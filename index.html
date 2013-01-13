@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Документ без названия</title>
+	</head>
+	
+	<body>
+		<script type="text/html" id="my">
+			<!--{Comment}-->
+			{template test(a = 1, b = 2)}
+				{var arr = [1, 2, 3, 4, 5]}
+				
+				{if a > 1}
+					<div>{a}</div>
+				{elseIf a < 10}
+					{1 + 2}
+				{/}
+				{block a}
+					<div class="{g + e.a}">
+						{block df}
+							{forEach a as el,i}
+								{forEach el}
+									{el2|html}
+								{/}
+							{/if !a}
+								121
+							{/}
+						{/block}
+					</div>
+				{/block}
+			{/template}
+		</script>
+		<script src="core.js"></script>
+		<script>
+			var a = Snakeskin.compile(document.getElementById('my'));
+		</script>
+	</body>
+</html>
