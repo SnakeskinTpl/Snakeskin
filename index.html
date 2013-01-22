@@ -7,27 +7,39 @@
 	
 	<body>
 		<script type="text/html" id="my">
-			<!--{Comment}-->
-			{template test(a = 1, b = 2)}
-				{var arr = [1, 2, 3, 4, 5]}
+			{template test()}
+				<!doctype html>
+				//<html>
+					/*{block header}
+						<head>
+							{block title}
+								
+							{/block}
+						</head>
+					{/block}*/
+					
+					{block footer}
+						
+					{/block}
+				</html>
+			{/template}
+			
+			{template test2() extends test}
+				{a = 2}
+				{b = 4}
 				
-				{if a > 1}
-					<div>{a}</div>
-				{elseIf a < 10}
-					{1 + 2}
-				{/}
-				{block a}
-					<div class="{g + e.a}">
-						{block df}
-							{forEach a as el,i}
-								{forEach el}
-									{el2|html}
-								{/}
-							{/if !a}
-								121
-							{/}
-						{/block}
-					</div>
+				{block title}
+					<title>тест наследования</title>
+				{/block}
+				
+				{block footer}
+					121
+				{/block}
+			{/template}
+			
+			{template test3() extends test2}
+				{block footer}
+					111
 				{/block}
 			{/template}
 		</script>

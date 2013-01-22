@@ -6,7 +6,7 @@ var Snakeskin = {};
 (function () {
 	var nlRgxp = /[\n\r]/g,
 		whitespaceRgxp = /[\t]|[\s]{2}/g,
-		commentRgxp = /<!--{.*?}-->/g,
+		commentRgxp = /\/\*.*?\*\//g,
 		
 		paramsRgxp = /.*?\((.*?)\).*/,
 		withoutParamsRgxp = /\(.*/,
@@ -22,7 +22,37 @@ var Snakeskin = {};
 		elseIfRgxp = /^elseIf\s+/,
 		elseRgxp = /^else\s+/,
 		
-		cache = {};
+		cache = {},
+		extMap = {};
+	
+	Snakeskin._getExtStr = function (tplName) {
+		var res = '';
+			
+			chain = [tplName],
+			nextName = tplName,
+			
+			i = -1;
+		
+		while (typeof extMap[nextName] !== 'undefined') {
+			nextName = extMap[nextName];
+			chain.unshift(nextName);
+		}
+		
+		while (++i < chain.length) {
+			if (i === 0) {
+				res = cache[chain[i]];
+				continue;
+			}
+			
+			(cache[chain[i]].match(/{block .*?}.*?{\/block}/g) || []).forEach(function (el) {
+				var blockName = el.replace(/{block (.*?)}.*/, '$1');
+				
+				res = res.replace(new RegExp('{block ' + blockName + '}.*?{\\/block}'), el);
+			});
+		}
+		
+		return res;
+	};
 	
 	/**
 	 * Скомпилировать шаблоны
@@ -31,12 +61,14 @@ var Snakeskin = {};
 	 * @return {}
 	 */
 	Snakeskin.compile = function (node) {
-		var source = node.innerHTML
-				.replace(nlRgxp, '')
+		var // Подготовка текста шаблонов
+			source = node.innerHTML
+				.replace(nlRgxp, ' ')
 				.replace(whitespaceRgxp, '')
 				.replace(commentRgxp, ''),
 			
 			tplName,
+			parentName,
 			cycle,
 			nm = '',
 			
@@ -57,13 +89,15 @@ var Snakeskin = {};
 			res = '',
 			
 			i = -1,
-			startI;
+			startI,
+			startJ;
 		
 		while (++i < source.length) {
 			if (source.charAt(i) === '{') {
 				if (!begin) {
 					begin = true;
 					continue;
+				
 				} else {
 					fakeBegin++;
 				}
@@ -71,8 +105,10 @@ var Snakeskin = {};
 			} else if (source.charAt(i) === '}') {
 				if (fakeBegin) {
 					fakeBegin--;
+				
 				} else {
 					begin = false;
+					// Название команды
 					commandDesc = command.split(' ')[0];
 					
 					switch (commandDesc) {
@@ -83,21 +119,31 @@ var Snakeskin = {};
 								.replace(templateRgxp, '')
 								.replace(withoutParamsRgxp, '');
 							
+							// Название родительского шаблона
+							if (/ extends /.test(command)) {
+								parentName = command.replace(/.*? extends (.*)/, '$1');;
+							}
+							
+							// Схема наследования
+							extMap[tplName] = parentName;
+							
 							// С пространством имён
 							if (dotRgxp.test(tplName)) {
-								res += tplName + '=function ('; 
+								res += tplName + '= function ('; 
 							
 							// Без простраства имён
 							} else {
 								res += 'function ' + tplName + '('; 
 							}
 							startI = i - command.length - 1;
+							startJ = i + 1;
 							
 							// Входные параметры
 							params = command.replace(paramsRgxp, '$1').split(',');
 							defParams = '';
 							
 							// Инициализация параметров по умолчанию
+							// (эээххх, когда же настанет ECMAScript 6 :()
 							params.forEach(function (el, i) {
 								var def = el.split('=');
 								def[0] = def[0].trim();
@@ -105,7 +151,7 @@ var Snakeskin = {};
 								
 								if (def.length > 1) {
 									def[1] = def[1].trim();
-									defParams += def[0] + '=typeof ' + def[0] + '!== \'undefined\'||' + def[0] + '!==null?' + def[0] + ':' + def[1] + ';';
+									defParams += def[0] + ' = typeof ' + def[0] + '!== \'undefined\' || ' + def[0] + ' !== null?' + def[0] + ':' + def[1] + ';';
 								}
 								
 								if (i !== params.length - 1) {
@@ -117,21 +163,31 @@ var Snakeskin = {};
 						
 						// Локальные переменные
 						case 'var' : {
-							res += 'var ' + command.replace(varRgxp, '') + ';';
+							if (!parentName) {
+								res += 'var ' + command.replace(varRgxp, '') + ';';
+							}
 						} break;
 						
 						// Условные операторы
 						case 'if' : {
-							res += 'if (' + command.replace(ifRgxp, '') + '){';
+							if (!parentName) {
+								res += 'if (' + command.replace(ifRgxp, '') + ') {';
+							}
 						} break;
 						case '/if' : {
-							res += '};if (' + command.replace(ifRgxp, '') + '){';
+							if (!parentName) {
+								res += '}; if (' + command.replace(ifRgxp, '') + ') {';
+							}
 						} break;
 						case 'elseIf' : {
-							res += '} else if (' + command.replace(elseIfRgxp, '') + '){';
+							if (!parentName) {
+								res += '} else if (' + command.replace(elseIfRgxp, '') + ') {';
+							}
 						} break;
 						case 'else' : {
-							res += '} else {';
+							if (!parentName) {
+								res += '} else {';
+							}
 						} break;
 						
 						// Блок
@@ -140,40 +196,62 @@ var Snakeskin = {};
 						
 						// Закрытие блока
 						case '/' : {
-							res += '};';
+							if (!parentName) {
+								res += '};';
+							}
 						} break;
 						
 						// Закрытие шаблона
 						case '/template' : {
-							res += 'return __RESULT__;};';
-							cache[tplName] = source.substring(startI, i + 1);
+							cache[tplName] = source.substring(startJ, i - 10);
+							
+							if (parentName) {
+								source = source.substring(0, startJ) + this._getExtStr(tplName) + source.substring(i - 10, source.length);
+								i = startJ;
+								
+								parentName = false;
+								begin = false;
+								beginStr = false;
+								command = '';
+								
+								continue;
+							}
+							
+							res += 'return __RESULT__; };';
 						} break;
 						
 						case 'forEach' : {
-							cycle = command.replace(forEachRgxp, '').split(' as ');
-							res +=  cycle[0] + ' && Snakeskin.forEach(' + cycle[0] + (cycle[1] ? ',' + cycle[1] : '') + '){'
+							if (!parentName) {
+								cycle = command.replace(forEachRgxp, '').split(' as ');
+								res +=  cycle[0] + ' && Snakeskin.forEach(' + cycle[0] + (cycle[1] ? ',' + cycle[1] : '') + ') {'
+							}
 						} break;
 						
 						// Вывод переменных
 						default : {
-							tmp = '';
-							tmpI = 1;
-							command.split('|').reverse().forEach(function (el, i, data) {
-								var part,
-									sPart;
+							if (!parentName) {
+								tmp = '';
+								tmpI = 1;
 								
-								if (i === data.length - 1) {
-									tmp += el + new Array(tmpI).join(')');
-								} else {
-									tmpI++;
-									part = el.split(' ');
-									sPart = part.slice(1);
+								// Поддержка фильтров через пайп
+								command.split('|').reverse().forEach(function (el, i, data) {
+									var part,
+										sPart;
 									
-									tmp += 'Snakeskin.Filters[\'' + part[0] + '\'](' + (sPart.length ? sPart.join('') + ',' : '');
-								}
-							});
-							
-							res += '__RESULT__ +=' + tmp + ';';
+									if (i === data.length - 1) {
+										tmp += el + new Array(tmpI).join(')');
+									
+									} else {
+										tmpI++;
+										part = el.split(' ');
+										sPart = part.slice(1);
+										
+										tmp += 'Snakeskin.Filters[\'' + part[0] + '\'](' + (sPart.length ? sPart.join('') + ', ' : '');
+									}
+								});
+								
+								res += '__RESULT__ += ' + tmp + ';';
+							}
 						}
 					}
 					
@@ -188,16 +266,20 @@ var Snakeskin = {};
 					res += '\';';
 					beginStr = false;
 				}
+				
 				command += source.charAt(i);
 			} else {
 				if (!beginStr) {
-					res += '__RESULT__ +=\'';
+					res += '__RESULT__ += \'';
 					beginStr = true;
 				}
 				
-				res += source.charAt(i);
+				if (!parentName) {
+					res += source.charAt(i);
+				}
 			}
 		}
+		
 		console.log(res);
 	};
 })();
