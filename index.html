@@ -7,41 +7,44 @@
 	
 	<body>
 		<script type="text/html" id="my">
-			{template test()}
+			{template test(l = 3)}
+				{a = 2}
+				{r = 2}
+				
 				<!doctype html>
-				//<html>
-					/*{block header}
+				<html>
+					{block header}
 						<head>
 							{block title}
 								
-							{/block}
+							{/end}
 						</head>
-					{/block}*/
+					{/end}
 					
 					{block footer}
-						
-					{/block}
+					{/end}
 				</html>
-			{/template}
+			{/end}
 			
 			{template test2() extends test}
-				{a = 2}
-				{b = 4}
+				{a = 3}
+				{g = 1}
+				{r = 1}
 				
 				{block title}
 					<title>тест наследования</title>
-				{/block}
+				{/end}
 				
 				{block footer}
-					121
-				{/block}
-			{/template}
+					{a + g}
+				{/end}
+			{/end}
 			
 			{template test3() extends test2}
 				{block footer}
 					111
-				{/block}
-			{/template}
+				{/end}
+			{/end}
 		</script>
 		<script src="core.js"></script>
 		<script>

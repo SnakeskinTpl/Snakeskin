@@ -4,51 +4,54 @@
 
 var Snakeskin = {};
 (function () {
-	var nlRgxp = /[\n\r]/g,
-		whitespaceRgxp = /[\t]|[\s]{2}/g,
-		commentRgxp = /\/\*.*?\*\//g,
-		
-		paramsRgxp = /.*?\((.*?)\).*/,
-		withoutParamsRgxp = /\(.*/,
-		dotRgxp = /\./,
-		equalRgxp = /=/g,
-		
-		templateRgxp = /^template\s+/,
-		varRgxp = /^var\s+/,
-		blockRgxp = /^block\s+/,
-		forEachRgxp = /^forEach\s+/,
-		
-		ifRgxp = /^\/?if\s+/,
-		elseIfRgxp = /^elseIf\s+/,
-		elseRgxp = /^else\s+/,
-		
-		cache = {},
-		extMap = {};
+	'use strict';
+	
+	var cache = {},
+		blockCache = {},
+		varCache = {},
+		extMap = {},
+		cData = [];
 	
 	Snakeskin._getExtStr = function (tplName) {
-		var res = '';
+		var res = cache[extMap[tplName]],
+			old = res.length,
+			diff,
 			
-			chain = [tplName],
-			nextName = tplName,
+			el = blockCache[tplName],
+			prev = blockCache[extMap[tplName]],
 			
-			i = -1;
+			block,
+			key,
+			i = -1,
+			
+			from = 0;
 		
-		while (typeof extMap[nextName] !== 'undefined') {
-			nextName = extMap[nextName];
-			chain.unshift(nextName);
-		}
-		
-		while (++i < chain.length) {
-			if (i === 0) {
-				res = cache[chain[i]];
-				continue;
+		while (++i < 3) {
+			if (i > 0) {
+				el = varCache[tplName];
+				prev = varCache[extMap[tplName]];
+				old = res.length;
 			}
 			
-			(cache[chain[i]].match(/{block .*?}.*?{\/block}/g) || []).forEach(function (el) {
-				var blockName = el.replace(/{block (.*?)}.*/, '$1');
+			for (key in el) {
+				if (!el.hasOwnProperty(key)) { continue; }
 				
-				res = res.replace(new RegExp('{block ' + blockName + '}.*?{\\/block}'), el);
-			});
+				diff = res.length - old;
+				block = cache[tplName].substring(el[key].from, el[key].to);
+				
+				if (prev[key]) {
+					if (i > 0) {
+						from = prev[key].to + diff + 1;
+					}
+					
+					res = res.substring(0, prev[key].from + diff) + block + res.substring(prev[key].to + diff, res.length);
+				
+				} else if (i === 2) {
+					block = '{' + block + '}';
+					res = res.substring(0, from) + block + res.substring(from, res.length);
+					from = from + block.length;
+				}
+			}
 		}
 		
 		return res;
@@ -63,22 +66,37 @@ var Snakeskin = {};
 	Snakeskin.compile = function (node) {
 		var // Подготовка текста шаблонов
 			source = node.innerHTML
-				.replace(nlRgxp, ' ')
-				.replace(whitespaceRgxp, '')
-				.replace(commentRgxp, ''),
+				// Однострочный комментарий
+				.replace(/\/\/.*/g, '')
+				// Переводы строк
+				.replace(/[\n\r]/g, ' ')
+				
+				// Обработка блоков cdata
+				.replace(/{cdata}([\s\S]*?){\/cdata}/, function (sstr, data) {
+					cData.push(data);
+					return '@cdata_' + (cData.length - 1);
+				})
+				
+				// Многострочный комментарий
+				.replace(/\/\*[\s\S]*?\*\//g, '')
+				// Отступы
+				.replace(/[\t]|[\s]{2}/g, ''),
+			
+			el,
 			
 			tplName,
 			parentName,
 			cycle,
-			nm = '',
 			
 			params,
 			defParams,
 			
 			begin,
+			beginI = 0,
 			fakeBegin = 0,
 			beginStr,
-			endElse,
+			
+			blockI = [],
 			
 			command = '',
 			commandDesc,
@@ -89,20 +107,22 @@ var Snakeskin = {};
 			res = '',
 			
 			i = -1,
-			startI,
-			startJ;
+			startI;
 		
 		while (++i < source.length) {
-			if (source.charAt(i) === '{') {
+			el = source.charAt(i);
+			
+			if (el === '{') {
 				if (!begin) {
 					begin = true;
+					
 					continue;
 				
 				} else {
 					fakeBegin++;
 				}
 			
-			} else if (source.charAt(i) === '}') {
+			} else if (el === '}') {
 				if (fakeBegin) {
 					fakeBegin--;
 				
@@ -114,32 +134,37 @@ var Snakeskin = {};
 					switch (commandDesc) {
 						// Определение нового шаблона
 						case 'template' : {
+							beginI++;
+							
 							// Получаем имя и пространство имён шаблона
 							tplName = command
-								.replace(templateRgxp, '')
-								.replace(withoutParamsRgxp, '');
+								.replace(/^template\s+/, '')
+								.replace(/\(.*/, '');
+							
+							blockCache[tplName] = {};
+							varCache[tplName] = {};
 							
 							// Название родительского шаблона
-							if (/ extends /.test(command)) {
-								parentName = command.replace(/.*? extends (.*)/, '$1');;
+							if (/\s+extends\s+/.test(command)) {
+								parentName = command.replace(/.*?\s+extends\s+(.*)/, '$1');;
 							}
 							
 							// Схема наследования
 							extMap[tplName] = parentName;
 							
 							// С пространством имён
-							if (dotRgxp.test(tplName)) {
+							if (/\./.test(tplName)) {
 								res += tplName + '= function ('; 
 							
 							// Без простраства имён
 							} else {
 								res += 'function ' + tplName + '('; 
 							}
-							startI = i - command.length - 1;
-							startJ = i + 1;
+							
+							startI = i + 1;
 							
 							// Входные параметры
-							params = command.replace(paramsRgxp, '$1').split(',');
+							params = command.replace(/.*?\((.*?)\).*/, '$1').split(',');
 							defParams = '';
 							
 							// Инициализация параметров по умолчанию
@@ -151,85 +176,122 @@ var Snakeskin = {};
 								
 								if (def.length > 1) {
 									def[1] = def[1].trim();
-									defParams += def[0] + ' = typeof ' + def[0] + '!== \'undefined\' || ' + def[0] + ' !== null?' + def[0] + ':' + def[1] + ';';
+									defParams += def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' || ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
 								}
 								
 								if (i !== params.length - 1) {
 									res += ',';
 								}
 							});
-							res += '){' + defParams + 'var __RESULT__ = \'\';';
-						} break;
+							res += ') { ' + defParams + 'var __RESULT__ = \'\';';
 						
-						// Локальные переменные
-						case 'var' : {
-							if (!parentName) {
-								res += 'var ' + command.replace(varRgxp, '') + ';';
-							}
 						} break;
 						
 						// Условные операторы
 						case 'if' : {
+							beginI++;
+							
 							if (!parentName) {
-								res += 'if (' + command.replace(ifRgxp, '') + ') {';
+								res += 'if (' + command.replace(/^\/?if\s+/, '') + ') {';
 							}
 						} break;
 						case '/if' : {
+							beginI++;
+							
 							if (!parentName) {
-								res += '}; if (' + command.replace(ifRgxp, '') + ') {';
+								res += '}; if (' + command.replace(/^\/?if\s+/, '') + ') {';
 							}
 						} break;
 						case 'elseIf' : {
+							beginI++;
+							
 							if (!parentName) {
-								res += '} else if (' + command.replace(elseIfRgxp, '') + ') {';
+								res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
 							}
 						} break;
 						case 'else' : {
+							beginI++;
+							
 							if (!parentName) {
 								res += '} else {';
 							}
 						} break;
 						
-						// Блок
-						case 'block' :
-						case '/block' : break;
+						// Блок наследования
+						case 'block' : {
+							blockCache[tplName][command] = {from: i - startI + 1};
+							blockI.push({
+								name: command,
+								i: ++beginI
+							});
+						} break;
 						
 						// Закрытие блока
-						case '/' : {
-							if (!parentName) {
+						case '/end' : {
+							beginI--;
+							tmp = blockI[blockI.length - 1];
+							
+							// Закрытие шаблона
+							if (beginI === 0) {
+								// Кешируем тело шаблона
+								cache[tplName] = source.substring(startI, i - command.length - 1);
+								
+								// Обработка наследования
+								if (parentName) {
+									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);
+									i = startI - 1;
+									beginI++;
+									
+									parentName = false;
+									begin = false;
+									beginStr = false;
+									command = '';
+									
+									continue;
+								}
+								
+								res += 'return __RESULT__; };';
+							
+							} else if (!parentName && (!tmp || tmp.i !== beginI + 1)) {
 								res += '};';
 							}
-						} break;
-						
-						// Закрытие шаблона
-						case '/template' : {
-							cache[tplName] = source.substring(startJ, i - 10);
 							
-							if (parentName) {
-								source = source.substring(0, startJ) + this._getExtStr(tplName) + source.substring(i - 10, source.length);
-								i = startJ;
-								
-								parentName = false;
-								begin = false;
-								beginStr = false;
-								command = '';
-								
-								continue;
+							if (tmp && tmp.i === beginI + 1) {
+								blockCache[tplName][tmp.name].to = i - startI - command.length - 1;
+								blockI.pop();
 							}
 							
-							res += 'return __RESULT__; };';
 						} break;
 						
+						// Цикл
 						case 'forEach' : {
+							beginI++;
+							
 							if (!parentName) {
-								cycle = command.replace(forEachRgxp, '').split(' as ');
+								cycle = command.replace(/^forEach\s+/, '').split(' as ');
 								res +=  cycle[0] + ' && Snakeskin.forEach(' + cycle[0] + (cycle[1] ? ',' + cycle[1] : '') + ') {'
 							}
 						} break;
 						
-						// Вывод переменных
 						default : {
-							if (!parentName) {
+							// Инициализация переменных
+							if (/=(?!=)/.test(command)) {
+								tmp = command.split('=')[0].trim();
+								if (varCache[tplName][tmp]) {
+									throw new Error('Can\'t ');
+								}
+								
+								varCache[tplName][tmp] = {
+									from: i - startI - command.length,
+									to: i - startI
+								};
+								
+								if (!parentName) {
+									res += 'var ' + command + ';';
+								}
+							
+							// Вывод переменных
+							} else if (!parentName) {
 								tmp = '';
 								tmpI = 1;
 								
@@ -256,7 +318,6 @@ var Snakeskin = {};
 					}
 					
 					command = '';
-					
 					continue;
 				}
 			}
@@ -267,7 +328,7 @@ var Snakeskin = {};
 					beginStr = false;
 				}
 				
-				command += source.charAt(i);
+				command += el;
 			} else {
 				if (!beginStr) {
 					res += '__RESULT__ += \'';
@@ -275,10 +336,16 @@ var Snakeskin = {};
 				}
 				
 				if (!parentName) {
-					res += source.charAt(i);
+					res += el;
 				}
 			}
 		}
+		
+		res = res
+			.replace(/@cdata_(\d+)/g, function (sstr, pos) {
+				return cData[pos]; 
+			})
+			.replace(/__RESULT__ \+= '';/g, '');
 		
 		console.log(res);
 	};
