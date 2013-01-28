@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Test: Snakeskin.compile</title>
+		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+		<script type="text/javascript" src="snakeskin.js"></script>
+	</head>
+	<body>
+		<h1 id="qunit-header">Test: Snakeskin.compile</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="test"></div>
+		
+		<script type="text/javascript">
+			var tpl = {};
+		</script>
+		<script type="text/x-snakeskin-template" id="templates">
+			{template first(name = 'world')}
+				{text = 'Hello'}
+				<h1>{text} {name}!</h1>
+			{/end}
+			
+			{template tpl.first(name = 'world')}
+				{text = 'Hello'}
+				<h1>{text} {name}!</h1>
+			{/end}
+			
+			{template second(name = 'world', lastName)}
+				{text = 'Hello'}
+				<h1>{text} {name + lastName}!</h1>
+			{/end}
+			
+			{template withWith(obj)}
+				{with obj.child}
+					{name} 
+					{with child}
+						{name}
+					{/end}
+				{/end}
+			{/end}
+			
+			{template withIf(a)}
+				{if a === 4}
+					OK
+				{elseIf a === 3}
+					FAIL
+				{else}
+					WIN
+				{/end}
+			{/end}
+			
+			{template forEach(a)}
+				{forEach a => el}
+					{el}
+				{/end}
+			{/end}
+			
+			{template deepForEach(a)}
+				{forEach a => el}
+					{forEach el => el}
+						{el}
+					{/end}
+				{/end}
+			{/end}
+			
+			{template base(a = 1, b)}
+				{title = 'foo'}
+				
+				<!doctype html>
+				<html>
+					{block head}
+						<head>
+							{block title}
+								<title>{title + (a + b)}</title>
+							{/end}
+						</head>
+					{/end}
+					{block footer}
+					{/end}
+				</html>
+			{/end}
+			
+			{template child(a = 3) extends base}
+				{title = 'foo2'}
+				{a = 4}
+				{b = 'foo'}
+				
+				{block head}
+					{title + a}
+				{/end}
+				
+				{block footer}
+					{block end}
+						{b}
+					{/end}
+				{/end}
+				
+				{block next}
+					121
+				{/end}
+			{/end}
+			
+			{template withFilter()}
+				{b = '"onclick="\'alert(1)\'"'}
+				<a href="{b}"></a>
+			{/end}
+			
+			{template withoutFilter()}
+				{b = '"onclick="\'alert(1)\'"'}
+				<a href="{b|!html}"></a>
+			{/end}
+			
+			{template withCData()}
+				{cdata}
+					{template withFilter()}
+						{b = '"onclick="\'alert(1)\'"'}
+						<a href="{b}"></a>
+					{/end}
+				{/cdata}
+				
+				{text = 'Hello'}
+				<h1>{text}!</h1>
+			{/end}
+		</script>
+		
+		<script type="text/javascript">
+			var block = document.getElementById('templates');
+			Snakeskin.compile(block)
+			
+			test('Snakeskin.compile', function () {
+				equal((function () {
+					block.innerHTML = first();
+					return block.innerHTML;
+				})(), '<h1>Hello world!</h1>', 'Параметр по умолчанию + переменная');
+				
+				equal((function () {
+					block.innerHTML = first('Koba');
+					return block.innerHTML;
+				})(), '<h1>Hello Koba!</h1>', 'Параметр + переменная');
+				
+				equal((function () {
+					block.innerHTML = tpl.first('Koba');
+					return block.innerHTML;
+				})(), '<h1>Hello Koba!</h1>', 'Параметр + переменная (вызов из пространства имён)');
+				
+				equal((function () {
+					block.innerHTML = second('Koba', 'Cool');
+					return block.innerHTML;
+				})(), '<h1>Hello KobaCool!</h1>', 'Два параметра + переменная + выражение');
+				
+				equal((function () {
+					block.innerHTML = withWith({
+						child: {
+							name: 'Koba',
+							child: {
+								name: 'none'
+							}
+						}
+					});
+					
+					return block.innerHTML;
+				})(), 'Koba none', 'С использованием with');
+				
+				equal((function () {
+					block.innerHTML = withIf(4);
+					return block.innerHTML;
+				})(), 'OK', 'Проверка if');
+				
+				equal((function () {
+					block.innerHTML = withIf(3);
+					return block.innerHTML;
+				})(), 'FAIL', 'Проверка elseIf');
+				
+				equal((function () {
+					block.innerHTML = withIf(33);
+					return block.innerHTML;
+				})(), 'WIN', 'Проверка else');
+				
+				equal((function () {
+					block.innerHTML = forEach([1, 2, 3]);
+					return block.innerHTML;
+				})(), '123', 'forEach');
+				
+				equal((function () {
+					block.innerHTML = deepForEach([[1, 2, 3]]);
+					return block.innerHTML;
+				})(), '123', 'forEach forEach');
+				
+				equal((function () {
+					block.innerHTML = base(2, 1);
+					return block.innerHTML;
+				})(), '<!doctype html><html><head><title>foo3</title></head></html>', 'Базовый блок наследования');
+				
+				equal((function () {
+					block.innerHTML = child();
+					return block.innerHTML;
+				})(), '<!doctype html><html>foo24foo</html>foo121', 'Проверка наследования');
+				
+				equal((function () {
+					block.innerHTML = withFilter();
+					return block.innerHTML;
+				})(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
+				
+				equal((function () {
+					block.innerHTML = withoutFilter();
+					return block.innerHTML;
+				})(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
+				
+				equal((function () {
+					block.innerHTML = withCData();
+					return block.innerHTML;
+				})(), '					{template withFilter()}						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}						<a href=\"{b}\"></a>					{/end}				<h1>Hello!</h1>', 'Использование cdata областей');
+			});
+		</script>
+	</body>
+</html>
