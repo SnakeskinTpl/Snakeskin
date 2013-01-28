@@ -8,7 +8,7 @@
 	<body>
 		<script type="text/html" id="my">
 			{template test(l = 3)}
-				{a = 2}
+				{a = 1}
 				{r = 2}
 				
 				<!doctype html>
@@ -16,7 +16,11 @@
 					{block header}
 						<head>
 							{block title}
+								{forEach a => el}
+								{/if a == 2}
+								{/end}
 								
+								{a|test 1,'1|23',3|test2 1|test3}
 							{/end}
 						</head>
 					{/end}
@@ -26,12 +30,13 @@
 				</html>
 			{/end}
 			
-			{template test2() extends test}
+			/*{template test2(j = 2) extends test}
 				{a = 3}
 				{g = 1}
 				{r = 1}
 				
 				{block title}
+					{console.log(a)}
 					<title>тест наследования</title>
 				{/end}
 				
@@ -44,7 +49,7 @@
 				{block footer}
 					111
 				{/end}
-			{/end}
+			{/end}*/
 		</script>
 		<script src="core.js"></script>
 		<script>
