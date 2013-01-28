@@ -28,8 +28,8 @@ var Snakeskin = {};
 			
 			from = 0;
 		
-		while (++i < 3) {
-			if (i > 0) {
+		while (++i < 4) {
+			if (i > 1) {
 				el = varCache[tplName];
 				prev = varCache[extMap[tplName]];
 				old = res.length;
@@ -41,17 +41,21 @@ var Snakeskin = {};
 				diff = res.length - old;
 				block = cache[tplName].substring(el[key].from, el[key].to);
 				
-				if (prev[key]) {
-					if (i > 0) {
+				if (prev[key] && (i === 0 || i === 2)) {
+					if (i > 1) {
 						from = prev[key].to + diff + 1;
 					}
 					
 					res = res.substring(0, prev[key].from + diff) + block + res.substring(prev[key].to + diff, res.length);
-				
-				} else if (i === 2) {
-					block = '{' + block + '}';
-					res = res.substring(0, from) + block + res.substring(from, res.length);
-					from = from + block.length;
+					
+				} else if (!prev[key]) {
+					if (i === 1) {
+						res += block;
+					} else if (i === 3) {
+						block = '{' + block + '}';
+						res = res.substring(0, from) + block + res.substring(from, res.length);
+						from = from + block.length;
+					}
 				}
 			}
 		}
@@ -340,6 +344,7 @@ var Snakeskin = {};
 						} else if (!parentName) {
 							tmp = '';
 							tmpI = 1;
+							bOpen = false;
 							
 							// Экранирование
 							command = command.split('');

@@ -8,7 +8,7 @@
 	<body>
 		<script type="text/html" id="my">
 			{template test(l = 3)}
-				{a = 1}
+				{a = '==34343=sd='}
 				{r = 2}
 				
 				<!doctype html>
@@ -30,8 +30,8 @@
 				</html>
 			{/end}
 			
-			/*{template test2(j = 2) extends test}
-				{a = 3}
+			{template test2(j = 2) extends test}
+				{a = 33}
 				{g = 1}
 				{r = 1}
 				
@@ -43,13 +43,17 @@
 				{block footer}
 					{a + g}
 				{/end}
+				
+				{block next}
+					{a}
+				{/end}
 			{/end}
 			
-			{template test3() extends test2}
+			{template test3(l,j) extends test2}
 				{block footer}
 					111
 				{/end}
-			{/end}*/
+			{/end}
 		</script>
 		<script src="core.js"></script>
 		<script>
