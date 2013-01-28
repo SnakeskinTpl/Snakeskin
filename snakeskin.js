@@ -1,5 +1,5 @@
 /////////////////////////////////
-//// Шаблонизатор
+//// Snakeskin - компилируемый шаблонизатор
 /////////////////////////////////
 
 var Snakeskin = {Filters: {}};
@@ -66,11 +66,12 @@ var Snakeskin = {Filters: {}};
 	};
 })();
 
+//#if withCompiler
 /////////////////////////////////
 //// Копилятор
 /////////////////////////////////
 
-(function () {
+(function (require) {
 	'use strict';
 	
 	var // Кеш шаблонов
@@ -86,7 +87,8 @@ var Snakeskin = {Filters: {}};
 		// Стек CDATA
 		cData = [],
 		
-		quote = {'"': true, '\'': true};
+		quote = {'"': true, '\'': true},
+		key;
 	
 	/**
 	 * Вернуть тело шаблона при наследовании
@@ -557,6 +559,21 @@ var Snakeskin = {Filters: {}};
 			throw new Error('Missing closing or opening tag in the template!');
 		}
 		
-		window['eval'](res);
+		if (require) {
+			global['eval'](res);
+		} else {
+			window['eval'](res);
+		}
+		
+		return res;
 	};
-})();
+	
+	// common.js экспорт
+	if (require) {
+		for (key in Snakeskin) {
+			if (!Snakeskin.hasOwnProperty(key)) { continue; }
+			exports[key] = Snakeskin[key];
+		}
+	}
+})(typeof window === 'undefined');
+//#endif

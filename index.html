@@ -2,29 +2,22 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Документ без названия</title>
+		<title>Hello word</title>
+		<script src="snakeskin.min.js"></script>
 	</head>
 	
 	<body>
 		<div id="test">
 		</div>
 		
-		<script type="text/html" id="my">
-			{template withCData()}
-				{cdata}
-					{template withFilter()}
-						{b = '"onclick="\'alert(1)\'"'}
-						<a href="{b}"></a>
-					{/end}
-				{/cdata}
-				
-				{text = 'Hello'}
-				<h1>{text}!</h1>
+		<script type="text/x-snakeskin-template" id="templates">
+			{template helloWord(name = 'word')}
+				<h1>Hello {name}!</h1>
 			{/end}
 		</script>
-		<script src="snakeskin.js"></script>
 		<script>
-			var a = Snakeskin.compile(document.getElementById('my'));
+			Snakeskin.compile(document.getElementById('templates'));
+			document.getElementById('test').innerHTML = helloWord();
 		</script>
 	</body>
 </html>
