@@ -165,11 +165,12 @@ var Snakeskin = {Filters: {}};
 	 * Скомпилировать шаблоны
 	 *
 	 * @param {(Node|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
+	 * @param {?boolean=} [opt_commonjs=false] - если true, то шаблон компилируется с экспортом
 	 * @return {string}
 	 *
 	 * @test compile_test.html
 	 */
-	Snakeskin.compile = function (src) {
+	Snakeskin.compile = function (src, opt_commonjs) {
 		var // Подготовка текста шаблонов
 			source = (src.innerHTML || src)
 				// Обработка блоков cdata
@@ -260,8 +261,8 @@ var Snakeskin = {Filters: {}};
 						
 						res += '/* Snakeskin template: ' + tplName + '; ' + params.replace(/=(.*?)(?:,|$)/g, '') + ' */';
 						// С пространством имён
-						if (/\./.test(tplName)) {
-							res += tplName + '= function ('; 
+						if (/\./.test(tplName) || opt_commonjs) {
+							res += (opt_commonjs ? 'exports.' : '') + tplName + '= function ('; 
 						
 						// Без простраства имён
 						} else {
@@ -428,7 +429,7 @@ var Snakeskin = {Filters: {}};
 							}
 						}
 						
-						// Закртие блоков наследования и пространства имён
+						// Закрытие блоков наследования и пространства имён
 						if (lastBlock && lastBlock.i === beginI + 1) {
 							blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
 							blockI.pop();
@@ -560,7 +561,11 @@ var Snakeskin = {Filters: {}};
 		}
 		
 		if (require) {
-			global['eval'](res);
+			if (opt_commonjs) {
+				eval(res);
+			} else {
+				global['eval'](res);
+			}
 		} else {
 			window['eval'](res);
 		}
