@@ -102,6 +102,7 @@ var Snakeskin = {};
 			beginStr,
 			
 			blockI = [],
+			withI = [],
 			
 			command = '',
 			
@@ -160,7 +161,7 @@ var Snakeskin = {};
 						
 						// Входные параметры
 						params = command.replace(/.*?\((.*?)\).*/, '$1').split(',');
-						paramsCache[tplName] = params;
+						paramsCache[tplName] = paramsCache[parentName] ? paramsCache[parentName].concat(params) : params;
 						defParams = '';
 						
 						// Подмешивание родительских входных параметров
@@ -255,6 +256,14 @@ var Snakeskin = {};
 						}
 					} break;
 					
+					// Пространство имён
+					case 'with' : {
+						withI.push({
+							scope: command.replace(/^with\s+/, ''),
+							i: ++beginI
+						});
+					} break;
+					
 					// Блок наследования
 					case 'block' : {
 						blockCache[tplName][command] = {from: i - startI + 1};
@@ -293,13 +302,17 @@ var Snakeskin = {};
 							
 							res += 'return __RESULT__; };';
 						
-						} else if (!parentName && (!tmp || tmp.i !== beginI + 1)) {
+						} else if (!parentName && (!tmp || tmp.i !== beginI + 1) && (!withI[withI.length - 1] || withI[withI.length - 1].i !== beginI + 1)) {
 							res += '};';
 						}
 						
 						if (tmp && tmp.i === beginI + 1) {
 							blockCache[tplName][tmp.name].to = i - startI - command.length - 1;
 							blockI.pop();
+						}
+						
+						if (withI[withI.length - 1] && withI[withI.length - 1].i === beginI + 1) {
+							withI.pop();
 						}
 						
 					} break;
@@ -369,7 +382,15 @@ var Snakeskin = {};
 									sPart;
 								
 								if (i === 0) {
-									tmp = el;
+									if (withI.length) {
+										withI.push({scope: el});
+										tmp = withI.reduce(function (str, el) {
+											return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
+										});
+										withI.pop();
+									} else {
+										tmp = el;
+									}
 								} else {
 									tmpI++;
 									part = el.split(' ');

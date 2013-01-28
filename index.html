@@ -49,9 +49,14 @@
 				{/end}
 			{/end}
 			
-			{template test3(l,j) extends test2}
+			{template test3(j) extends test2}
 				{block footer}
-					111
+					{with a.t}
+						{f}
+						{with a.t}
+							{f}
+						{/end}
+					{/end}
 				{/end}
 			{/end}
 		</script>
