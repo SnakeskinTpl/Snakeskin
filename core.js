@@ -6,19 +6,35 @@ var Snakeskin = {};
 (function () {
 	'use strict';
 	
-	var cache = {},
+	var // Кеш шаблонов
+		cache = {},
+		// Кеш блоков
 		blockCache = {},
+		// Кеш переменных
 		varCache = {},
+		// Кеш входных параметров
 		paramsCache = {},
+		// Карта наследований
 		extMap = {},
+		// Стек CDATA
 		cData = [],
+		
 		quote = {'"': true, '\'': true};
 	
+	/**
+	 * Вернуть тело шаблона при наследовании
+	 *
+	 * @param {string} tplName - название шаблона
+	 * @return {string}
+	 */
 	Snakeskin._getExtStr = function (tplName) {
-		var res = cache[extMap[tplName]],
+		var // Исходный текст шаблона равен родительскому
+			res = cache[extMap[tplName]],
 			old = res.length,
+			// Разница между длинами родительского и дочернего шаблона
 			diff,
 			
+			// Блоки дочернего и родительского шаблона
 			el = blockCache[tplName],
 			prev = blockCache[extMap[tplName]],
 			
@@ -26,10 +42,16 @@ var Snakeskin = {};
 			key,
 			i = -1,
 			
+			// Позиция для вставки новой переменной
 			from = 0;
 		
+		// Цикл производит перекрытие добавление новых блоков (новые блоки добавляются в конец шаблона)
+		// (итерации 0 и 1), а затем
+		// перекрытие и добавление новыхх переменных (итерации 2 и 3),
+		// причём новые переменные добавляются сразу за унаследованными
 		while (++i < 4) {
 			if (i > 1) {
+				// Переменные дочернего и родительского шаблона
 				el = varCache[tplName];
 				prev = varCache[extMap[tplName]];
 				old = res.length;
@@ -38,19 +60,26 @@ var Snakeskin = {};
 			for (key in el) {
 				if (!el.hasOwnProperty(key)) { continue; }
 				
+				// Пересчитываем разницу
 				diff = res.length - old;
+				// Текст добавляемой области
 				block = cache[tplName].substring(el[key].from, el[key].to);
 				
+				// Перекрытие
 				if (prev[key] && (i === 0 || i === 2)) {
 					if (i > 1) {
 						from = prev[key].to + diff + 1;
 					}
 					
 					res = res.substring(0, prev[key].from + diff) + block + res.substring(prev[key].to + diff, res.length);
-					
+				
+				// Добавление
 				} else if (!prev[key]) {
+					// Блоки
 					if (i === 1) {
-						res += block;
+						res += '{' + key + '}' + block + '{/end}';
+					
+					// Переменные
 					} else if (i === 3) {
 						block = '{' + block + '}';
 						res = res.substring(0, from) + block + res.substring(from, res.length);
@@ -66,12 +95,12 @@ var Snakeskin = {};
 	/**
 	 * Скомпилировать шаблоны
 	 *
-	 * @param {} node - 
-	 * @return {}
+	 * @param {(Node|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
+	 * @return {string}
 	 */
-	Snakeskin.compile = function (node) {
+	Snakeskin.compile = function (src) {
 		var // Подготовка текста шаблонов
-			source = node.innerHTML
+			source = (src.innerHTML || src)
 				// Однострочный комментарий
 				.replace(/\/\/.*/g, '')
 				// Переводы строк
@@ -102,7 +131,9 @@ var Snakeskin = {};
 			beginStr,
 			
 			blockI = [],
+			lastBlock,
 			withI = [],
+			lastWith,
 			
 			command = '',
 			
@@ -233,13 +264,11 @@ var Snakeskin = {};
 							res += 'if (' + command.replace(/^\/?if\s+/, '') + ') {';
 						}
 					} break;
-				
 					case '/if' : {
 						if (!parentName) {
 							res += '}; if (' + command.replace(/^\/?if\s+/, '') + ') {';
 						}
 					} break;
-				
 					case 'elseIf' : {
 						beginI++;
 						
@@ -247,7 +276,6 @@ var Snakeskin = {};
 							res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
 						}
 					} break;
-				
 					case 'else' : {
 						beginI++;
 						
@@ -276,7 +304,8 @@ var Snakeskin = {};
 					// Закрытие блока
 					case '/end' : {
 						beginI--;
-						tmp = blockI[blockI.length - 1];
+						lastBlock = blockI[blockI.length - 1];
+						lastWith = withI[withI.length - 1];
 						
 						// Закрытие шаблона
 						if (beginI === 0) {
@@ -302,16 +331,18 @@ var Snakeskin = {};
 							
 							res += 'return __RESULT__; };';
 						
-						} else if (!parentName && (!tmp || tmp.i !== beginI + 1) && (!withI[withI.length - 1] || withI[withI.length - 1].i !== beginI + 1)) {
+						// Закрываются все блоки кроме блоков наследования и пространства имён
+						} else if (!parentName && (!lastBlock || lastBlock.i !== beginI + 1) && (!lastWith || lastWith.i !== beginI + 1)) {
 							res += '};';
 						}
 						
-						if (tmp && tmp.i === beginI + 1) {
-							blockCache[tplName][tmp.name].to = i - startI - command.length - 1;
+						// Закртие блоков наследования и пространства имён
+						if (lastBlock && lastBlock.i === beginI + 1) {
+							blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
 							blockI.pop();
 						}
 						
-						if (withI[withI.length - 1] && withI[withI.length - 1].i === beginI + 1) {
+						if (lastWith && lastWith.i === beginI + 1) {
 							withI.pop();
 						}
 						
@@ -359,7 +390,7 @@ var Snakeskin = {};
 							tmpI = 1;
 							bOpen = false;
 							
-							// Экранирование
+							// Экранирование пайпов в строке
 							command = command.split('');
 							command.forEach(function (el, i) {
 								if (quote[el]) {
@@ -391,6 +422,7 @@ var Snakeskin = {};
 									} else {
 										tmp = el;
 									}
+								
 								} else {
 									tmpI++;
 									part = el.split(' ');
@@ -409,24 +441,24 @@ var Snakeskin = {};
 				continue;
 			}
 		
-		if (begin) {
-			if (beginStr) {
-				res += '\';';
-				beginStr = false;
-			}
-			
-			command += el;
-		} else {
-			if (!beginStr) {
-				res += '__RESULT__ += \'';
-				beginStr = true;
-			}
-			
-			if (!parentName) {
-				res += el;
+			if (begin) {
+				if (beginStr) {
+					res += '\';';
+					beginStr = false;
+				}
+				
+				command += el;
+			} else {
+				if (!beginStr) {
+					res += '__RESULT__ += \'';
+					beginStr = true;
+				}
+				
+				if (!parentName) {
+					res += el;
+				}
 			}
 		}
-	}
 		
 		res = res
 			.replace(/@cdata_(\d+)/g, function (sstr, pos) {
