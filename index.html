@@ -6,61 +6,23 @@
 	</head>
 	
 	<body>
+		<div id="test">
+		</div>
+		
 		<script type="text/html" id="my">
-			{template test(l = 3)}
-				{a = '==34343=sd='}
-				{r = 2}
-				
-				<!doctype html>
-				<html>
-					{block header}
-						<head>
-							{block title}
-								{forEach a => el}
-								{/if a == 2}
-								{/end}
-								
-								{a|test 1,'1|23',3|test2 1|test3}
-							{/end}
-						</head>
+			{template withCData()}
+				{cdata}
+					{template withFilter()}
+						{b = '"onclick="\'alert(1)\'"'}
+						<a href="{b}"></a>
 					{/end}
-					
-					{block footer}
-					{/end}
-				</html>
-			{/end}
-			
-			{template test2(j = 2) extends test}
-				{a = 33}
-				{g = 1}
-				{r = 1}
+				{/cdata}
 				
-				{block title}
-					{console.log(a)}
-					<title>тест наследования</title>
-				{/end}
-				
-				{block footer}
-					{a + g}
-				{/end}
-				
-				{block next}
-					{a}
-				{/end}
-			{/end}
-			
-			{template test3(j) extends test2}
-				{block footer}
-					{with a.t}
-						{f}
-						{with a.t}
-							{f}
-						{/end}
-					{/end}
-				{/end}
+				{text = 'Hello'}
+				<h1>{text}!</h1>
 			{/end}
 		</script>
-		<script src="core.js"></script>
+		<script src="snakeskin.js"></script>
 		<script>
 			var a = Snakeskin.compile(document.getElementById('my'));
 		</script>
