@@ -2,7 +2,10 @@
 //// Snakeskin - компилируемый шаблонизатор
 /////////////////////////////////
 
-var Snakeskin = {Filters: {}};
+var Snakeskin = {
+	VERSION: '1.0.1',
+	Filters: {}
+};
 
 (function (require) {
 	'use strict';
@@ -12,6 +15,18 @@ var Snakeskin = {Filters: {}};
 	/////////////////////////////////
 	
 	var key;
+	
+	if (!Array.isArray) {
+		/**
+		 * Вернуть true, если указанный объект является массивом
+		 *
+		 * @param {*} obj - исходный объект
+		 * @return {boolean}
+		 */
+		Array.isArray = function (obj) {
+			return Object.prototype.toString.call(obj) === '[object Array]';
+		};
+	}
 	
 	/**
 	 * Итератор цикла

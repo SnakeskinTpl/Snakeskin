@@ -2,7 +2,10 @@
 //// Snakeskin - компилируемый шаблонизатор
 /////////////////////////////////
 
-var Snakeskin = {Filters: {}};
+var Snakeskin = {
+	VERSION: '1.0.1',
+	Filters: {}
+};
 
 (function (require) {
 	'use strict';
@@ -12,6 +15,18 @@ var Snakeskin = {Filters: {}};
 	/////////////////////////////////
 	
 	var key;
+	
+	if (!Array.isArray) {
+		/**
+		 * Вернуть true, если указанный объект является массивом
+		 *
+		 * @param {*} obj - исходный объект
+		 * @return {boolean}
+		 */
+		Array.isArray = function (obj) {
+			return Object.prototype.toString.call(obj) === '[object Array]';
+		};
+	}
 	
 	/**
 	 * Итератор цикла
@@ -74,6 +89,113 @@ var Snakeskin = {Filters: {}};
 	/////////////////////////////////
 	//// Копилятор
 	/////////////////////////////////
+	
+	// Полифилы для старых ишаков
+	if (!Array.prototype.forEach) {
+		/**
+		 * Перебрать элементы массива
+		 * (выполнения цикла нельзя прервать, но для этого можно использовать some или every)
+		 *
+		 * @this {!Array}
+		 * @param {function(this:thisObject, *, number, !Array)} callback - функция, которая будет вызываться для каждого элемента массива
+		 * @param {thisObject=} [opt_thisObject] - контекст функции callback
+		 * @template thisObject
+		 */
+		Array.prototype.forEach = function (callback, opt_thisObject) {
+			var i = -1,
+				aLength = this.length;
+			
+			if (!opt_thisObject) {
+				while ((i += 1) < aLength) {
+					callback(this[i], i, this);
+				}
+			} else {
+				while ((i += 1) < aLength) {
+					callback.call(opt_thisObject, this[i], i, this);
+				}
+			}
+		}
+	}
+	
+	if (!Array.prototype.some) {
+		/**
+		 * Вернуть true, если есть хотя бы один элемент удовлетворяющий условию
+		 * (метод прерывает исполнение, когда callback возвращает true)
+		 *
+		 * @this {!Array}
+		 * @param {function(this:thisObject, *, number, !Array): (boolean|void)} callback - функция, которая будет вызываться для каждого элемента массива
+		 * @param {thisObject=} [opt_thisObject] - контекст функции callback
+		 * @template thisObject
+		 * @return {boolean}
+		 */
+		Array.prototype.some = function (callback, opt_thisObject) {
+			var i = -1,
+				aLength = this.length,
+				res;
+			
+			if (!opt_thisObject) {
+				while ((i += 1) < aLength) {
+					res = callback(this[i], i, this);
+					if (res) { return true; }
+				}
+			} else {
+				while ((i += 1) < aLength) {
+					res = callback.call(opt_thisObject, this[i], i, this);
+					if (res) { return true; }
+				}
+			}
+			
+			return false;
+		}
+	}
+	
+	if (!Array.prototype.reduce) {
+		/**
+		 * Рекурсивно привести массив к другому значению
+		 * (функция callback принимает результат выполнения предыдущей итерации и актуальный элемент)
+		 *
+		 * @this {!Array}
+		 * @param {function(*, *, number, !Array): *} callback - функция, которая будет вызываться для каждого элемента массива
+		 * @param {Object=} [opt_initialValue=this[0]] - объект, который будет использоваться как первый элемент при первом вызове callback
+		 * @template thisObject
+		 * @return {*}
+		 */
+		Array.prototype.reduce = function (callback, opt_initialValue) {
+			var i = 0,
+				aLength = this.length,
+				res;
+			
+			if (aLength === 1) { return this[0]; } 
+			
+			if (typeof opt_initialValue !== 'undefined') {
+				res = opt_initialValue;
+			} else {
+				res = this[0];
+			}
+			
+			while ((i += 1) < aLength) {
+				res = callback(res, this[i], i, this);
+			}
+			
+			return res;
+		};
+	}
+	
+	if (!String.prototype.trim) {
+		/**
+		 * Удалить крайние пробелы у строки
+		 *
+		 * @this {string}
+		 * @return {string}
+		 */
+		String.prototype.trim = function () {
+			var str = this.replace(/^\s\s*/, ''),
+				i = str.length;
+				
+			while (/\s/.test(str.charAt((i -= 1)))) {};
+			return str.substring(0, i + 1);
+		};
+	}
 	
 	var // Кеш шаблонов
 		cache = {},
@@ -345,11 +467,19 @@ var Snakeskin = {Filters: {}};
 						// Декларация функции
 						// с пространством имён или при экспорте в common.js
 						if (/\./.test(tplName) || opt_commonjs) {
+							tplName.split('.').reduce(function (str, el, i) {
+								res += '' +
+								'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+									(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
+								
+								return str + '.' + el;
+							});
+							
 							res += (opt_commonjs ? 'exports.' : '') + tplName + '= function ('; 
 						
 						// Без простраства имён
 						} else {
-							res += 'function ' + tplName + '('; 
+							res += (!require ? 'window.' + tplName + ' = ': '') + 'function ' + (require ? tplName : '') + '('; 
 						}
 						
 						// Начальная позиция шаблона
@@ -569,7 +699,7 @@ var Snakeskin = {Filters: {}};
 							tmp = command.split('=')[0].trim();
 							
 							// Попытка повторной инициализации переменной
-							if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
+							if (varCache[tplName][tmp] || varICache[tplName][tmp] || tmp === '__RESULT__') {
 								throw new Error('Variable "' + tmp + '" has already defined (template: "' + tplName + '")!');
 							}
 							
@@ -595,7 +725,7 @@ var Snakeskin = {Filters: {}};
 							unEscape = false;
 							
 							// Поддержка фильтров через пайп
-							command.split('|').forEach(function (el, i, data) {
+							command.split('|').forEach(function (el, i) {
 								var part,
 									sPart;
 								
