@@ -1,5 +1,5 @@
 /////////////////////////////////
-//// Шаблонизатор
+//// Snakeskin - компилируемый шаблонизатор
 /////////////////////////////////
 
 var Snakeskin = {Filters: {}};
@@ -25,6 +25,7 @@ var Snakeskin = {Filters: {}};
 			while (++i < length) {
 				callback(obj[i], i, i === 0, i === length - 1, length);
 			}
+		
 		} else {
 			i = 0;
 			for (key in obj) {

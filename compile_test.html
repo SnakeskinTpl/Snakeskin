@@ -87,8 +87,8 @@
 			
 			{template child(a = 3) extends base}
 				{title = 'foo2'}
-				{a = 4}
 				{b = 'foo'}
+				{e = {a: 1, b: [1, 2, 3]}}
 				
 				{block head}
 					{title + a}
@@ -199,7 +199,7 @@
 				equal((function () {
 					block.innerHTML = child();
 					return block.innerHTML;
-				})(), '<!doctype html><html>foo24foo</html>foo121', 'Проверка наследования');
+				})(), '<!doctype html><html>foo23foo</html>foo121', 'Проверка наследования');
 				
 				equal((function () {
 					block.innerHTML = withFilter();
