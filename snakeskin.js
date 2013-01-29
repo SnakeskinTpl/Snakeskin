@@ -4,11 +4,15 @@
 
 var Snakeskin = {Filters: {}};
 
-/////////////////////////////////
-//// Live toolkit
-/////////////////////////////////
-
-(function () {	
+(function (require) {
+	'use strict';
+	
+	/////////////////////////////////
+	//// Live toolkit
+	/////////////////////////////////
+	
+	var key;
+	
 	/**
 	 * Итератор цикла
 	 *
@@ -65,15 +69,11 @@ var Snakeskin = {Filters: {}};
 	Snakeskin.Filters.html = function (str) {
 		return String(str).replace(escapeHTMLRgxp, escapeHTML);
 	};
-})();
-
-//#if withCompiler
-/////////////////////////////////
-//// Копилятор
-/////////////////////////////////
-
-(function (require) {
-	'use strict';
+	
+	//#if withCompiler
+	/////////////////////////////////
+	//// Копилятор
+	/////////////////////////////////
 	
 	var // Кеш шаблонов
 		cache = {},
@@ -89,8 +89,7 @@ var Snakeskin = {Filters: {}};
 		// Стек CDATA
 		cData = [],
 		
-		quote = {'"': true, '\'': true},
-		key;
+		quote = {'"': true, '\'': true};
 	
 	/**
 	 * Вернуть тело шаблона при наследовании
@@ -255,7 +254,16 @@ var Snakeskin = {Filters: {}};
 				// Многострочный комментарий
 				.replace(/\/\*[\s\S]*?\*\//g, ''),
 			
-			res = '/* This code is generated automatically, don\'t alter it. */',
+			res = '' +
+			'/* This code is generated automatically, don\'t alter it. */' +
+			(opt_commonjs ?
+				'var Snakeskin = global.Snakeskin;' + 
+				'exports.liveInit = function (path) { ' +
+					'Snakeskin = require(path);' +
+					'return this;' +
+				'};'
+			: ''),
+			
 			el,
 			
 			tplName,
@@ -687,6 +695,7 @@ var Snakeskin = {Filters: {}};
 		
 		return res;
 	};
+	//#endif
 	
 	// common.js экспорт
 	if (require) {
@@ -696,4 +705,3 @@ var Snakeskin = {Filters: {}};
 		}
 	}
 })(typeof window === 'undefined');
-//#endif

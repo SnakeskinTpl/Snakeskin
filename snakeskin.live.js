@@ -4,11 +4,15 @@
 
 var Snakeskin = {Filters: {}};
 
-/////////////////////////////////
-//// Live toolkit
-/////////////////////////////////
-
-(function () {	
+(function (require) {
+	'use strict';
+	
+	/////////////////////////////////
+	//// Live toolkit
+	/////////////////////////////////
+	
+	var key;
+	
 	/**
 	 * Итератор цикла
 	 *
@@ -65,6 +69,13 @@ var Snakeskin = {Filters: {}};
 	Snakeskin.Filters.html = function (str) {
 		return String(str).replace(escapeHTMLRgxp, escapeHTML);
 	};
-})();
-
-
+	
+	
+	// common.js экспорт
+	if (require) {
+		for (key in Snakeskin) {
+			if (!Snakeskin.hasOwnProperty(key)) { continue; }
+			exports[key] = Snakeskin[key];
+		}
+	}
+})(typeof window === 'undefined');
