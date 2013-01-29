@@ -565,6 +565,11 @@ var Snakeskin = {Filters: {}};
 								throw new Error('Variable "' + tmp + '" has already defined (template: "' + tplName + '")!');
 							}
 							
+							// Попытка инициализации переменной в цикле
+							if (forEachI.length) {
+								throw new Error('Variable "' + tmp + '" can\'t be defined in a loop (template: "' + tplName + '")!');
+							}
+							
 							// Кеширование
 							varCache[tplName][tmp] = {
 								from: i - startI - command.length,
