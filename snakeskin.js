@@ -3,9 +3,12 @@
 /////////////////////////////////
 
 var Snakeskin = {
-	VERSION: '1.0.1',
-	Filters: {}
-};
+		VERSION: '1.1',
+		Filters: {},
+		cache: {}
+	},
+	
+	SS = Snakeskin;
 
 (function (require) {
 	'use strict';
@@ -86,6 +89,7 @@ var Snakeskin = {
 	};
 	
 	//#if withCompiler
+	
 	/////////////////////////////////
 	//// Копилятор
 	/////////////////////////////////
@@ -199,19 +203,42 @@ var Snakeskin = {
 	
 	var // Кеш шаблонов
 		cache = {},
+		
 		// Кеш блоков
 		blockCache = {},
+		protoCache = {},
+		
 		// Кеш переменных
 		varCache = {},
 		varICache = {},
+		
 		// Кеш входных параметров
 		paramsCache = {},
+		
 		// Карта наследований
 		extMap = {},
 		// Стек CDATA
 		cData = [],
 		
-		quote = {'"': true, '\'': true};
+		quote = {'"': true, '\'': true},
+		// Системные константы
+		sysConst = {
+			'template': true,
+			'if': true,
+			'elseIf': true,
+			'else': true,
+			'with': true,
+			'forEach': true,
+			'block': true,
+			'proto': true,
+			'apply': true,
+			
+			'__SNAKESKIN_RESULT__': true,
+			'__SNAKESKIN_TMP_RESULT__': true,
+			'__SNAKESKIN_CDATA__': true
+		},
+		
+		error;
 	
 	/**
 	 * Вернуть тело шаблона при наследовании
@@ -221,33 +248,63 @@ var Snakeskin = {
 	 * @return {string}
 	 */
 	Snakeskin._getExtStr = function (tplName) {
+		// Если указанный родитель не существует
+		if (!cache[extMap[tplName]]) {
+			error = new Error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined!');
+			error.name = 'Snakeskin Error';
+			
+			throw error;
+		}
+		
 		var // Исходный текст шаблона равен родительскому
 			res = cache[extMap[tplName]],
-			old = res.length,
+			old,
 			// Разница между длинами родительского и дочернего шаблона
+			startDiff,
 			diff,
 			
 			// Блоки дочернего и родительского шаблона
-			el = blockCache[tplName],
-			prev = blockCache[extMap[tplName]],
+			el,
+			prev,
 			
 			block,
 			key,
 			i = -1,
 			
 			// Позиция для вставки новой переменной
-			from = 0;
+			// или нового блока прототипа
+			from = 0,
+			advDiff = [],
+			adv;
 		
 		// Цикл производит перекрытие добавление новых блоков (новые блоки добавляются в конец шаблона)
 		// (итерации 0 и 1), а затем
 		// перекрытие и добавление новых переменных (итерации 2 и 3),
-		// причём новые переменные добавляются сразу за унаследованными
-		while (++i < 4) {
-			if (i > 1) {
-				// Переменные дочернего и родительского шаблона
+		// причём новые переменные добавляются сразу за унаследованными,
+		// а под конец перекрытие и добавление прототипов (4-5 итерации)
+		while (++i < 6) {
+			if (i % 2 === 0) {
+				old = res.length;
+			}
+			
+			// Блоки дочернего и родительского шаблона
+			if (i === 0) {
+				el = blockCache[tplName];
+				prev = blockCache[extMap[tplName]];
+			
+			// Переменные дочернего и родительского шаблона
+			} else if (i === 2) {
 				el = varCache[tplName];
 				prev = varCache[extMap[tplName]];
-				old = res.length;
+				
+				from = 0;
+			
+			// Прототипы дочернего и родительского шаблона
+			} else if (i === 4) {
+				el = protoCache[tplName];
+				prev = protoCache[extMap[tplName]];
+				
+				from = 0;
 			}
 			
 			for (key in el) {
@@ -255,27 +312,56 @@ var Snakeskin = {
 				
 				// Пересчитываем разницу
 				diff = res.length - old;
+				adv = 0;
+				
 				// Текст добавляемой области
 				block = cache[tplName].substring(el[key].from, el[key].to);
 				
 				// Перекрытие
-				if (prev[key] && (i === 0 || i === 2)) {
+				if (prev[key] && (i % 2 === 0)) {
 					if (i > 1) {
 						from = prev[key].from + diff + block.length + 1;
 					}
 					
-					res = res.substring(0, prev[key].from + diff) + block + res.substring(prev[key].to + diff, res.length);
+					// Для перекрытия прототипов вычисляем сдвиг от перекрытия переменных
+					if (i === 4) {
+						startDiff = prev[key].from + diff;
+						advDiff.some(function (el) {
+							if (el.val < startDiff) {
+								adv = el.adv;
+							} else {
+								return true;
+							}
+						});
+						// 4 => '{end}'.length - 1
+						from += adv + 4;
+					}
+					
+					res = res.substring(0, prev[key].from + diff + adv) + block + res.substring(prev[key].to + diff + adv, res.length);
 				
 				// Добавление
 				} else if (!prev[key]) {
 					// Блоки
 					if (i === 1) {
-						res += '{' + key + '}' + block + '{/end}';
+						res += '{' + key + '}' + block + '{end}';
 					
 					// Переменные
 					} else if (i === 3) {
 						block = '{' + block + '}';
 						res = res.substring(0, from) + block + res.substring(from, res.length);
+						
+						advDiff.push({
+							val: from,
+							adv: from + block.length
+						});
+						
+						from = from + block.length;
+					
+					// Прототипы
+					} else if (i === 5) {
+						block = '{' + key + '}' + block + '{end}';
+						res = res.substring(0, from) + block + res.substring(from, res.length);
+						
 						from = from + block.length;
 					}
 				}
@@ -305,6 +391,7 @@ var Snakeskin = {
 						bOpen = el;
 					}
 				}
+			
 			} else if (bOpen) {
 				switch (el) {
 					case '|' : {
@@ -330,7 +417,6 @@ var Snakeskin = {
 		return str;
 	};
 	
-	
 	/**
 	 * Снять экранирование спец символов
 	 *
@@ -355,20 +441,20 @@ var Snakeskin = {
 	 *
 	 * @test compile_test.html
 	 */
-	Snakeskin.compile = function (src, opt_commonjs) {
+	Snakeskin.compile = function (src, opt_commonjs, opt_dryRun) {
 		var // Подготовка текста шаблонов
 			source = (src.innerHTML || src)
 				// Обработка блоков cdata
-				.replace(/{cdata}([\s\S]*?){\/cdata}/, function (sstr, data) {
+				.replace(/{cdata}([\s\S]*?){end\s+cdata}/, function (sstr, data) {
 					cData.push(data);
-					return '@cdata_' + (cData.length - 1);
+					return '__SNAKESKIN_CDATA__' + (cData.length - 1);
 				})
 				
 				// Однострочный комментарий
 				.replace(/\/\/.*/g, '')
 				// Отступы
 				.replace(/^\s*|\s*$/g, '')
-				.replace(/{\/end}\s*{template/g, '{\/end}{template')
+				.replace(/{end}\s*{template/g, '{end}{template')
 				.replace(/[\t]/g, '')
 				// Переводы строк
 				.replace(/[\n\r]/g, '')
@@ -377,7 +463,7 @@ var Snakeskin = {
 				.replace(/\/\*[\s\S]*?\*\//g, ''),
 			
 			res = '' +
-			'/* This code is generated automatically, don\'t alter it. */' +
+			(!opt_dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
 			(opt_commonjs ?
 				'var Snakeskin = global.Snakeskin;' + 
 				'exports.liveInit = function (path) { ' +
@@ -403,6 +489,10 @@ var Snakeskin = {
 			blockI = [],
 			lastBlock,
 			
+			protoI = [],
+			lastProto,
+			protoStart,
+			
 			withI = [],
 			lastWith,
 			
@@ -426,6 +516,7 @@ var Snakeskin = {
 					fakeBegin++;
 				} else {
 					begin = true;
+					
 					continue;
 				}
 			
@@ -438,11 +529,17 @@ var Snakeskin = {
 					// Определение нового шаблона
 					case 'template' : {
 						beginI++;
+						// Начальная позиция шаблона
+						startI = i + 1;
 						
 						// Получаем имя и пространство имён шаблона
 						tplName = command
 							.replace(/^template\s+/, '')
 							.replace(/\(.*/, '');
+						
+						if (opt_dryRun) {
+							break;
+						}
 						
 						// Название родительского шаблона
 						if (/\s+extends\s+/.test(command)) {
@@ -454,8 +551,10 @@ var Snakeskin = {
 						
 						// Создаём место в кеше
 						blockCache[tplName] = {};
+						protoCache[tplName] = {};
 						varCache[tplName] = {};
 						varICache[tplName] = {};
+						
 						// Схема наследования
 						extMap[tplName] = parentName;
 						
@@ -481,9 +580,6 @@ var Snakeskin = {
 						} else {
 							res += (!require ? 'window.' + tplName + ' = ': '') + 'function ' + (require ? tplName : '') + '('; 
 						}
-						
-						// Начальная позиция шаблона
-						startI = i + 1;
 						
 						// Входные параметры
 						params = params.split(',');
@@ -572,7 +668,7 @@ var Snakeskin = {
 								res += ',';
 							}
 						});
-						res += ') { ' + defParams + 'var __RESULT__ = \'\';';
+						res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', __SNAKESKIN_TMP_RESULT__;';
 					
 					} break;
 					
@@ -580,17 +676,17 @@ var Snakeskin = {
 					case 'if' : {
 						beginI++;
 						
-						if (!parentName) {
+						if (!parentName && !protoStart) {
 							res += 'if (' + command.replace(/^\/?if\s+/, '') + ') {';
 						}
 					} break;
 					case 'elseIf' : {
-						if (!parentName) {
+						if (!parentName && !protoStart) {
 							res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
 						}
 					} break;
 					case 'else' : {
-						if (!parentName) {
+						if (!parentName && !protoStart) {
 							res += '} else {';
 						}
 					} break;
@@ -603,9 +699,52 @@ var Snakeskin = {
 						});
 					} break;
 					
+					// Прототип блока наследования
+					case 'proto' : {
+						if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
+							// Попытка декларировать прототип блока несколько раз
+							if (protoCache[tplName][command]) {
+								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" has already defined (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error;
+							}
+							
+							protoCache[tplName][command] = {from: i - startI + 1};
+						}
+						
+						protoI.push({
+							name: command,
+							i: ++beginI,
+							startI: i + 1
+						});
+						
+						if (!parentName) {
+							protoStart = true;
+						}
+					} break;
+					
+					// Применение прототипа
+					case 'apply' : {
+						if (!parentName && !protoI.length) {
+							res += protoCache[tplName][command.replace(/^apply/, 'proto')].body;
+						}
+					} break;
+					
 					// Блок наследования
 					case 'block' : {
-						blockCache[tplName][command] = {from: i - startI + 1};
+						if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
+							// Попытка декларировать блок несколько раз
+							if (blockCache[tplName][command]) {
+								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" has already defined (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error;
+							}
+							
+							blockCache[tplName][command] = {from: i - startI + 1};
+						}
+						
 						blockI.push({
 							name: command,
 							i: ++beginI
@@ -616,23 +755,26 @@ var Snakeskin = {
 					case 'forEach' : {
 						forEachI.push(++beginI);
 						
-						if (!parentName) {
+						if (!parentName && !protoStart) {
 							cycle = command.replace(/^forEach\s+/, '').split('=>');
 							res +=  cycle[0] + ' && Snakeskin.forEach(' + cycle[0] + ', function (' + (cycle[1] || '') + ') {'
 						}
 					} break;
 					
 					// Закрытие блока
-					case '/end' : {
+					case 'end' : {
 						beginI--;
 						
 						// Последний элементы стеков
 						lastBlock = blockI[blockI.length - 1];
+						lastProto = protoI[protoI.length - 1];
 						lastWith = withI[withI.length - 1];
 						lastForEach = forEachI[forEachI.length - 1];
 						
 						// Закрытие шаблона
 						if (beginI === 0) {
+							if (opt_dryRun) { break; }
+							
 							// Кешируем тело шаблона
 							cache[tplName] = source.substring(startI, i - command.length - 1);
 							
@@ -642,11 +784,15 @@ var Snakeskin = {
 							// но уже как атомарного (без наследования)
 							if (parentName) {
 								// Результирующее тело шаблона
-								source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);
+								source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);;
 								
 								// Перемотка переменных
 								// (сбрасывание)
+								blockCache[tplName] = {};
+								protoCache[tplName] = {};
 								varCache[tplName] = {};
+								varICache[tplName] = {};
+								
 								i = startI - 1;
 								beginI++;
 								
@@ -658,27 +804,56 @@ var Snakeskin = {
 								continue;
 							}
 							
-							res += 'return __RESULT__; };';
+							res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + tplName + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
 						
 						// Закрываются все блоки кроме блоков наследования и пространства имён,
 						// т.к. они в конечном шаблоне не используются,
 						// а нужны для парсера
-						} else if (!parentName && (!lastBlock || lastBlock.i !== beginI + 1) && (!lastWith || lastWith.i !== beginI + 1)) {
+						} else if (!parentName
+							&& (!lastProto || lastProto.i !== beginI + 1)
+							&& (!lastBlock || lastBlock.i !== beginI + 1)
+							&& (!lastWith || lastWith.i !== beginI + 1)
+						) {
 							// Если закрывается блок цикла
 							if (lastForEach === beginI + 1) {
 								forEachI.pop();
-								res += '});'
+								
+								if (!protoStart) {
+									res += '});'
+								}
 							
 							// Простой блок
-							} else {
+							} else if (!protoStart) {
 								res += '};';
 							}
 						}
 						
 						// Закрытие блоков наследования и пространства имён
 						if (lastBlock && lastBlock.i === beginI + 1) {
-							blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
 							blockI.pop();
+							
+							if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
+								blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
+							}
+						}
+						
+						if (lastProto && lastProto.i === beginI + 1) {
+							protoI.pop();
+							
+							if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
+								protoCache[tplName][lastProto.name].to = i - startI - command.length - 1;
+							}
+							
+							// Рекурсивно анализируем прототипы блоков
+							if (!parentName) {
+								protoCache[tplName][lastProto.name].body = this.compile('{template ' + tplName + '()}'
+									+ source.substring(lastProto.startI, i - command.length - 1)
+									+ '{end}', null, true);
+							}
+							
+							if (!protoI.length) {
+								protoStart = false;
+							}
 						}
 						
 						if (lastWith && lastWith.i === beginI + 1) {
@@ -689,7 +864,7 @@ var Snakeskin = {
 					
 					default : {
 						// Экспорт console api
-						if (!parentName && /console\./.test(command)) {
+						if (!parentName && !protoStart && /console\./.test(command)) {
 							res += command + ';';
 							break;
 						}
@@ -698,14 +873,28 @@ var Snakeskin = {
 						if (/=(?!=)/.test(command)) {
 							tmp = command.split('=')[0].trim();
 							
+							// Попытка инициализировать переменную с зарезервированным именем
+							if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
+								error = new Error('Variable "' + tmp + '" has already defined (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error;
+							}
+							
 							// Попытка повторной инициализации переменной
-							if (varCache[tplName][tmp] || varICache[tplName][tmp] || tmp === '__RESULT__') {
-								throw new Error('Variable "' + tmp + '" has already defined (template: "' + tplName + '")!');
+							if (sysConst[tmp]) {
+								error = new Error('Can\'t declare variable "' + tmp + '", try another name (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error
 							}
 							
 							// Попытка инициализации переменной в цикле
 							if (forEachI.length) {
-								throw new Error('Variable "' + tmp + '" can\'t be defined in a loop (template: "' + tplName + '")!');
+								error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error;
 							}
 							
 							// Кеширование
@@ -714,12 +903,12 @@ var Snakeskin = {
 								to: i - startI
 							}
 							
-							if (!parentName) {
+							if (!parentName && !protoStart) {
 								res += 'var ' + command + ';';
 							}
 						
 						// Вывод переменных
-						} else if (!parentName) {
+						} else if (!parentName && !protoStart) {
 							tmp = '';
 							tmpI = 1;
 							unEscape = false;
@@ -757,7 +946,8 @@ var Snakeskin = {
 								}
 							});
 							
-							res += '__RESULT__ += ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
+							res += '__SNAKESKIN_TMP_RESULT__ = ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
+							res += '__SNAKESKIN_RESULT__ += typeof __SNAKESKIN_TMP_RESULT__ === \'undefined\' ? \'\' : __SNAKESKIN_TMP_RESULT__;';
 						}
 					}
 				}
@@ -768,7 +958,7 @@ var Snakeskin = {
 			
 			// Запись команды
 			if (begin) {
-				if (beginStr) {
+				if (!protoStart && beginStr) {
 					res += '\';';
 					beginStr = false;
 				}
@@ -776,9 +966,9 @@ var Snakeskin = {
 				command += el;
 			
 			// Запись строки
-			} else {
+			} else if (!protoStart) {
 				if (!beginStr) {
-					res += '__RESULT__ += \'';
+					res += '__SNAKESKIN_RESULT__ += \'';
 					beginStr = true;
 				}
 				
@@ -790,21 +980,28 @@ var Snakeskin = {
 		
 		res = this._descape(res)
 			// Обратная замена cdata областей
-			.replace(/@cdata_(\d+)/g, function (sstr, pos) {
+			.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
 				return cData[pos]
 					.replace(/[\n\r]/g, '')
 					.replace(/\'/g, '&#39;'); 
 			})
 			// Удаление пустых операций
-			.replace(/__RESULT__ \+= '';/g, '');
+			.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
 		
 		// Конец шаблона
-		res += '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */';
+		res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
 		
 		// Если количество открытых блоков не совпадает с количеством закрытых,
 		// то кидаем исключение
 		if (beginI !== 0) {
-			throw new Error('Missing closing or opening tag in the template!');
+			error = new Error('Missing closing or opening tag in the template!');
+			error.name = 'Snakeskin Error';
+			
+			throw error;
+		}
+		
+		if (opt_dryRun) {
+			return res;
 		}
 		
 		// Компиляция на сервере

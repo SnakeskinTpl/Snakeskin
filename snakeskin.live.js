@@ -3,9 +3,12 @@
 /////////////////////////////////
 
 var Snakeskin = {
-	VERSION: '1.0.1',
-	Filters: {}
-};
+		VERSION: '1.0.1',
+		Filters: {},
+		cache: {}
+	},
+	
+	SS = Snakeskin;
 
 (function (require) {
 	'use strict';

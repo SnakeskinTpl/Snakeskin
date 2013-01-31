@@ -23,26 +23,26 @@
 			{template first(name = 'world')}
 				{text = 'Hello'}
 				<h1>{text} {name}!</h1>
-			{/end}
+			{end}
 			
 			{template tpl.first(name = 'world')}
 				{text = 'Hello'}
 				<h1>{text} {name}!</h1>
-			{/end}
+			{end}
 			
 			{template second(name = 'world', lastName)}
 				{text = 'Hello'}
 				<h1>{text} {name + lastName}!</h1>
-			{/end}
+			{end}
 			
 			{template withWith(obj)}
 				{with obj.child}
 					{name} 
 					{with child}
 						{name}
-					{/end}
-				{/end}
-			{/end}
+					{end}
+				{end}
+			{end}
 			
 			{template withIf(a)}
 				{if a === 4}
@@ -51,22 +51,22 @@
 					FAIL
 				{else}
 					WIN
-				{/end}
-			{/end}
+				{end}
+			{end}
 			
 			{template forEachTest(a)}
 				{forEach a => el}
 					{el}
-				{/end}
-			{/end}
+				{end}
+			{end}
 			
 			{template deepForEach(a)}
 				{forEach a => el}
 					{forEach el => el}
 						{el}
-					{/end}
-				{/end}
-			{/end}
+					{end}
+				{end}
+			{end}
 			
 			{template base(a = 1, b)}
 				{title = 'foo'}
@@ -77,13 +77,13 @@
 						<head>
 							{block title}
 								<title>{title + (a + b)}</title>
-							{/end}
+							{end}
 						</head>
-					{/end}
+					{end}
 					{block footer}
-					{/end}
+					{end}
 				</html>
-			{/end}
+			{end}
 			
 			{template child(a = 3) extends base}
 				{title = 'foo2'}
@@ -92,40 +92,40 @@
 				
 				{block head}
 					{title + a}
-				{/end}
+				{end}
 				
 				{block footer}
 					{block end}
 						{b}
-					{/end}
-				{/end}
+					{end}
+				{end}
 				
 				{block next}
 					121
-				{/end}
-			{/end}
+				{end}
+			{end}
 			
 			{template withFilter()}
 				{b = '"onclick="\'alert(1)\'"'}
 				<a href="{b}"></a>
-			{/end}
+			{end}
 			
 			{template withoutFilter()}
 				{b = '"onclick="\'alert(1)\'"'}
 				<a href="{b|!html}"></a>
-			{/end}
+			{end}
 			
 			{template withCData()}
 				{cdata}
 					{template withFilter()}
 						{b = '"onclick="\'alert(1)\'"'}
 						<a href="{b}"></a>
-					{/end}
-				{/cdata}
+					{end}
+				{end cdata}
 				
 				{text = 'Hello'}
 				<h1>{text}!</h1>
-			{/end}
+			{end}
 		</script>
 		
 		<script type="text/javascript">
@@ -154,7 +154,7 @@
 				equal(child(), '<!doctype html><html>foo23foo</html>foo121', 'Проверка наследования');
 				equal(withFilter(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
-				equal(withCData(), '					{template withFilter()}						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}						<a href=\"{b}\"></a>					{/end}				<h1>Hello!</h1>', 'Использование cdata областей');
+				equal(withCData(), '					{template withFilter()}						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}						<a href=\"{b}\"></a>					{end}				<h1>Hello!</h1>', 'Использование cdata областей');
 			});
 		</script>
 	</body>
