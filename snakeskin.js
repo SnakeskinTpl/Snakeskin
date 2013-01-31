@@ -476,7 +476,6 @@ var Snakeskin = {
 			
 			tplName,
 			parentName,
-			cycle,
 			
 			params,
 			defParams,
@@ -704,7 +703,7 @@ var Snakeskin = {
 						if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
 							// Попытка декларировать прототип блока несколько раз
 							if (protoCache[tplName][command]) {
-								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" has already defined (template: "' + tplName + '")!');
+								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (template: "' + tplName + '")!');
 								error.name = 'Snakeskin Error';
 								
 								throw error;
@@ -727,6 +726,15 @@ var Snakeskin = {
 					// Применение прототипа
 					case 'apply' : {
 						if (!parentName && !protoI.length) {
+							command = command.replace(/^apply/, 'proto');
+							// Попытка применить не объявленный прототип
+							if (!protoCache[tplName][command]) {
+								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is not defined (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error;
+							}
+							
 							res += protoCache[tplName][command.replace(/^apply/, 'proto')].body;
 						}
 					} break;
@@ -736,7 +744,7 @@ var Snakeskin = {
 						if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
 							// Попытка декларировать блок несколько раз
 							if (blockCache[tplName][command]) {
-								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" has already defined (template: "' + tplName + '")!');
+								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (template: "' + tplName + '")!');
 								error.name = 'Snakeskin Error';
 								
 								throw error;
@@ -756,8 +764,8 @@ var Snakeskin = {
 						forEachI.push(++beginI);
 						
 						if (!parentName && !protoStart) {
-							cycle = command.replace(/^forEach\s+/, '').split('=>');
-							res +=  cycle[0] + ' && Snakeskin.forEach(' + cycle[0] + ', function (' + (cycle[1] || '') + ') {'
+							command = command.replace(/^forEach\s+/, '').split('=>');
+							res +=  command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
 						}
 					} break;
 					
@@ -875,7 +883,7 @@ var Snakeskin = {
 							
 							// Попытка инициализировать переменную с зарезервированным именем
 							if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
-								error = new Error('Variable "' + tmp + '" has already defined (template: "' + tplName + '")!');
+								error = new Error('Variable "' + tmp + '" is already defined (template: "' + tplName + '")!');
 								error.name = 'Snakeskin Error';
 								
 								throw error;
