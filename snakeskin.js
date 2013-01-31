@@ -223,16 +223,6 @@ var Snakeskin = {
 		quote = {'"': true, '\'': true},
 		// Системные константы
 		sysConst = {
-			'template': true,
-			'if': true,
-			'elseIf': true,
-			'else': true,
-			'with': true,
-			'forEach': true,
-			'block': true,
-			'proto': true,
-			'apply': true,
-			
 			'__SNAKESKIN_RESULT__': true,
 			'__SNAKESKIN_TMP_RESULT__': true,
 			'__SNAKESKIN_CDATA__': true
@@ -387,7 +377,7 @@ var Snakeskin = {
 				if (!str[i - 1] || str[i - 1] !== '\\') {
 					if (bOpen && bOpen === el) {
 						bOpen = false;
-					} else {
+					} else if (!bOpen) {
 						bOpen = el;
 					}
 				}
@@ -498,6 +488,8 @@ var Snakeskin = {
 			forEachI = [],
 			lastForEach,
 			
+			nmCache = {},
+			
 			command = '',
 			unEscape,
 			
@@ -505,463 +497,470 @@ var Snakeskin = {
 			tmpI,
 			
 			i = -1,
-			startI;
+			startI,
+			
+			bOpen;
 		
 		while (++i < source.length) {
 			el = source.charAt(i);
 			
-			if (el === '{') {
-				if (begin) {
-					fakeBegin++;
-				} else {
-					begin = true;
-					
-					continue;
-				}
-			
-			} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
-				begin = false;
-				command = this._escape(command);
+			if (!bOpen) {
+				if (el === '{') {
+					if (begin) {
+						fakeBegin++;
+					} else {
+						begin = true;
+						continue;
+					}
 				
-				// Обработка команд
-				switch (command.split(' ')[0]) {
-					// Определение нового шаблона
-					case 'template' : {
-						beginI++;
-						// Начальная позиция шаблона
-						startI = i + 1;
-						
-						// Получаем имя и пространство имён шаблона
-						tplName = command
-							.replace(/^template\s+/, '')
-							.replace(/\(.*/, '');
-						
-						if (opt_dryRun) {
-							break;
-						}
-						
-						// Название родительского шаблона
-						if (/\s+extends\s+/.test(command)) {
-							parentName = command.replace(/.*?\s+extends\s+(.*)/, '$1');;
-						}
-						
-						// Входные параметры
-						params = command.replace(/.*?\((.*?)\).*/, '$1');
-						
-						// Создаём место в кеше
-						blockCache[tplName] = {};
-						protoCache[tplName] = {};
-						varCache[tplName] = {};
-						varICache[tplName] = {};
-						
-						// Схема наследования
-						extMap[tplName] = parentName;
-						
-						// Для возможности удобного пост-парсинга,
-						// каждая функция снабжается комментарием вида:
-						// /* Snakeskin template: название шаблона; параметры через запятую */
-						res += '/* Snakeskin template: ' + tplName + '; ' + params.replace(/=(.*?)(?:,|$)/g, '') + ' */';
-						
-						// Декларация функции
-						// с пространством имён или при экспорте в common.js
-						if (/\./.test(tplName) || opt_commonjs) {
-							tplName.split('.').reduce(function (str, el, i) {
-								res += '' +
-								'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-									(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
-								
-								return str + '.' + el;
-							});
+				} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
+					begin = false;
+					command = this._escape(command);
+					
+					// Обработка команд
+					switch (command.split(' ')[0]) {
+						// Определение нового шаблона
+						case 'template' : {
+							beginI++;
+							// Начальная позиция шаблона
+							startI = i + 1;
 							
-							res += (opt_commonjs ? 'exports.' : '') + tplName + '= function ('; 
-						
-						// Без простраства имён
-						} else {
-							res += (!require ? 'window.' + tplName + ' = ': '') + 'function ' + (require ? tplName : '') + '('; 
-						}
-						
-						// Входные параметры
-						params = params.split(',');
-						// Если шаблон наследуется,
-						// то подмешиваем ко входым параметрам шаблона
-						// входные параметры родителя
-						paramsCache[tplName] = paramsCache[parentName] ? paramsCache[parentName].concat(params) : params;
-						defParams = '';
-						
-						// Переинициализация входных параметров родительскими
-						// (только если нужно)
-						if (paramsCache[parentName]) {
-							paramsCache[parentName].forEach(function (el) {
-								var def = el.split('=');
-								// Здесь и далее по коду
-								// [0] - название переменной
-								// [1] - значение по умолчанию (опционально)
-								def[0] = def[0].trim();
-								def[1] = def[1] && def[1].trim();
-								
-								params.forEach(function (el2, i) {
-									var def2 = el2.split('=');
-									def2[0] = def2[0].trim();
-									def2[1] = def2[1] && def2[1].trim();
-									
-									// Если переменная не имеет параметра по умолчанию,
-									// то ставим параметр по умолчанию родителя
-									if (def[0] === def2[0] && typeof def2[1] === 'undefined') {
-										params[i] = el;
+							// Получаем имя и пространство имён шаблона
+							tplName = command
+								.replace(/^template\s+/, '')
+								.replace(/\(.*/, '');
+							
+							if (opt_dryRun) {
+								break;
+							}
+							
+							// Название родительского шаблона
+							if (/\s+extends\s+/.test(command)) {
+								parentName = command.replace(/.*?\s+extends\s+(.*)/, '$1');;
+							}
+							
+							// Входные параметры
+							params = command.replace(/.*?\((.*?)\).*/, '$1');
+							
+							// Создаём место в кеше
+							blockCache[tplName] = {};
+							protoCache[tplName] = {};
+							varCache[tplName] = {};
+							varICache[tplName] = {};
+							
+							// Схема наследования
+							extMap[tplName] = parentName;
+							
+							// Для возможности удобного пост-парсинга,
+							// каждая функция снабжается комментарием вида:
+							// /* Snakeskin template: название шаблона; параметры через запятую */
+							res += '/* Snakeskin template: ' + tplName + '; ' + params.replace(/=(.*?)(?:,|$)/g, '') + ' */';
+							
+							// Декларация функции
+							// с пространством имён или при экспорте в common.js
+							if (/\./.test(tplName) || opt_commonjs) {
+								tplName.split('.').reduce(function (str, el, i) {
+									if (!nmCache[str]) {
+										res += '' +
+										'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+											(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
+										
+										nmCache[str] = true;
 									}
+									
+									return str + '.' + el;
 								});
-							});
-						}
-						
-						// Инициализация параметров по умолчанию
-						// (эээххх, когда же настанет ECMAScript 6 :()
-						params.forEach(function (el, i) {
-							var def = el.split('=');
-							def[0] = def[0].trim();
-							res += def[0];
+								
+								res += (opt_commonjs ? 'exports.' : '') + tplName + '= function ('; 
 							
-							if (def.length > 1) {
-								// Подмешивание родительских входных параметров
-								if (paramsCache[parentName] && !defParams) {
-									paramsCache[parentName].forEach(function (el) {
-										var def = el.split('='),
-											local;
+							// Без простраства имён
+							} else {
+								res += (!require ? 'window.' + tplName + ' = ': '') + 'function ' + (require ? tplName : '') + '('; 
+							}
+							
+							// Входные параметры
+							params = params.split(',');
+							// Если шаблон наследуется,
+							// то подмешиваем ко входым параметрам шаблона
+							// входные параметры родителя
+							paramsCache[tplName] = paramsCache[parentName] ? paramsCache[parentName].concat(params) : params;
+							defParams = '';
+							
+							// Переинициализация входных параметров родительскими
+							// (только если нужно)
+							if (paramsCache[parentName]) {
+								paramsCache[parentName].forEach(function (el) {
+									var def = el.split('=');
+									// Здесь и далее по коду
+									// [0] - название переменной
+									// [1] - значение по умолчанию (опционально)
+									def[0] = def[0].trim();
+									def[1] = def[1] && def[1].trim();
+									
+									params.forEach(function (el2, i) {
+										var def2 = el2.split('=');
+										def2[0] = def2[0].trim();
+										def2[1] = def2[1] && def2[1].trim();
 										
-										def[0] = def[0].trim();
-										def[1] = def[1] && def[1].trim();
-										
-										// true, если входной параметр родительского шаблона
-										// присутствует также в дочернем
-										local = params.some(function (el) {
-											var val = el.split('=');
-											val[0] = val[0].trim();
-											val[1] = val[1] && val[1].trim();
-											
-											return val[0] === def[0];
-										});
-										
-										// Если входный параметр родителя отсутствует у ребёнка,
-										// то инициализируем его как локальную переменную шаблона
-										if (!local) {
-											// С параметром по умолчанию
-											if (typeof def[1] !== 'undefined') {
-												defParams += 'var ' + def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
-											
-											// Без
-											} else {
-												defParams += 'var ' + def[0] + ';';
-											}
+										// Если переменная не имеет параметра по умолчанию,
+										// то ставим параметр по умолчанию родителя
+										if (def[0] === def2[0] && typeof def2[1] === 'undefined') {
+											params[i] = el;
 										}
 									});
-								}
+								});
+							}
+							
+							// Инициализация параметров по умолчанию
+							// (эээххх, когда же настанет ECMAScript 6 :()
+							params.forEach(function (el, i) {
+								var def = el.split('=');
+								def[0] = def[0].trim();
+								res += def[0];
 								
-								
-								// Параметры по умолчанию
-								def[1] = def[1].trim();
-								varICache[tplName][def[0]] = el;
-								defParams += def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
-							}
-							
-							// После последнего параметра запятая не ставится
-							if (i !== params.length - 1) {
-								res += ',';
-							}
-						});
-						res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', __SNAKESKIN_TMP_RESULT__;';
-					
-					} break;
-					
-					// Условные операторы
-					case 'if' : {
-						beginI++;
-						
-						if (!parentName && !protoStart) {
-							res += 'if (' + command.replace(/^\/?if\s+/, '') + ') {';
-						}
-					} break;
-					case 'elseIf' : {
-						if (!parentName && !protoStart) {
-							res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
-						}
-					} break;
-					case 'else' : {
-						if (!parentName && !protoStart) {
-							res += '} else {';
-						}
-					} break;
-					
-					// Пространство имён
-					case 'with' : {
-						withI.push({
-							scope: command.replace(/^with\s+/, ''),
-							i: ++beginI
-						});
-					} break;
-					
-					// Прототип блока наследования
-					case 'proto' : {
-						if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
-							// Попытка декларировать прототип блока несколько раз
-							if (protoCache[tplName][command]) {
-								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (template: "' + tplName + '")!');
-								error.name = 'Snakeskin Error';
-								
-								throw error;
-							}
-							
-							protoCache[tplName][command] = {from: i - startI + 1};
-						}
-						
-						protoI.push({
-							name: command,
-							i: ++beginI,
-							startI: i + 1
-						});
-						
-						if (!parentName) {
-							protoStart = true;
-						}
-					} break;
-					
-					// Применение прототипа
-					case 'apply' : {
-						if (!parentName && !protoI.length) {
-							command = command.replace(/^apply/, 'proto');
-							// Попытка применить не объявленный прототип
-							if (!protoCache[tplName][command]) {
-								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is not defined (template: "' + tplName + '")!');
-								error.name = 'Snakeskin Error';
-								
-								throw error;
-							}
-							
-							res += protoCache[tplName][command.replace(/^apply/, 'proto')].body;
-						}
-					} break;
-					
-					// Блок наследования
-					case 'block' : {
-						if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
-							// Попытка декларировать блок несколько раз
-							if (blockCache[tplName][command]) {
-								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (template: "' + tplName + '")!');
-								error.name = 'Snakeskin Error';
-								
-								throw error;
-							}
-							
-							blockCache[tplName][command] = {from: i - startI + 1};
-						}
-						
-						blockI.push({
-							name: command,
-							i: ++beginI
-						});
-					} break;
-					
-					// Цикл
-					case 'forEach' : {
-						forEachI.push(++beginI);
-						
-						if (!parentName && !protoStart) {
-							command = command.replace(/^forEach\s+/, '').split('=>');
-							res +=  command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
-						}
-					} break;
-					
-					// Закрытие блока
-					case 'end' : {
-						beginI--;
-						
-						// Последний элементы стеков
-						lastBlock = blockI[blockI.length - 1];
-						lastProto = protoI[protoI.length - 1];
-						lastWith = withI[withI.length - 1];
-						lastForEach = forEachI[forEachI.length - 1];
-						
-						// Закрытие шаблона
-						if (beginI === 0) {
-							if (opt_dryRun) { break; }
-							
-							// Кешируем тело шаблона
-							cache[tplName] = source.substring(startI, i - command.length - 1);
-							
-							// Обработка наследования:
-							// тело шаблона объединяется с телом родителя
-							// и обработка шаблона начинается заново,
-							// но уже как атомарного (без наследования)
-							if (parentName) {
-								// Результирующее тело шаблона
-								source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);;
-								
-								// Перемотка переменных
-								// (сбрасывание)
-								blockCache[tplName] = {};
-								protoCache[tplName] = {};
-								varCache[tplName] = {};
-								varICache[tplName] = {};
-								
-								i = startI - 1;
-								beginI++;
-								
-								parentName = false;
-								begin = false;
-								beginStr = false;
-								command = '';
-								
-								continue;
-							}
-							
-							res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + tplName + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
-						
-						// Закрываются все блоки кроме блоков наследования и пространства имён,
-						// т.к. они в конечном шаблоне не используются,
-						// а нужны для парсера
-						} else if (!parentName
-							&& (!lastProto || lastProto.i !== beginI + 1)
-							&& (!lastBlock || lastBlock.i !== beginI + 1)
-							&& (!lastWith || lastWith.i !== beginI + 1)
-						) {
-							// Если закрывается блок цикла
-							if (lastForEach === beginI + 1) {
-								forEachI.pop();
-								
-								if (!protoStart) {
-									res += '});'
-								}
-							
-							// Простой блок
-							} else if (!protoStart) {
-								res += '};';
-							}
-						}
-						
-						// Закрытие блоков наследования и пространства имён
-						if (lastBlock && lastBlock.i === beginI + 1) {
-							blockI.pop();
-							
-							if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
-								blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
-							}
-						}
-						
-						if (lastProto && lastProto.i === beginI + 1) {
-							protoI.pop();
-							
-							if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
-								protoCache[tplName][lastProto.name].to = i - startI - command.length - 1;
-							}
-							
-							// Рекурсивно анализируем прототипы блоков
-							if (!parentName) {
-								protoCache[tplName][lastProto.name].body = this.compile('{template ' + tplName + '()}'
-									+ source.substring(lastProto.startI, i - command.length - 1)
-									+ '{end}', null, true);
-							}
-							
-							if (!protoI.length) {
-								protoStart = false;
-							}
-						}
-						
-						if (lastWith && lastWith.i === beginI + 1) {
-							withI.pop();
-						}
-						
-					} break;
-					
-					default : {
-						// Экспорт console api
-						if (!parentName && !protoStart && /console\./.test(command)) {
-							res += command + ';';
-							break;
-						}
-						
-						// Инициализация переменных
-						if (/=(?!=)/.test(command)) {
-							tmp = command.split('=')[0].trim();
-							
-							// Попытка инициализировать переменную с зарезервированным именем
-							if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
-								error = new Error('Variable "' + tmp + '" is already defined (template: "' + tplName + '")!');
-								error.name = 'Snakeskin Error';
-								
-								throw error;
-							}
-							
-							// Попытка повторной инициализации переменной
-							if (sysConst[tmp]) {
-								error = new Error('Can\'t declare variable "' + tmp + '", try another name (template: "' + tplName + '")!');
-								error.name = 'Snakeskin Error';
-								
-								throw error
-							}
-							
-							// Попытка инициализации переменной в цикле
-							if (forEachI.length) {
-								error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (template: "' + tplName + '")!');
-								error.name = 'Snakeskin Error';
-								
-								throw error;
-							}
-							
-							// Кеширование
-							varCache[tplName][tmp] = {
-								from: i - startI - command.length,
-								to: i - startI
-							}
-							
-							if (!parentName && !protoStart) {
-								res += 'var ' + command + ';';
-							}
-						
-						// Вывод переменных
-						} else if (!parentName && !protoStart) {
-							tmp = '';
-							tmpI = 1;
-							unEscape = false;
-							
-							// Поддержка фильтров через пайп
-							command.split('|').forEach(function (el, i) {
-								var part,
-									sPart;
-								
-								if (i === 0) {
-									// Если используется with блок
-									if (withI.length) {
-										withI.push({scope: el});
-										tmp = withI.reduce(function (str, el) {
-											return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
+								if (def.length > 1) {
+									// Подмешивание родительских входных параметров
+									if (paramsCache[parentName] && !defParams) {
+										paramsCache[parentName].forEach(function (el) {
+											var def = el.split('='),
+												local;
+											
+											def[0] = def[0].trim();
+											def[1] = def[1] && def[1].trim();
+											
+											// true, если входной параметр родительского шаблона
+											// присутствует также в дочернем
+											local = params.some(function (el) {
+												var val = el.split('=');
+												val[0] = val[0].trim();
+												val[1] = val[1] && val[1].trim();
+												
+												return val[0] === def[0];
+											});
+											
+											// Если входный параметр родителя отсутствует у ребёнка,
+											// то инициализируем его как локальную переменную шаблона
+											if (!local) {
+												// С параметром по умолчанию
+												if (typeof def[1] !== 'undefined') {
+													defParams += 'var ' + def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
+												
+												// Без
+												} else {
+													defParams += 'var ' + def[0] + ';';
+												}
+											}
 										});
-										withI.pop();
-									
-									} else {
-										tmp = el;
 									}
+									
+									
+									// Параметры по умолчанию
+									def[1] = def[1].trim();
+									varICache[tplName][def[0]] = el;
+									defParams += def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
+								}
 								
-								} else {
-									part = el.split(' ');
-									sPart = part.slice(1);
-									
-									// По умолчанию, все переменные пропускаются через фильтр html
-									if (part[0] !== '!html') {
-										tmpI++;
-										tmp = 'Snakeskin.Filters[\'' + part[0] + '\'](' + tmp + (sPart.length ? ', ' + sPart.join('') : '') + ')';
-									
-									} else {
-										unEscape = true;
-									}
+								// После последнего параметра запятая не ставится
+								if (i !== params.length - 1) {
+									res += ',';
 								}
 							});
+							res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', __SNAKESKIN_TMP_RESULT__;';
+						
+						} break;
+						
+						// Условные операторы
+						case 'if' : {
+							beginI++;
 							
-							res += '__SNAKESKIN_TMP_RESULT__ = ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
-							res += '__SNAKESKIN_RESULT__ += typeof __SNAKESKIN_TMP_RESULT__ === \'undefined\' ? \'\' : __SNAKESKIN_TMP_RESULT__;';
+							if (!parentName && !protoStart) {
+								res += 'if (' + command.replace(/^\/?if\s+/, '') + ') {';
+							}
+						} break;
+						case 'elseIf' : {
+							if (!parentName && !protoStart) {
+								res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
+							}
+						} break;
+						case 'else' : {
+							if (!parentName && !protoStart) {
+								res += '} else {';
+							}
+						} break;
+						
+						// Пространство имён
+						case 'with' : {
+							withI.push({
+								scope: command.replace(/^with\s+/, ''),
+								i: ++beginI
+							});
+						} break;
+						
+						// Прототип блока наследования
+						case 'proto' : {
+							if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
+								// Попытка декларировать прототип блока несколько раз
+								if (protoCache[tplName][command]) {
+									error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error;
+								}
+								
+								protoCache[tplName][command] = {from: i - startI + 1};
+							}
+							
+							protoI.push({
+								name: command,
+								i: ++beginI,
+								startI: i + 1
+							});
+							
+							if (!parentName) {
+								protoStart = true;
+							}
+						} break;
+						
+						// Применение прототипа
+						case 'apply' : {
+							if (!parentName && !protoI.length) {
+								command = command.replace(/^apply/, 'proto');
+								// Попытка применить не объявленный прототип
+								if (!protoCache[tplName][command]) {
+									error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is not defined (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error;
+								}
+								
+								res += protoCache[tplName][command.replace(/^apply/, 'proto')].body;
+							}
+						} break;
+						
+						// Блок наследования
+						case 'block' : {
+							if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
+								// Попытка декларировать блок несколько раз
+								if (blockCache[tplName][command]) {
+									error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error;
+								}
+								
+								blockCache[tplName][command] = {from: i - startI + 1};
+							}
+							
+							blockI.push({
+								name: command,
+								i: ++beginI
+							});
+						} break;
+						
+						// Цикл
+						case 'forEach' : {
+							forEachI.push(++beginI);
+							
+							if (!parentName && !protoStart) {
+								command = command.replace(/^forEach\s+/, '').split('=>');
+								res +=  command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
+							}
+						} break;
+						
+						// Закрытие блока
+						case 'end' : {
+							beginI--;
+							
+							// Последний элементы стеков
+							lastBlock = blockI[blockI.length - 1];
+							lastProto = protoI[protoI.length - 1];
+							lastWith = withI[withI.length - 1];
+							lastForEach = forEachI[forEachI.length - 1];
+							
+							// Закрытие шаблона
+							if (beginI === 0) {
+								if (opt_dryRun) { break; }
+								
+								// Кешируем тело шаблона
+								cache[tplName] = source.substring(startI, i - command.length - 1);
+								
+								// Обработка наследования:
+								// тело шаблона объединяется с телом родителя
+								// и обработка шаблона начинается заново,
+								// но уже как атомарного (без наследования)
+								if (parentName) {
+									// Результирующее тело шаблона
+									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);;
+									
+									// Перемотка переменных
+									// (сбрасывание)
+									blockCache[tplName] = {};
+									protoCache[tplName] = {};
+									varCache[tplName] = {};
+									varICache[tplName] = {};
+									
+									i = startI - 1;
+									beginI++;
+									
+									parentName = false;
+									begin = false;
+									beginStr = false;
+									command = '';
+									
+									continue;
+								}
+								
+								res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + tplName + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
+							
+							// Закрываются все блоки кроме блоков наследования и пространства имён,
+							// т.к. они в конечном шаблоне не используются,
+							// а нужны для парсера
+							} else if (!parentName
+								&& (!lastProto || lastProto.i !== beginI + 1)
+								&& (!lastBlock || lastBlock.i !== beginI + 1)
+								&& (!lastWith || lastWith.i !== beginI + 1)
+							) {
+								// Если закрывается блок цикла
+								if (lastForEach === beginI + 1) {
+									forEachI.pop();
+									
+									if (!protoStart) {
+										res += '});'
+									}
+								
+								// Простой блок
+								} else if (!protoStart) {
+									res += '};';
+								}
+							}
+							
+							// Закрытие блоков наследования и пространства имён
+							if (lastBlock && lastBlock.i === beginI + 1) {
+								blockI.pop();
+								
+								if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
+									blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
+								}
+							}
+							
+							if (lastProto && lastProto.i === beginI + 1) {
+								protoI.pop();
+								
+								if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
+									protoCache[tplName][lastProto.name].to = i - startI - command.length - 1;
+								}
+								
+								// Рекурсивно анализируем прототипы блоков
+								if (!parentName) {
+									protoCache[tplName][lastProto.name].body = this.compile('{template ' + tplName + '()}'
+										+ source.substring(lastProto.startI, i - command.length - 1)
+										+ '{end}', null, true);
+								}
+								
+								if (!protoI.length) {
+									protoStart = false;
+								}
+							}
+							
+							if (lastWith && lastWith.i === beginI + 1) {
+								withI.pop();
+							}
+							
+						} break;
+						
+						default : {
+							// Экспорт console api
+							if (!parentName && !protoStart && /console\./.test(command)) {
+								res += command + ';';
+								break;
+							}
+							
+							// Инициализация переменных
+							if (/=(?!=)/.test(command)) {
+								tmp = command.split('=')[0].trim();
+								
+								// Попытка инициализировать переменную с зарезервированным именем
+								if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
+									error = new Error('Variable "' + tmp + '" is already defined (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error;
+								}
+								
+								// Попытка повторной инициализации переменной
+								if (sysConst[tmp]) {
+									error = new Error('Can\'t declare variable "' + tmp + '", try another name (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error
+								}
+								
+								// Попытка инициализации переменной в цикле
+								if (forEachI.length) {
+									error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error;
+								}
+								
+								// Кеширование
+								varCache[tplName][tmp] = {
+									from: i - startI - command.length,
+									to: i - startI
+								}
+								
+								if (!parentName && !protoStart) {
+									res += 'var ' + command + ';';
+								}
+							
+							// Вывод переменных
+							} else if (!parentName && !protoStart) {
+								tmp = '';
+								tmpI = 1;
+								unEscape = false;
+								
+								// Поддержка фильтров через пайп
+								command.split('|').forEach(function (el, i) {
+									var part,
+										sPart;
+									
+									if (i === 0) {
+										// Если используется with блок
+										if (withI.length) {
+											withI.push({scope: el});
+											tmp = withI.reduce(function (str, el) {
+												return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
+											});
+											withI.pop();
+										
+										} else {
+											tmp = el;
+										}
+									
+									} else {
+										part = el.split(' ');
+										sPart = part.slice(1);
+										
+										// По умолчанию, все переменные пропускаются через фильтр html
+										if (part[0] !== '!html') {
+											tmpI++;
+											tmp = 'Snakeskin.Filters[\'' + part[0] + '\'](' + tmp + (sPart.length ? ', ' + sPart.join('') : '') + ')';
+										
+										} else {
+											unEscape = true;
+										}
+									}
+								});
+								
+								res += '__SNAKESKIN_TMP_RESULT__ = ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
+								res += '__SNAKESKIN_RESULT__ += typeof __SNAKESKIN_TMP_RESULT__ === \'undefined\' ? \'\' : __SNAKESKIN_TMP_RESULT__;';
+							}
 						}
 					}
+					
+					command = '';
+					continue;
 				}
-				
-				command = '';
-				continue;
 			}
 			
 			// Запись команды
@@ -969,6 +968,14 @@ var Snakeskin = {
 				if (!protoStart && beginStr) {
 					res += '\';';
 					beginStr = false;
+				}
+				
+				if ((quote[el] || el === '/') && (!source[i - 1] || source[i - 1] !== '\\')) {
+					if (bOpen && bOpen === el) {
+						bOpen = false;
+					} else if (!bOpen) {
+						bOpen = el;
+					}
 				}
 				
 				command += el;
