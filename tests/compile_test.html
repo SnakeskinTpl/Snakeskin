@@ -151,7 +151,7 @@
 				equal(forEachTest([1, 2, 3]), '123', 'forEach');
 				equal(deepForEach([[1, 2, 3]]), '123', 'forEach forEach');
 				equal(base(2, 1), '<!doctype html><html><head><title>foo3</title></head></html>', 'Базовый блок наследования');
-				equal(child(), '<!doctype html><html>foo23foo</html>foo121', 'Проверка наследования');
+				equal(child(), '<!doctype html><html>foo23foo</html>121', 'Проверка наследования');
 				equal(withFilter(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
 				equal(withCData(), '					{template withFilter()}						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}						<a href=\"{b}\"></a>					{end}				<h1>Hello!</h1>', 'Использование cdata областей');

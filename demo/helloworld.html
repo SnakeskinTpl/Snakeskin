@@ -9,13 +9,47 @@
 	<body>
 		<div id="test"></div>
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(name = 'world')}
-				<h1>Hello {apply}!</h1>
+			{template base(a = 1, b)}
+				{title = 'foo'}
+				
+				<!doctype html>
+				<html>
+					{block head}
+						<head>
+							{block title}
+								<title>{title + (a + b)}</title>
+							{end}
+						</head>
+					{end}
+					{block footer}
+					{end}
+				</html>
+			{end}
+			
+			{template child(a = 3) extends base}
+				{title = 'foo2'}
+				{b = 'foo'}
+				{e = {a: 1, b: [1, 2, 3]}}
+				
+				{block head}
+					{title + a}
+				{end}
+				
+				{block footer}
+					{block end}
+						{b}
+					{end}
+				{end}
+				
+				{block next}
+					121
+				{end}
 			{end}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld();
+			console.log(child());
+			//document.getElementById('test').innerHTML = helloWorld();
 		</script>
 	</body>
 </html>

@@ -741,7 +741,7 @@ var Snakeskin = {
 					
 					// Блок наследования
 					case 'block' : {
-						if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
+						if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 							// Попытка декларировать блок несколько раз
 							if (blockCache[tplName][command]) {
 								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (template: "' + tplName + '")!');
