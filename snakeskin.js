@@ -223,6 +223,7 @@ var Snakeskin = {
 		cData = [],
 		
 		quote = {'"': true, '\'': true},
+		
 		// Системные константы
 		sysConst = {
 			'__SNAKESKIN_RESULT__': true,
@@ -273,8 +274,8 @@ var Snakeskin = {
 		// Цикл производит перекрытие добавление новых блоков (новые блоки добавляются в конец шаблона)
 		// (итерации 0 и 1), а затем
 		// перекрытие и добавление новых переменных (итерации 2 и 3),
-		// причём новые переменные добавляются сразу за унаследованными,
-		// а под конец перекрытие и добавление прототипов (4-5 итерации)
+		// а затем перекрытие и добавление прототипов (4-5 итерации),
+		// причём новые переменные и прототипы добавляются сразу за унаследованными
 		while (++i < 6) {
 			// Блоки дочернего и родительского шаблона
 			if (i === 0) {
@@ -368,6 +369,8 @@ var Snakeskin = {
 					
 					// Переменные и прототипы
 					} else if (i === 3 || i === 5) {
+						// Сдучай, если в дочернем шаблоне нет перекрытий,
+						// но есть добавления нового
 						if (newFrom === null) {
 							newFrom = from;
 							from += adv;
@@ -386,8 +389,6 @@ var Snakeskin = {
 				}
 			}
 		}
-		
-		console.log(res);
 		
 		return res;
 	};
@@ -458,7 +459,7 @@ var Snakeskin = {
 	 *
 	 * @param {(Node|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
 	 * @param {?boolean=} [opt_commonjs=false] - если true, то шаблон компилируется с экспортом
-	 * @param {?boolean=} [opt_dryRun=false] - если true, то шаблон только транслируется (не компилируется)
+	 * @param {?boolean=} [opt_dryRun=false] - если true, то шаблон только транслируется (не компилируется), приватный параметр
 	 * @return {string}
 	 *
 	 * @test compile_test.html
@@ -467,20 +468,16 @@ var Snakeskin = {
 		var // Подготовка текста шаблонов
 			source = (src.innerHTML || src)
 				// Обработка блоков cdata
-				.replace(/{cdata}([\s\S]*?){end\s+cdata}/, function (sstr, data) {
+				.replace(/{cdata}([\s\S]*?){end\s+cdata}/gm, function (sstr, data) {
 					cData.push(data);
 					return '__SNAKESKIN_CDATA__' + (cData.length - 1);
 				})
 				
 				// Однострочный комментарий
-				.replace(/\/\/.*/g, '')
-				// Отступы
-				.replace(/^\s*|\s*$/g, '')
-				.replace(/{end}\s*{template/g, '{end}{template')
-				.replace(/[\t]/g, '')
-				// Переводы строк
-				.replace(/\n/g, '')
-				.replace(/\r/g, '')
+				.replace(/\/\/.*/gm, '')
+				
+				// Отступы и новая строка
+				.replace(/[\t\v\n\r]*/gm, '')
 				
 				// Многострочный комментарий
 				.replace(/\/\*[\s\S]*?\*\//g, ''),
@@ -497,7 +494,7 @@ var Snakeskin = {
 			
 			el,
 			
-			tplName,
+			tplName = null,
 			parentName,
 			
 			params,
@@ -538,14 +535,18 @@ var Snakeskin = {
 			el = source.charAt(i);
 			
 			if (!bOpen) {
+				// Начало управляющей конструкции
+				// (не забываем следить за уровнем вложенностей {)
 				if (el === '{') {
 					if (begin) {
 						fakeBegin++;
+					
 					} else {
 						begin = true;
 						continue;
 					}
 				
+				// Упраляющая конструкция завершилась
 				} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
 					begin = false;
 					command = this._escape(command);
@@ -568,7 +569,7 @@ var Snakeskin = {
 							// +1 => } >>
 							startI = i + 1;
 							
-							// Получаем имя и пространство имён шаблона
+							// Имя + пространство имён шаблона
 							tplName = command
 								.replace(/^template\s+/, '')
 								.replace(/\(.*/, '');
@@ -860,6 +861,7 @@ var Snakeskin = {
 								}
 								
 								res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + tplName + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
+								tplName = null;
 							
 							// Закрываются все блоки кроме блоков наследования и пространства имён,
 							// т.к. они в конечном шаблоне не используются,
@@ -1048,8 +1050,10 @@ var Snakeskin = {
 			// Обратная замена cdata областей
 			.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
 				return cData[pos]
-					.replace(/[\n\r]/g, '')
-					.replace(/\'/g, '&#39;'); 
+					.replace(/\n/gm, '\\n')
+					.replace(/\r/gm, '\\r')
+					.replace(/\v/gm, '\\v')
+					.replace(/\'/gm, '&#39;'); 
 			})
 			// Удаление пустых операций
 			.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');

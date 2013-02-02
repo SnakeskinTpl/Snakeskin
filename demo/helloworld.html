@@ -36,14 +36,15 @@
 				
 				{proto a33a}
 					{proto j}
-						Вася
+						Вася\n
 					{end}
 					
-					{apply a33a}
+					{apply j}
 				{end}
+				{apply a33a}
 			{end}
 			
-			{template child() extends base}
+			/*{template child() extends base}
 				{z = 1}
 				{block a}
 					sd
@@ -66,7 +67,7 @@
 				{end}
 				
 				{tt = 45}
-			{end}
+			{end}*/
 			
 			/*{template base(a = 1, b)}
 				{title = 'foo'}
