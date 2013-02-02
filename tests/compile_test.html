@@ -6,7 +6,7 @@
 		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.11.0.css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
-		<script type="text/javascript" src="../snakeskin.min.js"></script>
+		<script type="text/javascript" src="../snakeskin.js"></script>
 	</head>
 	<body>
 		<h1 id="qunit-header">Test: Snakeskin.compile</h1>
@@ -70,6 +70,13 @@
 			
 			{template base(a = 1, b)}
 				{title = 'foo'}
+				{proto test}
+					{proto start}
+						OK
+					{end}
+					
+					READY {apply start} ?
+				{end}
 				
 				<!doctype html>
 				<html>
@@ -81,6 +88,7 @@
 						</head>
 					{end}
 					{block footer}
+						{apply test}
 					{end}
 				</html>
 			{end}
@@ -90,6 +98,10 @@
 				{b = 'foo'}
 				{e = {a: 1, b: [1, 2, 3]}}
 				
+				{proto start}
+					NO
+				{end}
+				
 				{block head}
 					{title + a}
 				{end}
@@ -98,6 +110,8 @@
 					{block end}
 						{b}
 					{end}
+					
+					{apply test}
 				{end}
 				
 				{block next}
@@ -150,7 +164,7 @@
 				equal(withIf(33), 'WIN', 'Проверка else');
 				equal(forEachTest([1, 2, 3]), '123', 'forEach');
 				equal(deepForEach([[1, 2, 3]]), '123', 'forEach forEach');
-				equal(base(2, 1), '<!doctype html><html><head><title>foo3</title></head></html>', 'Базовый блок наследования');
+				equal(base(2, 1), '<!doctype html><html><head><title>foo3</title></head>READY OK ?</html>', 'Базовый блок наследования');
 				equal(child(), '<!doctype html><html>foo23foo</html>121', 'Проверка наследования');
 				equal(withFilter(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');

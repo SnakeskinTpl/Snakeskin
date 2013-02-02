@@ -207,9 +207,11 @@ var Snakeskin = {
 		// Кеш блоков
 		blockCache = {},
 		protoCache = {},
+		fromProtoCache = {},
 		
 		// Кеш переменных
 		varCache = {},
+		fromVarCache = {},
 		varICache = {},
 		
 		// Кеш входных параметров
@@ -246,12 +248,9 @@ var Snakeskin = {
 			throw error;
 		}
 		
-		var // Исходный текст шаблона равен родительскому
-			res = cache[extMap[tplName]],
-			old,
-			// Разница между длинами родительского и дочернего шаблона
-			startDiff,
-			diff,
+		var parentTpl = extMap[tplName],
+			// Исходный текст шаблона равен родительскому
+			res = cache[parentTpl],
 			
 			// Блоки дочернего и родительского шаблона
 			el,
@@ -263,8 +262,12 @@ var Snakeskin = {
 			
 			// Позиция для вставки новой переменной
 			// или нового блока прототипа
+			newFrom,
 			from = 0,
+			
 			advDiff = [],
+			blockDiff,
+			diff,
 			adv;
 		
 		// Цикл производит перекрытие добавление новых блоков (новые блоки добавляются в конец шаблона)
@@ -273,90 +276,118 @@ var Snakeskin = {
 		// причём новые переменные добавляются сразу за унаследованными,
 		// а под конец перекрытие и добавление прототипов (4-5 итерации)
 		while (++i < 6) {
-			if (i % 2 === 0) {
-				old = res.length;
-			}
-			
 			// Блоки дочернего и родительского шаблона
 			if (i === 0) {
 				el = blockCache[tplName];
-				prev = blockCache[extMap[tplName]];
+				prev = blockCache[parentTpl];
 			
 			// Переменные дочернего и родительского шаблона
 			} else if (i === 2) {
 				el = varCache[tplName];
-				prev = varCache[extMap[tplName]];
+				prev = varCache[parentTpl];
 				
-				from = 0;
+				// Позиция конца декларации последней переменной родительского шаблона
+				from = fromVarCache[parentTpl];
+				newFrom = null;
 			
 			// Прототипы дочернего и родительского шаблона
 			} else if (i === 4) {
 				el = protoCache[tplName];
-				prev = protoCache[extMap[tplName]];
+				prev = protoCache[parentTpl];
 				
-				from = 0;
+				// Позиция конца декларации последнего прототипа родительского шаблона
+				from = fromProtoCache[parentTpl];
+				newFrom = null;
 			}
 			
 			for (key in el) {
 				if (!el.hasOwnProperty(key)) { continue; }
 				
-				// Пересчитываем разницу
-				diff = res.length - old;
+				// Сдвиг относительно родительской позиции элемента
 				adv = 0;
-				
 				// Текст добавляемой области
 				block = cache[tplName].substring(el[key].from, el[key].to);
 				
-				// Перекрытие
-				if (prev[key] && (i % 2 === 0)) {
-					if (i > 1) {
-						from = prev[key].from + diff + block.length + 1;
-					}
-					
-					// Для перекрытия прототипов вычисляем сдвиг от перекрытия переменных
-					if (i === 4) {
-						startDiff = prev[key].from + diff;
-						advDiff.some(function (el) {
-							if (el.val < startDiff) {
-								adv = el.adv;
-							} else {
-								return true;
-							}
-						});
-						// 4 => '{end}'.length - 1
-						from += adv + 4;
-					}
-					
-					res = res.substring(0, prev[key].from + diff + adv) + block + res.substring(prev[key].to + diff + adv, res.length);
+				// Разница между дочерним и родительским блоком
+				if (prev[key]) {
+					blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
+				}
 				
+				// Вычисляем сдвиг
+				diff = prev[key] ? prev[key].from : from;
+				advDiff
+					// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
+					.sort(function (a, b) {
+						if (a.val > b.val) {
+							return 1;
+						}
+						
+						if (a.val === b.val) {
+							return 0;
+						}
+						
+						if (a.val < b.val) {
+							return -1;
+						}
+					})
+					.some(function (el) {
+						if (el.val < diff) {
+							adv += el.adv;
+						} else {
+							return true;
+						}
+					});
+				
+				if (prev[key] && (i % 2 === 0)) {
+					// Новые глобальные блоки всегда добавляются в конец шаблона,
+					// а остальные элементы после последнего вызова
+					if (i > 1) {
+						newFrom = prev[key].from + adv + block.length;
+						from += blockDiff;
+						
+						if (newFrom > from) {
+							// } >>
+							from = newFrom + (i === 4 ? 5 : 1);
+						}
+					}
+					
+					// Перекрытие
+					res = res.substring(0, prev[key].from + adv) + block + res.substring(prev[key].to + adv, res.length);
+					
+					// Добавляем сдвиг в стек
+					advDiff.push({
+						val: prev[key].from,
+						adv: blockDiff
+					});
+			
 				// Добавление
 				} else if (!prev[key]) {
 					// Блоки
 					if (i === 1) {
 						res += '{' + key + '}' + block + '{end}';
 					
-					// Переменные
-					} else if (i === 3) {
-						block = '{' + block + '}';
+					// Переменные и прототипы
+					} else if (i === 3 || i === 5) {
+						if (newFrom === null) {
+							newFrom = from;
+							from += adv;
+						}
+						
+						block = i === 3 ? ('{' + block + '}') : ('{' + key + '}' + block + '{end}');
 						res = res.substring(0, from) + block + res.substring(from, res.length);
 						
 						advDiff.push({
-							val: from,
-							adv: from + block.length
+							val: newFrom,
+							adv: block.length
 						});
-						
-						from = from + block.length;
-					
-					// Прототипы
-					} else if (i === 5) {
-						block = '{' + key + '}' + block + '{end}';
-						res = res.substring(0, from) + block + res.substring(from, res.length);
 						
 						from = from + block.length;
 					}
 				}
 			}
 		}
+		
+		console.log(res);
 		
 		return res;
 	};
@@ -427,6 +458,7 @@ var Snakeskin = {
 	 *
 	 * @param {(Node|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
 	 * @param {?boolean=} [opt_commonjs=false] - если true, то шаблон компилируется с экспортом
+	 * @param {?boolean=} [opt_dryRun=false] - если true, то шаблон только транслируется (не компилируется)
 	 * @return {string}
 	 *
 	 * @test compile_test.html
@@ -447,7 +479,8 @@ var Snakeskin = {
 				.replace(/{end}\s*{template/g, '{end}{template')
 				.replace(/[\t]/g, '')
 				// Переводы строк
-				.replace(/[\n\r]/g, '')
+				.replace(/\n/g, '')
+				.replace(/\r/g, '')
 				
 				// Многострочный комментарий
 				.replace(/\/\*[\s\S]*?\*\//g, ''),
@@ -521,8 +554,18 @@ var Snakeskin = {
 					switch (command.split(' ')[0]) {
 						// Определение нового шаблона
 						case 'template' : {
+							// Если количество открытых блоков не совпадает с количеством закрытых,
+							// то кидаем исключение
+							if (beginI !== 0) {
+								error = new Error('Missing closing or opening tag in the template (template: "' + tplName + '")!');
+								error.name = 'Snakeskin Error';
+								
+								throw error;
+							}
+							
 							beginI++;
 							// Начальная позиция шаблона
+							// +1 => } >>
 							startI = i + 1;
 							
 							// Получаем имя и пространство имён шаблона
@@ -544,8 +587,12 @@ var Snakeskin = {
 							
 							// Создаём место в кеше
 							blockCache[tplName] = {};
+							
 							protoCache[tplName] = {};
+							fromProtoCache[tplName] = 0;
+							
 							varCache[tplName] = {};
+							fromVarCache[tplName] = 0;
 							varICache[tplName] = {};
 							
 							// Схема наследования
@@ -644,21 +691,19 @@ var Snakeskin = {
 												// С параметром по умолчанию
 												if (typeof def[1] !== 'undefined') {
 													defParams += 'var ' + def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
-												
-												// Без
-												} else {
-													defParams += 'var ' + def[0] + ';';
+													varICache[tplName][def[0]] = el;
 												}
 											}
 										});
 									}
 									
-									
 									// Параметры по умолчанию
 									def[1] = def[1].trim();
-									varICache[tplName][def[0]] = el;
 									defParams += def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
 								}
+								
+								// Кеширование
+								varICache[tplName][def[0]] = el;
 								
 								// После последнего параметра запятая не ставится
 								if (i !== params.length - 1) {
@@ -795,8 +840,12 @@ var Snakeskin = {
 									// Перемотка переменных
 									// (сбрасывание)
 									blockCache[tplName] = {};
+									
 									protoCache[tplName] = {};
+									fromProtoCache[tplName] = 0;
+									
 									varCache[tplName] = {};
+									fromVarCache[tplName] = 0;
 									varICache[tplName] = {};
 									
 									i = startI - 1;
@@ -838,7 +887,7 @@ var Snakeskin = {
 							if (lastBlock && lastBlock.i === beginI + 1) {
 								blockI.pop();
 								
-								if (!opt_dryRun && ((parentName && !blockI.length) || !parentName)) {
+								if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 									blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
 								}
 							}
@@ -848,6 +897,7 @@ var Snakeskin = {
 								
 								if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
 									protoCache[tplName][lastProto.name].to = i - startI - command.length - 1;
+									fromProtoCache[tplName] = i - startI + 1;
 								}
 								
 								// Рекурсивно анализируем прототипы блоков
@@ -908,6 +958,7 @@ var Snakeskin = {
 									from: i - startI - command.length,
 									to: i - startI
 								}
+								fromVarCache[tplName] = i - startI + 1;
 								
 								if (!parentName && !protoStart) {
 									res += 'var ' + command + ';';
