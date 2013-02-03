@@ -6,7 +6,7 @@
 		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.11.0.css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
-		<script type="text/javascript" src="../snakeskin.js"></script>
+		<script type="text/javascript" src="../snakeskin.min.js"></script>
 	</head>
 	<body>
 		<h1 id="qunit-header">Test: Snakeskin.compile</h1>
@@ -16,9 +16,6 @@
 		<ol id="qunit-tests"></ol>
 		<div id="test"></div>
 		
-		<script type="text/javascript">
-			var tpl = {};
-		</script>
 		<script type="text/x-snakeskin-template" id="templates">
 			{template first(name = 'world')}
 				{text = 'Hello'}
@@ -138,7 +135,9 @@
 				{end cdata}
 				
 				{text = 'Hello'}
-				<h1>{text}!</h1>
+				<h1>{text}{cdata}
+					{a}
+				{end cdata}!</h1>
 			{end}
 		</script>
 		
@@ -168,7 +167,7 @@
 				equal(child(), '<!doctype html><html>foo23fooREADY NO ?</html>121', 'Проверка наследования');
 				equal(withFilter(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
-				equal(withCData(), '\n					{template withFilter()}\n						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}\n						<a href=\"{b}\"></a>\n					{end}\n				<h1>Hello!</h1>', 'Использование cdata областей');
+				equal(withCData(), '\n					{template withFilter()}\n						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}\n						<a href=\"{b}\"></a>\n					{end}\n				<h1>Hello\n					{a}\n				!</h1>', 'Использование cdata областей');
 			});
 		</script>
 	</body>

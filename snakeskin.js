@@ -466,7 +466,7 @@ var Snakeskin = {
 	 */
 	Snakeskin.compile = function (src, opt_commonjs, opt_dryRun) {
 		var // Подготовка текста шаблонов
-			source = (src.innerHTML || src)
+			source = String(src.innerHTML || src)
 				// Обработка блоков cdata
 				.replace(/{cdata}([\s\S]*?){end\s+cdata}/gm, function (sstr, data) {
 					cData.push(data);
@@ -488,8 +488,10 @@ var Snakeskin = {
 				'var Snakeskin = global.Snakeskin;' + 
 				'exports.liveInit = function (path) { ' +
 					'Snakeskin = require(path);' +
+					'exec();' +
 					'return this;' +
-				'};'
+				'};' +
+				'function exec() {'
 			: ''),
 			
 			el,
@@ -836,7 +838,7 @@ var Snakeskin = {
 								// но уже как атомарного (без наследования)
 								if (parentName) {
 									// Результирующее тело шаблона
-									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);;
+									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);
 									
 									// Перемотка переменных
 									// (сбрасывание)
@@ -1060,6 +1062,7 @@ var Snakeskin = {
 		
 		// Конец шаблона
 		res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
+		res += opt_commonjs ? '}' : '';
 		
 		// Если количество открытых блоков не совпадает с количеством закрытых,
 		// то кидаем исключение
@@ -1082,12 +1085,12 @@ var Snakeskin = {
 			
 			// Простая компиляция
 			} else {
-				global['eval'](res);
+				global.eval(res);
 			}
 		
 		// Живая компиляция в браузере
 		} else {
-			window['eval'](res);
+			window.eval(res);
 		}
 		
 		return res;

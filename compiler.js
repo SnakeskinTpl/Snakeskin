@@ -3,10 +3,11 @@
 /////////////////////////////////
 
 var fs = require('fs'),
-	Snakeskin = require('./snakeskin'),
 	file, newFile,
-	commonjs,
-	res;
+	
+	commonjs;
+
+global.Snakeskin = require('./snakeskin');
 
 if (process.argv.length < 3) {
 	console.log('Usage: node compiler fname.ss');
@@ -16,6 +17,8 @@ if (process.argv.length < 3) {
 	newFile = process.argv[commonjs ? 4 : 3] || (file + '.js');
 	
 	fs.readFile(file, function (err, data) {
+		var res;
+		
 		if (err) {
 			console.log(err);
 		} else {
