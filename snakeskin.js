@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1.1',
+		VERSION: '1.1.2',
 		Filters: {},
 		cache: {}
 	},
@@ -413,12 +413,13 @@ var Snakeskin = {
 	 *
 	 * @private
 	 * @param {string} tplName - название шаблона
+	 * @param {Object} info - дополнительная информация
 	 * @return {string}
 	 */
-	Snakeskin._getExtStr = function (tplName) {
+	Snakeskin._getExtStr = function (tplName, info) {
 		// Если указанный родитель не существует
 		if (!cache[extMap[tplName]]) {
-			error = new Error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined!');
+			error = new Error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined (' + this._genError(info) + ')!');
 			error.name = 'Snakeskin Error';
 			
 			throw error;
@@ -617,6 +618,7 @@ var Snakeskin = {
 	/**
 	 * Снять экранирование спец символов
 	 *
+	 * @private
 	 * @param {string} str - исходная строка
 	 * @return {string}
 	 */
@@ -630,16 +632,46 @@ var Snakeskin = {
 	};
 	
 	/**
+	 * Вывести дополнительную информацию об ошибке
+	 *
+	 * @private
+	 * @param {Object} obj - дополнительная информация
+	 * @return {string}
+	 */
+	Snakeskin._genError = function (obj) {
+		var key,
+			str = '';
+		
+		for (key in obj) {
+			if (!obj.hasOwnProperty(key)) { continue; }
+			
+			if (!obj[key].innerHTML) {
+				str += key + ': ' + obj[key] + ', ';
+			} else {
+				str += key + ': (class: ' + (obj[key].className || 'undefined') + ', id: ' + (obj[key].id || 'undefined') + '), ';
+			}
+		}
+		
+		return str.replace(/, $/, '');
+	};
+	
+	/**
 	 * Скомпилировать шаблоны
 	 *
 	 * @param {(Node|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
 	 * @param {?boolean=} [opt_commonjs=false] - если true, то шаблон компилируется с экспортом
 	 * @param {?boolean=} [opt_dryRun=false] - если true, то шаблон только транслируется (не компилируется), приватный параметр
+	 * @param {Object=} [opt_info] - дополнительная информация, приватный параметр
 	 * @return {string}
 	 *
 	 * @test compile_test.html
 	 */
-	Snakeskin.compile = function (src, opt_commonjs, opt_dryRun) {
+	Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
+		opt_info = opt_info || {};
+		if (src.innerHTML) {
+			opt_info.node = src;
+		}
+		
 		var // Подготовка текста шаблонов
 			source = String(src.innerHTML || src)
 				// Обработка блоков cdata
@@ -650,10 +682,8 @@ var Snakeskin = {
 				
 				// Однострочный комментарий
 				.replace(/\/\/.*/gm, '')
-				
 				// Отступы и новая строка
 				.replace(/[\t\v\n\r]*/gm, '')
-				
 				// Многострочный комментарий
 				.replace(/\/\*[\s\S]*?\*\//g, ''),
 			
@@ -668,6 +698,7 @@ var Snakeskin = {
 				'};' +
 				'function exec() {'
 			: ''),
+			tryRes,
 			
 			el,
 			
@@ -739,7 +770,7 @@ var Snakeskin = {
 							// Если количество открытых блоков не совпадает с количеством закрытых,
 							// то кидаем исключение
 							if (beginI !== 0) {
-								error = new Error('Missing closing or opening tag in the template (template: "' + tplName + '")!');
+								error = new Error('Missing closing or opening tag in the template (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 								error.name = 'Snakeskin Error';
 								
 								throw error;
@@ -926,7 +957,7 @@ var Snakeskin = {
 							if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 								// Попытка декларировать прототип блока несколько раз
 								if (protoCache[tplName][command]) {
-									error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (template: "' + tplName + '")!');
+									error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 									
 									throw error;
@@ -976,7 +1007,7 @@ var Snakeskin = {
 							if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 								// Попытка декларировать блок несколько раз
 								if (blockCache[tplName][command]) {
-									error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (template: "' + tplName + '")!');
+									error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 									
 									throw error;
@@ -1015,7 +1046,7 @@ var Snakeskin = {
 							if (beginI === 0) {
 								// Вызовы не объявленных прототипов
 								if (backHashI) {
-									error = new Error('Proto "' + lastBack + '" is not defined (template: "' + tplName + '")!');
+									error = new Error('Proto "' + lastBack + '" is not defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 									
 									throw error;
@@ -1032,7 +1063,7 @@ var Snakeskin = {
 								// но уже как атомарного (без наследования)
 								if (parentName) {
 									// Результирующее тело шаблона
-									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1);
+									source = source.substring(0, startI) + this._getExtStr(tplName, opt_info) + source.substring(i - command.length - 1);
 									
 									// Перемотка переменных
 									// (сбрасывание)
@@ -1139,7 +1170,7 @@ var Snakeskin = {
 								
 								// Попытка инициализировать переменную с зарезервированным именем
 								if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
-									error = new Error('Variable "' + tmp + '" is already defined (template: "' + tplName + '")!');
+									error = new Error('Variable "' + tmp + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 									
 									throw error;
@@ -1147,7 +1178,7 @@ var Snakeskin = {
 								
 								// Попытка повторной инициализации переменной
 								if (sysConst[tmp]) {
-									error = new Error('Can\'t declare variable "' + tmp + '", try another name (template: "' + tplName + '")!');
+									error = new Error('Can\'t declare variable "' + tmp + '", try another name (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 									
 									throw error
@@ -1155,7 +1186,7 @@ var Snakeskin = {
 								
 								// Попытка инициализации переменной в цикле
 								if (forEachI.length) {
-									error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (template: "' + tplName + '")!');
+									error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 									
 									throw error;
@@ -1271,7 +1302,7 @@ var Snakeskin = {
 		// Если количество открытых блоков не совпадает с количеством закрытых,
 		// то кидаем исключение
 		if (beginI !== 0) {
-			error = new Error('Missing closing or opening tag in the template!');
+			error = new Error('Missing closing or opening tag in the template (template: ' + tplName + ', ' + this._genError(opt_info) + ')!');
 			error.name = 'Snakeskin Error';
 			
 			throw error;
