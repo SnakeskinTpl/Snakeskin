@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1',
+		VERSION: '1.1.1',
 		Filters: {},
 		cache: {}
 	},
@@ -242,7 +242,7 @@ var Snakeskin = {
 			}
 		}
 		
-		return (typeof lastInd !== 'undefined' ? tmp.substr(0, lastInd) : tmp) + '…';
+		return (typeof lastInd !== 'undefined' ? tmp.substring(0, lastInd) : tmp) + '…';
 	};
 	
 	/**

@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1',
+		VERSION: '1.1.1',
 		Filters: {},
 		cache: {}
 	},
@@ -242,7 +242,7 @@ var Snakeskin = {
 			}
 		}
 		
-		return (typeof lastInd !== 'undefined' ? tmp.substr(0, lastInd) : tmp) + '…';
+		return (typeof lastInd !== 'undefined' ? tmp.substring(0, lastInd) : tmp) + '…';
 	};
 	
 	/**
@@ -528,7 +528,7 @@ var Snakeskin = {
 					}
 					
 					// Перекрытие
-					res = res.substring(0, prev[key].from + adv) + block + res.substring(prev[key].to + adv, res.length);
+					res = res.substring(0, prev[key].from + adv) + block + res.substring(prev[key].to + adv);
 					
 					// Добавляем сдвиг в стек
 					advDiff.push({
@@ -552,7 +552,7 @@ var Snakeskin = {
 						}
 						
 						block = i === 3 ? ('{' + block + '}') : ('{' + key + '}' + block + '{end}');
-						res = res.substring(0, from) + block + res.substring(from, res.length);
+						res = res.substring(0, from) + block + res.substring(from);
 						
 						advDiff.push({
 							val: newFrom,
@@ -689,6 +689,10 @@ var Snakeskin = {
 			lastProto,
 			protoStart,
 			
+			backHashI = 0,
+			lastBack,
+			backHash = {},
+			
 			withI = [],
 			lastWith,
 			
@@ -751,9 +755,7 @@ var Snakeskin = {
 								.replace(/^template\s+/, '')
 								.replace(/\(.*/, '');
 							
-							if (opt_dryRun) {
-								break;
-							}
+							if (opt_dryRun) { break; }
 							
 							// Название родительского шаблона
 							if (/\s+extends\s+/.test(command)) {
@@ -868,7 +870,7 @@ var Snakeskin = {
 											if (!local) {
 												// С параметром по умолчанию
 												if (typeof def[1] !== 'undefined') {
-													defParams += 'var ' + def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' + def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
+													defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
 													varICache[tplName][def[0]] = el;
 												}
 											}
@@ -921,7 +923,7 @@ var Snakeskin = {
 						
 						// Прототип блока наследования
 						case 'proto' : {
-							if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
+							if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 								// Попытка декларировать прототип блока несколько раз
 								if (protoCache[tplName][command]) {
 									error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (template: "' + tplName + '")!');
@@ -948,15 +950,24 @@ var Snakeskin = {
 						case 'apply' : {
 							if (!parentName && !protoI.length) {
 								command = command.replace(/^apply/, 'proto');
-								// Попытка применить не объявленный прототип
-								if (!protoCache[tplName][command]) {
-									error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is not defined (template: "' + tplName + '")!');
-									error.name = 'Snakeskin Error';
-									
-									throw error;
-								}
 								
-								res += protoCache[tplName][command.replace(/^apply/, 'proto')].body;
+								// Попытка применить не объявленный прототип
+								// (запоминаем место вызова, чтобы вернуться к нему,
+								// когда прототип будет объявлен)
+								if (!protoCache[tplName][command]) {
+									if (!backHash[command]) {
+										backHash[command] = [];
+										backHash[command].protoStart = protoStart;
+										
+										lastBack = command.replace(/^proto\s+/, '');
+										backHashI++;
+									}
+									
+									backHash[command].push(res.length);
+								
+								} else {
+									res += protoCache[tplName][command].body;
+								}
 							}
 						} break;
 						
@@ -1002,6 +1013,14 @@ var Snakeskin = {
 							
 							// Закрытие шаблона
 							if (beginI === 0) {
+								// Вызовы не объявленных прототипов
+								if (backHashI) {
+									error = new Error('Proto "' + lastBack + '" is not defined (template: "' + tplName + '")!');
+									error.name = 'Snakeskin Error';
+									
+									throw error;
+								}
+								
 								if (opt_dryRun) { break; }
 								
 								// Кешируем тело шаблона
@@ -1013,7 +1032,7 @@ var Snakeskin = {
 								// но уже как атомарного (без наследования)
 								if (parentName) {
 									// Результирующее тело шаблона
-									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1, source.length);
+									source = source.substring(0, startI) + this._getExtStr(tplName) + source.substring(i - command.length - 1);
 									
 									// Перемотка переменных
 									// (сбрасывание)
@@ -1074,7 +1093,7 @@ var Snakeskin = {
 							if (lastProto && lastProto.i === beginI + 1) {
 								protoI.pop();
 								
-								if (!opt_dryRun && ((parentName && !protoI.length) || !parentName)) {
+								if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 									protoCache[tplName][lastProto.name].to = i - startI - command.length - 1;
 									fromProtoCache[tplName] = i - startI + 1;
 								}
@@ -1086,11 +1105,21 @@ var Snakeskin = {
 										+ '{end}', null, true);
 								}
 								
+								if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
+									backHash[lastProto.name].forEach(function (el) {
+										res = res.substring(0, el) + protoCache[tplName][lastProto.name].body + res.substring(el);
+									});
+									
+									delete backHash[lastProto.name];
+									backHashI--;
+								}
+								
 								if (!protoI.length) {
 									protoStart = false;
 								}
 							}
 							
+							// Закрытие with блока
 							if (lastWith && lastWith.i === beginI + 1) {
 								withI.pop();
 							}
