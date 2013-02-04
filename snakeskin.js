@@ -253,7 +253,7 @@ var Snakeskin = {
 	 * @return {string}
 	 */
 	Snakeskin.Filters.repeat = function (str, opt_num) {
-		return new Array(opt_num || 1).join(str);
+		return new Array(opt_num || 2).join(str);
 	};
 	
 	/**
