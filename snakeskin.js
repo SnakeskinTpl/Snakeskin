@@ -698,7 +698,6 @@ var Snakeskin = {
 				'};' +
 				'function exec() {'
 			: ''),
-			tryRes,
 			
 			el,
 			
