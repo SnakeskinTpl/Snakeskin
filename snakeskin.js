@@ -622,7 +622,7 @@ var Snakeskin = {
 	 * @param {string} str - исходная строка
 	 * @return {string}
 	 */
-	Snakeskin._descape = function (str) {
+	Snakeskin._uescape = function (str) {
 		return str
 			.replace(/__SNAKESKIN_ESCAPE__PIPE/g, '|')
 			.replace(/__SNAKESKIN_ESCAPE__EQUAL/g, '=')
@@ -1282,7 +1282,7 @@ var Snakeskin = {
 			}
 		}
 		
-		res = this._descape(res)
+		res = this._uescape(res)
 			// Обратная замена cdata областей
 			.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
 				return cData[pos]
