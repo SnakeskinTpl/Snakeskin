@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1.2',
+		VERSION: '1.1.3',
 		Filters: {},
 		cache: {}
 	},
@@ -42,7 +42,7 @@ var Snakeskin = {
 			var str = this.replace(/^\s\s*/, ''),
 				i = str.length;
 				
-			while (/\s/.test(str.charAt((i -= 1)))) {};
+			while (/\s/.test(str.charAt(--i))) {};
 			return str.substring(0, i + 1);
 		};
 	}
@@ -301,11 +301,11 @@ var Snakeskin = {
 				aLength = this.length;
 			
 			if (!opt_thisObject) {
-				while ((i += 1) < aLength) {
+				while (++i < aLength) {
 					callback(this[i], i, this);
 				}
 			} else {
-				while ((i += 1) < aLength) {
+				while (++i < aLength) {
 					callback.call(opt_thisObject, this[i], i, this);
 				}
 			}
@@ -329,12 +329,12 @@ var Snakeskin = {
 				res;
 			
 			if (!opt_thisObject) {
-				while ((i += 1) < aLength) {
+				while (++i < aLength) {
 					res = callback(this[i], i, this);
 					if (res) { return true; }
 				}
 			} else {
-				while ((i += 1) < aLength) {
+				while (++i < aLength) {
 					res = callback.call(opt_thisObject, this[i], i, this);
 					if (res) { return true; }
 				}
@@ -368,7 +368,7 @@ var Snakeskin = {
 				res = this[0];
 			}
 			
-			while ((i += 1) < aLength) {
+			while (++i < aLength) {
 				res = callback(res, this[i], i, this);
 			}
 			
@@ -570,65 +570,33 @@ var Snakeskin = {
 	};
 	
 	/**
-	 * Экранировать спец символы Snakeskin
+	 * Заметить кавычки с содержимом в строке на ссылку:
+	 * __SNAKESKIN_QUOT__номер
 	 *
 	 * @private
 	 * @param {string} str - исходная строка
+	 * @param {Array=} [opt_stack] - массив для подстрок
 	 * @return {string}
 	 */
-	Snakeskin._escape = function (str) {
-		var bOpen;
-		
-		str = str.split('');
-		str.forEach(function (el, i) {
-			if (quote[el]) {
-				if (!str[i - 1] || str[i - 1] !== '\\') {
-					if (bOpen && bOpen === el) {
-						bOpen = false;
-					} else if (!bOpen) {
-						bOpen = el;
-					}
-				}
-			
-			} else if (bOpen) {
-				switch (el) {
-					case '|' : {
-						str[i] = '__SNAKESKIN_ESCAPE__PIPE';
-					} break;
-					case '=' : {
-						str[i] = '__SNAKESKIN_ESCAPE__EQUAL';
-					} break;
-					case ',' : {
-						str[i] = '__SNAKESKIN_ESCAPE__COMMA';
-					} break;
-					case '(' : {
-						str[i] = '__SNAKESKIN_ESCAPE__BOPEN';
-					} break;
-					case ')' : {
-						str[i] = '__SNAKESKIN_ESCAPE__BCLOSE';
-					} break;
-				}
-			}
+	Snakeskin._escape = function (str, opt_stack) {
+		return str.replace(/(["']).*?[^\\]\1/g, function (sstr) {
+			opt_stack && opt_stack.push(sstr);
+			return '__SNAKESKIN_QUOT__' + (opt_stack ? opt_stack.length - 1 : '_');
 		});
-		str = str.join('');
-		
-		return str;
 	};
 	
 	/**
-	 * Снять экранирование спец символов
+	 * Заметить __SNAKESKIN_QUOT__номер в строке на реальное содержимое
 	 *
 	 * @private
 	 * @param {string} str - исходная строка
+	 * @param {!Array} stack - массив c подстроками
 	 * @return {string}
 	 */
-	Snakeskin._uescape = function (str) {
-		return str
-			.replace(/__SNAKESKIN_ESCAPE__PIPE/g, '|')
-			.replace(/__SNAKESKIN_ESCAPE__EQUAL/g, '=')
-			.replace(/__SNAKESKIN_ESCAPE__COMMA/g, ',')
-			.replace(/__SNAKESKIN_ESCAPE__BOPEN/g, '(')
-			.replace(/__SNAKESKIN_ESCAPE__BCLOSE/g, ')');
+	Snakeskin._uescape = function (str, stack) {
+		return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
+			return stack[pos];
+		});
 	};
 	
 	/**
@@ -737,6 +705,8 @@ var Snakeskin = {
 			tmp,
 			tmpI,
 			
+			quotContent = [],
+			
 			i = -1,
 			startI,
 			
@@ -760,7 +730,7 @@ var Snakeskin = {
 				// Упраляющая конструкция завершилась
 				} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
 					begin = false;
-					command = this._escape(command);
+					command = this._escape(command, quotContent);
 					
 					// Обработка команд
 					switch (command.split(' ')[0]) {
@@ -815,18 +785,26 @@ var Snakeskin = {
 							
 							// Декларация функции
 							// с пространством имён или при экспорте в common.js
-							if (/\./.test(tplName) || opt_commonjs) {
-								tplName.split('.').reduce(function (str, el, i) {
-									if (!nmCache[str]) {
-										res += '' +
-										'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-											(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
-										
-										nmCache[str] = true;
-									}
+							if (/\.|\[/.test(tplName) || opt_commonjs) {
+								tplName
+									.replace(/\[/g, '.')
+									.replace(/]/g, '')
 									
-									return str + '.' + el;
-								});
+									.split('.').reduce(function (str, el, i) {
+										if (!nmCache[str]) {
+											res += '' +
+											'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+												(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
+											
+											nmCache[str] = true;
+										}
+										
+										if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
+											return str + '[' + el + ']';
+										}
+										
+										return str + '.' + el;
+									});
 								
 								res += (opt_commonjs ? 'exports.' : '') + tplName + '= function ('; 
 							
@@ -1086,7 +1064,7 @@ var Snakeskin = {
 									continue;
 								}
 								
-								res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + tplName + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
+								res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + this._uescape(tplName, quotContent).replace(/'/g, '\\\'') + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
 								tplName = null;
 							
 							// Закрываются все блоки кроме блоков наследования и пространства имён,
@@ -1282,7 +1260,7 @@ var Snakeskin = {
 			}
 		}
 		
-		res = this._uescape(res)
+		res = this._uescape(res, quotContent)
 			// Обратная замена cdata областей
 			.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
 				return cData[pos]

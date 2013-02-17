@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1.2',
+		VERSION: '1.1.3',
 		Filters: {},
 		cache: {}
 	},
@@ -42,7 +42,7 @@ var Snakeskin = {
 			var str = this.replace(/^\s\s*/, ''),
 				i = str.length;
 				
-			while (/\s/.test(str.charAt((i -= 1)))) {};
+			while (/\s/.test(str.charAt(--i))) {};
 			return str.substring(0, i + 1);
 		};
 	}
