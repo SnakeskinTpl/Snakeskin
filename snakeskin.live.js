@@ -95,6 +95,16 @@ var Snakeskin = {
 		};
 	
 	/**
+	 * Замена undefined на ''
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {*}
+	 */
+	Snakeskin.Filters.undef = function (str) {
+		return typeof str !== 'undefined' ? str : '';
+	};
+	
+	/**
 	 * Экранирование строки html
 	 *
 	 * @param {*} str - исходная строка

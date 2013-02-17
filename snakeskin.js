@@ -95,6 +95,16 @@ var Snakeskin = {
 		};
 	
 	/**
+	 * Замена undefined на ''
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {*}
+	 */
+	Snakeskin.Filters.undef = function (str) {
+		return typeof str !== 'undefined' ? str : '';
+	};
+	
+	/**
 	 * Экранирование строки html
 	 *
 	 * @param {*} str - исходная строка
@@ -402,7 +412,6 @@ var Snakeskin = {
 		// Системные константы
 		sysConst = {
 			'__SNAKESKIN_RESULT__': true,
-			'__SNAKESKIN_TMP_RESULT__': true,
 			'__SNAKESKIN_CDATA__': true
 		},
 		
@@ -898,7 +907,7 @@ var Snakeskin = {
 									res += ',';
 								}
 							});
-							res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', __SNAKESKIN_TMP_RESULT__;';
+							res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';';
 						
 						} break;
 						
@@ -1203,7 +1212,9 @@ var Snakeskin = {
 										} else {
 											tmp = el;
 										}
-									
+										
+										tmp = 'Snakeskin.Filters.undef(' + tmp + ')';
+										
 									} else {
 										part = el.split(' ');
 										sPart = part.slice(1);
@@ -1219,8 +1230,7 @@ var Snakeskin = {
 									}
 								});
 								
-								res += '__SNAKESKIN_TMP_RESULT__ = ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
-								res += '__SNAKESKIN_RESULT__ += typeof __SNAKESKIN_TMP_RESULT__ === \'undefined\' ? \'\' : __SNAKESKIN_TMP_RESULT__;';
+								res += '__SNAKESKIN_RESULT__ += ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
 							}
 						}
 					}
