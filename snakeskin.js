@@ -1187,7 +1187,7 @@ var Snakeskin = {
 								unEscape = false;
 								
 								// Поддержка фильтров через пайп
-								command.split('|').forEach(function (el, i) {
+								command.replace(/\|\|/g, '__SNAKESKIN_ESCAPE__OR').split('|').forEach(function (el, i) {
 									var part,
 										sPart;
 									
@@ -1261,6 +1261,8 @@ var Snakeskin = {
 		}
 		
 		res = this._uescape(res, quotContent)
+			.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
+			
 			// Обратная замена cdata областей
 			.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
 				return cData[pos]
