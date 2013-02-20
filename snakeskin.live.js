@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1.3',
+		VERSION: '1.2',
 		Filters: {},
 		cache: {}
 	},
@@ -95,16 +95,6 @@ var Snakeskin = {
 		};
 	
 	/**
-	 * Замена undefined на ''
-	 *
-	 * @param {*} str - исходная строка
-	 * @return {*}
-	 */
-	Snakeskin.Filters.undef = function (str) {
-		return typeof str !== 'undefined' ? str : '';
-	};
-	
-	/**
 	 * Экранирование строки html
 	 *
 	 * @param {*} str - исходная строка
@@ -112,6 +102,16 @@ var Snakeskin = {
 	 */
 	Snakeskin.Filters.html = function (str) {
 		return String(str).replace(escapeHTMLRgxp, escapeHTML);
+	};
+	
+	/**
+	 * Замена undefined на ''
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {*}
+	 */
+	Snakeskin.Filters.undef = function (str) {
+		return typeof str !== 'undefined' ? str : '';
 	};
 	
 	var uentityMap = {

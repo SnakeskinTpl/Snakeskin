@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.1.3',
+		VERSION: '1.2',
 		Filters: {},
 		cache: {}
 	},
@@ -95,16 +95,6 @@ var Snakeskin = {
 		};
 	
 	/**
-	 * Замена undefined на ''
-	 *
-	 * @param {*} str - исходная строка
-	 * @return {*}
-	 */
-	Snakeskin.Filters.undef = function (str) {
-		return typeof str !== 'undefined' ? str : '';
-	};
-	
-	/**
 	 * Экранирование строки html
 	 *
 	 * @param {*} str - исходная строка
@@ -112,6 +102,16 @@ var Snakeskin = {
 	 */
 	Snakeskin.Filters.html = function (str) {
 		return String(str).replace(escapeHTMLRgxp, escapeHTML);
+	};
+	
+	/**
+	 * Замена undefined на ''
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {*}
+	 */
+	Snakeskin.Filters.undef = function (str) {
+		return typeof str !== 'undefined' ? str : '';
 	};
 	
 	var uentityMap = {
@@ -706,6 +706,9 @@ var Snakeskin = {
 			forEachI = [],
 			lastForEach,
 			
+			bemI = [],
+			lastBEM,
+			
 			nmCache = {},
 			
 			command = '',
@@ -739,7 +742,7 @@ var Snakeskin = {
 				// Упраляющая конструкция завершилась
 				} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
 					begin = false;
-					command = this._escape(command, quotContent);
+					command = this._escape(command, quotContent).trim();
 					
 					// Обработка команд
 					switch (command.split(' ')[0]) {
@@ -1014,7 +1017,27 @@ var Snakeskin = {
 							
 							if (!parentName && !protoStart) {
 								command = command.replace(/^forEach\s+/, '').split('=>');
-								res +=  command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
+								res += command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
+							}
+						} break;
+						
+						// БЕМ myFire блок
+						case 'bem' : {
+							bemI.push(++beginI);
+							
+							if (!parentName && !protoStart) {
+								// Получаем параметры инициализации блока и врапим имя кавычками
+								command = command.substring(3).trim().split(',');
+								command[0] += '\'';
+								command = command.join(',');
+								
+								res += ''
+								'__SNAKESKIN_RESULT__ += \'' +
+								'<div class="i-bem" data-params="{name: \\\'' +
+									this._uescape(command, quotContent)
+										.replace(/\\/g, '\\\\')
+										.replace(/('|")/g, '\\$1') +
+								'}">\';';
 							}
 						} break;
 						
@@ -1026,7 +1049,9 @@ var Snakeskin = {
 							lastBlock = blockI[blockI.length - 1];
 							lastProto = protoI[protoI.length - 1];
 							lastWith = withI[withI.length - 1];
+							
 							lastForEach = forEachI[forEachI.length - 1];
+							lastBEM = bemI[bemI.length - 1];
 							
 							// Закрытие шаблона
 							if (beginI === 0) {
@@ -1092,6 +1117,14 @@ var Snakeskin = {
 										res += '});'
 									}
 								
+								// Закрытие BEM блока
+								} else if (lastBEM === beginI + 1) {
+									bemI.pop();
+									
+									if (!protoStart) {
+										res += '__SNAKESKIN_RESULT__ += \'</div>\';'
+									}
+								
 								// Простой блок
 								} else if (!protoStart) {
 									res += '};';
@@ -1148,6 +1181,10 @@ var Snakeskin = {
 							if (!parentName && !protoStart && /console\./.test(command)) {
 								res += command + ';';
 								break;
+							}
+							
+							if (command.substring(0, 2) === 'b-') {
+								console.log(command)
 							}
 							
 							// Инициализация переменных
