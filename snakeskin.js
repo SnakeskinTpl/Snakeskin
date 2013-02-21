@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.2',
+		VERSION: '1.2.1',
 		Filters: {},
 		cache: {}
 	},
@@ -1023,17 +1023,23 @@ var Snakeskin = {
 						
 						// БЕМ myFire блок
 						case 'bem' : {
-							bemI.push(++beginI);
+							bemI.push({
+								i: ++beginI,
+								tag: /\(/g.test(command) ? command.replace(/.*?\((.*)\)[\s\S]*/, '$1') : null
+							});
 							
 							if (!parentName && !protoStart) {
+								lastBEM = bemI[bemI.length - 1];
+								command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command.substring(3);
+								
 								// Получаем параметры инициализации блока и врапим имя кавычками
-								command = command.substring(3).trim().split(',');
+								command = command.trim().split(',');
 								command[0] += '\'';
 								command = command.join(',');
 								
-								res += ''
+								res += '' +
 								'__SNAKESKIN_RESULT__ += \'' +
-								'<div class="i-bem" data-params="{name: \\\'' +
+								'<' + (lastBEM.tag || 'div') + ' class="i-bem" data-params="{name: \\\'' +
 									this._uescape(command, quotContent)
 										.replace(/\\/g, '\\\\')
 										.replace(/('|")/g, '\\$1') +
@@ -1118,11 +1124,11 @@ var Snakeskin = {
 									}
 								
 								// Закрытие BEM блока
-								} else if (lastBEM === beginI + 1) {
+								} else if (lastBEM.i === beginI + 1) {
 									bemI.pop();
 									
 									if (!protoStart) {
-										res += '__SNAKESKIN_RESULT__ += \'</div>\';'
+										res += '__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || 'div') + '>\';'
 									}
 								
 								// Простой блок
