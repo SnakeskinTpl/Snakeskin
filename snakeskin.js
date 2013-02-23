@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.2.1',
+		VERSION: '1.2.2',
 		Filters: {},
 		cache: {}
 	},
@@ -660,9 +660,10 @@ var Snakeskin = {
 				// Однострочный комментарий
 				.replace(/\/\/.*/gm, '')
 				// Отступы и новая строка
-				.replace(/[\t\v\n\r]*/gm, '')
+				.replace(/[\t\v\r\n]/gm, '')
 				// Многострочный комментарий
-				.replace(/\/\*[\s\S]*?\*\//g, ''),
+				.replace(/\/\*[\s\S]*?\*\//g, '')
+				.trim(),
 			
 			res = '' +
 			(!opt_dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
@@ -718,6 +719,7 @@ var Snakeskin = {
 			tmpI,
 			
 			quotContent = [],
+			varOut,
 			
 			i = -1,
 			startI,
@@ -1124,7 +1126,7 @@ var Snakeskin = {
 									}
 								
 								// Закрытие BEM блока
-								} else if (lastBEM.i === beginI + 1) {
+								} else if (lastBEM && lastBEM.i === beginI + 1) {
 									bemI.pop();
 									
 									if (!protoStart) {
@@ -1187,10 +1189,6 @@ var Snakeskin = {
 							if (!parentName && !protoStart && /console\./.test(command)) {
 								res += command + ';';
 								break;
-							}
-							
-							if (command.substring(0, 2) === 'b-') {
-								console.log(command)
 							}
 							
 							// Инициализация переменных
@@ -1312,6 +1310,7 @@ var Snakeskin = {
 				}
 			}
 		}
+		
 		
 		res = this._uescape(res, quotContent)
 			.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
