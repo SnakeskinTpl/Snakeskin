@@ -3,8 +3,13 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.2.2',
+		VERSION: '1.3',
+		
 		Filters: {},
+		Vars: {
+			BEMtag: {}
+		},
+		
 		cache: {}
 	},
 	
@@ -395,6 +400,7 @@ var Snakeskin = {
 		fromProtoCache = {},
 		
 		// Кеш переменных
+		globalVarCache = {},
 		varCache = {},
 		fromVarCache = {},
 		varICache = {},
@@ -708,6 +714,7 @@ var Snakeskin = {
 			lastForEach,
 			
 			bemI = [],
+			bemName,
 			lastBEM,
 			
 			nmCache = {},
@@ -1029,19 +1036,22 @@ var Snakeskin = {
 								i: ++beginI,
 								tag: /\(/g.test(command) ? command.replace(/.*?\((.*)\)[\s\S]*/, '$1') : null
 							});
+							lastBEM = bemI[bemI.length - 1];
+							
+							// Получаем параметры инициализации блока и врапим имя кавычками
+							command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command.substring(3);
+							command = command.trim().split(',');
+							
+							bemName = command[0];
+							lastBEM.original = this.Vars.BEMtag[bemName];
 							
 							if (!parentName && !protoStart) {
-								lastBEM = bemI[bemI.length - 1];
-								command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command.substring(3);
-								
-								// Получаем параметры инициализации блока и врапим имя кавычками
-								command = command.trim().split(',');
 								command[0] += '\'';
 								command = command.join(',');
 								
 								res += '' +
 								'__SNAKESKIN_RESULT__ += \'' +
-								'<' + (lastBEM.tag || 'div') + ' class="i-bem" data-params="{name: \\\'' +
+								'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-bem" data-params="{name: \\\'' +
 									this._uescape(command, quotContent)
 										.replace(/\\/g, '\\\\')
 										.replace(/('|")/g, '\\$1') +
@@ -1130,7 +1140,7 @@ var Snakeskin = {
 									bemI.pop();
 									
 									if (!protoStart) {
-										res += '__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || 'div') + '>\';'
+										res += '__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';'
 									}
 								
 								// Простой блок
@@ -1195,39 +1205,45 @@ var Snakeskin = {
 							if (/=(?!=)/.test(command)) {
 								tmp = command.split('=')[0].trim();
 								
-								// Попытка инициализировать переменную с зарезервированным именем
-								if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
-									error = new Error('Variable "' + tmp + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
-									error.name = 'Snakeskin Error';
+								if (tplName) {
+									// Попытка инициализировать переменную с зарезервированным именем
+									if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
+										error = new Error('Variable "' + tmp + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+										error.name = 'Snakeskin Error';
+										
+										throw error;
+									}
 									
-									throw error;
-								}
-								
-								// Попытка повторной инициализации переменной
-								if (sysConst[tmp]) {
-									error = new Error('Can\'t declare variable "' + tmp + '", try another name (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
-									error.name = 'Snakeskin Error';
+									// Попытка повторной инициализации переменной
+									if (sysConst[tmp]) {
+										error = new Error('Can\'t declare variable "' + tmp + '", try another name (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+										error.name = 'Snakeskin Error';
+										
+										throw error
+									}
 									
-									throw error
-								}
+									// Попытка инициализации переменной в цикле
+									if (forEachI.length) {
+										error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+										error.name = 'Snakeskin Error';
+										
+										throw error;
+									}
 								
-								// Попытка инициализации переменной в цикле
-								if (forEachI.length) {
-									error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
-									error.name = 'Snakeskin Error';
+									// Кеширование
+									varCache[tplName][tmp] = {
+										from: i - startI - command.length,
+										to: i - startI
+									}
+									fromVarCache[tplName] = i - startI + 1;
 									
-									throw error;
-								}
+									if (!parentName && !protoStart) {
+										res += 'var ' + command + ';';
+									}
 								
-								// Кеширование
-								varCache[tplName][tmp] = {
-									from: i - startI - command.length,
-									to: i - startI
-								}
-								fromVarCache[tplName] = i - startI + 1;
-								
-								if (!parentName && !protoStart) {
-									res += 'var ' + command + ';';
+								} else {
+									globalVarCache[tmp] = true;
+									res += 'Snakeskin.Vars.' + command + ';';
 								}
 							
 							// Вывод переменных
@@ -1254,7 +1270,7 @@ var Snakeskin = {
 											tmp = el;
 										}
 										
-										tmp = 'Snakeskin.Filters.undef(' + tmp + ')';
+										tmp = 'Snakeskin.Filters.undef(' + (!varCache[tplName][tmp] && globalVarCache[tmp] ? 'Snakeskin.Vars.' : '') + tmp + ')';
 										
 									} else {
 										part = el.split(' ');
