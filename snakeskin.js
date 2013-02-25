@@ -780,7 +780,7 @@ var Snakeskin = {
 							
 							// Название родительского шаблона
 							if (/\s+extends\s+/.test(command)) {
-								parentName = command.replace(/.*?\s+extends\s+(.*)/, '$1');;
+								parentName = command.replace(/.*?\s+extends\s+(.*)/, '$1');
 							}
 							
 							// Входные параметры
