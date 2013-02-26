@@ -3,7 +3,7 @@
 /////////////////////////////////
 
 var Snakeskin = {
-		VERSION: '1.3',
+		VERSION: '1.3.1',
 		
 		Filters: {},
 		Vars: {
@@ -433,7 +433,7 @@ var Snakeskin = {
 	 */
 	Snakeskin._getExtStr = function (tplName, info) {
 		// Если указанный родитель не существует
-		if (!cache[extMap[tplName]]) {
+		if (typeof cache[extMap[tplName]] === 'undefined') {
 			error = new Error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined (' + this._genError(info) + ')!');
 			error.name = 'Snakeskin Error';
 			
@@ -686,6 +686,7 @@ var Snakeskin = {
 			el,
 			
 			tplName = null,
+			tmpTplName,
 			parentName,
 			
 			params,
@@ -772,15 +773,17 @@ var Snakeskin = {
 							startI = i + 1;
 							
 							// Имя + пространство имён шаблона
-							tplName = command
+							tplName = tmpTplName = command
 								.replace(/^template\s+/, '')
-								.replace(/\(.*/, '');
+								.replace(/\(.*/, '')
+							
+							tplName = this._uescape(tplName, quotContent);
 							
 							if (opt_dryRun) { break; }
 							
 							// Название родительского шаблона
 							if (/\s+extends\s+/.test(command)) {
-								parentName = command.replace(/.*?\s+extends\s+(.*)/, '$1');
+								parentName = this._uescape(command.replace(/.*?\s+extends\s+(.*)/, '$1'), quotContent);
 							}
 							
 							// Входные параметры
@@ -806,8 +809,8 @@ var Snakeskin = {
 							
 							// Декларация функции
 							// с пространством имён или при экспорте в common.js
-							if (/\.|\[/.test(tplName) || opt_commonjs) {
-								tplName
+							if (/\.|\[/.test(tmpTplName) || opt_commonjs) {
+								tmpTplName
 									.replace(/\[/g, '.')
 									.replace(/]/g, '')
 									
@@ -827,11 +830,11 @@ var Snakeskin = {
 										return str + '.' + el;
 									});
 								
-								res += (opt_commonjs ? 'exports.' : '') + tplName + '= function ('; 
+								res += (opt_commonjs ? 'exports.' : '') + tmpTplName + '= function ('; 
 							
 							// Без простраства имён
 							} else {
-								res += (!require ? 'window.' + tplName + ' = ': '') + 'function ' + (require ? tplName : '') + '('; 
+								res += (!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + (require ? tmpTplName : '') + '('; 
 							}
 							
 							// Входные параметры
