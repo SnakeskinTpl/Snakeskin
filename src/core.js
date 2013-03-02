@@ -34,6 +34,7 @@ var Snakeskin = {
 	//#endif
 	
 	// common.js экспорт
+	var key;
 	if (require) {
 		for (key in Snakeskin) {
 			if (!Snakeskin.hasOwnProperty(key)) { continue; }

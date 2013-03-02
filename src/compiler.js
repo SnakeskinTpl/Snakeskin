@@ -480,7 +480,12 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								continue;
 							}
 							
-							res += 'return __SNAKESKIN_RESULT__; }; Snakeskin.cache[\'' + this._uescape(tplName, quotContent).replace(/'/g, '\\\'') + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';';
+							res += '' +
+								'return __SNAKESKIN_RESULT__; };' +
+								'if (typeof Snakeskin !== \'undefined\') {' +
+									'Snakeskin.cache[\'' + this._uescape(tplName, quotContent).replace(/'/g, '\\\'') + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';' +
+								'}';
+							
 							tplName = null;
 						
 						// Закрываются все блоки кроме блоков наследования и пространства имён,
