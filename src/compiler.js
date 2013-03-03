@@ -398,8 +398,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 					case 'bem' : {
 						bemI.push({
 							i: ++beginI,
-							tag: /\(/g.test(command) ? /\(.*?\)/.exec(command)[1] : null
+							tag: /\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 						});
+						
 						lastBEM = bemI[bemI.length - 1];
 						
 						// Получаем параметры инициализации блока и врапим имя кавычками
