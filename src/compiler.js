@@ -613,7 +613,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							
 							} else {
 								globalVarCache[tmp] = true;
-								res += 'Snakeskin.Vars.' + command + ';';
+								res += 'if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }';
 							}
 						
 						// Вывод переменных
