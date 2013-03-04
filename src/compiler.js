@@ -48,6 +48,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 		: ''),
 		
 		el,
+		canWrite,
 		
 		tplName = null,
 		tmpTplName,
@@ -140,6 +141,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						tplName = tmpTplName = /^template\s+(.*?)\(/.exec(command)[1];
 						tplName = this._uescape(tplName, quotContent);
 						
+						// Если true, то шаблон не будет добавлен в скомпилированный файл
+						canWrite = this.write[tplName] !== false;
+						
 						if (opt_dryRun) { break; }
 						
 						// Название родительского шаблона
@@ -166,7 +170,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						// Для возможности удобного пост-парсинга,
 						// каждая функция снабжается комментарием вида:
 						// /* Snakeskin template: название шаблона; параметры через запятую */
-						res += '/* Snakeskin template: ' + tplName + '; ' + params.replace(/=(.*?)(?:,|$)/g, '') + ' */';
+						if (canWrite) {
+							res += '/* Snakeskin template: ' + tplName + '; ' + params.replace(/=(.*?)(?:,|$)/g, '') + ' */';
+						}
 						
 						// Декларация функции
 						// с пространством имён или при экспорте в common.js
@@ -177,9 +183,11 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								
 								.split('.').reduce(function (str, el, i) {
 									if (!nmCache[str]) {
-										res += '' +
-										'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-											(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
+										if (canWrite) {
+											res += '' +
+											'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+												(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }';
+										}
 										
 										nmCache[str] = true;
 									}
@@ -191,11 +199,15 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 									return str + '.' + el;
 								});
 							
-							res += (opt_commonjs ? 'exports.' : '') + tmpTplName + '= function ('; 
+							if (canWrite) {
+								res += (opt_commonjs ? 'exports.' : '') + tmpTplName + '= function ('; 
+							}
 						
 						// Без простраства имён
 						} else {
-							res += (!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + (require ? tmpTplName : '') + '('; 
+							if (canWrite) {
+								res += (!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + (require ? tmpTplName : '') + '(';
+							}
 						}
 						
 						// Входные параметры
@@ -236,7 +248,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						params.forEach(function (el, i) {
 							var def = el.split('=');
 							def[0] = def[0].trim();
-							res += def[0];
+							if (canWrite) {
+								res += def[0];
+							}
 							
 							if (def.length > 1) {
 								// Подмешивание родительских входных параметров
@@ -280,11 +294,28 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							
 							// После последнего параметра запятая не ставится
 							if (i !== params.length - 1) {
-								res += ',';
+								if (canWrite) {
+									res += ',';
+								}
 							}
 						});
-						res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';';
+						if (canWrite) {
+							res += ') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';';
+						}
 					
+					} break;
+					
+					// Если указан этот флаг, то шаблон не добавляется в итоговый файл,
+					// а используется только для наследования
+					case 'cut' : {
+						command = this._uescape(command.replace(/^cut\s+/, ''), quotContent);
+						
+						if (!this.write[command]) {
+							this.write[command] = false;
+						}
+					} break;
+					case 'uncut' : {
+						this.write[this._uescape(command.replace(/^uncut\s+/, ''), quotContent)] = true;
 					} break;
 					
 					// Условные операторы
@@ -292,17 +323,23 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						beginI++;
 						
 						if (!parentName && !protoStart) {
-							res += 'if (' + command.replace(/^if\s+/, '') + ') {';
+							if (canWrite) {
+								res += 'if (' + command.replace(/^if\s+/, '') + ') {';
+							}
 						}
 					} break;
 					case 'elseIf' : {
 						if (!parentName && !protoStart) {
-							res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
+							if (canWrite) {
+								res += '} else if (' + command.replace(/^elseIf\s+/, '') + ') {';
+							}
 						}
 					} break;
 					case 'else' : {
 						if (!parentName && !protoStart) {
-							res += '} else {';
+							if (canWrite) {
+								res += '} else {';
+							}
 						}
 					} break;
 					
@@ -359,7 +396,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								backHash[command].push(res.length);
 							
 							} else {
-								res += protoCache[tplName][command].body;
+								if (canWrite) {
+									res += protoCache[tplName][command].body;
+								}
 							}
 						}
 					} break;
@@ -390,7 +429,10 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						
 						if (!parentName && !protoStart) {
 							command = command.replace(/^forEach\s+/, '').split('=>');
-							res += command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
+							
+							if (canWrite) {
+								res += command[0] + ' && Snakeskin.forEach(' + command[0] + ', function (' + (command[1] || '') + ') {'
+							}
 						}
 					} break;
 					
@@ -414,13 +456,15 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							command[0] += '\'';
 							command = command.join(',');
 							
-							res += '' +
-							'__SNAKESKIN_RESULT__ += \'' +
-							'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-bem" data-params="{name: \\\'' +
-								this._uescape(command, quotContent)
-									.replace(/\\/g, '\\\\')
-									.replace(/('|")/g, '\\$1') +
-							'}">\';';
+							if (canWrite) {
+								res += '' +
+								'__SNAKESKIN_RESULT__ += \'' +
+								'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-bem" data-params="{name: \\\'' +
+									this._uescape(command, quotContent)
+										.replace(/\\/g, '\\\\')
+										.replace(/('|")/g, '\\$1') +
+								'}">\';';
+							}
 						}
 					} break;
 					
@@ -473,6 +517,10 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								i = startI - 1;
 								beginI++;
 								
+								if (this.write[parentName] === false) {
+									res = res.replace(new RegExp('/\\* Snakeskin template: ' + parentName.replace(/([.\[\]^$])/g, '\\$1') + '[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'), '');
+								}
+								
 								parentName = false;
 								begin = false;
 								beginStr = false;
@@ -481,12 +529,15 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								continue;
 							}
 							
-							res += '' +
-								'return __SNAKESKIN_RESULT__; };' +
+							if (canWrite) {
+								res += '' +
+									'return __SNAKESKIN_RESULT__; };' +
 								'if (typeof Snakeskin !== \'undefined\') {' +
 									'Snakeskin.cache[\'' + this._uescape(tplName, quotContent).replace(/'/g, '\\\'') + '\'] = ' + (opt_commonjs ? 'exports.' : '') + tplName + ';' +
-								'}';
+								'}/* Snakeskin template. */';
+							}
 							
+							canWrite = true;
 							tplName = null;
 						
 						// Закрываются все блоки кроме блоков наследования и пространства имён,
@@ -502,7 +553,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								forEachI.pop();
 								
 								if (!protoStart) {
-									res += '});'
+									if (canWrite) {
+										res += '});';
+									}
 								}
 							
 							// Закрытие BEM блока
@@ -510,12 +563,16 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								bemI.pop();
 								
 								if (!protoStart) {
-									res += '__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';'
+									if (canWrite) {
+										res += '__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';';
+									}
 								}
 							
 							// Простой блок
 							} else if (!protoStart) {
-								res += '};';
+								if (canWrite) {
+									res += '};';
+								}
 							}
 						}
 						
@@ -545,7 +602,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							
 							if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
 								backHash[lastProto.name].forEach(function (el) {
-									res = res.substring(0, el) + protoCache[tplName][lastProto.name].body + res.substring(el);
+									if (canWrite) {
+										res = res.substring(0, el) + protoCache[tplName][lastProto.name].body + res.substring(el);
+									}
 								});
 								
 								delete backHash[lastProto.name];
@@ -567,7 +626,10 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 					default : {
 						// Экспорт console api
 						if (!parentName && !protoStart && /console\./.test(command)) {
-							res += command + ';';
+							if (canWrite) {
+								res += command + ';';
+							}
+							
 							break;
 						}
 						
@@ -608,12 +670,16 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								fromVarCache[tplName] = i - startI + 1;
 								
 								if (!parentName && !protoStart) {
-									res += 'var ' + command + ';';
+									if (canWrite) {
+										res += 'var ' + command + ';';
+									}
 								}
 							
 							} else {
 								globalVarCache[tmp] = true;
-								res += 'if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }';
+								if (canWrite) {
+									res += 'if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }';
+								}
 							}
 						
 						// Вывод переменных
@@ -657,7 +723,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								}
 							});
 							
-							res += '__SNAKESKIN_RESULT__ += ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
+							if (canWrite) {
+								res += '__SNAKESKIN_RESULT__ += ' + (!unEscape ? 'Snakeskin.Filters.html(' : '') + tmp + (!unEscape ? ')' : '') + ';';
+							}
 						}
 					}
 				}
@@ -670,7 +738,10 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 		// Запись команды
 		if (begin) {
 			if (!protoStart && beginStr) {
-				res += '\';';
+				if (canWrite) {
+					res += '\';';
+				}
+				
 				beginStr = false;
 			}
 			
@@ -687,12 +758,16 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 		// Запись строки
 		} else if (!protoStart) {
 			if (!beginStr) {
-				res += '__SNAKESKIN_RESULT__ += \'';
+				if (canWrite) {
+					res += '__SNAKESKIN_RESULT__ += \'';
+				}
 				beginStr = true;
 			}
 			
 			if (!parentName) {
-				res += el;
+				if (canWrite) {
+					res += el;
+				}
 			}
 		}
 	}
