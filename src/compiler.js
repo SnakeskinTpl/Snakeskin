@@ -314,7 +314,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							this.write[command] = false;
 						}
 					} break;
-					case 'uncut' : {
+					case 'save' : {
 						this.write[this._uescape(command.replace(/^uncut\s+/, ''), quotContent)] = true;
 					} break;
 					
@@ -518,7 +518,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 								beginI++;
 								
 								if (this.write[parentName] === false) {
-									res = res.replace(new RegExp('/\\* Snakeskin template: ' + parentName.replace(/([.\[\]^$])/g, '\\$1') + '[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'), '');
+									res = res.replace(new RegExp('/\\* Snakeskin template: ' + parentName.replace(/([.\[\]^$])/g, '\\$1') + ';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'), '');
 								}
 								
 								parentName = false;
