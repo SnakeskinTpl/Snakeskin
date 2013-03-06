@@ -958,7 +958,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						}
 					} break;
 					case 'save' : {
-						this.write[this._uescape(command.replace(/^uncut\s+/, ''), quotContent)] = true;
+						this.write[this._uescape(command.replace(/^save\s+/, ''), quotContent)] = true;
 					} break;
 					
 					// Условные операторы
