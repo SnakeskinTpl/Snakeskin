@@ -437,6 +437,11 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 					} break;
 					
 					// БЕМ myFire блок
+					case 'setBEM' : {
+						command = command.replace(/^setBEM\s+/, '').match(/(.*?)\s+(.*)/);
+						this.BEM[command[1]] = (new Function('return ' + this._uescape(command[2], quotContent)))();
+					} break;
+					
 					case 'bem' : {
 						bemI.push({
 							i: ++beginI,
@@ -450,7 +455,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						command = command.trim().split(',');
 						
 						bemName = command[0];
-						lastBEM.original = this.Vars.BEMtag[bemName];
+						lastBEM.original = this.BEM[bemName] && this.BEM[bemName].tag;
 						
 						if (!parentName && !protoStart) {
 							command[0] += '\'';

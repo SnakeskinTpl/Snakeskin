@@ -1,12 +1,11 @@
 var Snakeskin = {
-		VERSION: '1.4.1',
+		VERSION: '1.5',
 		
 		Filters: {},
-		write: {},
-		Vars: {
-			BEMtag: {}
-		},
+		BEM: {},
+		Vars: {},
 		
+		write: {},
 		cache: {}
 	},
 	
