@@ -24,7 +24,7 @@ if (!String.prototype.trim) {
 	String.prototype.trim = function () {
 		var str = this.replace(/^\s\s*/, ''),
 			i = str.length;
-			
+
 		while (/\s/.test(str.charAt(--i))) {};
 		return str.substring(0, i + 1);
 	};

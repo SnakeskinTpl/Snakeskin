@@ -13,7 +13,10 @@
  */
 Snakeskin._escape = function (str, opt_stack) {
 	return str.replace(/(["']).*?[^\\]\1/g, function (sstr) {
-		opt_stack && opt_stack.push(sstr);
+		if (opt_stack) {
+			opt_stack.push(sstr);
+		}
+
 		return '__SNAKESKIN_QUOT__' + (opt_stack ? opt_stack.length - 1 : '_');
 	});
 };

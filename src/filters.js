@@ -80,7 +80,7 @@ var uriO = /%5B/g,
  * @return {string}
  */
 Snakeskin.Filters.uri = function (str) {
-	return encodeURI(String(url)).replace(uriO, '[').replace(uriC, ']');
+	return encodeURI(String(str)).replace(uriO, '[').replace(uriC, ']');
 };
 
 /**
@@ -160,19 +160,19 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
 	if (!str || str.length <= length) {
 		return str;
 	}
-	
+
 	var tmp = str.substring(0, length - 1),
 		lastInd, i = tmp.length;
-	
+
 	while (i-- && opt_wordOnly) {
 		if (tmp.charAt(i) === ' ') {
 			lastInd = i;
-		
+
 		} else if (typeof lastInd !== 'undefined') {
 			break;
 		}
 	}
-	
+
 	return (typeof lastInd !== 'undefined' ? tmp.substring(0, lastInd) : tmp) + '…';
 };
 

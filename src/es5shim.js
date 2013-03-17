@@ -15,7 +15,7 @@ if (!Array.prototype.forEach) {
 	Array.prototype.forEach = function (callback, opt_thisObject) {
 		var i = -1,
 			aLength = this.length;
-		
+
 		if (!opt_thisObject) {
 			while (++i < aLength) {
 				callback(this[i], i, this);
@@ -25,7 +25,7 @@ if (!Array.prototype.forEach) {
 				callback.call(opt_thisObject, this[i], i, this);
 			}
 		}
-	}
+	};
 }
 
 if (!Array.prototype.some) {
@@ -43,7 +43,7 @@ if (!Array.prototype.some) {
 		var i = -1,
 			aLength = this.length,
 			res;
-		
+
 		if (!opt_thisObject) {
 			while (++i < aLength) {
 				res = callback(this[i], i, this);
@@ -55,9 +55,9 @@ if (!Array.prototype.some) {
 				if (res) { return true; }
 			}
 		}
-		
+
 		return false;
-	}
+	};
 }
 
 if (!Array.prototype.reduce) {
@@ -75,19 +75,19 @@ if (!Array.prototype.reduce) {
 		var i = 0,
 			aLength = this.length,
 			res;
-		
-		if (aLength === 1) { return this[0]; } 
-		
+
+		if (aLength === 1) { return this[0]; }
+
 		if (typeof opt_initialValue !== 'undefined') {
 			res = opt_initialValue;
 		} else {
 			res = this[0];
 		}
-		
+
 		while (++i < aLength) {
 			res = callback(res, this[i], i, this);
 		}
-		
+
 		return res;
 	};
 }
