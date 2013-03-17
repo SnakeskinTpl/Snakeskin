@@ -129,7 +129,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						// Если количество открытых блоков не совпадает с количеством закрытых,
 						// то кидаем исключение
 						if (beginI !== 0) {
-							error = new Error('Missing closing or opening tag in the template (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+							error = new Error('Missing closing or opening tag in the template (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 							error.name = 'Snakeskin Error';
 
 							throw error;
@@ -359,7 +359,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 							// Попытка декларировать прототип блока несколько раз
 							if (protoCache[tplName][command]) {
-								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+								error = new Error('Proto "' + command.replace(/^proto\s+/, '') + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 								error.name = 'Snakeskin Error';
 
 								throw error;
@@ -411,7 +411,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
 							// Попытка декларировать блок несколько раз
 							if (blockCache[tplName][command]) {
-								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+								error = new Error('Block "' + command.replace(/^block\s+/, '') + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 								error.name = 'Snakeskin Error';
 
 								throw error;
@@ -508,7 +508,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 						if (beginI === 0) {
 							// Вызовы не объявленных прототипов
 							if (backHashI) {
-								error = new Error('Proto "' + lastBack + '" is not defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+								error = new Error('Proto "' + lastBack + '" is not defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 								error.name = 'Snakeskin Error';
 
 								throw error;
@@ -668,7 +668,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							if (tplName) {
 								// Попытка инициализировать переменную с зарезервированным именем
 								if (varCache[tplName][tmp] || varICache[tplName][tmp]) {
-									error = new Error('Variable "' + tmp + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+									error = new Error('Variable "' + tmp + '" is already defined (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 
 									throw error;
@@ -676,7 +676,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 
 								// Попытка повторной инициализации переменной
 								if (sysConst[tmp]) {
-									error = new Error('Can\'t declare variable "' + tmp + '", try another name (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+									error = new Error('Can\'t declare variable "' + tmp + '", try another name (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 
 									throw error
@@ -684,7 +684,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 
 								// Попытка инициализации переменной в цикле
 								if (forEachI.length) {
-									error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (command: {' + command + '}, template: "' + tplName + ', ' + this._genError(opt_info) + '")!');
+									error = new Error('Variable "' + tmp + '" can\'t be defined in a loop (command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + '")!');
 									error.name = 'Snakeskin Error';
 
 									throw error;
@@ -821,7 +821,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (beginI !== 0) {
-		error = new Error('Missing closing or opening tag in the template (template: ' + tplName + ', ' + this._genError(opt_info) + ')!');
+		error = new Error('Missing closing or opening tag in the template (template: ' + tplName + ', ' + this._genErrorAdvInfoAdvInfo(opt_info) + ')!');
 		error.name = 'Snakeskin Error';
 
 		throw error;

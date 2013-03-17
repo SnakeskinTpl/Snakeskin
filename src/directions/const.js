@@ -1,0 +1,3 @@
+Snakeskin.Directions['const'] = function () {
+
+};

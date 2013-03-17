@@ -1,5 +1,7 @@
 var Snakeskin = {
-		VERSION: '1.5.3',
+		VERSION: '2.0',
+
+		Directions: {},
 
 		Filters: {},
 		BEM: {},
@@ -30,7 +32,10 @@ var Snakeskin = {
 	//#include escape.js
 	//#include inherit.js
 	//#include other.js
-	//#include compiler.js
+
+	//#include new_compiler.js
+	//#include directions/template.js
+	//#include directions/const.js
 	//#endif
 
 	// common.js экспорт

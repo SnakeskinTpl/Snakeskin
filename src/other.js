@@ -9,7 +9,7 @@
  * @param {Object} obj - дополнительная информация
  * @return {string}
  */
-Snakeskin._genError = function (obj) {
+Snakeskin._genErrorAdvInfo = function (obj) {
 	var key,
 		str = '';
 
@@ -24,4 +24,17 @@ Snakeskin._genError = function (obj) {
 	}
 
 	return str.replace(/, $/, '');
+};
+
+/**
+ * Генерировать оишбку
+ *
+ * @param {string} msg - сообщение ошибки
+ * @returns {!Error}
+ */
+Snakeskin.error = function (msg) {
+	var error = new Error(msg);
+	error.name = 'Snakeskin Error';
+
+	return error;
 };
