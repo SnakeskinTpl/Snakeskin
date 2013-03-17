@@ -1,5 +1,5 @@
 var Snakeskin = {
-		VERSION: '1.5.1',
+		VERSION: '1.5.2',
 
 		Filters: {},
 		BEM: {},
@@ -730,6 +730,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 
 		nmCache = {},
 
+		commandLength,
 		command = '',
 		unEscape,
 
@@ -761,6 +762,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 			// Упраляющая конструкция завершилась
 			} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
 				begin = false;
+				commandLength = command.length;
 				command = this._escape(command, quotContent).trim();
 
 				// Обработка команд
@@ -1142,7 +1144,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							if (opt_dryRun) { break; }
 
 							// Кешируем тело шаблона
-							cache[tplName] = source.substring(startI, i - command.length - 1);
+							cache[tplName] = source.substring(startI, i - commandLength - 1);
 
 							// Обработка наследования:
 							// тело шаблона объединяется с телом родителя
@@ -1150,7 +1152,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							// но уже как атомарного (без наследования)
 							if (parentName) {
 								// Результирующее тело шаблона
-								source = source.substring(0, startI) + this._getExtStr(tplName, opt_info) + source.substring(i - command.length - 1);
+								source = source.substring(0, startI) + this._getExtStr(tplName, opt_info) + source.substring(i - commandLength - 1);
 
 								// Перемотка переменных
 								// (сбрасывание)
@@ -1234,7 +1236,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							blockI.pop();
 
 							if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
-								blockCache[tplName][lastBlock.name].to = i - startI - command.length - 1;
+								blockCache[tplName][lastBlock.name].to = i - startI - commandLength - 1;
 							}
 						}
 
@@ -1242,14 +1244,14 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							protoI.pop();
 
 							if (!opt_dryRun && ((parentName && !blockI.length && !protoI.length) || !parentName)) {
-								protoCache[tplName][lastProto.name].to = i - startI - command.length - 1;
+								protoCache[tplName][lastProto.name].to = i - startI - commandLength - 1;
 								fromProtoCache[tplName] = i - startI + 1;
 							}
 
 							// Рекурсивно анализируем прототипы блоков
 							if (!parentName) {
 								protoCache[tplName][lastProto.name].body = this.compile('{template ' + tplName + '()}' +
-									source.substring(lastProto.startI, i - command.length - 1) +
+									source.substring(lastProto.startI, i - commandLength - 1) +
 									'{end}', null, true);
 							}
 
@@ -1317,7 +1319,7 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 
 								// Кеширование
 								varCache[tplName][tmp] = {
-									from: i - startI - command.length,
+									from: i - startI - commandLength,
 									to: i - startI
 								}
 								fromVarCache[tplName] = i - startI + 1;
