@@ -68,7 +68,6 @@ if (!Array.prototype.reduce) {
 	 * @this {!Array}
 	 * @param {function(*, *, number, !Array): *} callback - функция, которая будет вызываться для каждого элемента массива
 	 * @param {Object=} [opt_initialValue=this[0]] - объект, который будет использоваться как первый элемент при первом вызове callback
-	 * @template thisObject
 	 * @return {*}
 	 */
 	Array.prototype.reduce = function (callback, opt_initialValue) {

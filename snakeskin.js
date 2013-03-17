@@ -1,5 +1,5 @@
 var Snakeskin = {
-		VERSION: '1.5.2',
+		VERSION: '1.5.3',
 
 		Filters: {},
 		BEM: {},
@@ -362,7 +362,6 @@ if (!Array.prototype.reduce) {
 	 * @this {!Array}
 	 * @param {function(*, *, number, !Array): *} callback - функция, которая будет вызываться для каждого элемента массива
 	 * @param {Object=} [opt_initialValue=this[0]] - объект, который будет использоваться как первый элемент при первом вызове callback
-	 * @template thisObject
 	 * @return {*}
 	 */
 	Array.prototype.reduce = function (callback, opt_initialValue) {
@@ -664,7 +663,9 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 		opt_info.node = src;
 	}
 
-	var // Подготовка текста шаблонов
+	var that = this,
+
+		// Подготовка текста шаблонов
 		source = String(src.innerHTML || src)
 			// Обработка блоков cdata
 			.replace(/{cdata}([\s\S]*?){end\s+cdata}/gm, function (sstr, data) {
@@ -1107,13 +1108,29 @@ Snakeskin.compile = function (src, opt_commonjs, opt_dryRun, opt_info) {
 							command[0] += '\'';
 							command = command.join(',');
 
+							command = command.split('${');
+							if (command.length > 1) {
+								command = command.reduce(function (str, el, i) {
+									if (i === 1) {
+										return that._uescape(str, quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1') + '\\\'\' + Snakeskin.Filters.html(Snakeskin.Filters.undef(' + el.replace('}', ')) + \'\\\'');
+									}
+
+									if (i % 2) {
+										return str + that._uescape(el, quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
+
+									} else {
+										return str + '\\\'\' + Snakeskin.Filters.html(Snakeskin.Filters.undef(' + el.replace('}', ')) + \'\\\'');
+									}
+								});
+							} else {
+								command = that._uescape(command[0], quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
+							}
+
 							if (canWrite) {
 								res += '' +
 								'__SNAKESKIN_RESULT__ += \'' +
 								'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-bem" data-params="{name: \\\'' +
-									this._uescape(command, quotContent)
-										.replace(/\\/g, '\\\\')
-										.replace(/('|")/g, '\\$1') +
+									command +
 								'}">\';';
 							}
 						}
