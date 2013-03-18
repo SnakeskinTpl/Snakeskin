@@ -982,7 +982,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			global.eval(vars.res);
 		}
 
-		// Живая компиляция в браузере
+	// Живая компиляция в браузере
 	} else {
 		window.eval(vars.res);
 	}
@@ -1900,35 +1900,25 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 		part[0] += '\'';
 		command = part.join(',');
 
+		// Обработка переменных
 		part = command.split('${');
-		if (part.length > 1) {
-			console.log(part);
+		command = '';
 
-			command = part.reduce(function (str, el, i) {
-				var part;
+		this.forEach(part, function (el, i) {
+			var part;
 
-				if (i === 1) {
-					part = el.split('}');
-					console.log(part[0]);
+			if (i > 0) {
+				part = el.split('}');
 
-					return that._uescape(str, vars.quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1') +
-						'\\\'\' + ' + that._returnVar(part[0], vars) + part.slice(1).join('') + ' + \'\\\'';
-				}
+				command += '\\\'\' + ' + that._returnVar(part[0], vars) +
+					' + \'\\\'' +
+					that._uescape(part.slice(1).join(''), vars.quotContent)
+						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
 
-				if (i % 2) {
-					return str + that._uescape(el, vars.quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-
-				} else {
-					part = el.split('}');
-					console.log(part[0]);
-
-					return str + '\\\'\' + ' + that._returnVar(part[0], vars) + part.slice(1).join('') + ' + \'\\\'';
-				}
-			});
-
-		} else {
-			command = this._uescape(part[0], vars.quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-		}
+			} else {
+				command += that._uescape(el, vars.quotContent).replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
+			}
+		});
 
 		vars.save('' +
 			'__SNAKESKIN_RESULT__ += \'' +

@@ -28,7 +28,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */
 Snakeskin.Directions['withEnd'] = function (command, commandLength, vars) {
 	vars.popPos('with');

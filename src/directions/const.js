@@ -105,7 +105,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
  * @param {string} vars.tplName - название шаблона
  * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
  * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  * @param {function(string)} vars.getPos - вернуть позиции
  *
  * @return {string}

@@ -62,17 +62,14 @@ Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
  * @param {string} vars.tplName - название шаблона
  * @param {string} vars.parentTplName - название родительского шаблона
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  *
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
 Snakeskin.Directions['blockEnd'] = function (command, commandLength, vars, adv) {
-	var lastBlock = vars.getLastPos('block');
-
-	vars.popPos('block');
+	var lastBlock = vars.popPos('block');
 	if (!adv.dryRun &&
 		((vars.parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !vars.parentTplName)
 	) {

@@ -11,20 +11,17 @@
 		</div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			{template helloWorld(name = 'world')}
+				<h1>Hello {name}!</h1>
 
-			{template deepForEach(a)}
-			{forEach a => el}
-			{forEach el => el}
-			{el}
-			{end}
-			{end}
-			{end}
+				{a = 2}{b = [1,2]}{c = '232'}
 
-
+				{bem (head) b-r, val: [1,2,3], e: ${a}, g: ${b}, cc: 'sdsd', ee: ${c|ucfirst|trim}}{end}
+			{end}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			//document.getElementById('test').innerHTML = helloWorld();
+			document.getElementById('test').innerHTML = helloWorld();
 		</script>
 	</body>
 </html>

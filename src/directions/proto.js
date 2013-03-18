@@ -69,9 +69,8 @@ Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
  * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
  * @param {number} vars.backHashI - количество обратных вызовов прототипов
  * @param {function(string)} vars.replace - изменить результирующую строку
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  *
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
@@ -83,9 +82,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) 
 		i = vars.i,
 
 		backHash = vars.backHash,
-		lastProto = vars.getLastPos('proto');
-
-	vars.popPos('proto');
+		lastProto = vars.popPos('proto');
 
 	if (!adv.dryRun && ((parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !parentTplName)) {
 		protoCache[tplName][lastProto.name].to = i - vars.startI - commandLength - 1;

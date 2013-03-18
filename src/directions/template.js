@@ -20,7 +20,7 @@
 Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) {
 	var tplName,
 		tmpTplName,
-		parentName,
+		parentTplName,
 
 		params,
 		defParams = '';
@@ -52,7 +52,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Название родительского шаблона
 	if (/\s+extends\s+/.test(command)) {
-		vars.parentTplName = parentName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
+		vars.parentTplName = parentTplName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
 	}
 
 	// Глобальный кеш блоков
@@ -71,7 +71,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	varICache[tplName] = {};
 
 	// Схема наследования
-	extMap[tplName] = parentName;
+	extMap[tplName] = parentTplName;
 
 	// Входные параметры
 	params = /\((.*?)\)/.exec(command)[1];
@@ -119,12 +119,12 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	// Если шаблон наследуется,
 	// то подмешиваем ко входым параметрам шаблона
 	// входные параметры родителя
-	paramsCache[tplName] = paramsCache[parentName] ? paramsCache[parentName].concat(params) : params;
+	paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(params) : params;
 
 	// Переинициализация входных параметров родительскими
 	// (только если нужно)
-	if (paramsCache[parentName]) {
-		paramsCache[parentName].forEach(function (el) {
+	if (paramsCache[parentTplName]) {
+		paramsCache[parentTplName].forEach(function (el) {
 			var def = el.split('=');
 			// Здесь и далее по коду
 			// [0] - название переменной
@@ -155,8 +155,8 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 		if (def.length > 1) {
 			// Подмешивание родительских входных параметров
-			if (paramsCache[parentName] && !defParams) {
-				paramsCache[parentName].forEach(function (el) {
+			if (paramsCache[parentTplName] && !defParams) {
+				paramsCache[parentTplName].forEach(function (el) {
 					var def = el.split('='),
 						local;
 

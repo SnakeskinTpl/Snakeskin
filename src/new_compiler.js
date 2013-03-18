@@ -173,13 +173,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 *
 			 * @this {!Object} vars
 			 * @param {string} name - название блока
+			 * @return {*}
 			 */
 			popPos: function (name) {
 				if (this.sysPosCache[name]) {
-					this.sysPosCache[name].pop();
-				} else {
-					this.posCache[name].pop();
+					return this.sysPosCache[name].pop();
 				}
+
+				return this.posCache[name].pop();
 			},
 
 			/**
@@ -383,7 +384,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			global.eval(vars.res);
 		}
 
-		// Живая компиляция в браузере
+	// Живая компиляция в браузере
 	} else {
 		window.eval(vars.res);
 	}

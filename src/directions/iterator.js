@@ -37,7 +37,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, vars) {
  * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */
 Snakeskin.Directions['forEachEnd'] = function (command, commandLength, vars) {
 	vars.popPos('forEach');

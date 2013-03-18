@@ -13,7 +13,7 @@
  * @param {!Object} vars.sysPosCache - кеш системных позиций
  * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(number): boolean} vars.notSysPos - вернёт true, если позиция не системная
+ * @param {function(number): boolean} vars.isNotSysPos - вернёт true, если позиция не системная
  *
  * @param {!Object} adv - дополнительные параметры
  */
