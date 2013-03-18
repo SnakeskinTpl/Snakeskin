@@ -374,7 +374,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	// Компиляция на сервере
 	if (require) {
 		// Экспорт
-		if (opt_commonjs) {
+		if (opt_commonJS) {
 			eval(vars.res);
 
 			// Простая компиляция
