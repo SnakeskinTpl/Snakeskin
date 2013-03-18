@@ -35,13 +35,13 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
-	if (vars.beginI !== 0) {
+	if (vars.openBlockI !== 0) {
 		throw this.error('' +
 			'Missing closing or opening tag in the template ' +
 			'(command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfo(adv.info) + '")!'
 		);
 	}
-	vars.beginI++;
+	vars.openBlockI++;
 
 	// Если true, то шаблон не будет добавлен в скомпилированный файл
 	vars.canWrite = this.write[tplName] !== false;
@@ -52,7 +52,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Название родительского шаблона
 	if (/\s+extends\s+/.test(command)) {
-		vars.parentName = parentName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
+		vars.parentTplName = parentName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
 	}
 
 	// Глобальный кеш блоков
@@ -219,7 +219,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
  */
 Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) {
 	var tplName = vars.tplName,
-		parentName = vars.parentName,
+		parentName = vars.parentTplName,
 
 		source = vars.source,
 		i = vars.i,
@@ -262,7 +262,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) 
 		varICache[tplName] = {};
 
 		vars.i = startI - 1;
-		vars.beginI++;
+		vars.openBlockI++;
 
 		if (this.write[parentName] === false) {
 			vars.res = vars.res.replace(new RegExp('/\\* Snakeskin template: ' +
@@ -271,7 +271,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) 
 				'');
 		}
 
-		vars.parentName = false;
+		vars.parentTplName = false;
 		return false;
 	}
 

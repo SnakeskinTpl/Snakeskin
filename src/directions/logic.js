@@ -10,15 +10,15 @@
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.beginI - количество открытых блоков
- * @param {string} vars.parentName - название родительского шаблона
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
  */
 Snakeskin.Directions['if'] = function (command, commandLength, vars) {
-	vars.beginI++;
+	vars.openBlockI++;
 
-	if (!vars.parentName && !vars.protoStart) {
+	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('if (' + command + ') {');
 	}
 };
@@ -31,12 +31,12 @@ Snakeskin.Directions['if'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.parentName - название родительского шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
  */
 Snakeskin.Directions['elseIf'] = function (command, commandLength, vars) {
-	if (!vars.parentName && !vars.protoStart) {
+	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('} else if (' + command + ') {');
 	}
 };
@@ -49,12 +49,12 @@ Snakeskin.Directions['elseIf'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.parentName - название родительского шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
  */
 Snakeskin.Directions['else'] = function (command, commandLength, vars) {
-	if (!vars.parentName && !vars.protoStart) {
+	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('} else {');
 	}
 };

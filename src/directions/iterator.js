@@ -10,17 +10,17 @@
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.beginI - количество открытых блоков
- * @param {string} vars.parentName - название родительского шаблона
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, *, boolean)} vars.setPos - установить позицию
+ * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
  */
 Snakeskin.Directions['forEach'] = function (command, commandLength, vars) {
 	var part;
 
-	vars.setPos('forEach', ++vars.beginI);
-	if (!vars.parentName && !vars.protoStart) {
+	vars.pushPos('forEach', ++vars.openBlockI);
+	if (!vars.parentTplName && !vars.protoStart) {
 		part = command.split('=>');
 		vars.save(command[0] + ' && Snakeskin.forEach(' + part[0] + ', function (' + (part[1] || '') + ') {');
 	}
@@ -34,15 +34,15 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {!Object} vars.posCache - кеш позиций
- * @param {string} vars.parentName - название родительского шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
+ * @param {function(string)} vars.popPos - удалить последнюю позицию
  */
 Snakeskin.Directions['forEachEnd'] = function (command, commandLength, vars) {
-	vars.posCache['forEach'].pop();
+	vars.popPos('forEach');
 
-	if (!vars.parentName && !vars.protoStart) {
+	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('});');
 	}
 };

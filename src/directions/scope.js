@@ -1,10 +1,35 @@
-Snakeskin.Directions['with'] = function (command, commandLength, vars, adv) {
-	vars.setPos('with', {
+/*!
+ * Директива with
+ */
+
+/**
+ * Декларация области видимости
+ *
+ * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ *
+ * @param {!Object} vars - объект локальных переменных
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
+ */
+Snakeskin.Directions['with'] = function (command, commandLength, vars) {
+	vars.pushPos('with', {
 		scope: command,
-		i: ++vars.beginI
+		i: ++vars.openBlockI
 	}, true);
 };
 
-Snakeskin.Directions['withEnd'] = function (command, commandLength, vars, adv) {
-	vars.sysPosCache['withEnd'].pop();
+/**
+ * Окончание области видимости
+ *
+ * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ *
+ * @param {!Object} vars - объект локальных переменных
+ * @param {function(string)} vars.popPos - удалить последнюю позицию
+ */
+Snakeskin.Directions['withEnd'] = function (command, commandLength, vars) {
+	vars.popPos('with');
 };

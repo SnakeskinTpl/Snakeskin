@@ -1,17 +1,38 @@
+/*!
+ * Работа с константами
+ */
+
+/**
+ * Декларация или вывод константы
+ *
+ * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ *
+ * @param {!Object} vars - объект локальных переменных
+ * @param {number} vars.i - номер итерации
+ * @param {number} vars.startI - номер итерации объявления шаблона
+ * @param {string} vars.tplName - название шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
+ * @param {function(string)} vars.save - сохранить строку в результирующую
+ * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
+ *
+ * @param {!Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
+ */
 Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 	var varName,
-		varPath = '',
-		unEscape = false,
 
 		tplName = vars.tplName,
-		parentName = vars.parentName,
+		parentTplName = vars.parentTplName,
 		protoStart = vars.protoStart,
 
 		i = vars.i,
 		startI = vars.startI;
 
 	// Экспорт console api
-	if (!parentName && !protoStart && /console\./.test(command)) {
+	if (!parentTplName && !protoStart && /console\./.test(command)) {
 		vars.save(command + ';');
 		return;
 	}
@@ -58,7 +79,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 			};
 			fromVarCache[tplName] = i - startI + 1;
 
-			if (!parentName && !protoStart) {
+			if (!parentTplName && !protoStart) {
 				vars.save('var ' + command + ';');
 			}
 
@@ -68,50 +89,68 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 		}
 
 	// Вывод переменных
-	} else if (!parentName && !protoStart) {
-		console.log(command)
+	} else if (!parentTplName && !protoStart) {
+		vars.save('__SNAKESKIN_RESULT__ += ' + this._returnVar(command, vars) + ';');
+	}
+};
 
-		// Поддержка фильтров через пайп
-		this.forEach(command.replace(/\|\|/g, '__SNAKESKIN_ESCAPE__OR').split('|'), function (el, i) {
-			var part,
-				sPart;
+/**
+ * Декларация или вывод константы
+ *
+ * @private
+ * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ *
+ * @param {!Object} vars - объект локальных переменных
+ * @param {string} vars.tplName - название шаблона
+ * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
+ * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
+ * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string)} vars.getPos - вернуть позиции
+ *
+ * @return {string}
+ */
+Snakeskin._returnVar = function (command, vars) {
+	var varPath = '',
+		unEscape = false;
 
-			if (i === 0) {
-				// Если используется with блок
-				if (vars.hasPos('with')) {
-					vars.setPos('with', {scope: el});
+	// Поддержка фильтров через пайп
+	this.forEach(command.replace(/\|\|/g, '__SNAKESKIN_ESCAPE__OR').split('|'), function (el, i) {
+		var part,
+			sPart;
 
-					varPath = vars.posCache['with'].reduce(function (str, el) {
-						return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
-					});
-					vars.posCache['with'].pop();
+		if (i === 0) {
+			// Если используется with блок
+			if (vars.hasPos('with')) {
+				vars.pushPos('with', {scope: el});
 
-				} else {
-					varPath = el;
-				}
-
-				varPath = '' +
-					'Snakeskin.Filters.undef(' +
-						(!varCache[tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
-					varPath + ')';
+				varPath = vars.getPos('with').reduce(function (str, el) {
+					return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
+				});
+				vars.popPos('with');
 
 			} else {
-				part = el.split(' ');
-				sPart = part.slice(1);
-
-				// По умолчанию, все переменные пропускаются через фильтр html
-				if (part[0] !== '!html') {
-					varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' + varPath + (sPart.length ? ', ' + sPart.join('') : '') + ')';
-
-				} else {
-					unEscape = true;
-				}
+				varPath = el;
 			}
-		});
 
-		vars.save('' +
-			'__SNAKESKIN_RESULT__ += ' +
-			(!unEscape ? 'Snakeskin.Filters.html(' : '') + varPath + (!unEscape ? ')' : '') + ';'
-		);
-	}
+			varPath = '' +
+				'Snakeskin.Filters.undef(' +
+				(!varCache[vars.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
+				varPath + ')';
+
+		} else {
+			part = el.split(' ');
+			sPart = part.slice(1);
+
+			// По умолчанию, все переменные пропускаются через фильтр html
+			if (part[0] !== '!html') {
+				varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' + varPath + (sPart.length ? ', ' + sPart.join('') : '') + ')';
+
+			} else {
+				unEscape = true;
+			}
+		}
+	});
+
+	return (!unEscape ? 'Snakeskin.Filters.html(' : '') + varPath + (!unEscape ? ')' : '');
 };

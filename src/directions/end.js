@@ -18,19 +18,19 @@
  * @param {!Object} adv - дополнительные параметры
  */
 Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
-	vars.beginI--;
+	vars.openBlockI--;
 	var that = this,
 		args = arguments,
 
-		beginI = vars.beginI + 1,
+		beginI = vars.openBlockI + 1,
 		res;
 
 	// Окончание шаблона
-	if (vars.beginI === 0) {
+	if (vars.openBlockI === 0) {
 		this.Directions.templateEnd.apply(this, arguments);
 
 	// Окончание простых блоков
-	} else if (vars.notSysPos(beginI)) {
+	} else if (vars.isNotSysPos(beginI)) {
 		this.forEach(vars.posCache, function (el, key) {
 			el = vars.getLastPos(key);
 
@@ -42,14 +42,14 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 			}
 		});
 
-		if (!res && !vars.parentName && !vars.protoStart) {
+		if (!res && !vars.parentTplName && !vars.protoStart) {
 			vars.save('};');
 		}
 	}
 
 	// Окончание системных блоков
 	this.forEach(vars.sysPosCache, function (el, key) {
-		el = vars.getLastPos(key, true);
+		el = vars.getLastPos(key);
 
 		if (el && ((typeof el.i !== 'undefined' && el.i === beginI) || el === beginI)) {
 			that.Directions[key + 'End'].apply(that, args);

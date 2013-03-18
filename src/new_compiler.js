@@ -27,7 +27,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 *
 			 * @type {number}
 			 */
-			beginI: 0,
+			openBlockI: 0,
 
 			/**
 			 * Кеш объявленных пространств имён,
@@ -144,14 +144,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			},
 
 			/**
-			 * Установить новую позицию блока
+			 * Добавить новую позицию блока
 			 *
 			 * @this {!Object} vars
 			 * @param {string} name - название блока
 			 * @param {*} val - значение
 			 * @param {?boolean=} opt_sys - если true, то параметр системный
 			 */
-			setPos: function (name, val, opt_sys) {
+			pushPos: function (name, val, opt_sys) {
 				if (opt_sys) {
 					if (!this.sysPosCache[name]) {
 						this.sysPosCache[name] = [];
@@ -169,16 +169,44 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			},
 
 			/**
-			 * Вернуть true, если есть позиции
+			 * Удалить последнюю позицию блока
 			 *
 			 * @this {!Object} vars
 			 * @param {string} name - название блока
-			 * @param {?boolean=} opt_sys - если true, то параметр системный
+			 */
+			popPos: function (name) {
+				if (this.sysPosCache[name]) {
+					this.sysPosCache[name].pop();
+				} else {
+					this.posCache[name].pop();
+				}
+			},
+
+			/**
+			 * Вернуть позиции блока
+			 *
+			 * @this {!Object} vars
+			 * @param {string} name - название блока
+			 * @returns {!Array}
+			 */
+			getPos: function (name) {
+				if (this.sysPosCache[name]) {
+					return this.sysPosCache[name];
+				}
+
+				return this.posCache[name];
+			},
+
+			/**
+			 * Вернуть true, если у блока есть позиции
+			 *
+			 * @this {!Object} vars
+			 * @param {string} name - название блока
 			 * @return {boolean}
 			 */
-			hasPos: function (name, opt_sys) {
-				if (opt_sys) {
-					return !!(this.sysPosCache[name] && this.sysPosCache[name].length);
+			hasPos: function (name) {
+				if (this.sysPosCache[name]) {
+					return this.sysPosCache[name].length;
 				}
 
 				return !!(this.posCache[name] && this.posCache[name].length);
@@ -189,12 +217,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 *
 			 * @this {!Object} vars
 			 * @param {string} name - название блока
-			 * @param {?boolean=} opt_sys - если true, то параметр системный
 			 * @return {*}
 			 */
-			getLastPos: function (name, opt_sys) {
-				if (opt_sys) {
-					if (this.sysPosCache[name] && this.sysPosCache[name].length) {
+			getLastPos: function (name) {
+				if (this.sysPosCache[name]) {
+					if (this.sysPosCache[name].length) {
 						return this.sysPosCache[name][this.sysPosCache[name].length - 1];
 					}
 
@@ -212,12 +239,12 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 * @param {number} i - номер позиции
 			 * @return {boolean}
 			 */
-			notSysPos: function (i) {
+			isNotSysPos: function (i) {
 				var that = this,
 					res = true;
 
 				Snakeskin.forEach(this.sysPosCache, function (el, key) {
-					el = that.getLastPos(key, true);
+					el = that.getLastPos(key);
 
 					if (el && ((typeof el.i !== 'undefined' && el.i === i) || el === i)) {
 						res = false;
@@ -315,7 +342,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				beginStr = true;
 			}
 
-			if (!vars.parentName) {
+			if (!vars.parentTplName) {
 				vars.save(el);
 			}
 		}
