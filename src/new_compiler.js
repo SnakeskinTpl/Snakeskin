@@ -16,14 +16,75 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	}
 
 	var vars = {
+			/**
+			 * Номер итерации
+			 *
+			 * @type {number}
+			 */
 			i: -1,
-			// Количество открытых скобок
+			/**
+			 * Количество открытых скобок
+			 *
+			 * @type {number}
+			 */
 			beginI: 0,
 
-			// Содержимое скобок
+			/**
+			 * Кеш объявленных пространств имён,
+			 * например, {
+			 *     'tpl': true,
+			 *     'tpl.my': true
+			 * }
+			 *
+			 * @type {!Object.<boolean>}
+			 */
+			nmCache: {},
+
+			/**
+			 * Кеш позиций директив
+			 *
+			 * @type {!Object}
+			 */
+			posCache: {},
+			/**
+			 * Кеш позиций системных директив
+			 *
+			 * @type {!Object}
+			 */
+			sysPosCache: {},
+
+			/**
+			 * Количество обратных вызовов прототипа
+			 * (когда apply до декларации вызываемого прототипа)
+			 *
+			 * @type {number}
+			 */
+			backHashI: 0,
+			/**
+			 * Кеш обратных вызовов прототипов
+			 *
+			 * @type {!Object.<!Array>}
+			 */
+			backHash: {},
+			/**
+			 * Имя последнего обратного прототипа
+			 *
+			 * @type {?string}
+			 */
+			lastBack: null,
+
+			/**
+			 * Содержимое скобок
+			 *
+			 * @type {!Array.<string>}
+			 */
 			quotContent: [],
 
-			// Исходный текст шаблона
+			/**
+			 * Исходный текст шаблона
+			 *
+			 * @type {string}
+			 */
 			source: String(src.innerHTML || src)
 				// Обработка блоков cdata
 				.replace(/{cdata}([\s\S]*?){end\s+cdata}/gm, function (sstr, data) {
@@ -39,7 +100,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				.replace(/\/\*[\s\S]*?\*\//g, '')
 				.trim(),
 
-			// Результирующий JS код
+			/**
+			 * Результирующий JS код
+			 *
+			 * @type {string}
+			 */
 			res: '' +
 				(!opt_dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
 				(opt_commonJS ?
@@ -64,6 +129,103 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				if (this.canWrite) {
 					this.res += str;
 				}
+			},
+
+			/**
+			 * Изменить результирующую строку
+			 *
+			 * @this {!Object} vars
+			 * @param {string} str - исходная строка
+			 */
+			replace: function (str) {
+				if (this.canWrite) {
+					this.res = str;
+				}
+			},
+
+			/**
+			 * Установить новую позицию блока
+			 *
+			 * @this {!Object} vars
+			 * @param {string} name - название блока
+			 * @param {*} val - значение
+			 * @param {?boolean=} opt_sys - если true, то параметр системный
+			 */
+			setPos: function (name, val, opt_sys) {
+				if (opt_sys) {
+					if (!this.sysPosCache[name]) {
+						this.sysPosCache[name] = [];
+					}
+
+					this.sysPosCache[name].push(val);
+
+				} else {
+					if (!this.posCache[name]) {
+						this.posCache[name] = [];
+					}
+
+					this.posCache[name].push(val);
+				}
+			},
+
+			/**
+			 * Вернуть true, если есть позиции
+			 *
+			 * @this {!Object} vars
+			 * @param {string} name - название блока
+			 * @param {?boolean=} opt_sys - если true, то параметр системный
+			 * @return {boolean}
+			 */
+			hasPos: function (name, opt_sys) {
+				if (opt_sys) {
+					return !!(this.sysPosCache[name] && this.sysPosCache[name].length);
+				}
+
+				return !!(this.posCache[name] && this.posCache[name].length);
+			},
+
+			/**
+			 * Вернуть последнюю позицию
+			 *
+			 * @this {!Object} vars
+			 * @param {string} name - название блока
+			 * @param {?boolean=} opt_sys - если true, то параметр системный
+			 * @return {*}
+			 */
+			getLastPos: function (name, opt_sys) {
+				if (opt_sys) {
+					if (this.sysPosCache[name] && this.sysPosCache[name].length) {
+						return this.sysPosCache[name][this.sysPosCache[name].length - 1];
+					}
+
+				} else {
+					if (this.posCache[name] && this.posCache[name].length) {
+						return this.posCache[name][this.posCache[name].length - 1];
+					}
+				}
+			},
+
+			/**
+			 * Вернуть true, если позиция не системная
+			 *
+			 * @this {!Object} vars
+			 * @param {number} i - номер позиции
+			 * @return {boolean}
+			 */
+			notSysPos: function (i) {
+				var that = this,
+					res = true;
+
+				Snakeskin.forEach(this.sysPosCache, function (el, key) {
+					el = that.getLastPos(key, true);
+
+					if (el && ((typeof el.i !== 'undefined' && el.i === i) || el === i)) {
+						res = false;
+						return false;
+					}
+				});
+
+				return res;
 			}
 		},
 
@@ -76,7 +238,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		commandLength,
 
 		el,
-		bOpen;
+		bOpen,
+
+		fnRes;
 
 	while (++vars.i < vars.source.length) {
 		el = vars.source.charAt(vars.i);
@@ -94,7 +258,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				}
 
 			// Упраляющая конструкция завершилась
-			} else if (el === '}' && (!fakeBegin || !fakeBegin--)) {
+			} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
 				begin = false;
 
 				commandLength = command.length;
@@ -104,8 +268,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				commandType = this.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
-				this.Directions[commandType].call(this,
-					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : commandType,
+				fnRes = this.Directions[commandType].call(this,
+					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,
 					commandLength,
 
 					vars,
@@ -115,6 +279,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 						info: opt_info
 					}
 				);
+
+				if (fnRes === false) {
+					begin = false;
+					beginStr = false;
+				}
 
 				command = '';
 				continue;

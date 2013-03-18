@@ -2,64 +2,6 @@
  * Полифилы для старых ишаков
  */
 
-if (!Array.prototype.forEach) {
-	/**
-	 * Перебрать элементы массива
-	 * (выполнения цикла нельзя прервать, но для этого можно использовать some или every)
-	 *
-	 * @this {!Array}
-	 * @param {function(this:thisObject, *, number, !Array)} callback - функция, которая будет вызываться для каждого элемента массива
-	 * @param {thisObject=} [opt_thisObject] - контекст функции callback
-	 * @template thisObject
-	 */
-	Array.prototype.forEach = function (callback, opt_thisObject) {
-		var i = -1,
-			aLength = this.length;
-
-		if (!opt_thisObject) {
-			while (++i < aLength) {
-				callback(this[i], i, this);
-			}
-		} else {
-			while (++i < aLength) {
-				callback.call(opt_thisObject, this[i], i, this);
-			}
-		}
-	};
-}
-
-if (!Array.prototype.some) {
-	/**
-	 * Вернуть true, если есть хотя бы один элемент удовлетворяющий условию
-	 * (метод прерывает исполнение, когда callback возвращает true)
-	 *
-	 * @this {!Array}
-	 * @param {function(this:thisObject, *, number, !Array): (boolean|void)} callback - функция, которая будет вызываться для каждого элемента массива
-	 * @param {thisObject=} [opt_thisObject] - контекст функции callback
-	 * @template thisObject
-	 * @return {boolean}
-	 */
-	Array.prototype.some = function (callback, opt_thisObject) {
-		var i = -1,
-			aLength = this.length,
-			res;
-
-		if (!opt_thisObject) {
-			while (++i < aLength) {
-				res = callback(this[i], i, this);
-				if (res) { return true; }
-			}
-		} else {
-			while (++i < aLength) {
-				res = callback.call(opt_thisObject, this[i], i, this);
-				if (res) { return true; }
-			}
-		}
-
-		return false;
-	};
-}
-
 if (!Array.prototype.reduce) {
 	/**
 	 * Рекурсивно привести массив к другому значению

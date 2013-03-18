@@ -1,7 +1,3 @@
-/*!
- * Наследование
- */
-
 /**
  * Вернуть тело шаблона при наследовании
  *
@@ -13,10 +9,7 @@
 Snakeskin._getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
 	if (typeof cache[extMap[tplName]] === 'undefined') {
-		error = new Error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!');
-		error.name = 'Snakeskin Error';
-
-		throw error;
+		throw this.error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!');
 	}
 
 	var parentTpl = extMap[tplName],
@@ -104,6 +97,7 @@ Snakeskin._getExtStr = function (tplName, info) {
 				.some(function (el) {
 					if (el.val < diff) {
 						adv += el.adv;
+
 					} else {
 						return true;
 					}

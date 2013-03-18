@@ -34,8 +34,22 @@ var Snakeskin = {
 	//#include other.js
 
 	//#include new_compiler.js
+
 	//#include directions/template.js
+
+	//#include directions/block.js
+	//#include directions/proto.js
+
+	//#include directions/iterator.js
+	//#include directions/logic.js
+	//#include directions/scope.js
 	//#include directions/const.js
+
+	//#include directions/cut.js
+	//#include directions/bem.js
+
+	//#include directions/end.js
+
 	//#endif
 
 	// common.js экспорт

@@ -1,8 +1,21 @@
-/**
+/*!
  * Директива template
- * (декларация шаблона)
+ */
+
+/**
+ * Декларация шаблона
  *
  * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ *
+ * @param {!Object} vars - объект локальных переменных
+ * @param {function(string)} vars.save - сохранить строку в результирующую
+ *
+ * @param {!Object} adv - дополнительные параметры
+ * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
+ * @param {boolean} adv.dryRun - true, если холостая обработка
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) {
 	var tplName,
@@ -23,7 +36,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (vars.beginI !== 0) {
-		return this.error('' +
+		throw this.error('' +
 			'Missing closing or opening tag in the template ' +
 			'(command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfo(adv.info) + '")!'
 		);
@@ -33,8 +46,9 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	// Если true, то шаблон не будет добавлен в скомпилированный файл
 	vars.canWrite = this.write[tplName] !== false;
 
-	// Холостой запуск
-	if (vars.dryRun) { return; }
+	if (adv.dryRun) {
+		return;
+	}
 
 	// Название родительского шаблона
 	if (/\s+extends\s+/.test(command)) {
@@ -186,4 +200,90 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	});
 
 	vars.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
+};
+
+/**
+ * Директива end для template
+ *
+ * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ *
+ * @param {!Object} vars - объект локальных переменных
+ * @param {function(string)} vars.save - сохранить строку в результирующую
+ *
+ * @param {!Object} adv - дополнительные параметры
+ * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
+ * @param {boolean} adv.dryRun - true, если холостая обработка
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
+ */
+Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) {
+	var tplName = vars.tplName,
+		parentName = vars.parentName,
+
+		source = vars.source,
+		i = vars.i,
+		startI = vars.startI;
+
+	// Вызовы не объявленных прототипов
+	if (vars.backHashI) {
+		throw this.error('' +
+			'Proto "' + vars.lastBack + '" is not defined ' +
+			'(command: {' + command + '}, template: "' + tplName + ', ' + this._genErrorAdvInfo(adv.info) + '")!'
+		);
+	}
+
+	if (adv.dryRun) {
+		return;
+	}
+
+	// Кешируем тело шаблона
+	cache[tplName] = source.substring(startI, i - commandLength - 1);
+
+	// Обработка наследования:
+	// тело шаблона объединяется с телом родителя
+	// и обработка шаблона начинается заново,
+	// но уже как атомарного (без наследования)
+	if (parentName) {
+		// Результирующее тело шаблона
+		vars.source = source.substring(0, startI) +
+			this._getExtStr(tplName, adv.info) +
+			source.substring(i - commandLength - 1);
+
+		// Перемотка переменных
+		// (сбрасывание)
+		blockCache[tplName] = {};
+
+		protoCache[tplName] = {};
+		fromProtoCache[tplName] = 0;
+
+		varCache[tplName] = {};
+		fromVarCache[tplName] = 0;
+		varICache[tplName] = {};
+
+		vars.i = startI - 1;
+		vars.beginI++;
+
+		if (this.write[parentName] === false) {
+			vars.res = vars.res.replace(new RegExp('/\\* Snakeskin template: ' +
+					parentName.replace(/([.\[\]^$])/g, '\\$1') +
+					';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
+				'');
+		}
+
+		vars.parentName = false;
+		return false;
+	}
+
+	vars.save('' +
+			'return __SNAKESKIN_RESULT__; };' +
+		'if (typeof Snakeskin !== \'undefined\') {' +
+			'Snakeskin.cache[\'' +
+				this._uescape(tplName, vars.quotContent).replace(/'/g, '\\\'') +
+			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
+		'}/* Snakeskin template. */'
+	);
+
+	vars.canWrite = true;
+	vars.tplName = null;
 };

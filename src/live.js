@@ -4,9 +4,10 @@
 
 /**
  * Итератор цикла
+ * (return false прерывает выполнение)
  *
  * @param {(!Array|!Object)} obj - массив или объект
- * @param {function()} callback - функция callback
+ * @param {(function(*, number, boolean, boolean, number)|function(*, string, number, boolean, boolean, number))} callback - функция callback
  */
 Snakeskin.forEach = function (obj, callback) {
 	var i = -1,
@@ -16,7 +17,9 @@ Snakeskin.forEach = function (obj, callback) {
 	if (Array.isArray(obj)) {
 		length = obj.length;
 		while (++i < length) {
-			callback(obj[i], i, i === 0, i === length - 1, length);
+			if (callback(obj[i], i, i === 0, i === length - 1, length) === false) {
+				break;
+			}
 		}
 
 	} else {
@@ -31,7 +34,9 @@ Snakeskin.forEach = function (obj, callback) {
 		for (key in obj) {
 			if (!obj.hasOwnProperty(key)) { continue; }
 			i++;
-			callback(obj[key], key, i, i === 0, i === length - 1, length);
+			if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
+				break;
+			}
 		}
 	}
 };
