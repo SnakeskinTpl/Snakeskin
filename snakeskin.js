@@ -590,7 +590,7 @@ Snakeskin._genErrorAdvInfo = function (obj) {
 };
 
 /**
- * Генерировать оишбку
+ * Генерировать ошибку
  *
  * @param {string} msg - сообщение ошибки
  * @returns {!Error}
@@ -980,7 +980,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		if (opt_commonJS) {
 			eval(vars.res);
 
-			// Простая компиляция
+		// Простая компиляция
 		} else {
 			global.eval(vars.res);
 		}

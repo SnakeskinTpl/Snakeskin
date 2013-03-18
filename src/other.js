@@ -27,7 +27,7 @@ Snakeskin._genErrorAdvInfo = function (obj) {
 };
 
 /**
- * Генерировать оишбку
+ * Генерировать ошибку
  *
  * @param {string} msg - сообщение ошибки
  * @returns {!Error}
