@@ -9,9 +9,7 @@ var Snakeskin = {
 
 		write: {},
 		cache: {}
-	},
-
-	SS = Snakeskin;
+	};
 
 (function (require) {
 	'use strict';
@@ -411,7 +409,10 @@ Snakeskin._uescape = function (str, stack) {
 Snakeskin._getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
 	if (typeof cache[extMap[tplName]] === 'undefined') {
-		throw this.error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!');
+		throw this.error('' +
+			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
+			'for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!'
+		);
 	}
 
 	var parentTpl = extMap[tplName],
@@ -481,8 +482,8 @@ Snakeskin._getExtStr = function (tplName, info) {
 
 			// Вычисляем сдвиг
 			diff = prev[key] ? prev[key].from : from;
-			advDiff
-				// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
+			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастани
+			this.forEach(advDiff
 				.sort(function (a, b) {
 					if (a.val > b.val) {
 						return 1;
@@ -495,13 +496,12 @@ Snakeskin._getExtStr = function (tplName, info) {
 					if (a.val < b.val) {
 						return -1;
 					}
-				})
-				.some(function (el) {
+				}), function (el) {
 					if (el.val < diff) {
 						adv += el.adv;
 
 					} else {
-						return true;
+						return false;
 					}
 				});
 
@@ -725,7 +725,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 * @param {string} str - исходная строка
 			 */
 			save: function (str) {
-				if (this.canWrite) {
+				if (!this.tplName || Snakeskin.write[this.tplName] !== false) {
 					this.res += str;
 				}
 			},
@@ -772,13 +772,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 *
 			 * @this {!Object} vars
 			 * @param {string} name - название блока
+			 * @return {*}
 			 */
 			popPos: function (name) {
 				if (this.sysPosCache[name]) {
-					this.sysPosCache[name].pop();
-				} else {
-					this.posCache[name].pop();
+					return this.sysPosCache[name].pop();
 				}
+
+				return this.posCache[name].pop();
 			},
 
 			/**
@@ -969,8 +970,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		return vars.res;
 	}
 
-	console.log(vars.res);
-
 	// Компиляция на сервере
 	if (require) {
 		// Экспорт
@@ -1001,6 +1000,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {number} vars.i - номер итерации
+ * @param {number} vars.startI - номер итерации объявления шаблона
+ * @param {string} vars.tplName - название шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
  * @param {!Object} adv - дополнительные параметры
@@ -1009,9 +1013,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) {
-	var tplName,
+	var that = this,
+
+		tplName,
 		tmpTplName,
-		parentName,
+		parentTplName,
 
 		params,
 		defParams = '';
@@ -1034,16 +1040,13 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	}
 	vars.openBlockI++;
 
-	// Если true, то шаблон не будет добавлен в скомпилированный файл
-	vars.canWrite = this.write[tplName] !== false;
-
 	if (adv.dryRun) {
 		return;
 	}
 
 	// Название родительского шаблона
 	if (/\s+extends\s+/.test(command)) {
-		vars.parentTplName = parentName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
+		vars.parentTplName = parentTplName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
 	}
 
 	// Глобальный кеш блоков
@@ -1062,7 +1065,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	varICache[tplName] = {};
 
 	// Схема наследования
-	extMap[tplName] = parentName;
+	extMap[tplName] = parentTplName;
 
 	// Входные параметры
 	params = /\((.*?)\)/.exec(command)[1];
@@ -1110,12 +1113,12 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	// Если шаблон наследуется,
 	// то подмешиваем ко входым параметрам шаблона
 	// входные параметры родителя
-	paramsCache[tplName] = paramsCache[parentName] ? paramsCache[parentName].concat(params) : params;
+	paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(params) : params;
 
 	// Переинициализация входных параметров родительскими
 	// (только если нужно)
-	if (paramsCache[parentName]) {
-		paramsCache[parentName].forEach(function (el) {
+	if (paramsCache[parentTplName]) {
+		this.forEach(paramsCache[parentTplName], function (el) {
 			var def = el.split('=');
 			// Здесь и далее по коду
 			// [0] - название переменной
@@ -1123,7 +1126,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 			def[0] = def[0].trim();
 			def[1] = def[1] && def[1].trim();
 
-			params.forEach(function (el2, i) {
+			that.forEach(params, function (el2, i) {
 				var def2 = el2.split('=');
 				def2[0] = def2[0].trim();
 				def2[1] = def2[1] && def2[1].trim();
@@ -1139,15 +1142,15 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Инициализация параметров по умолчанию
 	// (эээххх, когда же настанет ECMAScript 6 :()
-	params.forEach(function (el, i) {
+	this.forEach(params, function (el, i) {
 		var def = el.split('=');
 		def[0] = def[0].trim();
 		vars.save(def[0]);
 
 		if (def.length > 1) {
 			// Подмешивание родительских входных параметров
-			if (paramsCache[parentName] && !defParams) {
-				paramsCache[parentName].forEach(function (el) {
+			if (paramsCache[parentTplName] && !defParams) {
+				that.forEach(paramsCache[parentTplName], function (el) {
 					var def = el.split('='),
 						local;
 
@@ -1156,12 +1159,15 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 					// true, если входной параметр родительского шаблона
 					// присутствует также в дочернем
-					local = params.some(function (el) {
+					that.forEach(params, function (el) {
 						var val = el.split('=');
 						val[0] = val[0].trim();
 						val[1] = val[1] && val[1].trim();
 
-						return val[0] === def[0];
+						if (val[0] === def[0]) {
+							local = true;
+							return false;
+						}
 					});
 
 					// Если входный параметр родителя отсутствует у ребёнка,
@@ -1201,6 +1207,14 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {number} vars.i - номер итерации
+ * @param {number} vars.startI - номер итерации объявления шаблона
+ * @param {string} vars.tplName - название шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {string} vars.source - исходный текст шаблона
+ * @param {string} vars.res - результирущая строка
+ * @param {boolean} vars.canWrite - если false, то шаблон не вставляется в результирующую JS строку
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
  * @param {!Object} adv - дополнительные параметры
@@ -1342,17 +1356,14 @@ Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
  * @param {string} vars.tplName - название шаблона
  * @param {string} vars.parentTplName - название родительского шаблона
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  *
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
 Snakeskin.Directions['blockEnd'] = function (command, commandLength, vars, adv) {
-	var lastBlock = vars.getLastPos('block');
-
-	vars.popPos('block');
+	var lastBlock = vars.popPos('block');
 	if (!adv.dryRun &&
 		((vars.parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !vars.parentTplName)
 	) {
@@ -1429,10 +1440,11 @@ Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
  * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
  * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
  * @param {number} vars.backHashI - количество обратных вызовов прототипов
+ * @param {string} vars.source - исходный текст шаблона
+ * @param {string} vars.res - результирущая строка
  * @param {function(string)} vars.replace - изменить результирующую строку
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  *
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
@@ -1444,9 +1456,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) 
 		i = vars.i,
 
 		backHash = vars.backHash,
-		lastProto = vars.getLastPos('proto');
-
-	vars.popPos('proto');
+		lastProto = vars.popPos('proto');
 
 	if (!adv.dryRun && ((parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !parentTplName)) {
 		protoCache[tplName][lastProto.name].to = i - vars.startI - commandLength - 1;
@@ -1553,7 +1563,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, vars) {
  * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */
 Snakeskin.Directions['forEachEnd'] = function (command, commandLength, vars) {
 	vars.popPos('forEach');
@@ -1650,7 +1660,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */
 Snakeskin.Directions['withEnd'] = function (command, commandLength, vars) {
 	vars.popPos('with');
@@ -1761,7 +1771,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
  * @param {string} vars.tplName - название шаблона
  * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
  * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  * @param {function(string)} vars.getPos - вернуть позиции
  *
  * @return {string}
@@ -1858,8 +1868,8 @@ Snakeskin.Directions['save'] = function (command, commandLength, vars) {
  * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
-	var part = command.match(/(.*?)\s+(.*)/);
-	this.BEM[part[1]] = (new Function('return ' + this._uescape(part[2], vars.quotContent)))();
+	var part = command.match(/(.*?),\s+(.*)/);
+	this.BEM[part[1]] = (new Function('return {' + this._uescape(part[2], vars.quotContent) + '}'))();
 };
 
 /**
@@ -1893,7 +1903,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 	command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command;
 	part = command.trim().split(',');
 
-	bemName = command[0];
+	bemName = part[0];
 	lastBEM.original = this.BEM[bemName] && this.BEM[bemName].tag;
 
 	if (!vars.parentTplName && !vars.protoStart) {
@@ -1938,12 +1948,10 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
  *
  * @param {!Object} vars - объект локальных переменных
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
- * @param {function(string)} vars.popPos - удалить последнюю позицию
+ * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */
 Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
-	var lastBEM = vars.getLastPos('bem');
-	vars.popPos('bem');
+	var lastBEM = vars.popPos('bem');
 
 	if (!vars.protoStart) {
 		vars.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
@@ -1964,7 +1972,7 @@ Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
  * @param {!Object} vars.sysPosCache - кеш системных позиций
  * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(number): boolean} vars.notSysPos - вернёт true, если позиция не системная
+ * @param {function(number): boolean} vars.isNotSysPos - вернёт true, если позиция не системная
  *
  * @param {!Object} adv - дополнительные параметры
  */

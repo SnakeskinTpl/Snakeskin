@@ -15,7 +15,6 @@
  * @param {number} vars.startI - номер итерации объявления шаблона
  * @param {string} vars.tplName - название шаблона
  * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.canWrite - если false, то шаблон не вставляется в результирующую JS строку
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
  * @param {!Object} adv - дополнительные параметры
@@ -24,7 +23,9 @@
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) {
-	var tplName,
+	var that = this,
+
+		tplName,
 		tmpTplName,
 		parentTplName,
 
@@ -48,9 +49,6 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 		);
 	}
 	vars.openBlockI++;
-
-	// Если true, то шаблон не будет добавлен в скомпилированный файл
-	vars.canWrite = this.write[tplName] !== false;
 
 	if (adv.dryRun) {
 		return;
@@ -130,7 +128,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	// Переинициализация входных параметров родительскими
 	// (только если нужно)
 	if (paramsCache[parentTplName]) {
-		paramsCache[parentTplName].forEach(function (el) {
+		this.forEach(paramsCache[parentTplName], function (el) {
 			var def = el.split('=');
 			// Здесь и далее по коду
 			// [0] - название переменной
@@ -138,7 +136,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 			def[0] = def[0].trim();
 			def[1] = def[1] && def[1].trim();
 
-			params.forEach(function (el2, i) {
+			that.forEach(params, function (el2, i) {
 				var def2 = el2.split('=');
 				def2[0] = def2[0].trim();
 				def2[1] = def2[1] && def2[1].trim();
@@ -154,7 +152,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Инициализация параметров по умолчанию
 	// (эээххх, когда же настанет ECMAScript 6 :()
-	params.forEach(function (el, i) {
+	this.forEach(params, function (el, i) {
 		var def = el.split('=');
 		def[0] = def[0].trim();
 		vars.save(def[0]);
@@ -162,7 +160,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 		if (def.length > 1) {
 			// Подмешивание родительских входных параметров
 			if (paramsCache[parentTplName] && !defParams) {
-				paramsCache[parentTplName].forEach(function (el) {
+				that.forEach(paramsCache[parentTplName], function (el) {
 					var def = el.split('='),
 						local;
 
@@ -171,12 +169,15 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 					// true, если входной параметр родительского шаблона
 					// присутствует также в дочернем
-					local = params.some(function (el) {
+					that.forEach(params, function (el) {
 						var val = el.split('=');
 						val[0] = val[0].trim();
 						val[1] = val[1] && val[1].trim();
 
-						return val[0] === def[0];
+						if (val[0] === def[0]) {
+							local = true;
+							return false;
+						}
 					});
 
 					// Если входный параметр родителя отсутствует у ребёнка,

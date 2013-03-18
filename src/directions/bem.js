@@ -13,8 +13,8 @@
  * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
-	var part = command.match(/(.*?)\s+(.*)/);
-	this.BEM[part[1]] = (new Function('return ' + this._uescape(part[2], vars.quotContent)))();
+	var part = command.match(/(.*?),\s+(.*)/);
+	this.BEM[part[1]] = (new Function('return {' + this._uescape(part[2], vars.quotContent) + '}'))();
 };
 
 /**
@@ -48,7 +48,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 	command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command;
 	part = command.trim().split(',');
 
-	bemName = command[0];
+	bemName = part[0];
 	lastBEM.original = this.BEM[bemName] && this.BEM[bemName].tag;
 
 	if (!vars.parentTplName && !vars.protoStart) {

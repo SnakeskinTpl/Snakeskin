@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Test: Snakeskin.compile</title>
 		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.11.0.css" />
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
 		<script type="text/javascript" src="../snakeskin.min.js"></script>
 	</head>
@@ -15,32 +15,32 @@
 		<h2 id="qunit-userAgent"></h2>
 		<ol id="qunit-tests"></ol>
 		<div id="test"></div>
-		
+
 		<script type="text/x-snakeskin-template" id="templates">
 			{template first(name = 'world')}
 				{text = 'Hello'}
 				<h1>{text} {name}!</h1>
 			{end}
-			
+
 			{template tpl.first(name = 'world')}
 				{text = 'Hello'}
 				<h1>{text} {name}!</h1>
 			{end}
-			
+
 			{template second(name = 'world', lastName)}
 				{text = 'Hello'}
 				<h1>{text} {name + lastName}!</h1>
 			{end}
-			
+
 			{template withWith(obj)}
 				{with obj.child}
-					{name} 
+					{name}
 					{with child}
-						{name}
+						 {name}
 					{end}
 				{end}
 			{end}
-			
+
 			{template withIf(a)}
 				{if a === 4}
 					OK
@@ -50,13 +50,13 @@
 					WIN
 				{end}
 			{end}
-			
+
 			{template forEachTest(a)}
 				{forEach a => el}
 					{el}
 				{end}
 			{end}
-			
+
 			{template deepForEach(a)}
 				{forEach a => el}
 					{forEach el => el}
@@ -64,17 +64,17 @@
 					{end}
 				{end}
 			{end}
-			
+
 			{template base(a = 1, b)}
 				{title = 'foo'}
 				{proto test}
 					{proto start}
 						OK
 					{end}
-					
+
 					READY {apply start} ?
 				{end}
-				
+
 				<!doctype html>
 				<html>
 					{block head}
@@ -89,43 +89,43 @@
 					{end}
 				</html>
 			{end}
-			
+
 			{template child(a = 3) extends base}
 				{title = 'foo2'}
 				{b = 'foo'}
 				{e = {a: 1, b: [1, 2, 3]}}
-				
+
 				{proto start}
 					NO
 				{end}
-				
+
 				{block head}
 					{title + a}
 				{end}
-				
+
 				{block footer}
 					{block end}
 						{b}
 					{end}
-					
+
 					{apply test}
 				{end}
-				
+
 				{block next}
 					121
 				{end}
 			{end}
-			
+
 			{template withFilter()}
 				{b = '"onclick="\'alert(1)\'"'}
 				<a href="{b}"></a>
 			{end}
-			
+
 			{template withoutFilter()}
 				{b = '"onclick="\'alert(1)\'"'}
 				<a href="{b|!html}"></a>
 			{end}
-			
+
 			{template withCData()}
 				{cdata}
 					{template withFilter()}
@@ -133,18 +133,40 @@
 						<a href="{b}"></a>
 					{end}
 				{end cdata}
-				
+
 				{text = 'Hello'}
 				<h1>{text}{cdata}
 					{a}
 				{end cdata}!</h1>
 			{end}
+
+			{global = 1}
+			{setBEM my, tag: 'head'}
+			{template bemTestParent()}
+				{a = 'foo   '}
+				{proto a}
+					{block e}
+						{bem (span) my, val: 1, next: ${a|ucfirst|trim}}{end}
+						{bem my, val: 1, next: ${a|ucfirst|trim}}{end}
+					{end}
+				{end}
+			{end}
+
+			{global = 2}
+			{global = 3}
+
+			{template bemTest() extends bemTestParent}
+				{block aa}
+					{apply a}
+					{global}
+				{end}
+			{end}
 		</script>
-		
+
 		<script type="text/javascript">
 			var block = document.getElementById('templates');
 			Snakeskin.compile(block)
-			
+
 			test('Snakeskin.compile', function () {
 				equal(first(), '<h1>Hello world!</h1>', 'Параметр по умолчанию + переменная');
 				equal(first('Koba'), '<h1>Hello Koba!</h1>', 'Параметр + переменная');
@@ -168,6 +190,7 @@
 				equal(withFilter(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
 				equal(withCData(), '\n					{template withFilter()}\n						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}\n						<a href=\"{b}\"></a>\n					{end}\n				<h1>Hello\n					{a}\n				!</h1>', 'Использование cdata областей');
+				equal(bemTest(), '<span class=\"i-bem\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-bem\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
 			});
 		</script>
 	</body>

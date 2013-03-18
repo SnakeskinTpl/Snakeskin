@@ -126,7 +126,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 * @param {string} str - исходная строка
 			 */
 			save: function (str) {
-				if (this.canWrite) {
+				if (!this.tplName || Snakeskin.write[this.tplName] !== false) {
 					this.res += str;
 				}
 			},
@@ -370,8 +370,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	if (opt_dryRun) {
 		return vars.res;
 	}
-
-	console.log(vars.res);
 
 	// Компиляция на сервере
 	if (require) {

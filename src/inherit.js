@@ -9,7 +9,10 @@
 Snakeskin._getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
 	if (typeof cache[extMap[tplName]] === 'undefined') {
-		throw this.error('The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!');
+		throw this.error('' +
+			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
+			'for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!'
+		);
 	}
 
 	var parentTpl = extMap[tplName],
@@ -79,8 +82,8 @@ Snakeskin._getExtStr = function (tplName, info) {
 
 			// Вычисляем сдвиг
 			diff = prev[key] ? prev[key].from : from;
-			advDiff
-				// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
+			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастани
+			this.forEach(advDiff
 				.sort(function (a, b) {
 					if (a.val > b.val) {
 						return 1;
@@ -93,13 +96,12 @@ Snakeskin._getExtStr = function (tplName, info) {
 					if (a.val < b.val) {
 						return -1;
 					}
-				})
-				.some(function (el) {
+				}), function (el) {
 					if (el.val < diff) {
 						adv += el.adv;
 
 					} else {
-						return true;
+						return false;
 					}
 				});
 
