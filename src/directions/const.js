@@ -122,8 +122,7 @@ Snakeskin._returnVar = function (command, vars) {
 		if (i === 0) {
 			// Если используется with блок
 			if (vars.hasPos('with')) {
-				vars.pushPos('with', {scope: el});
-
+				vars.pushPos('with', {scope: el}, true);
 				varPath = vars.getPos('with').reduce(function (str, el) {
 					return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
 				});

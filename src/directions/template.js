@@ -91,13 +91,13 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 			.split('.').reduce(function (str, el, i) {
 				// Проверка существования пространства имён
-				if (!nmCache[str]) {
+				if (!vars.nmCache[str]) {
 					vars.save('' +
-						'if (typeof ' + (opt_commonjs ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(opt_commonjs ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }'
+						'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }'
 					);
 
-					nmCache[str] = true;
+					vars.nmCache[str] = true;
 				}
 
 				if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
@@ -107,7 +107,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 				return str + '.' + el;
 			});
 
-		vars.save((opt_commonjs ? 'exports.' : '') + tmpTplName + '= function (');
+		vars.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function (');
 
 	// Без простраства имён
 	} else {

@@ -129,7 +129,7 @@ Snakeskin._getExtStr = function (tplName, info) {
 			} else if (!prev[key]) {
 				// Блоки
 				if (i === 1) {
-					res += '{' + key + '}' + block + '{end}';
+					res += '{block ' + key + '}' + block + '{end}';
 
 				// Переменные и прототипы
 				} else if (i === 3 || i === 5) {
@@ -140,7 +140,7 @@ Snakeskin._getExtStr = function (tplName, info) {
 						from += adv;
 					}
 
-					block = i === 3 ? ('{' + block + '}') : ('{' + key + '}' + block + '{end}');
+					block = i === 3 ? ('{' + block + '}') : ('{proto ' + key + '}' + block + '{end}');
 					res = res.substring(0, from) + block + res.substring(from);
 
 					advDiff.push({

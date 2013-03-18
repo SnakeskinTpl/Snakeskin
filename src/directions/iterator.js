@@ -22,7 +22,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, vars) {
 	vars.pushPos('forEach', ++vars.openBlockI);
 	if (!vars.parentTplName && !vars.protoStart) {
 		part = command.split('=>');
-		vars.save(command[0] + ' && Snakeskin.forEach(' + part[0] + ', function (' + (part[1] || '') + ') {');
+		vars.save(part[0] + ' && Snakeskin.forEach(' + part[0] + ', function (' + (part[1] || '') + ') {');
 	}
 };
 

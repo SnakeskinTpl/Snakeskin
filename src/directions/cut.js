@@ -10,7 +10,7 @@
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {!Array} vars.quotContent - массив строк
+ * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
 	command = this._uescape(command, vars.quotContent);
@@ -28,7 +28,7 @@ Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {!Array} vars.quotContent - массив строк
+ * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['save'] = function (command, commandLength, vars) {
 	this.write[this._uescape(command, vars.quotContent)] = true;
