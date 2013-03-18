@@ -68,6 +68,8 @@ Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
  * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
  * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
  * @param {number} vars.backHashI - количество обратных вызовов прототипов
+ * @param {string} vars.source - исходный текст шаблона
+ * @param {string} vars.res - результирущая строка
  * @param {function(string)} vars.replace - изменить результирующую строку
  * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
  * @param {function(string): *} vars.popPos - удалить последнюю позицию

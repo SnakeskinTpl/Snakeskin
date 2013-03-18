@@ -10,6 +10,12 @@
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {number} vars.i - номер итерации
+ * @param {number} vars.startI - номер итерации объявления шаблона
+ * @param {string} vars.tplName - название шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.canWrite - если false, то шаблон не вставляется в результирующую JS строку
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
  * @param {!Object} adv - дополнительные параметры
@@ -210,6 +216,14 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
+ * @param {number} vars.openBlockI - количество открытых блоков
+ * @param {number} vars.i - номер итерации
+ * @param {number} vars.startI - номер итерации объявления шаблона
+ * @param {string} vars.tplName - название шаблона
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {string} vars.source - исходный текст шаблона
+ * @param {string} vars.res - результирущая строка
+ * @param {boolean} vars.canWrite - если false, то шаблон не вставляется в результирующую JS строку
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
  * @param {!Object} adv - дополнительные параметры

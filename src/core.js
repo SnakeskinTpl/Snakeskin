@@ -9,9 +9,7 @@ var Snakeskin = {
 
 		write: {},
 		cache: {}
-	},
-
-	SS = Snakeskin;
+	};
 
 (function (require) {
 	'use strict';
@@ -33,7 +31,7 @@ var Snakeskin = {
 	//#include inherit.js
 	//#include other.js
 
-	//#include new_compiler.js
+	//#include compiler.js
 
 	//#include directions/template.js
 
