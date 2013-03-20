@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.0',
+		VERSION: '2.0.1',
 
 		Directions: {},
 
@@ -300,6 +300,16 @@ Snakeskin.Filters.remove = function (str, search) {
  */
 Snakeskin.Filters.replace = function (str, search, replace) {
 	return String(str).replace(search, replace);
+};
+
+/**
+ * Преобразовать объект в строку JSON
+ *
+ * @param {(!Object|!Array)} val - исходный объект
+ * @return {string}
+ */
+Snakeskin.Filters.json = function (val) {
+	return JSON.stringify(val);
 };
 /*!
  * Полифилы для старых ишаков
