@@ -35,7 +35,7 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
 Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 	vars.pushPos('bem', {
 		i: ++vars.openBlockI,
-		tag: /\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
+		tag: /^\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 	});
 
 	var that = this,
@@ -64,7 +64,6 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 
 			if (i > 0) {
 				part = el.split('}');
-
 				command += '\\\'\' + ' + that._returnVar(part[0], vars) +
 					' + \'\\\'' +
 					that._uescape(part.slice(1).join(''), vars.quotContent)

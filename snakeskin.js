@@ -962,6 +962,12 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		}
 	}
 
+	// Если количество открытых блоков не совпадает с количеством закрытых,
+	// то кидаем исключение
+	if (vars.openBlockI !== 0) {
+		throw this.error('Missing closing or opening tag in the template, ' + this._genErrorAdvInfo(opt_info) + '")!');
+	}
+
 	vars.res = this._uescape(vars.res, vars.quotContent)
 		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
@@ -983,6 +989,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	if (opt_dryRun) {
 		return vars.res;
 	}
+
+	console.log(vars.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -1823,7 +1831,9 @@ Snakeskin._returnVar = function (command, vars) {
 
 			// По умолчанию, все переменные пропускаются через фильтр html
 			if (part[0] !== '!html') {
-				varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' + varPath + (sPart.length ? ', ' + sPart.join('') : '') + ')';
+				varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' +
+					varPath + (sPart.length ? ', ' + sPart.join('') : '') +
+				')';
 
 			} else {
 				unEscape = true;
@@ -1904,7 +1914,7 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
 Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 	vars.pushPos('bem', {
 		i: ++vars.openBlockI,
-		tag: /\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
+		tag: /^\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 	});
 
 	var that = this,
@@ -1933,7 +1943,6 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 
 			if (i > 0) {
 				part = el.split('}');
-
 				command += '\\\'\' + ' + that._returnVar(part[0], vars) +
 					' + \'\\\'' +
 					that._uescape(part.slice(1).join(''), vars.quotContent)

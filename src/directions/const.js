@@ -143,7 +143,9 @@ Snakeskin._returnVar = function (command, vars) {
 
 			// По умолчанию, все переменные пропускаются через фильтр html
 			if (part[0] !== '!html') {
-				varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' + varPath + (sPart.length ? ', ' + sPart.join('') : '') + ')';
+				varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' +
+					varPath + (sPart.length ? ', ' + sPart.join('') : '') +
+				')';
 
 			} else {
 				unEscape = true;
