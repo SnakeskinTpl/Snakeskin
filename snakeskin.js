@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.0.1',
+		VERSION: '2.0.2',
 
 		Directions: {},
 
@@ -1967,7 +1967,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
 	var lastBEM = vars.popPos('bem');
 
-	if (!vars.protoStart) {
+	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
 };

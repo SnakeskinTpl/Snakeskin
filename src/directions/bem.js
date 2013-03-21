@@ -98,7 +98,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
 	var lastBEM = vars.popPos('bem');
 
-	if (!vars.protoStart) {
+	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
 };
