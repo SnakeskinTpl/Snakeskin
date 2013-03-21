@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.0.3',
+		VERSION: '2.0.4',
 
 		Directions: {},
 
@@ -989,8 +989,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	if (opt_dryRun) {
 		return vars.res;
 	}
-
-	console.log(vars.res);
 
 	// Компиляция на сервере
 	if (require) {
