@@ -320,7 +320,7 @@ if (!Array.prototype.reduce) {
 	 * Рекурсивно привести массив к другому значению
 	 * (функция callback принимает результат выполнения предыдущей итерации и актуальный элемент)
 	 *
-	 * @this {!Array}
+	 * @this {Array}
 	 * @param {function(*, *, number, !Array): *} callback - функция, которая будет вызываться для каждого элемента массива
 	 * @param {Object=} [opt_initialValue=this[0]] - объект, который будет использоваться как первый элемент при первом вызове callback
 	 * @return {*}
@@ -735,7 +735,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Добавить строку в результирующую
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} str - исходная строка
 			 */
 			save: function (str) {
@@ -747,7 +747,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Изменить результирующую строку
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} str - исходная строка
 			 */
 			replace: function (str) {
@@ -759,7 +759,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Добавить новую позицию блока
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @param {*} val - значение
 			 * @param {?boolean=} opt_sys - если true, то параметр системный
@@ -784,7 +784,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Удалить последнюю позицию блока
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @return {*}
 			 */
@@ -799,7 +799,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Вернуть позиции блока
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @returns {!Array}
 			 */
@@ -814,7 +814,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Вернуть true, если у блока есть позиции
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @return {boolean}
 			 */
@@ -829,7 +829,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Вернуть последнюю позицию
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @return {*}
 			 */
@@ -849,7 +849,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Вернуть true, если позиция не системная
 			 *
-			 * @this {!Object} vars
+			 * @this {Object} vars
 			 * @param {number} i - номер позиции
 			 * @return {boolean}
 			 */
