@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.0.4',
+		VERSION: '2.0.5',
 
 		Directions: {},
 
@@ -279,7 +279,11 @@ Snakeskin.Filters.replace = function (str, search, replace) {
  * @return {string}
  */
 Snakeskin.Filters.json = function (val) {
-	return JSON.stringify(val);
+	if (typeof val === 'object') {
+		return JSON.stringify(val);
+	}
+
+	return String(val);
 };
 
 
