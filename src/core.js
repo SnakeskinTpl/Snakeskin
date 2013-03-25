@@ -55,11 +55,7 @@ var Snakeskin = {
 	//#endif
 
 	// common.js экспорт
-	var key;
 	if (require) {
-		for (key in Snakeskin) {
-			if (!Snakeskin.hasOwnProperty(key)) { continue; }
-			exports[key] = Snakeskin[key];
-		}
+		module.exports = Snakeskin;
 	}
 })(typeof window === 'undefined');
