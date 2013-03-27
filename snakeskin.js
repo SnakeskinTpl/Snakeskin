@@ -395,7 +395,7 @@ var // Кеш шаблонов
  * @return {string}
  */
 Snakeskin._escape = function (str, opt_stack) {
-	return str.replace(/(?:(['"])\1|(['"])[\s\S]*?(?:(?:[\\]{2}(?=\2))|[^\\])\2)/g, function (sstr) {
+	return str.replace(/(["'])(?:\\[\S\s]|(?:(?!\1|\\)[\S\s]))*\1/g, function (sstr) {
 		if (opt_stack) {
 			opt_stack.push(sstr);
 		}
