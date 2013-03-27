@@ -28,6 +28,7 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
  * @param {number} vars.openBlockI - количество открытых блоков
  * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
+ * @param {!Array.<string>} vars.quotContent - массив строк
  * @param {function(string)} vars.save - сохранить строку в результирующую
  * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
@@ -91,6 +92,8 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
  * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */

@@ -6,7 +6,7 @@
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.beginI - количество открытых блоков
+ * @param {number} vars.openBlockI - количество открытых блоков
  * @param {string} vars.parentName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {!Object} vars.posCache - кеш позиций
@@ -22,7 +22,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 	var that = this,
 		args = arguments,
 
-		beginI = vars.openBlockI + 1,
+		openBlockI = vars.openBlockI + 1,
 		res;
 
 	// Окончание шаблона
@@ -30,11 +30,11 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 		this.Directions.templateEnd.apply(this, arguments);
 
 	// Окончание простых блоков
-	} else if (vars.isNotSysPos(beginI)) {
+	} else if (vars.isNotSysPos(openBlockI)) {
 		this.forEach(vars.posCache, function (el, key) {
 			el = vars.getLastPos(key);
 
-			if (el && ((typeof el.i !== 'undefined' && el.i === beginI) || el === beginI)) {
+			if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
 				res = true;
 				that.Directions[key + 'End'].apply(that, args);
 
@@ -51,7 +51,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 	this.forEach(vars.sysPosCache, function (el, key) {
 		el = vars.getLastPos(key);
 
-		if (el && ((typeof el.i !== 'undefined' && el.i === beginI) || el === beginI)) {
+		if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
 			that.Directions[key + 'End'].apply(that, args);
 			return false;
 		}

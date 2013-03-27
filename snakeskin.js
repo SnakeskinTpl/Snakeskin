@@ -618,7 +618,7 @@ Snakeskin.error = function (msg) {
 /**
  * Скомпилировать шаблоны
  *
- * @param {(Node|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
+ * @param {(Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
  * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом
  * @param {?boolean=} [opt_dryRun=false] - если true, то шаблон только транслируется (не компилируется), приватный параметр
  * @param {Object=} [opt_info] - дополнительная информация, приватный параметр
@@ -1028,7 +1028,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
  * @param {number} vars.i - номер итерации
  * @param {number} vars.startI - номер итерации объявления шаблона
  * @param {string} vars.tplName - название шаблона
+ * @param {!Object.<boolean>} vars.nmCache - кеш объявленных пространств имён
  * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {!Array.<string>} vars.quotContent - массив строк
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
  * @param {!Object} adv - дополнительные параметры
@@ -1236,8 +1238,11 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
  * @param {number} vars.startI - номер итерации объявления шаблона
  * @param {string} vars.tplName - название шаблона
  * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {number} vars.backHashI - количество обратных вызовов прототипов
+ * @param {string} vars.lastBack - название последнего обратного вызова
  * @param {string} vars.source - исходный текст шаблона
  * @param {string} vars.res - результирущая строка
+ * @param {!Array.<string>} vars.quotContent - массив строк
  * @param {boolean} vars.canWrite - если false, то шаблон не вставляется в результирующую JS строку
  * @param {function(string)} vars.save - сохранить строку в результирующую
  *
@@ -1520,6 +1525,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) 
  * @param {number} vars.startI - номер итерации объявления шаблона
  * @param {string} vars.tplName - название шаблона
  * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
  * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
  * @param {number} vars.backHashI - количество обратных вызовов прототипов
  * @param {string} vars.lastBack - название последнего обратного вызова
@@ -1909,6 +1915,7 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
  * @param {number} vars.openBlockI - количество открытых блоков
  * @param {string} vars.parentTplName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
+ * @param {!Array.<string>} vars.quotContent - массив строк
  * @param {function(string)} vars.save - сохранить строку в результирующую
  * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
  * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
@@ -1972,6 +1979,8 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {function(string)} vars.save - сохранить строку в результирующую
  * @param {function(string): *} vars.popPos - удалить последнюю позицию
  */
@@ -1990,7 +1999,7 @@ Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
  * @param {number} commandLength - длина команды
  *
  * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.beginI - количество открытых блоков
+ * @param {number} vars.openBlockI - количество открытых блоков
  * @param {string} vars.parentName - название родительского шаблона
  * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
  * @param {!Object} vars.posCache - кеш позиций
@@ -2006,7 +2015,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 	var that = this,
 		args = arguments,
 
-		beginI = vars.openBlockI + 1,
+		openBlockI = vars.openBlockI + 1,
 		res;
 
 	// Окончание шаблона
@@ -2014,11 +2023,11 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 		this.Directions.templateEnd.apply(this, arguments);
 
 	// Окончание простых блоков
-	} else if (vars.isNotSysPos(beginI)) {
+	} else if (vars.isNotSysPos(openBlockI)) {
 		this.forEach(vars.posCache, function (el, key) {
 			el = vars.getLastPos(key);
 
-			if (el && ((typeof el.i !== 'undefined' && el.i === beginI) || el === beginI)) {
+			if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
 				res = true;
 				that.Directions[key + 'End'].apply(that, args);
 
@@ -2035,7 +2044,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 	this.forEach(vars.sysPosCache, function (el, key) {
 		el = vars.getLastPos(key);
 
-		if (el && ((typeof el.i !== 'undefined' && el.i === beginI) || el === beginI)) {
+		if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
 			that.Directions[key + 'End'].apply(that, args);
 			return false;
 		}

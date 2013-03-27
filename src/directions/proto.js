@@ -124,6 +124,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) 
  * @param {number} vars.startI - номер итерации объявления шаблона
  * @param {string} vars.tplName - название шаблона
  * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
  * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
  * @param {number} vars.backHashI - количество обратных вызовов прототипов
  * @param {string} vars.lastBack - название последнего обратного вызова
