@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.0.7',
+		VERSION: '2.0.8',
 
 		Directions: {},
 
@@ -38,6 +38,7 @@ var Snakeskin = {
 	//#include compiler.js
 
 	//#include directions/template.js
+	//#include directions/call.js
 
 	//#include directions/block.js
 	//#include directions/proto.js
