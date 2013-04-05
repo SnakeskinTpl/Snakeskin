@@ -67,7 +67,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 				part = el.split('}');
 				command += '\\\'\' + ' + that._returnVar(part[0], vars) +
 					' + \'\\\'' +
-					that._uescape(part.slice(1).join(''), vars.quotContent)
+					that._uescape(part.slice(1).join('}'), vars.quotContent)
 						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
 
 			} else {
