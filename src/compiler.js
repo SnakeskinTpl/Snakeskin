@@ -93,7 +93,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				})
 
 				// Однострочный комментарий
-				.replace(/\/\/.*/gm, '')
+				.replace(/\/\/\/.*/gm, '')
 				// Отступы и новая строка
 				.replace(/[\t\v\r\n]/gm, '')
 				// Многострочный комментарий
