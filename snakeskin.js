@@ -739,113 +739,106 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Добавить строку в результирующую
 			 *
-			 * @this {Object} vars
 			 * @param {string} str - исходная строка
 			 */
 			save: function (str) {
-				if (!this.tplName || Snakeskin.write[this.tplName] !== false) {
-					this.res += str;
+				if (!vars.tplName || Snakeskin.write[vars.tplName] !== false) {
+					vars.res += str;
 				}
 			},
 
 			/**
 			 * Изменить результирующую строку
 			 *
-			 * @this {Object} vars
 			 * @param {string} str - исходная строка
 			 */
 			replace: function (str) {
-				if (this.canWrite) {
-					this.res = str;
+				if (vars.canWrite) {
+					vars.res = str;
 				}
 			},
 
 			/**
 			 * Добавить новую позицию блока
 			 *
-			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @param {*} val - значение
 			 * @param {?boolean=} opt_sys - если true, то параметр системный
 			 */
 			pushPos: function (name, val, opt_sys) {
 				if (opt_sys) {
-					if (!this.sysPosCache[name]) {
-						this.sysPosCache[name] = [];
+					if (!vars.sysPosCache[name]) {
+						vars.sysPosCache[name] = [];
 					}
 
-					this.sysPosCache[name].push(val);
+					vars.sysPosCache[name].push(val);
 
 				} else {
-					if (!this.posCache[name]) {
-						this.posCache[name] = [];
+					if (!vars.posCache[name]) {
+						vars.posCache[name] = [];
 					}
 
-					this.posCache[name].push(val);
+					vars.posCache[name].push(val);
 				}
 			},
 
 			/**
 			 * Удалить последнюю позицию блока
 			 *
-			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @return {*}
 			 */
 			popPos: function (name) {
-				if (this.sysPosCache[name]) {
-					return this.sysPosCache[name].pop();
+				if (vars.sysPosCache[name]) {
+					return vars.sysPosCache[name].pop();
 				}
 
-				return this.posCache[name].pop();
+				return vars.posCache[name].pop();
 			},
 
 			/**
 			 * Вернуть позиции блока
 			 *
-			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @returns {!Array}
 			 */
 			getPos: function (name) {
-				if (this.sysPosCache[name]) {
-					return this.sysPosCache[name];
+				if (vars.sysPosCache[name]) {
+					return vars.sysPosCache[name];
 				}
 
-				return this.posCache[name];
+				return vars.posCache[name];
 			},
 
 			/**
 			 * Вернуть true, если у блока есть позиции
 			 *
-			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @return {boolean}
 			 */
 			hasPos: function (name) {
-				if (this.sysPosCache[name]) {
-					return this.sysPosCache[name].length;
+				if (vars.sysPosCache[name]) {
+					return vars.sysPosCache[name].length;
 				}
 
-				return !!(this.posCache[name] && this.posCache[name].length);
+				return !!(vars.posCache[name] && vars.posCache[name].length);
 			},
 
 			/**
 			 * Вернуть последнюю позицию
 			 *
-			 * @this {Object} vars
 			 * @param {string} name - название блока
 			 * @return {*}
 			 */
 			getLastPos: function (name) {
-				if (this.sysPosCache[name]) {
-					if (this.sysPosCache[name].length) {
-						return this.sysPosCache[name][this.sysPosCache[name].length - 1];
+				if (vars.sysPosCache[name]) {
+					if (vars.sysPosCache[name].length) {
+						return vars.sysPosCache[name][vars.sysPosCache[name].length - 1];
 					}
 
 				} else {
-					if (this.posCache[name] && this.posCache[name].length) {
-						return this.posCache[name][this.posCache[name].length - 1];
+					if (vars.posCache[name] && vars.posCache[name].length) {
+						return vars.posCache[name][vars.posCache[name].length - 1];
 					}
 				}
 			},
@@ -853,16 +846,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			/**
 			 * Вернуть true, если позиция не системная
 			 *
-			 * @this {Object} vars
 			 * @param {number} i - номер позиции
 			 * @return {boolean}
 			 */
 			isNotSysPos: function (i) {
-				var that = this,
-					res = true;
+				var res = true;
 
 				Snakeskin.forEach(this.sysPosCache, function (el, key) {
-					el = that.getLastPos(key);
+					el = vars.getLastPos(key);
 
 					if (el && ((typeof el.i !== 'undefined' && el.i === i) || el === i)) {
 						res = false;
