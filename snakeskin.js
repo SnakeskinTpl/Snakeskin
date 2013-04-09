@@ -607,7 +607,7 @@ Snakeskin._genErrorAdvInfo = function (obj) {
  * Генерировать ошибку
  *
  * @param {string} msg - сообщение ошибки
- * @returns {!Error}
+ * @return {!Error}
  */
 Snakeskin.error = function (msg) {
 	var error = new Error(msg);
@@ -800,7 +800,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 * Вернуть позиции блока
 			 *
 			 * @param {string} name - название блока
-			 * @returns {!Array}
+			 * @return {!Array}
 			 */
 			getPos: function (name) {
 				if (vars.sysPosCache[name]) {

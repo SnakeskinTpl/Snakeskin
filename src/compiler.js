@@ -183,7 +183,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 * Вернуть позиции блока
 			 *
 			 * @param {string} name - название блока
-			 * @returns {!Array}
+			 * @return {!Array}
 			 */
 			getPos: function (name) {
 				if (vars.sysPosCache[name]) {

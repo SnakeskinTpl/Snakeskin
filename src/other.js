@@ -30,7 +30,7 @@ Snakeskin._genErrorAdvInfo = function (obj) {
  * Генерировать ошибку
  *
  * @param {string} msg - сообщение ошибки
- * @returns {!Error}
+ * @return {!Error}
  */
 Snakeskin.error = function (msg) {
 	var error = new Error(msg);
