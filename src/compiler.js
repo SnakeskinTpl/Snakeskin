@@ -335,7 +335,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			}
 
 			if (!vars.parentTplName) {
-				vars.save(el);
+				vars.save(el.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\''));
 			}
 		}
 	}

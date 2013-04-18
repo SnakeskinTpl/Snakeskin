@@ -4,7 +4,7 @@
 
 var fs = require('fs'),
 	file, newFile,
-	
+
 	commonjs;
 
 global.Snakeskin = require('./snakeskin');
@@ -15,10 +15,10 @@ if (process.argv.length < 3) {
 	file = process.argv[2];
 	commonjs = process.argv[3] === '--commonjs';
 	newFile = process.argv[commonjs ? 4 : 3] || (file + '.js');
-	
+
 	fs.readFile(file, function (err, data) {
 		var res;
-		
+
 		if (err) {
 			console.log(err);
 		} else {
