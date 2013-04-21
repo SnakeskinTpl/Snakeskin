@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.1',
+		VERSION: '2.2',
 
 		Directions: {},
 
@@ -1214,6 +1214,11 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	});
 
 	vars.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
+	vars.save('var TPL_NAME = \'' + tmpTplName + '\';');
+
+	if (parentTplName) {
+		vars.save('var PARENT_TPL_NAME = \'' + parentTplName + '\';');
+	}
 };
 
 /**
@@ -1741,7 +1746,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 	}
 
 	// Инициализация переменных
-	if (/=(?!=)/.test(command)) {
+	if (/[^=]=[^=]/.test(command)) {
 		varName = command.split('=')[0].trim();
 
 		if (tplName) {

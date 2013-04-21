@@ -38,7 +38,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 	}
 
 	// Инициализация переменных
-	if (/=(?!=)/.test(command)) {
+	if (/[^=]=[^=]/.test(command)) {
 		varName = command.split('=')[0].trim();
 
 		if (tplName) {

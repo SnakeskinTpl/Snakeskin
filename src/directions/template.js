@@ -209,6 +209,11 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 	});
 
 	vars.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
+	vars.save('var TPL_NAME = \'' + tmpTplName + '\';');
+
+	if (parentTplName) {
+		vars.save('var PARENT_TPL_NAME = \'' + parentTplName + '\';');
+	}
 };
 
 /**
