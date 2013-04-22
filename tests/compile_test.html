@@ -146,8 +146,8 @@
 				{a = 'foo   '}
 				{proto a}
 					{block e}
-						{bem (span) my, val: 1, next: ${a|ucfirst|trim}}{end}
-						{bem my, val: 1, next: ${a|ucfirst|trim}}{end}
+						{bem (span) my, val: 1, next: '${a|ucfirst|trim}'}{end}
+						{bem my, val: 1, next: '${a|ucfirst|trim}'}{end}
 					{end}
 				{end}
 			{end}
