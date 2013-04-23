@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.3',
+		VERSION: '2.2.4',
 
 		Directions: {},
 
@@ -1994,7 +1994,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 
 		vars.save('' +
 			'__SNAKESKIN_RESULT__ += \'' +
-				'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-bem" data-params="{name: \\\'' +
+				'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
 				command +
 			'}">\';'
 		);
