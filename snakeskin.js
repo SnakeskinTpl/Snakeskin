@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.2',
+		VERSION: '2.2.3',
 
 		Directions: {},
 
@@ -885,6 +885,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			// Начало управляющей конструкции
 			// (не забываем следить за уровнем вложенностей {)
 			if (el === '{') {
+
+
 				if (begin) {
 					fakeBegin++;
 
@@ -1331,6 +1333,22 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) 
 Snakeskin.Directions['call'] = function (command, commandLength, vars) {
 	if (!vars.parentTplName && !vars.protoStart) {
 		vars.save('__SNAKESKIN_RESULT__ += ' + command + ';');
+	}
+};/**
+ * Директива void
+ *
+ * @this {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ *
+ * @param {!Object} vars - объект локальных переменныхв
+ * @param {string} vars.parentTplName - название родительского шаблона
+ * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
+ * @param {function(string)} vars.save - сохранить строку в результирующую
+ */
+Snakeskin.Directions['void'] = function (command, commandLength, vars) {
+	if (!vars.parentTplName && !vars.protoStart) {
+		vars.save(command + ';');
 	}
 };
 /*!

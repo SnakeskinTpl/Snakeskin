@@ -268,6 +268,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			// Начало управляющей конструкции
 			// (не забываем следить за уровнем вложенностей {)
 			if (el === '{') {
+
+
 				if (begin) {
 					fakeBegin++;
 
