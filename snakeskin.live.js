@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.4',
+		VERSION: '2.2.5',
 
 		Directions: {},
 
@@ -29,8 +29,9 @@ var Snakeskin = {
  *
  * @param {(!Array|!Object)} obj - массив или объект
  * @param {(function(*, number, boolean, boolean, number)|function(*, string, number, boolean, boolean, number))} callback - функция callback
+ * @param {Object=} [opt_ctx] - контекст функции
  */
-Snakeskin.forEach = function (obj, callback) {
+Snakeskin.forEach = function (obj, callback, opt_ctx) {
 	var i = -1,
 		length,
 		key;
@@ -38,9 +39,18 @@ Snakeskin.forEach = function (obj, callback) {
 	if (Array.isArray(obj)) {
 		length = obj.length;
 		while (++i < length) {
-			if (callback(obj[i], i, i === 0, i === length - 1, length) === false) {
-				break;
+			if (opt_ctx) {
+				if (callback.call(opt_ctx, obj[i], i, i === 0, i === length - 1, length) === false) {
+					break;
+				}
+
+			} else {
+				if (callback(obj[i], i, i === 0, i === length - 1, length) === false) {
+					break;
+				}
 			}
+
+
 		}
 
 	} else {
@@ -55,8 +65,16 @@ Snakeskin.forEach = function (obj, callback) {
 		for (key in obj) {
 			if (!obj.hasOwnProperty(key)) { continue; }
 			i++;
-			if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
-				break;
+
+			if (opt_ctx) {
+				if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
+					break;
+				}
+
+			} else {
+				if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
+					break;
+				}
 			}
 		}
 	}

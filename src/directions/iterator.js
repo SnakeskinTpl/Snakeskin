@@ -43,6 +43,6 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, vars) {
 	vars.popPos('forEach');
 
 	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('});');
+		vars.save('}, this);');
 	}
 };
