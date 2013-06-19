@@ -44,30 +44,30 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 		if (tplName) {
 			// Попытка повторной инициализации переменной
 			if (varCache[tplName][varName] || varICache[tplName][varName]) {
-				throw Snakeskin.error('' +
+				throw Snakeskin.error(
 					'Variable "' + varName + '" is already defined ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						Snakeskin._genErrorAdvInfo(adv.info) +
+						Snakeskin.genErrorAdvInfo(adv.info) +
 					'")!'
 				);
 			}
 
 			// Попытка инициализировать переменную с зарезервированным именем
 			if (sysConst[varName]) {
-				throw Snakeskin.error('' +
+				throw Snakeskin.error(
 					'Can\'t declare variable "' + varName + '", try another name ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						Snakeskin._genErrorAdvInfo(adv.info) +
+						Snakeskin.genErrorAdvInfo(adv.info) +
 					'")!'
 				);
 			}
 
 			// Попытка инициализации переменной в цикле
 			if (vars.hasPos('forEach')) {
-				throw Snakeskin.error('' +
+				throw Snakeskin.error(
 					'Variable "' + varName + '" can\'t be defined in a loop ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						Snakeskin._genErrorAdvInfo(adv.info) +
+						Snakeskin.genErrorAdvInfo(adv.info) +
 					'")!'
 				);
 			}
@@ -132,7 +132,7 @@ Snakeskin._returnVar = function (command, vars) {
 				varPath = el;
 			}
 
-			varPath = '' +
+			varPath =
 				'Snakeskin.Filters.undef(' +
 				(!varCache[vars.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
 				varPath + ')';

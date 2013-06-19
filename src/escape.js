@@ -2,12 +2,11 @@
  * Заметить блоки вида ' ... ', " ... ", / ... / на
  * __SNAKESKIN_QUOT__номер
  *
- * @private
  * @param {string} str - исходная строка
  * @param {Array=} [opt_stack] - массив для подстрок
  * @return {string}
  */
-Snakeskin._replaceDangerBlocks = function (str, opt_stack) {
+Snakeskin.replaceDangerBlocks = function (str, opt_stack) {
 	var begin,
 		escape,
 		end = true,
@@ -52,12 +51,11 @@ Snakeskin._replaceDangerBlocks = function (str, opt_stack) {
 /**
  * Заметить __SNAKESKIN_QUOT__номер в строке на реальное содержимое
  *
- * @private
  * @param {string} str - исходная строка
  * @param {!Array} stack - массив c подстроками
  * @return {string}
  */
-Snakeskin._pasteDangerBlocks = function (str, stack) {
+Snakeskin.pasteDangerBlocks = function (str, stack) {
 	return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
 		return stack[pos];
 	});

@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '3.0',
+	VERSION: '2.3',
 
 	Directions: {},
 
@@ -74,21 +74,22 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
 		}
 	}
 };/*!
- * Фильтры
+ * Стандартные фильтры
  */
 
 var entityMap = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		'\'': '&#39;',
-		'/': '&#x2F;'
-	},
-	escapeHTMLRgxp = /[&<>"'\/]/g,
-	escapeHTML = function (s) {
-		return entityMap[s];
-	};
+	'&': '&amp;',
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	'\'': '&#39;',
+	'/': '&#x2F;'
+};
+
+var escapeHTMLRgxp = /[&<>"'\/]/g;
+function escapeHTML(s) {
+	return entityMap[s];
+}
 
 /**
  * Экранирование строки html
@@ -97,7 +98,7 @@ var entityMap = {
  * @return {string}
  */
 Snakeskin.Filters.html = function (str) {
-	return String(str).replace(escapeHTMLRgxp, escapeHTML);
+	return (str + '').replace(escapeHTMLRgxp, escapeHTML);
 };
 
 /**
@@ -117,11 +118,12 @@ var uentityMap = {
 	'&quot;': '"',
 	'&#39;': '\'',
 	'&#x2F;': '/'
-},
-uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
-uescapeHTML = function (s) {
-	return uentityMap[s];
 };
+
+var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g;
+function uescapeHTML(s) {
+	return uentityMap[s];
+}
 
 /**
  * Снять экранирование строки html
@@ -130,7 +132,7 @@ uescapeHTML = function (s) {
  * @return {string}
  */
 Snakeskin.Filters.uhtml = function (str) {
-	return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
+	return (str + '').replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
 var stripTagsRgxp = /<\/?[^>]+>/g;
@@ -142,7 +144,7 @@ var stripTagsRgxp = /<\/?[^>]+>/g;
  * @return {string}
  */
 Snakeskin.Filters.stripTags = function (str) {
-	return String(str).replace(stripTagsRgxp, '');
+	return (str + '').replace(stripTagsRgxp, '');
 };
 
 var uriO = /%5B/g,
@@ -155,17 +157,17 @@ var uriO = /%5B/g,
  * @return {string}
  */
 Snakeskin.Filters.uri = function (str) {
-	return encodeURI(String(str)).replace(uriO, '[').replace(uriC, ']');
+	return encodeURI(str + '').replace(uriO, '[').replace(uriC, ']');
 };
 
 /**
  * Перевести строку в верхний регистр
  *
- * @param {string} str - исходная строка
+ * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters.upper = function (str) {
-	return String(str).toUpperCase();
+	return (str + '').toUpperCase();
 };
 
 /**
@@ -175,7 +177,7 @@ Snakeskin.Filters.upper = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.ucfirst = function (str) {
-	str = String(str);
+	str += '';
 	return str.charAt(0).toUpperCase() + str.substring(1);
 };
 
@@ -186,7 +188,7 @@ Snakeskin.Filters.ucfirst = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.lower = function (str) {
-	return String(str).toLowerCase();
+	return (str + '').toLowerCase();
 };
 
 /**
@@ -196,7 +198,7 @@ Snakeskin.Filters.lower = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.lcfirst = function (str) {
-	str = String(str);
+	str += '';
 	return str.charAt(0).toLowerCase() + str.substring(1);
 };
 
@@ -207,7 +209,7 @@ Snakeskin.Filters.lcfirst = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.trim = function (str) {
-	return String(str).trim();
+	return (str + '').trim();
 };
 
 var spaceCollapseRgxp = /\s{2,}/g;
@@ -219,11 +221,11 @@ var spaceCollapseRgxp = /\s{2,}/g;
  * @return {string}
  */
 Snakeskin.Filters.collapse = function (str) {
-	return String(str).replace(spaceCollapseRgxp, ' ').trim();
+	return (str + '').replace(spaceCollapseRgxp, ' ').trim();
 };
 
 /**
- * Обрезать строку до нужно длины (в конце, если нужно, ставится троеточие)
+ * Обрезать строку до нужной длины (в конце, если нужно, ставится троеточие)
  *
  * @param {*} str - исходная строка
  * @param {number} length - максимальная длина текста
@@ -231,14 +233,15 @@ Snakeskin.Filters.collapse = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
-	str = String(str);
+	str += '';
 	if (!str || str.length <= length) {
 		return str;
 	}
 
 	var tmp = str.substring(0, length - 1),
-		lastInd, i = tmp.length;
+		lastInd;
 
+	var i = tmp.length;
 	while (i-- && opt_wordOnly) {
 		if (tmp.charAt(i) === ' ') {
 			lastInd = i;
@@ -270,19 +273,19 @@ Snakeskin.Filters.repeat = function (str, opt_num) {
  * @return {string}
  */
 Snakeskin.Filters.remove = function (str, search) {
-	return String(str).replace(search, '');
+	return (str + '').replace(search, '');
 };
 
 /**
  * Заменить все подстроки в строке
  *
  * @param {*} str - исходная строка
- * @param {(string|RegExp)} search - искомая подстрока
+ * @param {(string|!RegExp)} search - искомая подстрока
  * @param {string} replace - строка для замены
  * @return {string}
  */
 Snakeskin.Filters.replace = function (str, search, replace) {
-	return String(str).replace(search, replace);
+	return (str + '').replace(search, replace);
 };
 
 /**
@@ -296,7 +299,7 @@ Snakeskin.Filters.json = function (val) {
 		return JSON.stringify(val);
 	}
 
-	return String(val);
+	return (val + '');
 };
 
 

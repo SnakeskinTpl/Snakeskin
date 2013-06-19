@@ -2,6 +2,7 @@
  * Глобальные переменные замыкания
  */
 
+var require;
 var cache = {};
 
 // Кеш блоков
@@ -55,6 +56,23 @@ var escapeEndMap = {
  *     то шаблон только транслируется (не компилируется), приватный параметр
  */
 function DirObj(src, commonJS, dryRun) {
+	var proto = this.prototype;
+	for (var key in proto) {
+		if (!proto.hasOwnProperty(key)) {
+			continue;
+		}
+
+		if (proto[key].init) {
+			this[key] = proto[key].init();
+		}
+	}
+
+	/**
+	 * Если false, то шаблон не вставляется в результирующую JS строку
+	 * @type {boolean}
+	 */
+	this.canWrite = true;
+
 	/**
 	 * Номер итерации
 	 * @type {number}
@@ -66,12 +84,6 @@ function DirObj(src, commonJS, dryRun) {
 	 * @type {number}
 	 */
 	this.openBlockI = 0;
-
-	/**
-	 * Кеш объявленных пространств имён
-	 * @type {!Object}
-	 */
-	this.nmCache = {};
 
 	/**
 	 * Кеш позиций директив
@@ -147,6 +159,8 @@ function DirObj(src, commonJS, dryRun) {
 			'function exec() {' :
 		'');
 }
+
+DirObj.params = {};
 
 /**
  * Добавить строку в результирующую

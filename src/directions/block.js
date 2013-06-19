@@ -32,10 +32,10 @@ Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
 
 		// Попытка декларировать блок несколько раз
 		if (blockCache[tplName][command]) {
-			throw Snakeskin.error('' +
+			throw Snakeskin.error(
 				'Block "' + command + '" is already defined ' +
 				'(command: {block ' + command + '}, template: "' + tplName + ', ' +
-					Snakeskin._genErrorAdvInfo(adv.info) +
+					Snakeskin.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}

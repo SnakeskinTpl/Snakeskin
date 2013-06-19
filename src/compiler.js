@@ -84,7 +84,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				begin = false;
 
 				var commandLength = command.length;
-				command = Snakeskin._replaceDangerBlocks(command, dirObj.quotContent).trim();
+				command = Snakeskin.replaceDangerBlocks(command, dirObj.quotContent).trim();
 
 				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
@@ -160,10 +160,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	// то кидаем исключение
 	if (dirObj.openBlockI !== 0) {
 		throw Snakeskin.error('Missing closing or opening tag in the template, ' +
-			Snakeskin._genErrorAdvInfo(opt_info) + '")!');
+			Snakeskin.genErrorAdvInfo(opt_info) + '")!');
 	}
 
-	dirObj.res = Snakeskin._pasteDangerBlocks(dirObj.res, dirObj.quotContent)
+	dirObj.res = Snakeskin.pasteDangerBlocks(dirObj.res, dirObj.quotContent)
 		.replace(/[\t\v\r\n]/gm, '')
 		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
