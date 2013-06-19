@@ -14,7 +14,7 @@
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
 	var part = command.match(/(.*?),\s+(.*)/);
-	this.BEM[part[1]] = (new Function('return {' + this._uescape(part[2], vars.quotContent) + '}'))();
+	this.BEM[part[1]] = (new Function('return {' + this._pasteDangerBlocks(part[2], vars.quotContent) + '}'))();
 };
 
 /**
@@ -57,7 +57,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 		command = part.join(',');
 
 		// Обработка переменных
-		part = that._uescape(command, vars.quotContent).split('${');
+		part = that._pasteDangerBlocks(command, vars.quotContent).split('${');
 		command = '';
 
 		this.forEach(part, function (el, i) {

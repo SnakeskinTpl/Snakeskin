@@ -4,11 +4,11 @@
  * @tests compile_test.html
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
- * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом
+ * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
  *
- * @param {Object=} [opt_info] - дополнительная информация, приватный параметр
+ * @param {Object=} [opt_info] - дополнительная информация о запуске, приватный параметр
  * @return {string}
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
@@ -17,37 +17,57 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		opt_info.node = src;
 	}
 
-	var dirObj = new DirObj(src, cData, opt_commonJS, opt_dryRun);
+	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
 
 	var begin,
 		fakeBegin = 0,
 		beginStr;
 
-	var command = '';
+	var command = '',
+		escape,
+		comment;
+
 	var bOpen,
-		fnRes;
-
-	var map = {
-		'"': true,
-		'\'': true,
-		'/': true
-	};
-
-	var endMap = {
-		',': true,
-		';': true,
-		'=': true,
-		'|': true,
-		'&': true,
-		'?': true,
-		':': true,
-		'(': true
-	};
+		bEnd = true;
 
 	while (++dirObj.i < dirObj.source.length) {
-		var el = dirObj.source.charAt(dirObj.i);
+		var str = dirObj.source,
+			el = str.charAt(dirObj.i);
 
 		if (!bOpen) {
+			if (begin) {
+				if (el === '\\' || escape) {
+					escape = !escape;
+				}
+
+			} else {
+				escape = false;
+			}
+
+			// Обработка комментариев
+			if (!escape) {
+				if (el === '/') {
+					if (str.charAt(dirObj.i + 1) === '/' && str.charAt(dirObj.i + 2) === '/') {
+						comment = '///';
+
+					} else if (str.charAt(dirObj.i + 1) === '*') {
+						comment = '/*';
+						dirObj.i++;
+
+					} else if (str.charAt(dirObj.i - 1) === '*') {
+						comment = false;
+						continue;
+					}
+
+				} else if (/[\n\v\r]/.test(el) && comment === '///') {
+					comment = false;
+				}
+			}
+
+			if (comment) {
+				continue;
+			}
+
 			// Начало управляющей конструкции
 			// (не забываем следить за уровнем вложенностей {)
 			if (el === '{') {
@@ -64,13 +84,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				begin = false;
 
 				var commandLength = command.length;
-				command = this._escape(command, dirObj.quotContent).trim();
+				command = this._replaceDangerBlocks(command, dirObj.quotContent).trim();
 
 				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = this.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
-				fnRes = this.Directions[commandType].call(this,
+				var fnRes = this.Directions[commandType].call(this,
 					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,
 					commandLength,
 
@@ -99,12 +119,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				beginStr = false;
 			}
 
-			var bEnd,
-				bEscape;
-
+			var bEscape;
 			if (command.length) {
 				if (!bOpen) {
-					if (endMap[el]) {
+					if (escapeEndMap[el]) {
 						bEnd = true;
 
 					} else if (/[^\s\/]/.test(el)) {
@@ -112,13 +130,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 					}
 				}
 
-				if (map[el] && (el === '/' ? bEnd : true) && !bOpen) {
+				if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
 					bOpen = el;
 
 				} else if (bOpen && (el === '\\' || bEscape)) {
 					bEscape = !bEscape;
 
-				} else if (map[el] && bOpen === el && !bEscape) {
+				} else if (escapeMap[el] && bOpen === el && !bEscape) {
 					bOpen = false;
 				}
 			}
@@ -144,12 +162,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		throw this.error('Missing closing or opening tag in the template, ' + this._genErrorAdvInfo(opt_info) + '")!');
 	}
 
-	dirObj.res = this._uescape(dirObj.res, dirObj.quotContent)
+	dirObj.res = this._pasteDangerBlocks(dirObj.res, dirObj.quotContent)
+		.replace(/[\t\v\r\n]/gm, '')
 		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
-			return cData[pos]
+			return dirObj.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
 				.replace(/\v/gm, '\\v')

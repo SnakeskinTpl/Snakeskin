@@ -40,7 +40,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Имя + пространство имён шаблона
 	tmpTplName = /(.*?)\(/.exec(command)[1];
-	vars.tplName = tplName = this._uescape(tmpTplName, vars.quotContent);
+	vars.tplName = tplName = this._pasteDangerBlocks(tmpTplName, vars.quotContent);
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
@@ -58,7 +58,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Название родительского шаблона
 	if (/\s+extends\s+/.test(command)) {
-		vars.parentTplName = parentTplName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
+		vars.parentTplName = parentTplName = this._pasteDangerBlocks(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
 	}
 
 	// Глобальный кеш блоков
@@ -304,7 +304,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) 
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				this._uescape(tplName, vars.quotContent).replace(/'/g, '\\\'') +
+				this._pasteDangerBlocks(tplName, vars.quotContent).replace(/'/g, '\\\'') +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);

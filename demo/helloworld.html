@@ -3,15 +3,24 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Hello world</title>
-		<script src="../snakeskin.js"></script>
+		<script src="../snakeskin.min.js"></script>
 	</head>
 
 	<body>
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld()}
-				{a = 5 / 2}
+			{template helloWorld(/*sd*/)}
+				///123
+				/*sd*/
+				{a =
+				///1
+				2
+				}
+				{a}
+				{b = /* 2 */ 3}
+				{b}
+				1///2
 			{/template}
 		</script>
 

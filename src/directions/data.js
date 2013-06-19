@@ -17,7 +17,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, vars) {
 
 	if (!vars.parentTplName && !vars.protoStart) {
 		// Обработка переменных
-		part = that._uescape(command, vars.quotContent).split('${');
+		part = that._pasteDangerBlocks(command, vars.quotContent).split('${');
 		command = '';
 
 		if (part.length < 2) {

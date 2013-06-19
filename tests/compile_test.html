@@ -166,6 +166,18 @@
 				{c = (/1[2]\/\\/)}
 				{3 / 3}
 			{/template}
+
+			{template testComment(/* as */)}
+				///123
+				/*sd*/
+				{a =
+					///1
+					2
+				}
+				{a}
+				{b = /* 2 */ 3}
+				{b}
+			{/template}
 		</script>
 
 		<script type="text/javascript">
@@ -197,6 +209,7 @@
 				equal(withCData(), '\n					{template withFilter()}\n						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}\n						<a href=\"{b}\"></a>\n					{end}\n				<h1>Hello\n					{a}\n				!</h1>', 'Использование cdata областей');
 				equal(bemTest(), '<span class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
 				equal(testEscape(), '1', 'Проверка экранирования в директивах и работы / окончаний');
+				equal(testComment(), '23', 'Проверка работы комментариев');
 			});
 		</script>
 	</body>

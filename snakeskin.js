@@ -390,20 +390,40 @@ var paramsCache = {};
 // Карта наследований
 var extMap = {};
 
-// Стек CDATA
-var cData = [];
-
 // Системные константы
 var sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true
 };
 
+// Таблица экранирований
+var escapeMap = {
+	'"': true,
+	'\'': true,
+	'/': true
+};
+
+var escapeEndMap = {
+	',': true,
+	';': true,
+	'=': true,
+	'|': true,
+	'&': true,
+	'?': true,
+	':': true,
+	'(': true
+};
+
 /**
  * Конструктор управления директивами
+ *
  * @constructor
+ * @param {string} src - текст шаблона
+ * @param {boolean} commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {boolean} dryRun - если true,
+ *     то шаблон только транслируется (не компилируется), приватный параметр
  */
-function DirObj(src, cData, commonJS, dryRun) {
+function DirObj(src, commonJS, dryRun) {
 	/**
 	 * Номер итерации
 	 * @type {number}
@@ -443,7 +463,7 @@ function DirObj(src, cData, commonJS, dryRun) {
 
 	/**
 	 * Кеш обратных вызовов прототипов
-	 * @type {!Object.<!Array>}
+	 * @type {!Object}
 	 */
 	this.backHash = {};
 
@@ -455,28 +475,27 @@ function DirObj(src, cData, commonJS, dryRun) {
 
 	/**
 	 * Содержимое скобок
-	 * @type {!Array.<string>}
+	 * @type {!Array}
 	 */
 	this.quotContent = [];
 
 	/**
+	 * Содержимое блоков cdata
+	 * @type {!Array}
+	 */
+	this.cDataContent = [];
+	var cdata = this.cDataContent;
+
+	/**
 	 * Исходный текст шаблона
-	 *
 	 * @type {string}
 	 */
-	this.source = String(src.innerHTML || src)
+	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-			cData.push(data);
-			return '__SNAKESKIN_CDATA__' + (cData.length - 1);
+			cdata.push(data);
+			return '__SNAKESKIN_CDATA__' + (cdata.length - 1);
 		})
-
-		// Однострочный комментарий
-		.replace(/\/\/\/.*/gm, '')
-		// Отступы и новая строка
-		.replace(/[\t\v\r\n]/gm, '')
-		// Многострочный комментарий
-		.replace(/\/\*[\s\S]*?\*\//g, '')
 		.trim();
 
 	/**
@@ -528,7 +547,7 @@ DirObj.prototype.replace = function (str) {
  * @this {DirObj}
  * @param {string} name - название блока
  * @param {*} val - значение
- * @param {?boolean=} opt_sys - если true, то параметр системный
+ * @param {?boolean=} opt_sys - если true, то блок системный
  */
 DirObj.prototype.pushPos = function (name, val, opt_sys) {
 	if (opt_sys) {
@@ -632,12 +651,8 @@ DirObj.prototype.isNotSysPos = function (i) {
 	}, this);
 
 	return res;
-};/*!
- * Экранирование
- */
-
-/**
- * Заметить кавычки с содержимом в строке на ссылку:
+};/**
+ * Заметить блоки вида ' ... ', " ... ", / ... / на
  * __SNAKESKIN_QUOT__номер
  *
  * @private
@@ -645,14 +660,46 @@ DirObj.prototype.isNotSysPos = function (i) {
  * @param {Array=} [opt_stack] - массив для подстрок
  * @return {string}
  */
-Snakeskin._escape = function (str, opt_stack) {
-	return str.replace(/(["'])(?:\\[\S\s]|(?:(?!\1|\\)[\S\s]))*\1/g, function (sstr) {
-		if (opt_stack) {
-			opt_stack.push(sstr);
+Snakeskin._replaceDangerBlocks = function (str, opt_stack) {
+	var begin,
+		escape,
+		end = true,
+		selectionStart,
+		lastCutLength = 0;
+
+	return str.split('').reduce(function (res, el, i) {
+		if (!begin) {
+			if (escapeEndMap[el]) {
+				end = true;
+
+			} else if (/[^\s\/]/.test(el)) {
+				end = false;
+			}
 		}
 
-		return '__SNAKESKIN_QUOT__' + (opt_stack ? opt_stack.length - 1 : '_');
-	});
+		if (escapeMap[el] && (el === '/' ? end : true) && !begin) {
+			begin = el;
+			selectionStart = i;
+
+		} else if (begin && (el === '\\' || escape)) {
+			escape = !escape;
+
+		} else if (escapeMap[el] && begin === el && !escape) {
+			begin = false;
+			var cut = str.substring(selectionStart, i + 1),
+				label = '__SNAKESKIN_QUOT__' + (opt_stack ? opt_stack.length : '_');
+
+			if (opt_stack) {
+				opt_stack.push(cut);
+			}
+
+			res = res.substring(0, selectionStart - lastCutLength) + label + res.substring(i + 1 - lastCutLength);
+			lastCutLength += cut.length - label.length;
+
+		}
+
+		return res;
+	}, str);
 };
 
 /**
@@ -663,7 +710,7 @@ Snakeskin._escape = function (str, opt_stack) {
  * @param {!Array} stack - массив c подстроками
  * @return {string}
  */
-Snakeskin._uescape = function (str, stack) {
+Snakeskin._pasteDangerBlocks = function (str, stack) {
 	return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
 		return stack[pos];
 	});
@@ -872,11 +919,11 @@ Snakeskin.error = function (msg) {
  * @tests compile_test.html
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
- * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом
+ * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
  *
- * @param {Object=} [opt_info] - дополнительная информация, приватный параметр
+ * @param {Object=} [opt_info] - дополнительная информация о запуске, приватный параметр
  * @return {string}
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
@@ -885,37 +932,57 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		opt_info.node = src;
 	}
 
-	var dirObj = new DirObj(src, cData, opt_commonJS, opt_dryRun);
+	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
 
 	var begin,
 		fakeBegin = 0,
 		beginStr;
 
-	var command = '';
+	var command = '',
+		escape,
+		comment;
+
 	var bOpen,
-		fnRes;
-
-	var map = {
-		'"': true,
-		'\'': true,
-		'/': true
-	};
-
-	var endMap = {
-		',': true,
-		';': true,
-		'=': true,
-		'|': true,
-		'&': true,
-		'?': true,
-		':': true,
-		'(': true
-	};
+		bEnd = true;
 
 	while (++dirObj.i < dirObj.source.length) {
-		var el = dirObj.source.charAt(dirObj.i);
+		var str = dirObj.source,
+			el = str.charAt(dirObj.i);
 
 		if (!bOpen) {
+			if (begin) {
+				if (el === '\\' || escape) {
+					escape = !escape;
+				}
+
+			} else {
+				escape = false;
+			}
+
+			// Обработка комментариев
+			if (!escape) {
+				if (el === '/') {
+					if (str.charAt(dirObj.i + 1) === '/' && str.charAt(dirObj.i + 2) === '/') {
+						comment = '///';
+
+					} else if (str.charAt(dirObj.i + 1) === '*') {
+						comment = '/*';
+						dirObj.i++;
+
+					} else if (str.charAt(dirObj.i - 1) === '*') {
+						comment = false;
+						continue;
+					}
+
+				} else if (/[\n\v\r]/.test(el) && comment === '///') {
+					comment = false;
+				}
+			}
+
+			if (comment) {
+				continue;
+			}
+
 			// Начало управляющей конструкции
 			// (не забываем следить за уровнем вложенностей {)
 			if (el === '{') {
@@ -932,13 +999,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				begin = false;
 
 				var commandLength = command.length;
-				command = this._escape(command, dirObj.quotContent).trim();
+				command = this._replaceDangerBlocks(command, dirObj.quotContent).trim();
 
 				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = this.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
-				fnRes = this.Directions[commandType].call(this,
+				var fnRes = this.Directions[commandType].call(this,
 					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,
 					commandLength,
 
@@ -967,12 +1034,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				beginStr = false;
 			}
 
-			var bEnd,
-				bEscape;
-
+			var bEscape;
 			if (command.length) {
 				if (!bOpen) {
-					if (endMap[el]) {
+					if (escapeEndMap[el]) {
 						bEnd = true;
 
 					} else if (/[^\s\/]/.test(el)) {
@@ -980,13 +1045,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 					}
 				}
 
-				if (map[el] && (el === '/' ? bEnd : true) && !bOpen) {
+				if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
 					bOpen = el;
 
 				} else if (bOpen && (el === '\\' || bEscape)) {
 					bEscape = !bEscape;
 
-				} else if (map[el] && bOpen === el && !bEscape) {
+				} else if (escapeMap[el] && bOpen === el && !bEscape) {
 					bOpen = false;
 				}
 			}
@@ -1012,12 +1077,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		throw this.error('Missing closing or opening tag in the template, ' + this._genErrorAdvInfo(opt_info) + '")!');
 	}
 
-	dirObj.res = this._uescape(dirObj.res, dirObj.quotContent)
+	dirObj.res = this._pasteDangerBlocks(dirObj.res, dirObj.quotContent)
+		.replace(/[\t\v\r\n]/gm, '')
 		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
-			return cData[pos]
+			return dirObj.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
 				.replace(/\v/gm, '\\v')
@@ -1096,7 +1162,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Имя + пространство имён шаблона
 	tmpTplName = /(.*?)\(/.exec(command)[1];
-	vars.tplName = tplName = this._uescape(tmpTplName, vars.quotContent);
+	vars.tplName = tplName = this._pasteDangerBlocks(tmpTplName, vars.quotContent);
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
@@ -1114,7 +1180,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, vars, adv) 
 
 	// Название родительского шаблона
 	if (/\s+extends\s+/.test(command)) {
-		vars.parentTplName = parentTplName = this._uescape(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
+		vars.parentTplName = parentTplName = this._pasteDangerBlocks(/\s+extends\s+(.*)/.exec(command)[1], vars.quotContent);
 	}
 
 	// Глобальный кеш блоков
@@ -1360,7 +1426,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, vars, adv) 
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				this._uescape(tplName, vars.quotContent).replace(/'/g, '\\\'') +
+				this._pasteDangerBlocks(tplName, vars.quotContent).replace(/'/g, '\\\'') +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);
@@ -1945,7 +2011,7 @@ Snakeskin._returnVar = function (command, vars) {
  * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
-	command = this._uescape(command, vars.quotContent);
+	command = this._pasteDangerBlocks(command, vars.quotContent);
 
 	if (!this.write[command]) {
 		this.write[command] = false;
@@ -1963,7 +2029,7 @@ Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
  * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['save'] = function (command, commandLength, vars) {
-	this.write[this._uescape(command, vars.quotContent)] = true;
+	this.write[this._pasteDangerBlocks(command, vars.quotContent)] = true;
 };/*!
  * Поддержка myFire.BEM
  */
@@ -1980,7 +2046,7 @@ Snakeskin.Directions['save'] = function (command, commandLength, vars) {
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
 	var part = command.match(/(.*?),\s+(.*)/);
-	this.BEM[part[1]] = (new Function('return {' + this._uescape(part[2], vars.quotContent) + '}'))();
+	this.BEM[part[1]] = (new Function('return {' + this._pasteDangerBlocks(part[2], vars.quotContent) + '}'))();
 };
 
 /**
@@ -2023,7 +2089,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 		command = part.join(',');
 
 		// Обработка переменных
-		part = that._uescape(command, vars.quotContent).split('${');
+		part = that._pasteDangerBlocks(command, vars.quotContent).split('${');
 		command = '';
 
 		this.forEach(part, function (el, i) {
@@ -2088,7 +2154,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, vars) {
 
 	if (!vars.parentTplName && !vars.protoStart) {
 		// Обработка переменных
-		part = that._uescape(command, vars.quotContent).split('${');
+		part = that._pasteDangerBlocks(command, vars.quotContent).split('${');
 		command = '';
 
 		if (part.length < 2) {

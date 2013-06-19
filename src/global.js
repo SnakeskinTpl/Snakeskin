@@ -21,20 +21,40 @@ var paramsCache = {};
 // Карта наследований
 var extMap = {};
 
-// Стек CDATA
-var cData = [];
-
 // Системные константы
 var sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true
 };
 
+// Таблица экранирований
+var escapeMap = {
+	'"': true,
+	'\'': true,
+	'/': true
+};
+
+var escapeEndMap = {
+	',': true,
+	';': true,
+	'=': true,
+	'|': true,
+	'&': true,
+	'?': true,
+	':': true,
+	'(': true
+};
+
 /**
  * Конструктор управления директивами
+ *
  * @constructor
+ * @param {string} src - текст шаблона
+ * @param {boolean} commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {boolean} dryRun - если true,
+ *     то шаблон только транслируется (не компилируется), приватный параметр
  */
-function DirObj(src, cData, commonJS, dryRun) {
+function DirObj(src, commonJS, dryRun) {
 	/**
 	 * Номер итерации
 	 * @type {number}
@@ -74,7 +94,7 @@ function DirObj(src, cData, commonJS, dryRun) {
 
 	/**
 	 * Кеш обратных вызовов прототипов
-	 * @type {!Object.<!Array>}
+	 * @type {!Object}
 	 */
 	this.backHash = {};
 
@@ -86,28 +106,27 @@ function DirObj(src, cData, commonJS, dryRun) {
 
 	/**
 	 * Содержимое скобок
-	 * @type {!Array.<string>}
+	 * @type {!Array}
 	 */
 	this.quotContent = [];
 
 	/**
+	 * Содержимое блоков cdata
+	 * @type {!Array}
+	 */
+	this.cDataContent = [];
+	var cdata = this.cDataContent;
+
+	/**
 	 * Исходный текст шаблона
-	 *
 	 * @type {string}
 	 */
-	this.source = String(src.innerHTML || src)
+	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-			cData.push(data);
-			return '__SNAKESKIN_CDATA__' + (cData.length - 1);
+			cdata.push(data);
+			return '__SNAKESKIN_CDATA__' + (cdata.length - 1);
 		})
-
-		// Однострочный комментарий
-		.replace(/\/\/\/.*/gm, '')
-		// Отступы и новая строка
-		.replace(/[\t\v\r\n]/gm, '')
-		// Многострочный комментарий
-		.replace(/\/\*[\s\S]*?\*\//g, '')
 		.trim();
 
 	/**
@@ -159,7 +178,7 @@ DirObj.prototype.replace = function (str) {
  * @this {DirObj}
  * @param {string} name - название блока
  * @param {*} val - значение
- * @param {?boolean=} opt_sys - если true, то параметр системный
+ * @param {?boolean=} opt_sys - если true, то блок системный
  */
 DirObj.prototype.pushPos = function (name, val, opt_sys) {
 	if (opt_sys) {

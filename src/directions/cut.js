@@ -13,7 +13,7 @@
  * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
-	command = this._uescape(command, vars.quotContent);
+	command = this._pasteDangerBlocks(command, vars.quotContent);
 
 	if (!this.write[command]) {
 		this.write[command] = false;
@@ -31,5 +31,5 @@ Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
  * @param {!Array.<string>} vars.quotContent - массив строк
  */
 Snakeskin.Directions['save'] = function (command, commandLength, vars) {
-	this.write[this._uescape(command, vars.quotContent)] = true;
+	this.write[this._pasteDangerBlocks(command, vars.quotContent)] = true;
 };
