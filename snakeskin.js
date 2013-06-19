@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.5',
+		VERSION: '2.2.6',
 
 		Directions: {},
 
@@ -722,7 +722,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			 */
 			source: String(src.innerHTML || src)
 				// Обработка блоков cdata
-				.replace(/{cdata}([\s\S]*?){end\s+cdata}/gm, function (sstr, data) {
+				.replace(/{cdata}([\s\S]*?){(?:\/cdata|end\s+cdata)}/gm, function (sstr, data) {
 					cData.push(data);
 					return '__SNAKESKIN_CDATA__' + (cData.length - 1);
 				})
@@ -903,8 +903,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			// Начало управляющей конструкции
 			// (не забываем следить за уровнем вложенностей {)
 			if (el === '{') {
-
-
 				if (begin) {
 					fakeBegin++;
 
@@ -920,7 +918,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				commandLength = command.length;
 				command = this._escape(command, vars.quotContent).trim();
 
-				commandType = command.split(' ')[0];
+				commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = this.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
@@ -953,7 +951,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				beginStr = false;
 			}
 
-			if ((quote[el] || el === '/') && (!vars.source[vars.i - 1] || vars.source[vars.i - 1] !== '\\')) {
+			if ((quote[el] || (el === '/' && command.length)) && (!vars.source[vars.i - 1] || vars.source[vars.i - 1] !== '\\')) {
 				if (bOpen && bOpen === el) {
 					bOpen = false;
 

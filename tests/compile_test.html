@@ -190,7 +190,7 @@
 				equal(withFilter(), '<a href=\"&quot;onclick=&quot;&#39;alert(1)&#39;&quot;\"></a>', 'Работа с фильтрами');
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
 				equal(withCData(), '\n					{template withFilter()}\n						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}\n						<a href=\"{b}\"></a>\n					{end}\n				<h1>Hello\n					{a}\n				!</h1>', 'Использование cdata областей');
-				equal(bemTest(), '<span class=\"i-bem\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-bem\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
+				equal(bemTest(), '<span class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
 			});
 		</script>
 	</body>
