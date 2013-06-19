@@ -3,17 +3,17 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.6',
+	VERSION: '3.0',
 
-		Directions: {},
+	Directions: {},
 
-		Filters: {},
-		BEM: {},
-		Vars: {},
+	Filters: {},
+	BEM: {},
+	Vars: {},
 
-		write: {},
-		cache: {}
-	};
+	write: {},
+	cache: {}
+};
 
 (function (require) {
 	'use strict';

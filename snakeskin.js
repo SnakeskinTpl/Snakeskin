@@ -3,17 +3,17 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.6',
+	VERSION: '3.0',
 
-		Directions: {},
+	Directions: {},
 
-		Filters: {},
-		BEM: {},
-		Vars: {},
+	Filters: {},
+	BEM: {},
+	Vars: {},
 
-		write: {},
-		cache: {}
-	};
+	write: {},
+	cache: {}
+};
 
 (function (require) {
 	'use strict';
@@ -371,35 +371,268 @@ if (!Array.prototype.reduce) {
  * Глобальные переменные замыкания
  */
 
-var // Кеш шаблонов
-	cache = {},
+var cache = {};
 
-	// Кеш блоков
-	blockCache = {},
+// Кеш блоков
+var blockCache = {},
 	protoCache = {},
-	fromProtoCache = {},
+	fromProtoCache = {};
 
-	// Кеш переменных
-	globalVarCache = {},
+// Кеш переменных
+var globalVarCache = {},
 	varCache = {},
 	fromVarCache = {},
-	varICache = {},
+	varICache = {};
 
-	// Кеш входных параметров
-	paramsCache = {},
+// Кеш входных параметров
+var paramsCache = {};
 
-	// Карта наследований
-	extMap = {},
-	// Стек CDATA
-	cData = [],
+// Карта наследований
+var extMap = {};
 
-	quote = {'"': true, '\'': true},
+// Стек CDATA
+var cData = [];
 
-	// Системные константы
-	sysConst = {
-		'__SNAKESKIN_RESULT__': true,
-		'__SNAKESKIN_CDATA__': true
-	};/*!
+// Системные константы
+var sysConst = {
+	'__SNAKESKIN_RESULT__': true,
+	'__SNAKESKIN_CDATA__': true
+};
+
+/**
+ * Конструктор управления директивами
+ * @constructor
+ */
+function DirObj(src, cData, commonJS, dryRun) {
+	/**
+	 * Номер итерации
+	 * @type {number}
+	 */
+	this.i = -1;
+
+	/**
+	 * Количество открытых скобок
+	 * @type {number}
+	 */
+	this.openBlockI = 0;
+
+	/**
+	 * Кеш объявленных пространств имён
+	 * @type {!Object}
+	 */
+	this.nmCache = {};
+
+	/**
+	 * Кеш позиций директив
+	 * @type {!Object}
+	 */
+	this.posCache = {};
+
+	/**
+	 * Кеш позиций системных директив
+	 * @type {!Object}
+	 */
+	this.sysPosCache = {};
+
+	/**
+	 * Количество обратных вызовов прототипа
+	 * (когда apply до декларации вызываемого прототипа)
+	 * @type {number}
+	 */
+	this.backHashI = 0;
+
+	/**
+	 * Кеш обратных вызовов прототипов
+	 * @type {!Object.<!Array>}
+	 */
+	this.backHash = {};
+
+	/**
+	 * Имя последнего обратного прототипа
+	 * @type {?string}
+	 */
+	this.lastBack = null;
+
+	/**
+	 * Содержимое скобок
+	 * @type {!Array.<string>}
+	 */
+	this.quotContent = [];
+
+	/**
+	 * Исходный текст шаблона
+	 *
+	 * @type {string}
+	 */
+	this.source = String(src.innerHTML || src)
+		// Обработка блоков cdata
+		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
+			cData.push(data);
+			return '__SNAKESKIN_CDATA__' + (cData.length - 1);
+		})
+
+		// Однострочный комментарий
+		.replace(/\/\/\/.*/gm, '')
+		// Отступы и новая строка
+		.replace(/[\t\v\r\n]/gm, '')
+		// Многострочный комментарий
+		.replace(/\/\*[\s\S]*?\*\//g, '')
+		.trim();
+
+	/**
+	 * Результирующий JS код
+	 * @type {string}
+	 */
+	this.res =
+		(!dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
+		(commonJS ?
+			'var Snakeskin = global.Snakeskin;' +
+
+			'exports.liveInit = function (path) { ' +
+				'Snakeskin = require(path);' +
+				'exec();' +
+				'return this;' +
+			'};' +
+
+			'function exec() {' :
+		'');
+}
+
+/**
+ * Добавить строку в результирующую
+ *
+ * @this {DirObj}
+ * @param {string} str - исходная строка
+ */
+DirObj.prototype.save = function (str) {
+	if (!this.tplName || Snakeskin.write[this.tplName] !== false) {
+		this.res += str;
+	}
+};
+
+/**
+ * Изменить результирующую строку
+ *
+ * @this {DirObj}
+ * @param {string} str - исходная строка
+ */
+DirObj.prototype.replace = function (str) {
+	if (this.canWrite) {
+		this.res = str;
+	}
+};
+
+/**
+ * Добавить новую позицию блока
+ *
+ * @this {DirObj}
+ * @param {string} name - название блока
+ * @param {*} val - значение
+ * @param {?boolean=} opt_sys - если true, то параметр системный
+ */
+DirObj.prototype.pushPos = function (name, val, opt_sys) {
+	if (opt_sys) {
+		if (!this.sysPosCache[name]) {
+			this.sysPosCache[name] = [];
+		}
+
+		this.sysPosCache[name].push(val);
+
+	} else {
+		if (!this.posCache[name]) {
+			this.posCache[name] = [];
+		}
+
+		this.posCache[name].push(val);
+	}
+};
+
+/**
+ * Удалить последнюю позицию блока
+ *
+ * @this {DirObj}
+ * @param {string} name - название блока
+ * @return {*}
+ */
+DirObj.prototype.popPos = function (name) {
+	if (this.sysPosCache[name]) {
+		return this.sysPosCache[name].pop();
+	}
+
+	return this.posCache[name].pop();
+};
+
+/**
+ * Вернуть позиции блока
+ *
+ * @this {DirObj}
+ * @param {string} name - название блока
+ * @return {!Array}
+ */
+DirObj.prototype.getPos = function (name) {
+	if (this.sysPosCache[name]) {
+		return this.sysPosCache[name];
+	}
+
+	return this.posCache[name];
+};
+
+/**
+ * Вернуть true, если у блока есть позиции
+ *
+ * @this {DirObj}
+ * @param {string} name - название блока
+ * @return {boolean}
+ */
+DirObj.prototype.hasPos = function (name) {
+	if (this.sysPosCache[name]) {
+		return !!this.sysPosCache[name].length;
+	}
+
+	return !!(this.posCache[name] && this.posCache[name].length);
+};
+
+/**
+ * Вернуть последнюю позицию блока
+ *
+ * @this {DirObj}
+ * @param {string} name - название блока
+ * @return {*}
+ */
+DirObj.prototype.getLastPos = function (name) {
+	if (this.sysPosCache[name]) {
+		if (this.sysPosCache[name].length) {
+			return this.sysPosCache[name][this.sysPosCache[name].length - 1];
+		}
+
+	} else {
+		if (this.posCache[name] && this.posCache[name].length) {
+			return this.posCache[name][this.posCache[name].length - 1];
+		}
+	}
+};
+
+/**
+ * Вернуть true, если позиция не системная
+ *
+ * @this {DirObj}
+ * @param {number} i - номер позиции
+ * @return {boolean}
+ */
+DirObj.prototype.isNotSysPos = function (i) {
+	var res = true;
+
+	Snakeskin.forEach(this.sysPosCache, function (el, key) {
+		el = this.getLastPos(key);
+
+		if (el && ((typeof el.i !== 'undefined' && el.i === i) || el === i)) {
+			res = false;
+			return false;
+		}
+	}, this);
+
+	return res;
+};/*!
  * Экранирование
  */
 
@@ -636,13 +869,15 @@ Snakeskin.error = function (msg) {
 /**
  * Скомпилировать шаблоны
  *
- * @param {(Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
+ * @tests compile_test.html
+ *
+ * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
  * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом
- * @param {?boolean=} [opt_dryRun=false] - если true, то шаблон только транслируется (не компилируется), приватный параметр
+ * @param {?boolean=} [opt_dryRun=false] - если true,
+ *     то шаблон только транслируется (не компилируется), приватный параметр
+ *
  * @param {Object=} [opt_info] - дополнительная информация, приватный параметр
  * @return {string}
- *
- * @test compile_test.html
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	opt_info = opt_info || {};
@@ -650,254 +885,35 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		opt_info.node = src;
 	}
 
-	var vars = {
-			/**
-			 * Номер итерации
-			 *
-			 * @type {number}
-			 */
-			i: -1,
-			/**
-			 * Количество открытых скобок
-			 *
-			 * @type {number}
-			 */
-			openBlockI: 0,
+	var dirObj = new DirObj(src, cData, opt_commonJS, opt_dryRun);
 
-			/**
-			 * Кеш объявленных пространств имён,
-			 * например, {
-			 *     'tpl': true,
-			 *     'tpl.my': true
-			 * }
-			 *
-			 * @type {!Object.<boolean>}
-			 */
-			nmCache: {},
-
-			/**
-			 * Кеш позиций директив
-			 *
-			 * @type {!Object}
-			 */
-			posCache: {},
-			/**
-			 * Кеш позиций системных директив
-			 *
-			 * @type {!Object}
-			 */
-			sysPosCache: {},
-
-			/**
-			 * Количество обратных вызовов прототипа
-			 * (когда apply до декларации вызываемого прототипа)
-			 *
-			 * @type {number}
-			 */
-			backHashI: 0,
-			/**
-			 * Кеш обратных вызовов прототипов
-			 *
-			 * @type {!Object.<!Array>}
-			 */
-			backHash: {},
-			/**
-			 * Имя последнего обратного прототипа
-			 *
-			 * @type {?string}
-			 */
-			lastBack: null,
-
-			/**
-			 * Содержимое скобок
-			 *
-			 * @type {!Array.<string>}
-			 */
-			quotContent: [],
-
-			/**
-			 * Исходный текст шаблона
-			 *
-			 * @type {string}
-			 */
-			source: String(src.innerHTML || src)
-				// Обработка блоков cdata
-				.replace(/{cdata}([\s\S]*?){(?:\/cdata|end\s+cdata)}/gm, function (sstr, data) {
-					cData.push(data);
-					return '__SNAKESKIN_CDATA__' + (cData.length - 1);
-				})
-
-				// Однострочный комментарий
-				.replace(/\/\/\/.*/gm, '')
-				// Отступы и новая строка
-				.replace(/[\t\v\r\n]/gm, '')
-				// Многострочный комментарий
-				.replace(/\/\*[\s\S]*?\*\//g, '')
-				.trim(),
-
-			/**
-			 * Результирующий JS код
-			 *
-			 * @type {string}
-			 */
-			res: '' +
-				(!opt_dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
-				(opt_commonJS ?
-					'var Snakeskin = global.Snakeskin;' +
-
-					'exports.liveInit = function (path) { ' +
-						'Snakeskin = require(path);' +
-						'exec();' +
-						'return this;' +
-					'};' +
-
-					'function exec() {'
-				: ''),
-
-			/**
-			 * Добавить строку в результирующую
-			 *
-			 * @param {string} str - исходная строка
-			 */
-			save: function (str) {
-				if (!vars.tplName || Snakeskin.write[vars.tplName] !== false) {
-					vars.res += str;
-				}
-			},
-
-			/**
-			 * Изменить результирующую строку
-			 *
-			 * @param {string} str - исходная строка
-			 */
-			replace: function (str) {
-				if (vars.canWrite) {
-					vars.res = str;
-				}
-			},
-
-			/**
-			 * Добавить новую позицию блока
-			 *
-			 * @param {string} name - название блока
-			 * @param {*} val - значение
-			 * @param {?boolean=} opt_sys - если true, то параметр системный
-			 */
-			pushPos: function (name, val, opt_sys) {
-				if (opt_sys) {
-					if (!vars.sysPosCache[name]) {
-						vars.sysPosCache[name] = [];
-					}
-
-					vars.sysPosCache[name].push(val);
-
-				} else {
-					if (!vars.posCache[name]) {
-						vars.posCache[name] = [];
-					}
-
-					vars.posCache[name].push(val);
-				}
-			},
-
-			/**
-			 * Удалить последнюю позицию блока
-			 *
-			 * @param {string} name - название блока
-			 * @return {*}
-			 */
-			popPos: function (name) {
-				if (vars.sysPosCache[name]) {
-					return vars.sysPosCache[name].pop();
-				}
-
-				return vars.posCache[name].pop();
-			},
-
-			/**
-			 * Вернуть позиции блока
-			 *
-			 * @param {string} name - название блока
-			 * @return {!Array}
-			 */
-			getPos: function (name) {
-				if (vars.sysPosCache[name]) {
-					return vars.sysPosCache[name];
-				}
-
-				return vars.posCache[name];
-			},
-
-			/**
-			 * Вернуть true, если у блока есть позиции
-			 *
-			 * @param {string} name - название блока
-			 * @return {boolean}
-			 */
-			hasPos: function (name) {
-				if (vars.sysPosCache[name]) {
-					return vars.sysPosCache[name].length;
-				}
-
-				return !!(vars.posCache[name] && vars.posCache[name].length);
-			},
-
-			/**
-			 * Вернуть последнюю позицию
-			 *
-			 * @param {string} name - название блока
-			 * @return {*}
-			 */
-			getLastPos: function (name) {
-				if (vars.sysPosCache[name]) {
-					if (vars.sysPosCache[name].length) {
-						return vars.sysPosCache[name][vars.sysPosCache[name].length - 1];
-					}
-
-				} else {
-					if (vars.posCache[name] && vars.posCache[name].length) {
-						return vars.posCache[name][vars.posCache[name].length - 1];
-					}
-				}
-			},
-
-			/**
-			 * Вернуть true, если позиция не системная
-			 *
-			 * @param {number} i - номер позиции
-			 * @return {boolean}
-			 */
-			isNotSysPos: function (i) {
-				var res = true;
-
-				Snakeskin.forEach(this.sysPosCache, function (el, key) {
-					el = vars.getLastPos(key);
-
-					if (el && ((typeof el.i !== 'undefined' && el.i === i) || el === i)) {
-						res = false;
-						return false;
-					}
-				});
-
-				return res;
-			}
-		},
-
-		begin,
+	var begin,
 		fakeBegin = 0,
-		beginStr,
+		beginStr;
 
-		command = '',
-		commandType,
-		commandLength,
-
-		el,
-		bOpen,
-
+	var command = '';
+	var bOpen,
 		fnRes;
 
-	while (++vars.i < vars.source.length) {
-		el = vars.source.charAt(vars.i);
+	var map = {
+		'"': true,
+		'\'': true,
+		'/': true
+	};
+
+	var endMap = {
+		',': true,
+		';': true,
+		'=': true,
+		'|': true,
+		'&': true,
+		'?': true,
+		':': true,
+		'(': true
+	};
+
+	while (++dirObj.i < dirObj.source.length) {
+		var el = dirObj.source.charAt(dirObj.i);
 
 		if (!bOpen) {
 			// Начало управляющей конструкции
@@ -915,10 +931,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
 				begin = false;
 
-				commandLength = command.length;
-				command = this._escape(command, vars.quotContent).trim();
+				var commandLength = command.length;
+				command = this._escape(command, dirObj.quotContent).trim();
 
-				commandType = command.replace(/^\//, 'end ').split(' ')[0];
+				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = this.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
@@ -926,7 +942,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,
 					commandLength,
 
-					vars,
+					dirObj,
 					{
 						commonJS: opt_commonJS,
 						dryRun: opt_dryRun,
@@ -946,42 +962,57 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 
 		// Запись команды
 		if (begin) {
-			if (!vars.protoStart && beginStr) {
-				vars.save('\';');
+			if (beginStr && !dirObj.protoStart) {
+				dirObj.save('\';');
 				beginStr = false;
 			}
 
-			if ((quote[el] || (el === '/' && command.length)) && (!vars.source[vars.i - 1] || vars.source[vars.i - 1] !== '\\')) {
-				if (bOpen && bOpen === el) {
-					bOpen = false;
+			var bEnd,
+				bEscape;
 
-				} else if (!bOpen) {
+			if (command.length) {
+				if (!bOpen) {
+					if (endMap[el]) {
+						bEnd = true;
+
+					} else if (/[^\s\/]/.test(el)) {
+						bEnd = false;
+					}
+				}
+
+				if (map[el] && (el === '/' ? bEnd : true) && !bOpen) {
 					bOpen = el;
+
+				} else if (bOpen && (el === '\\' || bEscape)) {
+					bEscape = !bEscape;
+
+				} else if (map[el] && bOpen === el && !bEscape) {
+					bOpen = false;
 				}
 			}
 
 			command += el;
 
 		// Запись строки
-		} else if (!vars.protoStart) {
+		} else if (!dirObj.protoStart) {
 			if (!beginStr) {
-				vars.save('__SNAKESKIN_RESULT__ += \'');
+				dirObj.save('__SNAKESKIN_RESULT__ += \'');
 				beginStr = true;
 			}
 
-			if (!vars.parentTplName) {
-				vars.save(el.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\''));
+			if (!dirObj.parentTplName) {
+				dirObj.save(el.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\''));
 			}
 		}
 	}
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
-	if (vars.openBlockI !== 0) {
+	if (dirObj.openBlockI !== 0) {
 		throw this.error('Missing closing or opening tag in the template, ' + this._genErrorAdvInfo(opt_info) + '")!');
 	}
 
-	vars.res = this._uescape(vars.res, vars.quotContent)
+	dirObj.res = this._uescape(dirObj.res, dirObj.quotContent)
 		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
 		// Обратная замена cdata областей
@@ -996,30 +1027,32 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
 
 	// Конец шаблона
-	vars.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
-	vars.res += opt_commonJS ? '}' : '';
+	dirObj.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
+	dirObj.res += opt_commonJS ? '}' : '';
 
 	if (opt_dryRun) {
-		return vars.res;
+		return dirObj.res;
 	}
+
+	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
 		// Экспорт
 		if (opt_commonJS) {
-			eval(vars.res);
+			eval(dirObj.res);
 
 		// Простая компиляция
 		} else {
-			global.eval(vars.res);
+			global.eval(dirObj.res);
 		}
 
 	// Живая компиляция в браузере
 	} else {
-		window.eval(vars.res);
+		window.eval(dirObj.res);
 	}
 
-	return vars.res;
+	return dirObj.res;
 };
 /*!
  * Директива template
