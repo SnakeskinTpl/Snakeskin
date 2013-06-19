@@ -19,10 +19,6 @@ var Snakeskin = {
 	'use strict';
 
 
-/*!
- * Различные методы для работы скомпилированных шаблонов
- */
-
 /**
  * Итератор цикла
  * (return false прерывает выполнение)
@@ -33,8 +29,7 @@ var Snakeskin = {
  */
 Snakeskin.forEach = function (obj, callback, opt_ctx) {
 	var i = -1,
-		length,
-		key;
+		length;
 
 	if (Array.isArray(obj)) {
 		length = obj.length;
@@ -55,7 +50,7 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
 
 	} else {
 		i = 0;
-		for (key in obj) {
+		for (var key in obj) {
 			if (!obj.hasOwnProperty(key)) { continue; }
 			i++;
 		}

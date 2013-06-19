@@ -1,7 +1,7 @@
 /**
  * Директива data
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -12,7 +12,7 @@
  * @param {function(string)} vars.save - сохранить строку в результирующую
  */
 Snakeskin.Directions['data'] = function (command, commandLength, vars) {
-	var that = this,
+	var that = Snakeskin,
 		part;
 
 	if (!vars.parentTplName && !vars.protoStart) {
@@ -28,7 +28,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, vars) {
 			return;
 		}
 
-		this.forEach(part, function (el, i) {
+		Snakeskin.forEach(part, function (el, i) {
 			var part;
 
 			if (i > 0) {

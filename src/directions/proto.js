@@ -5,7 +5,7 @@
 /**
  * Декларация прототипа
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -31,10 +31,10 @@ Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
 	if (!adv.dryRun && ((parentName && !vars.hasPos('block') && !vars.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать прототип блока несколько раз
 		if (protoCache[tplName][command]) {
-			throw this.error('' +
+			throw Snakeskin.error('' +
 				'Proto "' + command + '" is already defined ' +
 				'(command: {proto' + command + '}, template: "' + tplName + ', ' +
-					this._genErrorAdvInfo(adv.info) +
+					Snakeskin._genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
@@ -56,7 +56,7 @@ Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
 /**
  * Окончание прототипа
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -93,13 +93,13 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) 
 
 	// Рекурсивно анализируем прототипы блоков
 	if (!parentTplName) {
-		protoCache[tplName][lastProto.name].body = this.compile('{template ' + tplName + '()}' +
+		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
 			vars.source.substring(lastProto.startI, i - commandLength - 1) +
 			'{end}', null, true);
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
-		this.forEach(backHash[lastProto.name], function (el) {
+		Snakeskin.forEach(backHash[lastProto.name], function (el) {
 			vars.replace(vars.res.substring(0, el) + protoCache[tplName][lastProto.name].body + vars.res.substring(el));
 		});
 
@@ -115,7 +115,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) 
 /**
  * Вызов прототипа
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *

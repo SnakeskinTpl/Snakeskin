@@ -5,7 +5,7 @@
 /**
  * Декларация итератора
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -29,7 +29,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, vars) {
 /**
  * Окончание итератора
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -43,6 +43,6 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, vars) {
 	vars.popPos('forEach');
 
 	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('}, this);');
+		vars.save('}, Snakeskin);');
 	}
 };

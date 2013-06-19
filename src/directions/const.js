@@ -5,7 +5,7 @@
 /**
  * Декларация или вывод константы
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -44,30 +44,30 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 		if (tplName) {
 			// Попытка повторной инициализации переменной
 			if (varCache[tplName][varName] || varICache[tplName][varName]) {
-				throw this.error('' +
+				throw Snakeskin.error('' +
 					'Variable "' + varName + '" is already defined ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						this._genErrorAdvInfo(adv.info) +
+						Snakeskin._genErrorAdvInfo(adv.info) +
 					'")!'
 				);
 			}
 
 			// Попытка инициализировать переменную с зарезервированным именем
 			if (sysConst[varName]) {
-				throw this.error('' +
+				throw Snakeskin.error('' +
 					'Can\'t declare variable "' + varName + '", try another name ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						this._genErrorAdvInfo(adv.info) +
+						Snakeskin._genErrorAdvInfo(adv.info) +
 					'")!'
 				);
 			}
 
 			// Попытка инициализации переменной в цикле
 			if (vars.hasPos('forEach')) {
-				throw this.error('' +
+				throw Snakeskin.error('' +
 					'Variable "' + varName + '" can\'t be defined in a loop ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						this._genErrorAdvInfo(adv.info) +
+						Snakeskin._genErrorAdvInfo(adv.info) +
 					'")!'
 				);
 			}
@@ -90,7 +90,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 
 	// Вывод переменных
 	} else if (!parentTplName && !protoStart) {
-		vars.save('__SNAKESKIN_RESULT__ += ' + this._returnVar(command, vars) + ';');
+		vars.save('__SNAKESKIN_RESULT__ += ' + Snakeskin._returnVar(command, vars) + ';');
 	}
 };
 
@@ -98,7 +98,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
  * Декларация или вывод константы
  *
  * @private
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  *
  * @param {!Object} vars - объект локальных переменных
@@ -115,7 +115,7 @@ Snakeskin._returnVar = function (command, vars) {
 		unEscape = false;
 
 	// Поддержка фильтров через пайп
-	this.forEach(command.replace(/\|\|/g, '__SNAKESKIN_ESCAPE__OR').split('|'), function (el, i) {
+	Snakeskin.forEach(command.replace(/\|\|/g, '__SNAKESKIN_ESCAPE__OR').split('|'), function (el, i) {
 		var part,
 			sPart;
 

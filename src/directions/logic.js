@@ -5,7 +5,7 @@
 /**
  * Директива if
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -26,7 +26,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, vars) {
 /**
  * Директива elseIf
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -44,7 +44,7 @@ Snakeskin.Directions['elseIf'] = function (command, commandLength, vars) {
 /**
  * Директива else
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *

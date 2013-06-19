@@ -1,7 +1,7 @@
 /**
  * Директива end
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -19,7 +19,7 @@
  */
 Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 	vars.openBlockI--;
-	var that = this,
+	var that = Snakeskin,
 		args = arguments,
 
 		openBlockI = vars.openBlockI + 1,
@@ -27,11 +27,11 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 
 	// Окончание шаблона
 	if (vars.openBlockI === 0) {
-		this.Directions.templateEnd.apply(this, arguments);
+		Snakeskin.Directions.templateEnd.apply(Snakeskin, arguments);
 
 	// Окончание простых блоков
 	} else if (vars.isNotSysPos(openBlockI)) {
-		this.forEach(vars.posCache, function (el, key) {
+		Snakeskin.forEach(vars.posCache, function (el, key) {
 			el = vars.getLastPos(key);
 
 			if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
@@ -48,7 +48,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 	}
 
 	// Окончание системных блоков
-	this.forEach(vars.sysPosCache, function (el, key) {
+	Snakeskin.forEach(vars.sysPosCache, function (el, key) {
 		el = vars.getLastPos(key);
 
 		if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {

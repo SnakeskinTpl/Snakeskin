@@ -5,7 +5,7 @@
 /**
  * Декларация блока
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -32,10 +32,10 @@ Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
 
 		// Попытка декларировать блок несколько раз
 		if (blockCache[tplName][command]) {
-			throw this.error('' +
+			throw Snakeskin.error('' +
 				'Block "' + command + '" is already defined ' +
 				'(command: {block ' + command + '}, template: "' + tplName + ', ' +
-					this._genErrorAdvInfo(adv.info) +
+					Snakeskin._genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
@@ -52,7 +52,7 @@ Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
 /**
  * Окончание блока
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *

@@ -1,5 +1,6 @@
 /**
  * Вернуть тело шаблона при наследовании
+ * (супер мутная функция, уже не помню, как она работает :))
  *
  * @private
  * @param {string} tplName - название шаблона
@@ -9,40 +10,33 @@
 Snakeskin._getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
 	if (typeof cache[extMap[tplName]] === 'undefined') {
-		throw this.error('' +
+		throw Snakeskin.error('' +
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
-			'for inheritance is not defined (' + this._genErrorAdvInfo(info) + ')!'
+			'for inheritance is not defined (' + Snakeskin._genErrorAdvInfo(info) + ')!'
 		);
 	}
 
 	var parentTpl = extMap[tplName],
-		// Исходный текст шаблона равен родительскому
 		res = cache[parentTpl],
 
-		// Блоки дочернего и родительского шаблона
-		el,
-		prev,
-
-		block,
-		key,
-		i = -1,
-
-		// Позиция для вставки новой переменной
-		// или нового блока прототипа
-		newFrom,
 		from = 0,
+		advDiff = [];
 
-		advDiff = [],
-		blockDiff,
-		diff,
-		adv;
-
-	// Цикл производит перекрытие добавление новых блоков (новые блоки добавляются в конец шаблона)
+	// Цикл производит перекрытие и добавление новых блоков (новые блоки добавляются в конец шаблона)
 	// (итерации 0 и 1), а затем
 	// перекрытие и добавление новых переменных (итерации 2 и 3),
 	// а затем перекрытие и добавление прототипов (4-5 итерации),
 	// причём новые переменные и прототипы добавляются сразу за унаследованными
+	var i = -1;
 	while (++i < 6) {
+		// Блоки дочернего и родительского шаблона
+		var el,
+			prev;
+
+		// Позиция для вставки новой переменной
+		// или нового блока прототипа
+		var newFrom;
+
 		// Блоки дочернего и родительского шаблона
 		if (i === 0) {
 			el = blockCache[tplName];
@@ -67,23 +61,24 @@ Snakeskin._getExtStr = function (tplName, info) {
 			newFrom = null;
 		}
 
-		for (key in el) {
+		for (var key in el) {
 			if (!el.hasOwnProperty(key)) { continue; }
 
 			// Сдвиг относительно родительской позиции элемента
-			adv = 0;
+			var adv = 0;
+
 			// Текст добавляемой области
-			block = cache[tplName].substring(el[key].from, el[key].to);
+			var block = cache[tplName].substring(el[key].from, el[key].to);
 
 			// Разница между дочерним и родительским блоком
 			if (prev[key]) {
-				blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
+				var blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
 			}
 
 			// Вычисляем сдвиг
-			diff = prev[key] ? prev[key].from : from;
+			var diff = prev[key] ? prev[key].from : from;
 			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастани
-			this.forEach(advDiff
+			Snakeskin.forEach(advDiff
 				.sort(function (a, b) {
 					if (a.val > b.val) {
 						return 1;

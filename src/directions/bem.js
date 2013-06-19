@@ -5,7 +5,6 @@
 /**
  * Декларация параметров БЭМ блока
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -14,13 +13,12 @@
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
 	var part = command.match(/(.*?),\s+(.*)/);
-	this.BEM[part[1]] = (new Function('return {' + this._pasteDangerBlocks(part[2], vars.quotContent) + '}'))();
+	Snakeskin.BEM[part[1]] = (new Function('return {' + Snakeskin._pasteDangerBlocks(part[2], vars.quotContent) + '}'))();
 };
 
 /**
  * Декларация БЭМ блока
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
@@ -39,7 +37,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 		tag: /^\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 	});
 
-	var that = this,
+	var that = Snakeskin,
 
 		lastBEM = vars.getLastPos('bem'),
 		bemName,
@@ -50,7 +48,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 	part = command.trim().split(',');
 
 	bemName = part[0];
-	lastBEM.original = this.BEM[bemName] && this.BEM[bemName].tag;
+	lastBEM.original = Snakeskin.BEM[bemName] && Snakeskin.BEM[bemName].tag;
 
 	if (!vars.parentTplName && !vars.protoStart) {
 		part[0] += '\'';
@@ -60,7 +58,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 		part = that._pasteDangerBlocks(command, vars.quotContent).split('${');
 		command = '';
 
-		this.forEach(part, function (el, i) {
+		Snakeskin.forEach(part, function (el, i) {
 			var part;
 
 			if (i > 0) {
@@ -87,7 +85,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 /**
  * Окончание БЭМ блока
  *
- * @this {Snakeskin}
+ * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
