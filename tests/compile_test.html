@@ -178,6 +178,20 @@
 				{b = /* 2 */ 3}
 				{b}
 			{/template}
+
+			{template testCycles(i = 0)}
+				{for var j = 0; j < 3; j++}
+					{j}
+				{end}
+
+				{while i++ < 3}
+					{i}
+				{end}
+
+				{repeat}
+					{i}
+				{until i--}
+			{end template}
 		</script>
 
 		<script type="text/javascript">
@@ -210,6 +224,7 @@
 				equal(bemTest(), '<span class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
 				equal(testEscape(), '1', 'Проверка экранирования в директивах и работы / окончаний');
 				equal(testComment(), '23', 'Проверка работы комментариев');
+				equal(testCycles(), '01212343210', 'Проверка работы комментариев');
 			});
 		</script>
 	</body>

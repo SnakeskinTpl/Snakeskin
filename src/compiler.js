@@ -89,6 +89,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
+				console.log(commandType);
+
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
 					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,

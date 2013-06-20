@@ -5,16 +5,12 @@
 /**
  * Директива cut
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {!Array.<string>} vars.quotContent - массив строк
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
-	command = Snakeskin.pasteDangerBlocks(command, vars.quotContent);
-
+Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
+	command = Snakeskin.pasteDangerBlocks(command, dirObj.quotContent);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
 	}
@@ -23,13 +19,10 @@ Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
 /**
  * Директива save
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {!Array.<string>} vars.quotContent - массив строк
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['save'] = function (command, commandLength, vars) {
-	Snakeskin.write[Snakeskin.pasteDangerBlocks(command, vars.quotContent)] = true;
+Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
+	Snakeskin.write[Snakeskin.pasteDangerBlocks(command, dirObj.quotContent)] = true;
 };

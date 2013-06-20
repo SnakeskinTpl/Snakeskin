@@ -1,34 +1,29 @@
 /*!
- * Директива proto
+ * Директивы proto и apply
  */
+
+/**
+ * Если true, то значит объявляется прототип
+ * @type {boolean}
+ */
+DirObj.prototype.protoStart = false;
 
 /**
  * Декларация прототипа
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, *)} vars.pushPos - добавить новую позицию
- * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
-	var tplName = vars.tplName,
-		parentName = vars.parentTplName;
+Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
+	var tplName = dirObj.tplName,
+		parentName = dirObj.parentTplName;
 
-	if (!adv.dryRun && ((parentName && !vars.hasPos('block') && !vars.hasPos('proto')) || !parentName)) {
+	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать прототип блока несколько раз
 		if (protoCache[tplName][command]) {
 			throw Snakeskin.error(
@@ -39,117 +34,113 @@ Snakeskin.Directions['proto'] = function (command, commandLength, vars, adv) {
 			);
 		}
 
-		protoCache[tplName][command] = {from: vars.i - vars.startI + 1};
+		protoCache[tplName][command] = {from: dirObj.i - dirObj.startI + 1};
 	}
 
-	vars.pushPos('proto', {
+	dirObj.pushPos('proto', {
 		name: command,
-		i: ++vars.openBlockI,
-		startI: vars.i + 1
+		i: ++dirObj.openBlockI,
+		startI: dirObj.i + 1
 	}, true);
 
 	if (!parentName) {
-		vars.protoStart = true;
+		dirObj.protoStart = true;
 	}
 };
 
 /**
  * Окончание прототипа
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
- * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
- * @param {number} vars.backHashI - количество обратных вызовов прототипов
- * @param {string} vars.source - исходный текст шаблона
- * @param {string} vars.res - результирущая строка
- * @param {function(string)} vars.replace - изменить результирующую строку
- * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
-Snakeskin.Directions['protoEnd'] = function (command, commandLength, vars, adv) {
-	var tplName = vars.tplName,
-		parentTplName = vars.parentTplName,
+Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv) {
+	var tplName = dirObj.tplName,
+		parentTplName = dirObj.parentTplName,
+		i = dirObj.i;
 
-		i = vars.i,
+	var backHash = dirObj.backHash,
+		lastProto = dirObj.popPos('proto');
 
-		backHash = vars.backHash,
-		lastProto = vars.popPos('proto');
-
-	if (!adv.dryRun && ((parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !parentTplName)) {
-		protoCache[tplName][lastProto.name].to = i - vars.startI - commandLength - 1;
-		fromProtoCache[tplName] = i - vars.startI + 1;
+	if (!adv.dryRun && ((parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentTplName)) {
+		protoCache[tplName][lastProto.name].to = i - dirObj.startI - commandLength - 1;
+		fromProtoCache[tplName] = i - dirObj.startI + 1;
 	}
 
 	// Рекурсивно анализируем прототипы блоков
 	if (!parentTplName) {
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
-			vars.source.substring(lastProto.startI, i - commandLength - 1) +
+			dirObj.source.substring(lastProto.startI, i - commandLength - 1) +
 			'{end}', null, true);
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
 		Snakeskin.forEach(backHash[lastProto.name], function (el) {
-			vars.replace(vars.res.substring(0, el) + protoCache[tplName][lastProto.name].body + vars.res.substring(el));
+			dirObj.replace(dirObj.res.substring(0, el) +
+				protoCache[tplName][lastProto.name].body +
+				dirObj.res.substring(el));
 		});
 
 		delete backHash[lastProto.name];
-		vars.backHashI--;
+		dirObj.backHashI--;
 	}
 
-	if (!vars.hasPos('proto')) {
-		vars.protoStart = false;
+	if (!dirObj.hasPos('proto')) {
+		dirObj.protoStart = false;
 	}
 };
 
 /**
+ * Кеш обратных вызовов прототипов
+ */
+DirObj.prototype.backHash = {
+	init: function () {
+		return {};
+	}
+};
+
+/**
+ * Количество обратных вызовов прототипа
+ * (когда apply до декларации вызываемого прототипа)
+ * @type {number}
+ */
+DirObj.prototype.backHashI = 0;
+
+/**
+ * Имя последнего обратного прототипа
+ * @type {?string}
+ */
+DirObj.prototype.lastBack = null;
+
+/**
  * Вызов прототипа
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
- * @param {!Object} vars.backHash - кеш обратных вызовов прототипов
- * @param {number} vars.backHashI - количество обратных вызовов прототипов
- * @param {string} vars.lastBack - название последнего обратного вызова
- * @param {string} vars.res - результирующая строка
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['apply'] = function (command, commandLength, vars) {
-	if (!vars.parentTplName && !vars.hasPos('proto')) {
+Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.hasPos('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
 		// когда прототип будет объявлен)
-		if (!protoCache[vars.tplName][command]) {
-			if (!vars.backHash[command]) {
-				vars.backHash[command] = [];
-				vars.backHash[command].protoStart = vars.protoStart;
+		if (!protoCache[dirObj.tplName][command]) {
+			if (!dirObj.backHash[command]) {
+				dirObj.backHash[command] = [];
+				dirObj.backHash[command].protoStart = dirObj.protoStart;
 
-				vars.lastBack = command;
-				vars.backHashI++;
+				dirObj.lastBack = command;
+				dirObj.backHashI++;
 			}
 
-			vars.backHash[command].push(vars.res.length);
+			dirObj.backHash[command].push(dirObj.res.length);
 
 		} else {
-			vars.save(protoCache[vars.tplName][command].body);
+			dirObj.save(protoCache[dirObj.tplName][command].body);
 		}
 	}
 };

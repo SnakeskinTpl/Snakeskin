@@ -40,6 +40,8 @@ Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
 
 				return false;
 			}
+
+			return true;
 		});
 
 		if (!res && !vars.parentTplName && !vars.protoStart) {

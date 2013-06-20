@@ -1,7 +1,6 @@
 /**
  * Директива void
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами

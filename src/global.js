@@ -98,25 +98,6 @@ function DirObj(src, commonJS, dryRun) {
 	this.sysPosCache = {};
 
 	/**
-	 * Количество обратных вызовов прототипа
-	 * (когда apply до декларации вызываемого прототипа)
-	 * @type {number}
-	 */
-	this.backHashI = 0;
-
-	/**
-	 * Кеш обратных вызовов прототипов
-	 * @type {!Object}
-	 */
-	this.backHash = {};
-
-	/**
-	 * Имя последнего обратного прототипа
-	 * @type {?string}
-	 */
-	this.lastBack = null;
-
-	/**
 	 * Содержимое скобок
 	 * @type {!Array}
 	 */
@@ -159,8 +140,6 @@ function DirObj(src, commonJS, dryRun) {
 			'function exec() {' :
 		'');
 }
-
-DirObj.params = {};
 
 /**
  * Добавить строку в результирующую
@@ -293,6 +272,8 @@ DirObj.prototype.isNotSysPos = function (i) {
 			res = false;
 			return false;
 		}
+
+		return true;
 	}, this);
 
 	return res;

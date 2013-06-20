@@ -37,6 +37,8 @@ var Snakeskin = {
 
 	//#include compiler.js
 
+	//#include directions/end.js
+
 	//#include directions/template.js
 	//#include directions/call.js
 	//#include directions/void.js
@@ -52,8 +54,6 @@ var Snakeskin = {
 	//#include directions/cut.js
 	//#include directions/bem.js
 	//#include directions/data.js
-
-	//#include directions/end.js
 
 	//#endif
 

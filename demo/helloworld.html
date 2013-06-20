@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Hello world</title>
-		<script src="../snakeskin.min.js"></script>
+		<script src="../snakeskin.js"></script>
 	</head>
 
 	<body>
@@ -11,16 +11,13 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(/*sd*/)}
-				///123
-				/*sd*/
-				{a =
-				///1
-				2
-				}
-				{a}
-				{b = /* 2 */ 3}
-				{b}
-				1///2
+				{for var j = 0; j < 10; j++}
+					{j}
+				{end}
+
+				{repeat}
+					{j}
+				{until j--}
 			{/template}
 		</script>
 
