@@ -9,7 +9,7 @@
 DirObj.prototype.protoStart = false;
 
 /**
- * Декларация прототипа
+ * Директива proto
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
@@ -49,7 +49,7 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
 };
 
 /**
- * Окончание прототипа
+ * Окончание proto
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
@@ -117,7 +117,7 @@ DirObj.prototype.backHashI = 0;
 DirObj.prototype.lastBack = null;
 
 /**
- * Вызов прототипа
+ * Директива apply
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды

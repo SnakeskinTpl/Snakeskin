@@ -120,7 +120,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 			}
 
 			var bEscape;
-			if (command.length) {
+			if (command !== '/') {
 				if (!bOpen) {
 					if (escapeEndMap[el]) {
 						bEnd = true;

@@ -98,8 +98,75 @@ Snakeskin.returnVar = function (command, dirObj) {
 	var varPath = '',
 		unEscape = false;
 
+	var bCount = 0,
+		bCountFilter = 0,
+		bContent = [command],
+
+		filterStart,
+		filter = [];
+
+	var res = '';
+
+	for (var i = 0; i < command.length; i++) {
+		var el = command.charAt(i),
+			next = command.charAt(i + 1);
+
+		if (el === '(') {
+			if (filterStart) {
+				bCountFilter++;
+
+			} else {
+				bContent.unshift('');
+				bCount++;
+			}
+		}
+
+		for (var j = bCount; j--;) {
+			bContent[j] += el;
+		}
+
+		if (el === ')') {
+			if (filterStart) {
+				if (bCountFilter) {
+					bCountFilter--;
+					filter[filter.length - 1] += el;
+
+				} else {
+					if (filterStart) {
+						res += bContent[bContent.length - 2];
+
+						if (filter.indexOf('!html') === -1) {
+							res = 'Snakeskin.Filters.html(' + res + ')';
+						}
+
+					} else {
+						filterStart = false;
+					}
+
+					bCount--;
+				}
+
+			} else {
+				bCount--;
+			}
+
+		} else if (el === '|' && /[!$a-z_]/i.test(next)) {
+			filter.push(next);
+
+			bCountFilter = 0;
+			filterStart = true;
+
+			i++;
+
+		} else if (filterStart && /[^)]/i.test(el)) {
+			filter[filter.length - 1] += el;
+		}
+	}
+
+	console.log(res);
+
 	// Поддержка фильтров через пайп
-	Snakeskin.forEach(command.replace(/\|\|/g, '__SNAKESKIN_ESCAPE__OR').split('|'), function (el, i) {
+	/*Snakeskin.forEach(command.split(/[^|]\|(?=[!a-z_])/i), function (el, i) {
 		var part,
 			sPart;
 
@@ -107,9 +174,11 @@ Snakeskin.returnVar = function (command, dirObj) {
 			// Если используется with блок
 			if (dirObj.hasPos('with')) {
 				dirObj.pushPos('with', {scope: el}, true);
+
 				varPath = dirObj.getPos('with').reduce(function (str, el) {
 					return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
 				});
+
 				dirObj.popPos('with');
 
 			} else {
@@ -135,7 +204,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 				unEscape = true;
 			}
 		}
-	});
+	});*/
 
 	return (!unEscape ? 'Snakeskin.Filters.html(' : '') + varPath + (!unEscape ? ')' : '');
 };
