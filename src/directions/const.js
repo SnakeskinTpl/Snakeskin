@@ -125,21 +125,31 @@ Snakeskin.returnVar = function (command, dirObj) {
 			bContent[j] += el;
 		}
 
-		if (el === ')') {
+		if (el === ')' || i === command.length - 1) {
+			if (!bCount) {
+				res += el;
+			}
+
 			if (filterStart) {
+				if (el !== ')') {
+					filter[filter.length - 1] += el;
+				}
+
 				if (bCountFilter) {
 					bCountFilter--;
-					filter[filter.length - 1] += el;
 
 				} else {
 					if (filterStart) {
-						res += bContent[bContent.length - 2];
+						res += filter.reduce(function (res, el) {
+							var params = el.replace().split(' '),
+								input = params.slice(1).join('').trim();
 
-						if (filter.indexOf('!html') === -1) {
-							res = 'Snakeskin.Filters.html(' + res + ')';
-						}
+							return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
+								(input ? ',' + input : '') + ')';
 
-					} else {
+						}, bContent[bContent.length - 2] || bContent[bContent.length - 1]);
+
+						filter = [];
 						filterStart = false;
 					}
 
@@ -147,6 +157,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 				}
 
 			} else {
+				res += bContent[bContent.length - 2];
 				bCount--;
 			}
 
@@ -160,6 +171,9 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 		} else if (filterStart && /[^)]/i.test(el)) {
 			filter[filter.length - 1] += el;
+
+		} else if (!bCount) {
+			res += el;
 		}
 	}
 
