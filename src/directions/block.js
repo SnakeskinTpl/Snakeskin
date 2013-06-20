@@ -10,12 +10,10 @@
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
-	var tplName = dirObj.tplName;
+	var tplName = dirObj.tplName,
+		parentName = dirObj.parentTplName;
 
-	if (!adv.dryRun &&
-		((dirObj.parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !dirObj.parentTplName)
-	) {
-
+	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать блок несколько раз
 		if (blockCache[tplName][command]) {
 			throw Snakeskin.error(

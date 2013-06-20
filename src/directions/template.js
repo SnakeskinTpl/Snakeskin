@@ -271,6 +271,8 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 	// но уже как атомарного (без наследования)
 	var parentName = dirObj.parentTplName;
 	if (parentName) {
+		//console.log(Snakeskin.getExtStr(tplName, adv.info));
+
 		// Результирующее тело шаблона
 		dirObj.source = source.substring(0, startI) +
 			Snakeskin.getExtStr(tplName, adv.info) +

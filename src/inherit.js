@@ -87,9 +87,7 @@ Snakeskin.getExtStr = function (tplName, info) {
 						return 0;
 					}
 
-					if (a.val < b.val) {
-						return -1;
-					}
+					return -1;
 				}), function (el) {
 					if (el.val < diff) {
 						adv += el.adv;
@@ -97,6 +95,8 @@ Snakeskin.getExtStr = function (tplName, info) {
 					} else {
 						return false;
 					}
+
+					return true;
 				});
 
 			if (prev[key] && (i % 2 === 0)) {

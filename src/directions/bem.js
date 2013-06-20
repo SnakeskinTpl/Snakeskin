@@ -51,7 +51,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 
 			if (i > 0) {
 				part = el.split('}');
-				command += '\' + ' + Snakeskin._returnVar(part[0], dirObj) +
+				command += '\' + ' + Snakeskin.returnVar(part[0], dirObj) +
 					' + \'' +
 					part.slice(1).join('}')
 						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');

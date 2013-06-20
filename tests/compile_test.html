@@ -197,7 +197,52 @@
 			{template testConst(a)}
 				{1 == 2 ? (function () { var a = 1; return a; })() : 2}
 				{1 === 1 && (a = 10)}
+				{b = {}}
+				{b.foo = 1}
+				{b['foo2'] = 2}
+				{b.foo + b.foo2}
+
+				{proto foo}
+					{aa = 2}
+					{aa}
+				{end}
+
+				{apply foo}
+				{apply foo}
 			{end}
+
+			{template superTestConst()}
+				{proto a}
+					{foo = 1}
+				{end}
+				{apply a}
+			{end}
+
+			{template childTestConst() extends superTestConst}
+				{proto a}
+					{foo = 2}
+					{foo}
+				{end}
+			{end}
+
+			{template superTestConst2()}
+				{proto a}
+					{a = 1}
+				{end}
+				{apply a}
+			{/template}
+
+			{template childTestConst2() extends superTestConst2}
+				{proto a}
+					{a = 2}
+					{proto e}
+						{j = 1}
+						{j}
+					{end}
+					{apply e}
+				{end}
+				{apply a}
+			{/template}
 		</script>
 
 		<script type="text/javascript">
@@ -231,7 +276,9 @@
 				equal(testEscape(), '1', 'Проверка экранирования в директивах и работы / окончаний');
 				equal(testComment(), '23', 'Проверка работы комментариев');
 				equal(testCycles(), '01212343210', 'Проверка работы комментариев');
-				equal(testConst(), '210', 'Проверка работы констант');
+				equal(testConst(), '210322', 'Проверка работы констант');
+				equal(childTestConst(), '2', 'Проверка работы констант при наследовании');
+				equal(childTestConst2(), '1', 'Проверка работы констант при наследовании #2');
 			});
 		</script>
 	</body>

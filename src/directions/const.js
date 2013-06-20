@@ -10,68 +10,70 @@
  *
  * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
+ * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
-	var varName,
-
-		tplName = dirObj.tplName,
-		parentTplName = dirObj.parentTplName,
+	var tplName = dirObj.tplName,
+		parentName = dirObj.parentTplName,
 		protoStart = dirObj.protoStart,
 
 		i = dirObj.i,
 		startI = dirObj.startI;
 
 	// Хак для экспорта console api
-	if (!parentTplName && !protoStart && /^console\./.test(command)) {
+	if (!parentName && !protoStart && /^console\./.test(command)) {
 		dirObj.save(command + ';');
 		return;
 	}
 
 	// Инициализация переменных
-	if (/^[a-z_][\w\[\]'"\s]*[^=]=[^=]/i.test(command)) {
-		varName = command.split('=')[0].trim();
+	if (/^[a-z_][\w\[\].'"\s]*[^=]=[^=]/i.test(command)) {
+		var varName = command.split('=')[0].trim();
 
 		if (tplName) {
-			// Попытка повторной инициализации переменной
-			if (varCache[tplName][varName] || varICache[tplName][varName]) {
-				throw Snakeskin.error(
-					'Variable "' + varName + '" is already defined ' +
-					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						Snakeskin.genErrorAdvInfo(adv.info) +
-					'")!'
-				);
+			if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
+				// Попытка повторной инициализации переменной
+				if (varCache[tplName][varName] || varICache[tplName][varName]) {
+					throw Snakeskin.error(
+						'Constant "' + varName + '" is already defined ' +
+						'(command: {' + command + '}, template: "' + tplName + ', ' +
+							Snakeskin.genErrorAdvInfo(adv.info) +
+						'")!'
+					);
+				}
+
+				// Попытка инициализировать переменную с зарезервированным именем
+				if (sysConst[varName]) {
+					throw Snakeskin.error(
+						'Can\'t declare constant "' + varName + '", try another name ' +
+						'(command: {' + command + '}, template: "' + tplName + ', ' +
+							Snakeskin.genErrorAdvInfo(adv.info) +
+						'")!'
+					);
+				}
+
+				// Попытка инициализации переменной в цикле
+				if (dirObj.hasPos('forEach')) {
+					throw Snakeskin.error(
+						'Constant "' + varName + '" can\'t be defined in a loop ' +
+						'(command: {' + command + '}, template: "' + tplName + ', ' +
+							Snakeskin.genErrorAdvInfo(adv.info) +
+						'")!'
+					);
+				}
+
+				// Кеширование
+				varCache[tplName][varName] = {
+					from: i - startI - commandLength,
+					to: i - startI
+				};
+
+				fromVarCache[tplName] = i - startI + 1;
 			}
 
-			// Попытка инициализировать переменную с зарезервированным именем
-			if (sysConst[varName]) {
-				throw Snakeskin.error(
-					'Can\'t declare variable "' + varName + '", try another name ' +
-					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						Snakeskin.genErrorAdvInfo(adv.info) +
-					'")!'
-				);
-			}
-
-			// Попытка инициализации переменной в цикле
-			if (dirObj.hasPos('forEach')) {
-				throw Snakeskin.error(
-					'Variable "' + varName + '" can\'t be defined in a loop ' +
-					'(command: {' + command + '}, template: "' + tplName + ', ' +
-						Snakeskin.genErrorAdvInfo(adv.info) +
-					'")!'
-				);
-			}
-
-			// Кеширование
-			varCache[tplName][varName] = {
-				from: i - startI - commandLength,
-				to: i - startI
-			};
-			fromVarCache[tplName] = i - startI + 1;
-
-			if (!parentTplName && !protoStart) {
-				dirObj.save('var ' + command + ';');
+			if (!parentName && !protoStart) {
+				dirObj.save((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';');
 			}
 
 		} else {
@@ -80,20 +82,19 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		}
 
 	// Вывод переменных
-	} else if (!parentTplName && !protoStart) {
-		dirObj.save('__SNAKESKIN_RESULT__ += ' + Snakeskin._returnVar(command, dirObj) + ';');
+	} else if (!parentName && !protoStart) {
+		dirObj.save('__SNAKESKIN_RESULT__ += ' + Snakeskin.returnVar(command, dirObj) + ';');
 	}
 };
 
 /**
  * Декларация или вывод константы
  *
- * @private
  * @param {string} command - название команды (или сама команда)
  * @param {!DirObj} dirObj - объект управления директивами
  * @return {string}
  */
-Snakeskin._returnVar = function (command, dirObj) {
+Snakeskin.returnVar = function (command, dirObj) {
 	var varPath = '',
 		unEscape = false;
 
