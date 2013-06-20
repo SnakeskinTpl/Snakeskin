@@ -984,8 +984,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
-				console.log(commandType);
-
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
 					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,
@@ -1481,18 +1479,13 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 };/**
  * Директива call
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменныхв
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {function(string)} vars.save - сохранить строку в результирующую
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['call'] = function (command, commandLength, vars) {
-	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('__SNAKESKIN_RESULT__ += ' + command + ';');
+Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
 };/**
  * Директива void
@@ -1506,36 +1499,35 @@ Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 		dirObj.save(command + ';');
 	}
 };
-/*!
- * Директива block
- */
 
 /**
- * Декларация блока
+ * Директива var
  *
- * @Snakeskin {Snakeskin}
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['var'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('var ' + command + ';');
+	}
+};
+/**
+ * Директива block
+ *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
- * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
-	var tplName = vars.tplName;
+Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
+	var tplName = dirObj.tplName;
 
 	if (!adv.dryRun &&
-		((vars.parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !vars.parentTplName)
+		((dirObj.parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !dirObj.parentTplName)
 	) {
 
 		// Попытка декларировать блок несколько раз
@@ -1548,41 +1540,32 @@ Snakeskin.Directions['block'] = function (command, commandLength, vars, adv) {
 			);
 		}
 
-		blockCache[tplName][command] = {from: vars.i - vars.startI + 1};
+		blockCache[tplName][command] = {from: dirObj.i - dirObj.startI + 1};
 	}
 
-	vars.pushPos('block', {
+	dirObj.pushPos('block', {
 		name: command,
-		i: ++vars.openBlockI
+		i: ++dirObj.openBlockI
 	}, true);
 };
 
 /**
- * Окончание блока
+ * Окончание block
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string): boolean} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
-Snakeskin.Directions['blockEnd'] = function (command, commandLength, vars, adv) {
-	var lastBlock = vars.popPos('block');
+Snakeskin.Directions['blockEnd'] = function (command, commandLength, dirObj, adv) {
+	var lastBlock = dirObj.popPos('block');
 	if (!adv.dryRun &&
-		((vars.parentTplName && !vars.hasPos('block') && !vars.hasPos('proto')) || !vars.parentTplName)
+		((dirObj.parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !dirObj.parentTplName)
 	) {
 
-		blockCache[vars.tplName][lastBlock.name].to = vars.i - vars.startI - commandLength - 1;
+		blockCache[dirObj.tplName][lastBlock.name].to = dirObj.i - dirObj.startI - commandLength - 1;
 	}
 };/*!
  * Директивы proto и apply
@@ -1737,7 +1720,6 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
 /**
  * Директива forEach
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
@@ -1767,7 +1749,6 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
 /**
  * Директива for
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
@@ -1796,7 +1777,6 @@ Snakeskin.Directions['forEnd'] = function (command, commandLength, dirObj) {
 /**
  * Директива while
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
@@ -1825,7 +1805,6 @@ Snakeskin.Directions['whileEnd'] = function (command, commandLength, dirObj) {
 /**
  * Директива repeat
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
@@ -1837,11 +1816,8 @@ Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj) {
 	}
 };
 
-Snakeskin.Directions['until'] = Snakeskin.Directions['end'];
-console.log(Snakeskin.Directions['until']);
-
 /**
- * Директива until
+ * Окончание repeat
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
@@ -1852,7 +1828,12 @@ Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('} while (' + command + ');');
 	}
-};/*!
+};
+
+/**
+ * Директива until
+ */
+Snakeskin.Directions['until'] = Snakeskin.Directions['end'];/*!
  * Условные директивы
  */
 
@@ -1895,40 +1876,29 @@ Snakeskin.Directions['else'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('} else {');
 	}
-};/*!
+};/**
  * Директива with
- */
-
-/**
- * Декларация области видимости
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['with'] = function (command, commandLength, vars) {
-	vars.pushPos('with', {
+Snakeskin.Directions['with'] = function (command, commandLength, dirObj) {
+	dirObj.pushPos('with', {
 		scope: command,
-		i: ++vars.openBlockI
+		i: ++dirObj.openBlockI
 	}, true);
 };
 
 /**
- * Окончание области видимости
+ * Окончание with
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['withEnd'] = function (command, commandLength, vars) {
-	vars.popPos('with');
+Snakeskin.Directions['withEnd'] = function (command, commandLength, dirObj) {
+	dirObj.popPos('with');
 };/*!
  * Работа с константами
  */
@@ -1936,40 +1906,31 @@ Snakeskin.Directions['withEnd'] = function (command, commandLength, vars) {
 /**
  * Декларация или вывод константы
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
+Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	var varName,
 
-		tplName = vars.tplName,
-		parentTplName = vars.parentTplName,
-		protoStart = vars.protoStart,
+		tplName = dirObj.tplName,
+		parentTplName = dirObj.parentTplName,
+		protoStart = dirObj.protoStart,
 
-		i = vars.i,
-		startI = vars.startI;
+		i = dirObj.i,
+		startI = dirObj.startI;
 
-	// Экспорт console api
-	if (!parentTplName && !protoStart && /console\./.test(command)) {
-		vars.save(command + ';');
+	// Хак для экспорта console api
+	if (!parentTplName && !protoStart && /^console\./.test(command)) {
+		dirObj.save(command + ';');
 		return;
 	}
 
 	// Инициализация переменных
-	if (/[^=]=[^=]/.test(command)) {
+	if (/^[a-z_][\w\[\]'"\s]*[^=]=[^=]/i.test(command)) {
 		varName = command.split('=')[0].trim();
 
 		if (tplName) {
@@ -1994,7 +1955,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 			}
 
 			// Попытка инициализации переменной в цикле
-			if (vars.hasPos('forEach')) {
+			if (dirObj.hasPos('forEach')) {
 				throw Snakeskin.error(
 					'Variable "' + varName + '" can\'t be defined in a loop ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
@@ -2011,17 +1972,17 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 			fromVarCache[tplName] = i - startI + 1;
 
 			if (!parentTplName && !protoStart) {
-				vars.save('var ' + command + ';');
+				dirObj.save('var ' + command + ';');
 			}
 
 		} else {
 			globalVarCache[varName] = true;
-			vars.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }');
+			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }');
 		}
 
 	// Вывод переменных
 	} else if (!parentTplName && !protoStart) {
-		vars.save('__SNAKESKIN_RESULT__ += ' + Snakeskin._returnVar(command, vars) + ';');
+		dirObj.save('__SNAKESKIN_RESULT__ += ' + Snakeskin._returnVar(command, dirObj) + ';');
 	}
 };
 
@@ -2029,19 +1990,11 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
  * Декларация или вывод константы
  *
  * @private
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.tplName - название шаблона
- * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
- * @param {function(string)} vars.getPos - вернуть позиции
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @return {string}
  */
-Snakeskin._returnVar = function (command, vars) {
+Snakeskin._returnVar = function (command, dirObj) {
 	var varPath = '',
 		unEscape = false;
 
@@ -2052,12 +2005,12 @@ Snakeskin._returnVar = function (command, vars) {
 
 		if (i === 0) {
 			// Если используется with блок
-			if (vars.hasPos('with')) {
-				vars.pushPos('with', {scope: el}, true);
-				varPath = vars.getPos('with').reduce(function (str, el) {
+			if (dirObj.hasPos('with')) {
+				dirObj.pushPos('with', {scope: el}, true);
+				varPath = dirObj.getPos('with').reduce(function (str, el) {
 					return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
 				});
-				vars.popPos('with');
+				dirObj.popPos('with');
 
 			} else {
 				varPath = el;
@@ -2065,7 +2018,7 @@ Snakeskin._returnVar = function (command, vars) {
 
 			varPath =
 				'Snakeskin.Filters.undef(' +
-				(!varCache[vars.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
+				(!varCache[dirObj.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
 				varPath + ')';
 
 		} else {
@@ -2093,16 +2046,12 @@ Snakeskin._returnVar = function (command, vars) {
 /**
  * Директива cut
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {!Array.<string>} vars.quotContent - массив строк
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
-	command = Snakeskin.pasteDangerBlocks(command, vars.quotContent);
-
+Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
+	command = Snakeskin.pasteDangerBlocks(command, dirObj.quotContent);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
 	}
@@ -2111,15 +2060,12 @@ Snakeskin.Directions['cut'] = function (command, commandLength, vars) {
 /**
  * Директива save
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {!Array.<string>} vars.quotContent - массив строк
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['save'] = function (command, commandLength, vars) {
-	Snakeskin.write[Snakeskin.pasteDangerBlocks(command, vars.quotContent)] = true;
+Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
+	Snakeskin.write[Snakeskin.pasteDangerBlocks(command, dirObj.quotContent)] = true;
 };/*!
  * Поддержка myFire.BEM
  */
@@ -2129,13 +2075,13 @@ Snakeskin.Directions['save'] = function (command, commandLength, vars) {
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {!Array.<string>} vars.quotContent - массив строк
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
+Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
 	var part = command.match(/(.*?),\s+(.*)/);
-	Snakeskin.BEM[part[1]] = (new Function('return {' + Snakeskin.pasteDangerBlocks(part[2], vars.quotContent) + '}'))();
+	Snakeskin.BEM[part[1]] = (new Function('return {' +
+		Snakeskin.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
+	)();
 };
 
 /**
@@ -2143,41 +2089,29 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {!Array.<string>} vars.quotContent - массив строк
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
-	vars.pushPos('bem', {
-		i: ++vars.openBlockI,
+Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
+	dirObj.pushPos('bem', {
+		i: ++dirObj.openBlockI,
 		tag: /^\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 	});
 
-	var that = Snakeskin,
-
-		lastBEM = vars.getLastPos('bem'),
-		bemName,
-		part;
+	var lastBEM = dirObj.getLastPos('bem');
 
 	// Получаем параметры инициализации блока и врапим имя кавычками
 	command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command;
-	part = command.trim().split(',');
+	var part = command.trim().split(',');
 
-	bemName = part[0];
+	var bemName = part[0];
 	lastBEM.original = Snakeskin.BEM[bemName] && Snakeskin.BEM[bemName].tag;
 
-	if (!vars.parentTplName && !vars.protoStart) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		part[0] += '\'';
 		command = part.join(',');
 
 		// Обработка переменных
-		part = that.pasteDangerBlocks(command, vars.quotContent).split('${');
+		part = Snakeskin.pasteDangerBlocks(command, dirObj.quotContent).split('${');
 		command = '';
 
 		Snakeskin.forEach(part, function (el, i) {
@@ -2185,7 +2119,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 
 			if (i > 0) {
 				part = el.split('}');
-				command += '\' + ' + that._returnVar(part[0], vars) +
+				command += '\' + ' + Snakeskin._returnVar(part[0], dirObj) +
 					' + \'' +
 					part.slice(1).join('}')
 						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
@@ -2195,7 +2129,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 			}
 		});
 
-		vars.save(
+		dirObj.save(
 			'__SNAKESKIN_RESULT__ += \'' +
 				'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
 				command +
@@ -2207,21 +2141,14 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 /**
  * Окончание БЭМ блока
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
-	var lastBEM = vars.popPos('bem');
-
-	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
+Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
+	var lastBEM = dirObj.popPos('bem');
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
 };/**
  * Директива data

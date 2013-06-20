@@ -5,40 +5,31 @@
 /**
  * Декларация или вывод константы
  *
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.i - номер итерации
- * @param {number} vars.startI - номер итерации объявления шаблона
- * @param {string} vars.tplName - название шаблона
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - если true, то значит объявляется прототип
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
+Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	var varName,
 
-		tplName = vars.tplName,
-		parentTplName = vars.parentTplName,
-		protoStart = vars.protoStart,
+		tplName = dirObj.tplName,
+		parentTplName = dirObj.parentTplName,
+		protoStart = dirObj.protoStart,
 
-		i = vars.i,
-		startI = vars.startI;
+		i = dirObj.i,
+		startI = dirObj.startI;
 
-	// Экспорт console api
-	if (!parentTplName && !protoStart && /console\./.test(command)) {
-		vars.save(command + ';');
+	// Хак для экспорта console api
+	if (!parentTplName && !protoStart && /^console\./.test(command)) {
+		dirObj.save(command + ';');
 		return;
 	}
 
 	// Инициализация переменных
-	if (/[^=]=[^=]/.test(command)) {
+	if (/^[a-z_][\w\[\]'"\s]*[^=]=[^=]/i.test(command)) {
 		varName = command.split('=')[0].trim();
 
 		if (tplName) {
@@ -63,7 +54,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 			}
 
 			// Попытка инициализации переменной в цикле
-			if (vars.hasPos('forEach')) {
+			if (dirObj.hasPos('forEach')) {
 				throw Snakeskin.error(
 					'Variable "' + varName + '" can\'t be defined in a loop ' +
 					'(command: {' + command + '}, template: "' + tplName + ', ' +
@@ -80,17 +71,17 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
 			fromVarCache[tplName] = i - startI + 1;
 
 			if (!parentTplName && !protoStart) {
-				vars.save('var ' + command + ';');
+				dirObj.save('var ' + command + ';');
 			}
 
 		} else {
 			globalVarCache[varName] = true;
-			vars.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }');
+			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }');
 		}
 
 	// Вывод переменных
 	} else if (!parentTplName && !protoStart) {
-		vars.save('__SNAKESKIN_RESULT__ += ' + Snakeskin._returnVar(command, vars) + ';');
+		dirObj.save('__SNAKESKIN_RESULT__ += ' + Snakeskin._returnVar(command, dirObj) + ';');
 	}
 };
 
@@ -98,19 +89,11 @@ Snakeskin.Directions['const'] = function (command, commandLength, vars, adv) {
  * Декларация или вывод константы
  *
  * @private
- * @Snakeskin {Snakeskin}
  * @param {string} command - название команды (или сама команда)
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.tplName - название шаблона
- * @param {function(string)} vars.hasPos - вернёт true, если есть позиции
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
- * @param {function(string)} vars.getPos - вернуть позиции
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @return {string}
  */
-Snakeskin._returnVar = function (command, vars) {
+Snakeskin._returnVar = function (command, dirObj) {
 	var varPath = '',
 		unEscape = false;
 
@@ -121,12 +104,12 @@ Snakeskin._returnVar = function (command, vars) {
 
 		if (i === 0) {
 			// Если используется with блок
-			if (vars.hasPos('with')) {
-				vars.pushPos('with', {scope: el}, true);
-				varPath = vars.getPos('with').reduce(function (str, el) {
+			if (dirObj.hasPos('with')) {
+				dirObj.pushPos('with', {scope: el}, true);
+				varPath = dirObj.getPos('with').reduce(function (str, el) {
 					return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
 				});
-				vars.popPos('with');
+				dirObj.popPos('with');
 
 			} else {
 				varPath = el;
@@ -134,7 +117,7 @@ Snakeskin._returnVar = function (command, vars) {
 
 			varPath =
 				'Snakeskin.Filters.undef(' +
-				(!varCache[vars.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
+				(!varCache[dirObj.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
 				varPath + ')';
 
 		} else {

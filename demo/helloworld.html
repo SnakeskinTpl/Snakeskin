@@ -10,14 +10,9 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(/*sd*/)}
-				{for var j = 0; j < 10; j++}
-					{j}
-				{end}
-
-				{repeat}
-					{j}
-				{until j--}
+			{template helloWorld()}
+			{1 == 2 ? (function () { var a = 1; return a; })() : 2}
+			{1 === 1 && (a = 10)}
 			{/template}
 		</script>
 
