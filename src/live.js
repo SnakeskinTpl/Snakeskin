@@ -23,8 +23,6 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
 					break;
 				}
 			}
-
-
 		}
 
 	} else {

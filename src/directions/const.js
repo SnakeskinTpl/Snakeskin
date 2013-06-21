@@ -105,120 +105,101 @@ Snakeskin.returnVar = function (command, dirObj) {
 		filterStart,
 		filter = [];
 
-	var res = '';
+	var res = command,
+		adv = 0;
 
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
-			next = command.charAt(i + 1);
+			next = command.charAt(i + 1),
+			nnext = command.charAt(i + 2);
 
+		var j;
 		if (el === '(') {
 			if (filterStart) {
 				bCountFilter++;
 
 			} else {
-				bContent.unshift('');
+				bContent.unshift([i]);
 				bCount++;
 			}
 		}
 
-		for (var j = bCount; j--;) {
-			bContent[j] += el;
+		if (!filterStart) {
+			// Закрылась скобка, а последующие 2 символа не являются фильтром,
+			// следовательно можно применить данное выражение без изменений
+			if (el === ')' && (next !== '|' || !/[!$a-z_]/i.test(nnext))) {
+				bCount--;
+				bContent.shift();
+				continue;
+			}
+
+		// Тело фильтра
+		} else if (el !== ')' || bCountFilter) {
+			if (el === ')') {
+				bCountFilter--;
+			}
+
+			filter[filter.length - 1] += el;
 		}
 
-		if (el === ')' || i === command.length - 1) {
-			if (!bCount) {
-				res += el;
-			}
-
-			if (filterStart) {
-				if (el !== ')') {
-					filter[filter.length - 1] += el;
-				}
-
-				if (bCountFilter) {
-					bCountFilter--;
-
-				} else {
-					if (filterStart) {
-						res += filter.reduce(function (res, el) {
-							var params = el.replace().split(' '),
-								input = params.slice(1).join('').trim();
-
-							return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
-								(input ? ',' + input : '') + ')';
-
-						}, bContent[bContent.length - 2] || bContent[bContent.length - 1]);
-
-						filter = [];
-						filterStart = false;
-					}
-
-					bCount--;
-				}
-
-			} else {
-				res += bContent[bContent.length - 2];
-				bCount--;
-			}
-
-		} else if (el === '|' && /[!$a-z_]/i.test(next)) {
-			filter.push(next);
+		// Начало фильтра
+		if (next === '|' && /[!$a-z_]/i.test(nnext)) {
+			bContent[0].push(i + 1);
+			filter.push(nnext);
 
 			bCountFilter = 0;
 			filterStart = true;
 
-			i++;
+			i += 2;
+			continue;
+		}
 
-		} else if (filterStart && /[^)]/i.test(el)) {
-			filter[filter.length - 1] += el;
+		if (el === ')' || i === command.length - 1) {
+			// Закрытая скобка была декларирована в теле фильтра,
+			// т.е. игнорим
+			if (bCountFilter) {
+				bCountFilter--;
 
-		} else if (!bCount) {
-			res += el;
+			} else {
+				// Срезаем лишнюю скобку
+				if (el === ')') {
+					for (j = bCount; j--;) {
+						bContent[j][0]++;
+					}
+				}
+
+				var length = bContent.length,
+					pos = bContent[length - bCount - 1],
+					fbody = bCount ? command.substring(pos[0], pos[1]) : res;
+
+				var resTmp = filter.reduce(function (res, el) {
+					var params = el.replace().split(' '),
+						input = params.slice(1).join('').trim();
+
+					return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
+						(input ? ',' + input : '') + ')';
+
+				}, fbody);
+
+				if (!bCount) {
+					res = resTmp;
+
+				} else {
+					var fstr = filter.join().length + 1;
+					res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + fstr + adv);
+					adv += resTmp.length - fbody.length - fstr;
+
+					bContent.splice(length - bCount - 1, 1);
+				}
+
+				filter = [];
+				filterStart = false;
+
+				bCount--;
+			}
 		}
 	}
 
 	console.log(res);
-
-	// Поддержка фильтров через пайп
-	/*Snakeskin.forEach(command.split(/[^|]\|(?=[!a-z_])/i), function (el, i) {
-		var part,
-			sPart;
-
-		if (i === 0) {
-			// Если используется with блок
-			if (dirObj.hasPos('with')) {
-				dirObj.pushPos('with', {scope: el}, true);
-
-				varPath = dirObj.getPos('with').reduce(function (str, el) {
-					return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
-				});
-
-				dirObj.popPos('with');
-
-			} else {
-				varPath = el;
-			}
-
-			varPath =
-				'Snakeskin.Filters.undef(' +
-				(!varCache[dirObj.tplName][varPath] && globalVarCache[varPath] ? 'Snakeskin.Vars.' : '') +
-				varPath + ')';
-
-		} else {
-			part = el.split(' ');
-			sPart = part.slice(1);
-
-			// По умолчанию, все переменные пропускаются через фильтр html
-			if (part[0] !== '!html') {
-				varPath = 'Snakeskin.Filters[\'' + part[0] + '\'](' +
-					varPath + (sPart.length ? ', ' + sPart.join('') : '') +
-				')';
-
-			} else {
-				unEscape = true;
-			}
-		}
-	});*/
-
 	return (!unEscape ? 'Snakeskin.Filters.html(' : '') + varPath + (!unEscape ? ')' : '');
 };
