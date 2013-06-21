@@ -2024,8 +2024,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 		}
 
 		if (!filterStart) {
-			// Закрылась скобка, а последующие 2 символа не являются фильтром,
-			// следовательно можно применить данное выражение без изменений
+			// Закрылась скобка, а последующие 2 символа не являются фильтром
 			if (el === ')' && (next !== '|' || !/[!$a-z_]/i.test(nnext))) {
 				bCount--;
 				bContent.shift();
@@ -2043,9 +2042,15 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 		// Начало фильтра
 		if (next === '|' && /[!$a-z_]/i.test(nnext)) {
-			bContent[0].push(i + 1);
-			filter.push(nnext);
+			if (bCount) {
+				bContent[0].push(i + 1);
 
+			} else {
+				bContent.push([0, i + 1]);
+				bCount = 1;
+			}
+
+			filter.push(nnext);
 			bCountFilter = 0;
 			filterStart = true;
 
@@ -2069,7 +2074,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 				var length = bContent.length,
 					pos = bContent[length - bCount - 1],
-					fbody = bCount ? command.substring(pos[0], pos[1]) : res;
+					fbody = command.substring(pos[0], pos[1]);
 
 				var resTmp = filter.reduce(function (res, el) {
 					var params = el.replace().split(' '),
@@ -2080,16 +2085,11 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 				}, fbody);
 
-				if (!bCount) {
-					res = resTmp;
+				var fstr = filter.join().length + 1;
+				res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + fstr + adv);
+				adv += resTmp.length - fbody.length - fstr;
 
-				} else {
-					var fstr = filter.join().length + 1;
-					res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + fstr + adv);
-					adv += resTmp.length - fbody.length - fstr;
-
-					bContent.splice(length - bCount - 1, 1);
-				}
+				bContent.splice(length - bCount - 1, 1);
 
 				filter = [];
 				filterStart = false;
