@@ -163,6 +163,9 @@ Snakeskin.returnVar = function (command, dirObj) {
 		useWith = dirObj.hasPos('with'),
 		scope = dirObj.getPos('with');
 
+	var wordAdvStart = 0,
+		wordAdvEnd = 0;
+
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
 			next = command.charAt(i + 1),
@@ -181,12 +184,19 @@ Snakeskin.returnVar = function (command, dirObj) {
 			continue;
 		}
 
+		// Расчёт scope
 		if (nword && /[@#$a-z_]/i.test(el)) {
 			var word = findNext(command, i);
 
+			var diff = wordAdvStart + wordAdvEnd + adv;
+			if (diff) {
+				diff++;
+			}
+
 			if (el === '@') {
-				res = res.substring(0, i + adv) + word.substring(1) + res.substring(i + word.length + adv);
-				adv--;
+				res = res.substring(0, i + diff) + word.substring(1) + res.substring(i + word.length + diff);
+				wordAdvStart--;
+				wordAdvEnd--;
 
 			} else if (!blackWordList[word] && useWith) {
 				var num = null;
@@ -196,31 +206,37 @@ Snakeskin.returnVar = function (command, dirObj) {
 					num++;
 				}
 
-				dirObj.pushPos('with', {scope: word.replace(/#(?:\d+|)/, '')}, true);
-				num = num ? scope.length - num : num;
+				var clword = word.replace(/#(?:\d+|)/, '');
+				scope.push({scope: clword});
+				var rnum = num = num ? scope.length - num : num;
 
-				var rnum = num;
 				var rword = scope.reduce(function (str, el, i, data) {
 					num = num ? num - 1 : num;
+					var val = typeof str.scope === 'undefined' ? str : str.scope;
 
 					if (num === null || num > 0) {
-						return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
+						return val + '.' + el.scope;
 					}
 
 					if (i === data.length - 1) {
-						return (rnum > 0 ? str + '.' : '') + el.scope;
+						return (rnum > 0 ? val + '.' : '') + el.scope;
 					}
 
-					return typeof str.scope === 'undefined' ? str : str.scope;
+					return val;
 				});
 
-				dirObj.popPos('with');
-				res = res.substring(0, i + adv) + rword + res.substring(i + word.length + adv);
-				adv += rword.length - word.length;
+				scope.pop();
+				res = res.substring(0, i + diff) + rword + res.substring(i + word.length + diff);
+				console.log(res)
+
+				wordAdvStart += clword.length - word.length;
+				wordAdvEnd += rword.length - word.length;
 			}
 
 			nword = false;
 
+		// Возможно, скоро начнётся новое слово,
+		// для которого можно посчитать scope
 		} else if (/[^@#$\w\[\].]/.test(el)) {
 			nword = true;
 		}
@@ -265,9 +281,11 @@ Snakeskin.returnVar = function (command, dirObj) {
 			var length = bContent.length,
 				pos = bContent[length - bCount - 1];
 
-			var fbody = command.substring(pos[0], pos[1]);
+			var fbody = res.substring(pos[0] + adv, pos[1] + adv);
+			//console.log(fbody);
+
 			var resTmp = filter.reduce(function (res, el) {
-				var params = el.replace().split(' '),
+				var params = el.split(' '),
 					input = params.slice(1).join('').trim();
 
 				return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
@@ -276,7 +294,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 			}, fbody);
 
 			var fstr = filter.join().length + 1;
-			res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + fstr + adv);
+			res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + adv + fstr);
 			adv += resTmp.length - fbody.length - fstr;
 
 			bContent.splice(length - bCount - 1, 1);

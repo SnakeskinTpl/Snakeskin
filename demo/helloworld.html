@@ -14,12 +14,10 @@
 				{with root}
 					{with foo}
 						{with obj.my}
-							{bar}
+							{(#bar|html) + (#2my|html)}
 						{end}
 					{end}
 				{end}
-
-
 			{end}
 		</script>
 
