@@ -87,6 +87,41 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	}
 };
 
+var blackWordList = {
+	'break': true,
+	'case': true,
+	'catch': true,
+	'continue': true,
+	'delete': true,
+	'do': true,
+	'else': true,
+	'false': true,
+	'finnaly': true,
+	'for': true,
+	'function': true,
+	'if': true,
+	'in': true,
+	'instanceof': true,
+	'new': true,
+	'null': true,
+	'return': true,
+	'switch': true,
+	'this': true,
+	'throw': true,
+	'true': true,
+	'try': true,
+	'typeof': true,
+	'var': true,
+	'void': true,
+	'while': true,
+	'with': true,
+	'class': true,
+	'let': true,
+	'const': true,
+	'debugger': true,
+	'interface': true
+};
+
 /**
  * Декларация или вывод константы
  *
@@ -108,13 +143,33 @@ Snakeskin.returnVar = function (command, dirObj) {
 	var res = command,
 		adv = 0;
 
+	function findNext(str, pos) {
+		var res = '';
+		for (var j = pos; j < str.length; j++) {
+			var el = str[j];
+
+			if (/[@#$\w\[\].]/.test(el)) {
+				res += el;
+
+			} else {
+				break;
+			}
+		}
+
+		return res;
+	}
+
+	var nword = true,
+		useWith = dirObj.hasPos('with'),
+		scope = dirObj.getPos('with');
+
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
 			next = command.charAt(i + 1),
 			nnext = command.charAt(i + 2);
 
-		var j;
 		if (el === '(') {
+			// Скобка открылась внутри декларации фильтра
 			if (filterStart) {
 				bCountFilter++;
 
@@ -122,6 +177,52 @@ Snakeskin.returnVar = function (command, dirObj) {
 				bContent.unshift([i]);
 				bCount++;
 			}
+
+			continue;
+		}
+
+		if (nword && /[@#$a-z_]/i.test(el)) {
+			var word = findNext(command, i);
+
+			if (el === '@') {
+				res = res.substring(0, i + adv) + word.substring(1) + res.substring(i + word.length + adv);
+				adv--;
+
+			} else if (!blackWordList[word] && useWith) {
+				var num = null;
+				if (el === '#') {
+					num = /#(\d+)/.exec(word);
+					num = num ? num[1] : 1;
+					num++;
+				}
+
+				dirObj.pushPos('with', {scope: word.replace(/#(?:\d+|)/, '')}, true);
+				num = num ? scope.length - num : num;
+
+				var rnum = num;
+				var rword = scope.reduce(function (str, el, i, data) {
+					num = num ? num - 1 : num;
+
+					if (num === null || num > 0) {
+						return (typeof str.scope === 'undefined' ? str : str.scope) + '.' + el.scope;
+					}
+
+					if (i === data.length - 1) {
+						return (rnum > 0 ? str + '.' : '') + el.scope;
+					}
+
+					return typeof str.scope === 'undefined' ? str : str.scope;
+				});
+
+				dirObj.popPos('with');
+				res = res.substring(0, i + adv) + rword + res.substring(i + word.length + adv);
+				adv += rword.length - word.length;
+			}
+
+			nword = false;
+
+		} else if (/[^@#$\w\[\].]/.test(el)) {
+			nword = true;
 		}
 
 		if (!filterStart) {
@@ -132,7 +233,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 				continue;
 			}
 
-		// Тело фильтра
+		// Составление тела фильтра
 		} else if (el !== ')' || bCountFilter) {
 			if (el === ')') {
 				bCountFilter--;
@@ -143,12 +244,13 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 		// Начало фильтра
 		if (next === '|' && /[!$a-z_]/i.test(nnext)) {
+			nword = false;
+
 			if (bCount) {
 				bContent[0].push(i + 1);
 
 			} else {
 				bContent.push([0, i + 1]);
-				bCount = 1;
 			}
 
 			filter.push(nnext);
@@ -159,44 +261,30 @@ Snakeskin.returnVar = function (command, dirObj) {
 			continue;
 		}
 
-		if (el === ')' || i === command.length - 1) {
-			// Закрытая скобка была декларирована в теле фильтра,
-			// т.е. игнорим
-			if (bCountFilter) {
-				bCountFilter--;
+		if (filterStart && ((el === ')' && !bCountFilter) || i === command.length - 1)) {
+			var length = bContent.length,
+				pos = bContent[length - bCount - 1];
 
-			} else {
-				// Срезаем лишнюю скобку
-				if (el === ')') {
-					for (j = bCount; j--;) {
-						bContent[j][0]++;
-					}
-				}
+			var fbody = command.substring(pos[0], pos[1]);
+			var resTmp = filter.reduce(function (res, el) {
+				var params = el.replace().split(' '),
+					input = params.slice(1).join('').trim();
 
-				var length = bContent.length,
-					pos = bContent[length - bCount - 1],
-					fbody = command.substring(pos[0], pos[1]);
+				return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
+					(input ? ',' + input : '') + ')';
 
-				var resTmp = filter.reduce(function (res, el) {
-					var params = el.replace().split(' '),
-						input = params.slice(1).join('').trim();
+			}, fbody);
 
-					return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
-						(input ? ',' + input : '') + ')';
+			var fstr = filter.join().length + 1;
+			res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + fstr + adv);
+			adv += resTmp.length - fbody.length - fstr;
 
-				}, fbody);
+			bContent.splice(length - bCount - 1, 1);
 
-				var fstr = filter.join().length + 1;
-				res = res.substring(0, pos[0] + adv) + resTmp + res.substring(pos[1] + fstr + adv);
-				adv += resTmp.length - fbody.length - fstr;
+			filter = [];
+			filterStart = false;
 
-				bContent.splice(length - bCount - 1, 1);
-
-				filter = [];
-				filterStart = false;
-
-				bCount--;
-			}
+			bCount--;
 		}
 	}
 

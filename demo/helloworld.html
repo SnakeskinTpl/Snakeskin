@@ -11,8 +11,15 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				///{2 + ((5|foo) + 4 + (6|html))}
-				{(1 + 2)|html get()}
+				{with root}
+					{with foo}
+						{with obj.my}
+							{bar}
+						{end}
+					{end}
+				{end}
+
+
 			{end}
 		</script>
 
