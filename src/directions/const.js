@@ -141,7 +141,8 @@ Snakeskin.returnVar = function (command, dirObj) {
 		pContent = [command],
 
 		filterStart,
-		filter = [];
+		filter = [],
+		rvFilter = [];
 
 	var res = command,
 		addition = 0;
@@ -275,6 +276,8 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 				if (filterStart) {
 					filter[filter.length - 1] += vres;
+					rvFilter[filter.length - 1] += word;
+
 					filterAddEnd += vres.length - word.length;
 
 				} else {
@@ -310,6 +313,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 				}
 
 				filter[filter.length - 1] += el;
+				rvFilter[filter.length - 1] += el;
 			}
 		}
 
@@ -329,6 +333,8 @@ Snakeskin.returnVar = function (command, dirObj) {
 			}
 
 			filter.push(nnext);
+			rvFilter.push(nnext);
+
 			pCountFilter = 0;
 			filterStart = true;
 
@@ -343,8 +349,6 @@ Snakeskin.returnVar = function (command, dirObj) {
 			var fbody = res.substring(pos[0] + addition, pos[1] + wordAddEnd - filterAddEnd + addition),
 				unEscape = false;
 
-			console.log(fbody, filter);
-
 			var resTmp = filter.reduce(function (res, el) {
 				var params = el.split(' '),
 					input = params.slice(1).join('').trim();
@@ -354,11 +358,9 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 			}, fbody);
 
-			console.log(res);
-
-			var fstr = filter.join().length + 1;
+			var fstr = rvFilter.join().length + 1;
 			res = res.substring(0, pos[0] + addition) +
-				resTmp + res.substring(pos[1] + wordAddEnd + addition + fstr);
+				resTmp + res.substring(pos[1] + wordAddEnd - filterAddEnd + addition + fstr);
 
 			addition += resTmp.length - fbody.length - fstr + wordAddEnd;
 
@@ -367,6 +369,8 @@ Snakeskin.returnVar = function (command, dirObj) {
 			pContent.splice(length - pCount - 1, 1);
 
 			filter = [];
+			rvFilter = [];
+
 			filterStart = false;
 			pCount--;
 		}
