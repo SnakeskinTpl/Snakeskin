@@ -86,7 +86,17 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				var commandLength = command.length;
 				command = Snakeskin.replaceDangerBlocks(command, dirObj.quotContent).trim();
 
-				var commandType = command.replace(/^\//, 'end ').split(' ')[0];
+				var commandType = command
+					// Хак для подержки закрытия директив через слеш
+					.replace(/^\//, 'end ')
+
+					// Хак для поддержки {data ...} как {{ ... }}
+					.replace(/^{([\s\S]*)}$/, function (sstr, $1) {
+						return 'data ' + $1;
+					})
+
+					.split(' ')[0];
+
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
