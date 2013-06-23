@@ -149,13 +149,25 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 	function findNext(str, pos) {
 		var res = '',
-			pCount = 0;
+			pCount = 0,
 
-		for (var j = pos; j < str.length; j++) {
-			var el = str[j];
+			start,
+			pContent = null;
 
-			if (/[@#$\w\[\]().]/.test(el)) {
+		for (var i = pos, j = 0; i < str.length; i++, j++) {
+			var el = str[i];
+
+			if (pCount || /[@#$\w\[\]().]/.test(el)) {
+				if (pContent !== null && (pCount > 1 || pCount === 1 && el !== ')')) {
+					pContent += el;
+				}
+
 				if (el === '(') {
+					if (pContent === null) {
+						start = j + 1;
+						pContent = '';
+					}
+
 					pCount++;
 
 				} else if (el === ')') {
@@ -174,7 +186,11 @@ Snakeskin.returnVar = function (command, dirObj) {
 			}
 		}
 
-		return res;
+		return {
+			word: res,
+			nword: pContent ?
+				res.substring(0, start) + Snakeskin.returnVar(pContent, dirObj) + res.substring(j - 1) : res
+		};
 	}
 
 	var nword = true,
@@ -209,9 +225,12 @@ Snakeskin.returnVar = function (command, dirObj) {
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
 			if (nword && !posNWord && /[@#$a-z_]/i.test(el)) {
-				var word = findNext(command, i),
-					uadd = wordAddEnd + addition,
+				var nextStep = findNext(command, i),
 
+					oword = nextStep.word,
+					word = nextStep.nword,
+
+					uadd = wordAddEnd + addition,
 					vres;
 
 				if (el === '@') {
@@ -271,20 +290,19 @@ Snakeskin.returnVar = function (command, dirObj) {
 					vres = 'Snakeskin.Filters.undef(' + vres + ')';
 				}
 
-				wordAddEnd += vres.length - word.length;
+				wordAddEnd += vres.length - oword.length;
 				nword = false;
 
 				if (filterStart) {
 					filter[filter.length - 1] += vres;
-					rvFilter[filter.length - 1] += word;
-
-					filterAddEnd += vres.length - word.length;
+					rvFilter[filter.length - 1] += oword;
+					filterAddEnd += vres.length - oword.length;
 
 				} else {
-					res = res.substring(0, i + uadd) + vres + res.substring(i + word.length + uadd);
+					res = res.substring(0, i + uadd) + vres + res.substring(i + oword.length + uadd);
 				}
 
-				i += word.length - 2;
+				i += oword.length - 2;
 				breakNum = 1;
 				continue;
 
@@ -346,14 +364,12 @@ Snakeskin.returnVar = function (command, dirObj) {
 			var length = pContent.length,
 				pos = pContent[length - pCount - 1];
 
-			var fbody = res.substring(pos[0] + addition, pos[1] + wordAddEnd - filterAddEnd + addition),
-				unEscape = false;
-
+			var fbody = res.substring(pos[0] + addition, pos[1] + wordAddEnd - filterAddEnd + addition);
 			var resTmp = filter.reduce(function (res, el) {
 				var params = el.split(' '),
 					input = params.slice(1).join('').trim();
 
-				return 'Snakeskin.filter[\'' + params.shift() + '\'](' + res +
+				return 'Snakeskin.Filters[\'' + params.shift() + '\'](' + res +
 					(input ? ',' + input : '') + ')';
 
 			}, fbody);
@@ -376,6 +392,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 		}
 	}
 
-	console.info(res);
-	return (!unEscape ? 'Snakeskin.Filters.html(' : '') + '' + (!unEscape ? ')' : '');
+	console.log(res);
+	return res;
+	//return (!unEscape ? 'Snakeskin.Filters.html(' : '') + '' + (!unEscape ? ')' : '');
 };

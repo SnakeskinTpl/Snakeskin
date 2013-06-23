@@ -11,7 +11,9 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{(yhmy|ucfirst a()) + 2}
+				{with foo}
+					{(yhmy|ucfirst a(b(), c()))}
+				{/with}
 			{/template}
 		</script>
 
