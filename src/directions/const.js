@@ -128,6 +128,8 @@ var comboBlackWordList = {
 	'const': true
 };
 
+//TODO: Отрефакторить, добавить стандартный глобальный фильтр
+
 /**
  * Декларация или вывод константы
  *
@@ -147,6 +149,30 @@ Snakeskin.returnVar = function (command, dirObj) {
 	var res = command,
 		addition = 0;
 
+	function prevObjL(str, pos) {
+		for (var i = pos; i--;) {
+			var el = str.charAt(i);
+
+			if (/\S/.test(el)) {
+				return el === '{';
+			}
+		}
+
+		return false;
+	}
+
+	function nextObjL(str, pos) {
+		for (var i = pos; i < str.length; i++) {
+			var el = str.charAt(i);
+
+			if (/\S/.test(el)) {
+				return el === ':';
+			}
+		}
+
+		return false;
+	}
+
 	function findNext(str, pos) {
 		var res = '',
 			pCount = 0,
@@ -155,7 +181,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 			pContent = null;
 
 		for (var i = pos, j = 0; i < str.length; i++, j++) {
-			var el = str[i];
+			var el = str.charAt(i);
 
 			if (pCount || /[@#$\w\[\]().]/.test(el)) {
 				if (pContent !== null && (pCount > 1 || pCount === 1 && el !== ')')) {
@@ -234,7 +260,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 					vres;
 
 				if (el === '@') {
-					if (!blackWordList[word] && useWith) {
+					if (!blackWordList[word] && !/__SNAKESKIN_QUOT__\d+/.test(word) && !prevObjL(command, i) && !nextObjL(command, i + oword.length) && useWith) {
 						vres = word.substring(next === '@' ? 2 : 1);
 
 						// Супер глобальная переменная внутри with
@@ -249,7 +275,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 
 				} else {
 					var clword = word.replace(/#(?:\d+|)/, '');
-					if (!blackWordList[word] && useWith) {
+					if (!blackWordList[word] && !/__SNAKESKIN_QUOT__\d+/.test(word) && !prevObjL(command, i) && !nextObjL(command, i + oword.length) && useWith) {
 						var num = null;
 
 						if (el === '#') {
@@ -286,7 +312,7 @@ Snakeskin.returnVar = function (command, dirObj) {
 				if (comboBlackWordList[word]) {
 					posNWord = 2;
 
-				} else if (!blackWordList[word]) {
+				} else if (!blackWordList[word] && !/__SNAKESKIN_QUOT__\d+/.test(word) && !prevObjL(command, i) && !nextObjL(command, i + oword.length)) {
 					vres = 'Snakeskin.Filters.undef(' + vres + ')';
 				}
 
