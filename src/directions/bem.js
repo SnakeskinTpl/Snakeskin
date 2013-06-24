@@ -42,29 +42,10 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 		part[0] += '\'';
 		command = part.join(',');
 
-		// Обработка переменных
-		part = dirObj.pasteDangerBlocks(command, dirObj.quotContent).split('${');
-		command = '';
-
-		Snakeskin.forEach(part, function (el, i) {
-			var part;
-
-			if (i > 0) {
-				part = el.split('}');
-				command += '\' + ' + dirObj.prepareOutput(part[0]) +
-					' + \'' +
-					part.slice(1).join('}')
-						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-
-			} else {
-				command += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-			}
-		});
-
 		dirObj.save(
 			'__SNAKESKIN_RESULT__ += \'' +
 				'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
-				command +
+				dirObj.replaceTplVars(command) +
 			'}">\';'
 		);
 	}

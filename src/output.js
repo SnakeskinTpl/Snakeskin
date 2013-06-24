@@ -138,7 +138,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 				escape = false;
 				res += '\' + ' +
 					this.prepareOutput(this.replaceDangerBlocks(dir, this.quotContent)) +
-					' + \'';
+				' + \'';
 			}
 		}
 	}
