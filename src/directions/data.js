@@ -33,7 +33,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, vars) {
 
 			if (i > 0) {
 				part = el.split('}');
-				command += '\' + ' + that.returnVar(part[0], vars) +
+				command += '\' + ' + vars.prepareOutput(part[0]) +
 					' + \'' +
 					part.slice(1).join('}')
 						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');

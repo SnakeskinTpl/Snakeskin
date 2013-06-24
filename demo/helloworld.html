@@ -11,9 +11,9 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{name = 'foobar'}
-
-				<div data-bind="{{ {name: '${name}'} }}">...</div>
+				{with a}
+					{a(b())}
+				{end}
 			{/template}
 		</script>
 
