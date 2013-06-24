@@ -4,7 +4,7 @@
  * @param {Object} obj - дополнительная информация
  * @return {string}
  */
-Snakeskin.genErrorAdvInfo = function (obj) {
+DirObj.prototype.genErrorAdvInfo = function (obj) {
 	var str = '';
 	for (var key in obj) {
 		if (!obj.hasOwnProperty(key)) { continue; }
@@ -27,7 +27,7 @@ Snakeskin.genErrorAdvInfo = function (obj) {
  * @param {string} msg - сообщение ошибки
  * @return {!Error}
  */
-Snakeskin.error = function (msg) {
+DirObj.prototype.error = function (msg) {
 	var error = new Error(msg);
 	error.name = 'Snakeskin Error';
 

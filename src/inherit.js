@@ -2,16 +2,17 @@
  * Вернуть тело шаблона при наследовании
  * (супер мутная функция, уже не помню, как она работает :))
  *
+ * @this {DirObj}
  * @param {string} tplName - название шаблона
  * @param {Object} info - дополнительная информация
  * @return {string}
  */
-Snakeskin.getExtStr = function (tplName, info) {
+DirObj.prototype.getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
 	if (typeof cache[extMap[tplName]] === 'undefined') {
-		throw Snakeskin.error(
+		throw this.error(
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
-			'for inheritance is not defined (' + Snakeskin.genErrorAdvInfo(info) + ')!'
+			'for inheritance is not defined (' + this.genErrorAdvInfo(info) + ')!'
 		);
 	}
 

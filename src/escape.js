@@ -6,7 +6,7 @@
  * @param {Array=} [opt_stack] - массив для подстрок
  * @return {string}
  */
-Snakeskin.replaceDangerBlocks = function (str, opt_stack) {
+DirObj.prototype.replaceDangerBlocks = function (str, opt_stack) {
 	var begin,
 		escape,
 		end = true,
@@ -55,7 +55,7 @@ Snakeskin.replaceDangerBlocks = function (str, opt_stack) {
  * @param {!Array} stack - массив c подстроками
  * @return {string}
  */
-Snakeskin.pasteDangerBlocks = function (str, stack) {
+DirObj.prototype.pasteDangerBlocks = function (str, stack) {
 	return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
 		return stack[pos];
 	});

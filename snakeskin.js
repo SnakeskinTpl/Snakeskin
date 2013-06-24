@@ -409,9 +409,7 @@ var escapeEndMap = {
 	'?': true,
 	':': true,
 	'(': true
-};
-
-/**
+};/**
  * Конструктор управления директивами
  *
  * @constructor
@@ -493,18 +491,20 @@ function DirObj(src, commonJS, dryRun) {
 	 */
 	this.res =
 		(!dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
-		(commonJS ?
-			'var Snakeskin = global.Snakeskin;' +
+			(commonJS ?
+				'var Snakeskin = global.Snakeskin;' +
 
-			'exports.liveInit = function (path) { ' +
-				'Snakeskin = require(path);' +
-				'exec();' +
-				'return this;' +
-			'};' +
+					'exports.liveInit = function (path) { ' +
+					'Snakeskin = require(path);' +
+					'exec();' +
+					'return this;' +
+					'};' +
 
-			'function exec() {' :
-		'');
+					'function exec() {' :
+				'');
 }
+
+Snakeskin.DirObj = DirObj;
 
 /**
  * Добавить строку в результирующую
@@ -650,7 +650,7 @@ DirObj.prototype.isNotSysPos = function (i) {
  * @param {Array=} [opt_stack] - массив для подстрок
  * @return {string}
  */
-Snakeskin.replaceDangerBlocks = function (str, opt_stack) {
+DirObj.prototype.replaceDangerBlocks = function (str, opt_stack) {
 	var begin,
 		escape,
 		end = true,
@@ -699,7 +699,7 @@ Snakeskin.replaceDangerBlocks = function (str, opt_stack) {
  * @param {!Array} stack - массив c подстроками
  * @return {string}
  */
-Snakeskin.pasteDangerBlocks = function (str, stack) {
+DirObj.prototype.pasteDangerBlocks = function (str, stack) {
 	return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
 		return stack[pos];
 	});
@@ -707,16 +707,17 @@ Snakeskin.pasteDangerBlocks = function (str, stack) {
  * Вернуть тело шаблона при наследовании
  * (супер мутная функция, уже не помню, как она работает :))
  *
+ * @this {DirObj}
  * @param {string} tplName - название шаблона
  * @param {Object} info - дополнительная информация
  * @return {string}
  */
-Snakeskin.getExtStr = function (tplName, info) {
+DirObj.prototype.getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
 	if (typeof cache[extMap[tplName]] === 'undefined') {
-		throw Snakeskin.error(
+		throw this.error(
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
-			'for inheritance is not defined (' + Snakeskin.genErrorAdvInfo(info) + ')!'
+			'for inheritance is not defined (' + this.genErrorAdvInfo(info) + ')!'
 		);
 	}
 
@@ -862,7 +863,7 @@ Snakeskin.getExtStr = function (tplName, info) {
  * @param {Object} obj - дополнительная информация
  * @return {string}
  */
-Snakeskin.genErrorAdvInfo = function (obj) {
+DirObj.prototype.genErrorAdvInfo = function (obj) {
 	var str = '';
 	for (var key in obj) {
 		if (!obj.hasOwnProperty(key)) { continue; }
@@ -885,7 +886,7 @@ Snakeskin.genErrorAdvInfo = function (obj) {
  * @param {string} msg - сообщение ошибки
  * @return {!Error}
  */
-Snakeskin.error = function (msg) {
+DirObj.prototype.error = function (msg) {
 	var error = new Error(msg);
 	error.name = 'Snakeskin Error';
 
@@ -977,7 +978,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 				begin = false;
 
 				var commandLength = command.length;
-				command = Snakeskin.replaceDangerBlocks(command, dirObj.quotContent).trim();
+				command = dirObj.replaceDangerBlocks(command, dirObj.quotContent).trim();
 
 				var commandType = command
 					// Хак для подержки закрытия директив через слеш
@@ -1062,11 +1063,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dirObj.openBlockI !== 0) {
-		throw Snakeskin.error('Missing closing or opening tag in the template, ' +
-			Snakeskin.genErrorAdvInfo(opt_info) + '")!');
+		throw dirObj.error('Missing closing or opening tag in the template, ' +
+			dirObj.genErrorAdvInfo(opt_info) + '")!');
 	}
 
-	dirObj.res = Snakeskin.pasteDangerBlocks(dirObj.res, dirObj.quotContent)
+	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res, dirObj.quotContent)
 		.replace(/[\t\v\r\n]/gm, '')
 		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
@@ -1194,6 +1195,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 /**
  * Вернуть целое слово из строки, начиная с указанной позиции
  *
+ * @this {DirObj}
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
  * @return {{word: string, finalWord: string}}
@@ -1262,8 +1264,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 
 	// Массив позиций открытия и закрытия скобок,
 	// идёт в порядке возрастания от вложенных к внешним блокам, например:
-	// ((a + b)) => [[1, 7], [0, 8], [0, 8]]
-	var pContent = [[0, command.length - 1]];
+	// ((a + b)) => [[1, 7], [0, 8]]
+	var pContent = [];
 
 	// true, если идёт декларация фильтра
 	var filterStart;
@@ -1471,8 +1473,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 		}
 
 		if (filterStart && ((el === ')' && !pCountFilter) || i === command.length - 1)) {
-			var length = pContent.length,
-				pos = pContent[length - pCount - 1];
+			var last = pCount ? pCount - 1 : pCount,
+				pos = pContent[last];
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
 				fbody = res.substring(pos[0] + addition, pos[1] + fadd);
@@ -1505,7 +1507,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 
 			wordAddEnd = 0;
 			filterAddEnd = 0;
-			pContent.splice(length - pCount - 1, 1);
+			pContent.splice(last, 1);
 
 			filter = [];
 			rvFilter = [];
@@ -1515,7 +1517,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 		}
 	}
 
-	console.log((!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : ''));
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };
 /**
@@ -1635,16 +1636,16 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 	// Имя + пространство имён шаблона
 	var tmpTplName = /(.*?)\(/.exec(command)[1],
-		tplName = Snakeskin.pasteDangerBlocks(tmpTplName, dirObj.quotContent);
+		tplName = dirObj.pasteDangerBlocks(tmpTplName, dirObj.quotContent);
 
 	dirObj.tplName = tplName;
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dirObj.openBlockI !== 0) {
-		throw Snakeskin.error(
+		throw dirObj.error(
 			'Missing closing or opening tag in the template ' +
-			'(command: {' + command + '}, template: "' + tplName + ', ' + Snakeskin.genErrorAdvInfo(adv.info) + '")!'
+			'(command: {' + command + '}, template: "' + tplName + ', ' + dirObj.genErrorAdvInfo(adv.info) + '")!'
 		);
 	}
 	dirObj.openBlockI++;
@@ -1656,7 +1657,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Название родительского шаблона
 	var parentTplName;
 	if (/\s+extends\s+/.test(command)) {
-		parentTplName = Snakeskin.pasteDangerBlocks(/\s+extends\s+(.*)/.exec(command)[1], dirObj.quotContent);
+		parentTplName = dirObj.pasteDangerBlocks(/\s+extends\s+(.*)/.exec(command)[1], dirObj.quotContent);
 		dirObj.parentTplName = parentTplName;
 	}
 
@@ -1829,9 +1830,9 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 
 	// Вызовы не объявленных прототипов
 	if (dirObj.backHashI) {
-		throw Snakeskin.error(
+		throw dirObj.error(
 			'Proto "' + dirObj.lastBack + '" is not defined ' +
-			'(command: {' + command + '}, template: "' + tplName + ', ' + Snakeskin.genErrorAdvInfo(adv.info) + '")!'
+			'(command: {' + command + '}, template: "' + tplName + ', ' + dirObj.genErrorAdvInfo(adv.info) + '")!'
 		);
 	}
 
@@ -1852,11 +1853,9 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 	// но уже как атомарного (без наследования)
 	var parentName = dirObj.parentTplName;
 	if (parentName) {
-		//console.log(Snakeskin.getExtStr(tplName, adv.info));
-
 		// Результирующее тело шаблона
 		dirObj.source = source.substring(0, startI) +
-			Snakeskin.getExtStr(tplName, adv.info) +
+			dirObj.getExtStr(tplName, adv.info) +
 			source.substring(i - commandLength - 1);
 
 		// Перемотка переменных
@@ -1888,7 +1887,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				Snakeskin.pasteDangerBlocks(tplName, dirObj.quotContent).replace(/'/g, '\\\'') +
+				dirObj.pasteDangerBlocks(tplName, dirObj.quotContent).replace(/'/g, '\\\'') +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);
@@ -1949,10 +1948,10 @@ Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
 	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать блок несколько раз
 		if (blockCache[tplName][command]) {
-			throw Snakeskin.error(
+			throw dirObj.error(
 				'Block "' + command + '" is already defined ' +
 				'(command: {block ' + command + '}, template: "' + tplName + ', ' +
-					Snakeskin.genErrorAdvInfo(adv.info) +
+					dirObj.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
@@ -2012,10 +2011,10 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
 	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать прототип блока несколько раз
 		if (protoCache[tplName][command]) {
-			throw Snakeskin.error(
+			throw dirObj.error(
 				'Proto "' + command + '" is already defined ' +
 				'(command: {proto' + command + '}, template: "' + tplName + ', ' +
-					Snakeskin.genErrorAdvInfo(adv.info) +
+					dirObj.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
@@ -2316,11 +2315,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['withEnd'] = function (command, commandLength, dirObj) {
 	dirObj.popPos('with');
-};/*!
- * Работа с константами
- */
-
-/**
+};/**
  * Декларация или вывод константы
  *
  * @param {string} command - название команды (или сама команда)
@@ -2334,9 +2329,9 @@ Snakeskin.Directions['withEnd'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	var tplName = dirObj.tplName,
 		parentName = dirObj.parentTplName,
-		protoStart = dirObj.protoStart,
+		protoStart = dirObj.protoStart;
 
-		i = dirObj.i,
+	var i = dirObj.i,
 		startI = dirObj.startI;
 
 	// Хак для экспорта console api
@@ -2353,30 +2348,30 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 				// Попытка повторной инициализации переменной
 				if (varCache[tplName][varName] || varICache[tplName][varName]) {
-					throw Snakeskin.error(
+					throw dirObj.error(
 						'Constant "' + varName + '" is already defined ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							Snakeskin.genErrorAdvInfo(adv.info) +
+							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
 
 				// Попытка инициализировать переменную с зарезервированным именем
 				if (sysConst[varName]) {
-					throw Snakeskin.error(
+					throw dirObj.error(
 						'Can\'t declare constant "' + varName + '", try another name ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							Snakeskin.genErrorAdvInfo(adv.info) +
+							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
 
 				// Попытка инициализации переменной в цикле
 				if (dirObj.hasPos('forEach')) {
-					throw Snakeskin.error(
+					throw dirObj.error(
 						'Constant "' + varName + '" can\'t be defined in a loop ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							Snakeskin.genErrorAdvInfo(adv.info) +
+							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
@@ -2404,7 +2399,6 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + dirObj.prepareOutput(command) + ';');
 	}
 };
-//TODO: Отрефакторить, добавить стандартный глобальный фильтр, запретить добавление констант внутри with блока
 /*!
  * Управление конечным кодом
  */
@@ -2417,7 +2411,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
-	command = Snakeskin.pasteDangerBlocks(command, dirObj.quotContent);
+	command = dirObj.pasteDangerBlocks(command, dirObj.quotContent);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
 	}
@@ -2431,7 +2425,7 @@ Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
-	Snakeskin.write[Snakeskin.pasteDangerBlocks(command, dirObj.quotContent)] = true;
+	Snakeskin.write[dirObj.pasteDangerBlocks(command, dirObj.quotContent)] = true;
 };/*!
  * Поддержка myFire.BEM
  */
@@ -2446,7 +2440,7 @@ Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
 	var part = command.match(/(.*?),\s+(.*)/);
 	Snakeskin.BEM[part[1]] = (new Function('return {' +
-		Snakeskin.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
+		dirObj.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
 	)();
 };
 
@@ -2477,7 +2471,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 		command = part.join(',');
 
 		// Обработка переменных
-		part = Snakeskin.pasteDangerBlocks(command, dirObj.quotContent).split('${');
+		part = dirObj.pasteDangerBlocks(command, dirObj.quotContent).split('${');
 		command = '';
 
 		Snakeskin.forEach(part, function (el, i) {
@@ -2535,7 +2529,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, vars) {
 
 	if (!vars.parentTplName && !vars.protoStart) {
 		// Обработка переменных
-		part = that.pasteDangerBlocks(command, vars.quotContent).split('${');
+		part = vars.pasteDangerBlocks(command, vars.quotContent).split('${');
 		command = '';
 
 		if (part.length < 2) {

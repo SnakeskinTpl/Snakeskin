@@ -1,7 +1,3 @@
-/*!
- * Работа с константами
- */
-
 /**
  * Декларация или вывод константы
  *
@@ -16,9 +12,9 @@
 Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	var tplName = dirObj.tplName,
 		parentName = dirObj.parentTplName,
-		protoStart = dirObj.protoStart,
+		protoStart = dirObj.protoStart;
 
-		i = dirObj.i,
+	var i = dirObj.i,
 		startI = dirObj.startI;
 
 	// Хак для экспорта console api
@@ -35,30 +31,30 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 				// Попытка повторной инициализации переменной
 				if (varCache[tplName][varName] || varICache[tplName][varName]) {
-					throw Snakeskin.error(
+					throw dirObj.error(
 						'Constant "' + varName + '" is already defined ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							Snakeskin.genErrorAdvInfo(adv.info) +
+							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
 
 				// Попытка инициализировать переменную с зарезервированным именем
 				if (sysConst[varName]) {
-					throw Snakeskin.error(
+					throw dirObj.error(
 						'Can\'t declare constant "' + varName + '", try another name ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							Snakeskin.genErrorAdvInfo(adv.info) +
+							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
 
 				// Попытка инициализации переменной в цикле
 				if (dirObj.hasPos('forEach')) {
-					throw Snakeskin.error(
+					throw dirObj.error(
 						'Constant "' + varName + '" can\'t be defined in a loop ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							Snakeskin.genErrorAdvInfo(adv.info) +
+							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
@@ -86,4 +82,3 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + dirObj.prepareOutput(command) + ';');
 	}
 };
-//TODO: Отрефакторить, добавить стандартный глобальный фильтр, запретить добавление констант внутри with блока

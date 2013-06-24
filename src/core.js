@@ -31,9 +31,10 @@ var Snakeskin = {
 
 	//#if withCompiler
 	//#include global.js
+	//#include api.js
 	//#include escape.js
 	//#include inherit.js
-	//#include other.js
+	//#include error.js
 
 	//#include compiler.js
 	//#include output.js

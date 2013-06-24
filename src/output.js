@@ -84,6 +84,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 /**
  * Вернуть целое слово из строки, начиная с указанной позиции
  *
+ * @this {DirObj}
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
  * @return {{word: string, finalWord: string}}
@@ -152,8 +153,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 
 	// Массив позиций открытия и закрытия скобок,
 	// идёт в порядке возрастания от вложенных к внешним блокам, например:
-	// ((a + b)) => [[1, 7], [0, 8], [0, 8]]
-	var pContent = [[0, command.length - 1]];
+	// ((a + b)) => [[1, 7], [0, 8]]
+	var pContent = [];
 
 	// true, если идёт декларация фильтра
 	var filterStart;
@@ -361,8 +362,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 		}
 
 		if (filterStart && ((el === ')' && !pCountFilter) || i === command.length - 1)) {
-			var length = pContent.length,
-				pos = pContent[length - pCount - 1];
+			var last = pCount ? pCount - 1 : pCount,
+				pos = pContent[last];
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
 				fbody = res.substring(pos[0] + addition, pos[1] + fadd);
@@ -395,7 +396,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 
 			wordAddEnd = 0;
 			filterAddEnd = 0;
-			pContent.splice(length - pCount - 1, 1);
+			pContent.splice(last, 1);
 
 			filter = [];
 			rvFilter = [];

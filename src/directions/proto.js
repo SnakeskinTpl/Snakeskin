@@ -26,10 +26,10 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
 	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать прототип блока несколько раз
 		if (protoCache[tplName][command]) {
-			throw Snakeskin.error(
+			throw dirObj.error(
 				'Proto "' + command + '" is already defined ' +
 				'(command: {proto' + command + '}, template: "' + tplName + ', ' +
-					Snakeskin.genErrorAdvInfo(adv.info) +
+					dirObj.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}

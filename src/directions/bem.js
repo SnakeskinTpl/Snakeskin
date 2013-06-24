@@ -12,7 +12,7 @@
 Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
 	var part = command.match(/(.*?),\s+(.*)/);
 	Snakeskin.BEM[part[1]] = (new Function('return {' +
-		Snakeskin.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
+		dirObj.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
 	)();
 };
 
@@ -43,7 +43,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 		command = part.join(',');
 
 		// Обработка переменных
-		part = Snakeskin.pasteDangerBlocks(command, dirObj.quotContent).split('${');
+		part = dirObj.pasteDangerBlocks(command, dirObj.quotContent).split('${');
 		command = '';
 
 		Snakeskin.forEach(part, function (el, i) {

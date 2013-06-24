@@ -16,10 +16,10 @@ Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
 	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать блок несколько раз
 		if (blockCache[tplName][command]) {
-			throw Snakeskin.error(
+			throw dirObj.error(
 				'Block "' + command + '" is already defined ' +
 				'(command: {block ' + command + '}, template: "' + tplName + ', ' +
-					Snakeskin.genErrorAdvInfo(adv.info) +
+					dirObj.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
