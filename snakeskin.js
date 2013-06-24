@@ -375,11 +375,10 @@ var blockCache = {},
 	protoCache = {},
 	fromProtoCache = {};
 
-// Кеш переменных
-var globalVarCache = {},
-	varCache = {},
-	fromVarCache = {},
-	varICache = {};
+// Кеш констант
+var constCache = {},
+	fromConstCache = {},
+	constICache = {};
 
 // Кеш входных параметров
 var paramsCache = {};
@@ -749,11 +748,11 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 		// Переменные дочернего и родительского шаблона
 		} else if (i === 2) {
-			el = varCache[tplName];
-			prev = varCache[parentTpl];
+			el = constCache[tplName];
+			prev = constCache[parentTpl];
 
 			// Позиция конца декларации последней переменной родительского шаблона
-			from = fromVarCache[parentTpl];
+			from = fromConstCache[parentTpl];
 			newFrom = null;
 
 		// Прототипы дочернего и родительского шаблона
@@ -1071,7 +1070,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res, dirObj.quotContent)
 		.replace(/[\t\v\r\n]/gm, '')
-		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
@@ -1255,9 +1253,10 @@ DirObj.prototype.getWord = function (str, pos) {
  * @this {DirObj}
  * @param {string} command - исходная комманда
  * @param {?boolean=} [opt_sys] - если true, то считается системным вызовом
+ * @param {?boolean=} [opt_breakFirst] - если true, то первое слово пропускается
  * @return {string}
  */
-DirObj.prototype.prepareOutput = function (command, opt_sys) {
+DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 	// Количество открытых скобок в строке
 	var pCount = 0;
 
@@ -1287,7 +1286,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 		addition = 0;
 
 	// true, то можно расчитывать слово
-	var nword = true;
+	var nword = !opt_breakFirst;
 
 	// Количество слов для пропуска
 	var posNWord = 0;
@@ -1334,11 +1333,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 				var canParse = !blackWordList[word] &&
 					!/__SNAKESKIN_QUOT__\d+/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
-					!this.isNextSyOL(command, i + word.length) &&
-					useWith;
+					!this.isNextSyOL(command, i + word.length);
 
 				if (el === '@') {
-					if (canParse) {
+					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
 
 						// Супер глобальная переменная внутри with
@@ -1353,7 +1351,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 
 				} else {
 					var rfWord = finalWord.replace(/#(?:\d+|)/, '');
-					if (canParse) {
+					if (canParse && useWith) {
 						var num = null;
 
 						// Уточнение scope
@@ -1656,9 +1654,9 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	protoCache[tplName] = {};
 	fromProtoCache[tplName] = 0;
 
-	varCache[tplName] = {};
-	fromVarCache[tplName] = 0;
-	varICache[tplName] = {};
+	constCache[tplName] = {};
+	fromConstCache[tplName] = 0;
+	constICache[tplName] = {};
 
 	extMap[tplName] = parentTplName;
 
@@ -1779,7 +1777,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 						// С параметром по умолчанию
 						if (typeof def[1] !== 'undefined') {
 							defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
-							varICache[tplName][def[0]] = el;
+							constICache[tplName][def[0]] = el;
 						}
 					}
 				});
@@ -1792,15 +1790,13 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 		}
 
 		// Кеширование
-		varICache[tplName][def[0]] = el;
+		constICache[tplName][def[0]] = el;
 
 		// После последнего параметра запятая не ставится
 		if (i !== params.length - 1) {
 			dirObj.save(',');
 		}
 	});
-
-	console.log(tmpTplName);
 
 	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
 	dirObj.save('var TPL_NAME = \'' + dirObj.pasteDangerBlocks(tmpTplName, dirObj.quotContent)
@@ -1865,18 +1861,18 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 		protoCache[tplName] = {};
 		fromProtoCache[tplName] = 0;
 
-		varCache[tplName] = {};
-		fromVarCache[tplName] = 0;
-		varICache[tplName] = {};
+		constCache[tplName] = {};
+		fromConstCache[tplName] = 0;
+		constICache[tplName] = {};
 
 		dirObj.i = startI - 1;
 		dirObj.openBlockI++;
 
 		if (Snakeskin.write[parentName] === false) {
 			dirObj.res = dirObj.res.replace(new RegExp('/\\* Snakeskin template: ' +
-					parentName.replace(/([.\[\]^$])/g, '\\$1') +
-					';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
-				'');
+				parentName.replace(/([.\[\]^$])/g, '\\$1') +
+				';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
+			'');
 		}
 
 		dirObj.parentTplName = null;
@@ -1887,7 +1883,8 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				dirObj.pasteDangerBlocks(tplName, dirObj.quotContent).replace(/'/g, '\\\'') +
+				dirObj.pasteDangerBlocks(tplName, dirObj.quotContent)
+					.replace(/\\/g, '\\').replace(/'/g, '\\\'') +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);
@@ -1917,13 +1914,41 @@ Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 		dirObj.save(dirObj.prepareOutput(command + ';', true));
 	}
 };/**
+ * Кеш переменных
+ */
+DirObj.prototype.varCache = {
+	init: function () {
+		return {};
+	}
+};
+
+/**
  * Директива var
  *
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {!Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['var'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
+	var tplName = dirObj.tplName,
+		varName = command.split('=')[0].trim();
+
+	// Попытка повторной инициализации переменной,
+	// которая установлена как константа
+	if (constCache[tplName][varName] || constICache[tplName][varName]) {
+		throw dirObj.error(
+			'Variable "' + varName + '" is already defined as constant ' +
+				'(command: {var ' + command + '}, template: "' + tplName + ', ' +
+				dirObj.genErrorAdvInfo(adv.info) +
+			'")!'
+		);
+	}
+
+	dirObj.varCache[varName] = true;
+
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(dirObj.prepareOutput('var ' + command + ';', true));
 	}
@@ -2343,9 +2368,12 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		var varName = command.split('=')[0].trim();
 
 		if (tplName) {
-			if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
+			if (!adv.dryRun && !dirObj.varCache[varName] &&
+				((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)
+			) {
+
 				// Попытка повторной инициализации переменной
-				if (varCache[tplName][varName] || varICache[tplName][varName]) {
+				if (constCache[tplName][varName] || constICache[tplName][varName]) {
 					throw dirObj.error(
 						'Constant "' + varName + '" is already defined ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
@@ -2385,21 +2413,27 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 				}
 
 				// Кеширование
-				varCache[tplName][varName] = {
+				constCache[tplName][varName] = {
 					from: i - startI - commandLength,
 					to: i - startI
 				};
 
-				fromVarCache[tplName] = i - startI + 1;
+				fromConstCache[tplName] = i - startI + 1;
 			}
 
 			if (!parentName && !protoStart) {
-				dirObj.save((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';');
+				if (!dirObj.varCache[varName]) {
+					dirObj.save(dirObj.prepareOutput((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';', true));
+
+				} else {
+					dirObj.save(command + ';', true, true);
+				}
 			}
 
 		} else {
-			globalVarCache[varName] = true;
-			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }');
+			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
+				dirObj.prepareOutput(command, true, true) +
+			'; }');
 		}
 
 	// Вывод переменных

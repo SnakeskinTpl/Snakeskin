@@ -142,9 +142,10 @@ DirObj.prototype.getWord = function (str, pos) {
  * @this {DirObj}
  * @param {string} command - исходная комманда
  * @param {?boolean=} [opt_sys] - если true, то считается системным вызовом
+ * @param {?boolean=} [opt_breakFirst] - если true, то первое слово пропускается
  * @return {string}
  */
-DirObj.prototype.prepareOutput = function (command, opt_sys) {
+DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 	// Количество открытых скобок в строке
 	var pCount = 0;
 
@@ -174,7 +175,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 		addition = 0;
 
 	// true, то можно расчитывать слово
-	var nword = true;
+	var nword = !opt_breakFirst;
 
 	// Количество слов для пропуска
 	var posNWord = 0;
@@ -221,11 +222,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 				var canParse = !blackWordList[word] &&
 					!/__SNAKESKIN_QUOT__\d+/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
-					!this.isNextSyOL(command, i + word.length) &&
-					useWith;
+					!this.isNextSyOL(command, i + word.length);
 
 				if (el === '@') {
-					if (canParse) {
+					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
 
 						// Супер глобальная переменная внутри with
@@ -240,7 +240,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys) {
 
 				} else {
 					var rfWord = finalWord.replace(/#(?:\d+|)/, '');
-					if (canParse) {
+					if (canParse && useWith) {
 						var num = null;
 
 						// Уточнение scope

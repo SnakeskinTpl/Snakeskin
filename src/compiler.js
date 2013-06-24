@@ -177,7 +177,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res, dirObj.quotContent)
 		.replace(/[\t\v\r\n]/gm, '')
-		.replace(/__SNAKESKIN_ESCAPE__OR/g, '||')
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {

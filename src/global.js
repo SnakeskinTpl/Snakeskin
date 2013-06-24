@@ -10,11 +10,10 @@ var blockCache = {},
 	protoCache = {},
 	fromProtoCache = {};
 
-// Кеш переменных
-var globalVarCache = {},
-	varCache = {},
-	fromVarCache = {},
-	varICache = {};
+// Кеш констант
+var constCache = {},
+	fromConstCache = {},
+	constICache = {};
 
 // Кеш входных параметров
 var paramsCache = {};

@@ -83,9 +83,9 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	protoCache[tplName] = {};
 	fromProtoCache[tplName] = 0;
 
-	varCache[tplName] = {};
-	fromVarCache[tplName] = 0;
-	varICache[tplName] = {};
+	constCache[tplName] = {};
+	fromConstCache[tplName] = 0;
+	constICache[tplName] = {};
 
 	extMap[tplName] = parentTplName;
 
@@ -206,7 +206,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 						// С параметром по умолчанию
 						if (typeof def[1] !== 'undefined') {
 							defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
-							varICache[tplName][def[0]] = el;
+							constICache[tplName][def[0]] = el;
 						}
 					}
 				});
@@ -219,7 +219,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 		}
 
 		// Кеширование
-		varICache[tplName][def[0]] = el;
+		constICache[tplName][def[0]] = el;
 
 		// После последнего параметра запятая не ставится
 		if (i !== params.length - 1) {
@@ -290,18 +290,18 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 		protoCache[tplName] = {};
 		fromProtoCache[tplName] = 0;
 
-		varCache[tplName] = {};
-		fromVarCache[tplName] = 0;
-		varICache[tplName] = {};
+		constCache[tplName] = {};
+		fromConstCache[tplName] = 0;
+		constICache[tplName] = {};
 
 		dirObj.i = startI - 1;
 		dirObj.openBlockI++;
 
 		if (Snakeskin.write[parentName] === false) {
 			dirObj.res = dirObj.res.replace(new RegExp('/\\* Snakeskin template: ' +
-					parentName.replace(/([.\[\]^$])/g, '\\$1') +
-					';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
-				'');
+				parentName.replace(/([.\[\]^$])/g, '\\$1') +
+				';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
+			'');
 		}
 
 		dirObj.parentTplName = null;
@@ -312,7 +312,8 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				dirObj.pasteDangerBlocks(tplName, dirObj.quotContent).replace(/'/g, '\\\'') +
+				dirObj.pasteDangerBlocks(tplName, dirObj.quotContent)
+					.replace(/\\/g, '\\').replace(/'/g, '\\\'') +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);

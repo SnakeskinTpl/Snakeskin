@@ -44,11 +44,11 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 		// Переменные дочернего и родительского шаблона
 		} else if (i === 2) {
-			el = varCache[tplName];
-			prev = varCache[parentTpl];
+			el = constCache[tplName];
+			prev = constCache[parentTpl];
 
 			// Позиция конца декларации последней переменной родительского шаблона
-			from = fromVarCache[parentTpl];
+			from = fromConstCache[parentTpl];
 			newFrom = null;
 
 		// Прототипы дочернего и родительского шаблона

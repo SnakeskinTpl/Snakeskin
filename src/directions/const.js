@@ -28,9 +28,12 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		var varName = command.split('=')[0].trim();
 
 		if (tplName) {
-			if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
+			if (!adv.dryRun && !dirObj.varCache[varName] &&
+				((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)
+			) {
+
 				// Попытка повторной инициализации переменной
-				if (varCache[tplName][varName] || varICache[tplName][varName]) {
+				if (constCache[tplName][varName] || constICache[tplName][varName]) {
 					throw dirObj.error(
 						'Constant "' + varName + '" is already defined ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
@@ -70,21 +73,27 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 				}
 
 				// Кеширование
-				varCache[tplName][varName] = {
+				constCache[tplName][varName] = {
 					from: i - startI - commandLength,
 					to: i - startI
 				};
 
-				fromVarCache[tplName] = i - startI + 1;
+				fromConstCache[tplName] = i - startI + 1;
 			}
 
 			if (!parentName && !protoStart) {
-				dirObj.save((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';');
+				if (!dirObj.varCache[varName]) {
+					dirObj.save(dirObj.prepareOutput((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';', true));
+
+				} else {
+					dirObj.save(command + ';', true, true);
+				}
 			}
 
 		} else {
-			globalVarCache[varName] = true;
-			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' + command + '; }');
+			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
+				dirObj.prepareOutput(command, true, true) +
+			'; }');
 		}
 
 	// Вывод переменных
