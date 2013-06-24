@@ -9,15 +9,17 @@
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
  *
+ * @param {Object=} [opt_scope] - родительский scope, приватный параметр
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun) {
+Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
 	opt_info = opt_info || {};
 	if (src.innerHTML) {
 		opt_info.node = src;
 	}
 
 	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
+	dirObj.sysPosCache['with'] = opt_scope;
 
 	var begin,
 		fakeBegin = 0,

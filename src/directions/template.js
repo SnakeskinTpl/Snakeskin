@@ -100,12 +100,14 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Декларация функции
 	// с пространством имён или при экспорте в common.js
 	if (/\.|\[/.test(tmpTplName) || adv.commonJS) {
+		var lastName = '';
+
 		tmpTplName
 			// Заменяем [] на .
 			.replace(/\[/g, '.')
 			.replace(/]/g, '')
 
-			.split('.').reduce(function (str, el, i) {
+			.split('.').reduce(function (str, el, i, data) {
 				// Проверка существования пространства имён
 				if (!dirObj.nmCache[str]) {
 					dirObj.save('' +
@@ -118,16 +120,19 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 				if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
 					return str + '[' + el + ']';
+
+				} else if (i === data.length - 1) {
+					lastName = el;
 				}
 
 				return str + '.' + el;
 			});
 
-		dirObj.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function (');
+		dirObj.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
 
 	// Без простраства имён
 	} else {
-		dirObj.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + (require ? tmpTplName : '') + '(');
+		dirObj.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
 	}
 
 	// Входные параметры
@@ -223,10 +228,12 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	});
 
 	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
-	dirObj.save('var TPL_NAME = \'' + tmpTplName + '\';');
+	dirObj.save('var TPL_NAME = \'' + dirObj.pasteDangerBlocks(tmpTplName, dirObj.quotContent)
+		.replace(/\\/g, '\\').replace(/'/g, '\\\'') + '\';');
 
 	if (parentTplName) {
-		dirObj.save('var PARENT_TPL_NAME = \'' + parentTplName + '\';');
+		dirObj.save('var PARENT_TPL_NAME = \'' + dirObj.pasteDangerBlocks(parentTplName, dirObj.quotContent)
+			.replace(/\\/g, '\\').replace(/'/g, '\\\'') + '\';');
 	}
 };
 

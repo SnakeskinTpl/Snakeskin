@@ -903,15 +903,17 @@ DirObj.prototype.error = function (msg) {
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
  *
+ * @param {Object=} [opt_scope] - родительский scope, приватный параметр
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun) {
+Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
 	opt_info = opt_info || {};
 	if (src.innerHTML) {
 		opt_info.node = src;
 	}
 
 	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
+	dirObj.sysPosCache['with'] = opt_scope;
 
 	var begin,
 		fakeBegin = 0,
@@ -1671,12 +1673,14 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Декларация функции
 	// с пространством имён или при экспорте в common.js
 	if (/\.|\[/.test(tmpTplName) || adv.commonJS) {
+		var lastName = '';
+
 		tmpTplName
 			// Заменяем [] на .
 			.replace(/\[/g, '.')
 			.replace(/]/g, '')
 
-			.split('.').reduce(function (str, el, i) {
+			.split('.').reduce(function (str, el, i, data) {
 				// Проверка существования пространства имён
 				if (!dirObj.nmCache[str]) {
 					dirObj.save('' +
@@ -1689,16 +1693,19 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 				if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
 					return str + '[' + el + ']';
+
+				} else if (i === data.length - 1) {
+					lastName = el;
 				}
 
 				return str + '.' + el;
 			});
 
-		dirObj.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function (');
+		dirObj.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
 
 	// Без простраства имён
 	} else {
-		dirObj.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + (require ? tmpTplName : '') + '(');
+		dirObj.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
 	}
 
 	// Входные параметры
@@ -1793,11 +1800,15 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 		}
 	});
 
+	console.log(tmpTplName);
+
 	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
-	dirObj.save('var TPL_NAME = \'' + tmpTplName + '\';');
+	dirObj.save('var TPL_NAME = \'' + dirObj.pasteDangerBlocks(tmpTplName, dirObj.quotContent)
+		.replace(/\\/g, '\\').replace(/'/g, '\\\'') + '\';');
 
 	if (parentTplName) {
-		dirObj.save('var PARENT_TPL_NAME = \'' + parentTplName + '\';');
+		dirObj.save('var PARENT_TPL_NAME = \'' + dirObj.pasteDangerBlocks(parentTplName, dirObj.quotContent)
+			.replace(/\\/g, '\\').replace(/'/g, '\\\'') + '\';');
 	}
 };
 
@@ -2047,7 +2058,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv
 	if (!parentTplName) {
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
 			dirObj.source.substring(lastProto.startI, i - commandLength - 1) +
-			'{end}', null, null, true);
+			'{end}', null, null, true, dirObj.getPos('with'));
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
@@ -2366,7 +2377,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 				// Попытка инициализации переменной в with блоке
 				if (dirObj.hasPos('with')) {
 					throw dirObj.error(
-						'Constant "' + varName + '" can\'t be defined in a "with" block ' +
+						'Constant "' + varName + '" can\'t be defined inside a "with" block ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
 							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
