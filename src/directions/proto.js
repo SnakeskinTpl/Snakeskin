@@ -75,7 +75,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv
 	if (!parentTplName) {
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
 			dirObj.source.substring(lastProto.startI, i - commandLength - 1) +
-			'{end}', null, true);
+			'{end}', null, null, true);
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {

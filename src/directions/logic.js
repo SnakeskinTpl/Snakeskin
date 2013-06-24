@@ -13,7 +13,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, dirObj) {
 	dirObj.openBlockI++;
 
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('if (' + command + ') {');
+		dirObj.save('if (' + dirObj.prepareOutput(command, true) + ') {');
 	}
 };
 
@@ -26,7 +26,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['elseIf'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('} else if (' + command + ') {');
+		dirObj.save('} else if (' + dirObj.prepareOutput(command, true) + ') {');
 	}
 };
 

@@ -22,7 +22,7 @@ if (process.argv.length < 3) {
 		if (err) {
 			console.log(err);
 		} else {
-			res = Snakeskin.compile(String(data), commonjs, null, {file: file});
+			res = Snakeskin.compile(String(data), commonjs, {file: file});
 			fs.writeFile(newFile, res, function (err) {
 				if (err) {
 					console.log(err);

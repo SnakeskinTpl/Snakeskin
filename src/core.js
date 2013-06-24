@@ -44,6 +44,7 @@ var Snakeskin = {
 	//#include directions/template.js
 	//#include directions/call.js
 	//#include directions/void.js
+	//#include directions/var.js
 
 	//#include directions/block.js
 	//#include directions/proto.js

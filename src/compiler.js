@@ -5,13 +5,13 @@
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
  * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {Object=} [opt_info] - дополнительная информация о запуске
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
  *
- * @param {Object=} [opt_info] - дополнительная информация о запуске, приватный параметр
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_dryRun, opt_info) {
+Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun) {
 	opt_info = opt_info || {};
 	if (src.innerHTML) {
 		opt_info.node = src;

@@ -41,7 +41,7 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['for'] = function (command, commandLength, dirObj) {
 	dirObj.pushPos('for', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('for (' + command + ') {');
+		dirObj.save('for (' + dirObj.prepareOutput(command, true) + ') {');
 	}
 };
 
@@ -69,7 +69,7 @@ Snakeskin.Directions['forEnd'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['while'] = function (command, commandLength, dirObj) {
 	dirObj.pushPos('while', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('while (' + command + ') {');
+		dirObj.save('while (' + dirObj.prepareOutput(command, true) + ') {');
 	}
 };
 
@@ -111,7 +111,7 @@ Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dirObj) {
 	dirObj.popPos('repeat');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('} while (' + command + ');');
+		dirObj.save('} while (' + dirObj.prepareOutput(command, true) + ');');
 	}
 };
 
