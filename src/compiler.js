@@ -26,15 +26,17 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		beginStr;
 
 	var command = '',
-		escape,
+		escape = false,
 		comment;
 
 	var bOpen,
-		bEnd = true;
+		bEnd = true,
+		bEscape = false;
 
 	while (++dirObj.i < dirObj.source.length) {
 		var str = dirObj.source,
-			el = str.charAt(dirObj.i);
+			el = str.charAt(dirObj.i),
+			next = str.charAt(dirObj.i + 1);
 
 		if (!bOpen) {
 			if (begin) {
@@ -49,10 +51,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			// Обработка комментариев
 			if (!escape) {
 				if (el === '/') {
-					if (str.charAt(dirObj.i + 1) === '/' && str.charAt(dirObj.i + 2) === '/') {
+					if (next === '/' && str.charAt(dirObj.i + 2) === '/') {
 						comment = '///';
 
-					} else if (str.charAt(dirObj.i + 1) === '*') {
+					} else if (next === '*') {
 						comment = '/*';
 						dirObj.i++;
 
@@ -131,7 +133,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				beginStr = false;
 			}
 
-			var bEscape;
 			if (command !== '/') {
 				if (!bOpen) {
 					if (escapeEndMap[el]) {

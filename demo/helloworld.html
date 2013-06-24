@@ -11,12 +11,12 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{a = 1}
-				{var e = 2}
-			{/template}
-
-			{template helloWorld2() extends helloWorld}
-				{a = 222}
+				{a = 111}
+				{{
+					{
+						name: '${"{"}'
+					}
+				}}
 			{/template}
 		</script>
 

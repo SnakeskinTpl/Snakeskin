@@ -919,15 +919,17 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		beginStr;
 
 	var command = '',
-		escape,
+		escape = false,
 		comment;
 
 	var bOpen,
-		bEnd = true;
+		bEnd = true,
+		bEscape = false;
 
 	while (++dirObj.i < dirObj.source.length) {
 		var str = dirObj.source,
-			el = str.charAt(dirObj.i);
+			el = str.charAt(dirObj.i),
+			next = str.charAt(dirObj.i + 1);
 
 		if (!bOpen) {
 			if (begin) {
@@ -942,10 +944,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			// Обработка комментариев
 			if (!escape) {
 				if (el === '/') {
-					if (str.charAt(dirObj.i + 1) === '/' && str.charAt(dirObj.i + 2) === '/') {
+					if (next === '/' && str.charAt(dirObj.i + 2) === '/') {
 						comment = '///';
 
-					} else if (str.charAt(dirObj.i + 1) === '*') {
+					} else if (next === '*') {
 						comment = '/*';
 						dirObj.i++;
 
@@ -1024,7 +1026,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				beginStr = false;
 			}
 
-			var bEscape;
 			if (command !== '/') {
 				if (!bOpen) {
 					if (escapeEndMap[el]) {
@@ -1152,6 +1153,109 @@ var comboBlackWordList = {
 	'var': true,
 	'let': true,
 	'const': true
+};
+
+DirObj.prototype.replaceTplVars = function (str) {
+	str = this.pasteDangerBlocks(str, this.quotContent);
+	var begin = 0,
+		dir;
+
+	var escape = false,
+		comment;
+
+	var bOpen,
+		bEnd = true,
+		bEscape = false;
+
+	var res = '';
+	for (var i = 0; i < str.length; i++) {
+		var el = str.charAt(i),
+			next = str.charAt(i + 1);
+
+		// Начало директивы
+		if (!begin && el === '$' && next === '{') {
+			begin++;
+			dir = '';
+
+			i++;
+			continue;
+		}
+
+		if (!begin) {
+			res += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
+		}
+
+		if (begin) {
+			if (el === '\\' || escape) {
+				escape = !escape;
+			}
+
+			// Обработка комментариев
+			if (!escape) {
+				if (el === '/') {
+					if (next === '/' && str.charAt(i + 2) === '/') {
+						comment = '///';
+
+					} else if (next === '*') {
+						comment = '/*';
+						i++;
+
+					} else if (str.charAt(i - 1) === '*') {
+						comment = false;
+						continue;
+					}
+
+				} else if (/[\n\v\r]/.test(el) && comment === '///') {
+					comment = false;
+				}
+			}
+
+			if (comment) {
+				continue;
+			}
+
+			// Экранирование
+			if (!bOpen) {
+				if (escapeEndMap[el]) {
+					bEnd = true;
+
+				} else if (/[^\s\/]/.test(el)) {
+					bEnd = false;
+				}
+			}
+
+			if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+				bOpen = el;
+
+			} else if (bOpen && (el === '\\' || bEscape)) {
+				bEscape = !bEscape;
+
+			} else if (escapeMap[el] && bOpen === el && !bEscape) {
+				bOpen = false;
+			}
+
+			if (!bOpen) {
+				if (el === '{') {
+					begin++;
+
+				} else if (el === '}') {
+					begin--;
+				}
+			}
+
+			if (begin) {
+				dir += el;
+
+			} else {
+				escape = false;
+				res += '\' + ' +
+					this.prepareOutput(this.replaceDangerBlocks(dir, this.quotContent)) +
+					' + \'';
+			}
+		}
+	}
+
+	return res;
 };
 
 /**
@@ -1911,7 +2015,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(dirObj.prepareOutput(command + ';', true));
+		dirObj.save(command);
 	}
 };/**
  * Кеш переменных
@@ -2561,34 +2665,7 @@ Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['data'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		// Обработка переменных
-		var part = dirObj.pasteDangerBlocks(command, dirObj.quotContent).split('${');
-		command = '';
-
-		if (part.length < 2) {
-			dirObj.save('__SNAKESKIN_RESULT__ += \'' + part[0]
-				.replace(/\\/g, '\\\\')
-				.replace(/('|")/g, '\\$1') + '\';');
-
-			return;
-		}
-
-		Snakeskin.forEach(part, function (el, i) {
-			var part;
-
-			if (i > 0) {
-				part = el.split('}');
-				command += '\' + ' + dirObj.prepareOutput(part[0]) +
-					' + \'' +
-					part.slice(1).join('}')
-						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-
-			} else {
-				command += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-			}
-		});
-
-		dirObj.save('__SNAKESKIN_RESULT__ += \'' + command + '\';');
+		dirObj.save('__SNAKESKIN_RESULT__ += \'' + dirObj.replaceTplVars(command) + '\';');
 	}
 };
 

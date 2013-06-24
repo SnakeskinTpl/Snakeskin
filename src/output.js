@@ -43,6 +43,109 @@ var comboBlackWordList = {
 	'const': true
 };
 
+DirObj.prototype.replaceTplVars = function (str) {
+	str = this.pasteDangerBlocks(str, this.quotContent);
+	var begin = 0,
+		dir;
+
+	var escape = false,
+		comment;
+
+	var bOpen,
+		bEnd = true,
+		bEscape = false;
+
+	var res = '';
+	for (var i = 0; i < str.length; i++) {
+		var el = str.charAt(i),
+			next = str.charAt(i + 1);
+
+		// Начало директивы
+		if (!begin && el === '$' && next === '{') {
+			begin++;
+			dir = '';
+
+			i++;
+			continue;
+		}
+
+		if (!begin) {
+			res += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
+		}
+
+		if (begin) {
+			if (el === '\\' || escape) {
+				escape = !escape;
+			}
+
+			// Обработка комментариев
+			if (!escape) {
+				if (el === '/') {
+					if (next === '/' && str.charAt(i + 2) === '/') {
+						comment = '///';
+
+					} else if (next === '*') {
+						comment = '/*';
+						i++;
+
+					} else if (str.charAt(i - 1) === '*') {
+						comment = false;
+						continue;
+					}
+
+				} else if (/[\n\v\r]/.test(el) && comment === '///') {
+					comment = false;
+				}
+			}
+
+			if (comment) {
+				continue;
+			}
+
+			// Экранирование
+			if (!bOpen) {
+				if (escapeEndMap[el]) {
+					bEnd = true;
+
+				} else if (/[^\s\/]/.test(el)) {
+					bEnd = false;
+				}
+			}
+
+			if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+				bOpen = el;
+
+			} else if (bOpen && (el === '\\' || bEscape)) {
+				bEscape = !bEscape;
+
+			} else if (escapeMap[el] && bOpen === el && !bEscape) {
+				bOpen = false;
+			}
+
+			if (!bOpen) {
+				if (el === '{') {
+					begin++;
+
+				} else if (el === '}') {
+					begin--;
+				}
+			}
+
+			if (begin) {
+				dir += el;
+
+			} else {
+				escape = false;
+				res += '\' + ' +
+					this.prepareOutput(this.replaceDangerBlocks(dir, this.quotContent)) +
+					' + \'';
+			}
+		}
+	}
+
+	return res;
+};
+
 /**
  * Вернуть true, если предыдущий не пробельный символ в строке равен {
  *
