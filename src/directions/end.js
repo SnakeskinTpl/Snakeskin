@@ -1,59 +1,50 @@
 /**
  * Директива end
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {string} vars.parentName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {!Object} vars.posCache - кеш позиций
- * @param {!Object} vars.sysPosCache - кеш системных позиций
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(number): boolean} vars.isNotSysPos - вернёт true, если позиция не системная
- *
+ * @param {!DirObj} dirObj - объект управления директивами
  * @param {!Object} adv - дополнительные параметры
  */
-Snakeskin.Directions['end'] = function (command, commandLength, vars, adv) {
-	vars.openBlockI--;
-	var that = this,
-		args = arguments,
-
-		openBlockI = vars.openBlockI + 1,
+Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
+	dirObj.openBlockI--;
+	var args = arguments,
+		openBlockI = dirObj.openBlockI + 1,
 		res;
 
 	// Окончание шаблона
-	if (vars.openBlockI === 0) {
-		this.Directions.templateEnd.apply(this, arguments);
+	if (dirObj.openBlockI === 0) {
+		Snakeskin.Directions.templateEnd.apply(Snakeskin, arguments);
 
 	// Окончание простых блоков
-	} else if (vars.isNotSysPos(openBlockI)) {
-		this.forEach(vars.posCache, function (el, key) {
-			el = vars.getLastPos(key);
+	} else if (dirObj.isNotSysPos(openBlockI)) {
+		Snakeskin.forEach(dirObj.posCache, function (el, key) {
+			el = dirObj.getLastPos(key);
 
 			if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
 				res = true;
-				that.Directions[key + 'End'].apply(that, args);
+				Snakeskin.Directions[key + 'End'].apply(Snakeskin, args);
 
 				return false;
 			}
+
+			return true;
 		});
 
-		if (!res && !vars.parentTplName && !vars.protoStart) {
-			vars.save('};');
+		if (!res && !dirObj.parentTplName && !dirObj.protoStart) {
+			dirObj.save('};');
 		}
 	}
 
 	// Окончание системных блоков
-	this.forEach(vars.sysPosCache, function (el, key) {
-		el = vars.getLastPos(key);
+	Snakeskin.forEach(dirObj.sysPosCache, function (el, key) {
+		el = dirObj.getLastPos(key);
 
 		if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
-			that.Directions[key + 'End'].apply(that, args);
+			Snakeskin.Directions[key + 'End'].apply(Snakeskin, args);
 			return false;
 		}
+
+		return true;
 	});
 };

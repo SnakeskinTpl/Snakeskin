@@ -3,17 +3,17 @@
  */
 
 var Snakeskin = {
-		VERSION: '2.2.6',
+	VERSION: '2.3',
 
-		Directions: {},
+	Directions: {},
 
-		Filters: {},
-		BEM: {},
-		Vars: {},
+	Filters: {},
+	BEM: {},
+	Vars: {},
 
-		write: {},
-		cache: {}
-	};
+	write: {},
+	cache: {}
+};
 
 (function (require) {
 	'use strict';
@@ -31,15 +31,20 @@ var Snakeskin = {
 
 	//#if withCompiler
 	//#include global.js
+	//#include api.js
 	//#include escape.js
 	//#include inherit.js
-	//#include other.js
+	//#include error.js
 
 	//#include compiler.js
+	//#include output.js
+
+	//#include directions/end.js
 
 	//#include directions/template.js
 	//#include directions/call.js
 	//#include directions/void.js
+	//#include directions/var.js
 
 	//#include directions/block.js
 	//#include directions/proto.js
@@ -52,8 +57,6 @@ var Snakeskin = {
 	//#include directions/cut.js
 	//#include directions/bem.js
 	//#include directions/data.js
-
-	//#include directions/end.js
 
 	//#endif
 

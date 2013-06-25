@@ -137,7 +137,7 @@
 				{text = 'Hello'}
 				<h1>{text}{cdata}
 					{a}
-				{end cdata}!</h1>
+				{/cdata}!</h1>
 			{end}
 
 			{global = 1}
@@ -158,9 +158,118 @@
 			{template bemTest() extends bemTestParent}
 				{block aa}
 					{apply a}
-					{global}
+					{@global}
 				{end}
 			{end}
+
+			{template testEscape(a = /1/, b = '2/2/\\\'')}
+				{c = (/1[2]\/\\/)}
+				{3 / 3}
+			{/template}
+
+			{template testComment(/* as */)}
+				///123
+				/*sd*/
+				{a =
+					///1
+					2
+				}
+				{e = /"'/}
+				{a}
+				{b = /* 2 */ 3}
+				{b}
+			{/template}
+
+			{template testCycles(i = 0)}
+				{for var j = 0; j < 3; j++}
+					{j}
+				{end}
+
+				{while i++ < 3}
+					{i}
+				{end}
+
+				{repeat}
+					{i}
+				{until i--}
+			{end template}
+
+			{template testConst(a)}
+				{1 == 2 ? (function () { var a = 1; return a; })() : 2}
+				{1 === 1 && (a = 10)}
+				{b = {}}
+				{b.foo = 1}
+				{b['foo2'] = 2}
+				{b.foo + b.foo2}
+
+				{proto foo}
+					{aa = 2}
+					{aa}
+				{end}
+
+				{apply foo}
+				{apply foo}
+			{end}
+
+			{template superTestConst()}
+				{proto a}
+					{foo = 1}
+				{end}
+				{apply a}
+			{end}
+
+			{template childTestConst() extends superTestConst}
+				{proto a}
+					{foo = 2}
+					{foo}
+				{end}
+			{end}
+
+			{template superTestConst2()}
+				{proto a}
+					{a = 1}
+				{end}
+				{apply a}
+			{/template}
+
+			{template childTestConst2() extends superTestConst2}
+				{proto a}
+					{a = 2}
+					{proto e}
+						{j = 1}
+						{j}
+					{end}
+					{apply e}
+				{end}
+				{apply a}
+			{/template}
+
+			{a = 10}
+			{template newTestWith()}
+				{var foo = {
+					child: {a: 1, child: {name: 'test'}},
+					a: 2
+				}}
+				{a = 2}
+				{with foo}
+					{with child}
+						{with child}
+							{proto e}
+								{(name|remove @String('s')) + (#a + #2a + @a + @@a) |ucfirst |remove @String('e')}
+							{end}
+						{end}
+					{end}
+				{end with}
+
+				{apply e}
+			{/template}
+
+			{template newDataTest()}
+				{a = 1}
+				{{
+					{name: "${a + @a /* 123 */ + ('foo'|ucfirst) + '{}'}"}
+				}}
+			{/template}
 		</script>
 
 		<script type="text/javascript">
@@ -191,6 +300,14 @@
 				equal(withoutFilter(), '<a href=""onclick="\'alert(1)\'""></a>', 'Работа с фильтрами (без экранирования)');
 				equal(withCData(), '\n					{template withFilter()}\n						{b = &#39;\"onclick=\"&#39;alert(1)&#39;\"&#39;}\n						<a href=\"{b}\"></a>\n					{end}\n				<h1>Hello\n					{a}\n				!</h1>', 'Использование cdata областей');
 				equal(bemTest(), '<span class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
+				equal(testEscape(), '1', 'Проверка экранирования в директивах и работы / окончаний');
+				equal(testComment(), '23', 'Проверка работы комментариев');
+				equal(testCycles(), '01212343210', 'Проверка работы циклов');
+				equal(testConst(), '210322', 'Проверка работы констант');
+				equal(childTestConst(), '2', 'Проверка работы констант при наследовании');
+				equal(childTestConst2(), '1', 'Проверка работы констант при наследовании #2');
+				equal(newTestWith(), 'Tt15', 'Проверка работы scope');
+				equal(newDataTest(), '{{name: "11Foo{}"}}', 'Проверка прокидывания переменных в data');
 			});
 		</script>
 	</body>

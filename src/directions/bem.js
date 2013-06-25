@@ -5,80 +5,47 @@
 /**
  * Декларация параметров БЭМ блока
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {!Array.<string>} vars.quotContent - массив строк
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['setBEM'] = function (command, commandLength, vars) {
+Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
 	var part = command.match(/(.*?),\s+(.*)/);
-	this.BEM[part[1]] = (new Function('return {' + this._uescape(part[2], vars.quotContent) + '}'))();
+	Snakeskin.BEM[part[1]] = (new Function('return {' +
+		dirObj.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
+	)();
 };
 
 /**
  * Декларация БЭМ блока
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {!Array.<string>} vars.quotContent - массив строк
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string, boolean): *} vars.getLastPos - вернуть последнюю позицию
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
-	vars.pushPos('bem', {
-		i: ++vars.openBlockI,
+Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
+	dirObj.pushPos('bem', {
+		i: ++dirObj.openBlockI,
 		tag: /^\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 	});
 
-	var that = this,
-
-		lastBEM = vars.getLastPos('bem'),
-		bemName,
-		part;
+	var lastBEM = dirObj.getLastPos('bem');
 
 	// Получаем параметры инициализации блока и врапим имя кавычками
 	command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command;
-	part = command.trim().split(',');
+	var part = command.trim().split(',');
 
-	bemName = part[0];
-	lastBEM.original = this.BEM[bemName] && this.BEM[bemName].tag;
+	var bemName = part[0];
+	lastBEM.original = Snakeskin.BEM[bemName] && Snakeskin.BEM[bemName].tag;
 
-	if (!vars.parentTplName && !vars.protoStart) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		part[0] += '\'';
 		command = part.join(',');
 
-		// Обработка переменных
-		part = that._uescape(command, vars.quotContent).split('${');
-		command = '';
-
-		this.forEach(part, function (el, i) {
-			var part;
-
-			if (i > 0) {
-				part = el.split('}');
-				command += '\' + ' + that._returnVar(part[0], vars) +
-					' + \'' +
-					part.slice(1).join('}')
-						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-
-			} else {
-				command += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-			}
-		});
-
-		vars.save('' +
+		dirObj.save(
 			'__SNAKESKIN_RESULT__ += \'' +
 				'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
-				command +
+				dirObj.replaceTplVars(command) +
 			'}">\';'
 		);
 	}
@@ -87,20 +54,13 @@ Snakeskin.Directions['bem'] = function (command, commandLength, vars) {
 /**
  * Окончание БЭМ блока
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {function(string)} vars.save - сохранить строку в результирующую
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['bemEnd'] = function (command, commandLength, vars) {
-	var lastBEM = vars.popPos('bem');
-
-	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
+Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
+	var lastBEM = dirObj.popPos('bem');
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
 };

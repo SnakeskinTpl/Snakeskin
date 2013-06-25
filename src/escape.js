@@ -1,35 +1,61 @@
-/*!
- * Экранирование
- */
-
 /**
- * Заметить кавычки с содержимом в строке на ссылку:
+ * Заметить блоки вида ' ... ', " ... ", / ... / на
  * __SNAKESKIN_QUOT__номер
  *
- * @private
  * @param {string} str - исходная строка
  * @param {Array=} [opt_stack] - массив для подстрок
  * @return {string}
  */
-Snakeskin._escape = function (str, opt_stack) {
-	return str.replace(/(["'])(?:\\[\S\s]|(?:(?!\1|\\)[\S\s]))*\1/g, function (sstr) {
-		if (opt_stack) {
-			opt_stack.push(sstr);
+DirObj.prototype.replaceDangerBlocks = function (str, opt_stack) {
+	var begin,
+		escape,
+		end = true,
+		selectionStart,
+		lastCutLength = 0;
+
+	return str.split('').reduce(function (res, el, i) {
+		if (!begin) {
+			if (escapeEndMap[el]) {
+				end = true;
+
+			} else if (/[^\s\/]/.test(el)) {
+				end = false;
+			}
 		}
 
-		return '__SNAKESKIN_QUOT__' + (opt_stack ? opt_stack.length - 1 : '_');
-	});
+		if (escapeMap[el] && (el === '/' ? end : true) && !begin) {
+			begin = el;
+			selectionStart = i;
+
+		} else if (begin && (el === '\\' || escape)) {
+			escape = !escape;
+
+		} else if (escapeMap[el] && begin === el && !escape) {
+			begin = false;
+			var cut = str.substring(selectionStart, i + 1),
+				label = '__SNAKESKIN_QUOT__' + (opt_stack ? opt_stack.length : '_');
+
+			if (opt_stack) {
+				opt_stack.push(cut);
+			}
+
+			res = res.substring(0, selectionStart - lastCutLength) + label + res.substring(i + 1 - lastCutLength);
+			lastCutLength += cut.length - label.length;
+
+		}
+
+		return res;
+	}, str);
 };
 
 /**
  * Заметить __SNAKESKIN_QUOT__номер в строке на реальное содержимое
  *
- * @private
  * @param {string} str - исходная строка
  * @param {!Array} stack - массив c подстроками
  * @return {string}
  */
-Snakeskin._uescape = function (str, stack) {
+DirObj.prototype.pasteDangerBlocks = function (str, stack) {
 	return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
 		return stack[pos];
 	});

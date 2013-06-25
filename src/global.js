@@ -2,32 +2,45 @@
  * Глобальные переменные замыкания
  */
 
-var // Кеш шаблонов
-	cache = {},
+var require;
+var cache = {};
 
-	// Кеш блоков
-	blockCache = {},
+// Кеш блоков
+var blockCache = {},
 	protoCache = {},
-	fromProtoCache = {},
+	fromProtoCache = {};
 
-	// Кеш переменных
-	globalVarCache = {},
-	varCache = {},
-	fromVarCache = {},
-	varICache = {},
+// Кеш констант
+var constCache = {},
+	fromConstCache = {},
+	constICache = {};
 
-	// Кеш входных параметров
-	paramsCache = {},
+// Кеш входных параметров
+var paramsCache = {};
 
-	// Карта наследований
-	extMap = {},
-	// Стек CDATA
-	cData = [],
+// Карта наследований
+var extMap = {};
 
-	quote = {'"': true, '\'': true},
+// Системные константы
+var sysConst = {
+	'__SNAKESKIN_RESULT__': true,
+	'__SNAKESKIN_CDATA__': true
+};
 
-	// Системные константы
-	sysConst = {
-		'__SNAKESKIN_RESULT__': true,
-		'__SNAKESKIN_CDATA__': true
-	};
+// Таблица экранирований
+var escapeMap = {
+	'"': true,
+	'\'': true,
+	'/': true
+};
+
+var escapeEndMap = {
+	',': true,
+	';': true,
+	'=': true,
+	'|': true,
+	'&': true,
+	'?': true,
+	':': true,
+	'(': true
+};

@@ -5,56 +5,40 @@
 /**
  * Директива if
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {function(string)} vars.save - сохранить строку в результирующую
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['if'] = function (command, commandLength, vars) {
-	vars.openBlockI++;
+Snakeskin.Directions['if'] = function (command, commandLength, dirObj) {
+	dirObj.openBlockI++;
 
-	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('if (' + command + ') {');
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('if (' + dirObj.prepareOutput(command, true) + ') {');
 	}
 };
 
 /**
  * Директива elseIf
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {function(string)} vars.save - сохранить строку в результирующую
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['elseIf'] = function (command, commandLength, vars) {
-	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('} else if (' + command + ') {');
+Snakeskin.Directions['elseIf'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('} else if (' + dirObj.prepareOutput(command, true) + ') {');
 	}
 };
 
 /**
  * Директива else
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {string} vars.parentTplName - название родительского шаблона
- * @param {boolean} vars.protoStart - true, если идёт парсинг proto блока
- * @param {function(string)} vars.save - сохранить строку в результирующую
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['else'] = function (command, commandLength, vars) {
-	if (!vars.parentTplName && !vars.protoStart) {
-		vars.save('} else {');
+Snakeskin.Directions['else'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('} else {');
 	}
 };

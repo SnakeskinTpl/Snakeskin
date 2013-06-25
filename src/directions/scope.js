@@ -1,35 +1,24 @@
-/*!
- * Директива with
- */
-
 /**
- * Декларация области видимости
+ * Директива with
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {number} vars.openBlockI - количество открытых блоков
- * @param {function(string, *, boolean)} vars.pushPos - добавить новую позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['with'] = function (command, commandLength, vars) {
-	vars.pushPos('with', {
+Snakeskin.Directions['with'] = function (command, commandLength, dirObj) {
+	dirObj.pushPos('with', {
 		scope: command,
-		i: ++vars.openBlockI
+		i: ++dirObj.openBlockI
 	}, true);
 };
 
 /**
- * Окончание области видимости
+ * Окончание with
  *
- * @this {Snakeskin}
  * @param {string} command - название команды (или сама команда)
  * @param {number} commandLength - длина команды
- *
- * @param {!Object} vars - объект локальных переменных
- * @param {function(string): *} vars.popPos - удалить последнюю позицию
+ * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['withEnd'] = function (command, commandLength, vars) {
-	vars.popPos('with');
+Snakeskin.Directions['withEnd'] = function (command, commandLength, dirObj) {
+	dirObj.popPos('with');
 };
