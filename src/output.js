@@ -43,6 +43,12 @@ var comboBlackWordList = {
 	'const': true
 };
 
+/**
+ * Заменить ${...} в строке на значение вывода
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
 DirObj.prototype.replaceTplVars = function (str) {
 	str = this.pasteDangerBlocks(str, this.quotContent);
 	var begin = 0,
@@ -166,7 +172,7 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
 };
 
 /**
- * Вернуть true, если следующий не пробельный символ в строке равен :
+ * Вернуть true, если следующий не пробельный символ в строке равен : или =
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
@@ -177,7 +183,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 		var el = str.charAt(i);
 
 		if (/\S/.test(el)) {
-			return el === ':';
+			return el === ':' || el === '=' && str.charAt(i + 1) !== '=' && str.charAt(i - 1) !== '=';
 		}
 	}
 
@@ -202,7 +208,7 @@ DirObj.prototype.getWord = function (str, pos) {
 	for (var i = pos, j = 0; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
-		if (pCount || /[@#$\w\[\]().]/.test(el)) {
+		if (pCount || /[@#$+\-\w\[\]().]/.test(el)) {
 			if (pContent !== null && (pCount > 1 || pCount === 1 && el !== ')')) {
 				pContent += el;
 			}
@@ -323,7 +329,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 					vres;
 
 				var canParse = !blackWordList[word] &&
-					!/__SNAKESKIN_QUOT__\d+/.test(word) &&
+					!/^__SNAKESKIN_QUOT__\d+/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
@@ -384,7 +390,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 				if (comboBlackWordList[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse) {
+				} else if (canParse && !opt_sys) {
 					vres = 'Snakeskin.Filters.undef(' + vres + ')';
 				}
 
@@ -420,7 +426,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 			if (!filterStart) {
 				// Закрылась скобка, а последующие 2 символа не являются фильтром
 				if (el === ')' && (next !== '|' || !/[!$a-z_]/i.test(nnext))) {
-					pCount--;
+					if (pCount) {
+						pCount--;
+					}
+
 					pContent.shift();
 					continue;
 				}
@@ -491,6 +500,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 
 			}, fbody);
 
+			console.log();
+
 			var fstr = rvFilter.join().length + 1;
 			res = res.substring(0, pos[0] + addition) +
 				resTmp + res.substring(pos[1] + fadd + fstr);
@@ -505,9 +516,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 			rvFilter = [];
 
 			filterStart = false;
-			pCount--;
+
+			if (pCount) {
+				pCount--;
+			}
 		}
 	}
 
+	console.info(res)
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };

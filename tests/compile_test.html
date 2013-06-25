@@ -243,6 +243,26 @@
 				{end}
 				{apply a}
 			{/template}
+
+			{a = 10}
+			{template newTestWith()}
+				{var foo = {
+					child: {a: 1, child: {name: 'test'}},
+					a: 2
+				}}
+				{a = 2}
+				{with foo}
+					{with child}
+						{with child}
+							{proto e}
+								{(name|remove @String('s')) + (#a + #2a + @a + @@a) |ucfirst |remove @String('e')}
+							{end}
+						{end}
+					{end}
+				{end with}
+
+				{apply e}
+			{/template}
 		</script>
 
 		<script type="text/javascript">
@@ -275,10 +295,11 @@
 				equal(bemTest(), '<span class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></span><head class=\"i-block\" data-params=\"{name: \'my\', val: 1, next: \'Foo\'}\"></head>3', 'myFireBEM');
 				equal(testEscape(), '1', 'Проверка экранирования в директивах и работы / окончаний');
 				equal(testComment(), '23', 'Проверка работы комментариев');
-				equal(testCycles(), '01212343210', 'Проверка работы комментариев');
+				equal(testCycles(), '01212343210', 'Проверка работы циклов');
 				equal(testConst(), '210322', 'Проверка работы констант');
 				equal(childTestConst(), '2', 'Проверка работы констант при наследовании');
 				equal(childTestConst2(), '1', 'Проверка работы констант при наследовании #2');
+				equal(newTestWith(), 'Tt15', 'Проверка работы scope');
 			});
 		</script>
 	</body>

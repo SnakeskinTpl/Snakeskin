@@ -1,6 +1,7 @@
 /**
  * Кеш переменных
  */
+
 DirObj.prototype.varCache = {
 	init: function () {
 		return {};
@@ -33,7 +34,6 @@ Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
 	}
 
 	dirObj.varCache[varName] = true;
-
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(dirObj.prepareOutput('var ' + command + ';', true));
 	}

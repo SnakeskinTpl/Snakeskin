@@ -1155,6 +1155,12 @@ var comboBlackWordList = {
 	'const': true
 };
 
+/**
+ * Заменить ${...} в строке на значение вывода
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
 DirObj.prototype.replaceTplVars = function (str) {
 	str = this.pasteDangerBlocks(str, this.quotContent);
 	var begin = 0,
@@ -1250,7 +1256,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 				escape = false;
 				res += '\' + ' +
 					this.prepareOutput(this.replaceDangerBlocks(dir, this.quotContent)) +
-					' + \'';
+				' + \'';
 			}
 		}
 	}
@@ -1278,7 +1284,7 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
 };
 
 /**
- * Вернуть true, если следующий не пробельный символ в строке равен :
+ * Вернуть true, если следующий не пробельный символ в строке равен : или =
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
@@ -1289,7 +1295,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 		var el = str.charAt(i);
 
 		if (/\S/.test(el)) {
-			return el === ':';
+			return el === ':' || el === '=' && str.charAt(i + 1) !== '=' && str.charAt(i - 1) !== '=';
 		}
 	}
 
@@ -1314,7 +1320,7 @@ DirObj.prototype.getWord = function (str, pos) {
 	for (var i = pos, j = 0; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
-		if (pCount || /[@#$\w\[\]().]/.test(el)) {
+		if (pCount || /[@#$+\-\w\[\]().]/.test(el)) {
 			if (pContent !== null && (pCount > 1 || pCount === 1 && el !== ')')) {
 				pContent += el;
 			}
@@ -1435,7 +1441,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 					vres;
 
 				var canParse = !blackWordList[word] &&
-					!/__SNAKESKIN_QUOT__\d+/.test(word) &&
+					!/^__SNAKESKIN_QUOT__\d+/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
@@ -1496,7 +1502,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 				if (comboBlackWordList[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse) {
+				} else if (canParse && !opt_sys) {
 					vres = 'Snakeskin.Filters.undef(' + vres + ')';
 				}
 
@@ -1532,7 +1538,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 			if (!filterStart) {
 				// Закрылась скобка, а последующие 2 символа не являются фильтром
 				if (el === ')' && (next !== '|' || !/[!$a-z_]/i.test(nnext))) {
-					pCount--;
+					if (pCount) {
+						pCount--;
+					}
+
 					pContent.shift();
 					continue;
 				}
@@ -1617,10 +1626,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 			rvFilter = [];
 
 			filterStart = false;
-			pCount--;
+
+			if (pCount) {
+				pCount--;
+			}
 		}
 	}
 
+	console.log(res)
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };
 /**
@@ -2020,6 +2033,7 @@ Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 };/**
  * Кеш переменных
  */
+
 DirObj.prototype.varCache = {
 	init: function () {
 		return {};
@@ -2052,7 +2066,6 @@ Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
 	}
 
 	dirObj.varCache[varName] = true;
-
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(dirObj.prepareOutput('var ' + command + ';', true));
 	}
@@ -2616,29 +2629,10 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 		part[0] += '\'';
 		command = part.join(',');
 
-		// Обработка переменных
-		part = dirObj.pasteDangerBlocks(command, dirObj.quotContent).split('${');
-		command = '';
-
-		Snakeskin.forEach(part, function (el, i) {
-			var part;
-
-			if (i > 0) {
-				part = el.split('}');
-				command += '\' + ' + dirObj.prepareOutput(part[0]) +
-					' + \'' +
-					part.slice(1).join('}')
-						.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-
-			} else {
-				command += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
-			}
-		});
-
 		dirObj.save(
 			'__SNAKESKIN_RESULT__ += \'' +
 				'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
-				command +
+				dirObj.replaceTplVars(command) +
 			'}">\';'
 		);
 	}

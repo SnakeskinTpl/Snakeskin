@@ -11,12 +11,7 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{a = 111}
-				{{
-					{
-						name: '${"{"}'
-					}
-				}}
+				{('my'|replace String('m')) + 45|ucfirst}
 			{/template}
 		</script>
 
