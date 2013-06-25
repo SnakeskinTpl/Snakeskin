@@ -10,24 +10,14 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template newTestWith()}
-				{with foo}
-					{with child}
-						{with child}
-							{proto e}
-								{(name|remove @String(2)) + #a}
-							{end}
-						{end}
-					{end}
-				{end}
-
-				{apply e}
+			{template newDataTest()}
+				{a + @a + (121|ucFirst) + '{}'}
 			{/template}
 		</script>
 
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = newTestWith();
+			document.getElementById('test').innerHTML = newDataTest();
 		</script>
 	</body>
 </html>

@@ -1091,7 +1091,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
-	//console.log(dirObj.res);
+	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -1405,7 +1405,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 		scope = this.getPos('with');
 
 	// Сдвиги
-	var wordAddEnd = 0,
+	var nPWordAddEnd = 0,
+		wordAddEnd = 0,
 		filterAddEnd = 0;
 
 	var unEscape = false,
@@ -1511,6 +1512,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 				}
 
 				wordAddEnd += vres.length - word.length;
+				if (!pCount) {
+					nPWordAddEnd += vres.length - word.length;
+				}
+
 				nword = false;
 
 				if (filterStart) {
@@ -1600,7 +1605,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
 				fbody = pCount ?
-					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
+					res.substring(pos[0] + nPWordAddEnd + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
 			filter = filter.reduce(function (arr, el) {
 				if (el !== '!html') {
@@ -1624,13 +1629,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 
 			var fstr = rvFilter.join().length + 1;
 			res = pCount ?
-				res.substring(0, pos[0] + addition) +
+				res.substring(0, pos[0] + nPWordAddEnd + addition) +
 					resTmp + res.substring(pos[1] + fadd + fstr) :
 				resTmp;
 
-
 			addition += resTmp.length - fbody.length - fstr + wordAddEnd - filterAddEnd;
 
+			nPWordAddEnd = 0;
 			wordAddEnd = 0;
 			filterAddEnd = 0;
 			pContent.splice(last, 1);
@@ -1646,7 +1651,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 		}
 	}
 
-	//console.info(res)
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };
 /**

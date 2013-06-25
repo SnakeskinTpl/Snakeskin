@@ -263,6 +263,13 @@
 
 				{apply e}
 			{/template}
+
+			{template newDataTest()}
+				{a = 1}
+				{{
+					{name: "${a + @a /* 123 */ + ('foo'|ucfirst) + '{}'}"}
+				}}
+			{/template}
 		</script>
 
 		<script type="text/javascript">
@@ -300,6 +307,7 @@
 				equal(childTestConst(), '2', 'Проверка работы констант при наследовании');
 				equal(childTestConst2(), '1', 'Проверка работы констант при наследовании #2');
 				equal(newTestWith(), 'Tt15', 'Проверка работы scope');
+				equal(newDataTest(), '{{name: "11Foo{}"}}', 'Проверка прокидывания переменных в data');
 			});
 		</script>
 	</body>
