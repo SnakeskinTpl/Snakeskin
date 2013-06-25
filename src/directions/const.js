@@ -24,14 +24,14 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	}
 
 	// Инициализация переменных
-	if (/^[a-z_][\w\[\].'"\s]*[^=]=[^=]/i.test(command)) {
-		var varName = command.split('=')[0].trim();
+	if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/i.test(command)) {
+		var varName = command.split('=')[0].trim(),
+			mod = varName.charAt(0);
 
 		if (tplName) {
-			if (!adv.dryRun && !dirObj.varCache[varName] &&
+			if (!adv.dryRun && !dirObj.varCache[varName] && mod !== '#' && mod !== '@' &&
 				((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)
 			) {
-
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {
 					throw dirObj.error(
@@ -82,11 +82,11 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			}
 
 			if (!parentName && !protoStart) {
-				if (!dirObj.varCache[varName]) {
+				if (!dirObj.varCache[varName] && mod !== '#' && mod !== '@') {
 					dirObj.save(dirObj.prepareOutput((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';', true));
 
 				} else {
-					dirObj.save(command + ';', true, true);
+					dirObj.save(dirObj.prepareOutput(command + ';', true));
 				}
 			}
 
