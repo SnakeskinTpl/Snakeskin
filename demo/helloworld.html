@@ -3,21 +3,20 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Hello world</title>
-		<script src="../snakeskin.js"></script>
+		<script src="../snakeskin.min.js"></script>
 	</head>
 
 	<body>
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template newDataTest()}
-				{a + @a + (1 + ((121)|ucFirst)) + '{}'}
+			{template helloWorld(name = 'world')}
+				<h1>Hello {name}!</h1>
 			{/template}
 		</script>
-
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = newDataTest();
+			document.getElementById('test').innerHTML = helloWorld();
 		</script>
 	</body>
 </html>
