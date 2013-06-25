@@ -1091,7 +1091,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
-	console.log(dirObj.res);
+	//console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -1408,7 +1408,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 	var wordAddEnd = 0,
 		filterAddEnd = 0;
 
-	var unEscape = false;
+	var unEscape = false,
+		deepFilter = false;
 
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
@@ -1445,18 +1446,21 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
+				var globalExport = /([$\w]*)(.*)/;
 				if (el === '@') {
 					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
+						globalExport = globalExport.exec(vres);
 
 						// Супер глобальная переменная внутри with
 						if (next === '@') {
-							vres = 'Snakeskin.Vars[\'' + vres + '\']';
+							vres = 'Snakeskin.Vars[\'' + globalExport[1] + '\']' + globalExport[2];
 						}
 
 					// Супер глобальная переменная вне with
 					} else {
-						vres = 'Snakeskin.Vars[\'' + finalWord.substring(next === '@' ? 2 : 1) + '\']';
+						globalExport = globalExport.exec(finalWord.substring(next === '@' ? 2 : 1));
+						vres = 'Snakeskin.Vars[\'' + globalExport[1] + '\']' + globalExport[2];
 					}
 
 				} else {
@@ -1536,14 +1540,19 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 			}
 
 			if (!filterStart) {
-				// Закрылась скобка, а последующие 2 символа не являются фильтром
-				if (el === ')' && (next !== '|' || !/[!$a-z_]/i.test(nnext))) {
-					if (pCount) {
-						pCount--;
-					}
+				if (el === ')') {
+					// Закрылась скобка, а последующие 2 символа не являются фильтром
+					if (next !== '|' || !/[!$a-z_]/i.test(nnext)) {
+						if (pCount) {
+							pCount--;
+						}
 
-					pContent.shift();
-					continue;
+						pContent.shift();
+						continue;
+
+					} else {
+						deepFilter = true;
+					}
 				}
 
 			// Составление тела фильтра
@@ -1590,7 +1599,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 				pos = pContent[last];
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
-				fbody = res.substring(pos[0] + addition, pos[1] + fadd);
+				fbody = pCount ?
+					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
 			filter = filter.reduce(function (arr, el) {
 				if (el !== '!html') {
@@ -1607,16 +1617,19 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 				var params = el.split(' '),
 					input = params.slice(1).join('').trim();
 
-				return 'Snakeskin.Filters[\'' + params.shift() + '\'](' + res +
-					(input ? ',' + input : '') + ')';
+				return 'Snakeskin.Filters[\'' + params.shift() + '\']' + (deepFilter || !pCount ? '(' : '') + res +
+					(input ? ',' + input : '') + (deepFilter || !pCount ? ')' : '');
 
 			}, fbody);
 
 			var fstr = rvFilter.join().length + 1;
-			res = res.substring(0, pos[0] + addition) +
-				resTmp + res.substring(pos[1] + fadd + fstr);
+			res = pCount ?
+				res.substring(0, pos[0] + addition) +
+					resTmp + res.substring(pos[1] + fadd + fstr) :
+				resTmp;
 
-			addition += resTmp.length - fbody.length - fstr + wordAddEnd;
+
+			addition += resTmp.length - fbody.length - fstr + wordAddEnd - filterAddEnd;
 
 			wordAddEnd = 0;
 			filterAddEnd = 0;
@@ -1626,14 +1639,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 			rvFilter = [];
 
 			filterStart = false;
-
 			if (pCount) {
 				pCount--;
+				deepFilter = false;
 			}
 		}
 	}
 
-	console.log(res)
+	//console.info(res)
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };
 /**
