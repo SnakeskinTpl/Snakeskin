@@ -95,7 +95,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					.replace(/^\//, 'end ')
 
 					// Хак для поддержки {data ...} как {{ ... }}
-					.replace(/^{([\s\S]*)}$/, function (sstr, $1) {
+					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
 						return 'data ' + $1;
 					})
 
@@ -105,7 +105,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
-					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+', 'm'), '') : command,
+					commandType !== 'const' ?
+						command.replace(new RegExp('^' + commandType + '\\s+', 'm'), '') : command,
 					commandLength,
 
 					dirObj,

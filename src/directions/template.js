@@ -228,10 +228,12 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	});
 
 	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
-	dirObj.save('var TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(tmpTplName)) + '\';');
+	dirObj.save('var TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(tmpTplName)) + '\';' +
+		'var PARENT_TPL_NAME;'
+	);
 
 	if (parentTplName) {
-		dirObj.save('var PARENT_TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(parentTplName)) + '\';');
+		dirObj.save('PARENT_TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(parentTplName)) + '\';');
 	}
 };
 
