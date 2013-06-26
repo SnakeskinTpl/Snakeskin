@@ -38,6 +38,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			el = str.charAt(dirObj.i),
 			next = str.charAt(dirObj.i + 1);
 
+		if (!begin && !dirObj.tplName && /\s/.test(el)) {
+			continue;
+		}
+
 		if (!bOpen) {
 			if (begin) {
 				if (el === '\\' || escape) {
@@ -189,7 +193,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				.replace(/'/gm, '&#39;');
 		})
 		// Удаление пустых операций
-		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
+		.replace(/__SNAKESKIN_RESULT__ \+= '[]';/g, '');
 
 	// Конец шаблона
 	dirObj.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
@@ -198,8 +202,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	if (opt_dryRun) {
 		return dirObj.res;
 	}
-
-	//document.getElementById('res').innerHTML = dirObj.res
 
 	// Компиляция на сервере
 	if (require) {
