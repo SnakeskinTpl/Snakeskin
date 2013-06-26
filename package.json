@@ -1,0 +1,32 @@
+{
+  "name": "Snakeskin",
+  "version": "2.3.4",
+  "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.\r Независим от среды исполнения, для работы нужен лишь интерпретатор JavaScript.",
+  "main": "snakeskin.js",
+  "bin": {
+    "snakeskin": "index.js"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kobezzza/Snakeskin"
+  },
+  "dependencies": {
+    "commander": "~1.2.0"
+  },
+  "keywords": [
+    "templates"
+  ],
+  "author": "Kobezzza",
+  "license": "BSD",
+  "readmeFilename": "readme.md",
+  "gitHead": "bdfb50fe92c4986f952b9d952b159e0606a0aa5a",
+  "bugs": {
+    "url": "https://github.com/kobezzza/Snakeskin/issues"
+  }
+}

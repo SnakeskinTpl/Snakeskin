@@ -1,38 +1,36 @@
-/**!
- * Скрипт для консоли
- */
-
-var fs = require('fs'),
-	file, newFile,
-	commonJS;
+#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
+var program = require('./node_modules/commander');
 
-if (process.argv.length < 3 || process.argv[2] === '-h' || process.argv[2] === '--help') {
-	console.log('Usage: node compiler fname.ss [--commonjs | -cjs]');
+program
+	.version('2.3.4')
+	.option('-s, --source [src]', 'Source file')
+	.option('-o, --output [src]', 'Output file')
+	.option('-cjs, --commonjs', 'Compile templates as commonJS module')
+	.parse(process.argv);
 
-} else {
-	file = process.argv[2];
-	commonJS = process.argv[3] === '--commonjs' || process.argv[3] === '-cjs';
-	newFile = process.argv[commonJS ? 4 : 3] || (file + '.js');
+var fs = require('fs');
+var file = program.source;
+var commonJS = program.commonjs;
+var newFile = program.output || (file + '.js');
 
-	fs.readFile(file, function (err, data) {
-		var res;
+fs.readFile(file, function (err, data) {
+	var res;
 
-		if (err) {
-			console.log(err);
+	if (err) {
+		console.log(err);
 
-		} else {
-			res = Snakeskin.compile(String(data), commonJS, {file: file});
+	} else {
+		res = Snakeskin.compile(String(data), commonJS, {file: file});
 
-			fs.writeFile(newFile, res, function (err) {
-				if (err) {
-					console.log(err);
+		fs.writeFile(newFile, res, function (err) {
+			if (err) {
+				console.log(err);
 
-				} else {
-					console.log('File "' + file + '" has been successfully compiled (' + newFile + ').');
-				}
-			});
-		}
-	});
-}
+			} else {
+				console.log('File "' + file + '" has been successfully compiled (' + newFile + ').');
+			}
+		});
+	}
+});
