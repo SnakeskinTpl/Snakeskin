@@ -13,15 +13,15 @@ if (!Array.prototype.reduce) {
 	 * @return {*}
 	 */
 	Array.prototype.reduce = function (callback, opt_initialValue) {
-		var i = 0,
+		var i = -1,
 			aLength = this.length,
 			res;
 
-		if (aLength === 1) { return this[0]; }
-
 		if (typeof opt_initialValue !== 'undefined') {
 			res = opt_initialValue;
+
 		} else {
+			i++;
 			res = this[0];
 		}
 

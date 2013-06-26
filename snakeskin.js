@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.3',
+	VERSION: '2.3.4',
 
 	Directions: {},
 
@@ -344,15 +344,15 @@ if (!Array.prototype.reduce) {
 	 * @return {*}
 	 */
 	Array.prototype.reduce = function (callback, opt_initialValue) {
-		var i = 0,
+		var i = -1,
 			aLength = this.length,
 			res;
 
-		if (aLength === 1) { return this[0]; }
-
 		if (typeof opt_initialValue !== 'undefined') {
 			res = opt_initialValue;
+
 		} else {
+			i++;
 			res = this[0];
 		}
 
@@ -1100,7 +1100,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
-	console.log(dirObj.res);
+	//document.getElementById('res').innerHTML = dirObj.res
 
 	// Компиляция на сервере
 	if (require) {
@@ -2509,6 +2509,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			if (!adv.dryRun && !dirObj.varCache[varName] && mod !== '#' && mod !== '@' &&
 				((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)
 			) {
+
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {
 					throw dirObj.error(

@@ -32,6 +32,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			if (!adv.dryRun && !dirObj.varCache[varName] && mod !== '#' && mod !== '@' &&
 				((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)
 			) {
+
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {
 					throw dirObj.error(
