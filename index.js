@@ -4,7 +4,7 @@ global.Snakeskin = require('./snakeskin');
 var program = require('./node_modules/commander');
 
 program
-	.version('2.3.6')
+	.version('2.3.7')
 	.option('-s, --source [src]', 'source file')
 	.option('-o, --output [src]', 'output file')
 	.option('-cjs, --commonjs', 'compile templates as commonJS module')

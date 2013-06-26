@@ -98,7 +98,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		}
 
 	// Вывод переменных
-	} else if (!parentName && !protoStart) {
+	} else if (!parentName && !protoStart && tplName) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + dirObj.prepareOutput(command) + ';');
 	}
 };
