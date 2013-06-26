@@ -10,9 +10,9 @@
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
-	var part = command.match(/(.*?),\s+(.*)/);
+	var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
 	Snakeskin.BEM[part[1]] = (new Function('return {' +
-		dirObj.pasteDangerBlocks(part[2], dirObj.quotContent) + '}')
+		dirObj.pasteDangerBlocks(part[2]) + '}')
 	)();
 };
 
@@ -26,13 +26,13 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 	dirObj.pushPos('bem', {
 		i: ++dirObj.openBlockI,
-		tag: /^\(/g.test(command) ? /\((.*?)\)/.exec(command)[1] : null
+		tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
 	});
 
 	var lastBEM = dirObj.getLastPos('bem');
 
 	// Получаем параметры инициализации блока и врапим имя кавычками
-	command = lastBEM.tag ? command.replace(/^.*?\)([\s\S]*)/, '$1') : command;
+	command = lastBEM.tag ? command.replace(/^[\s\S]*?\)([\s\S]*)/m, '$1') : command;
 	var part = command.trim().split(',');
 
 	var bemName = part[0];

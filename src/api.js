@@ -83,13 +83,13 @@ function DirObj(src, commonJS, dryRun) {
 			(commonJS ?
 				'var Snakeskin = global.Snakeskin;' +
 
-					'exports.liveInit = function (path) { ' +
+				'exports.liveInit = function (path) { ' +
 					'Snakeskin = require(path);' +
 					'exec();' +
 					'return this;' +
-					'};' +
+				'};' +
 
-					'function exec() {' :
+				'function exec() {' :
 				'');
 }
 

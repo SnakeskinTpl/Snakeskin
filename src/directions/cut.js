@@ -10,7 +10,7 @@
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
-	command = dirObj.pasteDangerBlocks(command, dirObj.quotContent);
+	command = dirObj.pasteDangerBlocks(command);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
 	}
@@ -24,5 +24,5 @@ Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
-	Snakeskin.write[dirObj.pasteDangerBlocks(command, dirObj.quotContent)] = true;
+	Snakeskin.write[dirObj.pasteDangerBlocks(command)] = true;
 };

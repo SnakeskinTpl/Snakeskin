@@ -24,7 +24,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 	}
 
 	// Инициализация переменных
-	if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/i.test(command)) {
+	if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
 		var varName = command.split('=')[0].trim(),
 			mod = varName.charAt(0);
 
@@ -83,7 +83,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 
 			if (!parentName && !protoStart) {
 				if (!dirObj.varCache[varName] && mod !== '#' && mod !== '@') {
-					dirObj.save(dirObj.prepareOutput((!/[.\[]/.test(varName) ? 'var ' : '') + command + ';', true));
+					dirObj.save(dirObj.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
 
 				} else {
 					dirObj.save(dirObj.prepareOutput(command + ';', true));

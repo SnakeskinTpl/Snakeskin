@@ -53,8 +53,8 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	dirObj.startI = dirObj.i + 1;
 
 	// Имя + пространство имён шаблона
-	var tmpTplName = /(.*?)\(/.exec(command)[1],
-		tplName = dirObj.pasteDangerBlocks(tmpTplName, dirObj.quotContent);
+	var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
+		tplName = dirObj.pasteDangerBlocks(tmpTplName);
 
 	dirObj.tplName = tplName;
 
@@ -74,8 +74,8 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 	// Название родительского шаблона
 	var parentTplName;
-	if (/\s+extends\s+/.test(command)) {
-		parentTplName = dirObj.pasteDangerBlocks(/\s+extends\s+(.*)/.exec(command)[1], dirObj.quotContent);
+	if (/\s+extends\s+/m.test(command)) {
+		parentTplName = dirObj.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
 		dirObj.parentTplName = parentTplName;
 	}
 
@@ -90,22 +90,22 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	extMap[tplName] = parentTplName;
 
 	// Входные параметры
-	var params = /\((.*?)\)/.exec(command)[1];
+	var params = /\(([\s\S]*?)\)/m.exec(command)[1];
 
 	// Для возможности удобного пост-парсинга,
 	// каждая функция снабжается комментарием вида:
 	// /* Snakeskin template: название шаблона; параметры через запятую */
-	dirObj.save('/* Snakeskin template: ' + tplName + '; ' + params.replace(/=(.*?)(?:,|$)/g, '') + ' */');
+	dirObj.save('/* Snakeskin template: ' + tplName + '; ' + params.replace(/=([\s\S]*?)(?:,|$)/gm, '') + ' */');
 
 	// Декларация функции
 	// с пространством имён или при экспорте в common.js
-	if (/\.|\[/.test(tmpTplName) || adv.commonJS) {
+	if (/\.|\[/m.test(tmpTplName) || adv.commonJS) {
 		var lastName = '';
 
 		tmpTplName
 			// Заменяем [] на .
-			.replace(/\[/g, '.')
-			.replace(/]/g, '')
+			.replace(/\[/gm, '.')
+			.replace(/]/gm, '')
 
 			.split('.').reduce(function (str, el, i, data) {
 				// Проверка существования пространства имён
@@ -228,12 +228,10 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	});
 
 	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
-	dirObj.save('var TPL_NAME = \'' + dirObj.pasteDangerBlocks(tmpTplName, dirObj.quotContent)
-		.replace(/\\/g, '\\').replace(/'/g, '\\\'') + '\';');
+	dirObj.save('var TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(tmpTplName)) + '\';');
 
 	if (parentTplName) {
-		dirObj.save('var PARENT_TPL_NAME = \'' + dirObj.pasteDangerBlocks(parentTplName, dirObj.quotContent)
-			.replace(/\\/g, '\\').replace(/'/g, '\\\'') + '\';');
+		dirObj.save('var PARENT_TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(parentTplName)) + '\';');
 	}
 };
 
@@ -299,7 +297,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 
 		if (Snakeskin.write[parentName] === false) {
 			dirObj.res = dirObj.res.replace(new RegExp('/\\* Snakeskin template: ' +
-				parentName.replace(/([.\[\]^$])/g, '\\$1') +
+				parentName.replace(/([.\[\]^$])/gm, '\\$1') +
 				';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
 			'');
 		}
@@ -312,8 +310,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				dirObj.pasteDangerBlocks(tplName, dirObj.quotContent)
-					.replace(/\\/g, '\\').replace(/'/g, '\\\'') +
+				dirObj.defEscape(dirObj.pasteDangerBlocks(tplName)) +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);

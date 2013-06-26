@@ -88,7 +88,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				begin = false;
 
 				var commandLength = command.length;
-				command = dirObj.replaceDangerBlocks(command, dirObj.quotContent).trim();
+				command = dirObj.replaceDangerBlocks(command).trim();
 
 				var commandType = command
 					// Хак для подержки закрытия директив через слеш
@@ -105,7 +105,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
-					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+'), '') : command,
+					commandType !== 'const' ? command.replace(new RegExp('^' + commandType + '\\s+', 'm'), '') : command,
 					commandLength,
 
 					dirObj,
@@ -164,7 +164,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			}
 
 			if (!dirObj.parentTplName) {
-				dirObj.save(el.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\''));
+				dirObj.save(dirObj.defEscape(el));
 			}
 		}
 	}
@@ -176,7 +176,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			dirObj.genErrorAdvInfo(opt_info) + '")!');
 	}
 
-	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res, dirObj.quotContent)
+	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res)
 		.replace(/[\t\v\r\n]/gm, '')
 
 		// Обратная замена cdata областей

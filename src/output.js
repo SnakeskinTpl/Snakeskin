@@ -50,7 +50,7 @@ var comboBlackWordList = {
  * @return {string}
  */
 DirObj.prototype.replaceTplVars = function (str) {
-	str = this.pasteDangerBlocks(str, this.quotContent);
+	str = this.pasteDangerBlocks(str);
 	var begin = 0,
 		dir;
 
@@ -76,7 +76,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 		}
 
 		if (!begin) {
-			res += el.replace(/\\/g, '\\\\').replace(/('|")/g, '\\$1');
+			res += el.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
 		}
 
 		if (begin) {
@@ -143,7 +143,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 			} else {
 				escape = false;
 				res += '\' + ' +
-					this.prepareOutput(this.replaceDangerBlocks(dir, this.quotContent)) +
+					this.prepareOutput(this.replaceDangerBlocks(dir)) +
 				' + \'';
 			}
 		}
