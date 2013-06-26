@@ -12,8 +12,11 @@
 Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
 	dirObj.pushPos('forEach', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		var part = command.split('=>');
-		dirObj.save(part[0] + ' && Snakeskin.forEach(' + part[0] + ', function (' + (part[1] || '') + ') {');
+		var part = command.split('=>'),
+			val = dirObj.prepareOutput(part[0], true);
+
+		dirObj.save(val + ' && Snakeskin.forEach(' + val +
+			', function (' + (part[1] || '') + ') {');
 	}
 };
 

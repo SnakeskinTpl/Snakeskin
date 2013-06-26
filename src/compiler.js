@@ -199,6 +199,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
+	console.log(dirObj.res);
+
 	// Компиляция на сервере
 	if (require) {
 		// Экспорт

@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.2',
+	VERSION: '2.3.3',
 
 	Directions: {},
 
@@ -1099,6 +1099,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	if (opt_dryRun) {
 		return dirObj.res;
 	}
+
+	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -2298,8 +2300,11 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
 	dirObj.pushPos('forEach', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		var part = command.split('=>');
-		dirObj.save(part[0] + ' && Snakeskin.forEach(' + part[0] + ', function (' + (part[1] || '') + ') {');
+		var part = command.split('=>'),
+			val = dirObj.prepareOutput(part[0], true);
+
+		dirObj.save(val + ' && Snakeskin.forEach(' + val +
+			', function (' + (part[1] || '') + ') {');
 	}
 };
 
