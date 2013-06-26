@@ -63,14 +63,14 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 				}
 
 				// Попытка инициализации переменной в with блоке
-				if (dirObj.hasPos('with')) {
+				/*if (dirObj.hasPos('with')) {
 					throw dirObj.error(
 						'Constant "' + varName + '" can\'t be defined inside a "with" block ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
 							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
-				}
+				}*/
 
 				// Кеширование
 				constCache[tplName][varName] = {
