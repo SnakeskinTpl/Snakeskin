@@ -306,7 +306,7 @@ Snakeskin — компилятор блочных шаблонов c подде�
 
     {template my()}
         {a = 1}
-        <button data-bind="{{ {count: ${a}, name: 'test'} }}">Нажми меня!</button>
+        <button data-bind="{{count: ${a}, name: 'test'}}">Нажми меня!</button>
     {end}
 
 ## Директива cdata
