@@ -22,7 +22,11 @@
   "keywords": [
     "templates"
   ],
-  "author": "Kobezzza",
+  "author": {
+    "name": "Kobezzza",
+    "email": "kobezzza@mail.ru",
+    "url": "https://github.com/Kobezzza"
+  },
   "license": "BSD",
   "readmeFilename": "readme.md",
   "gitHead": "bdfb50fe92c4986f952b9d952b159e0606a0aa5a",
