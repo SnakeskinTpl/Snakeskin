@@ -193,7 +193,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				.replace(/'/gm, '&#39;');
 		})
 		// Удаление пустых операций
-		.replace(/__SNAKESKIN_RESULT__ \+= '[]';/g, '');
+		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
 
 	// Конец шаблона
 	dirObj.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
