@@ -1,12 +1,13 @@
 {
   "name": "snakeskin",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.\r Независим от среды исполнения, для работы нужен лишь интерпретатор JavaScript.",
   "main": "snakeskin.js",
   "bin": {
     "snakeskin": "index.js"
   },
   "directories": {
+    "lib": "lib",
     "test": "tests"
   },
   "scripts": {
@@ -17,7 +18,8 @@
     "url": "https://github.com/kobezzza/Snakeskin"
   },
   "dependencies": {
-    "commander": "~1.2.0"
+    "commander": "~1.2.0",
+    "jossy": "~0.0.2"
   },
   "keywords": [
     "templates"

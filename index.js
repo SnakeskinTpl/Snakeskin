@@ -1,21 +1,22 @@
 #!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
-var program = require('./node_modules/commander');
+var Program = require('commander');
 
-program
-	.version('2.3.7')
+Program
+	.version('2.3.8')
 	.option('-s, --source [src]', 'source file')
 	.option('-o, --output [src]', 'output file')
 	.option('-cjs, --commonjs', 'compile templates as commonJS module')
 	.parse(process.argv);
 
 var fs = require('fs');
-var file = program.source;
-var commonJS = program.commonjs;
-var newFile = program.output || (file + '.js');
+var file = Program.source;
+var commonJS = Program.commonjs;
+var newFile = Program.output || (file + '.js');
 
-fs.readFile(file, function (err, data) {
+var Jossy = require('jossy');
+Jossy.compile(file, null, null, function (err, data) {
 	if (err) {
 		console.log(err);
 
