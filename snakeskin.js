@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.8',
+	VERSION: '2.3.9',
 
 	Directions: {},
 
@@ -500,7 +500,7 @@ function DirObj(src, commonJS, dryRun) {
 				'};' +
 
 				'function exec() {' :
-				'');
+			'');
 }
 
 Snakeskin.DirObj = DirObj;
@@ -707,7 +707,7 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
  */
 DirObj.prototype.pasteDangerBlocks = function (str) {
 	var stack = this.quotContent;
-	return str.replace(/__SNAKESKIN_QUOT__(\d+)/g, function (sstr, pos) {
+	return str.replace(/__SNAKESKIN_QUOT__(\d+)/gm, function (sstr, pos) {
 		return stack[pos];
 	});
 };/**
