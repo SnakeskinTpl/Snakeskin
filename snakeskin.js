@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.10',
+	VERSION: '2.3.11',
 
 	Directions: {},
 
@@ -2321,7 +2321,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
 	dirObj.popPos('forEach');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('}, Snakeskin);');
+		dirObj.save('}, this);');
 	}
 };
 
