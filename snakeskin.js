@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.9',
+	VERSION: '2.3.10',
 
 	Directions: {},
 
@@ -1323,6 +1323,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
  */
 DirObj.prototype.getWord = function (str, pos) {
 	var res = '',
+		nres,
 		pCount = 0;
 
 	var start,
@@ -1332,11 +1333,11 @@ DirObj.prototype.getWord = function (str, pos) {
 		var el = str.charAt(i);
 
 		if (pCount || /[@#$+\-\w\[\]().]/.test(el)) {
-			if (pContent !== null && (pCount > 1 || pCount === 1 && el !== ')')) {
+			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
 				pContent += el;
 			}
 
-			if (el === '(') {
+			if (el === '(' || el === '[') {
 				if (pContent === null) {
 					start = j + 1;
 					pContent = '';
@@ -1344,9 +1345,22 @@ DirObj.prototype.getWord = function (str, pos) {
 
 				pCount++;
 
-			} else if (el === ')') {
+			} else if (el === ')' || el === ']') {
 				if (pCount) {
 					pCount--;
+
+					if (!pCount && el === ']') {
+						if (nres) {
+							nres += '[' + this.prepareOutput(pContent, true, true) + ']';
+
+						} else {
+							nres = res.substring(0, start) +
+								this.prepareOutput(pContent, true, true) +
+								res.substring(j) + ']';
+						}
+
+						pContent = null;
+					}
 
 				} else {
 					break;
@@ -1362,7 +1376,7 @@ DirObj.prototype.getWord = function (str, pos) {
 
 	return {
 		word: res,
-		finalWord: pContent ?
+		finalWord: nres ? nres : pContent ?
 			res.substring(0, start) + this.prepareOutput(pContent, true) + res.substring(j - 1) : res
 	};
 };
@@ -1374,10 +1388,11 @@ DirObj.prototype.getWord = function (str, pos) {
  * @this {DirObj}
  * @param {string} command - исходная комманда
  * @param {?boolean=} [opt_sys] - если true, то считается системным вызовом
+ * @param {?boolean=} [opt_isys] - если true, то считается вложенным системным вызовом
  * @param {?boolean=} [opt_breakFirst] - если true, то первое слово пропускается
  * @return {string}
  */
-DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
+DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst) {
 	// Количество открытых скобок в строке
 	var pCount = 0;
 
@@ -1517,7 +1532,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_breakFirst) {
 				if (comboBlackWordList[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse && !opt_sys) {
+				} else if (canParse && (!opt_sys || opt_isys)) {
 					vres = 'Snakeskin.Filters.undef(' + vres + ')';
 				}
 
@@ -1735,15 +1750,6 @@ DirObj.prototype.tplName = null;
 DirObj.prototype.parentTplName = null;
 
 /**
- * Кеш объявленных пространств имён
- */
-DirObj.prototype.nmCache = {
-	init: function () {
-		return {};
-	}
-};
-
-/**
  * Декларация шаблона
  *
  * @param {string} command - название команды (или сама команда)
@@ -1816,15 +1822,10 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 			.replace(/]/gm, '')
 
 			.split('.').reduce(function (str, el, i, data) {
-				// Проверка существования пространства имён
-				if (!dirObj.nmCache[str]) {
-					dirObj.save('' +
-						'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }'
-					);
-
-					dirObj.nmCache[str] = true;
-				}
+				dirObj.save('' +
+					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+					(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }'
+				);
 
 				if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
 					return str + '[' + el + ']';
@@ -2047,7 +2048,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(command);
+		dirObj.save(command + ';');
 	}
 };/**
  * Кеш переменных
@@ -2572,7 +2573,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 
 		} else {
 			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
-				dirObj.prepareOutput(command, true, true) +
+				dirObj.prepareOutput(command, true, null, true) +
 			'; }');
 		}
 
