@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.11',
+	VERSION: '2.3.12',
 
 	Directions: {},
 
@@ -407,7 +407,8 @@ var escapeEndMap = {
 	'&': true,
 	'?': true,
 	':': true,
-	'(': true
+	'(': true,
+	'{': true
 };/**
  * Конструктор управления директивами
  *
@@ -664,7 +665,9 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
 		end = true,
 
 		selectionStart,
-		lastCutLength = 0;
+		lastCutLength = 0,
+
+		block = false;
 
 	var stack = this.quotContent;
 	return str.split('').reduce(function (res, el, i) {
@@ -674,6 +677,15 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
 
 			} else if (/[^\s\/]/.test(el)) {
 				end = false;
+			}
+		}
+
+		if (begin === '/' && !escape) {
+			if (el === '[') {
+				block = true;
+
+			} else if (el === ']') {
+				block = false;
 			}
 		}
 

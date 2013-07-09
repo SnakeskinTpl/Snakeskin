@@ -1,6 +1,6 @@
 {
   "name": "snakeskin",
-  "version": "2.3.11",
+  "version": "2.3.12",
   "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.\r Независим от среды исполнения, для работы нужен лишь интерпретатор JavaScript.",
   "main": "snakeskin.js",
   "bin": {

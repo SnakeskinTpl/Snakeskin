@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.11',
+	VERSION: '2.3.12',
 
 	Directions: {},
 
