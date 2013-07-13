@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.15',
+	VERSION: '2.3.16',
 
 	Directions: {},
 
@@ -1022,6 +1022,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					.split(' ')[0];
 
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
+
+				// Хак для {void ...} как {?...}
+				if (commandType === 'void' && command.charAt(0) === '?') {
+					command = command.substring(1);
+				}
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
@@ -2068,7 +2073,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(dirObj.prepareOutput(command + ';'));
+		dirObj.save(dirObj.prepareOutput(command) + ';');
 	}
 };/**
  * Кеш переменных
