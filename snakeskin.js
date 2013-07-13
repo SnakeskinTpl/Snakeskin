@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.14',
+	VERSION: '2.3.15',
 
 	Directions: {},
 
@@ -1010,6 +1010,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				var commandType = command
 					// Хак для подержки закрытия директив через слеш
 					.replace(/^\//, 'end ')
+
+					// Хак для {void ...} как {?...}
+					.replace(/^\?/, 'void ')
 
 					// Хак для поддержки {data ...} как {{ ... }}
 					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
