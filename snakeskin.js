@@ -1007,12 +1007,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				var commandLength = command.length;
 				command = dirObj.replaceDangerBlocks(command).trim();
 
-				var commandType = command
+				command = command
 					// Хак для подержки закрытия директив через слеш
 					.replace(/^\//, 'end ')
 
 					// Хак для {void ...} как {?...}
-					.replace(/^\?/, 'void ')
+					.replace(/^\?/, 'void ');
+
+				var commandType = command
 
 					// Хак для поддержки {data ...} как {{ ... }}
 					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
@@ -1022,11 +1024,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					.split(' ')[0];
 
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
-
-				// Хак для {void ...} как {?...}
-				if (commandType === 'void' && command.charAt(0) === '?') {
-					command = command.substring(1);
-				}
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
