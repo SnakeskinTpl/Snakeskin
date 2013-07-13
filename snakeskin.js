@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.13',
+	VERSION: '2.3.14',
 
 	Directions: {},
 
@@ -2065,7 +2065,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(command + ';');
+		dirObj.save(dirObj.prepareOutput(command + ';'));
 	}
 };/**
  * Кеш переменных
