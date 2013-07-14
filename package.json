@@ -18,8 +18,8 @@
     "url": "https://github.com/kobezzza/Snakeskin"
   },
   "dependencies": {
-    "commander": "~1.2.0",
-    "jossy": "~0.0.2"
+    "commander": "~1.3",
+    "jossy": "~0.0"
   },
   "keywords": [
     "templates"
