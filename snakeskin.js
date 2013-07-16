@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.16',
+	VERSION: '2.3.17',
 
 	Directions: {},
 
@@ -1349,10 +1349,10 @@ DirObj.prototype.getWord = function (str, pos) {
 	for (var i = pos, j = 0; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
-		if (res === 'this[' || res === 'this.') {
+		/*if (res === 'this[' || res === 'this.') {
 			res = 'this';
 			break;
-		}
+		}*/
 
 		if (pCount || /[@#$+\-\w\[\]().]/.test(el)) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
