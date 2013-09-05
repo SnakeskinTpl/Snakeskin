@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.17',
+	VERSION: '2.3.18',
 
 	Directions: {},
 
@@ -2521,7 +2521,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 
 	// Хак для экспорта console api
 	if (!parentName && !protoStart && /^console\./.test(command)) {
-		dirObj.save(command + ';');
+		dirObj.save(dirObj.prepareOutput(command) + ';');
 		return;
 	}
 
