@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.18',
+	VERSION: '2.3.19',
 
 	Directions: {},
 
@@ -1663,8 +1663,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				var params = el.split(' '),
 					input = params.slice(1).join('').trim();
 
-				return 'Snakeskin.Filters[\'' + params.shift() + '\']' + (deepFilter || !pCount ? '(' : '') + res +
-					(input ? ',' + input : '') + (deepFilter || !pCount ? ')' : '');
+				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' + (deepFilter || !pCount ? '(' : '') + res +
+					(input ? ',' + input : '') + (deepFilter || !pCount ? ')' : '') + ')';
 
 			}, fbody);
 
@@ -1958,7 +1958,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 		}
 	});
 
-	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\';');
+	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
 	dirObj.save('var TPL_NAME = \'' + dirObj.defEscape(dirObj.pasteDangerBlocks(tmpTplName)) + '\';' +
 		'var PARENT_TPL_NAME;'
 	);
