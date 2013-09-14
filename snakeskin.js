@@ -136,7 +136,7 @@ Snakeskin.Filters.html = function (str) {
  * @return {*}
  */
 Snakeskin.Filters.undef = function (str) {
-	return typeof str !== 'undefined' ? str : '';
+	return str !== void 0 ? str : '';
 };
 
 var uentityMap = {
@@ -274,12 +274,12 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
 		if (tmp.charAt(i) === ' ') {
 			lastInd = i;
 
-		} else if (typeof lastInd !== 'undefined') {
+		} else if (lastInd !== void 0) {
 			break;
 		}
 	}
 
-	return (typeof lastInd !== 'undefined' ? tmp.substring(0, lastInd) : tmp) + '…';
+	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + '…';
 };
 
 /**
@@ -348,7 +348,7 @@ if (!Array.prototype.reduce) {
 			aLength = this.length,
 			res;
 
-		if (typeof opt_initialValue !== 'undefined') {
+		if (opt_initialValue !== void 0) {
 			res = opt_initialValue;
 
 		} else {
@@ -633,7 +633,7 @@ DirObj.prototype.isNotSysPos = function (i) {
 	Snakeskin.forEach(this.sysPosCache, function (el, key) {
 		el = this.getLastPos(key);
 
-		if (el && ((typeof el.i !== 'undefined' && el.i === i) || el === i)) {
+		if (el && ((el.i !== void 0 && el.i === i) || el === i)) {
 			res = false;
 			return false;
 		}
@@ -733,7 +733,7 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  */
 DirObj.prototype.getExtStr = function (tplName, info) {
 	// Если указанный родитель не существует
-	if (typeof cache[extMap[tplName]] === 'undefined') {
+	if (cache[extMap[tplName]] === void 0) {
 		throw this.error(
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
 			'for inheritance is not defined (' + this.genErrorAdvInfo(info) + ')!'
@@ -1529,7 +1529,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						// Формирование финальной строки
 						vres = scope.reduce(function (str, el, i, data) {
 							num = num ? num - 1 : num;
-							var val = typeof str.scope === 'undefined' ? str : str.scope;
+							var val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
 								return val + '.' + el.scope;
@@ -1716,7 +1716,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 		Snakeskin.forEach(dirObj.posCache, function (el, key) {
 			el = dirObj.getLastPos(key);
 
-			if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
+			if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
 				res = true;
 				Snakeskin.Directions[key + 'End'].apply(Snakeskin, args);
 
@@ -1735,7 +1735,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 	Snakeskin.forEach(dirObj.sysPosCache, function (el, key) {
 		el = dirObj.getLastPos(key);
 
-		if (el && ((typeof el.i !== 'undefined' && el.i === openBlockI) || el === openBlockI)) {
+		if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
 			Snakeskin.Directions[key + 'End'].apply(Snakeskin, args);
 			return false;
 		}
@@ -1891,7 +1891,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 				// Если переменная не имеет параметра по умолчанию,
 				// то ставим параметр по умолчанию родителя
-				if (def[0] === def2[0] && typeof def2[1] === 'undefined') {
+				if (def[0] === def2[0] && def2[1] === void 0) {
 					params[i] = el;
 				}
 			});
@@ -1906,46 +1906,46 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 		def[0] = def[0].trim();
 		dirObj.save(def[0]);
 
-		if (def.length > 1) {
-			// Подмешивание родительских входных параметров
-			if (paramsCache[parentTplName] && !defParams) {
-				Snakeskin.forEach(paramsCache[parentTplName], function (el) {
-					var def = el.split('='),
-						local;
+		// Подмешивание родительских входных параметров
+		if (paramsCache[parentTplName] && !defParams) {
+			Snakeskin.forEach(paramsCache[parentTplName], function (el) {
+				var def = el.split('='),
+					local;
 
-					def[0] = def[0].trim();
-					def[1] = def[1] && def[1].trim();
+				def[0] = def[0].trim();
+				def[1] = def[1] && def[1].trim();
 
-					// true, если входной параметр родительского шаблона
-					// присутствует также в дочернем
-					Snakeskin.forEach(params, function (el) {
-						var val = el.split('=');
-						val[0] = val[0].trim();
-						val[1] = val[1] && val[1].trim();
+				// true, если входной параметр родительского шаблона
+				// присутствует также в дочернем
+				Snakeskin.forEach(params, function (el) {
+					var val = el.split('=');
+					val[0] = val[0].trim();
+					val[1] = val[1] && val[1].trim();
 
-						if (val[0] === def[0]) {
-							local = true;
-							return false;
-						}
-
-						return true;
-					});
-
-					// Если входный параметр родителя отсутствует у ребёнка,
-					// то инициализируем его как локальную переменную шаблона
-					if (!local) {
-						// С параметром по умолчанию
-						if (typeof def[1] !== 'undefined') {
-							defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
-							constICache[tplName][def[0]] = el;
-						}
+					if (val[0] === def[0]) {
+						local = true;
+						return false;
 					}
-				});
-			}
 
-			// Параметры по умолчанию
+					return true;
+				});
+
+				// Если входный параметр родителя отсутствует у ребёнка,
+				// то инициализируем его как локальную переменную шаблона
+				if (!local) {
+					// С параметром по умолчанию
+					if (def[1] !== void 0) {
+						defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
+						constICache[tplName][def[0]] = el;
+					}
+				}
+			});
+		}
+
+		// Параметры по умолчанию
+		if (def.length > 1) {
 			def[1] = def[1].trim();
-			defParams += def[0] + ' = typeof ' + def[0] + ' !== \'undefined\' && ' +
+			defParams += def[0] + ' = ' + def[0] + ' !== void 0 && ' +
 				def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
 		}
 

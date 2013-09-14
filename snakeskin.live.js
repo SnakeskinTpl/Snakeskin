@@ -106,7 +106,7 @@ Snakeskin.Filters.html = function (str) {
  * @return {*}
  */
 Snakeskin.Filters.undef = function (str) {
-	return typeof str !== 'undefined' ? str : '';
+	return str !== void 0 ? str : '';
 };
 
 var uentityMap = {
@@ -244,12 +244,12 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
 		if (tmp.charAt(i) === ' ') {
 			lastInd = i;
 
-		} else if (typeof lastInd !== 'undefined') {
+		} else if (lastInd !== void 0) {
 			break;
 		}
 	}
 
-	return (typeof lastInd !== 'undefined' ? tmp.substring(0, lastInd) : tmp) + '…';
+	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + '…';
 };
 
 /**
