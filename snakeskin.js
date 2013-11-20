@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.19',
+	VERSION: '2.4.0',
 
 	Directions: {},
 
@@ -50,7 +50,7 @@ if (!String.prototype.trim) {
 	};
 }
 /**
- * Итератор цикла
+ * Итератор объектов и массивов
  * (return false прерывает выполнение)
  *
  * @param {(!Array|!Object)} obj - массив или объект
@@ -98,6 +98,41 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
 				if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
 					break;
 				}
+			}
+		}
+	}
+};
+
+/**
+ * Итератор объектов с учётом родительских свойств
+ * (return false прерывает выполнение)
+ *
+ * @param {(!Array|!Object)} obj - массив или объект
+ * @param {function(*, string, number, boolean, boolean, number)} callback - функция callback
+ * @param {Object=} [opt_ctx] - контекст функции
+ */
+Snakeskin.forIn = function (obj, callback, opt_ctx) {
+	var i = 0,
+		length;
+
+	for (var key in obj) {
+		i++;
+	}
+
+	length = i;
+	i = -1;
+
+	for (key in obj) {
+		i++;
+
+		if (opt_ctx) {
+			if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
+				break;
+			}
+
+		} else {
+			if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
+				break;
 			}
 		}
 	}
@@ -2342,6 +2377,38 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
 	dirObj.popPos('forEach');
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('}, this);');
+	}
+};
+
+/**
+ * Директива forIn
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
+	dirObj.pushPos('forIn', ++dirObj.openBlockI);
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		var part = command.split('=>'),
+			val = dirObj.prepareOutput(part[0], true);
+
+		dirObj.save(val + ' && Snakeskin.forIn(' + val +
+			', function (' + (part[1] || '') + ') {');
+	}
+};
+
+/**
+ * Окончание forIn
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
+	dirObj.popPos('forIn');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('}, this);');
 	}

@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.3.19',
+	VERSION: '2.4.0',
 
 	Directions: {},
 
@@ -20,7 +20,7 @@ var Snakeskin = {
 
 
 /**
- * Итератор цикла
+ * Итератор объектов и массивов
  * (return false прерывает выполнение)
  *
  * @param {(!Array|!Object)} obj - массив или объект
@@ -68,6 +68,41 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
 				if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
 					break;
 				}
+			}
+		}
+	}
+};
+
+/**
+ * Итератор объектов с учётом родительских свойств
+ * (return false прерывает выполнение)
+ *
+ * @param {(!Array|!Object)} obj - массив или объект
+ * @param {function(*, string, number, boolean, boolean, number)} callback - функция callback
+ * @param {Object=} [opt_ctx] - контекст функции
+ */
+Snakeskin.forIn = function (obj, callback, opt_ctx) {
+	var i = 0,
+		length;
+
+	for (var key in obj) {
+		i++;
+	}
+
+	length = i;
+	i = -1;
+
+	for (key in obj) {
+		i++;
+
+		if (opt_ctx) {
+			if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
+				break;
+			}
+
+		} else {
+			if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
+				break;
 			}
 		}
 	}
