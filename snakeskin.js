@@ -2407,7 +2407,7 @@ Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['forInEnd'] = function (command, commandLength, dirObj) {
 	dirObj.popPos('forIn');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('}, this);');
