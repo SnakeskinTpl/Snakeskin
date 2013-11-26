@@ -3,7 +3,7 @@
  */
 
 var Snakeskin = {
-	VERSION: '2.4.0',
+	VERSION: '2.4.1',
 
 	Directions: {},
 
@@ -37,8 +37,6 @@ if (!Array.isArray) {
 if (!String.prototype.trim) {
 	/**
 	 * Удалить крайние пробелы у строки
-	 *
-	 * @this {string}
 	 * @return {string}
 	 */
 	String.prototype.trim = function () {
@@ -373,7 +371,6 @@ if (!Array.prototype.reduce) {
 	 * Рекурсивно привести массив к другому значению
 	 * (функция callback принимает результат выполнения предыдущей итерации и актуальный элемент)
 	 *
-	 * @this {Array}
 	 * @param {function(*, *, number, !Array): *} callback - функция, которая будет вызываться для каждого элемента массива
 	 * @param {Object=} [opt_initialValue=this[0]] - объект, который будет использоваться как первый элемент при первом вызове callback
 	 * @return {*}
@@ -543,8 +540,6 @@ Snakeskin.DirObj = DirObj;
 
 /**
  * Добавить строку в результирующую
- *
- * @this {DirObj}
  * @param {string} str - исходная строка
  */
 DirObj.prototype.save = function (str) {
@@ -555,8 +550,6 @@ DirObj.prototype.save = function (str) {
 
 /**
  * Изменить результирующую строку
- *
- * @this {DirObj}
  * @param {string} str - исходная строка
  */
 DirObj.prototype.replace = function (str) {
@@ -568,7 +561,6 @@ DirObj.prototype.replace = function (str) {
 /**
  * Добавить новую позицию блока
  *
- * @this {DirObj}
  * @param {string} name - название блока
  * @param {*} val - значение
  * @param {?boolean=} opt_sys - если true, то блок системный
@@ -593,7 +585,6 @@ DirObj.prototype.pushPos = function (name, val, opt_sys) {
 /**
  * Удалить последнюю позицию блока
  *
- * @this {DirObj}
  * @param {string} name - название блока
  * @return {*}
  */
@@ -608,7 +599,6 @@ DirObj.prototype.popPos = function (name) {
 /**
  * Вернуть позиции блока
  *
- * @this {DirObj}
  * @param {string} name - название блока
  * @return {!Array}
  */
@@ -623,7 +613,6 @@ DirObj.prototype.getPos = function (name) {
 /**
  * Вернуть true, если у блока есть позиции
  *
- * @this {DirObj}
  * @param {string} name - название блока
  * @return {boolean}
  */
@@ -638,7 +627,6 @@ DirObj.prototype.hasPos = function (name) {
 /**
  * Вернуть последнюю позицию блока
  *
- * @this {DirObj}
  * @param {string} name - название блока
  * @return {*}
  */
@@ -658,7 +646,6 @@ DirObj.prototype.getLastPos = function (name) {
 /**
  * Вернуть true, если позиция не системная
  *
- * @this {DirObj}
  * @param {number} i - номер позиции
  * @return {boolean}
  */
@@ -761,7 +748,6 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  * Вернуть тело шаблона при наследовании
  * (супер мутная функция, уже не помню, как она работает :))
  *
- * @this {DirObj}
  * @param {string} tplName - название шаблона
  * @param {Object} info - дополнительная информация
  * @return {string}
@@ -1368,7 +1354,6 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 /**
  * Вернуть целое слово из строки, начиная с указанной позиции
  *
- * @this {DirObj}
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
  * @return {{word: string, finalWord: string}}
@@ -1442,7 +1427,6 @@ DirObj.prototype.getWord = function (str, pos) {
  * Подготовить комманду к выводу:<br />
  * осуществляется привязка к scope и инициализация фильтров
  *
- * @this {DirObj}
  * @param {string} command - исходная комманда
  * @param {?boolean=} [opt_sys] - если true, то считается системным вызовом
  * @param {?boolean=} [opt_isys] - если true, то считается вложенным системным вызовом
