@@ -23,7 +23,16 @@ Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) 
 
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		if (dirObj.openBlockI === 1 && dirObj.tplName) {
-			dirObj.save('return __SNAKESKIN_RESULT__;');
+			if (command !== 'return') {
+				dirObj.save(dirObj.prepareOutput('return ' + command + ';', true));
+
+			} else {
+				dirObj.save('return __SNAKESKIN_RESULT__;');
+			}
+
+
+		} else if (command !== 'return') {
+			dirObj.save(dirObj.prepareOutput('return ' + command + ';', true));
 
 		} else {
 			dirObj.save('return;');

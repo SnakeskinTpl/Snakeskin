@@ -2503,7 +2503,21 @@ Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) 
 	}
 
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('return __SNAKESKIN_RESULT__;');
+		if (dirObj.openBlockI === 1 && dirObj.tplName) {
+			if (command !== 'return') {
+				dirObj.save(dirObj.prepareOutput('return ' + command + ';', true));
+
+			} else {
+				dirObj.save('return __SNAKESKIN_RESULT__;');
+			}
+
+
+		} else if (command === 'false') {
+			dirObj.save('return false;');
+
+		} else {
+			dirObj.save('return;');
+		}
 	}
 };
 var __NEJS_THIS__ = this;
@@ -2818,18 +2832,29 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
 };
 var __NEJS_THIS__ = this;
 /*!
- * Итераторы и циклы
+ * @status stable
+ * @version 1.0.0
  */
 
 /**
  * Директива forEach
  *
  * @param {string} command - название команды (или сама команда)
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "forEach" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dirObj.pushPos('forEach', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var part = command.split('=>'),
@@ -2859,11 +2884,21 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
  * Директива forIn
  *
  * @param {string} command - название команды (или сама команда)
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "forIn" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dirObj.pushPos('forIn', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var part = command.split('=>'),
@@ -2893,29 +2928,24 @@ Snakeskin.Directions['forInEnd'] = function (command, commandLength, dirObj) {
  * Директива for
  *
  * @param {string} command - название команды (или сама команда)
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['for'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	dirObj.pushPos('for', ++dirObj.openBlockI);
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "for" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('for (' + dirObj.prepareOutput(command, true) + ') {');
-	}
-};
-
-/**
- * Окончание for
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
- */
-Snakeskin.Directions['forEnd'] = function (command, commandLength, dirObj) {
-	var __NEJS_THIS__ = this;
-	dirObj.popPos('for');
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('}');
 	}
 };
 
@@ -2923,29 +2953,24 @@ Snakeskin.Directions['forEnd'] = function (command, commandLength, dirObj) {
  * Директива while
  *
  * @param {string} command - название команды (или сама команда)
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['while'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	dirObj.pushPos('while', ++dirObj.openBlockI);
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "while" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('while (' + dirObj.prepareOutput(command, true) + ') {');
-	}
-};
-
-/**
- * Окончание while
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
- */
-Snakeskin.Directions['whileEnd'] = function (command, commandLength, dirObj) {
-	var __NEJS_THIS__ = this;
-	dirObj.popPos('while');
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save('}');
 	}
 };
 
@@ -2953,11 +2978,21 @@ Snakeskin.Directions['whileEnd'] = function (command, commandLength, dirObj) {
  * Директива repeat
  *
  * @param {string} command - название команды (или сама команда)
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "repeat" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dirObj.pushPos('repeat', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('do {');
@@ -2982,7 +3017,35 @@ Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dirObj) {
 /**
  * Директива until
  */
-Snakeskin.Directions['until'] = Snakeskin.Directions['end'];var __NEJS_THIS__ = this;
+Snakeskin.Directions['until'] = Snakeskin.Directions['end'];
+
+/**
+ * Директива break
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['break'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('break;');
+	}
+};
+
+/**
+ * Директива continue
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['continue'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('continue;');
+	}
+};var __NEJS_THIS__ = this;
 /*!
  * @status stable
  * @version 1.0.0
@@ -3133,8 +3196,7 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dirObj) {
 		dirObj.save('}');
 		dirObj.space = true;
 	}
-};
-var __NEJS_THIS__ = this;
+};var __NEJS_THIS__ = this;
 /**!
  * @status stable
  * @version 1.0.0
