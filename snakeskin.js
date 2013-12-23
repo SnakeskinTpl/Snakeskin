@@ -1215,6 +1215,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		bEnd = true,
 		bEscape = false;
 
+	var space = false;
+
 	while (++dirObj.i < dirObj.source.length) {
 		var str = dirObj.source;
 		var el = str.charAt(dirObj.i);
@@ -1225,13 +1227,25 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
 		// (исключение: внутри JSDoc всё сохраняется без изменений)
-		if (!begin && !dirObj.tplName && /\s/.test(el)) {
-			if (jsDoc) {
-				el = dirObj.applySpaceEscape(el);
+		if (/\s/.test(el)) {
+			if (begin) {
+				el = ' ';
+
+			} else if (!dirObj.openBlockI && jsDoc) {
+				el = el.replace(/[ \t]+/g, ' ');
 
 			} else {
-				continue;
+				if (!space) {
+					el = ' ';
+					space = true;
+
+				} else {
+					continue;
+				}
 			}
+
+		} else {
+			space = false;
 		}
 
 		if (!bOpen) {
@@ -1256,7 +1270,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 					} else if (next2str === '/*') {
 
-						if (next3str !== '/**' && !dirObj.tplName) {
+						if (next3str !== '/**' && dirObj.openBlockI) {
 							comment = next2str;
 							dirObj.i++;
 
@@ -1346,7 +1360,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Запись команды
 		if (begin) {
-			if (beginStr && !dirObj.protoStart) {
+			if (beginStr && dirObj.openBlockI && !dirObj.protoStart) {
 				dirObj.save('\';');
 				beginStr = false;
 			}
@@ -1376,7 +1390,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Запись строки
 		} else if (!dirObj.protoStart) {
-			if (!beginStr && !jsDoc) {
+			if (!beginStr && dirObj.openBlockI) {
 				dirObj.save('__SNAKESKIN_RESULT__ += \'');
 				beginStr = true;
 			}
@@ -1386,7 +1400,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				if (!beginStr) {
 					jsDoc = false;
-					dirObj.save('\n');
 				}
 			}
 		}
@@ -1400,13 +1413,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res)
-		.replace(/[\t\v\r\n]/gm, '')
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
-			var __NEJS_THIS__ = this;
-			return dirObj.applySpaceEscape(dirObj.cDataContent[pos]);
-		})
+			return dirObj.applySpaceEscape(dirObj.cDataContent[pos]);})
 
 		// Удаление пустых операций
 		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
