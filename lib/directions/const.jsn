@@ -1,11 +1,17 @@
+/*!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Декларация или вывод константы
  *
  * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
  *
+ * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
- * @param {!Object} adv - дополнительные параметры
+ *
+ * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
@@ -25,7 +31,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 
 	// Инициализация переменных
 	if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
-		var varName = command.split('=')[0].trim(),
+		let varName = command.split('=')[0].trim(),
 			mod = varName.charAt(0);
 
 		if (tplName) {
@@ -53,25 +59,15 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 					);
 				}
 
-				// Попытка инициализации переменной в цикле
-				if (dirObj.hasPos('forEach')) {
+				// Попытка инициализации переменной внутри итератора
+				if (dirObj.hasPos('forEach') || dirObj.hasPos('forIn')) {
 					throw dirObj.error(
-						'Constant "' + varName + '" can\'t be defined in a loop ' +
+						'Constant "' + varName + '" can\'t be defined in a iterator ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
 							dirObj.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
-
-				// Попытка инициализации переменной в with блоке
-				/*if (dirObj.hasPos('with')) {
-					throw dirObj.error(
-						'Constant "' + varName + '" can\'t be defined inside a "with" block ' +
-						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							dirObj.genErrorAdvInfo(adv.info) +
-						'")!'
-					);
-				}*/
 
 				// Кеширование
 				constCache[tplName][varName] = {
