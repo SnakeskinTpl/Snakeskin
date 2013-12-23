@@ -53,8 +53,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		bEnd = true,
 		bEscape = false;
 
-	var space = false;
-
 	while (++dirObj.i < dirObj.source.length) {
 		let str = dirObj.source;
 		let el = str.charAt(dirObj.i);
@@ -63,21 +61,34 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			opt_info.line++;
 		}
 
-		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
-		// (исключение: внутри JSDoc всё сохраняется без изменений)
+		// Обработка пробельных символов
 		if (/\s/.test(el)) {
+			// Внутри директивы
 			if (begin) {
-				el = ' ';
+				if (!bOpen) {
+					el = ' ';
 
+				// Внутри строки внутри директивы
+				} else {
+					el = el
+						.replace(/\n/, '\\n')
+						.replace(/\v/, '\\v')
+						.replace(/\r/, '\\r');
+				}
+
+			// Простой ввод вне деклараций шаблона
 			} else if (!dirObj.openBlockI) {
+				// Для JSDoc все символы остаются неизменны,
+				// а в остальныхслучаях они игнорируются
 				if (!jsDoc) {
 					continue;
 				}
 
+			// Простой ввод внутри декларации шаблона
 			} else {
-				if (!space) {
+				if (!dirObj.space) {
 					el = ' ';
-					space = true;
+					dirObj.space = true;
 
 				} else {
 					continue;
@@ -85,7 +96,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			}
 
 		} else {
-			space = false;
+			dirObj.space = false;
 		}
 
 		if (!bOpen) {
@@ -203,6 +214,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				beginStr = false;
 			}
 
+			// Обработка литералов строки и регулярных выражений внутри директивы
 			if (command !== '/') {
 				if (!bOpen) {
 					if (escapeEndMap[el]) {
@@ -253,10 +265,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res)
 
 		// Обратная замена cdata областей
-		.replace(/__SNAKESKIN_CDATA__(\d+)/g, (sstr, pos) => dirObj.applySpaceEscape(dirObj.cDataContent[pos]))
-
-		// Удаление пустых операций
-		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
+		.replace(/__SNAKESKIN_CDATA__(\d+)_/g, (sstr, pos) => {
+			return dirObj.cDataContent[pos]
+				.replace(/\n/gm, '\\n')
+				.replace(/\r/gm, '\\r')
+				.replace(/\v/gm, '\\v')
+				.replace(/'/gm, '&#39;');
+		});
 
 	// Конец шаблона
 	dirObj.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';

@@ -15,14 +15,17 @@
 			 * @param {foo}
 			 */
 			{template helloWorld(name = 'world')}
-				<h1
-				class="foo">Hello {name}!</h1>
+				<h1 class="{&}
+					foo{&}
+				">Hello {name}!</h1>
 
 				{cdata}
 					{block foo}
 						{?alert(1)}
 					{/block}
 				{/cdata}
+				1
+					2
 			{/template}
 		</script>
 		<script>

@@ -512,6 +512,12 @@ function DirObj(src, commonJS, dryRun) {
 	this.canWrite = true;
 
 	/**
+	 * Если true, то последующие пробельный символы вырезаются
+	 * @type {boolean}
+	 */
+	this.space = false;
+
+	/**
 	 * Номер итерации
 	 * @type {number}
 	 */
@@ -557,7 +563,11 @@ function DirObj(src, commonJS, dryRun) {
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
 			
 			cdata.push(data);
-			return '{__appendLine__ ' + data.match(/[\n\r]/g).length + '}__SNAKESKIN_CDATA__' + (cdata.length - 1);
+			return '{__appendLine__ ' +
+				data.match(/[\n\r]/g).length +
+				'}__SNAKESKIN_CDATA__' +
+				(cdata.length - 1) +
+				'_';
 		});
 
 	/**
@@ -731,27 +741,6 @@ DirObj.prototype.isNotSysPos = function (i) {
 DirObj.prototype.applyDefEscape = function (str) {
 	var __NEJS_THIS__ = this;
 	return str.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\'');
-};
-
-/*dirObj.cDataContent[pos]
- .replace(/\n/gm, '\\n')
- .replace(/\r/gm, '\\r')
- .replace(/\v/gm, '\\v')
- .replace(/'/gm, '&#39;')*/
-
-/**
- * Применить к строке экранирование пробельных символов
- *
- * @param {string} str - исходная строка
- * @return {string}
- */
-DirObj.prototype.applySpaceEscape = function (str) {
-	var __NEJS_THIS__ = this;
-	return str
-		.replace(/\n/gm, '\\n')
-		.replace(/\r/gm, '\\r')
-		.replace(/\v/gm, '\\v')
-		.replace(/'/gm, '&#39;');
 };
 
 if (typeof window === 'undefined') {
@@ -1215,8 +1204,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		bEnd = true,
 		bEscape = false;
 
-	var space = false;
-
 	while (++dirObj.i < dirObj.source.length) {
 		var str = dirObj.source;
 		var el = str.charAt(dirObj.i);
@@ -1225,21 +1212,34 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			opt_info.line++;
 		}
 
-		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
-		// (исключение: внутри JSDoc всё сохраняется без изменений)
+		// Обработка пробельных символов
 		if (/\s/.test(el)) {
+			// Внутри директивы
 			if (begin) {
-				el = ' ';
+				if (!bOpen) {
+					el = ' ';
 
+				// Внутри строки внутри директивы
+				} else {
+					el = el
+						.replace(/\n/, '\\n')
+						.replace(/\v/, '\\v')
+						.replace(/\r/, '\\r');
+				}
+
+			// Простой ввод вне деклараций шаблона
 			} else if (!dirObj.openBlockI) {
+				// Для JSDoc все символы остаются неизменны,
+				// а в остальныхслучаях они игнорируются
 				if (!jsDoc) {
 					continue;
 				}
 
+			// Простой ввод внутри декларации шаблона
 			} else {
-				if (!space) {
+				if (!dirObj.space) {
 					el = ' ';
-					space = true;
+					dirObj.space = true;
 
 				} else {
 					continue;
@@ -1247,7 +1247,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			}
 
 		} else {
-			space = false;
+			dirObj.space = false;
 		}
 
 		if (!bOpen) {
@@ -1367,6 +1367,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				beginStr = false;
 			}
 
+			// Обработка литералов строки и регулярных выражений внутри директивы
 			if (command !== '/') {
 				if (!bOpen) {
 					if (escapeEndMap[el]) {
@@ -1417,11 +1418,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	dirObj.res = dirObj.pasteDangerBlocks(dirObj.res)
 
 		// Обратная замена cdata областей
-		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
-			return dirObj.applySpaceEscape(dirObj.cDataContent[pos]);})
-
-		// Удаление пустых операций
-		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
+		.replace(/__SNAKESKIN_CDATA__(\d+)_/g, function (sstr, pos) {
+			
+			return dirObj.cDataContent[pos]
+				.replace(/\n/gm, '\\n')
+				.replace(/\r/gm, '\\r')
+				.replace(/\v/gm, '\\v')
+				.replace(/'/gm, '&#39;');
+		});
 
 	// Конец шаблона
 	dirObj.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
@@ -2032,6 +2036,34 @@ var __NEJS_THIS__ = this;
 Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
 	adv.info.line += parseInt(command);
+};var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
+/**
+ * Директива &
+ *
+ * @param {string} command - название команды (или сама команда)
+ *
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
+ */
+Snakeskin.Directions['&'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
+	if (!dirObj.tplName) {
+		throw dirObj.error('Directive "&" can only be used within a template, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.space = true;
+	}
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable

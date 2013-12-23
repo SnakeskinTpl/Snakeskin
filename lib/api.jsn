@@ -31,6 +31,12 @@ function DirObj(src, commonJS, dryRun) {
 	this.canWrite = true;
 
 	/**
+	 * Если true, то последующие пробельный символы вырезаются
+	 * @type {boolean}
+	 */
+	this.space = false;
+
+	/**
 	 * Номер итерации
 	 * @type {number}
 	 */
@@ -75,7 +81,11 @@ function DirObj(src, commonJS, dryRun) {
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, (sstr, data) => {
 			cdata.push(data);
-			return '{__appendLine__ ' + data.match(/[\n\r]/g).length + '}__SNAKESKIN_CDATA__' + (cdata.length - 1);
+			return '{__appendLine__ ' +
+				data.match(/[\n\r]/g).length +
+				'}__SNAKESKIN_CDATA__' +
+				(cdata.length - 1) +
+				'_';
 		});
 
 	/**
