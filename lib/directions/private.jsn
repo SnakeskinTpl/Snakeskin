@@ -15,5 +15,11 @@
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirObj, adv) {
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "cdata" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	adv.info.line += parseInt(command);
 };
