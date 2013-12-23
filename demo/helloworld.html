@@ -3,13 +3,16 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Hello world</title>
-		<script src="../snakeskin.min.js"></script>
+		<script src="../snakeskin.js"></script>
 	</head>
 
 	<body>
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			/**
+			 * foo
+			 */
 			{template helloWorld(name = 'world')}
 				<h1>Hello {name}!</h1>
 			{/template}

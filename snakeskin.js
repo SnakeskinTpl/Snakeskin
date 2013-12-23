@@ -1,3 +1,4 @@
+var __NEJS_THIS__ = this;
 /*!
  * Шаблонный движок с поддержкой наследования
  */
@@ -16,8 +17,10 @@ var Snakeskin = {
 };
 
 (function (require) {
+	var __NEJS_THIS__ = this;
 	'use strict';
 
+var __NEJS_THIS__ = this;
 /*!
  * Полифилы для старых ишаков
  */
@@ -30,6 +33,7 @@ if (!Array.isArray) {
 	 * @return {boolean}
 	 */
 	Array.isArray = function (obj) {
+		var __NEJS_THIS__ = this;
 		return Object.prototype.toString.call(obj) === '[object Array]';
 	};
 }
@@ -40,6 +44,7 @@ if (!String.prototype.trim) {
 	 * @return {string}
 	 */
 	String.prototype.trim = function () {
+		var __NEJS_THIS__ = this;
 		var str = this.replace(/^\s\s*/, ''),
 			i = str.length;
 
@@ -47,6 +52,7 @@ if (!String.prototype.trim) {
 		return str.substring(0, i + 1);
 	};
 }
+var __NEJS_THIS__ = this;
 /**
  * Итератор объектов и массивов
  * (return false прерывает выполнение)
@@ -56,6 +62,7 @@ if (!String.prototype.trim) {
  * @param {Object=} [opt_ctx] - контекст функции
  */
 Snakeskin.forEach = function (obj, callback, opt_ctx) {
+	var __NEJS_THIS__ = this;
 	var i = -1,
 		length;
 
@@ -110,6 +117,7 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
  * @param {Object=} [opt_ctx] - контекст функции
  */
 Snakeskin.forIn = function (obj, callback, opt_ctx) {
+	var __NEJS_THIS__ = this;
 	var i = 0,
 		length;
 
@@ -134,7 +142,8 @@ Snakeskin.forIn = function (obj, callback, opt_ctx) {
 			}
 		}
 	}
-};/*!
+};var __NEJS_THIS__ = this;
+/*!
  * Стандартные фильтры
  */
 
@@ -149,6 +158,7 @@ var entityMap = {
 
 var escapeHTMLRgxp = /[&<>"'\/]/g;
 function escapeHTML(s) {
+	var __NEJS_THIS__ = this;
 	return entityMap[s];
 }
 
@@ -159,6 +169,7 @@ function escapeHTML(s) {
  * @return {string}
  */
 Snakeskin.Filters.html = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(escapeHTMLRgxp, escapeHTML);
 };
 
@@ -169,6 +180,7 @@ Snakeskin.Filters.html = function (str) {
  * @return {*}
  */
 Snakeskin.Filters.undef = function (str) {
+	var __NEJS_THIS__ = this;
 	return str !== void 0 ? str : '';
 };
 
@@ -183,6 +195,7 @@ var uentityMap = {
 
 var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g;
 function uescapeHTML(s) {
+	var __NEJS_THIS__ = this;
 	return uentityMap[s];
 }
 
@@ -193,6 +206,7 @@ function uescapeHTML(s) {
  * @return {string}
  */
 Snakeskin.Filters.uhtml = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
@@ -205,6 +219,7 @@ var stripTagsRgxp = /<\/?[^>]+>/g;
  * @return {string}
  */
 Snakeskin.Filters.stripTags = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(stripTagsRgxp, '');
 };
 
@@ -218,6 +233,7 @@ var uriO = /%5B/g,
  * @return {string}
  */
 Snakeskin.Filters.uri = function (str) {
+	var __NEJS_THIS__ = this;
 	return encodeURI(str + '').replace(uriO, '[').replace(uriC, ']');
 };
 
@@ -228,6 +244,7 @@ Snakeskin.Filters.uri = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.upper = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').toUpperCase();
 };
 
@@ -238,6 +255,7 @@ Snakeskin.Filters.upper = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.ucfirst = function (str) {
+	var __NEJS_THIS__ = this;
 	str += '';
 	return str.charAt(0).toUpperCase() + str.substring(1);
 };
@@ -249,6 +267,7 @@ Snakeskin.Filters.ucfirst = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.lower = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').toLowerCase();
 };
 
@@ -259,6 +278,7 @@ Snakeskin.Filters.lower = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.lcfirst = function (str) {
+	var __NEJS_THIS__ = this;
 	str += '';
 	return str.charAt(0).toLowerCase() + str.substring(1);
 };
@@ -270,6 +290,7 @@ Snakeskin.Filters.lcfirst = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.trim = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').trim();
 };
 
@@ -282,6 +303,7 @@ var spaceCollapseRgxp = /\s{2,}/g;
  * @return {string}
  */
 Snakeskin.Filters.collapse = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(spaceCollapseRgxp, ' ').trim();
 };
 
@@ -294,6 +316,7 @@ Snakeskin.Filters.collapse = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
+	var __NEJS_THIS__ = this;
 	str += '';
 	if (!str || str.length <= length) {
 		return str;
@@ -323,6 +346,7 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
  * @return {string}
  */
 Snakeskin.Filters.repeat = function (str, opt_num) {
+	var __NEJS_THIS__ = this;
 	return new Array(opt_num || 2).join(str);
 };
 
@@ -334,6 +358,7 @@ Snakeskin.Filters.repeat = function (str, opt_num) {
  * @return {string}
  */
 Snakeskin.Filters.remove = function (str, search) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(search, '');
 };
 
@@ -346,6 +371,7 @@ Snakeskin.Filters.remove = function (str, search) {
  * @return {string}
  */
 Snakeskin.Filters.replace = function (str, search, replace) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(search, replace);
 };
 
@@ -356,12 +382,14 @@ Snakeskin.Filters.replace = function (str, search, replace) {
  * @return {string}
  */
 Snakeskin.Filters.json = function (val) {
+	var __NEJS_THIS__ = this;
 	if (typeof val === 'object') {
 		return JSON.stringify(val);
 	}
 
 	return (val + '');
 };
+var __NEJS_THIS__ = this;
 /*!
  * Полифилы для старых ишаков
  */
@@ -376,6 +404,7 @@ if (!Array.prototype.reduce) {
 	 * @return {*}
 	 */
 	Array.prototype.reduce = function (callback, opt_initialValue) {
+		var __NEJS_THIS__ = this;
 		var i = -1,
 			aLength = this.length,
 			res;
@@ -395,6 +424,7 @@ if (!Array.prototype.reduce) {
 		return res;
 	};
 }
+var __NEJS_THIS__ = this;
 /*!
  * Глобальные переменные замыкания
  */
@@ -441,8 +471,14 @@ var escapeEndMap = {
 	':': true,
 	'(': true,
 	'{': true
-};/**
- * Конструктор управления директивами
+};var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
+/**
+ * Объект управления директивами
  *
  * @constructor
  * @param {string} src - текст шаблона
@@ -451,6 +487,7 @@ var escapeEndMap = {
  *     то шаблон только транслируется (не компилируется), приватный параметр
  */
 function DirObj(src, commonJS, dryRun) {
+	var __NEJS_THIS__ = this;
 	var proto = this.prototype;
 	for (var key in proto) {
 		if (!proto.hasOwnProperty(key)) {
@@ -512,6 +549,7 @@ function DirObj(src, commonJS, dryRun) {
 	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
+			var __NEJS_THIS__ = this;
 			cdata.push(data);
 			return '__SNAKESKIN_CDATA__' + (cdata.length - 1);
 		})
@@ -543,6 +581,7 @@ Snakeskin.DirObj = DirObj;
  * @param {string} str - исходная строка
  */
 DirObj.prototype.save = function (str) {
+	var __NEJS_THIS__ = this;
 	if (!this.tplName || Snakeskin.write[this.tplName] !== false) {
 		this.res += str;
 	}
@@ -553,6 +592,7 @@ DirObj.prototype.save = function (str) {
  * @param {string} str - исходная строка
  */
 DirObj.prototype.replace = function (str) {
+	var __NEJS_THIS__ = this;
 	if (this.canWrite) {
 		this.res = str;
 	}
@@ -566,6 +606,7 @@ DirObj.prototype.replace = function (str) {
  * @param {?boolean=} opt_sys - если true, то блок системный
  */
 DirObj.prototype.pushPos = function (name, val, opt_sys) {
+	var __NEJS_THIS__ = this;
 	if (opt_sys) {
 		if (!this.sysPosCache[name]) {
 			this.sysPosCache[name] = [];
@@ -589,6 +630,7 @@ DirObj.prototype.pushPos = function (name, val, opt_sys) {
  * @return {*}
  */
 DirObj.prototype.popPos = function (name) {
+	var __NEJS_THIS__ = this;
 	if (this.sysPosCache[name]) {
 		return this.sysPosCache[name].pop();
 	}
@@ -603,6 +645,7 @@ DirObj.prototype.popPos = function (name) {
  * @return {!Array}
  */
 DirObj.prototype.getPos = function (name) {
+	var __NEJS_THIS__ = this;
 	if (this.sysPosCache[name]) {
 		return this.sysPosCache[name];
 	}
@@ -617,6 +660,7 @@ DirObj.prototype.getPos = function (name) {
  * @return {boolean}
  */
 DirObj.prototype.hasPos = function (name) {
+	var __NEJS_THIS__ = this;
 	if (this.sysPosCache[name]) {
 		return !!this.sysPosCache[name].length;
 	}
@@ -631,6 +675,7 @@ DirObj.prototype.hasPos = function (name) {
  * @return {*}
  */
 DirObj.prototype.getLastPos = function (name) {
+	var __NEJS_THIS__ = this;
 	if (this.sysPosCache[name]) {
 		if (this.sysPosCache[name].length) {
 			return this.sysPosCache[name][this.sysPosCache[name].length - 1];
@@ -650,10 +695,12 @@ DirObj.prototype.getLastPos = function (name) {
  * @return {boolean}
  */
 DirObj.prototype.isNotSysPos = function (i) {
+	var __NEJS_THIS__ = this;
 	var res = true;
 
 	Snakeskin.forEach(this.sysPosCache, function (el, key) {
-		el = this.getLastPos(key);
+		
+		el = __NEJS_THIS__.getLastPos(key);
 
 		if (el && ((el.i !== void 0 && el.i === i) || el === i)) {
 			res = false;
@@ -661,16 +708,18 @@ DirObj.prototype.isNotSysPos = function (i) {
 		}
 
 		return true;
-	}, this);
+	});
 
 	return res;
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Стандартное экранирование
  *
  * @param {string} str - исходная строка
  * @return {string}
  */
 DirObj.prototype.defEscape = function (str) {
+	var __NEJS_THIS__ = this;
 	return str.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\'');
 };
 
@@ -682,6 +731,7 @@ DirObj.prototype.defEscape = function (str) {
  * @return {string}
  */
 DirObj.prototype.replaceDangerBlocks = function (str) {
+	var __NEJS_THIS__ = this;
 	var begin,
 		escape,
 		end = true,
@@ -693,6 +743,7 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
 
 	var stack = this.quotContent;
 	return str.split('').reduce(function (res, el, i) {
+		var __NEJS_THIS__ = this;
 		if (!begin) {
 			if (escapeEndMap[el]) {
 				end = true;
@@ -740,11 +791,14 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
  * @return {string}
  */
 DirObj.prototype.pasteDangerBlocks = function (str) {
+	var __NEJS_THIS__ = this;
 	var stack = this.quotContent;
 	return str.replace(/__SNAKESKIN_QUOT__(\d+)/gm, function (sstr, pos) {
+		var __NEJS_THIS__ = this;
 		return stack[pos];
 	});
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Вернуть тело шаблона при наследовании
  * (супер мутная функция, уже не помню, как она работает :))
  *
@@ -753,6 +807,7 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  * @return {string}
  */
 DirObj.prototype.getExtStr = function (tplName, info) {
+	var __NEJS_THIS__ = this;
 	// Если указанный родитель не существует
 	if (cache[extMap[tplName]] === void 0) {
 		throw this.error(
@@ -825,6 +880,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастани
 			Snakeskin.forEach(advDiff
 				.sort(function (a, b) {
+					var __NEJS_THIS__ = this;
 					if (a.val > b.val) {
 						return 1;
 					}
@@ -835,6 +891,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 					return -1;
 				}), function (el) {
+					var __NEJS_THIS__ = this;
 					if (el.val < diff) {
 						adv += el.adv;
 
@@ -897,13 +954,15 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	}
 
 	return res;
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Вывести дополнительную информацию об ошибке
  *
  * @param {Object} obj - дополнительная информация
  * @return {string}
  */
 DirObj.prototype.genErrorAdvInfo = function (obj) {
+	var __NEJS_THIS__ = this;
 	var str = '';
 	for (var key in obj) {
 		if (!obj.hasOwnProperty(key)) { continue; }
@@ -927,15 +986,20 @@ DirObj.prototype.genErrorAdvInfo = function (obj) {
  * @return {!Error}
  */
 DirObj.prototype.error = function (msg) {
+	var __NEJS_THIS__ = this;
 	var error = new Error(msg);
 	error.name = 'Snakeskin Error';
 
 	return error;
 };
+var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Скомпилировать шаблоны
- *
- * @tests compile_test.html
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
  * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
@@ -947,6 +1011,7 @@ DirObj.prototype.error = function (msg) {
  * @return {string}
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
+	var __NEJS_THIS__ = this;
 	opt_info = opt_info || {};
 	if (src.innerHTML) {
 		opt_info.node = src;
@@ -955,24 +1020,38 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
 	dirObj.sysPosCache['with'] = opt_scope;
 
-	var begin,
-		fakeBegin = 0,
-		beginStr;
+	// Если true, то идёт содержимое директивы
+	var begin = false;
 
-	var command = '',
-		escape = false,
-		comment;
+	// Количество открытых { внутри директивы
+	var fakeBegin = 0;
+
+	// Если true, то идёт запись простой строки
+	var beginStr = false;
+
+	// Содержимое директивы
+	var command = '';
+
+	// Если true, то предыдущий символ был не экранированный \
+	var escape = false;
+
+	// Если содержит значение отличное от false,
+	// то значит идёт блок комметариев comment (///, /*, /**)
+	var comment = false;
+
+	// Если true, то значит идёт JSDoc
+	var jsDoc = false;
 
 	var bOpen,
 		bEnd = true,
 		bEscape = false;
 
 	while (++dirObj.i < dirObj.source.length) {
-		var str = dirObj.source,
-			el = str.charAt(dirObj.i),
-			next = str.charAt(dirObj.i + 1);
+		var str = dirObj.source;
+		var el = str.charAt(dirObj.i);
 
-		if (!begin && !dirObj.tplName && /\s/.test(el)) {
+		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
+		if (!begin && !dirObj.tplName && /\s/.test(el) && !jsDoc) {
 			continue;
 		}
 
@@ -986,19 +1065,35 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				escape = false;
 			}
 
+			var next2str = el + str.charAt(dirObj.i + 1);
+			var next3str = next2str + str.charAt(dirObj.i + 2);
+
 			// Обработка комментариев
 			if (!escape) {
 				if (el === '/') {
-					if (next === '/' && str.charAt(dirObj.i + 2) === '/') {
-						comment = '///';
+					if (next3str === '///') {
+						comment = next3str;
+						dirObj.i += 2;
 
-					} else if (next === '*') {
-						comment = '/*';
-						dirObj.i++;
+					} else if (next2str === '/*') {
+
+						if (next3str !== '/**' && !dirObj.tplName) {
+							comment = next2str;
+							dirObj.i++;
+
+						} else {
+							beginStr = true;
+							jsDoc = true;
+						}
 
 					} else if (str.charAt(dirObj.i - 1) === '*') {
-						comment = false;
-						continue;
+						if (comment === '/*') {
+							comment = false;
+							continue;
+
+						} else if (beginStr) {
+							beginStr = false;
+						}
 					}
 
 				} else if (/[\n\v\r]/.test(el) && comment === '///') {
@@ -1039,6 +1134,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 					// Хак для поддержки {data ...} как {{ ... }}
 					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
+						var __NEJS_THIS__ = this;
 						return 'data ' + $1;
 					})
 
@@ -1102,13 +1198,18 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Запись строки
 		} else if (!dirObj.protoStart) {
-			if (!beginStr) {
+			if (!beginStr && !jsDoc) {
 				dirObj.save('__SNAKESKIN_RESULT__ += \'');
 				beginStr = true;
 			}
 
 			if (!dirObj.parentTplName) {
 				dirObj.save(dirObj.defEscape(el));
+
+				if (!beginStr) {
+					jsDoc = false;
+					dirObj.save('\n');
+				}
 			}
 		}
 	}
@@ -1125,6 +1226,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
+			var __NEJS_THIS__ = this;
 			return dirObj.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
@@ -1161,7 +1263,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	return dirObj.res;
-};/**!
+};var __NEJS_THIS__ = this;
+/**!
  * Парсер вывода результата
  */
 
@@ -1213,6 +1316,7 @@ var comboBlackWordList = {
  * @return {string}
  */
 DirObj.prototype.replaceTplVars = function (str) {
+	var __NEJS_THIS__ = this;
 	str = this.pasteDangerBlocks(str);
 	var begin = 0,
 		dir;
@@ -1323,6 +1427,7 @@ DirObj.prototype.replaceTplVars = function (str) {
  * @return {boolean}
  */
 DirObj.prototype.isPrevSyOL = function (str, pos) {
+	var __NEJS_THIS__ = this;
 	for (var i = pos; i--;) {
 		var el = str.charAt(i);
 
@@ -1342,6 +1447,7 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
  * @return {boolean}
  */
 DirObj.prototype.isNextSyOL = function (str, pos) {
+	var __NEJS_THIS__ = this;
 	for (var i = pos; i < str.length; i++) {
 		var el = str.charAt(i);
 
@@ -1361,6 +1467,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
  * @return {{word: string, finalWord: string}}
  */
 DirObj.prototype.getWord = function (str, pos) {
+	var __NEJS_THIS__ = this;
 	var res = '',
 		nres,
 		pCount = 0;
@@ -1436,6 +1543,7 @@ DirObj.prototype.getWord = function (str, pos) {
  * @return {string}
  */
 DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst) {
+	var __NEJS_THIS__ = this;
 	// Количество открытых скобок в строке
 	var pCount = 0;
 
@@ -1549,6 +1657,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 						// Формирование финальной строки
 						vres = scope.reduce(function (str, el, i, data) {
+							var __NEJS_THIS__ = this;
 							num = num ? num - 1 : num;
 							var val = str.scope === void 0 ? str : str.scope;
 
@@ -1670,6 +1779,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
 			filter = filter.reduce(function (arr, el) {
+				var __NEJS_THIS__ = this;
 				if (el !== '!html') {
 					arr.push(el);
 
@@ -1681,6 +1791,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}, []);
 
 			var resTmp = filter.reduce(function (res, el) {
+				var __NEJS_THIS__ = this;
 				var params = el.split(' '),
 					input = params.slice(1).join('').trim();
 
@@ -1714,6 +1825,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };
+var __NEJS_THIS__ = this;
 /**
  * Директива end
  *
@@ -1723,6 +1835,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
  * @param {!Object} adv - дополнительные параметры
  */
 Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	dirObj.openBlockI--;
 	var args = arguments,
 		openBlockI = dirObj.openBlockI + 1,
@@ -1735,6 +1848,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 	// Окончание простых блоков
 	} else if (dirObj.isNotSysPos(openBlockI)) {
 		Snakeskin.forEach(dirObj.posCache, function (el, key) {
+			var __NEJS_THIS__ = this;
 			el = dirObj.getLastPos(key);
 
 			if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
@@ -1754,6 +1868,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 
 	// Окончание системных блоков
 	Snakeskin.forEach(dirObj.sysPosCache, function (el, key) {
+		var __NEJS_THIS__ = this;
 		el = dirObj.getLastPos(key);
 
 		if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
@@ -1764,6 +1879,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 		return true;
 	});
 };
+var __NEJS_THIS__ = this;
 /*!
  * Директива template
  */
@@ -1805,6 +1921,7 @@ DirObj.prototype.parentTplName = null;
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	// Начальная позиция шаблона
 	// +1 => } >>
 	dirObj.startI = dirObj.i + 1;
@@ -1865,6 +1982,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 			.replace(/]/gm, '')
 
 			.split('.').reduce(function (str, el, i, data) {
+				var __NEJS_THIS__ = this;
 				dirObj.save('' +
 					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
 					(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }'
@@ -1898,6 +2016,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// (только если нужно)
 	if (paramsCache[parentTplName]) {
 		Snakeskin.forEach(paramsCache[parentTplName], function (el) {
+			var __NEJS_THIS__ = this;
 			var def = el.split('=');
 			// Здесь и далее по коду
 			// [0] - название переменной
@@ -1906,6 +2025,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 			def[1] = def[1] && def[1].trim();
 
 			Snakeskin.forEach(params, function (el2, i) {
+				var __NEJS_THIS__ = this;
 				var def2 = el2.split('=');
 				def2[0] = def2[0].trim();
 				def2[1] = def2[1] && def2[1].trim();
@@ -1923,6 +2043,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// (эээххх, когда же настанет ECMAScript 6 :()
 	var defParams = '';
 	Snakeskin.forEach(params, function (el, i) {
+		var __NEJS_THIS__ = this;
 		var def = el.split('=');
 		def[0] = def[0].trim();
 		dirObj.save(def[0]);
@@ -1930,6 +2051,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 		// Подмешивание родительских входных параметров
 		if (paramsCache[parentTplName] && !defParams) {
 			Snakeskin.forEach(paramsCache[parentTplName], function (el) {
+				var __NEJS_THIS__ = this;
 				var def = el.split('='),
 					local;
 
@@ -1939,6 +2061,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 				// true, если входной параметр родительского шаблона
 				// присутствует также в дочернем
 				Snakeskin.forEach(params, function (el) {
+					var __NEJS_THIS__ = this;
 					var val = el.split('=');
 					val[0] = val[0].trim();
 					val[1] = val[1] && val[1].trim();
@@ -2003,6 +2126,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
  * @return {?}
  */
 Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var tplName = dirObj.tplName;
 
 	// Вызовы не объявленных прототипов
@@ -2071,7 +2195,8 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 
 	dirObj.canWrite = true;
 	dirObj.tplName = null;
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Директива call
  *
  * @param {string} command - название команды (или сама команда)
@@ -2079,22 +2204,11 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
-};/**
- * Директива void
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
- */
-Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(dirObj.prepareOutput(command) + ';');
-	}
-};
-
+};var __NEJS_THIS__ = this;
 /**
  * Директива void
  *
@@ -2102,16 +2216,33 @@ Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  */
-Snakeskin.Directions['js'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save(dirObj.prepareOutput(command) + ';');
+	}
+};
+
+/**
+ * Директива eval
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['eval'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(command);
 	}
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Кеш переменных
  */
 
 DirObj.prototype.varCache = {
 	init: function () {
+		var __NEJS_THIS__ = this;
 		return {};
 	}
 };
@@ -2127,6 +2258,7 @@ DirObj.prototype.varCache = {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var tplName = dirObj.tplName,
 		varName = command.split('=')[0].trim();
 
@@ -2146,6 +2278,7 @@ Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
 		dirObj.save(dirObj.prepareOutput('var ' + command + ';', true));
 	}
 };
+var __NEJS_THIS__ = this;
 /**
  * Директива block
  *
@@ -2158,6 +2291,7 @@ Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var tplName = dirObj.tplName,
 		parentName = dirObj.parentTplName;
 
@@ -2192,6 +2326,7 @@ Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
 Snakeskin.Directions['blockEnd'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var lastBlock = dirObj.popPos('block');
 	if (!adv.dryRun &&
 		((dirObj.parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !dirObj.parentTplName)
@@ -2199,7 +2334,8 @@ Snakeskin.Directions['blockEnd'] = function (command, commandLength, dirObj, adv
 
 		blockCache[dirObj.tplName][lastBlock.name].to = dirObj.i - dirObj.startI - commandLength - 1;
 	}
-};/*!
+};var __NEJS_THIS__ = this;
+/*!
  * Директивы proto и apply
  */
 
@@ -2221,6 +2357,7 @@ DirObj.prototype.protoStart = false;
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var tplName = dirObj.tplName,
 		parentName = dirObj.parentTplName;
 
@@ -2260,6 +2397,7 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
 Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var tplName = dirObj.tplName,
 		parentTplName = dirObj.parentTplName,
 		i = dirObj.i;
@@ -2281,6 +2419,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
 		Snakeskin.forEach(backHash[lastProto.name], function (el) {
+			var __NEJS_THIS__ = this;
 			dirObj.replace(dirObj.res.substring(0, el) +
 				protoCache[tplName][lastProto.name].body +
 				dirObj.res.substring(el));
@@ -2300,6 +2439,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv
  */
 DirObj.prototype.backHash = {
 	init: function () {
+		var __NEJS_THIS__ = this;
 		return {};
 	}
 };
@@ -2325,6 +2465,7 @@ DirObj.prototype.lastBack = null;
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.hasPos('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
@@ -2345,6 +2486,7 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
 		}
 	}
 };
+var __NEJS_THIS__ = this;
 /*!
  * Итераторы и циклы
  */
@@ -2357,6 +2499,7 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('forEach', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var part = command.split('=>'),
@@ -2375,6 +2518,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.popPos('forEach');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('}, this);');
@@ -2389,6 +2533,7 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('forIn', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var part = command.split('=>'),
@@ -2407,6 +2552,7 @@ Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['forInEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.popPos('forIn');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('}, this);');
@@ -2421,6 +2567,7 @@ Snakeskin.Directions['forInEnd'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['for'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('for', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('for (' + dirObj.prepareOutput(command, true) + ') {');
@@ -2435,6 +2582,7 @@ Snakeskin.Directions['for'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['forEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.popPos('for');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('}');
@@ -2449,6 +2597,7 @@ Snakeskin.Directions['forEnd'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['while'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('while', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('while (' + dirObj.prepareOutput(command, true) + ') {');
@@ -2463,6 +2612,7 @@ Snakeskin.Directions['while'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['whileEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.popPos('while');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('}');
@@ -2477,6 +2627,7 @@ Snakeskin.Directions['whileEnd'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('repeat', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('do {');
@@ -2491,6 +2642,7 @@ Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.popPos('repeat');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('} while (' + dirObj.prepareOutput(command, true) + ');');
@@ -2500,7 +2652,8 @@ Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dirObj) {
 /**
  * Директива until
  */
-Snakeskin.Directions['until'] = Snakeskin.Directions['end'];/*!
+Snakeskin.Directions['until'] = Snakeskin.Directions['end'];var __NEJS_THIS__ = this;
+/*!
  * Условные директивы
  */
 
@@ -2512,6 +2665,7 @@ Snakeskin.Directions['until'] = Snakeskin.Directions['end'];/*!
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['if'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.openBlockI++;
 
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
@@ -2527,6 +2681,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['elseIf'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('} else if (' + dirObj.prepareOutput(command, true) + ') {');
 	}
@@ -2540,10 +2695,12 @@ Snakeskin.Directions['elseIf'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['else'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('} else {');
 	}
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Директива with
  *
  * @param {string} command - название команды (или сама команда)
@@ -2551,6 +2708,7 @@ Snakeskin.Directions['else'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['with'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('with', {
 		scope: command,
 		i: ++dirObj.openBlockI
@@ -2565,8 +2723,10 @@ Snakeskin.Directions['with'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['withEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.popPos('with');
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Декларация или вывод константы
  *
  * @param {string} command - название команды (или сама команда)
@@ -2578,6 +2738,7 @@ Snakeskin.Directions['withEnd'] = function (command, commandLength, dirObj) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
 	var tplName = dirObj.tplName,
 		parentName = dirObj.parentTplName,
 		protoStart = dirObj.protoStart;
@@ -2670,6 +2831,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + dirObj.prepareOutput(command) + ';');
 	}
 };
+var __NEJS_THIS__ = this;
 /*!
  * Управление конечным кодом
  */
@@ -2682,6 +2844,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	command = dirObj.pasteDangerBlocks(command);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
@@ -2696,8 +2859,10 @@ Snakeskin.Directions['cut'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	Snakeskin.write[dirObj.pasteDangerBlocks(command)] = true;
-};/*!
+};var __NEJS_THIS__ = this;
+/*!
  * Поддержка myFire.BEM
  */
 
@@ -2709,6 +2874,7 @@ Snakeskin.Directions['save'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
 	Snakeskin.BEM[part[1]] = (new Function('return {' +
 		dirObj.pasteDangerBlocks(part[2]) + '}')
@@ -2723,6 +2889,7 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	dirObj.pushPos('bem', {
 		i: ++dirObj.openBlockI,
 		tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
@@ -2758,11 +2925,13 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	var lastBEM = dirObj.popPos('bem');
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
-};/**
+};var __NEJS_THIS__ = this;
+/**
  * Директива data
  *
  * @param {string} command - название команды (или сама команда)
@@ -2770,6 +2939,7 @@ Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['data'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('__SNAKESKIN_RESULT__ += \'' + dirObj.replaceTplVars(command) + '\';');
 	}

@@ -1,3 +1,4 @@
+var __NEJS_THIS__ = this;
 /*!
  * Шаблонный движок с поддержкой наследования
  */
@@ -16,9 +17,11 @@ var Snakeskin = {
 };
 
 (function (require) {
+	var __NEJS_THIS__ = this;
 	'use strict';
 
 
+var __NEJS_THIS__ = this;
 /**
  * Итератор объектов и массивов
  * (return false прерывает выполнение)
@@ -28,6 +31,7 @@ var Snakeskin = {
  * @param {Object=} [opt_ctx] - контекст функции
  */
 Snakeskin.forEach = function (obj, callback, opt_ctx) {
+	var __NEJS_THIS__ = this;
 	var i = -1,
 		length;
 
@@ -82,6 +86,7 @@ Snakeskin.forEach = function (obj, callback, opt_ctx) {
  * @param {Object=} [opt_ctx] - контекст функции
  */
 Snakeskin.forIn = function (obj, callback, opt_ctx) {
+	var __NEJS_THIS__ = this;
 	var i = 0,
 		length;
 
@@ -106,7 +111,8 @@ Snakeskin.forIn = function (obj, callback, opt_ctx) {
 			}
 		}
 	}
-};/*!
+};var __NEJS_THIS__ = this;
+/*!
  * Стандартные фильтры
  */
 
@@ -121,6 +127,7 @@ var entityMap = {
 
 var escapeHTMLRgxp = /[&<>"'\/]/g;
 function escapeHTML(s) {
+	var __NEJS_THIS__ = this;
 	return entityMap[s];
 }
 
@@ -131,6 +138,7 @@ function escapeHTML(s) {
  * @return {string}
  */
 Snakeskin.Filters.html = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(escapeHTMLRgxp, escapeHTML);
 };
 
@@ -141,6 +149,7 @@ Snakeskin.Filters.html = function (str) {
  * @return {*}
  */
 Snakeskin.Filters.undef = function (str) {
+	var __NEJS_THIS__ = this;
 	return str !== void 0 ? str : '';
 };
 
@@ -155,6 +164,7 @@ var uentityMap = {
 
 var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g;
 function uescapeHTML(s) {
+	var __NEJS_THIS__ = this;
 	return uentityMap[s];
 }
 
@@ -165,6 +175,7 @@ function uescapeHTML(s) {
  * @return {string}
  */
 Snakeskin.Filters.uhtml = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
@@ -177,6 +188,7 @@ var stripTagsRgxp = /<\/?[^>]+>/g;
  * @return {string}
  */
 Snakeskin.Filters.stripTags = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(stripTagsRgxp, '');
 };
 
@@ -190,6 +202,7 @@ var uriO = /%5B/g,
  * @return {string}
  */
 Snakeskin.Filters.uri = function (str) {
+	var __NEJS_THIS__ = this;
 	return encodeURI(str + '').replace(uriO, '[').replace(uriC, ']');
 };
 
@@ -200,6 +213,7 @@ Snakeskin.Filters.uri = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.upper = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').toUpperCase();
 };
 
@@ -210,6 +224,7 @@ Snakeskin.Filters.upper = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.ucfirst = function (str) {
+	var __NEJS_THIS__ = this;
 	str += '';
 	return str.charAt(0).toUpperCase() + str.substring(1);
 };
@@ -221,6 +236,7 @@ Snakeskin.Filters.ucfirst = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.lower = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').toLowerCase();
 };
 
@@ -231,6 +247,7 @@ Snakeskin.Filters.lower = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.lcfirst = function (str) {
+	var __NEJS_THIS__ = this;
 	str += '';
 	return str.charAt(0).toLowerCase() + str.substring(1);
 };
@@ -242,6 +259,7 @@ Snakeskin.Filters.lcfirst = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.trim = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').trim();
 };
 
@@ -254,6 +272,7 @@ var spaceCollapseRgxp = /\s{2,}/g;
  * @return {string}
  */
 Snakeskin.Filters.collapse = function (str) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(spaceCollapseRgxp, ' ').trim();
 };
 
@@ -266,6 +285,7 @@ Snakeskin.Filters.collapse = function (str) {
  * @return {string}
  */
 Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
+	var __NEJS_THIS__ = this;
 	str += '';
 	if (!str || str.length <= length) {
 		return str;
@@ -295,6 +315,7 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
  * @return {string}
  */
 Snakeskin.Filters.repeat = function (str, opt_num) {
+	var __NEJS_THIS__ = this;
 	return new Array(opt_num || 2).join(str);
 };
 
@@ -306,6 +327,7 @@ Snakeskin.Filters.repeat = function (str, opt_num) {
  * @return {string}
  */
 Snakeskin.Filters.remove = function (str, search) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(search, '');
 };
 
@@ -318,6 +340,7 @@ Snakeskin.Filters.remove = function (str, search) {
  * @return {string}
  */
 Snakeskin.Filters.replace = function (str, search, replace) {
+	var __NEJS_THIS__ = this;
 	return (str + '').replace(search, replace);
 };
 
@@ -328,6 +351,7 @@ Snakeskin.Filters.replace = function (str, search, replace) {
  * @return {string}
  */
 Snakeskin.Filters.json = function (val) {
+	var __NEJS_THIS__ = this;
 	if (typeof val === 'object') {
 		return JSON.stringify(val);
 	}

@@ -24,24 +24,38 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
 	dirObj.sysPosCache['with'] = opt_scope;
 
-	var begin,
-		fakeBegin = 0,
-		beginStr;
+	// Если true, то идёт содержимое директивы
+	var begin = false;
 
-	var command = '',
-		escape = false,
-		comment;
+	// Количество открытых { внутри директивы
+	var fakeBegin = 0;
+
+	// Если true, то идёт запись простой строки
+	var beginStr = false;
+
+	// Содержимое директивы
+	var command = '';
+
+	// Если true, то предыдущий символ был не экранированный \
+	var escape = false;
+
+	// Если содержит значение отличное от false,
+	// то значит идёт блок комметариев comment (///, /*, /**)
+	var comment = false;
+
+	// Если true, то значит идёт JSDoc
+	var jsDoc = false;
 
 	var bOpen,
 		bEnd = true,
 		bEscape = false;
 
 	while (++dirObj.i < dirObj.source.length) {
-		let str = dirObj.source,
-			el = str.charAt(dirObj.i),
-			next = str.charAt(dirObj.i + 1);
+		let str = dirObj.source;
+		let el = str.charAt(dirObj.i);
 
-		if (!begin && !dirObj.tplName && /\s/.test(el)) {
+		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
+		if (!begin && !dirObj.tplName && /\s/.test(el) && !jsDoc) {
 			continue;
 		}
 
@@ -55,19 +69,35 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				escape = false;
 			}
 
+			let next2str = el + str.charAt(dirObj.i + 1);
+			let next3str = next2str + str.charAt(dirObj.i + 2);
+
 			// Обработка комментариев
 			if (!escape) {
 				if (el === '/') {
-					if (next === '/' && str.charAt(dirObj.i + 2) === '/') {
-						comment = '///';
+					if (next3str === '///') {
+						comment = next3str;
+						dirObj.i += 2;
 
-					} else if (next === '*') {
-						comment = '/*';
-						dirObj.i++;
+					} else if (next2str === '/*') {
+
+						if (next3str !== '/**' && !dirObj.tplName) {
+							comment = next2str;
+							dirObj.i++;
+
+						} else {
+							beginStr = true;
+							jsDoc = true;
+						}
 
 					} else if (str.charAt(dirObj.i - 1) === '*') {
-						comment = false;
-						continue;
+						if (comment === '/*') {
+							comment = false;
+							continue;
+
+						} else if (beginStr) {
+							beginStr = false;
+						}
 					}
 
 				} else if (/[\n\v\r]/.test(el) && comment === '///') {
@@ -94,7 +124,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
 				begin = false;
 
-				var commandLength = command.length;
+				let commandLength = command.length;
 				command = dirObj.replaceDangerBlocks(command).trim();
 
 				command = command
@@ -104,7 +134,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					// Хак для {void ...} как {?...}
 					.replace(/^\?/, 'void ');
 
-				var commandType = command
+				let commandType = command
 
 					// Хак для поддержки {data ...} как {{ ... }}
 					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
@@ -116,9 +146,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
 				// Обработка команд
-				var fnRes = Snakeskin.Directions[commandType](
+				let fnRes = Snakeskin.Directions[commandType](
+
 					commandType !== 'const' ?
 						command.replace(new RegExp('^' + commandType + '\\s+', 'm'), '') : command,
+
 					commandLength,
 
 					dirObj,
@@ -171,13 +203,18 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Запись строки
 		} else if (!dirObj.protoStart) {
-			if (!beginStr) {
+			if (!beginStr && !jsDoc) {
 				dirObj.save('__SNAKESKIN_RESULT__ += \'');
 				beginStr = true;
 			}
 
 			if (!dirObj.parentTplName) {
 				dirObj.save(dirObj.defEscape(el));
+
+				if (!beginStr) {
+					jsDoc = false;
+					dirObj.save('\n');
+				}
 			}
 		}
 	}
@@ -210,6 +247,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	if (opt_dryRun) {
 		return dirObj.res;
 	}
+
+	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
