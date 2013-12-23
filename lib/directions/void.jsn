@@ -1,15 +1,10 @@
-/**
- * Директива void
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+/**!
+ * @status stable
+ * @version 1.0.0
  */
-Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(dirObj.prepareOutput(command) + ';');
-	}
-};
+
+// Короткая форма директивы eval
+Snakeskin.Replacers.push((cmd) => cmd.replace(/^\?!/, 'eval '));
 
 /**
  * Директива eval
@@ -21,5 +16,21 @@ Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['eval'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(command);
+	}
+};
+
+// Короткая форма директивы void
+Snakeskin.Replacers.push((cmd) => cmd.replace(/^\?/, 'void '));
+
+/**
+ * Директива void
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save(dirObj.prepareOutput(command) + ';');
 	}
 };

@@ -3,6 +3,9 @@
  * @version 1.0.0
  */
 
+// Короткая форма директивы end
+Snakeskin.Replacers.push((cmd) => cmd.replace(/^\//, 'end '));
+
 /**
  * Директива end
  *
