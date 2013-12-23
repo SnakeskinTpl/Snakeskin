@@ -16,18 +16,15 @@
 			 */
 			{template helloWorld(name = 'world')}
 				{:a = 1}
+				{switch a}
+					{> 1}
+						121
+					{/>}
 
-				<h1 class="{&}
-					foo{&}
-				">Hello {name}!</h1>
-
-				{cdata}
-					{block foo}
-						{?alert(1)}
-					{/block}
-				{/cdata}
-				1
-					2
+					{default}
+						555
+					{/default}
+				{/switch}
 			{/template}
 		</script>
 		<script>
