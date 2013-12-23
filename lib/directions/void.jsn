@@ -19,7 +19,7 @@ Snakeskin.Replacers.push((cmd) => cmd.replace(/^\?/, 'void '));
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj, adv) {
 	if (!dirObj.tplName) {
-		throw dirObj.error('Directive "void" can only be used within a template, ' +
+		throw dirObj.error('Directive "void" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
 	}

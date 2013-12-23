@@ -16,7 +16,7 @@
  */
 Snakeskin.Directions['&'] = function (command, commandLength, dirObj, adv) {
 	if (!dirObj.tplName) {
-		throw dirObj.error('Directive "&" can only be used within a template, ' +
+		throw dirObj.error('Directive "&" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
 	}
