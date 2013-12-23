@@ -49,6 +49,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	// Если true, то значит идёт JSDoc
 	var jsDoc = false;
 
+	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
 	var bOpen,
 		bEnd = true,
 		bEscape = false;
