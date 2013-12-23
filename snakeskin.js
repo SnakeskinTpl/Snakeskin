@@ -1231,8 +1231,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			if (begin) {
 				el = ' ';
 
-			} else if (!dirObj.openBlockI && jsDoc) {
-				el = el.replace(/[ \t]+/g, ' ');
+			} else if (!dirObj.openBlockI) {
+				if (!jsDoc) {
+					continue;
+				}
 
 			} else {
 				if (!space) {
