@@ -1,12 +1,19 @@
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Кеш переменных
  */
-
 DirObj.prototype.varCache = {
 	init: function () {
 		return {};
 	}
 };
+
+// Короткая форма директивы var
+Snakeskin.Replacers.push((cmd) => cmd.replace(/^:/, 'var '));
 
 /**
  * Директива var
@@ -15,10 +22,16 @@ DirObj.prototype.varCache = {
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  *
- * @param {!Object} adv - дополнительные параметры
+ * @param {Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "var" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	var tplName = dirObj.tplName,
 		varName = command.split('=')[0].trim();
 

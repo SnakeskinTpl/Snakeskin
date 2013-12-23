@@ -1200,6 +1200,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	// Если true, то значит идёт JSDoc
 	var jsDoc = false;
 
+	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
 	var bOpen,
 		bEnd = true,
 		bEscape = false;
@@ -2035,6 +2036,12 @@ var __NEJS_THIS__ = this;
  */
 Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "cdata" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	adv.info.line += parseInt(command);
 };var __NEJS_THIS__ = this;
 /**!
@@ -2056,7 +2063,7 @@ Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirOb
 Snakeskin.Directions['&'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
 	if (!dirObj.tplName) {
-		throw dirObj.error('Directive "&" can only be used within a template, ' +
+		throw dirObj.error('Directive "&" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
 	}
@@ -2489,8 +2496,8 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
  */
 Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.tplName) {
-		throw dirObj.error('Directive "return" can only be used within a template, ' +
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "return" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
 	}
@@ -2535,8 +2542,8 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.tplName) {
-		throw dirObj.error('Directive "void" can only be used within a template, ' +
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "void" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
 	}
@@ -2545,16 +2552,24 @@ Snakeskin.Directions['void'] = function (command, commandLength, dirObj, adv) {
 		dirObj.save(dirObj.prepareOutput(command) + ';');
 	}
 };var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Кеш переменных
  */
-
 DirObj.prototype.varCache = {
 	init: function () {
 		var __NEJS_THIS__ = this;
 		return {};
 	}
 };
+
+// Короткая форма директивы var
+Snakeskin.Replacers.push(function (cmd) {
+	return cmd.replace(/^:/, 'var ');});
 
 /**
  * Директива var
@@ -2563,11 +2578,17 @@ DirObj.prototype.varCache = {
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  *
- * @param {!Object} adv - дополнительные параметры
+ * @param {Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (!dirObj.openBlockI) {
+		throw dirObj.error('Directive "var" can only be used within a template or prototype, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	var tplName = dirObj.tplName,
 		varName = command.split('=')[0].trim();
 
