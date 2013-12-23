@@ -16,7 +16,7 @@
  * @return {string}
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
-	opt_info = opt_info || {};
+	opt_info = opt_info || {line: 1};
 	var html = src['innerHTML'];
 
 	if (html) {
@@ -55,6 +55,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	while (++dirObj.i < dirObj.source.length) {
 		let str = dirObj.source;
 		let el = str.charAt(dirObj.i);
+
+		if (/[\r\n]/.test(el)) {
+			opt_info.line++;
+		}
 
 		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
 		// (исключение: внутри JSDoc всё сохраняется без изменений)

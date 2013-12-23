@@ -1097,6 +1097,11 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 	return res;
 };var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Вывести дополнительную информацию об ошибке
  *
@@ -1154,7 +1159,7 @@ var __NEJS_THIS__ = this;
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
 	var __NEJS_THIS__ = this;
-	opt_info = opt_info || {};
+	opt_info = opt_info || {line: 1};
 	var html = src['innerHTML'];
 
 	if (html) {
@@ -1193,6 +1198,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	while (++dirObj.i < dirObj.source.length) {
 		var str = dirObj.source;
 		var el = str.charAt(dirObj.i);
+
+		if (/[\r\n]/.test(el)) {
+			opt_info.line++;
+		}
 
 		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
 		// (исключение: внутри JSDoc всё сохраняется без изменений)
@@ -1992,6 +2001,12 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (dirObj.openBlockI <= 0) {
+		throw dirObj.error('Invalid call "end", ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dirObj.openBlockI--;
 
 	var args = arguments;
@@ -2424,11 +2439,21 @@ Snakeskin.Replacers.push(function (cmd) {
  * Директива void
  *
  * @param {string} command - название команды (или сама команда)
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['void'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
+	if (dirObj.tplName) {
+		throw dirObj.error('Directive "void" can only be used within a template, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(dirObj.prepareOutput(command) + ';');
 	}

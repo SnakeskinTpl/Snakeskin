@@ -1,3 +1,8 @@
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Вывести дополнительную информацию об ошибке
  *
@@ -6,7 +11,7 @@
  */
 DirObj.prototype.genErrorAdvInfo = function (obj) {
 	var str = '';
-	for (var key in obj) {
+	for (let key in obj) {
 		if (!obj.hasOwnProperty(key)) { continue; }
 
 		if (!obj[key].innerHTML) {
