@@ -37,7 +37,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		bEscape = false;
 
 	while (++dirObj.i < dirObj.source.length) {
-		var str = dirObj.source,
+		let str = dirObj.source,
 			el = str.charAt(dirObj.i),
 			next = str.charAt(dirObj.i + 1);
 
