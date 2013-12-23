@@ -16,9 +16,11 @@
 			{template helloWorld(name = 'world')}
 				<h1>Hello {name}!</h1>
 
-				{block foo}
-					{?alert(1)}
-				{/block2}
+
+					{block foo}
+						{?alert(1)}
+					{/block}
+
 			{/template}
 		</script>
 		<script>
