@@ -17,11 +17,13 @@
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
 	opt_info = opt_info || {};
-	if (src.innerHTML) {
+	var html = src['innerHTML'];
+
+	if (html) {
 		opt_info.node = src;
 	}
 
-	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
+	var dirObj = new DirObj(html || src, opt_commonJS, opt_dryRun);
 	dirObj.sysPosCache['with'] = opt_scope;
 
 	// Если true, то идёт содержимое директивы
@@ -216,6 +218,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		}
 	}
 
+	console.log(dirObj.res);
+
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dirObj.openBlockI !== 0) {
@@ -244,8 +248,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	if (opt_dryRun) {
 		return dirObj.res;
 	}
-
-	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {

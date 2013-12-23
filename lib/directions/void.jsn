@@ -3,22 +3,6 @@
  * @version 1.0.0
  */
 
-// Короткая форма директивы eval
-Snakeskin.Replacers.push((cmd) => cmd.replace(/^\?!/, 'eval '));
-
-/**
- * Директива eval
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
- */
-Snakeskin.Directions['eval'] = function (command, commandLength, dirObj) {
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(command);
-	}
-};
-
 // Короткая форма директивы void
 Snakeskin.Replacers.push((cmd) => cmd.replace(/^\?/, 'void '));
 

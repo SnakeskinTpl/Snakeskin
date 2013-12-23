@@ -4,9 +4,10 @@ var __NEJS_THIS__ = this;
  */
 
 var Snakeskin = {
-	VERSION: '2.4.1',
+	VERSION: [2, 5, 0].join('.'),
 
 	Directions: {},
+	Replacers: [],
 
 	Filters: {},
 	BEM: {},
@@ -1154,11 +1155,13 @@ var __NEJS_THIS__ = this;
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
 	var __NEJS_THIS__ = this;
 	opt_info = opt_info || {};
-	if (src.innerHTML) {
+	var html = src['innerHTML'];
+
+	if (html) {
 		opt_info.node = src;
 	}
 
-	var dirObj = new DirObj(src.innerHTML || src, opt_commonJS, opt_dryRun);
+	var dirObj = new DirObj(html || src, opt_commonJS, opt_dryRun);
 	dirObj.sysPosCache['with'] = opt_scope;
 
 	// Если true, то идёт содержимое директивы
@@ -1265,20 +1268,17 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				var commandLength = command.length;
 				command = dirObj.replaceDangerBlocks(command).trim();
 
-				command = command
-					// Хак для подержки закрытия директив через слеш
-					.replace(/^\//, 'end ')
-
-					// Хак для {void ...} как {?...}
-					.replace(/^\?/, 'void ');
+				// Поддержка коротких форм записи директив
+				Snakeskin.forEach(Snakeskin.Replacers, function (fn) {
+					
+					command = fn(command);
+				});
 
 				var commandType = command
 
 					// Хак для поддержки {data ...} как {{ ... }}
-					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
-						var __NEJS_THIS__ = this;
-						return 'data ' + $1;
-					})
+					.replace(/^{([\s\S]*)}$/m,function (sstr, $1) {
+						return 'data ' + $1;})
 
 					.split(' ')[0];
 
@@ -1358,6 +1358,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		}
 	}
 
+	console.log(dirObj.res);
+
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dirObj.openBlockI !== 0) {
@@ -1387,8 +1389,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	if (opt_dryRun) {
 		return dirObj.res;
 	}
-
-	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -1975,6 +1975,10 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
+// Короткая форма директивы end
+Snakeskin.Replacers.push(function (cmd) {
+	return cmd.replace(/^\//, 'end ');});
+
 /**
  * Директива end
  *
@@ -2379,19 +2383,14 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
 };var __NEJS_THIS__ = this;
-/**
- * Директива void
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+/**!
+ * @status stable
+ * @version 1.0.0
  */
-Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
-	var __NEJS_THIS__ = this;
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(dirObj.prepareOutput(command) + ';');
-	}
-};
+
+// Короткая форма директивы eval
+Snakeskin.Replacers.push(function (cmd) {
+	return cmd.replace(/^\?!/, 'eval ');});
 
 /**
  * Директива eval
@@ -2404,6 +2403,24 @@ Snakeskin.Directions['eval'] = function (command, commandLength, dirObj) {
 	var __NEJS_THIS__ = this;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(command);
+	}
+};
+
+// Короткая форма директивы void
+Snakeskin.Replacers.push(function (cmd) {
+	return cmd.replace(/^\?/, 'void ');});
+
+/**
+ * Директива void
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
+	var __NEJS_THIS__ = this;
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save(dirObj.prepareOutput(command) + ';');
 	}
 };var __NEJS_THIS__ = this;
 /**
