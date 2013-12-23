@@ -177,3 +177,29 @@ Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dirObj) {
  * Директива until
  */
 Snakeskin.Directions['until'] = Snakeskin.Directions['end'];
+
+/**
+ * Директива break
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['break'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('break;');
+	}
+};
+
+/**
+ * Директива continue
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['continue'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('continue;');
+	}
+};
