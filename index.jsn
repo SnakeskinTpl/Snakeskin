@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-var __NEJS_THIS__ = this;
 global.Snakeskin = require('./snakeskin');
 var Program = require('commander');
 
@@ -18,13 +17,11 @@ var newFile = Program.output || (file + '.js');
 
 var Jossy = require('jossy');
 Jossy.compile(file, null, null, function (err, data) {
-	var __NEJS_THIS__ = this;
 	if (err) {
 		console.log(err);
 
 	} else {
 		fs.writeFile(newFile, Snakeskin.compile(String(data), commonJS, {file: file}), function (err) {
-			var __NEJS_THIS__ = this;
 			if (err) {
 				console.log(err);
 

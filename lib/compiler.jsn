@@ -1,4 +1,3 @@
-var __NEJS_THIS__ = this;
 /**!
  * @status stable
  * @version 1.0.0
@@ -17,7 +16,6 @@ var __NEJS_THIS__ = this;
  * @return {string}
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
-	var __NEJS_THIS__ = this;
 	opt_info = opt_info || {};
 	if (src.innerHTML) {
 		opt_info.node = src;
@@ -110,7 +108,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 					// Хак для поддержки {data ...} как {{ ... }}
 					.replace(/^{([\s\S]*)}$/m, function (sstr, $1) {
-						var __NEJS_THIS__ = this;
 						return 'data ' + $1;
 					})
 
@@ -197,7 +194,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
-			var __NEJS_THIS__ = this;
 			return dirObj.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
