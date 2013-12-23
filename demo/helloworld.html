@@ -10,28 +10,23 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			/**
-			 * foo
-			 * @param {foo}
-			 */
 			{template helloWorld(name = 'world')}
-				{return 1}
+				{block foo}
+					{foo = 1}
+				{end}
+			{/template}
 
-				{:a = 1}
-				{switch a}
-					{> 1}
-						121
-					{/>}
-
-					{default}
-						555
-					{/default}
-				{/switch}
+			{template helloWorld2(name = 'world') extends helloWorld}
+				{foo = 2}
+				{block foo}
+					2
+					{super block foo}
+				{end}
 			{/template}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld();
+			document.getElementById('test').innerHTML = helloWorld2();
 		</script>
 	</body>
 </html>

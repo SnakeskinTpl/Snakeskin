@@ -57,6 +57,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	while (++dirObj.i < dirObj.source.length) {
 		let str = dirObj.source;
 		let el = str.charAt(dirObj.i);
+		let rEl = el;
 
 		if (/[\r\n]/.test(el)) {
 			opt_info.line++;
@@ -141,7 +142,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 						}
 					}
 
-				} else if (/[\n\v\r]/.test(el) && comment === '///') {
+				} else if (/[\n\v\r]/.test(rEl) && comment === '///') {
 					comment = false;
 				}
 			}
@@ -272,7 +273,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				.replace(/\r/gm, '\\r')
 				.replace(/\v/gm, '\\v')
 				.replace(/'/gm, '&#39;');
-		});
+		})
+
+		// Удаление пустых операций
+		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
 
 	// Конец шаблона
 	dirObj.res += !opt_dryRun ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
@@ -282,7 +286,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
-	console.log(dirObj.res);
+	//console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
