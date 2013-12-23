@@ -40,10 +40,12 @@ var Snakeskin = {
 	//#include compiler.js
 	//#include output.js
 
+	//#include directions/private.js
 	//#include directions/end.js
 
 	//#include directions/template.js
 	//#include directions/return.js
+
 	//#include directions/call.js
 	//#include directions/void.js
 	//#include directions/var.js

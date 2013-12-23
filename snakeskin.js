@@ -555,11 +555,10 @@ function DirObj(src, commonJS, dryRun) {
 	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-			var __NEJS_THIS__ = this;
+			
 			cdata.push(data);
-			return '__SNAKESKIN_CDATA__' + (cdata.length - 1);
-		})
-		.trim();
+			return '{__appendLine__ ' + data.match(/[\n\r]/g).length + '}__SNAKESKIN_CDATA__' + (cdata.length - 1);
+		});
 
 	/**
 	 * Результирующий JS код
@@ -1164,6 +1163,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 	if (html) {
 		opt_info.node = src;
+		html = html.replace(/\s*?\n/, '');
 	}
 
 	var dirObj = new DirObj(html || src, opt_commonJS, opt_dryRun);
@@ -1984,6 +1984,26 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
+/**
+ * Директива __appendLine__
+ *
+ * @param {string} command - название команды (или сама команда)
+ *
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
+ */
+Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
+	adv.info.line += parseInt(command);
+};var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
 // Короткая форма директивы end
 Snakeskin.Replacers.push(function (cmd) {
 	return cmd.replace(/^\//, 'end ');});
@@ -2403,7 +2423,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
  */
 Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (dirObj.tplName) {
+	if (!dirObj.tplName) {
 		throw dirObj.error('Directive "return" can only be used within a template, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2412,7 +2432,8 @@ Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) 
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('return __SNAKESKIN_RESULT__;');
 	}
-};var __NEJS_THIS__ = this;
+};
+var __NEJS_THIS__ = this;
 /**
  * Директива call
  *
@@ -2448,7 +2469,7 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (dirObj.tplName) {
+	if (!dirObj.tplName) {
 		throw dirObj.error('Directive "void" can only be used within a template, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);

@@ -1,0 +1,19 @@
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
+/**
+ * Директива __appendLine__
+ *
+ * @param {string} command - название команды (или сама команда)
+ *
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
+ */
+Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirObj, adv) {
+	adv.info.line += parseInt(command);
+};
