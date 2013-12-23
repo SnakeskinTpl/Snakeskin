@@ -723,7 +723,7 @@ DirObj.prototype.isNotSysPos = function (i) {
  */
 
 /**
- * Применить у строке стандартное экранирование
+ * Применить к строке стандартное экранирование
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -731,6 +731,27 @@ DirObj.prototype.isNotSysPos = function (i) {
 DirObj.prototype.applyDefEscape = function (str) {
 	var __NEJS_THIS__ = this;
 	return str.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\'');
+};
+
+/*dirObj.cDataContent[pos]
+ .replace(/\n/gm, '\\n')
+ .replace(/\r/gm, '\\r')
+ .replace(/\v/gm, '\\v')
+ .replace(/'/gm, '&#39;')*/
+
+/**
+ * Применить к строке экранирование пробельных символов
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.applySpaceEscape = function (str) {
+	var __NEJS_THIS__ = this;
+	return str
+		.replace(/\n/gm, '\\n')
+		.replace(/\r/gm, '\\r')
+		.replace(/\v/gm, '\\v')
+		.replace(/'/gm, '&#39;');
 };
 
 if (typeof window === 'undefined') {
@@ -1135,7 +1156,6 @@ DirObj.prototype.error = function (msg) {
 	var __NEJS_THIS__ = this;
 	var error = new Error(msg);
 	error.name = 'Snakeskin Error';
-
 	return error;
 };
 var __NEJS_THIS__ = this;
@@ -1205,8 +1225,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Все пробельные символы вне директив и вне декларации шаблона игнорируются
 		// (исключение: внутри JSDoc всё сохраняется без изменений)
-		if (!begin && !dirObj.tplName && /\s/.test(el) && !jsDoc) {
-			continue;
+		if (!begin && !dirObj.tplName && /\s/.test(el)) {
+			if (jsDoc) {
+				el = dirObj.applySpaceEscape(el);
+
+			} else {
+				continue;
+			}
 		}
 
 		if (!bOpen) {
@@ -1380,12 +1405,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)/g, function (sstr, pos) {
 			var __NEJS_THIS__ = this;
-			return dirObj.cDataContent[pos]
-				.replace(/\n/gm, '\\n')
-				.replace(/\r/gm, '\\r')
-				.replace(/\v/gm, '\\v')
-				.replace(/'/gm, '&#39;');
+			return dirObj.applySpaceEscape(dirObj.cDataContent[pos]);
 		})
+
 		// Удаление пустых операций
 		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
 

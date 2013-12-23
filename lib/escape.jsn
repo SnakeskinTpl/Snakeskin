@@ -4,13 +4,33 @@
  */
 
 /**
- * Применить у строке стандартное экранирование
+ * Применить к строке стандартное экранирование
  *
  * @param {string} str - исходная строка
  * @return {string}
  */
 DirObj.prototype.applyDefEscape = function (str) {
 	return str.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\'');
+};
+
+/*dirObj.cDataContent[pos]
+ .replace(/\n/gm, '\\n')
+ .replace(/\r/gm, '\\r')
+ .replace(/\v/gm, '\\v')
+ .replace(/'/gm, '&#39;')*/
+
+/**
+ * Применить к строке экранирование пробельных символов
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.applySpaceEscape = function (str) {
+	return str
+		.replace(/\n/gm, '\\n')
+		.replace(/\r/gm, '\\r')
+		.replace(/\v/gm, '\\v')
+		.replace(/'/gm, '&#39;');
 };
 
 if (typeof window === 'undefined') {
