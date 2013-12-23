@@ -1291,8 +1291,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 						command.replace(new RegExp('^' + commandType + '\\s+', 'm'), '') : command,
 
 					commandLength,
-
 					dirObj,
+
 					{
 						commonJS: opt_commonJS,
 						dryRun: opt_dryRun,
@@ -1358,8 +1358,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		}
 	}
 
-	console.log(dirObj.res);
-
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dirObj.openBlockI !== 0) {
@@ -1389,6 +1387,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	if (opt_dryRun) {
 		return dirObj.res;
 	}
+
+	console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -2370,6 +2370,34 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
 	dirObj.canWrite = true;
 	dirObj.tplName = null;
 };var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
+/**
+ * Директива return
+ *
+ * @param {string} command - название команды (или сама команда)
+ *
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
+ */
+Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) {
+	var __NEJS_THIS__ = this;
+	if (dirObj.tplName) {
+		throw dirObj.error('Directive "return" can only be used within a template, ' +
+			dirObj.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save('return __SNAKESKIN_RESULT__;');
+	}
+};var __NEJS_THIS__ = this;
 /**
  * Директива call
  *
@@ -2387,24 +2415,6 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
  * @status stable
  * @version 1.0.0
  */
-
-// Короткая форма директивы eval
-Snakeskin.Replacers.push(function (cmd) {
-	return cmd.replace(/^\?!/, 'eval ');});
-
-/**
- * Директива eval
- *
- * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
- */
-Snakeskin.Directions['eval'] = function (command, commandLength, dirObj) {
-	var __NEJS_THIS__ = this;
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(command);
-	}
-};
 
 // Короткая форма директивы void
 Snakeskin.Replacers.push(function (cmd) {
