@@ -1142,6 +1142,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
+	console.log(dirObj.res);
+
 	// Компиляция на сервере
 	if (require) {
 		// Экспорт
@@ -2090,6 +2092,19 @@ Snakeskin.Directions['call'] = function (command, commandLength, dirObj) {
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj) {
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save(dirObj.prepareOutput(command) + ';');
+	}
+};
+
+/**
+ * Директива void
+ *
+ * @param {string} command - название команды (или сама команда)
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dirObj - объект управления директивами
+ */
+Snakeskin.Directions['js'] = function (command, commandLength, dirObj) {
+	if (!dirObj.parentTplName && !dirObj.protoStart) {
+		dirObj.save(command);
 	}
 };/**
  * Кеш переменных
