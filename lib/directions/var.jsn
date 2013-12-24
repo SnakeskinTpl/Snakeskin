@@ -5,7 +5,6 @@
 
 /**
  * Кеш переменных
- * @type {!Object}
  */
 DirObj.prototype.varCache = {
 	init: function () {

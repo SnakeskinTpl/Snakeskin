@@ -12,87 +12,82 @@ DirObj.prototype.protoStart = false;
 /**
  * Директива proto
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['proto'] = function (command, commandLength, dirObj, adv) {
-	var tplName = dirObj.tplName,
-		parentName = dirObj.parentTplName;
-
-	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
+Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
+	if (!adv.dryRun && ((dir.parentTplName && !dir.hasPos('block') && !dir.hasPos('proto')) || !dir.parentTplName)) {
 		// Попытка декларировать прототип блока несколько раз
-		if (protoCache[tplName][command]) {
-			throw dirObj.error(
+		if (protoCache[dir.tplName][command]) {
+			throw dir.error(
 				'Proto "' + command + '" is already defined ' +
-				'(command: {proto' + command + '}, template: "' + tplName + ', ' +
-					dirObj.genErrorAdvInfo(adv.info) +
+				'(command: {proto' + command + '}, template: "' + dir.tplName + ', ' +
+					dir.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
 
-		protoCache[tplName][command] = {from: dirObj.i - dirObj.startI + 1};
+		protoCache[dir.tplName][command] = {from: dir.i - dir.startI + 1};
 	}
 
-	dirObj.pushPos('proto', {
+	dir.startDir('proto', {
 		name: command,
-		i: ++dirObj.openBlockI,
-		startI: dirObj.i + 1
+		startI: dir.i + 1
 	}, true);
 
-	if (!parentName) {
-		dirObj.protoStart = true;
+	if (!dir.parentTplName) {
+		dir.protoStart = true;
 	}
 };
 
 /**
  * Окончание proto
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
+ *
  * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  */
-Snakeskin.Directions['protoEnd'] = function (command, commandLength, dirObj, adv) {
-	var tplName = dirObj.tplName,
-		parentTplName = dirObj.parentTplName,
-		i = dirObj.i;
+Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
+	var tplName = dir.tplName;
+	//TODO: вернуться к этому куску
+	var backHash = dir.backHash,
+		lastProto = dir.popPos('proto');
 
-	var backHash = dirObj.backHash,
-		lastProto = dirObj.popPos('proto');
-
-	if (!adv.dryRun && ((parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentTplName)) {
-		protoCache[tplName][lastProto.name].to = i - dirObj.startI - commandLength - 1;
-		fromProtoCache[tplName] = i - dirObj.startI + 1;
+	if (!adv.dryRun && ((dir.parentTplName && !dir.hasPos('block') && !dir.hasPos('proto')) || !dir.parentTplName)) {
+		protoCache[tplName][lastProto.name].to = dir.i - dir.startI - commandLength - 1;
+		fromProtoCache[tplName] = dir.i - dir.startI + 1;
 	}
 
 	// Рекурсивно анализируем прототипы блоков
-	if (!parentTplName) {
+	if (!dir.parentTplName) {
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
-			dirObj.source.substring(lastProto.startI, i - commandLength - 1) +
-			'{end}', null, null, true, dirObj.getPos('with'));
+			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
+			'{end}', null, null, true, dir.getPos('with'));
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
 		Snakeskin.forEach(backHash[lastProto.name], function (el) {
-			dirObj.replace(dirObj.res.substring(0, el) +
+			dir.replace(dir.res.substring(0, el) +
 				protoCache[tplName][lastProto.name].body +
-				dirObj.res.substring(el));
+				dir.res.substring(el));
 		});
 
 		delete backHash[lastProto.name];
-		dirObj.backHashI--;
+		dir.backHashI--;
 	}
 
-	if (!dirObj.hasPos('proto')) {
-		dirObj.protoStart = false;
+	if (!dir.hasPos('proto')) {
+		dir.protoStart = false;
 	}
 };
 
@@ -124,35 +119,35 @@ DirObj.prototype.lastBack = null;
  * @param {string} command - название команды (или сама команда)
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['apply'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.structure.parent) {
-		throw dirObj.error('Directive "apply" can only be used within a template or prototype, ' +
-			dirObj.genErrorAdvInfo(adv.info)
+Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "apply" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 
-	if (!dirObj.parentTplName && !dirObj.hasPos('proto')) {
+	if (!dir.parentTplName && !dir.hasPos('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
 		// когда прототип будет объявлен)
-		if (!protoCache[dirObj.tplName][command]) {
-			if (!dirObj.backHash[command]) {
-				dirObj.backHash[command] = [];
-				dirObj.backHash[command].protoStart = dirObj.protoStart;
+		if (!protoCache[dir.tplName][command]) {
+			if (!dir.backHash[command]) {
+				dir.backHash[command] = [];
+				dir.backHash[command].protoStart = dir.protoStart;
 
-				dirObj.lastBack = command;
-				dirObj.backHashI++;
+				dir.lastBack = command;
+				dir.backHashI++;
 			}
 
-			dirObj.backHash[command].push(dirObj.res.length);
+			dir.backHash[command].push(dir.res.length);
 
 		} else {
-			dirObj.save(protoCache[dirObj.tplName][command].body);
+			dir.save(protoCache[dir.tplName][command].body);
 		}
 	}
 };
