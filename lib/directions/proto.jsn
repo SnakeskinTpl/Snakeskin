@@ -130,7 +130,7 @@ DirObj.prototype.lastBack = null;
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['apply'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "apply" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);

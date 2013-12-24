@@ -15,7 +15,7 @@
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['if'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "if" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -66,7 +66,7 @@ Snakeskin.Directions['else'] = function (command, commandLength, dirObj) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['switch'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "switch can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);

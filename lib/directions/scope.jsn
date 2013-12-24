@@ -15,7 +15,7 @@
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['with'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "with" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);

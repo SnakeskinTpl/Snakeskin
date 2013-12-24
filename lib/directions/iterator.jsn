@@ -15,7 +15,7 @@
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "forEach" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -58,7 +58,7 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "forIn" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -101,7 +101,7 @@ Snakeskin.Directions['forInEnd'] = function (command, commandLength, dirObj) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "for" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -126,7 +126,7 @@ Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "while" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -151,7 +151,7 @@ Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "repeat" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);

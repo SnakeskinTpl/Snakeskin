@@ -571,7 +571,7 @@ function DirObj(src, commonJS, dryRun) {
 	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-			
+
 			cdata.push(data);
 			return '{__appendLine__ ' +
 				data.match(/[\n\r]/g).length +
@@ -744,7 +744,7 @@ DirObj.prototype.isNotSysPos = function (i) {
 	var res = true;
 
 	Snakeskin.forEach(this.sysPosCache, function (el, key) {
-		
+
 		el = __NEJS_THIS__.getLastPos(key);
 
 		if (el && ((el.i !== void 0 && el.i === i) || el === i)) {
@@ -1066,7 +1066,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
 			Snakeskin.forEach(
 				advDiff.sort(function (a, b) {
-					
+
 					if (a.val > b.val) {
 						return 1;
 					}
@@ -1079,7 +1079,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 				}),
 
 				function (el) {
-					
+
 
 					if (el.val < diff) {
 						adv += el.adv;
@@ -1269,7 +1269,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				}
 
 			// Простой ввод вне деклараций шаблона
-			} else if (!dirObj.openBlockI) {
+			} else if (!dirObj.structure.parent) {
 				// Для JSDoc все символы остаются неизменны,
 				// а в остальныхслучаях они игнорируются
 				if (!jsDoc) {
@@ -1361,7 +1361,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				// Поддержка коротких форм записи директив
 				Snakeskin.forEach(Snakeskin.Replacers, function (fn) {
-					
+
 					command = fn(command);
 				});
 
@@ -1460,7 +1460,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)_/g, function (sstr, pos) {
-			
+
 			return dirObj.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
@@ -2080,7 +2080,7 @@ var __NEJS_THIS__ = this;
  */
 Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "cdata" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2172,7 +2172,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 	// Окончание простых блоков
 	} else if (dirObj.isNotSysPos(openBlockI)) {
 		Snakeskin.forEach(dirObj.posCache, function (el, key) {
-			
+
 			el = dirObj.getLastPos(key);
 
 			if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
@@ -2193,7 +2193,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 
 	// Окончание системных блоков
 	Snakeskin.forEach(dirObj.sysPosCache, function (el, key) {
-		
+
 		el = dirObj.getLastPos(key);
 
 		if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
@@ -2544,7 +2544,7 @@ Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv
  */
 Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "return" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2587,7 +2587,7 @@ var __NEJS_THIS__ = this;
  */
 Snakeskin.Directions['call'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "call" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2619,7 +2619,7 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['void'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "void" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2660,7 +2660,7 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "var" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2705,7 +2705,7 @@ var __NEJS_THIS__ = this;
  */
 Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "block" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2894,7 +2894,7 @@ DirObj.prototype.lastBack = null;
  */
 Snakeskin.Directions['apply'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "apply" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2938,7 +2938,7 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dirObj, adv) {
  */
 Snakeskin.Directions['super'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "super" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -2976,7 +2976,7 @@ var __NEJS_THIS__ = this;
  */
 Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "forEach" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3021,7 +3021,7 @@ Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "forIn" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3066,7 +3066,7 @@ Snakeskin.Directions['forInEnd'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "for" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3092,7 +3092,7 @@ Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
  */
 Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "while" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3118,7 +3118,7 @@ Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
  */
 Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "repeat" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3196,7 +3196,7 @@ Snakeskin.Directions['continue'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['if'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "if" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3250,7 +3250,7 @@ Snakeskin.Directions['else'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['switch'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "switch can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3351,7 +3351,7 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['with'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "with" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
@@ -3594,7 +3594,7 @@ Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['data'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
-	if (!dirObj.openBlockI) {
+	if (!dirObj.structure.parent) {
 		throw dirObj.error('Directive "data" can only be used within a template or prototype, ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
