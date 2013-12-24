@@ -8,6 +8,7 @@
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или текст шаблонов
  * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
+ *
  * @param {Object=} [opt_info] - дополнительная информация о запуске
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
@@ -187,7 +188,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				let fnRes = Snakeskin.Directions[commandType](
 
 					commandType !== 'const' ?
-						command.replace(new RegExp('^' + commandType + '\\s+', 'm'), '') : command,
+						command.replace(new RegExp('^' + commandType + '\\s*', 'm'), '') : command,
 
 					commandLength,
 					dirObj,

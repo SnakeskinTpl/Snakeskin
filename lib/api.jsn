@@ -129,6 +129,10 @@ DirObj.prototype.save = function (str) {
 	}
 };
 
+DirObj.prototype.isSimpleOutput = function () {
+	return !this.parentTplName && !this.protoStart;
+};
+
 /**
  * Изменить результирующую строку
  * @param {string} str - исходная строка
