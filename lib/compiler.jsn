@@ -89,7 +89,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 			// Простой ввод внутри декларации шаблона
 			} else {
-				if (!dirObj.space) {
+				if (!dirObj.space && !dirObj.strongSpace) {
 					el = ' ';
 					dirObj.space = true;
 
@@ -287,8 +287,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
-	//console.log(dirObj.res);
-	console.log(dirObj.structure);
+	console.log(dirObj.res);
+	//console.log(dirObj.structure);
 
 	// Компиляция на сервере
 	if (require) {

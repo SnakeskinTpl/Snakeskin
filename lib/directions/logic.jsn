@@ -39,6 +39,12 @@ Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['elseIf'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "elseIf" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	if (dir.structure.name !== 'if') {
 		throw dir.error('Directive "elseIf" can only be used with a "if", ' +
 			dir.genErrorAdvInfo(adv.info)
@@ -62,6 +68,12 @@ Snakeskin.Directions['elseIf'] = function (command, commandLength, dir, adv) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['else'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "else" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	if (dir.structure.name !== 'if') {
 		throw dir.error('Directive "else" can only be used with a "if", ' +
 			dir.genErrorAdvInfo(adv.info)
@@ -94,7 +106,21 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 	dir.startDir('switch');
 	if (!dir.parentTplName && !dir.protoStart) {
 		dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
-		dir.space = true;
+		dir.strongSpace = true;
+	}
+};
+
+/**
+ * Окончание switch
+ *
+ * @param {string} command - текст команды
+ * @param {number} commandLength - длина команды
+ * @param {!DirObj} dir - объект управления директивами
+ */
+Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
+	if (dir.isSimpleOutput()) {
+		dir.save('}');
+		dir.strongSpace = false;
 	}
 };
 
@@ -114,7 +140,13 @@ Snakeskin.Replacers.push((cmd) => cmd.replace(/^end >/, 'end case'));
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
-	if (dir.structure.parent !== 'switch') {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "case" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	if (!dir.has('switch')) {
 		throw dir.error('Directive "case" can only be used within a "switch", ' +
 			dir.genErrorAdvInfo(adv.info)
 		);
@@ -123,6 +155,7 @@ Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
 	dir.startDir('case');
 	if (dir.isSimpleOutput()) {
 		dir.save('case ' + dir.prepareOutput(command, true) + ': {');
+		dir.strongSpace = false;
 	}
 };
 
@@ -136,7 +169,7 @@ Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
 Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
 	if (dir.isSimpleOutput()) {
 		dir.save('} break;');
-		dir.space = true;
+		dir.strongSpace = true;
 	}
 };
 

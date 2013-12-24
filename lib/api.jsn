@@ -154,12 +154,13 @@ DirObj.prototype.initCache = function (tplName) {
 	constICache[tplName] = {};
 };
 
-DirObj.prototype.startDir = function (name, params, opt_sys) {
+DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
 	var obj = {
 		name: name,
 		parent: this.structure,
 		childs: [],
-		params: params
+		params: opt_params,
+		isSys: !!opt_sys
 	};
 
 	this.structure.childs.push(obj);
@@ -170,6 +171,29 @@ DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
 };
 
+DirObj.prototype.has = function (name, opt_obj) {
+	var struct = this.structure;
+	var current = (opt_obj || struct).name;
+
+	if (current === name) {
+		return true;
+
+	} else if (struct.parent && (current === 'block' || current === 'proto')) {
+		return this.has(name, struct.parent);
+	}
+
+	return false;
+};
+
+DirObj.prototype.hasParent = function (name) {
+	var struct = this.structure;
+
+	if (struct.parent) {
+		return this.has(name, struct.parent);
+	}
+
+	return false;
+};
 
 /**
  * Удалить последнюю позицию блока

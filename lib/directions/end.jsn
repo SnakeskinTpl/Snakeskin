@@ -24,63 +24,26 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.openBlockI--;
-
-	var args = arguments;
-	var openBlockI = dir.openBlockI + 1,
-		res = false;
+	var obj = dir.structure;
 
 	// Если в директиве end указано название закрываемой директивы,
 	// то проверяем, чтобы оно совпадало с реально закрываемой директивой
-	function test(command, key) {
-		if (command !== 'end' && command !== key) {
-			throw dir.error('Invalid closing tag in the template, expected: ' +
-				key +
-				', declared: ' +
-				command +
-				', ' +
-				dir.genErrorAdvInfo(adv.info)
-			);
-		}
+	if (command && command !== obj.name) {
+		throw dir.error('Invalid closing tag in the template, expected: ' +
+			obj.name +
+			', declared: ' +
+			command +
+			', ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
 	}
 
-	// Окончание шаблона
-	if (dir.openBlockI === 0) {
-		Snakeskin.Directions.templateEnd.apply(Snakeskin, arguments);
+	if (Snakeskin.Directions[obj.name + 'End']) {
+		Snakeskin.Directions[obj.name + 'End'].apply(Snakeskin, arguments);
 
-	// Окончание простых блоков
-	} else if (dir.isNotSysPos(openBlockI)) {
-		Snakeskin.forEach(dir.posCache, (el, key) => {
-			el = dir.getLastPos(key);
-
-			if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
-				test(command, key);
-				res = true;
-
-				Snakeskin.Directions[key + 'End'].apply(Snakeskin, args);
-				return false;
-			}
-
-			return true;
-		});
-
-		if (!res && !dir.parentTplName && !dir.protoStart) {
-			dir.save('};');
-		}
+	} else if (!obj.isSys) {
+		dir.save('};');
 	}
-
-	// Окончание системных блоков
-	Snakeskin.forEach(dir.sysPosCache, (el, key) => {
-		el = dir.getLastPos(key);
-
-		if (el && ((el.i !== void 0 && el.i === openBlockI) || el === openBlockI)) {
-			test(command, key);
-			Snakeskin.Directions[key + 'End'].apply(Snakeskin, args);
-			return false;
-		}
-
-		return true;
-	});
 
 	dir.endDir();
 };
