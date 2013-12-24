@@ -184,10 +184,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
-				if (Snakeskin.strongDirs[commandType]) {
-					dirObj.strongDir = commandType;
-
-				} else if (dirObj.strongDir && Snakeskin.strongDirs[dirObj.strongDir][commandType]) {
+				if (dirObj.strongDir && Snakeskin.strongDirs[dirObj.strongDir][commandType]) {
 					dirObj.returnStrongDir = dirObj.strongDir;
 					dirObj.strongDir = null;
 				}
@@ -207,6 +204,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 						info: opt_info
 					}
 				);
+
+				if (Snakeskin.strongDirs[commandType]) {
+					dirObj.strongDir = commandType;
+				}
 
 				if (fnRes === false) {
 					begin = false;

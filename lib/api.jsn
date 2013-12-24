@@ -129,7 +129,13 @@ DirObj.prototype.save = function (str) {
 	}
 };
 
-DirObj.prototype.isSimpleOutput = function () {
+DirObj.prototype.isSimpleOutput = function (info) {
+	if (info && this.strongDir) {
+		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '", ' +
+			this.genErrorAdvInfo(info)
+		);
+	}
+
 	return !this.parentTplName && !this.protoStart;
 };
 

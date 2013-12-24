@@ -613,8 +613,14 @@ DirObj.prototype.save = function (str) {
 	}
 };
 
-DirObj.prototype.isSimpleOutput = function () {
+DirObj.prototype.isSimpleOutput = function (info) {
 	var __NEJS_THIS__ = this;
+	if (info && this.strongDir) {
+		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '", ' +
+			this.genErrorAdvInfo(info)
+		);
+	}
+
 	return !this.parentTplName && !this.protoStart;
 };
 
@@ -1405,10 +1411,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
-				if (Snakeskin.strongDirs[commandType]) {
-					dirObj.strongDir = commandType;
-
-				} else if (dirObj.strongDir && Snakeskin.strongDirs[dirObj.strongDir][commandType]) {
+				if (dirObj.strongDir && Snakeskin.strongDirs[dirObj.strongDir][commandType]) {
 					dirObj.returnStrongDir = dirObj.strongDir;
 					dirObj.strongDir = null;
 				}
@@ -1428,6 +1431,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 						info: opt_info
 					}
 				);
+
+				if (Snakeskin.strongDirs[commandType]) {
+					dirObj.strongDir = commandType;
+				}
 
 				if (fnRes === false) {
 					begin = false;
@@ -3183,7 +3190,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
 	}
 
 	dir.startDir('if');
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('if (' + dir.prepareOutput(command, true) + ') {');
 	}
 };
@@ -3213,7 +3220,7 @@ Snakeskin.Directions['elseIf'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('} else if (' + dir.prepareOutput(command, true) + ') {');
 	}
 };
@@ -3243,7 +3250,7 @@ Snakeskin.Directions['else'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('} else {');
 	}
 };
@@ -3273,7 +3280,7 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 	}
 
 	dir.startDir('switch');
-	if (!dir.parentTplName && !dir.protoStart) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
 		dir.strongSpace = true;
 	}
@@ -3326,7 +3333,7 @@ Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
 	}
 
 	dir.startDir('case');
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('case ' + dir.prepareOutput(command, true) + ': {');
 		dir.strongSpace = false;
 	}
@@ -3373,7 +3380,7 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	}
 
 	dir.startDir('default');
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('default: {');
 		dir.strongSpace = false;
 	}
