@@ -39,10 +39,9 @@ Snakeskin.Directions['block'] = function (command, commandLength, dir, adv) {
 		blockCache[tplName][command] = {from: dir.i - dir.startI + 1};
 	}
 
-	dir.pushPos('block', {
-		name: command,
-		i: ++dir.openBlockI
-	}, true);
+	dir.startDir('block', {
+		name: command
+	});
 };
 
 /**

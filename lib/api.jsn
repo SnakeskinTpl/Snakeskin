@@ -170,29 +170,6 @@ DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
 };
 
-/**
- * Добавить новую позицию блока
- *
- * @param {string} name - название блока
- * @param {*} val - значение
- * @param {?boolean=} opt_sys - если true, то блок системный
- */
-DirObj.prototype.pushPos = function (name, val, opt_sys) {
-	if (opt_sys) {
-		if (!this.sysPosCache[name]) {
-			this.sysPosCache[name] = [];
-		}
-
-		this.sysPosCache[name].push(val);
-
-	} else {
-		if (!this.posCache[name]) {
-			this.posCache[name] = [];
-		}
-
-		this.posCache[name].push(val);
-	}
-};
 
 /**
  * Удалить последнюю позицию блока
