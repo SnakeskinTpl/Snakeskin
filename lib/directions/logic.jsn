@@ -91,6 +91,11 @@ Snakeskin.Directions['else'] = function (command, commandLength, dir, adv) {
 	}
 };
 
+Snakeskin.strongDirs['switch'] = {
+	'case': true,
+	'default': true
+};
+
 /**
  * Директива switch
  *

@@ -3,6 +3,8 @@
  * @version 1.0.0
  */
 
+Snakeskin.sysDirs['with'] = true;
+
 /**
  * Директива with
  *

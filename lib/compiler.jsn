@@ -184,6 +184,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
+				if (Snakeskin.strongDirs[commandType]) {
+					dirObj.strongDir = commandType;
+
+				} else if (dirObj.strongDir && Snakeskin.strongDirs[dirObj.strongDir][commandType]) {
+					dirObj.returnStrongDir = dirObj.strongDir;
+					dirObj.strongDir = null;
+				}
+
 				// Обработка команд
 				let fnRes = Snakeskin.Directions[commandType](
 

@@ -9,6 +9,9 @@ var Snakeskin = {
 	Directions: {},
 	Replacers: [],
 
+	strongDirs: {},
+	sysDirs: {},
+
 	Filters: {},
 	BEM: {},
 	Vars: {},
@@ -19,8 +22,6 @@ var Snakeskin = {
 
 (function (require) {
 	var __NEJS_THIS__ = this;
-	'use strict';
-
 
 var __NEJS_THIS__ = this;
 /**

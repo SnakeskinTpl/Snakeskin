@@ -8,6 +8,9 @@ var Snakeskin = {
 	Directions: {},
 	Replacers: [],
 
+	strongDirs: {},
+	sysDirs: {},
+
 	Filters: {},
 	BEM: {},
 	Vars: {},
@@ -17,8 +20,6 @@ var Snakeskin = {
 };
 
 (function (require) {
-	'use strict';
-
 	//#if old.live
 	//#include es5shim.live.js
 	//#endif

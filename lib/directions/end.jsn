@@ -38,6 +38,15 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	if (Snakeskin.strongDirs[obj.name]) {
+		dir.strongDir = null;
+	}
+
+	if (dir.returnStrongDir) {
+		dir.strongDir = dir.returnStrongDir;
+		dir.returnStrongDir = null;
+	}
+
 	if (Snakeskin.Directions[obj.name + 'End']) {
 		Snakeskin.Directions[obj.name + 'End'].apply(Snakeskin, arguments);
 

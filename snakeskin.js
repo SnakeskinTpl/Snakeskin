@@ -9,6 +9,9 @@ var Snakeskin = {
 	Directions: {},
 	Replacers: [],
 
+	strongDirs: {},
+	sysDirs: {},
+
 	Filters: {},
 	BEM: {},
 	Vars: {},
@@ -19,8 +22,6 @@ var Snakeskin = {
 
 (function (require) {
 	var __NEJS_THIS__ = this;
-	'use strict';
-
 var __NEJS_THIS__ = this;
 /*!
  * Полифилы для старых ишаков
@@ -518,12 +519,6 @@ function DirObj(src, commonJS, dryRun) {
 	this.space = false;
 
 	/**
-	 * Если true, то последующие пробельный символы вырезаются
-	 * @type {boolean}
-	 */
-	this.strongSpace = false;
-
-	/**
 	 * Номер итерации
 	 * @type {number}
 	 */
@@ -673,7 +668,18 @@ DirObj.prototype.has = function (name, opt_obj) {
 	if (current === name) {
 		return true;
 
-	} else if (struct.parent && (current === 'block' || current === 'proto')) {
+	} else if (struct.parent && Snakeskin.sysDirs[current]) {
+		return this.has(name, struct.parent);
+	}
+
+	return false;
+};
+
+DirObj.prototype.hasParent = function (name) {
+	var __NEJS_THIS__ = this;
+	var struct = this.structure;
+
+	if (struct.parent) {
 		return this.has(name, struct.parent);
 	}
 
@@ -1398,6 +1404,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					.split(' ')[0];
 
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
+
+				if (Snakeskin.strongDirs[commandType]) {
+					dirObj.strongDir = commandType;
+
+				} else if (dirObj.strongDir && Snakeskin.strongDirs[dirObj.strongDir][commandType]) {
+					dirObj.returnStrongDir = dirObj.strongDir;
+					dirObj.strongDir = null;
+				}
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
@@ -2182,6 +2196,15 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	if (Snakeskin.strongDirs[obj.name]) {
+		dir.strongDir = null;
+	}
+
+	if (dir.returnStrongDir) {
+		dir.strongDir = dir.returnStrongDir;
+		dir.returnStrongDir = null;
+	}
+
 	if (Snakeskin.Directions[obj.name + 'End']) {
 		Snakeskin.Directions[obj.name + 'End'].apply(Snakeskin, arguments);
 
@@ -2653,6 +2676,8 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
+Snakeskin.sysDirs['block'] = true;
+
 /**
  * Директива block
  *
@@ -2721,6 +2746,8 @@ Snakeskin.Directions['blockEnd'] = function (command, commandLength, dir, adv) {
  * @status stable
  * @version 1.0.0
  */
+
+Snakeskin.sysDirs['proto'] = true;
 
 /**
  * Если true, то значит объявляется прототип
@@ -3149,6 +3176,12 @@ Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "if" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dir.startDir('if');
 	if (dir.isSimpleOutput()) {
 		dir.save('if (' + dir.prepareOutput(command, true) + ') {');
@@ -3213,6 +3246,11 @@ Snakeskin.Directions['else'] = function (command, commandLength, dir, adv) {
 	if (dir.isSimpleOutput()) {
 		dir.save('} else {');
 	}
+};
+
+Snakeskin.strongDirs['switch'] = {
+	'case': true,
+	'default': true
 };
 
 /**
@@ -3359,6 +3397,8 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
  * @status stable
  * @version 1.0.0
  */
+
+Snakeskin.sysDirs['with'] = true;
 
 /**
  * Директива with
