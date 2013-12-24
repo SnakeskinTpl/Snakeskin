@@ -10,12 +10,6 @@
 DirObj.prototype.startI = 0;
 
 /**
- * Количество открытых блоков
- * @type {number}
- */
-DirObj.prototype.openBlockI = 0;
-
-/**
  * Название шаблона
  * @type {?string}
  */
@@ -30,38 +24,36 @@ DirObj.prototype.parentTplName = null;
 /**
  * Директива template
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv) {
-	dirObj.startDir('template');
-
-	// Начальная позиция шаблона
-	// +1 => } >>
-	dirObj.startI = dirObj.i + 1;
-
-	// Имя + пространство имён шаблона
-	var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
-		tplName = dirObj.pasteDangerBlocks(tmpTplName);
-
-	dirObj.tplName = tplName;
-
-	// Если количество открытых блоков не совпадает с количеством закрытых,
-	// то кидаем исключение
-	if (dirObj.openBlockI) {
-		throw dirObj.error(
-			'Missing closing or opening tag in the template ' +
-			'(command: {' + command + '}, template: "' + tplName + ', ' + dirObj.genErrorAdvInfo(adv.info) + '")!'
+Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
+	if (dir.structure.parent) {
+		throw dir.error('Directive "template" can be used only within the global space, ' +
+			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 
+	dir.startDir('template');
+
+	// Начальная позиция шаблона
+	// +1 => } >>
+	dir.startI = dir.i + 1;
+
+	// Имя + пространство имён шаблона
+	var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
+		tplName = dir.pasteDangerBlocks(tmpTplName);
+
+	dir.tplName = tplName;
+
+	// При холостой обработке прерываем дальнейшее выполнение директивы
 	if (adv.dryRun) {
 		return;
 	}
@@ -69,18 +61,11 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Название родительского шаблона
 	var parentTplName;
 	if (/\s+extends\s+/m.test(command)) {
-		parentTplName = dirObj.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
-		dirObj.parentTplName = parentTplName;
+		parentTplName = dir.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
+		dir.parentTplName = parentTplName;
 	}
 
-	blockCache[tplName] = {};
-	protoCache[tplName] = {};
-	fromProtoCache[tplName] = 0;
-
-	constCache[tplName] = {};
-	fromConstCache[tplName] = 0;
-	constICache[tplName] = {};
-
+	dir.initCache(tplName);
 	extMap[tplName] = parentTplName;
 
 	// Входные параметры
@@ -89,7 +74,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Для возможности удобного пост-парсинга,
 	// каждая функция снабжается комментарием вида:
 	// /* Snakeskin template: название шаблона; параметры через запятую */
-	dirObj.save('/* Snakeskin template: ' + tplName + '; ' + params.replace(/=([\s\S]*?)(?:,|$)/gm, '') + ' */');
+	dir.save('/* Snakeskin template: ' + tplName + '; ' + params.replace(/=([\s\S]*?)(?:,|$)/gm, '') + ' */');
 
 	// Декларация функции
 	// с пространством имён или при экспорте в common.js
@@ -103,13 +88,13 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 			.split('.')
 			.reduce((str, el, i, data) => {
-				dirObj.save(
+				dir.save(
 					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
 						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
 					'}'
 				);
 
-				if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
+				if (el.indexOf('__ESCAPER_QUOT__') === 0) {
 					return str + '[' + el + ']';
 
 				} else if (i === data.length - 1) {
@@ -119,11 +104,11 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 				return str + '.' + el;
 			});
 
-		dirObj.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
+		dir.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
 
 	// Без простраства имён
 	} else {
-		dirObj.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
+		dir.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
 	}
 
 	// Входные параметры
@@ -166,7 +151,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	Snakeskin.forEach(params, (el, i) => {
 		var def = el.split('=');
 		def[0] = def[0].trim();
-		dirObj.save(def[0]);
+		dir.save(def[0]);
 
 		// Подмешивание родительских входных параметров
 		if (paramsCache[parentTplName] && !defParams) {
@@ -215,27 +200,28 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 		// После последнего параметра запятая не ставится
 		if (i !== params.length - 1) {
-			dirObj.save(',');
+			dir.save(',');
 		}
 	});
 
-	dirObj.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
-	dirObj.save('var TPL_NAME = \'' + dirObj.applyDefEscape(dirObj.pasteDangerBlocks(tmpTplName)) + '\';' +
+	dir.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
+	dir.save(
+		'var TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(tmpTplName)) + '\';' +
 		'var PARENT_TPL_NAME;'
 	);
 
 	if (parentTplName) {
-		dirObj.save('PARENT_TPL_NAME = \'' + dirObj.applyDefEscape(dirObj.pasteDangerBlocks(parentTplName)) + '\';');
+		dir.save('PARENT_TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(parentTplName)) + '\';');
 	}
 };
 
 /**
  * Окончание template
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
@@ -243,14 +229,14 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  * @return {?}
  */
-Snakeskin.Directions['teplateEnd'] = function (command, commandLength, dirObj, adv) {
-	var tplName = dirObj.tplName;
+Snakeskin.Directions['teplateEnd'] = function (command, commandLength, dir, adv) {
+	var tplName = dir.tplName;
 
 	// Вызовы не объявленных прототипов
-	if (dirObj.backHashI) {
-		throw dirObj.error(
-			'Proto "' + dirObj.lastBack + '" is not defined ' +
-			'(command: {' + command + '}, template: "' + tplName + ', ' + dirObj.genErrorAdvInfo(adv.info) + '")!'
+	if (dir.backHashI) {
+		throw dir.error(
+			'Proto "' + dir.lastBack + '" is not defined ' +
+			'(command: {' + command + '}, template: "' + tplName + ', ' + dir.genErrorAdvInfo(adv.info) + '")!'
 		);
 	}
 
@@ -258,58 +244,44 @@ Snakeskin.Directions['teplateEnd'] = function (command, commandLength, dirObj, a
 		return;
 	}
 
-	var source = dirObj.source,
-		i = dirObj.i,
-		startI = dirObj.startI;
-
 	// Кешируем тело шаблона
-	cache[tplName] = source.substring(startI, i - commandLength - 1);
+	cache[tplName] = dir.source.substring(dir.startI, dir.i - commandLength - 1);
 
 	// Обработка наследования:
 	// тело шаблона объединяется с телом родителя
 	// и обработка шаблона начинается заново,
 	// но уже как атомарного (без наследования)
-	var parentName = dirObj.parentTplName;
-	if (parentName) {
+	if (dir.parentTplName) {
 		// Результирующее тело шаблона
-		dirObj.source = source.substring(0, startI) +
-			dirObj.getExtStr(tplName, adv.info) +
-			source.substring(i - commandLength - 1);
+		dir.source = dir.source.substring(0, dir.startI) +
+			dir.getExtStr(tplName, adv.info) +
+			dir.source.substring(dir.i - commandLength - 1);
 
 		// Перемотка переменных
 		// (сбрасывание)
-		blockCache[tplName] = {};
+		dir.initCache(tplName);
+		dir.i = dir.startI - 1;
 
-		protoCache[tplName] = {};
-		fromProtoCache[tplName] = 0;
-
-		constCache[tplName] = {};
-		fromConstCache[tplName] = 0;
-		constICache[tplName] = {};
-
-		dirObj.i = startI - 1;
-		dirObj.openBlockI++;
-
-		if (Snakeskin.write[parentName] === false) {
-			dirObj.res = dirObj.res.replace(new RegExp('/\\* Snakeskin template: ' +
-				parentName.replace(/([.\[\]^$])/gm, '\\$1') +
+		if (Snakeskin.write[dir.parentTplName] === false) {
+			dir.res = dir.res.replace(new RegExp('/\\* Snakeskin template: ' +
+				dir.parentTplName.replace(/([.\[\]^$])/gm, '\\$1') +
 				';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
 			'');
 		}
 
-		dirObj.parentTplName = null;
+		dir.parentTplName = null;
 		return false;
 	}
 
-	dirObj.save(
+	dir.save(
 			'return __SNAKESKIN_RESULT__; };' +
 		'if (typeof Snakeskin !== \'undefined\') {' +
 			'Snakeskin.cache[\'' +
-				dirObj.applyDefEscape(dirObj.pasteDangerBlocks(tplName)) +
+				dir.applyDefEscape(dir.pasteDangerBlocks(tplName)) +
 			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
 		'}/* Snakeskin template. */'
 	);
 
-	dirObj.canWrite = true;
-	dirObj.tplName = null;
+	dir.canWrite = true;
+	dir.tplName = null;
 };

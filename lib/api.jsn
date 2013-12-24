@@ -143,6 +143,17 @@ DirObj.prototype.replace = function (str) {
 	}
 };
 
+DirObj.prototype.initCache = function (tplName) {
+	blockCache[tplName] = {};
+
+	protoCache[tplName] = {};
+	fromProtoCache[tplName] = 0;
+
+	constCache[tplName] = {};
+	fromConstCache[tplName] = 0;
+	constICache[tplName] = {};
+};
+
 DirObj.prototype.startDir = function (name, params, opt_sys) {
 	var obj = {
 		name: name,
@@ -151,13 +162,11 @@ DirObj.prototype.startDir = function (name, params, opt_sys) {
 		params: params
 	};
 
-	this.openBlockI++;
 	this.structure.childs.push(obj);
 	this.structure = obj;
 };
 
 DirObj.prototype.endDir = function () {
-	this.openBlockI--;
 	this.structure = this.structure.parent;
 };
 

@@ -5,6 +5,7 @@
 
 /**
  * Кеш переменных
+ * @type {!Object}
  */
 DirObj.prototype.varCache = {
 	init: function () {
@@ -18,36 +19,36 @@ Snakeskin.Replacers.push((cmd) => cmd.replace(/^:/, 'var '));
 /**
  * Директива var
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['var'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.structure.parent) {
-		throw dirObj.error('Directive "var" can only be used within a template or prototype, ' +
-			dirObj.genErrorAdvInfo(adv.info)
+Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "var" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 
-	var tplName = dirObj.tplName,
-		varName = command.split('=')[0].trim();
+	var varName = command.split('=')[0].trim();
 
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
-	if (constCache[tplName][varName] || constICache[tplName][varName]) {
-		throw dirObj.error(
+	if (constCache[dir.tplName][varName] || constICache[dir.tplName][varName]) {
+		throw dir.error(
 			'Variable "' + varName + '" is already defined as constant ' +
-				'(command: {var ' + command + '}, template: "' + tplName + ', ' +
-				dirObj.genErrorAdvInfo(adv.info) +
+				'(command: {var ' + command + '}, template: "' + dir.tplName + ', ' +
+				dir.genErrorAdvInfo(adv.info) +
 			'")!'
 		);
 	}
 
-	dirObj.varCache[varName] = true;
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		dirObj.save(dirObj.prepareOutput('var ' + command + ';', true));
+	dir.varCache[varName] = true;
+	if (dir.isSimpleOutput()) {
+		dir.save(dir.prepareOutput('var ' + command + ';', true));
 	}
 };
