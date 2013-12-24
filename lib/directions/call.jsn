@@ -6,7 +6,7 @@
 /**
  * Директива call
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
@@ -16,12 +16,12 @@
  */
 Snakeskin.Directions['call'] = function (command, commandLength, dirObj, adv) {
 	if (!dirObj.structure.parent) {
-		throw dirObj.error('Directive "call" can only be used within a template or prototype, ' +
+		throw dirObj.error('Directive "call" can only be used within a "template" or "proto", ' +
 			dirObj.genErrorAdvInfo(adv.info)
 		);
 	}
 
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
+	if (dir.isSimpleOutput()) {
 		dirObj.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
 };

@@ -6,7 +6,7 @@
 /**
  * Декларация параметров БЭМ блока
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  */
@@ -20,7 +20,7 @@ Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
 /**
  * Декларация БЭМ блока
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  */
@@ -39,7 +39,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 	var bemName = part[0];
 	lastBEM.original = Snakeskin.BEM[bemName] && Snakeskin.BEM[bemName].tag;
 
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
+	if (dir.isSimpleOutput()) {
 		part[0] += '\'';
 		command = part.join(',');
 
@@ -55,13 +55,13 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dirObj) {
 /**
  * Окончание БЭМ блока
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['bemEnd'] = function (command, commandLength, dirObj) {
 	var lastBEM = dirObj.popPos('bem');
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
+	if (dir.isSimpleOutput()) {
 		dirObj.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
 };

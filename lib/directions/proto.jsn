@@ -116,7 +116,7 @@ DirObj.prototype.lastBack = null;
 /**
  * Директива apply
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
