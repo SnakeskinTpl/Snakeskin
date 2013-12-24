@@ -21,6 +21,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('if');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('if (' + dirObj.prepareOutput(command, true) + ') {');
@@ -71,6 +72,7 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dirObj, adv) 
 		);
 	}
 
+	dirObj.startDir('switch');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('switch (' + dirObj.prepareOutput(command, true) + ') {');
@@ -90,6 +92,7 @@ Snakeskin.Replacers.push((cmd) => cmd.replace(/^end >/, 'end case'));
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['case'] = function (command, commandLength, dirObj) {
+	dirObj.startDir('case');
 	dirObj.pushPos('case', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('case ' + dirObj.prepareOutput(command, true) + ': {');
@@ -119,6 +122,7 @@ Snakeskin.Directions['caseEnd'] = function (command, commandLength, dirObj) {
  * @param {!DirObj} dirObj - объект управления директивами
  */
 Snakeskin.Directions['default'] = function (command, commandLength, dirObj) {
+	dirObj.startDir('default');
 	dirObj.pushPos('default', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('default: {');

@@ -11,23 +11,18 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{block foo}
-					{foo = 1}
-				{end}
-			{/template}
+				{if 1}
+					{if 1}
+					{end}
 
-			{template helloWorld2(name = 'world') extends helloWorld}
-				{foo = 2}
-
-				{block foo}
-					2
-					{super block foo}
+					{if 2}
+					{end}
 				{end}
 			{/template}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld2();
+			document.getElementById('test').innerHTML = helloWorld();
 		</script>
 	</body>
 </html>

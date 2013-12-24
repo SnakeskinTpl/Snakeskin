@@ -81,4 +81,6 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 
 		return true;
 	});
+
+	dirObj.endDir();
 };

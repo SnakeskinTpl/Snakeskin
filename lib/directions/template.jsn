@@ -1,5 +1,6 @@
-/*!
- * Директива template
+/**!
+ * @status stable
+ * @version 1.0.0
  */
 
 /**
@@ -27,18 +28,21 @@ DirObj.prototype.tplName = null;
 DirObj.prototype.parentTplName = null;
 
 /**
- * Декларация шаблона
+ * Директива template
  *
  * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
  *
+ * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
- * @param {!Object} adv - дополнительные параметры
+ *
+ * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv) {
+	dirObj.startDir('template');
+
 	// Начальная позиция шаблона
 	// +1 => } >>
 	dirObj.startI = dirObj.i + 1;
@@ -51,13 +55,12 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
-	if (dirObj.openBlockI !== 0) {
+	if (dirObj.openBlockI) {
 		throw dirObj.error(
 			'Missing closing or opening tag in the template ' +
 			'(command: {' + command + '}, template: "' + tplName + ', ' + dirObj.genErrorAdvInfo(adv.info) + '")!'
 		);
 	}
-	dirObj.openBlockI++;
 
 	if (adv.dryRun) {
 		return;
@@ -91,17 +94,19 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Декларация функции
 	// с пространством имён или при экспорте в common.js
 	if (/\.|\[/m.test(tmpTplName) || adv.commonJS) {
-		var lastName = '';
+		let lastName = '';
 
 		tmpTplName
 			// Заменяем [] на .
 			.replace(/\[/gm, '.')
 			.replace(/]/gm, '')
 
-			.split('.').reduce(function (str, el, i, data) {
-				dirObj.save('' +
+			.split('.')
+			.reduce((str, el, i, data) => {
+				dirObj.save(
 					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-					(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {}; }'
+						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
+					'}'
 				);
 
 				if (el.substring(0, 18) === '__SNAKESKIN_QUOT__') {
@@ -123,6 +128,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 	// Входные параметры
 	params = params.split(',');
+
 	// Если шаблон наследуется,
 	// то подмешиваем ко входым параметрам шаблона
 	// входные параметры родителя
@@ -131,15 +137,16 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Переинициализация входных параметров родительскими
 	// (только если нужно)
 	if (paramsCache[parentTplName]) {
-		Snakeskin.forEach(paramsCache[parentTplName], function (el) {
+		Snakeskin.forEach(paramsCache[parentTplName], (el) => {
 			var def = el.split('=');
+
 			// Здесь и далее по коду
 			// [0] - название переменной
 			// [1] - значение по умолчанию (опционально)
 			def[0] = def[0].trim();
 			def[1] = def[1] && def[1].trim();
 
-			Snakeskin.forEach(params, function (el2, i) {
+			Snakeskin.forEach(params, (el2, i) => {
 				var def2 = el2.split('=');
 				def2[0] = def2[0].trim();
 				def2[1] = def2[1] && def2[1].trim();
@@ -156,14 +163,14 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 	// Инициализация параметров по умолчанию
 	// (эээххх, когда же настанет ECMAScript 6 :()
 	var defParams = '';
-	Snakeskin.forEach(params, function (el, i) {
+	Snakeskin.forEach(params, (el, i) => {
 		var def = el.split('=');
 		def[0] = def[0].trim();
 		dirObj.save(def[0]);
 
 		// Подмешивание родительских входных параметров
 		if (paramsCache[parentTplName] && !defParams) {
-			Snakeskin.forEach(paramsCache[parentTplName], function (el) {
+			Snakeskin.forEach(paramsCache[parentTplName], (el) => {
 				var def = el.split('='),
 					local;
 
@@ -172,8 +179,9 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 
 				// true, если входной параметр родительского шаблона
 				// присутствует также в дочернем
-				Snakeskin.forEach(params, function (el) {
+				Snakeskin.forEach(params, (el) => {
 					var val = el.split('=');
+
 					val[0] = val[0].trim();
 					val[1] = val[1] && val[1].trim();
 
@@ -186,13 +194,11 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 				});
 
 				// Если входный параметр родителя отсутствует у ребёнка,
+				// но он имеет значение по умолчанию,
 				// то инициализируем его как локальную переменную шаблона
-				if (!local) {
-					// С параметром по умолчанию
-					if (def[1] !== void 0) {
-						defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
-						constICache[tplName][def[0]] = el;
-					}
+				if (!local && def[1] !== void 0) {
+					defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
+					constICache[tplName][def[0]] = el;
 				}
 			});
 		}
@@ -224,19 +230,20 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 };
 
 /**
- * Директива end для template
+ * Окончание template
  *
  * @param {string} command - название команды (или сама команда)
- * @param {number} commandLength - длина команды
  *
+ * @param {number} commandLength - длина команды
  * @param {!DirObj} dirObj - объект управления директивами
- * @param {!Object} adv - дополнительные параметры
+ *
+ * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  * @return {?}
  */
-Snakeskin.Directions.templateEnd = function (command, commandLength, dirObj, adv) {
+Snakeskin.Directions['teplateEnd'] = function (command, commandLength, dirObj, adv) {
 	var tplName = dirObj.tplName;
 
 	// Вызовы не объявленных прототипов

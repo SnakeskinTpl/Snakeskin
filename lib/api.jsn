@@ -52,7 +52,11 @@ function DirObj(src, commonJS, dryRun) {
 	 * Структура шаблоан
 	 * @type {!Object}
 	 */
-	this.structure = {};
+	this.structure = {
+		name: 'root',
+		parent: null,
+		childs: []
+	};
 
 	/**
 	 * Кеш позиций директив
@@ -133,6 +137,24 @@ DirObj.prototype.replace = function (str) {
 	if (this.canWrite) {
 		this.res = str;
 	}
+};
+
+DirObj.prototype.startDir = function (name, params, opt_sys) {
+	var obj = {
+		name: name,
+		parent: this.structure,
+		childs: [],
+		params: params
+	};
+
+	this.openBlockI++;
+	this.structure.childs.push(obj);
+	this.structure = obj;
+};
+
+DirObj.prototype.endDir = function () {
+	this.openBlockI--;
+	this.structure = this.structure.parent;
 };
 
 /**

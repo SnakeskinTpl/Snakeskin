@@ -530,6 +530,16 @@ function DirObj(src, commonJS, dryRun) {
 	this.openBlockI = 0;
 
 	/**
+	 * Структура шаблоан
+	 * @type {!Object}
+	 */
+	this.structure = {
+		name: 'root',
+		parent: null,
+		childs: []
+	};
+
+	/**
 	 * Кеш позиций директив
 	 * @type {!Object}
 	 */
@@ -611,6 +621,26 @@ DirObj.prototype.replace = function (str) {
 	if (this.canWrite) {
 		this.res = str;
 	}
+};
+
+DirObj.prototype.startDir = function (name, params) {
+	var __NEJS_THIS__ = this;
+	var obj = {
+		name: name,
+		parent: this.structure,
+		childs: [],
+		params: params
+	};
+
+	console.log(name, this.structure);
+
+	this.structure.childs.push(obj);
+	this.structure = obj;
+};
+
+DirObj.prototype.endDir = function () {
+	var __NEJS_THIS__ = this;
+	this.structure = this.structure.parent;
 };
 
 /**
@@ -1450,6 +1480,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	//console.log(dirObj.res);
+	console.log(dirObj.structure);
 
 	// Компиляция на сервере
 	if (require) {
@@ -2173,6 +2204,8 @@ Snakeskin.Directions['end'] = function (command, commandLength, dirObj, adv) {
 
 		return true;
 	});
+
+	dirObj.endDir();
 };
 var __NEJS_THIS__ = this;
 /*!
@@ -2235,7 +2268,9 @@ Snakeskin.Directions['template'] = function (command, commandLength, dirObj, adv
 			'(command: {' + command + '}, template: "' + tplName + ', ' + dirObj.genErrorAdvInfo(adv.info) + '")!'
 		);
 	}
+
 	dirObj.openBlockI++;
+	dirObj.startDir('template');
 
 	if (adv.dryRun) {
 		return;
@@ -2715,16 +2750,11 @@ Snakeskin.Directions['blockEnd'] = function (command, commandLength, dirObj, adv
 	var lastBlock = dirObj.popPos('block');
 	var block = blockCache[dirObj.tplName][lastBlock.name];
 
-
 	if (!adv.dryRun &&
 		((dirObj.parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !dirObj.parentTplName)
 	) {
 		block.to = dirObj.i - dirObj.startI - commandLength - 1;
-
-		if (!block.body) {
-			block.body = dirObj.source.substring(dirObj.startI).substring(block.from, block.to);
-			console.log(block.body);
-		}
+		block.body = dirObj.source.substring(dirObj.startI).substring(block.from, block.to);
 	}
 };var __NEJS_THIS__ = this;
 /*!
@@ -2952,6 +2982,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj, adv)
 		);
 	}
 
+	dirObj.startDir('forEach');
 	dirObj.pushPos('forEach', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var part = command.split('=>'),
@@ -2996,6 +3027,7 @@ Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('forIn');
 	dirObj.pushPos('forIn', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var part = command.split('=>'),
@@ -3040,6 +3072,7 @@ Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('for');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('for (' + dirObj.prepareOutput(command, true) + ') {');
@@ -3065,6 +3098,7 @@ Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('while');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('while (' + dirObj.prepareOutput(command, true) + ') {');
@@ -3090,6 +3124,7 @@ Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj, adv) 
 		);
 	}
 
+	dirObj.startDir('repeat');
 	dirObj.pushPos('repeat', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('do {');
@@ -3167,6 +3202,7 @@ Snakeskin.Directions['if'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('if');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('if (' + dirObj.prepareOutput(command, true) + ') {');
@@ -3220,6 +3256,7 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dirObj, adv) 
 		);
 	}
 
+	dirObj.startDir('switch');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('switch (' + dirObj.prepareOutput(command, true) + ') {');
@@ -3242,6 +3279,7 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['case'] = function (command, commandLength, dirObj) {
 	var __NEJS_THIS__ = this;
+	dirObj.startDir('case');
 	dirObj.pushPos('case', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('case ' + dirObj.prepareOutput(command, true) + ': {');
@@ -3273,6 +3311,7 @@ Snakeskin.Directions['caseEnd'] = function (command, commandLength, dirObj) {
  */
 Snakeskin.Directions['default'] = function (command, commandLength, dirObj) {
 	var __NEJS_THIS__ = this;
+	dirObj.startDir('default');
 	dirObj.pushPos('default', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('default: {');

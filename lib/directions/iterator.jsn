@@ -21,6 +21,7 @@ Snakeskin.Directions['forEach'] = function (command, commandLength, dirObj, adv)
 		);
 	}
 
+	dirObj.startDir('forEach');
 	dirObj.pushPos('forEach', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		let part = command.split('=>'),
@@ -63,6 +64,7 @@ Snakeskin.Directions['forIn'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('forIn');
 	dirObj.pushPos('forIn', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		let part = command.split('=>'),
@@ -105,6 +107,7 @@ Snakeskin.Directions['for'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('for');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('for (' + dirObj.prepareOutput(command, true) + ') {');
@@ -129,6 +132,7 @@ Snakeskin.Directions['while'] = function (command, commandLength, dirObj, adv) {
 		);
 	}
 
+	dirObj.startDir('while');
 	dirObj.openBlockI++;
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('while (' + dirObj.prepareOutput(command, true) + ') {');
@@ -153,6 +157,7 @@ Snakeskin.Directions['repeat'] = function (command, commandLength, dirObj, adv) 
 		);
 	}
 
+	dirObj.startDir('repeat');
 	dirObj.pushPos('repeat', ++dirObj.openBlockI);
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		dirObj.save('do {');
