@@ -21,6 +21,12 @@ Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "if" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dir.startDir('if');
 	if (dir.isSimpleOutput()) {
 		dir.save('if (' + dir.prepareOutput(command, true) + ') {');
@@ -117,7 +123,7 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
  */
-Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
+Snakeskin.Directions['switchEnd'] = function (command, commandLength, dir) {
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
 		dir.strongSpace = false;

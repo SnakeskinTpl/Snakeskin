@@ -518,6 +518,12 @@ function DirObj(src, commonJS, dryRun) {
 	this.space = false;
 
 	/**
+	 * Если true, то последующие пробельный символы вырезаются
+	 * @type {boolean}
+	 */
+	this.strongSpace = false;
+
+	/**
 	 * Номер итерации
 	 * @type {number}
 	 */
@@ -3242,7 +3248,7 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
  */
-Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
+Snakeskin.Directions['switchEnd'] = function (command, commandLength, dir) {
 	var __NEJS_THIS__ = this;
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
