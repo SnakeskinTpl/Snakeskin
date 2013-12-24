@@ -58,6 +58,8 @@ function DirObj(src, commonJS, dryRun) {
 		childs: []
 	};
 
+	this.inlineDir = null;
+
 	/**
 	 * Кеш позиций директив
 	 * @type {!Object}
@@ -161,12 +163,26 @@ DirObj.prototype.initCache = function (tplName) {
 };
 
 DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
+	this.inlineDir = false;
+
 	var obj = {
 		name: name,
 		parent: this.structure,
 		childs: [],
 		params: opt_params,
 		isSys: !!opt_sys
+	};
+
+	this.structure.childs.push(obj);
+	this.structure = obj;
+};
+
+DirObj.prototype.startInlineDir = function (name) {
+	this.inlineDir = true;
+
+	var obj = {
+		name: name,
+		parent: this.structure
 	};
 
 	this.structure.childs.push(obj);

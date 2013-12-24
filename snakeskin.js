@@ -540,6 +540,8 @@ function DirObj(src, commonJS, dryRun) {
 		childs: []
 	};
 
+	this.inlineDir = null;
+
 	/**
 	 * Кеш позиций директив
 	 * @type {!Object}
@@ -649,12 +651,27 @@ DirObj.prototype.initCache = function (tplName) {
 
 DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
 	var __NEJS_THIS__ = this;
+	this.inlineDir = false;
+
 	var obj = {
 		name: name,
 		parent: this.structure,
 		childs: [],
 		params: opt_params,
 		isSys: !!opt_sys
+	};
+
+	this.structure.childs.push(obj);
+	this.structure = obj;
+};
+
+DirObj.prototype.startInlineDir = function (name) {
+	var __NEJS_THIS__ = this;
+	this.inlineDir = true;
+
+	var obj = {
+		name: name,
+		parent: this.structure
 	};
 
 	this.structure.childs.push(obj);
@@ -1432,6 +1449,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					}
 				);
 
+				if (dirObj.inlineDir === true) {
+					dirObj.structure = dirObj.structure.parent;
+				}
+
 				if (Snakeskin.strongDirs[commandType]) {
 					dirObj.strongDir = commandType;
 				}
@@ -2131,6 +2152,7 @@ Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dir, 
 		);
 	}
 
+	dir.startInlineDir('cdata');
 	dir.isSimpleOutput(adv.info);
 	adv.info.line += parseInt(command);
 };var __NEJS_THIS__ = this;
