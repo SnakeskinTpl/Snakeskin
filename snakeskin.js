@@ -949,6 +949,11 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
 	var __NEJS_THIS__ = this;
 	return Escaper.paste(str, this.quotContent);
 };var __NEJS_THIS__ = this;
+/*!
+ * @status stable
+ * @version 1.0.0
+ */
+
 /**
  * Вернуть тело шаблона при наследовании
  * (супер мутная функция, уже не помню, как она работает :))
@@ -968,9 +973,9 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	}
 
 	var parentTpl = extMap[tplName],
-		res = cache[parentTpl],
+		res = cache[parentTpl];
 
-		from = 0,
+	var from = 0,
 		advDiff = [];
 
 	// Цикл производит перекрытие и добавление новых блоков (новые блоки добавляются в конец шаблона)
@@ -978,8 +983,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	// перекрытие и добавление новых переменных (итерации 2 и 3),
 	// а затем перекрытие и добавление прототипов (4-5 итерации),
 	// причём новые переменные и прототипы добавляются сразу за унаследованными
-	var i = -1;
-	while (++i < 6) {
+	for (var i = -1; ++i < 6;) {
 		// Блоки дочернего и родительского шаблона
 		var el,
 			prev;
@@ -1028,10 +1032,11 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 			// Вычисляем сдвиг
 			var diff = prev[key] ? prev[key].from : from;
-			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастани
-			Snakeskin.forEach(advDiff
-				.sort(function (a, b) {
-					var __NEJS_THIS__ = this;
+
+			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
+			Snakeskin.forEach(
+				advDiff.sort(function (a, b) {
+					
 					if (a.val > b.val) {
 						return 1;
 					}
@@ -1041,8 +1046,11 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 					}
 
 					return -1;
-				}), function (el) {
-					var __NEJS_THIS__ = this;
+				}),
+
+				function (el) {
+					
+
 					if (el.val < diff) {
 						adv += el.adv;
 
@@ -1051,7 +1059,8 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 					}
 
 					return true;
-				});
+				}
+			);
 
 			if (prev[key] && (i % 2 === 0)) {
 				// Новые глобальные блоки всегда добавляются в конец шаблона,
@@ -1440,7 +1449,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dirObj.res;
 	}
 
-	console.log(dirObj.res);
+	//console.log(dirObj.res);
 
 	// Компиляция на сервере
 	if (require) {
@@ -2704,13 +2713,18 @@ Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
 Snakeskin.Directions['blockEnd'] = function (command, commandLength, dirObj, adv) {
 	var __NEJS_THIS__ = this;
 	var lastBlock = dirObj.popPos('block');
+	var block = blockCache[dirObj.tplName][lastBlock.name];
+
+
 	if (!adv.dryRun &&
 		((dirObj.parentTplName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !dirObj.parentTplName)
 	) {
-		var block = blockCache[dirObj.tplName][lastBlock.name];
-
 		block.to = dirObj.i - dirObj.startI - commandLength - 1;
-		block.body = dirObj.source.substring(dirObj.startI).substring(block.from, block.to);
+
+		if (!block.body) {
+			block.body = dirObj.source.substring(dirObj.startI).substring(block.from, block.to);
+			console.log(block.body);
+		}
 	}
 };var __NEJS_THIS__ = this;
 /*!
@@ -2902,7 +2916,7 @@ Snakeskin.Directions['super'] = function (command, commandLength, dirObj, adv) {
 
 	if (!dirObj.parentTplName && !dirObj.protoStart) {
 		var type = command.split(' ');
-		console.log(command)
+		//console.log(command)
 
 		/*if (type[0] === 'block') {
 			console.log(121, blockCache[extMap[dirObj.tplName]][type[1]].body);
