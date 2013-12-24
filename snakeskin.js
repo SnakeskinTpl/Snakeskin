@@ -2131,6 +2131,7 @@ Snakeskin.Directions['__appendLine__'] = function (command, commandLength, dir, 
 		);
 	}
 
+	dir.isSimpleOutput(adv.info);
 	adv.info.line += parseInt(command);
 };var __NEJS_THIS__ = this;
 /**!
