@@ -6,36 +6,37 @@
 /**
  * Директива return
  *
- * @param {string} command - название команды (или сама команда)
+ * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['return'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.structure.parent) {
-		throw dirObj.error('Directive "return" can only be used within a template or prototype, ' +
-			dirObj.genErrorAdvInfo(adv.info)
+Snakeskin.Directions['return'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "return" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 
-	if (!dirObj.parentTplName && !dirObj.protoStart) {
-		if (dirObj.structure.name === 'template') {
-			if (command !== 'return') {
-				dirObj.save(dirObj.prepareOutput('return ' + command + ';', true));
+	//TODO: вернуться к этому куску
+	if (dir.isSimpleOutput()) {
+		if (dir.structure.name === 'template') {
+			if (command) {
+				dir.save(dir.prepareOutput('return ' + command + ';', true));
 
 			} else {
-				dirObj.save('return __SNAKESKIN_RESULT__;');
+				dir.save('return __SNAKESKIN_RESULT__;');
 			}
 
 
-		} else if (command !== 'return') {
-			dirObj.save(dirObj.prepareOutput('return ' + command + ';', true));
+		} else if (command) {
+			dir.save(dir.prepareOutput('return ' + command + ';', true));
 
 		} else {
-			dirObj.save('return;');
+			dir.save('return;');
 		}
 	}
 };
