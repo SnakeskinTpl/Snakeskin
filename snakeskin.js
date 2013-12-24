@@ -2167,7 +2167,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 	// Если в директиве end указано название закрываемой директивы,
 	// то проверяем, чтобы оно совпадало с реально закрываемой директивой
 	if (command && command !== obj.name) {
-		throw dir.error('Invalid closing tag in the template, expected: ' +
+		throw dir.error('Invalid closing tag, expected: ' +
 			obj.name +
 			', declared: ' +
 			command +
@@ -3316,7 +3316,13 @@ Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
  */
 Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
-	if (dir.structure.parent !== 'switch') {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "default" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	if (!dir.has('switch')) {
 		throw dir.error('Directive "default" can only be used within a "switch", ' +
 			dir.genErrorAdvInfo(adv.info)
 		);
@@ -3325,6 +3331,7 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	dir.startDir('default');
 	if (dir.isSimpleOutput()) {
 		dir.save('default: {');
+		dir.strongSpace = false;
 	}
 };
 
@@ -3339,7 +3346,7 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
 	var __NEJS_THIS__ = this;
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
-		dir.space = true;
+		dir.strongSpace = true;
 	}
 };var __NEJS_THIS__ = this;
 /**!

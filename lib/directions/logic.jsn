@@ -185,7 +185,13 @@ Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
-	if (dir.structure.parent !== 'switch') {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "default" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	if (!dir.has('switch')) {
 		throw dir.error('Directive "default" can only be used within a "switch", ' +
 			dir.genErrorAdvInfo(adv.info)
 		);
@@ -194,6 +200,7 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	dir.startDir('default');
 	if (dir.isSimpleOutput()) {
 		dir.save('default: {');
+		dir.strongSpace = false;
 	}
 };
 
@@ -207,6 +214,6 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
-		dir.space = true;
+		dir.strongSpace = true;
 	}
 };
