@@ -9,23 +9,23 @@
  * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
-	var tplName = dirObj.tplName,
-		parentName = dirObj.parentTplName,
-		protoStart = dirObj.protoStart;
+Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
+	var tplName = dir.tplName,
+		parentName = dir.parentTplName,
+		protoStart = dir.protoStart;
 
-	var i = dirObj.i,
-		startI = dirObj.startI;
+	var i = dir.i,
+		startI = dir.startI;
 
 	// Хак для экспорта console api
 	if (!parentName && !protoStart && /^console\./.test(command)) {
-		dirObj.save(dirObj.prepareOutput(command) + ';');
+		dir.save(dir.prepareOutput(command) + ';');
 		return;
 	}
 
@@ -35,36 +35,36 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			mod = varName.charAt(0);
 
 		if (tplName) {
-			if (!adv.dryRun && !dirObj.varCache[varName] && mod !== '#' && mod !== '@' &&
-				((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)
+			if (!adv.dryRun && !dir.varCache[varName] && mod !== '#' && mod !== '@' &&
+				((parentName && !dir.hasPos('block') && !dir.hasPos('proto')) || !parentName)
 			) {
 
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {
-					throw dirObj.error(
+					throw dir.error(
 						'Constant "' + varName + '" is already defined ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							dirObj.genErrorAdvInfo(adv.info) +
+							dir.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
 
 				// Попытка инициализировать переменную с зарезервированным именем
 				if (sysConst[varName]) {
-					throw dirObj.error(
+					throw dir.error(
 						'Can\'t declare constant "' + varName + '", try another name ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							dirObj.genErrorAdvInfo(adv.info) +
+							dir.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
 
 				// Попытка инициализации переменной внутри итератора
-				if (dirObj.hasPos('forEach') || dirObj.hasPos('forIn')) {
-					throw dirObj.error(
+				if (dir.hasPos('forEach') || dir.hasPos('forIn')) {
+					throw dir.error(
 						'Constant "' + varName + '" can\'t be defined in a iterator ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
-							dirObj.genErrorAdvInfo(adv.info) +
+							dir.genErrorAdvInfo(adv.info) +
 						'")!'
 					);
 				}
@@ -79,22 +79,22 @@ Snakeskin.Directions['const'] = function (command, commandLength, dirObj, adv) {
 			}
 
 			if (!parentName && !protoStart) {
-				if (!dirObj.varCache[varName] && mod !== '#' && mod !== '@') {
-					dirObj.save(dirObj.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
+				if (!dir.varCache[varName] && mod !== '#' && mod !== '@') {
+					dir.save(dir.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
 
 				} else {
-					dirObj.save(dirObj.prepareOutput(command + ';', true));
+					dir.save(dir.prepareOutput(command + ';', true));
 				}
 			}
 
 		} else {
-			dirObj.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
-				dirObj.prepareOutput(command, true, null, true) +
+			dir.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
+				dir.prepareOutput(command, true, null, true) +
 			'; }');
 		}
 
 	// Вывод переменных
 	} else if (!parentName && !protoStart && tplName) {
-		dirObj.save('__SNAKESKIN_RESULT__ += ' + dirObj.prepareOutput(command) + ';');
+		dir.save('__SNAKESKIN_RESULT__ += ' + dir.prepareOutput(command) + ';');
 	}
 };

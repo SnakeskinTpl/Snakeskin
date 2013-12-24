@@ -9,15 +9,15 @@
  * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['super'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.structure.parent) {
-		throw dirObj.error('Directive "super" can only be used within a "template" or "proto", ' +
-			dirObj.genErrorAdvInfo(adv.info)
+Snakeskin.Directions['super'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "super" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 

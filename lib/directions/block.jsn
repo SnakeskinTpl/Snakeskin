@@ -9,39 +9,39 @@
  * @param {string} command - текст команды
  *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['block'] = function (command, commandLength, dirObj, adv) {
-	if (!dirObj.structure.parent) {
-		throw dirObj.error('Directive "block" can only be used within a "template" or "proto", ' +
-			dirObj.genErrorAdvInfo(adv.info)
+Snakeskin.Directions['block'] = function (command, commandLength, dir, adv) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "block" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 
-	var tplName = dirObj.tplName,
-		parentName = dirObj.parentTplName;
+	var tplName = dir.tplName,
+		parentName = dir.parentTplName;
 
-	if (!adv.dryRun && ((parentName && !dirObj.hasPos('block') && !dirObj.hasPos('proto')) || !parentName)) {
+	if (!adv.dryRun && ((parentName && !dir.hasPos('block') && !dir.hasPos('proto')) || !parentName)) {
 		// Попытка декларировать блок несколько раз
 		if (blockCache[tplName][command]) {
-			throw dirObj.error(
+			throw dir.error(
 				'Block "' + command + '" is already defined ' +
 				'(command: {block ' + command + '}, template: "' + tplName + ', ' +
-					dirObj.genErrorAdvInfo(adv.info) +
+					dir.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
 
-		blockCache[tplName][command] = {from: dirObj.i - dirObj.startI + 1};
+		blockCache[tplName][command] = {from: dir.i - dir.startI + 1};
 	}
 
-	dirObj.pushPos('block', {
+	dir.pushPos('block', {
 		name: command,
-		i: ++dirObj.openBlockI
+		i: ++dir.openBlockI
 	}, true);
 };
 
