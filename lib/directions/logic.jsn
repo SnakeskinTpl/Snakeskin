@@ -203,16 +203,3 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 		dir.save('default: {');
 	}
 };
-
-/**
- * Окончание default
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
-	if (dir.isSimpleOutput()) {
-		dir.save('}');
-	}
-};
