@@ -632,12 +632,18 @@ DirObj.prototype.save = function (str) {
 	}
 };
 
-
-DirObj.prototype.isSimpleOutput = function (info) {
+/**
+ * Вернуть true,
+ * если возможна запись в результирующую строку JavaScript
+ *
+ * @param {Object=} [opt_info] - информация о шаблоне (название файлы, узла и т.д.)
+ * @return {boolean}
+ */
+DirObj.prototype.isSimpleOutput = function (opt_info) {
 	var __NEJS_THIS__ = this;
-	if (info && this.strongDir) {
+	if (opt_info && this.strongDir) {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '", ' +
-			this.genErrorAdvInfo(info)
+			this.genErrorAdvInfo(opt_info)
 		);
 	}
 
@@ -655,6 +661,10 @@ DirObj.prototype.replace = function (str) {
 	}
 };
 
+/**
+ * Инициализировать кеш для шаблона
+ * @param {string} tplName - название шаблона
+ */
 DirObj.prototype.initCache = function (tplName) {
 	var __NEJS_THIS__ = this;
 	blockCache[tplName] = {};
@@ -667,6 +677,12 @@ DirObj.prototype.initCache = function (tplName) {
 	constICache[tplName] = {};
 };
 
+/**
+ * Декларировать начало блочной директивы
+ *
+ * @param {string} name - название директивы
+ * @param {Object=} [opt_params] - дополнительные параметры директивы
+ */
 DirObj.prototype.startDir = function (name, opt_params) {
 	var __NEJS_THIS__ = this;
 	this.inlineDir = false;
@@ -674,6 +690,7 @@ DirObj.prototype.startDir = function (name, opt_params) {
 	var vars = {};
 	var struct = this.structure;
 
+	// Установка ссылок на локальные переменные родительское директивы
 	if (struct.vars) {
 		var parentVars = struct.vars;
 		for (var key in parentVars) {
@@ -698,6 +715,12 @@ DirObj.prototype.startDir = function (name, opt_params) {
 	this.structure = obj;
 };
 
+/**
+ * Декларировать начало строчной директивы
+ *
+ * @param {string} name - название директивы
+ * @param {Object=} [opt_params] - дополнительные параметры директивы
+ */
 DirObj.prototype.startInlineDir = function (name, opt_params) {
 	var __NEJS_THIS__ = this;
 	this.inlineDir = true;
@@ -712,11 +735,22 @@ DirObj.prototype.startInlineDir = function (name, opt_params) {
 	this.structure = obj;
 };
 
+/**
+ * Декларировать конец директивы
+ */
 DirObj.prototype.endDir = function () {
 	var __NEJS_THIS__ = this;
 	this.structure = this.structure.parent;
 };
 
+/**
+ * Проверить начилие директивы в цепочке структуры,
+ * начиная с активной
+ *
+ * @param {string} name - название директивы
+ * @param {Object=} [opt_obj=this.structure] - проверяемый объект
+ * @return {boolean}
+ */
 DirObj.prototype.has = function (name, opt_obj) {
 	var __NEJS_THIS__ = this;
 	var struct = this.structure;
@@ -732,6 +766,13 @@ DirObj.prototype.has = function (name, opt_obj) {
 	return false;
 };
 
+/**
+ * Проверить начилие директивы в цепочке родителей активной
+ * (сама активная дирекктива исключается)
+ *
+ * @param {string} name - название директивы
+ * @return {boolean}
+ */
 DirObj.prototype.hasParent = function (name) {
 	var __NEJS_THIS__ = this;
 	var struct = this.structure;
@@ -1408,7 +1449,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Запись команды
 		if (begin) {
-			if (beginStr && dir.structure.parent && !dir.protoStart) {
+			if (beginStr && dir.isSimpleOutput()) {
 				dir.save('\';');
 				beginStr = false;
 			}
@@ -1438,21 +1479,20 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 			command += el;
 
 		// Запись строки
-		} else if (!dir.protoStart) {
+		} else {
 			if (dir.strongDir) {
 				throw dir.error('Text can not be used with a "' + dir.strongDir + '", ' +
 					dir.genErrorAdvInfo(opt_info)
 				);
 			}
 
-			if (!beginStr && dir.structure.parent) {
-				dir.save('__SNAKESKIN_RESULT__ += \'');
-				beginStr = true;
-			}
+			if (dir.isSimpleOutput()) {
+				if (!beginStr) {
+					dir.save('__SNAKESKIN_RESULT__ += \'');
+					beginStr = true;
+				}
 
-			if (!dir.parentTplName) {
 				dir.save(dir.applyDefEscape(el));
-
 				if (!beginStr) {
 					jsDoc = false;
 				}
