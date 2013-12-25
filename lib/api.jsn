@@ -202,12 +202,13 @@ DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
 	this.structure = obj;
 };
 
-DirObj.prototype.startInlineDir = function (name) {
+DirObj.prototype.startInlineDir = function (name, opt_params) {
 	this.inlineDir = true;
 
 	var obj = {
 		name: name,
-		parent: this.structure
+		parent: this.structure,
+		params: opt_params
 	};
 
 	this.structure.childs.push(obj);

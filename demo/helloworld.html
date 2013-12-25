@@ -12,16 +12,9 @@
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
 				{:a = 1}
-				{switch a}
-					{block a}
-						{cdata}
-							1
-						{/cdata}
-						{default}
-							1
-						{end}
-					{/block}
-				{end}
+				{if 1}
+					{:a = 1}
+				{/if}
 			{/template}
 		</script>
 		<script>
