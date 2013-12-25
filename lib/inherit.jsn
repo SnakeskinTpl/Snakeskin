@@ -64,49 +64,45 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 			newFrom = null;
 		}
 
+		let blockDiff;
 		for (let key in el) {
 			if (!el.hasOwnProperty(key)) { continue; }
 
 			// Сдвиг относительно родительской позиции элемента
-			var adv = 0;
+			let adv = 0;
 
 			// Текст добавляемой области
 			let block = cache[tplName].substring(el[key].from, el[key].to);
 
 			// Разница между дочерним и родительским блоком
 			if (prev[key]) {
-				var blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
+				blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
 			}
 
 			// Вычисляем сдвиг
-			var diff = prev[key] ? prev[key].from : from;
+			let diff = prev[key] ? prev[key].from : from;
 
 			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
-			Snakeskin.forEach(
-				advDiff.sort((a, b) => {
-					if (a.val > b.val) {
-						return 1;
-					}
-
-					if (a.val === b.val) {
-						return 0;
-					}
-
-					return -1;
-				}),
-
-				(el) => {
-
-					if (el.val < diff) {
-						adv += el.adv;
-
-					} else {
-						return false;
-					}
-
-					return true;
+			advDiff.sort((a, b) => {
+				if (a.val > b.val) {
+					return 1;
 				}
-			);
+
+				if (a.val === b.val) {
+					return 0;
+				}
+
+				return -1;
+			});
+
+			for (let j = 0; j < advDiff.length; j++) {
+				if (advDiff[j].val < diff) {
+					adv += advDiff[j].adv;
+
+				} else {
+					break;
+				}
+			}
 
 			if (prev[key] && (i % 2 === 0)) {
 				// Новые глобальные блоки всегда добавляются в конец шаблона,
