@@ -519,7 +519,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				fbody = pCount ?
 					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
-			filter = filter.reduce(function (arr, el) {
+			filter = filter.reduce((arr, el) => {
 				if (el !== '!html') {
 					arr.push(el);
 
