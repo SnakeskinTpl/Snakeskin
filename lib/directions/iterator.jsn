@@ -103,9 +103,14 @@ Snakeskin.Directions['for'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.startDir('for');
+	dir.startDir('for', {
+		open: true.valueOf,
+		i: 0
+	});
+
 	if (dir.isSimpleOutput()) {
-		dir.save('for (' + dir.prepareOutput(command, true) + ') {');
+		dir.save('for (');
+		dir.strongSpace = true;
 	}
 };
 

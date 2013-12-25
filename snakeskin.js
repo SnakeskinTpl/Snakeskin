@@ -2777,14 +2777,35 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 
 	var realVar = '__' + varName + '_' + dir.structure.name + '_' + dir.i;
 
-	dir.structure.vars[varName] = realVar;
+	var dirStruct = dir.structure;
+
+	dirStruct.vars[varName] = realVar;
 	dir.varCache[varName] = true;
 
 	//dir.startInlineDir('var');
 
 	if (dir.isSimpleOutput()) {
 		struct[0] = realVar + ' ';
-		dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
+
+		if (dirStruct.name === 'for' && dirStruct.params.open) {
+			var params = dirStruct.params;
+			var prev = '';
+
+			if (!params.vars) {
+				prev += 'var ';
+				dirStruct.params.vars = true;
+			}
+
+			var end = command.slice(-1) !== ',';
+			if (end) {
+				params.i++;
+			}
+
+			dir.save(dir.prepareOutput(prev + struct.join('=') + (end ? ';' : ''), true));
+
+		} else {
+			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
+		}
 	}
 };
 var __NEJS_THIS__ = this;
@@ -3167,9 +3188,14 @@ Snakeskin.Directions['for'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.startDir('for');
+	dir.startDir('for', {
+		open: true.valueOf,
+		i: 0
+	});
+
 	if (dir.isSimpleOutput()) {
-		dir.save('for (' + dir.prepareOutput(command, true) + ') {');
+		dir.save('for (');
+		dir.strongSpace = true;
 	}
 };
 
