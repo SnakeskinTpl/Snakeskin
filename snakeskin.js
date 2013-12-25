@@ -4,7 +4,7 @@ var __NEJS_THIS__ = this;
  */
 
 var Snakeskin = {
-	VERSION: [2, 5, 0].join('.'),
+	VERSION: [3, 0, 0].join('.'),
 
 	Directions: {},
 	Replacers: [],
@@ -24,7 +24,9 @@ var Snakeskin = {
 	var __NEJS_THIS__ = this;
 var __NEJS_THIS__ = this;
 /*!
- * Полифилы для старых ишаков
+ * Полифилы для старых браузеров
+ * @status stable
+ * @version 1.0.0
  */
 
 if (!Array.isArray) {
@@ -145,8 +147,9 @@ Snakeskin.forIn = function (obj, callback, opt_ctx) {
 		}
 	}
 };var __NEJS_THIS__ = this;
-/*!
- * Стандартные фильтры
+/**!
+ * @status stable
+ * @version 1.0.0
  */
 
 var entityMap = {
@@ -380,20 +383,22 @@ Snakeskin.Filters.replace = function (str, search, replace) {
 /**
  * Преобразовать объект в строку JSON
  *
- * @param {(!Object|!Array)} val - исходный объект
+ * @param {(Object|Array|string|number|boolean)} obj - исходный объект
  * @return {string}
  */
-Snakeskin.Filters.json = function (val) {
+Snakeskin.Filters.json = function (obj) {
 	var __NEJS_THIS__ = this;
-	if (typeof val === 'object') {
-		return JSON.stringify(val);
+	if (typeof obj === 'object') {
+		return JSON.stringify(obj);
 	}
 
-	return (val + '');
+	return (obj + '');
 };
 var __NEJS_THIS__ = this;
 /*!
- * Полифилы для старых ишаков
+ * Полифилы для старых браузеров
+ * @status stable
+ * @version 1.0.0
  */
 
 if (!Array.prototype.reduce) {
@@ -407,8 +412,8 @@ if (!Array.prototype.reduce) {
 	 */
 	Array.prototype.reduce = function (callback, opt_initialValue) {
 		var __NEJS_THIS__ = this;
-		var i = -1,
-			aLength = this.length,
+		var i = -1;
+		var length = this.length,
 			res;
 
 		if (opt_initialValue !== void 0) {
@@ -419,7 +424,7 @@ if (!Array.prototype.reduce) {
 			res = this[0];
 		}
 
-		while (++i < aLength) {
+		while (++i < length) {
 			res = callback(res, this[i], i, this);
 		}
 
@@ -566,6 +571,8 @@ function DirObj(src, commonJS, dryRun) {
 	 * @type {Object}
 	 */
 	this.returnStrongDir = null;
+
+	this.cache = {};
 
 	/**
 	 * Кеш позиций директив
@@ -1294,7 +1301,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
-	dir.sysPosCache['with'] = opt_scope;
+	dir.cache['with'] = opt_scope || [];
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;
@@ -1916,8 +1923,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	// Количество слов для пропуска
 	var posNWord = 0;
 
-	var useWith = this.hasPos('with'),
-		scope = this.getPos('with');
+	var scope = this.cache['with'],
+		useWith = scope.length;
 
 	// Сдвиги
 	var wordAddEnd = 0,
@@ -3498,6 +3505,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.cache['with'].push(command);
 	dir.startDir('with', {
 		scope: command
 	}, true);

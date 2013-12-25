@@ -41,7 +41,7 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 	dir.startDir('proto', {
 		name: command,
 		startI: dir.i + 1
-	}, true);
+	});
 
 	if (!dir.parentTplName) {
 		dir.protoStart = true;

@@ -4,7 +4,7 @@ var __NEJS_THIS__ = this;
  */
 
 var Snakeskin = {
-	VERSION: [2, 5, 0].join('.'),
+	VERSION: [3, 0, 0].join('.'),
 
 	Directions: {},
 	Replacers: [],
@@ -114,8 +114,9 @@ Snakeskin.forIn = function (obj, callback, opt_ctx) {
 		}
 	}
 };var __NEJS_THIS__ = this;
-/*!
- * Стандартные фильтры
+/**!
+ * @status stable
+ * @version 1.0.0
  */
 
 var entityMap = {
@@ -349,16 +350,16 @@ Snakeskin.Filters.replace = function (str, search, replace) {
 /**
  * Преобразовать объект в строку JSON
  *
- * @param {(!Object|!Array)} val - исходный объект
+ * @param {(Object|Array|string|number|boolean)} obj - исходный объект
  * @return {string}
  */
-Snakeskin.Filters.json = function (val) {
+Snakeskin.Filters.json = function (obj) {
 	var __NEJS_THIS__ = this;
-	if (typeof val === 'object') {
-		return JSON.stringify(val);
+	if (typeof obj === 'object') {
+		return JSON.stringify(obj);
 	}
 
-	return (val + '');
+	return (obj + '');
 };
 
 

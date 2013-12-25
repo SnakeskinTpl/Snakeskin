@@ -189,7 +189,7 @@ DirObj.prototype.initCache = function (tplName) {
 	constICache[tplName] = {};
 };
 
-DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
+DirObj.prototype.startDir = function (name, opt_params) {
 	this.inlineDir = false;
 
 	var obj = {
@@ -197,7 +197,7 @@ DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
 		parent: this.structure,
 		childs: [],
 		params: opt_params,
-		isSys: !!opt_sys
+		isSys: !!Snakeskin.sysDirs[name]
 	};
 
 	this.structure.childs.push(obj);
