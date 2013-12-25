@@ -1383,8 +1383,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 			// Упраляющая конструкция завершилась
 			} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
-				begin = false;
+				if (!command) {
+					throw dir.error('Directive is not defined, ' +
+						dir.genErrorAdvInfo(opt_info)
+					);
+				}
 
+				begin = false;
 				var commandLength = command.length;
 				command = dir.replaceDangerBlocks(command).trim();
 
@@ -1411,6 +1416,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 					};
 
 					dir.strongDir = null;
+					dir.strongSpace = false;
 				}
 
 				// Обработка команд
@@ -1435,6 +1441,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				if (Snakeskin.strongDirs[commandType]) {
 					dir.strongDir = commandType;
+					dir.strongSpace = true;
 				}
 
 				if (fnRes === false) {
@@ -2235,6 +2242,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 
 	if (dir.returnStrongDir && dir.returnStrongDir.child === obj.name) {
 		dir.strongDir = dir.returnStrongDir.dir;
+		dir.strongSpace = true;
 		dir.returnStrongDir = null;
 	}
 
@@ -3244,12 +3252,6 @@ Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "if" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
 	dir.startDir('if');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('if (' + dir.prepareOutput(command, true) + ') {');
@@ -3343,7 +3345,6 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 	dir.startDir('switch');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
-		dir.strongSpace = true;
 	}
 };
 
@@ -3358,7 +3359,6 @@ Snakeskin.Directions['switchEnd'] = function (command, commandLength, dir) {
 	var __NEJS_THIS__ = this;
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
-		dir.strongSpace = false;
 	}
 };
 
@@ -3396,7 +3396,6 @@ Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
 	dir.startDir('case');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('case ' + dir.prepareOutput(command, true) + ': {');
-		dir.strongSpace = false;
 	}
 };
 
@@ -3411,7 +3410,6 @@ Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
 	var __NEJS_THIS__ = this;
 	if (dir.isSimpleOutput()) {
 		dir.save('} break;');
-		dir.strongSpace = true;
 	}
 };
 
@@ -3443,7 +3441,6 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	dir.startDir('default');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('default: {');
-		dir.strongSpace = false;
 	}
 };
 
@@ -3458,7 +3455,6 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
 	var __NEJS_THIS__ = this;
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
-		dir.strongSpace = true;
 	}
 };var __NEJS_THIS__ = this;
 /**!
