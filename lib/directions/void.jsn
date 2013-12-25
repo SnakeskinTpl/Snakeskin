@@ -25,7 +25,7 @@ Snakeskin.Directions['void'] = function (command, commandLength, dir, adv) {
 	}
 
 	dir.startInlineDir('void');
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save(dir.prepareOutput(command) + ';');
 	}
 };

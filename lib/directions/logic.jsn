@@ -114,19 +114,6 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 	}
 };
 
-/**
- * Окончание switch
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['switchEnd'] = function (command, commandLength, dir) {
-	if (dir.isSimpleOutput()) {
-		dir.save('}');
-	}
-};
-
 // Короткая форма директивы case
 Snakeskin.Replacers.push((cmd) => cmd.replace(/^>/, 'case '));
 Snakeskin.Replacers.push((cmd) => cmd.replace(/^end >/, 'end case'));
