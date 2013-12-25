@@ -518,7 +518,7 @@ function DirObj(src, commonJS, dryRun) {
 	this.canWrite = true;
 
 	/**
-	 * Если true и strongSpace = true, то последующие пробельный символы вырезаются
+	 * Если true и strongSpace = true, то последующие пробельные символы вырезаются
 	 * @type {boolean}
 	 */
 	this.space = false;
@@ -571,20 +571,6 @@ function DirObj(src, commonJS, dryRun) {
 	 * @type {Object}
 	 */
 	this.returnStrongDir = null;
-
-	this.cache = {};
-
-	/**
-	 * Кеш позиций директив
-	 * @type {!Object}
-	 */
-	this.posCache = {};
-
-	/**
-	 * Кеш позиций системных директив
-	 * @type {!Object}
-	 */
-	this.sysPosCache = {};
 
 	/**
 	 * Содержимое скобок
@@ -755,107 +741,6 @@ DirObj.prototype.hasParent = function (name) {
 	}
 
 	return false;
-};
-
-DirObj.prototype.hasParent = function (name) {
-	var __NEJS_THIS__ = this;
-	var struct = this.structure;
-
-	if (struct.parent) {
-		return this.has(name, struct.parent);
-	}
-
-	return false;
-};
-
-/**
- * Удалить последнюю позицию блока
- *
- * @param {string} name - название блока
- * @return {*}
- */
-DirObj.prototype.popPos = function (name) {
-	var __NEJS_THIS__ = this;
-	if (this.sysPosCache[name]) {
-		return this.sysPosCache[name].pop();
-	}
-
-	return this.posCache[name].pop();
-};
-
-/**
- * Вернуть позиции блока
- *
- * @param {string} name - название блока
- * @return {!Array}
- */
-DirObj.prototype.getPos = function (name) {
-	var __NEJS_THIS__ = this;
-	if (this.sysPosCache[name]) {
-		return this.sysPosCache[name];
-	}
-
-	return this.posCache[name];
-};
-
-/**
- * Вернуть true, если у блока есть позиции
- *
- * @param {string} name - название блока
- * @return {boolean}
- */
-DirObj.prototype.hasPos = function (name) {
-	var __NEJS_THIS__ = this;
-	if (this.sysPosCache[name]) {
-		return !!this.sysPosCache[name].length;
-	}
-
-	return !!(this.posCache[name] && this.posCache[name].length);
-};
-
-/**
- * Вернуть последнюю позицию блока
- *
- * @param {string} name - название блока
- * @return {*}
- */
-DirObj.prototype.getLastPos = function (name) {
-	var __NEJS_THIS__ = this;
-	if (this.sysPosCache[name]) {
-		if (this.sysPosCache[name].length) {
-			return this.sysPosCache[name][this.sysPosCache[name].length - 1];
-		}
-
-	} else {
-		if (this.posCache[name] && this.posCache[name].length) {
-			return this.posCache[name][this.posCache[name].length - 1];
-		}
-	}
-};
-
-/**
- * Вернуть true, если позиция не системная
- *
- * @param {number} i - номер позиции
- * @return {boolean}
- */
-DirObj.prototype.isNotSysPos = function (i) {
-	var __NEJS_THIS__ = this;
-	var res = true;
-
-	Snakeskin.forEach(this.sysPosCache, function (el, key) {
-		
-		el = __NEJS_THIS__.getLastPos(key);
-
-		if (el && ((el.i !== void 0 && el.i === i) || el === i)) {
-			res = false;
-			return false;
-		}
-
-		return true;
-	});
-
-	return res;
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -1318,7 +1203,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
 
 	// Устанавливаем scope
-	dir.cache['with'] = opt_scope || [];
+	dir.scopeCache = opt_scope || dir.scopeCache;
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;
@@ -1579,7 +1464,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	// то кидаем исключение
 	if (dir.structure.parent) {
 		throw dir.error('Missing closing or opening tag in the template, ' +
-			dir.genErrorAdvInfo(opt_info) + '")!');
+			dir.genErrorAdvInfo(opt_info) +
+		'")!');
 	}
 
 	dir.res = dir.pasteDangerBlocks(dir.res)
@@ -1606,7 +1492,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	console.log(dir.res);
-	//console.log(dirObj.structure);
 
 	// Компиляция на сервере
 	if (require) {
@@ -1941,7 +1826,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	// Количество слов для пропуска
 	var posNWord = 0;
 
-	var scope = this.cache['with'],
+	var scope = this.scopeCache,
 		useWith = scope.length;
 
 	// Сдвиги
@@ -3541,6 +3426,16 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
  * @version 1.0.0
  */
 
+/**
+ * Кеш переменных
+ */
+DirObj.prototype.scopeCache = {
+	init: function () {
+		var __NEJS_THIS__ = this;
+		return [];
+	}
+};
+
 Snakeskin.sysDirs['with'] = true;
 
 /**
@@ -3562,7 +3457,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.cache['with'].push(command);
+	dir.scopeCache.push(command);
 	dir.startDir('with', {
 		scope: command
 	});

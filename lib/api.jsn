@@ -143,11 +143,17 @@ DirObj.prototype.save = function (str) {
 	}
 };
 
-
-DirObj.prototype.isSimpleOutput = function (info) {
-	if (info && this.strongDir) {
+/**
+ * Вернуть true,
+ * если возможна запись в результирующую строку JavaScript
+ *
+ * @param {Object=} [opt_info] - информация о шаблоне (название файлы, узла и т.д.)
+ * @return {boolean}
+ */
+DirObj.prototype.isSimpleOutput = function (opt_info) {
+	if (opt_info && this.strongDir) {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '", ' +
-			this.genErrorAdvInfo(info)
+			this.genErrorAdvInfo(opt_info)
 		);
 	}
 
@@ -164,6 +170,10 @@ DirObj.prototype.replace = function (str) {
 	}
 };
 
+/**
+ * Инициализировать кеш для шаблона
+ * @param {string} tplName - название шаблона
+ */
 DirObj.prototype.initCache = function (tplName) {
 	blockCache[tplName] = {};
 
@@ -175,12 +185,19 @@ DirObj.prototype.initCache = function (tplName) {
 	constICache[tplName] = {};
 };
 
+/**
+ * Декларировать начало блочной директивы
+ *
+ * @param {string} name - название директивы
+ * @param {Object=} [opt_params] - дополнительные параметры директивы
+ */
 DirObj.prototype.startDir = function (name, opt_params) {
 	this.inlineDir = false;
 
 	var vars = {};
 	var struct = this.structure;
 
+	// Установка ссылок на локальные переменные родительское директивы
 	if (struct.vars) {
 		let parentVars = struct.vars;
 		for (let key in parentVars) {
@@ -205,6 +222,12 @@ DirObj.prototype.startDir = function (name, opt_params) {
 	this.structure = obj;
 };
 
+/**
+ * Декларировать начало строчной директивы
+ *
+ * @param {string} name - название директивы
+ * @param {Object=} [opt_params] - дополнительные параметры директивы
+ */
 DirObj.prototype.startInlineDir = function (name, opt_params) {
 	this.inlineDir = true;
 
@@ -218,10 +241,21 @@ DirObj.prototype.startInlineDir = function (name, opt_params) {
 	this.structure = obj;
 };
 
+/**
+ * Декларировать конец директивы
+ */
 DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
 };
 
+/**
+ * Проверить начилие директивы в цепочке структуры,
+ * начиная с активной
+ *
+ * @param {string} name - название директивы
+ * @param {Object=} [opt_obj=this.structure] - проверяемый объект
+ * @return {boolean}
+ */
 DirObj.prototype.has = function (name, opt_obj) {
 	var struct = this.structure;
 	var current = (opt_obj || struct).name;
@@ -236,6 +270,13 @@ DirObj.prototype.has = function (name, opt_obj) {
 	return false;
 };
 
+/**
+ * Проверить начилие директивы в цепочке родителей активной
+ * (сама активная дирекктива исключается)
+ *
+ * @param {string} name - название директивы
+ * @return {boolean}
+ */
 DirObj.prototype.hasParent = function (name) {
 	var struct = this.structure;
 
