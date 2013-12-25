@@ -2746,8 +2746,6 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 
 	if (dir.isSimpleOutput()) {
 		struct[0] = realVar;
-		console.log(struct.join('='));
-
 		dir.save(dir.prepareOutput('var ' + command + ';', true));
 	}
 };

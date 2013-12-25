@@ -11,10 +11,10 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{:a = 1}
-				{if 1}
-					{:a = 1}
-				{/if}
+				{var a = {fo: {my: {}}}}
+				{with a}
+					{fo}
+				{end}
 			{/template}
 		</script>
 		<script>

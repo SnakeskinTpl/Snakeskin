@@ -1,5 +1,6 @@
-/*!
- * Стандартные фильтры
+/**!
+ * @status stable
+ * @version 1.0.0
  */
 
 var entityMap = {
@@ -216,13 +217,13 @@ Snakeskin.Filters.replace = function (str, search, replace) {
 /**
  * Преобразовать объект в строку JSON
  *
- * @param {(!Object|!Array)} val - исходный объект
+ * @param {(Object|Array|string|number|boolean)} obj - исходный объект
  * @return {string}
  */
-Snakeskin.Filters.json = function (val) {
-	if (typeof val === 'object') {
-		return JSON.stringify(val);
+Snakeskin.Filters.json = function (obj) {
+	if (typeof obj === 'object') {
+		return JSON.stringify(obj);
 	}
 
-	return (val + '');
+	return (obj + '');
 };
