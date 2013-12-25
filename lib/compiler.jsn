@@ -26,7 +26,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
-	dir.sysPosCache['with'] = opt_scope;
+	dir.cache['with'] = opt_scope || [];
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;

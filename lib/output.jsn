@@ -307,8 +307,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	// Количество слов для пропуска
 	var posNWord = 0;
 
-	var useWith = this.hasPos('with'),
-		scope = this.getPos('with');
+	var scope = this.cache['with'],
+		useWith = scope.length;
 
 	// Сдвиги
 	var wordAddEnd = 0,

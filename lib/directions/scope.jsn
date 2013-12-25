@@ -23,6 +23,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.cache['with'].push(command);
 	dir.startDir('with', {
 		scope: command
 	}, true);
