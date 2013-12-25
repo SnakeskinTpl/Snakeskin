@@ -11,9 +11,13 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{for} {:i = 1,} {:j = 2} {i < 10; i++}
-					{i}
-				{/for}
+				{forEach a => el, i}
+				{/forEach}
+
+				{if Array.isArray(a)}
+					{for} {:i = 0,} {:el = a[i]}
+				{else}
+				{end}
 			{/template}
 		</script>
 		<script>
