@@ -27,9 +27,7 @@ Snakeskin.Replacers.push((cmd) => cmd.replace(/^:/, 'var '));
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
 Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
-	var parent = dir.structure.parent;
-
-	if (!parent) {
+	if (!dir.structure.parent) {
 		throw dir.error('Directive "var" can only be used within a "template" or "proto", ' +
 			dir.genErrorAdvInfo(adv.info)
 		);
@@ -49,16 +47,15 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	var realVar = varName + '_' + parent.name + '_' + dir.i;
-	dir.varCache[varName] = {
-		name: realVar,
-		parent: parent
-	};
+	var realVar = '__' + varName + '_' + dir.structure.name + '_' + dir.i;
+
+	dir.structure.vars[varName] = realVar;
+	dir.varCache[varName] = true;
 
 	//dir.startInlineDir('var');
 
 	if (dir.isSimpleOutput()) {
-		struct[0] = realVar;
-		dir.save(dir.prepareOutput('var ' + command + ';', true));
+		struct[0] = realVar + ' ';
+		dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 	}
 };

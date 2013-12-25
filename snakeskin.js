@@ -685,15 +685,30 @@ DirObj.prototype.startDir = function (name, opt_params) {
 	var __NEJS_THIS__ = this;
 	this.inlineDir = false;
 
+	var vars = {};
+	var struct = this.structure;
+
+	if (struct.vars) {
+		var parentVars = struct.vars;
+		for (var key in parentVars) {
+			if (!parentVars.hasOwnProperty(key)) {
+				continue;
+			}
+
+			vars[key] = parentVars[key];
+		}
+	}
+
 	var obj = {
 		name: name,
-		parent: this.structure,
+		parent: struct,
 		childs: [],
+		vars: vars,
 		params: opt_params,
 		isSys: !!Snakeskin.sysDirs[name]
 	};
 
-	this.structure.childs.push(obj);
+	struct.childs.push(obj);
 	this.structure = obj;
 };
 
@@ -1936,6 +1951,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var unEscape = false,
 		deepFilter = false;
 
+	var vars = this.structure.vars;
+
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
 			next = command.charAt(i + 1),
@@ -1970,7 +1987,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				// не является константой замены Escaper,
 				// не является названием свойства в литерале объекта ({свойство: )
 				var canParse = !blackWordList[word] &&
-					isNaN(Number(word))
+					isNaN(Number(word)) &&
 					!/^__ESCAPER_QUOT__\d+_/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
@@ -2033,7 +2050,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						scope.pop();
 
 					} else {
-						vres = rfWord;
+						vres = canParse ? vars[rfWord] || rfWord : rfWord;
 					}
 				}
 
@@ -2738,9 +2755,7 @@ Snakeskin.Replacers.push(function (cmd) {
  */
 Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
-	var parent = dir.structure.parent;
-
-	if (!parent) {
+	if (!dir.structure.parent) {
 		throw dir.error('Directive "var" can only be used within a "template" or "proto", ' +
 			dir.genErrorAdvInfo(adv.info)
 		);
@@ -2760,17 +2775,16 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	var realVar = varName + '_' + parent.name + '_' + dir.i;
-	dir.varCache[varName] = {
-		name: realVar,
-		parent: parent
-	};
+	var realVar = '__' + varName + '_' + dir.structure.name + '_' + dir.i;
+
+	dir.structure.vars[varName] = realVar;
+	dir.varCache[varName] = true;
 
 	//dir.startInlineDir('var');
 
 	if (dir.isSimpleOutput()) {
-		struct[0] = realVar;
-		dir.save(dir.prepareOutput('var ' + command + ';', true));
+		struct[0] = realVar + ' ';
+		dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 	}
 };
 var __NEJS_THIS__ = this;

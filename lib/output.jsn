@@ -318,6 +318,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var unEscape = false,
 		deepFilter = false;
 
+	var vars = this.structure.vars;
+
 	for (let i = 0; i < command.length; i++) {
 		let el = command.charAt(i),
 			next = command.charAt(i + 1),
@@ -352,7 +354,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				// не является константой замены Escaper,
 				// не является названием свойства в литерале объекта ({свойство: )
 				let canParse = !blackWordList[word] &&
-					isNaN(Number(word))
+					isNaN(Number(word)) &&
 					!/^__ESCAPER_QUOT__\d+_/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
@@ -414,7 +416,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						scope.pop();
 
 					} else {
-						vres = rfWord;
+						vres = canParse ? vars[rfWord] || rfWord : rfWord;
 					}
 				}
 

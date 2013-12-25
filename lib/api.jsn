@@ -192,15 +192,30 @@ DirObj.prototype.initCache = function (tplName) {
 DirObj.prototype.startDir = function (name, opt_params) {
 	this.inlineDir = false;
 
+	var vars = {};
+	var struct = this.structure;
+
+	if (struct.vars) {
+		let parentVars = struct.vars;
+		for (let key in parentVars) {
+			if (!parentVars.hasOwnProperty(key)) {
+				continue;
+			}
+
+			vars[key] = parentVars[key];
+		}
+	}
+
 	var obj = {
 		name: name,
-		parent: this.structure,
+		parent: struct,
 		childs: [],
+		vars: vars,
 		params: opt_params,
 		isSys: !!Snakeskin.sysDirs[name]
 	};
 
-	this.structure.childs.push(obj);
+	struct.childs.push(obj);
 	this.structure = obj;
 };
 
