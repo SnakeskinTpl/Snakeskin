@@ -3,6 +3,15 @@
  * @version 1.0.0
  */
 
+/**
+ * Кеш переменных
+ */
+DirObj.prototype.scopeCache = {
+	init: function () {
+		return [];
+	}
+};
+
 Snakeskin.sysDirs['with'] = true;
 
 /**
@@ -23,7 +32,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.cache['with'].push(command);
+	dir.scopeCache.push(command);
 	dir.startDir('with', {
 		scope: command
 	});
