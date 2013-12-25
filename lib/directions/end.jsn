@@ -44,6 +44,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 
 	if (dir.returnStrongDir && dir.returnStrongDir.child === obj.name) {
 		dir.strongDir = dir.returnStrongDir.dir;
+		dir.strongSpace = true;
 		dir.returnStrongDir = null;
 	}
 

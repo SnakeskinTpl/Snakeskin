@@ -21,12 +21,6 @@ Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "if" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
 	dir.startDir('if');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('if (' + dir.prepareOutput(command, true) + ') {');
@@ -117,7 +111,6 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 	dir.startDir('switch');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
-		dir.strongSpace = true;
 	}
 };
 
@@ -131,7 +124,6 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 Snakeskin.Directions['switchEnd'] = function (command, commandLength, dir) {
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
-		dir.strongSpace = false;
 	}
 };
 
@@ -166,7 +158,6 @@ Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
 	dir.startDir('case');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('case ' + dir.prepareOutput(command, true) + ': {');
-		dir.strongSpace = false;
 	}
 };
 
@@ -180,7 +171,6 @@ Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
 Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
 	if (dir.isSimpleOutput()) {
 		dir.save('} break;');
-		dir.strongSpace = true;
 	}
 };
 
@@ -211,7 +201,6 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	dir.startDir('default');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('default: {');
-		dir.strongSpace = false;
 	}
 };
 
@@ -225,6 +214,5 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
 	if (dir.isSimpleOutput()) {
 		dir.save('}');
-		dir.strongSpace = true;
 	}
 };
