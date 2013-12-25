@@ -681,7 +681,7 @@ DirObj.prototype.initCache = function (tplName) {
 	constICache[tplName] = {};
 };
 
-DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
+DirObj.prototype.startDir = function (name, opt_params) {
 	var __NEJS_THIS__ = this;
 	this.inlineDir = false;
 
@@ -690,7 +690,7 @@ DirObj.prototype.startDir = function (name, opt_params, opt_sys) {
 		parent: this.structure,
 		childs: [],
 		params: opt_params,
-		isSys: !!opt_sys
+		isSys: !!Snakeskin.sysDirs[name]
 	};
 
 	this.structure.childs.push(obj);
@@ -1301,6 +1301,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	}
 
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
+
+	// Устанавливаем scope
 	dir.cache['with'] = opt_scope || [];
 
 	// Если true, то идёт содержимое директивы
@@ -1610,7 +1612,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	return dir.res;
 };var __NEJS_THIS__ = this;
 /**!
- * Парсер вывода результата
+ * @status stable
+ * @version 1.0.0
  */
 
 var blackWordList = {
@@ -1646,6 +1649,10 @@ var blackWordList = {
 	'const': true,
 	'debugger': true,
 	'interface': true
+};
+
+var unaryBlackWordList = {
+	'new': true
 };
 
 var comboBlackWordList = {
@@ -1814,28 +1821,23 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 DirObj.prototype.getWord = function (str, pos) {
 	var __NEJS_THIS__ = this;
 	var res = '',
-		nres,
-		pCount = 0;
+		nres = '';
 
-	var start,
+	var pCount = 0;
+	var start = 0,
 		pContent = null;
 
-	for (var i = pos, j = 0; i < str.length; i++, j++) {
+	for (var i = pos, j$0 = 0; i < str.length; i++, j$0++) {
 		var el = str.charAt(i);
 
-		/*if (res === 'this[' || res === 'this.') {
-			res = 'this';
-			break;
-		}*/
-
-		if (pCount || /[@#$+\-\w\[\]().]/.test(el)) {
+		if (pCount || /[@#$+\-\w\[\]().]/.test(el) || (el === ' ' && unaryBlackWordList[res])) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
 				pContent += el;
 			}
 
 			if (el === '(' || el === '[') {
 				if (pContent === null) {
-					start = j + 1;
+					start = j$0 + 1;
 					pContent = '';
 				}
 
@@ -1852,7 +1854,8 @@ DirObj.prototype.getWord = function (str, pos) {
 						} else {
 							nres = res.substring(0, start) +
 								this.prepareOutput(pContent, true, true) +
-								res.substring(j) + ']';
+								res.substring(j$0) +
+							']';
 						}
 
 						pContent = null;
@@ -1878,7 +1881,7 @@ DirObj.prototype.getWord = function (str, pos) {
 };
 
 /**
- * Подготовить комманду к выводу:<br />
+ * Подготовить комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
  *
  * @param {string} command - исходная комманда
@@ -1954,22 +1957,32 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// Расчёт scope:
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
-			if (nword && !posNWord && /[@#$a-z_]/i.test(el)) {
-				var nextStep = this.getWord(command, i),
-
-					word = nextStep.word,
+			if (nword && !posNWord && /[@#$a-z_0-9]/i.test(el)) {
+				var nextStep = this.getWord(command, i);
+				var word = nextStep.word,
 					finalWord = nextStep.finalWord;
 
 				var uadd = wordAddEnd + addition,
 					vres;
 
+				// true, если полученное слово не является зарезервированным (blackWordList),
+				// не является числом,
+				// не является константой замены Escaper,
+				// не является названием свойства в литерале объекта ({свойство: )
 				var canParse = !blackWordList[word] &&
-					!/^__SNAKESKIN_QUOT__\d+/.test(word) &&
+					isNaN(Number(word))
+					!/^__ESCAPER_QUOT__\d+_/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
 				var globalExport = /([$\w]*)(.*)/;
-				if (el === '@') {
+
+				// Экспорт числовых литералов
+				if (/[0-9]/.test(el)) {
+					vres = finalWord;
+
+				// Экспорт глобальный и супер глобальных переменных
+				} else if (el === '@') {
 					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
 						globalExport = globalExport.exec(vres);
@@ -2002,7 +2015,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 						// Формирование финальной строки
 						vres = scope.reduce(function (str, el, i, data) {
-							var __NEJS_THIS__ = this;
+							
 							num = num ? num - 1 : num;
 							var val = str.scope === void 0 ? str : str.scope;
 
@@ -2136,19 +2149,22 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}, []);
 
 			var resTmp = filter.reduce(function (res, el) {
-				var __NEJS_THIS__ = this;
-				var params = el.split(' '),
-					input = params.slice(1).join('').trim();
+				
+				var params = el.split(' ');
+				var input = params.slice(1).join('').trim();
 
-				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' + (deepFilter || !pCount ? '(' : '') + res +
-					(input ? ',' + input : '') + (deepFilter || !pCount ? ')' : '') + ')';
+				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
+					(deepFilter || !pCount ? '(' : '') +
+					res +
+					(input ? ',' + input : '') +
+					(deepFilter || !pCount ? ')' : '') +
+					')';
 
 			}, fbody);
 
 			var fstr = rvFilter.join().length + 1;
 			res = pCount ?
-				res.substring(0, pos[0] + addition) +
-					resTmp + res.substring(pos[1] + fadd + fstr) :
+				res.substring(0, pos[0] + addition) + resTmp + res.substring(pos[1] + fadd + fstr) :
 				resTmp;
 
 			addition += resTmp.length - fbody.length - fstr + wordAddEnd - filterAddEnd;
@@ -2161,6 +2177,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			rvFilter = [];
 
 			filterStart = false;
+
 			if (pCount) {
 				pCount--;
 				deepFilter = false;
@@ -2872,7 +2889,7 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 	dir.startDir('proto', {
 		name: command,
 		startI: dir.i + 1
-	}, true);
+	});
 
 	if (!dir.parentTplName) {
 		dir.protoStart = true;
@@ -3508,7 +3525,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 	dir.cache['with'].push(command);
 	dir.startDir('with', {
 		scope: command
-	}, true);
+	});
 };var __NEJS_THIS__ = this;
 /*!
  * @status stable

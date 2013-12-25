@@ -11,10 +11,9 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{var a = {fo: {my: {}}}}
-				{with a}
-					{fo}
-				{end}
+				{with foo}
+					{(1|ucfirst (2|ucfirst)) + 1e3 + my}
+				{/with}
 			{/template}
 		</script>
 		<script>

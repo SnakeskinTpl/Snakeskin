@@ -1,5 +1,6 @@
 /**!
- * Парсер вывода результата
+ * @status stable
+ * @version 1.0.0
  */
 
 var blackWordList = {
@@ -35,6 +36,10 @@ var blackWordList = {
 	'const': true,
 	'debugger': true,
 	'interface': true
+};
+
+var unaryBlackWordList = {
+	'new': true
 };
 
 var comboBlackWordList = {
@@ -160,8 +165,8 @@ DirObj.prototype.replaceTplVars = function (str) {
  * @return {boolean}
  */
 DirObj.prototype.isPrevSyOL = function (str, pos) {
-	for (var i = pos; i--;) {
-		var el = str.charAt(i);
+	for (let i = pos; i--;) {
+		let el = str.charAt(i);
 
 		if (/\S/.test(el)) {
 			return el === '{';
@@ -179,8 +184,8 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
  * @return {boolean}
  */
 DirObj.prototype.isNextSyOL = function (str, pos) {
-	for (var i = pos; i < str.length; i++) {
-		var el = str.charAt(i);
+	for (let i = pos; i < str.length; i++) {
+		let el = str.charAt(i);
 
 		if (/\S/.test(el)) {
 			return el === ':' || el === '=' && str.charAt(i + 1) !== '=' && str.charAt(i - 1) !== '=';
@@ -199,21 +204,16 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
  */
 DirObj.prototype.getWord = function (str, pos) {
 	var res = '',
-		nres,
-		pCount = 0;
+		nres = '';
 
-	var start,
+	var pCount = 0;
+	var start = 0,
 		pContent = null;
 
-	for (var i = pos, j = 0; i < str.length; i++, j++) {
-		var el = str.charAt(i);
+	for (let i = pos, j = 0; i < str.length; i++, j++) {
+		let el = str.charAt(i);
 
-		/*if (res === 'this[' || res === 'this.') {
-			res = 'this';
-			break;
-		}*/
-
-		if (pCount || /[@#$+\-\w\[\]().]/.test(el)) {
+		if (pCount || /[@#$+\-\w\[\]().]/.test(el) || (el === ' ' && unaryBlackWordList[res])) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
 				pContent += el;
 			}
@@ -237,7 +237,8 @@ DirObj.prototype.getWord = function (str, pos) {
 						} else {
 							nres = res.substring(0, start) +
 								this.prepareOutput(pContent, true, true) +
-								res.substring(j) + ']';
+								res.substring(j) +
+							']';
 						}
 
 						pContent = null;
@@ -263,7 +264,7 @@ DirObj.prototype.getWord = function (str, pos) {
 };
 
 /**
- * Подготовить комманду к выводу:<br />
+ * Подготовить комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
  *
  * @param {string} command - исходная комманда
@@ -317,12 +318,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var unEscape = false,
 		deepFilter = false;
 
-	for (var i = 0; i < command.length; i++) {
-		var el = command.charAt(i),
+	for (let i = 0; i < command.length; i++) {
+		let el = command.charAt(i),
 			next = command.charAt(i + 1),
 			nnext = command.charAt(i + 2);
 
-		var breakNum;
+		let breakNum;
 		if (!breakNum) {
 			if (el === '(') {
 				// Скобка открылась внутри декларации фильтра
@@ -338,22 +339,32 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// Расчёт scope:
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
-			if (nword && !posNWord && /[@#$a-z_]/i.test(el)) {
-				var nextStep = this.getWord(command, i),
-
-					word = nextStep.word,
+			if (nword && !posNWord && /[@#$a-z_0-9]/i.test(el)) {
+				let nextStep = this.getWord(command, i);
+				let word = nextStep.word,
 					finalWord = nextStep.finalWord;
 
-				var uadd = wordAddEnd + addition,
+				let uadd = wordAddEnd + addition,
 					vres;
 
-				var canParse = !blackWordList[word] &&
-					!/^__SNAKESKIN_QUOT__\d+/.test(word) &&
+				// true, если полученное слово не является зарезервированным (blackWordList),
+				// не является числом,
+				// не является константой замены Escaper,
+				// не является названием свойства в литерале объекта ({свойство: )
+				let canParse = !blackWordList[word] &&
+					isNaN(Number(word))
+					!/^__ESCAPER_QUOT__\d+_/.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
-				var globalExport = /([$\w]*)(.*)/;
-				if (el === '@') {
+				let globalExport = /([$\w]*)(.*)/;
+
+				// Экспорт числовых литералов
+				if (/[0-9]/.test(el)) {
+					vres = finalWord;
+
+				// Экспорт глобальный и супер глобальных переменных
+				} else if (el === '@') {
 					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
 						globalExport = globalExport.exec(vres);
@@ -370,7 +381,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					}
 
 				} else {
-					var rfWord = finalWord.replace(/#(?:\d+|)/, '');
+					let rfWord = finalWord.replace(/#(?:\d+|)/, '');
 					if (canParse && useWith) {
 						var num = null;
 
@@ -385,7 +396,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						var rnum = num = num ? scope.length - num : num;
 
 						// Формирование финальной строки
-						vres = scope.reduce(function (str, el, i, data) {
+						vres = scope.reduce((str, el, i, data) => {
 							num = num ? num - 1 : num;
 							var val = str.scope === void 0 ? str : str.scope;
 
@@ -501,8 +512,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		if (filterStart && ((el === ')' && !pCountFilter) || i === command.length - 1)) {
-			var pos = pContent[0];
-			var fadd = wordAddEnd - filterAddEnd + addition,
+			let pos = pContent[0];
+			let fadd = wordAddEnd - filterAddEnd + addition,
 				fbody = pCount ?
 					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
@@ -517,19 +528,22 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				return arr;
 			}, []);
 
-			var resTmp = filter.reduce(function (res, el) {
-				var params = el.split(' '),
-					input = params.slice(1).join('').trim();
+			let resTmp = filter.reduce((res, el) => {
+				var params = el.split(' ');
+				var input = params.slice(1).join('').trim();
 
-				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' + (deepFilter || !pCount ? '(' : '') + res +
-					(input ? ',' + input : '') + (deepFilter || !pCount ? ')' : '') + ')';
+				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
+					(deepFilter || !pCount ? '(' : '') +
+					res +
+					(input ? ',' + input : '') +
+					(deepFilter || !pCount ? ')' : '') +
+					')';
 
 			}, fbody);
 
-			var fstr = rvFilter.join().length + 1;
+			let fstr = rvFilter.join().length + 1;
 			res = pCount ?
-				res.substring(0, pos[0] + addition) +
-					resTmp + res.substring(pos[1] + fadd + fstr) :
+				res.substring(0, pos[0] + addition) + resTmp + res.substring(pos[1] + fadd + fstr) :
 				resTmp;
 
 			addition += resTmp.length - fbody.length - fstr + wordAddEnd - filterAddEnd;
@@ -542,6 +556,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			rvFilter = [];
 
 			filterStart = false;
+
 			if (pCount) {
 				pCount--;
 				deepFilter = false;
