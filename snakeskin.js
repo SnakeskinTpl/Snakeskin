@@ -592,7 +592,7 @@ function DirObj(src, commonJS, dryRun) {
 	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-			
+
 			cdata.push(data);
 			return '{__appendLine__ ' +
 				data.match(/[\n\r]/g).length +
@@ -1092,7 +1092,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
 			Snakeskin.forEach(
 				advDiff.sort(function (a, b) {
-					
+
 					if (a.val > b.val) {
 						return 1;
 					}
@@ -1105,7 +1105,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 				}),
 
 				function (el) {
-					
+
 
 					if (el.val < diff) {
 						adv += el.adv;
@@ -1244,7 +1244,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
 
 	// Устанавливаем scope
-	dir.scopeCache = opt_scope || dir.scopeCache;
+	dir.scope = opt_scope || dir.scope;
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;
@@ -1395,7 +1395,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				// Поддержка коротких форм записи директив
 				Snakeskin.forEach(Snakeskin.Replacers, function (fn) {
-					
+
 					command = fn(command);
 				});
 
@@ -1519,7 +1519,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)_/g, function (sstr, pos) {
-			
+
 			return dir.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
@@ -1873,7 +1873,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	// Количество слов для пропуска
 	var posNWord = 0;
 
-	var scope = this.scopeCache,
+	var scope = this.scope,
 		useWith = scope.length;
 
 	// Сдвиги
@@ -1964,7 +1964,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 						// Формирование финальной строки
 						vres = scope.reduce(function (str, el, i, data) {
-							
+
 							num = num ? num - 1 : num;
 							var val = str.scope === void 0 ? str : str.scope;
 
@@ -2098,7 +2098,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}, []);
 
 			var resTmp = filter.reduce(function (res, el) {
-				
+
 				var params = el.split(' ');
 				var input = params.slice(1).join('').trim();
 
@@ -2249,7 +2249,7 @@ Snakeskin.Directions['end'] = function (command, commandLength, dir, adv) {
 	if (Snakeskin.Directions[obj.name + 'End']) {
 		Snakeskin.Directions[obj.name + 'End'].apply(Snakeskin, arguments);
 
-	} else if (!obj.isSys) {
+	} else if (!obj.isSys && dir.isSimpleOutput()) {
 		dir.save('};');
 	}
 
@@ -2347,7 +2347,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 
 			.split('.')
 			.reduce(function (str, el, i, data) {
-				
+
 				dir.save(
 					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
 						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
@@ -2383,7 +2383,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	// (только если нужно)
 	if (paramsCache[parentTplName]) {
 		Snakeskin.forEach(paramsCache[parentTplName], function (el) {
-			
+
 			var def = el.split('=');
 
 			// Здесь и далее по коду
@@ -2393,7 +2393,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 			def[1] = def[1] && def[1].trim();
 
 			Snakeskin.forEach(params, function (el2, i) {
-				
+
 				var def2 = el2.split('=');
 				def2[0] = def2[0].trim();
 				def2[1] = def2[1] && def2[1].trim();
@@ -2411,7 +2411,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	// (эээххх, когда же настанет ECMAScript 6 :()
 	var defParams = '';
 	Snakeskin.forEach(params, function (el, i) {
-		
+
 		var def = el.split('=');
 		def[0] = def[0].trim();
 		dir.save(def[0]);
@@ -2419,7 +2419,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 		// Подмешивание родительских входных параметров
 		if (paramsCache[parentTplName] && !defParams) {
 			Snakeskin.forEach(paramsCache[parentTplName], function (el) {
-				
+
 				var def = el.split('='),
 					local;
 
@@ -2429,7 +2429,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 				// true, если входной параметр родительского шаблона
 				// присутствует также в дочернем
 				Snakeskin.forEach(params, function (el) {
-					
+
 					var val = el.split('=');
 
 					val[0] = val[0].trim();
@@ -2652,7 +2652,7 @@ Snakeskin.Directions['void'] = function (command, commandLength, dir, adv) {
 	}
 
 	dir.startInlineDir('void');
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save(dir.prepareOutput(command) + ';');
 	}
 };var __NEJS_THIS__ = this;
@@ -3348,20 +3348,6 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 	}
 };
 
-/**
- * Окончание switch
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['switchEnd'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('}');
-	}
-};
-
 // Короткая форма директивы case
 Snakeskin.Replacers.push(function (cmd) {
 	return cmd.replace(/^>/, 'case ');});
@@ -3442,20 +3428,6 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('default: {');
 	}
-};
-
-/**
- * Окончание default
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('}');
-	}
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -3465,7 +3437,7 @@ Snakeskin.Directions['defaultEnd'] = function (command, commandLength, dir) {
 /**
  * Кеш переменных
  */
-DirObj.prototype.scopeCache = {
+DirObj.prototype.scope = {
 	init: function () {
 		var __NEJS_THIS__ = this;
 		return [];
@@ -3493,7 +3465,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.scopeCache.push(command);
+	dir.scope.push(command);
 	dir.startDir('with', {
 		scope: command
 	});

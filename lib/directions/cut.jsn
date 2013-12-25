@@ -7,10 +7,20 @@
  * Директива cut
  *
  * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['cut'] = function (command, commandLength, dir) {
+Snakeskin.Directions['cut'] = function (command, commandLength, dir, adv) {
+	if (dir.structure.parent) {
+		throw dir.error('Directive "cut" can be used only within the global space, ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	command = dir.pasteDangerBlocks(command);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
@@ -21,9 +31,19 @@ Snakeskin.Directions['cut'] = function (command, commandLength, dir) {
  * Директива save
  *
  * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['save'] = function (command, commandLength, dir) {
+Snakeskin.Directions['save'] = function (command, commandLength, dir, adv) {
+	if (dir.structure.parent) {
+		throw dir.error('Directive "save" can be used only within the global space, ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	Snakeskin.write[dir.pasteDangerBlocks(command)] = true;
 };

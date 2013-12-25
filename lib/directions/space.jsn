@@ -21,7 +21,8 @@ Snakeskin.Directions['&'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (dir.isSimpleOutput()) {
+	dir.startInlineDir('&');
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.space = true;
 	}
 };

@@ -28,7 +28,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
 
 	// Устанавливаем scope
-	dir.scopeCache = opt_scope || dir.scopeCache;
+	dir.scope = opt_scope || dir.scope;
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;

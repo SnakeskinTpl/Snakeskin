@@ -4,9 +4,9 @@
  */
 
 /**
- * Кеш переменных
+ * Область видимости
  */
-DirObj.prototype.scopeCache = {
+DirObj.prototype.scope = {
 	init: function () {
 		return [];
 	}
@@ -32,7 +32,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.scopeCache.push(command);
+	dir.scope.push(command);
 	dir.startDir('with', {
 		scope: command
 	});
