@@ -21,6 +21,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.startInlineDir('call');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
