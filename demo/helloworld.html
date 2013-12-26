@@ -14,7 +14,11 @@
 			{template helloWorld(name = 'world')}
 				{:a = {b: {}}}
 				{with a}
-					{b}
+					{@a}
+					{with b}
+						{@a}
+						{#b}
+					{end}
 				{end}
 			{/template}
 		</script>

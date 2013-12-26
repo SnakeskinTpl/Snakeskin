@@ -1945,6 +1945,9 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						// Супер глобальная переменная внутри with
 						if (next === '@') {
 							vres = 'Snakeskin.Vars[\'' + globalExport[1] + '\']' + globalExport[2];
+
+						} else {
+							vres = vars[vres] || vres;
 						}
 
 					// Супер глобальная переменная вне with
@@ -1965,6 +1968,9 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							num++;
 						}
 
+						var first = scope[0];
+						scope[0] = vars[scope[0]] || scope[0];
+
 						scope.push({scope: rfWord});
 						var rnum = num = num ? scope.length - num : num;
 
@@ -1975,7 +1981,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							var val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								return (vars[val] || val) + '.' + el.scope;
+								return val + '.' + el.scope;
 							}
 
 							if (i === data.length - 1) {
@@ -1986,6 +1992,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						});
 
 						scope.pop();
+						scope[0] = first;
 
 					} else {
 						vres = canParse ? vars[rfWord] || rfWord : rfWord;
