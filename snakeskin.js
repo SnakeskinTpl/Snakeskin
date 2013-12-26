@@ -2898,10 +2898,6 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
 
 	// Рекурсивно анализируем прототипы блоков
 	if (!dir.parentTplName) {
-		console.log('{template ' + tplName + '()}' +
-			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
-			'{end}');
-
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
 			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
 			'{end}', null, null, true, dir.scope);
@@ -2966,6 +2962,7 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.startInlineDir('apply');
 	if (!dir.parentTplName && !dir.hasParent('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,

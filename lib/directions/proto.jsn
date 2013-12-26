@@ -132,6 +132,7 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.startInlineDir('apply');
 	if (!dir.parentTplName && !dir.hasParent('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
