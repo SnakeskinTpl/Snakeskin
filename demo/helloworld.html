@@ -11,10 +11,13 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
+				{apply foo('foo')}
+
 				{proto foo(val)}
 					{val}
 				{/proto}
-				{apply foo('foo')}
+
+				{apply foo('foo2')}
 			{/template}
 		</script>
 		<script>

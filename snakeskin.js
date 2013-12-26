@@ -2871,11 +2871,13 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 		startI: dir.i + 1
 	});
 
-	var params = command.match(/\((.*?)\)/);
+	var params = command.match(/\((.*?)\)/),
+		paramsMap = [];
+
 	if (params) {
 		params = params[1].split(',');
 		for (var i = 0; i < params.length; i++) {
-			dir.declVar(params[i]);
+			paramsMap.push(dir.declVar(params[i]));
 		}
 	}
 
@@ -2890,7 +2892,10 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 			);
 		}
 
-		protoCache[dir.tplName][name] = {from: dir.i - dir.startI + 1};
+		protoCache[dir.tplName][name] = {
+			from: dir.i - dir.startI + 1,
+			params: paramsMap
+		};
 	}
 
 	if (!dir.parentTplName) {
@@ -2929,10 +2934,21 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
 		Snakeskin.forEach(backHash[lastProto.name], function (el) {
-			var __NEJS_THIS__ = this;
-			dir.replace(dir.res.substring(0, el) +
+			
+			var protoParams = protoCache[tplName][lastProto.name].params;
+			console.log(lastProto);
+
+			var params = el.params,
+				paramsStr = '';
+
+			for (var i = 0; i < protoParams.length; i++) {
+				paramsStr += 'var ' + protoParams[i] + ' = ' + params[i] + ';';
+			}
+
+			dir.replace(dir.res.substring(0, el.pos) +
+				paramsStr +
 				protoCache[tplName][lastProto.name].body +
-				dir.res.substring(el));
+				dir.res.substring(el.pos));
 		});
 
 		delete backHash[lastProto.name];
@@ -2989,6 +3005,15 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
 	var name = command.match(/[^(]+/)[0];
 	dir.startInlineDir('apply');
 
+	var params = command.match(/\((.*?)\)/);
+
+	if (params) {
+		params = params[1].split(',');
+
+	} else {
+		params = [];
+	}
+
 	if (!dir.parentTplName && !dir.hasParent('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
@@ -3002,10 +3027,20 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
 				dir.backHashI++;
 			}
 
-			dir.backHash[name].push(dir.res.length);
+			dir.backHash[name].push({
+				pos: dir.res.length,
+				params: params
+			});
 
 		} else {
-			dir.save(protoCache[dir.tplName][name].body);
+			var proto = protoCache[dir.tplName][name];
+			var protoParams = proto.params;
+
+			for (var i = 0; i < protoParams.length; i++) {
+				dir.save('var ' + protoParams[i] + ' = ' + params[i] + ';');
+			}
+
+			dir.save(proto.body);
 		}
 	}
 };var __NEJS_THIS__ = this;
