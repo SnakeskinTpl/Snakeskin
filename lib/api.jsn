@@ -13,14 +13,9 @@
  *     то шаблон только транслируется (не компилируется), приватный параметр
  */
 function DirObj(src, commonJS, dryRun) {
-	var proto = this.prototype;
-	for (let key in proto) {
-		if (!proto.hasOwnProperty(key)) {
-			continue;
-		}
-
-		if (proto[key].init) {
-			this[key] = proto[key].init();
+	for (let key in this) {
+		if (this[key] && this[key].init) {
+			this[key] = this[key].init();
 		}
 	}
 

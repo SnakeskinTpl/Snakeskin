@@ -405,7 +405,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							var val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								return val + '.' + el.scope;
+								return (vars[val] || val) + '.' + el.scope;
 							}
 
 							if (i === data.length - 1) {

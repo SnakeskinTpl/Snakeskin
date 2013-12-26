@@ -12,8 +12,9 @@
 		<script type="text/x-snakeskin-template" id="templates">
 			{a = 1}
 			{template helloWorld(name = 'world')}
-				{switch 1}
-					{a = 1}
+				{:a = {b: {}}}
+				{with a}
+					{b}
 				{end}
 			{/template}
 		</script>

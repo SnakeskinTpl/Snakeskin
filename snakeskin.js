@@ -500,14 +500,9 @@ var escapeEndMap = {
  */
 function DirObj(src, commonJS, dryRun) {
 	var __NEJS_THIS__ = this;
-	var proto = this.prototype;
-	for (var key in proto) {
-		if (!proto.hasOwnProperty(key)) {
-			continue;
-		}
-
-		if (proto[key].init) {
-			this[key] = proto[key].init();
+	for (var key in this) {
+		if (this[key] && this[key].init) {
+			this[key] = this[key].init();
 		}
 	}
 
@@ -1980,7 +1975,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							var val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								return val + '.' + el.scope;
+								return (vars[val] || val) + '.' + el.scope;
 							}
 
 							if (i === data.length - 1) {
@@ -2589,6 +2584,7 @@ Snakeskin.Directions['return'] = function (command, commandLength, dir, adv) {
 	}
 
 	//TODO: вернуться к этому куску
+	dir.startInlineDir('return');
 	if (dir.isSimpleOutput()) {
 		if (dir.structure.name === 'template') {
 			if (command) {
@@ -2632,6 +2628,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.startInlineDir('call');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
@@ -2728,8 +2725,7 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 	dirStruct.vars[varName] = realVar;
 	dir.varCache[varName] = true;
 
-	//dir.startInlineDir('var');
-
+	dir.startInlineDir('var');
 	if (dir.isSimpleOutput()) {
 		struct[0] = realVar + ' ';
 
@@ -3637,34 +3633,54 @@ Snakeskin.Directions['save'] = function (command, commandLength, dir, adv) {
  */
 
 /**
- * Декларация параметров БЭМ блока
+ * Директива setBEM
  *
  * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
- * @param {!DirObj} dirObj - объект управления директивами
+ * @param {!DirObj} dir - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['setBEM'] = function (command, commandLength, dirObj) {
+Snakeskin.Directions['setBEM'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
+	if (dir.structure.parent) {
+		throw dir.error('Directive "setBEM" can be used only within the global space, ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
 	Snakeskin.BEM[part[1]] = (new Function('return {' +
-		dirObj.pasteDangerBlocks(part[2]) + '}')
+		dir.pasteDangerBlocks(part[2]) + '}')
 	)();
 };
 
 /**
- * Декларация БЭМ блока
+ * Директива bem
  *
  * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['bem'] = function (command, commandLength, dir) {
+Snakeskin.Directions['bem'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "bem" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	dir.startDir('bem', {
 		tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
 	});
 
-	var lastBEM = dir.getLastPos('bem');
+	var lastBEM = dir.structure.params;
 
 	// Получаем параметры инициализации блока и врапим имя кавычками
 	command = lastBEM.tag ? command.replace(/^[\s\S]*?\)([\s\S]*)/m, '$1') : command;
@@ -3687,7 +3703,7 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dir) {
 };
 
 /**
- * Окончание БЭМ блока
+ * Окончание bem
  *
  * @param {string} command - текст команды
  * @param {number} commandLength - длина команды
@@ -3695,8 +3711,8 @@ Snakeskin.Directions['bem'] = function (command, commandLength, dir) {
  */
 Snakeskin.Directions['bemEnd'] = function (command, commandLength, dir) {
 	var __NEJS_THIS__ = this;
-	var lastBEM = dir.popPos('bem');
 	if (dir.isSimpleOutput()) {
+		var lastBEM = dir.structure.params;
 		dir.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 	}
 };var __NEJS_THIS__ = this;
@@ -3724,6 +3740,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.startDir('data');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('__SNAKESKIN_RESULT__ += \'' + dir.replaceTplVars(command) + '\';');
 	}
