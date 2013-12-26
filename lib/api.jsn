@@ -169,7 +169,7 @@ DirObj.prototype.isSimpleOutput = function (opt_info) {
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function (dryRun) {
-	return dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
+	return !dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
 };
 
 /**

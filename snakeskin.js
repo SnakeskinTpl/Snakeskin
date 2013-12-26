@@ -660,7 +660,7 @@ DirObj.prototype.isSimpleOutput = function (opt_info) {
  */
 DirObj.prototype.isAdvTest = function (dryRun) {
 	var __NEJS_THIS__ = this;
-	return dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
+	return !dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
 };
 
 /**
@@ -1444,6 +1444,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				);
 
 				if (dir.inlineDir === true) {
+					dir.inlineDir = null;
 					dir.structure = dir.structure.parent;
 				}
 
@@ -1782,7 +1783,8 @@ DirObj.prototype.getWord = function (str, pos) {
 	var start = 0,
 		pContent = null;
 
-	for (var i = pos, j$0 = 0; i < str.length; i++, j$0++) {
+	var j = 0;
+	for (var i = pos; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
 		if (pCount || /[@#$+\-\w\[\]().]/.test(el) || (el === ' ' && unaryBlackWordList[res])) {
@@ -1792,7 +1794,7 @@ DirObj.prototype.getWord = function (str, pos) {
 
 			if (el === '(' || el === '[') {
 				if (pContent === null) {
-					start = j$0 + 1;
+					start = j + 1;
 					pContent = '';
 				}
 
@@ -1809,7 +1811,7 @@ DirObj.prototype.getWord = function (str, pos) {
 						} else {
 							nres = res.substring(0, start) +
 								this.prepareOutput(pContent, true, true) +
-								res.substring(j$0) +
+								res.substring(j) +
 							']';
 						}
 
@@ -1891,7 +1893,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var unEscape = false,
 		deepFilter = false;
 
-	var vars = this.structure.vars;
+	var vars = this.structure.childs ?
+		this.structure.vars : this.structure.parent.vars;
 
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
@@ -3498,18 +3501,12 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 	var i = dir.i,
 		startI = dir.startI;
 
-	// Хак для экспорта console api
-	if (!dir.parentTplName && !dir.protoStart && /^console\./.test(command)) {
-		dir.save(dir.prepareOutput(command) + ';');
-		return;
-	}
-
 	// Инициализация переменных
 	if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
 		var varName = command.split('=')[0].trim(),
 			mod = varName.charAt(0);
 
-		if (tplName) {
+		if (dir.structure.parent) {
 			if (dir.isAdvTest(adv.dryRun) && !dir.varCache[varName] && mod !== '#' && mod !== '@') {
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {

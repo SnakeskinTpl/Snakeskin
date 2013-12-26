@@ -210,7 +210,8 @@ DirObj.prototype.getWord = function (str, pos) {
 	var start = 0,
 		pContent = null;
 
-	for (let i = pos, j = 0; i < str.length; i++, j++) {
+	var j = 0;
+	for (let i = pos; i < str.length; i++, j++) {
 		let el = str.charAt(i);
 
 		if (pCount || /[@#$+\-\w\[\]().]/.test(el) || (el === ' ' && unaryBlackWordList[res])) {
@@ -318,7 +319,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var unEscape = false,
 		deepFilter = false;
 
-	var vars = this.structure.vars;
+	var vars = this.structure.childs ?
+		this.structure.vars : this.structure.parent.vars;
 
 	for (let i = 0; i < command.length; i++) {
 		let el = command.charAt(i),

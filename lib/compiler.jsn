@@ -218,6 +218,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 				);
 
 				if (dir.inlineDir === true) {
+					dir.inlineDir = null;
 					dir.structure = dir.structure.parent;
 				}
 
