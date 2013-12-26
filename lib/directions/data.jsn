@@ -21,6 +21,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	dir.startDir('data');
 	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('__SNAKESKIN_RESULT__ += \'' + dir.replaceTplVars(command) + '\';');
 	}
