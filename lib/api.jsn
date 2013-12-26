@@ -161,6 +161,18 @@ DirObj.prototype.isSimpleOutput = function (opt_info) {
 };
 
 /**
+ * Вернуть true,
+ * если возможна обработка директивы
+ * (не холостой ход, не вложенный блок или прототип в родительской структуре или standalone шаблон)
+ *
+ * @param {boolean} dryRun - true, если идёт холостая обработка
+ * @return {boolean}
+ */
+DirObj.prototype.isAdvTest = function (dryRun) {
+	return dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
+};
+
+/**
  * Изменить результирующую строку
  * @param {string} str - исходная строка
  */
@@ -252,7 +264,7 @@ DirObj.prototype.endDir = function () {
  * Проверить начилие директивы в цепочке структуры,
  * начиная с активной
  *
- * @param {string} name - название директивы
+ * @param {(string|!Object)} name - название директивы или объект названий
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
  * @return {boolean}
  */
@@ -260,7 +272,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 	var struct = this.structure;
 	var current = (opt_obj || struct).name;
 
-	if (current === name) {
+	if (name[current] || current === name) {
 		return true;
 
 	} else if (struct.parent && Snakeskin.sysDirs[current]) {
@@ -274,7 +286,7 @@ DirObj.prototype.has = function (name, opt_obj) {
  * Проверить начилие директивы в цепочке родителей активной
  * (сама активная дирекктива исключается)
  *
- * @param {string} name - название директивы
+ * @param {(string|!Object)} name - название директивы или объект названий
  * @return {boolean}
  */
 DirObj.prototype.hasParent = function (name) {

@@ -10,13 +10,18 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(name = 'world')}
-				{switch 1}
-					{?alert(1)}
-					{> 1}
-						1
-					{/>}
-				{/switch}
+			{template ss(name = 'world')}
+				{a = 1}
+				{block foo}
+					{a}
+				{/block}
+			{/template}
+
+			{template helloWorld(name = 'world') extends ss}
+				{a = 2}
+				{block foo}
+					{a}
+				{/block}
 			{/template}
 		</script>
 		<script>

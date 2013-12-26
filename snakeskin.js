@@ -592,7 +592,7 @@ function DirObj(src, commonJS, dryRun) {
 	this.source = String(src)
 		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-
+			
 			cdata.push(data);
 			return '{__appendLine__ ' +
 				data.match(/[\n\r]/g).length +
@@ -648,6 +648,19 @@ DirObj.prototype.isSimpleOutput = function (opt_info) {
 	}
 
 	return !this.parentTplName && !this.protoStart;
+};
+
+/**
+ * Вернуть true,
+ * если возможна обработка директивы
+ * (не холостой ход, не вложенный блок или прототип в родительской структуре или standalone шаблон)
+ *
+ * @param {boolean} dryRun - true, если идёт холостая обработка
+ * @return {boolean}
+ */
+DirObj.prototype.isAdvTest = function (dryRun) {
+	var __NEJS_THIS__ = this;
+	return dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
 };
 
 /**
@@ -747,7 +760,7 @@ DirObj.prototype.endDir = function () {
  * Проверить начилие директивы в цепочке структуры,
  * начиная с активной
  *
- * @param {string} name - название директивы
+ * @param {(string|!Object)} name - название директивы или объект названий
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
  * @return {boolean}
  */
@@ -756,7 +769,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 	var struct = this.structure;
 	var current = (opt_obj || struct).name;
 
-	if (current === name) {
+	if (name[current] || current === name) {
 		return true;
 
 	} else if (struct.parent && Snakeskin.sysDirs[current]) {
@@ -770,7 +783,7 @@ DirObj.prototype.has = function (name, opt_obj) {
  * Проверить начилие директивы в цепочке родителей активной
  * (сама активная дирекктива исключается)
  *
- * @param {string} name - название директивы
+ * @param {(string|!Object)} name - название директивы или объект названий
  * @return {boolean}
  */
 DirObj.prototype.hasParent = function (name) {
@@ -1072,6 +1085,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 			newFrom = null;
 		}
 
+		var blockDiff;
 		for (var key in el) {
 			if (!el.hasOwnProperty(key)) { continue; }
 
@@ -1083,40 +1097,34 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 			// Разница между дочерним и родительским блоком
 			if (prev[key]) {
-				var blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
+				blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
 			}
 
 			// Вычисляем сдвиг
 			var diff = prev[key] ? prev[key].from : from;
 
 			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
-			Snakeskin.forEach(
-				advDiff.sort(function (a, b) {
-
-					if (a.val > b.val) {
-						return 1;
-					}
-
-					if (a.val === b.val) {
-						return 0;
-					}
-
-					return -1;
-				}),
-
-				function (el) {
-
-
-					if (el.val < diff) {
-						adv += el.adv;
-
-					} else {
-						return false;
-					}
-
-					return true;
+			advDiff.sort(function (a, b) {
+				
+				if (a.val > b.val) {
+					return 1;
 				}
-			);
+
+				if (a.val === b.val) {
+					return 0;
+				}
+
+				return -1;
+			});
+
+			for (var j = 0; j < advDiff.length; j++) {
+				if (advDiff[j].val < diff) {
+					adv += advDiff[j].adv;
+
+				} else {
+					break;
+				}
+			}
 
 			if (prev[key] && (i % 2 === 0)) {
 				// Новые глобальные блоки всегда добавляются в конец шаблона,
@@ -1395,7 +1403,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 				// Поддержка коротких форм записи директив
 				Snakeskin.forEach(Snakeskin.Replacers, function (fn) {
-
+					
 					command = fn(command);
 				});
 
@@ -1519,7 +1527,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 		// Обратная замена cdata областей
 		.replace(/__SNAKESKIN_CDATA__(\d+)_/g, function (sstr, pos) {
-
+			
 			return dir.cDataContent[pos]
 				.replace(/\n/gm, '\\n')
 				.replace(/\r/gm, '\\r')
@@ -1964,7 +1972,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 						// Формирование финальной строки
 						vres = scope.reduce(function (str, el, i, data) {
-
+							
 							num = num ? num - 1 : num;
 							var val = str.scope === void 0 ? str : str.scope;
 
@@ -2086,7 +2094,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
 			filter = filter.reduce(function (arr, el) {
-				var __NEJS_THIS__ = this;
+				
 				if (el !== '!html') {
 					arr.push(el);
 
@@ -2098,7 +2106,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}, []);
 
 			var resTmp = filter.reduce(function (res, el) {
-
+				
 				var params = el.split(' ');
 				var input = params.slice(1).join('').trim();
 
@@ -2190,7 +2198,8 @@ Snakeskin.Directions['&'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (dir.isSimpleOutput()) {
+	dir.startInlineDir('&');
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.space = true;
 	}
 };var __NEJS_THIS__ = this;
@@ -2347,7 +2356,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 
 			.split('.')
 			.reduce(function (str, el, i, data) {
-
+				
 				dir.save(
 					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
 						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
@@ -2383,7 +2392,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	// (только если нужно)
 	if (paramsCache[parentTplName]) {
 		Snakeskin.forEach(paramsCache[parentTplName], function (el) {
-
+			
 			var def = el.split('=');
 
 			// Здесь и далее по коду
@@ -2393,7 +2402,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 			def[1] = def[1] && def[1].trim();
 
 			Snakeskin.forEach(params, function (el2, i) {
-
+				
 				var def2 = el2.split('=');
 				def2[0] = def2[0].trim();
 				def2[1] = def2[1] && def2[1].trim();
@@ -2411,7 +2420,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	// (эээххх, когда же настанет ECMAScript 6 :()
 	var defParams = '';
 	Snakeskin.forEach(params, function (el, i) {
-
+		
 		var def = el.split('=');
 		def[0] = def[0].trim();
 		dir.save(def[0]);
@@ -2419,7 +2428,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 		// Подмешивание родительских входных параметров
 		if (paramsCache[parentTplName] && !defParams) {
 			Snakeskin.forEach(paramsCache[parentTplName], function (el) {
-
+				
 				var def = el.split('='),
 					local;
 
@@ -2429,7 +2438,7 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 				// true, если входной параметр родительского шаблона
 				// присутствует также в дочернем
 				Snakeskin.forEach(params, function (el) {
-
+					
 					var val = el.split('=');
 
 					val[0] = val[0].trim();
@@ -2526,6 +2535,7 @@ Snakeskin.Directions['templateEnd'] = function (command, commandLength, dir, adv
 		// Перемотка переменных
 		// (сбрасывание)
 		dir.initCache(tplName);
+		dir.startDir('template');
 		dir.i = dir.startI - 1;
 
 		if (Snakeskin.write[dir.parentTplName] === false) {
@@ -2619,7 +2629,7 @@ Snakeskin.Directions['call'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 	}
 };var __NEJS_THIS__ = this;
@@ -2769,26 +2779,23 @@ Snakeskin.Directions['block'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	var tplName = dir.tplName,
-		parentName = dir.parentTplName;
+	dir.startDir('block', {
+		name: command
+	});
 
-	if (!adv.dryRun && ((parentName && !dir.hasPos('block') && !dir.hasPos('proto')) || !parentName)) {
+	if (dir.isAdvTest(adv.dryRun)) {
 		// Попытка декларировать блок несколько раз
-		if (blockCache[tplName][command]) {
+		if (blockCache[dir.tplName][command]) {
 			throw dir.error(
 				'Block "' + command + '" is already defined ' +
-				'(command: {block ' + command + '}, template: "' + tplName + ', ' +
+				'(command: {block ' + command + '}, template: "' + dir.tplName + ', ' +
 					dir.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
 
-		blockCache[tplName][command] = {from: dir.i - dir.startI + 1};
+		blockCache[dir.tplName][command] = {from: dir.i - dir.startI + 1};
 	}
-
-	dir.startDir('block', {
-		name: command
-	});
 };
 
 /**
@@ -2804,11 +2811,8 @@ Snakeskin.Directions['block'] = function (command, commandLength, dir, adv) {
  */
 Snakeskin.Directions['blockEnd'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
-	var block = blockCache[dir.tplName][dir.structure.params.name];
-
-	if (!adv.dryRun &&
-		((dir.parentTplName && !dir.hasParent('block') && !dir.hasParent('proto')) || !dir.parentTplName)
-	) {
+	if (dir.isAdvTest(adv.dryRun)) {
+		var block = blockCache[dir.tplName][dir.structure.params.name];
 		block.to = dir.i - dir.startI - commandLength - 1;
 		block.body = dir.source.substring(dir.startI).substring(block.from, block.to);
 	}
@@ -3435,7 +3439,7 @@ Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
  */
 
 /**
- * Кеш переменных
+ * Область видимости
  */
 DirObj.prototype.scope = {
 	init: function () {
@@ -3476,7 +3480,7 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
  */
 
 /**
- * Декларация или вывод константы
+ * Декларация константы или вывод значения
  *
  * @param {string} command - текст команды
  *
@@ -3489,15 +3493,13 @@ Snakeskin.Directions['with'] = function (command, commandLength, dir, adv) {
  */
 Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
-	var tplName = dir.tplName,
-		parentName = dir.parentTplName,
-		protoStart = dir.protoStart;
+	var tplName = dir.tplName;
 
 	var i = dir.i,
 		startI = dir.startI;
 
 	// Хак для экспорта console api
-	if (!parentName && !protoStart && /^console\./.test(command)) {
+	if (!dir.parentTplName && !dir.protoStart && /^console\./.test(command)) {
 		dir.save(dir.prepareOutput(command) + ';');
 		return;
 	}
@@ -3508,10 +3510,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 			mod = varName.charAt(0);
 
 		if (tplName) {
-			if (!adv.dryRun && !dir.varCache[varName] && mod !== '#' && mod !== '@' &&
-				((parentName && !dir.hasPos('block') && !dir.hasPos('proto')) || !parentName)
-			) {
-
+			if (dir.isAdvTest(adv.dryRun) && !dir.varCache[varName] && mod !== '#' && mod !== '@') {
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {
 					throw dir.error(
@@ -3533,7 +3532,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 				}
 
 				// Попытка инициализации переменной внутри итератора
-				if (dir.hasPos('forEach') || dir.hasPos('forIn')) {
+				if (dir.hasParent({'forEach': true, 'forIn': true})) {
 					throw dir.error(
 						'Constant "' + varName + '" can\'t be defined in a iterator ' +
 						'(command: {' + command + '}, template: "' + tplName + ', ' +
@@ -3551,7 +3550,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 				fromConstCache[tplName] = i - startI + 1;
 			}
 
-			if (!parentName && !protoStart) {
+			if (!dir.parentTplName && !dir.protoStart) {
 				if (!dir.varCache[varName] && mod !== '#' && mod !== '@') {
 					dir.save(dir.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
 
@@ -3566,9 +3565,17 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 			'; }');
 		}
 
-	// Вывод переменных
-	} else if (!parentName && !protoStart && tplName) {
-		dir.save('__SNAKESKIN_RESULT__ += ' + dir.prepareOutput(command) + ';');
+	// Вывод значения
+	} else {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "output" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(adv.info)
+			);
+		}
+
+		if (dir.isSimpleOutput(adv.info)) {
+			dir.save('__SNAKESKIN_RESULT__ += ' + dir.prepareOutput(command) + ';');
+		}
 	}
 };
 var __NEJS_THIS__ = this;
@@ -3581,11 +3588,21 @@ var __NEJS_THIS__ = this;
  * Директива cut
  *
  * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['cut'] = function (command, commandLength, dir) {
+Snakeskin.Directions['cut'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
+	if (dir.structure.parent) {
+		throw dir.error('Directive "cut" can be used only within the global space, ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	command = dir.pasteDangerBlocks(command);
 	if (!Snakeskin.write[command]) {
 		Snakeskin.write[command] = false;
@@ -3596,11 +3613,21 @@ Snakeskin.Directions['cut'] = function (command, commandLength, dir) {
  * Директива save
  *
  * @param {string} command - текст команды
+ *
  * @param {number} commandLength - длина команды
  * @param {!DirObj} dir - объект управления директивами
+ *
+ * @param {Object} adv - дополнительные параметры
+ * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
  */
-Snakeskin.Directions['save'] = function (command, commandLength, dir) {
+Snakeskin.Directions['save'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
+	if (dir.structure.parent) {
+		throw dir.error('Directive "save" can be used only within the global space, ' +
+			dir.genErrorAdvInfo(adv.info)
+		);
+	}
+
 	Snakeskin.write[dir.pasteDangerBlocks(command)] = true;
 };var __NEJS_THIS__ = this;
 /**!
@@ -3696,7 +3723,7 @@ Snakeskin.Directions['data'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (dir.isSimpleOutput()) {
+	if (dir.isSimpleOutput(adv.info)) {
 		dir.save('__SNAKESKIN_RESULT__ += \'' + dir.replaceTplVars(command) + '\';');
 	}
 };

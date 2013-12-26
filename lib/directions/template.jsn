@@ -260,6 +260,7 @@ Snakeskin.Directions['templateEnd'] = function (command, commandLength, dir, adv
 		// Перемотка переменных
 		// (сбрасывание)
 		dir.initCache(tplName);
+		dir.startDir('template');
 		dir.i = dir.startI - 1;
 
 		if (Snakeskin.write[dir.parentTplName] === false) {
