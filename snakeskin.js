@@ -2936,7 +2936,6 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
 		Snakeskin.forEach(backHash[lastProto.name], function (el) {
 			
 			var protoParams = protoCache[tplName][lastProto.name].params;
-			console.log(lastProto);
 
 			var params = el.params,
 				paramsStr = '';

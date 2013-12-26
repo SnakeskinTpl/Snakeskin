@@ -34,32 +34,11 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 	}
 
 	var struct = command.split('='),
-		dirStruct = dir.structure;
-
-	var realVar = dir.declVar(struct[0].trim());
+		realVar = dir.declVar(struct[0].trim());
 
 	dir.startInlineDir('var');
 	if (dir.isSimpleOutput()) {
 		struct[0] = realVar + ' ';
-
-		if (dirStruct.name === 'for' && dirStruct.params.open) {
-			let params = dirStruct.params;
-			let prev = '';
-
-			if (!params.vars) {
-				prev += 'var ';
-				dirStruct.params.vars = true;
-			}
-
-			let end = command.slice(-1) !== ',';
-			if (end) {
-				params.i++;
-			}
-
-			dir.save(dir.prepareOutput(prev + struct.join('=') + (end ? ';' : ''), true));
-
-		} else {
-			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
-		}
+		dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 	}
 };
