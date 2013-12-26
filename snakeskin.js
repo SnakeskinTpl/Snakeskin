@@ -3507,6 +3507,8 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 			mod = varName.charAt(0);
 
 		if (dir.structure.parent) {
+			dir.startInlineDir('const');
+
 			if (dir.isAdvTest(adv.dryRun) && !dir.varCache[varName] && mod !== '#' && mod !== '@') {
 				// Попытка повторной инициализации переменной
 				if (constCache[tplName][varName] || constICache[tplName][varName]) {
@@ -3547,7 +3549,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 				fromConstCache[tplName] = i - startI + 1;
 			}
 
-			if (!dir.parentTplName && !dir.protoStart) {
+			if (dir.isSimpleOutput(adv.info)) {
 				if (!dir.varCache[varName] && mod !== '#' && mod !== '@') {
 					dir.save(dir.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
 
@@ -3557,6 +3559,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 			}
 
 		} else {
+			dir.startInlineDir('globalVar');
 			dir.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
 				dir.prepareOutput(command, true, null, true) +
 			'; }');
@@ -3570,6 +3573,7 @@ Snakeskin.Directions['const'] = function (command, commandLength, dir, adv) {
 			);
 		}
 
+		dir.startInlineDir('output');
 		if (dir.isSimpleOutput(adv.info)) {
 			dir.save('__SNAKESKIN_RESULT__ += ' + dir.prepareOutput(command) + ';');
 		}
