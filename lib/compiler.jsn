@@ -322,10 +322,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 		return dir.res;
 	}
 
-	console.log(dir.res);
+	console.log(new Function(dir.res).toString());
+	new Function(dir.res)();
 
 	// Компиляция на сервере
-	if (require) {
+	/*if (require) {
 		// Экспорт
 		if (opt_commonJS) {
 			eval(dir.res);
@@ -337,8 +338,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 
 	// Живая компиляция в браузере
 	} else {
-		window.eval(dir.res);
-	}
+		new Function(dir.res)();
+	}*/
 
 	return dir.res;
 };

@@ -11,21 +11,8 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{proto foo(val)}
-					{if val > 0}
-						{val}
-						{apply foo(--val)}
-					{end}
-				{/proto}
+				1
 			{/template}
-
-			var __i_proto_foo_2 = 1;
-			while (__i_proto_foo_2) {
-				{if val > 0}
-					{val}
-					{__i_proto_foo_2++}
-				{end}
-			}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));

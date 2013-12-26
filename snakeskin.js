@@ -1572,10 +1572,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope)
 		return dir.res;
 	}
 
-	console.log(dir.res);
+	console.log(new Function(dir.res).toString());
+	new Function(dir.res)();
 
 	// Компиляция на сервере
-	if (require) {
+	/*if (require) {
 		// Экспорт
 		if (opt_commonJS) {
 			eval(dir.res);
@@ -1587,8 +1588,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope)
 
 	// Живая компиляция в браузере
 	} else {
-		window.eval(dir.res);
-	}
+		new Function(dir.res)();
+	}*/
 
 	return dir.res;
 };var __NEJS_THIS__ = this;
@@ -2742,33 +2743,12 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 	}
 
 	var struct = command.split('='),
-		dirStruct = dir.structure;
-
-	var realVar = dir.declVar(struct[0].trim());
+		realVar = dir.declVar(struct[0].trim());
 
 	dir.startInlineDir('var');
 	if (dir.isSimpleOutput()) {
 		struct[0] = realVar + ' ';
-
-		if (dirStruct.name === 'for' && dirStruct.params.open) {
-			var params = dirStruct.params;
-			var prev = '';
-
-			if (!params.vars) {
-				prev += 'var ';
-				dirStruct.params.vars = true;
-			}
-
-			var end = command.slice(-1) !== ',';
-			if (end) {
-				params.i++;
-			}
-
-			dir.save(dir.prepareOutput(prev + struct.join('=') + (end ? ';' : ''), true));
-
-		} else {
-			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
-		}
+		dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 	}
 };
 var __NEJS_THIS__ = this;
@@ -3191,14 +3171,9 @@ Snakeskin.Directions['for'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	dir.startDir('for', {
-		open: true.valueOf,
-		i: 0
-	});
-
+	dir.startDir('for');
 	if (dir.isSimpleOutput()) {
 		dir.save('for (');
-		dir.strongSpace = true;
 	}
 };
 
