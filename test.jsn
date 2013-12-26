@@ -1,0 +1,35 @@
+/*!
+ * @status stable
+ * @version 1.0.0
+ */
+
+var fs = require('fs');
+var path = require('path');
+var assert = require('assert');
+
+var snakeskin = require('./snakeskin');
+var testFolder = path.resolve(__dirname, 'tests');
+
+fs.readdirSync(testFolder).forEach((el) => {
+	if (path.extname(el) === '.ss') {
+		let src = path.join(testFolder, el);
+		let txt = String(fs.readFileSync(src)).split('###');
+
+		txt.forEach((el, i) => {
+			txt[i] = el.trim();
+		});
+
+		let starts = txt[0].split(/[\n\r]+/);
+		let results = txt[2].split('***');
+
+		fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
+
+		let tpl = require('./tests/' + el + '.js').liveInit('../snakeskin');
+
+		starts.forEach((el, i) => {
+			let params = el.split(' ');
+
+			assert.equal(tpl[params[0]].apply(tpl, params.slice(1)).trim(), results[i].trim());
+		});
+	}
+});
