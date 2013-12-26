@@ -34,25 +34,9 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 	}
 
 	var struct = command.split('='),
-		varName = struct[0].trim();
+		dirStruct = dir.structure;
 
-	// Попытка повторной инициализации переменной,
-	// которая установлена как константа
-	if (constCache[dir.tplName][varName] || constICache[dir.tplName][varName]) {
-		throw dir.error(
-			'Variable "' + varName + '" is already defined as constant ' +
-				'(command: {var ' + command + '}, template: "' + dir.tplName + ', ' +
-				dir.genErrorAdvInfo(adv.info) +
-			'")!'
-		);
-	}
-
-	var realVar = '__' + varName + '_' + dir.structure.name + '_' + dir.i;
-
-	var dirStruct = dir.structure;
-
-	dirStruct.vars[varName] = realVar;
-	dir.varCache[varName] = true;
+	var realVar = dir.declVar(struct[0].trim());
 
 	dir.startInlineDir('var');
 	if (dir.isSimpleOutput()) {

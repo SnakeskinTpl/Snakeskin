@@ -16,7 +16,7 @@
  * @param {Object=} [opt_scope] - родительский scope, приватный параметр
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
+Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope = {}) {
 	opt_info = opt_info || {line: 1};
 	var html = src['innerHTML'];
 
@@ -28,7 +28,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
 
 	// Устанавливаем scope
-	dir.scope = opt_scope || dir.scope;
+	dir.scope = opt_scope.scope || dir.scope;
+
+	dir.structure.vars = opt_scope.vars || dir.structure.vars;
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;

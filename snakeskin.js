@@ -538,6 +538,7 @@ function DirObj(src, commonJS, dryRun) {
 	this.structure = {
 		name: 'root',
 		parent: null,
+		vars: {},
 		childs: []
 	};
 
@@ -690,12 +691,13 @@ DirObj.prototype.initCache = function (tplName) {
  *
  * @param {string} name - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
+ * @param {Object=} [opt_vars] - локальные переменные директивы
  */
-DirObj.prototype.startDir = function (name, opt_params) {
+DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 	var __NEJS_THIS__ = this;
 	this.inlineDir = false;
 
-	var vars = {};
+	var vars = opt_vars || {};
 	var struct = this.structure;
 
 	// Установка ссылок на локальные переменные родительское директивы
@@ -790,6 +792,31 @@ DirObj.prototype.hasParent = function (name) {
 	}
 
 	return false;
+};
+
+/**
+ * Декларировать переменную
+ *
+ * @param {string} varName - название переменной
+ * @return {string}
+ */
+DirObj.prototype.declVar = function (varName) {
+	var __NEJS_THIS__ = this;
+	// Попытка повторной инициализации переменной,
+	// которая установлена как константа
+	if (constCache[this.tplName][varName] || constICache[this.tplName][varName]) {
+		throw this.error('Variable "' + varName + '" is already defined as constant, ' +
+			this.genErrorAdvInfo(adv.info)
+		);
+	}
+
+	var dirStruct = this.structure;
+	var realVar = '__' + varName + '_' + dirStruct.name + '_' + this.i;
+
+	dirStruct.vars[varName] = realVar;
+	this.varCache[varName] = true;
+
+	return realVar;
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -1234,8 +1261,9 @@ var __NEJS_THIS__ = this;
  * @param {Object=} [opt_scope] - родительский scope, приватный параметр
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope) {
+Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope) {
 	var __NEJS_THIS__ = this;
+	if (typeof opt_scope === "undefined") { opt_scope = {}; }
 	opt_info = opt_info || {line: 1};
 	var html = src['innerHTML'];
 
@@ -1247,7 +1275,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_scope
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
 
 	// Устанавливаем scope
-	dir.scope = opt_scope || dir.scope;
+	dir.scope = opt_scope.scope || dir.scope;
+
+	dir.structure.vars = opt_scope.vars || dir.structure.vars;
 
 	// Если true, то идёт содержимое директивы
 	var begin = false;
@@ -2712,25 +2742,9 @@ Snakeskin.Directions['var'] = function (command, commandLength, dir, adv) {
 	}
 
 	var struct = command.split('='),
-		varName = struct[0].trim();
+		dirStruct = dir.structure;
 
-	// Попытка повторной инициализации переменной,
-	// которая установлена как константа
-	if (constCache[dir.tplName][varName] || constICache[dir.tplName][varName]) {
-		throw dir.error(
-			'Variable "' + varName + '" is already defined as constant ' +
-				'(command: {var ' + command + '}, template: "' + dir.tplName + ', ' +
-				dir.genErrorAdvInfo(adv.info) +
-			'")!'
-		);
-	}
-
-	var realVar = '__' + varName + '_' + dir.structure.name + '_' + dir.i;
-
-	var dirStruct = dir.structure;
-
-	dirStruct.vars[varName] = realVar;
-	dir.varCache[varName] = true;
+	var realVar = dir.declVar(struct[0].trim());
 
 	dir.startInlineDir('var');
 	if (dir.isSimpleOutput()) {
@@ -2850,23 +2864,33 @@ DirObj.prototype.protoStart = false;
  */
 Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
+	var name = command.match(/[^(]+/)[0];
+
 	dir.startDir('proto', {
-		name: command,
+		name: name,
 		startI: dir.i + 1
 	});
 
+	var params = command.match(/\((.*?)\)/);
+	if (params) {
+		params = params[1].split(',');
+		for (var i = 0; i < params.length; i++) {
+			dir.declVar(params[i]);
+		}
+	}
+
 	if (dir.isAdvTest(adv.dryRun)) {
 		// Попытка декларировать прототип блока несколько раз
-		if (protoCache[dir.tplName][command]) {
+		if (protoCache[dir.tplName][name]) {
 			throw dir.error(
-				'Proto "' + command + '" is already defined ' +
+				'Proto "' + name + '" is already defined ' +
 				'(command: {proto' + command + '}, template: "' + dir.tplName + ', ' +
 					dir.genErrorAdvInfo(adv.info) +
 				'")!'
 			);
 		}
 
-		protoCache[dir.tplName][command] = {from: dir.i - dir.startI + 1};
+		protoCache[dir.tplName][name] = {from: dir.i - dir.startI + 1};
 	}
 
 	if (!dir.parentTplName) {
@@ -2900,7 +2924,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
 	if (!dir.parentTplName) {
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
 			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
-			'{end}', null, null, true, dir.scope);
+			'{end}', null, null, true, {scope: dir.scope, vars: dir.structure.vars});
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
@@ -2962,24 +2986,26 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
+	var name = command.match(/[^(]+/)[0];
 	dir.startInlineDir('apply');
+
 	if (!dir.parentTplName && !dir.hasParent('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
 		// когда прототип будет объявлен)
-		if (!protoCache[dir.tplName][command]) {
-			if (!dir.backHash[command]) {
-				dir.backHash[command] = [];
-				dir.backHash[command].protoStart = dir.protoStart;
+		if (!protoCache[dir.tplName][name]) {
+			if (!dir.backHash[name]) {
+				dir.backHash[name] = [];
+				dir.backHash[name].protoStart = dir.protoStart;
 
-				dir.lastBack = command;
+				dir.lastBack = name;
 				dir.backHashI++;
 			}
 
-			dir.backHash[command].push(dir.res.length);
+			dir.backHash[name].push(dir.res.length);
 
 		} else {
-			dir.save(protoCache[dir.tplName][command].body);
+			dir.save(protoCache[dir.tplName][name].body);
 		}
 	}
 };var __NEJS_THIS__ = this;
