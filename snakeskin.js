@@ -2850,7 +2850,12 @@ DirObj.prototype.protoStart = false;
  */
 Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
-	if (!adv.dryRun && ((dir.parentTplName && !dir.hasPos('block') && !dir.hasPos('proto')) || !dir.parentTplName)) {
+	dir.startDir('proto', {
+		name: command,
+		startI: dir.i + 1
+	});
+
+	if (dir.isAdvTest(adv.dryRun)) {
 		// Попытка декларировать прототип блока несколько раз
 		if (protoCache[dir.tplName][command]) {
 			throw dir.error(
@@ -2863,11 +2868,6 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 
 		protoCache[dir.tplName][command] = {from: dir.i - dir.startI + 1};
 	}
-
-	dir.startDir('proto', {
-		name: command,
-		startI: dir.i + 1
-	});
 
 	if (!dir.parentTplName) {
 		dir.protoStart = true;
@@ -2888,20 +2888,23 @@ Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
 Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
 	var tplName = dir.tplName;
-	//TODO: вернуться к этому куску
 	var backHash = dir.backHash,
-		lastProto = dir.popPos('proto');
+		lastProto = dir.structure.params;
 
-	if (!adv.dryRun && ((dir.parentTplName && !dir.hasPos('block') && !dir.hasPos('proto')) || !dir.parentTplName)) {
+	if (dir.isAdvTest(adv.dryRun)) {
 		protoCache[tplName][lastProto.name].to = dir.i - dir.startI - commandLength - 1;
 		fromProtoCache[tplName] = dir.i - dir.startI + 1;
 	}
 
 	// Рекурсивно анализируем прототипы блоков
 	if (!dir.parentTplName) {
+		console.log('{template ' + tplName + '()}' +
+			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
+			'{end}');
+
 		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
 			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
-			'{end}', null, null, true, dir.getPos('with'));
+			'{end}', null, null, true, dir.scope);
 	}
 
 	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
@@ -2916,7 +2919,7 @@ Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
 		dir.backHashI--;
 	}
 
-	if (!dir.hasPos('proto')) {
+	if (!dir.hasParent('proto')) {
 		dir.protoStart = false;
 	}
 };
@@ -2963,7 +2966,7 @@ Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
 		);
 	}
 
-	if (!dir.parentTplName && !dir.hasPos('proto')) {
+	if (!dir.parentTplName && !dir.hasParent('proto')) {
 		// Попытка применить не объявленный прототип
 		// (запоминаем место вызова, чтобы вернуться к нему,
 		// когда прототип будет объявлен)

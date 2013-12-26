@@ -10,16 +10,14 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{a = 1}
 			{template helloWorld(name = 'world')}
-				{:a = {b: {}}}
-				{with a}
-					{@a}
-					{with b}
-						{@a}
-						{#b}
-					{end}
-				{end}
+				{apply foo}
+				{proto foo}
+					{proto foo2}
+						1
+					{/proto}
+					{apply foo2}
+				{/proto}
 			{/template}
 		</script>
 		<script>
