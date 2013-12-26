@@ -1,10 +1,11 @@
 index
 index Bob
+index Bob Cache
 
 ###
 
-{template index(name = 'world')}
-	<h1>Hello {name}!</h1>
+{template index(name = 'world', lname)}
+	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 {end}
 
 ###
@@ -14,3 +15,7 @@ index Bob
 ***
 
 <h1>Hello Bob!</h1>
+
+***
+
+<h1>Hello Bob Cache!</h1>
