@@ -11,115 +11,111 @@ Snakeskin.sysDirs['proto'] = true;
  */
 DirObj.prototype.protoStart = false;
 
-/**
- * Директива proto
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {boolean} adv.dryRun - true, если холостая обработка
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['proto'] = function (command, commandLength, dir, adv) {
-	var name = command.match(/[^(]+/)[0];
+Snakeskin.addDirective(
+	'proto',
 
-	dir.startDir('proto', {
-		name: name,
-		startI: dir.i + 1
-	});
+	{
+		isSys: true
+	},
 
-	var params = command.match(/\((.*?)\)/),
-		paramsMap = [];
+	(command, commandLength, dir, params) => {
+		var name = command.match(/[^(]+/)[0];
 
-	if (params) {
-		params = params[1].split(',');
-		for (let i = 0; i < params.length; i++) {
-			paramsMap.push(dir.declVar(params[i]));
+		dir.startDir(params.name, {
+			name: name,
+			startI: dir.i + 1
+		});
+
+		var args = command.match(/\((.*?)\)/),
+			argsMap = [];
+
+		if (args) {
+			args = args[1].split(',');
+			for (let i = 0; i < args.length; i++) {
+				argsMap.push(dir.declVar(args[i]));
+			}
 		}
-	}
 
-	if (dir.isAdvTest(adv.dryRun)) {
-		// Попытка декларировать прототип блока несколько раз
-		if (protoCache[dir.tplName][name]) {
-			throw dir.error(
-				'Proto "' + name + '" is already defined ' +
-				'(command: {proto' + command + '}, template: "' + dir.tplName + ', ' +
-					dir.genErrorAdvInfo(adv.info) +
-				'")!'
+		if (dir.isAdvTest(adv.dryRun)) {
+			// Попытка декларировать прототип блока несколько раз
+			if (protoCache[dir.tplName][name]) {
+				throw dir.error('Proto "' + name + '" is already defined, ' +
+					dir.genErrorAdvInfo(params.info)
+				);
+			}
+
+			protoCache[dir.tplName][name] = {
+				from: dir.i - dir.startI + 1,
+				args: argsMap
+			};
+		}
+
+		if (!dir.parentTplName) {
+			dir.protoStart = true;
+		}
+	},
+
+	(command, commandLength, dir) => {
+		var tplName = dir.tplName,
+			lastProto = dir.structure.params;
+
+		var proto = protoCache[tplName][lastProto.name];
+
+		if (dir.isAdvTest(adv.dryRun)) {
+			proto.to = dir.i - dir.startI - commandLength - 1;
+			fromProtoCache[tplName] = dir.i - dir.startI + 1;
+		}
+
+		// Рекурсивно анализируем прототипы блоков
+		if (!dir.parentTplName) {
+			proto.body = Snakeskin.compile(
+				'{template ' + tplName + '()}' +
+					dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
+				'{end}',
+
+				null,
+				null,
+				true,
+
+				{
+					scope: dir.scope,
+					vars: dir.structure.vars
+				}
 			);
 		}
 
-		protoCache[dir.tplName][name] = {
-			from: dir.i - dir.startI + 1,
-			params: paramsMap
-		};
-	}
+		let bacs = dir.backHash[lastProto.name];
+		if (bacs && !bacs.protoStart) {
+			let args = proto.args;
 
-	if (!dir.parentTplName) {
-		dir.protoStart = true;
-	}
-};
+			for (let i = 0; i < bacs.length; i++) {
+				let el = bacs[i];
 
-/**
- * Окончание proto
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {boolean} adv.dryRun - true, если холостая обработка
- */
-Snakeskin.Directions['protoEnd'] = function (command, commandLength, dir, adv) {
-	var tplName = dir.tplName;
-	var backHash = dir.backHash,
-		lastProto = dir.structure.params;
+				let params = el.args,
+					paramsStr = '';
 
-	if (dir.isAdvTest(adv.dryRun)) {
-		protoCache[tplName][lastProto.name].to = dir.i - dir.startI - commandLength - 1;
-		fromProtoCache[tplName] = dir.i - dir.startI + 1;
-	}
+				for (let j = 0; i < args.length; j++) {
+					paramsStr += 'var ' + args[i] + ' = ' + params[i] + ';';
+				}
 
-	// Рекурсивно анализируем прототипы блоков
-	if (!dir.parentTplName) {
-		protoCache[tplName][lastProto.name].body = Snakeskin.compile('{template ' + tplName + '()}' +
-			dir.source.substring(lastProto.startI, dir.i - commandLength - 1) +
-			'{end}', null, null, true, {scope: dir.scope, vars: dir.structure.vars});
-	}
-
-	if (backHash[lastProto.name] && !backHash[lastProto.name].protoStart) {
-		Snakeskin.forEach(backHash[lastProto.name], (el) => {
-			var protoParams = protoCache[tplName][lastProto.name].params;
-
-			var params = el.params,
-				paramsStr = '';
-
-			for (let i = 0; i < protoParams.length; i++) {
-				paramsStr += 'var ' + protoParams[i] + ' = ' + params[i] + ';';
+				dir.replace(
+					dir.res.substring(0, el.pos) +
+					paramsStr +
+					protoCache[tplName][lastProto.name].body +
+					dir.res.substring(el.pos)
+				);
 			}
 
-			dir.replace(dir.res.substring(0, el.pos) +
-				paramsStr +
-				protoCache[tplName][lastProto.name].body +
-				dir.res.substring(el.pos));
-		});
+			delete dir.backHash[lastProto.name];
+			dir.backHashI--;
+		}
 
-		delete backHash[lastProto.name];
-		dir.backHashI--;
+		if (!dir.hasParent('proto')) {
+			dir.protoStart = false;
+		}
 	}
+);
 
-	if (!dir.hasParent('proto')) {
-		dir.protoStart = false;
-	}
-};
-
-/**
- * Кеш обратных вызовов прототипов
- */
 DirObj.prototype.backHash = {
 	init: function () {
 		return {};
@@ -139,63 +135,57 @@ DirObj.prototype.backHashI = 0;
  */
 DirObj.prototype.lastBack = null;
 
-/**
- * Директива apply
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['apply'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "apply" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'apply',
 
-	var name = command.match(/[^(]+/)[0];
-	dir.startInlineDir('apply');
+	null,
 
-	var params = command.match(/\((.*?)\)/);
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
 
-	if (params) {
-		params = params[1].split(',');
+		var name = command.match(/[^(]+/)[0];
+		dir.startInlineDir(params.name);
 
-	} else {
-		params = [];
-	}
-
-	if (!dir.parentTplName && !dir.hasParent('proto')) {
-		// Попытка применить не объявленный прототип
-		// (запоминаем место вызова, чтобы вернуться к нему,
-		// когда прототип будет объявлен)
-		if (!protoCache[dir.tplName][name]) {
-			if (!dir.backHash[name]) {
-				dir.backHash[name] = [];
-				dir.backHash[name].protoStart = dir.protoStart;
-
-				dir.lastBack = name;
-				dir.backHashI++;
-			}
-
-			dir.backHash[name].push({
-				pos: dir.res.length,
-				params: params
-			});
+		var args = command.match(/\((.*?)\)/);
+		if (args) {
+			args = args[1].split(',');
 
 		} else {
-			let proto = protoCache[dir.tplName][name];
-			let protoParams = proto.params;
+			args = [];
+		}
 
-			for (let i = 0; i < protoParams.length; i++) {
-				dir.save('var ' + protoParams[i] + ' = ' + params[i] + ';');
+		if (!dir.parentTplName && !dir.hasParent('proto')) {
+			// Попытка применить не объявленный прототип
+			// (запоминаем место вызова, чтобы вернуться к нему,
+			// когда прототип будет объявлен)
+			if (!protoCache[dir.tplName][name]) {
+				if (!dir.backHash[name]) {
+					dir.backHash[name] = [];
+					dir.backHash[name].protoStart = dir.protoStart;
+
+					dir.lastBack = name;
+					dir.backHashI++;
+				}
+
+				dir.backHash[name].push({
+					pos: dir.res.length,
+					args: args
+				});
+
+			} else {
+				let proto = protoCache[dir.tplName][name];
+				let protoArgs = proto.args;
+
+				for (let i = 0; i < protoArgs.length; i++) {
+					dir.save('var ' + protoArgs[i] + ' = ' + params[i] + ';');
+				}
+
+				dir.save(proto.body);
 			}
-
-			dir.save(proto.body);
 		}
 	}
-};
+);

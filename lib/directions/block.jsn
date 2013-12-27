@@ -36,7 +36,6 @@ Snakeskin.addDirective(
 	(command, commandLength, dir, params) => {
 		if (dir.isAdvTest(params.dryRun)) {
 			let block = blockCache[dir.tplName][dir.structure.params.name];
-			block.to = dir.i - dir.startI - commandLength - 1;
 			block.body = dir.source.substring(dir.startI).substring(block.from, block.to);
 		}
 	}
