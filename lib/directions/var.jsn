@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 			realVar = dir.declVar(struct[0].trim());
 
 		dir.startInlineDir(params.name);
-		if (dir.isSimpleOutput()) {
+		if (dir.isSimpleOutput(params.info)) {
 			struct[0] = realVar + ' ';
 			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 		}
