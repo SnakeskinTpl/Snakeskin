@@ -26,7 +26,13 @@ var Snakeskin = {
 	 * Пространство имён для супер глобальных переменных
 	 * @namespace
 	 */
-	Vars: {}
+	Vars: {},
+
+	/**
+	 * Кеш шаблонов
+	 * @type {!Object}
+	 */
+	cache: {}
 };
 
 ((require) => {

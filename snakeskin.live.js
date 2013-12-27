@@ -1,27 +1,43 @@
 var __NEJS_THIS__ = this;
-/*!
- * Шаблонный движок с поддержкой наследования
+/**!
+ * @status stable
+ * @version 1.0.0
  */
 
 var Snakeskin = {
+	/**
+	 * Версия движка
+	 * @type {string}
+	 */
 	VERSION: [3, 0, 0].join('.'),
 
+	/**
+	 * Пространство имён для директив
+	 * @namespace
+	 */
 	Directions: {},
-	Replacers: {},
 
-	strongDirs: {},
-	sysDirs: {},
-
+	/**
+	 * Пространство имён для фильтров
+	 * @namespace
+	 */
 	Filters: {},
-	BEM: {},
+
+	/**
+	 * Пространство имён для супер глобальных переменных
+	 * @namespace
+	 */
 	Vars: {},
 
-	write: {},
+	/**
+	 * Кеш шаблонов
+	 * @type {!Object}
+	 */
 	cache: {}
 };
 
 (function (require) {
-	var __NEJS_THIS__ = this;
+	
 
 var __NEJS_THIS__ = this;
 /**
