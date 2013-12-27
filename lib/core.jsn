@@ -5,10 +5,11 @@
 var Snakeskin = {
 	VERSION: [3, 0, 0].join('.'),
 
+	/**
+	 * Пространство имён для директив
+	 * @namespace
+	 */
 	Directions: {},
-	Replacers: {},
-
-	strongDirs: {},
 	sysDirs: {},
 
 	Filters: {},
@@ -39,6 +40,7 @@ var Snakeskin = {
 	//#include error.js
 
 	//#include compiler.js
+	//#include directions.js
 	//#include output.js
 
 	//#include directions/private.js

@@ -23,6 +23,10 @@ var paramsCache = {};
 // Карта наследований
 var extMap = {};
 
+var replacers = {};
+var strongDirs = {};
+var sysDirs = {};
+
 // Системные константы
 const sysConst = {
 	'__SNAKESKIN_RESULT__': true,
