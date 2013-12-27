@@ -2520,6 +2520,9 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	}
 };
 
+/**
+ * Директива placeholder
+ */
 Snakeskin.Directions['placeholder'] = Snakeskin.Directions['template'];
 
 /**
@@ -2572,10 +2575,10 @@ Snakeskin.Directions['templateEnd'] = function (command, commandLength, dir, adv
 		dir.i = dir.startI - 1;
 
 		if (Snakeskin.write[dir.parentTplName] === false) {
-			dir.res = dir.res.replace(new RegExp('/\\* Snakeskin template: ' +
+			/*dir.res = dir.res.replace(new RegExp('/\\* Snakeskin template: ' +
 				dir.parentTplName.replace(/([.\[\]^$])/gm, '\\$1') +
-				';[\\s\\S]*?/\\* Snakeskin template\\. \\*/', 'm'),
-			'');
+				';[\\s\\S]*?/\\* Snakeskin template\\. \\*//*', 'm'),
+			'');*/
 		}
 
 		dir.parentTplName = null;
@@ -2595,6 +2598,9 @@ Snakeskin.Directions['templateEnd'] = function (command, commandLength, dir, adv
 	dir.tplName = null;
 };
 
+/**
+ * Окончание placeholder
+ */
 Snakeskin.Directions['placeholderEnd'] = Snakeskin.Directions['templateEnd'];var __NEJS_THIS__ = this;
 /**!
  * @status stable
