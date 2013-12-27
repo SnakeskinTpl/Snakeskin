@@ -13,7 +13,7 @@
  * @param {Object} [params.strongDirs] - объект с указанием директив, которые могут быть вложены в эту
  * @param {?boolean=} [params.sysDir=false] - если true, то директива считается системной
  *
- * @param {function(string, number, !DirObj, !Object)} constr - конструктор директивы
+ * @param {function(string, number, !DirObj, {name: string, info: Object, commonJS: boolean, dryRun: boolean})} constr - конструктор директивы
  */
 Snakeskin.addDirective = function (name, params, constr) {
 	params = params || {};

@@ -3,29 +3,25 @@
  * @version 1.0.0
  */
 
-// Короткая форма директивы void
-Snakeskin.Replacers['?'] = (cmd) => cmd.replace(/^\?/, 'void ');
+Snakeskin.addDirective(
+	'void',
 
-/**
- * Директива void
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['void'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "void" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+	{
+		replacers: {
+			'?': (cmd) => cmd.replace(/^\?/, 'void ')
+		}
+	},
 
-	dir.startInlineDir('void');
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save(dir.prepareOutput(command) + ';');
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		dir.startInlineDir(params.name);
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save(dir.prepareOutput(command) + ';');
+		}
 	}
-};
+);
