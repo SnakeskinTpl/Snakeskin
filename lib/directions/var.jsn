@@ -13,7 +13,7 @@ DirObj.prototype.varCache = {
 };
 
 // Короткая форма директивы var
-Snakeskin.Replacers.push((cmd) => cmd.replace(/^:/, 'var '));
+Snakeskin.Replacers[':'] = (cmd) => cmd.replace(/^:/, 'var ');
 
 /**
  * Директива var

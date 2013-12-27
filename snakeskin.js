@@ -7,7 +7,7 @@ var Snakeskin = {
 	VERSION: [3, 0, 0].join('.'),
 
 	Directions: {},
-	Replacers: [],
+	Replacers: {},
 
 	strongDirs: {},
 	sysDirs: {},
@@ -1258,12 +1258,14 @@ var __NEJS_THIS__ = this;
  * @param {?boolean=} [opt_dryRun=false] - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
  *
- * @param {Object=} [opt_scope] - родительский scope, приватный параметр
+ * @param {Object=} [opt_sysParams] - служебные параметры запуска
+ * @param {Array=} [opt_sysParams.scope] - родительский scope
+ * @param {Object=} [opt_sysParams.vars] - объект родительских переменных
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope) {
+Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysParams) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_scope === "undefined") { opt_scope = {}; }
+	if (typeof opt_sysParams === "undefined") { opt_sysParams = {}; }
 	opt_info = opt_info || {line: 1};
 	var html = src['innerHTML'];
 
@@ -1274,22 +1276,21 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope)
 
 	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
 
-	// Устанавливаем scope
-	dir.scope = opt_scope.scope || dir.scope;
+	dir.scope = opt_sysParams.scope || dir.scope;
+	dir.structure.vars = opt_sysParams.vars || dir.structure.vars;
 
-	dir.structure.vars = opt_scope.vars || dir.structure.vars;
-
-	// Если true, то идёт содержимое директивы
+	// Если true, то идёт содержимое директивы,
+	// т.е. { ... }
 	var begin = false;
+
+	// Содержимое директивы
+	var command = '';
 
 	// Количество открытых { внутри директивы
 	var fakeBegin = 0;
 
 	// Если true, то идёт запись простой строки
 	var beginStr = false;
-
-	// Содержимое директивы
-	var command = '';
 
 	// Если true, то предыдущий символ был не экранированный \
 	var escape = false;
@@ -1354,6 +1355,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope)
 		}
 
 		if (!bOpen) {
+			// Обработка экранирования
 			if (begin) {
 				if (el === '\\' || escape) {
 					escape = !escape;
@@ -1426,11 +1428,17 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_scope)
 				var commandLength = command.length;
 				command = dir.replaceDangerBlocks(command).trim();
 
+				var replacers = Snakeskin.Replacers;
+				var short1 = command.charAt(0);
+				var short2 = command.substr(0, 2);
+
 				// Поддержка коротких форм записи директив
-				Snakeskin.forEach(Snakeskin.Replacers, function (fn) {
-					
-					command = fn(command);
-				});
+				if (replacers[short2]) {
+					command = replacers[short2](command);
+
+				} else if (replacers[short1]) {
+					command = replacers[short1](command);
+				}
 
 				var commandType = command
 
@@ -2245,8 +2253,8 @@ Snakeskin.Directions['&'] = function (command, commandLength, dir, adv) {
  */
 
 // Короткая форма директивы end
-Snakeskin.Replacers.push(function (cmd) {
-	return cmd.replace(/^\//, 'end ');});
+Snakeskin.Replacers['/'] = function (cmd) {
+	return cmd.replace(/^\//, 'end ');};
 
 /**
  * Директива end
@@ -2677,8 +2685,8 @@ Snakeskin.Directions['call'] = function (command, commandLength, dir, adv) {
  */
 
 // Короткая форма директивы void
-Snakeskin.Replacers.push(function (cmd) {
-	return cmd.replace(/^\?/, 'void ');});
+Snakeskin.Replacers['?'] = function (cmd) {
+	return cmd.replace(/^\?/, 'void ');};
 
 /**
  * Директива void
@@ -2720,8 +2728,8 @@ DirObj.prototype.varCache = {
 };
 
 // Короткая форма директивы var
-Snakeskin.Replacers.push(function (cmd) {
-	return cmd.replace(/^:/, 'var ');});
+Snakeskin.Replacers[':'] = function (cmd) {
+	return cmd.replace(/^:/, 'var ');};
 
 /**
  * Директива var
@@ -3394,10 +3402,10 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 };
 
 // Короткая форма директивы case
-Snakeskin.Replacers.push(function (cmd) {
-	return cmd.replace(/^>/, 'case ');});
-Snakeskin.Replacers.push(function (cmd) {
-	return cmd.replace(/^end >/, 'end case');});
+Snakeskin.Replacers['>'] = function (cmd) {
+	return cmd.replace(/^>/, 'case ');};
+Snakeskin.Replacers['/>'] = function (cmd) {
+	return cmd.replace(/^\/>/, 'end case');};
 
 /**
  * Директива case

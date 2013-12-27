@@ -4,7 +4,7 @@
  */
 
 // Короткая форма директивы void
-Snakeskin.Replacers.push((cmd) => cmd.replace(/^\?/, 'void '));
+Snakeskin.Replacers['?'] = (cmd) => cmd.replace(/^\?/, 'void ');
 
 /**
  * Директива void

@@ -4,7 +4,7 @@
  */
 
 // Короткая форма директивы end
-Snakeskin.Replacers.push((cmd) => cmd.replace(/^\//, 'end '));
+Snakeskin.Replacers['/'] = (cmd) => cmd.replace(/^\//, 'end ');
 
 /**
  * Директива end

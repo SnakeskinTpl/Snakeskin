@@ -115,8 +115,8 @@ Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
 };
 
 // Короткая форма директивы case
-Snakeskin.Replacers.push((cmd) => cmd.replace(/^>/, 'case '));
-Snakeskin.Replacers.push((cmd) => cmd.replace(/^end >/, 'end case'));
+Snakeskin.Replacers['>'] = (cmd) => cmd.replace(/^>/, 'case ');
+Snakeskin.Replacers['/>'] = (cmd) => cmd.replace(/^\/>/, 'end case');
 
 /**
  * Директива case
