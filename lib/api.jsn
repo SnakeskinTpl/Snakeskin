@@ -134,7 +134,7 @@ Snakeskin.DirObj = DirObj;
  * @param {string} str - исходная строка
  */
 DirObj.prototype.save = function (str) {
-	if (!this.tplName || Snakeskin.write[this.tplName] !== false) {
+	if (!this.tplName || write[this.tplName] !== false) {
 		this.res += str;
 	}
 };

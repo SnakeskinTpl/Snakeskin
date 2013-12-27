@@ -28,6 +28,7 @@ var replacers = {};
 var strongDirs = {};
 var sysDirs = {};
 var bem = {};
+var write = {};
 
 // Системные константы
 const sysConst = {
