@@ -21,299 +21,248 @@ DirObj.prototype.tplName = null;
  */
 DirObj.prototype.parentTplName = null;
 
-/**
- * Директива template
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {string} adv.name - название директивы
- * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
- * @param {boolean} adv.dryRun - true, если холостая обработка
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
-	if (dir.structure.parent) {
-		throw dir.error('Directive "' + adv.name + '" can be used only within the global space, ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'template',
 
-	dir.startDir(adv.name);
+	null,
 
-	// Начальная позиция шаблона
-	// +1 => } >>
-	dir.startI = dir.i + 1;
-
-	// Имя + пространство имён шаблона
-	var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
-		tplName = dir.pasteDangerBlocks(tmpTplName);
-
-	if (adv.name === 'placeholder') {
-		if (!Snakeskin.write[tplName]) {
-			Snakeskin.write[tplName] = false;
+	(command, commandLength, dir, params) => {
+		if (dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can be used only within the global space, ' +
+				dir.genErrorAdvInfo(params.info)
+			);
 		}
-	}
 
-	dir.tplName = tplName;
+		dir.startDir(params.name);
 
-	// При холостой обработке прерываем дальнейшее выполнение директивы
-	if (adv.dryRun) {
-		return;
-	}
+		// Начальная позиция шаблона
+		// +1 => } >>
+		dir.startI = dir.i + 1;
 
-	// Название родительского шаблона
-	var parentTplName;
-	if (/\s+extends\s+/m.test(command)) {
-		parentTplName = dir.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
-		dir.parentTplName = parentTplName;
-	}
+		// Имя + пространство имён шаблона
+		var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
+			tplName = dir.pasteDangerBlocks(tmpTplName);
 
-	dir.initCache(tplName);
-	extMap[tplName] = parentTplName;
+		if (params.name === 'placeholder') {
+			if (!Snakeskin.write[tplName]) {
+				Snakeskin.write[tplName] = false;
+			}
+		}
 
-	// Входные параметры
-	var params = /\(([\s\S]*?)\)/m.exec(command)[1];
+		dir.tplName = tplName;
 
-	// Для возможности удобного пост-парсинга,
-	// каждая функция снабжается комментарием вида:
-	// /* Snakeskin template: название шаблона; параметры через запятую */
-	dir.save('/* Snakeskin template: ' + tplName + '; ' + params.replace(/=([\s\S]*?)(?:,|$)/gm, '') + ' */');
+		// При холостой обработке прерываем дальнейшее выполнение директивы
+		if (params.dryRun) {
+			return;
+		}
 
-	// Декларация функции
-	// с пространством имён или при экспорте в common.js
-	if (/\.|\[/m.test(tmpTplName) || adv.commonJS) {
-		let lastName = '';
+		// Название родительского шаблона
+		var parentTplName;
+		if (/\s+extends\s+/m.test(command)) {
+			parentTplName = dir.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
+			dir.parentTplName = parentTplName;
+		}
 
-		tmpTplName
-			// Заменяем [] на .
-			.replace(/\[/gm, '.')
-			.replace(/]/gm, '')
+		dir.initCache(tplName);
+		extMap[tplName] = parentTplName;
 
-			.split('.')
-			.reduce((str, el, i, data) => {
-				dir.save(
-					'if (typeof ' + (adv.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(adv.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
-					'}'
-				);
+		// Входные параметры
+		var args = /\(([\s\S]*?)\)/m.exec(command)[1];
 
-				if (el.indexOf('__ESCAPER_QUOT__') === 0) {
-					return str + '[' + el + ']';
+		// Для возможности удобного пост-парсинга,
+		// каждая функция снабжается комментарием вида:
+		// /* Snakeskin template: название шаблона; параметры через запятую */
+		dir.save('/* Snakeskin template: ' + tplName + '; ' + args.replace(/=([\s\S]*?)(?:,|$)/gm, '') + ' */');
 
-				} else if (i === data.length - 1) {
-					lastName = el;
-				}
+		// Декларация функции
+		// с пространством имён или при экспорте в common.js
+		if (/\.|\[/m.test(tmpTplName) || params.commonJS) {
+			let lastName = '';
 
-				return str + '.' + el;
-			});
+			tmpTplName
+				// Заменяем [] на .
+				.replace(/\[/gm, '.')
+				.replace(/]/gm, '')
 
-		dir.save((adv.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
+				.split('.')
+				.reduce((str, el, i, data) => {
+					dir.save(
+						'if (typeof ' + (params.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+							(params.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
+						'}'
+					);
 
-	// Без простраства имён
-	} else {
-		dir.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
-	}
+					if (el.indexOf('__ESCAPER_QUOT__') === 0) {
+						return str + '[' + el + ']';
 
-	// Входные параметры
-	params = params.split(',');
+					} else if (i === data.length - 1) {
+						lastName = el;
+					}
 
-	// Если шаблон наследуется,
-	// то подмешиваем ко входым параметрам шаблона
-	// входные параметры родителя
-	paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(params) : params;
+					return str + '.' + el;
+				});
 
-	// Переинициализация входных параметров родительскими
-	// (только если нужно)
-	if (paramsCache[parentTplName]) {
-		Snakeskin.forEach(paramsCache[parentTplName], (el) => {
-			var def = el.split('=');
+			dir.save((params.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
 
-			// Здесь и далее по коду
-			// [0] - название переменной
-			// [1] - значение по умолчанию (опционально)
-			def[0] = def[0].trim();
-			def[1] = def[1] && def[1].trim();
+		// Без простраства имён
+		} else {
+			dir.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
+		}
 
-			Snakeskin.forEach(params, (el2, i) => {
-				var def2 = el2.split('=');
-				def2[0] = def2[0].trim();
-				def2[1] = def2[1] && def2[1].trim();
+		// Входные параметры
+		args = args.split(',');
 
-				// Если переменная не имеет параметра по умолчанию,
-				// то ставим параметр по умолчанию родителя
-				if (def[0] === def2[0] && def2[1] === void 0) {
-					params[i] = el;
-				}
-			});
-		});
-	}
+		// Если шаблон наследуется,
+		// то подмешиваем ко входым параметрам шаблона
+		// входные параметры родителя
+		paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(args) : args;
 
-	// Инициализация параметров по умолчанию
-	// (эээххх, когда же настанет ECMAScript 6 :()
-	var defParams = '';
-	Snakeskin.forEach(params, (el, i) => {
-		var def = el.split('=');
-		def[0] = def[0].trim();
-		dir.save(def[0]);
-
-		// Подмешивание родительских входных параметров
-		if (paramsCache[parentTplName] && !defParams) {
+		// Переинициализация входных параметров родительскими
+		// (только если нужно)
+		if (paramsCache[parentTplName]) {
 			Snakeskin.forEach(paramsCache[parentTplName], (el) => {
-				var def = el.split('='),
-					local;
+				var def = el.split('=');
 
+				// Здесь и далее по коду
+				// [0] - название переменной
+				// [1] - значение по умолчанию (опционально)
 				def[0] = def[0].trim();
 				def[1] = def[1] && def[1].trim();
 
-				// true, если входной параметр родительского шаблона
-				// присутствует также в дочернем
-				Snakeskin.forEach(params, (el) => {
-					var val = el.split('=');
+				Snakeskin.forEach(args, (el2, i) => {
+					var def2 = el2.split('=');
+					def2[0] = def2[0].trim();
+					def2[1] = def2[1] && def2[1].trim();
 
-					val[0] = val[0].trim();
-					val[1] = val[1] && val[1].trim();
-
-					if (val[0] === def[0]) {
-						local = true;
-						return false;
+					// Если переменная не имеет параметра по умолчанию,
+					// то ставим параметр по умолчанию родителя
+					if (def[0] === def2[0] && def2[1] === void 0) {
+						args[i] = el;
 					}
-
-					return true;
 				});
-
-				// Если входный параметр родителя отсутствует у ребёнка,
-				// но он имеет значение по умолчанию,
-				// то инициализируем его как локальную переменную шаблона
-				if (!local && def[1] !== void 0) {
-					defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
-					constICache[tplName][def[0]] = el;
-				}
 			});
 		}
 
-		// Параметры по умолчанию
-		if (def.length > 1) {
-			def[1] = def[1].trim();
-			defParams += def[0] + ' = ' + def[0] + ' !== void 0 && ' +
-				def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
+		// Инициализация параметров по умолчанию
+		// (эээххх, когда же настанет ECMAScript 6 :()
+		var defParams = '';
+		Snakeskin.forEach(args, (el, i) => {
+			var def = el.split('=');
+			def[0] = def[0].trim();
+			dir.save(def[0]);
+
+			// Подмешивание родительских входных параметров
+			if (paramsCache[parentTplName] && !defParams) {
+				Snakeskin.forEach(paramsCache[parentTplName], (el) => {
+					var def = el.split('='),
+						local;
+
+					def[0] = def[0].trim();
+					def[1] = def[1] && def[1].trim();
+
+					// true, если входной параметр родительского шаблона
+					// присутствует также в дочернем
+					Snakeskin.forEach(args, (el) => {
+						var val = el.split('=');
+
+						val[0] = val[0].trim();
+						val[1] = val[1] && val[1].trim();
+
+						if (val[0] === def[0]) {
+							local = true;
+							return false;
+						}
+
+						return true;
+					});
+
+					// Если входный параметр родителя отсутствует у ребёнка,
+					// но он имеет значение по умолчанию,
+					// то инициализируем его как локальную переменную шаблона
+					if (!local && def[1] !== void 0) {
+						defParams += 'var ' + def[0] + ' = ' + def[1] + ';';
+						constICache[tplName][def[0]] = el;
+					}
+				});
+			}
+
+			// Параметры по умолчанию
+			if (def.length > 1) {
+				def[1] = def[1].trim();
+				defParams += def[0] + ' = ' + def[0] + ' !== void 0 && ' +
+					def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
+			}
+
+			// Кеширование
+			constICache[tplName][def[0]] = el;
+
+			// После последнего параметра запятая не ставится
+			if (i !== args.length - 1) {
+				dir.save(',');
+			}
+		});
+
+		dir.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
+		dir.save(
+			'var TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(tmpTplName)) + '\';' +
+			'var PARENT_TPL_NAME;'
+		);
+
+		if (parentTplName) {
+			dir.save('PARENT_TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(parentTplName)) + '\';');
+		}
+	},
+
+	(command, commandLength, dir, params) => {
+		var tplName = dir.tplName;
+
+		// Вызовы не объявленных прототипов
+		if (dir.backHashI) {
+			throw dir.error('Proto "' + dir.lastBack + '" is not defined, ' +
+				dir.genErrorAdvInfo(params.info)
+			);
 		}
 
-		// Кеширование
-		constICache[tplName][def[0]] = el;
-
-		// После последнего параметра запятая не ставится
-		if (i !== params.length - 1) {
-			dir.save(',');
+		if (params.dryRun) {
+			return;
 		}
-	});
 
-	dir.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
-	dir.save(
-		'var TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(tmpTplName)) + '\';' +
-		'var PARENT_TPL_NAME;'
-	);
+		// Кешируем тело шаблона
+		cache[tplName] = dir.source.substring(dir.startI, dir.i - commandLength - 1);
 
-	if (parentTplName) {
-		dir.save('PARENT_TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(parentTplName)) + '\';');
-	}
-};
+		// Обработка наследования:
+		// тело шаблона объединяется с телом родителя
+		// и обработка шаблона начинается заново,
+		// но уже как атомарного (без наследования)
+		if (dir.parentTplName) {
+			// Результирующее тело шаблона
+			dir.source = dir.source.substring(0, dir.startI) +
+				dir.getExtStr(tplName, params.info) +
+				dir.source.substring(dir.i - commandLength - 1);
 
-/**
- * Директива placeholder
- */
-Snakeskin.Directions['placeholder'] = Snakeskin.Directions['template'];
+			// Перемотка переменных
+			// (сбрасывание)
+			dir.initCache(tplName);
+			dir.startDir(params.name);
+			dir.i = dir.startI - 1;
 
-/**
- * Директива save
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['save'] = function (command, commandLength, dir, adv) {
-	if (dir.structure.parent) {
-		throw dir.error('Directive "save" can be used only within the global space, ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+			dir.parentTplName = null;
+			return false;
+		}
 
-	Snakeskin.write[dir.pasteDangerBlocks(command)] = true;
-};
-
-/**
- * Окончание template
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
- * @param {boolean} adv.dryRun - true, если холостая обработка
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- * @return {?}
- */
-Snakeskin.Directions['templateEnd'] = function (command, commandLength, dir, adv) {
-	var tplName = dir.tplName;
-
-	// Вызовы не объявленных прототипов
-	if (dir.backHashI) {
-		throw dir.error(
-			'Proto "' + dir.lastBack + '" is not defined ' +
-			'(command: {' + command + '}, template: "' + tplName + ', ' + dir.genErrorAdvInfo(adv.info) + '")!'
-		);
-	}
-
-	if (adv.dryRun) {
-		return;
-	}
-
-	// Кешируем тело шаблона
-	cache[tplName] = dir.source.substring(dir.startI, dir.i - commandLength - 1);
-
-	// Обработка наследования:
-	// тело шаблона объединяется с телом родителя
-	// и обработка шаблона начинается заново,
-	// но уже как атомарного (без наследования)
-	if (dir.parentTplName) {
-		// Результирующее тело шаблона
-		dir.source = dir.source.substring(0, dir.startI) +
-			dir.getExtStr(tplName, adv.info) +
-			dir.source.substring(dir.i - commandLength - 1);
-
-		// Перемотка переменных
-		// (сбрасывание)
-		dir.initCache(tplName);
-		dir.startDir('template');
-		dir.i = dir.startI - 1;
-
-		dir.parentTplName = null;
-		return false;
-	}
-
-	dir.save(
+		dir.save(
 			'return __SNAKESKIN_RESULT__; };' +
-		'if (typeof Snakeskin !== \'undefined\') {' +
-			'Snakeskin.cache[\'' +
+			'if (typeof Snakeskin !== \'undefined\') {' +
+				'Snakeskin.cache[\'' +
 				dir.applyDefEscape(dir.pasteDangerBlocks(tplName)) +
-			'\'] = ' + (adv.commonJS ? 'exports.' : '') + tplName + ';' +
-		'}/* Snakeskin template. */'
-	);
+				'\'] = ' + (params.commonJS ? 'exports.' : '') + tplName + ';' +
+			'}/* Snakeskin template. */'
+		);
 
-	dir.canWrite = true;
-	dir.tplName = null;
-};
+		dir.canWrite = true;
+		dir.tplName = null;
+	}
+);
 
-/**
- * Окончание placeholder
- */
+Snakeskin.Directions['placeholder'] = Snakeskin.Directions['template'];
 Snakeskin.Directions['placeholderEnd'] = Snakeskin.Directions['templateEnd'];
