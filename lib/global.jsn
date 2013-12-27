@@ -23,9 +23,11 @@ var paramsCache = {};
 // Карта наследований
 var extMap = {};
 
+// Кеширующие таблицы
 var replacers = {};
 var strongDirs = {};
 var sysDirs = {};
+var bem = {};
 
 // Системные константы
 const sysConst = {
