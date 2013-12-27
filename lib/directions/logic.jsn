@@ -3,190 +3,154 @@
  * @version 1.0.0
  */
 
-/**
- * Директива if
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['if'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "if" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
+Snakeskin.addDirective(
+	'if',
+
+	null,
+
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		dir.startDir(params.name);
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save('if (' + dir.prepareOutput(command, true) + ') {');
+		}
 	}
+);
 
-	dir.startDir('if');
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save('if (' + dir.prepareOutput(command, true) + ') {');
+Snakeskin.addDirective(
+	'elseIf',
+
+	null,
+
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		if (dir.structure.name !== 'if') {
+			throw dir.error('Directive "' + params.name + '" can only be used with a "if", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save('} else if (' + dir.prepareOutput(command, true) + ') {');
+		}
 	}
-};
+);
 
-/**
- * Директива elseIf
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['elseIf'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "elseIf" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
+Snakeskin.addDirective(
+	'else',
+
+	null,
+
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		if (dir.structure.name !== 'if') {
+			throw dir.error('Directive "' + params.name + '" can only be used with a "if", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save('} else {');
+		}
 	}
+);
 
-	if (dir.structure.name !== 'if') {
-		throw dir.error('Directive "elseIf" can only be used with a "if", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
+Snakeskin.addDirective(
+	'switch',
+
+	{
+		strongDirs: {
+			'case': true,
+			'default': true
+		}
+	},
+
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		dir.startDir(params.name);
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
+		}
 	}
+);
 
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save('} else if (' + dir.prepareOutput(command, true) + ') {');
+Snakeskin.addDirective(
+	'case',
+
+	{
+		replacers: {
+			'>': (cmd) => cmd.replace(/^>/, 'case '),
+			'/>': (cmd) => cmd.replace(/^\/>/, 'end case')
+		}
+	},
+
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		if (!dir.has('switch')) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "switch", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		dir.startDir(params.name);
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save('case ' + dir.prepareOutput(command, true) + ': {');
+		}
+	},
+
+	(command, commandLength, dir) => {
+		if (dir.isSimpleOutput()) {
+			dir.save('} break;');
+		}
 	}
-};
+);
 
-/**
- * Директива else
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['else'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "else" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
+Snakeskin.addDirective(
+	'default',
+
+	null,
+
+	(command, commandLength, dir, params) => {
+		if (!dir.structure.parent) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		if (!dir.has('switch')) {
+			throw dir.error('Directive "' + params.name + '" can only be used within a "switch", ' +
+				dir.genErrorAdvInfo(params.info)
+			);
+		}
+
+		dir.startDir(params.name);
+		if (dir.isSimpleOutput(params.info)) {
+			dir.save('default: {');
+		}
 	}
-
-	if (dir.structure.name !== 'if') {
-		throw dir.error('Directive "else" can only be used with a "if", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save('} else {');
-	}
-};
-
-Snakeskin.strongDirs['switch'] = {
-	'case': true,
-	'default': true
-};
-
-/**
- * Директива switch
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['switch'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "switch" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
-	dir.startDir('switch');
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
-	}
-};
-
-// Короткая форма директивы case
-Snakeskin.Replacers['>'] = (cmd) => cmd.replace(/^>/, 'case ');
-Snakeskin.Replacers['/>'] = (cmd) => cmd.replace(/^\/>/, 'end case');
-
-/**
- * Директива case
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['case'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "case" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
-	if (!dir.has('switch')) {
-		throw dir.error('Directive "case" can only be used within a "switch", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
-	dir.startDir('case');
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save('case ' + dir.prepareOutput(command, true) + ': {');
-	}
-};
-
-/**
- * Окончание case
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['caseEnd'] = function (command, commandLength, dir) {
-	if (dir.isSimpleOutput()) {
-		dir.save('} break;');
-	}
-};
-
-/**
- * Директива default
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['default'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "default" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
-	if (!dir.has('switch')) {
-		throw dir.error('Directive "default" can only be used within a "switch", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
-
-	dir.startDir('default');
-	if (dir.isSimpleOutput(adv.info)) {
-		dir.save('default: {');
-	}
-};
+);
