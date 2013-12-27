@@ -1307,6 +1307,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 		bEnd = true,
 		bEscape = false;
 
+	var replacers = Snakeskin.Replacers,
+		strongDirs = Snakeskin.strongDirs;
+
 	while (++dir.i < dir.source.length) {
 		var str = dir.source;
 		var el = str.charAt(dir.i);
@@ -1428,7 +1431,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 				var commandLength = command.length;
 				command = dir.replaceDangerBlocks(command).trim();
 
-				var replacers = Snakeskin.Replacers;
 				var short1 = command.charAt(0);
 				var short2 = command.substr(0, 2);
 
@@ -1440,17 +1442,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 					command = replacers[short1](command);
 				}
 
-				var commandType = command
-
-					// Хак для поддержки {data ...} как {{ ... }}
-					.replace(/^{([\s\S]*)}$/m,function (sstr, $1) {
-						return 'data ' + $1;})
-
-					.split(' ')[0];
-
+				var commandType = command.split(' ')[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
-				if (dir.strongDir && Snakeskin.strongDirs[dir.strongDir][commandType]) {
+				if (dir.strongDir && strongDirs[dir.strongDir][commandType]) {
 					dir.returnStrongDir = {
 						child: commandType,
 						dir: dir.strongDir
@@ -1470,6 +1465,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 					dir,
 
 					{
+						name: commandType,
 						commonJS: opt_commonJS,
 						dryRun: opt_dryRun,
 						info: opt_info
@@ -1481,7 +1477,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 					dir.structure = dir.structure.parent;
 				}
 
-				if (Snakeskin.strongDirs[commandType]) {
+				if (strongDirs[commandType]) {
 					dir.strongDir = commandType;
 					dir.strongSpace = true;
 				}
@@ -1553,8 +1549,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 	// то кидаем исключение
 	if (dir.structure.parent) {
 		throw dir.error('Missing closing or opening tag in the template, ' +
-			dir.genErrorAdvInfo(opt_info) +
-		'")!');
+			dir.genErrorAdvInfo(opt_info)
+		);
 	}
 
 	dir.res = dir.pasteDangerBlocks(dir.res)
@@ -1580,24 +1576,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 		return dir.res;
 	}
 
-	console.log(new Function(dir.res).toString());
+	console.log(dir.res);
 	new Function(dir.res)();
-
-	// Компиляция на сервере
-	/*if (require) {
-		// Экспорт
-		if (opt_commonJS) {
-			eval(dir.res);
-
-		// Простая компиляция
-		} else {
-			global.eval(dir.res);
-		}
-
-	// Живая компиляция в браузере
-	} else {
-		new Function(dir.res)();
-	}*/
 
 	return dir.res;
 };var __NEJS_THIS__ = this;
@@ -2341,6 +2321,7 @@ DirObj.prototype.parentTplName = null;
  * @param {!DirObj} dir - объект управления директивами
  *
  * @param {Object} adv - дополнительные параметры
+ * @param {string} adv.name - название директивы
  * @param {boolean} adv.commonJS - true, если шаблон генерируется в формате commonJS
  * @param {boolean} adv.dryRun - true, если холостая обработка
  * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
@@ -2348,12 +2329,12 @@ DirObj.prototype.parentTplName = null;
 Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	var __NEJS_THIS__ = this;
 	if (dir.structure.parent) {
-		throw dir.error('Directive "template" can be used only within the global space, ' +
+		throw dir.error('Directive "' + adv.name + '" can be used only within the global space, ' +
 			dir.genErrorAdvInfo(adv.info)
 		);
 	}
 
-	dir.startDir('template');
+	dir.startDir(adv.name);
 
 	// Начальная позиция шаблона
 	// +1 => } >>
@@ -2362,6 +2343,12 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	// Имя + пространство имён шаблона
 	var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
 		tplName = dir.pasteDangerBlocks(tmpTplName);
+
+	if (adv.name === 'placeholder') {
+		if (!Snakeskin.write[tplName]) {
+			Snakeskin.write[tplName] = false;
+		}
+	}
 
 	dir.tplName = tplName;
 
@@ -2533,6 +2520,8 @@ Snakeskin.Directions['template'] = function (command, commandLength, dir, adv) {
 	}
 };
 
+Snakeskin.Directions['placeholder'] = Snakeskin.Directions['template'];
+
 /**
  * Окончание template
  *
@@ -2604,7 +2593,9 @@ Snakeskin.Directions['templateEnd'] = function (command, commandLength, dir, adv
 
 	dir.canWrite = true;
 	dir.tplName = null;
-};var __NEJS_THIS__ = this;
+};
+
+Snakeskin.Directions['placeholderEnd'] = Snakeskin.Directions['templateEnd'];var __NEJS_THIS__ = this;
 /**!
  * @status stable
  * @version 1.0.0
@@ -3770,6 +3761,10 @@ Snakeskin.Directions['bemEnd'] = function (command, commandLength, dir) {
  * @status stable
  * @version 1.0.0
  */
+
+// Короткая форма директивы data
+Snakeskin.Replacers['*'] = function (cmd) {
+	return cmd.replace(/^\*/, 'data ');};
 
 /**
  * Директива data

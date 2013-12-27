@@ -10,9 +10,12 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(name = 'world')}
+			{placeholder ss(name = 'world')}
 				1
-			{/template}
+			{/}
+
+			{template helloWorld(name = 'world') extends ss}
+			{/}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));

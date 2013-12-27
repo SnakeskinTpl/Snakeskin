@@ -218,6 +218,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					dir,
 
 					{
+						name: commandType,
 						commonJS: opt_commonJS,
 						dryRun: opt_dryRun,
 						info: opt_info
