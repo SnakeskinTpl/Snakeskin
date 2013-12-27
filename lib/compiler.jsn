@@ -60,6 +60,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 		bEnd = true,
 		bEscape = false;
 
+	var replacers = Snakeskin.Replacers,
+		strongDirs = Snakeskin.strongDirs;
+
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
 		let el = str.charAt(dir.i);
@@ -181,7 +184,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 				let commandLength = command.length;
 				command = dir.replaceDangerBlocks(command).trim();
 
-				let replacers = Snakeskin.Replacers;
 				let short1 = command.charAt(0);
 				let short2 = command.substr(0, 2);
 
@@ -193,16 +195,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					command = replacers[short1](command);
 				}
 
-				let commandType = command
-
-					// Хак для поддержки {data ...} как {{ ... }}
-					.replace(/^{([\s\S]*)}$/m,(sstr, $1) => 'data ' + $1)
-
-					.split(' ')[0];
-
+				let commandType = command.split(' ')[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
-				if (dir.strongDir && Snakeskin.strongDirs[dir.strongDir][commandType]) {
+				if (dir.strongDir && strongDirs[dir.strongDir][commandType]) {
 					dir.returnStrongDir = {
 						child: commandType,
 						dir: dir.strongDir
@@ -233,7 +229,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					dir.structure = dir.structure.parent;
 				}
 
-				if (Snakeskin.strongDirs[commandType]) {
+				if (strongDirs[commandType]) {
 					dir.strongDir = commandType;
 					dir.strongSpace = true;
 				}
@@ -305,8 +301,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 	// то кидаем исключение
 	if (dir.structure.parent) {
 		throw dir.error('Missing closing or opening tag in the template, ' +
-			dir.genErrorAdvInfo(opt_info) +
-		'")!');
+			dir.genErrorAdvInfo(opt_info)
+		);
 	}
 
 	dir.res = dir.pasteDangerBlocks(dir.res)
@@ -331,24 +327,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 		return dir.res;
 	}
 
-	console.log(new Function(dir.res).toString());
+	console.log(dir.res);
 	new Function(dir.res)();
-
-	// Компиляция на сервере
-	/*if (require) {
-		// Экспорт
-		if (opt_commonJS) {
-			eval(dir.res);
-
-		// Простая компиляция
-		} else {
-			global.eval(dir.res);
-		}
-
-	// Живая компиляция в браузере
-	} else {
-		new Function(dir.res)();
-	}*/
 
 	return dir.res;
 };

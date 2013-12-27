@@ -3,6 +3,9 @@
  * @version 1.0.0
  */
 
+// Короткая форма директивы data
+Snakeskin.Replacers['*'] = (cmd) => cmd.replace(/^\*/, 'data ');
+
 /**
  * Директива data
  *
