@@ -67,9 +67,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 	function escapeWhitespace(str) {
 		return str
-			.replace(/\n/, '\\n')
-			.replace(/\v/, '\\v')
-			.replace(/\r/, '\\r');
+			.replace(/\n/gm, '\\n')
+			.replace(/\v/gm, '\\v')
+			.replace(/\r/gm, '\\r');
 	}
 
 	while (++dir.i < dir.source.length) {
@@ -315,13 +315,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 	dir.res = dir.pasteDangerBlocks(dir.res)
 
 		// Обратная замена cdata областей
-		.replace(/__SNAKESKIN_CDATA__(\d+)_/g, (sstr, pos) => {
-			return dir.cDataContent[pos]
-				.replace(/\n/gm, '\\n')
-				.replace(/\r/gm, '\\r')
-				.replace(/\v/gm, '\\v')
-				.replace(/'/gm, '&#39;');
-		})
+		.replace(
+			/__SNAKESKIN_CDATA__(\d+)_/g,
+			(sstr, pos) => escapeWhitespace(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
+		)
 
 		// Удаление пустых операций
 		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');

@@ -4,12 +4,13 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
+/** @namespace */
 var Snakeskin = {
 	/**
 	 * Версия движка
 	 * @type {string}
 	 */
-	VERSION: [3, 0, 0].join('.'),
+	VERSION: [3, 0, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -39,97 +40,8 @@ var Snakeskin = {
 (function (require) {
 	
 
+
 var __NEJS_THIS__ = this;
-/**
- * Итератор объектов и массивов
- * (return false прерывает выполнение)
- *
- * @param {(!Array|!Object)} obj - массив или объект
- * @param {(function(*, number, boolean, boolean, number)|function(*, string, number, boolean, boolean, number))} callback - функция callback
- * @param {Object=} [opt_ctx] - контекст функции
- */
-Snakeskin.forEach = function (obj, callback, opt_ctx) {
-	var __NEJS_THIS__ = this;
-	var i = -1,
-		length;
-
-	if (Array.isArray(obj)) {
-		length = obj.length;
-		while (++i < length) {
-			if (opt_ctx) {
-				if (callback.call(opt_ctx, obj[i], i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-
-			} else {
-				if (callback(obj[i], i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-			}
-		}
-
-	} else {
-		i = 0;
-		for (var key in obj) {
-			if (!obj.hasOwnProperty(key)) { continue; }
-			i++;
-		}
-
-		length = i;
-		i = -1;
-		for (key in obj) {
-			if (!obj.hasOwnProperty(key)) { continue; }
-			i++;
-
-			if (opt_ctx) {
-				if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-
-			} else {
-				if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-			}
-		}
-	}
-};
-
-/**
- * Итератор объектов с учётом родительских свойств
- * (return false прерывает выполнение)
- *
- * @param {(!Array|!Object)} obj - массив или объект
- * @param {function(*, string, number, boolean, boolean, number)} callback - функция callback
- * @param {Object=} [opt_ctx] - контекст функции
- */
-Snakeskin.forIn = function (obj, callback, opt_ctx) {
-	var __NEJS_THIS__ = this;
-	var i = 0,
-		length;
-
-	for (var key in obj) {
-		i++;
-	}
-
-	length = i;
-	i = -1;
-
-	for (key in obj) {
-		i++;
-
-		if (opt_ctx) {
-			if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
-				break;
-			}
-
-		} else {
-			if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
-				break;
-			}
-		}
-	}
-};var __NEJS_THIS__ = this;
 /**!
  * @status stable
  * @version 1.0.0
@@ -378,9 +290,9 @@ Snakeskin.Filters.json = function (obj) {
 	return (obj + '');
 };
 
-
 	// common.js экспорт
 	if (require) {
 		module.exports = Snakeskin;
 	}
+
 })(typeof window === 'undefined');

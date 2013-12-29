@@ -4,12 +4,13 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
+/** @namespace */
 var Snakeskin = {
 	/**
 	 * Версия движка
 	 * @type {string}
 	 */
-	VERSION: [3, 0, 0].join('.'),
+	VERSION: [3, 0, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -38,6 +39,7 @@ var Snakeskin = {
 
 (function (require) {
 	
+
 var __NEJS_THIS__ = this;
 /*!
  * Полифилы для старых браузеров
@@ -73,96 +75,6 @@ if (!String.prototype.trim) {
 	};
 }
 var __NEJS_THIS__ = this;
-/**
- * Итератор объектов и массивов
- * (return false прерывает выполнение)
- *
- * @param {(!Array|!Object)} obj - массив или объект
- * @param {(function(*, number, boolean, boolean, number)|function(*, string, number, boolean, boolean, number))} callback - функция callback
- * @param {Object=} [opt_ctx] - контекст функции
- */
-Snakeskin.forEach = function (obj, callback, opt_ctx) {
-	var __NEJS_THIS__ = this;
-	var i = -1,
-		length;
-
-	if (Array.isArray(obj)) {
-		length = obj.length;
-		while (++i < length) {
-			if (opt_ctx) {
-				if (callback.call(opt_ctx, obj[i], i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-
-			} else {
-				if (callback(obj[i], i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-			}
-		}
-
-	} else {
-		i = 0;
-		for (var key in obj) {
-			if (!obj.hasOwnProperty(key)) { continue; }
-			i++;
-		}
-
-		length = i;
-		i = -1;
-		for (key in obj) {
-			if (!obj.hasOwnProperty(key)) { continue; }
-			i++;
-
-			if (opt_ctx) {
-				if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-
-			} else {
-				if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
-					break;
-				}
-			}
-		}
-	}
-};
-
-/**
- * Итератор объектов с учётом родительских свойств
- * (return false прерывает выполнение)
- *
- * @param {(!Array|!Object)} obj - массив или объект
- * @param {function(*, string, number, boolean, boolean, number)} callback - функция callback
- * @param {Object=} [opt_ctx] - контекст функции
- */
-Snakeskin.forIn = function (obj, callback, opt_ctx) {
-	var __NEJS_THIS__ = this;
-	var i = 0,
-		length;
-
-	for (var key in obj) {
-		i++;
-	}
-
-	length = i;
-	i = -1;
-
-	for (key in obj) {
-		i++;
-
-		if (opt_ctx) {
-			if (callback.call(opt_ctx, obj[key], key, i, i === 0, i === length - 1, length) === false) {
-				break;
-			}
-
-		} else {
-			if (callback(obj[key], key, i, i === 0, i === length - 1, length) === false) {
-				break;
-			}
-		}
-	}
-};var __NEJS_THIS__ = this;
 /**!
  * @status stable
  * @version 1.0.0
@@ -412,43 +324,6 @@ Snakeskin.Filters.json = function (obj) {
 };
 var __NEJS_THIS__ = this;
 /*!
- * Полифилы для старых браузеров
- * @status stable
- * @version 1.0.0
- */
-
-if (!Array.prototype.reduce) {
-	/**
-	 * Рекурсивно привести массив к другому значению
-	 * (функция callback принимает результат выполнения предыдущей итерации и актуальный элемент)
-	 *
-	 * @param {function(*, *, number, !Array): *} callback - функция, которая будет вызываться для каждого элемента массива
-	 * @param {Object=} [opt_initialValue=this[0]] - объект, который будет использоваться как первый элемент при первом вызове callback
-	 * @return {*}
-	 */
-	Array.prototype.reduce = function (callback, opt_initialValue) {
-		var __NEJS_THIS__ = this;
-		var i = -1;
-		var length = this.length,
-			res;
-
-		if (opt_initialValue !== void 0) {
-			res = opt_initialValue;
-
-		} else {
-			i++;
-			res = this[0];
-		}
-
-		while (++i < length) {
-			res = callback(res, this[i], i, this);
-		}
-
-		return res;
-	};
-}
-var __NEJS_THIS__ = this;
-/*!
  * Глобальные переменные замыкания
  * @status stable
  * @version 1.0.0
@@ -474,11 +349,11 @@ var paramsCache = {};
 var extMap = {};
 
 // Кеширующие таблицы
-var replacers = {};
-var strongDirs = {};
-var sysDirs = {};
-var bem = {};
-var write = {};
+var replacers = {},
+	strongDirs = {},
+	sysDirs = {},
+	bem = {},
+	write = {};
 
 // Системные константы
 var sysConst = {
@@ -1078,7 +953,6 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  */
 DirObj.prototype.getExtStr = function (tplName, info) {
 	var __NEJS_THIS__ = this;
-	// Если указанный родитель не существует
 	if (cache[extMap[tplName]] === void 0) {
 		throw this.error(
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
@@ -1092,13 +966,12 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	var from = 0,
 		advDiff = [];
 
-	// Цикл производит перекрытие и добавление новых блоков (новые блоки добавляются в конец шаблона)
-	// (итерации 0 и 1), а затем
-	// перекрытие и добавление новых переменных (итерации 2 и 3),
-	// а затем перекрытие и добавление прототипов (4-5 итерации),
+	// Цикл производит перекрытие и добавление новых блоков
+	// (новые блоки добавляются в конец шаблона, итерации 0 и 1),
+	// а затем перекрытие и добавление новых переменных (итерации 2 и 3),
+	// а затем перекрытие и добавление прототипов (итерации 4 и 5),
 	// причём новые переменные и прототипы добавляются сразу за унаследованными
 	for (var i = -1; ++i < 6;) {
-		// Блоки дочернего и родительского шаблона
 		var el,
 			prev;
 
@@ -1132,12 +1005,12 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 		var blockDiff;
 		for (var key in el) {
-			if (!el.hasOwnProperty(key)) { continue; }
+			if (!el.hasOwnProperty(key)) {
+				continue;
+			}
 
 			// Сдвиг относительно родительской позиции элемента
 			var adv = 0;
-
-			// Текст добавляемой области
 			var block = cache[tplName].substring(el[key].from, el[key].to);
 
 			// Разница между дочерним и родительским блоком
@@ -1145,22 +1018,8 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 				blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
 			}
 
-			// Вычисляем сдвиг
 			var diff = prev[key] ? prev[key].from : from;
-
-			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
-			advDiff.sort(function (a, b) {
-				
-				if (a.val > b.val) {
-					return 1;
-				}
-
-				if (a.val === b.val) {
-					return 0;
-				}
-
-				return -1;
-			});
+			advDiff.sort(sornFn);
 
 			for (var j = 0; j < advDiff.length; j++) {
 				if (advDiff[j].val < diff) {
@@ -1184,10 +1043,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 					}
 				}
 
-				// Перекрытие
 				res = res.substring(0, prev[key].from + adv) + block + res.substring(prev[key].to + adv);
-
-				// Добавляем сдвиг в стек
 				advDiff.push({
 					val: prev[key].from,
 					adv: blockDiff
@@ -1223,6 +1079,22 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	}
 
 	return res;
+};
+
+/**
+ * Функция сортировки сдвигов
+ */
+var sornFn = function (a, b) {
+	
+	if (a.val > b.val) {
+		return 1;
+	}
+
+	if (a.val === b.val) {
+		return 0;
+	}
+
+	return -1;
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -1239,7 +1111,9 @@ DirObj.prototype.genErrorAdvInfo = function (obj) {
 	var __NEJS_THIS__ = this;
 	var str = '';
 	for (var key in obj) {
-		if (!obj.hasOwnProperty(key)) { continue; }
+		if (!obj.hasOwnProperty(key)) {
+			continue;
+		}
 
 		if (!obj[key].innerHTML) {
 			str += key + ': ' + obj[key] + ', ';
@@ -1290,7 +1164,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 	var __NEJS_THIS__ = this;
 	if (typeof opt_sysParams === "undefined") { opt_sysParams = {}; }
 	opt_info = opt_info || {line: 1};
-	var html = src['innerHTML'];
+	var html = src.innerHTML;
 
 	if (html) {
 		opt_info.node = src;
@@ -1330,17 +1204,30 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 		bEnd = true,
 		bEscape = false;
 
+	var nextLineRgxp = /[\r\n\v]/,
+		whiteSpaceRgxp = /\s/,
+		bEndRgxp = /[^\s\/]/,
+		commandTypeRgxp = /[^\s]+/m;
+
+	function escapeWhitespace(str) {
+		var __NEJS_THIS__ = this;
+		return str
+			.replace(/\n/, '\\n')
+			.replace(/\v/, '\\v')
+			.replace(/\r/, '\\r');
+	}
+
 	while (++dir.i < dir.source.length) {
 		var str = dir.source;
 		var el = str.charAt(dir.i);
 		var rEl = el;
 
-		if (/[\r\n]/.test(el)) {
+		if (nextLineRgxp.test(el)) {
 			opt_info.line++;
 		}
 
 		// Обработка пробельных символов
-		if (/\s/.test(el)) {
+		if (whiteSpaceRgxp.test(el)) {
 			// Внутри директивы
 			if (begin) {
 				if (!bOpen) {
@@ -1348,10 +1235,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 				// Внутри строки внутри директивы
 				} else {
-					el = el
-						.replace(/\n/, '\\n')
-						.replace(/\v/, '\\v')
-						.replace(/\r/, '\\r');
+					el = escapeWhitespace(el);
 				}
 
 			// Простой ввод вне деклараций шаблона
@@ -1419,7 +1303,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 						}
 					}
 
-				} else if (/[\n\v\r]/.test(rEl) && comment === '///') {
+				} else if (nextLineRgxp.test(rEl) && comment === '///') {
 					comment = false;
 				}
 			}
@@ -1462,7 +1346,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 					command = replacers[short1](command);
 				}
 
-				var commandType = command.split(' ')[0];
+				var commandType = command.match(commandTypeRgxp)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
 				if (dir.strongDir && strongDirs[dir.strongDir][commandType]) {
@@ -1479,7 +1363,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 				var fnRes = Snakeskin.Directions[commandType](
 
 					commandType !== 'const' ?
-						command.replace(new RegExp('^' + commandType + '\\s*', 'm'), '') : command,
+						command.replace(commandTypeRgxp, '') : command,
 
 					commandLength,
 					dir,
@@ -1525,7 +1409,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 					if (escapeEndMap[el]) {
 						bEnd = true;
 
-					} else if (/[^\s\/]/.test(el)) {
+					} else if (bEndRgxp.test(el)) {
 						bEnd = false;
 					}
 				}
@@ -1925,7 +1809,7 @@ DirObj.prototype.getWord = function (str, pos) {
  * Подготовить комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
  *
- * @param {string} command - исходная комманда
+ * @param {string} command - исходная команда
  * @param {?boolean=} [opt_sys] - если true, то считается системным вызовом
  * @param {?boolean=} [opt_isys] - если true, то считается вложенным системным вызовом
  * @param {?boolean=} [opt_breakFirst] - если true, то первое слово пропускается
@@ -2009,7 +1893,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				var uadd = wordAddEnd + addition,
 					vres;
 
-				// true, если полученное слово не является зарезервированным (blackWordList),
+				// true,
+				// если полученное слово не является зарезервированным (blackWordList),
 				// не является числом,
 				// не является константой замены Escaper,
 				// не является названием свойства в литерале объекта ({свойство: )
@@ -3635,4 +3520,5 @@ Snakeskin.addDirective(
 	if (require) {
 		module.exports = Snakeskin;
 	}
+
 })(typeof window === 'undefined');
