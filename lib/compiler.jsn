@@ -62,8 +62,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 	var nextLineRgxp = /[\r\n\v]/,
 		whiteSpaceRgxp = /\s/,
-		bEndRgxp = /[^\s\/]/,
-		commandTypeRgxp = /[^\s]+/m;
+		bEndRgxp = /[^\s\/]/;
+
+	var commandTypeRgxp = /[^\s]+/m,
+		commandRgxp = /[^\s]+\s*/m;
 
 	function escapeWhitespace(str) {
 		return str
@@ -218,7 +220,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 				let fnRes = Snakeskin.Directions[commandType](
 
 					commandType !== 'const' ?
-						command.replace(commandTypeRgxp, '') : command,
+						command.replace(commandRgxp, '') : command,
 
 					commandLength,
 					dir,
