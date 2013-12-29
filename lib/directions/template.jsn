@@ -27,7 +27,7 @@ Snakeskin.addDirective(
 	null,
 
 	(command, commandLength, dir, params) => {
-		dir.isDirectiveInGlobalSpace(params.name, params.info);
+		dir.isDirectiveInGlobalSpace(params.name);
 		dir.startDir(params.name);
 
 		// Начальная позиция шаблона
@@ -71,16 +71,19 @@ Snakeskin.addDirective(
 		// с пространством имён или при экспорте в common.js
 		if (/\.|\[/m.test(tmpTplName) || params.commonJS) {
 			let lastName = '';
-			let str = '';
 
 			let tmpArr = tmpTplName
+
 				// Заменяем [] на .
 				.replace(/\[/gm, '.')
 				.replace(/]/gm, '')
 
 				.split('.');
 
-			for (let i = 0; i < tmpArr.length; i++) {
+			let str = tmpArr[0],
+				length = tmpArr.length;
+
+			for (let i = 1; i < length; i++) {
 				let el = tmpArr[i];
 
 				dir.save(
@@ -93,7 +96,7 @@ Snakeskin.addDirective(
 					str += '[' + el + ']';
 					continue;
 
-				} else if (i === data.length - 1) {
+				} else if (i === length - 1) {
 					lastName = el;
 				}
 
@@ -108,20 +111,20 @@ Snakeskin.addDirective(
 		}
 
 		// Входные параметры
-		args = args.split(',');
+		var argsList = args.split(','),
+			parentArgs = paramsCache[parentTplName];
 
 		// Если шаблон наследуется,
 		// то подмешиваем ко входым параметрам шаблона
 		// входные параметры родителя
-		paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(args) : args;
+		paramsCache[tplName] = parentArgs ? parentArgs.concat(argsList) : argsList;
 
 		// Переинициализация входных параметров родительскими
 		// (только если нужно)
-		if (paramsCache[parentTplName]) {
-			let arr = paramsCache[parentTplName];
+		if (parentArgs) {
+			for (let i = 0; i < parentArgs.length; i++) {
 
-			for (let i = 0; i < arr.length; i++) {
-				let el = arr[i];
+				let el = parentArgs[i];
 				let def = el.split('=');
 
 				// Здесь и далее по коду
@@ -130,8 +133,9 @@ Snakeskin.addDirective(
 				def[0] = def[0].trim();
 				def[1] = def[1] && def[1].trim();
 
-				for (let j = 0; j < args.length; j++) {
-					let el2 = args[j];
+				for (let j = 0; j < argsList.length; j++) {
+
+					let el2 = argsList[j];
 					let def2 = el2.split('=');
 
 					def2[0] = def2[0].trim();
@@ -140,7 +144,7 @@ Snakeskin.addDirective(
 					// Если переменная не имеет параметра по умолчанию,
 					// то ставим параметр по умолчанию родителя
 					if (def[0] === def2[0] && def2[1] === void 0) {
-						args[j] = el;
+						argsList[j] = el;
 					}
 				}
 			}
@@ -149,19 +153,18 @@ Snakeskin.addDirective(
 		// Инициализация параметров по умолчанию
 		// (эээххх, когда же настанет ECMAScript 6 :()
 		var defParams = '';
-		for (let i = 0; i < args.length; i++) {
-			let el = args[i];
+		for (let i = 0; i < argsList.length; i++) {
+			let el = argsList[i];
 			let def = el.split('=');
 
 			def[0] = def[0].trim();
 			dir.save(def[0]);
 
 			// Подмешивание родительских входных параметров
-			if (paramsCache[parentTplName] && !defParams) {
-				let arr = paramsCache[parentTplName];
+			if (parentArgs && !defParams) {
+				for (let j = 0; j < parentArgs.length; j++) {
 
-				for (let j = 0; j < arr.length; j++) {
-					let el2 = arr[j];
+					let el2 = parentArgs[j];
 					let def2 = el2.split('='),
 						local = false;
 
@@ -170,8 +173,8 @@ Snakeskin.addDirective(
 
 					// local = true, если входной параметр родительского шаблона
 					// присутствует также в дочернем
-					for (let k = 0; k < args.length; k++) {
-						let el3 = args[k];
+					for (let k = 0; k < argsList.length; k++) {
+						let el3 = argsList[k];
 						let val = el3.split('=');
 
 						val[0] = val[0].trim();
@@ -203,7 +206,7 @@ Snakeskin.addDirective(
 			constICache[tplName][def[0]] = el;
 
 			// После последнего параметра запятая не ставится
-			if (i !== args.length - 1) {
+			if (i !== argsList.length - 1) {
 				dir.save(',');
 			}
 		}

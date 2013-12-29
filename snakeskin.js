@@ -393,17 +393,27 @@ var escapeEndMap = {
  *
  * @constructor
  * @param {string} src - текст шаблона
- * @param {boolean} commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
- * @param {boolean} dryRun - если true,
+ * @param {Object} params - дополнительные параметры
+ *
+ * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {boolean} params.dryRun - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
+ *
+ * @param {Object=} [params.info] - дополнительная информация
  */
-function DirObj(src, commonJS, dryRun) {
+function DirObj(src, params) {
 	var __NEJS_THIS__ = this;
 	for (var key in this) {
 		if (this[key] && this[key].init) {
 			this[key] = this[key].init();
 		}
 	}
+
+	/**
+	 * Дополнительная информация
+	 * @type {Object}
+	 */
+	this.info = params.info;
 
 	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
@@ -442,8 +452,7 @@ function DirObj(src, commonJS, dryRun) {
 	};
 
 	/**
-	 * true, если директива не имеет закрывающей части,
-	 * false - если имеет
+	 * true, если директива не имеет закрывающей части
 	 * @type {?boolean}
 	 */
 	this.inlineDir = null;
@@ -500,8 +509,8 @@ function DirObj(src, commonJS, dryRun) {
 	 * Результирующий JS код
 	 * @type {string}
 	 */
-	this.res = (!dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
-		(commonJS ?
+	this.res = (!params.dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
+		(params.commonJS ?
 			'var Snakeskin = global.Snakeskin;' +
 
 			'exports.liveInit = function (path) { ' +
@@ -563,14 +572,13 @@ DirObj.prototype.isAdvTest = function (dryRun) {
  * и генерировать ошибку, если это не так
  *
  * @param {string} name - название директивы
- * @param {!Object} info - информация о шаблоне (название файлы, узла и т.д.)
  * @returns {boolean}
  */
-DirObj.prototype.isDirectiveInGlobalSpace = function (name, info) {
+DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
 	var __NEJS_THIS__ = this;
 	if (this.structure.parent) {
-		throw dir.error('Directive "' + name + '" can be used only within the global space, ' +
-			dir.genErrorAdvInfo(info)
+		throw this.error('Directive "' + name + '" can be used only within the global space, ' +
+			this.genErrorAdvInfo(this.info)
 		);
 	}
 
@@ -1191,7 +1199,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 		html = html.replace(/\s*?\n/, '');
 	}
 
-	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
+	var dir = new DirObj(html || src, {
+		commonJS: !!opt_commonJS,
+		dryRun: !!opt_dryRun,
+		info: opt_info
+	});
 
 	dir.scope = opt_sysParams.scope || dir.scope;
 	dir.structure.vars = opt_sysParams.vars || dir.structure.vars;
@@ -2279,7 +2291,7 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		dir.isDirectiveInGlobalSpace(params.name, params.info);
+		dir.isDirectiveInGlobalSpace(params.name);
 		dir.startDir(params.name);
 
 		// Начальная позиция шаблона
@@ -2323,16 +2335,19 @@ Snakeskin.addDirective(
 		// с пространством имён или при экспорте в common.js
 		if (/\.|\[/m.test(tmpTplName) || params.commonJS) {
 			var lastName = '';
-			var str = '';
 
 			var tmpArr = tmpTplName
+
 				// Заменяем [] на .
 				.replace(/\[/gm, '.')
 				.replace(/]/gm, '')
 
 				.split('.');
 
-			for (var i = 0; i < tmpArr.length; i++) {
+			var str = tmpArr[0],
+				length = tmpArr.length;
+
+			for (var i = 1; i < length; i++) {
 				var el = tmpArr[i];
 
 				dir.save(
@@ -2345,7 +2360,7 @@ Snakeskin.addDirective(
 					str += '[' + el + ']';
 					continue;
 
-				} else if (i === data.length - 1) {
+				} else if (i === length - 1) {
 					lastName = el;
 				}
 
@@ -2360,12 +2375,14 @@ Snakeskin.addDirective(
 		}
 
 		// Входные параметры
-		args = args.split(',');
+		var argsList = args.split(',');
 
 		// Если шаблон наследуется,
 		// то подмешиваем ко входым параметрам шаблона
 		// входные параметры родителя
-		paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(args) : args;
+		paramsCache[tplName] = paramsCache[parentTplName] ? paramsCache[parentTplName].concat(argsList) : argsList;
+
+		console.log(paramsCache);
 
 		// Переинициализация входных параметров родительскими
 		// (только если нужно)
@@ -2382,8 +2399,8 @@ Snakeskin.addDirective(
 				def[0] = def[0].trim();
 				def[1] = def[1] && def[1].trim();
 
-				for (var j = 0; j < args.length; j++) {
-					var el2 = args[j];
+				for (var j = 0; j < argsList.length; j++) {
+					var el2 = argsList[j];
 					var def2 = el2.split('=');
 
 					def2[0] = def2[0].trim();
@@ -2392,7 +2409,7 @@ Snakeskin.addDirective(
 					// Если переменная не имеет параметра по умолчанию,
 					// то ставим параметр по умолчанию родителя
 					if (def[0] === def2[0] && def2[1] === void 0) {
-						args[j] = el$0;
+						argsList[j] = el$0;
 					}
 				}
 			}
@@ -2401,8 +2418,8 @@ Snakeskin.addDirective(
 		// Инициализация параметров по умолчанию
 		// (эээххх, когда же настанет ECMAScript 6 :()
 		var defParams = '';
-		for (var i$1 = 0; i$1 < args.length; i$1++) {
-			var el$1 = args[i$1];
+		for (var i$1 = 0; i$1 < argsList.length; i$1++) {
+			var el$1 = argsList[i$1];
 			var def$0 = el$1.split('=');
 
 			def$0[0] = def$0[0].trim();
@@ -2422,8 +2439,8 @@ Snakeskin.addDirective(
 
 					// local = true, если входной параметр родительского шаблона
 					// присутствует также в дочернем
-					for (var k = 0; k < args.length; k++) {
-						var el3 = args[k];
+					for (var k = 0; k < argsList.length; k++) {
+						var el3 = argsList[k];
 						var val = el3.split('=');
 
 						val[0] = val[0].trim();
@@ -2455,7 +2472,7 @@ Snakeskin.addDirective(
 			constICache[tplName][def$0[0]] = el$1;
 
 			// После последнего параметра запятая не ставится
-			if (i$1 !== args.length - 1) {
+			if (i$1 !== argsList.length - 1) {
 				dir.save(',');
 			}
 		}

@@ -27,7 +27,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 		html = html.replace(/\s*?\n/, '');
 	}
 
-	var dir = new DirObj(html || src, opt_commonJS, opt_dryRun);
+	var dir = new DirObj(html || src, {
+		commonJS: !!opt_commonJS,
+		dryRun: !!opt_dryRun,
+		info: opt_info
+	});
 
 	dir.scope = opt_sysParams.scope || dir.scope;
 	dir.structure.vars = opt_sysParams.vars || dir.structure.vars;

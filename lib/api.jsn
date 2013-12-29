@@ -8,16 +8,26 @@
  *
  * @constructor
  * @param {string} src - текст шаблона
- * @param {boolean} commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
- * @param {boolean} dryRun - если true,
+ * @param {Object} params - дополнительные параметры
+ *
+ * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {boolean} params.dryRun - если true,
  *     то шаблон только транслируется (не компилируется), приватный параметр
+ *
+ * @param {Object=} [params.info] - дополнительная информация
  */
-function DirObj(src, commonJS, dryRun) {
+function DirObj(src, params) {
 	for (let key in this) {
 		if (this[key] && this[key].init) {
 			this[key] = this[key].init();
 		}
 	}
+
+	/**
+	 * Дополнительная информация
+	 * @type {Object}
+	 */
+	this.info = params.info;
 
 	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
@@ -56,8 +66,7 @@ function DirObj(src, commonJS, dryRun) {
 	};
 
 	/**
-	 * true, если директива не имеет закрывающей части,
-	 * false - если имеет
+	 * true, если директива не имеет закрывающей части
 	 * @type {?boolean}
 	 */
 	this.inlineDir = null;
@@ -113,8 +122,8 @@ function DirObj(src, commonJS, dryRun) {
 	 * Результирующий JS код
 	 * @type {string}
 	 */
-	this.res = (!dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
-		(commonJS ?
+	this.res = (!params.dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
+		(params.commonJS ?
 			'var Snakeskin = global.Snakeskin;' +
 
 			'exports.liveInit = function (path) { ' +
@@ -173,13 +182,12 @@ DirObj.prototype.isAdvTest = function (dryRun) {
  * и генерировать ошибку, если это не так
  *
  * @param {string} name - название директивы
- * @param {!Object} info - информация о шаблоне (название файлы, узла и т.д.)
  * @returns {boolean}
  */
-DirObj.prototype.isDirectiveInGlobalSpace = function (name, info) {
+DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
 	if (this.structure.parent) {
-		throw dir.error('Directive "' + name + '" can be used only within the global space, ' +
-			dir.genErrorAdvInfo(info)
+		throw this.error('Directive "' + name + '" can be used only within the global space, ' +
+			this.genErrorAdvInfo(this.info)
 		);
 	}
 
