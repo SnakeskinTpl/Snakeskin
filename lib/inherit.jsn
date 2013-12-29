@@ -12,7 +12,6 @@
  * @return {string}
  */
 DirObj.prototype.getExtStr = function (tplName, info) {
-	// Если указанный родитель не существует
 	if (cache[extMap[tplName]] === void 0) {
 		throw this.error(
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
@@ -26,13 +25,12 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	var from = 0,
 		advDiff = [];
 
-	// Цикл производит перекрытие и добавление новых блоков (новые блоки добавляются в конец шаблона)
-	// (итерации 0 и 1), а затем
-	// перекрытие и добавление новых переменных (итерации 2 и 3),
-	// а затем перекрытие и добавление прототипов (4-5 итерации),
+	// Цикл производит перекрытие и добавление новых блоков
+	// (новые блоки добавляются в конец шаблона, итерации 0 и 1),
+	// а затем перекрытие и добавление новых переменных (итерации 2 и 3),
+	// а затем перекрытие и добавление прототипов (итерации 4 и 5),
 	// причём новые переменные и прототипы добавляются сразу за унаследованными
 	for (let i = -1; ++i < 6;) {
-		// Блоки дочернего и родительского шаблона
 		let el,
 			prev;
 
@@ -66,12 +64,12 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 
 		let blockDiff;
 		for (let key in el) {
-			if (!el.hasOwnProperty(key)) { continue; }
+			if (!el.hasOwnProperty(key)) {
+				continue;
+			}
 
 			// Сдвиг относительно родительской позиции элемента
 			let adv = 0;
-
-			// Текст добавляемой области
 			let block = cache[tplName].substring(el[key].from, el[key].to);
 
 			// Разница между дочерним и родительским блоком
@@ -79,21 +77,8 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 				blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
 			}
 
-			// Вычисляем сдвиг
 			let diff = prev[key] ? prev[key].from : from;
-
-			// Следим, чтобы стек сдвигов всегда был отсортирован по возрастанию
-			advDiff.sort((a, b) => {
-				if (a.val > b.val) {
-					return 1;
-				}
-
-				if (a.val === b.val) {
-					return 0;
-				}
-
-				return -1;
-			});
+			advDiff.sort(sornFn);
 
 			for (let j = 0; j < advDiff.length; j++) {
 				if (advDiff[j].val < diff) {
@@ -117,10 +102,7 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 					}
 				}
 
-				// Перекрытие
 				res = res.substring(0, prev[key].from + adv) + block + res.substring(prev[key].to + adv);
-
-				// Добавляем сдвиг в стек
 				advDiff.push({
 					val: prev[key].from,
 					adv: blockDiff
@@ -156,4 +138,19 @@ DirObj.prototype.getExtStr = function (tplName, info) {
 	}
 
 	return res;
+};
+
+/**
+ * Функция сортировки сдвигов
+ */
+var sornFn = (a, b) => {
+	if (a.val > b.val) {
+		return 1;
+	}
+
+	if (a.val === b.val) {
+		return 0;
+	}
+
+	return -1;
 };

@@ -3,12 +3,13 @@
  * @version 1.0.0
  */
 
+/** @namespace */
 var Snakeskin = {
 	/**
 	 * Версия движка
 	 * @type {string}
 	 */
-	VERSION: [3, 0, 0].join('.'),
+	VERSION: [3, 0, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -36,6 +37,7 @@ var Snakeskin = {
 };
 
 ((require) => {
+
 	//#if old.live
 		//#include es5shim.live.js
 	//#endif
@@ -81,4 +83,5 @@ var Snakeskin = {
 	if (require) {
 		module.exports = Snakeskin;
 	}
+
 })(typeof window === 'undefined');

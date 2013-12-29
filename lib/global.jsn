@@ -24,11 +24,11 @@ var paramsCache = {};
 var extMap = {};
 
 // Кеширующие таблицы
-var replacers = {};
-var strongDirs = {};
-var sysDirs = {};
-var bem = {};
-var write = {};
+var replacers = {},
+	strongDirs = {},
+	sysDirs = {},
+	bem = {},
+	write = {};
 
 // Системные константы
 const sysConst = {

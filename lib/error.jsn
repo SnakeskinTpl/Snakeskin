@@ -12,7 +12,9 @@
 DirObj.prototype.genErrorAdvInfo = function (obj) {
 	var str = '';
 	for (let key in obj) {
-		if (!obj.hasOwnProperty(key)) { continue; }
+		if (!obj.hasOwnProperty(key)) {
+			continue;
+		}
 
 		if (!obj[key].innerHTML) {
 			str += key + ': ' + obj[key] + ', ';
