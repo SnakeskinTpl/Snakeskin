@@ -17,15 +17,12 @@ Snakeskin.addDirective(
 	},
 
 	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startDir('with', {
+				scope: command
+			});
 
 		dir.scope.push(command);
-		dir.startDir('with', {
-			scope: command
-		});
 	}
 );

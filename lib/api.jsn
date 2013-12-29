@@ -29,6 +29,10 @@ function DirObj(src, params) {
 	 */
 	this.info = params.info;
 
+	this.dryRun = params.dryRun;
+
+	this.commonJS = params.commonJS;
+
 	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
 	 * @type {boolean}
@@ -153,14 +157,12 @@ DirObj.prototype.save = function (str) {
 /**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
- *
- * @param {Object=} [opt_info] - информация о шаблоне (название файлы, узла и т.д.)
  * @return {boolean}
  */
-DirObj.prototype.isSimpleOutput = function (opt_info) {
-	if (opt_info && this.strongDir) {
+DirObj.prototype.isSimpleOutput = function () {
+	if (this.strongDir) {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '", ' +
-			this.genErrorAdvInfo(opt_info)
+			this.genErrorAdvInfo(this.info)
 		);
 	}
 

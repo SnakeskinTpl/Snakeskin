@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 			.isDirectiveInBlock(params.name)
 			.startInlineDir(params.name);
 
-		if (dir.isSimpleOutput(params.info)) {
+		if (dir.isSimpleOutput()) {
 			dir.save(dir.prepareOutput(command) + ';');
 		}
 	}

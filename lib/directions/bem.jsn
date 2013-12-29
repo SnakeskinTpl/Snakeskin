@@ -9,11 +9,9 @@ Snakeskin.addDirective(
 	null,
 
 	(command, commandLength, dir, params) => {
-		if (dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can be used only within the global space, ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
 		var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
 		bem[part[1]] = (new Function('return {' +
@@ -28,15 +26,11 @@ Snakeskin.addDirective(
 	null,
 
 	(command, commandLength, dir, params) => {
-		if (dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can be used only within the global space, ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir('bem', {
-			tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
-		});
+		dir
+			.isDirectiveInBlock(params.name)
+			.startDir(params.name, {
+				tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
+			});
 
 		var lastBEM = dir.structure.params;
 

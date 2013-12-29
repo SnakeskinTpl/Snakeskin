@@ -19,17 +19,14 @@ Snakeskin.addDirective(
 	},
 
 	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
 		var struct = command.split('='),
 			realVar = dir.declVar(struct[0].trim());
 
-		dir.startInlineDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
+		if (dir.isSimpleOutput()) {
 			struct[0] = realVar + ' ';
 			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 		}
