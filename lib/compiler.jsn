@@ -20,7 +20,7 @@
  */
 Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysParams = {}) {
 	opt_info = opt_info || {line: 1};
-	var html = src['innerHTML'];
+	var html = src.innerHTML;
 
 	if (html) {
 		opt_info.node = src;
@@ -60,17 +60,29 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 		bEnd = true,
 		bEscape = false;
 
+	var nextLineRgxp = /[\r\n\v]/,
+		whiteSpaceRgxp = /\s/,
+		bEndRgxp = /[^\s\/]/,
+		commandTypeRgxp = /[^\s]+/m;
+
+	function escapeWhitespace(str) {
+		return str
+			.replace(/\n/, '\\n')
+			.replace(/\v/, '\\v')
+			.replace(/\r/, '\\r');
+	}
+
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
 		let el = str.charAt(dir.i);
 		let rEl = el;
 
-		if (/[\r\n]/.test(el)) {
+		if (nextLineRgxp.test(el)) {
 			opt_info.line++;
 		}
 
 		// Обработка пробельных символов
-		if (/\s/.test(el)) {
+		if (whiteSpaceRgxp.test(el)) {
 			// Внутри директивы
 			if (begin) {
 				if (!bOpen) {
@@ -78,10 +90,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 				// Внутри строки внутри директивы
 				} else {
-					el = el
-						.replace(/\n/, '\\n')
-						.replace(/\v/, '\\v')
-						.replace(/\r/, '\\r');
+					el = escapeWhitespace(el);
 				}
 
 			// Простой ввод вне деклараций шаблона
@@ -149,7 +158,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 						}
 					}
 
-				} else if (/[\n\v\r]/.test(rEl) && comment === '///') {
+				} else if (nextLineRgxp.test(rEl) && comment === '///') {
 					comment = false;
 				}
 			}
@@ -192,7 +201,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					command = replacers[short1](command);
 				}
 
-				let commandType = command.split(' ')[0];
+				let commandType = command.match(commandTypeRgxp)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
 				if (dir.strongDir && strongDirs[dir.strongDir][commandType]) {
@@ -209,7 +218,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 				let fnRes = Snakeskin.Directions[commandType](
 
 					commandType !== 'const' ?
-						command.replace(new RegExp('^' + commandType + '\\s*', 'm'), '') : command,
+						command.replace(commandTypeRgxp, '') : command,
 
 					commandLength,
 					dir,
@@ -255,7 +264,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					if (escapeEndMap[el]) {
 						bEnd = true;
 
-					} else if (/[^\s\/]/.test(el)) {
+					} else if (bEndRgxp.test(el)) {
 						bEnd = false;
 					}
 				}
