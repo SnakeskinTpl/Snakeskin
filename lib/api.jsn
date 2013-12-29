@@ -146,6 +146,8 @@ DirObj.prototype.save = function (str) {
 	if (!this.tplName || write[this.tplName] !== false) {
 		this.res += str;
 	}
+
+	return this;
 };
 
 /**
@@ -178,11 +180,11 @@ DirObj.prototype.isAdvTest = function (dryRun) {
 };
 
 /**
- * Вернуть true, если директива находится в глобальном пространстве,
- * и генерировать ошибку, если это не так
+ * Генерировать ошибку,
+ * если директива находится не в глобальном пространстве
  *
  * @param {string} name - название директивы
- * @returns {boolean}
+ * @return {!DirObj}
  */
 DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
 	if (this.structure.parent) {
@@ -191,22 +193,45 @@ DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
 		);
 	}
 
-	return true;
+	return this;
+};
+
+/**
+ * Генерировать ошибку,
+ * если директива находится вне тела шаблона или прототипа
+ *
+ * @param {string} name - название директивы
+ * @return {!DirObj}
+ */
+DirObj.prototype.isDirectiveInBlock = function (name) {
+	if (!dir.structure.parent) {
+		throw dir.error('Directive "' + name + '" can only be used within a "template" or "proto", ' +
+			dir.genErrorAdvInfo(this.info)
+		);
+	}
+
+	return this;
 };
 
 /**
  * Изменить результирующую строку
+ *
  * @param {string} str - исходная строка
+ * @return {!DirObj}
  */
 DirObj.prototype.replace = function (str) {
 	if (this.canWrite) {
 		this.res = str;
 	}
+
+	return this;
 };
 
 /**
  * Инициализировать кеш для шаблона
+ *
  * @param {string} tplName - название шаблона
+ * @return {!DirObj}
  */
 DirObj.prototype.initCache = function (tplName) {
 	blockCache[tplName] = {};
@@ -217,6 +242,8 @@ DirObj.prototype.initCache = function (tplName) {
 	constCache[tplName] = {};
 	fromConstCache[tplName] = 0;
 	constICache[tplName] = {};
+
+	return this;
 };
 
 /**
@@ -225,6 +252,7 @@ DirObj.prototype.initCache = function (tplName) {
  * @param {string} name - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @param {Object=} [opt_vars] - локальные переменные директивы
+ * @return {!DirObj}
  */
 DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 	this.inlineDir = false;
@@ -255,6 +283,8 @@ DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 
 	struct.childs.push(obj);
 	this.structure = obj;
+
+	return this;
 };
 
 /**
@@ -262,6 +292,7 @@ DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
  *
  * @param {string} name - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
+ * @return {!DirObj}
  */
 DirObj.prototype.startInlineDir = function (name, opt_params) {
 	this.inlineDir = true;
@@ -274,6 +305,8 @@ DirObj.prototype.startInlineDir = function (name, opt_params) {
 
 	this.structure.childs.push(obj);
 	this.structure = obj;
+
+	return this;
 };
 
 /**
@@ -281,6 +314,7 @@ DirObj.prototype.startInlineDir = function (name, opt_params) {
  */
 DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
+	return this;
 };
 
 /**

@@ -13,13 +13,10 @@ Snakeskin.addDirective(
 	},
 
 	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
-		dir.startInlineDir(params.name);
 		if (dir.isSimpleOutput(params.info)) {
 			dir.save(dir.prepareOutput(command) + ';');
 		}

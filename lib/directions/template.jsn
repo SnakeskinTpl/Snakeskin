@@ -27,8 +27,9 @@ Snakeskin.addDirective(
 	null,
 
 	(command, commandLength, dir, params) => {
-		dir.isDirectiveInGlobalSpace(params.name);
-		dir.startDir(params.name);
+		dir
+			.isDirectiveInGlobalSpace(params.name)
+			.startDir(params.name);
 
 		// Начальная позиция шаблона
 		// +1 => } >>
@@ -114,39 +115,61 @@ Snakeskin.addDirective(
 		var argsList = args.split(','),
 			parentArgs = paramsCache[parentTplName];
 
+		var argsTable = paramsCache[tplName] = {};
+		for (let i = 0; i < argsList.length; i++) {
+			let arg = argsList[i].split('=');
+			arg[0] = arg[0].trim();
+
+			argsTable[arg[0]] = {
+				i: i,
+				key: arg[0],
+				value: arg[1] && arg[1].trim()
+			};
+		}
+
 		// Если шаблон наследуется,
 		// то подмешиваем ко входым параметрам шаблона
 		// входные параметры родителя
-		paramsCache[tplName] = parentArgs ? parentArgs.concat(argsList) : argsList;
-
-		// Переинициализация входных параметров родительскими
-		// (только если нужно)
 		if (parentArgs) {
-			for (let i = 0; i < parentArgs.length; i++) {
+			for (let key in parentArgs) {
+				if (!parentArgs.hasOwnProperty(key)) {
+					continue;
+				}
 
-				let el = parentArgs[i];
-				let def = el.split('=');
+				let el = parentArgs[key],
+					current = argsTable[key];
 
-				// Здесь и далее по коду
-				// [0] - название переменной
-				// [1] - значение по умолчанию (опционально)
-				def[0] = def[0].trim();
-				def[1] = def[1] && def[1].trim();
+				if (el.value !== void 0) {
+					if (!argsTable[key]) {
+						argsTable[key] = {
+							local: true,
+							i: el.i,
+							key: key,
+							value: el.value
+						};
 
-				for (let j = 0; j < argsList.length; j++) {
-
-					let el2 = argsList[j];
-					let def2 = el2.split('=');
-
-					def2[0] = def2[0].trim();
-					def2[1] = def2[1] && def2[1].trim();
-
-					// Если переменная не имеет параметра по умолчанию,
-					// то ставим параметр по умолчанию родителя
-					if (def[0] === def2[0] && def2[1] === void 0) {
-						argsList[j] = el;
+					} else if (current && current.value === void 0) {
+						argsTable[key].value = el.value;
 					}
 				}
+			}
+		}
+
+		argsList = [];
+		var localVars = [];
+
+		for (let key in argsTable) {
+			if (!argsTable.hasOwnProperty(key)) {
+				continue;
+			}
+
+			let el = argsTable[key];
+
+			if (el.local) {
+				localVars[el.i] = el;
+
+			} else {
+				argsList[el.i] = el;
 			}
 		}
 
@@ -155,60 +178,33 @@ Snakeskin.addDirective(
 		var defParams = '';
 		for (let i = 0; i < argsList.length; i++) {
 			let el = argsList[i];
-			let def = el.split('=');
 
-			def[0] = def[0].trim();
-			dir.save(def[0]);
+			dir.save(el.key);
+			constICache[tplName][el.key] = el;
 
-			// Подмешивание родительских входных параметров
-			if (parentArgs && !defParams) {
-				for (let j = 0; j < parentArgs.length; j++) {
-
-					let el2 = parentArgs[j];
-					let def2 = el2.split('='),
-						local = false;
-
-					def2[0] = def2[0].trim();
-					def2[1] = def2[1] && def2[1].trim();
-
-					// local = true, если входной параметр родительского шаблона
-					// присутствует также в дочернем
-					for (let k = 0; k < argsList.length; k++) {
-						let el3 = argsList[k];
-						let val = el3.split('=');
-
-						val[0] = val[0].trim();
-						val[1] = val[1] && val[1].trim();
-
-						if (val[0] === def2[0]) {
-							local = true;
-							break;
-						}
-					}
-
-					// Если входный параметр родителя отсутствует у ребёнка,
-					// но он имеет значение по умолчанию,
-					// то инициализируем его как локальную переменную шаблона
-					if (!local && def2[1] !== void 0) {
-						defParams += 'var ' + def2[0] + ' = ' + def2[1] + ';';
-						constICache[tplName][def2[0]] = el2;
-					}
-				}
+			if (el.value !== void 0) {
+				defParams += el.key + ' = ' + el.key + ' !== void 0 && ' +
+					el.key + ' !== null ? ' + el.key + ' : ' + el.value + ';';
 			}
-
-			// Параметры по умолчанию
-			if (def.length > 1) {
-				def[1] = def[1].trim();
-				defParams += def[0] + ' = ' + def[0] + ' !== void 0 && ' +
-					def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
-			}
-
-			constICache[tplName][def[0]] = el;
 
 			// После последнего параметра запятая не ставится
 			if (i !== argsList.length - 1) {
 				dir.save(',');
 			}
+		}
+
+		// Входные параметры родительского шаблона,
+		// для которых есть значение по умолчанию,
+		// ставятся как локальные переменные
+		for (let i = 0; i < localVars.length; i++) {
+			let el = localVars[i];
+
+			if (!el) {
+				continue;
+			}
+
+			defParams += 'var ' + el.key + ' = ' + el.value + ';';
+			constICache[tplName][el.key] = el;
 		}
 
 		dir.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
