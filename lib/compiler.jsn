@@ -201,7 +201,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					command = replacers[short1](command);
 				}
 
-				let commandType = command.match(commandTypeRgxp)[0];
+				let commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
 				if (dir.strongDir && strongDirs[dir.strongDir][commandType]) {

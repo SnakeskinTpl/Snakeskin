@@ -27,12 +27,7 @@ Snakeskin.addDirective(
 	null,
 
 	(command, commandLength, dir, params) => {
-		if (dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can be used only within the global space, ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
+		dir.isDirectiveInGlobalSpace(params.name, params.info);
 		dir.startDir(params.name);
 
 		// Начальная позиция шаблона
@@ -50,8 +45,6 @@ Snakeskin.addDirective(
 		}
 
 		dir.tplName = tplName;
-
-		// При холостой обработке прерываем дальнейшее выполнение директивы
 		if (params.dryRun) {
 			return;
 		}
