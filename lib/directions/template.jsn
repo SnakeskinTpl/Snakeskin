@@ -163,12 +163,12 @@ Snakeskin.addDirective(
 				for (let j = 0; j < arr.length; j++) {
 					let el2 = arr[j];
 					let def2 = el2.split('='),
-						local;
+						local = false;
 
 					def2[0] = def2[0].trim();
 					def2[1] = def2[1] && def2[1].trim();
 
-					// true, если входной параметр родительского шаблона
+					// local = true, если входной параметр родительского шаблона
 					// присутствует также в дочернем
 					for (let k = 0; k < args.length; k++) {
 						let el3 = args[k];
@@ -200,7 +200,6 @@ Snakeskin.addDirective(
 					def[0] + ' !== null ? ' + def[0] + ' : ' + def[1] + ';';
 			}
 
-			// Кеширование
 			constICache[tplName][def[0]] = el;
 
 			// После последнего параметра запятая не ставится
@@ -234,7 +233,6 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		// Кешируем тело шаблона
 		cache[tplName] = dir.source.substring(dir.startI, dir.i - commandLength - 1);
 
 		// Обработка наследования:
@@ -242,13 +240,10 @@ Snakeskin.addDirective(
 		// и обработка шаблона начинается заново,
 		// но уже как атомарного (без наследования)
 		if (dir.parentTplName) {
-			// Результирующее тело шаблона
 			dir.source = dir.source.substring(0, dir.startI) +
 				dir.getExtStr(tplName, params.info) +
 				dir.source.substring(dir.i - commandLength - 1);
 
-			// Перемотка переменных
-			// (сбрасывание)
 			dir.initCache(tplName);
 			dir.startDir(params.name);
 			dir.i = dir.startI - 1;

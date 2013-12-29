@@ -33,7 +33,8 @@ var replacers = {},
 // Системные константы
 const sysConst = {
 	'__SNAKESKIN_RESULT__': true,
-	'__SNAKESKIN_CDATA__': true
+	'__SNAKESKIN_CDATA__': true,
+	'$_': true
 };
 
 // Таблица экранирований
