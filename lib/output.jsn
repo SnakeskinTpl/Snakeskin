@@ -421,27 +421,27 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						}
 
 						let first = scope[0];
+						vres = first;
 
 						scope[0] = vars[scope[0]] || scope[0];
-						scope.push({scope: rfWord});
+						scope.push(rfWord);
 
-						let rnum = num = num ? scope.length - num : num;
-						let str = first;
+						let rnum = num = num ? scope.length - num : num,
+							length = scope.length;
 
-						for (let j = 1; j < scope.length; j++) {
+						for (let j = 1; j < length; j++) {
 							num = num ? num - 1 : num;
-							let val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								str = val + '.' + scope[j].scope;
+								vres += '.' + scope[j];
+								continue;
 							}
 
-							if (j === data.length - 1) {
-								str = (rnum > 0 ? val + '.' : '') + scope[j].scope;
+							if (j === length - 1) {
+								vres = (rnum > 0 ? vres + '.' : '') + scope[j];
 							}
 						}
 
-						vres = str;
 						scope.pop();
 						scope[0] = first;
 
@@ -547,7 +547,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			let pos = pContent[0];
 			let fadd = wordAddEnd - filterAddEnd + addition,
 				fbody = pCount ?
-					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
+					res.substring(pos[0] + addition, pos[1] + fadd) :
+					res.substring(0, pos[1] + fadd);
 
 			let arr = [];
 			for (let j = 0; j < filter.length; j++) {

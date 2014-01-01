@@ -10,11 +10,14 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(name = 'world', a, b = 1)}
-				{'foo' + 1}
-			{/}
+			{template helloWorld(name = 'world', b = 1)}
+				{a = {foo: {next: 1}}}
 
-			{template helloWorld2.foo['foo'](b) extends helloWorld}
+				{with a}
+					{with foo}
+						{@a}
+					{/}
+				{/}
 			{/}
 		</script>
 		<script>

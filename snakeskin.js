@@ -415,6 +415,10 @@ function DirObj(src, params) {
 	 */
 	this.info = params.info;
 
+	this.dryRun = params.dryRun;
+
+	this.commonJS = params.commonJS;
+
 	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
 	 * @type {boolean}
@@ -534,20 +538,20 @@ DirObj.prototype.save = function (str) {
 	if (!this.tplName || write[this.tplName] !== false) {
 		this.res += str;
 	}
+
+	return this;
 };
 
 /**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
- *
- * @param {Object=} [opt_info] - информация о шаблоне (название файлы, узла и т.д.)
  * @return {boolean}
  */
-DirObj.prototype.isSimpleOutput = function (opt_info) {
+DirObj.prototype.isSimpleOutput = function () {
 	var __NEJS_THIS__ = this;
-	if (opt_info && this.strongDir) {
+	if (this.strongDir) {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '", ' +
-			this.genErrorAdvInfo(opt_info)
+			this.genErrorAdvInfo(this.info)
 		);
 	}
 
@@ -568,11 +572,11 @@ DirObj.prototype.isAdvTest = function (dryRun) {
 };
 
 /**
- * Вернуть true, если директива находится в глобальном пространстве,
- * и генерировать ошибку, если это не так
+ * Генерировать ошибку,
+ * если директива находится не в глобальном пространстве
  *
  * @param {string} name - название директивы
- * @returns {boolean}
+ * @return {!DirObj}
  */
 DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
 	var __NEJS_THIS__ = this;
@@ -582,23 +586,47 @@ DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
 		);
 	}
 
-	return true;
+	return this;
+};
+
+/**
+ * Генерировать ошибку,
+ * если директива находится вне тела шаблона или прототипа
+ *
+ * @param {string} name - название директивы
+ * @return {!DirObj}
+ */
+DirObj.prototype.isDirectiveInBlock = function (name) {
+	var __NEJS_THIS__ = this;
+	if (!this.structure.parent) {
+		throw this.error('Directive "' + name + '" can only be used within a "template" or "proto", ' +
+			this.genErrorAdvInfo(this.info)
+		);
+	}
+
+	return this;
 };
 
 /**
  * Изменить результирующую строку
+ *
  * @param {string} str - исходная строка
+ * @return {!DirObj}
  */
 DirObj.prototype.replace = function (str) {
 	var __NEJS_THIS__ = this;
 	if (this.canWrite) {
 		this.res = str;
 	}
+
+	return this;
 };
 
 /**
  * Инициализировать кеш для шаблона
+ *
  * @param {string} tplName - название шаблона
+ * @return {!DirObj}
  */
 DirObj.prototype.initCache = function (tplName) {
 	var __NEJS_THIS__ = this;
@@ -610,6 +638,8 @@ DirObj.prototype.initCache = function (tplName) {
 	constCache[tplName] = {};
 	fromConstCache[tplName] = 0;
 	constICache[tplName] = {};
+
+	return this;
 };
 
 /**
@@ -618,6 +648,7 @@ DirObj.prototype.initCache = function (tplName) {
  * @param {string} name - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @param {Object=} [opt_vars] - локальные переменные директивы
+ * @return {!DirObj}
  */
 DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 	var __NEJS_THIS__ = this;
@@ -649,6 +680,8 @@ DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 
 	struct.childs.push(obj);
 	this.structure = obj;
+
+	return this;
 };
 
 /**
@@ -656,6 +689,7 @@ DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
  *
  * @param {string} name - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
+ * @return {!DirObj}
  */
 DirObj.prototype.startInlineDir = function (name, opt_params) {
 	var __NEJS_THIS__ = this;
@@ -669,6 +703,8 @@ DirObj.prototype.startInlineDir = function (name, opt_params) {
 
 	this.structure.childs.push(obj);
 	this.structure = obj;
+
+	return this;
 };
 
 /**
@@ -677,6 +713,7 @@ DirObj.prototype.startInlineDir = function (name, opt_params) {
 DirObj.prototype.endDir = function () {
 	var __NEJS_THIS__ = this;
 	this.structure = this.structure.parent;
+	return this;
 };
 
 /**
@@ -695,7 +732,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 	if (name[current] || current === name) {
 		return true;
 
-	} else if (struct.parent && Snakeskin.sysDirs[current]) {
+	} else if (struct.parent && sysDirs[current]) {
 		return this.has(name, struct.parent);
 	}
 
@@ -1735,10 +1772,12 @@ DirObj.prototype.replaceTplVars = function (str) {
  */
 DirObj.prototype.isPrevSyOL = function (str, pos) {
 	var __NEJS_THIS__ = this;
+	var rgxp = /\S/;
+
 	for (var i = pos; i--;) {
 		var el = str.charAt(i);
 
-		if (/\S/.test(el)) {
+		if (rgxp.test(el)) {
 			return el === '{';
 		}
 	}
@@ -1755,10 +1794,12 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
  */
 DirObj.prototype.isNextSyOL = function (str, pos) {
 	var __NEJS_THIS__ = this;
+	var rgxp = /\S/;
+
 	for (var i = pos; i < str.length; i++) {
 		var el = str.charAt(i);
 
-		if (/\S/.test(el)) {
+		if (rgxp.test(el)) {
 			return el === ':' || el === '=' && str.charAt(i + 1) !== '=' && str.charAt(i - 1) !== '=';
 		}
 	}
@@ -1783,10 +1824,12 @@ DirObj.prototype.getWord = function (str, pos) {
 		pContent = null;
 
 	var j = 0;
+	var nextCharRgxp = /[@#$+\-\w\[\]().]/;
+
 	for (var i = pos; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
-		if (pCount || /[@#$+\-\w\[\]().]/.test(el) || (el === ' ' && unaryBlackWordList[res])) {
+		if (pCount || nextCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
 				pContent += el;
 			}
@@ -1848,6 +1891,7 @@ DirObj.prototype.getWord = function (str, pos) {
  */
 DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst) {
 	var __NEJS_THIS__ = this;
+	// Скобка = (
 	// Количество открытых скобок в строке
 	var pCount = 0;
 
@@ -1895,12 +1939,25 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var vars = this.structure.childs ?
 		this.structure.vars : this.structure.parent.vars;
 
+	var globalExportRgxp = /([$\w]*)(.*)/,
+		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
+
+	var nextCharRgxp = /[@#$a-z_0-9]/i,
+		newWordRgxp = /[^@#$\w\[\].]/,
+		filterRgxp = /[!$a-z_]/i;
+
+	var numRgxp = /[0-9]/,
+		modRgxp = /#(?:\d+|)/,
+		strongModRgxp = /#(\d+)/;
+
 	for (var i = 0; i < command.length; i++) {
 		var el = command.charAt(i),
 			next = command.charAt(i + 1),
 			nnext = command.charAt(i + 2);
 
+		// Количество пропускаемых итераций
 		var breakNum;
+
 		if (!breakNum) {
 			if (el === '(') {
 				// Скобка открылась внутри декларации фильтра
@@ -1916,7 +1973,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// Расчёт scope:
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
-			if (nword && !posNWord && /[@#$a-z_0-9]/i.test(el)) {
+			if (nword && !posNWord && nextCharRgxp.test(el)) {
 				var nextStep = this.getWord(command, i);
 				var word = nextStep.word,
 					finalWord = nextStep.finalWord;
@@ -1931,21 +1988,21 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				// не является названием свойства в литерале объекта ({свойство: )
 				var canParse = !blackWordList[word] &&
 					isNaN(Number(word)) &&
-					!/^__ESCAPER_QUOT__\d+_/.test(word) &&
+					!escapeRgxp.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
-				var globalExport = /([$\w]*)(.*)/;
+				var globalExport;
 
 				// Экспорт числовых литералов
-				if (/[0-9]/.test(el)) {
+				if (numRgxp.test(el)) {
 					vres = finalWord;
 
 				// Экспорт глобальный и супер глобальных переменных
 				} else if (el === '@') {
 					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
-						globalExport = globalExport.exec(vres);
+						globalExport = globalExportRgxp.exec(vres);
 
 						// Супер глобальная переменная внутри with
 						if (next === '@') {
@@ -1957,44 +2014,43 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 					// Супер глобальная переменная вне with
 					} else {
-						globalExport = globalExport.exec(finalWord.substring(next === '@' ? 2 : 1));
+						globalExport = globalExportRgxp.exec(finalWord.substring(next === '@' ? 2 : 1));
 						vres = 'Snakeskin.Vars[\'' + globalExport[1] + '\']' + globalExport[2];
 					}
 
 				} else {
-					var rfWord = finalWord.replace(/#(?:\d+|)/, '');
+					var rfWord = finalWord.replace(modRgxp, '');
 					if (canParse && useWith) {
 						var num = null;
 
 						// Уточнение scope
 						if (el === '#') {
-							num = /#(\d+)/.exec(finalWord);
+							num = strongModRgxp.exec(finalWord);
 							num = num ? num[1] : 1;
 							num++;
 						}
 
 						var first = scope[0];
+						vres = first;
+
 						scope[0] = vars[scope[0]] || scope[0];
+						scope.push(rfWord);
 
-						scope.push({scope: rfWord});
-						var rnum = num = num ? scope.length - num : num;
+						var rnum = num = num ? scope.length - num : num,
+							length = scope.length;
 
-						// Формирование финальной строки
-						vres = scope.reduce(function (str, el, i, data) {
-							
+						for (var j = 1; j < length; j++) {
 							num = num ? num - 1 : num;
-							var val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								return val + '.' + el.scope;
+								vres += '.' + scope[j];
+								continue;
 							}
 
-							if (i === data.length - 1) {
-								return (rnum > 0 ? val + '.' : '') + el.scope;
+							if (j === length - 1) {
+								vres = (rnum > 0 ? vres + '.' : '') + scope[j];
 							}
-
-							return val;
-						});
+						}
 
 						scope.pop();
 						scope[0] = first;
@@ -2034,7 +2090,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			// Возможно, скоро начнётся новое слово,
 			// для которого можно посчитать scope
-			} else if (/[^@#$\w\[\].]/.test(el)) {
+			} else if (newWordRgxp.test(el)) {
 				nword = true;
 
 				if (posNWord > 0) {
@@ -2045,7 +2101,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			if (!filterStart) {
 				if (el === ')') {
 					// Закрылась скобка, а последующие 2 символа не являются фильтром
-					if (next !== '|' || !/[!$a-z_]/i.test(nnext)) {
+					if (next !== '|' || !filterRgxp.test(nnext)) {
 						if (pCount) {
 							pCount--;
 						}
@@ -2074,7 +2130,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		// Через 2 итерации начнётся фильтр
-		if (next === '|' && /[!$a-z_]/i.test(nnext)) {
+		if (next === '|' && filterRgxp.test(nnext)) {
 			nword = false;
 
 			if (!filterStart) {
@@ -2101,37 +2157,41 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			var pos = pContent[0];
 			var fadd = wordAddEnd - filterAddEnd + addition,
 				fbody = pCount ?
-					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
+					res.substring(pos[0] + addition, pos[1] + fadd) :
+					res.substring(0, pos[1] + fadd);
 
-			filter = filter.reduce(function (arr, el) {
-				
+			var arr = [];
+			for (var j$0 = 0; j$0 < filter.length; j$0++) {
 				if (el !== '!html') {
-					arr.push(el);
+					arr.push(filter[j$0]);
 
 				} else if (!pCount) {
 					unEscape = true;
 				}
+			}
 
-				return arr;
-			}, []);
+			filter = arr;
+			var resTmp = fbody;
 
-			var resTmp = filter.reduce(function (res, el) {
-				
-				var params = el.split(' ');
+			for (var j$1 = 0; j$1 < filter.length; j$1++) {
+				var params = filter[j$1].split(' ');
 				var input = params.slice(1).join('').trim();
 
-				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
+				resTmp = '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
 					(deepFilter || !pCount ? '(' : '') +
 					res +
 					(input ? ',' + input : '') +
 					(deepFilter || !pCount ? ')' : '') +
-					')';
-
-			}, fbody);
+				')';
+			}
 
 			var fstr = rvFilter.join().length + 1;
 			res = pCount ?
-				res.substring(0, pos[0] + addition) + resTmp + res.substring(pos[1] + fadd + fstr) :
+
+				res.substring(0, pos[0] + addition) +
+					resTmp +
+					res.substring(pos[1] + fadd + fstr) :
+
 				resTmp;
 
 			addition += resTmp.length - fbody.length - fstr + wordAddEnd - filterAddEnd;
@@ -2191,14 +2251,11 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
-		dir.startInlineDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
+		if (dir.isSimpleOutput()) {
 			dir.space = true;
 		}
 	}
@@ -2291,8 +2348,9 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		dir.isDirectiveInGlobalSpace(params.name);
-		dir.startDir(params.name);
+		dir
+			.isDirectiveInGlobalSpace(params.name)
+			.startDir(params.name);
 
 		// Начальная позиция шаблона
 		// +1 => } >>
@@ -2329,7 +2387,13 @@ Snakeskin.addDirective(
 		// Для возможности удобного пост-парсинга,
 		// каждая функция снабжается комментарием вида:
 		// /* Snakeskin template: название шаблона; параметры через запятую */
-		dir.save('/* Snakeskin template: ' + tplName + '; ' + args.replace(/=([\s\S]*?)(?:,|$)/gm, '') + ' */');
+		dir.save(
+			'/* Snakeskin template: ' +
+				tplName +
+				'; ' +
+				args.replace(/=([\s\S]*?)(?:,|$)/gm, '') +
+			' */'
+		);
 
 		// Декларация функции
 		// с пространством имён или при экспорте в common.js
@@ -2617,14 +2681,11 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
-		dir.startInlineDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
+		if (dir.isSimpleOutput()) {
 			dir.save(dir.prepareOutput(command) + ';');
 		}
 	}
@@ -2653,17 +2714,14 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
 		var struct = command.split('='),
 			realVar = dir.declVar(struct[0].trim());
 
-		dir.startInlineDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
+		if (dir.isSimpleOutput()) {
 			struct[0] = realVar + ' ';
 			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
 		}
@@ -2684,15 +2742,11 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir(params.name, {
-			name: command
-		});
+		dir
+			.isDirectiveInBlock(params.name)
+			.startDir(params.name, {
+				name: command
+			});
 
 		if (dir.isAdvTest(params.dryRun)) {
 			// Попытка декларировать блок несколько раз
@@ -3343,16 +3397,11 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startDir('with');
 
 		dir.scope.push(command);
-		dir.startDir('with', {
-			scope: command
-		});
 	}
 );var __NEJS_THIS__ = this;
 /*!
@@ -3452,11 +3501,9 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can be used only within the global space, ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
+		dir
+			.isDirectiveInBlock(params.name)
+			.startInlineDir(params.name);
 
 		var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
 		bem[part[1]] = (new Function('return {' +
@@ -3472,15 +3519,11 @@ Snakeskin.addDirective(
 
 	function (command, commandLength, dir, params) {
 		
-		if (dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can be used only within the global space, ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir('bem', {
-			tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
-		});
+		dir
+			.isDirectiveInBlock(params.name)
+			.startDir(params.name, {
+				tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
+			});
 
 		var lastBEM = dir.structure.params;
 

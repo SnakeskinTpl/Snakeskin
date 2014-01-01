@@ -206,9 +206,9 @@ DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
  * @return {!DirObj}
  */
 DirObj.prototype.isDirectiveInBlock = function (name) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "' + name + '" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(this.info)
+	if (!this.structure.parent) {
+		throw this.error('Directive "' + name + '" can only be used within a "template" or "proto", ' +
+			this.genErrorAdvInfo(this.info)
 		);
 	}
 
@@ -334,7 +334,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 	if (name[current] || current === name) {
 		return true;
 
-	} else if (struct.parent && Snakeskin.sysDirs[current]) {
+	} else if (struct.parent && sysDirs[current]) {
 		return this.has(name, struct.parent);
 	}
 

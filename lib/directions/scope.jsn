@@ -19,9 +19,7 @@ Snakeskin.addDirective(
 	(command, commandLength, dir, params) => {
 		dir
 			.isDirectiveInBlock(params.name)
-			.startDir('with', {
-				scope: command
-			});
+			.startDir('with');
 
 		dir.scope.push(command);
 	}
