@@ -165,10 +165,12 @@ DirObj.prototype.replaceTplVars = function (str) {
  * @return {boolean}
  */
 DirObj.prototype.isPrevSyOL = function (str, pos) {
+	var rgxp = /\S/;
+
 	for (let i = pos; i--;) {
 		let el = str.charAt(i);
 
-		if (/\S/.test(el)) {
+		if (rgxp.test(el)) {
 			return el === '{';
 		}
 	}
@@ -184,10 +186,12 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
  * @return {boolean}
  */
 DirObj.prototype.isNextSyOL = function (str, pos) {
+	var rgxp = /\S/;
+
 	for (let i = pos; i < str.length; i++) {
 		let el = str.charAt(i);
 
-		if (/\S/.test(el)) {
+		if (rgxp.test(el)) {
 			return el === ':' || el === '=' && str.charAt(i + 1) !== '=' && str.charAt(i - 1) !== '=';
 		}
 	}
@@ -211,10 +215,12 @@ DirObj.prototype.getWord = function (str, pos) {
 		pContent = null;
 
 	var j = 0;
+	var nextCharRgxp = /[@#$+\-\w\[\]().]/;
+
 	for (let i = pos; i < str.length; i++, j++) {
 		let el = str.charAt(i);
 
-		if (pCount || /[@#$+\-\w\[\]().]/.test(el) || (el === ' ' && unaryBlackWordList[res])) {
+		if (pCount || nextCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
 				pContent += el;
 			}
@@ -323,6 +329,17 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var vars = this.structure.childs ?
 		this.structure.vars : this.structure.parent.vars;
 
+	var globalExportRgxp = /([$\w]*)(.*)/,
+		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
+
+	var nextCharRgxp = /[@#$a-z_0-9]/i,
+		newWordRgxp = /[^@#$\w\[\].]/,
+		filterRgxp = /[!$a-z_]/i;
+
+	var numRgxp = /[0-9]/,
+		modRgxp = /#(?:\d+|)/,
+		strongModRgxp = /#(\d+)/;
+
 	for (let i = 0; i < command.length; i++) {
 		let el = command.charAt(i),
 			next = command.charAt(i + 1),
@@ -346,7 +363,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// Расчёт scope:
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
-			if (nword && !posNWord && /[@#$a-z_0-9]/i.test(el)) {
+			if (nword && !posNWord && nextCharRgxp.test(el)) {
 				let nextStep = this.getWord(command, i);
 				let word = nextStep.word,
 					finalWord = nextStep.finalWord;
@@ -361,21 +378,21 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				// не является названием свойства в литерале объекта ({свойство: )
 				let canParse = !blackWordList[word] &&
 					isNaN(Number(word)) &&
-					!/^__ESCAPER_QUOT__\d+_/.test(word) &&
+					!escapeRgxp.test(word) &&
 					!this.isPrevSyOL(command, i) &&
 					!this.isNextSyOL(command, i + word.length);
 
-				let globalExport = /([$\w]*)(.*)/;
+				let globalExport;
 
 				// Экспорт числовых литералов
-				if (/[0-9]/.test(el)) {
+				if (numRgxp.test(el)) {
 					vres = finalWord;
 
 				// Экспорт глобальный и супер глобальных переменных
 				} else if (el === '@') {
 					if (canParse && useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
-						globalExport = globalExport.exec(vres);
+						globalExport = globalExportRgxp.exec(vres);
 
 						// Супер глобальная переменная внутри with
 						if (next === '@') {
@@ -387,18 +404,18 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 					// Супер глобальная переменная вне with
 					} else {
-						globalExport = globalExport.exec(finalWord.substring(next === '@' ? 2 : 1));
+						globalExport = globalExportRgxp.exec(finalWord.substring(next === '@' ? 2 : 1));
 						vres = 'Snakeskin.Vars[\'' + globalExport[1] + '\']' + globalExport[2];
 					}
 
 				} else {
-					let rfWord = finalWord.replace(/#(?:\d+|)/, '');
+					let rfWord = finalWord.replace(modRgxp, '');
 					if (canParse && useWith) {
 						let num = null;
 
 						// Уточнение scope
 						if (el === '#') {
-							num = /#(\d+)/.exec(finalWord);
+							num = strongModRgxp.exec(finalWord);
 							num = num ? num[1] : 1;
 							num++;
 						}
@@ -463,7 +480,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			// Возможно, скоро начнётся новое слово,
 			// для которого можно посчитать scope
-			} else if (/[^@#$\w\[\].]/.test(el)) {
+			} else if (newWordRgxp.test(el)) {
 				nword = true;
 
 				if (posNWord > 0) {
@@ -474,7 +491,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			if (!filterStart) {
 				if (el === ')') {
 					// Закрылась скобка, а последующие 2 символа не являются фильтром
-					if (next !== '|' || !/[!$a-z_]/i.test(nnext)) {
+					if (next !== '|' || !filterRgxp.test(nnext)) {
 						if (pCount) {
 							pCount--;
 						}
@@ -503,7 +520,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		// Через 2 итерации начнётся фильтр
-		if (next === '|' && /[!$a-z_]/i.test(nnext)) {
+		if (next === '|' && filterRgxp.test(nnext)) {
 			nword = false;
 
 			if (!filterStart) {
@@ -559,7 +576,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			let fstr = rvFilter.join().length + 1;
 			res = pCount ?
-				res.substring(0, pos[0] + addition) + resTmp + res.substring(pos[1] + fadd + fstr) :
+
+				res.substring(0, pos[0] + addition) +
+					resTmp +
+					res.substring(pos[1] + fadd + fstr) :
+
 				resTmp;
 
 			addition += resTmp.length - fbody.length - fstr + wordAddEnd - filterAddEnd;
