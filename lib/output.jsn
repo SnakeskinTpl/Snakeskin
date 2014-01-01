@@ -275,6 +275,7 @@ DirObj.prototype.getWord = function (str, pos) {
  * @return {string}
  */
 DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst) {
+	// Скобка = (
 	// Количество открытых скобок в строке
 	var pCount = 0;
 
@@ -327,7 +328,9 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			next = command.charAt(i + 1),
 			nnext = command.charAt(i + 2);
 
+		// Количество пропускаемых итераций
 		let breakNum;
+
 		if (!breakNum) {
 			if (el === '(') {
 				// Скобка открылась внутри декларации фильтра
@@ -408,18 +411,16 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						let rnum = num = num ? scope.length - num : num;
 						let str = first;
 
-						for (let i = 1; i < scope.length; i++) {
-							let el = scope[i];
-
+						for (let j = 1; j < scope.length; j++) {
 							num = num ? num - 1 : num;
 							let val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								str = val + '.' + el.scope;
+								str = val + '.' + scope[j].scope;
 							}
 
-							if (i === data.length - 1) {
-								str = (rnum > 0 ? val + '.' : '') + el.scope;
+							if (j === data.length - 1) {
+								str = (rnum > 0 ? val + '.' : '') + scope[j].scope;
 							}
 						}
 
@@ -532,9 +533,9 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
 			let arr = [];
-			for (let i = 0; i < filter.length; i++) {
+			for (let j = 0; j < filter.length; j++) {
 				if (el !== '!html') {
-					arr.push(filter[i]);
+					arr.push(filter[j]);
 
 				} else if (!pCount) {
 					unEscape = true;
@@ -544,8 +545,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			filter = arr;
 			let resTmp = fbody;
 
-			for (let i = 0; i < filter.length; i++) {
-				let params = filter[i].split(' ');
+			for (let j = 0; j < filter.length; j++) {
+				let params = filter[j].split(' ');
 				let input = params.slice(1).join('').trim();
 
 				resTmp = '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
