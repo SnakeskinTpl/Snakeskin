@@ -391,7 +391,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				} else {
 					let rfWord = finalWord.replace(/#(?:\d+|)/, '');
 					if (canParse && useWith) {
-						var num = null;
+						let num = null;
 
 						// Уточнение scope
 						if (el === '#') {
@@ -401,27 +401,29 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						}
 
 						let first = scope[0];
+
 						scope[0] = vars[scope[0]] || scope[0];
-
 						scope.push({scope: rfWord});
-						var rnum = num = num ? scope.length - num : num;
 
-						// Формирование финальной строки
-						vres = scope.reduce((str, el, i, data) => {
+						let rnum = num = num ? scope.length - num : num;
+						let str = first;
+
+						for (let i = 1; i < scope.length; i++) {
+							let el = scope[i];
+
 							num = num ? num - 1 : num;
-							var val = str.scope === void 0 ? str : str.scope;
+							let val = str.scope === void 0 ? str : str.scope;
 
 							if (num === null || num > 0) {
-								return val + '.' + el.scope;
+								str = val + '.' + el.scope;
 							}
 
 							if (i === data.length - 1) {
-								return (rnum > 0 ? val + '.' : '') + el.scope;
+								str = (rnum > 0 ? val + '.' : '') + el.scope;
 							}
+						}
 
-							return val;
-						});
-
+						vres = str;
 						scope.pop();
 						scope[0] = first;
 
@@ -529,29 +531,30 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				fbody = pCount ?
 					res.substring(pos[0] + addition, pos[1] + fadd) : res.substring(0, pos[1] + fadd);
 
-			filter = filter.reduce((arr, el) => {
+			let arr = [];
+			for (let i = 0; i < filter.length; i++) {
 				if (el !== '!html') {
-					arr.push(el);
+					arr.push(filter[i]);
 
 				} else if (!pCount) {
 					unEscape = true;
 				}
+			}
 
-				return arr;
-			}, []);
+			filter = arr;
+			let resTmp = fbody;
 
-			let resTmp = filter.reduce((res, el) => {
-				var params = el.split(' ');
-				var input = params.slice(1).join('').trim();
+			for (let i = 0; i < filter.length; i++) {
+				let params = filter[i].split(' ');
+				let input = params.slice(1).join('').trim();
 
-				return '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
+				resTmp = '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
 					(deepFilter || !pCount ? '(' : '') +
 					res +
 					(input ? ',' + input : '') +
 					(deepFilter || !pCount ? ')' : '') +
-					')';
-
-			}, fbody);
+				')';
+			}
 
 			let fstr = rvFilter.join().length + 1;
 			res = pCount ?
