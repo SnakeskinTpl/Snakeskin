@@ -6,15 +6,14 @@
 Snakeskin.addDirective(
 	'&',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInBlock(params.name)
-			.startInlineDir(params.name);
-
-		if (dir.isSimpleOutput()) {
-			dir.space = true;
+	function () {
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.space = true;
 		}
 	}
 );
