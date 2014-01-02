@@ -11,9 +11,9 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		dir.startInlineDir();
-		if (dir.isSimpleOutput()) {
-			dir.save('__SNAKESKIN_RESULT__ += ' + command + ';');
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 		}
 	}
 );
