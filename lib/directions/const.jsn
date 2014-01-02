@@ -8,75 +8,62 @@ Snakeskin.addDirective(
 
 	null,
 
-	(command, commandLength, dir, params) => {
-		var tplName = dir.tplName;
+	function (command, commandLength) {
+		var tplName = this.tplName;
 
 		// Инициализация переменных
 		if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
 			let varName = command.split('=')[0].trim(),
 				mod = varName.charAt(0);
 
-			if (dir.structure.parent) {
-				dir.startInlineDir('const');
+			if (this.structure.parent) {
+				this.startInlineDir('const');
 
-				if (dir.isAdvTest(params.dryRun) && !dir.varCache[varName] && mod !== '#' && mod !== '@') {
+				if (this.isAdvTest() && !this.varCache[varName] && mod !== '#' && mod !== '@') {
 					// Попытка повторной инициализации переменной
 					if (constCache[tplName][varName] || constICache[tplName][varName]) {
-						throw dir.error('Constant "' + varName + '" is already defined, ' +
-							dir.genErrorAdvInfo(params.info)
-						);
+						throw this.error('Constant "' + varName + '" is already defined');
 					}
 
 					// Попытка инициализировать переменную с зарезервированным именем
 					if (sysConst[varName]) {
-						throw dir.error('Can\'t declare constant "' + varName + '", try another name, ' +
-							dir.genErrorAdvInfo(params.info)
-						);
-					}
-
-					// Попытка инициализации переменной внутри итератора
-					if (dir.hasParent({'forEach': true, 'forIn': true})) {
-						throw dir.error('Constant "' + varName + '" can\'t be defined in a iterator, ' +
-							dir.genErrorAdvInfo(params.info)
-						);
+						throw this.error('Can\'t declare constant "' + varName + '", try another name');
 					}
 
 					// Кеширование
 					constCache[tplName][varName] = {
-						from: dir.i - dir.startI - commandLength,
-						to: dir.i - dir.startI
+						from: this.i - this.startI - commandLength,
+						to: this.i - this.startI
 					};
 
-					fromConstCache[tplName] = dir.i - dir.startI + 1;
+					fromConstCache[tplName] = this.i - this.startI + 1;
 				}
 
-				if (dir.isSimpleOutput(params.info)) {
-					if (!dir.varCache[varName] && mod !== '#' && mod !== '@') {
-						dir.save(dir.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
+				if (this.isSimpleOutput()) {
+					if (!this.varCache[varName] && mod !== '#' && mod !== '@') {
+						this.save(this.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
 
 					} else {
-						dir.save(dir.prepareOutput(command + ';', true));
+						this.save(this.prepareOutput(command + ';', true));
 					}
 				}
 
 			} else {
-				dir.startInlineDir('globalVar');
-				dir.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
-					dir.prepareOutput(command, true, null, true) +
+				this.startInlineDir('globalVar');
+				this.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
+					this.prepareOutput(command, true, null, true) +
 				'; }');
 			}
 
 		// Вывод значения
 		} else {
-			if (!dir.structure.parent) {
-				throw dir.error('Directive "output" can only be used within a "template" or "proto", ' +
-					dir.genErrorAdvInfo(params.info)
-				);
+			if (!this.structure.parent) {
+				throw this.error('Directive "output" can only be used within a "template" or "proto"');
 			}
 
-			dir.startInlineDir('output');
-			if (dir.isSimpleOutput(params.info)) {
-				dir.save('__SNAKESKIN_RESULT__ += ' + dir.prepareOutput(command) + ';');
+			this.startInlineDir('output');
+			if (this.isSimpleOutput()) {
+				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
 			}
 		}
 	}
