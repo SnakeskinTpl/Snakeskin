@@ -1952,6 +1952,24 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		modRgxp = /#(?:\d+|)/,
 		strongModRgxp = /#(\d+)/;
 
+	var multPropRgxp = /\[|\./,
+		firstPropRgxp = /([^.[]+)(.*)/;
+
+	function addScope(str) {
+		var __NEJS_THIS__ = this;
+		if (multPropRgxp.test(str)) {
+			var fistProp = firstPropRgxp.exec(str);
+			fistProp[1] = vars[fistProp[1]] || fistProp[1];
+
+			str = fistProp.slice(1).join('');
+
+		} else {
+			str = vars[str] || str;
+		}
+
+		return str;
+	}
+
 	var commandLength = command.length;
 	for (var i = 0; i < commandLength; i++) {
 		var el = command.charAt(i),
@@ -2014,7 +2032,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							vres = 'Snakeskin.Vars[\'' + globalExport[1] + '\']' + globalExport[2];
 
 						} else {
-							vres = vars[vres] || vres;
+							vres = addScope(vres);
 						}
 
 					// Супер глобальная переменная вне with
@@ -2036,32 +2054,34 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						}
 
 						var first = scope[0];
-						vres = first;
+						vres = addScope(first);
 
-						scope[0] = vars[scope[0]] || scope[0];
 						scope.push(rfWord);
-
 						var rnum = num = num ? scope.length - num : num,
 							length = scope.length;
 
-						for (var j = 1; j < length; j++) {
-							num = num ? num - 1 : num;
+						if (!num) {
+							vres = addScope(rfWord);
 
-							if (num === null || num > 0) {
-								vres += '.' + scope[j];
-								continue;
-							}
+						} else {
+							for (var j = 1; j < length; j++) {
+								num = num ? num - 1 : num;
 
-							if (j === length - 1) {
-								vres = (rnum > 0 ? vres + '.' : '') + scope[j];
+								if (num === null || num > 0) {
+									vres += '.' + scope[j];
+									continue;
+								}
+
+								if (j === length - 1) {
+									vres = (rnum > 0 ? vres + '.' : '') + scope[j];
+								}
 							}
 						}
 
 						scope.pop();
-						scope[0] = first;
 
 					} else {
-						vres = canParse ? vars[rfWord] || rfWord : rfWord;
+						vres = canParse ? addScope(rfWord) : rfWord;
 					}
 				}
 
