@@ -11,7 +11,7 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{((a|json)|ucfirst) + a|ucfirst}
+				{(a|trim (1|round)|html) + (22|trim)}
 			{/}
 		</script>
 		<script>

@@ -351,7 +351,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			next = command.charAt(i + 1),
 			nnext = command.charAt(i + 2);
 
-		// Количество пропускаемых итераций
+		let isFilter;
 		let breakNum;
 
 		if (!breakNum) {
@@ -379,10 +379,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 				// true,
 				// если полученное слово не является зарезервированным (blackWordList),
+				// не является фильтром,
 				// не является числом,
 				// не является константой замены Escaper,
 				// не является названием свойства в литерале объекта ({свойство: )
 				let canParse = !blackWordList[word] &&
+					!isFilter &&
 					isNaN(Number(word)) &&
 					!escapeRgxp.test(word) &&
 					!this.isPrevSyOL(command, i) &&
@@ -512,15 +514,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			// Составление тела фильтра
 			} else if (el !== ')' || pCountFilter) {
-				if (el === ')' && pCountFilter) {
-					pCountFilter--;
-				}
+				let last = filter.length - 1;
 
-				filter[filter.length - 1] += el;
-				rvFilter[filter.length - 1] += el;
+				filter[last] += el;
+				rvFilter[last] += el;
 			}
 		}
 
+		isFilter = el === '|';
 		if (breakNum) {
 			breakNum--;
 		}
@@ -529,7 +530,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			let pos = pContent[0];
 
 			let fadd = wordAddEnd - filterAddEnd + addition,
-				fbody = res.substring(pos[0], pos[1] + fadd);
+				fbody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fadd);
 
 			let arr = [];
 			for (let j = 0; j < filter.length; j++) {
@@ -557,7 +558,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}
 
 			let fstr = rvFilter.join().length + 1;
-
 			res = pCount ?
 
 				res.substring(0, pos[0] + addition) +
@@ -588,6 +588,18 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}
 		}
 
+		if (el === ')' && pCountFilter) {
+			pCountFilter--;
+
+			let last = filter.length - 1;
+			let cache = filter[last];
+
+			filter[last] = this.prepareOutput(cache, true, null, true);
+
+			wordAddEnd += filter[last].length - cache.length;
+			filterAddEnd += filter[last].length - cache.length;
+		}
+
 		// Через 2 итерации начнётся фильтр
 		if (next === '|' && filterRgxp.test(nnext)) {
 			nword = false;
@@ -601,15 +613,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				}
 			}
 
-			filter.push(nnext);
-			rvFilter.push(nnext);
-
-			pCountFilter = 0;
 			filterStart = true;
-
-			// Перематываем на начало фильтра
-			i += 2;
-			continue;
+			if (!pCountFilter) {
+				filter.push(nnext);
+				rvFilter.push(nnext);
+				i += 2;
+			}
 		}
 	}
 
