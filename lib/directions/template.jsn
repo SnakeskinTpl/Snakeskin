@@ -24,40 +24,40 @@ DirObj.prototype.parentTplName = null;
 Snakeskin.addDirective(
 	'template',
 
-	null,
+	{
+		inGlobal: true
+	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInGlobalSpace(params.name)
-			.startDir(params.name);
+	(command) => {
+		this.startDir();
 
 		// Начальная позиция шаблона
 		// +1 => } >>
-		dir.startI = dir.i + 1;
+		this.startI = this.i + 1;
 
 		// Имя + пространство имён шаблона
 		var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
-			tplName = dir.pasteDangerBlocks(tmpTplName);
+			tplName = this.pasteDangerBlocks(tmpTplName);
 
-		if (params.name === 'placeholder') {
+		if (this.name === 'placeholder') {
 			if (!write[tplName]) {
 				write[tplName] = false;
 			}
 		}
 
-		dir.tplName = tplName;
-		if (params.dryRun) {
+		this.tplName = tplName;
+		if (this.dryRun) {
 			return;
 		}
 
 		// Название родительского шаблона
 		var parentTplName;
 		if (/\s+extends\s+/m.test(command)) {
-			parentTplName = dir.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
-			dir.parentTplName = parentTplName;
+			parentTplName = this.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
+			this.parentTplName = parentTplName;
 		}
 
-		dir.initCache(tplName);
+		this.initCache(tplName);
 		extMap[tplName] = parentTplName;
 
 		// Входные параметры
@@ -66,7 +66,7 @@ Snakeskin.addDirective(
 		// Для возможности удобного пост-парсинга,
 		// каждая функция снабжается комментарием вида:
 		// /* Snakeskin template: название шаблона; параметры через запятую */
-		dir.save(
+		this.save(
 			'/* Snakeskin template: ' +
 				tplName +
 				'; ' +
@@ -76,7 +76,7 @@ Snakeskin.addDirective(
 
 		// Декларация функции
 		// с пространством имён или при экспорте в common.js
-		if (/\.|\[/m.test(tmpTplName) || params.commonJS) {
+		if (/\.|\[/m.test(tmpTplName) || this.commonJS) {
 			let lastName = '';
 
 			let tmpArr = tmpTplName
@@ -93,9 +93,9 @@ Snakeskin.addDirective(
 			for (let i = 1; i < length; i++) {
 				let el = tmpArr[i];
 
-				dir.save(
-					'if (typeof ' + (params.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(params.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
+				this.save(
+					'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+						(this.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
 					'}'
 				);
 
@@ -110,11 +110,11 @@ Snakeskin.addDirective(
 				str += '.' + el;
 			}
 
-			dir.save((params.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
+			this.save((this.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
 
 		// Без простраства имён
 		} else {
-			dir.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
+			this.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
 		}
 
 		// Входные параметры
@@ -185,7 +185,7 @@ Snakeskin.addDirective(
 		for (let i = 0; i < argsList.length; i++) {
 			let el = argsList[i];
 
-			dir.save(el.key);
+			this.save(el.key);
 			constICache[tplName][el.key] = el;
 
 			if (el.value !== void 0) {
@@ -195,7 +195,7 @@ Snakeskin.addDirective(
 
 			// После последнего параметра запятая не ставится
 			if (i !== argsList.length - 1) {
-				dir.save(',');
+				this.save(',');
 			}
 		}
 
@@ -213,61 +213,59 @@ Snakeskin.addDirective(
 			constICache[tplName][el.key] = el;
 		}
 
-		dir.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
-		dir.save(
-			'var TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(tmpTplName)) + '\';' +
+		this.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
+		this.save(
+			'var TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(tmpTplName)) + '\';' +
 			'var PARENT_TPL_NAME;'
 		);
 
 		if (parentTplName) {
-			dir.save('PARENT_TPL_NAME = \'' + dir.applyDefEscape(dir.pasteDangerBlocks(parentTplName)) + '\';');
+			this.save('PARENT_TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(parentTplName)) + '\';');
 		}
 	},
 
-	(command, commandLength, dir, params) => {
-		var tplName = dir.tplName;
+	(command, commandLength) => {
+		var tplName = this.tplName;
 
 		// Вызовы не объявленных прототипов
-		if (dir.backHashI) {
-			throw dir.error('Proto "' + dir.lastBack + '" is not defined, ' +
-				dir.genErrorAdvInfo(params.info)
-			);
+		if (this.backHashI) {
+			throw this.error('Proto "' + this.lastBack + '" is not defined');
 		}
 
-		if (params.dryRun) {
+		if (this.dryRun) {
 			return;
 		}
 
-		cache[tplName] = dir.source.substring(dir.startI, dir.i - commandLength - 1);
+		cache[tplName] = this.source.substring(this.startI, this.i - commandLength - 1);
 
 		// Обработка наследования:
 		// тело шаблона объединяется с телом родителя
 		// и обработка шаблона начинается заново,
 		// но уже как атомарного (без наследования)
-		if (dir.parentTplName) {
-			dir.source = dir.source.substring(0, dir.startI) +
-				dir.getExtStr(tplName, params.info) +
-				dir.source.substring(dir.i - commandLength - 1);
+		if (this.parentTplName) {
+			this.source = this.source.substring(0, this.startI) +
+				this.getExtStr(tplName, this.info) +
+				this.source.substring(this.i - commandLength - 1);
 
-			dir.initCache(tplName);
-			dir.startDir(params.name);
-			dir.i = dir.startI - 1;
+			this.initCache(tplName);
+			this.startDir(this.name);
+			this.i = this.startI - 1;
 
-			dir.parentTplName = null;
+			this.parentTplName = null;
 			return false;
 		}
 
-		dir.save(
+		this.save(
 			'return __SNAKESKIN_RESULT__; };' +
 			'if (typeof Snakeskin !== \'undefined\') {' +
 				'Snakeskin.cache[\'' +
-				dir.applyDefEscape(dir.pasteDangerBlocks(tplName)) +
-				'\'] = ' + (params.commonJS ? 'exports.' : '') + tplName + ';' +
+				this.applyDefEscape(this.pasteDangerBlocks(tplName)) +
+				'\'] = ' + (this.commonJS ? 'exports.' : '') + tplName + ';' +
 			'}/* Snakeskin template. */'
 		);
 
-		dir.canWrite = true;
-		dir.tplName = null;
+		this.canWrite = true;
+		this.tplName = null;
 	}
 );
 

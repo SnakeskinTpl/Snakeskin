@@ -13,22 +13,21 @@ Snakeskin.addDirective(
 	'var',
 
 	{
+		inBlock: true,
 		replacers: {
 			':': (cmd) => cmd.replace(/^:/, 'var ')
 		}
 	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInBlock(params.name)
-			.startInlineDir(params.name);
+	(command) => {
+		this.startInlineDir();
 
 		var struct = command.split('='),
-			realVar = dir.declVar(struct[0].trim());
+			realVar = this.declVar(struct[0].trim());
 
-		if (dir.isSimpleOutput()) {
+		if (this.isSimpleOutput()) {
 			struct[0] = realVar + ' ';
-			dir.save(dir.prepareOutput('var ' + struct.join('=') + ';', true));
+			this.save(this.prepareOutput('var ' + struct.join('=') + ';', true));
 		}
 	}
 );
