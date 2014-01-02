@@ -179,40 +179,6 @@ DirObj.prototype.isAdvTest = function (dryRun) {
 };
 
 /**
- * Генерировать ошибку,
- * если директива находится не в глобальном пространстве
- *
- * @param {string} name - название директивы
- * @return {!DirObj}
- */
-DirObj.prototype.isDirectiveInGlobalSpace = function (name) {
-	if (this.structure.parent) {
-		throw this.error('Directive "' + name + '" can be used only within the global space, ' +
-			this.genErrorAdvInfo(this.info)
-		);
-	}
-
-	return this;
-};
-
-/**
- * Генерировать ошибку,
- * если директива находится вне тела шаблона или прототипа
- *
- * @param {string} name - название директивы
- * @return {!DirObj}
- */
-DirObj.prototype.isDirectiveInBlock = function (name) {
-	if (!this.structure.parent) {
-		throw this.error('Directive "' + name + '" can only be used within a "template" or "proto", ' +
-			this.genErrorAdvInfo(this.info)
-		);
-	}
-
-	return this;
-};
-
-/**
  * Изменить результирующую строку
  *
  * @param {string} str - исходная строка

@@ -44,6 +44,26 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	}
 
 	sysDirs[name] = !!params.sysDir;
-	Snakeskin.Directions[name] = constr;
+
+	Snakeskin.Directions[name] = function (command, commandLength, params) {
+		if (params.inBlock) {
+			if (!this.structure.parent) {
+				throw this.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
+					this.genErrorAdvInfo(this.info)
+				);
+			}
+		}
+
+		if (params.inGlobalSpace) {
+			if (this.structure.parent) {
+				throw this.error('Directive "' + params.name + '" can be used only within the global space, ' +
+					this.genErrorAdvInfo(this.info)
+				);
+			}
+		}
+
+		constr.apply(this, arguments);
+	};
+
 	Snakeskin.Directions[name + 'End'] = opt_end;
 };
