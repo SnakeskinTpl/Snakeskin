@@ -14,8 +14,7 @@ Snakeskin.addDirective(
 	},
 
 	(command) => {
-		dir.startInlineDir();
-
+		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save(this.prepareOutput(command) + ';');
 		}

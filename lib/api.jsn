@@ -148,7 +148,7 @@ function DirObj(src, params) {
 Snakeskin.DirObj = DirObj;
 
 /**
- * Добавить строку в результирующую
+ * Добавить строку в результирующую строку JavaScript
  * @param {string} str - исходная строка
  */
 DirObj.prototype.save = function (str) {
@@ -176,12 +176,14 @@ DirObj.prototype.isSimpleOutput = function () {
  * Вернуть true,
  * если возможна обработка директивы
  * (не холостой ход, не вложенный блок или прототип в родительской структуре или standalone шаблон)
- *
- * @param {boolean} dryRun - true, если идёт холостая обработка
  * @return {boolean}
  */
-DirObj.prototype.isAdvTest = function (dryRun) {
-	return !dryRun && ((this.parentTplName && !this.hasParent({'block': true, 'proto': true})) || !this.parentTplName);
+DirObj.prototype.isAdvTest = function () {
+	return !this.dryRun &&
+		(
+			(this.parentTplName && !this.hasParent({'block': true, 'proto': true})) ||
+			!this.parentTplName
+		);
 };
 
 /**
@@ -315,7 +317,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 
 /**
  * Проверить начилие директивы в цепочке родителей активной
- * (сама активная дирекктива исключается)
+ * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или объект названий
  * @return {boolean}
@@ -340,15 +342,12 @@ DirObj.prototype.declVar = function (varName) {
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
 	if (constCache[this.tplName][varName] || constICache[this.tplName][varName]) {
-		throw this.error('Variable "' + varName + '" is already defined as constant, ' +
-			this.genErrorAdvInfo(adv.info)
-		);
+		throw this.error('Variable "' + varName + '" is already defined as constant');
 	}
 
-	var dirStruct = this.structure;
-	var realVar = '__' + varName + '_' + dirStruct.name + '_' + this.i;
+	var realVar = '__' + varName + '_' + this.structure.name + '_' + this.i;
 
-	dirStruct.vars[varName] = realVar;
+	this.structure.vars[varName] = realVar;
 	this.varCache[varName] = true;
 
 	return realVar;
