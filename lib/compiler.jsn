@@ -220,6 +220,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					dir.strongSpace = false;
 				}
 
+				dir.name = commandType;
+
 				// Обработка команд
 				let fnRes = Snakeskin.Directions[commandType].call(
 					dir,
@@ -227,14 +229,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					commandType !== 'const' ?
 						command.replace(commandRgxp, '') : command,
 
-					commandLength,
-
-					{
-						name: commandType,
-						commonJS: opt_commonJS,
-						dryRun: opt_dryRun,
-						info: opt_info
-					}
+					commandLength
 				);
 
 				if (dir.inlineDir === true) {

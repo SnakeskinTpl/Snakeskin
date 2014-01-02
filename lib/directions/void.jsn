@@ -13,8 +13,8 @@ Snakeskin.addDirective(
 		}
 	},
 
-	(command, commandLength, dir, params) => {
-		dir.startInlineDir(params.name);
+	(command) => {
+		dir.startInlineDir(this.name);
 
 		if (dir.isSimpleOutput()) {
 			dir.save(dir.prepareOutput(command) + ';');

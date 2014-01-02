@@ -13,8 +13,8 @@
  * @param {Object} [params.strongDirs] - объект с указанием директив, которые могут быть вложены в эту
  * @param {?boolean=} [params.sysDir=false] - если true, то директива считается системной
  *
- * @param {function(string, number, !DirObj, {name: string, info: Object, commonJS: boolean, dryRun: boolean})} constr - конструктор директивы
- * @param {?function(string, number, !DirObj, {name: string, info: Object, commonJS: boolean, dryRun: boolean})=} opt_end - окончание директивы
+ * @param {function(this:DirObj, string, number, Object)} constr - конструктор директивы
+ * @param {?function(this:DirObj, string, number, Object)=} opt_end - окончание директивы
  */
 Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	params = params || {};
@@ -45,7 +45,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 
 	sysDirs[name] = !!params.sysDir;
 
-	Snakeskin.Directions[name] = function (command, commandLength, params) {
+	Snakeskin.Directions[name] = function (command, commandLength) {
 		if (params.inBlock) {
 			if (!this.structure.parent) {
 				throw this.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
