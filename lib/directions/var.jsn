@@ -19,7 +19,7 @@ Snakeskin.addDirective(
 		}
 	},
 
-	(command) => {
+	function (command) {
 		this.startInlineDir();
 
 		var struct = command.split('='),

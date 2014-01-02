@@ -13,14 +13,16 @@ Snakeskin.addDirective(
 	'with',
 
 	{
+		inBlock: true,
 		sysDir: true
 	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInBlock(params.name)
-			.startDir('with');
+	function (command) {
+		this.startDir();
+		this.scope.push(command);
+	},
 
-		dir.scope.push(command);
+	function () {
+		this.scope.pop();
 	}
 );
