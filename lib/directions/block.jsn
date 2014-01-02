@@ -26,10 +26,14 @@ Snakeskin.addDirective(
 		}
 	},
 
-	function () {
+	function (command, commandLength) {
 		if (this.isAdvTest()) {
 			let block = blockCache[this.tplName][this.structure.params.name];
-			block.body = this.source.substring(this.startI).substring(block.from, block.to);
+
+			block.to = this.i - this.startI - commandLength - 1;
+			block.body = this.source
+				.substring(this.startI)
+				.substring(block.from, block.to);
 		}
 	}
 );
