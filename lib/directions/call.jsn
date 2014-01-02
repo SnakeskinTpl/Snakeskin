@@ -6,17 +6,13 @@
 Snakeskin.addDirective(
 	'call',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startInlineDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
+	function (command) {
+		dir.startInlineDir();
+		if (dir.isSimpleOutput()) {
 			dir.save('__SNAKESKIN_RESULT__ += ' + command + ';');
 		}
 	}

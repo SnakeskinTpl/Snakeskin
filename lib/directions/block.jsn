@@ -7,32 +7,29 @@ Snakeskin.addDirective(
 	'block',
 
 	{
+		inBlock: true,
 		isSys: true
 	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInBlock(params.name)
-			.startDir(params.name, {
-				name: command
-			});
+	function (command) {
+		this.startDir(null, {
+			name: command
+		});
 
-		if (dir.isAdvTest(params.dryRun)) {
+		if (this.isAdvTest()) {
 			// Попытка декларировать блок несколько раз
-			if (blockCache[dir.tplName][command]) {
-				throw dir.error('Block "' + command + '" is already defined, ' +
-					dir.genErrorAdvInfo(params.info)
-				);
+			if (blockCache[this.tplName][command]) {
+				throw this.error('Block "' + command + '" is already defined');
 			}
 
-			blockCache[dir.tplName][command] = {from: dir.i - dir.startI + 1};
+			blockCache[this.tplName][command] = {from: this.i - this.startI + 1};
 		}
 	},
 
-	(command, commandLength, dir, params) => {
-		if (dir.isAdvTest(params.dryRun)) {
-			let block = blockCache[dir.tplName][dir.structure.params.name];
-			block.body = dir.source.substring(dir.startI).substring(block.from, block.to);
+	function () {
+		if (this.isAdvTest()) {
+			let block = blockCache[this.tplName][this.structure.params.name];
+			block.body = this.source.substring(this.startI).substring(block.from, block.to);
 		}
 	}
 );

@@ -6,16 +6,16 @@
 Snakeskin.addDirective(
 	'setBEM',
 
-	null,
+	{
+		inGlobal: true
+	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInBlock(params.name)
-			.startInlineDir(params.name);
-
+	function (command) {
+		this.startInlineDir();
 		var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
+
 		bem[part[1]] = (new Function('return {' +
-			dir.pasteDangerBlocks(part[2]) + '}')
+			this.pasteDangerBlocks(part[2]) + '}')
 		)();
 	}
 );
@@ -23,16 +23,16 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'bem',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		dir
-			.isDirectiveInBlock(params.name)
-			.startDir(params.name, {
-				tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
-			});
+	function (command) {
+		this.startDir(null, {
+			tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
+		});
 
-		var lastBEM = dir.structure.params;
+		var lastBEM = this.structure.params;
 
 		// Получаем параметры инициализации блока и врапим имя кавычками
 		command = lastBEM.tag ? command.replace(/^[\s\S]*?\)([\s\S]*)/m, '$1') : command;
@@ -41,23 +41,23 @@ Snakeskin.addDirective(
 		var bemName = part[0];
 		lastBEM.original = bem[bemName] && bem[bemName].tag;
 
-		if (dir.isSimpleOutput()) {
+		if (this.isSimpleOutput()) {
 			part[0] += '\'';
 			command = part.join(',');
 
-			dir.save(
+			this.save(
 				'__SNAKESKIN_RESULT__ += \'' +
 					'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
-					dir.replaceTplVars(command) +
+					this.replaceTplVars(command) +
 				'}">\';'
 			);
 		}
 	},
 
-	(command, commandLength, dir) => {
-		if (dir.isSimpleOutput()) {
-			let lastBEM = dir.structure.params;
-			dir.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
+	function () {
+		if (this.isSimpleOutput()) {
+			let lastBEM = this.structure.params;
+			this.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
 		}
 	}
 );
