@@ -1883,22 +1883,28 @@ DirObj.prototype.getWord = function (str, pos) {
  * Подготовить комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
  *
- * @param {string} command - исходная команда
- * @param {?boolean=} [opt_sys] - если true, то считается системным вызовом
- * @param {?boolean=} [opt_isys] - если true, то считается вложенным системным вызовом
- * @param {?boolean=} [opt_breakFirst] - если true, то первое слово пропускается
+ * @param {string} command - текст команды
+ * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
+ * @param {?boolean=} [opt_isys] - если true, то запуск функции считается вложенным системным вызовом
+ * @param {?boolean=} [opt_breakFirst] - если true, то первое слово в команде пропускается
  * @return {string}
  */
 DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst) {
 	var __NEJS_THIS__ = this;
+	// ОПРЕДЕЛЕНИЯ:
 	// Скобка = (
+
+	var res = command;
+
 	// Количество открытых скобок в строке
+	// (скобки открытые внутри фильтра не считаются)
 	var pCount = 0;
 
-	// Количество открытых скобок в фильтре
+	// Количество открытых скобок внутри фильтра:
+	// |foo (1 + 2) / 3
 	var pCountFilter = 0;
 
-	// Массив позиций открытия и закрытия скобок,
+	// Массив позиций открытия и закрытия скобок (pCount),
 	// идёт в порядке возрастания от вложенных к внешним блокам, например:
 	// ((a + b)) => [[1, 7], [0, 8]]
 	var pContent = [];
@@ -1906,8 +1912,9 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	// true, если идёт декларация фильтра
 	var filterStart = false;
 
-	// true, если идёт вложенный фильтр
-	var deepFilter = false;
+	// true, если идёт фильтр-враппер, т.е.
+	// (2 / 3)|round
+	var filterWrapper = false;
 
 	// Массивы итоговых фильтров и истинных фильтров,
 	// например:
@@ -1920,9 +1927,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var filter = [],
 		rvFilter = [];
 
-	var res = command,
-		addition = 0;
-
 	// true, то можно расчитывать слово
 	var nword = !opt_breakFirst;
 
@@ -1934,7 +1938,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		useWith = scope.length;
 
 	// Сдвиги
-	var wordAddEnd = 0,
+	var addition = 0,
+		wordAddEnd = 0,
 		filterAddEnd = 0;
 
 	// true, если применяется фильтр !html
@@ -2118,7 +2123,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						continue;
 
 					} else {
-						deepFilter = true;
+						filterWrapper = true;
 					}
 				}
 
@@ -2160,10 +2165,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				var input = params.slice(1).join('').trim();
 
 				resTmp = '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
-					(deepFilter || !pCount ? '(' : '') +
+					(filterWrapper || !pCount ? '(' : '') +
 					resTmp +
 					(input ? ',' + input : '') +
-					(deepFilter || !pCount ? ')' : '') +
+					(filterWrapper || !pCount ? ')' : '') +
 				')';
 			}
 
@@ -2185,7 +2190,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			if (pCount) {
 				pCount--;
-				deepFilter = false;
+				filterWrapper = false;
 			}
 
 			wordAddEnd += resTmp.length - fbody.length - fstr;
