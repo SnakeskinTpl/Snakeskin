@@ -13,25 +13,30 @@ Snakeskin.addDirective(
 
 		// Инициализация переменных
 		if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
-			let varName = command.split('=')[0].trim(),
-				mod = varName.charAt(0);
+			let name = command.split('=')[0].trim(),
+				mod = name.charAt(0);
 
 			if (this.structure.parent) {
 				this.startInlineDir('const');
 
-				if (this.isAdvTest() && !this.varCache[varName] && mod !== '#' && mod !== '@') {
-					// Попытка повторной инициализации переменной
-					if (constCache[tplName][varName] || constICache[tplName][varName]) {
-						throw this.error('Constant "' + varName + '" is already defined');
+				if (this.isAdvTest() && mod !== '#' && mod !== '@') {
+					// Попытка повторной инициализации константы
+					if (constCache[tplName][name] || constICache[tplName][name]) {
+						throw this.error('Constant "' + name + '" is already defined');
 					}
 
-					// Попытка инициализировать переменную с зарезервированным именем
-					if (sysConst[varName]) {
-						throw this.error('Can\'t declare constant "' + varName + '", try another name');
+					// Попытка инициализации константы, которая была объявлена как переменная
+					if (this.varCache[name]) {
+						throw this.error('Constant "' + name + '" is already defined as variable');
+					}
+
+					// Попытка инициализировать константу с зарезервированным именем
+					if (sysConst[name]) {
+						throw this.error('Can\'t declare constant "' + name + '", try another name');
 					}
 
 					// Кеширование
-					constCache[tplName][varName] = {
+					constCache[tplName][name] = {
 						from: this.i - this.startI - commandLength,
 						to: this.i - this.startI
 					};
@@ -40,8 +45,8 @@ Snakeskin.addDirective(
 				}
 
 				if (this.isSimpleOutput()) {
-					if (!this.varCache[varName] && mod !== '#' && mod !== '@') {
-						this.save(this.prepareOutput((!/[.\[]/m.test(varName) ? 'var ' : '') + command + ';', true));
+					if (mod !== '#' && mod !== '@') {
+						this.save(this.prepareOutput((!/[.\[]/m.test(name) ? 'var ' : '') + command + ';', true));
 
 					} else {
 						this.save(this.prepareOutput(command + ';', true));
