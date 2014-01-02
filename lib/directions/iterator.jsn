@@ -3,46 +3,34 @@
  * @version 1.0.0
  */
 
-/**
- * Директива forEach
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['forEach'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "forEach" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'forEach',
 
-	dir.startDir('forEach');
-	if (dir.isSimpleOutput()) {
-		let part = command.split('=>'),
-			val = dir.prepareOutput(part[0], true);
+	{
+		inBlock: true
+	},
 
-		dir.save(val + ' && Snakeskin.forEach(' + val +
-			', function (' + (part[1] || '') + ') {');
-	}
-};
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			let part = command.split('=>'),
+				val = this.prepareOutput(part[0], true);
 
-/**
- * Окончание forEach
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dir) {
-	if (dir.isSimpleOutput()) {
-		dir.save('}, this);');
+			let varsStr = '';
+
+			if (part[1]) {
+				let vars = part[1].split(',');
+
+				for (let i = 0; i < vars.length; i++) {
+					let el = this.declVar(vars[i].trim());
+					varsStr += 'var ' + el + ' = ';
+				}
+			}
+
+			this.save(varsStr + 'if (' + this.prepareOutput(command, true) + ') {');
+		}
 	}
-};
+);
 
 /**
  * Директива forIn

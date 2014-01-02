@@ -2713,10 +2713,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		
-		__NEJS_THIS__.startInlineDir();
-		if (__NEJS_THIS__.isSimpleOutput()) {
-			__NEJS_THIS__.save(__NEJS_THIS__.prepareOutput(command) + ';');
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.save(this.prepareOutput(command) + ';');
 		}
 	}
 );var __NEJS_THIS__ = this;
@@ -3046,48 +3046,35 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
-/**
- * Директива forEach
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['forEach'] = function (command, commandLength, dir, adv) {
-	var __NEJS_THIS__ = this;
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "forEach" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'forEach',
 
-	dir.startDir('forEach');
-	if (dir.isSimpleOutput()) {
-		var part = command.split('=>'),
-			val = dir.prepareOutput(part[0], true);
+	{
+		inBlock: true
+	},
 
-		dir.save(val + ' && Snakeskin.forEach(' + val +
-			', function (' + (part[1] || '') + ') {');
-	}
-};
+	function (command) {
+		var __NEJS_THIS__ = this;
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			var part = command.split('=>'),
+				val = this.prepareOutput(part[0], true);
 
-/**
- * Окончание forEach
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['forEachEnd'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('}, this);');
+			var varsStr = '';
+
+			if (part[1]) {
+				var vars = part[1].split(',');
+
+				for (var i = 0; i < vars.length; i++) {
+					var el = this.declVar(vars[i].trim());
+					varsStr += 'var ' + el + ' = ';
+				}
+			}
+
+			this.save(varsStr + 'if (' + this.prepareOutput(command, true) + ') {');
+		}
 	}
-};
+);
 
 /**
  * Директива forIn

@@ -13,7 +13,7 @@ Snakeskin.addDirective(
 		}
 	},
 
-	(command) => {
+	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save(this.prepareOutput(command) + ';');

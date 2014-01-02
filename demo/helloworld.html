@@ -11,17 +11,15 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{:a = 1}
+				{proto foo(a)}
+					{a}
 
-				{proto foo(bat = 1, foo)}
-					{bat}
-
-					{with bat}
-						{#a}
+					{if a}
+						{?a--}
 					{/}
 				{/}
 
-				{apply foo(ss)}
+				{apply foo(1)}
 			{/}
 		</script>
 		<script>
