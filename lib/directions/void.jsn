@@ -7,17 +7,17 @@ Snakeskin.addDirective(
 	'void',
 
 	{
-		block: true,
+		inBlock: true,
 		replacers: {
 			'?': (cmd) => cmd.replace(/^\?/, 'void ')
 		}
 	},
 
 	(command) => {
-		dir.startInlineDir(this.name);
+		dir.startInlineDir();
 
-		if (dir.isSimpleOutput()) {
-			dir.save(dir.prepareOutput(command) + ';');
+		if (this.isSimpleOutput()) {
+			this.save(this.prepareOutput(command) + ';');
 		}
 	}
 );

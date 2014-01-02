@@ -9,8 +9,8 @@
  * @param {string} name - название директивы
  * @param {Object} params - дополнительные параметры
  *
- * @param {?boolean=} [params.block=false] - если true, то директива может находиться только внутри шаблона или прототипа
- * @param {?boolean=} [params.global=false] - если true, то директива может находиться только в глобальном пространстве
+ * @param {?boolean=} [params.inBlock=false] - если true, то директива может находиться только внутри шаблона или прототипа
+ * @param {?boolean=} [params.inGlobal=false] - если true, то директива может находиться только в глобальном пространстве
  * @param {?boolean=} [params.sysDir=false] - если true, то директива считается системной
  *
  * @param {Object} [params.replacers] - объект с указанием сокращений директив
@@ -48,11 +48,11 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	}
 
 	Snakeskin.Directions[name] = function (dir, command, commandLength) {
-		if (params.block && !dir.structure.parent) {
+		if (params.inBlock && !dir.structure.parent) {
 			throw dir.error('Directive "' + name + '" can only be used within a "template" or "proto"');
 		}
 
-		if (params.global && dir.structure.parent) {
+		if (params.inGlobal && dir.structure.parent) {
 			throw dir.error('Directive "' + name + '" can be used only within the global space');
 		}
 
@@ -77,7 +77,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 
 		if (strongDirs[name]) {
 			dir.strongDir = name;
-			dir.strongSpace = dir;
+			dir.strongSpace = true;
 		}
 	};
 

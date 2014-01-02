@@ -220,12 +220,14 @@ DirObj.prototype.initCache = function (tplName) {
 /**
  * Декларировать начало блочной директивы
  *
- * @param {string} name - название директивы
+ * @param {string} [opt_name=this.name] - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @param {Object=} [opt_vars] - локальные переменные директивы
  * @return {!DirObj}
  */
-DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
+DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars = {}) {
+	opt_name = opt_name || this.name;
+	opt_params = opt_params || {};
 	this.inlineDir = false;
 
 	var vars = opt_vars || {};
@@ -244,12 +246,12 @@ DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 	}
 
 	var obj = {
-		name: name,
+		name: opt_name,
 		parent: struct,
 		childs: [],
 		vars: vars,
 		params: opt_params,
-		isSys: !!sysDirs[name]
+		isSys: !!sysDirs[opt_name]
 	};
 
 	struct.childs.push(obj);
@@ -261,15 +263,16 @@ DirObj.prototype.startDir = function (name, opt_params, opt_vars) {
 /**
  * Декларировать начало строчной директивы
  *
- * @param {string} name - название директивы
+ * @param {string} [opt_name=this.name] - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @return {!DirObj}
  */
-DirObj.prototype.startInlineDir = function (name, opt_params) {
+DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
+	opt_name = opt_name || this.name;
 	this.inlineDir = true;
 
 	var obj = {
-		name: name,
+		name: opt_name,
 		parent: this.structure,
 		params: opt_params
 	};
