@@ -1395,6 +1395,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 				var commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
+				console.log(commandType);
+
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
 					dir,
@@ -1468,6 +1470,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
+	console.log(dir.structure);
 	if (dir.structure.parent) {
 		throw dir.error('Missing closing or opening tag in the template');
 	}
