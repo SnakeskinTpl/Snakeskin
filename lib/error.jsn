@@ -6,22 +6,27 @@
 /**
  * Вывести дополнительную информацию об ошибке
  *
- * @param {Object} obj - дополнительная информация
+ * @param {Object=} [opt_obj] - дополнительная информация
  * @return {string}
  */
-DirObj.prototype.genErrorAdvInfo = function (obj) {
+DirObj.prototype.genErrorAdvInfo = function (opt_obj = this.info) {
 	var str = '';
-	for (let key in obj) {
-		if (!obj.hasOwnProperty(key)) {
+
+	if (!opt_obj) {
+		return str;
+	}
+
+	for (let key in opt_obj) {
+		if (!opt_obj.hasOwnProperty(key)) {
 			continue;
 		}
 
-		if (!obj[key].innerHTML) {
-			str += key + ': ' + obj[key] + ', ';
+		if (!opt_obj[key].innerHTML) {
+			str += key + ': ' + opt_obj[key] + ', ';
 
 		} else {
-			str += key + ': (class: ' + (obj[key].className || 'undefined') + ', id: ' +
-				(obj[key].id || 'undefined') + '), ';
+			str += key + ': (class: ' + (opt_obj[key].className || 'undefined') + ', id: ' +
+				(opt_obj[key].id || 'undefined') + '), ';
 		}
 	}
 
@@ -35,7 +40,7 @@ DirObj.prototype.genErrorAdvInfo = function (obj) {
  * @return {!Error}
  */
 DirObj.prototype.error = function (msg) {
-	var error = new Error(msg);
+	var error = new Error(msg + ', ' + this.genErrorAdvInfo());
 	error.name = 'Snakeskin Error';
 	return error;
 };

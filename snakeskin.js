@@ -1672,13 +1672,22 @@ DirObj.prototype.replaceTplVars = function (str) {
 		bEnd = true,
 		bEscape = false;
 
+	function replacer(str) {
+		var __NEJS_THIS__ = this;
+		return str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
+	}
+
+	var nextLineRgxp = /[\r\n\v]/,
+		bEndRgxp = /[^\s\/]/;
+
 	var res = '';
+
 	for (var i = 0; i < str.length; i++) {
-		var el = str.charAt(i),
-			next = str.charAt(i + 1);
+		var el = str.charAt(i);
+		var next2str = el + str.charAt(i + 1);
 
 		// Начало директивы
-		if (!begin && el === '$' && next === '{') {
+		if (!begin && next2str === '${') {
 			begin++;
 			dir = '';
 
@@ -1687,7 +1696,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 		}
 
 		if (!begin) {
-			res += el.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
+			res += replacer(el);
 		}
 
 		if (begin) {
@@ -1697,20 +1706,22 @@ DirObj.prototype.replaceTplVars = function (str) {
 
 			// Обработка комментариев
 			if (!escape) {
+				var next3str = next2str + str.charAt(i + 2);
 				if (el === '/') {
-					if (next === '/' && str.charAt(i + 2) === '/') {
+					if (next3str === '///') {
 						comment = '///';
+						i+= 2;
 
-					} else if (next === '*') {
+					} else if (next2str === '/*') {
 						comment = '/*';
 						i++;
 
-					} else if (str.charAt(i - 1) === '*') {
+					} else if (str.charAt(i - 1) === '*' && comment === '/*') {
 						comment = false;
 						continue;
 					}
 
-				} else if (/[\n\v\r]/.test(el) && comment === '///') {
+				} else if (nextLineRgxp.test(el) && comment === '///') {
 					comment = false;
 				}
 			}
@@ -1724,7 +1735,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 				if (escapeEndMap[el]) {
 					bEnd = true;
 
-				} else if (/[^\s\/]/.test(el)) {
+				} else if (bEndRgxp.test(el)) {
 					bEnd = false;
 				}
 			}
@@ -2086,8 +2097,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				nword = false;
 
 				if (filterStart) {
-					filter[filter.length - 1] += vres;
-					rvFilter[filter.length - 1] += word;
+					var last = filter.length - 1;
+
+					filter[last] += vres;
+					rvFilter[last] += word;
+
 					filterAddEnd += vres.length - word.length;
 
 				} else {
@@ -2129,10 +2143,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			// Составление тела фильтра
 			} else if (el !== ')' || pCountFilter) {
-				var last = filter.length - 1;
+				var last$0 = filter.length - 1;
 
-				filter[last] += el;
-				rvFilter[last] += el;
+				filter[last$0] += el;
+				rvFilter[last$0] += el;
 			}
 		}
 
@@ -2142,6 +2156,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		if (filterStart && ((el === ')' && !pCountFilter) || i === commandLength - 1)) {
+			if (i === commandLength - 1 && pCount && el !== ')') {
+				throw this.error('Missing closing or opening parenthesis in the template, ' +
+					this.genErrorAdvInfo(this.info)
+				);
+			}
+
 			var pos = pContent[0];
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
@@ -2203,16 +2223,17 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}
 		}
 
+		// Закрылась скобка внутри фильтра
 		if (el === ')' && pCountFilter) {
 			pCountFilter--;
 
-			var last$0 = filter.length - 1;
-			var cache = filter[last$0];
+			var last$1 = filter.length - 1;
+			var cache = filter[last$1];
 
-			filter[last$0] = this.prepareOutput(cache, true, null, true);
+			filter[last$1] = this.prepareOutput(cache, true, null, true);
 
-			wordAddEnd += filter[last$0].length - cache.length;
-			filterAddEnd += filter[last$0].length - cache.length;
+			wordAddEnd += filter[last$1].length - cache.length;
+			filterAddEnd += filter[last$1].length - cache.length;
 		}
 
 		// Через 2 итерации начнётся фильтр
