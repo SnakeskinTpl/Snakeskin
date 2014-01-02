@@ -2993,7 +2993,7 @@ Snakeskin.addDirective(
 									':' +
 									def :
 								def :
-							args[i]
+							args[i] || 'void 0'
 							) + ';'
 					);
 				}
