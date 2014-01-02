@@ -28,7 +28,7 @@ Snakeskin.addDirective(
 		inGlobal: true
 	},
 
-	(command) => {
+	function (command) {
 		this.startDir();
 
 		// Начальная позиция шаблона
@@ -224,7 +224,7 @@ Snakeskin.addDirective(
 		}
 	},
 
-	(command, commandLength) => {
+	function (command, commandLength) {
 		var tplName = this.tplName;
 
 		// Вызовы не объявленных прототипов
@@ -244,11 +244,11 @@ Snakeskin.addDirective(
 		// но уже как атомарного (без наследования)
 		if (this.parentTplName) {
 			this.source = this.source.substring(0, this.startI) +
-				this.getExtStr(tplName, this.info) +
+				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
 			this.initCache(tplName);
-			this.startDir(this.name);
+			this.startDir(this.structure.name);
 			this.i = this.startI - 1;
 
 			this.parentTplName = null;

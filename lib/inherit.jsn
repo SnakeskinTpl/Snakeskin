@@ -8,14 +8,13 @@
  * (супер мутная функция, уже не помню, как она работает :))
  *
  * @param {string} tplName - название шаблона
- * @param {Object} info - дополнительная информация
  * @return {string}
  */
-DirObj.prototype.getExtStr = function (tplName, info) {
+DirObj.prototype.getExtStr = function (tplName) {
 	if (cache[extMap[tplName]] === void 0) {
 		throw this.error(
 			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
-			'for inheritance is not defined (' + this.genErrorAdvInfo(info) + ')!'
+			'for inheritance is not defined'
 		);
 	}
 
