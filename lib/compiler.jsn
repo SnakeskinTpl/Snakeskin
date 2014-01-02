@@ -187,9 +187,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 			// Упраляющая конструкция завершилась
 			} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
 				if (!command) {
-					throw dir.error('Directive is not defined, ' +
-						dir.genErrorAdvInfo(opt_info)
-					);
+					throw dir.error('Directive is not defined');
 				}
 
 				begin = false;
@@ -210,20 +208,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 				let commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
-				if (dir.strongDir && strongDirs[dir.strongDir][commandType]) {
-					dir.returnStrongDir = {
-						child: commandType,
-						dir: dir.strongDir
-					};
-
-					dir.strongDir = null;
-					dir.strongSpace = false;
-				}
-
-				dir.name = commandType;
-
 				// Обработка команд
-				let fnRes = Snakeskin.Directions[commandType].call(
+				let fnRes = Snakeskin.Directions[commandType](
 					dir,
 
 					commandType !== 'const' ?
@@ -231,16 +217,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 					commandLength
 				);
-
-				if (dir.inlineDir === true) {
-					dir.inlineDir = null;
-					dir.structure = dir.structure.parent;
-				}
-
-				if (strongDirs[commandType]) {
-					dir.strongDir = commandType;
-					dir.strongSpace = true;
-				}
 
 				if (fnRes === false) {
 					begin = false;
@@ -286,9 +262,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 		// Запись строки
 		} else {
 			if (dir.strongDir) {
-				throw dir.error('Text can not be used with a "' + dir.strongDir + '", ' +
-					dir.genErrorAdvInfo(opt_info)
-				);
+				throw dir.error('Text can not be used with a "' + dir.strongDir + '"');
 			}
 
 			if (dir.isSimpleOutput()) {
@@ -308,9 +282,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dir.structure.parent) {
-		throw dir.error('Missing closing or opening tag in the template, ' +
-			dir.genErrorAdvInfo(opt_info)
-		);
+		throw dir.error('Missing closing or opening tag in the template');
 	}
 
 	dir.res = dir.pasteDangerBlocks(dir.res)

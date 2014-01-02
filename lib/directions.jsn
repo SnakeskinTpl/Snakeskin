@@ -47,16 +47,38 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		}
 	}
 
-	Snakeskin.Directions[name] = function (command, commandLength) {
-		if (params.block && !this.structure.parent) {
-			throw this.error('Directive "' + name + '" can only be used within a "template" or "proto"');
+	Snakeskin.Directions[name] = function (dir, command, commandLength) {
+		if (params.block && !dir.structure.parent) {
+			throw dir.error('Directive "' + name + '" can only be used within a "template" or "proto"');
 		}
 
-		if (params.global && this.structure.parent) {
-			throw this.error('Directive "' + name + '" can be used only within the global space');
+		if (params.global && dir.structure.parent) {
+			throw dir.error('Directive "' + name + '" can be used only within the global space');
 		}
 
-		constr.apply(this, arguments);
+		dir.name = name;
+
+		if (dir.strongDir && strongDirs[dir.strongDir][name]) {
+			dir.returnStrongDir = {
+				child: name,
+				dir: dir.strongDir
+			};
+
+			dir.strongDir = null;
+			dir.strongSpace = false;
+		}
+
+		constr.call(dir, command, commandLength);
+
+		if (dir.inlineDir === true) {
+			dir.inlineDir = null;
+			dir.structure = dir.structure.parent;
+		}
+
+		if (strongDirs[name]) {
+			dir.strongDir = name;
+			dir.strongSpace = dir;
+		}
 	};
 
 	Snakeskin.Directions[name + 'End'] = opt_end;
