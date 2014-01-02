@@ -13,7 +13,7 @@
 			{template helloWorld()}
 				{:a = 1}
 
-				{proto foo(bat)}
+				{proto foo(bat = 1)}
 					{bat.foo}
 
 					{with bat}
@@ -21,7 +21,7 @@
 					{/}
 				{/}
 
-				{apply foo(1)}
+				{apply foo(ss)}
 			{/}
 		</script>
 		<script>

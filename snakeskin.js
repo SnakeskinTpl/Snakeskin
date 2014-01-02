@@ -750,7 +750,7 @@ DirObj.prototype.declVar = function (varName) {
 		struct = this.structure.parent;
 	}
 
-	var realVar = '__' + varName + '_' + this.structure.name + '_' + this.i;
+	var realVar = '__' + varName + '_' + struct.name + '_' + this.i;
 
 	struct.vars[varName] = realVar;
 	this.varCache[varName] = true;
@@ -2831,7 +2831,9 @@ Snakeskin.addDirective(
 		if (args) {
 			args = args[1].split(',');
 			for (var i = 0; i < args.length; i++) {
-				argsMap.push(this.declVar(args[i]));
+				var arg = args[i].split('=');
+				arg[0] = this.declVar(arg[0].trim());
+				argsMap.push(arg);
 			}
 		}
 
@@ -2977,7 +2979,23 @@ Snakeskin.addDirective(
 				var protoArgs = proto.args;
 
 				for (var i = 0; i < protoArgs.length; i++) {
-					this.save('var ' + protoArgs[i] + ' = ' + args[i] + ';');
+					args[i] = args[i] || null;
+
+					var arg = protoArgs[i][0];
+					var def = protoArgs[i][1];
+
+					this.save('var ' + arg + ' = ' +
+						(def !== void 0 ?
+							args[i] ?
+								'typeof ' + args[i] + ' !== \'undefined\' && ' +
+									args[i] + ' !== null ? ' +
+									args[i] +
+									':' +
+									def :
+								def :
+							args[i]
+							) + ';'
+					);
 				}
 
 				this.save(proto.body);
