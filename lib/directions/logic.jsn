@@ -6,18 +6,14 @@
 Snakeskin.addDirective(
 	'if',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
-			dir.save('if (' + dir.prepareOutput(command, true) + ') {');
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('if (' + this.prepareOutput(command, true) + ') {');
 		}
 	}
 );
@@ -25,23 +21,17 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'elseIf',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
+	function (command) {
+		if (this.structure.name !== 'if') {
+			throw this.error('Directive "' + this.name + '" can only be used with a "if"');
 		}
 
-		if (dir.structure.name !== 'if') {
-			throw dir.error('Directive "' + params.name + '" can only be used with a "if", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		if (dir.isSimpleOutput(params.info)) {
-			dir.save('} else if (' + dir.prepareOutput(command, true) + ') {');
+		if (this.isSimpleOutput()) {
+			this.save('} else if (' + this.prepareOutput(command, true) + ') {');
 		}
 	}
 );
@@ -49,23 +39,17 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'else',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
+	function () {
+		if (this.structure.name !== 'if') {
+			throw this.error('Directive "' + this.name + '" can only be used with a "if"');
 		}
 
-		if (dir.structure.name !== 'if') {
-			throw dir.error('Directive "' + params.name + '" can only be used with a "if", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		if (dir.isSimpleOutput(params.info)) {
-			dir.save('} else {');
+		if (this.isSimpleOutput()) {
+			this.save('} else {');
 		}
 	}
 );
@@ -74,22 +58,17 @@ Snakeskin.addDirective(
 	'switch',
 
 	{
+		inBlock: true,
 		strongDirs: {
 			'case': true,
 			'default': true
 		}
 	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
-			dir.save('switch (' + dir.prepareOutput(command, true) + ') {');
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('switch (' + this.prepareOutput(command, true) + ') {');
 		}
 	}
 );
@@ -98,34 +77,27 @@ Snakeskin.addDirective(
 	'case',
 
 	{
+		inBlock: true,
 		replacers: {
 			'>': (cmd) => cmd.replace(/^>/, 'case '),
 			'/>': (cmd) => cmd.replace(/^\/>/, 'end case')
 		}
 	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
+	function (command) {
+		if (!this.has('switch')) {
+			throw this.error('Directive "' + this.name + '" can only be used within a "switch"');
 		}
 
-		if (!dir.has('switch')) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "switch", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
-			dir.save('case ' + dir.prepareOutput(command, true) + ': {');
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('case ' + this.prepareOutput(command, true) + ': {');
 		}
 	},
 
-	(command, commandLength, dir) => {
-		if (dir.isSimpleOutput()) {
-			dir.save('} break;');
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save('} break;');
 		}
 	}
 );
@@ -133,24 +105,18 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'default',
 
-	null,
+	{
+		inBlock: true
+	},
 
-	(command, commandLength, dir, params) => {
-		if (!dir.structure.parent) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "template" or "proto", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
+	function () {
+		if (!this.has('switch')) {
+			throw this.error('Directive "' + this.name + '" can only be used within a "switch"');
 		}
 
-		if (!dir.has('switch')) {
-			throw dir.error('Directive "' + params.name + '" can only be used within a "switch", ' +
-				dir.genErrorAdvInfo(params.info)
-			);
-		}
-
-		dir.startDir(params.name);
-		if (dir.isSimpleOutput(params.info)) {
-			dir.save('default: {');
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('default: {');
 		}
 	}
 );
