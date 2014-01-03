@@ -7,7 +7,7 @@ Snakeskin.addDirective(
 	'if',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 	'elseIf',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 	'else',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function () {
@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 	'switch',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		strongDirs: {
 			'case': true,
 			'default': true
@@ -77,7 +77,7 @@ Snakeskin.addDirective(
 	'case',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			'>': (cmd) => cmd.replace(/^>/, 'case '),
 			'/>': (cmd) => cmd.replace(/^\/>/, 'end case')
@@ -106,7 +106,7 @@ Snakeskin.addDirective(
 	'default',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function () {

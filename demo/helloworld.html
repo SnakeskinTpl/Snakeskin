@@ -11,9 +11,13 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{a = 1}
-				{with a}
-					{:a2 = {a: a, b: 2}}
+				{switch 1}
+					{> 1}
+						1
+					{/>}
+
+					{proto d}
+					{/}
 				{/}
 			{/}
 		</script>

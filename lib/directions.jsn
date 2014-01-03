@@ -36,18 +36,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		}
 	}
 
-	if (params.strongDirs) {
-		let dirs = params.strongDirs;
-
-		for (let key in dirs) {
-			if (!dirs.hasOwnProperty(key)) {
-				continue;
-			}
-
-			strongDirs[key] = dirs[key];
-		}
-	}
-
+	strongDirs[name] = params.strongDirs;
 	Snakeskin.Directions[name] = function (dir, command, commandLength) {
 		switch (params.placement) {
 			case 'template': {

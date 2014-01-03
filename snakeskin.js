@@ -555,7 +555,7 @@ DirObj.prototype.save = function (str) {
  */
 DirObj.prototype.isSimpleOutput = function () {
 	var __NEJS_THIS__ = this;
-	if (this.strongDir) {
+	if (this.name !== 'end' && this.strongDir) {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '"');
 	}
 
@@ -1539,18 +1539,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		}
 	}
 
-	if (params.strongDirs) {
-		var dirs = params.strongDirs;
-
-		for (var key$0 in dirs) {
-			if (!dirs.hasOwnProperty(key$0)) {
-				continue;
-			}
-
-			strongDirs[key$0] = dirs[key$0];
-		}
-	}
-
+	strongDirs[name] = params.strongDirs;
 	Snakeskin.Directions[name] = function (dir, command, commandLength) {
 		var __NEJS_THIS__ = this;
 		switch (params.placement) {
@@ -3286,7 +3275,7 @@ Snakeskin.addDirective(
 	'if',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -3302,7 +3291,7 @@ Snakeskin.addDirective(
 	'elseIf',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -3321,7 +3310,7 @@ Snakeskin.addDirective(
 	'else',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function () {
@@ -3340,7 +3329,7 @@ Snakeskin.addDirective(
 	'switch',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		strongDirs: {
 			'case': true,
 			'default': true
@@ -3360,7 +3349,7 @@ Snakeskin.addDirective(
 	'case',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			'>': function (cmd) {
 				return cmd.replace(/^>/, 'case ');},
@@ -3393,7 +3382,7 @@ Snakeskin.addDirective(
 	'default',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function () {
