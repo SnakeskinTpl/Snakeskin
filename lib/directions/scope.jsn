@@ -13,8 +13,8 @@ Snakeskin.addDirective(
 	'with',
 
 	{
-		inBlock: true,
-		sysDir: true
+		placement: 'template',
+		sys: true
 	},
 
 	function (command) {

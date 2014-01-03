@@ -7,7 +7,7 @@ Snakeskin.addDirective(
 	'void',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			'?': (cmd) => cmd.replace(/^\?/, 'void ')
 		}

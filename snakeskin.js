@@ -1514,7 +1514,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
  * @param {?string=} [params.placement] - если true, то делается проверка,
  *     где именно размещена директива ('global', 'template', ...)
  *
- * @param {?boolean=} [params.sysDir=false] - если true, то директива считается системной
+ * @param {?boolean=} [params.sys=false] - если true, то директива считается системной
  *
  * @param {Object} [params.replacers] - объект коротких сокращений директивы
  * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
@@ -1525,7 +1525,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	var __NEJS_THIS__ = this;
 	params = params || {};
-	sysDirs[name] = !!params.sysDir;
+	sysDirs[name] = !!params.sys;
 
 	if (params.replacers) {
 		var repls = params.replacers;
@@ -2705,7 +2705,7 @@ Snakeskin.addDirective(
 	'call',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -2725,7 +2725,7 @@ Snakeskin.addDirective(
 	'void',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			'?': function (cmd) {
 				return cmd.replace(/^\?/, 'void ');}
@@ -2786,8 +2786,8 @@ Snakeskin.addDirective(
 	'block',
 
 	{
-		inBlock: true,
-		isSys: true
+		placement: 'template',
+		sys: true
 	},
 
 	function (command) {
@@ -2797,7 +2797,6 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isAdvTest()) {
-			// Попытка декларировать блок несколько раз
 			if (blockCache[this.tplName][command]) {
 				throw this.error('Block "' + command + '" is already defined');
 			}
@@ -3401,8 +3400,8 @@ Snakeskin.addDirective(
 	'with',
 
 	{
-		inBlock: true,
-		sysDir: true
+		placement: 'template',
+		sys: true
 	},
 
 	function (command) {
@@ -3429,17 +3428,26 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
-		var scan = /^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i.exec(command);
+
+		var rgxp = this.scope.length ?
+			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
+			/^[$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;
+
+		var scan = rgxp.exec(command);
 
 		// Инициализация переменных
 		if (scan && !scan[1]) {
 			var name = command.split('=')[0].trim(),
 				mod = name.charAt(0);
 
+			if (mod === '#' || mod === '@') {
+				throw this.error('Can\'t declare constant "' + name + '" with the context modifier');
+			}
+
 			if (this.structure.parent) {
 				this.startInlineDir('const');
 
-				if (this.isAdvTest() && mod !== '#' && mod !== '@') {
+				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы
 					if (constCache[tplName][name] || constICache[tplName][name]) {
 						throw this.error('Constant "' + name + '" is already defined');
@@ -3465,12 +3473,7 @@ Snakeskin.addDirective(
 				}
 
 				if (this.isSimpleOutput()) {
-					if (mod !== '#' && mod !== '@') {
-						this.save(this.prepareOutput((!/[.\[]/m.test(name) ? 'var ' : '') + command + ';', true));
-
-					} else {
-						this.save(this.prepareOutput(command + ';', true));
-					}
+					this.save(this.prepareOutput((!/[.\[]/.test(name) ? 'var ' : '') + command + ';', true));
 				}
 
 			} else {

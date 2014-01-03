@@ -13,7 +13,7 @@ Snakeskin.addDirective(
 	'var',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			':': (cmd) => cmd.replace(/^:/, 'var ')
 		}
@@ -21,11 +21,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-
-		var struct = command.split('='),
-			realVar = this.declVar(struct[0].trim());
-
 		if (this.isSimpleOutput()) {
+			let struct = command.split('='),
+				realVar = this.declVar(struct[0].trim());
+
 			struct[0] = realVar + ' ';
 			this.save(this.prepareOutput('var ' + struct.join('=') + ';', true));
 		}

@@ -10,13 +10,11 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{setBEM b-foo, tag: 'body'}
-
 			{template helloWorld()}
-				{bem b-foo, name: 'foo', val: [
-					1, 2, 3,
-					{a: 1}
-				]}{/}
+				{:a = 1}
+				{with a}
+					{?a = 2}
+				{/}
 			{/}
 		</script>
 		<script>
