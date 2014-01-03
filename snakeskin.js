@@ -1601,6 +1601,7 @@ var blackWordList = {
 	'~~': true,
 	'!': true,
 	'!!': true,
+	'arguments': true,
 	'break': true,
 	'case': true,
 	'catch': true,
@@ -2662,6 +2663,10 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			if (this.firstProto) {
+				if (command) {
+					this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
+				}
+
 				this.save('break;');
 
 			} else {

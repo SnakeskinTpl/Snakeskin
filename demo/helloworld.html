@@ -14,17 +14,29 @@
 				{proto foo(a)}
 					Итерация: {a}<br />
 
+					{if a > 1e3}
+						{return 'Фак тебе!'}
+					{/}
+
 					{if a}
 						{apply foo(--a)}
 					{/}
 				{/}
 
-				{apply foo(10)}
+				{block foo}
+					{apply foo(2)}
+				{/}
+			{/}
+
+			{template helloWorld2() extends helloWorld}
+				{block foo}
+					{apply foo(10)}
+				{/}
 			{/}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld();
+			document.getElementById('test').innerHTML = helloWorld2();
 		</script>
 	</body>
 </html>

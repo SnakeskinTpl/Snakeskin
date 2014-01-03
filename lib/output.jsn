@@ -12,6 +12,7 @@ var blackWordList = {
 	'~~': true,
 	'!': true,
 	'!!': true,
+	'arguments': true,
 	'break': true,
 	'case': true,
 	'catch': true,
