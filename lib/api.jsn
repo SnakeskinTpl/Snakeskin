@@ -205,10 +205,10 @@ DirObj.prototype.replace = function (str) {
  * @param {string} tplName - название шаблона
  * @return {!DirObj}
  */
-DirObj.prototype.initCache = function (tplName) {
+DirObj.prototype.initCache = function (tplName, opt_force = false) {
 	blockCache[tplName] = {};
 
-	protoCache[tplName] = {};
+	protoCache[tplName] = opt_force ? {} : protoCache[tplName] || {};
 	fromProtoCache[tplName] = 0;
 
 	constCache[tplName] = {};

@@ -21,6 +21,9 @@ DirObj.prototype.tplName = null;
  */
 DirObj.prototype.parentTplName = null;
 
+var start,
+	end;
+
 Snakeskin.addDirective(
 	'template',
 
@@ -28,7 +31,7 @@ Snakeskin.addDirective(
 		placement: 'global'
 	},
 
-	function (command) {
+	(start = function (command) {
 		this.startDir();
 
 		// Начальная позиция шаблона
@@ -222,9 +225,9 @@ Snakeskin.addDirective(
 		if (parentTplName) {
 			this.save('PARENT_TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(parentTplName)) + '\';');
 		}
-	},
+	}),
 
-	function (command, commandLength) {
+	(end = function (command, commandLength) {
 		var tplName = this.tplName;
 
 		// Вызовы не объявленных прототипов
@@ -247,7 +250,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initCache(tplName);
+			this.initCache(tplName, true);
 			this.startDir(this.structure.name);
 			this.i = this.startI - 1;
 
@@ -266,8 +269,16 @@ Snakeskin.addDirective(
 
 		this.canWrite = true;
 		this.tplName = null;
-	}
+	})
 );
 
-Snakeskin.Directions['placeholder'] = Snakeskin.Directions['template'];
-Snakeskin.Directions['placeholderEnd'] = Snakeskin.Directions['templateEnd'];
+Snakeskin.addDirective(
+	'placeholder',
+
+	{
+		placement: 'global'
+	},
+
+	start,
+	end
+);

@@ -597,11 +597,12 @@ DirObj.prototype.replace = function (str) {
  * @param {string} tplName - название шаблона
  * @return {!DirObj}
  */
-DirObj.prototype.initCache = function (tplName) {
+DirObj.prototype.initCache = function (tplName,opt_force) {
 	var __NEJS_THIS__ = this;
+	if (typeof opt_force === "undefined") { opt_force = false; }
 	blockCache[tplName] = {};
 
-	protoCache[tplName] = {};
+	protoCache[tplName] = opt_force ? {} : protoCache[tplName] || {};
 	fromProtoCache[tplName] = 0;
 
 	constCache[tplName] = {};
@@ -2195,11 +2196,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			breakNum--;
 		}
 
-		if (filterStart && ((el === ')' && !pCountFilter) || i === commandLength - 1)) {
-			if (i === commandLength - 1 && pCount && el !== ')') {
-				throw this.error('Missing closing or opening parenthesis in the template');
-			}
+		if (i === commandLength - 1 && pCount && el !== ')') {
+			throw this.error('Missing closing or opening parenthesis in the template');
+		}
 
+		if (filterStart && ((el === ')' && !pCountFilter) || i === commandLength - 1)) {
 			var pos = pContent[0];
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
@@ -2418,6 +2419,9 @@ DirObj.prototype.tplName = null;
  */
 DirObj.prototype.parentTplName = null;
 
+var start,
+	end;
+
 Snakeskin.addDirective(
 	'template',
 
@@ -2425,7 +2429,7 @@ Snakeskin.addDirective(
 		placement: 'global'
 	},
 
-	function (command) {
+	(start = function (command) {
 		var __NEJS_THIS__ = this;
 		this.startDir();
 
@@ -2620,9 +2624,9 @@ Snakeskin.addDirective(
 		if (parentTplName) {
 			this.save('PARENT_TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(parentTplName)) + '\';');
 		}
-	},
+	}),
 
-	function (command, commandLength) {
+	(end = function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
 
@@ -2646,7 +2650,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initCache(tplName);
+			this.initCache(tplName, true);
 			this.startDir(this.structure.name);
 			this.i = this.startI - 1;
 
@@ -2665,11 +2669,19 @@ Snakeskin.addDirective(
 
 		this.canWrite = true;
 		this.tplName = null;
-	}
+	})
 );
 
-Snakeskin.Directions['placeholder'] = Snakeskin.Directions['template'];
-Snakeskin.Directions['placeholderEnd'] = Snakeskin.Directions['templateEnd'];var __NEJS_THIS__ = this;
+Snakeskin.addDirective(
+	'placeholder',
+
+	{
+		placement: 'global'
+	},
+
+	start,
+	end
+);var __NEJS_THIS__ = this;
 /**!
  * @status stable
  * @version 1.0.0
@@ -2875,7 +2887,14 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		var name = command.match(/[^(]+/)[0];
+		var name = command.match(/[^(]+/)[0],
+			parts = name.split('->');
+
+		if (parts[1]) {
+			name = parts[1].trim();
+			this.tplName = parts[0].trim();
+			this.initCache(this.tplName);
+		}
 
 		this.startDir(null, {
 			name: name,
