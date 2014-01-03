@@ -37,12 +37,12 @@ var blackWordList = {
 	'try': true,
 	'typeof': true,
 	'var': true,
+	'const': true,
+	'let': true,
 	'void': true,
 	'while': true,
 	'with': true,
-	'class': true,
-	'let': true,
-	'const': true,
+	'class': true
 	'debugger': true,
 	'interface': true
 };
@@ -53,8 +53,8 @@ var unaryBlackWordList = {
 
 var comboBlackWordList = {
 	'var': true,
-	'let': true,
-	'const': true
+	'const': true,
+	'let': true
 };
 
 /**
