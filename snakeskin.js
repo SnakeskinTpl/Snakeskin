@@ -2973,7 +2973,7 @@ Snakeskin.addDirective(
 			args = [];
 		}
 
-		if (!this.parentTplName && !this.hasParent('proto')) {
+		if (this.isSimpleOutput() && !this.parentTplName && !this.hasParent('proto')) {
 			if (this.firstProto === name) {
 				this.save(this.prepareOutput('__I_PROTO__++', true) + ';');
 				return;
