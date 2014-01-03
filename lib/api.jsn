@@ -117,11 +117,10 @@ function DirObj(src, params) {
 	 * @type {string}
 	 */
 	this.source = String(src)
-		// Обработка блоков cdata
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, (sstr, data) => {
 			cdata.push(data);
 			return '{__appendLine__ ' +
-				data.match(/[\n\r]/g).length +
+				(data.match(/[\n\r]/g) || '').length +
 				'}__SNAKESKIN_CDATA__' +
 				(cdata.length - 1) +
 				'_';
