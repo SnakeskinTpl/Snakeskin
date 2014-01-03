@@ -12,7 +12,7 @@
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
 				{proto foo(a)}
-					{a}
+					Итерация: {a}<br />
 
 					{if a}
 						{?a--}
@@ -20,7 +20,7 @@
 					{/}
 				{/}
 
-				{apply foo(1222)}
+				{apply foo(10)}
 			{/}
 		</script>
 		<script>

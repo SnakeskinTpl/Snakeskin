@@ -2602,7 +2602,7 @@ Snakeskin.addDirective(
 		var tplName = this.tplName;
 
 		// Вызовы не объявленных прототипов
-		if (this.backHashI) {
+		if (this.backTableI) {
 			throw this.error('Proto "' + this.lastBack + '" is not defined');
 		}
 
@@ -2650,45 +2650,31 @@ Snakeskin.Directions['placeholderEnd'] = Snakeskin.Directions['templateEnd'];var
  * @version 1.0.0
  */
 
-/**
- * Директива return
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['return'] = function (command, commandLength, dir, adv) {
-	var __NEJS_THIS__ = this;
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "return" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'return',
 
-	//TODO: вернуться к этому куску
-	dir.startInlineDir('return');
-	if (dir.isSimpleOutput()) {
-		if (dir.structure.name === 'template') {
-			if (command) {
-				dir.save(dir.prepareOutput('return ' + command + ';', true));
+	{
+		inBlock: true
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			if (this.firstProto) {
+				this.save('break;');
 
 			} else {
-				dir.save('return __SNAKESKIN_RESULT__;');
+				if (command) {
+					this.save(this.prepareOutput('return ' + command + ';', true));
+
+				} else {
+					this.save('return __SNAKESKIN_RESULT__;');
+				}
 			}
-
-
-		} else if (command) {
-			dir.save(dir.prepareOutput('return ' + command + ';', true));
-
-		} else {
-			dir.save('return;');
 		}
 	}
-};
+);
 var __NEJS_THIS__ = this;
 /*!
  * @status stable
@@ -2823,6 +2809,32 @@ Snakeskin.addDirective(
  */
 DirObj.prototype.protoStart = false;
 
+DirObj.prototype.returnArgs = function (protoArgs, args) {
+	var __NEJS_THIS__ = this;
+	var str = 'var ' + protoArgs[0][0] + ' = ' + protoArgs[0][1] + ';';
+
+	for (var i = 1; i < protoArgs.length; i++) {
+		var val = args[i - 1] || null;
+
+		var arg = protoArgs[i][0],
+			def = protoArgs[i][1];
+
+		str += 'var ' + arg + ' = ' +
+			(def !== void 0 ?
+				val ?
+					'typeof ' + val + ' !== \'undefined\' && ' +
+						val + ' !== null ? ' +
+						val +
+						':' +
+						def :
+					def :
+				val || 'void 0'
+			) + ';';
+	}
+
+	return str;
+};
+
 Snakeskin.addDirective(
 	'proto',
 
@@ -2839,22 +2851,23 @@ Snakeskin.addDirective(
 			startI: this.i + 1
 		});
 
-		var args = command.match(/\((.*?)\)/),
-			argsMap = [[this.declVar('__I_PROTO__'), 1]];
-
-		if (args) {
-			args = args[1].split(',');
-			for (var i = 0; i < args.length; i++) {
-				var arg = args[i].split('=');
-				arg[0] = this.declVar(arg[0].trim());
-				argsMap.push(arg);
-			}
-		}
-
 		if (this.isAdvTest()) {
-			// Попытка декларировать прототип блока несколько раз
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');
+			}
+
+			var args = command.match(/\((.*?)\)/),
+				argsMap = [
+					[this.declVar('__I_PROTO__'), 1]
+				];
+
+			if (args) {
+				args = args[1].split(',');
+				for (var i = 0; i < args.length; i++) {
+					var arg = args[i].split('=');
+					arg[0] = this.declVar(arg[0].trim());
+					argsMap.push(arg);
+				}
 			}
 
 			protoCache[this.tplName][name] = {
@@ -2901,30 +2914,23 @@ Snakeskin.addDirective(
 			);
 		}
 
-		var bacs = this.backHash[lastProto.name];
-		if (bacs && !bacs.protoStart) {
+		var back = this.backTable[lastProto.name];
+		if (back && !back.protoStart) {
 			var args = proto.args;
 
-			for (var i = 0; i < bacs.length; i++) {
-				var el = bacs[i];
-
-				var params = el.args,
-					paramsStr = '';
-
-				for (var j = 0; i < args.length; j++) {
-					paramsStr += 'var ' + args[i] + ' = ' + params[i] + ';';
-				}
+			for (var i = 0; i < back.length; i++) {
+				var el = back[i];
 
 				this.replace(
 					this.res.substring(0, el.pos) +
-					paramsStr +
+					this.returnArgs(args, el.args) +
 					protoCache[tplName][lastProto.name].body +
 					this.res.substring(el.pos)
 				);
 			}
 
-			delete this.backHash[lastProto.name];
-			this.backHashI--;
+			delete this.backTable[lastProto.name];
+			this.backTableI--;
 		}
 
 		if (!this.hasParent('proto')) {
@@ -2933,7 +2939,7 @@ Snakeskin.addDirective(
 	}
 );
 
-DirObj.prototype.backHash = {
+DirObj.prototype.backTable = {
 	init: function () {
 		var __NEJS_THIS__ = this;
 		return {};
@@ -2945,7 +2951,7 @@ DirObj.prototype.backHash = {
  * (когда apply до декларации вызываемого прототипа)
  * @type {number}
  */
-DirObj.prototype.backHashI = 0;
+DirObj.prototype.backTableI = 0;
 
 /**
  * Имя последнего обратного прототипа
@@ -2962,65 +2968,35 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		var name = command.match(/[^(]+/)[0];
 		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			var name = command.match(/[^(]+/)[0],
+				args = command.match(/\((.*?)\)/);
 
-		var args = command.match(/\((.*?)\)/);
-		if (args) {
-			args = args[1].split(',');
 
-		} else {
-			args = [];
-		}
-
-		if (this.isSimpleOutput() && !this.parentTplName && !this.hasParent('proto')) {
 			if (this.firstProto === name) {
 				this.save(this.prepareOutput('__I_PROTO__++', true) + ';');
-				return;
-			}
 
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
-			if (!protoCache[this.tplName][name]) {
-				if (!this.backHash[name]) {
-					this.backHash[name] = [];
-					this.backHash[name].protoStart = this.protoStart;
+			} else if (!protoCache[this.tplName][name]) {
+				if (!this.backTable[name]) {
+					this.backTable[name] = [];
+					this.backTable[name].protoStart = this.protoStart;
 
 					this.lastBack = name;
-					this.backHashI++;
+					this.backTableI++;
 				}
 
-				this.backHash[name].push({
+				this.backTable[name].push({
 					pos: this.res.length,
 					args: args
 				});
 
 			} else {
 				var proto = protoCache[this.tplName][name];
-				var protoArgs = proto.args,
-					argStr = '';
-
-				for (var i = 0; i < protoArgs.length; i++) {
-					args[i] = args[i] || null;
-
-					var arg = protoArgs[i][0],
-						def = protoArgs[i][1];
-
-					argStr += 'var ' + arg + ' = ' +
-						(def !== void 0 ?
-							args[i] ?
-								'typeof ' + args[i] + ' !== \'undefined\' && ' +
-									args[i] + ' !== null ? ' +
-									args[i] +
-									':' +
-									def :
-								def :
-							args[i] || 'void 0'
-						) + ';';
-				}
-
-				this.save(argStr + proto.body);
+				this.save(this.returnArgs(proto.args, args ? args[1].split(',') : []) + proto.body);
 			}
 		}
 	}

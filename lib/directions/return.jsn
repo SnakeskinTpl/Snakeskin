@@ -3,41 +3,27 @@
  * @version 1.0.0
  */
 
-/**
- * Директива return
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['return'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "return" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'return',
 
-	//TODO: вернуться к этому куску
-	dir.startInlineDir('return');
-	if (dir.isSimpleOutput()) {
-		if (dir.structure.name === 'template') {
-			if (command) {
-				dir.save(dir.prepareOutput('return ' + command + ';', true));
+	{
+		inBlock: true
+	},
+
+	function (command) {
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			if (this.firstProto) {
+				this.save('break;');
 
 			} else {
-				dir.save('return __SNAKESKIN_RESULT__;');
+				if (command) {
+					this.save(this.prepareOutput('return ' + command + ';', true));
+
+				} else {
+					this.save('return __SNAKESKIN_RESULT__;');
+				}
 			}
-
-
-		} else if (command) {
-			dir.save(dir.prepareOutput('return ' + command + ';', true));
-
-		} else {
-			dir.save('return;');
 		}
 	}
-};
+);
