@@ -1805,7 +1805,7 @@ DirObj.prototype.isPrevSyOL = function (str, pos) {
 };
 
 /**
- * Вернуть true, если следующий не пробельный символ в строке равен : или =
+ * Вернуть true, если следующий не пробельный символ в строке равен :
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
@@ -1819,7 +1819,7 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 		var el = str.charAt(i);
 
 		if (rgxp.test(el)) {
-			return el === ':' || el === '=' && str.charAt(i + 1) !== '=' && str.charAt(i - 1) !== '=';
+			return el === ':';
 		}
 	}
 
@@ -1954,7 +1954,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	// Область видимости
 	var scope = this.scope,
-		useWith = scope.length;
+		useWith = !!scope.length;
 
 	// Сдвиги
 	var addition = 0,
@@ -2756,7 +2756,7 @@ Snakeskin.addDirective(
 	'var',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			':': function (cmd) {
 				return cmd.replace(/^:/, 'var ');}
@@ -2766,11 +2766,10 @@ Snakeskin.addDirective(
 	function (command) {
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
-
-		var struct = command.split('='),
-			realVar = this.declVar(struct[0].trim());
-
 		if (this.isSimpleOutput()) {
+			var struct = command.split('='),
+				realVar = this.declVar(struct[0].trim());
+
 			struct[0] = realVar + ' ';
 			this.save(this.prepareOutput('var ' + struct.join('=') + ';', true));
 		}
