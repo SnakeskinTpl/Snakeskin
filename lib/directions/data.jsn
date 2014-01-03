@@ -7,7 +7,7 @@ Snakeskin.addDirective(
 	'data',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			'*': (cmd) => cmd.replace(/^\*/, 'data ')
 		}

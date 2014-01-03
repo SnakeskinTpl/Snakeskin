@@ -1506,17 +1506,18 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
  */
 
 /**
- * Добавить новую директиву
+ * Добавить новую директиву в пространство имён шаблонизатора
  *
  * @param {string} name - название директивы
  * @param {Object} params - дополнительные параметры
  *
- * @param {?boolean=} [params.inBlock=false] - если true, то директива может находиться только внутри шаблона или прототипа
- * @param {?boolean=} [params.inGlobal=false] - если true, то директива может находиться только в глобальном пространстве
+ * @param {?string=} [params.placement] - если true, то делается проверка,
+ *     где именно размещена директива ('global', 'template', ...)
+ *
  * @param {?boolean=} [params.sysDir=false] - если true, то директива считается системной
  *
- * @param {Object} [params.replacers] - объект с указанием сокращений директив
- * @param {Object} [params.strongDirs] - объект с указанием директив, которые могут быть вложены в исходную
+ * @param {Object} [params.replacers] - объект коротких сокращений директивы
+ * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
  *
  * @param {function(this:DirObj, string, number)} constr - конструктор директивы
  * @param {?function(this:DirObj, string, number)=} opt_end - окончание директивы
@@ -1552,12 +1553,26 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 
 	Snakeskin.Directions[name] = function (dir, command, commandLength) {
 		var __NEJS_THIS__ = this;
-		if (params.inBlock && !dir.structure.parent) {
-			throw dir.error('Directive "' + name + '" can only be used within a "template" or "proto"');
-		}
+		switch (params.placement) {
+			case 'template': {
+				if (!dir.structure.parent) {
+					throw dir.error('Directive "' + name + '" can only be used within a "template" or "proto"');
+				}
+			} break;
 
-		if (params.inGlobal && dir.structure.parent) {
-			throw dir.error('Directive "' + name + '" can be used only within the global space');
+			case 'global': {
+				if (dir.structure.parent) {
+					throw dir.error('Directive "' + name + '" can be used only within the global space');
+				}
+			} break;
+
+			default: {
+				if (params.placement) {
+					if (dir.hasParent(params.placement)) {
+						throw dir.error('Directive "' + name + '" can be used only within a "' + params.placement + '"');
+					}
+				}
+			}
 		}
 
 		dir.name = name;
@@ -3488,17 +3503,17 @@ Snakeskin.addDirective(
 	'setBEM',
 
 	{
-		inGlobal: true
+		placement: 'global'
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
-		var part = command.match(/([\s\S]*?),\s+([\s\S]*)/m);
+		var part = command.match(/(.*?),\s+(.*)/);
 
 		bem[part[1]] = (new Function('return {' +
-			this.pasteDangerBlocks(part[2]) + '}')
-		)();
+			this.pasteDangerBlocks(part[2]) +
+		'}'))();
 	}
 );
 
@@ -3506,25 +3521,25 @@ Snakeskin.addDirective(
 	'bem',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
 		this.startDir(null, {
-			tag: /^\(/.test(command) ? /\(([\s\S]*?)\)/m.exec(command)[1] : null
+			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 		});
 
-		var lastBEM = this.structure.params;
-
-		// Получаем параметры инициализации блока и врапим имя кавычками
-		command = lastBEM.tag ? command.replace(/^[\s\S]*?\)([\s\S]*)/m, '$1') : command;
-		var part = command.trim().split(',');
-
-		var bemName = part[0];
-		lastBEM.original = bem[bemName] && bem[bemName].tag;
-
 		if (this.isSimpleOutput()) {
+			var lastBEM = this.structure.params;
+
+			// Получаем параметры инициализации блока и врапим имя кавычками
+			command = lastBEM.tag ? command.replace(/^.*?\)(.*)/, '$1') : command;
+			var part = command.trim().split(',');
+
+			var bemName = part[0];
+			lastBEM.original = bem[bemName] && bem[bemName].tag;
+
 			part[0] += '\'';
 			command = part.join(',');
 
@@ -3554,7 +3569,7 @@ Snakeskin.addDirective(
 	'data',
 
 	{
-		inBlock: true,
+		placement: 'template',
 		replacers: {
 			'*': function (cmd) {
 				return cmd.replace(/^\*/, 'data ');}

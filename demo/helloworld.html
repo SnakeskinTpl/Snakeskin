@@ -10,33 +10,18 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			{setBEM b-foo, tag: 'body'}
+
 			{template helloWorld()}
-				{proto foo(a)}
-					Итерация: {a}<br />
-
-					{if a > 1e3}
-						{return 'Фак тебе!'}
-					{/}
-
-					{if a}
-						{apply foo(--a)}
-					{/}
-				{/}
-
-				{block foo}
-					{apply foo(2)}
-				{/}
-			{/}
-
-			{template helloWorld2() extends helloWorld}
-				{block foo}
-					{apply foo(10)}
-				{/}
+				{bem b-foo, name: 'foo', val: [
+					1, 2, 3,
+					{a: 1}
+				]}{/}
 			{/}
 		</script>
 		<script>
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld2();
+			document.getElementById('test').innerHTML = helloWorld();
 		</script>
 	</body>
 </html>
