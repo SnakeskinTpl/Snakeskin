@@ -41,8 +41,7 @@ var Snakeskin = {
 	
 
 var __NEJS_THIS__ = this;
-/*!
- * Полифилы для старых браузеров
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -138,7 +137,7 @@ function uescapeHTML(s) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.uhtml = function (str) {
+Snakeskin.Filters['uhtml'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return (str + '').replace(uescapeHTMLRgxp, uescapeHTML);
 };
@@ -151,7 +150,7 @@ var stripTagsRgxp = /<\/?[^>]+>/g;
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.stripTags = function (str) {
+Snakeskin.Filters['stripTags'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return (str + '').replace(stripTagsRgxp, '');
 };
@@ -165,7 +164,7 @@ var uriO = /%5B/g,
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.uri = function (str) {
+Snakeskin.Filters['uri'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return encodeURI(str + '').replace(uriO, '[').replace(uriC, ']');
 };
@@ -176,7 +175,7 @@ Snakeskin.Filters.uri = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.upper = function (str) {
+Snakeskin.Filters['upper'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return (str + '').toUpperCase();
 };
@@ -187,7 +186,7 @@ Snakeskin.Filters.upper = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.ucfirst = function (str) {
+Snakeskin.Filters['ucfirst'] = function (str) {
 	var __NEJS_THIS__ = this;
 	str += '';
 	return str.charAt(0).toUpperCase() + str.substring(1);
@@ -199,7 +198,7 @@ Snakeskin.Filters.ucfirst = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.lower = function (str) {
+Snakeskin.Filters['lower'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return (str + '').toLowerCase();
 };
@@ -210,7 +209,7 @@ Snakeskin.Filters.lower = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.lcfirst = function (str) {
+Snakeskin.Filters['lcfirst'] = function (str) {
 	var __NEJS_THIS__ = this;
 	str += '';
 	return str.charAt(0).toLowerCase() + str.substring(1);
@@ -222,7 +221,7 @@ Snakeskin.Filters.lcfirst = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.trim = function (str) {
+Snakeskin.Filters['trim'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return (str + '').trim();
 };
@@ -235,7 +234,7 @@ var spaceCollapseRgxp = /\s{2,}/g;
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.collapse = function (str) {
+Snakeskin.Filters['collapse'] = function (str) {
 	var __NEJS_THIS__ = this;
 	return (str + '').replace(spaceCollapseRgxp, ' ').trim();
 };
@@ -248,7 +247,7 @@ Snakeskin.Filters.collapse = function (str) {
  * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
  * @return {string}
  */
-Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
+Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
 	var __NEJS_THIS__ = this;
 	str += '';
 	if (!str || str.length <= length) {
@@ -278,7 +277,7 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
  * @param {?number=} [opt_num=1] - число повторений
  * @return {string}
  */
-Snakeskin.Filters.repeat = function (str, opt_num) {
+Snakeskin.Filters['repeat'] = function (str, opt_num) {
 	var __NEJS_THIS__ = this;
 	return new Array(opt_num || 2).join(str);
 };
@@ -290,7 +289,7 @@ Snakeskin.Filters.repeat = function (str, opt_num) {
  * @param {(string|RegExp)} search - искомая подстрока
  * @return {string}
  */
-Snakeskin.Filters.remove = function (str, search) {
+Snakeskin.Filters['remove'] = function (str, search) {
 	var __NEJS_THIS__ = this;
 	return (str + '').replace(search, '');
 };
@@ -303,7 +302,7 @@ Snakeskin.Filters.remove = function (str, search) {
  * @param {string} replace - строка для замены
  * @return {string}
  */
-Snakeskin.Filters.replace = function (str, search, replace) {
+Snakeskin.Filters['replace'] = function (str, search, replace) {
 	var __NEJS_THIS__ = this;
 	return (str + '').replace(search, replace);
 };
@@ -314,7 +313,7 @@ Snakeskin.Filters.replace = function (str, search, replace) {
  * @param {(Object|Array|string|number|boolean)} obj - исходный объект
  * @return {string}
  */
-Snakeskin.Filters.json = function (obj) {
+Snakeskin.Filters['json'] = function (obj) {
 	var __NEJS_THIS__ = this;
 	if (typeof obj === 'object') {
 		return JSON.stringify(obj);
@@ -2223,7 +2222,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				var params = filter[j$1].split(' ');
 				var input = params.slice(1).join('').trim();
 
-				resTmp = '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
+				var current = params.shift().split('.'),
+					f = '';
+
+				for (var k = 0; k < current.length; k++) {
+					f += '[\'' + current[k] + '\']';
+				}
+
+				resTmp = '($_ = Snakeskin.Filters' + f +
 					(filterWrapper || !pCount ? '(' : '') +
 					resTmp +
 					(input ? ',' + input : '') +

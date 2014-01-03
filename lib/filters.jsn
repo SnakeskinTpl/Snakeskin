@@ -57,7 +57,7 @@ function uescapeHTML(s) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.uhtml = function (str) {
+Snakeskin.Filters['uhtml'] = function (str) {
 	return (str + '').replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
@@ -69,7 +69,7 @@ var stripTagsRgxp = /<\/?[^>]+>/g;
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.stripTags = function (str) {
+Snakeskin.Filters['stripTags'] = function (str) {
 	return (str + '').replace(stripTagsRgxp, '');
 };
 
@@ -82,7 +82,7 @@ var uriO = /%5B/g,
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.uri = function (str) {
+Snakeskin.Filters['uri'] = function (str) {
 	return encodeURI(str + '').replace(uriO, '[').replace(uriC, ']');
 };
 
@@ -92,7 +92,7 @@ Snakeskin.Filters.uri = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.upper = function (str) {
+Snakeskin.Filters['upper'] = function (str) {
 	return (str + '').toUpperCase();
 };
 
@@ -102,7 +102,7 @@ Snakeskin.Filters.upper = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.ucfirst = function (str) {
+Snakeskin.Filters['ucfirst'] = function (str) {
 	str += '';
 	return str.charAt(0).toUpperCase() + str.substring(1);
 };
@@ -113,7 +113,7 @@ Snakeskin.Filters.ucfirst = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.lower = function (str) {
+Snakeskin.Filters['lower'] = function (str) {
 	return (str + '').toLowerCase();
 };
 
@@ -123,7 +123,7 @@ Snakeskin.Filters.lower = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.lcfirst = function (str) {
+Snakeskin.Filters['lcfirst'] = function (str) {
 	str += '';
 	return str.charAt(0).toLowerCase() + str.substring(1);
 };
@@ -134,7 +134,7 @@ Snakeskin.Filters.lcfirst = function (str) {
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.trim = function (str) {
+Snakeskin.Filters['trim'] = function (str) {
 	return (str + '').trim();
 };
 
@@ -146,7 +146,7 @@ var spaceCollapseRgxp = /\s{2,}/g;
  * @param {*} str - исходная строка
  * @return {string}
  */
-Snakeskin.Filters.collapse = function (str) {
+Snakeskin.Filters['collapse'] = function (str) {
 	return (str + '').replace(spaceCollapseRgxp, ' ').trim();
 };
 
@@ -158,7 +158,7 @@ Snakeskin.Filters.collapse = function (str) {
  * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
  * @return {string}
  */
-Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
+Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
 	str += '';
 	if (!str || str.length <= length) {
 		return str;
@@ -187,7 +187,7 @@ Snakeskin.Filters.truncate = function (str, length, opt_wordOnly) {
  * @param {?number=} [opt_num=1] - число повторений
  * @return {string}
  */
-Snakeskin.Filters.repeat = function (str, opt_num) {
+Snakeskin.Filters['repeat'] = function (str, opt_num) {
 	return new Array(opt_num || 2).join(str);
 };
 
@@ -198,7 +198,7 @@ Snakeskin.Filters.repeat = function (str, opt_num) {
  * @param {(string|RegExp)} search - искомая подстрока
  * @return {string}
  */
-Snakeskin.Filters.remove = function (str, search) {
+Snakeskin.Filters['remove'] = function (str, search) {
 	return (str + '').replace(search, '');
 };
 
@@ -210,7 +210,7 @@ Snakeskin.Filters.remove = function (str, search) {
  * @param {string} replace - строка для замены
  * @return {string}
  */
-Snakeskin.Filters.replace = function (str, search, replace) {
+Snakeskin.Filters['replace'] = function (str, search, replace) {
 	return (str + '').replace(search, replace);
 };
 
@@ -220,7 +220,7 @@ Snakeskin.Filters.replace = function (str, search, replace) {
  * @param {(Object|Array|string|number|boolean)} obj - исходный объект
  * @return {string}
  */
-Snakeskin.Filters.json = function (obj) {
+Snakeskin.Filters['json'] = function (obj) {
 	if (typeof obj === 'object') {
 		return JSON.stringify(obj);
 	}

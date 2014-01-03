@@ -1,10 +1,11 @@
-/*!
- * Полифилы для старых браузеров
+/**!
  * @status stable
  * @version 1.0.0
  */
 
 if (!Array.isArray) {
+	let toString = Object.prototype.toString;
+
 	/**
 	 * Вернуть true, если указанный объект является массивом
 	 *
@@ -12,7 +13,7 @@ if (!Array.isArray) {
 	 * @return {boolean}
 	 */
 	Array.isArray = function (obj) {
-		return Object.prototype.toString.call(obj) === '[object Array]';
+		return toString.call(obj) === '[object Array]';
 	};
 }
 
@@ -25,7 +26,7 @@ if (!String.prototype.trim) {
 		var str = this.replace(/^\s\s*/, ''),
 			i = str.length;
 
-		while (/\s/.test(str.charAt(--i))) {}
+		for (let rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
 		return str.substring(0, i + 1);
 	};
 }

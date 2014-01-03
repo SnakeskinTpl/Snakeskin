@@ -622,7 +622,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				let params = filter[j].split(' ');
 				let input = params.slice(1).join('').trim();
 
-				resTmp = '($_ = Snakeskin.Filters[\'' + params.shift() + '\']' +
+				let current = params.shift().split('.'),
+					f = '';
+
+				for (let k = 0; k < current.length; k++) {
+					f += '[\'' + current[k] + '\']';
+				}
+
+				resTmp = '($_ = Snakeskin.Filters' + f +
 					(filterWrapper || !pCount ? '(' : '') +
 					resTmp +
 					(input ? ',' + input : '') +

@@ -10,15 +10,17 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto helloWorld->foo()}
-				1
-			{/}
-
 			{template helloWorld()}
-				{apply foo}
+				{1|Math.rand}
 			{/}
 		</script>
 		<script>
+			Snakeskin.Filters.Math = {
+				rand: function () {
+					return Math.random();
+				}
+			};
+
 			Snakeskin.compile(document.getElementById('templates'));
 			document.getElementById('test').innerHTML = helloWorld();
 		</script>
