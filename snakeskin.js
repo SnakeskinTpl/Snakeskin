@@ -47,6 +47,8 @@ var __NEJS_THIS__ = this;
  */
 
 if (!Array.isArray) {
+	var toString = Object.prototype.toString;
+
 	/**
 	 * Вернуть true, если указанный объект является массивом
 	 *
@@ -55,7 +57,7 @@ if (!Array.isArray) {
 	 */
 	Array.isArray = function (obj) {
 		var __NEJS_THIS__ = this;
-		return Object.prototype.toString.call(obj) === '[object Array]';
+		return toString.call(obj) === '[object Array]';
 	};
 }
 
@@ -69,7 +71,7 @@ if (!String.prototype.trim) {
 		var str = this.replace(/^\s\s*/, ''),
 			i = str.length;
 
-		while (/\s/.test(str.charAt(--i))) {}
+		for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
 		return str.substring(0, i + 1);
 	};
 }
@@ -1450,16 +1452,19 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 		// Запись строки
 		} else {
-			if (dir.strongDir) {
-				throw dir.error('Text can not be used with a "' + dir.strongDir + '"');
-			}
-
-			if (dir.isSimpleOutput()) {
+			if (!jsDoc && dir.isSimpleOutput()) {
 				if (!beginStr) {
+					if (!dir.structure.parent) {
+						throw dir.error('Only comments can be used in the global space');
+					}
+
 					dir.save('__SNAKESKIN_RESULT__ += \'');
 					beginStr = true;
 				}
 
+				dir.save(dir.applyDefEscape(el));
+
+			} else if (jsDoc) {
 				dir.save(dir.applyDefEscape(el));
 				if (!beginStr) {
 					jsDoc = false;
