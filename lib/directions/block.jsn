@@ -7,8 +7,8 @@ Snakeskin.addDirective(
 	'block',
 
 	{
-		inBlock: true,
-		isSys: true
+		placement: 'template',
+		sys: true
 	},
 
 	function (command) {
@@ -17,7 +17,6 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isAdvTest()) {
-			// Попытка декларировать блок несколько раз
 			if (blockCache[this.tplName][command]) {
 				throw this.error('Block "' + command + '" is already defined');
 			}

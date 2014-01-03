@@ -12,7 +12,7 @@
  * @param {?string=} [params.placement] - если true, то делается проверка,
  *     где именно размещена директива ('global', 'template', ...)
  *
- * @param {?boolean=} [params.sysDir=false] - если true, то директива считается системной
+ * @param {?boolean=} [params.sys=false] - если true, то директива считается системной
  *
  * @param {Object} [params.replacers] - объект коротких сокращений директивы
  * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
@@ -22,7 +22,7 @@
  */
 Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	params = params || {};
-	sysDirs[name] = !!params.sysDir;
+	sysDirs[name] = !!params.sys;
 
 	if (params.replacers) {
 		let repls = params.replacers;
