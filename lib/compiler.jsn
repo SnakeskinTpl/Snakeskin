@@ -146,13 +146,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 					} else if (next2str === '/*') {
 
-						if (next3str !== '/**' && dir.structure.parent) {
-							comment = next2str;
-							dir.i++;
-
-						} else {
+						if (next3str === '/**') {
 							beginStr = true;
 							jsDoc = true;
+
+						} else {
+							comment = next2str;
+							dir.i++;
 						}
 
 					} else if (str.charAt(dir.i - 1) === '*') {
@@ -263,23 +263,32 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 		// Запись строки
 		} else {
-			if (!jsDoc && dir.isSimpleOutput()) {
-				if (!beginStr) {
-					if (!dir.structure.parent) {
-						throw dir.error('Only comments can be used in the global space');
+			if (!dir.structure.parent) {
+				if (jsDoc) {
+					dir.save(dir.applyDefEscape(el));
+
+				} else {
+					throw dir.error('Only comments can be used in the global space');
+				}
+
+			} else {
+				dir.startInlineDir('text');
+
+				if (jsDoc || dir.isSimpleOutput()) {
+					if (!beginStr) {
+						dir.save('__SNAKESKIN_RESULT__ += \'');
+						beginStr = true;
 					}
 
-					dir.save('__SNAKESKIN_RESULT__ += \'');
-					beginStr = true;
+					dir.save(dir.applyDefEscape(el));
 				}
+			}
 
-				dir.save(dir.applyDefEscape(el));
+			dir.inlineDir = null;
+			dir.structure = dir.structure.parent;
 
-			} else if (jsDoc) {
-				dir.save(dir.applyDefEscape(el));
-				if (!beginStr) {
-					jsDoc = false;
-				}
+			if (!beginStr) {
+				jsDoc = false;
 			}
 		}
 	}
