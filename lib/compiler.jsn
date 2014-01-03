@@ -61,7 +61,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
 	var bOpen,
-		bEnd = true,
+		bEnd,
 		bEscape = false;
 
 	var nextLineRgxp = /[\r\n\v]/,
@@ -180,6 +180,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 					fakeBegin++;
 
 				} else {
+					bEnd = true;
 					begin = true;
 					continue;
 				}
@@ -207,8 +208,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 				let commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
-
-				console.log(commandType);
 
 				// Обработка команд
 				let fnRes = Snakeskin.Directions[commandType](
@@ -238,25 +237,23 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 			}
 
 			// Обработка литералов строки и регулярных выражений внутри директивы
-			if (command !== '/') {
-				if (!bOpen) {
-					if (escapeEndMap[el]) {
-						bEnd = true;
+			if (!bOpen) {
+				if (escapeEndMap[el]) {
+					bEnd = true;
 
-					} else if (bEndRgxp.test(el)) {
-						bEnd = false;
-					}
+				} else if (bEndRgxp.test(el)) {
+					bEnd = false;
 				}
+			}
 
-				if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
-					bOpen = el;
+			if (escapeMap[el] && (el === '/' ? bEnd && command : true) && !bOpen) {
+				bOpen = el;
 
-				} else if (bOpen && (el === '\\' || bEscape)) {
-					bEscape = !bEscape;
+			} else if (bOpen && (el === '\\' || bEscape)) {
+				bEscape = !bEscape;
 
-				} else if (escapeMap[el] && bOpen === el && !bEscape) {
-					bOpen = false;
-				}
+			} else if (escapeMap[el] && bOpen === el && !bEscape) {
+				bOpen = false;
 			}
 
 			command += el;

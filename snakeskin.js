@@ -1247,7 +1247,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
 	var bOpen,
-		bEnd = true,
+		bEnd,
 		bEscape = false;
 
 	var nextLineRgxp = /[\r\n\v]/,
@@ -1367,6 +1367,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 					fakeBegin++;
 
 				} else {
+					bEnd = true;
 					begin = true;
 					continue;
 				}
@@ -1394,8 +1395,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 				var commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
-
-				console.log(commandType);
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
@@ -1425,25 +1424,23 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 			}
 
 			// Обработка литералов строки и регулярных выражений внутри директивы
-			if (command !== '/') {
-				if (!bOpen) {
-					if (escapeEndMap[el]) {
-						bEnd = true;
+			if (!bOpen) {
+				if (escapeEndMap[el]) {
+					bEnd = true;
 
-					} else if (bEndRgxp.test(el)) {
-						bEnd = false;
-					}
+				} else if (bEndRgxp.test(el)) {
+					bEnd = false;
 				}
+			}
 
-				if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
-					bOpen = el;
+			if (escapeMap[el] && (el === '/' ? bEnd && command : true) && !bOpen) {
+				bOpen = el;
 
-				} else if (bOpen && (el === '\\' || bEscape)) {
-					bEscape = !bEscape;
+			} else if (bOpen && (el === '\\' || bEscape)) {
+				bEscape = !bEscape;
 
-				} else if (escapeMap[el] && bOpen === el && !bEscape) {
-					bOpen = false;
-				}
+			} else if (escapeMap[el] && bOpen === el && !bEscape) {
+				bOpen = false;
 			}
 
 			command += el;
@@ -1470,7 +1467,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
-	console.log(dir.structure);
 	if (dir.structure.parent) {
 		throw dir.error('Missing closing or opening tag in the template');
 	}
@@ -1593,6 +1589,14 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
  */
 
 var blackWordList = {
+	'+': true,
+	'++': true,
+	'-': true,
+	'--': true,
+	'~': true,
+	'~~': true,
+	'!': true,
+	'!!': true,
 	'break': true,
 	'case': true,
 	'catch': true,
@@ -1819,7 +1823,7 @@ DirObj.prototype.getWord = function (str, pos) {
 		pContent = null;
 
 	var j = 0;
-	var nextCharRgxp = /[@#$+\-\w\[\]().]/;
+	var nextCharRgxp = /[@#$+\-~!\w\[\]().]/;
 
 	for (var i = pos; i < str.length; i++, j++) {
 		var el = str.charAt(i);
@@ -1947,7 +1951,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var globalExportRgxp = /([$\w]*)(.*)/,
 		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
 
-	var nextCharRgxp = /[@#$a-z_0-9]/i,
+	var nextCharRgxp = /[@#$+\-~!\w]/i,
 		newWordRgxp = /[^@#$\w\[\].]/,
 		filterRgxp = /[!$a-z_]/i;
 
@@ -3475,6 +3479,9 @@ Snakeskin.addDirective(
 			}
 
 			this.startInlineDir('output');
+
+			console.log(this.prepareOutput(command));
+
 			if (this.isSimpleOutput()) {
 				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
 			}

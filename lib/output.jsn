@@ -4,6 +4,14 @@
  */
 
 var blackWordList = {
+	'+': true,
+	'++': true,
+	'-': true,
+	'--': true,
+	'~': true,
+	'~~': true,
+	'!': true,
+	'!!': true,
 	'break': true,
 	'case': true,
 	'catch': true,
@@ -225,7 +233,7 @@ DirObj.prototype.getWord = function (str, pos) {
 		pContent = null;
 
 	var j = 0;
-	var nextCharRgxp = /[@#$+\-\w\[\]().]/;
+	var nextCharRgxp = /[@#$+\-~!\w\[\]().]/;
 
 	for (let i = pos; i < str.length; i++, j++) {
 		let el = str.charAt(i);
@@ -352,7 +360,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var globalExportRgxp = /([$\w]*)(.*)/,
 		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
 
-	var nextCharRgxp = /[@#$a-z_0-9]/i,
+	var nextCharRgxp = /[@#$+\-~!\w]/i,
 		newWordRgxp = /[^@#$\w\[\].]/,
 		filterRgxp = /[!$a-z_]/i;
 

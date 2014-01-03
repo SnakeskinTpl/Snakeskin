@@ -11,15 +11,7 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{proto foo(a)}
-					{a}
-
-					{if a}
-						{?a--}
-					{/}
-				{/}
-
-				{apply foo(1)}
+				{(/{/.test('{'))}
 			{/}
 		</script>
 		<script>
