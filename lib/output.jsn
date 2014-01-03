@@ -177,41 +177,33 @@ DirObj.prototype.replaceTplVars = function (str) {
 };
 
 /**
- * Вернуть true, если предыдущий не пробельный символ в строке равен {
+ * Вернуть true, если cлово является свойством в литерале объекта
  *
  * @param {string} str - исходная строка
- * @param {number} pos - начальная позиция
+ * @param {number} start - начальная позиция слова
+ * @param {number} end - конечная позиция слова
  * @return {boolean}
  */
-DirObj.prototype.isPrevSyOL = function (str, pos) {
+DirObj.prototype.isSyOL = function (str, start, end) {
 	var rgxp = /\S/;
+	var res;
 
-	for (let i = pos; i--;) {
+	for (let i = start; i--;) {
 		let el = str.charAt(i);
 
 		if (rgxp.test(el)) {
-			return el === '{';
+			res = el === '?';
+			break;
 		}
 	}
 
-	return false;
-};
+	if (!res) {
+		for (let i = end; i < str.length; i++) {
+			let el = str.charAt(i);
 
-/**
- * Вернуть true, если следующий не пробельный символ в строке равен :
- *
- * @param {string} str - исходная строка
- * @param {number} pos - начальная позиция
- * @return {boolean}
- */
-DirObj.prototype.isNextSyOL = function (str, pos) {
-	var rgxp = /\S/;
-
-	for (let i = pos; i < str.length; i++) {
-		let el = str.charAt(i);
-
-		if (rgxp.test(el)) {
-			return el === ':';
+			if (rgxp.test(el)) {
+				return el === ':';
+			}
 		}
 	}
 
@@ -451,8 +443,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					!isFilter &&
 					isNaN(Number(word)) &&
 					!escapeRgxp.test(word) &&
-					!this.isPrevSyOL(command, i) &&
-					!this.isNextSyOL(command, i + word.length);
+					!this.isSyOL(command, i, i + word.length);
 
 				let globalExport;
 
