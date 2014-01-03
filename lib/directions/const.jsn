@@ -10,9 +10,10 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var tplName = this.tplName;
+		var scan = /^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i.exec(command);
 
 		// Инициализация переменных
-		if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
+		if (scan && !scan[1]) {
 			let name = command.split('=')[0].trim(),
 				mod = name.charAt(0);
 
@@ -68,7 +69,7 @@ Snakeskin.addDirective(
 
 			this.startInlineDir('output');
 			if (this.isSimpleOutput()) {
-				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
+				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command, scan && scan[1]) + ';');
 			}
 		}
 	}

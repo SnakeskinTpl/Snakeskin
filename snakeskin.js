@@ -2723,7 +2723,7 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput(command) + ';');
+			this.save(this.prepareOutput(command, true) + ';');
 		}
 	}
 );var __NEJS_THIS__ = this;
@@ -3414,6 +3414,12 @@ Snakeskin.addDirective(
  * @version 1.0.0
  */
 
+/**
+ * Регулярное выражение для проверки вывода
+ * @type {!RegExp}
+ */
+DirObj.prototype.outputRgxp = /^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;
+
 Snakeskin.addDirective(
 	'const',
 
@@ -3422,9 +3428,10 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
+		var scan = this.outputRgxp.exec(command);
 
 		// Инициализация переменных
-		if (/^[@#$a-z_][$\w\[\].'"\s]*[^=]=[^=]/im.test(command)) {
+		if (scan && !scan[1]) {
 			var name = command.split('=')[0].trim(),
 				mod = name.charAt(0);
 
@@ -3479,11 +3486,8 @@ Snakeskin.addDirective(
 			}
 
 			this.startInlineDir('output');
-
-			console.log(this.prepareOutput(command));
-
 			if (this.isSimpleOutput()) {
-				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
+				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command, scan && scan[1]) + ';');
 			}
 		}
 	}
