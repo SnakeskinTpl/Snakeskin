@@ -1647,8 +1647,6 @@ var blackWordList = {
 	'while': true,
 	'with': true,
 	'class': true,
-	'let': true,
-	'const': true,
 	'debugger': true,
 	'interface': true
 };
@@ -1659,8 +1657,8 @@ var unaryBlackWordList = {
 
 var comboBlackWordList = {
 	'var': true,
-	'let': true,
-	'const': true
+	'const': true,
+	'let': true
 };
 
 /**
@@ -1822,6 +1820,28 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 
 		if (rgxp.test(el)) {
 			return el === ':';
+		}
+	}
+
+	return false;
+};
+
+/**
+ * Вернуть true, если следующий не пробельный символ в строке равен присвоению (=)
+ *
+ * @param {string} str - исходная строка
+ * @param {number} pos - начальная позиция
+ * @return {boolean}
+ */
+DirObj.prototype.isNextAssign = function (str, pos) {
+	var __NEJS_THIS__ = this;
+	var rgxp = /\S/;
+
+	for (var i = pos; i < str.length; i++) {
+		var el = str.charAt(i);
+
+		if (rgxp.test(el)) {
+			return el === '=' && str.charAt(i + 1) !== '=';
 		}
 	}
 
@@ -2114,6 +2134,15 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 					} else {
 						vres = canParse ? addScope(rfWord) : rfWord;
+					}
+				}
+
+				if (canParse) {
+					if (this.isNextAssign(command, i + word.length)) {
+						// Попытка повторной инициализации константы
+						if (constCache[this.tplName][vres] || constICache[this.tplName][vres]) {
+							throw this.error('Constant "' + vres + '" is already defined');
+						}
 					}
 				}
 

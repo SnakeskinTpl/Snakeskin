@@ -219,6 +219,27 @@ DirObj.prototype.isNextSyOL = function (str, pos) {
 };
 
 /**
+ * Вернуть true, если следующий не пробельный символ в строке равен присвоению (=)
+ *
+ * @param {string} str - исходная строка
+ * @param {number} pos - начальная позиция
+ * @return {boolean}
+ */
+DirObj.prototype.isNextAssign = function (str, pos) {
+	var rgxp = /\S/;
+
+	for (let i = pos; i < str.length; i++) {
+		let el = str.charAt(i);
+
+		if (rgxp.test(el)) {
+			return el === '=' && str.charAt(i + 1) !== '=';
+		}
+	}
+
+	return false;
+};
+
+/**
  * Вернуть целое слово из строки, начиная с указанной позиции
  *
  * @param {string} str - исходная строка
@@ -500,6 +521,15 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 					} else {
 						vres = canParse ? addScope(rfWord) : rfWord;
+					}
+				}
+
+				if (canParse) {
+					if (this.isNextAssign(command, i + word.length)) {
+						// Попытка повторной инициализации константы
+						if (constCache[this.tplName][vres] || constICache[this.tplName][vres]) {
+							throw this.error('Constant "' + vres + '" is already defined');
+						}
 					}
 				}
 
