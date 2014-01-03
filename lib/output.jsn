@@ -42,7 +42,7 @@ var blackWordList = {
 	'void': true,
 	'while': true,
 	'with': true,
-	'class': true
+	'class': true,
 	'debugger': true,
 	'interface': true
 };
