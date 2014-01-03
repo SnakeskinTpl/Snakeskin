@@ -97,29 +97,20 @@ Snakeskin.Directions['for'] = function (command, commandLength, dir, adv) {
 	}
 };
 
-/**
- * Директива while
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['while'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "while" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'while',
 
-	dir.startDir('while');
-	if (dir.isSimpleOutput()) {
-		dir.save('while (' + dir.prepareOutput(command, true) + ') {');
+	{
+		inBlock: true
+	},
+
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('while (' + this.prepareOutput(command, true) + ') {');
+		}
 	}
-};
+);
 
 /**
  * Директива repeat

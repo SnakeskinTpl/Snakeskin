@@ -11,8 +11,15 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{a=1}
-				{?a += window}
+				{proto foo(a)}
+					{a}
+
+					{if a}
+						{?a--}
+						{apply foo}
+					{/}
+				{/}
+				{apply foo(1222)}
 			{/}
 		</script>
 		<script>

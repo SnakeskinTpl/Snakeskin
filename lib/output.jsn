@@ -371,15 +371,17 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var multPropRgxp = /\[|\./,
 		firstPropRgxp = /([^.[]+)(.*)/;
 
+	var propValRgxp = /[^-+!]+/;
+	var replacePropVal = (sstr) => vars[sstr] || sstr;
+
 	function addScope(str) {
 		if (multPropRgxp.test(str)) {
 			let fistProp = firstPropRgxp.exec(str);
-			fistProp[1] = vars[fistProp[1]] || fistProp[1];
-
+			fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
 			str = fistProp.slice(1).join('');
 
 		} else {
-			str = vars[str] || str;
+			str = str.replace(propValRgxp, replacePropVal);
 		}
 
 		return str;
@@ -499,6 +501,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						vres = canParse ? addScope(rfWord) : rfWord;
 					}
 				}
+
+				console.log(vres);
 
 				// Данное слово является составным системным,
 				// т.е. пропускаем его и следующее за ним

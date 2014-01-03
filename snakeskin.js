@@ -359,6 +359,7 @@ var replacers = {},
 var sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true,
+	'__I_PROTO__': true,
 	'$_': true
 };
 
@@ -1962,16 +1963,19 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var multPropRgxp = /\[|\./,
 		firstPropRgxp = /([^.[]+)(.*)/;
 
+	var propValRgxp = /[^-+!]+/;
+	var replacePropVal = function (sstr) {
+		return vars[sstr] || sstr;};
+
 	function addScope(str) {
 		var __NEJS_THIS__ = this;
 		if (multPropRgxp.test(str)) {
 			var fistProp = firstPropRgxp.exec(str);
-			fistProp[1] = vars[fistProp[1]] || fistProp[1];
-
+			fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
 			str = fistProp.slice(1).join('');
 
 		} else {
-			str = vars[str] || str;
+			str = str.replace(propValRgxp, replacePropVal);
 		}
 
 		return str;
@@ -2091,6 +2095,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						vres = canParse ? addScope(rfWord) : rfWord;
 					}
 				}
+
+				console.log(vres);
 
 				// Данное слово является составным системным,
 				// т.е. пропускаем его и следующее за ним
@@ -2833,7 +2839,7 @@ Snakeskin.addDirective(
 		});
 
 		var args = command.match(/\((.*?)\)/),
-			argsMap = [];
+			argsMap = [[this.declVar('__I_PROTO__'), 1]];
 
 		if (args) {
 			args = args[1].split(',');
@@ -2877,7 +2883,9 @@ Snakeskin.addDirective(
 		if (!this.parentTplName) {
 			proto.body = Snakeskin.compile(
 				'{template ' + tplName + '()}' +
-					this.source.substring(lastProto.startI, this.i - commandLength - 1) +
+					'{while __I_PROTO__--}' +
+						this.source.substring(lastProto.startI, this.i - commandLength - 1) +
+					'{end}' +
 				'{end}',
 
 				null,
@@ -2964,6 +2972,8 @@ Snakeskin.addDirective(
 		}
 
 		if (!this.parentTplName && !this.hasParent('proto')) {
+			console.log(1);
+
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
@@ -2983,15 +2993,16 @@ Snakeskin.addDirective(
 
 			} else {
 				var proto = protoCache[this.tplName][name];
-				var protoArgs = proto.args;
+				var protoArgs = proto.args,
+					argStr = '';
 
 				for (var i = 0; i < protoArgs.length; i++) {
 					args[i] = args[i] || null;
 
-					var arg = protoArgs[i][0];
-					var def = protoArgs[i][1];
+					var arg = protoArgs[i][0],
+						def = protoArgs[i][1];
 
-					this.save('var ' + arg + ' = ' +
+					argStr += 'var ' + arg + ' = ' +
 						(def !== void 0 ?
 							args[i] ?
 								'typeof ' + args[i] + ' !== \'undefined\' && ' +
@@ -3001,11 +3012,10 @@ Snakeskin.addDirective(
 									def :
 								def :
 							args[i] || 'void 0'
-						) + ';'
-					);
+						) + ';';
 				}
 
-				this.save(proto.body);
+				this.save(argStr + proto.body);
 			}
 		}
 	}
@@ -3151,30 +3161,21 @@ Snakeskin.Directions['for'] = function (command, commandLength, dir, adv) {
 	}
 };
 
-/**
- * Директива while
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['while'] = function (command, commandLength, dir, adv) {
-	var __NEJS_THIS__ = this;
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "while" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'while',
 
-	dir.startDir('while');
-	if (dir.isSimpleOutput()) {
-		dir.save('while (' + dir.prepareOutput(command, true) + ') {');
+	{
+		inBlock: true
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('while (' + this.prepareOutput(command, true) + ') {');
+		}
 	}
-};
+);
 
 /**
  * Директива repeat
@@ -3414,12 +3415,6 @@ Snakeskin.addDirective(
  * @version 1.0.0
  */
 
-/**
- * Регулярное выражение для проверки вывода
- * @type {!RegExp}
- */
-DirObj.prototype.outputRgxp = /^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;
-
 Snakeskin.addDirective(
 	'const',
 
@@ -3428,7 +3423,7 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
-		var scan = this.outputRgxp.exec(command);
+		var scan = /^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i.exec(command);
 
 		// Инициализация переменных
 		if (scan && !scan[1]) {

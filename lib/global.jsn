@@ -34,6 +34,7 @@ var replacers = {},
 const sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true,
+	'__I_PROTO__': true,
 	'$_': true
 };
 
