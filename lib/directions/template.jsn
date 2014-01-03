@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 	'template',
 
 	{
-		inGlobal: true
+		placement: 'global'
 	},
 
 	function (command) {

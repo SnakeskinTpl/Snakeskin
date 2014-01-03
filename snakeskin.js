@@ -647,7 +647,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params,opt_vars) {
 		childs: [],
 		vars: vars,
 		params: opt_params,
-		isSys: !!sysDirs[opt_name]
+		sys: !!sysDirs[opt_name]
 	};
 
 	struct.childs.push(obj);
@@ -2330,7 +2330,7 @@ Snakeskin.addDirective(
 	'&',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function () {
@@ -2387,7 +2387,7 @@ Snakeskin.addDirective(
 		if (Snakeskin.Directions[struct.name + 'End']) {
 			Snakeskin.Directions[struct.name + 'End'].apply(this, arguments);
 
-		} else if (!struct.isSys && this.isSimpleOutput()) {
+		} else if (!struct.sys && this.isSimpleOutput()) {
 			this.save('};');
 		}
 
@@ -2422,7 +2422,7 @@ Snakeskin.addDirective(
 	'template',
 
 	{
-		inGlobal: true
+		placement: 'global'
 	},
 
 	function (command) {
@@ -2679,7 +2679,7 @@ Snakeskin.addDirective(
 	'return',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -2870,7 +2870,7 @@ Snakeskin.addDirective(
 	'proto',
 
 	{
-		isSys: true
+		sys: true
 	},
 
 	function (command) {
@@ -2994,7 +2994,7 @@ Snakeskin.addDirective(
 	'apply',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {

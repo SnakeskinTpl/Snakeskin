@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 		if (Snakeskin.Directions[struct.name + 'End']) {
 			Snakeskin.Directions[struct.name + 'End'].apply(this, arguments);
 
-		} else if (!struct.isSys && this.isSimpleOutput()) {
+		} else if (!struct.sys && this.isSimpleOutput()) {
 			this.save('};');
 		}
 

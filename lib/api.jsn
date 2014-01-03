@@ -252,7 +252,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars = {}) {
 		childs: [],
 		vars: vars,
 		params: opt_params,
-		isSys: !!sysDirs[opt_name]
+		sys: !!sysDirs[opt_name]
 	};
 
 	struct.childs.push(obj);

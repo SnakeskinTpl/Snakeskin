@@ -38,7 +38,7 @@ Snakeskin.addDirective(
 	'proto',
 
 	{
-		isSys: true
+		sys: true
 	},
 
 	function (command) {
@@ -159,7 +159,7 @@ Snakeskin.addDirective(
 	'apply',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
