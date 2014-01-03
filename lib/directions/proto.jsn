@@ -13,7 +13,7 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var str = 'var ' + protoArgs[0][0] + ' = ' + protoArgs[0][1] + ';';
 
 	for (let i = 1; i < protoArgs.length; i++) {
-		let val = args[i - 1] || null;
+		let val = this.prepareOutput(args[i - 1] || null, true);
 
 		let arg = protoArgs[i][0],
 			def = protoArgs[i][1];
@@ -168,14 +168,20 @@ Snakeskin.addDirective(
 			let name = command.match(/[^(]+/)[0],
 				args = command.match(/\((.*?)\)/);
 
+			let proto = protoCache[this.tplName][name],
+				argsStr;
+
+			if (proto) {
+				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);
+			}
 
 			if (this.firstProto === name) {
-				this.save(this.prepareOutput('__I_PROTO__++', true) + ';');
+				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
 
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
-			} else if (!protoCache[this.tplName][name]) {
+			} else if (!proto) {
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
@@ -190,8 +196,7 @@ Snakeskin.addDirective(
 				});
 
 			} else {
-				let proto = protoCache[this.tplName][name];
-				this.save(this.returnArgs(proto.args, args ? args[1].split(',') : []) + proto.body);
+				this.save(argsStr + proto.body);
 			}
 		}
 	}
