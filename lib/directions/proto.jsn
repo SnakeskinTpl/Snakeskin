@@ -79,7 +79,8 @@ Snakeskin.addDirective(
 
 				{
 					scope: this.scope,
-					vars: this.structure.vars
+					vars: this.structure.vars,
+					firstProto: lastProto.name
 				}
 			);
 		}
@@ -155,6 +156,11 @@ Snakeskin.addDirective(
 		}
 
 		if (!this.parentTplName && !this.hasParent('proto')) {
+			if (this.firstProto === name) {
+				this.save(this.prepareOutput('__I_PROTO__++', true) + ';');
+				return;
+			}
+
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)

@@ -33,6 +33,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 		info: opt_info
 	});
 
+	dir.firstProto = opt_sysParams.firstProto;
 	dir.scope = opt_sysParams.scope || dir.scope;
 	dir.structure.vars = opt_sysParams.vars || dir.structure.vars;
 
@@ -208,6 +209,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun, opt_sysPa
 
 				let commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
+
+				//commandType === 'apply' && console.log(commandType);
 
 				// Обработка команд
 				let fnRes = Snakeskin.Directions[commandType](

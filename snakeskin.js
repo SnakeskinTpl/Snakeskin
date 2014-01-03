@@ -1220,6 +1220,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 		info: opt_info
 	});
 
+	dir.firstProto = opt_sysParams.firstProto;
 	dir.scope = opt_sysParams.scope || dir.scope;
 	dir.structure.vars = opt_sysParams.vars || dir.structure.vars;
 
@@ -1396,6 +1397,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 
 				var commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
+
+				//commandType === 'apply' && console.log(commandType);
 
 				// Обработка команд
 				var fnRes = Snakeskin.Directions[commandType](
@@ -2095,8 +2098,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						vres = canParse ? addScope(rfWord) : rfWord;
 					}
 				}
-
-				console.log(vres);
 
 				// Данное слово является составным системным,
 				// т.е. пропускаем его и следующее за ним
@@ -2894,7 +2895,8 @@ Snakeskin.addDirective(
 
 				{
 					scope: this.scope,
-					vars: this.structure.vars
+					vars: this.structure.vars,
+					firstProto: lastProto.name
 				}
 			);
 		}
@@ -2972,7 +2974,10 @@ Snakeskin.addDirective(
 		}
 
 		if (!this.parentTplName && !this.hasParent('proto')) {
-			console.log(1);
+			if (this.firstProto === name) {
+				this.save(this.prepareOutput('__I_PROTO__++', true) + ';');
+				return;
+			}
 
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
