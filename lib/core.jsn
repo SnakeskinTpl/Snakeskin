@@ -70,6 +70,7 @@ var Snakeskin = {
 		//#include directions/proto.js
 		//#include directions/inherit.js
 
+		//#include directions/cycles.js
 		//#include directions/iterator.js
 		//#include directions/logic.js
 		//#include directions/scope.js

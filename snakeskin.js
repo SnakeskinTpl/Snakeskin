@@ -3419,7 +3419,11 @@ Snakeskin.addDirective(
 			this.save('continue;');
 		}
 	}
-);
+);var __NEJS_THIS__ = this;
+/*!
+ * @status stable
+ * @version 1.0.0
+ */
 
 Snakeskin.addDirective(
 	'forEach',
