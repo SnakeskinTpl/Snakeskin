@@ -2558,7 +2558,7 @@ Snakeskin.addDirective(
 
 		// Имя + пространство имён шаблона
 		try {
-			var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
+			var tmpTplName = /(.*?)\(/.exec(command)[1],
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
 		} catch (ignore) {
@@ -2604,7 +2604,7 @@ Snakeskin.addDirective(
 
 		// Входные параметры
 		try {
-			var args = /\(([\s\S]*?)\)/m.exec(command)[1];
+			var args = /\((.*?)\)/.exec(command)[1];
 
 		} catch (ignore) {
 			throw this.error('Invalid syntax');
@@ -2617,7 +2617,7 @@ Snakeskin.addDirective(
 			'/* Snakeskin template: ' +
 				tplName +
 				'; ' +
-				args.replace(/=([\s\S]*?)(?:,|$)/gm, '') +
+				args.replace(/=(.*?)(?:,|$)/g, '') +
 			' */'
 		);
 
