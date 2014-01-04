@@ -1879,10 +1879,12 @@ DirObj.prototype.isNextAssign = function (str, pos) {
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
+ * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
  * @return {{word: string, finalWord: string}}
  */
-DirObj.prototype.getWord = function (str, pos) {
+DirObj.prototype.getWord = function (str, pos,opt_sys) {
 	var __NEJS_THIS__ = this;
+	if (typeof opt_sys === "undefined") { opt_sys = false; }
 	var res = '',
 		nres = '';
 
@@ -1919,7 +1921,7 @@ DirObj.prototype.getWord = function (str, pos) {
 
 						} else {
 							nres = res.substring(0, start) +
-								this.prepareOutput(pContent, true, true) +
+								this.prepareOutput(pContent, true, !opt_sys) +
 								res.substring(j) +
 							']';
 						}
@@ -2073,7 +2075,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
 			if (nword && !posNWord && nextCharRgxp.test(el)) {
-				var nextStep = this.getWord(command, i);
+				var nextStep = this.getWord(command, i, opt_sys);
 				var word = nextStep.word,
 					finalWord = nextStep.finalWord;
 
@@ -2856,8 +2858,9 @@ DirObj.prototype.varCache = {
 	}
 };
 
-DirObj.prototype.multiDeclVar = function (str) {
+DirObj.prototype.multiDeclVar = function (str,opt_end) {
 	var __NEJS_THIS__ = this;
+	if (typeof opt_end === "undefined") { opt_end = true; }
 	var isSys = 0,
 		cache = '';
 
@@ -2908,7 +2911,7 @@ DirObj.prototype.multiDeclVar = function (str) {
 		throw this.error('Invalid syntax');
 	}
 
-	return final.slice(0, -1) + ';';
+	return final.slice(0, -1) + (opt_end ? ';' : '');
 };
 
 Snakeskin.addDirective(
@@ -3250,64 +3253,203 @@ Snakeskin.addDirective(
 			var part = command.split('=>'),
 				val = this.prepareOutput(part[0], true);
 
-			var varsStr = '';
+			var args = part[1] ? part[1].trim().split(',') : [];
 
-			if (part[1]) {
-				var vars = part[1].split(',');
+			var tmp = this.multiDeclVar('__TMP__ = ' + val),
+				cache = this.prepareOutput('__TMP__', true);
 
-				for (var i = 0; i < vars.length; i++) {
-					var el = this.declVar(vars[i].trim());
-					varsStr += 'var ' + el + ' = ';
-				}
+			var oLength = '';
+			if (args.length >= 5) {
+				oLength +=
+					this.multiDeclVar('__TMP_LENGTH__ = 0') +
+					'for (' + this.multiDeclVar('key', false) + 'in ' + cache + ') {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('key', true) + ')) { continue; }' +
+						this.prepareOutput('__TMP_LENGTH__++;', true) +
+					'}';
 			}
 
-			this.save(varsStr + 'if (' + this.prepareOutput(command, true) + ') {');
+			var resStr =
+				tmp +
+				'if (' + cache + ') {' +
+					'if (Array.isArray(' + cache + ')) {' +
+						this.multiDeclVar('__TMP_LENGTH__ = __TMP__.length') +
+						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput('__I__ < __TMP_LENGTH__; __I__++', true) + ') {' +
+							(function () {
+								
+								var str = '';
+
+								for (var i = 0; i < args.length; i++) {
+									switch (i) {
+										case 0: {
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache + '[__I__]');
+										} break;
+
+										case 1: {
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
+										} break;
+
+										case 2: {
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
+										} break;
+
+										case 3: {
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
+										} break;
+
+										case 4: {
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
+										} break;
+									}
+								}
+
+								return str;
+							})()
+				;
+
+			var end =
+				'} else {' +
+					oLength +
+					this.multiDeclVar('__I__ = -1') +
+					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) { continue; }' +
+						this.prepareOutput('__I__++;', true) +
+
+						(function () {
+							
+							var str = '';
+
+							for (var i = 0; i < args.length; i++) {
+								switch (i) {
+									case 0: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache + '[__KEY__]');
+									} break;
+
+									case 1: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __KEY__');
+									} break;
+
+									case 2: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
+									} break;
+
+									case 3: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
+									} break;
+
+									case 4: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
+									} break;
+
+									case 5: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
+									} break;
+								}
+							}
+
+							return str;
+						})()
+				;
+
+			this.save(resStr);
+			this.structure.params = {
+				from: this.res.length,
+				end: end
+			};
+		}
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		if (this.isSimpleOutput()) {
+			var params = this.structure.params;
+			this.save('}' + params.end + this.res.substring(params.from) + '}}}');
 		}
 	}
 );
 
-/**
- * Директива forIn
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['forIn'] = function (command, commandLength, dir, adv) {
-	var __NEJS_THIS__ = this;
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "forIn" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'forIn',
 
-	dir.startDir('forIn');
-	if (dir.isSimpleOutput()) {
-		var part = command.split('=>'),
-			val = dir.prepareOutput(part[0], true);
+	{
+		placement: 'template'
+	},
 
-		dir.save(val + ' && Snakeskin.forIn(' + val +
-			', function (' + (part[1] || '') + ') {');
-	}
-};
+	function (command) {
+		var __NEJS_THIS__ = this;
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			var part = command.split('=>'),
+				val = this.prepareOutput(part[0], true);
 
-/**
- * Окончание forIn
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['forInEnd'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('}, this);');
+			var args = part[1] ? part[1].trim().split(',') : [];
+
+			var tmp = this.multiDeclVar('__TMP__ = ' + val),
+				cache = this.prepareOutput('__TMP__', true);
+
+			var oLength = '';
+			if (args.length >= 5) {
+				oLength +=
+					this.multiDeclVar('__TMP_LENGTH__ = 0') +
+					'for (' + this.multiDeclVar('key', false) + 'in ' + cache + ') {' +
+						this.prepareOutput('__TMP_LENGTH__++;', true) +
+					'}';
+			}
+
+			var resStr =
+				tmp +
+				'if (' + cache + ') {' +
+					oLength +
+					this.multiDeclVar('__I__ = -1') +
+					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
+						this.prepareOutput('__I__++;', true) +
+
+						(function () {
+							
+							var str = '';
+
+							for (var i = 0; i < args.length; i++) {
+								switch (i) {
+									case 0: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache + '[__KEY__]');
+									} break;
+
+									case 1: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __KEY__');
+									} break;
+
+									case 2: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
+									} break;
+
+									case 3: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
+									} break;
+
+									case 4: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
+									} break;
+
+									case 5: {
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
+									} break;
+								}
+							}
+
+							return str;
+						})()
+			;
+
+			this.save(resStr);
+		}
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		if (this.isSimpleOutput()) {
+			this.save('}}');
+		}
 	}
-};
+);
 
 Snakeskin.addDirective(
 	'for',

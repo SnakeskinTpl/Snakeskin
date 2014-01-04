@@ -236,9 +236,10 @@ DirObj.prototype.isNextAssign = function (str, pos) {
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
+ * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
  * @return {{word: string, finalWord: string}}
  */
-DirObj.prototype.getWord = function (str, pos) {
+DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
 	var res = '',
 		nres = '';
 
@@ -275,7 +276,7 @@ DirObj.prototype.getWord = function (str, pos) {
 
 						} else {
 							nres = res.substring(0, start) +
-								this.prepareOutput(pContent, true, true) +
+								this.prepareOutput(pContent, true, !opt_sys) +
 								res.substring(j) +
 							']';
 						}
@@ -426,7 +427,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
 			if (nword && !posNWord && nextCharRgxp.test(el)) {
-				let nextStep = this.getWord(command, i);
+				let nextStep = this.getWord(command, i, opt_sys);
 				let word = nextStep.word,
 					finalWord = nextStep.finalWord;
 

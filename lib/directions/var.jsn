@@ -9,7 +9,7 @@ DirObj.prototype.varCache = {
 	}
 };
 
-DirObj.prototype.multiDeclVar = function (str) {
+DirObj.prototype.multiDeclVar = function (str, opt_end = true) {
 	var isSys = 0,
 		cache = '';
 
@@ -60,7 +60,7 @@ DirObj.prototype.multiDeclVar = function (str) {
 		throw this.error('Invalid syntax');
 	}
 
-	return final.slice(0, -1) + ';';
+	return final.slice(0, -1) + (opt_end ? ';' : '');
 };
 
 Snakeskin.addDirective(

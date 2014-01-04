@@ -11,12 +11,9 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{var a = 1, b = [1,2,3]}
-
-				{do}
-					{a}
-					{?a++}
-				{while a < 10}
+				{forIn {a: 1, b: 2} => el}
+					{el}<br />
+				{/}
 			{/}
 		</script>
 		<script>
