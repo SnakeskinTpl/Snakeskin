@@ -3350,6 +3350,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save('if (' + this.prepareOutput(command, true) + ') {');
@@ -3366,6 +3370,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		if (this.structure.name !== 'if') {
 			throw this.error('Directive "' + this.name + '" can only be used with a "if"');
 		}
@@ -3408,6 +3416,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save('switch (' + this.prepareOutput(command, true) + ') {');
@@ -3430,6 +3442,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		if (!this.has('switch')) {
 			throw this.error('Directive "' + this.name + '" can only be used within a "switch"');
 		}
