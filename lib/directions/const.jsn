@@ -9,10 +9,6 @@ Snakeskin.addDirective(
 	null,
 
 	function (command, commandLength) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		var tplName = this.tplName;
 		var rgxp = this.scope.length ?
 			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
@@ -22,7 +18,13 @@ Snakeskin.addDirective(
 
 		// Инициализация переменных
 		if (scan && !scan[1]) {
-			let name = command.split('=')[0].trim(),
+			let parts = command.split('=');
+
+			if (!parts[1] || !parts[1].trim()) {
+				throw this.error('Invalid syntax');
+			}
+
+			let name = parts[0].trim(),
 				mod = name.charAt(0);
 
 			if (mod === '#' || mod === '@') {

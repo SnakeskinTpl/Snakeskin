@@ -3527,10 +3527,6 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		var tplName = this.tplName;
 		var rgxp = this.scope.length ?
 			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
@@ -3540,7 +3536,13 @@ Snakeskin.addDirective(
 
 		// Инициализация переменных
 		if (scan && !scan[1]) {
-			var name = command.split('=')[0].trim(),
+			var parts = command.split('=');
+
+			if (!parts[1] || !parts[1].trim()) {
+				throw this.error('Invalid syntax');
+			}
+
+			var name = parts[0].trim(),
 				mod = name.charAt(0);
 
 			if (mod === '#' || mod === '@') {
@@ -3709,13 +3711,13 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'binding',
+	'decl',
 
 	{
 		placement: 'template',
 		replacers: {
 			'{': function (cmd) {
-				return cmd.replace(/^\{/, 'binding ');}
+				return cmd.replace(/^\{/, 'decl ');}
 		}
 	},
 
