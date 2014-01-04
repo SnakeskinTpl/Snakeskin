@@ -73,13 +73,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
 
-	function escapeWhitespace(str) {
-		return str
-			.replace(/\n/gm, '\\n')
-			.replace(/\v/gm, '\\v')
-			.replace(/\r/gm, '\\r');
-	}
-
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
 		let el = str.charAt(dir.i);
@@ -98,7 +91,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 
 				// Внутри строки внутри директивы
 				} else {
-					el = escapeWhitespace(el);
+					el = dir.escapeNextLine(el);
 				}
 
 			// Простой ввод вне деклараций шаблона
@@ -305,7 +298,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 		// Обратная замена cdata областей
 		.replace(
 			/__SNAKESKIN_CDATA__(\d+)_/g,
-			(sstr, pos) => escapeWhitespace(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
+			(sstr, pos) => dir.escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
 		)
 
 		// Удаление пустых операций
