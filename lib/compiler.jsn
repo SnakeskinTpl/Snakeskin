@@ -75,15 +75,15 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
-		let el = str.charAt(dir.i);
-		let rEl = el;
+		let el = str.charAt(dir.i),
+			rEl = el;
 
 		if (nextLineRgxp.test(el)) {
 			opt_info.line++;
 		}
 
-		// Обработка пробельных символов
 		if (whiteSpaceRgxp.test(el)) {
+
 			// Внутри директивы
 			if (begin) {
 				if (!bOpen) {
@@ -128,8 +128,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 				escape = false;
 			}
 
-			let next2str = el + str.charAt(dir.i + 1);
-			let next3str = next2str + str.charAt(dir.i + 2);
+			let next2str = el + str.charAt(dir.i + 1),
+				next3str = next2str + str.charAt(dir.i + 2);
 
 			// Обработка комментариев
 			if (!escape) {
@@ -140,7 +140,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 
 					} else if (next2str === '/*') {
 
-						if (next3str === '/**') {
+						if (next3str === '/**' && !dir.structure.parent) {
 							beginStr = true;
 							jsDoc = true;
 
@@ -190,8 +190,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 				let commandLength = command.length;
 				command = dir.replaceDangerBlocks(command).trim();
 
-				let short1 = command.charAt(0);
-				let short2 = command.substr(0, 2);
+				let short1 = command.charAt(0),
+					short2 = command.substr(0, 2);
 
 				// Поддержка коротких форм записи директив
 				if (replacers[short2]) {
@@ -203,8 +203,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 
 				let commandType = commandTypeRgxp.exec(command)[0];
 				commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
-
-				//commandType === 'apply' && console.log(commandType);
 
 				// Обработка команд
 				let fnRes = Snakeskin.Directions[commandType](
