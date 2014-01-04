@@ -10,8 +10,15 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			/**
+			 * @return {string}
+			 */
 			{template helloWorld()}
-				1
+				{switch 1}
+					{> 1}
+						foo
+					{/}
+				{/}
 			{/}
 		</script>
 		<script>
