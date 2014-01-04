@@ -2884,8 +2884,9 @@ DirObj.prototype.multiDeclVar = function (str) {
 
 		} else if (closeSysTable[el]) {
 			isSys--;
+		}
 
-		} else if ((el === ',' || i === length - 1) && !isSys) {
+		if ((el === ',' || i === length - 1) && !isSys) {
 			if (i === length - 1) {
 				cache += el;
 			}
@@ -3239,7 +3240,7 @@ Snakeskin.addDirective(
 	'forEach',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
@@ -3346,89 +3347,146 @@ Snakeskin.addDirective(
 	'while',
 
 	{
-		inBlock: true
+		placement: 'template'
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		if (this.structure.name == 'do') {
+			if (this.isSimpleOutput()) {
+				this.save('} while (' + this.prepareOutput(command, true) + ');');
+			}
+
+			Snakeskin.Directions['end'](this);
+
+		} else {
+			this.startDir();
+			if (this.isSimpleOutput()) {
+				this.save('while (' + this.prepareOutput(command, true) + ') {');
+			}
+		}
+
+
+	}
+);
+
+Snakeskin.addDirective(
+	'repeat',
+
+	{
+		placement: 'template',
+		sys: true
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save('while (' + this.prepareOutput(command, true) + ') {');
+			this.save('do {');
 		}
 	}
 );
 
-/**
- * Директива repeat
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['repeat'] = function (command, commandLength, dir, adv) {
-	var __NEJS_THIS__ = this;
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "repeat" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'do',
 
-	dir.startDir('repeat');
-	if (dir.isSimpleOutput()) {
-		dir.save('do {');
-	}
-};
+	{
+		placement: 'template',
+		sys: true
+	},
 
-/**
- * Окончание repeat
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['repeatEnd'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('} while (' + dir.prepareOutput(command, true) + ');');
+	function () {
+		var __NEJS_THIS__ = this;
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save('do {');
+		}
 	}
-};
+);
 
-/**
- * Директива until
- */
-Snakeskin.Directions['until'] = Snakeskin.Directions['end'];
+Snakeskin.addDirective(
+	'until',
 
-/**
- * Директива break
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['break'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('break;');
+	{
+		placement: 'template'
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		if (this.structure.name !== 'repeat') {
+			throw this.error('Directive "' + this.name + '" can only be used with a "repeat"');
+		}
+
+		if (this.isSimpleOutput()) {
+			this.save('} while (' + this.prepareOutput(command, true) + ');');
+		}
+
+		Snakeskin.Directions['end'](this);
 	}
-};
+);
 
-/**
- * Директива continue
- *
- * @param {string} command - текст команды
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- */
-Snakeskin.Directions['continue'] = function (command, commandLength, dir) {
-	var __NEJS_THIS__ = this;
-	if (dir.isSimpleOutput()) {
-		dir.save('continue;');
+Snakeskin.addDirective(
+	'break',
+
+	{
+		placement: 'template'
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+
+		if (!this.hasParent({
+			'repeat': true,
+			'while': true,
+			'do': true,
+			'forEach': true,
+			'forIn': true
+		})) {
+			throw this.error('Directive "' + this.name + '" can only be used with a cycles');
+		}
+
+		if (this.isSimpleOutput()) {
+			this.save('break;');
+		}
 	}
-};var __NEJS_THIS__ = this;
+);
+
+Snakeskin.addDirective(
+	'continue',
+
+	{
+		placement: 'template'
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+
+		if (!this.hasParent({
+			'repeat': true,
+			'while': true,
+			'do': true,
+			'forEach': true,
+			'forIn': true
+		})) {
+			throw this.error('Directive "' + this.name + '" can only be used with a cycles');
+		}
+
+		if (this.isSimpleOutput()) {
+			this.save('continue;');
+		}
+	}
+);
+var __NEJS_THIS__ = this;
 /*!
  * @status stable
  * @version 1.0.0

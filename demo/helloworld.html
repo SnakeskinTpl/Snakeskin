@@ -13,9 +13,10 @@
 			{template helloWorld()}
 				{var a = 1, b = [1,2,3]}
 
-				{for var i = 0; i < 10; i++}
-					{i}
-				{/}
+				{do}
+					{a}
+					{?a++}
+				{while a < 10}
 			{/}
 		</script>
 		<script>
