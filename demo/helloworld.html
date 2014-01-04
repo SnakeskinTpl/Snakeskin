@@ -11,19 +11,10 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				foo
-				{switch 1}
-					/** 121 */
-				{/}
+				{return -> apply foo()}
 			{/}
 		</script>
 		<script>
-			Snakeskin.Filters.Math = {
-				rand: function () {
-					return Math.random();
-				}
-			};
-
 			Snakeskin.compile(document.getElementById('templates'));
 			document.getElementById('test').innerHTML = helloWorld();
 		</script>

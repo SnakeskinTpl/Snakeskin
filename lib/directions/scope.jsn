@@ -3,12 +3,6 @@
  * @version 1.0.0
  */
 
-DirObj.prototype.scope = {
-	init: function () {
-		return [];
-	}
-};
-
 Snakeskin.addDirective(
 	'with',
 

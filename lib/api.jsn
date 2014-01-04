@@ -8,29 +8,35 @@
  *
  * @constructor
  * @param {string} src - текст шаблона
+ *
  * @param {Object} params - дополнительные параметры
- *
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
- * @param {boolean} params.dryRun - если true,
- *     то шаблон только транслируется (не компилируется), приватный параметр
  *
+ * @param {Array=} [params.scope] - область видимости (контекст) директив
+ * @param {Object=} [params.vars] - объект локальных переменных
+ *
+ * @param {?string=} [params.proto] - название корневого прототипа
  * @param {Object=} [params.info] - дополнительная информация
  */
 function DirObj(src, params) {
+	// Создание локальных свойств
 	for (let key in this) {
 		if (this[key] && this[key].init) {
 			this[key] = this[key].init();
 		}
 	}
 
-	/** @type {Object} */
-	this.info = params.info;
-
-	/** @type {boolean} */
-	this.dryRun = params.dryRun;
-
 	/** @type {Object=} */
 	this.commonJS = params.commonJS;
+
+	/** @type {!Array} */
+	this.scope = params.scope || [];
+
+	/** @type {?string} */
+	this.proto = params.proto;
+
+	/** @type {Object} */
+	this.info = params.info;
 
 	/**
 	 * Название активной директивы
@@ -70,7 +76,7 @@ function DirObj(src, params) {
 	this.structure = {
 		name: 'root',
 		parent: null,
-		vars: {},
+		vars: params.vars || {},
 		childs: []
 	};
 
@@ -130,7 +136,7 @@ function DirObj(src, params) {
 	 * Результирующий JS код
 	 * @type {string}
 	 */
-	this.res = (!params.dryRun ? '/* This code is generated automatically, don\'t alter it. */' : '') +
+	this.res = (!params.proto ? '/* This code is generated automatically, don\'t alter it. */' : '') +
 		(params.commonJS ?
 			'var Snakeskin = global.Snakeskin;' +
 
@@ -178,7 +184,7 @@ DirObj.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function () {
-	return !this.dryRun &&
+	return !this.proto &&
 		(
 			(this.parentTplName && !this.hasParent({'block': true, 'proto': true})) ||
 			!this.parentTplName

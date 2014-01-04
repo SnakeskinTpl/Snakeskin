@@ -49,7 +49,7 @@ Snakeskin.addDirective(
 		}
 
 		this.tplName = tplName;
-		if (this.dryRun) {
+		if (this.proto) {
 			return;
 		}
 

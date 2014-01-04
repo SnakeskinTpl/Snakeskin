@@ -108,12 +108,11 @@ Snakeskin.addDirective(
 
 				null,
 				null,
-				true,
 
 				{
 					scope: this.scope,
 					vars: this.structure.vars,
-					firstProto: lastProto.name
+					proto: lastProto.name
 				}
 			);
 		}
@@ -182,7 +181,7 @@ Snakeskin.addDirective(
 				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);
 			}
 
-			if (this.firstProto === name) {
+			if (this.proto === name) {
 				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
 
 			// Попытка применить не объявленный прототип
