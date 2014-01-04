@@ -38,7 +38,7 @@ var Snakeskin = {
 };
 
 (function (require) {
-	
+
 
 var __NEJS_THIS__ = this;
 /**!
@@ -506,7 +506,7 @@ function DirObj(src, params) {
 	 */
 	this.source = String(src)
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function (sstr, data) {
-			
+
 			cdata.push(data);
 			return '{__appendLine__ ' +
 				(data.match(/[\n\r]/g) || '').length +
@@ -598,7 +598,7 @@ DirObj.prototype.replace = function (str) {
  * @param {string} tplName - название шаблона
  * @return {!DirObj}
  */
-DirObj.prototype.initCache = function (tplName,opt_force) {
+DirObj.prototype.initTemplateCache = function (tplName,opt_force) {
 	var __NEJS_THIS__ = this;
 	if (typeof opt_force === "undefined") { opt_force = false; }
 	blockCache[tplName] = {};
@@ -1494,7 +1494,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_dryRun,opt_sysPar
 		.replace(
 			/__SNAKESKIN_CDATA__(\d+)_/g,
 			function (sstr, pos) {
-				return escapeWhitespace(dir.cDataContent[pos]).replace(/'/gm, '&#39;');}
+				return escapeWhitespace(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
+;}
 		)
 
 		// Удаление пустых операций
@@ -2373,7 +2374,8 @@ Snakeskin.addDirective(
 	{
 		replacers: {
 			'/': function (cmd) {
-				return cmd.replace(/^\//, 'end ');}
+				return cmd.replace(/^\//, 'end ')
+;}
 		}
 	},
 
@@ -2479,7 +2481,7 @@ Snakeskin.addDirective(
 			this.parentTplName = parentTplName;
 		}
 
-		this.initCache(tplName);
+		this.initTemplateCache(tplName);
 		extMap[tplName] = parentTplName;
 
 		// Входные параметры
@@ -2670,7 +2672,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initCache(tplName, true);
+			this.initTemplateCache(tplName, true);
 			this.startDir(this.structure.name);
 			this.i = this.startI - 1;
 
@@ -2769,7 +2771,8 @@ Snakeskin.addDirective(
 		placement: 'template',
 		replacers: {
 			'?': function (cmd) {
-				return cmd.replace(/^\?/, 'void ');}
+				return cmd.replace(/^\?/, 'void ')
+;}
 		}
 	},
 
@@ -2804,7 +2807,8 @@ Snakeskin.addDirective(
 		placement: 'template',
 		replacers: {
 			':': function (cmd) {
-				return cmd.replace(/^:/, 'var ');}
+				return cmd.replace(/^:/, 'var ')
+;}
 		}
 	},
 
@@ -2913,7 +2917,7 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 			this.tplName = parts[0].trim();
-			this.initCache(this.tplName);
+			this.initTemplateCache(this.tplName);
 		}
 
 		this.startDir(null, {
@@ -3392,7 +3396,8 @@ Snakeskin.addDirective(
 			'>': function (cmd) {
 				return cmd.replace(/^>/, 'case ');},
 			'/>': function (cmd) {
-				return cmd.replace(/^\/>/, 'end case');}
+				return cmd.replace(/^\/>/, 'end case')
+;}
 		}
 	},
 
@@ -3626,7 +3631,8 @@ Snakeskin.addDirective(
 		placement: 'template',
 		replacers: {
 			'*': function (cmd) {
-				return cmd.replace(/^\*/, 'data ');}
+				return cmd.replace(/^\*/, 'data ')
+;}
 		}
 	},
 

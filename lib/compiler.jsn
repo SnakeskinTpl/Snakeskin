@@ -8,16 +8,16 @@
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или исходный текст шаблонов
  *
- * @param {?boolean=} [opt_commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
- * @param {Object=} [opt_info] - дополнительная информация о запуске
+ * @param {?boolean=} [opt_commonJS=false] - если true,
+ *     то шаблон компилируется с экспортом в стиле commonJS (для node.js)
  *
- * @param {Object=} [opt_params] - дополнительные параметры запуска
+ * @param {Object=} [opt_info] - дополнительная информация о запуске:
+ *     используется для сообщений об ошибках
  *
+ * @param {Object=} [opt_params] - служебный параметры запуска
  * @param {Array=} [opt_params.scope] - область видимости (контекст) директив
  * @param {Object=} [opt_params.vars] - объект локальных переменных
- *
  * @param {?string=} [opt_params.proto] - название корневого прототипа
- * @param {Object=} [opt_params.info] - дополнительная информация
  *
  * @return {string}
  */
@@ -31,11 +31,11 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 	}
 
 	var dir = new DirObj(html || src, {
+		info: opt_info,
 		commonJS: !!opt_commonJS,
 		proto: opt_params.proto,
 		scope: opt_params.scope || dir.scope,
-		vars: opt_params.vars || dir.structure.vars,
-		info: opt_info
+		vars: opt_params.vars || dir.structure.vars
 	});
 
 	// Если true, то идёт содержимое директивы,

@@ -16,7 +16,8 @@
  * @param {Object=} [params.vars] - объект локальных переменных
  *
  * @param {?string=} [params.proto] - название корневого прототипа
- * @param {Object=} [params.info] - дополнительная информация
+ * @param {Object=} [params.info] - дополнительная информация о запуске:
+ *     используется для сообщений об ошибках
  */
 function DirObj(src, params) {
 	// Создание локальных свойств
@@ -116,7 +117,6 @@ function DirObj(src, params) {
 	 * @type {!Array}
 	 */
 	this.cDataContent = [];
-	var cdata = this.cDataContent;
 
 	/**
 	 * Исходный текст шаблона
@@ -124,12 +124,15 @@ function DirObj(src, params) {
 	 */
 	this.source = String(src)
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, (sstr, data) => {
-			cdata.push(data);
-			return '{__appendLine__ ' +
-				(data.match(/[\n\r]/g) || '').length +
-				'}__SNAKESKIN_CDATA__' +
-				(cdata.length - 1) +
-				'_';
+			this.cDataContent.push(data);
+			return '' +
+
+				// Количество добавляемых строк
+				'{__appendLine__ ' + (data.match(/[\n\r]/g) || '').length + '}' +
+
+				// Метка для замены
+				'__SNAKESKIN_CDATA__' + (this.cDataContent.length - 1) + '_'
+			;
 		});
 
 	/**
@@ -154,14 +157,32 @@ Snakeskin.DirObj = DirObj;
 
 /**
  * Добавить строку в результирующую строку JavaScript
+ *
  * @param {string} str - исходная строка
+ * @return {boolean}
  */
 DirObj.prototype.save = function (str) {
 	if (!this.tplName || write[this.tplName] !== false) {
 		this.res += str;
+		return true;
 	}
 
-	return this;
+	return false;
+};
+
+/**
+ * Изменить результирующую строку JavaScript
+ *
+ * @param {string} str - исходная строка
+ * @return {boolean}
+ */
+DirObj.prototype.replace = function (str) {
+	if (this.canWrite) {
+		this.res = str;
+		return true;
+	}
+
+	return false;
 };
 
 /**
@@ -179,42 +200,39 @@ DirObj.prototype.isSimpleOutput = function () {
 
 /**
  * Вернуть true,
- * если возможна обработка директивы
- * (не холостой ход, не вложенный блок или прототип в родительской структуре или standalone шаблон)
+ * если ситуация соотвествует условию:
+ *     не обработка тела прототипа &&
+ *     (
+ *         не вложенный блок или прототип в родительской структуре ||
+ *         standalone шаблон
+ *     )
+ *
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function () {
 	return !this.proto &&
 		(
-			(this.parentTplName && !this.hasParent({'block': true, 'proto': true})) ||
+			(this.parentTplName && !this.hasParent({
+				'block': true,
+				'proto': true
+			})) ||
 			!this.parentTplName
 		);
 };
 
 /**
- * Изменить результирующую строку
- *
- * @param {string} str - исходная строка
- * @return {!DirObj}
- */
-DirObj.prototype.replace = function (str) {
-	if (this.canWrite) {
-		this.res = str;
-	}
-
-	return this;
-};
-
-/**
- * Инициализировать кеш для шаблона
+ * (Пере)инициализировать кеш для шаблона
  *
  * @param {string} tplName - название шаблона
+ * @param {boolean=} [opt_force=false] - если true, то кеш прототипов сбрасывается принудительно
  * @return {!DirObj}
  */
-DirObj.prototype.initCache = function (tplName, opt_force = false) {
-	blockCache[tplName] = {};
+DirObj.prototype.initTemplateCache = function (tplName, opt_force = false) {
+	protoCache[tplName] = opt_force ?
+		{} :
+		protoCache[tplName] || {};
 
-	protoCache[tplName] = opt_force ? {} : protoCache[tplName] || {};
+	blockCache[tplName] = {};
 	fromProtoCache[tplName] = 0;
 
 	constCache[tplName] = {};
@@ -292,6 +310,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
 
 /**
  * Декларировать конец директивы
+ * @return {!DirObj}
  */
 DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
@@ -321,7 +340,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 };
 
 /**
- * Проверить начилие директивы в цепочке родителей активной
+ * Проверить начилие директивы в цепочке структуры
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или объект названий
