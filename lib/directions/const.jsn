@@ -9,8 +9,11 @@ Snakeskin.addDirective(
 	null,
 
 	function (command, commandLength) {
-		var tplName = this.tplName;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
 
+		var tplName = this.tplName;
 		var rgxp = this.scope.length ?
 			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
 			/^[$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;

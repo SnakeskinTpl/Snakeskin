@@ -14,9 +14,35 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.startDir();
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'' + this.replaceTplVars(command) + '\';');
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'decl',
+
+	{
+		placement: 'template',
+		replacers: {
+			'{': (cmd) => cmd.replace(/^\{/, 'decl ')
+		}
+	},
+
+	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.save('__SNAKESKIN_RESULT__ += \'{{' + this.replaceTplVars(command) + '}\';');
 		}
 	}
 );

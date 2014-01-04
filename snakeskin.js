@@ -2784,6 +2784,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += ' + command + ';');
@@ -2869,6 +2873,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir(null, {
 			name: command
 		});
@@ -3519,8 +3527,11 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
-		var tplName = this.tplName;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
 
+		var tplName = this.tplName;
 		var rgxp = this.scope.length ?
 			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
 			/^[$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;
@@ -3603,12 +3614,21 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startInlineDir();
 		var part = command.match(/(.*?),\s+(.*)/);
 
-		bem[part[1]] = (new Function('return {' +
-			this.pasteDangerBlocks(part[2]) +
-		'}'))();
+		try {
+			bem[part[1]] = (new Function('return {' +
+				this.pasteDangerBlocks(part[2]) +
+			'}'))();
+
+		} catch (ignore) {
+			throw this.error('Invalid syntax');
+		}
 	}
 );
 
@@ -3621,6 +3641,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir(null, {
 			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 		});
@@ -3673,9 +3697,37 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		this.startDir();
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'' + this.replaceTplVars(command) + '\';');
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'binding',
+
+	{
+		placement: 'template',
+		replacers: {
+			'{': function (cmd) {
+				return cmd.replace(/^\{/, 'binding ');}
+		}
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.save('__SNAKESKIN_RESULT__ += \'{{' + this.replaceTplVars(command) + '}\';');
 		}
 	}
 );

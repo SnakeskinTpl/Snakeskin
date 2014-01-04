@@ -14,11 +14,8 @@
 			 * @return {string}
 			 */
 			{template helloWorld()}
-				{switch 1}
-					{> 1}
-						foo
-					{/}
-				{/}
+				{a = 1}
+				{{${a}}}
 			{/}
 		</script>
 		<script>
