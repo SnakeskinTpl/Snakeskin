@@ -14,6 +14,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		if (/(?:^|\s+)(?:var|const|let) /.test(command)) {
 			throw this.error('Can\'t declare variables within "void"');
 		}

@@ -2484,6 +2484,10 @@ Snakeskin.addDirective(
 
 	(start = function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir();
 
 		// Начальная позиция шаблона
@@ -2491,8 +2495,17 @@ Snakeskin.addDirective(
 		this.startI = this.i + 1;
 
 		// Имя + пространство имён шаблона
-		var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
-			tplName = this.pasteDangerBlocks(tmpTplName);
+		try {
+			var tmpTplName = /([\s\S]*?)\(/m.exec(command)[1],
+				tplName = this.pasteDangerBlocks(tmpTplName);
+
+		} catch (ignore) {
+			throw this.error('Invalid syntax');
+		}
+
+		if (!tplName) {
+			throw this.error('Invalid syntax');
+		}
 
 		if (this.name === 'placeholder') {
 			if (!write[tplName]) {
@@ -2516,7 +2529,12 @@ Snakeskin.addDirective(
 		extMap[tplName] = parentTplName;
 
 		// Входные параметры
-		var args = /\(([\s\S]*?)\)/m.exec(command)[1];
+		try {
+			var args = /\(([\s\S]*?)\)/m.exec(command)[1];
+
+		} catch (ignore) {
+			throw this.error('Invalid syntax');
+		}
 
 		// Для возможности удобного пост-парсинга,
 		// каждая функция снабжается комментарием вида:
@@ -2688,7 +2706,7 @@ Snakeskin.addDirective(
 			throw this.error('Proto "' + this.lastBack + '" is not defined');
 		}
 
-		if (this.dryRun) {
+		if (this.proto) {
 			return;
 		}
 
@@ -2812,6 +2830,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		if (/(?:^|\s+)(?:var|const|let) /.test(command)) {
 			throw this.error('Can\'t declare variables within "void"');
 		}
@@ -2847,6 +2869,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			var struct = command.split('='),
@@ -3506,6 +3532,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir();
 		this.scope.push(command);
 	},

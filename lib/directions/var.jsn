@@ -20,6 +20,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			let struct = command.split('='),
