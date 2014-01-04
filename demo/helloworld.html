@@ -11,8 +11,11 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 2)}
-				{foo = '0'}
-				<div {attr -class, foo}></div>
+				{proto foo}
+					{return}
+				{/}
+
+				{apply foo}
 			{/}
 		</script>
 		<script>

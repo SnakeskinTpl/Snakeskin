@@ -2407,6 +2407,28 @@ Snakeskin.addDirective(
 
 		this.info.line += parseInt(command);
 	}
+);
+
+Snakeskin.addDirective(
+	'__protoWhile__',
+
+	{
+		placement: 'template'
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save(this.prepareOutput('__I_PROTO__', true) +
+				':while (' + this.prepareOutput(command, true) + ') {'
+			);
+		}
+	}
 );var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -2826,11 +2848,7 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			if (this.proto) {
-				if (command) {
-					this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
-				}
-
-				this.save('break;');
+				this.save(this.prepareOutput('break __I_PROTO__;', true));
 
 			} else {
 				if (command) {
@@ -3091,7 +3109,7 @@ Snakeskin.addDirective(
 		if (!this.parentTplName) {
 			proto.body = Snakeskin.compile(
 				'{template ' + tplName + '()}' +
-					'{while __I_PROTO__--}' +
+					'{__protoWhile__ __I_PROTO__--}' +
 						this.source.substring(lastProto.startI, this.i - commandLength - 1) +
 					'{end}' +
 				'{end}',

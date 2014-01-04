@@ -106,7 +106,7 @@ Snakeskin.addDirective(
 		if (!this.parentTplName) {
 			proto.body = Snakeskin.compile(
 				'{template ' + tplName + '()}' +
-					'{while __I_PROTO__--}' +
+					'{__protoWhile__ __I_PROTO__--}' +
 						this.source.substring(lastProto.startI, this.i - commandLength - 1) +
 					'{end}' +
 				'{end}',
