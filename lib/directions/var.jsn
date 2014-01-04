@@ -9,6 +9,59 @@ DirObj.prototype.varCache = {
 	}
 };
 
+DirObj.prototype.multiDeclVar = function (str) {
+	var isSys = 0,
+		cache = '';
+
+	var final = 'var ';
+
+	var sysTable = {
+		'(': true,
+		'[': true,
+		'{': true
+	};
+
+	var closeSysTable = {
+		')': true,
+		']': true,
+		'}': true
+	};
+
+	var length = str.length;
+	for (let i = 0; i < length; i++) {
+		let el = str.charAt(i);
+
+		if (sysTable[el]) {
+			isSys++;
+
+		} else if (closeSysTable[el]) {
+			isSys--;
+
+		} else if ((el === ',' || i === length - 1) && !isSys) {
+			if (i === length - 1) {
+				cache += el;
+			}
+
+			let parts = cache.split('='),
+				realVar = this.declVar(parts[0].trim());
+
+			parts[0] = realVar + ' ';
+			final += this.prepareOutput(parts.join('=') + ',', true);
+
+			cache = '';
+			continue;
+		}
+
+		cache += el;
+	}
+
+	if (isSys) {
+		throw this.error('Invalid syntax');
+	}
+
+	return final.slice(0, -1) + ';';
+};
+
 Snakeskin.addDirective(
 	'var',
 
@@ -26,11 +79,7 @@ Snakeskin.addDirective(
 
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let struct = command.split('='),
-				realVar = this.declVar(struct[0].trim());
-
-			struct[0] = realVar + ' ';
-			this.save(this.prepareOutput('var ' + struct.join('=') + ';', true));
+			this.save(this.multiDeclVar(command));
 		}
 	}
 );

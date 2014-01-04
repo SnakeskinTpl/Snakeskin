@@ -2856,6 +2856,60 @@ DirObj.prototype.varCache = {
 	}
 };
 
+DirObj.prototype.multiDeclVar = function (str) {
+	var __NEJS_THIS__ = this;
+	var isSys = 0,
+		cache = '';
+
+	var final = 'var ';
+
+	var sysTable = {
+		'(': true,
+		'[': true,
+		'{': true
+	};
+
+	var closeSysTable = {
+		')': true,
+		']': true,
+		'}': true
+	};
+
+	var length = str.length;
+	for (var i = 0; i < length; i++) {
+		var el = str.charAt(i);
+
+		if (sysTable[el]) {
+			isSys++;
+
+		} else if (closeSysTable[el]) {
+			isSys--;
+
+		} else if ((el === ',' || i === length - 1) && !isSys) {
+			if (i === length - 1) {
+				cache += el;
+			}
+
+			var parts = cache.split('='),
+				realVar = this.declVar(parts[0].trim());
+
+			parts[0] = realVar + ' ';
+			final += this.prepareOutput(parts.join('=') + ',', true);
+
+			cache = '';
+			continue;
+		}
+
+		cache += el;
+	}
+
+	if (isSys) {
+		throw this.error('Invalid syntax');
+	}
+
+	return final.slice(0, -1) + ';';
+};
+
 Snakeskin.addDirective(
 	'var',
 
@@ -2875,11 +2929,7 @@ Snakeskin.addDirective(
 
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			var struct = command.split('='),
-				realVar = this.declVar(struct[0].trim());
-
-			struct[0] = realVar + ' ';
-			this.save(this.prepareOutput('var ' + struct.join('=') + ';', true));
+			this.save(this.multiDeclVar(command));
 		}
 	}
 );
@@ -3258,30 +3308,39 @@ Snakeskin.Directions['forInEnd'] = function (command, commandLength, dir) {
 	}
 };
 
-/**
- * Директива for
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['for'] = function (command, commandLength, dir, adv) {
-	var __NEJS_THIS__ = this;
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "for" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'for',
 
-	dir.startDir('for');
-	if (dir.isSimpleOutput()) {
-		dir.save('for (');
+	{
+		placement: 'template'
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			var parts = command.split(';');
+
+			if (parts.length !== 3) {
+				throw this.error('Invalid syntax');
+			}
+
+			var rgxp = /var /;
+			this.save('for (' +
+				(rgxp.test(parts[0]) ?
+					this.multiDeclVar(parts[0].replace(rgxp, '')) :
+					this.prepareOutput(parts[0], true)
+				) +
+				this.prepareOutput(parts.slice(1).join(';'), true) +
+			') {');
+		}
 	}
-};
+);
+
 
 Snakeskin.addDirective(
 	'while',

@@ -10,10 +10,12 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			/**
-			 * @return {string}
-			 */
 			{template helloWorld()}
+				{var a = 1, b = [1,2,3]}
+
+				{for var i = 0; i < 10; i++}
+					{i}
+				{/}
 			{/}
 		</script>
 		<script>
