@@ -9,6 +9,12 @@
  */
 DirObj.prototype.protoStart = false;
 
+/**
+ * Кеш внещних прототипов
+ * @type {!Object}
+ */
+DirObj.prototype.preProtos = {};
+
 DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var str = 'var ' + protoArgs[0][0] + ' = ' + protoArgs[0][1] + ';';
 
@@ -48,7 +54,6 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 			this.tplName = parts[0].trim();
-			this.initTemplateCache(this.tplName);
 		}
 
 		this.startDir(null, {

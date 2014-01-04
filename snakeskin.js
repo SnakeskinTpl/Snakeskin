@@ -713,16 +713,16 @@ DirObj.prototype.endDir = function () {
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
  * @return {boolean}
  */
-DirObj.prototype.has = function (name, opt_obj) {
+DirObj.prototype.has = function (name,opt_obj) {
 	var __NEJS_THIS__ = this;
-	var struct = this.structure;
-	var current = (opt_obj || struct).name;
+	if (typeof opt_obj === "undefined") { opt_obj = this.structure; }
+	var current = opt_obj.name;
 
 	if (name[current] || current === name) {
 		return true;
 
-	} else if (struct.parent && sysDirs[current]) {
-		return this.has(name, struct.parent);
+	} else if (opt_obj.parent) {
+		return this.has(name, opt_obj.parent);
 	}
 
 	return false;
@@ -737,10 +737,8 @@ DirObj.prototype.has = function (name, opt_obj) {
  */
 DirObj.prototype.hasParent = function (name) {
 	var __NEJS_THIS__ = this;
-	var struct = this.structure;
-
-	if (struct.parent) {
-		return this.has(name, struct.parent);
+	if (this.structure.parent) {
+		return this.has(name, this.structure.parent);
 	}
 
 	return false;

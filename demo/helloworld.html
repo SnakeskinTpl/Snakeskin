@@ -10,12 +10,11 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template ss(name = 1)}
-
+			{proto helloWorld->test}
 			{/}
 
 			{template helloWorld(name = 2)}
-
+				{apply test}
 			{/}
 		</script>
 		<script>
