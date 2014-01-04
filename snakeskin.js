@@ -3441,7 +3441,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			var part = command.split('=>'),
-				val = this.prepareOutput(part[0], true);
+				val = this.prepareOutput(part[0], true).trim();
 
 			if (part.length > 2) {
 				throw this.error('Invalid syntax');
