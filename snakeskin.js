@@ -565,22 +565,6 @@ DirObj.prototype.save = function (str) {
 };
 
 /**
- * Изменить результирующую строку JavaScript
- *
- * @param {string} str - исходная строка
- * @return {boolean}
- */
-DirObj.prototype.replace = function (str) {
-	var __NEJS_THIS__ = this;
-	if (this.canWrite) {
-		this.res = str;
-		return true;
-	}
-
-	return false;
-};
-
-/**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
  * @return {boolean}
@@ -3128,12 +3112,12 @@ Snakeskin.addDirective(
 			for (var i = 0; i < back.length; i++) {
 				var el = back[i];
 
-				this.replace(
-					this.res.substring(0, el.pos) +
-					this.returnArgs(args, el.args) +
-					protoCache[tplName][lastProto.name].body +
-					this.res.substring(el.pos)
-				);
+				if (this.canWrite) {
+					this.res = this.res.substring(0, el.pos) +
+						this.returnArgs(args, el.args) +
+						protoCache[tplName][lastProto.name].body +
+						this.res.substring(el.pos);
+				}
 			}
 
 			delete this.backTable[lastProto.name];

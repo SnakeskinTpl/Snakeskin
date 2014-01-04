@@ -124,12 +124,12 @@ Snakeskin.addDirective(
 			for (let i = 0; i < back.length; i++) {
 				let el = back[i];
 
-				this.replace(
-					this.res.substring(0, el.pos) +
-					this.returnArgs(args, el.args) +
-					protoCache[tplName][lastProto.name].body +
-					this.res.substring(el.pos)
-				);
+				if (this.canWrite) {
+					this.res = this.res.substring(0, el.pos) +
+						this.returnArgs(args, el.args) +
+						protoCache[tplName][lastProto.name].body +
+						this.res.substring(el.pos);
+				}
 			}
 
 			delete this.backTable[lastProto.name];

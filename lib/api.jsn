@@ -171,21 +171,6 @@ DirObj.prototype.save = function (str) {
 };
 
 /**
- * Изменить результирующую строку JavaScript
- *
- * @param {string} str - исходная строка
- * @return {boolean}
- */
-DirObj.prototype.replace = function (str) {
-	if (this.canWrite) {
-		this.res = str;
-		return true;
-	}
-
-	return false;
-};
-
-/**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
  * @return {boolean}
