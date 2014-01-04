@@ -12,6 +12,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir(null, {
 			name: command
 		});

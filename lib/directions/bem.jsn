@@ -11,12 +11,21 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startInlineDir();
 		var part = command.match(/(.*?),\s+(.*)/);
 
-		bem[part[1]] = (new Function('return {' +
-			this.pasteDangerBlocks(part[2]) +
-		'}'))();
+		try {
+			bem[part[1]] = (new Function('return {' +
+				this.pasteDangerBlocks(part[2]) +
+			'}'))();
+
+		} catch (ignore) {
+			throw this.error('Invalid syntax');
+		}
 	}
 );
 
@@ -28,6 +37,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startDir(null, {
 			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 		});
