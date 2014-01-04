@@ -11,15 +11,14 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{forEach {a: 1, b: 2} => foo}
-					{foo}
-					{break}
-				{/}
+
 			{/}
 		</script>
 		<script>
+			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
 			document.getElementById('test').innerHTML = helloWorld();
+			console.timeEnd('foo');
 		</script>
 	</body>
 </html>
