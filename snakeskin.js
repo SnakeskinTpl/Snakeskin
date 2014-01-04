@@ -605,15 +605,11 @@ DirObj.prototype.isAdvTest = function () {
  * (Пере)инициализировать кеш для шаблона
  *
  * @param {string} tplName - название шаблона
- * @param {boolean=} [opt_force=false] - если true, то кеш прототипов сбрасывается принудительно
  * @return {!DirObj}
  */
-DirObj.prototype.initTemplateCache = function (tplName,opt_force) {
+DirObj.prototype.initTemplateCache = function (tplName) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_force === "undefined") { opt_force = false; }
-	protoCache[tplName] = opt_force ?
-		{} :
-		protoCache[tplName] || {};
+	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
 	fromProtoCache[tplName] = 0;
@@ -2779,7 +2775,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initTemplateCache(tplName, true);
+			this.initTemplateCache(tplName);
 			this.startDir(this.structure.name);
 
 			this.i = this.startI - 1;
@@ -2995,6 +2991,12 @@ Snakeskin.addDirective(
  */
 DirObj.prototype.protoStart = false;
 
+/**
+ * Кеш внещних прототипов
+ * @type {!Object}
+ */
+DirObj.prototype.preProtos = {};
+
 DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var __NEJS_THIS__ = this;
 	var str = 'var ' + protoArgs[0][0] + ' = ' + protoArgs[0][1] + ';';
@@ -3036,7 +3038,6 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 			this.tplName = parts[0].trim();
-			this.initTemplateCache(this.tplName);
 		}
 
 		this.startDir(null, {
@@ -3438,15 +3439,15 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			var part = command.split('=>'),
-				val = this.prepareOutput(part[0], true).trim();
+			var parts = command.split('=>'),
+				val = this.prepareOutput(parts[0], true).trim();
 
-			if (part.length > 2) {
+			if (parts.length > 2) {
 				throw this.error('Invalid syntax');
 			}
 
-			var args = part[1] ?
-				part[1].trim().split(',') : [];
+			var args = parts[1] ?
+				parts[1].trim().split(',') : [];
 
 			var tmp = this.multiDeclVar('__TMP__ = ' + val),
 				cache = this.prepareOutput('__TMP__', true);
@@ -3593,14 +3594,14 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			var part = command.split('=>'),
-				val = this.prepareOutput(part[0], true);
+			var parts = command.split('=>'),
+				val = this.prepareOutput(parts[0], true);
 
-			if (part.length > 2) {
+			if (parts.length > 2) {
 				throw this.error('Invalid syntax');
 			}
 
-			var args = part[1] ? part[1].trim().split(',') : [];
+			var args = parts[1] ? parts[1].trim().split(',') : [];
 
 			var tmp = this.multiDeclVar('__TMP__ = ' + val),
 				cache = this.prepareOutput('__TMP__', true);
@@ -3954,11 +3955,11 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		var part = command.match(/(.*?),\s+(.*)/);
+		var parts = command.match(/(.*?),\s+(.*)/);
 
 		try {
-			bem[part[1]] = (new Function('return {' +
-				this.pasteDangerBlocks(part[2]) +
+			bem[parts[1]] = (new Function('return {' +
+				this.pasteDangerBlocks(parts[2]) +
 			'}'))();
 
 		} catch (ignore) {
@@ -3989,13 +3990,13 @@ Snakeskin.addDirective(
 
 			// Получаем параметры инициализации блока и врапим имя кавычками
 			command = lastBEM.tag ? command.replace(/^.*?\)(.*)/, '$1') : command;
-			var part = command.trim().split(',');
+			var parts = command.trim().split(',');
 
-			var bemName = part[0];
+			var bemName = parts[0];
 			lastBEM.original = bem[bemName] && bem[bemName].tag;
 
-			part[0] += '\'';
-			command = part.join(',');
+			parts[0] += '\'';
+			command = parts.join(',');
 
 			this.save(
 				'__SNAKESKIN_RESULT__ += \'' +
@@ -4063,6 +4064,37 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'{{' + this.replaceTplVars(command) + '}\';');
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'attr',
+
+	{
+		placement: 'template'
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			var parts = command.match(/(.*?),\s+(.*)/);
+
+			if (!parts) {
+				throw this.error('Invalid syntax');
+			}
+
+			parts[2] = this.prepareOutput(parts[2], true);
+			this.save(
+				'if (' + parts[2] + ') {' +
+					'__SNAKESKIN_RESULT__ += \'' + parts[1] + '="\' + ' + parts[2] + ' + \'"\';' +
+				'}'
+			);
 		}
 	}
 );

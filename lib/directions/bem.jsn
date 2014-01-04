@@ -16,11 +16,11 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		var part = command.match(/(.*?),\s+(.*)/);
+		var parts = command.match(/(.*?),\s+(.*)/);
 
 		try {
-			bem[part[1]] = (new Function('return {' +
-				this.pasteDangerBlocks(part[2]) +
+			bem[parts[1]] = (new Function('return {' +
+				this.pasteDangerBlocks(parts[2]) +
 			'}'))();
 
 		} catch (ignore) {
@@ -50,13 +50,13 @@ Snakeskin.addDirective(
 
 			// Получаем параметры инициализации блока и врапим имя кавычками
 			command = lastBEM.tag ? command.replace(/^.*?\)(.*)/, '$1') : command;
-			let part = command.trim().split(',');
+			let parts = command.trim().split(',');
 
-			let bemName = part[0];
+			let bemName = parts[0];
 			lastBEM.original = bem[bemName] && bem[bemName].tag;
 
-			part[0] += '\'';
-			command = part.join(',');
+			parts[0] += '\'';
+			command = parts.join(',');
 
 			this.save(
 				'__SNAKESKIN_RESULT__ += \'' +

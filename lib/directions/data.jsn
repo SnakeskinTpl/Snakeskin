@@ -46,3 +46,33 @@ Snakeskin.addDirective(
 		}
 	}
 );
+
+Snakeskin.addDirective(
+	'attr',
+
+	{
+		placement: 'template'
+	},
+
+	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			let parts = command.match(/(.*?),\s+(.*)/);
+
+			if (!parts) {
+				throw this.error('Invalid syntax');
+			}
+
+			parts[2] = this.prepareOutput(parts[2], true);
+			this.save(
+				'if (' + parts[2] + ') {' +
+					'__SNAKESKIN_RESULT__ += \'' + parts[1] + '="\' + ' + parts[2] + ' + \'"\';' +
+				'}'
+			);
+		}
+	}
+);

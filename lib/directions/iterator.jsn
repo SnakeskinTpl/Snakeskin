@@ -17,15 +17,15 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let part = command.split('=>'),
-				val = this.prepareOutput(part[0], true).trim();
+			let parts = command.split('=>'),
+				val = this.prepareOutput(parts[0], true).trim();
 
-			if (part.length > 2) {
+			if (parts.length > 2) {
 				throw this.error('Invalid syntax');
 			}
 
-			let args = part[1] ?
-				part[1].trim().split(',') : [];
+			let args = parts[1] ?
+				parts[1].trim().split(',') : [];
 
 			let tmp = this.multiDeclVar('__TMP__ = ' + val),
 				cache = this.prepareOutput('__TMP__', true);
@@ -168,14 +168,14 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let part = command.split('=>'),
-				val = this.prepareOutput(part[0], true);
+			let parts = command.split('=>'),
+				val = this.prepareOutput(parts[0], true);
 
-			if (part.length > 2) {
+			if (parts.length > 2) {
 				throw this.error('Invalid syntax');
 			}
 
-			let args = part[1] ? part[1].trim().split(',') : [];
+			let args = parts[1] ? parts[1].trim().split(',') : [];
 
 			let tmp = this.multiDeclVar('__TMP__ = ' + val),
 				cache = this.prepareOutput('__TMP__', true);
