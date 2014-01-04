@@ -2553,6 +2553,7 @@ Snakeskin.addDirective(
 			throw this.error('Invalid syntax');
 		}
 
+		this.info.template = tplName;
 		if (this.name === 'placeholder') {
 			if (!write[tplName]) {
 				write[tplName] = false;
@@ -2564,7 +2565,6 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		// Название родительского шаблона
 		var parentTplName;
 		if (/\s+extends\s+/m.test(command)) {
 			try {
@@ -2577,7 +2577,7 @@ Snakeskin.addDirective(
 
 			if (cache[parentTplName] === void 0) {
 				throw this.error(
-					'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
+					'The specified template ("' + parentTplName + '" -> "' + tplName + '") ' +
 						'for inheritance is not defined'
 				);
 			}
@@ -2609,6 +2609,7 @@ Snakeskin.addDirective(
 		// с пространством имён или при экспорте в common.js
 		if (/\.|\[/m.test(tmpTplName) || this.commonJS) {
 			var lastName = '';
+			var escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
 
 			var tmpArr = tmpTplName
 
@@ -2630,7 +2631,7 @@ Snakeskin.addDirective(
 					'}'
 				);
 
-				if (el.indexOf('__ESCAPER_QUOT__') === 0) {
+				if (escaperRgxp.test(el)) {
 					str += '[' + el + ']';
 					continue;
 
@@ -2799,6 +2800,8 @@ Snakeskin.addDirective(
 
 		this.canWrite = true;
 		this.tplName = null;
+
+		delete this.info.template;
 	})
 );
 

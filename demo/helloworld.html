@@ -10,12 +10,12 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template ss()}
+			{template ss(name = 1)}
 
 			{/}
 
-			{template helloWorld() extends ss}
-
+			{template helloWorld(name = 2)}
+				     foooo {name = 3}
 			{/}
 		</script>
 		<script>
