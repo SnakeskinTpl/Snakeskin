@@ -787,6 +787,62 @@ DirObj.prototype.declVar = function (varName) {
 	this.varCache[varName] = true;
 
 	return realVar;
+};
+
+DirObj.prototype.multiDeclVar = function (str,opt_end) {
+	var __NEJS_THIS__ = this;
+	if (typeof opt_end === "undefined") { opt_end = true; }
+	var isSys = 0,
+		cache = '';
+
+	var final = 'var ';
+
+	var sysTable = {
+		'(': true,
+		'[': true,
+		'{': true
+	};
+
+	var closeSysTable = {
+		')': true,
+		']': true,
+		'}': true
+	};
+
+	var length = str.length;
+	for (var i = 0; i < length; i++) {
+		var el = str.charAt(i);
+
+		if (sysTable[el]) {
+			isSys++;
+
+		} else if (closeSysTable[el]) {
+			isSys--;
+		}
+
+		if ((el === ',' || i === length - 1) && !isSys) {
+			if (i === length - 1) {
+				cache += el;
+			}
+
+			var parts = cache.split('='),
+				realVar = this.declVar(parts[0].trim());
+
+			parts[0] = realVar + ' ';
+			final += this.prepareOutput(parts.join('=') + ',', true);
+
+			cache = '';
+			continue;
+		}
+
+		cache += el;
+	}
+
+	if (isSys) {
+		throw this.error('Invalid syntax');
+	}
+
+	return final.slice(0, -1) + (opt_end ? ';' : '');
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -1037,13 +1093,6 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  */
 DirObj.prototype.getExtStr = function (tplName) {
 	var __NEJS_THIS__ = this;
-	if (cache[extMap[tplName]] === void 0) {
-		throw this.error(
-			'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
-			'for inheritance is not defined'
-		);
-	}
-
 	var parentTpl = extMap[tplName],
 		res = cache[parentTpl];
 
@@ -2467,6 +2516,12 @@ var __NEJS_THIS__ = this;
 DirObj.prototype.startI = 0;
 
 /**
+ * Номер строки объявления шаблона
+ * @type {?number}
+ */
+DirObj.prototype.startLine = null;
+
+/**
  * Название шаблона
  * @type {?string}
  */
@@ -2499,6 +2554,7 @@ Snakeskin.addDirective(
 		// Начальная позиция шаблона
 		// +1 => } >>
 		this.startI = this.i + 1;
+		this.startLine = this.info.line;
 
 		// Имя + пространство имён шаблона
 		try {
@@ -2527,8 +2583,20 @@ Snakeskin.addDirective(
 		// Название родительского шаблона
 		var parentTplName;
 		if (/\s+extends\s+/m.test(command)) {
-			parentTplName = this.pasteDangerBlocks(/\s+extends\s+([\s\S]*)/m.exec(command)[1]);
-			this.parentTplName = parentTplName;
+			try {
+				parentTplName = this.pasteDangerBlocks(/\s+extends\s+(.*)/m.exec(command)[1]);
+				this.parentTplName = parentTplName;
+
+			} catch (ignore) {
+				throw this.error('Invalid syntax');
+			}
+
+			if (cache[parentTplName] === void 0) {
+				throw this.error(
+					'The specified pattern ("' + extMap[tplName]+ '" for "' + tplName + '") ' +
+						'for inheritance is not defined'
+				);
+			}
 		}
 
 		this.initTemplateCache(tplName);
@@ -2723,14 +2791,15 @@ Snakeskin.addDirective(
 		// и обработка шаблона начинается заново,
 		// но уже как атомарного (без наследования)
 		if (this.parentTplName) {
+			this.info.line = this.startLine;
 			this.source = this.source.substring(0, this.startI) +
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
 			this.initTemplateCache(tplName, true);
 			this.startDir(this.structure.name);
-			this.i = this.startI - 1;
 
+			this.i = this.startI - 1;
 			this.parentTplName = null;
 			return false;
 		}
@@ -2860,62 +2929,6 @@ DirObj.prototype.varCache = {
 		var __NEJS_THIS__ = this;
 		return {};
 	}
-};
-
-DirObj.prototype.multiDeclVar = function (str,opt_end) {
-	var __NEJS_THIS__ = this;
-	if (typeof opt_end === "undefined") { opt_end = true; }
-	var isSys = 0,
-		cache = '';
-
-	var final = 'var ';
-
-	var sysTable = {
-		'(': true,
-		'[': true,
-		'{': true
-	};
-
-	var closeSysTable = {
-		')': true,
-		']': true,
-		'}': true
-	};
-
-	var length = str.length;
-	for (var i = 0; i < length; i++) {
-		var el = str.charAt(i);
-
-		if (sysTable[el]) {
-			isSys++;
-
-		} else if (closeSysTable[el]) {
-			isSys--;
-		}
-
-		if ((el === ',' || i === length - 1) && !isSys) {
-			if (i === length - 1) {
-				cache += el;
-			}
-
-			var parts = cache.split('='),
-				realVar = this.declVar(parts[0].trim());
-
-			parts[0] = realVar + ' ';
-			final += this.prepareOutput(parts.join('=') + ',', true);
-
-			cache = '';
-			continue;
-		}
-
-		cache += el;
-	}
-
-	if (isSys) {
-		throw this.error('Invalid syntax');
-	}
-
-	return final.slice(0, -1) + (opt_end ? ';' : '');
 };
 
 Snakeskin.addDirective(
