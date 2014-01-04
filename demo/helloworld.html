@@ -11,8 +11,7 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld()}
-				{forIn {a: 1, b: 2} => el}
-					{el}<br />
+				{forEach {a: 1, b: 2} => foo}
 				{/}
 			{/}
 		</script>
