@@ -56,19 +56,15 @@ Snakeskin.addDirective(
 
 			if (!this.tplName) {
 				this.tplName = parts[0].trim();
-
-				this.preProtos[this.tplName] = this.preProtos[this.tplName] || {};
-				this.preProtos[this.tplName][name] = {
-					from: this.i - commandLength - 1
-				};
-
-				this.link = name;
+				this.preProtos[this.tplName] = this.preProtos[this.tplName] || '';
+				this.protoLink = name;
 			}
 		}
 
 		this.startDir(null, {
 			name: name,
-			startI: this.i + 1
+			startI: this.i + 1,
+			from: this.i - commandLength - 1
 		});
 
 		if (this.isAdvTest()) {
@@ -103,10 +99,9 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			lastProto = this.structure.params;
 
-		if (this.link === lastProto.name) {
-			let proto = this.preProtos[this.tplName][this.link];
-			proto.body = this.source.substring(proto.from, this.i + 1);
-			this.link = null;
+		if (this.protoLink === lastProto.name) {
+			this.preProtos[this.tplName] += this.source.substring(lastProto.from, this.i + 1);
+			this.protoLink = null;
 			this.tplName = null;
 
 		} else {

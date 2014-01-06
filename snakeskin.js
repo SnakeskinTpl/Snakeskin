@@ -438,6 +438,12 @@ function DirObj(src, params) {
 	this.name = null;
 
 	/**
+	 * Название внешнего прототипа
+	 * @type {?string}
+	 */
+	this.protoLink = null;
+
+	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
 	 * @type {boolean}
 	 */
@@ -591,7 +597,7 @@ DirObj.prototype.isSimpleOutput = function () {
  */
 DirObj.prototype.isAdvTest = function () {
 	var __NEJS_THIS__ = this;
-	return !this.proto && !this.link &&
+	return !this.proto && !this.protoLink &&
 		(
 			(this.parentTplName && !this.hasParent({
 				'block': true,
@@ -607,10 +613,9 @@ DirObj.prototype.isAdvTest = function () {
  * @param {string} tplName - название шаблона
  * @return {!DirObj}
  */
-DirObj.prototype.initTemplateCache = function (tplName,opt_force) {
+DirObj.prototype.initTemplateCache = function (tplName) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_force === "undefined") { opt_force = false; }
-	protoCache[tplName] = opt_force ? {} : protoCache[tplName] || {};
+	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
 	fromProtoCache[tplName] = 0;
@@ -2772,15 +2777,13 @@ Snakeskin.addDirective(
 			this.save('PARENT_TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(parentTplName)) + '\';');
 		}
 
+		// Подкючение "внешних" прототипов
 		if ((!extMap[tplName] || parentTplName) && this.preProtos[tplName]) {
-			var obj = this.preProtos[tplName],
-				str$0 = '';
+			this.source = this.source.substring(0, this.i + 1) +
+				this.preProtos[tplName] +
+				this.source.substring(this.i + 1);
 
-			for (var key$1 in obj) {
-				str$0 += obj[key$1].body;
-			}
-
-			this.source = this.source.substring(0, this.i + 1) + str$0 + this.source.substring(this.i + 1);
+			this.preProtos[tplName] = null;
 		}
 	}),
 
@@ -2809,7 +2812,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initTemplateCache(tplName, true);
+			this.initTemplateCache(tplName);
 			this.startDir(this.structure.name);
 
 			this.i = this.startI - 1;
@@ -3070,19 +3073,15 @@ Snakeskin.addDirective(
 
 			if (!this.tplName) {
 				this.tplName = parts[0].trim();
-
-				this.preProtos[this.tplName] = this.preProtos[this.tplName] || {};
-				this.preProtos[this.tplName][name] = {
-					from: this.i - commandLength - 1
-				};
-
-				this.link = name;
+				this.preProtos[this.tplName] = this.preProtos[this.tplName] || '';
+				this.protoLink = name;
 			}
 		}
 
 		this.startDir(null, {
 			name: name,
-			startI: this.i + 1
+			startI: this.i + 1,
+			from: this.i - commandLength - 1
 		});
 
 		if (this.isAdvTest()) {
@@ -3118,21 +3117,20 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			lastProto = this.structure.params;
 
-		if (this.link === lastProto.name) {
-			var proto = this.preProtos[this.tplName][this.link];
-			proto.body = this.source.substring(proto.from, this.i + 1);
-			this.link = null;
+		if (this.protoLink === lastProto.name) {
+			this.preProtos[this.tplName] += this.source.substring(lastProto.from, this.i + 1);
+			this.protoLink = null;
 			this.tplName = null;
 
 		} else {
-			var proto$0 = protoCache[tplName][lastProto.name];
+			var proto = protoCache[tplName][lastProto.name];
 
 			if (this.isAdvTest()) {
-				proto$0.to = this.i - this.startI - commandLength - 1;
+				proto.to = this.i - this.startI - commandLength - 1;
 				fromProtoCache[tplName] = this.i - this.startI + 1;
 
 				// Рекурсивно анализируем прототипы блоков
-				proto$0.body = Snakeskin.compile(
+				proto.body = Snakeskin.compile(
 					'{template ' + tplName + '()}' +
 						'{var __I_PROTO__ = 1}' +
 						'{__protoWhile__ __I_PROTO__--}' +
@@ -3153,7 +3151,7 @@ Snakeskin.addDirective(
 
 			var back = this.backTable[lastProto.name];
 			if (back && !back.protoStart) {
-				var args = proto$0.args;
+				var args = proto.args;
 
 				for (var i = 0; i < back.length; i++) {
 					var el = back[i];

@@ -46,6 +46,12 @@ function DirObj(src, params) {
 	this.name = null;
 
 	/**
+	 * Название внешнего прототипа
+	 * @type {?string}
+	 */
+	this.protoLink = null;
+
+	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
 	 * @type {boolean}
 	 */
@@ -195,7 +201,7 @@ DirObj.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function () {
-	return !this.proto && !this.link &&
+	return !this.proto && !this.protoLink &&
 		(
 			(this.parentTplName && !this.hasParent({
 				'block': true,
