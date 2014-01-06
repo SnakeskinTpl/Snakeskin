@@ -414,7 +414,7 @@ function DirObj(src, params) {
 		}
 	}
 
-	/** @type {Object=} */
+	/** @type {Object} */
 	this.commonJS = params.commonJS;
 
 	/** @type {!Array} */
