@@ -438,12 +438,6 @@ function DirObj(src, params) {
 	this.name = null;
 
 	/**
-	 * Название внешнего прототипа
-	 * @type {?string}
-	 */
-	this.protoLink = null;
-
-	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
 	 * @type {boolean}
 	 */
@@ -587,7 +581,7 @@ DirObj.prototype.isSimpleOutput = function () {
 /**
  * Вернуть true,
  * если ситуация соотвествует условию:
- *     не обработка тела прототипа &&
+ *     не обработка тела прототипа && не внешний прототип &&
  *     (
  *         не вложенный блок или прототип в родительской структуре ||
  *         standalone шаблон
@@ -647,7 +641,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params,opt_vars) {
 
 	// Установка ссылок на локальные переменные родительское директивы
 	if (struct.vars) {
-		var parentVars = struct.vars;
+		var parentVars = Object(struct.vars);
 		for (var key in parentVars) {
 			if (!parentVars.hasOwnProperty(key)) {
 				continue;
@@ -773,6 +767,14 @@ DirObj.prototype.declVar = function (varName) {
 	return realVar;
 };
 
+/**
+ * Парсить строку декларации переменных, провести декларацию
+ * и вернуть результирующий вариант для шаблона
+ *
+ * @param {string} str - исходная строка
+ * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
+ * @return {string}
+ */
 DirObj.prototype.multiDeclVar = function (str,opt_end) {
 	var __NEJS_THIS__ = this;
 	if (typeof opt_end === "undefined") { opt_end = true; }
@@ -1194,7 +1196,7 @@ DirObj.prototype.getExtStr = function (tplName) {
 						from += adv;
 					}
 
-					block = i === 3 ? ('{' + block + '}') : ('{proto ' + key + '}' + block + '{end}');
+					block = i === 3 ? ('{' + block + '}') : ('{proto ' + key + el[key].argsDecl + '}' + block + '{end}');
 					res = res.substring(0, from) + block + res.substring(from);
 
 					advDiff.push({
@@ -1597,6 +1599,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
  * @param {?string=} [params.placement] - если true, то делается проверка,
  *     где именно размещена директива ('global', 'template', ...)
  *
+ * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
  * @param {?boolean=} [params.sys=false] - если true, то директива считается системной
  *
  * @param {Object} [params.replacers] - объект коротких сокращений директивы
@@ -1645,6 +1648,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 					}
 				}
 			}
+		}
+
+		if (params.notEmpty && !command) {
+			throw this.error('Invalid syntax');
 		}
 
 		dir.name = name;
@@ -2418,16 +2425,10 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'__protoWhile__',
 
-	{
-		placement: 'template'
-	},
+	null,
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save(this.prepareOutput('__I_PROTO__', true) +
@@ -2546,15 +2547,12 @@ Snakeskin.addDirective(
 	'template',
 
 	{
-		placement: 'global'
+		placement: 'global',
+		notEmpty: true
 	},
 
 	(start = function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 
 		// Начальная позиция шаблона
@@ -2840,7 +2838,8 @@ Snakeskin.addDirective(
 	'placeholder',
 
 	{
-		placement: 'global'
+		placement: 'global',
+		notEmpty: true
 	},
 
 	start,
@@ -2886,15 +2885,12 @@ Snakeskin.addDirective(
 	'call',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += ' + command + ';');
@@ -2911,6 +2907,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'?': function (cmd) {
 				return cmd.replace(/^\?/, 'void ');}
@@ -2919,10 +2916,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (/(?:^|\s+)(?:var|const|let) /.test(command)) {
 			throw this.error('Can\'t declare variables within "void"');
 		}
@@ -2950,6 +2943,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			':': function (cmd) {
 				return cmd.replace(/^:/, 'var ');}
@@ -2958,10 +2952,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save(this.multiDeclVar(command));
@@ -2979,15 +2969,12 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true
+		sys: true,
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir(null, {
 			name: command
 		});
@@ -3025,11 +3012,24 @@ Snakeskin.addDirective(
 DirObj.prototype.protoStart = false;
 
 /**
- * Кеш внещних прототипов
+ * Кеш "внешних" прототипов
  * @type {!Object}
  */
 DirObj.prototype.preProtos = {};
 
+/**
+ * Название активного "внешнего" прототипа
+ * @type {?string}
+ */
+DirObj.prototype.protoLink = null;
+
+/**
+ * Вернуть строку декларации аргументов прототипа
+ *
+ * @param {!Array.<!Array>} protoArgs - массив аргументов прототипа [название, значение по умолчанию]
+ * @param {!Array} args - массив передаваемых аргументов
+ * @return {string}
+ */
 DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var __NEJS_THIS__ = this;
 	var str = '';
@@ -3060,7 +3060,8 @@ Snakeskin.addDirective(
 	'proto',
 
 	{
-		sys: true
+		sys: true,
+		notEmpty: true
 	},
 
 	function (command, commandLength) {
@@ -3071,11 +3072,16 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 
+			// Идёт декларация внешнего прототипа
 			if (!this.tplName) {
 				this.tplName = parts[0].trim();
 				this.preProtos[this.tplName] = this.preProtos[this.tplName] || '';
 				this.protoLink = name;
 			}
+		}
+
+		if (!name || !this.tplName) {
+			throw this.error('Invalid syntax');
 		}
 
 		this.startDir(null, {
@@ -3093,9 +3099,9 @@ Snakeskin.addDirective(
 				argsMap = [];
 
 			if (args) {
-				args = args[1].split(',');
-				for (var i = 0; i < args.length; i++) {
-					var arg = args[i].split('=');
+				var argsList = args[1].split(',');
+				for (var i = 0; i < argsList.length; i++) {
+					var arg = argsList[i].split('=');
 					arg[0] = this.declVar(arg[0].trim());
 					argsMap.push(arg);
 				}
@@ -3103,6 +3109,7 @@ Snakeskin.addDirective(
 
 			protoCache[this.tplName][name] = {
 				from: this.i - this.startI + 1,
+				argsDecl: args ? args[0] : '',
 				args: argsMap
 			};
 		}
@@ -3117,6 +3124,7 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			lastProto = this.structure.params;
 
+		// Закрылся "внешний" прототип
 		if (this.protoLink === lastProto.name) {
 			this.preProtos[this.tplName] += this.source.substring(lastProto.from, this.i + 1);
 			this.protoLink = null;
@@ -3149,6 +3157,7 @@ Snakeskin.addDirective(
 				);
 			}
 
+			// Применение обратных прототипов
 			var back = this.backTable[lastProto.name];
 			if (back && !back.protoStart) {
 				var args = proto.args;
@@ -3199,15 +3208,16 @@ Snakeskin.addDirective(
 	'apply',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			var name = command.match(/[^(]+/)[0],
-				args = command.match(/\((.*?)\)/);
+			var name = /[^(]+/.exec(command)[0],
+				args = /\((.*?)\)/.exec(command);
 
 			var proto = protoCache[this.tplName][name],
 				argsStr;
@@ -3216,6 +3226,7 @@ Snakeskin.addDirective(
 				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);
 			}
 
+			// Рекурсивный вызов прототипа
 			if (this.proto === name) {
 				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
 
@@ -3289,15 +3300,12 @@ Snakeskin.addDirective(
 	'for',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			var parts = command.split(';');
@@ -3313,7 +3321,7 @@ Snakeskin.addDirective(
 					this.prepareOutput(parts[0], true)
 					) +
 				this.prepareOutput(parts.slice(1).join(';'), true) +
-				') {');
+			') {');
 		}
 	}
 );
@@ -3323,15 +3331,12 @@ Snakeskin.addDirective(
 	'while',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (this.structure.name == 'do') {
 			if (this.isSimpleOutput()) {
 				this.save('} while (' + this.prepareOutput(command, true) + ');');
@@ -3345,8 +3350,6 @@ Snakeskin.addDirective(
 				this.save('while (' + this.prepareOutput(command, true) + ') {');
 			}
 		}
-
-
 	}
 );
 
@@ -3388,15 +3391,12 @@ Snakeskin.addDirective(
 	'until',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (this.structure.name !== 'repeat') {
 			throw this.error('Directive "' + this.name + '" can only be used with a "repeat"');
 		}
@@ -3471,15 +3471,12 @@ Snakeskin.addDirective(
 	'forEach',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			var parts = command.split('=>'),
@@ -3626,15 +3623,12 @@ Snakeskin.addDirective(
 	'forIn',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			var parts = command.split('=>'),
@@ -3726,15 +3720,12 @@ Snakeskin.addDirective(
 	'if',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save('if (' + this.prepareOutput(command, true) + ') {');
@@ -3746,15 +3737,12 @@ Snakeskin.addDirective(
 	'elseIf',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (this.structure.name !== 'if') {
 			throw this.error('Directive "' + this.name + '" can only be used with a "if"');
 		}
@@ -3789,6 +3777,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		strongDirs: {
 			'case': true,
 			'default': true
@@ -3797,10 +3786,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save('switch (' + this.prepareOutput(command, true) + ') {');
@@ -3813,6 +3798,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'>': function (cmd) {
 				return cmd.replace(/^>/, 'case ');},
@@ -3823,10 +3809,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (!this.has('switch')) {
 			throw this.error('Directive "' + this.name + '" can only be used within a "switch"');
 		}
@@ -3874,15 +3856,12 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true
+		sys: true,
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		this.scope.push(command);
 	},
@@ -3988,15 +3967,12 @@ Snakeskin.addDirective(
 	'setBEM',
 
 	{
-		placement: 'global'
+		placement: 'global',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		var parts = command.match(/(.*?),\s+(.*)/);
 
@@ -4015,15 +3991,12 @@ Snakeskin.addDirective(
 	'bem',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir(null, {
 			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 		});
@@ -4068,6 +4041,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'*': function (cmd) {
 				return cmd.replace(/^\*/, 'data ');}
@@ -4076,10 +4050,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'' + this.replaceTplVars(command) + '\';');
@@ -4092,6 +4062,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'{': function (cmd) {
 				return cmd.replace(/^\{/, 'decl ');}
@@ -4100,10 +4071,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'{{' + this.replaceTplVars(command) + '}\';');
@@ -4115,15 +4082,12 @@ Snakeskin.addDirective(
 	'attr',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
 		var __NEJS_THIS__ = this;
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			var parts = command.match(/(.*?),\s+(.*)/);
@@ -4132,7 +4096,7 @@ Snakeskin.addDirective(
 				throw this.error('Invalid syntax');
 			}
 
-			parts[1] = parts[1].charAt(0) === '-' ? 'data' + parts[1] : parts[1]
+			parts[1] = parts[1].charAt(0) === '-' ? 'data' + parts[1] : parts[1];
 			parts[2] = this.prepareOutput(parts[2], true);
 
 			this.save(

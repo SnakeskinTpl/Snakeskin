@@ -95,9 +95,9 @@ Snakeskin.addDirective(
 				argsMap = [];
 
 			if (args) {
-				args = args[1].split(',');
-				for (let i = 0; i < args.length; i++) {
-					let arg = args[i].split('=');
+				let argsList = args[1].split(',');
+				for (let i = 0; i < argsList.length; i++) {
+					let arg = argsList[i].split('=');
 					arg[0] = this.declVar(arg[0].trim());
 					argsMap.push(arg);
 				}
@@ -105,6 +105,7 @@ Snakeskin.addDirective(
 
 			protoCache[this.tplName][name] = {
 				from: this.i - this.startI + 1,
+				argsDecl: args ? args[0] : '',
 				args: argsMap
 			};
 		}
