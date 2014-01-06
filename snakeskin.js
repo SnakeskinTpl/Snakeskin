@@ -591,7 +591,7 @@ DirObj.prototype.isSimpleOutput = function () {
  */
 DirObj.prototype.isAdvTest = function () {
 	var __NEJS_THIS__ = this;
-	return !this.proto &&
+	return !this.proto && !this.link &&
 		(
 			(this.parentTplName && !this.hasParent({
 				'block': true,
@@ -2771,6 +2771,17 @@ Snakeskin.addDirective(
 		if (parentTplName) {
 			this.save('PARENT_TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(parentTplName)) + '\';');
 		}
+
+		if ((!extMap[tplName] || parentTplName) && this.preProtos[tplName]) {
+			var obj = this.preProtos[tplName],
+				str$0 = '';
+
+			for (var key$1 in obj) {
+				str$0 += obj[key$1].body;
+			}
+
+			this.source = this.source.substring(0, this.i + 1) + str$0 + this.source.substring(this.i + 1);
+		}
 	}),
 
 	(end = function (command, commandLength) {
@@ -3049,16 +3060,24 @@ Snakeskin.addDirective(
 		sys: true
 	},
 
-	function (command) {
+	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var name = command.match(/[^(]+/)[0],
 			parts = name.split('->');
 
 		if (parts[1]) {
 			name = parts[1].trim();
-			this.tplName = parts[0].trim();
-			this.startI = this.i + 1;
-			this.initTemplateCache(this.tplName);
+
+			if (!this.tplName) {
+				this.tplName = parts[0].trim();
+
+				this.preProtos[this.tplName] = this.preProtos[this.tplName] || {};
+				this.preProtos[this.tplName][name] = {
+					from: this.i - commandLength - 1
+				};
+
+				this.link = name;
+			}
 		}
 
 		this.startDir(null, {
@@ -3099,49 +3118,57 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			lastProto = this.structure.params;
 
-		var proto = protoCache[tplName][lastProto.name];
+		if (this.link === lastProto.name) {
+			var proto = this.preProtos[this.tplName][this.link];
+			proto.body = this.source.substring(proto.from, this.i + 1);
+			this.link = null;
+			this.tplName = null;
 
-		if (this.isAdvTest()) {
-			proto.to = this.i - this.startI - commandLength - 1;
-			fromProtoCache[tplName] = this.i - this.startI + 1;
+		} else {
+			var proto$0 = protoCache[tplName][lastProto.name];
 
-			// Рекурсивно анализируем прототипы блоков
-			proto.body = Snakeskin.compile(
-				'{template ' + tplName + '()}' +
-					'{var __I_PROTO__ = 1}' +
-					'{__protoWhile__ __I_PROTO__--}' +
-						this.source.substring(lastProto.startI, this.i - commandLength - 1) +
-					'{end}' +
-				'{end}',
+			if (this.isAdvTest()) {
+				proto$0.to = this.i - this.startI - commandLength - 1;
+				fromProtoCache[tplName] = this.i - this.startI + 1;
 
-				null,
-				null,
+				// Рекурсивно анализируем прототипы блоков
+				proto$0.body = Snakeskin.compile(
+					'{template ' + tplName + '()}' +
+						'{var __I_PROTO__ = 1}' +
+						'{__protoWhile__ __I_PROTO__--}' +
+							this.source.substring(lastProto.startI, this.i - commandLength - 1) +
+						'{end}' +
+					'{end}',
 
-				{
-					scope: this.scope,
-					vars: this.structure.vars,
-					proto: lastProto.name
-				}
-			);
-		}
+					null,
+					null,
 
-		var back = this.backTable[lastProto.name];
-		if (back && !back.protoStart) {
-			var args = proto.args;
-
-			for (var i = 0; i < back.length; i++) {
-				var el = back[i];
-
-				if (this.canWrite) {
-					this.res = this.res.substring(0, el.pos) +
-						this.returnArgs(args, el.args) +
-						protoCache[tplName][lastProto.name].body +
-						this.res.substring(el.pos);
-				}
+					{
+						scope: this.scope,
+						vars: this.structure.vars,
+						proto: lastProto.name
+					}
+				);
 			}
 
-			delete this.backTable[lastProto.name];
-			this.backTableI--;
+			var back = this.backTable[lastProto.name];
+			if (back && !back.protoStart) {
+				var args = proto$0.args;
+
+				for (var i = 0; i < back.length; i++) {
+					var el = back[i];
+
+					if (this.canWrite) {
+						this.res = this.res.substring(0, el.pos) +
+							this.returnArgs(args, el.args) +
+							protoCache[tplName][lastProto.name].body +
+							this.res.substring(el.pos);
+					}
+				}
+
+				delete this.backTable[lastProto.name];
+				this.backTableI--;
+			}
 		}
 
 		if (!this.hasParent('proto')) {

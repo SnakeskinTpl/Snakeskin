@@ -195,7 +195,7 @@ DirObj.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function () {
-	return !this.proto &&
+	return !this.proto && !this.link &&
 		(
 			(this.parentTplName && !this.hasParent({
 				'block': true,

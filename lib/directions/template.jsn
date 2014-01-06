@@ -263,6 +263,17 @@ Snakeskin.addDirective(
 		if (parentTplName) {
 			this.save('PARENT_TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(parentTplName)) + '\';');
 		}
+
+		if ((!extMap[tplName] || parentTplName) && this.preProtos[tplName]) {
+			let obj = this.preProtos[tplName],
+				str = '';
+
+			for (let key in obj) {
+				str += obj[key].body;
+			}
+
+			this.source = this.source.substring(0, this.i + 1) + str + this.source.substring(this.i + 1);
+		}
 	}),
 
 	(end = function (command, commandLength) {
