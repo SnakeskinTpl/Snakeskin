@@ -66,7 +66,7 @@ var comboBlackWordList = {
 DirObj.prototype.replaceTplVars = function (str) {
 	str = this.pasteDangerBlocks(str);
 	var begin = 0,
-		dir;
+		dir = '';
 
 	var escape = false,
 		comment;

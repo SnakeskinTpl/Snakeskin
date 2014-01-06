@@ -30,7 +30,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 		html = html.replace(/\s*?\n/, '');
 	}
 
-	var dir = new DirObj(html || src, {
+	var dir = new DirObj(String(html || src), {
 		info: opt_info,
 		commonJS: !!opt_commonJS,
 		proto: opt_params.proto,

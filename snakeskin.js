@@ -8,7 +8,7 @@ var __NEJS_THIS__ = this;
 var Snakeskin = {
 	/**
 	 * Версия движка
-	 * @type {string}
+	 * @type {!Array}
 	 */
 	VERSION: [3, 0, 0],
 
@@ -320,8 +320,7 @@ Snakeskin.Filters['json'] = function (obj) {
 	return (obj + '');
 };
 var __NEJS_THIS__ = this;
-/*!
- * Глобальные переменные замыкания
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -587,14 +586,16 @@ DirObj.prototype.isSimpleOutput = function () {
  */
 DirObj.prototype.isAdvTest = function () {
 	var __NEJS_THIS__ = this;
-	return !this.proto && !this.protoLink &&
+	return !!(
+		!this.proto && !this.protoLink &&
 		(
 			(this.parentTplName && !this.hasParent({
 				'block': true,
 				'proto': true
 			})) ||
 			!this.parentTplName
-		);
+		)
+	);
 };
 
 /**
@@ -620,7 +621,7 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 /**
  * Декларировать начало блочной директивы
  *
- * @param {string} [opt_name=this.name] - название директивы
+ * @param {?string=} [opt_name=this.name] - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @param {Object=} [opt_vars] - локальные переменные директивы
  * @return {!DirObj}
@@ -665,7 +666,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params,opt_vars) {
 /**
  * Декларировать начало строчной директивы
  *
- * @param {string} [opt_name=this.name] - название директивы
+ * @param {?string=} [opt_name=this.name] - название директивы
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @return {!DirObj}
  */
@@ -1062,7 +1063,7 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
 	var __NEJS_THIS__ = this;
 	return Escaper.paste(str, this.quotContent);
 };var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -1300,7 +1301,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		html = html.replace(/\s*?\n/, '');
 	}
 
-	var dir = new DirObj(html || src, {
+	var dir = new DirObj(String(html || src), {
 		info: opt_info,
 		commonJS: !!opt_commonJS,
 		proto: opt_params.proto,
@@ -1754,7 +1755,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 	var __NEJS_THIS__ = this;
 	str = this.pasteDangerBlocks(str);
 	var begin = 0,
-		dir;
+		dir = '';
 
 	var escape = false,
 		comment;
@@ -2879,7 +2880,7 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -2962,7 +2963,7 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -3003,7 +3004,7 @@ Snakeskin.addDirective(
 		}
 	}
 );var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -3296,7 +3297,7 @@ Snakeskin.Directions['super'] = function (command, commandLength, dir, adv) {
 	}
 };
 var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -3468,7 +3469,7 @@ Snakeskin.addDirective(
 		}
 	}
 );var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -3717,7 +3718,7 @@ Snakeskin.addDirective(
 		}
 	}
 );var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -3852,7 +3853,7 @@ Snakeskin.addDirective(
 		}
 	}
 );var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
@@ -3937,7 +3938,7 @@ Snakeskin.addDirective(
 		this.scope.pop();
 	}
 );var __NEJS_THIS__ = this;
-/*!
+/**!
  * @status stable
  * @version 1.0.0
  */
