@@ -289,7 +289,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initTemplateCache(tplName);
+			this.initTemplateCache(tplName, true);
 			this.startDir(this.structure.name);
 
 			this.i = this.startI - 1;

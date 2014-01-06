@@ -211,8 +211,8 @@ DirObj.prototype.isAdvTest = function () {
  * @param {string} tplName - название шаблона
  * @return {!DirObj}
  */
-DirObj.prototype.initTemplateCache = function (tplName) {
-	protoCache[tplName] = {};
+DirObj.prototype.initTemplateCache = function (tplName, opt_force = false) {
+	protoCache[tplName] = opt_force ? {} : protoCache[tplName] || {};
 
 	blockCache[tplName] = {};
 	fromProtoCache[tplName] = 0;

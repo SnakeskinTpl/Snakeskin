@@ -54,6 +54,8 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 			this.tplName = parts[0].trim();
+			this.startI = this.i + 1;
+			this.initTemplateCache(this.tplName);
 		}
 
 		this.startDir(null, {

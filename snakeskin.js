@@ -607,9 +607,10 @@ DirObj.prototype.isAdvTest = function () {
  * @param {string} tplName - название шаблона
  * @return {!DirObj}
  */
-DirObj.prototype.initTemplateCache = function (tplName) {
+DirObj.prototype.initTemplateCache = function (tplName,opt_force) {
 	var __NEJS_THIS__ = this;
-	protoCache[tplName] = {};
+	if (typeof opt_force === "undefined") { opt_force = false; }
+	protoCache[tplName] = opt_force ? {} : protoCache[tplName] || {};
 
 	blockCache[tplName] = {};
 	fromProtoCache[tplName] = 0;
@@ -2797,7 +2798,7 @@ Snakeskin.addDirective(
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
-			this.initTemplateCache(tplName);
+			this.initTemplateCache(tplName, true);
 			this.startDir(this.structure.name);
 
 			this.i = this.startI - 1;
@@ -3056,6 +3057,8 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 			this.tplName = parts[0].trim();
+			this.startI = this.i + 1;
+			this.initTemplateCache(this.tplName);
 		}
 
 		this.startDir(null, {
