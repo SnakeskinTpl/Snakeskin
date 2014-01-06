@@ -75,9 +75,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 		bEnd = true,
 		bEscape = false;
 
-	function replacer(str) {
-		return str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
-	}
+	var replacer = (str) => str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
 
 	var nextLineRgxp = /[\r\n\v]/,
 		bEndRgxp = /[^\s\/]/;
