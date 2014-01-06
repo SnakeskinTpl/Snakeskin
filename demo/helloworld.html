@@ -10,30 +10,11 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto base->foo}
-				1
-			{/}
-
-			{placeholder base()}
-			{/}
-
-			{proto helloWorld->foo(i)}
-				{i}
-				{if i}
-					{apply foo(--i)}
-					{return}
-				{/}
-			{/}
-
-			{proto helloWorld->foo2}
-				Привет!!!
-			{/}
-
-			{template helloWorld() extends base}
-				{a = 1}
-				{block foo}
-					{apply foo(10)}
-					{apply foo2}
+			{template helloWorld()}
+				{try}
+					{?f()}
+				{catch err}
+					{?console.log(err)}
 				{/}
 			{/}
 		</script>
