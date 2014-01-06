@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 				throw this.error('Block "' + command + '" is already defined');
 			}
 
-			blockCache[this.tplName][command] = {from: this.i - this.startI + 1};
+			blockCache[this.tplName][command] = {from: this.i - this.startTemplateI + 1};
 		}
 	},
 
@@ -30,9 +30,9 @@ Snakeskin.addDirective(
 		if (this.isAdvTest()) {
 			let block = blockCache[this.tplName][this.structure.params.name];
 
-			block.to = this.i - this.startI - commandLength - 1;
+			block.to = this.i - this.startTemplateI - commandLength - 1;
 			block.body = this.source
-				.substring(this.startI)
+				.substring(this.startTemplateI)
 				.substring(block.from, block.to);
 		}
 	}

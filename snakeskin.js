@@ -2523,13 +2523,13 @@ var __NEJS_THIS__ = this;
  * Номер итерации объявления шаблона
  * @type {number}
  */
-DirObj.prototype.startI = 0;
+DirObj.prototype.startTemplateI = 0;
 
 /**
  * Номер строки объявления шаблона
  * @type {?number}
  */
-DirObj.prototype.startLine = null;
+DirObj.prototype.startTemplateLine = null;
 
 /**
  * Название шаблона
@@ -2560,8 +2560,8 @@ Snakeskin.addDirective(
 
 		// Начальная позиция шаблона
 		// +1 => } >>
-		this.startI = this.i + 1;
-		this.startLine = this.info.line;
+		this.startTemplateI = this.i + 1;
+		this.startTemplateLine = this.info.line;
 
 		// Имя + пространство имён шаблона
 		try {
@@ -2801,22 +2801,22 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		cache[tplName] = this.source.substring(this.startI, this.i - commandLength - 1);
+		cache[tplName] = this.source.substring(this.startTemplateI, this.i - commandLength - 1);
 
 		// Обработка наследования:
 		// тело шаблона объединяется с телом родителя
 		// и обработка шаблона начинается заново,
 		// но уже как атомарного (без наследования)
 		if (this.parentTplName) {
-			this.info.line = this.startLine;
-			this.source = this.source.substring(0, this.startI) +
+			this.info.line = this.startTemplateLine;
+			this.source = this.source.substring(0, this.startTemplateI) +
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
 
 			this.initTemplateCache(tplName);
 			this.startDir(this.structure.name);
 
-			this.i = this.startI - 1;
+			this.i = this.startTemplateI - 1;
 			this.parentTplName = null;
 			return false;
 		}
@@ -2988,7 +2988,7 @@ Snakeskin.addDirective(
 				throw this.error('Block "' + command + '" is already defined');
 			}
 
-			blockCache[this.tplName][command] = {from: this.i - this.startI + 1};
+			blockCache[this.tplName][command] = {from: this.i - this.startTemplateI + 1};
 		}
 	},
 
@@ -2997,9 +2997,9 @@ Snakeskin.addDirective(
 		if (this.isAdvTest()) {
 			var block = blockCache[this.tplName][this.structure.params.name];
 
-			block.to = this.i - this.startI - commandLength - 1;
+			block.to = this.i - this.startTemplateI - commandLength - 1;
 			block.body = this.source
-				.substring(this.startI)
+				.substring(this.startTemplateI)
 				.substring(block.from, block.to);
 		}
 	}
@@ -3090,7 +3090,7 @@ Snakeskin.addDirective(
 
 		this.startDir(null, {
 			name: name,
-			startI: this.i + 1,
+			startTemplateI: this.i + 1,
 			from: this.i - commandLength - 1
 		});
 
@@ -3114,7 +3114,7 @@ Snakeskin.addDirective(
 			var hasInParent = this.parentTplName ? !!protoCache[this.parentTplName][name] : false;
 			protoCache[this.tplName][name] = {
 				length: commandLength,
-				from: this.i - this.startI + 1,
+				from: this.i - this.startTemplateI + 1,
 				argsDecl: args ? args[0] : '',
 				args: argsMap
 			};
@@ -3140,15 +3140,15 @@ Snakeskin.addDirective(
 			var proto = protoCache[tplName][lastProto.name];
 
 			if (this.isAdvTest()) {
-				proto.to = this.i - this.startI - commandLength - 1;
-				fromProtoCache[tplName] = this.i - this.startI + 1;
+				proto.to = this.i - this.startTemplateI - commandLength - 1;
+				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					'{template ' + tplName + '()}' +
 						'{var __I_PROTO__ = 1}' +
 						'{__protoWhile__ __I_PROTO__--}' +
-							this.source.substring(lastProto.startI, this.i - commandLength - 1) +
+							this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1) +
 						'{end}' +
 					'{end}',
 
@@ -3993,11 +3993,11 @@ Snakeskin.addDirective(
 
 					// Кеширование
 					constCache[tplName][name] = {
-						from: this.i - this.startI - commandLength,
-						to: this.i - this.startI
+						from: this.i - this.startTemplateI - commandLength,
+						to: this.i - this.startTemplateI
 					};
 
-					fromConstCache[tplName] = this.i - this.startI + 1;
+					fromConstCache[tplName] = this.i - this.startTemplateI + 1;
 				}
 
 				if (this.isSimpleOutput()) {

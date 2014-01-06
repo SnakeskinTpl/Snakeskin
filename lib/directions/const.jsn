@@ -52,11 +52,11 @@ Snakeskin.addDirective(
 
 					// Кеширование
 					constCache[tplName][name] = {
-						from: this.i - this.startI - commandLength,
-						to: this.i - this.startI
+						from: this.i - this.startTemplateI - commandLength,
+						to: this.i - this.startTemplateI
 					};
 
-					fromConstCache[tplName] = this.i - this.startI + 1;
+					fromConstCache[tplName] = this.i - this.startTemplateI + 1;
 				}
 
 				if (this.isSimpleOutput()) {
