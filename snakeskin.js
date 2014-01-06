@@ -90,11 +90,9 @@ var entityMap = {
 	'/': '&#x2F;'
 };
 
-var escapeHTMLRgxp = /[&<>"'\/]/g;
-function escapeHTML(s) {
-	var __NEJS_THIS__ = this;
-	return entityMap[s];
-}
+var escapeHTMLRgxp = /[&<>"'\/]/g,
+	escapeHTML = function (s) {
+		return entityMap[s];};
 
 /**
  * Экранирование строки html
@@ -127,11 +125,9 @@ var uentityMap = {
 	'&#x2F;': '/'
 };
 
-var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g;
-function uescapeHTML(s) {
-	var __NEJS_THIS__ = this;
-	return uentityMap[s];
-}
+var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
+	uescapeHTML = function (s) {
+		return uentityMap[s];};
 
 /**
  * Снять экранирование строки html
@@ -781,7 +777,7 @@ DirObj.prototype.multiDeclVar = function (str,opt_end) {
 	var isSys = 0,
 		cache = '';
 
-	var final = 'var ';
+	var fin = 'var ';
 
 	var sysTable = {
 		'(': true,
@@ -815,7 +811,7 @@ DirObj.prototype.multiDeclVar = function (str,opt_end) {
 				realVar = this.declVar(parts[0].trim());
 
 			parts[0] = realVar + ' ';
-			final += this.prepareOutput(parts.join('=') + ',', true);
+			fin += this.prepareOutput(parts.join('=') + ',', true);
 
 			cache = '';
 			continue;
@@ -828,7 +824,7 @@ DirObj.prototype.multiDeclVar = function (str,opt_end) {
 		throw this.error('Invalid syntax');
 	}
 
-	return final.slice(0, -1) + (opt_end ? ';' : '');
+	return fin.slice(0, -1) + (opt_end ? ';' : '');
 };var __NEJS_THIS__ = this;
 /**!
  * @status stable
