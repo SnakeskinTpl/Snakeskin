@@ -3017,10 +3017,10 @@ DirObj.prototype.preProtos = {};
 
 DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var __NEJS_THIS__ = this;
-	var str = 'var ' + protoArgs[0][0] + ' = ' + protoArgs[0][1] + ';';
+	var str = '';
 
-	for (var i = 1; i < protoArgs.length; i++) {
-		var val = this.prepareOutput(args[i - 1] || null, true);
+	for (var i = 0; i < protoArgs.length; i++) {
+		var val = this.prepareOutput(args[i] || null, true);
 
 		var arg = protoArgs[i][0],
 			def = protoArgs[i][1];
@@ -3037,6 +3037,8 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 				val || 'void 0'
 			) + ';';
 	}
+
+	console.log(str);
 
 	return str;
 };
@@ -3069,9 +3071,7 @@ Snakeskin.addDirective(
 			}
 
 			var args = command.match(/\((.*?)\)/),
-				argsMap = [
-					[this.declVar('__I_PROTO__'), 1]
-				];
+				argsMap = [];
 
 			if (args) {
 				args = args[1].split(',');
@@ -3109,6 +3109,7 @@ Snakeskin.addDirective(
 		if (!this.parentTplName) {
 			proto.body = Snakeskin.compile(
 				'{template ' + tplName + '()}' +
+					'{var __I_PROTO__ = 1}' +
 					'{__protoWhile__ __I_PROTO__--}' +
 						this.source.substring(lastProto.startI, this.i - commandLength - 1) +
 					'{end}' +

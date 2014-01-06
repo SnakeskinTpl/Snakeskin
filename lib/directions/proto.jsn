@@ -16,10 +16,10 @@ DirObj.prototype.protoStart = false;
 DirObj.prototype.preProtos = {};
 
 DirObj.prototype.returnArgs = function (protoArgs, args) {
-	var str = 'var ' + protoArgs[0][0] + ' = ' + protoArgs[0][1] + ';';
+	var str = '';
 
-	for (let i = 1; i < protoArgs.length; i++) {
-		let val = this.prepareOutput(args[i - 1] || null, true);
+	for (let i = 0; i < protoArgs.length; i++) {
+		let val = this.prepareOutput(args[i] || null, true);
 
 		let arg = protoArgs[i][0],
 			def = protoArgs[i][1];
@@ -67,9 +67,7 @@ Snakeskin.addDirective(
 			}
 
 			let args = command.match(/\((.*?)\)/),
-				argsMap = [
-					[this.declVar('__I_PROTO__'), 1]
-				];
+				argsMap = [];
 
 			if (args) {
 				args = args[1].split(',');
@@ -106,6 +104,7 @@ Snakeskin.addDirective(
 		if (!this.parentTplName) {
 			proto.body = Snakeskin.compile(
 				'{template ' + tplName + '()}' +
+					'{var __I_PROTO__ = 1}' +
 					'{__protoWhile__ __I_PROTO__--}' +
 						this.source.substring(lastProto.startI, this.i - commandLength - 1) +
 					'{end}' +

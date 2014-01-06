@@ -12,10 +12,12 @@
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 2)}
 				{proto foo}
-					{return}
+					{proto my(num)}
+						{num}
+					{/}
 				{/}
 
-				{apply foo}
+				{apply my(2)}
 			{/}
 		</script>
 		<script>
