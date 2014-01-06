@@ -104,7 +104,7 @@ Snakeskin.addDirective(
 			}
 
 			protoCache[this.tplName][name] = {
-				from: this.i - this.startI + 1,
+				from: this.i - this.startI - commandLength - 1,
 				argsDecl: args ? args[0] : '',
 				args: argsMap
 			};

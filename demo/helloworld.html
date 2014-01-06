@@ -10,23 +10,23 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			/*{proto base->foo}
+			{proto base->foo}
 				1
-			{/}*/
+			{/}
 
 			{placeholder base()}
 			{/}
 
-			{proto helloWorld->foo2(i)}
+			{proto helloWorld->foo(i)}
 				{i}
 				{if i}
-					{apply foo2(--i)}
+					{apply foo(--i)}
 				{/}
 			{/}
 
 			{template helloWorld() extends base}
 				{block foo}
-					{apply foo2(10)}
+					{apply foo(10)}
 				{/}
 			{/}
 		</script>
