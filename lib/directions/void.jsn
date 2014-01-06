@@ -8,16 +8,13 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'?': (cmd) => cmd.replace(/^\?/, 'void ')
 		}
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (/(?:^|\s+)(?:var|const|let) /.test(command)) {
 			throw this.error('Can\'t declare variables within "void"');
 		}

@@ -34,14 +34,11 @@ Snakeskin.addDirective(
 	'template',
 
 	{
-		placement: 'global'
+		placement: 'global',
+		notEmpty: true
 	},
 
 	(start = function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 
 		// Начальная позиция шаблона
@@ -326,7 +323,8 @@ Snakeskin.addDirective(
 	'placeholder',
 
 	{
-		placement: 'global'
+		placement: 'global',
+		notEmpty: true
 	},
 
 	start,

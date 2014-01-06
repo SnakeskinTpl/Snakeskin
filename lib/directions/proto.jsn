@@ -57,14 +57,11 @@ Snakeskin.addDirective(
 	'proto',
 
 	{
-		sys: true
+		sys: true,
+		notEmpty: true
 	},
 
 	function (command, commandLength) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		var name = command.match(/[^(]+/)[0],
 			parts = name.split('->');
 
@@ -204,14 +201,11 @@ Snakeskin.addDirective(
 	'apply',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			let name = /[^(]+/.exec(command)[0],

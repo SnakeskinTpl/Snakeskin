@@ -14,16 +14,13 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			':': (cmd) => cmd.replace(/^:/, 'var ')
 		}
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save(this.multiDeclVar(command));

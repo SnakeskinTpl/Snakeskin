@@ -23,15 +23,9 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'__protoWhile__',
 
-	{
-		placement: 'template'
-	},
+	null,
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save(this.prepareOutput('__I_PROTO__', true) +
