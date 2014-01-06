@@ -8,16 +8,13 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'*': (cmd) => cmd.replace(/^\*/, 'data ')
 		}
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'' + this.replaceTplVars(command) + '\';');
@@ -30,16 +27,13 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
+		notEmpty: true,
 		replacers: {
 			'{': (cmd) => cmd.replace(/^\{/, 'decl ')
 		}
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('__SNAKESKIN_RESULT__ += \'{{' + this.replaceTplVars(command) + '}\';');
@@ -51,14 +45,11 @@ Snakeskin.addDirective(
 	'attr',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			let parts = command.match(/(.*?),\s+(.*)/);
@@ -67,7 +58,7 @@ Snakeskin.addDirective(
 				throw this.error('Invalid syntax');
 			}
 
-			parts[1] = parts[1].charAt(0) === '-' ? 'data' + parts[1] : parts[1]
+			parts[1] = parts[1].charAt(0) === '-' ? 'data' + parts[1] : parts[1];
 			parts[2] = this.prepareOutput(parts[2], true);
 
 			this.save(

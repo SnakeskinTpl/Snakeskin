@@ -7,14 +7,11 @@ Snakeskin.addDirective(
 	'for',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			let parts = command.split(';');
@@ -30,7 +27,7 @@ Snakeskin.addDirective(
 					this.prepareOutput(parts[0], true)
 					) +
 				this.prepareOutput(parts.slice(1).join(';'), true) +
-				') {');
+			') {');
 		}
 	}
 );
@@ -40,14 +37,11 @@ Snakeskin.addDirective(
 	'while',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (this.structure.name == 'do') {
 			if (this.isSimpleOutput()) {
 				this.save('} while (' + this.prepareOutput(command, true) + ');');
@@ -61,8 +55,6 @@ Snakeskin.addDirective(
 				this.save('while (' + this.prepareOutput(command, true) + ') {');
 			}
 		}
-
-
 	}
 );
 
@@ -102,14 +94,11 @@ Snakeskin.addDirective(
 	'until',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		if (this.structure.name !== 'repeat') {
 			throw this.error('Directive "' + this.name + '" can only be used with a "repeat"');
 		}

@@ -8,14 +8,11 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true
+		sys: true,
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir(null, {
 			name: command
 		});

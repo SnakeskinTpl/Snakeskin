@@ -12,6 +12,7 @@
  * @param {?string=} [params.placement] - если true, то делается проверка,
  *     где именно размещена директива ('global', 'template', ...)
  *
+ * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
  * @param {?boolean=} [params.sys=false] - если true, то директива считается системной
  *
  * @param {Object} [params.replacers] - объект коротких сокращений директивы
@@ -58,6 +59,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 					}
 				}
 			}
+		}
+
+		if (params.notEmpty && !command) {
+			throw this.error('Invalid syntax');
 		}
 
 		dir.name = name;

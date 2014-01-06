@@ -7,14 +7,11 @@ Snakeskin.addDirective(
 	'setBEM',
 
 	{
-		placement: 'global'
+		placement: 'global',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startInlineDir();
 		var parts = command.match(/(.*?),\s+(.*)/);
 
@@ -33,14 +30,11 @@ Snakeskin.addDirective(
 	'bem',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		notEmpty: true
 	},
 
 	function (command) {
-		if (!command) {
-			throw this.error('Invalid syntax');
-		}
-
 		this.startDir(null, {
 			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
 		});
