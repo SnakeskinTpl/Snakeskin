@@ -13,6 +13,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
+			this.space = true;
 			if (this.proto) {
 				this.save(this.prepareOutput('break __I_PROTO__;', true));
 

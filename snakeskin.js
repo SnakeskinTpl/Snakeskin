@@ -2861,6 +2861,7 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
+			this.space = true;
 			if (this.proto) {
 				this.save(this.prepareOutput('break __I_PROTO__;', true));
 
@@ -3432,6 +3433,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			this.save('break;');
+			this.space = true;
 		}
 	}
 );
@@ -3459,6 +3461,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			this.save('continue;');
+			this.space = true;
 		}
 	}
 );var __NEJS_THIS__ = this;

@@ -133,6 +133,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			this.save('break;');
+			this.space = true;
 		}
 	}
 );
@@ -159,6 +160,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			this.save('continue;');
+			this.space = true;
 		}
 	}
 );
