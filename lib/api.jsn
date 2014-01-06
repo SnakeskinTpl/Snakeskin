@@ -186,7 +186,7 @@ DirObj.prototype.isSimpleOutput = function () {
 /**
  * Вернуть true,
  * если ситуация соотвествует условию:
- *     не обработка тела прототипа &&
+ *     не обработка тела прототипа && не внешний прототип &&
  *     (
  *         не вложенный блок или прототип в родительской структуре ||
  *         standalone шаблон
@@ -361,6 +361,14 @@ DirObj.prototype.declVar = function (varName) {
 	return realVar;
 };
 
+/**
+ * Парсить строку декларации переменных, провести декларацию
+ * и вернуть результирующий вариант для шаблона
+ *
+ * @param {string} str - исходная строка
+ * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
+ * @return {string}
+ */
 DirObj.prototype.multiDeclVar = function (str, opt_end = true) {
 	var isSys = 0,
 		cache = '';
