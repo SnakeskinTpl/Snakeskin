@@ -12,10 +12,8 @@ var entityMap = {
 	'/': '&#x2F;'
 };
 
-var escapeHTMLRgxp = /[&<>"'\/]/g;
-function escapeHTML(s) {
-	return entityMap[s];
-}
+var escapeHTMLRgxp = /[&<>"'\/]/g,
+	escapeHTML = (s) => entityMap[s];
 
 /**
  * Экранирование строки html
@@ -46,10 +44,8 @@ var uentityMap = {
 	'&#x2F;': '/'
 };
 
-var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g;
-function uescapeHTML(s) {
-	return uentityMap[s];
-}
+var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
+	uescapeHTML = (s) => uentityMap[s];
 
 /**
  * Снять экранирование строки html
