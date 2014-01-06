@@ -759,7 +759,7 @@ DirObj.prototype.declVar = function (varName) {
 		struct = this.structure.parent;
 	}
 
-	var realVar = '__' + varName + '_' + struct.name + '_' + this.i;
+	var realVar = '__' + varName + '_' + struct.name + '_' + (this.proto || '') + this.i + '_' + this.info.line;
 
 	struct.vars[varName] = realVar;
 	this.varCache[varName] = true;
@@ -3038,8 +3038,6 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 			) + ';';
 	}
 
-	console.log(str);
-
 	return str;
 };
 
@@ -3103,10 +3101,8 @@ Snakeskin.addDirective(
 		if (this.isAdvTest()) {
 			proto.to = this.i - this.startI - commandLength - 1;
 			fromProtoCache[tplName] = this.i - this.startI + 1;
-		}
 
-		// Рекурсивно анализируем прототипы блоков
-		if (!this.parentTplName) {
+			// Рекурсивно анализируем прототипы блоков
 			proto.body = Snakeskin.compile(
 				'{template ' + tplName + '()}' +
 					'{var __I_PROTO__ = 1}' +
