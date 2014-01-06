@@ -10,11 +10,24 @@
 DirObj.prototype.protoStart = false;
 
 /**
- * Кеш внещних прототипов
+ * Кеш "внешних" прототипов
  * @type {!Object}
  */
 DirObj.prototype.preProtos = {};
 
+/**
+ * Название активного "внешнего" прототипа
+ * @type {?string}
+ */
+DirObj.prototype.protoLink = null;
+
+/**
+ * Вернуть строку декларации аргументов прототипа
+ *
+ * @param {!Array.<!Array>} protoArgs - массив аргументов прототипа [название, значение по умолчанию]
+ * @param {!Array} args - массив передаваемых аргументов
+ * @return {string}
+ */
 DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var str = '';
 
@@ -48,17 +61,26 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		var name = command.match(/[^(]+/)[0],
 			parts = name.split('->');
 
 		if (parts[1]) {
 			name = parts[1].trim();
 
+			// Идёт декларация внешнего прототипа
 			if (!this.tplName) {
 				this.tplName = parts[0].trim();
 				this.preProtos[this.tplName] = this.preProtos[this.tplName] || '';
 				this.protoLink = name;
 			}
+		}
+
+		if (!name || !this.tplName) {
+			throw this.error('Invalid syntax');
 		}
 
 		this.startDir(null, {
@@ -99,6 +121,7 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			lastProto = this.structure.params;
 
+		// Закрылся "внешний" прототип
 		if (this.protoLink === lastProto.name) {
 			this.preProtos[this.tplName] += this.source.substring(lastProto.from, this.i + 1);
 			this.protoLink = null;
@@ -131,6 +154,7 @@ Snakeskin.addDirective(
 				);
 			}
 
+			// Применение обратных прототипов
 			let back = this.backTable[lastProto.name];
 			if (back && !back.protoStart) {
 				let args = proto.args;
@@ -184,10 +208,14 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!command) {
+			throw this.error('Invalid syntax');
+		}
+
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let name = command.match(/[^(]+/)[0],
-				args = command.match(/\((.*?)\)/);
+			let name = /[^(]+/.exec(command)[0],
+				args = /\((.*?)\)/.exec(command);
 
 			let proto = protoCache[this.tplName][name],
 				argsStr;
@@ -196,6 +224,7 @@ Snakeskin.addDirective(
 				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);
 			}
 
+			// Рекурсивный вызов прототипа
 			if (this.proto === name) {
 				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
 
