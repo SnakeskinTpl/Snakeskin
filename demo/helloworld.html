@@ -25,9 +25,14 @@
 				{/}
 			{/}
 
+			{proto helloWorld->foo2}
+				Привет!!!
+			{/}
+
 			{template helloWorld() extends base}
 				{block foo}
 					{apply foo(10)}
+					{apply foo2}
 				{/}
 			{/}
 		</script>

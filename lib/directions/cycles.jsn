@@ -32,7 +32,6 @@ Snakeskin.addDirective(
 	}
 );
 
-
 Snakeskin.addDirective(
 	'while',
 

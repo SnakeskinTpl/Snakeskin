@@ -1143,14 +1143,22 @@ DirObj.prototype.getExtStr = function (tplName) {
 
 			// Сдвиг относительно родительской позиции элемента
 			var adv = 0;
-			var block = cache[tplName].substring(el[key].from, el[key].to);
+			var current = el[key];
+			var parent = prev[key];
 
-			// Разница между дочерним и родительским блоком
-			if (prev[key]) {
-				blockDiff = block.length - cache[parentTpl].substring(prev[key].from, prev[key].to).length;
+			if (i === 4 && parent && current.argsDecl !== parent.argsDecl) {
+				current.from -= current.length;
+				parent.from -= parent.length;
 			}
 
-			var diff = prev[key] ? prev[key].from : from;
+			var block = cache[tplName].substring(current.from, current.to);
+
+			// Разница между дочерним и родительским блоком
+			if (parent) {
+				blockDiff = block.length - cache[parentTpl].substring(parent.from, parent.to).length;
+			}
+
+			var diff = parent ? parent.from : from;
 			advDiff.sort(sornFn);
 
 			for (var j = 0; j < advDiff.length; j++) {
@@ -1162,11 +1170,11 @@ DirObj.prototype.getExtStr = function (tplName) {
 				}
 			}
 
-			if (prev[key] && (i % 2 === 0)) {
+			if (parent && (i % 2 === 0)) {
 				// Новые глобальные блоки всегда добавляются в конец шаблона,
 				// а остальные элементы после последнего вызова
 				if (i > 1) {
-					newFrom = prev[key].from + adv + block.length;
+					newFrom = parent.from + adv + block.length;
 					from += blockDiff;
 
 					if (newFrom > from) {
@@ -1175,14 +1183,14 @@ DirObj.prototype.getExtStr = function (tplName) {
 					}
 				}
 
-				res = res.substring(0, prev[key].from + adv) + block + res.substring(prev[key].to + adv);
+				res = res.substring(0, parent.from + adv) + block + res.substring(parent.to + adv);
 				advDiff.push({
-					val: prev[key].from,
+					val: parent.from,
 					adv: blockDiff
 				});
 
 			// Добавление
-			} else if (!prev[key]) {
+			} else if (!parent) {
 				// Блоки
 				if (i === 1) {
 					res += '{block ' + key + '}' + block + '{end}';
@@ -1196,7 +1204,7 @@ DirObj.prototype.getExtStr = function (tplName) {
 						from += adv;
 					}
 
-					block = i === 3 ? ('{' + block + '}') : ('{proto ' + key + el[key].argsDecl + '}' + block + '{end}');
+					block = i === 3 ? ('{' + block + '}') : ('{proto ' + key + current.argsDecl + '}' + block + '{end}');
 					res = res.substring(0, from) + block + res.substring(from);
 
 					advDiff.push({
@@ -1759,10 +1767,8 @@ DirObj.prototype.replaceTplVars = function (str) {
 		bEnd = true,
 		bEscape = false;
 
-	function replacer(str) {
-		var __NEJS_THIS__ = this;
-		return str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
-	}
+	var replacer = function (str) {
+		return str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');};
 
 	var nextLineRgxp = /[\r\n\v]/,
 		bEndRgxp = /[^\s\/]/;
@@ -2811,6 +2817,8 @@ Snakeskin.addDirective(
 				this.source.substring(this.i - commandLength - 1);
 
 			this.initTemplateCache(tplName);
+			console.log(this.source);
+
 			this.startDir(this.structure.name);
 
 			this.i = this.startI - 1;
@@ -3108,8 +3116,10 @@ Snakeskin.addDirective(
 				}
 			}
 
+			var hasInParent = this.parentTplName ? !!protoCache[this.parentTplName][name] : false;
 			protoCache[this.tplName][name] = {
-				from: this.i - this.startI - commandLength - 1,
+				length: commandLength,
+				from: this.i - this.startI + 1,
 				argsDecl: args ? args[0] : '',
 				args: argsMap
 			};
@@ -3320,13 +3330,12 @@ Snakeskin.addDirective(
 				(rgxp.test(parts[0]) ?
 					this.multiDeclVar(parts[0].replace(rgxp, '')) :
 					this.prepareOutput(parts[0], true)
-					) +
+				) +
 				this.prepareOutput(parts.slice(1).join(';'), true) +
 			') {');
 		}
 	}
 );
-
 
 Snakeskin.addDirective(
 	'while',
