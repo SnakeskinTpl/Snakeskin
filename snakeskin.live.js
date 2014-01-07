@@ -47,6 +47,30 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
+Snakeskin.importFilters = function (filters, namespace) {
+	var __NEJS_THIS__ = this;
+	var obj = Snakeskin.Filters;
+
+	if (namespace) {
+		var parts = namespace.split('.');
+		for (var i = 0; i < parts.length; i++) {
+			if (!obj[parts[i]]) {
+				obj[parts[i]] = {};
+			}
+
+			obj = obj[parts[i]];
+		}
+	}
+
+	for (var key in filters) {
+		if (!filters.hasOwnProperty(key)) {
+			continue;
+		}
+
+		obj[key] = filters[key];
+	}
+};
+
 var entityMap = {
 	'&': '&amp;',
 	'<': '&lt;',

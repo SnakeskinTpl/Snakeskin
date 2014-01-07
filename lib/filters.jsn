@@ -3,6 +3,35 @@
  * @version 1.0.0
  */
 
+/**
+ * Импортировать свойства объекта в Snakeskin.Filters
+ *
+ * @param {!Object} filters - исходный объект
+ * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
+ */
+Snakeskin.importFilters = function (filters, opt_namespace) {
+	var obj = Snakeskin.Filters;
+
+	if (opt_namespace) {
+		let parts = opt_namespace.split('.');
+		for (let i = 0; i < parts.length; i++) {
+			if (!obj[parts[i]]) {
+				obj[parts[i]] = {};
+			}
+
+			obj = obj[parts[i]];
+		}
+	}
+
+	for (let key in filters) {
+		if (!filters.hasOwnProperty(key)) {
+			continue;
+		}
+
+		obj[key] = filters[key];
+	}
+};
+
 var entityMap = {
 	'&': '&amp;',
 	'<': '&lt;',
