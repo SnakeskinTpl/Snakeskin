@@ -4359,12 +4359,12 @@ Snakeskin.addDirective(
 				throw this.error('Invalid syntax');
 			}
 
-			parts[1] = parts[1].charAt(0) === '-' ? 'data' + parts[1] : parts[1];
-			parts[2] = this.prepareOutput(parts[2], true);
+			parts[1] = (parts[1].charAt(0) === '-' ? '\'data-\' + ' + parts[1].slice(1) : parts[1]).trim();
+			parts[2] = this.prepareOutput(parts[2].trim(), true);
 
 			this.save(
 				'if (' + parts[2] + ') {' +
-					'__SNAKESKIN_RESULT__ += \'' + parts[1] + '="\' + ' + parts[2] + ' + \'"\';' +
+					'__SNAKESKIN_RESULT__ += ' + parts[1] + ' + \'="\' + ' + parts[2] + ' + \'"\';' +
 				'}'
 			);
 		}
