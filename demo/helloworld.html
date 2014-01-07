@@ -10,15 +10,20 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(name = 'world')}
-				{foo = 'bar'}
-				<h1{attr 'style', '' || 'color: red'}>Hello!</h1>
-			{/}
+			{template test(obj)}{with obj}<div><h1 class='header'>{header}</h1><h2 class='header2'>{header2}</h2><h3 class='header3'>{header3}</h3><h4 class='header4'>{header4}</h4><h5 class='header5'>{header5}</h5><h6 class='header6'>{header6}</h6><ul class='list'>{forEach list => el}<li class='item'>{@el}</li>{/}</ul></div>{/}{/}
 		</script>
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld();
+			document.getElementById('test').innerHTML = test({
+				header: "Header",
+				header2: "Header2",
+				header3: "Header3",
+				header4: "Header4",
+				header5: "Header5",
+				header6: "Header6",
+				list: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+			});
 			console.timeEnd('foo');
 		</script>
 	</body>

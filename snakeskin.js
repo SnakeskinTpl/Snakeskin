@@ -2332,7 +2332,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						var rnum = num = num ? scope.length - num : num,
 							length = scope.length;
 
-						if (num <= 0) {
+						if (num !== null && num <= 0) {
 							vres = addScope(rfWord);
 
 						} else {
@@ -3682,7 +3682,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			var parts = command.split('=>'),
-				val = this.prepareOutput(parts[0], true).trim();
+				val = parts[0];
 
 			if (parts.length > 2) {
 				throw this.error('Invalid syntax');
@@ -3691,8 +3691,9 @@ Snakeskin.addDirective(
 			var args = parts[1] ?
 				parts[1].trim().split(',') : [];
 
+			var pr = this.scope.length ? '@' : '';
 			var tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput('__TMP__', true);
+				cache = this.prepareOutput(pr + '__TMP__', true);
 
 			// Длина объекта
 			var oLength = '';
@@ -3700,11 +3701,11 @@ Snakeskin.addDirective(
 				oLength +=
 					this.multiDeclVar('__TMP_LENGTH__ = 0') +
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput(pr + '__KEY__', true) + ')) {' +
 							'continue;' +
 						'}' +
 
-						this.prepareOutput('__TMP_LENGTH__++;', true) +
+						this.prepareOutput(pr + '__TMP_LENGTH__++;', true) +
 					'}';
 			}
 
@@ -3713,8 +3714,8 @@ Snakeskin.addDirective(
 				tmp +
 				'if (' + cache + ') {' +
 					'if (Array.isArray(' + cache + ')) {' +
-						this.multiDeclVar('__TMP_LENGTH__ = __TMP__.length') +
-						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput('__I__ < __TMP_LENGTH__; __I__++', true) + ') {' +
+						this.multiDeclVar('__TMP_LENGTH__ = ' + pr + '__TMP__.length') +
+						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput(pr + '__I__ <' + pr +  '__TMP_LENGTH__;' + pr + '__I__++', true) + ') {' +
 							(function () {
 								
 								var str = '';
@@ -3722,11 +3723,11 @@ Snakeskin.addDirective(
 								for (var i = 0; i < args.length; i++) {
 									switch (i) {
 										case 0: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache + '[__I__]');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__I__]');
 										} break;
 
 										case 1: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__');
 										} break;
 
 										case 2: {
@@ -3734,15 +3735,15 @@ Snakeskin.addDirective(
 										} break;
 
 										case 3: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
 										} break;
 
 										case 4: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
 										} break;
 
 										case 5: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
 										} break;
 									}
 								}
@@ -3759,11 +3760,11 @@ Snakeskin.addDirective(
 					this.multiDeclVar('__I__ = -1') +
 
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput(pr + '__KEY__', true) + ')) {' +
 							'continue;' +
 						'}' +
 
-						this.prepareOutput('__I__++;', true) +
+						this.prepareOutput(pr + '__I__++;', true) +
 						(function () {
 							
 							var str = '';
@@ -3771,11 +3772,11 @@ Snakeskin.addDirective(
 							for (var i = 0; i < args.length; i++) {
 								switch (i) {
 									case 0: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache + '[__KEY__]');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__KEY__]');
 									} break;
 
 									case 1: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __KEY__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__KEY__');
 									} break;
 
 									case 2: {
@@ -3783,19 +3784,19 @@ Snakeskin.addDirective(
 									} break;
 
 									case 3: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__');
 									} break;
 
 									case 4: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
 									} break;
 
 									case 5: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
 									} break;
 
 									case 6: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
 									} break;
 								}
 							}
@@ -3834,7 +3835,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			var parts = command.split('=>'),
-				val = this.prepareOutput(parts[0], true);
+				val = parts[0];
 
 			if (parts.length > 2) {
 				throw this.error('Invalid syntax');
@@ -3842,15 +3843,16 @@ Snakeskin.addDirective(
 
 			var args = parts[1] ? parts[1].trim().split(',') : [];
 
+			var pr = this.scope.length ? '@' : '';
 			var tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput('__TMP__', true);
+				cache = this.prepareOutput(pr + '__TMP__', true);
 
 			var oLength = '';
 			if (args.length >= 6) {
 				oLength +=
 					this.multiDeclVar('__TMP_LENGTH__ = 0') +
 					'for (' + this.multiDeclVar('key', false) + 'in ' + cache + ') {' +
-						this.prepareOutput('__TMP_LENGTH__++;', true) +
+						this.prepareOutput(pr + '__TMP_LENGTH__++;', true) +
 					'}';
 			}
 
@@ -3860,7 +3862,7 @@ Snakeskin.addDirective(
 					oLength +
 					this.multiDeclVar('__I__ = -1') +
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						this.prepareOutput('__I__++;', true) +
+						this.prepareOutput(pr + '__I__++;', true) +
 
 						(function () {
 							
@@ -3869,11 +3871,11 @@ Snakeskin.addDirective(
 							for (var i = 0; i < args.length; i++) {
 								switch (i) {
 									case 0: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache + '[__KEY__]');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__KEY__]');
 									} break;
 
 									case 1: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __KEY__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__KEY__');
 									} break;
 
 									case 2: {
@@ -3881,19 +3883,19 @@ Snakeskin.addDirective(
 									} break;
 
 									case 3: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__');
 									} break;
 
 									case 4: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
 									} break;
 
 									case 5: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
 									} break;
 
 									case 6: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
 									} break;
 								}
 							}
