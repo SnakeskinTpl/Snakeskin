@@ -315,14 +315,16 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 
 	new Function(dir.res)();
 	if (!require && !opt_commonJS) {
-		try {
-			let blob = new Blob([dir.res], {type: 'application/javascript'});
-			let script = document.createElement('script');
+		setTimeout(() => {
+			try {
+				let blob = new Blob([dir.res], {type: 'application/javascript'});
+				let script = document.createElement('script');
 
-			script.src = URL.createObjectURL(blob);
-			document.head.appendChild(script);
+				script.src = URL.createObjectURL(blob);
+				document.head.appendChild(script);
 
-		} catch (ignore) {}
+			} catch (ignore) {}
+		}, 50);
 	}
 
 	return dir.res;
