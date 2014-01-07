@@ -11,7 +11,7 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{placeholder foo()}
-				{block k}{a = 4}{/}
+				{block k}{block ppp}{a = 4}{/}{/}
 
 				{proto e}
 					{a}
@@ -20,7 +20,6 @@
 
 			{template helloWorld() extends foo}
 				{a = 3}
-				{block k}4545{/}
 
 				{proto e}{block e}{super}{/}{/}
 				{block foo}{apply e}{/}

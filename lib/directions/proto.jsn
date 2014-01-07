@@ -103,7 +103,6 @@ Snakeskin.addDirective(
 				}
 			}
 
-			let hasInParent = this.parentTplName ? !!protoCache[this.parentTplName][name] : false;
 			protoCache[this.tplName][name] = {
 				length: commandLength,
 				from: this.i - this.startTemplateI + 1,
@@ -179,7 +178,7 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if (!this.hasParent('proto')) {
+		if (!this.hasParentBlock('proto')) {
 			this.protoStart = false;
 		}
 	}

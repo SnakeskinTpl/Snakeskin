@@ -602,7 +602,7 @@ DirObj.prototype.isAdvTest = function () {
 	return !!(
 		!this.proto && !this.protoLink &&
 		(
-			(this.parentTplName && !this.hasParent({
+			(this.parentTplName && !this.hasParentBlock({
 				'block': true,
 				'proto': true
 			})) ||
@@ -815,6 +815,22 @@ DirObj.prototype.hasParent = function (name) {
 	var __NEJS_THIS__ = this;
 	if (this.structure.parent) {
 		return this.has(name, this.structure.parent);
+	}
+
+	return false;
+};
+
+/**
+ * Проверить начилие директивы в цепочке блочной структуры
+ * (начальная активная директива исключается)
+ *
+ * @param {(string|!Object)} name - название директивы или объект названий
+ * @return {boolean}
+ */
+DirObj.prototype.hasParentBlock = function (name) {
+	var __NEJS_THIS__ = this;
+	if (this.blockStructure.parent) {
+		return this.has(name, this.blockStructure.parent);
 	}
 
 	return false;
@@ -3207,7 +3223,6 @@ Snakeskin.addDirective(
 				}
 			}
 
-			var hasInParent = this.parentTplName ? !!protoCache[this.parentTplName][name] : false;
 			protoCache[this.tplName][name] = {
 				length: commandLength,
 				from: this.i - this.startTemplateI + 1,
@@ -3284,7 +3299,7 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if (!this.hasParent('proto')) {
+		if (!this.hasParentBlock('proto')) {
 			this.protoStart = false;
 		}
 	}
