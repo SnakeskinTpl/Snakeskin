@@ -77,6 +77,12 @@ function DirObj(src, params) {
 	this.blockStructure = null;
 
 	/**
+	 * Таблица блоков (прототипы, блоки, константы)
+	 * @type {Object}
+	 */
+	this.blockTable = null;
+
+	/**
 	 * Структура шаблонов
 	 * @type {!Object}
 	 */
@@ -226,6 +232,8 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 		childs: []
 	};
 
+	this.blockTable = {};
+
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -320,6 +328,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
 			params: opt_params
 		};
 
+		this.blockTable[opt_name + '_' + opt_params.name] = sub;
 		this.blockStructure.childs.push(sub);
 		this.blockStructure = sub;
 	}

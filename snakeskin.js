@@ -465,6 +465,12 @@ function DirObj(src, params) {
 	this.blockStructure = null;
 
 	/**
+	 * Таблица блоков (прототипы, блоки, константы)
+	 * @type {Object}
+	 */
+	this.blockTable = null;
+
+	/**
 	 * Структура шаблонов
 	 * @type {!Object}
 	 */
@@ -619,6 +625,8 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 		childs: []
 	};
 
+	this.blockTable = {};
+
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -717,6 +725,7 @@ DirObj.prototype.startInlineDir = function (opt_name,opt_params) {
 			params: opt_params
 		};
 
+		this.blockTable[opt_name + '_' + opt_params.name] = sub;
 		this.blockStructure.childs.push(sub);
 		this.blockStructure = sub;
 	}
@@ -1123,7 +1132,6 @@ DirObj.prototype.getExtStr = function (tplName) {
 	var parentTpl = extMap[tplName],
 		res = cache[parentTpl];
 
-	console.log(structure[tplName], structure[parentTpl]);
 	var from = 0,
 		advDiff = [];
 
@@ -2855,6 +2863,8 @@ Snakeskin.addDirective(
 		cache[tplName] = this.source.substring(this.startTemplateI, this.i - commandLength - 1);
 		structure[tplName] = this.blockStructure;
 
+		console.log(this.blockTable);
+
 		// Обработка наследования:
 		// тело шаблона объединяется с телом родителя
 		// и обработка шаблона начинается заново,
@@ -3335,7 +3345,7 @@ Snakeskin.addDirective(
 			'const': true
 		};
 
-		if (!extMap[this.tplName] || this.parentTplName) {
+		if (this.parentTplName) {
 			var obj = this.blockStructure;
 			var cache;
 

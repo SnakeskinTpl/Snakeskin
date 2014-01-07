@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 			'const': true
 		};
 
-		if (!extMap[this.tplName] || this.parentTplName) {
+		if (this.parentTplName) {
 			let obj = this.blockStructure;
 			let cache;
 
