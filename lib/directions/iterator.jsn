@@ -63,7 +63,7 @@ Snakeskin.addDirective(
 										} break;
 
 										case 2: {
-											str += this.multiDeclVar(args[i] + ' = ' + cache);
+											str += this.multiDeclVar(args[i] + ' = ' + pr + cache);
 										} break;
 
 										case 3: {
@@ -111,7 +111,7 @@ Snakeskin.addDirective(
 									} break;
 
 									case 2: {
-										str += this.multiDeclVar(args[i] + ' = ' + cache);
+										str += this.multiDeclVar(args[i] + ' = ' + pr + cache);
 									} break;
 
 									case 3: {
@@ -207,7 +207,7 @@ Snakeskin.addDirective(
 									} break;
 
 									case 2: {
-										str += this.multiDeclVar(args[i] + ' = ' + cache);
+										str += this.multiDeclVar(args[i] + ' = ' + pr + cache);
 									} break;
 
 									case 3: {
