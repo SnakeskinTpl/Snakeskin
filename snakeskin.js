@@ -881,7 +881,7 @@ DirObj.prototype.declVar = function (varName) {
 	var realVar = '__' + varName + '_' + (this.proto ? this.proto.name : '') + '_' + struct.name + '_' + this.i;
 
 	struct.vars[varName] = realVar;
-	this.varCache[varName] = true;
+	this.varCache[this.tplName][varName] = true;
 
 	return realVar;
 };
@@ -2725,6 +2725,7 @@ Snakeskin.addDirective(
 		};
 
 		this.blockTable = {};
+		this.varCache[tplName] = {};
 
 		if (this.proto) {
 			return;
@@ -4159,7 +4160,7 @@ Snakeskin.addDirective(
 					}
 
 					// Попытка инициализации константы, которая была объявлена как переменная
-					if (this.varCache[name]) {
+					if (this.varCache[tplName][name]) {
 						throw this.error('Constant "' + name + '" is already defined as variable');
 					}
 

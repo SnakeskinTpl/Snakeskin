@@ -74,6 +74,7 @@ Snakeskin.addDirective(
 		};
 
 		this.blockTable = {};
+		this.varCache[tplName] = {};
 
 		if (this.proto) {
 			return;
