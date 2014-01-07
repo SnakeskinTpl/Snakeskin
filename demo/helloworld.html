@@ -11,10 +11,19 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template foo()}
-				{foo = 1}
-				{with {foo: 1}}
-					{#9999999999foo}
+				{proto bar(i)}
+					{i}
+
+					{if i === 2}
+						{return}
+					{/}
+
+					{if i}
+						{apply bar(--i)}
+					{/}
 				{/}
+
+				{apply bar(4)}
 			{/}
 		</script>
 		<script>

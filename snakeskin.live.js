@@ -48,7 +48,7 @@ var __NEJS_THIS__ = this;
  */
 
 /**
- * Импортировать свойства объекта в Snakeskin.Filters
+ * Импортировать свойства объекта в пространство имён Snakeskin.Filters
  *
  * @param {!Object} filters - исходный объект
  * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
