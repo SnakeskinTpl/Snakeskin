@@ -141,7 +141,7 @@ Snakeskin.addDirective(
 				proto.body = Snakeskin.compile(
 					'{template ' + tplName + '()}' +
 						'{var __I_PROTO__ = 1}' +
-						'{__protoWhile__ ' + (this.scope ? '@' : '') + '__I_PROTO__--}' +
+						'{__protoWhile__ ' + (this.scope.length ? '@' : '') + '__I_PROTO__--}' +
 							this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1) +
 						'{end}' +
 					'{end}',
