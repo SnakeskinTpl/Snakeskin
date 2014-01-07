@@ -355,7 +355,8 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
-var require;
+var globalCache = {};
+
 var cache = {},
 	table = {};
 
@@ -1428,7 +1429,12 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		html = html.replace(/\s*?\n/, '');
 	}
 
-	var dir = new DirObj(String(html || src), {
+	var key = html || src;
+	if (globalCache[key]) {
+		return globalCache[key];
+	}
+
+	var dir = new DirObj(String(key), {
 		info: opt_info,
 		commonJS: !!opt_commonJS,
 		proto: opt_params.proto,
@@ -1713,6 +1719,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 	}
 
 	new Function(dir.res)();
+	globalCache[key] = dir.res;
 	if (!require && !opt_commonJS) {
 		setTimeout(function () {
 			
