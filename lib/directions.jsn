@@ -85,7 +85,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 			dir.inlineDir = null;
 			dir.structure = dir.structure.parent;
 
-			if (sname === 'const') {
+			if (dir.blockStructure && sname === 'const') {
 				dir.blockStructure = dir.blockStructure.parent;
 			}
 		}

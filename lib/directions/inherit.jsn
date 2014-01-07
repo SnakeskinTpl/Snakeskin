@@ -19,14 +19,11 @@ Snakeskin.addDirective(
 
 		if (!extMap[this.tplName] || this.parentTplName) {
 			let obj = this.blockStructure;
-			let current = obj.name;
 			let cache;
 
 			while (1) {
-				if (table[current]) {
-					console.log(obj);
-
-					switch (current) {
+				if (table[obj.name]) {
+					switch (obj.name) {
 						case 'proto': {
 							cache = protoCache[this.parentTplName][obj.params.name];
 						} break;
@@ -39,7 +36,6 @@ Snakeskin.addDirective(
 					if (cache) {
 						break;
 					}
-
 				}
 
 				if (obj.parent && obj.parent.name !== 'root') {

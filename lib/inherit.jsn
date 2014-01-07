@@ -13,6 +13,7 @@ DirObj.prototype.getExtStr = function (tplName) {
 	var parentTpl = extMap[tplName],
 		res = cache[parentTpl];
 
+	console.log(structure[tplName], structure[parentTpl]);
 	var from = 0,
 		advDiff = [];
 

@@ -326,7 +326,8 @@ var __NEJS_THIS__ = this;
  */
 
 var require;
-var cache = {};
+var cache = {},
+	structure = {};
 
 // Кеш блоков
 var blockCache = {},
@@ -459,13 +460,9 @@ function DirObj(src, params) {
 
 	/**
 	 * Дерево блоков (прототипы, блоки, константы)
-	 * @type {!Object}
+	 * @type {Object}
 	 */
-	this.blockStructure = {
-		name: 'root',
-		parent: null,
-		childs: []
-	};
+	this.blockStructure = null;
 
 	/**
 	 * Структура шаблонов
@@ -616,6 +613,12 @@ DirObj.prototype.isAdvTest = function () {
  */
 DirObj.prototype.initTemplateCache = function (tplName) {
 	var __NEJS_THIS__ = this;
+	this.blockStructure = {
+		name: 'root',
+		parent: null,
+		childs: []
+	};
+
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -670,7 +673,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params,opt_vars) {
 	struct.childs.push(obj);
 	this.structure = obj;
 
-	if (opt_name === 'block' || opt_name === 'proto') {
+	if (this.blockStructure && (opt_name === 'block' || opt_name === 'proto')) {
 		var sub = {
 			name: opt_name,
 			parent: this.blockStructure,
@@ -707,7 +710,7 @@ DirObj.prototype.startInlineDir = function (opt_name,opt_params) {
 	this.structure.childs.push(obj);
 	this.structure = obj;
 
-	if (opt_name === 'const') {
+	if (this.blockStructure && opt_name === 'const') {
 		var sub = {
 			name: opt_name,
 			parent: this.blockStructure,
@@ -730,7 +733,7 @@ DirObj.prototype.endDir = function () {
 	var name = this.structure.name;
 	this.structure = this.structure.parent;
 
-	if (name === 'block' || name === 'proto') {
+	if (this.blockStructure && (name === 'block' || name === 'proto')) {
 		this.blockStructure = this.blockStructure.parent;
 	}
 
@@ -1120,6 +1123,7 @@ DirObj.prototype.getExtStr = function (tplName) {
 	var parentTpl = extMap[tplName],
 		res = cache[parentTpl];
 
+	console.log(structure[tplName], structure[parentTpl]);
 	var from = 0,
 		advDiff = [];
 
@@ -1720,7 +1724,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 			dir.inlineDir = null;
 			dir.structure = dir.structure.parent;
 
-			if (sname === 'const') {
+			if (dir.blockStructure && sname === 'const') {
 				dir.blockStructure = dir.blockStructure.parent;
 			}
 		}
@@ -2849,6 +2853,7 @@ Snakeskin.addDirective(
 		}
 
 		cache[tplName] = this.source.substring(this.startTemplateI, this.i - commandLength - 1);
+		structure[tplName] = this.blockStructure;
 
 		// Обработка наследования:
 		// тело шаблона объединяется с телом родителя
@@ -2872,7 +2877,7 @@ Snakeskin.addDirective(
 			'return __SNAKESKIN_RESULT__; };' +
 			'if (typeof Snakeskin !== \'undefined\') {' +
 				'Snakeskin.cache[\'' +
-				this.applyDefEscape(this.pasteDangerBlocks(tplName)) +
+					this.applyDefEscape(this.pasteDangerBlocks(tplName)) +
 				'\'] = ' + (this.commonJS ? 'exports.' : '') + tplName + ';' +
 			'}/* Snakeskin template. */'
 		);
@@ -3332,14 +3337,11 @@ Snakeskin.addDirective(
 
 		if (!extMap[this.tplName] || this.parentTplName) {
 			var obj = this.blockStructure;
-			var current = obj.name;
 			var cache;
 
 			while (1) {
-				if (table[current]) {
-					console.log(obj);
-
-					switch (current) {
+				if (table[obj.name]) {
+					switch (obj.name) {
 						case 'proto': {
 							cache = protoCache[this.parentTplName][obj.params.name];
 						} break;
@@ -3352,7 +3354,6 @@ Snakeskin.addDirective(
 					if (cache) {
 						break;
 					}
-
 				}
 
 				if (obj.parent && obj.parent.name !== 'root') {

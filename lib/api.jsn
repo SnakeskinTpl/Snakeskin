@@ -72,13 +72,9 @@ function DirObj(src, params) {
 
 	/**
 	 * Дерево блоков (прототипы, блоки, константы)
-	 * @type {!Object}
+	 * @type {Object}
 	 */
-	this.blockStructure = {
-		name: 'root',
-		parent: null,
-		childs: []
-	};
+	this.blockStructure = null;
 
 	/**
 	 * Структура шаблонов
@@ -224,6 +220,12 @@ DirObj.prototype.isAdvTest = function () {
  * @return {!DirObj}
  */
 DirObj.prototype.initTemplateCache = function (tplName) {
+	this.blockStructure = {
+		name: 'root',
+		parent: null,
+		childs: []
+	};
+
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -276,7 +278,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars = {}) {
 	struct.childs.push(obj);
 	this.structure = obj;
 
-	if (opt_name === 'block' || opt_name === 'proto') {
+	if (this.blockStructure && (opt_name === 'block' || opt_name === 'proto')) {
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
@@ -311,7 +313,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
 	this.structure.childs.push(obj);
 	this.structure = obj;
 
-	if (opt_name === 'const') {
+	if (this.blockStructure && opt_name === 'const') {
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
@@ -333,7 +335,7 @@ DirObj.prototype.endDir = function () {
 	var name = this.structure.name;
 	this.structure = this.structure.parent;
 
-	if (name === 'block' || name === 'proto') {
+	if (this.blockStructure && (name === 'block' || name === 'proto')) {
 		this.blockStructure = this.blockStructure.parent;
 	}
 
