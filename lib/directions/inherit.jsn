@@ -3,34 +3,20 @@
  * @version 1.0.0
  */
 
-/**
- * Директива super
- *
- * @param {string} command - текст команды
- *
- * @param {number} commandLength - длина команды
- * @param {!DirObj} dir - объект управления директивами
- *
- * @param {Object} adv - дополнительные параметры
- * @param {!Object} adv.info - информация о шаблоне (название файлы, узла и т.д.)
- */
-Snakeskin.Directions['super'] = function (command, commandLength, dir, adv) {
-	if (!dir.structure.parent) {
-		throw dir.error('Directive "super" can only be used within a "template" or "proto", ' +
-			dir.genErrorAdvInfo(adv.info)
-		);
-	}
+Snakeskin.addDirective(
+	'super',
 
-	if (dir.isSimpleOutput()) {
-		let type = command.split(' ');
-		//console.log(command)
+	{
+		placement: 'template'
+	},
 
-		/*if (type[0] === 'block') {
-			console.log(121, blockCache[extMap[dirObj.tplName]][type[1]].body);
+	function (command) {
+		if (this.isSimpleOutput()) {
+			console.log(this.structure);
 
-			dirObj.source = dirObj.source.substring(0, dirObj.i + 1) +
+			/*this.source = this.source.substring(0, this.i + 1) +
 				blockCache[extMap[dirObj.tplName]][type[1]].body +
-				dirObj.source.substring(dirObj.i + 1);
-		}*/
+				dirObj.source.substring(dirObj.i + 1);*/
+		}
 	}
-};
+);

@@ -86,6 +86,8 @@ Snakeskin.addDirective(
 			from: this.i - commandLength - 1
 		});
 
+		console.log(1, this.blockStructure);
+
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');

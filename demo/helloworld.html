@@ -10,15 +10,17 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			/**
-			 * @return {string}
-			 */
-			{template helloWorld()}
-				{try}
-					{?f()}
-				{catch err}
-					{?console.log(err)}
-					{{foobar}}
+			{placeholder foo()}
+				{proto e}
+					{a}
+				{/}
+			{/}
+
+			{template helloWorld() extends foo}
+				{a = 3}
+
+				{proto e}
+					{super}
 				{/}
 			{/}
 		</script>
