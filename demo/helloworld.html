@@ -10,14 +10,15 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template foo()}
-				{{{foo}}}
+			{template helloWorld(name = 'world')}
+			{foo = 'bar'}
+			<h1>Hello {{{foo}}}!</h1>
 			{/}
 		</script>
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = foo();
+			document.getElementById('test').innerHTML = helloWorld();
 			console.timeEnd('foo');
 		</script>
 	</body>

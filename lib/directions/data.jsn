@@ -36,6 +36,8 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
+			command = this.replaceTplVars(command);
+
 			let start = /^\{+/.exec(command) || [''],
 				end = /\}+$/.exec(command) || [''];
 
@@ -47,10 +49,7 @@ Snakeskin.addDirective(
 				throw this.error('Invalid syntax');
 			}
 
-			this.save('__SNAKESKIN_RESULT__ += \'{' +
-				add +
-				this.replaceTplVars(command) + '}\';'
-			);
+			this.save('__SNAKESKIN_RESULT__ += \'{' + add + command + '}\';');
 		}
 	}
 );

@@ -4323,6 +4323,8 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
+			command = this.replaceTplVars(command);
+
 			var start = /^\{+/.exec(command) || [''],
 				end = /\}+$/.exec(command) || [''];
 
@@ -4334,10 +4336,7 @@ Snakeskin.addDirective(
 				throw this.error('Invalid syntax');
 			}
 
-			this.save('__SNAKESKIN_RESULT__ += \'{' +
-				add +
-				this.replaceTplVars(command) + '}\';'
-			);
+			this.save('__SNAKESKIN_RESULT__ += \'{' + add + command + '}\';');
 		}
 	}
 );
