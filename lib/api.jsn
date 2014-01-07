@@ -226,13 +226,6 @@ DirObj.prototype.isAdvTest = function () {
  * @return {!DirObj}
  */
 DirObj.prototype.initTemplateCache = function (tplName) {
-	this.blockStructure = {
-		name: 'root',
-		parent: null,
-		childs: []
-	};
-
-	this.blockTable = {};
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -426,6 +419,7 @@ DirObj.prototype.hasParent = function (name) {
  * @return {boolean}
  */
 DirObj.prototype.hasParentBlock = function (name) {
+	//console.log(name, this.blockStructure);
 	if (this.blockStructure.parent) {
 		return this.has(name, this.blockStructure.parent);
 	}

@@ -47,12 +47,18 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
-Snakeskin.importFilters = function (filters, namespace) {
+/**
+ * Импортировать свойства объекта в Snakeskin.Filters
+ *
+ * @param {!Object} filters - исходный объект
+ * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
+ */
+Snakeskin.importFilters = function (filters, opt_namespace) {
 	var __NEJS_THIS__ = this;
 	var obj = Snakeskin.Filters;
 
-	if (namespace) {
-		var parts = namespace.split('.');
+	if (opt_namespace) {
+		var parts = opt_namespace.split('.');
 		for (var i = 0; i < parts.length; i++) {
 			if (!obj[parts[i]]) {
 				obj[parts[i]] = {};

@@ -10,25 +10,35 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{placeholder foo()}
-				{block k}{block ppp}{a = 4}{/}{/}
+			{template base(a = 1, b)}
+				{title = 'foo'}
+				{proto test}
+					{proto start}
+						OK
+					{end}
 
-				{proto e}
-					{a}
-				{/}
-			{/}
+					READY {apply start} ?
+				{end}
 
-			{template helloWorld() extends foo}
-				{a = 3}
-
-				{proto e}{block e}{super}{/}{/}
-				{block foo}{0|m.f.random}{/}
-			{/}
+				<!doctype html>
+				<html>
+					{block head}
+						<head>
+							{block title}
+								<title>{title + (a + b)}</title>
+							{end}
+						</head>
+					{end}
+					{block footer}
+						{apply test}
+					{end}
+				</html>
+			{end}
 		</script>
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld();
+			document.getElementById('test').innerHTML = base(2, 1);
 			console.timeEnd('foo');
 		</script>
 	</body>
