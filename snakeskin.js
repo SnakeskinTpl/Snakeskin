@@ -432,7 +432,7 @@ var escapeEndMap = {
  * @param {Array=} [params.scope] - область видимости (контекст) директив
  * @param {Object=} [params.vars] - объект локальных переменных
  *
- * @param {?string=} [params.proto] - название корневого прототипа
+ * @param {Object=} [params.proto] - объект корневого прототипа
  * @param {Object=} [params.info] - дополнительная информация о запуске:
  *     используется для сообщений об ошибках
  */
@@ -451,7 +451,7 @@ function DirObj(src, params) {
 	/** @type {!Array} */
 	this.scope = params.scope || [];
 
-	/** @type {?string} */
+	/** @type {Object} */
 	this.proto = params.proto;
 
 	/** @type {Object} */
@@ -613,7 +613,7 @@ DirObj.prototype.isSimpleOutput = function () {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '"');
 	}
 
-	return !this.parentTplName && !this.protoStart;
+	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
@@ -878,7 +878,7 @@ DirObj.prototype.declVar = function (varName) {
 		struct = this.structure.parent;
 	}
 
-	var realVar = '__' + varName + '_' + (this.proto || '') + '_' + struct.name + '_' + this.i;
+	var realVar = '__' + varName + '_' + (this.proto ? this.proto.name : '') + '_' + struct.name + '_' + this.i;
 
 	struct.vars[varName] = realVar;
 	this.varCache[varName] = true;
@@ -3237,6 +3237,7 @@ Snakeskin.addDirective(
 			from: this.i - commandLength - 1
 		});
 
+		console.log(name);
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');
@@ -3304,7 +3305,10 @@ Snakeskin.addDirective(
 					{
 						scope: this.scope,
 						vars: this.structure.vars,
-						proto: lastProto.name
+						proto: {
+							name: lastProto.name,
+							parentTplName: this.parentTplName
+						}
 					}
 				);
 			}
@@ -4121,8 +4125,6 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
-		console.log(command);
-
 		var tplName = this.tplName;
 		var rgxp = this.scope.length ?
 			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :

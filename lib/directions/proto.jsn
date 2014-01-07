@@ -86,6 +86,7 @@ Snakeskin.addDirective(
 			from: this.i - commandLength - 1
 		});
 
+		console.log(name);
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');
@@ -152,7 +153,10 @@ Snakeskin.addDirective(
 					{
 						scope: this.scope,
 						vars: this.structure.vars,
-						proto: lastProto.name
+						proto: {
+							name: lastProto.name,
+							parentTplName: this.parentTplName
+						}
 					}
 				);
 			}
