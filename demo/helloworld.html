@@ -10,35 +10,19 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template base(a = 1, b)}
-				{title = 'foo'}
-				{proto test}
-					{proto start}
-						OK
-					{end}
+			{template testConst(a)}
+				{b = {}}
+				{b.foo = 1}
+			{end}
 
-					READY {apply start} ?
-				{end}
-
-				<!doctype html>
-				<html>
-					{block head}
-						<head>
-							{block title}
-								<title>{title + (a + b)}</title>
-							{end}
-						</head>
-					{end}
-					{block footer}
-						{apply test}
-					{end}
-				</html>
+			{template testConst2(a) extends testConst}
+			{b.foo = 15}
 			{end}
 		</script>
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = base(2, 1);
+			document.getElementById('test').innerHTML = testConst2();
 			console.timeEnd('foo');
 		</script>
 	</body>

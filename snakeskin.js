@@ -4121,6 +4121,8 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
+		console.log(command);
+
 		var tplName = this.tplName;
 		var rgxp = this.scope.length ?
 			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
@@ -4148,6 +4150,10 @@ Snakeskin.addDirective(
 					name: name
 				});
 
+				if (this.isSimpleOutput()) {
+					this.save(this.prepareOutput((!/[.\[]/.test(name) ? 'var ' : '') + command + ';', true));
+				}
+
 				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы
 					if (constCache[tplName][name] || constICache[tplName][name]) {
@@ -4171,10 +4177,6 @@ Snakeskin.addDirective(
 					};
 
 					fromConstCache[tplName] = this.i - this.startTemplateI + 1;
-				}
-
-				if (this.isSimpleOutput()) {
-					this.save(this.prepareOutput((!/[.\[]/.test(name) ? 'var ' : '') + command + ';', true));
 				}
 
 			} else {
