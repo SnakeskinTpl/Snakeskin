@@ -327,7 +327,7 @@ var __NEJS_THIS__ = this;
 
 var require;
 var cache = {},
-	structure = {};
+	table = {};
 
 // Кеш блоков
 var blockCache = {},
@@ -626,7 +626,6 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	};
 
 	this.blockTable = {};
-
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -688,6 +687,37 @@ DirObj.prototype.startDir = function (opt_name, opt_params,opt_vars) {
 			childs: [],
 			params: opt_params
 		};
+
+		var key$0 = opt_name + '_' + opt_params.name;
+
+		if (this.blockTable[key$0] === true) {
+			sub.drop = true;
+		}
+
+		this.blockTable[key$0] = sub;
+
+		var deep = function (obj) {
+			
+			for (var i = 0; i < obj.length; i++) {
+				var el = obj[i];
+				var key = el.name + '_' + el.params.name;
+
+				if (__NEJS_THIS__.blockTable[key]) {
+					__NEJS_THIS__.blockTable[key].drop = true;
+
+				} else {
+					__NEJS_THIS__.blockTable[key] = true;
+				}
+
+				if (el.childs) {
+					deep(el.childs);
+				}
+			}
+		};
+
+		if (this.parentTplName && table[this.parentTplName][key$0] && table[this.parentTplName][key$0].childs) {
+			deep(table[this.parentTplName][key$0].childs);
+		}
 
 		this.blockStructure.childs.push(sub);
 		this.blockStructure = sub;
@@ -1148,6 +1178,9 @@ DirObj.prototype.getExtStr = function (tplName) {
 		return -1;
 	}
 
+	var tb = table[tplName],
+		k;
+
 	// Цикл производит перекрытие и добавление новых блоков
 	// (новые блоки добавляются в конец шаблона, итерации 0 и 1),
 	// а затем перекрытие и добавление новых переменных (итерации 2 и 3),
@@ -1163,11 +1196,13 @@ DirObj.prototype.getExtStr = function (tplName) {
 
 		// Блоки дочернего и родительского шаблона
 		if (i === 0) {
+			k = 'block_';
 			el = blockCache[tplName];
 			prev = blockCache[parentTpl];
 
 		// Переменные дочернего и родительского шаблона
 		} else if (i === 2) {
+			k = 'const_';
 			el = constCache[tplName];
 			prev = constCache[parentTpl];
 
@@ -1177,6 +1212,7 @@ DirObj.prototype.getExtStr = function (tplName) {
 
 		// Прототипы дочернего и родительского шаблона
 		} else if (i === 4) {
+			k = 'proto_';
 			el = protoCache[tplName];
 			prev = protoCache[parentTpl];
 
@@ -1194,7 +1230,7 @@ DirObj.prototype.getExtStr = function (tplName) {
 			// Сдвиг относительно родительской позиции элемента
 			var adv = 0;
 			var current = el[key];
-			var parent = prev[key];
+			var parent = !tb[k + key].drop && prev[key];
 
 			if (i === 4 && parent && current.argsDecl !== parent.argsDecl) {
 				current.from -= current.length;
@@ -2861,9 +2897,7 @@ Snakeskin.addDirective(
 		}
 
 		cache[tplName] = this.source.substring(this.startTemplateI, this.i - commandLength - 1);
-		structure[tplName] = this.blockStructure;
-
-		console.log(this.blockTable);
+		table[tplName] = this.blockTable;
 
 		// Обработка наследования:
 		// тело шаблона объединяется с телом родителя

@@ -233,7 +233,6 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	};
 
 	this.blockTable = {};
-
 	protoCache[tplName] = {};
 
 	blockCache[tplName] = {};
@@ -293,6 +292,36 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars = {}) {
 			childs: [],
 			params: opt_params
 		};
+
+		let key = opt_name + '_' + opt_params.name;
+
+		if (this.blockTable[key] === true) {
+			sub.drop = true;
+		}
+
+		this.blockTable[key] = sub;
+
+		let deep = (obj) => {
+			for (let i = 0; i < obj.length; i++) {
+				let el = obj[i];
+				let key = el.name + '_' + el.params.name;
+
+				if (this.blockTable[key]) {
+					this.blockTable[key].drop = true;
+
+				} else {
+					this.blockTable[key] = true;
+				}
+
+				if (el.childs) {
+					deep(el.childs);
+				}
+			}
+		};
+
+		if (this.parentTplName && table[this.parentTplName][key] && table[this.parentTplName][key].childs) {
+			deep(table[this.parentTplName][key].childs);
+		}
 
 		this.blockStructure.childs.push(sub);
 		this.blockStructure = sub;

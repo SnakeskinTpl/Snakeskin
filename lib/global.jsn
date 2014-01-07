@@ -5,7 +5,7 @@
 
 var require;
 var cache = {},
-	structure = {};
+	table = {};
 
 // Кеш блоков
 var blockCache = {},
