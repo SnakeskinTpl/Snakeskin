@@ -1713,6 +1713,17 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 	}
 
 	new Function(dir.res)();
+	if (!require && !opt_commonJS) {
+		try {
+			var blob = new Blob([dir.res], {type: 'application/javascript'});
+			var script = document.createElement('script');
+
+			script.src = URL.createObjectURL(blob);
+			document.head.appendChild(script);
+
+		} catch (ignore) {}
+	}
+
 	return dir.res;
 };var __NEJS_THIS__ = this;
 /**!
@@ -4359,8 +4370,8 @@ Snakeskin.addDirective(
 				throw this.error('Invalid syntax');
 			}
 
-			parts[1] = (parts[1].charAt(0) === '-' ? '\'data-\' + ' + parts[1].slice(1) : parts[1]).trim();
-			parts[2] = this.prepareOutput(parts[2].trim(), true);
+			parts[1] = parts[1].charAt(0) === '-' ? '\'data-\' + ' + parts[1].slice(1) : parts[1];
+			parts[2] = this.prepareOutput(parts[2], true);
 
 			this.save(
 				'if (' + parts[2] + ') {' +
