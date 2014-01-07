@@ -851,7 +851,6 @@ DirObj.prototype.hasParent = function (name) {
  */
 DirObj.prototype.hasParentBlock = function (name) {
 	var __NEJS_THIS__ = this;
-	//console.log(name, this.blockStructure);
 	if (this.blockStructure.parent) {
 		return this.has(name, this.blockStructure.parent);
 	}
@@ -1713,7 +1712,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	console.log(dir.res);
+	//console.log(dir.res);
 	new Function(dir.res)();
 
 	return dir.res;
