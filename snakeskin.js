@@ -2194,7 +2194,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	// Область переменных
 	var vars = this.structure.childs ?
-		this.structure.vars : this.structure.parent.vars;
+		this.structure.vars :
+		this.structure.parent.vars;
 
 	var globalExportRgxp = /([$\w]*)(.*)/,
 		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
@@ -2317,7 +2318,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						var rnum = num = num ? scope.length - num : num,
 							length = scope.length;
 
-						if (num === 0) {
+						if (num <= 0) {
 							vres = addScope(rfWord);
 
 						} else {
@@ -3283,8 +3284,6 @@ Snakeskin.addDirective(
 
 			obj.text += this.source.substring(lastProto.from, this.i + 1);
 			obj.line += this.info.line - obj.startLine;
-
-			console.log(obj.line);
 
 			this.protoLink = null;
 			this.tplName = null;
@@ -4294,8 +4293,8 @@ Snakeskin.addDirective(
 		placement: 'template',
 		notEmpty: true,
 		replacers: {
-			'*': function (cmd) {
-				return cmd.replace(/^\*/, 'data ');}
+			'=': function (cmd) {
+				return cmd.replace(/^=/, 'data ');}
 		}
 	},
 

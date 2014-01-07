@@ -368,7 +368,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	// Область переменных
 	var vars = this.structure.childs ?
-		this.structure.vars : this.structure.parent.vars;
+		this.structure.vars :
+		this.structure.parent.vars;
 
 	var globalExportRgxp = /([$\w]*)(.*)/,
 		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
@@ -489,7 +490,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						let rnum = num = num ? scope.length - num : num,
 							length = scope.length;
 
-						if (num === 0) {
+						if (num <= 0) {
 							vres = addScope(rfWord);
 
 						} else {

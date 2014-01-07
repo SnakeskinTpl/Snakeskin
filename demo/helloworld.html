@@ -10,20 +10,11 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto foo->my}
-				1
-			{/}
-
-			{proto foo->my1}
-				1
-			{/}
-
 			{template foo()}
-				{proto e}
-					{void var a = 1}
+				{foo = 1}
+				{with {foo: 1}}
+					{#9999999999foo}
 				{/}
-
-				{apply my}
 			{/}
 		</script>
 		<script>
