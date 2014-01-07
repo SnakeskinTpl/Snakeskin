@@ -934,7 +934,7 @@ DirObj.prototype.multiDeclVar = function (str,opt_end) {
 				realVar = this.declVar(parts[0].trim());
 
 			parts[0] = realVar + ' ';
-			fin += this.prepareOutput(parts.join('=') + ',', true);
+			fin += this.prepareOutput(parts.join('=') + ',', true, null, true);
 
 			cache = '';
 			continue;
@@ -2568,7 +2568,7 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput('__I_PROTO__', true) +
+			this.save(this.prepareOutput((this.scope ? '@' : '') + '__I_PROTO__', true) +
 				':while (' + this.prepareOutput(command, true) + ') {'
 			);
 		}
@@ -3294,7 +3294,7 @@ Snakeskin.addDirective(
 				proto.body = Snakeskin.compile(
 					'{template ' + tplName + '()}' +
 						'{var __I_PROTO__ = 1}' +
-						'{__protoWhile__ __I_PROTO__--}' +
+						'{__protoWhile__ ' + (this.scope ? '@' : '') + '__I_PROTO__--}' +
 							this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1) +
 						'{end}' +
 					'{end}',

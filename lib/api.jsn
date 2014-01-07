@@ -499,7 +499,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end = true) {
 				realVar = this.declVar(parts[0].trim());
 
 			parts[0] = realVar + ' ';
-			fin += this.prepareOutput(parts.join('=') + ',', true);
+			fin += this.prepareOutput(parts.join('=') + ',', true, null, true);
 
 			cache = '';
 			continue;

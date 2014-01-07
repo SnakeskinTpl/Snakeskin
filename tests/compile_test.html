@@ -263,13 +263,6 @@
 
 				{apply e}
 			{/template}
-
-			{template newDataTest()}
-				{a = 1}
-				{{
-					{name: "${a + @a /* 123 */ + ('foo'|ucfirst) + '{}'}"}
-				}}
-			{/template}
 		</script>
 
 		<script type="text/javascript">
