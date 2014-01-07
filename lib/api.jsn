@@ -348,17 +348,21 @@ DirObj.prototype.endDir = function () {
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
  * @return {boolean}
  */
-DirObj.prototype.has = function (name, opt_obj = this.structure) {
-	var current = opt_obj.name;
+DirObj.prototype.has = function (name, opt_obj) {
+	var obj = opt_obj || this.structure;
+	var current = obj.name;
 
-	if (name[current] || current === name) {
-		return true;
+	while (1) {
+		if (name[current] || current === name) {
+			return true;
 
-	} else if (opt_obj.parent) {
-		return this.has(name, opt_obj.parent);
+		} else if (obj.parent) {
+			obj = obj.parent;
+
+		} else {
+			return false;
+		}
 	}
-
-	return false;
 };
 
 /**

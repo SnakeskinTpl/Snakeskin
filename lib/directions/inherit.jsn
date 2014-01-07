@@ -11,8 +11,39 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		var table = {
+			'block': true,
+			'proto': true,
+			'const': true
+		};
+
 		if (this.isSimpleOutput()) {
-			console.log(this.structure);
+			let obj = this.blockStructure;
+			let current = obj.name;
+
+			while (1) {
+				if (table[current]) {
+					switch (current) {
+						case 'proto': {
+							protoCache
+						} break;
+
+						case 'block': {
+							blockCache
+						} break;
+
+						case 'const': {
+							constCache
+						} break;
+					}
+
+				} else if (obj.parent) {
+					obj = obj.parent;
+
+				} else {
+					break;
+				}
+			}
 
 			/*this.source = this.source.substring(0, this.i + 1) +
 				blockCache[extMap[dirObj.tplName]][type[1]].body +

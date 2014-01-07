@@ -458,6 +458,16 @@ function DirObj(src, params) {
 	this.i = -1;
 
 	/**
+	 * Дерево блоков (прототипы, блоки, константы)
+	 * @type {!Object}
+	 */
+	this.blockStructure = {
+		name: 'root',
+		parent: null,
+		childs: []
+	};
+
+	/**
 	 * Структура шаблонов
 	 * @type {!Object}
 	 */
@@ -660,6 +670,18 @@ DirObj.prototype.startDir = function (opt_name, opt_params,opt_vars) {
 	struct.childs.push(obj);
 	this.structure = obj;
 
+	if (opt_name === 'block' || opt_name === 'proto') {
+		var sub = {
+			name: opt_name,
+			parent: this.blockStructure,
+			childs: [],
+			params: opt_params
+		};
+
+		this.blockStructure.childs.push(sub);
+		this.blockStructure = sub;
+	}
+
 	return this;
 };
 
@@ -685,6 +707,17 @@ DirObj.prototype.startInlineDir = function (opt_name,opt_params) {
 	this.structure.childs.push(obj);
 	this.structure = obj;
 
+	if (opt_name === 'const') {
+		var sub = {
+			name: opt_name,
+			parent: this.blockStructure,
+			params: opt_params
+		};
+
+		this.blockStructure.childs.push(sub);
+		this.blockStructure = sub;
+	}
+
 	return this;
 };
 
@@ -694,7 +727,13 @@ DirObj.prototype.startInlineDir = function (opt_name,opt_params) {
  */
 DirObj.prototype.endDir = function () {
 	var __NEJS_THIS__ = this;
+	var name = this.structure.name;
 	this.structure = this.structure.parent;
+
+	if (name === 'block' || name === 'proto') {
+		this.blockStructure = this.blockStructure.parent;
+	}
+
 	return this;
 };
 
@@ -1674,8 +1713,14 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		constr.call(dir, command, commandLength);
 
 		if (dir.inlineDir === true) {
+			var sname = dir.structure.name;
+
 			dir.inlineDir = null;
 			dir.structure = dir.structure.parent;
+
+			if (sname === 'const') {
+				dir.blockStructure = dir.blockStructure.parent;
+			}
 		}
 
 		if (strongDirs[name]) {
@@ -3094,6 +3139,8 @@ Snakeskin.addDirective(
 			from: this.i - commandLength - 1
 		});
 
+		console.log(this.blockStructure);
+
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');
@@ -3274,8 +3321,6 @@ Snakeskin.addDirective(
 	function (command) {
 		var __NEJS_THIS__ = this;
 		if (this.isSimpleOutput()) {
-			console.log(this.structure);
-
 			/*this.source = this.source.substring(0, this.i + 1) +
 				blockCache[extMap[dirObj.tplName]][type[1]].body +
 				dirObj.source.substring(dirObj.i + 1);*/
