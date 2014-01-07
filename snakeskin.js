@@ -851,7 +851,7 @@ DirObj.prototype.hasParent = function (name) {
  */
 DirObj.prototype.hasParentBlock = function (name) {
 	var __NEJS_THIS__ = this;
-	if (this.blockStructure.parent) {
+	if (this.blockStructure && this.blockStructure.parent) {
 		return this.has(name, this.blockStructure.parent);
 	}
 
@@ -1712,9 +1712,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	//console.log(dir.res);
 	new Function(dir.res)();
-
 	return dir.res;
 };var __NEJS_THIS__ = this;
 /**!
@@ -2923,9 +2921,10 @@ Snakeskin.addDirective(
 		// Подкючение "внешних" прототипов
 		if ((!extMap[tplName] || parentTplName) && this.preProtos[tplName]) {
 			this.source = this.source.substring(0, this.i + 1) +
-				this.preProtos[tplName] +
+				this.preProtos[tplName].text +
 				this.source.substring(this.i + 1);
 
+			this.info.line -= this.preProtos[tplName].line;
 			this.preProtos[tplName] = null;
 		}
 	}),
@@ -3222,7 +3221,13 @@ Snakeskin.addDirective(
 			// Идёт декларация внешнего прототипа
 			if (!this.tplName) {
 				this.tplName = parts[0].trim();
-				this.preProtos[this.tplName] = this.preProtos[this.tplName] || '';
+
+				this.preProtos[this.tplName] = this.preProtos[this.tplName] || {
+					text: '',
+					line: 0
+				};
+
+				this.preProtos[this.tplName].startLine = this.info.line;
 				this.protoLink = name;
 			}
 		}
@@ -3274,7 +3279,13 @@ Snakeskin.addDirective(
 
 		// Закрылся "внешний" прототип
 		if (this.protoLink === lastProto.name) {
-			this.preProtos[this.tplName] += this.source.substring(lastProto.from, this.i + 1);
+			var obj = this.preProtos[this.tplName];
+
+			obj.text += this.source.substring(lastProto.from, this.i + 1);
+			obj.line += this.info.line - obj.startLine;
+
+			console.log(obj.line);
+
 			this.protoLink = null;
 			this.tplName = null;
 

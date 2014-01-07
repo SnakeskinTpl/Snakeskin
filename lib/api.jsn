@@ -419,7 +419,7 @@ DirObj.prototype.hasParent = function (name) {
  * @return {boolean}
  */
 DirObj.prototype.hasParentBlock = function (name) {
-	if (this.blockStructure.parent) {
+	if (this.blockStructure && this.blockStructure.parent) {
 		return this.has(name, this.blockStructure.parent);
 	}
 

@@ -10,17 +10,26 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template newDataTest()}
-			{a = 1}
-			{{
-			{name: "${a + @a /* 123 */ + ('foo'|ucfirst) + '{}'}"}
-			}}
-			{/template}
+			{proto foo->my}
+				1
+			{/}
+
+			{proto foo->my1}
+				1
+			{/}
+
+			{template foo()}
+				{proto e}
+					{void var a = 1}
+				{/}
+
+				{apply my}
+			{/}
 		</script>
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = newDataTest();
+			document.getElementById('test').innerHTML = foo();
 			console.timeEnd('foo');
 		</script>
 	</body>
