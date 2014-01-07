@@ -19,9 +19,8 @@
 			{template helloWorld() extends foo}
 				{a = 3}
 
-				{proto e}
-					{super}
-				{/}
+				{proto e}{block e}{super}{/}{/}
+				{block foo}{apply e}{/}
 			{/}
 		</script>
 		<script>

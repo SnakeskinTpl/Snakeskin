@@ -350,13 +350,12 @@ DirObj.prototype.endDir = function () {
  */
 DirObj.prototype.has = function (name, opt_obj) {
 	var obj = opt_obj || this.structure;
-	var current = obj.name;
 
 	while (1) {
-		if (name[current] || current === name) {
+		if (name[obj.name] || obj.name === name) {
 			return true;
 
-		} else if (obj.parent) {
+		} else if (obj.parent && obj.parent.name !== 'root') {
 			obj = obj.parent;
 
 		} else {

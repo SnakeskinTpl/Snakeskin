@@ -748,13 +748,12 @@ DirObj.prototype.endDir = function () {
 DirObj.prototype.has = function (name, opt_obj) {
 	var __NEJS_THIS__ = this;
 	var obj = opt_obj || this.structure;
-	var current = obj.name;
 
 	while (1) {
-		if (name[current] || current === name) {
+		if (name[obj.name] || obj.name === name) {
 			return true;
 
-		} else if (obj.parent) {
+		} else if (obj.parent && obj.parent.name !== 'root') {
 			obj = obj.parent;
 
 		} else {
@@ -3323,7 +3322,7 @@ Snakeskin.addDirective(
 		placement: 'template'
 	},
 
-	function () {
+	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var table = {
 			'block': true,
@@ -3338,6 +3337,8 @@ Snakeskin.addDirective(
 
 			while (1) {
 				if (table[current]) {
+					console.log(obj);
+
 					switch (current) {
 						case 'proto': {
 							cache = protoCache[this.parentTplName][obj.params.name];
@@ -3352,7 +3353,9 @@ Snakeskin.addDirective(
 						break;
 					}
 
-				} else if (obj.parent) {
+				}
+
+				if (obj.parent && obj.parent.name !== 'root') {
 					obj = obj.parent;
 
 				} else {
@@ -3361,9 +3364,11 @@ Snakeskin.addDirective(
 			}
 
 			if (cache) {
-				this.source = this.source.substring(0, this.i + 1) +
+				this.source = this.source.substring(0, this.i - commandLength - 1) +
 					cache.content +
 					this.source.substring(this.i + 1);
+
+				this.i -= commandLength + 1;
 			}
 		}
 	}
