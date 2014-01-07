@@ -4364,7 +4364,7 @@ Snakeskin.addDirective(
 
 			this.save(
 				'if (' + parts[2] + ') {' +
-					'__SNAKESKIN_RESULT__ += \' \' + ' + parts[1] + ' + \'="\' + ' + parts[2] + ' + \'"\';' +
+					'__SNAKESKIN_RESULT__ += \' \' + ' + parts[1] + ' + \'="\' + (' + parts[2] + ') + \'"\';' +
 				'}'
 			);
 		}

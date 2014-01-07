@@ -12,7 +12,7 @@
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
 				{foo = 'bar'}
-				<h1>Hello{attr       -'class'             , 'bar'}</h1>
+				<h1{attr 'style', '' || 'color: red'}>Hello!</h1>
 			{/}
 		</script>
 		<script>
