@@ -31,7 +31,7 @@ Snakeskin.addDirective(
 			let block = blockCache[this.tplName][this.structure.params.name];
 
 			block.to = this.i - this.startTemplateI - commandLength - 1;
-			block.body = this.source
+			block.content = this.source
 				.substring(this.startTemplateI)
 				.substring(block.from, block.to);
 		}

@@ -132,6 +132,10 @@ Snakeskin.addDirective(
 
 			if (this.isAdvTest()) {
 				proto.to = this.i - this.startTemplateI - commandLength - 1;
+				proto.content = this.source
+					.substring(this.startTemplateI)
+					.substring(proto.from, proto.to);
+
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
 				// Рекурсивно анализируем прототипы блоков

@@ -745,19 +745,22 @@ DirObj.prototype.endDir = function () {
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
  * @return {boolean}
  */
-DirObj.prototype.has = function (name,opt_obj) {
+DirObj.prototype.has = function (name, opt_obj) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_obj === "undefined") { opt_obj = this.structure; }
-	var current = opt_obj.name;
+	var obj = opt_obj || this.structure;
+	var current = obj.name;
 
-	if (name[current] || current === name) {
-		return true;
+	while (1) {
+		if (name[current] || current === name) {
+			return true;
 
-	} else if (opt_obj.parent) {
-		return this.has(name, opt_obj.parent);
+		} else if (obj.parent) {
+			obj = obj.parent;
+
+		} else {
+			return false;
+		}
 	}
-
-	return false;
 };
 
 /**
@@ -3043,7 +3046,7 @@ Snakeskin.addDirective(
 			var block = blockCache[this.tplName][this.structure.params.name];
 
 			block.to = this.i - this.startTemplateI - commandLength - 1;
-			block.body = this.source
+			block.content = this.source
 				.substring(this.startTemplateI)
 				.substring(block.from, block.to);
 		}
@@ -3139,8 +3142,6 @@ Snakeskin.addDirective(
 			from: this.i - commandLength - 1
 		});
 
-		console.log(this.blockStructure);
-
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');
@@ -3188,6 +3189,10 @@ Snakeskin.addDirective(
 
 			if (this.isAdvTest()) {
 				proto.to = this.i - this.startTemplateI - commandLength - 1;
+				proto.content = this.source
+					.substring(this.startTemplateI)
+					.substring(proto.from, proto.to);
+
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
 				// Рекурсивно анализируем прототипы блоков
@@ -3318,12 +3323,48 @@ Snakeskin.addDirective(
 		placement: 'template'
 	},
 
-	function (command) {
+	function () {
 		var __NEJS_THIS__ = this;
-		if (this.isSimpleOutput()) {
-			/*this.source = this.source.substring(0, this.i + 1) +
-				blockCache[extMap[dirObj.tplName]][type[1]].body +
-				dirObj.source.substring(dirObj.i + 1);*/
+		var table = {
+			'block': true,
+			'proto': true,
+			'const': true
+		};
+
+		if (!extMap[this.tplName] || this.parentTplName) {
+			var obj = this.blockStructure;
+			var current = obj.name;
+			var cache;
+
+			while (1) {
+				if (table[current]) {
+					switch (current) {
+						case 'proto': {
+							cache = protoCache[this.parentTplName][obj.params.name];
+						} break;
+
+						case 'block': {
+							cache = blockCache[this.parentTplName][obj.params.name];
+						} break;
+					}
+
+					if (cache) {
+						break;
+					}
+
+				} else if (obj.parent) {
+					obj = obj.parent;
+
+				} else {
+					break;
+				}
+			}
+
+			if (cache) {
+				this.source = this.source.substring(0, this.i + 1) +
+					cache.content +
+					this.source.substring(this.i + 1);
+			}
 		}
 	}
 );
@@ -4004,7 +4045,9 @@ Snakeskin.addDirective(
 			}
 
 			if (this.structure.parent) {
-				this.startInlineDir('const');
+				this.startInlineDir('const', {
+					name: name
+				});
 
 				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы

@@ -32,7 +32,9 @@ Snakeskin.addDirective(
 			}
 
 			if (this.structure.parent) {
-				this.startInlineDir('const');
+				this.startInlineDir('const', {
+					name: name
+				});
 
 				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы

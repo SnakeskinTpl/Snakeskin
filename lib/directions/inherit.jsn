@@ -10,31 +10,32 @@ Snakeskin.addDirective(
 		placement: 'template'
 	},
 
-	function (command) {
+	function () {
 		var table = {
 			'block': true,
 			'proto': true,
 			'const': true
 		};
 
-		if (this.isSimpleOutput()) {
+		if (!extMap[this.tplName] || this.parentTplName) {
 			let obj = this.blockStructure;
 			let current = obj.name;
+			let cache;
 
 			while (1) {
 				if (table[current]) {
 					switch (current) {
 						case 'proto': {
-							protoCache
+							cache = protoCache[this.parentTplName][obj.params.name];
 						} break;
 
 						case 'block': {
-							blockCache
+							cache = blockCache[this.parentTplName][obj.params.name];
 						} break;
+					}
 
-						case 'const': {
-							constCache
-						} break;
+					if (cache) {
+						break;
 					}
 
 				} else if (obj.parent) {
@@ -45,9 +46,11 @@ Snakeskin.addDirective(
 				}
 			}
 
-			/*this.source = this.source.substring(0, this.i + 1) +
-				blockCache[extMap[dirObj.tplName]][type[1]].body +
-				dirObj.source.substring(dirObj.i + 1);*/
+			if (cache) {
+				this.source = this.source.substring(0, this.i + 1) +
+					cache.content +
+					this.source.substring(this.i + 1);
+			}
 		}
 	}
 );
