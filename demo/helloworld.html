@@ -11,19 +11,7 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template foo()}
-				{proto bar(i)}
-					{i}
-
-					{if i === 2}
-						{return}
-					{/}
-
-					{if i}
-						{apply bar(--i)}
-					{/}
-				{/}
-
-				{apply bar(4)}
+				{decl {foo}}
 			{/}
 		</script>
 		<script>

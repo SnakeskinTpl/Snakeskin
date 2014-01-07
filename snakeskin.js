@@ -4323,7 +4323,7 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			this.save('__SNAKESKIN_RESULT__ += \'{{' + this.replaceTplVars(command) + '}\';');
+			this.save('__SNAKESKIN_RESULT__ += \'{' + (command.charAt(0) === '{' ? '' : '{') + this.replaceTplVars(command) + '}\';');
 		}
 	}
 );
