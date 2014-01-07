@@ -3237,7 +3237,6 @@ Snakeskin.addDirective(
 			from: this.i - commandLength - 1
 		});
 
-		console.log(name);
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
 				throw this.error('Proto "' + name + '" is already defined');
@@ -3333,9 +3332,6 @@ Snakeskin.addDirective(
 				this.backTableI--;
 			}
 		}
-
-		/*console.log(this.proto, this.blockStructure);
-		debugger;*/
 
 		if (!this.hasParentBlock('proto')) {
 			this.protoStart = false;
