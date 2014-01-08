@@ -1720,8 +1720,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	console.log(dir.res);
-
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
 
