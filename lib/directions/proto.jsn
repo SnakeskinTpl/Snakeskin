@@ -32,7 +32,7 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var str = '';
 
 	for (let i = 0; i < protoArgs.length; i++) {
-		let val = this.prepareOutput(args[i] || null, true);
+		let val = this.prepareOutput(args[i] || 'null', true);
 
 		let arg = protoArgs[i][0],
 			def = protoArgs[i][1];
@@ -231,7 +231,7 @@ Snakeskin.addDirective(
 				args = /\((.*?)\)/.exec(command);
 
 			let proto = protoCache[this.tplName][name],
-				argsStr;
+				argsStr = '';
 
 			if (proto) {
 				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);

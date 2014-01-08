@@ -3083,7 +3083,7 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			this.save('__SNAKESKIN_RESULT__ += ' + command + ';');
+			this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command, true) + ';');
 		}
 	}
 );var __NEJS_THIS__ = this;
@@ -3225,7 +3225,7 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var str = '';
 
 	for (var i = 0; i < protoArgs.length; i++) {
-		var val = this.prepareOutput(args[i] || null, true);
+		var val = this.prepareOutput(args[i] || 'null', true);
 
 		var arg = protoArgs[i][0],
 			def = protoArgs[i][1];
@@ -3428,7 +3428,7 @@ Snakeskin.addDirective(
 				args = /\((.*?)\)/.exec(command);
 
 			var proto = protoCache[this.tplName][name],
-				argsStr;
+				argsStr = '';
 
 			if (proto) {
 				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);

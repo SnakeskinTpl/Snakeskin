@@ -10,16 +10,19 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{a = 1}
-			{template test(obj)}
-				{@b = 2}
+			{template helloWorld(name = 'world')}
+				{proto foo(a, b = 1)}
+					{a + b}
+				{end}
+
+				{apply foo(1)}
 			{/}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = test({
+			document.getElementById('test').innerHTML = helloWorld({
 				header: "Header",
 				header2: "Header2",
 				header3: "Header3",
