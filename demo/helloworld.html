@@ -12,12 +12,16 @@
 		<script type="text/x-snakeskin-template" id="templates">
 			{template test(obj)}
 				{with obj}
-					{forEach list => el}
-						{el}
+					{proto foo}
+						{forEach list => el}
+							{el}
+						{/}
 					{/}
+					{apply foo}
 				{/}
 			{/}
 		</script>
+
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));

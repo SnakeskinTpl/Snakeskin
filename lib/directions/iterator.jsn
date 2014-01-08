@@ -170,10 +170,8 @@ Snakeskin.addDirective(
 			}
 
 			let args = parts[1] ? parts[1].trim().split(',') : [];
-
-			let pr = this.scope.length ? '@' : '';
 			let tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput(pr + '__TMP__', true);
+				cache = this.prepareOutput('__TMP__', true);
 
 			let oLength = '';
 			if (args.length >= 6) {

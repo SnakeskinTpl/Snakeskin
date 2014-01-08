@@ -1720,10 +1720,9 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	console.log(dir.res);
-
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
+
 	if (!require && !opt_commonJS) {
 		setTimeout(function () {
 			
@@ -2353,9 +2352,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							}
 
 							var first = scope[0];
-							vres = addScope(first);
-
 							scope.push(rfWord);
+
 							var rnum = num = num ? scope.length - num : num,
 								length = scope.length;
 
@@ -2363,6 +2361,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 								vres = addScope(rfWord);
 
 							} else {
+								vres = addScope(first);
 								for (var j = 1; j < length; j++) {
 									num = num ? num - 1 : num;
 
@@ -3869,10 +3868,8 @@ Snakeskin.addDirective(
 			}
 
 			var args = parts[1] ? parts[1].trim().split(',') : [];
-
-			var pr = this.scope.length ? '@' : '';
 			var tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput(pr + '__TMP__', true);
+				cache = this.prepareOutput('__TMP__', true);
 
 			var oLength = '';
 			if (args.length >= 6) {

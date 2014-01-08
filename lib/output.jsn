@@ -499,9 +499,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							}
 
 							let first = scope[0];
-							vres = addScope(first);
-
 							scope.push(rfWord);
+
 							let rnum = num = num ? scope.length - num : num,
 								length = scope.length;
 
@@ -509,6 +508,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 								vres = addScope(rfWord);
 
 							} else {
+								vres = addScope(first);
 								for (let j = 1; j < length; j++) {
 									num = num ? num - 1 : num;
 
