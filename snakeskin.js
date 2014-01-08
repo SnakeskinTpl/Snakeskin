@@ -1720,6 +1720,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
+	console.log(dir.res);
+
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
 
@@ -4242,6 +4244,11 @@ Snakeskin.addDirective(
 
 			this.startInlineDir('output');
 			if (this.isSimpleOutput()) {
+				if (command.charAt(0) === '@' && command.split('=').length > 1) {
+					this.save(this.prepareOutput(command, true) + ';');
+					return;
+				}
+
 				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command, scan && scan[1]) + ';');
 			}
 		}

@@ -10,15 +10,9 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			{a = 1}
 			{template test(obj)}
-				{with obj}
-					{proto foo}
-						{forEach list => el}
-							{el}
-						{/}
-					{/}
-					{apply foo}
-				{/}
+				{@b = 2}
 			{/}
 		</script>
 
