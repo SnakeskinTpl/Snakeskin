@@ -446,9 +446,12 @@ DirObj.prototype.declVar = function (varName) {
 
 	var realVar = '__' + varName + '_' + (this.proto ? this.proto.name : '') + '_' + struct.name + '_' + this.i;
 
-	struct.vars[varName] = realVar;
-	this.varCache[this.tplName][varName] = true;
+	struct.vars[varName] = {
+		value: realVar,
+		useWith: !!this.scope.length
+	};
 
+	this.varCache[this.tplName][varName] = true;
 	return realVar;
 };
 

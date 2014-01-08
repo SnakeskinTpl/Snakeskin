@@ -880,9 +880,12 @@ DirObj.prototype.declVar = function (varName) {
 
 	var realVar = '__' + varName + '_' + (this.proto ? this.proto.name : '') + '_' + struct.name + '_' + this.i;
 
-	struct.vars[varName] = realVar;
-	this.varCache[this.tplName][varName] = true;
+	struct.vars[varName] = {
+		value: realVar,
+		useWith: !!this.scope.length
+	};
 
+	this.varCache[this.tplName][varName] = true;
 	return realVar;
 };
 
@@ -1573,7 +1576,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 			}
 
 			if (!jsDoc) {
-
 				// Начало управляющей конструкции
 				// (не забываем следить за уровнем вложенностей {)
 				if (el === '{') {
@@ -1717,6 +1719,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 	if (dir.proto) {
 		return dir.res;
 	}
+
+	console.log(dir.res);
 
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
@@ -2234,7 +2238,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	var propValRgxp = /[^-+!]+/;
 	var replacePropVal = function (sstr) {
-		return vars[sstr] || sstr;};
+		return vars[sstr] ? vars[sstr].value : sstr;};
 
 	function addScope(str) {
 		var __NEJS_THIS__ = this;
@@ -2248,6 +2252,17 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		return str;
+	}
+
+	function returnProp(str) {
+		var __NEJS_THIS__ = this;
+		if (multPropRgxp.test(str)) {
+			var fistProp = firstPropRgxp.exec(str);
+			str = fistProp[1];
+		}
+
+		var res = propValRgxp.exec(str);
+		return res ? res[0] : null;
 	}
 
 	var commandLength = command.length;
@@ -2323,41 +2338,47 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				} else {
 					var rfWord = finalWord.replace(modRgxp, '');
 					if (canParse && useWith) {
-						var num = null;
-
-						// Уточнение scope
-						if (el === '#') {
-							num = strongModRgxp.exec(finalWord);
-							num = num ? num[1] : 1;
-							num++;
-						}
-
-						var first = scope[0];
-						vres = addScope(first);
-
-						scope.push(rfWord);
-						var rnum = num = num ? scope.length - num : num,
-							length = scope.length;
-
-						if (num !== null && num <= 0) {
+						var v = vars[returnProp(rfWord)];
+						if (v && v.useWith) {
 							vres = addScope(rfWord);
 
 						} else {
-							for (var j = 1; j < length; j++) {
-								num = num ? num - 1 : num;
+							var num = null;
 
-								if (num === null || num > 0) {
-									vres += '.' + scope[j];
-									continue;
-								}
+							// Уточнение scope
+							if (el === '#') {
+								num = strongModRgxp.exec(finalWord);
+								num = num ? num[1] : 1;
+								num++;
+							}
 
-								if (j === length - 1) {
-									vres = (rnum > 0 ? vres + '.' : '') + scope[j];
+							var first = scope[0];
+							vres = addScope(first);
+
+							scope.push(rfWord);
+							var rnum = num = num ? scope.length - num : num,
+								length = scope.length;
+
+							if (num !== null && num <= 0) {
+								vres = addScope(rfWord);
+
+							} else {
+								for (var j = 1; j < length; j++) {
+									num = num ? num - 1 : num;
+
+									if (num === null || num > 0) {
+										vres += '.' + scope[j];
+										continue;
+									}
+
+									if (j === length - 1) {
+										vres = (rnum > 0 ? vres + '.' : '') + scope[j];
+									}
 								}
 							}
-						}
 
-						scope.pop();
+							scope.pop();
+						}
 
 					} else {
 						vres = canParse ? addScope(rfWord) : rfWord;
@@ -2587,7 +2608,7 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput((this.scope.length ? '@' : '') + '__I_PROTO__', true) +
+			this.save(this.prepareOutput('__I_PROTO__', true) +
 				':while (' + this.prepareOutput(command, true) + ') {'
 			);
 		}
@@ -3324,7 +3345,7 @@ Snakeskin.addDirective(
 				proto.body = Snakeskin.compile(
 					'{template ' + tplName + '()}' +
 						'{var __I_PROTO__ = 1}' +
-						'{__protoWhile__ ' + (this.scope.length ? '@' : '') + '__I_PROTO__--}' +
+						'{__protoWhile__ __I_PROTO__--}' +
 							this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1) +
 						'{end}' +
 					'{end}',
@@ -3698,9 +3719,8 @@ Snakeskin.addDirective(
 			var args = parts[1] ?
 				parts[1].trim().split(',') : [];
 
-			var pr = this.scope.length ? '@' : '';
 			var tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput(pr + '__TMP__', true);
+				cache = this.prepareOutput('__TMP__', true);
 
 			// Длина объекта
 			var oLength = '';
@@ -3708,11 +3728,11 @@ Snakeskin.addDirective(
 				oLength +=
 					this.multiDeclVar('__TMP_LENGTH__ = 0') +
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput(pr + '__KEY__', true) + ')) {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) {' +
 							'continue;' +
 						'}' +
 
-						this.prepareOutput(pr + '__TMP_LENGTH__++;', true) +
+						this.prepareOutput('__TMP_LENGTH__++;', true) +
 					'}';
 			}
 
@@ -3721,8 +3741,8 @@ Snakeskin.addDirective(
 				tmp +
 				'if (' + cache + ') {' +
 					'if (Array.isArray(' + cache + ')) {' +
-						this.multiDeclVar('__TMP_LENGTH__ = ' + pr + '__TMP__.length') +
-						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput(pr + '__I__ <' + pr +  '__TMP_LENGTH__;' + pr + '__I__++', true) + ') {' +
+						this.multiDeclVar('__TMP_LENGTH__ =  __TMP__.length') +
+						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput('__I__ < __TMP_LENGTH__; __I__++', true) + ') {' +
 							(function () {
 								
 								var str = '';
@@ -3730,27 +3750,27 @@ Snakeskin.addDirective(
 								for (var i = 0; i < args.length; i++) {
 									switch (i) {
 										case 0: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__I__]');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP__[__I__]');
 										} break;
 
 										case 1: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
 										} break;
 
 										case 2: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache);
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP__');
 										} break;
 
 										case 3: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
 										} break;
 
 										case 4: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
 										} break;
 
 										case 5: {
-											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
+											str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
 										} break;
 									}
 								}
@@ -3767,11 +3787,11 @@ Snakeskin.addDirective(
 					this.multiDeclVar('__I__ = -1') +
 
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput(pr + '__KEY__', true) + ')) {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) {' +
 							'continue;' +
 						'}' +
 
-						this.prepareOutput(pr + '__I__++;', true) +
+						this.prepareOutput('__I__++;', true) +
 						(function () {
 							
 							var str = '';
@@ -3779,31 +3799,31 @@ Snakeskin.addDirective(
 							for (var i = 0; i < args.length; i++) {
 								switch (i) {
 									case 0: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__KEY__]');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP__[__KEY__]');
 									} break;
 
 									case 1: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__KEY__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __KEY__');
 									} break;
 
 									case 2: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache);
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP__');
 									} break;
 
 									case 3: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
 									} break;
 
 									case 4: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
 									} break;
 
 									case 5: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
 									} break;
 
 									case 6: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
 									} break;
 								}
 							}
@@ -3859,7 +3879,7 @@ Snakeskin.addDirective(
 				oLength +=
 					this.multiDeclVar('__TMP_LENGTH__ = 0') +
 					'for (' + this.multiDeclVar('key', false) + 'in ' + cache + ') {' +
-						this.prepareOutput(pr + '__TMP_LENGTH__++;', true) +
+						this.prepareOutput('__TMP_LENGTH__++;', true) +
 					'}';
 			}
 
@@ -3869,7 +3889,7 @@ Snakeskin.addDirective(
 					oLength +
 					this.multiDeclVar('__I__ = -1') +
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						this.prepareOutput(pr + '__I__++;', true) +
+						this.prepareOutput('__I__++;', true) +
 
 						(function () {
 							
@@ -3878,31 +3898,31 @@ Snakeskin.addDirective(
 							for (var i = 0; i < args.length; i++) {
 								switch (i) {
 									case 0: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__KEY__]');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP__[__KEY__]');
 									} break;
 
 									case 1: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__KEY__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __KEY__');
 									} break;
 
 									case 2: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + cache);
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP__');
 									} break;
 
 									case 3: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__');
 									} break;
 
 									case 4: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === 0');
 									} break;
 
 									case 5: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
 									} break;
 
 									case 6: {
-										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
+										str += __NEJS_THIS__.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
 									} break;
 								}
 							}

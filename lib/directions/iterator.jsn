@@ -24,9 +24,8 @@ Snakeskin.addDirective(
 			let args = parts[1] ?
 				parts[1].trim().split(',') : [];
 
-			let pr = this.scope.length ? '@' : '';
 			let tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput(pr + '__TMP__', true);
+				cache = this.prepareOutput('__TMP__', true);
 
 			// Длина объекта
 			let oLength = '';
@@ -34,11 +33,11 @@ Snakeskin.addDirective(
 				oLength +=
 					this.multiDeclVar('__TMP_LENGTH__ = 0') +
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput(pr + '__KEY__', true) + ')) {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) {' +
 							'continue;' +
 						'}' +
 
-						this.prepareOutput(pr + '__TMP_LENGTH__++;', true) +
+						this.prepareOutput('__TMP_LENGTH__++;', true) +
 					'}';
 			}
 
@@ -47,35 +46,35 @@ Snakeskin.addDirective(
 				tmp +
 				'if (' + cache + ') {' +
 					'if (Array.isArray(' + cache + ')) {' +
-						this.multiDeclVar('__TMP_LENGTH__ = ' + pr + '__TMP__.length') +
-						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput(pr + '__I__ <' + pr +  '__TMP_LENGTH__;' + pr + '__I__++', true) + ') {' +
+						this.multiDeclVar('__TMP_LENGTH__ =  __TMP__.length') +
+						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput('__I__ < __TMP_LENGTH__; __I__++', true) + ') {' +
 							(() => {
 								var str = '';
 
 								for (let i = 0; i < args.length; i++) {
 									switch (i) {
 										case 0: {
-											str += this.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__I__]');
+											str += this.multiDeclVar(args[i] + ' = __TMP__[__I__]');
 										} break;
 
 										case 1: {
-											str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__');
+											str += this.multiDeclVar(args[i] + ' = __I__');
 										} break;
 
 										case 2: {
-											str += this.multiDeclVar(args[i] + ' = ' + pr + cache);
+											str += this.multiDeclVar(args[i] + ' = __TMP__');
 										} break;
 
 										case 3: {
-											str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
+											str += this.multiDeclVar(args[i] + ' = __I__ === 0');
 										} break;
 
 										case 4: {
-											str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
+											str += this.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
 										} break;
 
 										case 5: {
-											str += this.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
+											str += this.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
 										} break;
 									}
 								}
@@ -92,42 +91,42 @@ Snakeskin.addDirective(
 					this.multiDeclVar('__I__ = -1') +
 
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput(pr + '__KEY__', true) + ')) {' +
+						'if (!' + cache + '.hasOwnProperty(' + this.prepareOutput('__KEY__', true) + ')) {' +
 							'continue;' +
 						'}' +
 
-						this.prepareOutput(pr + '__I__++;', true) +
+						this.prepareOutput('__I__++;', true) +
 						(() => {
 							var str = '';
 
 							for (let i = 0; i < args.length; i++) {
 								switch (i) {
 									case 0: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__KEY__]');
+										str += this.multiDeclVar(args[i] + ' = __TMP__[__KEY__]');
 									} break;
 
 									case 1: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__KEY__');
+										str += this.multiDeclVar(args[i] + ' = __KEY__');
 									} break;
 
 									case 2: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + cache);
+										str += this.multiDeclVar(args[i] + ' = __TMP__');
 									} break;
 
 									case 3: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__');
+										str += this.multiDeclVar(args[i] + ' = __I__');
 									} break;
 
 									case 4: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
+										str += this.multiDeclVar(args[i] + ' = __I__ === 0');
 									} break;
 
 									case 5: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
+										str += this.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
 									} break;
 
 									case 6: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
+										str += this.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
 									} break;
 								}
 							}
@@ -181,7 +180,7 @@ Snakeskin.addDirective(
 				oLength +=
 					this.multiDeclVar('__TMP_LENGTH__ = 0') +
 					'for (' + this.multiDeclVar('key', false) + 'in ' + cache + ') {' +
-						this.prepareOutput(pr + '__TMP_LENGTH__++;', true) +
+						this.prepareOutput('__TMP_LENGTH__++;', true) +
 					'}';
 			}
 
@@ -191,7 +190,7 @@ Snakeskin.addDirective(
 					oLength +
 					this.multiDeclVar('__I__ = -1') +
 					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						this.prepareOutput(pr + '__I__++;', true) +
+						this.prepareOutput('__I__++;', true) +
 
 						(() => {
 							var str = '';
@@ -199,31 +198,31 @@ Snakeskin.addDirective(
 							for (let i = 0; i < args.length; i++) {
 								switch (i) {
 									case 0: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + cache + '[' + pr + '__KEY__]');
+										str += this.multiDeclVar(args[i] + ' = __TMP__[__KEY__]');
 									} break;
 
 									case 1: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__KEY__');
+										str += this.multiDeclVar(args[i] + ' = __KEY__');
 									} break;
 
 									case 2: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + cache);
+										str += this.multiDeclVar(args[i] + ' = __TMP__');
 									} break;
 
 									case 3: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__');
+										str += this.multiDeclVar(args[i] + ' = __I__');
 									} break;
 
 									case 4: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__ === 0');
+										str += this.multiDeclVar(args[i] + ' = __I__ === 0');
 									} break;
 
 									case 5: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__I__ === ' + pr + '__TMP_LENGTH__ - 1');
+										str += this.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
 									} break;
 
 									case 6: {
-										str += this.multiDeclVar(args[i] + ' = ' + pr + '__TMP_LENGTH__');
+										str += this.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
 									} break;
 								}
 							}
