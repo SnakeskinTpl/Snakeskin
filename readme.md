@@ -254,14 +254,18 @@ Snakeskin не поддерживает вложенные шаблоны, но 
 		{apply f2(i)}
 		{apply f2(i + 1)}
 
-		{proto foo->f2(i)}
-			{i}
+		{proto f3(i)}
+			{i * 2}
 		{/}
 	{/}
 
 	{template foo()}
 		{apply begin} /// 1 2
-		{apply f2(1)} /// 1
+		{apply f3(2)} /// 4
+
+		{proto f2(i)}
+			{i}
+		{/}
 	{/}
 
 ## Директива end

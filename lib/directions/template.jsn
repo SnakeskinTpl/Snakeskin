@@ -343,10 +343,18 @@ Snakeskin.addDirective(
 				for (let i = 0; i < cache[key].length; i++) {
 					let el = cache[key][i];
 
+					if (!el.outer) {
+						continue;
+					}
+
+					if (!protoCache[tplName][key]) {
+						throw this.error('Proto "' + key + '" is not defined');
+					}
+
 					this.res = this.res.substring(0, el.pos) +
 						this.res.substring(el.pos).replace(
 							el.label,
-							el.argsStr + protoCache[tplName][key].body
+							(el.argsStr || '') + protoCache[tplName][key].body
 						);
 				}
 			}

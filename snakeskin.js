@@ -3034,10 +3034,18 @@ Snakeskin.addDirective(
 				for (var i$3 = 0; i$3 < cache$1[key$1].length; i$3++) {
 					var el$4 = cache$1[key$1][i$3];
 
+					if (!el$4.outer) {
+						continue;
+					}
+
+					if (!protoCache[tplName][key$1]) {
+						throw this.error('Proto "' + key$1 + '" is not defined');
+					}
+
 					this.res = this.res.substring(0, el$4.pos) +
 						this.res.substring(el$4.pos).replace(
 							el$4.label,
-							el$4.argsStr + protoCache[tplName][key$1].body
+							(el$4.argsStr || '') + protoCache[tplName][key$1].body
 						);
 				}
 			}
@@ -3405,7 +3413,6 @@ Snakeskin.addDirective(
 						}
 					}
 				);
-
 			}
 
 			// Применение обратных прототипов
