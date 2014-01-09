@@ -111,33 +111,42 @@ function foo() {
 которые не будут вырезаться на этапе трансляции
 (это может быть нужно, если, например, после трансляции шаблоны будут компилироваться в Google Closure Compiler).
 
-    /**
-     * Описание шаблона
-     *
-     * @param {?} param1 - параметр 1
-     * @param {?} param2 - параметр 2
-     * @return {string}
-     */
-    {template myTemplate(param1, param2)}
-    {end}
+```js
+/**
+ * Описание шаблона
+ *
+ * @param {?} param1 - параметр 1
+ * @param {?} param2 - параметр 2
+ * @return {string}
+ */
+{template myTemplate(param1, param2)}
+{end}
+```
 
 ## Объявления шаблона
 
+Объявление шаблона возможно с помощью директив `template` и `placeholder`.
+Шаблон может декларироваться только в глобальной области (т.е. шаблон не может включать в себя другой шаблон).
+
 Простой шаблон без входных параметров:
 
-    {template myTemplate()}
-        Тело шаблона
-    {end}
+```js
+{template myTemplate()}
+    Тело шаблона
+{end}
+```
 
 Простой шаблон без входных параметров объявленный в пространстве имён (безопасность добавления проверяется):
 
-    {template myTpl.myTemplate()}
-        Тело шаблона
-    {end}
+```js
+{template myTpl.myTemplate()}
+    Тело шаблона
+{end}
 
-    {template myTpl['myTemplate']()}
-        Тело шаблона
-    {end}
+{template myTpl['myTemplate']()}
+    Тело шаблона
+{end}
+```
 
 Есть одно небольшое отличие в конечном коде, при использовании `myTpl.myTemplate()` и `myTpl['myTemplate']()`:
 в первом случае будет `myTpl.myTemplate = function myTemplate() {`, а во втором `myTpl['myTemplate'] = function () {`,
