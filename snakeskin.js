@@ -2977,13 +2977,12 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
 
+		// Вызовы не объявленных прототипов внутри прототипа
 		if (this.backTableI && this.proto) {
+			var cache$0 = Object(this.backTable);
 			var ctx = this.proto.ctx;
 
 			ctx.backTableI += this.backTableI;
-			ctx.lastBack = this.lastBack;
-
-			var cache$0 = Object(this.backTable);
 			for (var key in cache$0) {
 				if (!cache$0.hasOwnProperty(key)) {
 					continue;
@@ -2991,10 +2990,10 @@ Snakeskin.addDirective(
 
 				for (var i = 0; i < cache$0[key].length; i++) {
 					cache$0[key][i].pos += this.proto.pos;
+					cache$0[key][i].outer = true;
 				}
 
 				ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache$0[key]) : cache$0[key];
-				ctx.backTable[key].protoStart = cache$0[key].protoStart;
 			}
 		}
 
@@ -3025,7 +3024,23 @@ Snakeskin.addDirective(
 
 		// Вызовы не объявленных прототипов
 		if (this.backTableI) {
-			throw this.error('Proto "' + this.lastBack + '" is not defined');
+			var cache$1 = Object(this.backTable);
+
+			for (var key$1 in cache$1) {
+				if (!cache$1.hasOwnProperty(key$1)) {
+					continue;
+				}
+
+				for (var i$3 = 0; i$3 < cache$1[key$1].length; i$3++) {
+					var el = cache$1[key$1][i$3];
+
+					this.res = this.res.substring(0, el.pos) +
+						this.res.substring(el.pos).replace(
+							el.label,
+							this.returnArgs(el.protoArgs, el.args) + protoCache[tplName][key$1].body
+						);
+				}
+			}
 		}
 
 		this.save(
@@ -3386,29 +3401,36 @@ Snakeskin.addDirective(
 						}
 					}
 				);
+
 			}
 
 			// Применение обратных прототипов
 			var back = this.backTable[lastProto.name];
-
-			console.log(back, lastProto.name);
-
 			if (back && !back.protoStart) {
 				var args = proto.args;
+				var fin = true;
 
 				for (var i = 0; i < back.length; i++) {
 					var el = back[i];
 
 					if (this.canWrite) {
-						this.res = this.res.substring(0, el.pos) +
-							this.returnArgs(args, el.args) +
-							protoCache[tplName][lastProto.name].body +
-							this.res.substring(el.pos);
+						if (!el.outer) {
+							this.res = this.res.substring(0, el.pos) +
+								this.returnArgs(args, el.args) +
+								protoCache[tplName][lastProto.name].body +
+								this.res.substring(el.pos);
+
+						} else {
+							el.protoArgs = args;
+							fin = false;
+						}
 					}
 				}
 
-				delete this.backTable[lastProto.name];
-				this.backTableI--;
+				if (fin) {
+					delete this.backTable[lastProto.name];
+					this.backTableI--;
+				}
 			}
 		}
 
@@ -3431,12 +3453,6 @@ DirObj.prototype.backTable = {
  * @type {number}
  */
 DirObj.prototype.backTableI = 0;
-
-/**
- * Имя последнего обратного прототипа
- * @type {?string}
- */
-DirObj.prototype.lastBack = null;
 
 Snakeskin.addDirective(
 	'apply',
@@ -3472,15 +3488,16 @@ Snakeskin.addDirective(
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
-
-					this.lastBack = name;
 					this.backTableI++;
 				}
 
 				this.backTable[name].push({
 					pos: this.res.length,
+					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + ' \\*\\/', 'g'),
 					args: args
 				});
+
+				this.save('/* __APPLY__' + this.tplName + '_' + name + ' */');
 
 			} else {
 				this.save(argsStr + proto.body);

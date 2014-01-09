@@ -284,13 +284,12 @@ Snakeskin.addDirective(
 	(end = function (command, commandLength) {
 		var tplName = this.tplName;
 
+		// Вызовы не объявленных прототипов внутри прототипа
 		if (this.backTableI && this.proto) {
+			let cache = Object(this.backTable);
 			let ctx = this.proto.ctx;
 
 			ctx.backTableI += this.backTableI;
-			ctx.lastBack = this.lastBack;
-
-			let cache = Object(this.backTable);
 			for (let key in cache) {
 				if (!cache.hasOwnProperty(key)) {
 					continue;
@@ -298,10 +297,10 @@ Snakeskin.addDirective(
 
 				for (let i = 0; i < cache[key].length; i++) {
 					cache[key][i].pos += this.proto.pos;
+					cache[key][i].outer = true;
 				}
 
 				ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache[key]) : cache[key];
-				ctx.backTable[key].protoStart = cache[key].protoStart;
 			}
 		}
 
@@ -332,7 +331,23 @@ Snakeskin.addDirective(
 
 		// Вызовы не объявленных прототипов
 		if (this.backTableI) {
-			throw this.error('Proto "' + this.lastBack + '" is not defined');
+			let cache = Object(this.backTable);
+
+			for (let key in cache) {
+				if (!cache.hasOwnProperty(key)) {
+					continue;
+				}
+
+				for (let i = 0; i < cache[key].length; i++) {
+					let el = cache[key][i];
+
+					this.res = this.res.substring(0, el.pos) +
+						this.res.substring(el.pos).replace(
+							el.label,
+							this.returnArgs(el.protoArgs, el.args) + protoCache[tplName][key].body
+						);
+				}
+			}
 		}
 
 		this.save(

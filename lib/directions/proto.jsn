@@ -170,29 +170,36 @@ Snakeskin.addDirective(
 						}
 					}
 				);
+
 			}
 
 			// Применение обратных прототипов
 			let back = this.backTable[lastProto.name];
-
-			console.log(back, lastProto.name);
-
 			if (back && !back.protoStart) {
 				let args = proto.args;
+				let fin = true;
 
 				for (let i = 0; i < back.length; i++) {
 					let el = back[i];
 
 					if (this.canWrite) {
-						this.res = this.res.substring(0, el.pos) +
-							this.returnArgs(args, el.args) +
-							protoCache[tplName][lastProto.name].body +
-							this.res.substring(el.pos);
+						if (!el.outer) {
+							this.res = this.res.substring(0, el.pos) +
+								this.returnArgs(args, el.args) +
+								protoCache[tplName][lastProto.name].body +
+								this.res.substring(el.pos);
+
+						} else {
+							el.protoArgs = args;
+							fin = false;
+						}
 					}
 				}
 
-				delete this.backTable[lastProto.name];
-				this.backTableI--;
+				if (fin) {
+					delete this.backTable[lastProto.name];
+					this.backTableI--;
+				}
 			}
 		}
 
@@ -214,12 +221,6 @@ DirObj.prototype.backTable = {
  * @type {number}
  */
 DirObj.prototype.backTableI = 0;
-
-/**
- * Имя последнего обратного прототипа
- * @type {?string}
- */
-DirObj.prototype.lastBack = null;
 
 Snakeskin.addDirective(
 	'apply',
@@ -254,15 +255,16 @@ Snakeskin.addDirective(
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
-
-					this.lastBack = name;
 					this.backTableI++;
 				}
 
 				this.backTable[name].push({
 					pos: this.res.length,
+					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + ' \\*\\/', 'g'),
 					args: args
 				});
+
+				this.save('/* __APPLY__' + this.tplName + '_' + name + ' */');
 
 			} else {
 				this.save(argsStr + proto.body);
