@@ -335,7 +335,6 @@ Snakeskin.addDirective(
 		// Вызовы не объявленных прототипов
 		if (this.backTableI) {
 			let cache = Object(this.backTable);
-
 			for (let key in cache) {
 				if (!cache.hasOwnProperty(key)) {
 					continue;
