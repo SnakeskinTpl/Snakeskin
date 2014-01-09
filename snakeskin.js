@@ -3491,13 +3491,14 @@ Snakeskin.addDirective(
 					this.backTableI++;
 				}
 
+				var rand = Math.random() + '';
 				this.backTable[name].push({
 					pos: this.res.length,
-					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + ' \\*\\/', 'g'),
+					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + '_' + rand.replace('.', '\\.') + ' \\*\\/'),
 					args: args
 				});
 
-				this.save('/* __APPLY__' + this.tplName + '_' + name + ' */');
+				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');
 
 			} else {
 				this.save(argsStr + proto.body);
