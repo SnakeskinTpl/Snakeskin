@@ -37,40 +37,42 @@ function foo() {
 
 #### Использования Snakeskin с компиляцией в браузере
 
-    <!doctype html>
-    <html>
-        <head>
-            <title>Пример</title>
-            <meta charset="utf-8">
-            <script src="snakeskin.js"></script>
-        </head>
+```html
+<!doctype html>
+<html>
+    <head>
+        <title>Пример</title>
+        <meta charset="utf-8">
+        <script src="snakeskin.js"></script>
+    </head>
 
-        <body>
-            <script type="text/x-snakeskin-template" id="templates">
-                {template hello(name)}
-                    Hello {name}!
-                {end}
+    <body>
+        <script type="text/x-snakeskin-template" id="templates">
+            {template hello(name)}
+                Hello {name}!
+            {end}
 
-                {template calc(a, b)}
-                    {a + b}
-                {end}
-            </script>
+            {template calc(a, b)}
+                {a + b}
+            {end}
+        </script>
 
-            <div id="result1"></div>
-            <div id="result2"></div>
+        <div id="result1"></div>
+        <div id="result2"></div>
 
-            <script>
-                // Компиляция шаблонов,
-                // после шаблоны hello и calc станут доступны,
-                // как простые глобальные функции
-                Snakeskin.compile(document.getElementById('templates'));
+        <script>
+            // Компиляция шаблонов,
+            // после шаблоны hello и calc станут доступны,
+            // как простые глобальные функции
+            Snakeskin.compile(document.getElementById('templates'));
 
-                // Выведем результат работы шаблонов
-                document.getElementById('result1').innerHTML = hello('World');
-                document.getElementById('result2').innerHTML = calc(5, 7);
-            </script>
-        </body>
-    </html>
+            // Выведем результат работы шаблонов
+            document.getElementById('result1').innerHTML = hello('World');
+            document.getElementById('result2').innerHTML = calc(5, 7);
+        </script>
+    </body>
+</html>
+```
 
 ## Области декларации шаблонов
 
