@@ -7,6 +7,14 @@ Snakeskin — компилятор блочных шаблонов c подде�
 
 Поиграться можно тут: http://jsfiddle.net/NAPWB
 
+## Установка
+
+	npm install -g snakeskin
+
+или
+
+	git clone https://github.com/kobezzza/Snakeskin
+
 ## Общая концепция
 
 Шаблоны в Snakeskin — это функции в JavaScript.
@@ -27,14 +35,6 @@ function foo() {
 
 После компиляции вызов шаблона соотвествует простому вызову функции `foo()`.
 Такой же подход используется в [Google Closure Templates](https://developers.google.com/closure/templates/).
-
-## Установка
-
-	npm install -g snakeskin
-
-или
-
-	git clone https://github.com/kobezzza/Snakeskin
 
 ### Варианты применения
 
