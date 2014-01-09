@@ -28,6 +28,14 @@ function foo() {
 После компиляции вызов шаблона соотвествует простому вызову функции `foo()`.
 Такой же подход используется в [Google Closure Templates](https://developers.google.com/closure/templates/).
 
+## Установка
+
+	npm install -g snakeskin
+
+или
+
+	git clone https://github.com/kobezzza/Snakeskin
+
 ### Варианты применения
 
 Существует 2 сценария использования Snakeskin:
@@ -678,65 +686,6 @@ Snakeskin.importFilters({
 		{a + b} /// 1 + foo.b
 	{end}
 
-## Директивы proto и apply
-
-Директива proto позволяет декларировать блоки, которые можно будет применять в шаблоне с помощью директивы `apply`.
-При этом при декларации содержимое блока не выводится.
-
-	{proto a}
-		foo
-	{end}
-
-	{apply a}
-	{apply a}
-
-При декларации proto внутри `with` полученный блок наследует родительский контекст.
-
-	{with foo}
-		{proto a}
-			{name}
-		{end}
-	{end}
-
-	{apply a} /// {foo.name}
-
-Директива может иметь входные параметры
-
-	/// Параметр b имеет значение по умолчанию
-	{proto foo(a, b = 1)}
-		{a + b}
-	{end}
-
-	{apply foo(1, 2)} /// 3
-	{apply foo(1)} /// 2
-
-Допускается рекурсивный вызов директивы
-
-	{proto foo(i)}
-		{i}
-		{if i}
-			{apply --i}
-		{end}
-	{end}
-
-	{apply foo(3)} /// 3 2 1 0
-
-Внутри декларации proto допускается использовать директиву `return`.
-
-	{proto foo(i)}
-		{i}
-
-		{if i === 2}
-			{return}
-		{end}
-
-		{if i}
-			{apply --i}
-		{end}
-	{end}
-
-	{apply foo(3)} /// 3 2
-
 ## Директива call
 
 Директива используется для вызова других шаблонов в теле шаблона.
@@ -850,14 +799,6 @@ Snakeskin.importFilters({
 
 Если вы транслируете шаблоны с помощью консольного приложения snakeskin, то в файлах шаблонов вы можете использовать
 директивы [jossy](https://github.com/Kolyaj/Jossy) для сборки множества файлов.
-
-## Установка
-
-	npm install -g snakeskin
-
-или
-
-	git clone https://github.com/kobezzza/Snakeskin
 
 ## Как компилировать и что подключать
 
