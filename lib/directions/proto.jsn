@@ -226,9 +226,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			console.log(this.protoLink)
 
+		if (this.isSimpleOutput()) {
 			let name = /[^(]+/.exec(command)[0],
 				args = /\((.*?)\)/.exec(command);
 

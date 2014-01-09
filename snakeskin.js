@@ -614,7 +614,7 @@ DirObj.prototype.isSimpleOutput = function () {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '"');
 	}
 
-	return !this.parentTplName && !this.protoLink && !this.protoStart && (!this.proto || !this.proto.parentTplName);
+	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
@@ -2975,11 +2975,6 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
 
-		// Вызовы не объявленных прототипов
-		if (this.backTableI) {
-			throw this.error('Proto "' + this.lastBack + '" is not defined');
-		}
-
 		if (this.proto) {
 			return;
 		}
@@ -3002,7 +2997,12 @@ Snakeskin.addDirective(
 
 			this.i = this.startTemplateI - 1;
 			this.parentTplName = null;
-			return false;
+			return;
+		}
+
+		// Вызовы не объявленных прототипов
+		if (this.backTableI) {
+			throw this.error('Proto "' + this.lastBack + '" is not defined');
 		}
 
 		this.save(
@@ -3421,9 +3421,8 @@ Snakeskin.addDirective(
 	function (command) {
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			console.log(this.protoLink)
 
+		if (this.isSimpleOutput()) {
 			var name = /[^(]+/.exec(command)[0],
 				args = /\((.*?)\)/.exec(command);
 

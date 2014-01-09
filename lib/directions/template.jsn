@@ -284,11 +284,6 @@ Snakeskin.addDirective(
 	(end = function (command, commandLength) {
 		var tplName = this.tplName;
 
-		// Вызовы не объявленных прототипов
-		if (this.backTableI) {
-			throw this.error('Proto "' + this.lastBack + '" is not defined');
-		}
-
 		if (this.proto) {
 			return;
 		}
@@ -311,7 +306,12 @@ Snakeskin.addDirective(
 
 			this.i = this.startTemplateI - 1;
 			this.parentTplName = null;
-			return false;
+			return;
+		}
+
+		// Вызовы не объявленных прототипов
+		if (this.backTableI) {
+			throw this.error('Proto "' + this.lastBack + '" is not defined');
 		}
 
 		this.save(
