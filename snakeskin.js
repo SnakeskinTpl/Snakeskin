@@ -4172,8 +4172,10 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
+
+		var frgxp = /^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;
 		var rgxp = this.scope.length ?
-			/^[@#$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i :
+			frgxp :
 			/^[$a-z_][$\w\[\].'"\s]*([^=]?[+-/*><^]*)=[^=]?/i;
 
 		var scan = rgxp.exec(command);
@@ -4242,12 +4244,12 @@ Snakeskin.addDirective(
 
 			this.startInlineDir('output');
 			if (this.isSimpleOutput()) {
-				if (command.charAt(0) === '@' && command.split('=').length > 1) {
+				if (frgxp.test(command)) {
 					this.save(this.prepareOutput(command, true) + ';');
 					return;
 				}
 
-				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command, scan && scan[1]) + ';');
+				this.save('__SNAKESKIN_RESULT__ += ' + this.prepareOutput(command) + ';');
 			}
 		}
 	}

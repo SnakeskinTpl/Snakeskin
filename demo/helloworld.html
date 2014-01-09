@@ -11,11 +11,9 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{proto foo(a, b = 1)}
-					{a + b}
-				{end}
-
-				{apply foo(1)}
+				{@a = 1}
+				{a = 2}
+				{a += 2}
 			{/}
 		</script>
 
