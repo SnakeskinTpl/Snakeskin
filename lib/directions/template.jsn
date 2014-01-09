@@ -284,6 +284,27 @@ Snakeskin.addDirective(
 	(end = function (command, commandLength) {
 		var tplName = this.tplName;
 
+		if (this.backTableI && this.proto) {
+			let ctx = this.proto.ctx;
+
+			ctx.backTableI += this.backTableI;
+			ctx.lastBack = this.lastBack;
+
+			let cache = Object(this.backTable);
+			for (let key in cache) {
+				if (!cache.hasOwnProperty(key)) {
+					continue;
+				}
+
+				for (let i = 0; i < cache[key].length; i++) {
+					cache[key][i].pos += this.proto.pos;
+				}
+
+				ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache[key]) : cache[key];
+				ctx.backTable[key].protoStart = cache[key].protoStart;
+			}
+		}
+
 		if (this.proto) {
 			return;
 		}

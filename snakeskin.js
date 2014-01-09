@@ -1720,6 +1720,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
+	console.log(dir.res);
+
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
 
@@ -2975,6 +2977,27 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		var tplName = this.tplName;
 
+		if (this.backTableI && this.proto) {
+			var ctx = this.proto.ctx;
+
+			ctx.backTableI += this.backTableI;
+			ctx.lastBack = this.lastBack;
+
+			var cache$0 = Object(this.backTable);
+			for (var key in cache$0) {
+				if (!cache$0.hasOwnProperty(key)) {
+					continue;
+				}
+
+				for (var i = 0; i < cache$0[key].length; i++) {
+					cache$0[key][i].pos += this.proto.pos;
+				}
+
+				ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache$0[key]) : cache$0[key];
+				ctx.backTable[key].protoStart = cache$0[key].protoStart;
+			}
+		}
+
 		if (this.proto) {
 			return;
 		}
@@ -3357,7 +3380,9 @@ Snakeskin.addDirective(
 						vars: this.structure.vars,
 						proto: {
 							name: lastProto.name,
-							parentTplName: this.parentTplName
+							parentTplName: this.parentTplName,
+							pos: this.res.length,
+							ctx: this
 						}
 					}
 				);
@@ -3365,6 +3390,9 @@ Snakeskin.addDirective(
 
 			// Применение обратных прототипов
 			var back = this.backTable[lastProto.name];
+
+			console.log(back, lastProto.name);
+
 			if (back && !back.protoStart) {
 				var args = proto.args;
 
@@ -3742,7 +3770,7 @@ Snakeskin.addDirective(
 				'if (' + cache + ') {' +
 					'if (Array.isArray(' + cache + ')) {' +
 						this.multiDeclVar('__TMP_LENGTH__ =  __TMP__.length') +
-						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput('__I__ < __TMP_LENGTH__; __I__++', true) + ') {' +
+						'for (' + this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __TMP_LENGTH__;', true) + ') {' +
 							(function () {
 								
 								var str = '';

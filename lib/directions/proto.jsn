@@ -164,7 +164,9 @@ Snakeskin.addDirective(
 						vars: this.structure.vars,
 						proto: {
 							name: lastProto.name,
-							parentTplName: this.parentTplName
+							parentTplName: this.parentTplName,
+							pos: this.res.length,
+							ctx: this
 						}
 					}
 				);
@@ -172,6 +174,9 @@ Snakeskin.addDirective(
 
 			// Применение обратных прототипов
 			let back = this.backTable[lastProto.name];
+
+			console.log(back, lastProto.name);
+
 			if (back && !back.protoStart) {
 				let args = proto.args;
 

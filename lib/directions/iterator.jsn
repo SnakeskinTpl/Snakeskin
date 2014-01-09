@@ -47,7 +47,7 @@ Snakeskin.addDirective(
 				'if (' + cache + ') {' +
 					'if (Array.isArray(' + cache + ')) {' +
 						this.multiDeclVar('__TMP_LENGTH__ =  __TMP__.length') +
-						'for (' + this.multiDeclVar('__I__ = 0') + this.prepareOutput('__I__ < __TMP_LENGTH__; __I__++', true) + ') {' +
+						'for (' + this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __TMP_LENGTH__;', true) + ') {' +
 							(() => {
 								var str = '';
 
