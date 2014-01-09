@@ -614,7 +614,7 @@ DirObj.prototype.isSimpleOutput = function () {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '"');
 	}
 
-	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
+	return !this.parentTplName && !this.protoLink && !this.protoStart && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
@@ -3422,6 +3422,8 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
+			console.log(this.protoLink)
+
 			var name = /[^(]+/.exec(command)[0],
 				args = /\((.*?)\)/.exec(command);
 

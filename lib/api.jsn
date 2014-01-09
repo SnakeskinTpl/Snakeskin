@@ -192,7 +192,7 @@ DirObj.prototype.isSimpleOutput = function () {
 		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '"');
 	}
 
-	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
+	return !this.parentTplName && !this.protoLink && !this.protoStart && (!this.proto || !this.proto.parentTplName);
 };
 
 /**

@@ -10,10 +10,16 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			{proto helloWorld->foo}
+				{apply w}
+			{/}
+
+			{proto helloWorld->w}
+				2
+			{/}
+
 			{template helloWorld(name = 'world')}
-				{@a = 1}
-				{a = 2}
-				{a += 2}
+
 			{/}
 		</script>
 
