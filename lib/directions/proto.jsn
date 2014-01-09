@@ -190,7 +190,12 @@ Snakeskin.addDirective(
 								this.res.substring(el.pos);
 
 						} else {
-							el.protoArgs = args;
+							let tmp = this.structure.vars;
+
+							this.structure.vars = el.vars;
+							el.argsStr = this.returnArgs(args, el.args);
+							this.structure.vars = tmp;
+
 							fin = false;
 						}
 					}

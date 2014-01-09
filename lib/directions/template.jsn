@@ -296,8 +296,11 @@ Snakeskin.addDirective(
 				}
 
 				for (let i = 0; i < cache[key].length; i++) {
-					cache[key][i].pos += this.proto.pos;
-					cache[key][i].outer = true;
+					let el = cache[key][i];
+
+					el.pos += this.proto.pos;
+					el.outer = true;
+					el.vars = this.structure.vars;
 				}
 
 				ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache[key]) : cache[key];
@@ -344,7 +347,7 @@ Snakeskin.addDirective(
 					this.res = this.res.substring(0, el.pos) +
 						this.res.substring(el.pos).replace(
 							el.label,
-							this.returnArgs(el.protoArgs, el.args) + protoCache[tplName][key].body
+							el.argsStr + protoCache[tplName][key].body
 						);
 				}
 			}

@@ -11,17 +11,17 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{proto helloWorld->foo}
-				121
-				{apply w}
+				{apply w(1)}
+				{apply w2(3)}
 			{/}
 
-			{proto helloWorld->w}
-				{apply w2}
-				{apply w2}
+			{proto helloWorld->w(i)}
+				{apply w2(i)}
+				{apply w2(i + 1)}
 			{/}
 
-			{proto helloWorld->w2}
-				2
+			{proto helloWorld->w2(i)}
+				{i}
 			{/}
 
 			{template helloWorld(name = 'world')}

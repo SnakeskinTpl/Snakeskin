@@ -1720,8 +1720,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	console.log(dir.res);
-
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
 
@@ -2989,8 +2987,11 @@ Snakeskin.addDirective(
 				}
 
 				for (var i = 0; i < cache$0[key].length; i++) {
-					cache$0[key][i].pos += this.proto.pos;
-					cache$0[key][i].outer = true;
+					var el = cache$0[key][i];
+
+					el.pos += this.proto.pos;
+					el.outer = true;
+					el.vars = this.structure.vars;
 				}
 
 				ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache$0[key]) : cache$0[key];
@@ -3032,12 +3033,12 @@ Snakeskin.addDirective(
 				}
 
 				for (var i$3 = 0; i$3 < cache$1[key$1].length; i$3++) {
-					var el = cache$1[key$1][i$3];
+					var el$4 = cache$1[key$1][i$3];
 
-					this.res = this.res.substring(0, el.pos) +
-						this.res.substring(el.pos).replace(
-							el.label,
-							this.returnArgs(el.protoArgs, el.args) + protoCache[tplName][key$1].body
+					this.res = this.res.substring(0, el$4.pos) +
+						this.res.substring(el$4.pos).replace(
+							el$4.label,
+							el$4.argsStr + protoCache[tplName][key$1].body
 						);
 				}
 			}
@@ -3421,7 +3422,12 @@ Snakeskin.addDirective(
 								this.res.substring(el.pos);
 
 						} else {
-							el.protoArgs = args;
+							var tmp = this.structure.vars;
+
+							this.structure.vars = el.vars;
+							el.argsStr = this.returnArgs(args, el.args);
+							this.structure.vars = tmp;
+
 							fin = false;
 						}
 					}
