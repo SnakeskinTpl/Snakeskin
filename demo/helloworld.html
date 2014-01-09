@@ -10,34 +10,29 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto helloWorld->foo2}
-				1
+			{proto foo->begin}
+				{apply f1(1)}
 			{/}
 
-			{proto helloWorld->foo}
-				{apply w(1)}
-				{apply w2(3)}
+			{proto foo->f1(i)}
+				{apply f2(i)}
+				{apply f2(i + 1)}
+
+				{proto f2(i)}
+					{i}
+				{/}
 			{/}
 
-			{proto helloWorld->w(i)}
-				{apply w2(i)}
-				{apply w2(i + 1)}
-			{/}
-
-			{proto helloWorld->w2(i)}
-				{i}
-			{/}
-
-			{template helloWorld(name = 'world')}
-				{apply foo}
-				{apply foo2}
+			{template foo()}
+				{apply begin} /// 1 2
+				{apply f2(1)} /// 1
 			{/}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld({
+			document.getElementById('test').innerHTML = foo({
 				header: "Header",
 				header2: "Header2",
 				header3: "Header3",

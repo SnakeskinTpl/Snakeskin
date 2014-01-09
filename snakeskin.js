@@ -3367,7 +3367,11 @@ Snakeskin.addDirective(
 			this.protoLink = null;
 			this.tplName = null;
 
-		} else {
+			if (!this.hasParentBlock('proto')) {
+				this.protoStart = false;
+			}
+
+		} else if (!this.protoLink) {
 			var proto = protoCache[tplName][lastProto.name];
 
 			if (this.isAdvTest()) {
@@ -3439,7 +3443,7 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if (!this.hasParentBlock('proto')) {
+		if ((!this.protoLink || this.protoLink === lastProto.name) && !this.hasParentBlock('proto')) {
 			this.protoStart = false;
 		}
 	}
