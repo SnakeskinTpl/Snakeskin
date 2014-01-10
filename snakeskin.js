@@ -1720,6 +1720,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
+	console.log(dir.res);
+
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
 
@@ -2607,7 +2609,10 @@ Snakeskin.addDirective(
 		var __NEJS_THIS__ = this;
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput('__I_PROTO__', true) +
+			var i = this.prepareOutput('__I_PROTO__', true);
+			protoCache[this.tplName][this.proto.name].i = i;
+
+			this.save(i +
 				':while (' + this.prepareOutput(command, true) + ') {'
 			);
 		}
@@ -3038,14 +3043,15 @@ Snakeskin.addDirective(
 						continue;
 					}
 
-					if (!protoCache[tplName][key$1]) {
+					var proto = protoCache[tplName][key$1];
+					if (!proto) {
 						throw this.error('Proto "' + key$1 + '" is not defined');
 					}
 
 					this.res = this.res.substring(0, el$4.pos) +
 						this.res.substring(el$4.pos).replace(
 							el$4.label,
-							(el$4.argsStr || '') + protoCache[tplName][key$1].body
+							(el$4.argsStr || '') + (el$4.recursive ? proto.i + '++;' : proto.body)
 						);
 				}
 			}
@@ -3500,7 +3506,7 @@ Snakeskin.addDirective(
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
-			} else if (!proto) {
+			} else if (!proto || !proto.body) {
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
@@ -3511,7 +3517,8 @@ Snakeskin.addDirective(
 				this.backTable[name].push({
 					pos: this.res.length,
 					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + '_' + rand.replace('.', '\\.') + ' \\*\\/'),
-					args: args
+					args: args,
+					recursive: !!proto
 				});
 
 				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');

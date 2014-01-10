@@ -347,14 +347,15 @@ Snakeskin.addDirective(
 						continue;
 					}
 
-					if (!protoCache[tplName][key]) {
+					let proto = protoCache[tplName][key];
+					if (!proto) {
 						throw this.error('Proto "' + key + '" is not defined');
 					}
 
 					this.res = this.res.substring(0, el.pos) +
 						this.res.substring(el.pos).replace(
 							el.label,
-							(el.argsStr || '') + protoCache[tplName][key].body
+							(el.argsStr || '') + (el.recursive ? proto.i + '++;' : proto.body)
 						);
 				}
 			}

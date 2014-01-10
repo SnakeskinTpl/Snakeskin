@@ -259,7 +259,7 @@ Snakeskin.addDirective(
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
-			} else if (!proto) {
+			} else if (!proto || !proto.body) {
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
@@ -270,7 +270,8 @@ Snakeskin.addDirective(
 				this.backTable[name].push({
 					pos: this.res.length,
 					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + '_' + rand.replace('.', '\\.') + ' \\*\\/'),
-					args: args
+					args: args,
+					recursive: !!proto
 				});
 
 				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');

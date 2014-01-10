@@ -28,7 +28,10 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput('__I_PROTO__', true) +
+			let i = this.prepareOutput('__I_PROTO__', true);
+			protoCache[this.tplName][this.proto.name].i = i;
+
+			this.save(i +
 				':while (' + this.prepareOutput(command, true) + ') {'
 			);
 		}
