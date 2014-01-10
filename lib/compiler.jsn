@@ -123,16 +123,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 		}
 
 		if (!bOpen) {
-			// Обработка экранирования
-			if (begin) {
-				if (el === '\\' || escape) {
-					escape = !escape;
-				}
-
-			} else {
-				escape = false;
-			}
-
 			let next2str = el + str.charAt(dir.i + 1),
 				next3str = next2str + str.charAt(dir.i + 2);
 
@@ -169,7 +159,12 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 				}
 			}
 
-			if (comment) {
+			// Обработка экранирования
+			if (el === '\\' || escape) {
+				escape = !escape;
+			}
+
+			if (comment || escape) {
 				continue;
 			}
 
@@ -188,13 +183,13 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 
 				// Упраляющая конструкция завершилась
 				} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
-					if (!command) {
-						throw dir.error('Directive is not defined');
-					}
-
 					begin = false;
 					let commandLength = command.length;
 					command = dir.replaceDangerBlocks(command).trim();
+
+					if (!command) {
+						throw dir.error('Directive is not defined');
+					}
 
 					let short1 = command.charAt(0),
 						short2 = command.substr(0, 2);
@@ -206,7 +201,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 					} else if (replacers[short1]) {
 						command = replacers[short1](command);
 					}
-
 					let commandType = commandTypeRgxp.exec(command)[0];
 					commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
