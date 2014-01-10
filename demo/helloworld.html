@@ -11,16 +11,16 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template helloWorld(name = 'world')}
-				{proto e(i)}
-					FOO!!!
-					{apply a(i)}
-				{end}
-
 				{proto a(i)}
 					{i}
 					{if i}
-						{apply e(--i)}
+						{apply a(--i)}
 					{end}
+				{end}
+
+				{proto e(i)}
+					FOO!!!
+					{apply a(i)}
 				{end}
 
 				{apply a(3)}

@@ -259,7 +259,6 @@ Snakeskin.addDirective(
 
 			if (selfProto) {
 				recursive = proto && proto.calls[selfProto.name];
-				cache[selfProto.name].calls[name] = true;
 			}
 
 			// Рекурсивный вызов прототипа
@@ -286,6 +285,10 @@ Snakeskin.addDirective(
 				});
 
 				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');
+
+				if (selfProto && !proto) {
+					cache[selfProto.name].calls[name] = true;
+				}
 
 			} else {
 				this.save(argsStr + proto.body);

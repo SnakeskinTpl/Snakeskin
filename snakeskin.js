@@ -1720,8 +1720,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	console.log(dir.res);
-
 	new Function(dir.res)();
 	globalCache[key] = dir.res;
 
@@ -3506,7 +3504,6 @@ Snakeskin.addDirective(
 
 			if (selfProto) {
 				recursive = proto && proto.calls[selfProto.name];
-				cache[selfProto.name].calls[name] = true;
 			}
 
 			// Рекурсивный вызов прототипа
@@ -3533,6 +3530,10 @@ Snakeskin.addDirective(
 				});
 
 				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');
+
+				if (selfProto && !proto) {
+					cache[selfProto.name].calls[name] = true;
+				}
 
 			} else {
 				this.save(argsStr + proto.body);
