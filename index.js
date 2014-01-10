@@ -1,30 +1,35 @@
 #!/usr/bin/env node
 
 var __NEJS_THIS__ = this;
-global.Snakeskin = require('./snakeskin');
-var Program = require('commander');
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
 
-Program
-	.version(Snakeskin.VERSION)
+global.Snakeskin = require('./snakeskin');
+var prog = require('commander');
+
+prog
+	.version(Snakeskin.VERSION.join('.'))
 	.option('-s, --source [src]', 'source file')
 	.option('-o, --output [src]', 'output file')
 	.option('-cjs, --commonjs', 'compile templates as commonJS module')
 	.parse(process.argv);
 
 var fs = require('fs');
-var file = Program.source;
-var commonJS = Program.commonjs;
-var newFile = Program.output || (file + '.js');
+var jossy = require('jossy');
 
-var Jossy = require('jossy');
-Jossy.compile(file, null, null, function (err, data) {
-	var __NEJS_THIS__ = this;
+var file = prog.source,
+	newFile = prog.output || (file + '.js');
+
+jossy.compile(file, null, null, function (err, data) {
+	
 	if (err) {
 		console.log(err);
 
 	} else {
-		fs.writeFile(newFile, Snakeskin.compile(String(data), commonJS, {file: file}), function (err) {
-			var __NEJS_THIS__ = this;
+		fs.writeFile(newFile, Snakeskin.compile(String(data), prog.commonjs, {file: file}), function (err) {
+			
 			if (err) {
 				console.log(err);
 

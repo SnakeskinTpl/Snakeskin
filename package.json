@@ -1,7 +1,7 @@
 {
   "name": "snakeskin",
-  "version": "2.4.1",
-  "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.\r Независим от среды исполнения, для работы нужен лишь интерпретатор JavaScript.",
+  "version": "3.0.0",
+  "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.",
   "main": "snakeskin.js",
   "bin": {
     "snakeskin": "index.js"
@@ -25,15 +25,16 @@
   "keywords": [
     "templates"
   ],
-  "author": {
-    "name": "Kobezzza",
-    "email": "kobezzza@mail.ru",
-    "url": "https://github.com/Kobezzza"
-  },
-  "license": "BSD",
-  "readmeFilename": "readme.md",
-  "gitHead": "bdfb50fe92c4986f952b9d952b159e0606a0aa5a",
+  "author": "Kobezzza <kobezzza@mail.ru> (https://github.com/Kobezzza)",
   "bugs": {
     "url": "https://github.com/kobezzza/Snakeskin/issues"
-  }
+  },
+  "homepage": "https://github.com/kobezzza/Snakeskin",
+  "devDependencies": {
+    "grunt-cli": "~0.1.11",
+    "grunt": "~0.4.2",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.7"
+  },
+  "license": "MIT"
 }
