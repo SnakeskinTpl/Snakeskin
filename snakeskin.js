@@ -3357,7 +3357,8 @@ Snakeskin.addDirective(
 				length: commandLength,
 				from: this.i - this.startTemplateI + 1,
 				argsDecl: args ? args[0] : '',
-				args: argsMap
+				args: argsMap,
+				calls: {}
 			};
 		}
 
@@ -3492,11 +3493,20 @@ Snakeskin.addDirective(
 			var name = /[^(]+/.exec(command)[0],
 				args = /\((.*?)\)/.exec(command);
 
-			var proto = protoCache[this.tplName][name],
+			var cache = protoCache[this.tplName];
+			var proto = cache[name],
 				argsStr = '';
 
 			if (proto) {
 				argsStr = this.returnArgs(proto.args, args ? args[1].split(',') : []);
+			}
+
+			var selfProto = this.proto,
+				recursive;
+
+			if (selfProto) {
+				recursive = proto && proto.calls[selfProto.name];
+				cache[selfProto.name].calls[name] = true;
 			}
 
 			// Рекурсивный вызов прототипа
@@ -3506,7 +3516,7 @@ Snakeskin.addDirective(
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
-			} else if (!proto || !proto.body) {
+			} else if (!proto || !proto.body || recursive) {
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
@@ -3515,10 +3525,11 @@ Snakeskin.addDirective(
 
 				var rand = Math.random() + '';
 				this.backTable[name].push({
+					proto: selfProto ? cache[selfProto.name] : null,
 					pos: this.res.length,
 					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + '_' + rand.replace('.', '\\.') + ' \\*\\/'),
 					args: args,
-					recursive: !!proto
+					recursive: !!proto || !!recursive
 				});
 
 				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');
