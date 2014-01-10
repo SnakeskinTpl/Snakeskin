@@ -9,6 +9,9 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		concat: {
 			files: {
+				'snakeskin.js': [
+					'lib/core.js'
+				]
 			}
 		},
 
