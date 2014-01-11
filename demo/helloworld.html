@@ -10,10 +10,20 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
+			{proto foo->b(i)}
+				{i}
+				{if i}
+					{apply e(--i)}
+				{/}
+			{/}
+
+			{proto foo->e(i)}
+				FOOO!!!
+				{apply b(i)}
+			{/}
+
 			{template foo()}
-				{'  foo '|trim}
-				{$_}
-				foo
+				{apply b(3)}
 			{end}
 		</script>
 
