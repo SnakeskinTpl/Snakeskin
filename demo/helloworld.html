@@ -10,35 +10,29 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto foo->b(i)}
-				{i}
-				{if i}
-					{apply e(--i)}
-				{/}
-			{/}
+			{proto base->footer}
+				###
+			{end}
 
-			{proto foo->e(i)}
-				FOOO!!!
-				{apply b(i)}
-			{/}
+			{template base()}
+				{name = 'Мир'}
+				Привет {name}!
+				{apply footer}
+			{end}
 
-			{template foo()}
-				{apply b(3)}
+			{proto child->footer}
+				~~~
+			{end}
+
+			{template child() extends base}
+				{name = 'Друг'}
 			{end}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = foo({
-				header: "Header",
-				header2: "Header2",
-				header3: "Header3",
-				header4: "Header4",
-				header5: "Header5",
-				header6: "Header6",
-				list: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-			});
+			document.getElementById('test').innerHTML = child();
 			console.timeEnd('foo');
 		</script>
 	</body>
