@@ -27,7 +27,7 @@ module.exports = function (grunt) {
 					'lib/footer.txt'
 				],
 
-				dest: 'builds/snakeskin.js'
+				dest: 'build/snakeskin.js'
 			},
 
 			live: {

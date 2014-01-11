@@ -10,29 +10,15 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto base->footer}
-				###
-			{end}
-
-			{template base()}
-				{name = 'Мир'}
-				Привет {name}!
-				{apply footer}
-			{end}
-
-			{proto child->footer}
-				~~~
-			{end}
-
-			{template child() extends base}
-				{name = 'Друг'}
+			{template foo(name)}
+				Hello {name}!
 			{end}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = child();
+			document.getElementById('test').innerHTML = foo();
 			console.timeEnd('foo');
 		</script>
 	</body>

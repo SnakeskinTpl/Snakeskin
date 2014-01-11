@@ -21,16 +21,23 @@ Snakeskin — компилятор блочных шаблонов c подде�
 
 Шаблоны в Snakeskin — это функции в JavaScript.
 
-	{template foo()}
-		Hello World!
+	{template foo(name)}
+		Hello {name}!
 	{end}
 
 Эквивалентно
 
 ```js
-function foo() {
-	return 'Hello World';
-}
+var foo = function foo(name) {
+	var __SNAKESKIN_RESULT__ = '',
+		$_;
+	var TPL_NAME = 'foo';
+	var PARENT_TPL_NAME;
+	__SNAKESKIN_RESULT__ += ' Hello ';
+	__SNAKESKIN_RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(name));
+	__SNAKESKIN_RESULT__ += '! ';
+	return __SNAKESKIN_RESULT__;
+};
 ```
 
 После компиляции вызов шаблона соотвествует простому вызову функции `foo()`.
