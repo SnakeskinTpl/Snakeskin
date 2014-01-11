@@ -173,7 +173,7 @@ function foo() {
 
 Простой шаблон без входных параметров:
 
-```js
+```ejs
 {template myTemplate()}
 	Тело шаблона
 {end}
