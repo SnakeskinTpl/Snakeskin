@@ -7,19 +7,19 @@ Snakeskin — компилятор блочных шаблонов c подде�
 
 ## Установка
 
-```js
+```
 npm install -g snakeskin
 ```
 
 или
 
-```js
+```
 bower install snakeskin
 ```
 
 или
 
-```js
+```
 git clone git://github.com/kobezzza/Snakeskin.git
 ```
 
