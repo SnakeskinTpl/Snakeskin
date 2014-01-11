@@ -3,21 +3,25 @@
 Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
 Независим от среды исполнения, для работы нужен лишь интерпретатор JavaScript.
 
-Подробная статья с описанием: http://habrahabr.ru/post/168093/
-
 Поиграться можно тут: http://jsfiddle.net/NAPWB
 
 ## Установка
 
-	npm install -g snakeskin
+```js
+npm install -g snakeskin
+```
 
 или
 
-	bower install snakeskin
+```js
+bower install snakeskin
+```
 
 или
 
-	git clone git://github.com/kobezzza/Snakeskin.git
+```js
+git clone git://github.com/kobezzza/Snakeskin.git
+```
 
 ## Общая концепция
 
@@ -44,8 +48,8 @@ function foo() {
 
 Существует 2 сценария использования Snakeskin:
 
-* Предварительная трансляция файлов Snakeskin в файлы JavaScript и подключение последних;
-* "Живая" компиляция шаблонов.
+1. Предварительная трансляция файлов Snakeskin в файлы JavaScript и подключение последних;
+2. "Живая" компиляция шаблонов.
 
 #### Использования Snakeskin с компиляцией в браузере
 
