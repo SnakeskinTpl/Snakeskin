@@ -24,28 +24,7 @@
 			{/}
 
 			{template index()}
-				{apply begin}{&}
-				{apply f3(2)}
-
-				{proto f2(i)}{&}
-					{i}
-				{/}
-
-				{a = {a: 1}}
-				{with a}
-				{/}
-			{/}
-
-			{template recursive()}
-				{proto begin(i)}
-					{i}
-
-					{if i}
-						{apply begin(--i)}
-					{/}
-				{/}
-
-				{apply begin(5)}
+			'   foo   bar '|collapse|ucfirst|repeat 3|remove ('Foo bar'|trim)
 			{/}
 		</script>
 

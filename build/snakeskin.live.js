@@ -299,12 +299,12 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
  * Составить строку из повторений подстроки
  *
  * @param {*} str - исходная строка
- * @param {?number=} [opt_num=1] - число повторений
+ * @param {?number=} [opt_num=2] - число повторений
  * @return {string}
  */
 Snakeskin.Filters['repeat'] = function (str, opt_num) {
 	var __NEJS_THIS__ = this;
-	return new Array(opt_num || 2).join(str);
+	return new Array((opt_num + 1) || 3).join(str);
 };
 
 /**
