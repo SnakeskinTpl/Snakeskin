@@ -256,8 +256,7 @@ Snakeskin.addDirective(
 				continue;
 			}
 
-			defParams += 'var ' + el.key + ' = ' + el.value + ';';
-			constICache[tplName][el.key] = el;
+			this.source += '{' + el.key + ' = ' + el.value + '}';
 		}
 
 		this.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
