@@ -11,6 +11,9 @@ var assert = require('assert');
 var snakeskin = require('./build/snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
+var testTpls = snakeskin.compile(fs.readFileSync(path.join(__dirname, 'test.ss')), true);
+console.log(snakeskin);
+
 fs.readdirSync(testFolder).forEach(function (file) {
 	
 	if (path.extname(file) === '.ss') {
