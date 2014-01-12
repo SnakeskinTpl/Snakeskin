@@ -1,6 +1,6 @@
-index 1
-index 2
-index 3
+index ; 1
+index ; 2
+index ; 3
 
 ###
 
@@ -15,11 +15,11 @@ index 3
 
 	{switch i}
 
-		{> '1'}
+		{> 1}
 			1
 		{end}
 
-		{> '2'}
+		{> 2}
 			2
 		{/>}
 
