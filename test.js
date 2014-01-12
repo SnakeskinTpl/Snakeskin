@@ -34,18 +34,19 @@ fs.readdirSync(testFolder).forEach(function (el) {
 			var params = el.split(' ; ');
 
 			assert.equal(
-				tpl[params[0]].apply(
-					tpl,
-					params.slice(1).map(function (el) {
-						
-						try {
-							return Function('return ' + el)();
+				eval(
+					'tpl.' + params[0] + '.apply(' +
+						'tpl,' +
+						'params.slice(1).map(function (el) {' +
+							'try {' +
+								'return Function("return " + el)();' +
 
-						} catch (ignore) {
-							return el;
-						}
-					})
-				).trim(),
+							'} catch (ignore) {' +
+								'return el;' +
+							'}' +
+						'})' +
+					').trim()'
+				),
 
 				results[i].trim()
 			);
