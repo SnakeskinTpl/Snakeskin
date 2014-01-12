@@ -20,7 +20,7 @@ tpl.foo['index'] ; Bob Cache
 {template index(name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 	///<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
-	Foo{&}            bar
+	Foo{&}            bar\///1
 {/}
 
 {template tpl.index(name = 'world', lname)}/* Foo */
@@ -36,15 +36,15 @@ tpl.foo['index'] ; Bob Cache
 
 ###
 
-<h1>Hello world!</h1> Foobar
+<h1>Hello world!</h1> Foobar///1
 
 ***
 
-<h1>Hello Bob!</h1> Foobar
+<h1>Hello Bob!</h1> Foobar///1
 
 ***
 
-<h1>Hello Bob Cache!</h1> Foobar
+<h1>Hello Bob Cache!</h1> Foobar///1
 
 ***
 

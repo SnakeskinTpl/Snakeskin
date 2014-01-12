@@ -237,7 +237,7 @@ Snakeskin.addDirective(
 
 			if (el.value !== void 0) {
 				defParams += el.key + ' = ' + el.key + ' !== void 0 && ' +
-					el.key + ' !== null ? ' + el.key + ' : ' + el.value + ';';
+					el.key + ' !== null ? ' + el.key + ' : ' + this.prepareOutput(el.value, true) + ';';
 			}
 
 			// После последнего параметра запятая не ставится

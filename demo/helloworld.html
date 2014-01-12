@@ -10,11 +10,10 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template index()}
-				{a = {a: String}}
-				{with a}
-					{'   foo   bar '|remove (@a('   Foo bar'))}
-				{/}
+			{a = 1}
+
+			{template index(a = @a)}
+				{a}
 			{/}
 		</script>
 
