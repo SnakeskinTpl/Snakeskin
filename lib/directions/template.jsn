@@ -249,6 +249,7 @@ Snakeskin.addDirective(
 		// Входные параметры родительского шаблона,
 		// для которых есть значение по умолчанию,
 		// ставятся как локальные переменные
+		var defs = '';
 		for (let i = 0; i < localVars.length; i++) {
 			let el = localVars[i];
 
@@ -256,7 +257,13 @@ Snakeskin.addDirective(
 				continue;
 			}
 
-			this.source += '{' + el.key + ' = ' + el.value + '}';
+			defs += '{' + el.key + ' = ' + el.value + '}';
+		}
+
+		if (defs) {
+			this.source = this.source.substring(0, this.i + 1) +
+				defs +
+				this.source.substring(this.i + 1);
 		}
 
 		this.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');

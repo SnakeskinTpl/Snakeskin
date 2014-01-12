@@ -1435,12 +1435,12 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		html = html.replace(/\s*?\n/, '');
 	}
 
-	var key = html || src;
-	if (globalCache[key]) {
-		return globalCache[key];
+	var text = html || src;
+	if (globalCache[text]) {
+		return globalCache[text];
 	}
 
-	var dir = new DirObj(String(key), {
+	var dir = new DirObj(String(text), {
 		info: opt_info,
 		commonJS: !!opt_commonJS,
 		proto: opt_params.proto,
@@ -1717,16 +1717,18 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
-	for (var key$0 in dir.preProtos) {
-		if (!dir.preProtos.hasOwnProperty(key$0)) {
+	for (var key in dir.preProtos) {
+		if (!dir.preProtos.hasOwnProperty(key)) {
 			continue;
 		}
 
-		throw dir.error('Template "' + key$0 + '" is not defined')
+		throw dir.error('Template "' + key + '" is not defined')
 	}
 
+	console.log(dir.res);
+
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
-	globalCache[key] = dir.res;
+	globalCache[text] = dir.res;
 
 	if (!require && !opt_commonJS) {
 		setTimeout(function () {
@@ -4268,6 +4270,7 @@ Snakeskin.addDirective(
 		// Входные параметры родительского шаблона,
 		// для которых есть значение по умолчанию,
 		// ставятся как локальные переменные
+		var defs = '';
 		for (var i$2 = 0; i$2 < localVars.length; i$2++) {
 			var el$3 = localVars[i$2];
 
@@ -4275,7 +4278,13 @@ Snakeskin.addDirective(
 				continue;
 			}
 
-			this.source += '{' + el$3.key + ' = ' + el$3.value + '}';
+			defs += '{' + el$3.key + ' = ' + el$3.value + '}';
+		}
+
+		if (defs) {
+			this.source = this.source.substring(0, this.i + 1) +
+				defs +
+				this.source.substring(this.i + 1);
 		}
 
 		this.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');

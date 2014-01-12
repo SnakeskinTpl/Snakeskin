@@ -10,17 +10,30 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{a = 1}
+			{proto base->bar}{/}
+			{template base(val = 1, val2 = 2)}
+				{val2}
+				{block foo}
+					{val}
 
-			{template index(a = @a)}
-				{a}
+					{apply bar}
+				{/}
+			{/}
+
+			{proto sub->bar(i = 2)}
+				{i}
+			{/}
+
+			{template sub(val = 2) extends base}
+				{vv = 2}
+				{block e}my{/}
 			{/}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = index();
+			document.getElementById('test').innerHTML = sub();
 			console.timeEnd('foo');
 		</script>
 	</body>
