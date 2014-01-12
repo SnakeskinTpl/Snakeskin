@@ -1725,6 +1725,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		throw dir.error('Template "' + key$0 + '" is not defined')
 	}
 
+	console.log(dir.res);
+
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
 	globalCache[key] = dir.res;
 
@@ -2229,7 +2231,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		this.structure.parent.vars;
 
 	var globalExportRgxp = /([$\w]*)(.*)/,
-		escapeRgxp = /^__ESCAPER_QUOT__\d+_/;
+		escapeRgxp = /^__ESCAPER_QUOT__\d+_/,
+		ssfRgxp = /Snakeskin\.Filters/;
 
 	var nextCharRgxp = /[@#$+\-~!\w]/i,
 		newWordRgxp = /[^@#$\w\[\].]/,
@@ -2314,6 +2317,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				// не является константой замены Escaper,
 				// не является названием свойства в литерале объекта ({свойство: )
 				var canParse = !blackWordList[word] &&
+					!pCountFilter &&
+					!ssfRgxp.test(word) &&
 					!isFilter &&
 					isNaN(Number(word)) &&
 					!escapeRgxp.test(word) &&
@@ -2470,11 +2475,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}
 		}
 
-		isFilter = el === '|';
-		if (breakNum) {
-			breakNum--;
-		}
-
 		if (i === commandLength - 1 && pCount && el !== ')') {
 			throw this.error('Missing closing or opening parenthesis in the template');
 		}
@@ -2549,21 +2549,27 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		// Закрылась скобка внутри фильтра
-		if (el === ')' && pCountFilter) {
+		if (el === ')' && pCountFilter && !breakNum) {
 			pCountFilter--;
 
-			var last$1 = filter.length - 1;
-			var cache = filter[last$1];
+			if (!pCountFilter) {
+				var last$1 = filter.length - 1;
+				var cache = filter[last$1];
 
-			filter[last$1] = this.prepareOutput(cache, true, null, true);
+				filter[last$1] = this.prepareOutput(cache, true, null, true);
+				wordAddEnd += filter[last$1].length - cache.length;
+				filterAddEnd += filter[last$1].length - cache.length;
 
-			wordAddEnd += filter[last$1].length - cache.length;
-			filterAddEnd += filter[last$1].length - cache.length;
-
-			if (i === commandLength - 1) {
-				i--;
-				breakNum = 1;
+				if (i === commandLength - 1) {
+					i--;
+					breakNum = 1;
+				}
 			}
+		}
+
+		isFilter = el === '|';
+		if (breakNum) {
+			breakNum--;
 		}
 
 		// Через 2 итерации начнётся фильтр

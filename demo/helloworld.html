@@ -11,7 +11,10 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			{template index()}
-				{'   foo   bar '|collapse|ucfirst|repeat 3|remove ('Foo bar'|repeat 2)}
+				{a = {a: String}}
+				{with a}
+					{'   foo   bar '|remove (a('   Foo bar'))}
+				{/}
 			{/}
 		</script>
 
