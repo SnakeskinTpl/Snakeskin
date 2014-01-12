@@ -1725,8 +1725,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		throw dir.error('Template "' + key + '" is not defined')
 	}
 
-	console.log(dir.res);
-
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
 	globalCache[text] = dir.res;
 
@@ -2782,7 +2780,7 @@ Snakeskin.addDirective(
 
 				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы
-					if (constCache[tplName][name] || constICache[tplName][name]) {
+					if (constCache[tplName][name] ? !constCache[tplName][name].tmp : constICache[tplName][name]) {
 						throw this.error('Constant "' + name + '" is already defined');
 					}
 
@@ -2796,7 +2794,6 @@ Snakeskin.addDirective(
 						throw this.error('Can\'t declare constant "' + name + '", try another name');
 					}
 
-					// Кеширование
 					constCache[tplName][name] = {
 						from: this.i - this.startTemplateI - commandLength,
 						to: this.i - this.startTemplateI
@@ -3634,6 +3631,35 @@ Snakeskin.addDirective(
 		}
 	}
 );
+
+Snakeskin.addDirective(
+	'__const__',
+
+	null,
+
+	function (command, commandLength) {
+		var __NEJS_THIS__ = this;
+		var name = command.split('=')[0].trim();
+
+		this.startInlineDir('const', {
+			name: name
+		});
+
+		if (this.isSimpleOutput()) {
+			this.save(this.prepareOutput('var ' + command + ';', true));
+		}
+
+		if (this.isAdvTest()) {
+			constCache[this.tplName][name] = {
+				from: this.i - this.startTemplateI - commandLength,
+				to: this.i - this.startTemplateI,
+				tmp: true
+			};
+
+			fromConstCache[this.tplName] = this.i - this.startTemplateI + 1;
+		}
+	}
+);
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -4278,7 +4304,7 @@ Snakeskin.addDirective(
 				continue;
 			}
 
-			defs += '{' + el$3.key + ' = ' + el$3.value + '}';
+			defs += '{__const__ ' + el$3.key + ' = ' + el$3.value + '}';
 		}
 
 		if (defs) {

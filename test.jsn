@@ -10,9 +10,9 @@ var assert = require('assert');
 var snakeskin = require('./build/snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
-fs.readdirSync(testFolder).forEach((el) => {
-	if (path.extname(el) === '.ss') {
-		let src = path.join(testFolder, el);
+fs.readdirSync(testFolder).forEach((file) => {
+	if (path.extname(file) === '.ss') {
+		let src = path.join(testFolder, file);
 		let txt = String(fs.readFileSync(src)).split('###');
 
 		txt.forEach((el, i) => {
@@ -22,30 +22,42 @@ fs.readdirSync(testFolder).forEach((el) => {
 		let starts = txt[0].split(/[\n\r]+/);
 		let results = txt[2].split('***');
 
-		fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
+		try {
+			fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
 
-		let tpl = require('./tests/' + el + '.js').liveInit('../build/snakeskin.live');
+		} catch (err) {
+			console.error('File: ' + file);
+			throw err;
+		}
+
+		let tpl = require('./tests/' + file + '.js').liveInit('../build/snakeskin.live');
 
 		starts.forEach((el, i) => {
 			let params = el.split(' ; ');
 
-			assert.equal(
-				eval(
-					'tpl.' + params[0] + '.apply(' +
-						'tpl,' +
-						'params.slice(1).map(function (el) {' +
-							'try {' +
-								'return Function("return " + el)();' +
+			try {
+				assert.equal(
+					eval(
+						'tpl.' + params[0] + '.apply(' +
+							'tpl,' +
+							'params.slice(1).map(function (el) {' +
+								'try {' +
+									'return Function("return " + el)();' +
 
-							'} catch (ignore) {' +
-								'return el;' +
-							'}' +
-						'})' +
-					').trim()'
-				),
+								'} catch (ignore) {' +
+									'return el;' +
+								'}' +
+							'})' +
+						').trim()'
+					),
 
-				results[i].trim()
-			);
+					results[i].trim()
+				);
+
+			} catch (err) {
+				console.error('File: ' + file);
+				throw err;
+			}
 		});
 	}
 });

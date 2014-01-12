@@ -37,3 +37,31 @@ Snakeskin.addDirective(
 		}
 	}
 );
+
+Snakeskin.addDirective(
+	'__const__',
+
+	null,
+
+	function (command, commandLength) {
+		let name = command.split('=')[0].trim();
+
+		this.startInlineDir('const', {
+			name: name
+		});
+
+		if (this.isSimpleOutput()) {
+			this.save(this.prepareOutput('var ' + command + ';', true));
+		}
+
+		if (this.isAdvTest()) {
+			constCache[this.tplName][name] = {
+				from: this.i - this.startTemplateI - commandLength,
+				to: this.i - this.startTemplateI,
+				tmp: true
+			};
+
+			fromConstCache[this.tplName] = this.i - this.startTemplateI + 1;
+		}
+	}
+);

@@ -257,7 +257,7 @@ Snakeskin.addDirective(
 				continue;
 			}
 
-			defs += '{' + el.key + ' = ' + el.value + '}';
+			defs += '{__const__ ' + el.key + ' = ' + el.value + '}';
 		}
 
 		if (defs) {
