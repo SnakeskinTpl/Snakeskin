@@ -13,7 +13,7 @@
 			{template index()}
 				{a = {a: String}}
 				{with a}
-					{'   foo   bar '|remove (a('   Foo bar'))}
+					{'   foo   bar '|remove (@a('   Foo bar'))}
 				{/}
 			{/}
 		</script>

@@ -319,8 +319,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info, opt_params = {}) {
 		throw dir.error('Template "' + key + '" is not defined')
 	}
 
-	console.log(dir.res);
-
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
 	globalCache[key] = dir.res;
 

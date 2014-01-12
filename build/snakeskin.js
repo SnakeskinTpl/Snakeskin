@@ -1725,8 +1725,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		throw dir.error('Template "' + key$0 + '" is not defined')
 	}
 
-	console.log(dir.res);
-
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
 	globalCache[key] = dir.res;
 
@@ -2331,8 +2329,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					vres = finalWord;
 
 				// Экспорт глобальный и супер глобальных переменных
-				} else if (el === '@') {
-					if (canParse && useWith) {
+				} else if (el === '@' && canParse) {
+					if (useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
 						globalExport = globalExportRgxp.exec(vres);
 
