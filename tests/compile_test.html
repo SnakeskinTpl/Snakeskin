@@ -3,11 +3,13 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Test: Snakeskin.compile</title>
-		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.11.0.css" />
-		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
+		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" />
+
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.13.0.js"></script>
 		<script type="text/javascript" src="../build/snakeskin.min.js"></script>
 	</head>
+
 	<body>
 		<h1 id="qunit-header">Test: Snakeskin.compile</h1>
 		<h2 id="qunit-banner"></h2>
@@ -16,12 +18,14 @@
 		<ol id="qunit-tests"></ol>
 		<div id="test"></div>
 
-		<script type="text/x-snakeskin-template" id="templates">
+		<script type="text/x-snakeskin-template" id="template">
 			{template first(name = 'world')}
 				{text = 'Hello'}
 				<h1>{text} {name}!</h1>
 			{end}
+		<script>
 
+		<script type="text/x-snakeskin-template" id="templates">
 			{template tpl.first(name = 'world')}
 				{text = 'Hello'}
 				<h1>{text} {name}!</h1>

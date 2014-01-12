@@ -8,7 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
 
-var snakeskin = require('./snakeskin');
+var snakeskin = require('./build/snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
 fs.readdirSync(testFolder).forEach(function (el) {
@@ -27,7 +27,7 @@ fs.readdirSync(testFolder).forEach(function (el) {
 
 		fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
 
-		var tpl = require('./tests/' + el + '.js').liveInit('../snakeskin');
+		var tpl = require('./tests/' + el + '.js').liveInit('../build/snakeskin.live');
 
 		starts.forEach(function (el, i) {
 			
