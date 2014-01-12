@@ -2,17 +2,25 @@ index ; {child: {name: 'Koba', child: {name: 'none'}}}
 
 ###
 
+{name = 'foo'}
 {template index(obj)}
+	{name = 'bar'}
 	{with obj.child}
 		{name}
 		{with child}
-			{name}
+			{
+				@name + ' ' +
+				#99name + ' ' +
+				#name + ' ' +
+				#1name + ' ' +
+				#2name + ' ' +
+				@@name + ' ' +
+				name
+			}
 		{end}
 	{end}
 {/}
 
 ###
 
-Koba  none
-
-***
+Koba  bar bar Koba Koba bar foo none

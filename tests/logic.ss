@@ -11,23 +11,23 @@ index ; 3
 		2
 	{else}
 		3
-	{/if}
+	{/}
 
 	{switch i}
 
 		{> 1}
 			1
-		{end}
+		{/}
 
 		{> 2}
 			2
-		{/>}
+		{/}
 
 		{default}
 			3
-		{end}
-	{end switch}
-{end}
+		{/}
+	{/}
+{/}
 
 ###
 
