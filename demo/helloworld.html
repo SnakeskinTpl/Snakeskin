@@ -10,33 +10,49 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto index1->begin}
-				{apply f1(1)}
-			{end}
+			{proto index->begin}
+				{apply f1(1)}{&}
+			{/}
 
 			{proto index->f1(i)}
-				{apply f2(i)}
-				{apply f2(i + 1)}
+				{apply f2(i)}{&}
+				{apply f2(i + 1)}{&}
 
-				{proto f3(i)}
+				{proto f3(i)}{&}
 					{i * 2}
-				{end}
-			{end}
+				{/}{&}
+			{/}
 
 			{template index()}
-				{apply begin}
+				{apply begin}{&}
 				{apply f3(2)}
 
-				{proto f2(i)}
+				{proto f2(i)}{&}
 					{i}
-				{end}
-			{end}
+				{/}
+
+				{a = {a: 1}}
+				{with a}
+				{/}
+			{/}
+
+			{template recursive()}
+				{proto begin(i)}
+					{i}
+
+					{if i}
+						{apply begin(--i)}
+					{/}
+				{/}
+
+				{apply begin(5)}
+			{/}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = index('sd');
+			document.getElementById('test').innerHTML = recursive();
 			console.timeEnd('foo');
 		</script>
 	</body>

@@ -4341,6 +4341,7 @@ Snakeskin.addDirective(
 		// Вызовы не объявленных прототипов
 		if (this.backTableI) {
 			var cache$1 = Object(this.backTable);
+
 			for (var key$1 in cache$1) {
 				if (!cache$1.hasOwnProperty(key$1)) {
 					continue;
@@ -4365,6 +4366,8 @@ Snakeskin.addDirective(
 						);
 				}
 			}
+
+			this.backTable = {};
 		}
 
 		this.save(

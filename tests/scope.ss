@@ -6,7 +6,8 @@ index ; {child: {name: 'Koba', child: {name: 'none'}}}
 {template index(obj)}
 	{name = 'bar'}
 	{with obj.child}
-		{name}
+		{name}{&}
+		{var e = 'test'}
 		{with child}
 			{
 				@name + ' ' +
@@ -15,7 +16,8 @@ index ; {child: {name: 'Koba', child: {name: 'none'}}}
 				#1name + ' ' +
 				#2name + ' ' +
 				@@name + ' ' +
-				name
+				name + ' ' +
+				e
 			}
 		{end}
 	{end}
@@ -23,4 +25,4 @@ index ; {child: {name: 'Koba', child: {name: 'none'}}}
 
 ###
 
-Koba  bar bar Koba Koba bar foo none
+Koba  bar bar Koba Koba bar foo none test
