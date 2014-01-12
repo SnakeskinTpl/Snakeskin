@@ -10,28 +10,15 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto index->begin}
-				{apply f1(1)}{&}
-			{/}
-
-			{proto index->f1(i)}
-				{apply f2(i)}{&}
-				{apply f2(i + 1)}{&}
-
-				{proto f3(i)}{&}
-					{i * 2}
-				{/}{&}
-			{/}
-
 			{template index()}
-			'   foo   bar '|collapse|ucfirst|repeat 3|remove ('Foo bar'|trim)
+				{'   foo   bar '|collapse|ucfirst|repeat 3|remove ('Foo bar'|repeat 2)}
 			{/}
 		</script>
 
 		<script>
 			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = recursive();
+			document.getElementById('test').innerHTML = index();
 			console.timeEnd('foo');
 		</script>
 	</body>

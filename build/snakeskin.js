@@ -2271,6 +2271,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		return res ? res[0] : null;
 	}
 
+	if (!command) {
+		throw this.error('Invalid syntax');
+	}
+
 	var commandLength = command.length;
 	for (var i = 0; i < commandLength; i++) {
 		var el = command.charAt(i),
@@ -2475,7 +2479,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			throw this.error('Missing closing or opening parenthesis in the template');
 		}
 
-		if (filterStart && ((el === ')' && !pCountFilter) || i === commandLength - 1)) {
+		if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
 			var pos = pContent[0];
 
 			var fadd = wordAddEnd - filterAddEnd + addition,
@@ -2555,6 +2559,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			wordAddEnd += filter[last$1].length - cache.length;
 			filterAddEnd += filter[last$1].length - cache.length;
+
+			if (i === commandLength - 1) {
+				i--;
+				breakNum = 1;
+			}
 		}
 
 		// Через 2 итерации начнётся фильтр
