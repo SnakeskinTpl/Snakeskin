@@ -10,16 +10,19 @@ tpl.foo['index'] ; Bob Cache
 
 ###
 
-{template index(name = 'world', lname)}
+/* Foo */
+/// bar
+
+{template index(name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 {/}
 
-{template tpl.index(name = 'world', lname)}
+{template tpl.index(name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 	{arguments.callee.name}
 {/}
 
-{template tpl.foo['index'](name = 'world', lname)}
+{template tpl.foo['index'](name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 {/}
 

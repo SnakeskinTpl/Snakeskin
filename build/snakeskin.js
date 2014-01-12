@@ -1493,7 +1493,6 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		}
 
 		if (whiteSpaceRgxp.test(el)) {
-
 			// Внутри директивы
 			if (begin) {
 				if (!bOpen) {
@@ -1507,8 +1506,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 			// Простой ввод вне деклараций шаблона
 			} else if (!dir.structure.parent) {
 				// Для JSDoc все символы остаются неизменны,
-				// а в остальныхслучаях они игнорируются
-				if (!jsDoc) {
+				// а в остальных случаях они игнорируются
+				if (!comment && !jsDoc) {
 					continue;
 				}
 
@@ -1561,6 +1560,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 
 				} else if (nextLineRgxp.test(rEl) && comment === '///') {
 					comment = false;
+					continue;
 				}
 			}
 
@@ -1716,6 +1716,8 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 	if (dir.proto) {
 		return dir.res;
 	}
+
+	console.log(dir.res);
 
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
 	globalCache[key] = dir.res;
