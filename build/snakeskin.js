@@ -1717,6 +1717,14 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		return dir.res;
 	}
 
+	for (var key$0 in dir.preProtos) {
+		if (!dir.preProtos.hasOwnProperty(key$0)) {
+			continue;
+		}
+
+		throw dir.error('Template "' + key$0 + '" is not defined')
+	}
+
 	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
 	globalCache[key] = dir.res;
 
@@ -4274,7 +4282,7 @@ Snakeskin.addDirective(
 				this.source.substring(this.i + 1);
 
 			this.info.line -= this.preProtos[tplName].line;
-			this.preProtos[tplName] = null;
+			delete this.preProtos[tplName];
 		}
 	}),
 
