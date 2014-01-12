@@ -13,30 +13,38 @@ tpl.foo['index'] ; Bob Cache
 /* Foo */
 /// bar
 
+/**
+ * @return string
+ * {template bar}
+ */
 {template index(name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	///<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	Foo{&}            bar
 {/}
 
 {template tpl.index(name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
-	{arguments.callee.name}
+	{arguments.callee.name}/*
+	{arguments.callee.name}*/
 {/}
 
 {template tpl.foo['index'](name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
 {/}
 
 ###
 
-<h1>Hello world!</h1>
+<h1>Hello world!</h1> Foobar
 
 ***
 
-<h1>Hello Bob!</h1>
+<h1>Hello Bob!</h1> Foobar
 
 ***
 
-<h1>Hello Bob Cache!</h1>
+<h1>Hello Bob Cache!</h1> Foobar
 
 ***
 
