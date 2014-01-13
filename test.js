@@ -40,7 +40,7 @@ fs.readdirSync(testFolder).forEach(function (file) {
 			throw err;
 		}
 
-		var tpl = require('./tests/' + file + '.js').liveInit('../build/snakeskin.live');
+		var tpl = require('./tests/' + file + '.js').liveInit(snakeskin);
 
 		starts.forEach(function (el, i) {
 			
