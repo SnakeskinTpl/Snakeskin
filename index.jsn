@@ -12,7 +12,7 @@ prog
 	.version(Snakeskin.VERSION.join('.'))
 	.option('-s, --source [src]', 'source file')
 	.option('-o, --output [src]', 'output file')
-	.option('-cjs, --commonjs', 'compile templates as commonJS module')
+	.option('-n, --commonjs', 'compile templates as commonJS module')
 	.parse(process.argv);
 
 var fs = require('fs');

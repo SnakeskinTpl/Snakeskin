@@ -1,2 +1,2 @@
-var tpl = require('./helloworld.commonjs.ss.js').liveInit('../snakeskin.live.min.js');
+var tpl = require('./helloworld.commonjs.ss.js').init(require('../snakeskin'));
 console.log(tpl.helloWorld());
