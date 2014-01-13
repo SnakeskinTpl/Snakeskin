@@ -574,7 +574,7 @@ function DirObj(src, params) {
 		(params.commonJS ?
 			'var Snakeskin = global.Snakeskin;' +
 
-			'exports.liveInit = function (obj) { ' +
+			'exports.init = function (obj) { ' +
 				'Snakeskin = typeof obj === "object" ? obj : require(obj);' +
 				'exec();' +
 				'return this;' +
@@ -1755,7 +1755,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 		// Экспорт
 		if (commonJS) {
 			new Function('exports', dir.res)(ctx);
-			ctx.liveInit(Snakeskin);
+			ctx.init(Snakeskin);
 			globalFnCache[text] = ctx;
 
 		// Простая компиляция

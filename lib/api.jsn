@@ -155,7 +155,7 @@ function DirObj(src, params) {
 		(params.commonJS ?
 			'var Snakeskin = global.Snakeskin;' +
 
-			'exports.liveInit = function (obj) { ' +
+			'exports.init = function (obj) { ' +
 				'Snakeskin = typeof obj === "object" ? obj : require(obj);' +
 				'exec();' +
 				'return this;' +

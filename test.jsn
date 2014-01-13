@@ -37,7 +37,7 @@ fs.readdirSync(testFolder).forEach((file) => {
 			throw err;
 		}
 
-		let tpl = require('./tests/' + file + '.js').liveInit(snakeskin);
+		let tpl = require('./tests/' + file + '.js').init(snakeskin);
 
 		starts.forEach((el, i) => {
 			let params = el.split(' ; ');
