@@ -1,8 +1,8 @@
-index
+cycles_index
 
 ###
 
-{template index(i = 0)}
+{template cycles_index(i = 0)}
 	{for var j = 0; j < 3; j++}
 		{j}
 	{end}

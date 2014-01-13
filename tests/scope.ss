@@ -1,9 +1,9 @@
-index ; {child: {name: 'Koba', child: {name: 'none'}}}
+scope_index ; {child: {name: 'Koba', child: {name: 'none'}}}
 
 ###
 
 {name = 'foo'}
-{template index(obj)}
+{template scope_index(obj)}
 	{name = 'bar'}
 	{with obj.child}
 		{name}{&}

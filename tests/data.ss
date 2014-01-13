@@ -1,8 +1,8 @@
-index
+data_index
 
 ###
 
-{template index()}
+{template data_index()}
 	{a = ' foo '}
 
 	{= {a: "${a|trim|ucfirst}"}}

@@ -1,8 +1,8 @@
-index
+try_index
 
 ###
 
-{template index()}
+{template try_index()}
 	{try}
 		{void foo()}
 

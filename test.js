@@ -72,6 +72,4 @@ fs.readdirSync(testFolder).forEach(function (file) {
 	}
 });
 
-console.log(asserts);
-
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpl.test(asserts));

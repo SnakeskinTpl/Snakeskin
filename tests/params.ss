@@ -1,18 +1,18 @@
-base
-child
-child2
+param_base
+param_child
+param_child2
 
 ###
 
-{template base(a, b = 1)}
+{template param_base(a, b = 1)}
 	{b}
 {/}
 
-{template child() extends base}
+{template param_child() extends param_base}
 	{b = 2}
 {/}
 
-{template child2() extends child}
+{template param_child2() extends param_child}
 	{b = 3}
 {/}
 

@@ -1,10 +1,10 @@
-index ; 1
-index ; 2
-index ; 3
+logic_index ; 1
+logic_index ; 2
+logic_index ; 3
 
 ###
 
-{template index(i)}
+{template logic_index(i)}
 	{if i == 1}
 		1
 	{elseIf i == 2}

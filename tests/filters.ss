@@ -1,9 +1,9 @@
-index
+filters_index
 
 ###
 
 {a = String}
-{template index()}
+{template filters_index()}
 	{a = {a: String}}
 	{with a}
 		{'   foo   bar '|collapse|ucfirst|repeat 3|remove ('   Foo bar'|trim|repeat)}

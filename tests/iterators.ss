@@ -1,23 +1,23 @@
-index1
-index2
-index3
+iterators_index1
+iterators_index2
+iterators_index3
 
 ###
 
-{template index1()}
+{template iterators_index1()}
 	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
 		{el} {i} {obj[i]} {isFirst} {isLast} {length} ---
 	{/}
 {/}
 
-{template index2()}
+{template iterators_index2()}
 	{forEach {a: 1, b: 2} => el, key, obj, i, isFirst, isLast, length}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
 {/}
 
 
-{template index3()}
+{template iterators_index3()}
 	{a = Object.create({a: 1, b: 2})}
 	{forIn a => el, key, obj, i, isFirst, isLast, length}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---

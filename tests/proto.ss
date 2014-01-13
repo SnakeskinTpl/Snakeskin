@@ -1,14 +1,14 @@
-index
-recursive
-recursive2
+proto_index
+proto_recursive
+proto_recursive2
 
 ###
 
-{proto index->begin}
+{proto proto_index->begin}
 	{apply f1(1)}
 {/}
 
-{proto index->f1(i)}
+{proto proto_index->f1(i)}
 	{apply f2(i)}
 	{apply f2(i + 1)}
 
@@ -17,7 +17,7 @@ recursive2
 	{/}{&}
 {/}
 
-{template index()}
+{template proto_index()}
 	{apply begin}
 	{apply f3(2)}
 
@@ -35,7 +35,7 @@ recursive2
 	{apply f4(2)}
 {/}
 
-{template recursive()}
+{template proto_recursive()}
 	{proto begin(i)}
 		{i}
 
@@ -47,7 +47,7 @@ recursive2
 	{apply begin(5)}
 {/}
 
-{template recursive2()}
+{template proto_recursive2()}
 	{proto begin(i)}
 		{proto foo(i)}
 			{if i === 2}
