@@ -11,12 +11,14 @@ var assert = require('assert');
 var snakeskin = require('./build/snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
-var testTpls = snakeskin.compile(fs.readFileSync(path.join(__dirname, 'test.ss')), {
-	commonJS: true,
-	context: exports
-});
+var tpl = {};
 
-console.log(exports);
+snakeskin.compile(
+	fs.readFileSync(path.join(__dirname, 'test.ss')),
+	{context: tpl}
+);
+
+tpl.liveInit(snakeskin);
 
 /*
 fs.readdirSync(testFolder).forEach((file) => {
