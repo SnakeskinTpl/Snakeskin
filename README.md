@@ -92,6 +92,36 @@ var foo = function foo(name) {
 </html>
 ```
 
+#### Использования Snakeskin в Node.js c "живой" компиляцией
+
+```js
+var snakeskin = require('snakeskin');
+
+var tpl =
+	'{template hello(name)}' +
+		'Hello {name}!' +
+	'{end}' +
+
+	'{template calc(a, b)}' +
+		'{a + b}' +
+	'{end}';
+
+var tpls = {};
+snakeskin.compile(tpl, {context: tpls});
+
+console.log(tpls.hello('World'));
+console.log(tpls.calc(5, 7));
+```
+
+#### Использования Snakeskin в Node.js с компилированными файлами
+
+```html
+var tpls = require('./my_tpls').init(require('snakeskin'));
+
+console.log(tpls.hello('World'));
+console.log(tpls.calc(5, 7));
+```
+
 ## Области декларации шаблонов
 
 Шаблоны можно описывать в отдельных файлах с расширением `.ss`
