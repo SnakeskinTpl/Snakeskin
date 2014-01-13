@@ -12,7 +12,7 @@ var snakeskin = require('./build/snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
 var testTpls = snakeskin.compile(fs.readFileSync(path.join(__dirname, 'test.ss')), true);
-console.log(snakeskin);
+console.log(snakeskin.liveInit);
 
 fs.readdirSync(testFolder).forEach(function (file) {
 	

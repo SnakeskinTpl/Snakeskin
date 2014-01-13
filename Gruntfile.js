@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 					'lib/filters.js',
 					'lib/global.js',
 					'lib/api.js',
-					'node_modules/escaper/escaper.js',
+					'node_modules/escaper/lib/core.js',
 					'lib/escape.js',
 					'lib/inherit.js',
 					'lib/error.js',
