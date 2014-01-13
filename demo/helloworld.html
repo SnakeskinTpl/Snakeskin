@@ -3,37 +3,22 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Hello world</title>
-		<script src="../build/snakeskin.js"></script>
+		<script src="../build/snakeskin.min.js"></script>
 	</head>
 
 	<body>
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto base->foo(i)}
-				{i}
-			{end}
-
-			{template base()}
-
-			{end}
-
-			{proto sub->foo(i)}
-				{super} - {i * 2}
-			{end}
-
-			{template sub() extends base}
-				{block my}
-					{apply foo(2)}
-				{end}
-			{end}
+			{template helloWorld(name = 'world')}
+				<h1>Hello {name}!</h1>
+			{/template}
 		</script>
 
 		<script>
-			console.time('foo');
 			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = sub();
-			console.timeEnd('foo');
+			document.getElementById('test').innerHTML = helloWorld();
 		</script>
+
 	</body>
 </html>
