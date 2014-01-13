@@ -10,24 +10,23 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{proto base->bar}{/}
-			{template base(val = 1, val2 = 2)}
-				{val2}
-				{block foo}
-					{val}
-
-					{apply bar}
-				{/}
-			{/}
-
-			{proto sub->bar(i = 2)}
+			{proto base->foo(i)}
 				{i}
-			{/}
+			{end}
 
-			{template sub(val = 2) extends base}
-				{vv = 2}
-				{block e}my{/}
-			{/}
+			{template base()}
+
+			{end}
+
+			{proto sub->foo(i)}
+				{super} - {i * 2}
+			{end}
+
+			{template sub() extends base}
+				{block my}
+					{apply foo(2)}
+				{end}
+			{end}
 		</script>
 
 		<script>

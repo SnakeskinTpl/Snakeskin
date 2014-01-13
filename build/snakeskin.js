@@ -953,11 +953,11 @@ DirObj.prototype.multiDeclVar = function (str,opt_end) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 var Escaper = {
-	VERSION: '1.0.2',
+	VERSION: [1, 0, 3],
 	isLocal: typeof window === 'undefined' ? !!global.EscaperIsLocal : false
 };
 
@@ -966,7 +966,7 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 }
 
 (function () {
-	var __NEJS_THIS__ = this;
+	
 	var escapeMap = {
 		'"': true,
 		'\'': true,
@@ -1002,7 +1002,7 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 	 *
 	 * @param {string} str - исходная строка
 	 * @param {?boolean=} [opt_withComment=false] - если true, то также вырезаются комментарии
-	 * @param {Array=} [opt_quotContent] - стек содержимого
+	 * @param {Array=} [opt_quotContent=this.quotContent] - стек содержимого
 	 * @return {string}
 	 */
 	Escaper.replace = function (str, opt_withComment, opt_quotContent) {
@@ -1120,7 +1120,7 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 	 * Заметить __ESCAPER_QUOT__номер в строке на реальное содержимое
 	 *
 	 * @param {string} str - исходная строка
-	 * @param {Array=} [opt_quotContent] - стек содержимого
+	 * @param {Array=} [opt_quotContent=this.quotContent] - стек содержимого
 	 * @return {string}
 	 */
 	Escaper.paste = function (str, opt_quotContent) {
