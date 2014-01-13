@@ -573,8 +573,8 @@ function DirObj(src, params) {
 		(params.commonJS ?
 			'var Snakeskin = global.Snakeskin;' +
 
-			'exports.liveInit = function (path) { ' +
-				'Snakeskin = require(path);' +
+			'exports.liveInit = function (obj) { ' +
+				'Snakeskin = typeof obj === "object" ? obj : require(obj);' +
 				'exec();' +
 				'return this;' +
 			'};' +
@@ -1411,22 +1411,29 @@ var __NEJS_THIS__ = this;
  *
  * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или исходный текст шаблонов
  *
- * @param {?boolean=} [opt_commonJS=false] - если true,
- *     то шаблон компилируется с экспортом в стиле commonJS (для node.js)
+ * @param {Object=} [opt_params] - дополнительные параметры запуска или если true,
+ *     то шаблон компилируется с экспортом в стиле commonJS
+ *
+ * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {Object=} [opt_params.context] - контекст для сохранение скомпилированного шаблона
+ *     (только при экспорте в commonJS)
  *
  * @param {Object=} [opt_info] - дополнительная информация о запуске:
  *     используется для сообщений об ошибках
  *
- * @param {Object=} [opt_params] - служебный параметры запуска
- * @param {Array=} [opt_params.scope] - область видимости (контекст) директив
- * @param {Object=} [opt_params.vars] - объект локальных переменных
- * @param {?string=} [opt_params.proto] - название корневого прототипа
+ * @param {Object=} [opt_sysParams] - служебный параметры запуска
+ * @param {Array=} [opt_sysParams.scope] - область видимости (контекст) директив
+ * @param {Object=} [opt_sysParams.vars] - объект локальных переменных
+ * @param {?string=} [opt_sysParams.proto] - название корневого прототипа
  *
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
+Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_params === "undefined") { opt_params = {}; }
+	if (typeof opt_sysParams === "undefined") { opt_sysParams = {}; }
+	var isObj = typeof opt_params === 'object' &&  opt_params instanceof Boolean === false;
+	var commonJS = isObj ? opt_params.commonJS : commonJS;
+
 	opt_info = opt_info || {line: 1};
 	var html = src.innerHTML;
 
@@ -1442,10 +1449,10 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 
 	var dir = new DirObj(String(text), {
 		info: opt_info,
-		commonJS: !!opt_commonJS,
-		proto: opt_params.proto,
-		scope: opt_params.scope,
-		vars: opt_params.vars
+		commonJS: !!commonJS,
+		proto: opt_sysParams.proto,
+		scope: opt_sysParams.scope,
+		vars: opt_sysParams.vars
 	});
 
 	// Если true, то идёт содержимое директивы,
@@ -1711,7 +1718,7 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 
 	// Конец шаблона
 	dir.res += !dir.proto ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
-	dir.res += opt_commonJS ? '}' : '';
+	dir.res += commonJS ? '}' : '';
 
 	if (dir.proto) {
 		return dir.res;
@@ -1725,10 +1732,25 @@ Snakeskin.compile = function (src, opt_commonJS, opt_info,opt_params) {
 		throw dir.error('Template "' + key + '" is not defined')
 	}
 
-	new Function('exports', dir.res)(require || opt_commonJS ? exports : window);
+	// Компиляция на сервере
+	if (require) {
+		// Экспорт
+		if (commonJS) {
+			new Function('exports', dir.res)(isObj ? opt_params.context : exports);
+
+		// Простая компиляция
+		} else {
+			global.eval(dir.res);
+		}
+
+	// Живая компиляция в браузере
+	} else {
+		new Function(dir.res)();
+	}
+
 	globalCache[text] = dir.res;
 
-	if (!require && !opt_commonJS) {
+	if (!require && !commonJS) {
 		setTimeout(function () {
 			
 			try {
@@ -4574,3 +4596,40 @@ Snakeskin.addDirective(
 	}
 
 })(typeof window === 'undefined');
+var __NEJS_THIS__ = this;
+/**!
+ * @status stable
+ * @version 1.0.0
+ */
+
+if (typeof window !== 'undefined') {
+	var fs = require('fs');
+	var path = require('path');
+	var jossy = require('jossy');
+
+	Snakeskin.compileFile = function (file, params) {
+		var __NEJS_THIS__ = this;
+		var save = params.output || file + '.js',
+			commonJS = typeof params.commonJS === 'undefined' ? true : params.commonJS;
+
+		function action(data) {
+			var __NEJS_THIS__ = this;
+			fs.writeFileSync(save, Snakeskin.compile(String(data), commonJS, {file: file}));
+		}
+
+		if (params.build) {
+			jossy.compile(file, null, null, function (err, data) {
+				
+				if (err) {
+					console.log(err);
+
+				} else {
+					action(data);
+				}
+			});
+
+		} else {
+			action(fs.readFileSync(file));
+		}
+	};
+}

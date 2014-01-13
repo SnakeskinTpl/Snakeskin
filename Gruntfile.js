@@ -24,7 +24,8 @@ module.exports = function (grunt) {
 					'lib/directions.js',
 					'lib/output.js',
 					'lib/directions/*.js',
-					'lib/footer.txt'
+					'lib/footer.txt',
+					'lib/server.js'
 				],
 
 				dest: 'build/snakeskin.js'
