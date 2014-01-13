@@ -17,6 +17,8 @@ snakeskin.compile(
 	{context: tpl}
 );
 
+var asserts = [];
+
 fs.readdirSync(testFolder).forEach((file) => {
 	if (path.extname(file) === '.ss') {
 		let src = path.join(testFolder, file);
@@ -28,6 +30,14 @@ fs.readdirSync(testFolder).forEach((file) => {
 
 		let starts = txt[0].split(/[\n\r]+/);
 		let results = txt[2].split('***');
+
+		let obj = {
+			tpl: txt[1],
+			id: path.basename(file, '.ss'),
+			js: []
+		};
+
+		asserts.push(obj);
 
 		try {
 			fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
@@ -43,21 +53,10 @@ fs.readdirSync(testFolder).forEach((file) => {
 			let params = el.split(' ; ');
 
 			try {
+				obj.js.push('equal(' + params[0] + '(' + params.slice(1) + ').trim(), "' + results[i].trim() + '");');
+
 				assert.equal(
-					eval(
-						'tpl.' + params[0] + '.apply(' +
-							'tpl,' +
-							'params.slice(1).map(function (el) {' +
-								'try {' +
-									'return Function("return " + el)();' +
-
-								'} catch (ignore) {' +
-									'return el;' +
-								'}' +
-							'})' +
-						').trim()'
-					),
-
+					eval('tpl.' + params[0] + '(' + params.slice(1) + ').trim()'),
 					results[i].trim()
 				);
 
@@ -68,3 +67,5 @@ fs.readdirSync(testFolder).forEach((file) => {
 		});
 	}
 });
+
+fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpl.test(asserts));

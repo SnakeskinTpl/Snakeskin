@@ -18,6 +18,8 @@ snakeskin.compile(
 	{context: tpl}
 );
 
+var asserts = [];
+
 fs.readdirSync(testFolder).forEach(function (file) {
 	
 	if (path.extname(file) === '.ss') {
@@ -31,6 +33,14 @@ fs.readdirSync(testFolder).forEach(function (file) {
 
 		var starts = txt[0].split(/[\n\r]+/);
 		var results = txt[2].split('***');
+
+		var obj = {
+			tpl: txt[1],
+			id: path.basename(file, '.ss'),
+			js: []
+		};
+
+		asserts.push(obj);
 
 		try {
 			fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
@@ -47,21 +57,10 @@ fs.readdirSync(testFolder).forEach(function (file) {
 			var params = el.split(' ; ');
 
 			try {
+				obj.js.push('equal(' + params[0] + '(' + params.slice(1) + ').trim(), "' + results[i].trim() + '");');
+
 				assert.equal(
-					eval(
-						'tpl.' + params[0] + '.apply(' +
-							'tpl,' +
-							'params.slice(1).map(function (el) {' +
-								'try {' +
-									'return Function("return " + el)();' +
-
-								'} catch (ignore) {' +
-									'return el;' +
-								'}' +
-							'})' +
-						').trim()'
-					),
-
+					eval('tpl.' + params[0] + '(' + params.slice(1) + ').trim()'),
 					results[i].trim()
 				);
 
@@ -72,3 +71,5 @@ fs.readdirSync(testFolder).forEach(function (file) {
 		});
 	}
 });
+
+fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpl.test(asserts));

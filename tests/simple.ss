@@ -1,12 +1,12 @@
 index
-index ; Bob
-index ; Bob Cache
+index ; 'Bob'
+index ; 'Bob' ; 'Cache'
 tpl.index
-tpl.index ; Bob
-tpl.index ; Bob Cache
+tpl.index ; 'Bob'
+tpl.index ; 'Bob' ; 'Cache'
 tpl.foo['index']
-tpl.foo['index'] ; Bob
-tpl.foo['index'] ; Bob Cache
+tpl.foo['index'] ; 'Bob'
+tpl.foo['index'] ; 'Bob' ; 'Cache'
 
 ###
 

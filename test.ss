@@ -4,7 +4,7 @@
  */
 
 {template test(asserts)}
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	{cdata}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html>
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,7 +13,7 @@
 
 			<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.13.0.js"></script>
-			<script type="text/javascript" src="../build/snakeskin.min.js"></script>
+			<script type="text/javascript" src="../build/snakeskin.js"></script>
 		</head>
 
 		<body>
@@ -23,14 +23,17 @@
 			<h2 id="qunit-userAgent"></h2>
 			<ol id="qunit-tests"></ol>
 
+	{/cdata}
 			{forEach asserts => el}
 				<script type="text/x-snakeskin-template" id="{el.id}">
-					{el.tpl}
+					{el.tpl|!html}
 				</script>
 
 				<script type="text/javascript">
 					Snakeskin.compile(document.getElementById('{el.id}'));
-					{el.js}
+					{forEach el.js => el}
+						{el|!html}
+					{/}
 				</script>
 			{/}
 		</body>
