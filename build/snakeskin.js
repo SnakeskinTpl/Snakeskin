@@ -352,7 +352,8 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
-var globalCache = {};
+var globalCache = {},
+	globalFnCache = {};
 
 var cache = {},
 	table = {};
@@ -1431,8 +1432,10 @@ var __NEJS_THIS__ = this;
 Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	var __NEJS_THIS__ = this;
 	if (typeof opt_sysParams === "undefined") { opt_sysParams = {}; }
-	var isObj = typeof opt_params === 'object' &&  opt_params instanceof Boolean === false;
-	var commonJS = isObj ? opt_params.commonJS : commonJS;
+	var isObj = typeof opt_params === 'object' && opt_params instanceof Boolean === false;
+
+	var commonJS = !!(isObj ? opt_params.commonJS || opt_params.context : opt_params);
+	var ctx = isObj ? opt_params.context || {} : {};
 
 	opt_info = opt_info || {line: 1};
 	var html = src.innerHTML;
@@ -1443,13 +1446,28 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	}
 
 	var text = html || src;
+
+	if (require && commonJS && globalFnCache[text]) {
+		var cache = globalFnCache[text];
+
+		for (var key in cache) {
+			if (!cache.hasOwnProperty(key)) {
+				continue;
+			}
+
+			ctx[key] = cache[key];
+		}
+
+		return globalCache[text];
+	}
+
 	if (globalCache[text]) {
 		return globalCache[text];
 	}
 
 	var dir = new DirObj(String(text), {
 		info: opt_info,
-		commonJS: !!commonJS,
+		commonJS: commonJS,
 		proto: opt_sysParams.proto,
 		scope: opt_sysParams.scope,
 		vars: opt_sysParams.vars
@@ -1724,19 +1742,21 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 		return dir.res;
 	}
 
-	for (var key in dir.preProtos) {
-		if (!dir.preProtos.hasOwnProperty(key)) {
+	for (var key$0 in dir.preProtos) {
+		if (!dir.preProtos.hasOwnProperty(key$0)) {
 			continue;
 		}
 
-		throw dir.error('Template "' + key + '" is not defined')
+		throw dir.error('Template "' + key$0 + '" is not defined')
 	}
 
 	// Компиляция на сервере
 	if (require) {
 		// Экспорт
 		if (commonJS) {
-			new Function('exports', dir.res)(isObj ? opt_params.context : exports);
+			new Function('exports', dir.res)(ctx);
+			ctx.liveInit(Snakeskin);
+			globalFnCache[text] = ctx;
 
 		// Простая компиляция
 		} else {
@@ -1749,7 +1769,6 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	}
 
 	globalCache[text] = dir.res;
-
 	if (!require && !commonJS) {
 		setTimeout(function () {
 			

@@ -27,7 +27,9 @@
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	var isObj = typeof opt_params === 'object' && opt_params instanceof Boolean === false;
+
 	var commonJS = !!(isObj ? opt_params.commonJS || opt_params.context : opt_params);
+	var ctx = isObj ? opt_params.context || {} : {};
 
 	opt_info = opt_info || {line: 1};
 	var html = src.innerHTML;
@@ -38,6 +40,21 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	}
 
 	var text = html || src;
+
+	if (require && commonJS && globalFnCache[text]) {
+		let cache = globalFnCache[text];
+
+		for (let key in cache) {
+			if (!cache.hasOwnProperty(key)) {
+				continue;
+			}
+
+			ctx[key] = cache[key];
+		}
+
+		return globalCache[text];
+	}
+
 	if (globalCache[text]) {
 		return globalCache[text];
 	}
@@ -330,7 +347,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	if (require) {
 		// Экспорт
 		if (commonJS) {
-			new Function('exports', dir.res)(isObj ? opt_params.context : {});
+			new Function('exports', dir.res)(ctx);
+			ctx.liveInit(Snakeskin);
+			globalFnCache[text] = ctx;
 
 		// Простая компиляция
 		} else {
@@ -343,7 +362,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	}
 
 	globalCache[text] = dir.res;
-
 	if (!require && !commonJS) {
 		setTimeout(() => {
 			try {

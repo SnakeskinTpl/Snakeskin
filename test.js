@@ -18,8 +18,6 @@ snakeskin.compile(
 	{context: tpl}
 );
 
-tpl.liveInit(snakeskin);
-
 /*
 fs.readdirSync(testFolder).forEach((file) => {
 	if (path.extname(file) === '.ss') {
