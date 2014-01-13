@@ -115,6 +115,8 @@ console.log(tpls.calc(5, 7));
 
 #### Использования Snakeskin в Node.js с компилированными файлами
 
+После подключения файла шаблонов необходимо вызвать метод init и передать ему ссылку на объект Snakeskin.
+
 ```js
 var tpls = require('./my_tpls').init(require('snakeskin'));
 
