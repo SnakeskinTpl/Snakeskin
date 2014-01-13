@@ -18,18 +18,19 @@ snakeskin.compile(
 	{context: tpl}
 );
 
-/*
-fs.readdirSync(testFolder).forEach((file) => {
+fs.readdirSync(testFolder).forEach(function (file) {
+	
 	if (path.extname(file) === '.ss') {
-		let src = path.join(testFolder, file);
-		let txt = String(fs.readFileSync(src)).split('###');
+		var src = path.join(testFolder, file);
+		var txt = String(fs.readFileSync(src)).split('###');
 
-		txt.forEach((el, i) => {
+		txt.forEach(function (el, i) {
+			
 			txt[i] = el.trim();
 		});
 
-		let starts = txt[0].split(/[\n\r]+/);
-		let results = txt[2].split('***');
+		var starts = txt[0].split(/[\n\r]+/);
+		var results = txt[2].split('***');
 
 		try {
 			fs.writeFileSync(src + '.js', snakeskin.compile(txt[1], true));
@@ -39,10 +40,11 @@ fs.readdirSync(testFolder).forEach((file) => {
 			throw err;
 		}
 
-		let tpl = require('./tests/' + file + '.js').liveInit('../build/snakeskin.live');
+		var tpl = require('./tests/' + file + '.js').liveInit('../build/snakeskin.live');
 
-		starts.forEach((el, i) => {
-			let params = el.split(' ; ');
+		starts.forEach(function (el, i) {
+			
+			var params = el.split(' ; ');
 
 			try {
 				assert.equal(
@@ -69,4 +71,4 @@ fs.readdirSync(testFolder).forEach((file) => {
 			}
 		});
 	}
-});*/
+});

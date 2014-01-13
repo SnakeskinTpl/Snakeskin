@@ -17,7 +17,6 @@ snakeskin.compile(
 	{context: tpl}
 );
 
-/*
 fs.readdirSync(testFolder).forEach((file) => {
 	if (path.extname(file) === '.ss') {
 		let src = path.join(testFolder, file);
@@ -68,4 +67,4 @@ fs.readdirSync(testFolder).forEach((file) => {
 			}
 		});
 	}
-});*/
+});
