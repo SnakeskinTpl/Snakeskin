@@ -6,8 +6,15 @@
 			<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" />
 
 			<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.13.0.js"></script>
+			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
 			<script type="text/javascript" src="../build/snakeskin.js"></script>
+			<script type="text/javascript">
+				Object.create = Object.create || function (obj) {
+					var F = function () {};
+					F.prototype = obj;
+					return new F();
+				};
+			</script>
 		</head>
 
 		<body>
@@ -111,11 +118,11 @@
 
 
 {template iterators_index3()}
-	{a = Object.create({a: 1, b: 2})}
+	{a = Object.create({a: 1})}
 	{forIn a => el, key, obj, i, isFirst, isLast, length}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators')); test('iterators', function () {  equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---');  equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---');  equal(iterators_index3().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---');  }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators')); test('iterators', function () {  equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---');  equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---');  equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---');  }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
 	{if i == 1}
 		1
 	{elseIf i == 2}
@@ -243,14 +250,13 @@
 
 {template simple_tpl.index(name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
-	{arguments.callee.name}/*
-	{arguments.callee.name}*/
+	/*{arguments.callee.name}*/
 {/}
 
 {template simple_tpl.foo['index'](name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple')); test('simple', function () {  equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1');  equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1');  equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1');  equal(simple_tpl.index().trim(), '<h1>Hello world!</h1> index');  equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1> index');  equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> index');  equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>');  equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>');  equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>');  }); </script>  <script type="text/x-snakeskin-template" id="try"> {template try_index()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple')); test('simple', function () {  equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1');  equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1');  equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1');  equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>');  equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>');  equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>');  equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>');  equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>');  equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>');  }); </script>  <script type="text/x-snakeskin-template" id="try"> {template try_index()}
 	{try}
 		{void foo()}
 

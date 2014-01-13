@@ -12,8 +12,15 @@
 			<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" />
 
 			<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.13.0.js"></script>
+			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
 			<script type="text/javascript" src="../build/snakeskin.js"></script>
+			<script type="text/javascript">
+				Object.create = Object.create || function (obj) {
+					var F = function () {};
+					F.prototype = obj;
+					return new F();
+				};
+			</script>
 		</head>
 
 		<body>

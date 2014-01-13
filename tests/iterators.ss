@@ -18,7 +18,7 @@ iterators_index3
 
 
 {template iterators_index3()}
-	{a = Object.create({a: 1, b: 2})}
+	{a = Object.create({a: 1})}
 	{forIn a => el, key, obj, i, isFirst, isLast, length}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
@@ -34,4 +34,4 @@ iterators_index3
 
 ***
 
-1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---
+1 a 1 0 true true 1 ---
