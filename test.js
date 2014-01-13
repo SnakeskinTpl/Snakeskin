@@ -57,7 +57,7 @@ fs.readdirSync(testFolder).forEach(function (file) {
 			var params = el.split(' ; ');
 
 			try {
-				obj.js.push('equal(' + params[0] + '(' + params.slice(1) + ').trim(), "' + results[i].trim() + '");');
+				obj.js.push('equal(' + params[0] + '(' + params.slice(1) + ').trim(), \'' + results[i].trim() + '\');');
 
 				assert.equal(
 					eval('tpl.' + params[0] + '(' + params.slice(1) + ').trim()'),
@@ -71,5 +71,7 @@ fs.readdirSync(testFolder).forEach(function (file) {
 		});
 	}
 });
+
+console.log(asserts);
 
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpl.test(asserts));

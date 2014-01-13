@@ -31,9 +31,11 @@
 
 				<script type="text/javascript">
 					Snakeskin.compile(document.getElementById('{el.id}'));
-					{forEach el.js => el}
-						{el|!html}
-					{/}
+					test('{el.id}', function () {cdata}{{/cdata}
+						{forEach el.js => el}
+							{el|!html}
+						{/}
+					{cdata}}{/cdata});
 				</script>
 			{/}
 		</body>
