@@ -115,7 +115,7 @@ console.log(tpls.calc(5, 7));
 
 #### Использования Snakeskin в Node.js с компилированными файлами
 
-```html
+```js
 var tpls = require('./my_tpls').init(require('snakeskin'));
 
 console.log(tpls.hello('World'));
