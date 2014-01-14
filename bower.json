@@ -1,0 +1,17 @@
+{
+  "name": "Snakeskin",
+  "main": "build/snakeskin.js",
+  "version": "3.0.0",
+  "homepage": "https://github.com/kobezzza/Snakeskin",
+  "authors": [
+    "Kobezzza <kobezzza@mail.ru>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
