@@ -176,7 +176,7 @@ Snakeskin.addDirective(
 			argsTable[arg[0]] = {
 				i: i,
 				key: arg[0],
-				value: arg[1] && arg[1].trim()
+				value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
 			};
 		}
 

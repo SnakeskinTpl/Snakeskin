@@ -150,6 +150,10 @@ console.log(tpls.hello('World'));
 console.log(tpls.calc(5, 7));
 ```
 
+#### Использование с Grunt
+
+https://github.com/kobezzza/grunt-snakeskin
+
 #### API
 
 ##### Snakeskin.compile(src, opt_params)

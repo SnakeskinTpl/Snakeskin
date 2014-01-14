@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 0, 1],
+	VERSION: [3, 0, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -4272,7 +4272,7 @@ Snakeskin.addDirective(
 			argsTable[arg[0]] = {
 				i: i$0,
 				key: arg[0],
-				value: arg[1] && arg[1].trim()
+				value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
 			};
 		}
 
