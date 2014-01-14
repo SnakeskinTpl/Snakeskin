@@ -71,7 +71,7 @@ var foo = function foo(name) {
 
 Пример File Watcher в WebStorm под Windows
 
-	Program: C:\Users\kobez_000\AppData\Roaming\npm\snakeskin.c md
+	Program: C:\Users\kobez_000\AppData\Roaming\npm\snakeskin.cmd
 	Arguments: -s $FileName$ -o $FileNameWithoutExtension$.ss.js
 	Working Directory: $FileDir$
 	Output Path: $FileNameWithoutExtension$.ss.js
