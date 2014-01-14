@@ -1155,7 +1155,8 @@ Snakeskin.importFilters({
 	<div {attr 'class', 'foo'}></div>
 
 	{a = 'foo'}
-	<div {attr 'class', a}></div>
+	<div {attr 'class', a}></div> /// <div class="foo"></div>
+	<div {attr -'class', a}></div> /// <div data-class="foo"></div>
 
 ## Наследования шаблонов
 
