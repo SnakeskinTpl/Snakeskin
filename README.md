@@ -67,6 +67,15 @@ var foo = function foo(name) {
 Если вы транслируете шаблоны с помощью консольного приложения Snakeskin,
 то в файлах шаблонов вы можете использовать директивы [jossy](https://github.com/Kolyaj/Jossy) для сборки множества файлов.
 
+Если вы использует IDE с поддержкой File Watcher (например WebStorm), то можно настроить [автокомпиляцию](http://screencast.com/t/iU7AgM6jvjaj) шаблонов.
+
+Пример File Watcher в WebStorm под Windows
+
+	Program: C:\Users\kobez_000\AppData\Roaming\npm\snakeskin.c md
+	Arguments: -s $FileName$ -o $FileNameWithoutExtension$.ss.js
+	Working Directory: $FileDir$
+	Output Path: $FileNameWithoutExtension$.ss.js
+
 #### Использования Snakeskin с компиляцией в браузере
 
 ```html
