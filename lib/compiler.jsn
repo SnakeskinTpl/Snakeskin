@@ -31,7 +31,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	var commonJS = !!(isObj ? opt_params.commonJS || opt_params.context : opt_params);
 	var ctx = isObj ? opt_params.context || {} : {};
 
-	opt_info = opt_info || {line: 1};
+	opt_info = opt_info || {};
+	opt_info.line = opt_info.line || 1;
+
 	var html = src.innerHTML;
 
 	if (html) {
