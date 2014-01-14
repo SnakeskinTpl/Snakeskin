@@ -3,8 +3,15 @@
  * @version 1.0.0
  */
 
-var globalCache = {},
-	globalFnCache = {};
+var globalCache = {
+	'true': {},
+	'false': {}
+};
+
+var globalFnCache = {
+	'true': {},
+	'false': {}
+};
 
 var cache = {},
 	table = {};

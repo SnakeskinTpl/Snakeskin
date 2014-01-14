@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 0, 0],
+	VERSION: [3, 0, 1],
 
 	/**
 	 * Пространство имён для директив
@@ -352,8 +352,15 @@ var __NEJS_THIS__ = this;
  * @version 1.0.0
  */
 
-var globalCache = {},
-	globalFnCache = {};
+var globalCache = {
+	'true': {},
+	'false': {}
+};
+
+var globalFnCache = {
+	'true': {},
+	'false': {}
+};
 
 var cache = {},
 	table = {};
@@ -1405,7 +1412,7 @@ DirObj.prototype.error = function (msg) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -1450,8 +1457,8 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 
 	var text = html || src;
 
-	if (require && commonJS && globalFnCache[text]) {
-		var cache = globalFnCache[text];
+	if (require && commonJS && globalFnCache[commonJS][text]) {
+		var cache = globalFnCache[commonJS][text];
 
 		for (var key in cache) {
 			if (!cache.hasOwnProperty(key)) {
@@ -1461,11 +1468,11 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 			ctx[key] = cache[key];
 		}
 
-		return globalCache[text];
+		return globalCache[commonJS][text];
 	}
 
-	if (globalCache[text]) {
-		return globalCache[text];
+	if (globalCache[commonJS][text]) {
+		return globalCache[commonJS][text];
 	}
 
 	var dir = new DirObj(String(text), {
@@ -1759,7 +1766,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 		if (commonJS) {
 			new Function('exports', dir.res)(ctx);
 			ctx.init(Snakeskin);
-			globalFnCache[text] = ctx;
+			globalFnCache[commonJS][text] = ctx;
 
 		// Простая компиляция
 		} else {
@@ -1771,7 +1778,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 		new Function(dir.res)();
 	}
 
-	globalCache[text] = dir.res;
+	globalCache[commonJS][text] = dir.res;
 	if (!require && !commonJS) {
 		setTimeout(function () {
 			
