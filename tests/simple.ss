@@ -30,6 +30,8 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 
 {template simple_tpl.foo['index'](name = 'world', lname)}/* Foo */
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	{a = 1}
+	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
 {/}
 
@@ -59,12 +61,12 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 
 ***
 
-<h1>Hello world!</h1>
+<h1>Hello world!</h1>  1
 
 ***
 
-<h1>Hello Bob!</h1>
+<h1>Hello Bob!</h1>  1
 
 ***
 
-<h1>Hello Bob Cache!</h1>
+<h1>Hello Bob Cache!</h1>  1
