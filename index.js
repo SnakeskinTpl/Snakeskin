@@ -66,4 +66,3 @@ if (file) {
 } else {
 	action(input);
 }
-
