@@ -1052,13 +1052,14 @@ Snakeskin.importFilters({
 * @ - искать значение вне with блоков, например, `{@a}`
 * @@ - искать значение супер-глобальной переменной, например, `{@@a}`
 
-
-	{with a.child}
-		{#a} /// a
-		{with a.next}
-			{#a + @b + @@c} /// a.child.a + b + Snakeskin.Vars['c']
-		{end}
+```
+{with a.child}
+	{#a} /// a
+	{with a.next}
+		{#a + @b + @@c} /// a.child.a + b + Snakeskin.Vars['c']
 	{end}
+{end}
+```
 
 При объявлении переменных внутри блоков with доступ адресуется к ним
 
