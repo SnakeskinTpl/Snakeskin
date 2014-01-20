@@ -43,7 +43,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 
 	var text = html || src;
 
-	if (require && commonJS && globalFnCache[commonJS][text]) {
+	if (node && commonJS && globalFnCache[commonJS][text]) {
 		let cache = globalFnCache[commonJS][text];
 
 		for (let key in cache) {
@@ -346,10 +346,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	}
 
 	// Компиляция на сервере
-	if (require) {
+	if (node) {
 		// Экспорт
 		if (commonJS) {
-			new Function('exports', dir.res)(ctx);
+			new Function('exports', 'require', dir.res)(ctx, require);
 			ctx.init(Snakeskin);
 			globalFnCache[commonJS][text] = ctx;
 
@@ -364,7 +364,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	}
 
 	globalCache[commonJS][text] = dir.res;
-	if (!require && !commonJS) {
+	if (!node && !commonJS) {
 		setTimeout(() => {
 			try {
 				let blob = new Blob([dir.res], {type: 'application/javascript'});

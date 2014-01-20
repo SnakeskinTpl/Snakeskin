@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 0, 3],
+	VERSION: [3, 0, 4],
 
 	/**
 	 * Пространство имён для директив
@@ -71,7 +71,7 @@ var Snakeskin = {
 	 */
 	cache: {}
 };
-(function (require) {
+(function (node) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -1457,7 +1457,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 
 	var text = html || src;
 
-	if (require && commonJS && globalFnCache[commonJS][text]) {
+	if (node && commonJS && globalFnCache[commonJS][text]) {
 		var cache = globalFnCache[commonJS][text];
 
 		for (var key in cache) {
@@ -1761,10 +1761,10 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	}
 
 	// Компиляция на сервере
-	if (require) {
+	if (node) {
 		// Экспорт
 		if (commonJS) {
-			new Function('exports', dir.res)(ctx);
+			new Function('exports', 'require', dir.res)(ctx, require);
 			ctx.init(Snakeskin);
 			globalFnCache[commonJS][text] = ctx;
 
@@ -1779,7 +1779,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	}
 
 	globalCache[commonJS][text] = dir.res;
-	if (!require && !commonJS) {
+	if (!node && !commonJS) {
 		setTimeout(function () {
 			
 			try {
@@ -4238,7 +4238,7 @@ Snakeskin.addDirective(
 
 				this.save(
 					'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(this.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
+						(this.commonJS ? 'exports.' : i === 1 ? node ? 'var ' : 'window.' : '') + str + ' = {};' +
 					'}'
 				);
 
@@ -4257,7 +4257,7 @@ Snakeskin.addDirective(
 
 		// Без простраства имён
 		} else {
-			this.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
+			this.save((!node ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
 		}
 
 		// Входные параметры
@@ -4618,7 +4618,7 @@ Snakeskin.addDirective(
 		}
 	}
 );
-	if (require) {
+	if (node) {
 		module.exports = Snakeskin;
 	}
 

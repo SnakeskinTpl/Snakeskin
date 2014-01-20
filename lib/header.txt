@@ -1,1 +1,1 @@
-(function (require) {
+(function (node) {

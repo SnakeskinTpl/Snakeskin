@@ -142,7 +142,7 @@ Snakeskin.addDirective(
 
 				this.save(
 					'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(this.commonJS ? 'exports.' : i === 1 ? require ? 'var ' : 'window.' : '') + str + ' = {};' +
+						(this.commonJS ? 'exports.' : i === 1 ? node ? 'var ' : 'window.' : '') + str + ' = {};' +
 					'}'
 				);
 
@@ -161,7 +161,7 @@ Snakeskin.addDirective(
 
 		// Без простраства имён
 		} else {
-			this.save((!require ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
+			this.save((!node ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
 		}
 
 		// Входные параметры

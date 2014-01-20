@@ -1,4 +1,4 @@
-	if (require) {
+	if (node) {
 		module.exports = Snakeskin;
 	}
 

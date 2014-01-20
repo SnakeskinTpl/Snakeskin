@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 0, 3],
+	VERSION: [3, 0, 4],
 
 	/**
 	 * Пространство имён для директив
@@ -71,7 +71,7 @@ var Snakeskin = {
 	 */
 	cache: {}
 };
-(function (require) {
+(function (node) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
@@ -346,7 +346,7 @@ Snakeskin.Filters['json'] = function (obj) {
 
 	return (obj + '');
 };
-	if (require) {
+	if (node) {
 		module.exports = Snakeskin;
 	}
 
