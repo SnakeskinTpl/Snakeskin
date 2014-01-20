@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 0, 4],
+	VERSION: [3, 1, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -424,7 +424,7 @@ var escapeEndMap = {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 /**
@@ -476,18 +476,17 @@ function DirObj(src, params) {
 	 */
 	this.canWrite = true;
 
-	/**
-	 * Если true и strongSpace = true, то последующие пробельные символы вырезаются
-	 * @type {boolean}
-	 */
+	/** @type {boolean} */
 	this.space = false;
 
-	/**
-	 * Если true и space = true, то последующие пробельный символы вырезаются
-	 * (в отличии от space не меняет своё значение автоматически)
-	 * @type {boolean}
-	 */
+	/** @type {boolean} */
 	this.strongSpace = false;
+
+	/** @type {boolean} */
+	this.superStrongSpace = false;
+
+	/** @type {RegExp} */
+	this.ignoreRgxp = null;
 
 	/**
 	 * Номер итерации
@@ -1548,9 +1547,12 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 
 			// Простой ввод внутри декларации шаблона
 			} else {
-				if (!dir.space && !dir.strongSpace) {
-					el = ' ';
-					dir.space = true;
+				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
+					el = dir.ignoreRgxp && dir.ignoreRgxp.test(el) ? '' : ' ';
+
+					if (el) {
+						dir.space = true;
+					}
 
 				} else {
 					continue;
@@ -4074,7 +4076,7 @@ Snakeskin.addDirective(
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 Snakeskin.addDirective(
@@ -4090,6 +4092,67 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			this.space = true;
 		}
+	}
+);
+
+Snakeskin.addDirective(
+	'&+',
+
+	{
+		placement: 'template'
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.superStrongSpace = true;
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'&-',
+
+	{
+		placement: 'template'
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+		if (this.isSimpleOutput()) {
+			this.superStrongSpace = false;
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'ignore',
+
+	{
+		placement: 'global'
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		this.startInlineDir();
+
+		var rgxp = '[';
+		var arr = command.split(' ');
+
+		for (var i = arr.length; i--;) {
+			if (arr[i]) {
+				if (arr[i].length !== 2 || arr[i].charAt(0) !== '%') {
+					throw this.error('Invalid syntax');
+				}
+
+				rgxp += '\\' + arr[i].charAt(1);
+			}
+		}
+
+		rgxp += ']';
+		this.ignoreRgxp = new RegExp(rgxp);
 	}
 );
 var __NEJS_THIS__ = this;

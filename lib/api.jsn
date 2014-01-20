@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 /**
@@ -51,18 +51,17 @@ function DirObj(src, params) {
 	 */
 	this.canWrite = true;
 
-	/**
-	 * Если true и strongSpace = true, то последующие пробельные символы вырезаются
-	 * @type {boolean}
-	 */
+	/** @type {boolean} */
 	this.space = false;
 
-	/**
-	 * Если true и space = true, то последующие пробельный символы вырезаются
-	 * (в отличии от space не меняет своё значение автоматически)
-	 * @type {boolean}
-	 */
+	/** @type {boolean} */
 	this.strongSpace = false;
+
+	/** @type {boolean} */
+	this.superStrongSpace = false;
+
+	/** @type {RegExp} */
+	this.ignoreRgxp = null;
 
 	/**
 	 * Номер итерации
