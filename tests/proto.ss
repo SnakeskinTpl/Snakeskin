@@ -18,7 +18,7 @@ proto_recursive2
 	{/}{&}
 {/}
 
-{template proto_index()}
+{template proto_index(i)}
 	{apply begin}
 	{apply f3(2)}
 

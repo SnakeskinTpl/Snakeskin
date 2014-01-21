@@ -430,12 +430,13 @@ DirObj.prototype.hasParentBlock = function (name) {
  * Декларировать переменную
  *
  * @param {string} varName - название переменной
+ * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
  * @return {string}
  */
-DirObj.prototype.declVar = function (varName) {
+DirObj.prototype.declVar = function (varName, opt_protoParams = false) {
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
-	if (constCache[this.tplName][varName] || constICache[this.tplName][varName]) {
+	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
 		throw this.error('Variable "' + varName + '" is already defined as constant');
 	}
 

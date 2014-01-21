@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 1, 1],
+	VERSION: [3, 1, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -869,13 +869,15 @@ DirObj.prototype.hasParentBlock = function (name) {
  * Декларировать переменную
  *
  * @param {string} varName - название переменной
+ * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
  * @return {string}
  */
-DirObj.prototype.declVar = function (varName) {
+DirObj.prototype.declVar = function (varName,opt_protoParams) {
 	var __NEJS_THIS__ = this;
+	if (typeof opt_protoParams === "undefined") { opt_protoParams = false; }
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
-	if (constCache[this.tplName][varName] || constICache[this.tplName][varName]) {
+	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
 		throw this.error('Variable "' + varName + '" is already defined as constant');
 	}
 
@@ -3820,7 +3822,7 @@ Snakeskin.addDirective(
 				var argsList = args[1].split(',');
 				for (var i = 0; i < argsList.length; i++) {
 					var arg = argsList[i].split('=');
-					arg[0] = this.declVar(arg[0].trim());
+					arg[0] = this.declVar(arg[0].trim(), true);
 					argsMap.push(arg);
 				}
 			}
