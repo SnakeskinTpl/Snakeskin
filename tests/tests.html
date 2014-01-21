@@ -186,6 +186,18 @@
 	{apply f4(2)}
 {/}
 
+{proto proto_index2.a['foo']->begin(i)}
+	{apply f1(1)}
+{/}
+
+{proto proto_index2.a['foo']->f1(i)}
+	{i}
+{/}
+
+{template proto_index2.a['foo']()}
+	{apply begin(1)}
+{/}
+
 {template proto_recursive()}
 	{proto begin(i)}
 		{i}
@@ -216,7 +228,7 @@
 	{/}
 
 	{apply begin(5)}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto')); test('proto', function () {  equal(proto_index().trim(), '1   2     4      1 2');  equal(proto_recursive().trim(), '5     4     3     2     1     0');  equal(proto_recursive2().trim(), '5         4         3');  }); </script>  <script type="text/x-snakeskin-template" id="scope"> {name = 'foo'}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto')); test('proto', function () {  equal(proto_index().trim(), '1   2     4      1 2');  equal(proto_index2.a['foo']().trim(), '1');  equal(proto_recursive().trim(), '5     4     3     2     1     0');  equal(proto_recursive2().trim(), '5         4         3');  }); </script>  <script type="text/x-snakeskin-template" id="scope"> {name = 'foo'}
 {template scope_index(obj)}
 	{name = 'bar'}
 	{with obj.child}

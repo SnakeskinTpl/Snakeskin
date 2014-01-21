@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 1, 0],
+	VERSION: [3, 1, 1],
 
 	/**
 	 * Пространство имён для директив
@@ -3714,7 +3714,7 @@ Snakeskin.addDirective(
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -3786,7 +3786,7 @@ Snakeskin.addDirective(
 
 			// Идёт декларация внешнего прототипа
 			if (!this.tplName) {
-				this.tplName = parts[0].trim();
+				this.tplName = this.pasteDangerBlocks(parts[0]).trim();
 
 				this.preProtos[this.tplName] = this.preProtos[this.tplName] || {
 					text: '',
@@ -3995,10 +3995,17 @@ Snakeskin.addDirective(
 				}
 
 				var rand = Math.random() + '';
+
 				this.backTable[name].push({
 					proto: selfProto ? cache[selfProto.name] : null,
 					pos: this.res.length,
-					label: new RegExp('\\/\\* __APPLY__' + this.tplName + '_' + name + '_' + rand.replace('.', '\\.') + ' \\*\\/'),
+
+					label: new RegExp('\\/\\* __APPLY__' +
+						this.tplName.replace(/([.\[])/g, '\\$1') +
+						'_' + name + '_' +
+						rand.replace('.', '\\.') + ' \\*\\/'
+					),
+
 					args: args,
 					recursive: !!proto || !!recursive
 				});

@@ -1,4 +1,5 @@
 proto_index
+proto_index2.a['foo']
 proto_recursive
 proto_recursive2
 
@@ -33,6 +34,18 @@ proto_recursive2
 	{/}
 
 	{apply f4(2)}
+{/}
+
+{proto proto_index2.a['foo']->begin(i)}
+	{apply f1(1)}
+{/}
+
+{proto proto_index2.a['foo']->f1(i)}
+	{i}
+{/}
+
+{template proto_index2.a['foo']()}
+	{apply begin(1)}
 {/}
 
 {template proto_recursive()}
@@ -71,6 +84,10 @@ proto_recursive2
 ###
 
 1   2     4      1 2
+
+***
+
+1
 
 ***
 
