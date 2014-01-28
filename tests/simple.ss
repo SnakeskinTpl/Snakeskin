@@ -1,3 +1,4 @@
+simple_output
 simple_index
 simple_index ; 'Bob'
 simple_index ; 'Bob' ; 'Cache'
@@ -9,6 +10,12 @@ simple_tpl.foo['index'] ; 'Bob'
 simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 
 ###
+
+{template simple_output()}
+	{e = {foo: {my: function () { return 1; }}}}
+	{a = {foo: 'my', n: 'foo'}}
+	{call e[a['n']][a['foo']](1, 2, 3)}
+{/template}
 
 /* Foo */
 /// bar
@@ -36,6 +43,10 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 {/}
 
 ###
+
+1
+
+***
 
 <h1>Hello world!</h1> Foobar///1
 

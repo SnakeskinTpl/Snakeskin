@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 1, 2],
+	VERSION: [3, 1, 3],
 
 	/**
 	 * Пространство имён для директив
@@ -1905,7 +1905,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 var blackWordList = {
@@ -2156,6 +2156,8 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 	var start = 0,
 		pContent = null;
 
+	var diff = 0;
+
 	var j = 0;
 	var nextCharRgxp = /[@#$+\-~!\w\[\]().]/;
 
@@ -2181,15 +2183,17 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 
 					if (!pCount && el === ']') {
 						if (nres) {
-							nres += '[' + this.prepareOutput(pContent, true, true) + ']';
+							nres = nres.substring(0, start + diff) +
+								this.prepareOutput(pContent, true, !opt_sys) +
+								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
 								this.prepareOutput(pContent, true, !opt_sys) +
-								res.substring(j) +
-							']';
+								res.substring(j);
 						}
 
+						diff = nres.length - res.length;
 						pContent = null;
 					}
 
@@ -2199,6 +2203,9 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 			}
 
 			res += el;
+			if (nres) {
+				nres += el;
+			}
 
 		} else {
 			break;
@@ -2405,6 +2412,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 				} else {
 					var rfWord = finalWord.replace(modRgxp, '');
+
 					if (canParse && useWith) {
 						var v = vars[returnProp(rfWord)];
 						if (v && v.useWith) {
