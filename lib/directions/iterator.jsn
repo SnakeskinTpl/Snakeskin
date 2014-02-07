@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 Snakeskin.addDirective(
@@ -147,6 +147,54 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			let params = this.structure.params;
 			this.save('}' + params.end + this.res.substring(params.from) + '}}}');
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'$forEach',
+
+	{
+		placement: 'template',
+		notEmpty: true
+	},
+
+	function (command) {
+		var parts = command.split('=>');
+
+		if (parts.length > 3) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startDir(null, {
+			params: parts[2] ? parts[1] : null
+		});
+
+		if (this.isSimpleOutput()) {
+			let vars = (parts[2] || parts[1] || '').split(',');
+
+			for (let i = 0; i < vars.length; i++) {
+				let el = vars[i].trim();
+
+				if (el) {
+					vars[i] = this.declVar(el);
+				}
+			}
+
+			this.save('$C(' + this.prepareOutput(parts[0], true) + ').forEach(function (' + vars.join(',') + ') {');
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			let params = this.structure.params.params;
+
+			if (params) {
+				this.save('}, ' + this.prepareOutput(params, true) + ');');
+
+			} else {
+				this.save('});');
+			}
 		}
 	}
 );

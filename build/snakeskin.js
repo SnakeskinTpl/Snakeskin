@@ -3460,6 +3460,56 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'$forEach',
+
+	{
+		placement: 'template',
+		notEmpty: true
+	},
+
+	function (command) {
+		var __NEJS_THIS__ = this;
+		var parts = command.split('=>');
+
+		if (parts.length > 3) {
+			throw this.error('Invalid syntax');
+		}
+
+		this.startDir(null, {
+			params: parts[2] ? parts[1] : null
+		});
+
+		if (this.isSimpleOutput()) {
+			var vars = (parts[2] || parts[1] || '').split(',');
+
+			for (var i = 0; i < vars.length; i++) {
+				var el = vars[i].trim();
+
+				if (el) {
+					vars[i] = this.declVar(el);
+				}
+			}
+
+			this.save('$C(' + this.prepareOutput(parts[0], true) + ').forEach(function (' + vars.join(',') + ') {');
+		}
+	},
+
+	function () {
+		var __NEJS_THIS__ = this;
+		if (this.isSimpleOutput()) {
+			var params = this.structure.params.params;
+
+			if (params) {
+				this.save('}, ' + this.prepareOutput(params, true) + ');');
+
+			} else {
+				this.save('});');
+			}
+		}
+	}
+);
+
+Snakeskin.addDirective(
 	'forIn',
 
 	{
