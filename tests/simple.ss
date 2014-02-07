@@ -15,7 +15,7 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 	{e = {foo: {my: function () { return 1; }}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
-	{new Array([1, 2, 3]).indexOf()}
+	{new String([1, 2, 3]).indexOf()}
 {/template}
 
 /* Foo */
