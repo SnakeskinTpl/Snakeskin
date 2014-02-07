@@ -250,7 +250,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 						commandLength
 					);
 
-					dir.space = !dir.text && prevSpace;
+					if (!dir.text && prevSpace) {
+						dir.space = true;
+					}
+
 					dir.text = false;
 
 					if (fnRes === false) {

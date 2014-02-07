@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 1, 3],
+	VERSION: [3, 2, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -1668,7 +1668,10 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 						commandLength
 					);
 
-					dir.space = !dir.text && prevSpace;
+					if (!dir.text && prevSpace) {
+						dir.space = true;
+					}
+
 					dir.text = false;
 
 					if (fnRes === false) {
@@ -1776,8 +1779,6 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 
 		throw dir.error('Template "' + key$0 + '" is not defined')
 	}
-
-	console.log(dir.res);
 
 	// Компиляция на сервере
 	if (node) {
@@ -3304,7 +3305,7 @@ Snakeskin.addDirective(
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 Snakeskin.addDirective(
