@@ -1012,6 +1012,22 @@ Snakeskin.importFilters({
 		{el}
 	{end}
 
+### $forEach
+
+---
+
+**Декларация**: *только внутри шаблонов или прототипов, необходим закрывающий `end`*.
+
+---
+
+Для итераций с использованием [Collection](https://github.com/kobezzza/Collection) существует директива $forEach.
+
+	{$forEach a => el, i}
+	{end}
+
+	{$forEach a => {filter: ':el > 3', startIndex: 2} => el, i}
+	{end}
+
 ### Циклы
 
 ---
