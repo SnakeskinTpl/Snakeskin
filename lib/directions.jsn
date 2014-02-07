@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 /**
@@ -9,7 +9,8 @@
  * @param {string} name - название директивы
  * @param {Object} params - дополнительные параметры
  *
- * @param {?string=} [params.placement] - если true, то делается проверка,
+ * @param {?boolean=} [params.text=false] - если true, то декларируется, что директива выводится как текст
+ * @param {?string=} [params.placement] - если указано, то делается проверка,
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
@@ -75,6 +76,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 
 			dir.strongDir = null;
 			dir.strongSpace = false;
+		}
+
+		if (params.text) {
+			dir.text = true;
 		}
 
 		constr.call(dir, command, commandLength);

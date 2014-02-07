@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 var blackWordList = {
@@ -241,6 +241,16 @@ DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
 	var res = '',
 		nres = '';
 
+	var pOpen = {
+		'(': true,
+		'[': true
+	};
+
+	var pClose = {
+		')': true,
+		']': true
+	};
+
 	var pCount = 0;
 	var start = 0,
 		pContent = null;
@@ -254,11 +264,11 @@ DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
 		let el = str.charAt(i);
 
 		if (pCount || nextCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
-			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
+			if (pContent !== null && (pCount > 1 || (pCount === 1 && !pClose[el]))) {
 				pContent += el;
 			}
 
-			if (el === '(' || el === '[') {
+			if (pOpen[el]) {
 				if (pContent === null) {
 					start = j + 1;
 					pContent = '';
@@ -266,19 +276,19 @@ DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
 
 				pCount++;
 
-			} else if (el === ')' || el === ']') {
+			} else if (pClose[el]) {
 				if (pCount) {
 					pCount--;
 
-					if (!pCount && el === ']') {
+					if (!pCount) {
 						if (nres) {
 							nres = nres.substring(0, start + diff) +
-								this.prepareOutput(pContent, true, !opt_sys) +
+								(pContent && this.prepareOutput(pContent, true, !opt_sys)) +
 								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
-								this.prepareOutput(pContent, true, !opt_sys) +
+								(pContent && this.prepareOutput(pContent, true, !opt_sys)) +
 								res.substring(j);
 						}
 
@@ -303,8 +313,7 @@ DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
 
 	return {
 		word: res,
-		finalWord: nres ? nres : pContent ?
-			res.substring(0, start) + this.prepareOutput(pContent, true) + res.substring(j - 1) : res
+		finalWord: nres || res
 	};
 };
 

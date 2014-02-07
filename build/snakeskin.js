@@ -424,7 +424,7 @@ var escapeEndMap = {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.1.0
+ * @version 1.2.0
  */
 
 /**
@@ -487,6 +487,9 @@ function DirObj(src, params) {
 
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
+
+	/** @type {boolean} */
+	this.text = false;
 
 	/**
 	 * Номер итерации
@@ -1413,7 +1416,7 @@ DirObj.prototype.error = function (msg) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 /**
@@ -1519,6 +1522,8 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
 
+	var prevSpace;
+
 	while (++dir.i < dir.source.length) {
 		var str = dir.source;
 		var el = str.charAt(dir.i),
@@ -1562,6 +1567,10 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 			}
 
 		} else {
+			if (el !== '{' && !begin) {
+				prevSpace = dir.space;
+			}
+
 			dir.space = false;
 		}
 
@@ -1645,6 +1654,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 					} else if (replacers[short1]) {
 						command = replacers[short1](command);
 					}
+
 					var commandType = commandTypeRgxp.exec(command)[0];
 					commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
@@ -1657,6 +1667,9 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 
 						commandLength
 					);
+
+					dir.space = !dir.text && prevSpace;
+					dir.text = false;
 
 					if (fnRes === false) {
 						begin = false;
@@ -1764,6 +1777,8 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 		throw dir.error('Template "' + key$0 + '" is not defined')
 	}
 
+	console.log(dir.res);
+
 	// Компиляция на сервере
 	if (node) {
 		// Экспорт
@@ -1802,7 +1817,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 /**
@@ -1811,7 +1826,8 @@ var __NEJS_THIS__ = this;
  * @param {string} name - название директивы
  * @param {Object} params - дополнительные параметры
  *
- * @param {?string=} [params.placement] - если true, то делается проверка,
+ * @param {?boolean=} [params.text=false] - если true, то декларируется, что директива выводится как текст
+ * @param {?string=} [params.placement] - если указано, то делается проверка,
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
@@ -1881,6 +1897,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 			dir.strongSpace = false;
 		}
 
+		if (params.text) {
+			dir.text = true;
+		}
+
 		constr.call(dir, command, commandLength);
 
 		if (dir.inlineDir === true) {
@@ -1905,7 +1925,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 var blackWordList = {
@@ -2152,6 +2172,16 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 	var res = '',
 		nres = '';
 
+	var pOpen = {
+		'(': true,
+		'[': true
+	};
+
+	var pClose = {
+		')': true,
+		']': true
+	};
+
 	var pCount = 0;
 	var start = 0,
 		pContent = null;
@@ -2165,11 +2195,11 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 		var el = str.charAt(i);
 
 		if (pCount || nextCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
-			if (pContent !== null && (pCount > 1 || (pCount === 1 && el !== ')' && el !== ']'))) {
+			if (pContent !== null && (pCount > 1 || (pCount === 1 && !pClose[el]))) {
 				pContent += el;
 			}
 
-			if (el === '(' || el === '[') {
+			if (pOpen[el]) {
 				if (pContent === null) {
 					start = j + 1;
 					pContent = '';
@@ -2177,19 +2207,19 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 
 				pCount++;
 
-			} else if (el === ')' || el === ']') {
+			} else if (pClose[el]) {
 				if (pCount) {
 					pCount--;
 
-					if (!pCount && el === ']') {
+					if (!pCount) {
 						if (nres) {
 							nres = nres.substring(0, start + diff) +
-								this.prepareOutput(pContent, true, !opt_sys) +
+								(pContent && this.prepareOutput(pContent, true, !opt_sys)) +
 								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
-								this.prepareOutput(pContent, true, !opt_sys) +
+								(pContent && this.prepareOutput(pContent, true, !opt_sys)) +
 								res.substring(j);
 						}
 
@@ -2214,8 +2244,7 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 
 	return {
 		word: res,
-		finalWord: nres ? nres : pContent ?
-			res.substring(0, start) + this.prepareOutput(pContent, true) + res.substring(j - 1) : res
+		finalWord: nres || res
 	};
 };
 
@@ -2660,7 +2689,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 Snakeskin.addDirective(
@@ -2692,7 +2721,8 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		text: true
 	},
 
 	function (command) {
@@ -2784,7 +2814,8 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		text: true
 	},
 
 	function (command) {
@@ -2798,7 +2829,7 @@ Snakeskin.addDirective(
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 Snakeskin.addDirective(
@@ -2878,6 +2909,8 @@ Snakeskin.addDirective(
 
 			this.startInlineDir('output');
 			if (this.isSimpleOutput()) {
+				this.text = true;
+
 				if (/^[@#$a-z_][$\w\[\].'"\s+-\/*><^]*=[^=]/.test(command)) {
 					this.save(this.prepareOutput(command, true) + ';');
 					return;
@@ -3064,7 +3097,7 @@ Snakeskin.addDirective(
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 Snakeskin.addDirective(
@@ -3073,6 +3106,7 @@ Snakeskin.addDirective(
 	{
 		placement: 'template',
 		notEmpty: true,
+		text: true,
 		replacers: {
 			'=': function (cmd) {
 				return cmd.replace(/^=/, 'data ');}
@@ -3094,6 +3128,7 @@ Snakeskin.addDirective(
 	{
 		placement: 'template',
 		notEmpty: true,
+		text: true,
 		replacers: {
 			'{': function (cmd) {
 				return cmd.replace(/^\{/, 'decl ');}
@@ -3127,7 +3162,8 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		text: true
 	},
 
 	function (command) {

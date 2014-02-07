@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 /**
@@ -104,6 +104,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
 
+	var prevSpace;
+
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
 		let el = str.charAt(dir.i),
@@ -147,6 +149,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 			}
 
 		} else {
+			if (el !== '{' && !begin) {
+				prevSpace = dir.space;
+			}
+
 			dir.space = false;
 		}
 
@@ -230,6 +236,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 					} else if (replacers[short1]) {
 						command = replacers[short1](command);
 					}
+
 					let commandType = commandTypeRgxp.exec(command)[0];
 					commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
 
@@ -242,6 +249,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 
 						commandLength
 					);
+
+					dir.space = !dir.text && prevSpace;
+					dir.text = false;
 
 					if (fnRes === false) {
 						begin = false;

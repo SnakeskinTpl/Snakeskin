@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 Snakeskin.addDirective(
@@ -9,6 +9,7 @@ Snakeskin.addDirective(
 	{
 		placement: 'template',
 		notEmpty: true,
+		text: true,
 		replacers: {
 			'=': (cmd) => cmd.replace(/^=/, 'data ')
 		}
@@ -28,6 +29,7 @@ Snakeskin.addDirective(
 	{
 		placement: 'template',
 		notEmpty: true,
+		text: true,
 		replacers: {
 			'{': (cmd) => cmd.replace(/^\{/, 'decl ')
 		}
@@ -59,7 +61,8 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		text: true
 	},
 
 	function (command) {

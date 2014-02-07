@@ -8,7 +8,8 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		text: true
 	},
 
 	function (command) {
