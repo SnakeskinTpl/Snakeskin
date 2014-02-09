@@ -1926,7 +1926,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 var blackWordList = {
@@ -2215,12 +2215,12 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 					if (!pCount) {
 						if (nres) {
 							nres = nres.substring(0, start + diff) +
-								(pContent && this.prepareOutput(pContent, true, !opt_sys)) +
+								(pContent && this.prepareOutput(pContent, true, !opt_sys && el !== ')')) +
 								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
-								(pContent && this.prepareOutput(pContent, true, !opt_sys)) +
+								(pContent && this.prepareOutput(pContent, true, !opt_sys && el !== ')')) +
 								res.substring(j);
 						}
 
