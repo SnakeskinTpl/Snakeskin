@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 2, 1],
+	VERSION: [3, 2, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -1926,7 +1926,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 var blackWordList = {
@@ -2164,12 +2164,10 @@ DirObj.prototype.isNextAssign = function (str, pos) {
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
- * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
  * @return {{word: string, finalWord: string}}
  */
-DirObj.prototype.getWord = function (str, pos,opt_sys) {
+DirObj.prototype.getWord = function (str, pos) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_sys === "undefined") { opt_sys = false; }
 	var res = '',
 		nres = '';
 
@@ -2215,12 +2213,12 @@ DirObj.prototype.getWord = function (str, pos,opt_sys) {
 					if (!pCount) {
 						if (nres) {
 							nres = nres.substring(0, start + diff) +
-								(pContent && this.prepareOutput(pContent, true, !opt_sys && el !== ')')) +
+								(pContent && this.prepareOutput(pContent, true)) +
 								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
-								(pContent && this.prepareOutput(pContent, true, !opt_sys && el !== ')')) +
+								(pContent && this.prepareOutput(pContent, true)) +
 								res.substring(j);
 						}
 
@@ -2393,7 +2391,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
 			if (nword && !posNWord && nextCharRgxp.test(el)) {
-				var nextStep = this.getWord(command, i, opt_sys);
+				var nextStep = this.getWord(command, i);
 				var word = nextStep.word,
 					finalWord = nextStep.finalWord;
 

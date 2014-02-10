@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 var blackWordList = {
@@ -234,10 +234,9 @@ DirObj.prototype.isNextAssign = function (str, pos) {
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
- * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
  * @return {{word: string, finalWord: string}}
  */
-DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
+DirObj.prototype.getWord = function (str, pos) {
 	var res = '',
 		nres = '';
 
@@ -283,12 +282,12 @@ DirObj.prototype.getWord = function (str, pos, opt_sys = false) {
 					if (!pCount) {
 						if (nres) {
 							nres = nres.substring(0, start + diff) +
-								(pContent && this.prepareOutput(pContent, true, !opt_sys && el !== ')')) +
+								(pContent && this.prepareOutput(pContent, true)) +
 								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
-								(pContent && this.prepareOutput(pContent, true, !opt_sys && el !== ')')) +
+								(pContent && this.prepareOutput(pContent, true)) +
 								res.substring(j);
 						}
 
@@ -457,7 +456,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			// флаг nword показывает, что началось новое слово;
 			// флаг posNWord показывает, сколько новых слов нужно пропустить
 			if (nword && !posNWord && nextCharRgxp.test(el)) {
-				let nextStep = this.getWord(command, i, opt_sys);
+				let nextStep = this.getWord(command, i);
 				let word = nextStep.word,
 					finalWord = nextStep.finalWord;
 
