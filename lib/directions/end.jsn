@@ -31,6 +31,7 @@ Snakeskin.addDirective(
 
 		if (strongDirs[struct.name]) {
 			this.strongDir = null;
+			this.strongSpace = false;
 		}
 
 		if (this.returnStrongDir && this.returnStrongDir.child === struct.name) {
