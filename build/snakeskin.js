@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 2, 2],
+	VERSION: [3, 2, 3],
 
 	/**
 	 * Пространство имён для директив
@@ -3222,6 +3222,7 @@ Snakeskin.addDirective(
 
 		if (strongDirs[struct.name]) {
 			this.strongDir = null;
+			this.strongSpace = false;
 		}
 
 		if (this.returnStrongDir && this.returnStrongDir.child === struct.name) {
