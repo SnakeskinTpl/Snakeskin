@@ -1,6 +1,7 @@
 logic_index ; 1
 logic_index ; 2
 logic_index ; 3
+logic_sub
 
 ###
 
@@ -29,6 +30,20 @@ logic_index ; 3
 	{/}
 {/}
 
+{template logic_base()}
+	<span class=""></span>
+{/}
+
+{template logic_sub() extends logic_base}
+	{block root}
+		{switch 1}
+			{> 1}
+				1
+			{/}
+		{/}
+	{/}
+{/}
+
 ###
 
 1 1
@@ -40,3 +55,7 @@ logic_index ; 3
 ***
 
 3 3
+
+***
+
+<span class=""></span>   1
