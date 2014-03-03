@@ -279,8 +279,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
 				if (escapeEndMap[el]) {
 					bEnd = true;
 
-				} else if (bEndRgxp.test(el)) {
-					bEnd = false;
+				} else {
+					bEnd = !bEndRgxp.test(el);
 				}
 			}
 
