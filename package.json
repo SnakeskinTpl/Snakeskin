@@ -1,6 +1,6 @@
 {
   "name": "snakeskin",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.",
   "main": "snakeskin.js",
   "bin": {
