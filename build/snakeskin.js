@@ -45,7 +45,7 @@ var Snakeskin = {
 	 * Версия движка
 	 * @type {!Array}
 	 */
-	VERSION: [3, 2, 4],
+	VERSION: [3, 2, 5],
 
 	/**
 	 * Пространство имён для директив
@@ -966,11 +966,11 @@ DirObj.prototype.multiDeclVar = function (str,opt_end) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.6
+ * @version 1.0.7
  */
 
 var Escaper = {
-	VERSION: [1, 0, 6],
+	VERSION: [1, 0, 8],
 	isLocal: typeof window === 'undefined' ? !!global.EscaperIsLocal : false
 };
 
@@ -1022,9 +1022,10 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 	 * @param {string} str - исходная строка
 	 * @param {?boolean=} [opt_withComment=false] - если true, то также вырезаются комментарии
 	 * @param {Array=} [opt_quotContent=this.quotContent] - стек содержимого
+	 * @param {?boolean=} [opt_snakeskin] - если true, то при экранировании учитываются конструкции Snakeskin
 	 * @return {string}
 	 */
-	Escaper.replace = function (str, opt_withComment, opt_quotContent) {
+	Escaper.replace = function (str, opt_withComment, opt_quotContent, opt_snakeskin) {
 		var __NEJS_THIS__ = this;
 		opt_withComment = !!opt_withComment;
 
@@ -1046,6 +1047,8 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 
 		var cut,
 			label;
+
+		var filterStart = false;
 
 		for (var i = 0; i < str.length; i++) {
 			var el = str.charAt(i),
@@ -1074,8 +1077,32 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 					if (escapeEndMap[el]) {
 						end = true;
 
-					} else {
-						end = !/[^\s\/]/.test(el);
+					} else if (/[^\s\/]/.test(el)) {
+						end = false;
+					}
+
+					var skip = false;
+
+					if (opt_snakeskin) {
+						if (el === '|' && /[a-z]/i.test(next)) {
+							filterStart = true;
+							end = false;
+							skip = true;
+
+						} else if (filterStart && /[\s]/.test(el)) {
+							filterStart = false;
+							end = true;
+							skip = true;
+						}
+					}
+
+					if (!skip) {
+						if (escapeEndMap[el]) {
+							end = true;
+
+						} else if (/[^\s\/]/.test(el)) {
+							end = false;
+						}
 					}
 				}
 
@@ -1164,7 +1191,7 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -1207,7 +1234,7 @@ if (typeof window === 'undefined') {
  */
 DirObj.prototype.replaceDangerBlocks = function (str) {
 	var __NEJS_THIS__ = this;
-	return Escaper.replace(str, true, this.quotContent);
+	return Escaper.replace(str, true, this.quotContent, true);
 };
 
 /**
@@ -1434,7 +1461,7 @@ DirObj.prototype.error = function (msg) {
 var __NEJS_THIS__ = this;
 /**!
  * @status stable
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 /**
@@ -1533,9 +1560,13 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 		bEnd,
 		bEscape = false;
 
+	var filterStart = false;
+
 	var nextLineRgxp = /[\r\n\v]/,
 		whiteSpaceRgxp = /\s/,
 		bEndRgxp = /[^\s\/]/;
+
+	var filterStartRgxp = /[a-z]/i;
 
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
@@ -1712,11 +1743,26 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 
 			// Обработка литералов строки и регулярных выражений внутри директивы
 			if (!bOpen) {
-				if (escapeEndMap[el]) {
-					bEnd = true;
+				var skip = false;
 
-				} else {
-					bEnd = !bEndRgxp.test(el);
+				if (el === '|' && filterStartRgxp.test(str.charAt(dir.i + 1))) {
+					filterStart = true;
+					bEnd = false;
+					skip = true;
+
+				} else if (filterStart && whiteSpaceRgxp.test(el)) {
+					filterStart = false;
+					bEnd = true;
+					skip = true;
+				}
+
+				if (!skip) {
+					if (escapeEndMap[el]) {
+						bEnd = true;
+
+					} else if (bEndRgxp.test(el)) {
+						bEnd = false;
+					}
 				}
 			}
 
