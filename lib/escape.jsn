@@ -1,6 +1,6 @@
 /**!
  * @status stable
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 /**
@@ -40,7 +40,7 @@ if (typeof window === 'undefined') {
  * @return {string}
  */
 DirObj.prototype.replaceDangerBlocks = function (str) {
-	return Escaper.replace(str, true, this.quotContent);
+	return Escaper.replace(str, true, this.quotContent, true);
 };
 
 /**
