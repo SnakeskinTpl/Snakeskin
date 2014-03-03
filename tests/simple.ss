@@ -16,7 +16,8 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
 	{new String([1, 2, 3]).indexOf()}
-	{'{foo}'|replace /^{|}$/gim, ''}
+	{'{foo}'|replace /^{/gim, ''}
+	{2 / 2}
 {/template}
 
 /* Foo */
@@ -46,7 +47,7 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 
 ###
 
-1 -1 foo
+1 -1 foo} 1
 
 ***
 
