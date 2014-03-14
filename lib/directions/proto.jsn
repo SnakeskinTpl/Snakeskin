@@ -17,10 +17,10 @@ DirObj.prototype.preProtos = {};
 DirObj.prototype.protoLink = null;
 
 /**
- * Вернуть строку декларации аргументов прототипа
+ * Вернуть строку декларации заданных аргументов прототипа
  *
  * @param {!Array.<!Array>} protoArgs - массив аргументов прототипа [название, значение по умолчанию]
- * @param {!Array} args - массив передаваемых аргументов
+ * @param {!Array} args - массив заданных аргументов
  * @return {string}
  */
 DirObj.prototype.returnArgs = function (protoArgs, args) {
