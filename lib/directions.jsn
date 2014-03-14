@@ -5,7 +5,7 @@
  * @param {Object} params - дополнительные параметры
  *
  * @param {?boolean=} [params.text=false] - если true, то декларируется, что директива выводится как текст
- * @param {?string=} [params.placement] - если указано, то делается проверка,
+ * @param {?string=} [params.placement] - если указано, то делается проверка
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
@@ -15,7 +15,7 @@
  * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
  *
  * @param {function(this:DirObj, string, number)} constr - конструктор директивы
- * @param {?function(this:DirObj, string, number)=} opt_end - окончание директивы
+ * @param {?function(this:DirObj, string, number)=} opt_end - окончание (деструктор) директивы
  */
 Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	params = params || {};
