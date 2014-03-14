@@ -1,9 +1,4 @@
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 if (!Array.isArray) {
 	var toString = Object.prototype.toString;
 
@@ -34,11 +29,6 @@ if (!String.prototype.trim) {
 	};
 }
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /** @namespace */
 var Snakeskin = {
 	/**
@@ -73,13 +63,8 @@ var Snakeskin = {
 };
 (function (node) {
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /**
- * Импортировать свойства объекта в пространство имён Snakeskin.Filters
+ * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
  *
  * @param {!Object} filters - исходный объект
  * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar

@@ -1,9 +1,4 @@
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 if (!Array.isArray) {
 	var toString = Object.prototype.toString;
 
@@ -34,11 +29,6 @@ if (!String.prototype.trim) {
 	};
 }
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /** @namespace */
 var Snakeskin = {
 	/**
@@ -73,13 +63,8 @@ var Snakeskin = {
 };
 (function (node) {
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /**
- * Импортировать свойства объекта в пространство имён Snakeskin.Filters
+ * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
  *
  * @param {!Object} filters - исходный объект
  * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
@@ -347,11 +332,6 @@ Snakeskin.Filters['json'] = function (obj) {
 	return (obj + '');
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 var globalCache = {
 	'true': {},
 	'false': {}
@@ -422,11 +402,6 @@ var escapeEndMap = {
 	'{': true
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.2.0
- */
-
 /**
  * Объект управления директивами
  *
@@ -812,7 +787,7 @@ DirObj.prototype.endDir = function () {
 };
 
 /**
- * Проверить начилие директивы в цепочке структуры,
+ * Проверить начилие заданной директивы в цепочке структуры,
  * начиная с активной
  *
  * @param {(string|!Object)} name - название директивы или объект названий
@@ -837,7 +812,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 };
 
 /**
- * Проверить начилие директивы в цепочке структуры
+ * Проверить начилие заданной директивы в цепочке структуры
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или объект названий
@@ -853,7 +828,7 @@ DirObj.prototype.hasParent = function (name) {
 };
 
 /**
- * Проверить начилие директивы в цепочке блочной структуры
+ * Проверить начилие заданной директивы в цепочке блочной структуры
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или объект названий
@@ -1189,11 +1164,6 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 	};
 })();
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.1
- */
-
 /**
  * Применить к строке стандартное экранирование
  *
@@ -1248,13 +1218,8 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
 	return Escaper.paste(str, this.quotContent);
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /**
- * Вернуть тело шаблона при наследовании
+ * Вернуть конечное тело заданного шаблона при наследовании
  *
  * @param {string} tplName - название шаблона
  * @return {string}
@@ -1409,11 +1374,6 @@ DirObj.prototype.getExtStr = function (tplName) {
 	return res;
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /**
  * Вывести дополнительную информацию об ошибке
  *
@@ -1459,11 +1419,6 @@ DirObj.prototype.error = function (msg) {
 	return error;
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.3
- */
-
 /**
  * Скомпилировать указанные шаблоны
  *
@@ -1880,11 +1835,6 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	return dir.res;
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.1.0
- */
-
 /**
  * Добавить новую директиву в пространство имён шаблонизатора
  *
@@ -1988,11 +1938,6 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	Snakeskin.Directions[name + 'End'] = opt_end;
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.4
- */
-
 var blackWordList = {
 	'+': true,
 	'++': true,
@@ -2048,7 +1993,7 @@ var comboBlackWordList = {
 };
 
 /**
- * Заменить ${...} в строке на значение вывода
+ * Заменить ${...} в указанной строке на значение вывода
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -2167,7 +2112,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 };
 
 /**
- * Вернуть true, если cлово является свойством в литерале объекта
+ * Вернуть true, если указанное cлово является свойством в литерале объекта
  *
  * @param {string} str - исходная строка
  * @param {number} start - начальная позиция слова
@@ -2202,7 +2147,7 @@ DirObj.prototype.isSyOL = function (str, start, end) {
 };
 
 /**
- * Вернуть true, если следующий не пробельный символ в строке равен присвоению (=)
+ * Вернуть true, если следующий не пробельный символ в указанной строке равен присвоению (=)
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
@@ -2224,7 +2169,7 @@ DirObj.prototype.isNextAssign = function (str, pos) {
 };
 
 /**
- * Вернуть целое слово из строки, начиная с указанной позиции
+ * Вернуть целое слово из заданной строки, начиная с указанной позиции
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
@@ -2312,10 +2257,10 @@ DirObj.prototype.getWord = function (str, pos) {
 };
 
 /**
- * Подготовить комманду к выводу:
+ * Подготовить указанную комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
  *
- * @param {string} command - текст команды
+ * @param {string} command - исходный текст команды
  * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
  * @param {?boolean=} [opt_isys] - если true, то запуск функции считается вложенным системным вызовом
  * @param {?boolean=} [opt_breakFirst] - если true, то первое слово в команде пропускается
@@ -2750,11 +2695,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
 };
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.1
- */
-
 Snakeskin.addDirective(
 	'setBEM',
 
@@ -2825,11 +2765,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'block',
 
@@ -2867,11 +2802,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'call',
 
@@ -2890,11 +2820,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.1
- */
-
 Snakeskin.addDirective(
 	'const',
 
@@ -2985,11 +2910,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'for',
 
@@ -3158,11 +3078,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.1
- */
-
 Snakeskin.addDirective(
 	'data',
 
@@ -3251,11 +3166,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'end',
 
@@ -3306,11 +3216,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'super',
 
@@ -3366,11 +3271,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.1.0
- */
-
 Snakeskin.addDirective(
 	'forEach',
 
@@ -3665,11 +3565,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'if',
 
@@ -3801,11 +3696,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'__appendLine__',
 
@@ -3872,11 +3762,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.1
- */
-
 /**
  * Если true, то значит объявляется прототип
  * @type {boolean}
@@ -4183,11 +4068,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'return',
 
@@ -4215,11 +4095,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'with',
 
@@ -4241,11 +4116,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.1.0
- */
-
 Snakeskin.addDirective(
 	'&',
 
@@ -4323,11 +4193,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 /**
  * Номер итерации объявления шаблона
  * @type {number}
@@ -4725,11 +4590,6 @@ Snakeskin.addDirective(
 	end
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'try',
 
@@ -4786,11 +4646,6 @@ Snakeskin.addDirective(
 );
 
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 DirObj.prototype.varCache = {
 	init: function () {
 		var __NEJS_THIS__ = this;
@@ -4819,11 +4674,6 @@ Snakeskin.addDirective(
 	}
 );
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 Snakeskin.addDirective(
 	'void',
 
