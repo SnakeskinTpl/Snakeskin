@@ -1,7 +1,7 @@
 /** @namespace */
 var Snakeskin = {
 	/**
-	 * Версия движка
+	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
 	VERSION: [3, 2, 5],
