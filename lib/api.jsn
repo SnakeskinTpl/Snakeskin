@@ -135,7 +135,6 @@ function DirObj(src, params) {
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, (sstr, data) => {
 			this.cDataContent.push(data);
 			return '' +
-
 				// Количество добавляемых строк
 				'{__appendLine__ ' + (data.match(/[\n\r]/g) || '').length + '}' +
 
@@ -166,7 +165,7 @@ function DirObj(src, params) {
 Snakeskin.DirObj = DirObj;
 
 /**
- * Добавить строку в результирующую строку JavaScript
+ * Добавить указанную строку в результирующую строку JavaScript
  *
  * @param {string} str - исходная строка
  * @return {boolean}

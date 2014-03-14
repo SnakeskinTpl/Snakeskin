@@ -1,5 +1,5 @@
 /**
- * Применить к строке стандартное экранирование
+ * Применить к указанной строке стандартное экранирование Snakeskin
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -9,7 +9,7 @@ DirObj.prototype.applyDefEscape = function (str) {
 };
 
 /**
- * Экранировать символы перевода строки
+ * Экранировать символы перевода строки в указанной строке
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -29,7 +29,7 @@ if (typeof window === 'undefined') {
 
 /**
  * Заметить блоки вида ' ... ', " ... ", / ... /, // ..., /* ... *\/ на
- * __ESCAPER_QUOT__номер_
+ * __ESCAPER_QUOT__номер_ в указанной строке
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -39,7 +39,7 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
 };
 
 /**
- * Заметить __ESCAPER_QUOT__номер_ в строке на реальное содержимое
+ * Заметить __ESCAPER_QUOT__номер_ в указанной строке на реальное содержимое
  *
  * @param {string} str - исходная строка
  * @return {string}
