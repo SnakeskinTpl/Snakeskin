@@ -1,11 +1,6 @@
 #!/usr/bin/env node
 
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.1.0
- */
-
 global.Snakeskin = require('./snakeskin');
 var Program = require('commander');
 

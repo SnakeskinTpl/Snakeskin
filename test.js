@@ -1,9 +1,4 @@
 var __NEJS_THIS__ = this;
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 var fs = require('fs');
 var path = require('path');
 var assert = require('assert');

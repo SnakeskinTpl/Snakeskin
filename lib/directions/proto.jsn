@@ -1,8 +1,3 @@
-/**!
- * @status stable
- * @version 1.0.1
- */
-
 /**
  * Если true, то значит объявляется прототип
  * @type {boolean}

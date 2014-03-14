@@ -1,10 +1,5 @@
 #!/usr/bin/env node
 
-/**!
- * @status stable
- * @version 1.1.0
- */
-
 global.Snakeskin = require('./snakeskin');
 var Program = require('commander');
 
