@@ -161,9 +161,9 @@ https://github.com/kobezzza/grunt-snakeskin
 
 	Скомпилировать указанные шаблоны
 
-	@param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или исходный текст шаблонов
+	@param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны, или исходный текст шаблонов
 
-	@param {Object=} [opt_params] - дополнительные параметры запуска или если true,
+	@param {Object=} [opt_params] - дополнительные параметры запуска, или если true,
 		то шаблон компилируется с экспортом в стиле commonJS
 
 	@param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
@@ -174,7 +174,7 @@ https://github.com/kobezzza/grunt-snakeskin
 
 ##### Snakeskin.importFilters(filters, opt_namespace)
 
-	Импортировать свойства объекта в пространство имён Snakeskin.Filters
+	Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
 
 	@param {!Object} filters - исходный объект
 	@param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
@@ -319,7 +319,7 @@ https://github.com/kobezzza/grunt-snakeskin
 ---
 
 Директива interface позволяет декларировать шаблон, тело которого будет существовать только на этапе трансляции,
-а в скомпилированном файле будет доступен только как интерфейс (пустая функция с входными параметрами).
+а в скомпилированном файле шаблон будет доступен только как интерфейс (пустая функция с входными параметрами).
 Синтаксис interface идентичен синтаксису template.
 
 	{interface myTpl.myTemplate()}
