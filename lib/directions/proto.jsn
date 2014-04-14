@@ -101,7 +101,15 @@ Snakeskin.addDirective(
 				argsMap = [];
 
 			if (args) {
-				let argsList = args[1].split(',');
+				let argsList;
+
+				try {
+					argsList = args[1].split(',');
+
+				} catch (ignore) {
+					throw this.error('Invalid syntax');
+				}
+
 				for (let i = 0; i < argsList.length; i++) {
 					let arg = argsList[i].split('=');
 					arg[0] = this.declVar(arg[0].trim(), true);

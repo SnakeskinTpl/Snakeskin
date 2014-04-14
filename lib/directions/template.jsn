@@ -51,7 +51,7 @@ Snakeskin.addDirective(
 		}
 
 		if (!tplName) {
-			throw this.error('Invalid syntax');
+			throw this.error('Invalid ' + this.name + ' declaration');
 		}
 
 		var iface = this.name === 'interface';
