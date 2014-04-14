@@ -168,10 +168,11 @@ Snakeskin.DirObj = DirObj;
  * Добавить указанную строку в результирующую строку JavaScript
  *
  * @param {string} str - исходная строка
+ * @param {?boolean=} [opt_interface=false] - если true, то идёт запись интерфейса шаблона
  * @return {boolean}
  */
-DirObj.prototype.save = function (str) {
-	if (!this.tplName || write[this.tplName] !== false) {
+DirObj.prototype.save = function (str, opt_interface) {
+	if (!this.tplName || write[this.tplName] !== false || opt_interface) {
 		this.res += str;
 		return true;
 	}
