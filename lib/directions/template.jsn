@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 		notEmpty: true
 	},
 
-	(start = function (command) {
+	(start = function (command, commandLength, jsDoc) {
 		this.startDir();
 
 		// Начальная позиция шаблона
@@ -106,18 +106,25 @@ Snakeskin.addDirective(
 			throw this.error('Invalid syntax');
 		}
 
+		var pos = '';
+
 		// Для возможности удобного пост-парсинга,
 		// каждая функция снабжается комментарием вида:
 		// /* Snakeskin template: название шаблона; параметры через запятую */
 		this.save(
-			'/* Snakeskin template: ' +
+			(pos = '/* Snakeskin template: ' +
 				tplName +
 				'; ' +
 				args.replace(/=(.*?)(?:,|$)/g, '') +
-			' */',
+			' */'),
 
-			iface
+			iface,
+			jsDoc
 		);
+
+		if (jsDoc) {
+			jsDoc += pos.length;
+		}
 
 		// Декларация функции
 		// с пространством имён или при экспорте в common.js
@@ -140,12 +147,17 @@ Snakeskin.addDirective(
 				let el = tmpArr[i];
 
 				this.save(
-					'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+					(pos = 'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
 						(this.commonJS ? 'exports.' : i === 1 ? node ? 'var ' : 'window.' : '') + str + ' = {};' +
-					'}',
+					'}'),
 
-					iface
+					iface,
+					jsDoc
 				);
+
+				if (jsDoc) {
+					jsDoc += pos.length;
+				}
 
 				if (escaperRgxp.test(el)) {
 					str += '[' + el + ']';
