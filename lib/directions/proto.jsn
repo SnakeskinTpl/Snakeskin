@@ -57,8 +57,13 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var name = command.match(/[^(]+/)[0],
-			parts = name.split('->');
+		var name = command.match(/[^(]+/)[0];
+
+		if (!name) {
+			throw this.error('Invalid prototype declaration');
+		}
+
+		var parts = name.split('->');
 
 		if (parts[1]) {
 			name = parts[1].trim();
@@ -164,6 +169,7 @@ Snakeskin.addDirective(
 						vars: this.structure.vars,
 						proto: {
 							name: lastProto.name,
+							recursive: lastProto.recursive,
 							parentTplName: this.parentTplName,
 							pos: this.res.length,
 							ctx: this
@@ -257,7 +263,7 @@ Snakeskin.addDirective(
 			}
 
 			// Рекурсивный вызов прототипа
-			if (this.proto && this.proto.name === name) {
+			if (selfProto && selfProto.name === name) {
 				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
 
 			// Попытка применить не объявленный прототип

@@ -20,7 +20,8 @@
  *
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams = {}) {
+Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
+	opt_sysParams = opt_sysParams || {};
 	var isObj = opt_params && !(typeof opt_params === 'boolean' || opt_params instanceof Boolean === true);
 
 	var commonJS = !!(isObj ? opt_params.commonJS || opt_params.context : opt_params);
