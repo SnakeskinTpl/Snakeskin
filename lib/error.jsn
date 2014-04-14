@@ -4,7 +4,8 @@
  * @param {Object=} [opt_obj] - дополнительная информация
  * @return {string}
  */
-DirObj.prototype.genErrorAdvInfo = function (opt_obj = this.info) {
+DirObj.prototype.genErrorAdvInfo = function (opt_obj) {
+	opt_obj = opt_obj || this.info;
 	var str = '';
 
 	if (!opt_obj) {
