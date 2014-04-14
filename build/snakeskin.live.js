@@ -32,10 +32,10 @@ var __NEJS_THIS__ = this;
 /** @namespace */
 var Snakeskin = {
 	/**
-	 * Версия движка
+	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [3, 2, 5],
+	VERSION: [3, 3, 0],
 
 	/**
 	 * Пространство имён для директив

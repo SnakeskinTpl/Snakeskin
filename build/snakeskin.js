@@ -32,10 +32,10 @@ var __NEJS_THIS__ = this;
 /** @namespace */
 var Snakeskin = {
 	/**
-	 * Версия движка
+	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [3, 2, 5],
+	VERSION: [3, 3, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -380,7 +380,7 @@ var sysConst = {
 	'$_': true
 };
 
-// Таблица экранирований
+// Таблица символов для экранирования
 var escapeMap = {
 	'"': true,
 	'\'': true,
@@ -541,7 +541,6 @@ function DirObj(src, params) {
 			
 			__NEJS_THIS__.cDataContent.push(data);
 			return '' +
-
 				// Количество добавляемых строк
 				'{__appendLine__ ' + (data.match(/[\n\r]/g) || '').length + '}' +
 
@@ -572,15 +571,23 @@ function DirObj(src, params) {
 Snakeskin.DirObj = DirObj;
 
 /**
- * Добавить строку в результирующую строку JavaScript
+ * Добавить указанную строку в результирующую строку JavaScript
  *
  * @param {string} str - исходная строка
+ * @param {?boolean=} [opt_interface=false] - если true, то идёт запись интерфейса шаблона
+ * @param {(boolean|number)=} [opt_jsDoc] - позиция предущей декларации jsDoc или false
  * @return {boolean}
  */
-DirObj.prototype.save = function (str) {
+DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 	var __NEJS_THIS__ = this;
-	if (!this.tplName || write[this.tplName] !== false) {
-		this.res += str;
+	if (!this.tplName || write[this.tplName] !== false || opt_interface) {
+		if (opt_jsDoc) {
+			this.res = this.res.substring(0, opt_jsDoc) + str + this.res.substring(opt_jsDoc);
+
+		} else {
+			this.res += str;
+		}
+
 		return true;
 	}
 
@@ -787,7 +794,7 @@ DirObj.prototype.endDir = function () {
 };
 
 /**
- * Проверить начилие заданной директивы в цепочке структуры,
+ * Проверить начилие указанной директивы в цепочке структуры,
  * начиная с активной
  *
  * @param {(string|!Object)} name - название директивы или объект названий
@@ -812,7 +819,7 @@ DirObj.prototype.has = function (name, opt_obj) {
 };
 
 /**
- * Проверить начилие заданной директивы в цепочке структуры
+ * Проверить начилие указанной директивы в цепочке структуры
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или объект названий
@@ -828,7 +835,7 @@ DirObj.prototype.hasParent = function (name) {
 };
 
 /**
- * Проверить начилие заданной директивы в цепочке блочной структуры
+ * Проверить начилие указанной директивы в цепочке блочной структуры
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или объект названий
@@ -844,7 +851,7 @@ DirObj.prototype.hasParentBlock = function (name) {
 };
 
 /**
- * Декларировать переменную
+ * Декларировать указанную переменную
  *
  * @param {string} varName - название переменной
  * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
@@ -876,7 +883,7 @@ DirObj.prototype.declVar = function (varName,opt_protoParams) {
 };
 
 /**
- * Парсить строку декларации переменных, провести декларацию
+ * Парсить указанную строку декларации переменных, провести инициализацию,
  * и вернуть результирующий вариант для шаблона
  *
  * @param {string} str - исходная строка
@@ -1064,7 +1071,7 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 							end = false;
 							skip = true;
 
-						} else if (filterStart && /[\s]/.test(el)) {
+						} else if (filterStart && /\s/.test(el)) {
 							filterStart = false;
 							end = true;
 							skip = true;
@@ -1165,7 +1172,7 @@ if (typeof window === 'undefined' && !Escaper.isLocal) {
 })();
 var __NEJS_THIS__ = this;
 /**
- * Применить к строке стандартное экранирование
+ * Применить к указанной строке стандартное экранирование Snakeskin
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -1176,7 +1183,7 @@ DirObj.prototype.applyDefEscape = function (str) {
 };
 
 /**
- * Экранировать символы перевода строки
+ * Экранировать символы перевода строки в указанной строке
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -1197,7 +1204,7 @@ if (typeof window === 'undefined') {
 
 /**
  * Заметить блоки вида ' ... ', " ... ", / ... /, // ..., /* ... *\/ на
- * __ESCAPER_QUOT__номер_
+ * __ESCAPER_QUOT__номер_ в указанной строке
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -1208,7 +1215,7 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
 };
 
 /**
- * Заметить __ESCAPER_QUOT__номер_ в строке на реальное содержимое
+ * Заметить __ESCAPER_QUOT__номер_ в указанной строке на реальное содержимое
  *
  * @param {string} str - исходная строка
  * @return {string}
@@ -1382,7 +1389,7 @@ var __NEJS_THIS__ = this;
  */
 DirObj.prototype.genErrorAdvInfo = function (opt_obj) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_obj === "undefined") { opt_obj = this.info; }
+	opt_obj = opt_obj || this.info;
 	var str = '';
 
 	if (!opt_obj) {
@@ -1422,9 +1429,9 @@ var __NEJS_THIS__ = this;
 /**
  * Скомпилировать указанные шаблоны
  *
- * @param {(!Element|string)} src - ссылка на DOM узел, где лежат шаблоны, или исходный текст шаблонов
+ * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны, или исходный текст шаблонов
  *
- * @param {Object=} [opt_params] - дополнительные параметры запуска или если true,
+ * @param {Object=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
  * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
@@ -1441,9 +1448,9 @@ var __NEJS_THIS__ = this;
  *
  * @return {string}
  */
-Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
+Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var __NEJS_THIS__ = this;
-	if (typeof opt_sysParams === "undefined") { opt_sysParams = {}; }
+	opt_sysParams = opt_sysParams || {};
 	var isObj = opt_params && !(typeof opt_params === 'boolean' || opt_params instanceof Boolean === true);
 
 	var commonJS = !!(isObj ? opt_params.commonJS || opt_params.context : opt_params);
@@ -1508,10 +1515,11 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 	var comment = false;
 
 	// Если true, то значит идёт JSDoc
-	var jsDoc = false;
+	var jsDoc = false,
+		jsDocStart = false;
 
 	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
-	var bOpen,
+	var bOpen = false,
 		bEnd,
 		bEscape = false;
 
@@ -1594,6 +1602,7 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 						if (next3str === '/**' && !dir.structure.parent) {
 							beginStr = true;
 							jsDoc = true;
+							jsDocStart = dir.res.length;
 
 						} else {
 							comment = next2str;
@@ -1669,13 +1678,15 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 						commandType !== 'const' ?
 							command.replace(commandRgxp, '') : command,
 
-						commandLength
+						commandLength,
+						jsDocStart
 					);
 
 					if (!dir.text && prevSpace) {
 						dir.space = true;
 					}
 
+					jsDocStart = false;
 					dir.text = false;
 
 					if (fnRes === false) {
@@ -1836,13 +1847,13 @@ Snakeskin.compile = function (src, opt_params, opt_info,opt_sysParams) {
 };
 var __NEJS_THIS__ = this;
 /**
- * Добавить новую директиву в пространство имён шаблонизатора
+ * Добавить новую директиву в пространство имён Snakeskin
  *
- * @param {string} name - название директивы
+ * @param {string} name - название добавляемой директивы
  * @param {Object} params - дополнительные параметры
  *
  * @param {?boolean=} [params.text=false] - если true, то декларируется, что директива выводится как текст
- * @param {?string=} [params.placement] - если указано, то делается проверка,
+ * @param {?string=} [params.placement] - если указано, то делается проверка
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
@@ -1851,8 +1862,8 @@ var __NEJS_THIS__ = this;
  * @param {Object} [params.replacers] - объект коротких сокращений директивы
  * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
  *
- * @param {function(this:DirObj, string, number)} constr - конструктор директивы
- * @param {?function(this:DirObj, string, number)=} opt_end - окончание директивы
+ * @param {function(this:DirObj, string, number, (boolean|number))} constr - конструктор директивы
+ * @param {?function(this:DirObj, string, number, (boolean|number))=} opt_end - окончание (деструктор) директивы
  */
 Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	var __NEJS_THIS__ = this;
@@ -1872,7 +1883,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	}
 
 	strongDirs[name] = params.strongDirs;
-	Snakeskin.Directions[name] = function (dir, command, commandLength) {
+	Snakeskin.Directions[name] = function (dir, command, commandLength, jsDoc) {
 		var __NEJS_THIS__ = this;
 		switch (params.placement) {
 			case 'template': {
@@ -1897,7 +1908,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		}
 
 		if (params.notEmpty && !command) {
-			throw this.error('Invalid syntax');
+			throw this.error('Invalid syntax, directive "' + name + '" should have a body');
 		}
 
 		dir.name = name;
@@ -1916,7 +1927,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 			dir.text = true;
 		}
 
-		constr.call(dir, command, commandLength);
+		constr.call(dir, command, commandLength, jsDoc);
 
 		if (dir.inlineDir === true) {
 			var sname = dir.structure.name;
@@ -2737,7 +2748,6 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			var lastBEM = this.structure.params;
 
-			// Получаем параметры инициализации блока и врапим имя кавычками
 			command = lastBEM.tag ? command.replace(/^.*?\)(.*)/, '$1') : command;
 			var parts = command.trim().split(',');
 
@@ -3781,10 +3791,10 @@ DirObj.prototype.preProtos = {};
 DirObj.prototype.protoLink = null;
 
 /**
- * Вернуть строку декларации аргументов прототипа
+ * Вернуть строку декларации заданных аргументов прототипа
  *
  * @param {!Array.<!Array>} protoArgs - массив аргументов прототипа [название, значение по умолчанию]
- * @param {!Array} args - массив передаваемых аргументов
+ * @param {!Array} args - массив заданных аргументов
  * @return {string}
  */
 DirObj.prototype.returnArgs = function (protoArgs, args) {
@@ -3823,8 +3833,13 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var __NEJS_THIS__ = this;
-		var name = command.match(/[^(]+/)[0],
-			parts = name.split('->');
+		var name = command.match(/[^(]+/)[0];
+
+		if (!name) {
+			throw this.error('Invalid prototype declaration');
+		}
+
+		var parts = name.split('->');
 
 		if (parts[1]) {
 			name = parts[1].trim();
@@ -3844,7 +3859,7 @@ Snakeskin.addDirective(
 		}
 
 		if (!name || !this.tplName) {
-			throw this.error('Invalid syntax');
+			throw this.error('Invalid prototype declaration');
 		}
 
 		this.startDir(null, {
@@ -3931,6 +3946,7 @@ Snakeskin.addDirective(
 						vars: this.structure.vars,
 						proto: {
 							name: lastProto.name,
+							recursive: lastProto.recursive,
 							parentTplName: this.parentTplName,
 							pos: this.res.length,
 							ctx: this
@@ -4026,7 +4042,7 @@ Snakeskin.addDirective(
 			}
 
 			// Рекурсивный вызов прототипа
-			if (this.proto && this.proto.name === name) {
+			if (selfProto && selfProto.name === name) {
 				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
 
 			// Попытка применить не объявленный прототип
@@ -4228,7 +4244,7 @@ Snakeskin.addDirective(
 		notEmpty: true
 	},
 
-	(start = function (command) {
+	(start = function (command, commandLength, jsDoc) {
 		var __NEJS_THIS__ = this;
 		this.startDir();
 
@@ -4250,8 +4266,10 @@ Snakeskin.addDirective(
 			throw this.error('Invalid syntax');
 		}
 
+		var iface = this.name === 'interface';
 		this.info.template = tplName;
-		if (this.name === 'placeholder') {
+
+		if (this.name !== 'template') {
 			if (!write[tplName]) {
 				write[tplName] = false;
 			}
@@ -4300,16 +4318,25 @@ Snakeskin.addDirective(
 			throw this.error('Invalid syntax');
 		}
 
+		var pos = '';
+
 		// Для возможности удобного пост-парсинга,
 		// каждая функция снабжается комментарием вида:
 		// /* Snakeskin template: название шаблона; параметры через запятую */
 		this.save(
-			'/* Snakeskin template: ' +
+			(pos = '/* Snakeskin template: ' +
 				tplName +
 				'; ' +
 				args.replace(/=(.*?)(?:,|$)/g, '') +
-			' */'
+			' */'),
+
+			iface,
+			jsDoc
 		);
+
+		if (jsDoc) {
+			jsDoc += pos.length;
+		}
 
 		// Декларация функции
 		// с пространством имён или при экспорте в common.js
@@ -4332,10 +4359,17 @@ Snakeskin.addDirective(
 				var el = tmpArr[i];
 
 				this.save(
-					'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
+					(pos = 'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
 						(this.commonJS ? 'exports.' : i === 1 ? node ? 'var ' : 'window.' : '') + str + ' = {};' +
-					'}'
+					'}'),
+
+					iface,
+					jsDoc
 				);
+
+				if (jsDoc) {
+					jsDoc += pos.length;
+				}
 
 				if (escaperRgxp.test(el)) {
 					str += '[' + el + ']';
@@ -4348,11 +4382,17 @@ Snakeskin.addDirective(
 				str += '.' + el;
 			}
 
-			this.save((this.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(');
+			this.save(
+				(this.commonJS ? 'exports.' : '') + tmpTplName + '= function ' + lastName + '(',
+				iface
+			);
 
 		// Без простраства имён
 		} else {
-			this.save((!node ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(');
+			this.save(
+				(!node ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(',
+				iface
+			);
 		}
 
 		// Входные параметры
@@ -4423,7 +4463,7 @@ Snakeskin.addDirective(
 		for (var i$1 = 0; i$1 < argsList.length; i$1++) {
 			var el$2 = argsList[i$1];
 
-			this.save(el$2.key);
+			this.save(el$2.key, iface);
 			constICache[tplName][el$2.key] = el$2;
 
 			if (el$2.value !== void 0) {
@@ -4433,7 +4473,10 @@ Snakeskin.addDirective(
 
 			// После последнего параметра запятая не ставится
 			if (i$1 !== argsList.length - 1) {
-				this.save(',');
+				this.save(',', iface);
+
+			} else {
+				this.save(') {', iface);
 			}
 		}
 
@@ -4457,7 +4500,7 @@ Snakeskin.addDirective(
 				this.source.substring(this.i + 1);
 		}
 
-		this.save(') { ' + defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
+		this.save(defParams + 'var __SNAKESKIN_RESULT__ = \'\', $_;');
 		this.save(
 			'var TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(tmpTplName)) + '\';' +
 			'var PARENT_TPL_NAME;'
@@ -4562,14 +4605,25 @@ Snakeskin.addDirective(
 			this.backTable = {};
 		}
 
-		this.save(
-			'return __SNAKESKIN_RESULT__; };' +
-			'if (typeof Snakeskin !== \'undefined\') {' +
-				'Snakeskin.cache[\'' +
-					this.applyDefEscape(this.pasteDangerBlocks(tplName)) +
-				'\'] = ' + (this.commonJS ? 'exports.' : '') + tplName + ';' +
-			'}/* Snakeskin template. */'
-		);
+		var iface = this.structure.name === 'interface';
+
+		if (iface) {
+			this.save('};', true);
+
+		} else {
+			this.save(
+					'return __SNAKESKIN_RESULT__; ' +
+				'};' +
+
+				'if (typeof Snakeskin !== \'undefined\') {' +
+					'Snakeskin.cache[\'' +
+						this.applyDefEscape(this.pasteDangerBlocks(tplName)) +
+					'\'] = ' + (this.commonJS ? 'exports.' : '') + tplName + ';' +
+				'}'
+			);
+		}
+
+		this.save('/* Snakeskin template. */', iface);
 
 		this.canWrite = true;
 		this.tplName = null;
@@ -4580,6 +4634,18 @@ Snakeskin.addDirective(
 
 Snakeskin.addDirective(
 	'placeholder',
+
+	{
+		placement: 'global',
+		notEmpty: true
+	},
+
+	start,
+	end
+);
+
+Snakeskin.addDirective(
+	'interface',
 
 	{
 		placement: 'global',
