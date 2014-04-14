@@ -14,8 +14,8 @@
  * @param {Object} [params.replacers] - объект коротких сокращений директивы
  * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
  *
- * @param {function(this:DirObj, string, number)} constr - конструктор директивы
- * @param {?function(this:DirObj, string, number)=} opt_end - окончание (деструктор) директивы
+ * @param {function(this:DirObj, string, number, (boolean|number))} constr - конструктор директивы
+ * @param {?function(this:DirObj, string, number, (boolean|number))=} opt_end - окончание (деструктор) директивы
  */
 Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	params = params || {};
@@ -34,7 +34,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 	}
 
 	strongDirs[name] = params.strongDirs;
-	Snakeskin.Directions[name] = function (dir, command, commandLength) {
+	Snakeskin.Directions[name] = function (dir, command, commandLength, jsDoc) {
 		switch (params.placement) {
 			case 'template': {
 				if (!dir.structure.parent) {
@@ -58,7 +58,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		}
 
 		if (params.notEmpty && !command) {
-			throw this.error('Invalid syntax');
+			throw this.error('Invalid syntax, directive "' + name + '" should have a body');
 		}
 
 		dir.name = name;
@@ -77,7 +77,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 			dir.text = true;
 		}
 
-		constr.call(dir, command, commandLength);
+		constr.call(dir, command, commandLength, jsDoc);
 
 		if (dir.inlineDir === true) {
 			let sname = dir.structure.name;

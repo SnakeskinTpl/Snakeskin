@@ -78,7 +78,7 @@ Snakeskin.addDirective(
 		}
 
 		if (!name || !this.tplName) {
-			throw this.error('Invalid syntax');
+			throw this.error('Invalid prototype declaration');
 		}
 
 		this.startDir(null, {
