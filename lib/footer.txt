@@ -1,5 +1,0 @@
-	if (node) {
-		module.exports = Snakeskin;
-	}
-
-})(typeof window === 'undefined');

@@ -98,3 +98,23 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 
 	Snakeskin.Directions[name + 'End'] = opt_end;
 };
+
+//#include ./directions/bem.js
+//#include ./directions/block.js
+//#include ./directions/call.js
+//#include ./directions/const.js
+//#include ./directions/cycles.js
+//#include ./directions/data.js
+//#include ./directions/end.js
+//#include ./directions/inherit.js
+//#include ./directions/iterator.js
+//#include ./directions/logic.js
+//#include ./directions/private.js
+//#include ./directions/proto.js
+//#include ./directions/return.js
+//#include ./directions/scope.js
+//#include ./directions/space.js
+//#include ./directions/template.js
+//#include ./directions/try.js
+//#include ./directions/var.js
+//#include ./directions/void.js

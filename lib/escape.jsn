@@ -25,7 +25,7 @@ if (typeof window === 'undefined') {
 	global.EscaperIsLocal = true;
 }
 
-//#include ../node_modules/escaper/escaper.js
+//#include ../node_modules/escaper/lib/escaper.js
 
 /**
  * Заметить блоки вида ' ... ', " ... ", / ... /, // ..., /* ... *\/ на
