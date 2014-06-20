@@ -1,7 +1,9 @@
 Snakeskin.addDirective(
 	'__appendLine__',
 
-	null,
+	{
+
+	},
 
 	function (command) {
 		if (!this.structure.parent) {
@@ -18,17 +20,16 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'__protoWhile__',
 
-	null,
+	{
+
+	},
 
 	function (command) {
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			let i = this.prepareOutput('__I_PROTO__', true);
 			protoCache[this.tplName][this.proto.name].i = i;
-
-			this.save(i +
-				':while (' + this.prepareOutput(command, true) + ') {'
-			);
+			this.save(`${i}:while (${this.prepareOutput(command, true)}) {`);
 		}
 	}
 );
@@ -36,7 +37,9 @@ Snakeskin.addDirective(
 Snakeskin.addDirective(
 	'__const__',
 
-	null,
+	{
+
+	},
 
 	function (command, commandLength) {
 		let name = command.split('=')[0].trim();
@@ -46,7 +49,7 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput('var ' + command + ';', true));
+			this.save(this.prepareOutput(`var ${command};`, true));
 		}
 
 		if (this.isAdvTest()) {
