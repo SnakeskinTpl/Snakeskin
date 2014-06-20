@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 			'}'))();
 
 		} catch (ignore) {
-			throw this.error('Invalid syntax');
+			throw this.error(`Invalid "setBEM" declaration: ${command}`);
 		}
 	}
 );
@@ -32,20 +32,24 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir(null, {
-			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
+			tag: /^\(/.test(command) ?
+				/\((.*?)\)/.exec(command)[1] : null
 		});
 
 		if (this.isSimpleOutput()) {
 			let lastBEM = this.structure.params;
 
-			command = lastBEM.tag ? command.replace(/^.*?\)(.*)/, '$1') : command;
-			let parts = command.trim().split(',');
+			command = lastBEM.tag ?
+				command.replace(/^.*?\)(.*)/, '$1') : command;
 
+			let parts = command.trim().split(',');
 			let bemName = parts[0];
-			lastBEM.original = bem[bemName] && bem[bemName].tag;
 
 			parts[0] += '\'';
 			command = parts.join(',');
+
+			lastBEM.original = bem[bemName] &&
+				bem[bemName].tag;
 
 			this.save(
 				'__SNAKESKIN_RESULT__ += \'' +
@@ -59,7 +63,7 @@ Snakeskin.addDirective(
 	function () {
 		if (this.isSimpleOutput()) {
 			let lastBEM = this.structure.params;
-			this.save('__SNAKESKIN_RESULT__ += \'</' + (lastBEM.tag || lastBEM.original || 'div') + '>\';');
+			this.save(`__SNAKESKIN_RESULT__ += '</${(lastBEM.tag || lastBEM.original || 'div')}>';`);
 		}
 	}
 );
