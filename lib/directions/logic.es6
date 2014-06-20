@@ -9,7 +9,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save('if (' + this.prepareOutput(command, true) + ') {');
+			this.save(`if (${this.prepareOutput(command, true)}) {`);
 		}
 	}
 );
@@ -24,11 +24,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'if') {
-			throw this.error('Directive "' + this.name + '" can only be used with a "if"');
+			throw this.error(`Directive "${this.name}" can only be used with a "if"`);
 		}
 
 		if (this.isSimpleOutput()) {
-			this.save('} else if (' + this.prepareOutput(command, true) + ') {');
+			this.save(`} else if (${this.prepareOutput(command, true)}) {`);
 		}
 	}
 );
@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.structure.name !== 'if') {
-			throw this.error('Directive "' + this.name + '" can only be used with a "if"');
+			throw this.error(`Directive "${this.name}" can only be used with a "if"`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -66,7 +66,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save('switch (' + this.prepareOutput(command, true) + ') {');
+			this.save(`switch (${this.prepareOutput(command, true)}) {`);
 		}
 	}
 );
@@ -85,12 +85,12 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (!this.has('switch')) {
-			throw this.error('Directive "' + this.name + '" can only be used within a "switch"');
+			throw this.error(`Directive "${this.name}" can only be used within a "switch"`);
 		}
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save('case ' + this.prepareOutput(command, true) + ': {');
+			this.save(`case ${this.prepareOutput(command, true)}: {`);
 		}
 	},
 
@@ -110,7 +110,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (!this.has('switch')) {
-			throw this.error('Directive "' + this.name + '" can only be used within a "switch"');
+			throw this.error(`Directive "${this.name}" can only be used within a "switch"`);
 		}
 
 		this.startDir();
