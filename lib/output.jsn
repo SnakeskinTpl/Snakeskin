@@ -427,13 +427,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	}
 
 	var commandLength = command.length;
+	var isFilter,
+		breakNum;
+
 	for (let i = 0; i < commandLength; i++) {
 		let el = command.charAt(i),
 			next = command.charAt(i + 1),
 			nnext = command.charAt(i + 2);
-
-		let isFilter;
-		let breakNum;
 
 		if (!breakNum) {
 			if (el === '(') {
