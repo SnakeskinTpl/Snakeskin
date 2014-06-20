@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 
 			} else {
 				if (command) {
-					this.save(this.prepareOutput('return ' + command + ';', true));
+					this.save(this.prepareOutput(`return ${command};`, true));
 
 				} else {
 					this.save('return __SNAKESKIN_RESULT__;');
