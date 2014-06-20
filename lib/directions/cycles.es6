@@ -12,7 +12,7 @@ Snakeskin.addDirective(
 			let parts = command.split(';');
 
 			if (parts.length !== 3) {
-				throw this.error('Invalid syntax');
+				throw this.error(`Invalid "for" declaration (${command})`);
 			}
 
 			let rgxp = /var /;
@@ -21,6 +21,7 @@ Snakeskin.addDirective(
 					this.multiDeclVar(parts[0].replace(rgxp, '')) :
 					this.prepareOutput(parts[0], true)
 				) +
+
 				this.prepareOutput(parts.slice(1).join(';'), true) +
 			') {');
 		}
@@ -38,7 +39,7 @@ Snakeskin.addDirective(
 	function (command) {
 		if (this.structure.name == 'do') {
 			if (this.isSimpleOutput()) {
-				this.save('} while (' + this.prepareOutput(command, true) + ');');
+				this.save(`} while (${this.prepareOutput(command, true)});`);
 			}
 
 			Snakeskin.Directions['end'](this);
@@ -46,7 +47,7 @@ Snakeskin.addDirective(
 		} else {
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				this.save('while (' + this.prepareOutput(command, true) + ') {');
+				this.save(`while (${this.prepareOutput(command, true)}) {`);
 			}
 		}
 	}
@@ -94,11 +95,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'repeat') {
-			throw this.error('Directive "' + this.name + '" can only be used with a "repeat"');
+			throw this.error(`Directive "${this.name}" can only be used with a "repeat"`);
 		}
 
 		if (this.isSimpleOutput()) {
-			this.save('} while (' + this.prepareOutput(command, true) + ');');
+			this.save(`} while (${this.prepareOutput(command, true)});`);
 		}
 
 		Snakeskin.Directions['end'](this);
@@ -116,13 +117,15 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 
 		if (!this.hasParent({
+
 			'repeat': true,
 			'while': true,
 			'do': true,
 			'forEach': true,
 			'forIn': true
+
 		})) {
-			throw this.error('Directive "' + this.name + '" can only be used with a cycles');
+			throw this.error(`Directive "${this.name}" can only be used with a cycles`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -143,13 +146,15 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 
 		if (!this.hasParent({
+
 			'repeat': true,
 			'while': true,
 			'do': true,
 			'forEach': true,
 			'forIn': true
+
 		})) {
-			throw this.error('Directive "' + this.name + '" can only be used with a cycles');
+			throw this.error(`Directive "${this.name}" can only be used with a cycles`);
 		}
 
 		if (this.isSimpleOutput()) {
