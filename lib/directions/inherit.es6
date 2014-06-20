@@ -16,17 +16,9 @@ Snakeskin.addDirective(
 			let obj = this.blockStructure;
 			let cache;
 
-			while (1) {
+			while (true) {
 				if (table[obj.name]) {
-					switch (obj.name) {
-						case 'proto': {
-							cache = protoCache[this.parentTplName][obj.params.name];
-						} break;
-
-						case 'block': {
-							cache = blockCache[this.parentTplName][obj.params.name];
-						} break;
-					}
+					cache = (obj.name === 'proto' ? protoCache : blockCache)[this.parentTplName][obj.params.name];
 
 					if (cache) {
 						break;
