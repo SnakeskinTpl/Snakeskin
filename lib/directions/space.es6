@@ -59,10 +59,10 @@ Snakeskin.addDirective(
 		for (let i = arr.length; i--;) {
 			if (arr[i]) {
 				if (arr[i].length !== 2 || arr[i].charAt(0) !== '%') {
-					throw this.error('Invalid syntax');
+					throw this.error(`Invalid "ignore" declaration: ${arr[i]}`);
 				}
 
-				rgxp += '\\' + arr[i].charAt(1);
+				rgxp += `\\${arr[i].charAt(1)}`;
 			}
 		}
 

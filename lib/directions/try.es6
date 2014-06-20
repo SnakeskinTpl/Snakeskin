@@ -23,11 +23,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'try') {
-			throw this.error('Directive "' + this.name + '" can only be used with a "try"');
+			throw this.error(`Directive "${this.name}" can only be used with a "try"`);
 		}
 
 		if (this.isSimpleOutput()) {
-			this.save('} catch (' + this.declVar(command) + ') {');
+			this.save(`} catch (${this.declVar(command)}) {`);
 		}
 	}
 );
@@ -41,7 +41,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.structure.name !== 'try') {
-			throw this.error('Directive "' + this.name + '" can only be used with a "try"');
+			throw this.error(`Directive "${this.name}" can only be used with a "try"`);
 		}
 
 		if (this.isSimpleOutput()) {
