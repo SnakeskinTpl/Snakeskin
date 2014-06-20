@@ -4,22 +4,34 @@
  * @param {string} name - название добавляемой директивы
  * @param {Object} params - дополнительные параметры
  *
- * @param {?boolean=} [params.text=false] - если true, то декларируется, что директива выводится как текст
- * @param {?string=} [params.placement] - если указано, то делается проверка
+ * @param {?boolean=} [params.text=false] - если true, то декларируется,
+ *     что директива выводится как текст
+ *
+ * @param {?string=} [params.placement] - если параметр задан, то делается проверка
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
  * @param {?boolean=} [params.sys=false] - если true, то директива считается системной
+ *     (например, block или proto, т.е. которые участвуют только на этапе трансляции)
  *
- * @param {Object} [params.replacers] - объект коротких сокращений директивы
- * @param {Object} [params.strongDirs] - объект директив, которые могут быть вложены в исходную
+ * @param {Object} [params.replacers] - таблица коротких сокращений директивы
+ *     replacers: {
+ *         // В ключе должно быть не более 2-х символов
+ *         '?': (cmd) => cmd.replace(/^\?/, 'void ')
+ *     }
+ *
+ * @param {Object} [params.strongDirs] - таблица директив, которые могут быть вложены в исходную
+ *     strongDirs: {
+ *         'case': true,
+ *         'default': true
+ *     }
  *
  * @param {function(this:DirObj, string, number, (boolean|number))} constr - конструктор директивы
- * @param {?function(this:DirObj, string, number, (boolean|number))=} opt_end - окончание (деструктор) директивы
+ * @param {?function(this:DirObj, string, number, (boolean|number))=} opt_destr - деструктор директивы
  */
-Snakeskin.addDirective = function (name, params, constr, opt_end) {
+Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 	params = params || {};
-	sysDirs[name] = !!params.sys;
+	sysDirs[name] = Boolean(params.sys);
 
 	if (params.replacers) {
 		let repls = params.replacers;
@@ -38,27 +50,27 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		switch (params.placement) {
 			case 'template': {
 				if (!dir.structure.parent) {
-					throw dir.error('Directive "' + name + '" can only be used within a "template", "interface", "placeholder" or "proto"');
+					throw dir.error(`Directive "${name}" can only be used within a "template", "interface", "placeholder" or "proto"`);
 				}
 			} break;
 
 			case 'global': {
 				if (dir.structure.parent) {
-					throw dir.error('Directive "' + name + '" can be used only within the global space');
+					throw dir.error(`Directive "${name}" can be used only within the global space`);
 				}
 			} break;
 
 			default: {
 				if (params.placement) {
 					if (dir.hasParent(params.placement)) {
-						throw dir.error('Directive "' + name + '" can be used only within a "' + params.placement + '"');
+						throw dir.error(`Directive "${name}" can be used only within a "${params.placement}"`);
 					}
 				}
 			}
 		}
 
 		if (params.notEmpty && !command) {
-			throw this.error('Invalid syntax, directive "' + name + '" should have a body');
+			throw this.error(`Invalid syntax, directive "${name}" should have a body`);
 		}
 
 		dir.name = name;
@@ -96,7 +108,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_end) {
 		}
 	};
 
-	Snakeskin.Directions[name + 'End'] = opt_end;
+	Snakeskin.Directions[`${name}End`] = opt_destr;
 };
 
 //#include ./directions/bem.js
