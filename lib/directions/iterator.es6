@@ -264,71 +264,76 @@ Snakeskin.addDirective(
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			let parts = command.split('=>'),
-				val = parts[0];
+				obj = parts[0];
 
 			if (!parts.length || parts.length > 2) {
 				throw this.error(`Invalid "${this.name}" declaration (${command})`);
 			}
 
-			let args = parts[1] ? parts[1].trim().split(',') : [];
-			let tmp = this.multiDeclVar('__TMP__ = ' + val),
-				cache = this.prepareOutput('__TMP__', true);
+			let args = parts[1] ?
+				parts[1].trim().split(',') : [];
 
-			let oLength = '';
+			let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
+				cacheObj = this.prepareOutput('__TMP__', true);
+
+			let objLength = '';
 			if (args.length >= 6) {
-				oLength +=
-					this.multiDeclVar('__TMP_LENGTH__ = 0') +
-					'for (' + this.multiDeclVar('key', false) + 'in ' + cache + ') {' +
-						this.prepareOutput('__TMP_LENGTH__++;', true) +
-					'}';
+				objLength += `
+					${this.multiDeclVar('__TMP_LENGTH__ = 0')}
+					for (${this.multiDeclVar('key', false)} in ${cacheObj}) {
+						${this.prepareOutput('__TMP_LENGTH__++;', true)}
+					}
+				`;
 			}
 
-			let resStr =
-				tmp +
-				'if (' + cache + ') {' +
-					oLength +
-					this.multiDeclVar('__I__ = -1') +
-					'for (' + this.multiDeclVar('__KEY__', false) + 'in ' + cache + ') {' +
-						this.prepareOutput('__I__++;', true) +
+			let resStr = `
+				${tmpObj}
+				if (${cacheObj}) {
+					${objLength}
+					${this.multiDeclVar('__I__ = -1')}
+					for (${this.multiDeclVar('__KEY__', false)} in ${cacheObj}) {
+						${this.prepareOutput('__I__++;', true)}
+			`;
 
-						(() => {
-							var str = '';
+			resStr += (() => {
+				var str = '';
 
-							for (let i = 0; i < args.length; i++) {
-								switch (i) {
-									case 0: {
-										str += this.multiDeclVar(args[i] + ' = __TMP__[__KEY__]');
-									} break;
+				for (let i = 0; i < args.length; i++) {
+					let tmp = args[i];
 
-									case 1: {
-										str += this.multiDeclVar(args[i] + ' = __KEY__');
-									} break;
+					switch (i) {
+						case 0: {
+							tmp += ' = __TMP__[__KEY__]';
+						} break;
 
-									case 2: {
-										str += this.multiDeclVar(args[i] + ' = __TMP__');
-									} break;
+						case 1: {
+							tmp += ' = __KEY__';
+						} break;
 
-									case 3: {
-										str += this.multiDeclVar(args[i] + ' = __I__');
-									} break;
+						case 2: {
+							tmp += ' = __TMP__';
+						} break;
 
-									case 4: {
-										str += this.multiDeclVar(args[i] + ' = __I__ === 0');
-									} break;
+						case 4: {
+							tmp += ' = __I__ === 0';
+						} break;
 
-									case 5: {
-										str += this.multiDeclVar(args[i] + ' = __I__ === __TMP_LENGTH__ - 1');
-									} break;
+						case 5: {
+							tmp += ' = __I__ === __TMP_LENGTH__ - 1';
+						} break;
 
-									case 6: {
-										str += this.multiDeclVar(args[i] + ' = __TMP_LENGTH__');
-									} break;
-								}
-							}
+						case 6: {
+							tmp += ' = __TMP_LENGTH__';
+						} break;
+					}
 
-							return str;
-						})()
-			;
+					if (i !== 3) {
+						str += this.multiDeclVar(tmp);
+					}
+				}
+
+				return str;
+			})();
 
 			this.save(resStr);
 		}
