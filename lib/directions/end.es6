@@ -17,11 +17,7 @@ Snakeskin.addDirective(
 		// Если в директиве end указано название закрываемой директивы,
 		// то проверяем, чтобы оно совпадало с реально закрываемой директивой
 		if (command && command !== struct.name) {
-			throw this.error('Invalid closing tag, expected: ' +
-				struct.name +
-				', declared: ' +
-				command
-			);
+			throw this.error(`Invalid closing tag, expected: ${struct.name}, declared: ${command}`);
 		}
 
 		if (strongDirs[struct.name]) {
@@ -35,8 +31,10 @@ Snakeskin.addDirective(
 			this.returnStrongDir = null;
 		}
 
-		if (Snakeskin.Directions[struct.name + 'End']) {
-			Snakeskin.Directions[struct.name + 'End'].apply(this, arguments);
+		var destruct = Snakeskin.Directions[`${struct.name}End`];
+
+		if (destruct) {
+			destruct.apply(this, arguments);
 
 		} else if (!struct.sys && this.isSimpleOutput()) {
 			this.save('};');
