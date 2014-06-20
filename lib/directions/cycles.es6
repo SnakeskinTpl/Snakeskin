@@ -12,7 +12,7 @@ Snakeskin.addDirective(
 			let parts = command.split(';');
 
 			if (parts.length !== 3) {
-				throw this.error(`Invalid "for" declaration (${command})`);
+				throw this.error(`Invalid "${this.name}" declaration (${command})`);
 			}
 
 			let rgxp = /var /;

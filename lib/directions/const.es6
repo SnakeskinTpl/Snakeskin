@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 			let parts = command.split('=');
 
 			if (!parts[1] || !parts[1].trim()) {
-				throw this.error(`Invalid "const" declaration (${command})`);
+				throw this.error(`Invalid "${this.name}" declaration (${command})`);
 			}
 
 			let name = parts[0].trim(),
