@@ -193,14 +193,14 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
 	}
 
 	var tmp = str.substring(0, length - 1),
-		lastInd = null;
+		lastInd = void 0;
 
 	var i = tmp.length;
 	while (i-- && opt_wordOnly) {
 		if (tmp.charAt(i) === ' ') {
 			lastInd = i;
 
-		} else if (lastInd !== null) {
+		} else if (lastInd !== void 0) {
 			break;
 		}
 	}

@@ -18,11 +18,14 @@ DirObj.prototype.genErrorAdvInfo = function (opt_obj) {
 		}
 
 		if (!opt_obj[key].innerHTML) {
-			str += key + ': ' + opt_obj[key] + ', ';
+			str += `${key}: ${opt_obj[key]}, `;
 
 		} else {
-			str += key + ': (class: ' + (opt_obj[key].className || 'undefined') + ', id: ' +
-				(opt_obj[key].id || 'undefined') + '), ';
+			str += `
+				${key}: (
+					class: ${opt_obj[key].className || 'undefined'},
+					id: ${opt_obj[key].id || 'undefined'}
+				), `;
 		}
 	}
 
@@ -30,13 +33,13 @@ DirObj.prototype.genErrorAdvInfo = function (opt_obj) {
 };
 
 /**
- * Генерировать ошибку
+ * Генерировать заданную ошибку
  *
  * @param {string} msg - сообщение ошибки
  * @return {!Error}
  */
 DirObj.prototype.error = function (msg) {
-	var error = new Error(msg + ', ' + this.genErrorAdvInfo());
+	var error = new Error(`${msg}, ${this.genErrorAdvInfo()}`);
 	error.name = 'Snakeskin Error';
 	return error;
 };
