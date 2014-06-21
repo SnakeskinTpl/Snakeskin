@@ -175,7 +175,8 @@ Snakeskin.DirObj = DirObj;
 DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 	if (!this.tplName || write[this.tplName] !== false || opt_interface) {
 		if (opt_jsDoc) {
-			this.res = this.res.substring(0, opt_jsDoc) + str + this.res.substring(opt_jsDoc);
+			let pos = Number(opt_jsDoc);
+			this.res = this.res.substring(0, pos) + str + this.res.substring(pos);
 
 		} else {
 			this.res += str;
@@ -251,9 +252,11 @@ DirObj.prototype.initTemplateCache = function (tplName) {
  * @param {Object=} [opt_vars] - локальные переменные директивы
  * @return {!DirObj}
  */
-DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars = {}) {
+DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
+	opt_vars = opt_vars || {};
 	opt_name = opt_name || this.name;
 	opt_params = opt_params || {};
+
 	this.inlineDir = false;
 
 	var vars = opt_vars || {};
@@ -334,9 +337,9 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars = {}) {
  * @param {Object=} [opt_params] - дополнительные параметры директивы
  * @return {!DirObj}
  */
-DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
+DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
+	opt_params = opt_params || {};
 	opt_name = opt_name || this.name;
-	this.inlineDir = true;
 
 	var obj = {
 		name: opt_name,
@@ -344,6 +347,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
 		params: opt_params
 	};
 
+	this.inlineDir = true;
 	this.structure.childs.push(obj);
 	this.structure = obj;
 
@@ -367,28 +371,25 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params = {}) {
  * @return {!DirObj}
  */
 DirObj.prototype.endDir = function () {
-	var name = this.structure.name;
-	this.structure = this.structure.parent;
-
-	if (this.blockStructure && (name === 'block' || name === 'proto')) {
+	if (this.blockStructure && {'block': true, 'proto': true}[this.structure.name]) {
 		this.blockStructure = this.blockStructure.parent;
 	}
 
+	this.structure = this.structure.parent;
 	return this;
 };
-
 /**
  * Проверить начилие указанной директивы в цепочке структуры,
  * начиная с активной
  *
- * @param {(string|!Object)} name - название директивы или объект названий
+ * @param {(string|!Object)} name - название директивы или таблица названий
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
  * @return {boolean}
  */
 DirObj.prototype.has = function (name, opt_obj) {
 	var obj = opt_obj || this.structure;
 
-	while (1) {
+	while (true) {
 		if (name[obj.name] || obj.name === name) {
 			return true;
 
@@ -405,7 +406,7 @@ DirObj.prototype.has = function (name, opt_obj) {
  * Проверить начилие указанной директивы в цепочке структуры
  * (начальная активная директива исключается)
  *
- * @param {(string|!Object)} name - название директивы или объект названий
+ * @param {(string|!Object)} name - название директивы или таблица названий
  * @return {boolean}
  */
 DirObj.prototype.hasParent = function (name) {
@@ -420,7 +421,7 @@ DirObj.prototype.hasParent = function (name) {
  * Проверить начилие указанной директивы в цепочке блочной структуры
  * (начальная активная директива исключается)
  *
- * @param {(string|!Object)} name - название директивы или объект названий
+ * @param {(string|!Object)} name - название директивы или таблица названий
  * @return {boolean}
  */
 DirObj.prototype.hasParentBlock = function (name) {
@@ -438,7 +439,9 @@ DirObj.prototype.hasParentBlock = function (name) {
  * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
  * @return {string}
  */
-DirObj.prototype.declVar = function (varName, opt_protoParams = false) {
+DirObj.prototype.declVar = function (varName, opt_protoParams) {
+	opt_protoParams = opt_protoParams || false;
+
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
 	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
@@ -469,7 +472,8 @@ DirObj.prototype.declVar = function (varName, opt_protoParams = false) {
  * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
  * @return {string}
  */
-DirObj.prototype.multiDeclVar = function (str, opt_end = true) {
+DirObj.prototype.multiDeclVar = function (str, opt_end) {
+	opt_end = opt_end !== false;
 	var isSys = 0,
 		cache = '';
 
