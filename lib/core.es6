@@ -32,6 +32,8 @@ var Snakeskin = {
 
 	/**
 	 * Кеш шаблонов
+	 *
+	 * @expose
 	 * @type {!Object}
 	 */
 	cache: {}
