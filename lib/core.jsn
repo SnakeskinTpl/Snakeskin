@@ -1,6 +1,6 @@
 //#include ./es5shim.live.js
 
-/** @namespace */
+/** @type {!Object} */
 var Snakeskin = {
 	/**
 	 * Версия Snakeskin
@@ -10,19 +10,23 @@ var Snakeskin = {
 
 	/**
 	 * Пространство имён для директив
-	 * @namespace
+	 * @type {!Object}
 	 */
 	Directions: {},
 
 	/**
 	 * Пространство имён для фильтров
-	 * @namespace
+	 *
+	 * @expose
+	 * @type {!Object}
 	 */
 	Filters: {},
 
 	/**
-	 * Пространство имён для супер глобальных переменных
-	 * @namespace
+	 * Пространство имён для суперглобальных переменных
+	 *
+	 * @expose
+	 * @type {!Object}
 	 */
 	Vars: {},
 
@@ -33,7 +37,7 @@ var Snakeskin = {
 	cache: {}
 };
 
-((node) => {
+((global, node) => {
 
 	//#include ./filters.js
 
@@ -52,6 +56,9 @@ var Snakeskin = {
 
 	if (node) {
 		module.exports = Snakeskin;
+
+	} else {
+		global['Snakeskin'] = Snakeskin;
 	}
 
-})(typeof window === 'undefined');
+})(this, typeof window === 'undefined' && typeof exports !== 'undefined');
