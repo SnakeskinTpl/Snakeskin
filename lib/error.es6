@@ -1,31 +1,25 @@
 /**
  * Вывести дополнительную информацию об ошибке
- *
- * @param {Object=} [opt_obj] - дополнительная информация
  * @return {string}
  */
-DirObj.prototype.genErrorAdvInfo = function (opt_obj) {
-	opt_obj = opt_obj || this.info;
+DirObj.prototype.genErrorAdvInfo = function () {
+	var info = this.info;
 	var str = '';
 
-	if (!opt_obj) {
+	if (!info) {
 		return str;
 	}
 
-	for (let key in opt_obj) {
-		if (!opt_obj.hasOwnProperty(key)) {
+	for (let key in info) {
+		if (!info.hasOwnProperty(key)) {
 			continue;
 		}
 
-		if (!opt_obj[key].innerHTML) {
-			str += `${key}: ${opt_obj[key]}, `;
+		if (!info[key].innerHTML) {
+			str += `${key}: ${info[key]}, `;
 
 		} else {
-			str += `
-				${key}: (
-					class: ${opt_obj[key].className || 'undefined'},
-					id: ${opt_obj[key].id || 'undefined'}
-				), `;
+			str += `${key}: (class: ${info[key].className || 'undefined'}, id: ${info[key].id || 'undefined'}), `;
 		}
 	}
 
