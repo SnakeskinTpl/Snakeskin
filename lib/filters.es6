@@ -1,7 +1,8 @@
 /**
  * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
  *
- * @param {!Object} filters - исходный объект
+ * @expose
+ * @param {!Object} filters - импортируемый объект
  * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
  */
 Snakeskin.importFilters = function (filters, opt_namespace) {
@@ -40,18 +41,20 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
 	escapeHTML = (s) => entityMap[s];
 
 /**
- * Экранирование строки html
+ * Экранирование HTML сущностей
  *
+ * @expose
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters.html = function (str) {
-	return (str + '').replace(escapeHTMLRgxp, escapeHTML);
+	return String(str).replace(escapeHTMLRgxp, escapeHTML);
 };
 
 /**
  * Замена undefined на ''
  *
+ * @expose
  * @param {*} str - исходная строка
  * @return {*}
  */
@@ -72,106 +75,111 @@ var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
 	uescapeHTML = (s) => uentityMap[s];
 
 /**
- * Снять экранирование строки html
+ * Снятие экранирования HTML сущностей
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['uhtml'] = function (str) {
-	return (str + '').replace(uescapeHTMLRgxp, uescapeHTML);
+	return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
 var stripTagsRgxp = /<\/?[^>]+>/g;
 
 /**
- * Удалить html теги из строки
+ * Удаление HTML тегов
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['stripTags'] = function (str) {
-	return (str + '').replace(stripTagsRgxp, '');
+	return String(str).replace(stripTagsRgxp, '');
 };
 
 var uriO = /%5B/g,
 	uriC = /%5D/g;
 
 /**
- * Кодировать URL - https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
+ * Кодирование URL
  *
+ * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['uri'] = function (str) {
-	return encodeURI(str + '').replace(uriO, '[').replace(uriC, ']');
+	return encodeURI(String(str))
+		.replace(uriO, '[')
+		.replace(uriC, ']');
 };
 
 /**
- * Перевести строку в верхний регистр
+ * Перевод строки в верхний регистр
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['upper'] = function (str) {
-	return (str + '').toUpperCase();
+	return String(str).toUpperCase();
 };
 
 /**
- * Перевести первую букву в верхний регистр
+ * Перевод первой буквы строки в верхний регистр
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['ucfirst'] = function (str) {
-	str += '';
+	str = String(str);
 	return str.charAt(0).toUpperCase() + str.substring(1);
 };
 
 /**
- * Перевести строку в нижний регистр
+ * Перевод строки в нижний регистр
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['lower'] = function (str) {
-	return (str + '').toLowerCase();
+	return String(str).toLowerCase();
 };
 
 /**
- * Перевести первую букву в нижний регистр
+ * Перевод первой буквы строки в нижний регистр
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['lcfirst'] = function (str) {
-	str += '';
+	str = String(str);
 	return str.charAt(0).toLowerCase() + str.substring(1);
 };
 
 /**
- * Обрезать крайние пробелы
+ * Срез крайних пробелов строки
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['trim'] = function (str) {
-	return (str + '').trim();
+	return String(str).trim();
 };
 
 var spaceCollapseRgxp = /\s{2,}/g;
 
 /**
- * Свернуть пробелы в один и срезать крайние
+ * Срез крайних пробелов строки
+ * и свёртывание остальных пробелов в один
  *
  * @param {*} str - исходная строка
  * @return {string}
  */
 Snakeskin.Filters['collapse'] = function (str) {
-	return (str + '').replace(spaceCollapseRgxp, ' ').trim();
+	return String(str).replace(spaceCollapseRgxp, ' ').trim();
 };
 
 /**
- * Обрезать строку до нужной длины (в конце, если нужно, ставится троеточие)
+ * Обрезание строки до заданной длины
+ * (в конце, если нужно, ставится троеточие)
  *
  * @param {*} str - исходная строка
  * @param {number} length - максимальная длина текста
@@ -179,20 +187,20 @@ Snakeskin.Filters['collapse'] = function (str) {
  * @return {string}
  */
 Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
-	str += '';
+	str = String(str);
 	if (!str || str.length <= length) {
 		return str;
 	}
 
 	var tmp = str.substring(0, length - 1),
-		lastInd;
+		lastInd = null;
 
 	var i = tmp.length;
 	while (i-- && opt_wordOnly) {
 		if (tmp.charAt(i) === ' ') {
 			lastInd = i;
 
-		} else if (lastInd !== void 0) {
+		} else if (lastInd !== null) {
 			break;
 		}
 	}
@@ -201,7 +209,7 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
 };
 
 /**
- * Составить строку из повторений подстроки
+ * Генерация строки из повторений исходной подстроки
  *
  * @param {*} str - исходная строка
  * @param {?number=} [opt_num=2] - число повторений
@@ -212,18 +220,18 @@ Snakeskin.Filters['repeat'] = function (str, opt_num) {
 };
 
 /**
- * Удалить все подстроки в строке
+ * Удаление подстроки из строки
  *
  * @param {*} str - исходная строка
  * @param {(string|RegExp)} search - искомая подстрока
  * @return {string}
  */
 Snakeskin.Filters['remove'] = function (str, search) {
-	return (str + '').replace(search, '');
+	return String(str).replace(search, '');
 };
 
 /**
- * Заменить все подстроки в строке
+ * Замена подстроки в строке
  *
  * @param {*} str - исходная строка
  * @param {(string|!RegExp)} search - искомая подстрока
@@ -231,11 +239,11 @@ Snakeskin.Filters['remove'] = function (str, search) {
  * @return {string}
  */
 Snakeskin.Filters['replace'] = function (str, search, replace) {
-	return (str + '').replace(search, replace);
+	return String(str).replace(search, replace);
 };
 
 /**
- * Преобразовать объект в строку JSON
+ * Преобразование объекта в JSON
  *
  * @param {(Object|Array|string|number|boolean)} obj - исходный объект
  * @return {string}
@@ -245,5 +253,5 @@ Snakeskin.Filters['json'] = function (obj) {
 		return JSON.stringify(obj);
 	}
 
-	return (obj + '');
+	return String(str);
 };
