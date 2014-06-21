@@ -43,6 +43,12 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 					def :
 				val || 'void 0'
 			) + ';';
+
+		/*str += `
+			var ${arg} = ${def !== void 0 ?
+				val ? `${val} != null ? ${val} : ${def} : ${def} : ${val} || void 0`
+			};
+		`;*/
 	}
 
 	return str;
@@ -77,7 +83,7 @@ Snakeskin.addDirective(
 					line: 0
 				};
 
-				this.preProtos[this.tplName].startLine = this.info.line;
+				this.preProtos[this.tplName].startLine = this.info['line'];
 				this.protoLink = name;
 			}
 		}
@@ -140,7 +146,7 @@ Snakeskin.addDirective(
 			let obj = this.preProtos[this.tplName];
 
 			obj.text += this.source.substring(lastProto.from, this.i + 1);
-			obj.line += this.info.line - obj.startLine;
+			obj.line += this.info['line'] - obj.startLine;
 
 			this.protoLink = null;
 			this.tplName = null;
