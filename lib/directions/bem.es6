@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 			'}'))();
 
 		} catch (ignore) {
-			throw this.error(`Invalid "${this.name}" declaration (${command})`);
+			throw this.error(`Invalid "setBEM" declaration: ${command}`);
 		}
 	}
 );
@@ -51,12 +51,12 @@ Snakeskin.addDirective(
 			lastBEM.original = bem[bemName] &&
 				bem[bemName].tag;
 
-			this.save(
-				'__SNAKESKIN_RESULT__ += \'' +
-					'<' + (lastBEM.tag || lastBEM.original || 'div') + ' class="i-block" data-params="{name: \\\'' +
-					this.replaceTplVars(command.replace(/\s+/g, ' ')) +
-				'}">\';'
-			);
+			this.save(`
+				__SNAKESKIN_RESULT__ += '<${lastBEM.tag || lastBEM.original || 'div'}
+					class="i-block"
+					data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
+				>';
+			`);
 		}
 	},
 

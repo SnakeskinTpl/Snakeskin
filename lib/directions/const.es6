@@ -62,9 +62,11 @@ Snakeskin.addDirective(
 
 			} else {
 				this.startInlineDir('globalVar');
-				this.save('if (typeof Snakeskin !== \'undefined\') { Snakeskin.Vars.' +
-					this.prepareOutput(command, true, null, true) +
-				'; }');
+				this.save(`
+					if (typeof Snakeskin !== 'undefined') {
+						Snakeskin.Vars.${this.prepareOutput(command, true, null, true)};
+					}
+				`);
 			}
 
 		// Вывод значения
