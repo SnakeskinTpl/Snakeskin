@@ -39,7 +39,7 @@ Snakeskin.addDirective(
 		// Начальная позиция шаблона
 		// +1 => } >>
 		this.startTemplateI = this.i + 1;
-		this.startTemplateLine = this.info.line;
+		this.startTemplateLine = this.info['line'];
 
 		// Имя + пространство имён шаблона
 		try {
@@ -55,7 +55,7 @@ Snakeskin.addDirective(
 		}
 
 		var iface = this.name === 'interface';
-		this.info.template = tplName;
+		this.info['template'] = tplName;
 
 		if (this.name !== 'template') {
 			if (!write[tplName]) {
@@ -106,7 +106,7 @@ Snakeskin.addDirective(
 			throw this.error('Invalid syntax');
 		}
 
-		var pos = '';
+		var pos;
 
 		// Для возможности удобного пост-парсинга,
 		// каждая функция снабжается комментарием вида:
@@ -304,7 +304,7 @@ Snakeskin.addDirective(
 				this.preProtos[tplName].text +
 				this.source.substring(this.i + 1);
 
-			this.info.line -= this.preProtos[tplName].line;
+			this.info['line'] -= this.preProtos[tplName].line;
 			delete this.preProtos[tplName];
 		}
 	}),
@@ -347,7 +347,7 @@ Snakeskin.addDirective(
 		// и обработка шаблона начинается заново,
 		// но уже как атомарного (без наследования)
 		if (this.parentTplName) {
-			this.info.line = this.startTemplateLine;
+			this.info['line'] = this.startTemplateLine;
 			this.source = this.source.substring(0, this.startTemplateI) +
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);
@@ -415,7 +415,7 @@ Snakeskin.addDirective(
 		this.canWrite = true;
 		this.tplName = null;
 
-		delete this.info.template;
+		delete this.info['template'];
 	})
 );
 
