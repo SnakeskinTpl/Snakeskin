@@ -32,23 +32,11 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 		let arg = protoArgs[i][0],
 			def = protoArgs[i][1];
 
-		str += 'var ' + arg + ' = ' +
-			(def !== void 0 ?
-				val ?
-					'typeof ' + val + ' !== \'undefined\' && ' +
-						val + ' !== null ? ' +
-						val +
-						':' +
-						def :
-					def :
-				val || 'void 0'
-			) + ';';
-
-		/*str += `
+		str += `
 			var ${arg} = ${def !== void 0 ?
-				val ? `${val} != null ? ${val} : ${def} : ${def} : ${val} || void 0`
+				val ? `${val} != null ? ${val} : ${def}` : def : val || 'void 0'
 			};
-		`;*/
+		`;
 	}
 
 	return str;
@@ -66,7 +54,7 @@ Snakeskin.addDirective(
 		var name = command.match(/[^(]+/)[0];
 
 		if (!name) {
-			throw this.error('Invalid prototype declaration');
+			throw this.error(`Invalid "${this.name}" declaration (${command})`);
 		}
 
 		var parts = name.split('->');
@@ -89,7 +77,7 @@ Snakeskin.addDirective(
 		}
 
 		if (!name || !this.tplName) {
-			throw this.error('Invalid prototype declaration');
+			throw this.error(`Invalid "${this.name}" declaration (${command})`);
 		}
 
 		this.startDir(null, {
@@ -100,7 +88,7 @@ Snakeskin.addDirective(
 
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
-				throw this.error('Proto "' + name + '" is already defined');
+				throw this.error(`Proto "${name}" is already defined`);
 			}
 
 			let args = command.match(/\((.*?)\)/),
@@ -113,7 +101,7 @@ Snakeskin.addDirective(
 					argsList = args[1].split(',');
 
 				} catch (ignore) {
-					throw this.error('Invalid syntax');
+					throw this.error(`Invalid "${this.name}" declaration (${command})`);
 				}
 
 				for (let i = 0; i < argsList.length; i++) {
@@ -168,12 +156,14 @@ Snakeskin.addDirective(
 
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
-					'{template ' + tplName + '()}' +
-						'{var __I_PROTO__ = 1}' +
-						'{__protoWhile__ __I_PROTO__--}' +
-							this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1) +
-						'{end}' +
-					'{end}',
+					`
+						{template ${tplName}()}
+							{var __I_PROTO__ = 1}
+							{__protoWhile__ __I_PROTO__--}
+								${this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1)}
+							{end}
+						{end}
+					`,
 
 					null,
 					null,
@@ -290,7 +280,7 @@ Snakeskin.addDirective(
 					this.backTableI++;
 				}
 
-				let rand = Math.random() + '';
+				let rand = Math.random().toString();
 
 				this.backTable[name].push({
 					proto: selfProto ? cache[selfProto.name] : null,

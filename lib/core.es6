@@ -41,7 +41,7 @@ var Snakeskin = {
 
 var isNode = typeof window === 'undefined' && typeof exports !== 'undefined';
 
-((global) => {
+((nm) => {
 	//#include ./filters.js
 
 	//#if compiler
@@ -58,10 +58,10 @@ var isNode = typeof window === 'undefined' && typeof exports !== 'undefined';
 	//#endif
 
 	if (isNode) {
-		module.exports = Snakeskin;
+		module['exports'] = Snakeskin;
 
 	} else {
-		global['Snakeskin'] = Snakeskin;
+		nm['Snakeskin'] = Snakeskin;
 	}
 
 })(this);
