@@ -12,21 +12,21 @@ snakeskin.compile(
 	{context: tpls}
 );
 
-var asserts = [];
+/*var asserts = [];
 
-fs.readdirSync(testFolder).forEach(function(file)  {
+fs.readdirSync(testFolder).forEach((file) => {
 	if (path.extname(file) === '.ss') {
-		var src = path.join(testFolder, file);
-		var txt = String(fs.readFileSync(src)).split('###');
+		let src = path.join(testFolder, file);
+		let txt = String(fs.readFileSync(src)).split('###');
 
-		txt.forEach(function(el, i)  {
+		txt.forEach((el, i) => {
 			txt[i] = el.trim();
 		});
 
-		var starts = txt[0].split(/[\n\r]+/);
-		var results = txt[2].split('***');
+		let starts = txt[0].split(/[\n\r]+/);
+		let results = txt[2].split('***');
 
-		var obj = {
+		let obj = {
 			tpl: txt[1],
 			id: path.basename(file, '.ss'),
 			js: []
@@ -35,32 +35,32 @@ fs.readdirSync(testFolder).forEach(function(file)  {
 		asserts.push(obj);
 
 		try {
-			fs.writeFileSync((("" + src) + ".js"), snakeskin.compile(txt[1], true));
+			fs.writeFileSync(`${src}.js`, snakeskin.compile(txt[1], true));
 
 		} catch (err) {
-			console.error(("File: " + file));
+			console.error(`File: ${file}`);
 			throw err;
 		}
 
-		var tpl = require((("./tests/" + file) + ".js")).init(snakeskin);
+		let tpl = require(`./tests/${file}.js`).init(snakeskin);
 
-		starts.forEach(function(el, i)  {
-			var params = el.split(' ; ');
+		starts.forEach((el, i) => {
+			let params = el.split(' ; ');
 
 			try {
-				obj.js.push((("equal(" + (params[0])) + ("(" + (params.slice(1))) + (").trim(), '" + (results[i].trim())) + "');"));
+				obj.js.push(`equal(${params[0]}(${params.slice(1)}).trim(), '${results[i].trim()}');`);
 
 				assert.equal(
-					eval((("tpl." + (params[0])) + ("(" + (params.slice(1))) + ").trim()")),
+					eval(`tpl.${params[0]}(${params.slice(1)}).trim()`),
 					results[i].trim()
 				);
 
 			} catch (err) {
-				console.error(("File: " + file));
+				console.error(`File: ${file}`);
 				throw err;
 			}
 		});
 	}
-});
+});*/
 
-fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
+//fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
