@@ -33,7 +33,7 @@ var replacers = {},
 	bem = {},
 	write = {};
 
-const sysConst = {
+var sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true,
 	'__I_PROTO__': true,
@@ -45,13 +45,13 @@ const sysConst = {
 	'$_': true
 };
 
-const escapeMap = {
+var escapeMap = {
 	'"': true,
 	'\'': true,
 	'/': true
 };
 
-const escapeEndMap = {
+var escapeEndMap = {
 	'-': true,
 	'+': true,
 	'*': true,

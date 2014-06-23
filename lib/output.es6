@@ -1,4 +1,4 @@
-const blackWordList = {
+var blackWordList = {
 	'+': true,
 	'++': true,
 	'-': true,
@@ -43,11 +43,11 @@ const blackWordList = {
 	'interface': true
 };
 
-const unaryBlackWordList = {
+var unaryBlackWordList = {
 	'new': true
 };
 
-const comboBlackWordList = {
+var comboBlackWordList = {
 	'var': true,
 	'const': true,
 	'let': true
