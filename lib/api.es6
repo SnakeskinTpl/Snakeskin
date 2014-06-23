@@ -218,7 +218,7 @@ DirObj.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function () {
-	return !!(
+	var res = (
 		!this.proto && !this.protoLink &&
 		(
 			(this.parentTplName && !this.hasParentBlock({
@@ -228,6 +228,8 @@ DirObj.prototype.isAdvTest = function () {
 			!this.parentTplName
 		)
 	);
+
+	return Boolean(res);
 };
 
 /**
@@ -286,7 +288,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		childs: [],
 		vars: vars,
 		params: opt_params,
-		sys: !!sysDirs[opt_name]
+		sys: Boolean(sysDirs[opt_name])
 	};
 
 	struct.childs.push(obj);
@@ -464,7 +466,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	struct.vars[varName] = {
 		value: realVar,
-		useWith: !!this.scope.length
+		useWith: Boolean(this.scope.length)
 	};
 
 	this.varCache[this.tplName][varName] = true;
@@ -528,7 +530,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	}
 
 	if (isSys) {
-		throw this.error('Invalid syntax');
+		throw this.error(`Invalid "var" declaration (${str})`);
 	}
 
 	return fin.slice(0, -1) + (opt_end ? ';' : '');
