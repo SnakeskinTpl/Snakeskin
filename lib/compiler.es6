@@ -403,7 +403,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		// Экспорт
 		if (cjs) {
 			new Function('exports', 'require', dir.res)(ctx, require);
-			ctx.init(Snakeskin);
+			ctx['init'](Snakeskin);
 			globalFnCache[cjs][text] = ctx;
 
 		// Простая компиляция
