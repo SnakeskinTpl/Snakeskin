@@ -1,6 +1,7 @@
 /**
  * Скомпилировать указанные шаблоны
  *
+ * @expose
  * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны, или исходный текст шаблонов
  *
  * @param {Object=} [opt_params] - дополнительные параметры запуска, или если true,
@@ -28,18 +29,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var ctx = isObj ? opt_params.context || {} : {};
 
 	opt_info = opt_info || {};
-	opt_info.line = opt_info.line || 1;
+	opt_info['line'] = opt_info['line'] || 1;
 
 	var html = src.innerHTML;
 
 	if (html) {
-		opt_info.node = src;
+		opt_info['isNode'] = src;
 		html = html.replace(/\s*?\n/, '');
 	}
 
 	var text = html || src;
 
-	if (node && commonJS && globalFnCache[commonJS][text]) {
+	if (isNode && commonJS && globalFnCache[commonJS][text]) {
 		let cache = globalFnCache[commonJS][text];
 
 		for (let key in cache) {
@@ -113,7 +114,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			rEl = el;
 
 		if (nextLineRgxp.test(el)) {
-			opt_info.line++;
+			opt_info['line']++;
 		}
 
 		if (whiteSpaceRgxp.test(el)) {
@@ -381,7 +382,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// Компиляция на сервере
-	if (node) {
+	if (isNode) {
 		// Экспорт
 		if (commonJS) {
 			new Function('exports', 'require', dir.res)(ctx, require);
@@ -399,7 +400,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	globalCache[commonJS][text] = dir.res;
-	if (!node && !commonJS) {
+	if (!isNode && !commonJS) {
 		setTimeout(() => {
 			try {
 				let blob = new Blob([dir.res], {type: 'application/javascript'});

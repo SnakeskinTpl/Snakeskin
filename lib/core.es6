@@ -39,8 +39,9 @@ var Snakeskin = {
 	cache: {}
 };
 
-((global, node) => {
+var isNode = typeof window === 'undefined' && typeof exports !== 'undefined';
 
+((global) => {
 	//#include ./filters.js
 
 	//#if compiler
@@ -56,11 +57,11 @@ var Snakeskin = {
 
 	//#endif
 
-	if (node) {
+	if (isNode) {
 		module.exports = Snakeskin;
 
 	} else {
 		global['Snakeskin'] = Snakeskin;
 	}
 
-})(this, typeof window === 'undefined' && typeof exports !== 'undefined');
+})(this);

@@ -42,6 +42,7 @@ const sysConst = {
 	'__I__': true,
 	'__TMP__': true,
 	'__TMP_LENGTH__': true,
+	'__TMP_KEYS__': true,
 	'__KEY__': true,
 	'$_': true
 };
