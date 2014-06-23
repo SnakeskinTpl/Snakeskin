@@ -39,7 +39,7 @@ var Snakeskin = {
 	cache: {}
 };
 
-var isNode = typeof window === 'undefined' && typeof exports !== 'undefined';
+const IS_NODE = typeof window === 'undefined' && typeof exports !== 'undefined';
 
 ((nm) => {
 	//#include ./filters.js
@@ -57,7 +57,7 @@ var isNode = typeof window === 'undefined' && typeof exports !== 'undefined';
 
 	//#endif
 
-	if (isNode) {
+	if (IS_NODE) {
 		module['exports'] = Snakeskin;
 
 	} else {

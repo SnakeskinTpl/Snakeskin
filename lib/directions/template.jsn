@@ -148,7 +148,7 @@ Snakeskin.addDirective(
 
 				this.save(
 					(pos = 'if (typeof ' + (this.commonJS ? 'exports.' : '') + str + ' === \'undefined\') { ' +
-						(this.commonJS ? 'exports.' : i === 1 ? isNode ? 'var ' : 'window.' : '') + str + ' = {};' +
+						(this.commonJS ? 'exports.' : i === 1 ? IS_NODE ? 'var ' : 'window.' : '') + str + ' = {};' +
 					'}'),
 
 					iface,
@@ -178,7 +178,7 @@ Snakeskin.addDirective(
 		// Без простраства имён
 		} else {
 			this.save(
-				(!isNode ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(',
+				(!IS_NODE ? 'window.' + tmpTplName + ' = ': '') + 'function ' + tmpTplName + '(',
 				iface
 			);
 		}
