@@ -1,8 +1,3 @@
-/**!
- * @status stable
- * @version 1.0.0
- */
-
 {template test(asserts)}
 	{cdata}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html>
@@ -13,7 +8,7 @@
 
 			<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
-			<script type="text/javascript" src="../build/snakeskin.js"></script>
+			<script type="text/javascript" src="../build/snakeskin.min.js"></script>
 			<script type="text/javascript">
 				Object.create = Object.create || function (obj) {
 					var F = function () {};
