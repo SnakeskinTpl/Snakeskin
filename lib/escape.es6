@@ -5,7 +5,9 @@
  * @return {string}
  */
 DirObj.prototype.applyDefEscape = function (str) {
-	return str.replace(/\\/gm, '\\\\').replace(/'/gm, '\\\'');
+	return str
+		.replace(/\\/gm, '\\\\')
+		.replace(/'/gm, '\\\'');
 };
 
 /**
@@ -28,7 +30,7 @@ if (typeof window === 'undefined') {
 //#include ../node_modules/escaper/lib/escaper.js
 
 /**
- * Заметить блоки вида ' ... ', " ... ", / ... /, // ..., /* ... *\/ на
+ * Заметить блоки вида ' ... ', " ... ", / ... /, ` ... `, // ..., /* ... *\/ на
  * __ESCAPER_QUOT__номер_ в указанной строке
  *
  * @param {string} str - исходная строка
