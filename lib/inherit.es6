@@ -11,20 +11,15 @@ DirObj.prototype.getExtStr = function (tplName) {
 	var from = 0,
 		advDiff = [];
 
-	function sornFn(a, b) {
-		if (a.val > b.val) {
-			return 1;
-		}
-
-		if (a.val === b.val) {
-			return 0;
-		}
-
-		return -1;
-	}
-
+	var sornFn = (a, b) => a.val - b.val;
 	var tb = table[tplName],
 		k;
+
+	var el,
+		prev;
+
+	var newFrom,
+		blockDiff;
 
 	// Цикл производит перекрытие и добавление новых блоков
 	// (новые блоки добавляются в конец шаблона, итерации 0 и 1),
@@ -32,13 +27,6 @@ DirObj.prototype.getExtStr = function (tplName) {
 	// а затем перекрытие и добавление прототипов (итерации 4 и 5),
 	// причём новые переменные и прототипы добавляются сразу за унаследованными
 	for (let i = 0; i < 6; i++) {
-		let el,
-			prev;
-
-		// Позиция для вставки новой переменной
-		// или нового блока прототипа
-		let newFrom;
-
 		// Блоки дочернего и родительского шаблона
 		if (i === 0) {
 			k = 'block_';
@@ -66,7 +54,6 @@ DirObj.prototype.getExtStr = function (tplName) {
 			newFrom = null;
 		}
 
-		let blockDiff;
 		for (let key in el) {
 			if (!el.hasOwnProperty(key)) {
 				continue;
