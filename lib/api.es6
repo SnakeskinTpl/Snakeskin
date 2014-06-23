@@ -87,7 +87,7 @@ function DirObj(src, params) {
 		name: 'root',
 		parent: null,
 		vars: params.vars || {},
-		childs: []
+		children: []
 	};
 
 	/**
@@ -291,20 +291,20 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	var obj = {
 		name: opt_name,
 		parent: struct,
-		childs: [],
+		children: [],
 		vars: vars,
 		params: opt_params,
 		sys: Boolean(sysDirs[opt_name])
 	};
 
-	struct.childs.push(obj);
+	struct.children.push(obj);
 	this.structure = obj;
 
 	if (this.blockStructure && {'block': true, 'proto': true}[opt_name]) {
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
-			childs: [],
+			children: [],
 			params: opt_params
 		};
 
@@ -327,17 +327,17 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 					this.blockTable[key] = true;
 				}
 
-				if (el.childs) {
-					deep(el.childs);
+				if (el.children) {
+					deep(el.children);
 				}
 			}
 		};
 
-		if (this.parentTplName && table[this.parentTplName][key] && table[this.parentTplName][key].childs) {
-			deep(table[this.parentTplName][key].childs);
+		if (this.parentTplName && table[this.parentTplName][key] && table[this.parentTplName][key].children) {
+			deep(table[this.parentTplName][key].children);
 		}
 
-		this.blockStructure.childs.push(sub);
+		this.blockStructure.children.push(sub);
 		this.blockStructure = sub;
 	}
 
@@ -362,7 +362,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 	};
 
 	this.inlineDir = true;
-	this.structure.childs.push(obj);
+	this.structure.children.push(obj);
 	this.structure = obj;
 
 	if (this.blockStructure && opt_name === 'const') {
@@ -373,7 +373,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 		};
 
 		this.blockTable[`${opt_name}_${opt_params.name}`] = sub;
-		this.blockStructure.childs.push(sub);
+		this.blockStructure.children.push(sub);
 		this.blockStructure = sub;
 	}
 
