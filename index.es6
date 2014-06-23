@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 global.Snakeskin = require('./snakeskin');
 var Program = require('commander');
 
@@ -38,7 +36,7 @@ function action(data) {
 				console.log(err);
 
 			} else {
-				console.log('File "' + file + '" has been successfully compiled (' + newFile + ').');
+				console.log(`File "${file}" has been successfully compiled (${newFile}).`);
 			}
 		});
 	}

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-var __NEJS_THIS__ = this;
 global.Snakeskin = require('./snakeskin');
 var Program = require('commander');
 
@@ -24,7 +23,6 @@ var file = Program.source,
 	newFile = Program.output || (file + '.js');
 
 function action(data) {
-	var __NEJS_THIS__ = this;
 	if (!data) {
 		Program.help();
 	}
@@ -35,21 +33,19 @@ function action(data) {
 		console.log(Snakeskin.compile(str, Program.commonjs, {file: file}));
 
 	} else {
-		fs.writeFile(newFile, Snakeskin.compile(str, Program.commonjs, {file: file}), function (err) {
-			
+		fs.writeFile(newFile, Snakeskin.compile(str, Program.commonjs, {file: file}), function(err)  {
 			if (err) {
 				console.log(err);
 
 			} else {
-				console.log('File "' + file + '" has been successfully compiled (' + newFile + ').');
+				console.log((("File \"" + file) + ("\" has been successfully compiled (" + newFile) + ")."));
 			}
 		});
 	}
 }
 
 if (file) {
-	jossy.compile(file, null, null, function (err, data) {
-		
+	jossy.compile(file, null, null, function(err, data)  {
 		if (err) {
 			console.log(err);
 

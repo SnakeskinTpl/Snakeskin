@@ -12,7 +12,7 @@ var path = require('path');
 		} else if (stats.isFile()) {
 			let ext = path.extname(el);
 
-			if (ext === '.jsn') {
+			if (ext === '.es6') {
 				let file = fs.readFileSync(src);
 
 				fs.writeFileSync(src, file + ' ');
