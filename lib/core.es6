@@ -4,6 +4,8 @@
 var Snakeskin = {
 	/**
 	 * Версия Snakeskin
+	 *
+	 * @expose
 	 * @type {!Array}
 	 */
 	VERSION: [3, 4, 0],
