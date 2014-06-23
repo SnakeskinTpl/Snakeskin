@@ -148,7 +148,7 @@ function DirObj(src, params) {
 	 * Результирующий JS код
 	 * @type {string}
 	 */
-	this.res = (!params.proto ? `/* ((${new Date().valueOf})) This code is generated automatically, don\'t alter it. */` : '') +
+	this.res = (!params.proto ? `/* ((${new Date().valueOf()})) This code is generated automatically, don\'t alter it. */` : '') +
 		(params.commonJS ? `
 			var Snakeskin = global.Snakeskin;
 

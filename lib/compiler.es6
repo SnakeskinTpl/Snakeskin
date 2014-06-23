@@ -33,7 +33,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		commonJS = opt_params;
 
 	} else {
-		commonJS = s(p.commonJS, p['commonJS']) !== false;
+		let cjs = s(p.commonJS, p['commonJS']);
+		commonJS = Boolean(cjs);
 	}
 
 	var ctx = s(p.context, p['context']) || {};

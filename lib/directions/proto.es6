@@ -293,7 +293,7 @@ Snakeskin.addDirective(
 					),
 
 					args: args,
-					recursive: !!proto || !!recursive
+					recursive: Boolean(proto || recursive)
 				});
 
 				this.save('/* __APPLY__' + this.tplName + '_' + name + '_' + rand + ' */');
