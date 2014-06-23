@@ -27,14 +27,12 @@ var paramsCache = {};
 // Карта наследований
 var extMap = {};
 
-// Кеширующие таблицы
 var replacers = {},
 	strongDirs = {},
 	sysDirs = {},
 	bem = {},
 	write = {};
 
-// Системные константы
 const sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true,
@@ -47,7 +45,6 @@ const sysConst = {
 	'$_': true
 };
 
-// Таблица символов для экранирования
 const escapeMap = {
 	'"': true,
 	'\'': true,
