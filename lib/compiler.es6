@@ -27,19 +27,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var p = opt_params ?
 		Object(opt_params) : {};
 
-	var ctx = s(p.context, p['context']) || {};
-	var commonJS = Boolean(ctx);
+	var cjs;
+	var ctx = (cjs = s(p.context, p['context'])) || {};
 
-	if (!commonJS) {
+	if (!cjs) {
 		if (typeof opt_params === 'boolean') {
-			commonJS = opt_params;
+			cjs = opt_params;
 
 		} else {
-			let cjs = s(p.commonJS, p['commonJS']);
-			commonJS = Boolean(cjs);
+			cjs = s(p.commonJS, p['commonJS']);
 		}
 	}
 
+	cjs = Boolean(cjs);
 	var info = opt_info || {};
 
 	info['file'] = s(info.file, info['file']);
@@ -54,8 +54,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var text = html || src;
 
-	if (IS_NODE && commonJS && globalFnCache[commonJS][text]) {
-		let cache = globalFnCache[commonJS][text];
+	if (IS_NODE && cjs && globalFnCache[cjs][text]) {
+		let cache = globalFnCache[cjs][text];
 
 		for (let key in cache) {
 			if (!cache.hasOwnProperty(key)) {
@@ -65,16 +65,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			ctx[key] = cache[key];
 		}
 
-		return globalCache[commonJS][text];
+		return globalCache[cjs][text];
 	}
 
-	if (globalCache[commonJS][text]) {
-		return globalCache[commonJS][text];
+	if (globalCache[cjs][text]) {
+		return globalCache[cjs][text];
 	}
 
 	var dir = new DirObj(String(text), {
 		info: info,
-		commonJS: commonJS,
+		commonJS: cjs,
 		proto: opt_sysParams.proto,
 		scope: opt_sysParams.scope,
 		vars: opt_sysParams.vars
@@ -380,8 +380,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		.replace(/__SNAKESKIN_RESULT__ \+= '';/g, '');
 
 	// Конец шаблона
-	dir.res += !dir.proto ? '/* Snakeskin templating system. Generated at: ' + new Date().toString() + '. */' : '';
-	dir.res += commonJS ? '}' : '';
+	if (!dir.proto) {
+		dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
+	}
+
+	dir.res += cjs ? '}' : '';
 
 	if (dir.proto) {
 		return dir.res;
@@ -398,10 +401,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Компиляция на сервере
 	if (IS_NODE) {
 		// Экспорт
-		if (commonJS) {
+		if (cjs) {
 			new Function('exports', 'require', dir.res)(ctx, require);
 			ctx.init(Snakeskin);
-			globalFnCache[commonJS][text] = ctx;
+			globalFnCache[cjs][text] = ctx;
 
 		// Простая компиляция
 		} else {
@@ -413,8 +416,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		new Function(dir.res)();
 	}
 
-	globalCache[commonJS][text] = dir.res;
-	if (!IS_NODE && !commonJS) {
+	globalCache[cjs][text] = dir.res;
+	if (!IS_NODE && !cjs) {
 		setTimeout(() => {
 			try {
 				let blob = new Blob([dir.res], {type: 'application/javascript'});

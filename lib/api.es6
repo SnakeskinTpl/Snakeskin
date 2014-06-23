@@ -148,8 +148,14 @@ function DirObj(src, params) {
 	 * Результирующий JS код
 	 * @type {string}
 	 */
-	this.res = (!params.proto ? `/* ((${new Date().valueOf()})) This code is generated automatically, don\'t alter it. */` : '') +
-		(params.commonJS ? `
+	this.res = '';
+
+	if (!params.proto) {
+		this.res += 'This code is generated automatically, don\'t alter it. */';
+	}
+
+	if (params.commonJS) {
+		this.res += `
 			var Snakeskin = global.Snakeskin;
 
 			exports.init = function (obj) {
@@ -163,8 +169,8 @@ function DirObj(src, params) {
 			};
 
 			function exec() {
-
-		` : '');
+		`;
+	}
 }
 
 Snakeskin.DirObj = DirObj;
