@@ -65,3 +65,21 @@ var escapeEndMap = {
 	'(': true,
 	'{': true
 };
+
+/**
+ * @param {?} a
+ * @param {?} b
+ * @param {?=} [opt_c]
+ * @return {?}
+ */
+function s(a, b, opt_c) {
+	if (a !== void 0) {
+		return a;
+	}
+
+	if (opt_c !== void 0) {
+		return b === void 0 ? opt_c : b;
+	}
+
+	return b;
+}
