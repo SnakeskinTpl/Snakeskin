@@ -5,7 +5,7 @@ var path = require('path');
 var fs = require('fs');
 
 function build(file, flags) {
-	jossy.compile(path.join(__dirname, 'lib/core.js'), null, flags, (err, res) => {
+	jossy.compile(path.join(__dirname, 'lib/core.js'), null, flags, function(err, res)  {
 		if (err) {
 			throw err;
 		}
@@ -21,14 +21,14 @@ function build(file, flags) {
 			.replace(/\/\*= (\w+) \*\//gm, '$1')
 			.replace(/^\\n/gm, '');
 
-		fs.writeFileSync(path.join(__dirname, `build/${file}.js`), res);
+		fs.writeFileSync(path.join(__dirname, (("build/" + file) + ".js")), res);
 
 		var gcc = spawn('java', [
 			'-jar',
 			'compiler.jar',
 
 			'--js',
-			`build/${file}.js`,
+			(("build/" + file) + ".js"),
 
 			'--compilation_level',
 			'ADVANCED_OPTIMIZATIONS',
@@ -44,16 +44,16 @@ function build(file, flags) {
 			'invalidCasts',
 
 			'--js_output_file',
-			`build/${file}.min.js`
+			(("build/" + file) + ".min.js")
 		]);
 
-		gcc.stderr.on('data', (data) => {
+		gcc.stderr.on('data', function(data)  {
 			fs.writeFileSync(path.join(__dirname, 'build/log.txt'), data);
 			console.log(String(data));
 		});
 
-		gcc.on('close', (code) => {
-			var min = path.join(__dirname, `build/${file}.min.js`);
+		gcc.on('close', function(code)  {
+			var min = path.join(__dirname, (("build/" + file) + ".min.js"));
 
 			fs.writeFileSync(
 				min,
@@ -61,14 +61,14 @@ function build(file, flags) {
 				fs.readFileSync(min).toString().replace(/\\t/gm, '')
 			);
 
-			console.log(`${file} compiled, code ${code}`);
+			console.log((("" + file) + (" compiled, code " + code) + ""));
 		});
 	});
 }
 
 var builds = Object(require('./builds'));
 
-for (let key in builds)  {
+for (var key in builds)  {
 	if (!builds.hasOwnProperty(key)) {
 		continue;
 	}
