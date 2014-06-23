@@ -134,12 +134,13 @@ function DirObj(src, params) {
 	this.source = String(src)
 		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, (sstr, data) => {
 			this.cDataContent.push(data);
+
 			return '' +
 				// Количество добавляемых строк
-				'{__appendLine__ ' + (data.match(/[\n\r]/g) || '').length + '}' +
+				`{__appendLine__ ${(data.match(/[\n\r]/g) || '').length}}` +
 
-				// Метка для замены
-				'__SNAKESKIN_CDATA__' + (this.cDataContent.length - 1) + '_'
+				// Метка для замены CDATA
+				`__SNAKESKIN_CDATA__${this.cDataContent.length - 1}_`
 			;
 		});
 
@@ -147,19 +148,23 @@ function DirObj(src, params) {
 	 * Результирующий JS код
 	 * @type {string}
 	 */
-	this.res = (!params.proto ? '/* This code is generated automatically, don\'t alter it. */' : '') +
-		(params.commonJS ?
-			'var Snakeskin = global.Snakeskin;' +
+	this.res = (!params.proto ? `/* ((${new Date().valueOf})) This code is generated automatically, don\'t alter it. */` : '') +
+		(params.commonJS ? `
+			var Snakeskin = global.Snakeskin;
 
-			'exports.init = function (obj) { ' +
-				'Snakeskin = typeof obj === "object" ? obj : require(obj);' +
-				'delete exports.init;' +
-				'exec();' +
-				'return this;' +
-			'};' +
+			exports.init = function (obj) {
+				Snakeskin = obj instanceof Object ?
+					obj : require(obj);
 
-			'function exec() {' :
-		'');
+				delete exports.init;
+				exec();
+
+				return this;
+			};
+
+			function exec() {
+
+		` : '');
 }
 
 Snakeskin.DirObj = DirObj;
@@ -195,7 +200,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
  */
 DirObj.prototype.isSimpleOutput = function () {
 	if (this.name !== 'end' && this.strongDir) {
-		throw this.error('Directive "' + this.structure.name + '" can not be used with a "' + this.strongDir + '"');
+		throw this.error(`Directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
 	}
 
 	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
@@ -248,12 +253,13 @@ DirObj.prototype.initTemplateCache = function (tplName) {
  * Декларировать начало блочной директивы
  *
  * @param {?string=} [opt_name=this.name] - название директивы
- * @param {Object=} [opt_params] - дополнительные параметры директивы
+ * @param {Object=} [opt_params] - дополнительные параметры
  * @param {Object=} [opt_vars] - локальные переменные директивы
  * @return {!DirObj}
  */
 DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_vars = opt_vars || {};
+
 	opt_name = opt_name || this.name;
 	opt_params = opt_params || {};
 
@@ -286,7 +292,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	struct.childs.push(obj);
 	this.structure = obj;
 
-	if (this.blockStructure && (opt_name === 'block' || opt_name === 'proto')) {
+	if (this.blockStructure && {'block': true, 'proto': true}[opt_name]) {
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
@@ -294,17 +300,17 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 			params: opt_params
 		};
 
-		let key = opt_name + '_' + opt_params.name;
+		let key = `${opt_name}_${opt_params.name}`;
 
 		if (this.blockTable[key] === true) {
 			sub.drop = true;
 		}
 
 		this.blockTable[key] = sub;
-		let deep = (obj) => {
+		var deep = (obj) => {
 			for (let i = 0; i < obj.length; i++) {
 				let el = obj[i];
-				let key = el.name + '_' + el.params.name;
+				let key = `${el.name}_${el.params.name}`;
 
 				if (this.blockTable[key]) {
 					this.blockTable[key].drop = true;
@@ -334,7 +340,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
  * Декларировать начало строчной директивы
  *
  * @param {?string=} [opt_name=this.name] - название директивы
- * @param {Object=} [opt_params] - дополнительные параметры директивы
+ * @param {Object=} [opt_params] - дополнительные параметры
  * @return {!DirObj}
  */
 DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
@@ -358,7 +364,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 			params: opt_params
 		};
 
-		this.blockTable[opt_name + '_' + opt_params.name] = sub;
+		this.blockTable[`${opt_name}_${opt_params.name}`] = sub;
 		this.blockStructure.childs.push(sub);
 		this.blockStructure = sub;
 	}
@@ -378,6 +384,7 @@ DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
 	return this;
 };
+
 /**
  * Проверить начилие указанной директивы в цепочке структуры,
  * начиная с активной
@@ -445,7 +452,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
 	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
-		throw this.error('Variable "' + varName + '" is already defined as constant');
+		throw this.error(`Variable "${varName}" is already defined as constant`);
 	}
 
 	var struct = this.structure;
@@ -453,7 +460,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 		struct = this.structure.parent;
 	}
 
-	var realVar = '__' + varName + '_' + (this.proto ? this.proto.name : '') + '_' + struct.name + '_' + this.i;
+	var realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${struct.name}_${this.i}`;
 
 	struct.vars[varName] = {
 		value: realVar,
