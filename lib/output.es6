@@ -383,8 +383,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		this.structure.vars :
 		this.structure.parent.vars;
 
-	var globalExportRgxp = /([$\w]*)(.*)/,
-		escapeRgxp = /^__ESCAPER_QUOT__\d+_/,
+	var escapeRgxp = /^__ESCAPER_QUOT__\d+_/,
 		ssfRgxp = /Snakeskin\.Filters/;
 
 	var nextCharRgxp = /[@#$+\-~!\w]/i,
@@ -423,6 +422,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		var res = propValRgxp.exec(str);
 		return res ? res[0] : null;
 	}
+
+	var setMod = (str) => str.charAt(0) === '[' ? str : `.${str}`;
 
 	if (!command) {
 		throw this.error('Invalid syntax');
@@ -474,21 +475,18 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					!escapeRgxp.test(word) &&
 					!this.isSyOL(command, i, i + word.length);
 
-				let globalExport;
-
 				// Экспорт числовых литералов
 				if (numRgxp.test(el)) {
 					vres = finalWord;
 
 				// Экспорт глобальный и супер глобальных переменных
-				} else if (el === '@' && canParse) {
+				} else if (el === '@'&& (useWith ? next !== '[' : true) && canParse) {
 					if (useWith) {
 						vres = finalWord.substring(next === '@' ? 2 : 1);
-						globalExport = globalExportRgxp.exec(vres);
 
 						// Супер глобальная переменная внутри with
 						if (next === '@') {
-							vres = `Snakeskin.Vars['${globalExport[1]}']${globalExport[2]}`;
+							vres = `Snakeskin.Vars${setMod(vres)}`;
 
 						} else {
 							vres = addScope(vres);
@@ -496,14 +494,17 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 					// Супер глобальная переменная вне with
 					} else {
-						globalExport = globalExportRgxp.exec(finalWord.substring(next === '@' ? 2 : 1));
-						vres = `Snakeskin.Vars['${globalExport[1]}']${globalExport[2]}`;
+						vres = `Snakeskin.Vars${setMod(finalWord.substring(next === '@' ? 2 : 1))}`;
 					}
 
 				} else {
 					let rfWord = finalWord.replace(modRgxp, '');
 
 					if (canParse && useWith) {
+						if (rfWord.charAt(0) === '@') {
+							rfWord = rfWord.substring(1);
+						}
+
 						let v = vars[returnProp(rfWord)];
 						if (v && v.useWith) {
 							vres = addScope(rfWord);
@@ -533,12 +534,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 									num = num ? num - 1 : num;
 
 									if (num === null || num > 0) {
-										vres += '.' + scope[j];
+										vres += setMod(scope[j]);
 										continue;
 									}
 
 									if (j === length - 1) {
-										vres = (rnum > 0 ? vres + '.' : '') + scope[j];
+										vres = (rnum > 0 ? scope[j].charAt(0) === '[' ? vres : `${vres}.` : '') +
+											scope[j];
 									}
 								}
 							}
@@ -547,7 +549,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						}
 
 					} else {
-						vres = canParse ? addScope(rfWord) : rfWord;
+						vres = canParse ?
+							addScope(rfWord) : rfWord;
 					}
 				}
 
