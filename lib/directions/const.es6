@@ -6,30 +6,25 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var tplName = this.tplName;
-
-		var rgxp = new RegExp(
-			'^[$a-z_' +
-			(this.scope.length ? '@#' : !tplName ? '\\[\\]' : '') +
-			'][$\\w\\[\\].\'"\\s]*=[^=]'
-		);
+		var tplName = this.tplName,
+			rgxp = new RegExp(`^[$a-z_${!this.scope.length ? '#' : ''}][$\\w\\[\\].\\s]*=[^=]`);
 
 		// Инициализация констант
-		if (rgxp.test(command)) {
-			let parts = command.split('=');
+		if (!tplName || rgxp.test(command)) {
+			if (tplName) {
+				let parts = command.split('=');
 
-			if (!parts[1] || !parts[1].trim()) {
-				throw this.error(`Invalid "${this.name}" declaration (${command})`);
-			}
+				if (!parts[1] || !parts[1].trim()) {
+					throw this.error(`Invalid "constant" declaration (${command})`);
+				}
 
-			let name = parts[0].trim(),
-				mod = name.charAt(0);
+				let name = this.pasteDangerBlocks(parts[0].trim());
 
-			if (mod === '#' || mod === '@') {
-				throw this.error(`Can't declare constant "${name}" with the context modifier`);
-			}
+				if (name.charAt(0) === '#') {
+					throw this.error(`Can\'t declare constant "${name.substring(1)}" with the context modifier (#)`);
+				}
 
-			if (this.structure.parent) {
+				name = name.replace(/\[(['"`])(.*?)\1]/g, '.$2');
 				this.startInlineDir('const', {
 					name: name
 				});
