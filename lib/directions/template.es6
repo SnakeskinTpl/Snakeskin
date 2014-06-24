@@ -81,14 +81,11 @@ Snakeskin.addDirective(
 				this.parentTplName = parentTplName;
 
 			} catch (ignore) {
-				throw this.error('Invalid syntax');
+				throw this.error(`Invalid "${this.name}" declaration: ${command}`);
 			}
 
 			if (cache[parentTplName] === void 0) {
-				throw this.error(
-					'The specified template ("' + parentTplName + '" -> "' + tplName + '") ' +
-						'for inheritance is not defined'
-				);
+				throw this.error(`The specified template ("${parentTplName}" -> "${tplName}") for inheritance is not defined`);
 			}
 		}
 
@@ -100,7 +97,7 @@ Snakeskin.addDirective(
 			var args = /\((.*?)\)/.exec(command)[1];
 
 		} catch (ignore) {
-			throw this.error('Invalid syntax');
+			throw this.error(`Invalid "${this.name}" declaration: ${command}`);
 		}
 
 		var pos;
