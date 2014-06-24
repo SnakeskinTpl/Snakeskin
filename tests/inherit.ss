@@ -1,6 +1,7 @@
 inherit_sub
 inherit_childTestConst
 inherit_childTestConst2
+inherit_childTestConst3
 
 ###
 
@@ -55,6 +56,21 @@ inherit_childTestConst2
 	{apply a}
 {/}
 
+{template inherit_superTestConst3()}
+	{a = {}}
+
+	{a.a = 1}
+	{a['b'] = 2}
+
+	{a.a}
+	{a.b}
+{/}
+
+{template inherit_childTestConst3() extends inherit_superTestConst3}
+	{a.a = 2}
+	{a.b = 3}
+{/}
+
 ###
 
 3  2  11   my
@@ -66,3 +82,7 @@ inherit_childTestConst2
 ***
 
 1
+
+***
+
+2 3
