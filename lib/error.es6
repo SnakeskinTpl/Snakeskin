@@ -15,6 +15,10 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			continue;
 		}
 
+		if (info[key] == null) {
+			continue;
+		}
+
 		if (!info[key].innerHTML) {
 			str += `${key}: ${info[key]}, `;
 
