@@ -255,13 +255,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					let commandType = commandTypeRgxp.exec(command)[0];
-					commandType = Snakeskin.Directions[commandType] ? commandType : 'const';
+					let isConst = commandType === 'const';
+
+					commandType = Snakeskin.Directions[commandType] ?
+						commandType : 'const';
 
 					// Обработка команд
 					let fnRes = Snakeskin.Directions[commandType](
 						dir,
 
-						commandType !== 'const' ?
+						isConst || commandType !== 'const' ?
 							command.replace(commandRgxp, '') : command,
 
 						commandLength,
@@ -413,6 +416,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Живая компиляция в браузере
 	} else {
+		console.log(dir.res);
 		new Function(dir.res)();
 	}
 
