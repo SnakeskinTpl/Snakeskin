@@ -8,9 +8,11 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		var tplName = this.tplName;
 
-		var frgxp = /^[@#$a-z_][$\w\[\].'"\s]*=[^=]/i;
-		var rgxp = this.scope.length ?
-			frgxp : /^[$a-z_][$\w\[\].'"\s]*=[^=]/i;
+		var rgxp = new RegExp(
+			'^[$a-z_' +
+			(this.scope.length ? '@#' : !tplName ? '\\[\\]' : '') +
+			'][$\\w\\[\\].\'"\\s]*=[^=]'
+		);
 
 		// Инициализация констант
 		if (rgxp.test(command)) {
@@ -64,7 +66,7 @@ Snakeskin.addDirective(
 				this.startInlineDir('globalVar');
 				this.save(`
 					if (typeof Snakeskin !== 'undefined') {
-						Snakeskin.Vars.${this.prepareOutput(command, true, null, true)};
+						Snakeskin.Vars${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
 					}
 				`);
 			}
@@ -72,15 +74,59 @@ Snakeskin.addDirective(
 		// Вывод значения
 		} else {
 			if (!this.structure.parent) {
-				throw this.error('Directive "output" can only be used within a "template" or "proto"');
+				throw this.error('Directive "output" can only be used within a "template", "interface", "placeholder" or "proto"');
 			}
 
 			this.startInlineDir('output');
 			if (this.isSimpleOutput()) {
 				this.text = true;
 
-				if (/^[@#$a-z_][$\w\[\].'"\s+-\/*><^]*=[^=]/.test(command)) {
-					this.save(this.prepareOutput(command, true) + ';');
+				let isAssign = (str) => {
+					var first = str.charAt(0);
+
+					if (!/[@#$a-z_]/.test(first)) {
+						return false;
+					}
+
+					var count = 0,
+						eq = false;
+
+					var bOpen = {
+						'[': true,
+						'(': true,
+						'{': true
+					};
+
+					var bClose = {
+						']': true,
+						')': true,
+						'}': true
+					};
+
+					for (var i = 1; i < str.length; i++) {
+						let el = str.charAt(i);
+
+						if (bOpen[el]) {
+							count++;
+							continue;
+
+						} else if (bClose[el]) {
+							count--;
+							continue;
+						}
+
+						if (el === '=' && !eq && !count && str.charAt(i + 1) !== '=') {
+							return true;
+						}
+
+						eq = el === '=';
+					}
+
+					return false;
+				};
+
+				if (isAssign(command)) {
+					this.save(`${this.prepareOutput(command, true)};`);
 					return;
 				}
 
