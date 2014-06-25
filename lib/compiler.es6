@@ -1,20 +1,26 @@
 /**
- * Скомпилировать указанные шаблоны
+ * Скомпилировать указанные шаблоны Snakeskin
  *
  * @expose
- * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны, или исходный текст шаблонов
+ * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны,
+ *     или исходный текст шаблонов
  *
  * @param {Object=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
- * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется
+ *     с экспортом в стиле commonJS
+ *
  * @param {Object=} [opt_params.context] - контекст для сохранение скомпилированного шаблона
  *     (только при экспорте в commonJS)
  *
- * @param {Object=} [opt_info] - дополнительная информация о запуске:
- *     используется для сообщений об ошибках
+ * @param {?function(!Error)=} [opt_params.onError] - функция обратного вызова для обработки ошибок при трансляции
+ * @param {Object=} [opt_info] - дополнительная информация о запуске
+ *     (используется для сообщений об ошибках)
  *
- * @param {Object=} [opt_sysParams] - служебный параметры запуска
+ * @param {?string=} [opt_info.file] - адрес исходного файла шаблонов
+ *
+ * @param {Object=} [opt_sysParams] - служебные параметры запуска
  * @param {Array=} [opt_sysParams.scope] - область видимости (контекст) директив
  * @param {Object=} [opt_sysParams.vars] - объект локальных переменных
  * @param {?string=} [opt_sysParams.proto] - название корневого прототипа
@@ -39,6 +45,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	var pref = '#',
+		prefI = 0,
+		needPref = false;
+
+	p.onError = s(p.onError, p['onError']);
+
 	cjs = Boolean(cjs);
 	var info = opt_info || {};
 
@@ -54,6 +66,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var text = html || src;
 
+	// Кеширование шаблонов в node.js
 	if (IS_NODE && cjs && globalFnCache[cjs][text]) {
 		let cache = globalFnCache[cjs][text];
 
@@ -77,7 +90,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		commonJS: cjs,
 		proto: opt_sysParams.proto,
 		scope: opt_sysParams.scope,
-		vars: opt_sysParams.vars
+		vars: opt_sysParams.vars,
+		onError: p.onError
 	});
 
 	// Если true, то идёт содержимое директивы,
@@ -124,8 +138,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
+
 		let el = str.charAt(dir.i),
-			rEl = el;
+			next = str.charAt(dir.i + 1);
+
+		var rEl = el;
 
 		if (nextLineRgxp.test(el)) {
 			info['line']++;
@@ -165,7 +182,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
-			if (el !== '{' && !begin) {
+			if ((needPref ? el !== pref : el !== '{') && !begin) {
 				prevSpace = dir.space;
 			}
 
@@ -173,7 +190,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (!bOpen) {
-			let next2str = el + str.charAt(dir.i + 1),
+			let next2str = el + next,
 				next3str = next2str + str.charAt(dir.i + 2);
 
 			// Обработка комментариев
@@ -221,21 +238,30 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 			if (!jsDoc) {
+				let isPrefStart = el === pref && next === '{';
+
 				// Начало управляющей конструкции
 				// (не забываем следить за уровнем вложенностей {)
-				if (el === '{') {
+				if (isPrefStart || el === '{') {
 					if (begin) {
 						fakeBegin++;
 
-					} else {
+					} else if (!needPref || isPrefStart) {
+						if (isPrefStart) {
+							dir.i++;
+							needPref = true;
+						}
+
 						bEnd = true;
 						begin = true;
+
 						continue;
 					}
 
 				// Упраляющая конструкция завершилась
-				} else if (el === '}' && (!fakeBegin || !(fakeBegin--))) {
+				} else if (el === '}' && begin && (!fakeBegin || !(fakeBegin--))) {
 					begin = false;
+
 					let commandLength = command.length;
 					command = dir.replaceDangerBlocks(command).trim();
 
@@ -270,6 +296,22 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandLength,
 						jsDocStart
 					);
+
+					if (dir.inlineDir !== false) {
+						if (commandType === 'end') {
+							prefI--;
+
+							if (!prefI) {
+								needPref = false;
+							}
+
+						} else if (!prefI) {
+							needPref = false;
+						}
+
+					} else if (needPref) {
+						prefI++;
+					}
 
 					if (!dir.text && prevSpace) {
 						dir.space = true;
