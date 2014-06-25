@@ -223,12 +223,12 @@ DirObj.prototype.getWord = function (str, pos) {
 					if (!pCount) {
 						if (nres) {
 							nres = nres.substring(0, start + diff) +
-								(pContent && this.prepareOutput(pContent, true)) +
+								(pContent && this.prepareOutput(pContent, true, null, null, true)) +
 								nres.substring(j + diff + pContent.length);
 
 						} else {
 							nres = res.substring(0, start) +
-								(pContent && this.prepareOutput(pContent, true)) +
+								(pContent && this.prepareOutput(pContent, true, null, null, true)) +
 								res.substring(j);
 						}
 
@@ -318,12 +318,13 @@ function isNextAssign(str, pos) {
  * осуществляется привязка к scope и инициализация фильтров
  *
  * @param {string} command - исходный текст команды
- * @param {?boolean=} [opt_sys] - если true, то запуск функции считается системным вызовом
- * @param {?boolean=} [opt_isys] - если true, то запуск функции считается вложенным системным вызовом
- * @param {?boolean=} [opt_breakFirst] - если true, то первое слово в команде пропускается
+ * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
+ * @param {?boolean=} [opt_isys=false] - если true, то запуск функции считается вложенным системным вызовом
+ * @param {?boolean=} [opt_breakFirst=false] - если true, то первое слово в команде пропускается
+ * @param {?boolean=} [opt_validate=true] - если false, то полученная конструкция не валидируется
  * @return {string}
  */
-DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst) {
+DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst, opt_validate) {
 	// ОПРЕДЕЛЕНИЯ:
 	// Скобка = (
 
@@ -709,7 +710,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				let last = filter.length - 1;
 				let cache = filter[last];
 
-				filter[last] = this.prepareOutput(cache, true, null, true);
+				filter[last] = this.prepareOutput(cache, true, null, true, false);
 				wordAddEnd += filter[last].length - cache.length;
 				filterAddEnd += filter[last].length - cache.length;
 
@@ -747,11 +748,16 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 	}
 
-	try {
-		esprima.parse(`${res};`);
+	if (opt_validate !== false) {
+		try {
+			esprima.parse(`${res
+				.replace(/^\[/, '$[')
+				.replace(/break [_]{2,}I_PROTO__\w+;/, '')
+			};`);
 
-	} catch (err) {
-		this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
+		} catch (err) {
+			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
+		}
 	}
 
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
