@@ -26,7 +26,10 @@ function DirObj(src, params) {
 	/** @type {?function(!Error)} */
 	this.onError = params.onError || null;
 
-	/** @type {boolean} */
+	/**
+	 * Если true, то трансляция сбрасывается
+	 * @type {boolean}
+	 */
 	this.brk = false;
 
 	/** @type {Object} */
@@ -46,6 +49,12 @@ function DirObj(src, params) {
 	 * @type {?string}
 	 */
 	this.name = null;
+
+	/**
+	 * Таблица директив, которые могут идти после исходной
+	 * @type {Object}
+	 */
+	this.after = null;
 
 	/**
 	 * Если false, то шаблон не вставляется в результирующую JS строку
