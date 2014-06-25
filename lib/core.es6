@@ -41,12 +41,14 @@ var Snakeskin = {
 	cache: {}
 };
 
-const IS_NODE = typeof window === 'undefined' && typeof exports !== 'undefined';
+//= (function () {
+	const IS_NODE = typeof window === 'undefined' && typeof exports !== 'undefined';
 
-((nm) => {
 	//#include ./filters.js
-
 	//#if compiler
+
+	//#include ../node_modules/esprima/esprima.js
+	var esprima = this.esprima;
 
 	//#include ./global.js
 	//#include ./api.js
@@ -63,7 +65,7 @@ const IS_NODE = typeof window === 'undefined' && typeof exports !== 'undefined';
 		module['exports'] = Snakeskin;
 
 	} else {
-		nm['Snakeskin'] = Snakeskin;
+		this['Snakeskin'] = Snakeskin;
 	}
 
-})(this);
+//= }).call(this);
