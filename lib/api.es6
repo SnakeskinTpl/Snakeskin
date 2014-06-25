@@ -5,7 +5,9 @@
  * @param {string} src - текст шаблона
  *
  * @param {Object} params - дополнительные параметры
+ *
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {?function(!Error)=} [params.onError] - функция обратного вызова для обработки ошибок при трансляции
  *
  * @param {Array=} [params.scope] - область видимости (контекст) директив
  * @param {Object=} [params.vars] - объект локальных переменных
@@ -15,12 +17,17 @@
  *     используется для сообщений об ошибках
  */
 function DirObj(src, params) {
-	// Создание локальных свойств
 	for (let key in this) {
 		if (this[key] && this[key].init) {
 			this[key] = this[key].init();
 		}
 	}
+
+	/** @type {?function(!Error)} */
+	this.onError = params.onError || null;
+
+	/** @type {boolean} */
+	this.brk = false;
 
 	/** @type {Object} */
 	this.commonJS = params.commonJS;

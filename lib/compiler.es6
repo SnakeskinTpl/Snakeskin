@@ -25,7 +25,7 @@
  * @param {Object=} [opt_sysParams.vars] - объект локальных переменных
  * @param {?string=} [opt_sysParams.proto] - название корневого прототипа
  *
- * @return {string}
+ * @return {(string|boolean)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	opt_sysParams = opt_sysParams || {};
@@ -266,7 +266,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = dir.replaceDangerBlocks(command).trim();
 
 					if (!command) {
-						throw dir.error('Directive is not defined');
+						dir.error('Directive is not defined');
+
+						if (dir.brk) {
+							return false;
+						}
 					}
 
 					let short1 = command.charAt(0),
@@ -296,6 +300,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandLength,
 						jsDocStart
 					);
+
+					if (dir.brk) {
+						return false;
+					}
 
 					if (dir.inlineDir !== false) {
 						if (commandType === 'end') {
@@ -382,7 +390,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					dir.save(dir.applyDefEscape(el));
 
 				} else {
-					throw dir.error('Text can\'t be used in the global space (except jsDoc)');
+					dir.error('Text can\'t be used in the global space (except jsDoc)');
+
+					if (dir.brk) {
+						return false;
+					}
 				}
 
 			} else {
@@ -410,7 +422,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
 	if (dir.structure.parent) {
-		throw dir.error('Missing closing or opening tag in the template');
+		dir.error('Missing closing or opening tag in the template');
+
+		if (dir.brk) {
+			return false;
+		}
 	}
 
 	dir.res = dir.pasteDangerBlocks(dir.res)
@@ -440,7 +456,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			continue;
 		}
 
-		throw dir.error(`Template "${key}" is not defined`);
+		dir.error(`Template "${key}" is not defined`);
+
+		if (dir.brk) {
+			return false;
+		}
 	}
 
 	// Компиляция на сервере
