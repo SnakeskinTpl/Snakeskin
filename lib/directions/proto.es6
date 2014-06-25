@@ -106,7 +106,7 @@ Snakeskin.addDirective(
 
 				for (let i = 0; i < argsList.length; i++) {
 					let arg = argsList[i].split('=');
-					arg[0] = this.declVar(arg[0].trim(), true);
+					arg[0] = this.declVar(arg[0].trim(), true) || '';
 					argsMap.push(arg);
 				}
 			}

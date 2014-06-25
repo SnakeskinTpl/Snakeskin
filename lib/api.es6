@@ -222,7 +222,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 /**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
- * @return {boolean}
+ * @return {(boolean|undefined)}
  */
 DirObj.prototype.isSimpleOutput = function () {
 	if (this.name !== 'end' && this.strongDir) {
@@ -472,7 +472,7 @@ DirObj.prototype.hasParentBlock = function (name) {
  *
  * @param {string} varName - название переменной
  * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
- * @return {string}
+ * @return {(string|undefined)}
  */
 DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	opt_protoParams = opt_protoParams || false;
@@ -505,7 +505,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
  *
  * @param {string} str - исходная строка
  * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
- * @return {string}
+ * @return {(string|undefined)}
  */
 DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	opt_end = opt_end !== false;

@@ -234,7 +234,7 @@ Snakeskin.addDirective(
 				let el = vars[i].trim();
 
 				if (el) {
-					vars[i] = this.declVar(el);
+					vars[i] = this.declVar(el) || '';
 				}
 			}
 
