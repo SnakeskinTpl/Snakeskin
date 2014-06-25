@@ -426,7 +426,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	}
 
 	if (!command) {
-		throw this.error('Invalid syntax');
+		this.error('invalid syntax');
 	}
 
 	var commandLength = command.length;
@@ -559,7 +559,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					(constCache[this.tplName][vres] || constICache[this.tplName][vres])
 				) {
 
-					throw this.error(`Constant "${vres}" is already defined`);
+					this.error(`constant "${vres}" is already defined`);
 				}
 
 				// Данное слово является составным системным,
@@ -629,7 +629,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		if (i === commandLength - 1 && pCount && el !== ')') {
-			throw this.error('Missing closing or opening parenthesis in the template');
+			this.error('missing closing or opening parenthesis in the template');
 		}
 
 		if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
@@ -745,6 +745,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				i += 2;
 			}
 		}
+	}
+
+	try {
+		esprima.parse(`${res};`);
+
+	} catch (err) {
+		this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
 	}
 
 	return (!unEscape && !opt_sys ? 'Snakeskin.Filters.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
