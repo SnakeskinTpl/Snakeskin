@@ -213,7 +213,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
  */
 DirObj.prototype.isSimpleOutput = function () {
 	if (this.name !== 'end' && this.strongDir) {
-		throw this.error(`Directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
+		this.error(`directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
 	}
 
 	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
@@ -467,7 +467,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
 	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
-		throw this.error(`Variable "${varName}" is already defined as constant`);
+		this.error(`variable "${varName}" is already defined as constant`);
 	}
 
 	var struct = this.structure;
@@ -543,7 +543,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	}
 
 	if (isSys) {
-		throw this.error(`Invalid "var" declaration (${str})`);
+		this.error(`invalid "var" declaration (${str})`);
 	}
 
 	return fin.slice(0, -1) + (opt_end ? ';' : '');
