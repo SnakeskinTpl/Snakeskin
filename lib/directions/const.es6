@@ -30,7 +30,7 @@ Snakeskin.addDirective(
 				});
 
 				if (this.isSimpleOutput()) {
-					this.save(this.prepareOutput((!/[.\[]/.test(name) ? 'var ' : '') + command + ';', true));
+					this.save((!/[.\[]/.test(name) ? 'var ' : '') + this.prepareOutput(command, true, null, true) + ';');
 				}
 
 				if (this.isAdvTest()) {
@@ -98,14 +98,14 @@ function isAssign(str) {
 		eq = false;
 
 	var bOpen = {
-		'[': true,
 		'(': true,
+		'[': true,
 		'{': true
 	};
 
 	var bClose = {
-		']': true,
 		')': true,
+		']': true,
 		'}': true
 	};
 
