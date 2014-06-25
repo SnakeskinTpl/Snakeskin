@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 
 		if (this.isAdvTest()) {
 			if (blockCache[this.tplName][command]) {
-				throw this.error(`Block "${command}" is already defined`);
+				return this.error(`block "${command}" is already defined`);
 			}
 
 			blockCache[this.tplName][command] = {from: this.i - this.startTemplateI + 1};

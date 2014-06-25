@@ -12,7 +12,7 @@ Snakeskin.addDirective(
 			let parts = command.split(';');
 
 			if (parts.length !== 3) {
-				throw this.error(`Invalid "${this.name}" declaration (${command})`);
+				return this.error(`invalid "${this.name}" declaration (${command})`);
 			}
 
 			let rgxp = /var /;
@@ -58,7 +58,10 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true
+		sys: true,
+		after: {
+			'until': true
+		}
 	},
 
 	function () {
@@ -74,7 +77,10 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true
+		sys: true,
+		after: {
+			'while': true
+		}
 	},
 
 	function () {
@@ -95,7 +101,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'repeat') {
-			throw this.error(`Directive "${this.name}" can only be used with a "repeat"`);
+			return this.error(`directive "${this.name}" can only be used with a "repeat"`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -125,7 +131,7 @@ Snakeskin.addDirective(
 			'forIn': true
 
 		})) {
-			throw this.error(`Directive "${this.name}" can only be used with a cycles`);
+			return this.error(`directive "${this.name}" can only be used with a cycles`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -154,7 +160,7 @@ Snakeskin.addDirective(
 			'forIn': true
 
 		})) {
-			throw this.error(`Directive "${this.name}" can only be used with a cycles`);
+			return this.error(`directive "${this.name}" can only be used with a cycles`);
 		}
 
 		if (this.isSimpleOutput()) {

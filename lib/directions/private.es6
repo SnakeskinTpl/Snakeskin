@@ -7,7 +7,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (!this.structure.parent) {
-			throw this.error('Directive "cdata" can only be used within a "template" or "proto"');
+			return this.error('directive "cdata" can only be used within a "template" or "proto"');
 		}
 
 		this.startInlineDir('cdata');

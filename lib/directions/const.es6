@@ -15,13 +15,13 @@ Snakeskin.addDirective(
 				let parts = command.split('=');
 
 				if (!parts[1] || !parts[1].trim()) {
-					throw this.error(`Invalid "constant" declaration (${command})`);
+					return this.error(`invalid "constant" declaration (${command})`);
 				}
 
 				let name = this.pasteDangerBlocks(parts[0].trim());
 
 				if (name.charAt(0) === '#') {
-					throw this.error(`Can\'t declare constant "${name.substring(1)}" with the context modifier (#)`);
+					return this.error(`can\'t declare constant "${name.substring(1)}" with the context modifier (#)`);
 				}
 
 				name = name.replace(/\[(['"`])(.*?)\1]/g, '.$2');
@@ -36,17 +36,17 @@ Snakeskin.addDirective(
 				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы
 					if (constCache[tplName][name] ? !constCache[tplName][name].tmp : constICache[tplName][name]) {
-						throw this.error(`Constant "${name}" is already defined`);
+						return this.error(`constant "${name}" is already defined`);
 					}
 
 					// Попытка инициализации константы, которая была объявлена как переменная
 					if (this.varCache[tplName][name]) {
-						throw this.error(`Constant "${name}" is already defined as variable`);
+						return this.error(`constant "${name}" is already defined as variable`);
 					}
 
 					// Попытка инициализировать константу с зарезервированным именем
 					if (sysConst[name]) {
-						throw this.error(`Can't declare constant "${name}", try another name`);
+						return this.error(`can't declare constant "${name}", try another name`);
 					}
 
 					constCache[tplName][name] = {
@@ -69,7 +69,7 @@ Snakeskin.addDirective(
 		// Вывод значения
 		} else {
 			if (!this.structure.parent) {
-				throw this.error('Directive "output" can only be used within a "template", "interface", "placeholder" or "proto"');
+				return this.error('Directive "output" can only be used within a "template", "interface", "placeholder" or "proto"');
 			}
 
 			this.startInlineDir('output');

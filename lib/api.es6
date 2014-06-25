@@ -194,12 +194,16 @@ Snakeskin.DirObj = DirObj;
 /**
  * Добавить указанную строку в результирующую строку JavaScript
  *
- * @param {string} str - исходная строка
+ * @param {string=} str - исходная строка
  * @param {?boolean=} [opt_interface=false] - если true, то идёт запись интерфейса шаблона
  * @param {(boolean|number)=} [opt_jsDoc] - позиция предущей декларации jsDoc или false
  * @return {boolean}
  */
 DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
+	if (str === void 0) {
+		return false;
+	}
+
 	if (!this.tplName || write[this.tplName] !== false || opt_interface) {
 		if (opt_jsDoc) {
 			let pos = Number(opt_jsDoc);
@@ -222,7 +226,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
  */
 DirObj.prototype.isSimpleOutput = function () {
 	if (this.name !== 'end' && this.strongDir) {
-		this.error(`directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
+		return this.error(`directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
 	}
 
 	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
@@ -476,7 +480,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
 	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
-		this.error(`variable "${varName}" is already defined as constant`);
+		return this.error(`variable "${varName}" is already defined as constant`);
 	}
 
 	var struct = this.structure;
@@ -552,7 +556,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	}
 
 	if (isSys) {
-		this.error(`invalid "var" declaration (${str})`);
+		return this.error(`invalid "var" declaration (${str})`);
 	}
 
 	return fin.slice(0, -1) + (opt_end ? ';' : '');

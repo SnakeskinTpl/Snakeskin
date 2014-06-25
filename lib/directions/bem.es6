@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 			'}'))();
 
 		} catch (ignore) {
-			throw this.error(`Invalid "${this.name}" declaration: ${command}`);
+			return this.error(`invalid "${this.name}" declaration (${command})`);
 		}
 	}
 );

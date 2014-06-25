@@ -11,7 +11,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (/(?:^|\s+)(?:var|const|let) /.test(command)) {
-			throw this.error('Can\'t declare variables within "void"');
+			return this.error('can\'t declare variables within "void"');
 		}
 
 		this.startInlineDir();

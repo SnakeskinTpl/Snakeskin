@@ -24,7 +24,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'if') {
-			throw this.error(`Directive "${this.name}" can only be used with a "if"`);
+			return this.error(`directive "${this.name}" can only be used with a "if"`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.structure.name !== 'if') {
-			throw this.error(`Directive "${this.name}" can only be used with a "if"`);
+			return this.error(`directive "${this.name}" can only be used with a "if"`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -85,7 +85,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (!this.has('switch')) {
-			throw this.error(`Directive "${this.name}" can only be used within a "switch"`);
+			return this.error(`directive "${this.name}" can only be used within a "switch"`);
 		}
 
 		this.startDir();
@@ -110,7 +110,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (!this.has('switch')) {
-			throw this.error(`Directive "${this.name}" can only be used within a "switch"`);
+			return this.error(`directive "${this.name}" can only be used within a "switch"`);
 		}
 
 		this.startDir();

@@ -54,7 +54,7 @@ Snakeskin.addDirective(
 		var name = command.match(/[^(]+/)[0];
 
 		if (!name) {
-			throw this.error(`Invalid "${this.name}" declaration (${command})`);
+			return this.error(`invalid "${this.name}" declaration (${command})`);
 		}
 
 		var parts = name.split('->');
@@ -77,7 +77,7 @@ Snakeskin.addDirective(
 		}
 
 		if (!name || !this.tplName) {
-			throw this.error(`Invalid "${this.name}" declaration (${command})`);
+			return this.error(`invalid "${this.name}" declaration (${command})`);
 		}
 
 		this.startDir(null, {
@@ -88,7 +88,7 @@ Snakeskin.addDirective(
 
 		if (this.isAdvTest()) {
 			if (protoCache[this.tplName][name]) {
-				throw this.error(`Proto "${name}" is already defined`);
+				return this.error(`proto "${name}" is already defined`);
 			}
 
 			let args = command.match(/\((.*?)\)/),
@@ -101,7 +101,7 @@ Snakeskin.addDirective(
 					argsList = args[1].split(',');
 
 				} catch (ignore) {
-					throw this.error(`Invalid "${this.name}" declaration (${command})`);
+					return this.error(`invalid "${this.name}" declaration (${command})`);
 				}
 
 				for (let i = 0; i < argsList.length; i++) {

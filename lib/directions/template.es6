@@ -46,7 +46,7 @@ Snakeskin.addDirective(
 		} catch (ignore) {}
 
 		if (!tplName) {
-			throw this.error(`Invalid "${this.name}" declaration: ${command}`);
+			return this.error(`invalid "${this.name}" declaration: ${command}`);
 		}
 
 		var iface =
@@ -81,11 +81,11 @@ Snakeskin.addDirective(
 				this.parentTplName = parentTplName;
 
 			} catch (ignore) {
-				throw this.error(`Invalid "${this.name}" declaration: ${command}`);
+				return this.error(`invalid "${this.name}" declaration: ${command}`);
 			}
 
 			if (cache[parentTplName] === void 0) {
-				throw this.error(`The specified template ("${parentTplName}" -> "${tplName}") for inheritance is not defined`);
+				return this.error(`the specified template ("${parentTplName}" -> "${tplName}") for inheritance is not defined`);
 			}
 		}
 
@@ -97,7 +97,7 @@ Snakeskin.addDirective(
 			var args = /\((.*?)\)/.exec(command)[1];
 
 		} catch (ignore) {
-			throw this.error(`Invalid "${this.name}" declaration: ${command}`);
+			return this.error(`invalid "${this.name}" declaration: ${command}`);
 		}
 
 		var pos;
@@ -106,12 +106,7 @@ Snakeskin.addDirective(
 		// каждая функция снабжается комментарием вида:
 		// /* Snakeskin template: название шаблона; параметры через запятую */
 		this.save(
-			(pos = '/* Snakeskin template: ' +
-				tplName +
-				'; ' +
-				args.replace(/=(.*?)(?:,|$)/g, '') +
-			' */'),
-
+			(pos = `/* Snakeskin template: ${tplName}; ${args.replace(/=(.*?)(?:,|$)/g, '')} */`),
 			iface,
 			jsDoc
 		);
@@ -372,7 +367,7 @@ Snakeskin.addDirective(
 
 					let proto = protoCache[tplName][key];
 					if (!proto) {
-						throw this.error('Proto "' + key + '" is not defined');
+						return this.error('proto "' + key + '" is not defined');
 					}
 
 					this.res = this.res.substring(0, el.pos) +
