@@ -50,27 +50,27 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		switch (params.placement) {
 			case 'template': {
 				if (!dir.structure.parent) {
-					throw dir.error(`Directive "${name}" can only be used within a "template", "interface", "placeholder" or "proto"`);
+					dir.error(`directive "${name}" can only be used within a "template", "interface", "placeholder" or "proto"`);
 				}
 			} break;
 
 			case 'global': {
 				if (dir.structure.parent) {
-					throw dir.error(`Directive "${name}" can be used only within the global space`);
+					dir.error(`directive "${name}" can be used only within the global space`);
 				}
 			} break;
 
 			default: {
 				if (params.placement) {
 					if (dir.hasParent(params.placement)) {
-						throw dir.error(`Directive "${name}" can be used only within a "${params.placement}"`);
+						dir.error(`directive "${name}" can be used only within a "${params.placement}"`);
 					}
 				}
 			}
 		}
 
 		if (params.notEmpty && !command) {
-			throw this.error(`Invalid syntax, directive "${name}" should have a body`);
+			this.error(`directive "${name}" should have a body`);
 		}
 
 		dir.name = name;
