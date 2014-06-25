@@ -322,7 +322,7 @@ function isNextAssign(str, pos) {
  * @param {?boolean=} [opt_isys=false] - если true, то запуск функции считается вложенным системным вызовом
  * @param {?boolean=} [opt_breakFirst=false] - если true, то первое слово в команде пропускается
  * @param {?boolean=} [opt_validate=true] - если false, то полученная конструкция не валидируется
- * @return {string}
+ * @return {(string|undefined)}
  */
 DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_breakFirst, opt_validate) {
 	// ОПРЕДЕЛЕНИЯ:
@@ -427,7 +427,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	}
 
 	if (!command) {
-		this.error('invalid syntax');
+		return this.error('invalid syntax');
 	}
 
 	var commandLength = command.length;
@@ -560,7 +560,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					(constCache[this.tplName][vres] || constICache[this.tplName][vres])
 				) {
 
-					this.error(`constant "${vres}" is already defined`);
+					return this.error(`constant "${vres}" is already defined`);
 				}
 
 				// Данное слово является составным системным,
@@ -630,7 +630,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		if (i === commandLength - 1 && pCount && el !== ')') {
-			this.error('missing closing or opening parenthesis in the template');
+			return this.error('missing closing or opening parenthesis in the template');
 		}
 
 		if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
@@ -754,13 +754,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				res
 					.trim()
 					.replace(/^\[/, '$[')
-					.replace(/break [_]{2,}I_PROTO__\w+;/, '') +
-
-				(/(?:\+\+|--|[$\w)\]}])$/.test(res) ? ';' : '')
+					.replace(/break [_]{2,}I_PROTO__\w+;/, '')
 			);
 
 		} catch (err) {
-			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
+			return this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
 		}
 	}
 
