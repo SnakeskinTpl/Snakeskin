@@ -62,6 +62,8 @@ function DirObj(src, params) {
 	 */
 	this.canWrite = true;
 
+	// Флаги работы с пробельными символами >>>
+
 	/** @type {boolean} */
 	this.space = false;
 
@@ -74,11 +76,13 @@ function DirObj(src, params) {
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
 
+	// <<<
+
 	/** @type {boolean} */
 	this.text = false;
 
 	/**
-	 * Номер итерации
+	 * Номер активной итерации
 	 * @type {number}
 	 */
 	this.i = -1;
@@ -101,7 +105,10 @@ function DirObj(src, params) {
 	 */
 	this.structure = {
 		name: 'root',
+
+		/** @type {?{name: string, parent: Object, vars: !Object, children: !Array}} */
 		parent: null,
+
 		vars: params.vars || {},
 		children: []
 	};
@@ -222,11 +229,12 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 /**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
- * @return {(boolean|undefined)}
+ * @return {boolean}
  */
 DirObj.prototype.isSimpleOutput = function () {
 	if (this.name !== 'end' && this.strongDir) {
-		return this.error(`directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
+		this.error(`directive "${this.structure.name}" can not be used with a "${this.strongDir}"`);
+		return false;
 	}
 
 	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
@@ -288,9 +296,10 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_vars = opt_vars || {};
 
-	opt_name = opt_name || this.name;
-	opt_params = opt_params || {};
+	opt_name = this.name =
+		opt_name || this.name;
 
+	opt_params = opt_params || {};
 	this.inlineDir = false;
 
 	var vars = opt_vars || {};
@@ -373,7 +382,8 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
  */
 DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 	opt_params = opt_params || {};
-	opt_name = opt_name || this.name;
+	opt_name =
+		this.name = opt_name || this.name;
 
 	var obj = {
 		name: opt_name,
@@ -472,7 +482,7 @@ DirObj.prototype.hasParentBlock = function (name) {
  *
  * @param {string} varName - название переменной
  * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
- * @return {(string|undefined)}
+ * @return {string}
  */
 DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	opt_protoParams = opt_protoParams || false;
@@ -480,7 +490,8 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
 	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
-		return this.error(`variable "${varName}" is already defined as constant`);
+		this.error(`variable "${varName}" is already defined as constant`);
+		return '';
 	}
 
 	var struct = this.structure;
@@ -505,7 +516,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
  *
  * @param {string} str - исходная строка
  * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
- * @return {(string|undefined)}
+ * @return {string}
  */
 DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	opt_end = opt_end !== false;
@@ -556,7 +567,8 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	}
 
 	if (isSys) {
-		return this.error(`invalid "var" declaration (${str})`);
+		this.error(`invalid "var" declaration (${str})`);
+		return '';
 	}
 
 	return fin.slice(0, -1) + (opt_end ? ';' : '');
