@@ -17,8 +17,7 @@ function build(file, flags) {
 
 			// Всякие хаки, чтобы GCC не ругался
 			.replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/gm, '$1 $2')
-			.replace(/\/\*, (\w+) \*\//gm, ', $1')
-			.replace(/\/\*= (\w+) \*\//gm, '$1')
+			.replace(/\/\/= (.*)/gm, '$1')
 			.replace(/^\\n/gm, '');
 
 		fs.writeFileSync(path.join(__dirname, `build/${file}.js`), res);
