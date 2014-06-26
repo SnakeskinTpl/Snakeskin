@@ -7,7 +7,7 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var tplName = this.tplName,
-			rgxp = new RegExp(`^[$a-z_${!this.scope.length ? '#' : ''}][$\\w\\[\\].\\s]*=[^=]`);
+			rgxp = new RegExp(`^[\$a-z_${!this.scope.length ? '#' : ''}][$\\w\\[\\].\\s]*=[^=]`);
 
 		// Инициализация констант
 		if (!tplName || rgxp.test(command)) {
@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 				}
 
 			} else {
-				this.startInlineDir('globalVar');
+				this.startInlineDir('superGlobalVar');
 				this.save(`
 					if (typeof Snakeskin !== 'undefined') {
 						Snakeskin.Vars${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
