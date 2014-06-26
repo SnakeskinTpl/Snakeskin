@@ -15,15 +15,17 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration (${command})`);
 			}
 
-			let rgxp = /var /;
-			this.save('for (' +
-				(rgxp.test(parts[0]) ?
-					this.multiDeclVar(parts[0].replace(rgxp, '')) :
-					this.prepareOutput(parts[0], true)
-				) +
+			let varDeclRgxp = /var /;
+			let decl = varDeclRgxp.test(parts[0]) ?
+				this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
-				this.prepareOutput(parts.slice(1).join(';'), true) +
-			') {');
+			this.save(`for (${decl + this.prepareOutput(parts.slice(1).join(';'), true)}) {`);
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save('}');
 		}
 	}
 );
@@ -45,7 +47,7 @@ Snakeskin.addDirective(
 			this.toQueue(() => {
 				Snakeskin.Directions['end']({
 					ctx: this,
-					name: 'while:doEnd'
+					name: 'while'
 				});
 			});
 
@@ -55,6 +57,12 @@ Snakeskin.addDirective(
 				this.save(`while (${this.prepareOutput(command, true)}) {`);
 			}
 		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save('}');
+		}
 	}
 );
 
@@ -63,7 +71,6 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true,
 		after: {
 			'until': true
 		}
@@ -74,7 +81,9 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			this.save('do {');
 		}
-	}
+	},
+
+	function () {}
 );
 
 Snakeskin.addDirective(
@@ -82,7 +91,6 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		sys: true,
 		after: {
 			'while': true
 		}
@@ -93,7 +101,9 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			this.save('do {');
 		}
-	}
+	},
+
+	function () {}
 );
 
 Snakeskin.addDirective(
@@ -116,7 +126,7 @@ Snakeskin.addDirective(
 		this.toQueue(() => {
 			Snakeskin.Directions['end']({
 				ctx: this,
-				name: 'until:repeatEnd'
+				name: 'until'
 			});
 		});
 	}
