@@ -1,1 +1,1 @@
-module.exports = require('./build/snakeskin');
+module.exports = require('./build/snakeskin.min');
