@@ -106,11 +106,16 @@ function DirObj(src, params) {
 	this.structure = {
 		name: 'root',
 
-		/** @type {?{name: string, parent: Object, vars: !Object, children: !Array}} */
+		/** @type {?{name: string, parent: Object, params: !Object, stack: !Array, vars: Object, children: Array, sys: boolean}} */
 		parent: null,
 
+		params: {},
+		stack: [],
+
 		vars: params.vars || {},
-		children: []
+		children: [],
+
+		sys: false
 	};
 
 	/**
@@ -320,9 +325,13 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	var obj = {
 		name: opt_name,
 		parent: struct,
-		children: [],
-		vars: vars,
+
 		params: opt_params,
+		stack: [],
+
+		vars: vars,
+		children: [],
+
 		sys: Boolean(sysDirs[opt_name])
 	};
 
@@ -333,8 +342,8 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
-			children: [],
-			params: opt_params
+			params: opt_params,
+			children: []
 		};
 
 		let key = `${opt_name}_${opt_params.name}`;
@@ -388,7 +397,14 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 	var obj = {
 		name: opt_name,
 		parent: this.structure,
-		params: opt_params
+
+		params: opt_params,
+		stack: [],
+
+		vars: null,
+		children: null,
+
+		sys: Boolean(sysDirs[opt_name])
 	};
 
 	this.inlineDir = true;
@@ -420,6 +436,33 @@ DirObj.prototype.endDir = function () {
 	}
 
 	this.structure = this.structure.parent;
+	return this;
+};
+
+/**
+ * Добавить функцию в очередь выполнения
+ *
+ * @param {function(this:DirObj)} fn - исходная функция
+ * @return {!DirObj}
+ */
+DirObj.prototype.toQueue = function (fn) {
+	this.structure.stack.push(fn);
+	return this;
+};
+
+/**
+ * Выполнить все функции, которые стоят в очереди
+ * @return {!DirObj}
+ */
+DirObj.prototype.applyQueue = function () {
+	var stack = this.structure.stack;
+
+	for (let i = 0; i < stack.length; i++) {
+		stack[i].call(this);
+		stack.shift();
+		i--;
+	}
+
 	return this;
 };
 
