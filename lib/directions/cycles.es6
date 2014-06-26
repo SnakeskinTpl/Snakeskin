@@ -42,9 +42,11 @@ Snakeskin.addDirective(
 				this.save(`} while (${this.prepareOutput(command, true)});`);
 			}
 
-			Snakeskin.Directions['end']({
-				ctx: this,
-				name: 'while'
+			this.toQueue(() => {
+				Snakeskin.Directions['end']({
+					ctx: this,
+					name: 'while:doEnd'
+				});
 			});
 
 		} else {
@@ -111,9 +113,11 @@ Snakeskin.addDirective(
 			this.save(`} while (${this.prepareOutput(command, true)});`);
 		}
 
-		Snakeskin.Directions['end']({
-			ctx: this,
-			name: 'until'
+		this.toQueue(() => {
+			Snakeskin.Directions['end']({
+				ctx: this,
+				name: 'until:repeatEnd'
+			});
 		});
 	}
 );
@@ -126,10 +130,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.startInlineDir();
-
 		if (!this.hasParent({
-
 			'repeat': true,
 			'while': true,
 			'do': true,
@@ -140,6 +141,7 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can only be used with a cycles`);
 		}
 
+		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('break;');
 			this.space = true;
@@ -155,10 +157,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.startInlineDir();
-
 		if (!this.hasParent({
-
 			'repeat': true,
 			'while': true,
 			'do': true,
@@ -169,6 +168,7 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can only be used with a cycles`);
 		}
 
+		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			this.save('continue;');
 			this.space = true;

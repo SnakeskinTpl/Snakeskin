@@ -11,7 +11,7 @@ Snakeskin.addDirective(
 		var struct = this.structure;
 
 		if (!struct.parent) {
-			return this.error('invalid call "end"');
+			return this.error(`invalid call "${this.name}"`);
 		}
 
 		// Если в директиве end указано название закрываемой директивы,
@@ -41,5 +41,8 @@ Snakeskin.addDirective(
 		}
 
 		this.endDir();
+		this.toQueue(() => {
+			this.startInlineDir();
+		});
 	}
 );
