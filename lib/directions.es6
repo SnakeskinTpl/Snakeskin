@@ -52,18 +52,27 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 	}
 
 	strongDirs[name] = params.strongDirs;
+	afterDirs[name] = params.after;
+
 	Snakeskin.Directions[name] = function (dir, command, commandLength, jsDoc) {
+		if (dir.ctx) {
+			name = dir.name || name;
+			dir = dir.ctx;
+		}
+
 		switch (params.placement) {
 			case 'template': {
 				if (!dir.structure.parent) {
 					dir.error(`directive "${name}" can only be used within a "template", "interface", "placeholder" or "proto"`);
 				}
+
 			} break;
 
 			case 'global': {
 				if (dir.structure.parent) {
 					dir.error(`directive "${name}" can be used only within the global space`);
 				}
+
 			} break;
 
 			default: {
@@ -73,16 +82,11 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			}
 		}
 
-		if (dir.after && !dir.after[name]) {
-			return dir.error(`directive "${name}" can't be used after a "${dir.name}"`);
-		}
-
 		if (params.notEmpty && !command) {
 			return dir.error(`directive "${name}" should have a body`);
 		}
 
 		dir.name = name;
-		dir.after = params.after || null;
 
 		if (dir.strongDir && strongDirs[dir.strongDir][name]) {
 			dir.returnStrongDir = {
@@ -99,6 +103,23 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		}
 
 		constr.call(dir, command, commandLength, jsDoc);
+
+		var parent = name === 'end' ?
+			dir.structure : dir.structure.parent;
+
+		if (parent) {
+			var list = parent.children;
+			var j = name === 'end' ? 1 : 2,
+				prev;
+
+			while ((prev = list[list.length - j]) && prev.name === 'text') {
+				j++;
+			}
+
+			if (prev && afterDirs[prev.name] && !afterDirs[prev.name][dir.name]) {
+				return dir.error(`directive "${dir.name}" can't be used after a "${prev.name}"`);
+			}
+		}
 
 		if (dir.inlineDir === true) {
 			let sname = dir.structure.name;
