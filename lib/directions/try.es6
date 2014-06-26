@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			this.save('} ');
+			this.save('}');
 		}
 	}
 );
@@ -48,14 +48,14 @@ Snakeskin.addDirective(
 
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				this.save(`catch (${this.declVar(command)}) {`);
+				this.save(` catch (${this.declVar(command)}) {`);
 			}
 		});
 	},
 
 	function () {
 		if (this.isSimpleOutput()) {
-			this.save('} ');
+			this.save('}');
 		}
 	}
 );
@@ -80,7 +80,7 @@ Snakeskin.addDirective(
 
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				this.save('finally {');
+				this.save(' finally {');
 			}
 		});
 	},
