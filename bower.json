@@ -1,8 +1,12 @@
 {
-  "name": "Snakeskin",
-  "main": "build/snakeskin.js",
-  "version": "3.3.0",
+  "name": "snakeskin",
+  "main": "build/snakeskin.min.js",
+  "version": "3.4.0",
   "homepage": "https://github.com/kobezzza/Snakeskin",
+  "keywords": [
+    "templates",
+    "javascript"
+  ],
   "authors": [
     "Kobezzza <kobezzza@mail.ru>"
   ],

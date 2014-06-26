@@ -1,37 +1,37 @@
 {
   "name": "snakeskin",
-  "version": "3.3.0",
-  "description": "Snakeskin — компилятор блочных шаблонов c поддержкой наследования.",
+  "version": "3.4.0",
   "main": "snakeskin.js",
   "bin": {
     "snakeskin": "index.js"
   },
-  "directories": {
-    "lib": "lib",
-    "test": "tests"
-  },
+  "keywords": [
+    "templates",
+    "javascript"
+  ],
+  "homepage": "https://github.com/kobezzza/Snakeskin",
   "scripts": {
     "test": "node ./test.js"
+  },
+  "dependencies": {
+    "commander": "~1.3",
+    "jossy": "~0.1"
+  },
+  "devDependencies": {
+    "escaper": "~1",
+    "esprima": "~1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/kobezzza/Snakeskin"
   },
-  "dependencies": {
-    "commander": "~1.3",
-    "jossy": "~0.0",
-    "escaper": "*"
+  "author": {
+    "name": "Kobezzza",
+    "email": "kobezzza@mail.ru",
+    "url": "https://github.com/Kobezzza"
   },
-  "keywords": [
-    "templates"
-  ],
-  "author": "Kobezzza <kobezzza@mail.ru> (https://github.com/Kobezzza)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kobezzza/Snakeskin/issues"
-  },
-  "homepage": "https://github.com/kobezzza/Snakeskin",
-  "devDependencies": {
-    "jossy": "~0.1"
-  },
-  "license": "MIT"
+  }
 }
