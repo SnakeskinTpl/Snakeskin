@@ -66,22 +66,31 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let parts = command.match(/(.*?),\s+(.*)/);
+			let parts = command.split(';');
+			let exec = (parts) => {
+				parts[0] = parts[0].charAt(0) === '-' ?
+					`'data-' + ${parts[0].slice(1)}` : parts[0];
 
-			if (!parts) {
-				return this.error(`invalid "${this.name}" declaration (${command})`);
-			}
+				parts[1] = this.prepareOutput(parts[1], true) || '';
+			};
 
-			parts[1] = parts[1].charAt(0) === '-' ?
-				`'data-' + ${parts[1].slice(1)}` : parts[1];
+			for (let i = 0; i < parts.length; i++) {
+				let arg = parts[i].split('=>');
 
-			parts[2] = this.prepareOutput(parts[2], true) || '';
-
-			this.save(`
-				if (${parts[2]}) {
-					${this.wrap(`' ' + ${parts[1]} + ' = "' + (${parts[2]}) + '"'`)}
+				if (arg.length !== 2) {
+					return this.error(`invalid "${this.name}" declaration (${command}, ${parts[i]})`);
 				}
-			`);
+
+				for (let j = 0; j < arg.length; j++) {
+					exec(arg);
+
+					this.save(`
+						if (${arg[1]}) {
+							${this.wrap(`' ' + ${arg[0]} + ' = "' + (${arg[1]}) + '"'`)}
+						}
+					`);
+				}
+			}
 		}
 	}
 );
