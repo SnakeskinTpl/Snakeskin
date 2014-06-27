@@ -309,7 +309,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						return false;
 					}
 
-					if (dir.inlineDir !== false) {
+					if (dir.inline !== false) {
 						if (commandType === 'end') {
 							prefI--;
 
@@ -413,7 +413,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					dir.save(dir.applyDefEscape(el));
 				}
 
-				dir.inlineDir = null;
+				dir.inline = null;
 				dir.structure = dir.structure.parent;
 			}
 
