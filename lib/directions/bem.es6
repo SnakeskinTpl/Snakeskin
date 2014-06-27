@@ -51,19 +51,19 @@ Snakeskin.addDirective(
 			lastBEM.original = bem[bemName] &&
 				bem[bemName].tag;
 
-			this.save(`
-				__SNAKESKIN_RESULT__ += '<${lastBEM.tag || lastBEM.original || 'div'}
+			this.save(this.wrap(`
+				'<${lastBEM.tag || lastBEM.original || 'div'}
 					class="i-block"
 					data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
-				>';
-			`);
+				>'
+			`));
 		}
 	},
 
 	function () {
 		if (this.isSimpleOutput()) {
 			let lastBEM = this.structure.params;
-			this.save(`__SNAKESKIN_RESULT__ += '</${(lastBEM.tag || lastBEM.original || 'div')}>';`);
+			this.save(this.wrap(`'</${(lastBEM.tag || lastBEM.original || 'div')}>'`));
 		}
 	}
 );

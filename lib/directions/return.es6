@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 					this.save(this.prepareOutput(`return ${command};`, true));
 
 				} else {
-					this.save('return __SNAKESKIN_RESULT__;');
+					this.save(`return __SNAKESKIN_RESULT__${this.stringBuffer ? '.join(\'\')' : ''};`);
 				}
 			}
 		}

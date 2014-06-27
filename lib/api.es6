@@ -3,10 +3,13 @@
  *
  * @constructor
  * @param {string} src - текст шаблона
- * @param {Object} params - дополнительные параметры
  *
+ * @param {Object} params - дополнительные параметры
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
+ *
  * @param {?function(!Error)=} [params.onError] - функция обратного вызова для обработки ошибок при трансляции
+ * @param {?boolean=} [params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
+ *     используется техника [].join
  *
  * @param {Array=} [params.scope] - область видимости (контекст) директив
  * @param {Object=} [params.vars] - объект локальных переменных
@@ -24,6 +27,9 @@ function DirObj(src, params) {
 
 	/** @type {?function(!Error)} */
 	this.onError = params.onError || null;
+
+	/** @type {boolean} */
+	this.stringBuffer = params.stringBuffer;
 
 	/**
 	 * Если true, то трансляция сбрасывается
@@ -187,6 +193,32 @@ function DirObj(src, params) {
 }
 
 Snakeskin.DirObj = DirObj;
+
+/**
+ * Вернуть строку начала конкатенации __SNAKESKIN_RESULT__
+ * @return {string}
+ */
+DirObj.prototype.$ = function () {
+	return `__SNAKESKIN_RESULT__ ${this.stringBuffer ? '.push(' : '+= '}`;
+};
+
+/**
+ * Вернуть строку окончания конкатенации __SNAKESKIN_RESULT__
+ * @return {string}
+ */
+DirObj.prototype.$$ = function () {
+	return this.stringBuffer ? ')' : '';
+};
+
+/**
+ * Вернуть строку конкатенации __SNAKESKIN_RESULT__
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.wrap = function (str) {
+	return this.$() + str + this.$$() + ';';
+};
 
 /**
  * Добавить указанную строку в результирующую строку JavaScript

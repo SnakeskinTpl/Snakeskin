@@ -13,7 +13,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			this.save(`__SNAKESKIN_RESULT__ += '${this.replaceTplVars(command)}';`);
+			this.save(`${this.$()}'${this.replaceTplVars(command)}'${this.$$()};`);
 		}
 	}
 );
@@ -49,7 +49,7 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration (${command})`);
 			}
 
-			this.save(`__SNAKESKIN_RESULT__ += '{${add + code}}';`);
+			this.save(this.wrap(`'{${add + code}}'`));
 		}
 	}
 );
@@ -79,7 +79,7 @@ Snakeskin.addDirective(
 
 			this.save(`
 				if (${parts[2]}) {
-					__SNAKESKIN_RESULT__ += ' ' + ${parts[1]} + ' = "' + (${parts[2]}) + '"';
+					${this.wrap(`' ' + ${parts[1]} + ' = "' + (${parts[2]}) + '"'`)}
 				}
 			`);
 		}
