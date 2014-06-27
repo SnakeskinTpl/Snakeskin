@@ -63,6 +63,18 @@ var escapeEndMap = {
 	'{': true
 };
 
+var bMap = {
+	'(': true,
+	'[': true,
+	'{': true
+};
+
+var closeBMap = {
+	')': true,
+	']': true,
+	'}': true
+};
+
 /**
  * @param {?} a
  * @param {?} b

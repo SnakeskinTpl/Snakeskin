@@ -20,17 +20,7 @@ Snakeskin.addDirective(
 		}
 
 		if (inside[name]) {
-			this.strong = null;
-			this.strongSpace = false;
-		}
-
-		var strong = this.strongStack,
-			last = strong.length - 1;
-
-		if (strong[last] && strong[last].child === name) {
-			this.strong = strong.dir;
-			this.strongSpace = true;
-			strong.pop();
+			this.strongSpace = struct.parent.strong;
 		}
 
 		var destruct = Snakeskin.Directions[`${name}End`];

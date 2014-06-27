@@ -515,7 +515,9 @@ DirObj.prototype.hasParentBlock = function (name) {
  * Декларировать указанную переменную
  *
  * @param {string} varName - название переменной
- * @param {boolean=} [opt_protoParams=false] - если true, то декларируется параметр прототипа
+ * @param {boolean=} [opt_protoParams=false] - если true, то переменная
+ *     декларируется как параметр прототипа
+ *
  * @return {string}
  */
 DirObj.prototype.declVar = function (varName, opt_protoParams) {
@@ -557,28 +559,16 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	var isSys = 0,
 		cache = '';
 
-	var fin = 'var ';
+	var fin = 'var ',
+		length = str.length;
 
-	var sysTable = {
-		'(': true,
-		'[': true,
-		'{': true
-	};
-
-	var closeSysTable = {
-		')': true,
-		']': true,
-		'}': true
-	};
-
-	var length = str.length;
 	for (let i = 0; i < length; i++) {
 		let el = str.charAt(i);
 
-		if (sysTable[el]) {
+		if (bMap[el]) {
 			isSys++;
 
-		} else if (closeSysTable[el]) {
+		} else if (closeBMap[el]) {
 			isSys--;
 		}
 
