@@ -287,6 +287,10 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	fromConstCache[tplName] = 0;
 	constICache[tplName] = {};
 
+	this.superStrongSpace = false;
+	this.strongSpace = false;
+	this.space = false;
+
 	return this;
 };
 
@@ -332,7 +336,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		vars: vars,
 		children: [],
 
-		sys: Boolean(sysDirs[opt_name])
+		sys: Boolean(sys[opt_name])
 	};
 
 	struct.children.push(obj);
@@ -404,7 +408,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 		vars: null,
 		children: null,
 
-		sys: Boolean(sysDirs[opt_name])
+		sys: Boolean(sys[opt_name])
 	};
 
 	this.inlineDir = true;
