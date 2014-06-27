@@ -33,6 +33,8 @@ var replacers = {},
 var sysConst = {
 	'__SNAKESKIN_RESULT__': true,
 	'__SNAKESKIN_CDATA__': true,
+	'__RETURN__': true,
+	'__RETURN_VAL__': true,
 	'__I_PROTO__': true,
 	'__I__': true,
 	'__TMP__': true,

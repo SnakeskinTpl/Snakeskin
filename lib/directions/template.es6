@@ -280,6 +280,7 @@ Snakeskin.addDirective(
 
 		this.save(`${defParams}var __SNAKESKIN_RESULT__ = ${this.stringBuffer ? '[]' : '\'\''}, \$_;`);
 		this.save(
+			'var __RETURN__ = false, __RETURN_VAL__;' +
 			'var TPL_NAME = \'' + this.applyDefEscape(this.pasteDangerBlocks(tmpTplName)) + '\';' +
 			'var PARENT_TPL_NAME;'
 		);

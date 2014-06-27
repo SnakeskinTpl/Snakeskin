@@ -33,6 +33,12 @@ Snakeskin.addDirective(
 		}
 
 		this.endDir();
+
+		if (this.structure.name !== '$forEach' && this.deferReturn) {
+			this.save(`if (__RETURN__) { ${this.deferReturn} }`);
+			this.deferReturn = null;
+		}
+
 		this.toQueue(() => {
 			this.startInlineDir();
 		});

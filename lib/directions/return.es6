@@ -7,17 +7,41 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
+
+		var useForEach = this.hasParent({
+			'proto': true,
+			'$forEach': true
+		}) === '$forEach';
+
 		if (this.isSimpleOutput()) {
 			this.space = true;
-			if (this.proto) {
-				this.save(this.prepareOutput('break __I_PROTO__;', true));
+			if (this.proto && !command) {
+				let val = this.prepareOutput('break __I_PROTO__;', true);
 
-			} else {
-				if (command) {
-					this.save(this.prepareOutput(`return ${command};`, true));
+				if (useForEach) {
+					this.save('__RETURN__ = true; return false;');
+					this.deferReturn = val;
 
 				} else {
-					this.save(`return __SNAKESKIN_RESULT__${this.stringBuffer ? '.join(\'\')' : ''};`);
+					this.save(val);
+				}
+
+			} else {
+				let val;
+
+				if (command) {
+					val = `return ${this.prepareOutput(command, true)};`;
+
+				} else {
+					val = `return __SNAKESKIN_RESULT__${this.stringBuffer ? '.join(\'\')' : ''};`;
+				}
+
+				if (useForEach) {
+					this.save('__RETURN__ = true; return false;');
+					this.deferReturn = val;
+
+				} else {
+					this.save(val);
 				}
 			}
 		}
