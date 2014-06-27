@@ -99,14 +99,13 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			return dir.error(`directive "${dirName}" should have a body`);
 		}
 
-		if (dir.strong && inside[dir.strong][dirName]) {
-			dir.strongStack.push({
-				child: dirName,
-				dir: dir.strong
-			});
+		if (struct.strong) {
+			if (inside[struct.name][dirName]) {
+				dir.strongSpace = false;
 
-			dir.strong = null;
-			dir.strongSpace = false;
+			} else if (sourceName === dirName && dirName !== 'end') {
+				return dir.error(`directive "${dirName}" can't be used within the "${struct.name}"`);
+			}
 		}
 
 		if (params.text) {
@@ -115,6 +114,11 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		constr.call(dir, command, commandLength, jsDoc);
 		var newStruct = dir.structure;
+
+		if (inside[dirName]) {
+			newStruct.strong = true;
+			dir.strongSpace = true;
+		}
 
 		if (dirName === sourceName) {
 			if (struct === newStruct) {
@@ -142,19 +146,12 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		dir.applyQueue();
 
 		if (dir.inline === true) {
-			let sname = dir.structure.name;
-
 			dir.inline = null;
-			dir.structure = dir.structure.parent;
+			dir.structure = newStruct.parent;
 
-			if (dir.blockStructure && sname === 'const') {
+			if (dir.blockStructure && dirName === 'const') {
 				dir.blockStructure = dir.blockStructure.parent;
 			}
-		}
-
-		if (inside[dirName]) {
-			dir.strong = dirName;
-			dir.strongSpace = true;
 		}
 	};
 
