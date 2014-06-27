@@ -495,13 +495,17 @@ DirObj.prototype.applyQueue = function () {
  *
  * @param {(string|!Object)} name - название директивы или таблица названий
  * @param {Object=} [opt_obj=this.structure] - проверяемый объект
- * @return {boolean}
+ * @return {(boolean|string)}
  */
 DirObj.prototype.has = function (name, opt_obj) {
 	var obj = opt_obj || this.structure;
 
 	while (true) {
 		if (name[obj.name] || obj.name === name) {
+			if (name[obj.name]) {
+				return obj.name;
+			}
+
 			return true;
 
 		} else if (obj.parent && obj.parent.name !== 'root') {
@@ -518,7 +522,7 @@ DirObj.prototype.has = function (name, opt_obj) {
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или таблица названий
- * @return {boolean}
+ * @return {(boolean|string)}
  */
 DirObj.prototype.hasParent = function (name) {
 	if (this.structure.parent) {
@@ -533,7 +537,7 @@ DirObj.prototype.hasParent = function (name) {
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или таблица названий
- * @return {boolean}
+ * @return {(boolean|string)}
  */
 DirObj.prototype.hasParentBlock = function (name) {
 	if (this.blockStructure && this.blockStructure.parent) {
