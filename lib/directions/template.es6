@@ -29,6 +29,7 @@ Snakeskin.addDirective(
 	'template',
 
 	{
+		template: true,
 		placement: 'global',
 		notEmpty: true
 	},
@@ -412,6 +413,7 @@ Snakeskin.addDirective(
 	'placeholder',
 
 	{
+		template: true,
 		placement: 'global',
 		notEmpty: true
 	},
@@ -424,6 +426,7 @@ Snakeskin.addDirective(
 	'interface',
 
 	{
+		template: true,
 		placement: 'global',
 		notEmpty: true
 	},

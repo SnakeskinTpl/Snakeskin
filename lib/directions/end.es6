@@ -20,7 +20,7 @@ Snakeskin.addDirective(
 			return this.error(`invalid closing tag, expected: "${struct.name}", declared: "${command}"`);
 		}
 
-		if (strongDirs[struct.name]) {
+		if (inside[struct.name]) {
 			this.strongDir = null;
 			this.strongSpace = false;
 		}
