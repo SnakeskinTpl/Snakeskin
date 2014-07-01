@@ -167,7 +167,11 @@ Snakeskin.addDirective(
 						{end}
 					`,
 
-					null,
+					{
+						inlineIterators: this.inlineIterators,
+						stringBuffer: this.stringBuffer
+					},
+
 					null,
 
 					{

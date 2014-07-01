@@ -34,8 +34,13 @@ Snakeskin.addDirective(
 
 		this.endDir();
 
-		if (!groups['callback'][this.structure.name] && this.deferReturn) {
-			this.save(`if (__RETURN__) { ${this.deferReturn} }`);
+		if (this.deferReturn && !this.getGroup('callback')[this.structure.name]) {
+			this.save(`
+				if (__RETURN__) {
+					${this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;'}
+				}
+			`);
+
 			this.deferReturn = null;
 		}
 

@@ -5,7 +5,10 @@ Snakeskin.addDirective(
 		block: true,
 		placement: 'template',
 		notEmpty: true,
-		group: 'cycle'
+		group: [
+			'cycle',
+			'callback'
+		]
 	},
 
 	function (command) {
@@ -20,6 +23,19 @@ Snakeskin.addDirective(
 
 			let args = parts[1] ?
 				parts[1].trim().split(',') : [];
+
+			if (!this.inlineIterators) {
+				for (let i = 0; i < args.length; i++) {
+					let el = args[i].trim();
+
+					if (el) {
+						args[i] = this.declVar(el) || '';
+					}
+				}
+
+				this.save(`Snakeskin.forEach(${this.prepareOutput(`(${parts[0]})`, true)}, function (${args.join(',')}) {`);
+				return;
+			}
 
 			let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
 				cacheObj = this.prepareOutput('__TMP__', true);
@@ -203,9 +219,14 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			let params = this.structure.params;
-			let part = this.res.substring(params.from);
-			this.save(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
+			if (!this.inlineIterators) {
+				this.save('});');
+
+			} else {
+				let params = this.structure.params;
+				let part = this.res.substring(params.from);
+				this.save(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
+			}
 		}
 	}
 );
@@ -270,7 +291,10 @@ Snakeskin.addDirective(
 		block: true,
 		placement: 'template',
 		notEmpty: true,
-		group: 'cycle'
+		group: [
+			'cycle',
+			'callback'
+		]
 	},
 
 	function (command) {
@@ -285,6 +309,19 @@ Snakeskin.addDirective(
 
 			let args = parts[1] ?
 				parts[1].trim().split(',') : [];
+
+			if (!this.inlineIterators) {
+				for (let i = 0; i < args.length; i++) {
+					let el = args[i].trim();
+
+					if (el) {
+						args[i] = this.declVar(el) || '';
+					}
+				}
+
+				this.save(`Snakeskin.forIn(${this.prepareOutput(`(${parts[0]})`, true)}, function (${args.join(',')}) {`);
+				return;
+			}
 
 			let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
 				cacheObj = this.prepareOutput('__TMP__', true);
@@ -356,7 +393,12 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			this.save('}}');
+			if (!this.inlineIterators) {
+				this.save('});');
+
+			} else {
+				this.save('}}');
+			}
 		}
 	}
 );

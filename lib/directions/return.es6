@@ -8,37 +8,49 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 
-		var useForEach = this.hasParent({
-			'proto': true,
-			'$forEach': true
-		}) === '$forEach';
+		var map = this.getGroup('callback');
+		map['proto'] = true;
+
+		var useCallback = this.hasParent(map) !== 'proto';
 
 		if (this.isSimpleOutput()) {
 			this.space = true;
 			if (this.proto && !command) {
 				let val = this.prepareOutput('break __I_PROTO__;', true);
 
-				if (useForEach) {
-					this.save('__RETURN__ = true; return false;');
-					this.deferReturn = val;
+				if (useCallback) {
+					this.save(`
+						__RETURN__ = true;
+						return false;
+					`);
+
+					this.deferReturn = String(val);
 
 				} else {
 					this.save(val);
 				}
 
 			} else {
-				let val;
+				let chunk,
+					val;
 
 				if (command) {
-					val = `return ${this.prepareOutput(command, true)};`;
+					chunk = this.prepareOutput(command, true);
+					val = `return ${chunk};`;
 
 				} else {
 					val = this.returnResult();
 				}
 
-				if (useForEach) {
-					this.save('__RETURN__ = true; return false;');
-					this.deferReturn = val;
+				if (useCallback) {
+					this.save(`
+						__RETURN__ = true;
+						${chunk ? `__RETURN_VAL__ = ${chunk};` : ''}
+
+						return false;
+					`);
+
+					this.deferReturn = chunk ? true : val;
 
 				} else {
 					this.save(val);
