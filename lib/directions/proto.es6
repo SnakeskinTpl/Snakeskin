@@ -181,8 +181,13 @@ Snakeskin.addDirective(
 							name: lastProto.name,
 							recursive: lastProto.recursive,
 							parentTplName: this.parentTplName,
+
 							pos: this.res.length,
-							ctx: this
+							ctx: this,
+
+							superStrongSpace: this.superStrongSpace,
+							strongSpace: this.strongSpace,
+							space: this.space
 						}
 					}
 				);

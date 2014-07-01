@@ -32,7 +32,7 @@
  * @param {Object=} [opt_sysParams] - служебные параметры запуска
  * @param {Array=} [opt_sysParams.scope] - область видимости (контекст) директив
  * @param {Object=} [opt_sysParams.vars] - объект локальных переменных
- * @param {?string=} [opt_sysParams.proto] - название корневого прототипа
+ * @param {Object=} [opt_sysParams.proto] - объект настроек прототипа
  *
  * @return {(string|boolean)}
  */

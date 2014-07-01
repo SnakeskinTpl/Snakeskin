@@ -72,7 +72,12 @@ Snakeskin.addDirective(
 		this.blockTable = {};
 		this.varCache[tplName] = {};
 
-		if (this.proto) {
+		var proto = this.proto;
+
+		if (proto) {
+			this.superStrongSpace = proto.superStrongSpace;
+			this.strongSpace = proto.strongSpace;
+			this.space = proto.space;
 			return;
 		}
 
