@@ -14,6 +14,9 @@
  * @param {?boolean=} [opt_params.stringBuffer] - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
  *
+ * @param {?boolean=} [opt_params.inlineIterators=true] - если false, то работа итераторов forEach и forIn
+ *     будет реализовываться через встроенные методы Snakeskin, а не через циклы
+ *
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (только при экспорте в commonJS)
  *
@@ -58,6 +61,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.onError = s(p.onError, p['onError']);
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
 	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
+	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) !== false;
 
 	cjs = Boolean(cjs);
 	var info = opt_info || {};
@@ -100,7 +104,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		scope: opt_sysParams.scope,
 		vars: opt_sysParams.vars,
 		onError: p.onError,
-		stringBuffer: p.stringBuffer
+		stringBuffer: p.stringBuffer,
+		inlineIterators: p.inlineIterators
 	});
 
 	// Если true, то идёт содержимое директивы,
