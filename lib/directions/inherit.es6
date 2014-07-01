@@ -6,18 +6,14 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var table = {
-			'block': true,
-			'proto': true,
-			'const': true
-		};
+		var map = this.getGroup('inherit');
 
 		if (this.parentTplName) {
-			let obj = this.blockStructure;
-			let cache;
+			let obj = this.blockStructure,
+				cache;
 
 			while (true) {
-				if (table[obj.name]) {
+				if (map[obj.name]) {
 					cache = (obj.name === 'proto' ? protoCache : blockCache)[this.parentTplName][obj.params.name];
 
 					if (cache) {
