@@ -34,14 +34,19 @@ Snakeskin.addDirective(
 
 		this.endDir();
 
-		if (this.deferReturn && !this.getGroup('callback')[this.structure.name]) {
-			this.save(`
-				if (__RETURN__) {
-					${this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;'}
-				}
-			`);
+		if (this.deferReturn) {
+			if (!this.getGroup('callback')[this.structure.name]) {
+				this.save(`
+					if (__RETURN__) {
+						${this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;'}
+					}
+				`);
 
-			this.deferReturn = null;
+				this.deferReturn = null;
+
+			} else {
+				this.save('return false;');
+			}
 		}
 
 		this.toQueue(() => {
