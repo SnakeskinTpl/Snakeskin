@@ -8,7 +8,11 @@
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
  *
  * @param {?function(!Error)=} [params.onError] - функция обратного вызова для обработки ошибок при трансляции
- * @param {?boolean=} [params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
+ *
+ * @param {boolean} [params.inlineIterators] - если false, то работа итераторов forEach и forIn
+ *     будет реализовываться через встроенные методы Snakeskin, а не через циклы
+ *
+ * @param {boolean} [params.stringBuffer] - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
  *
  * @param {Array=} [params.scope] - область видимости (контекст) директив
@@ -30,6 +34,9 @@ function DirObj(src, params) {
 
 	/** @type {boolean} */
 	this.stringBuffer = params.stringBuffer;
+
+	/** @type {boolean} */
+	this.inlineIterators = params.inlineIterators;
 
 	/**
 	 * Если true, то трансляция сбрасывается
@@ -137,7 +144,7 @@ function DirObj(src, params) {
 	/**
 	 * Текст, который будет возвращён шаблоном
 	 * после выхода из директив группы callback
-	 * @type {?string}
+	 * @type {(string|boolean|null)}
 	 */
 	this.deferReturn = null;
 
@@ -502,6 +509,37 @@ DirObj.prototype.applyQueue = function () {
 	}
 
 	return this;
+};
+
+/**
+ * Вернуть заданную группу директив
+ *
+ * @param {string} name - название группы
+ * @return {!Object}
+ */
+DirObj.prototype.getGroup = function (name) {
+	var map = {};
+	var cb = groups[name],
+		ignore = {};
+
+	if (name === 'callback' && this.inlineIterators) {
+		ignore['forEach'] = true;
+		ignore['forIn'] = true;
+	}
+
+	for (let key in cb) {
+		if (!cb.hasOwnProperty(key)) {
+			continue;
+		}
+
+		if (ignore[key]) {
+			continue;
+		}
+
+		map[key] = true;
+	}
+
+	return map;
 };
 
 /**
