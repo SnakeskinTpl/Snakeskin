@@ -434,6 +434,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var isFilter,
 		breakNum;
 
+	var mod = {
+		'@': true,
+		'#': true
+	};
+
 	for (let i = 0; i < commandLength; i++) {
 		let el = command.charAt(i),
 			next = command.charAt(i + 1),
@@ -481,9 +486,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					vres = finalWord;
 
 				// Экспорт глобальный и супер глобальных переменных
-				} else if (el === '@'&& (useWith ? next !== '[' : true) && canParse) {
+				} else if ((useWith && !mod[el] || el === '@' && (useWith ? next === '@' : true)) && canParse) {
+
 					if (useWith) {
-						vres = finalWord.substring(next === '@' ? 2 : 1);
+						vres = next === '@' ?
+							finalWord.substring(2) : finalWord;
 
 						// Супер глобальная переменная внутри with
 						if (next === '@') {
@@ -511,42 +518,20 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 							vres = addScope(rfWord);
 
 						} else {
-							let num = null;
+							let num = 0;
 
 							// Уточнение scope
 							if (el === '#') {
-								num = strongModRgxp.exec(finalWord);
-								num = num ? num[1] : 1;
-								num++;
+								let val = strongModRgxp.exec(finalWord);
+								num = val ? val[1] : 1;
 							}
 
-							let first = scope[0];
-							scope.push(rfWord);
-
-							let rnum = num = num ? scope.length - num : num,
-								length = scope.length;
-
-							if (num !== null && num <= 0) {
+							if (num && (scope.length - num) <= 0) {
 								vres = addScope(rfWord);
 
 							} else {
-								vres = addScope(first);
-								for (let j = 1; j < length; j++) {
-									num = num ? num - 1 : num;
-
-									if (num === null || num > 0) {
-										vres += setMod(scope[j]);
-										continue;
-									}
-
-									if (j === length - 1) {
-										vres = (rnum > 0 ? scope[j].charAt(0) === '[' ? vres : `${vres}.` : '') +
-											scope[j];
-									}
-								}
+								vres = addScope(scope[scope.length - 1 - num]) + setMod(rfWord);
 							}
-
-							scope.pop();
 						}
 
 					} else {

@@ -10,7 +10,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		this.scope.push(command);
+		this.scope.push(this.prepareOutput(command, true));
 	},
 
 	function () {
