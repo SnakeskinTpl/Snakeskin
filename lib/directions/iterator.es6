@@ -24,20 +24,20 @@ Snakeskin.addDirective(
 			let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
 				cacheObj = this.prepareOutput('__TMP__', true);
 
-			let objLength = this.multiDeclVar('__TMP_KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
-				keys = this.prepareOutput('__TMP_KEYS__', true);
+			let objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
+				keys = this.prepareOutput('__KEYS__', true);
 
 			if (args.length >= 6) {
 				objLength += `
-					${this.multiDeclVar(`__TMP_LENGTH__ = __TMP_KEYS__ ? __TMP_KEYS__.length : 0`)}
+					${this.multiDeclVar(`__LENGTH__ = __KEYS__ ? __KEYS__.length : 0`)}
 					if (!${keys}) {
-						${this.multiDeclVar('__TMP_LENGTH__ = 0')}
+						${this.multiDeclVar('__LENGTH__ = 0')}
 						for (${this.multiDeclVar('__KEY__', false)} in ${cacheObj}) {
 							if (!${cacheObj}.hasOwnProperty(${this.prepareOutput('__KEY__', true)})) {
 								continue;
 							}
 
-							${this.prepareOutput('__TMP_LENGTH__++;', true)}
+							${this.prepareOutput('__LENGTH__++;', true)}
 						}
 					}
 				`;
@@ -47,8 +47,8 @@ Snakeskin.addDirective(
 				${tmpObj}
 				if (${cacheObj}) {
 					if (Array.isArray(${cacheObj})) {
-						${this.multiDeclVar('__TMP_LENGTH__ =  __TMP__.length')}
-						for (${this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __TMP_LENGTH__;', true)}) {
+						${this.multiDeclVar('__LENGTH__ =  __TMP__.length')}
+						for (${this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true)}) {
 			`;
 
 			resStr += (() => {
@@ -75,11 +75,11 @@ Snakeskin.addDirective(
 						} break;
 
 						case 4: {
-							tmp += ' = __I__ === __TMP_LENGTH__ - 1';
+							tmp += ' = __I__ === __LENGTH__ - 1';
 						} break;
 
 						case 5: {
-							tmp += ' = __TMP_LENGTH__';
+							tmp += ' = __LENGTH__';
 						} break;
 					}
 
@@ -93,8 +93,8 @@ Snakeskin.addDirective(
 				} else {
 					${objLength}
 					if (${keys}) {
-						${this.multiDeclVar(`__TMP_LENGTH__ = __TMP_KEYS__.length`)}
-						for (${this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __TMP_LENGTH__;', true)}) {
+						${this.multiDeclVar(`__LENGTH__ = __KEYS__.length`)}
+						for (${this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true)}) {
 			`;
 
 			end += (() => {
@@ -105,11 +105,11 @@ Snakeskin.addDirective(
 
 					switch (i) {
 						case 0: {
-							tmp += ' = __TMP__[__TMP_KEYS__[__I__]]';
+							tmp += ' = __TMP__[__KEYS__[__I__]]';
 						} break;
 
 						case 1: {
-							tmp += ' = __TMP_KEYS__[__I__]';
+							tmp += ' = __KEYS__[__I__]';
 						} break;
 
 						case 2: {
@@ -125,11 +125,11 @@ Snakeskin.addDirective(
 						} break;
 
 						case 5: {
-							tmp += ' = __I__ === __TMP_LENGTH__ - 1';
+							tmp += ' = __I__ === __LENGTH__ - 1';
 						} break;
 
 						case 6: {
-							tmp += ' = __TMP_LENGTH__';
+							tmp += ' = __LENGTH__';
 						} break;
 					}
 
@@ -178,11 +178,11 @@ Snakeskin.addDirective(
 						} break;
 
 						case 5: {
-							tmp += ' = __I__ === __TMP_LENGTH__ - 1';
+							tmp += ' = __I__ === __LENGTH__ - 1';
 						} break;
 
 						case 6: {
-							tmp += ' = __TMP_LENGTH__';
+							tmp += ' = __LENGTH__';
 						} break;
 					}
 
@@ -289,9 +289,9 @@ Snakeskin.addDirective(
 			let objLength = '';
 			if (args.length >= 6) {
 				objLength += `
-					${this.multiDeclVar('__TMP_LENGTH__ = 0')}
+					${this.multiDeclVar('__LENGTH__ = 0')}
 					for (${this.multiDeclVar('key', false)} in ${cacheObj}) {
-						${this.prepareOutput('__TMP_LENGTH__++;', true)}
+						${this.prepareOutput('__LENGTH__++;', true)}
 					}
 				`;
 			}
@@ -333,11 +333,11 @@ Snakeskin.addDirective(
 						} break;
 
 						case 5: {
-							tmp += ' = __I__ === __TMP_LENGTH__ - 1';
+							tmp += ' = __I__ === __LENGTH__ - 1';
 						} break;
 
 						case 6: {
-							tmp += ' = __TMP_LENGTH__';
+							tmp += ' = __LENGTH__';
 						} break;
 					}
 
