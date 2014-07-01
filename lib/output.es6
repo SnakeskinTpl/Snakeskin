@@ -553,7 +553,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				if (comboBlackWordList[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse && (!opt_sys || opt_isys)) {
+				} else if (canParse && (!opt_sys || opt_isys) && !filterStart) {
 					vres = `Snakeskin.Filters.undef(${vres})`;
 				}
 
