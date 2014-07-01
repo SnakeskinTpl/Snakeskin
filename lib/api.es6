@@ -187,6 +187,8 @@ function DirObj(src, params) {
 		this.res += 'This code is generated automatically, don\'t alter it. */';
 	}
 
+	this.res += `(function () {`;
+
 	if (params.commonJS) {
 		this.res += `
 			var Snakeskin = global.Snakeskin;

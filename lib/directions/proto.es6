@@ -5,13 +5,13 @@
 DirObj.prototype.protoStart = false;
 
 /**
- * Кеш "внешних" прототипов
+ * Кеш внешних прототипов
  * @type {!Object}
  */
 DirObj.prototype.preProtos = {};
 
 /**
- * Название активного "внешнего" прототипа
+ * Название активного внешнего прототипа
  * @type {?string}
  */
 DirObj.prototype.protoLink = null;
