@@ -183,28 +183,29 @@ function DirObj(src, params) {
 	 */
 	this.res = '';
 
-	if (!params.proto) {
-		this.res += 'This code is generated automatically, don\'t alter it. */';
-	}
-
-	this.res += `(function () {`;
-
-	if (params.commonJS) {
+	if (!this.proto) {
 		this.res += `
-			var Snakeskin = global.Snakeskin;
-
-			exports.init = function (obj) {
-				Snakeskin = obj instanceof Object ?
-					obj : require(obj);
-
-				delete exports.init;
-				exec();
-
-				return this;
-			};
-
-			function exec() {
+			This code is generated automatically, don\'t alter it. */
+			(function () {
 		`;
+
+		if (this.commonJS) {
+			this.res += `
+				var Snakeskin = global.Snakeskin;
+
+				exports.init = function (obj) {
+					Snakeskin = obj instanceof Object ?
+						obj : require(obj);
+
+					delete exports.init;
+					exec.call(exports);
+
+					return exports;
+				};
+
+				function exec() {
+			`;
+		}
 	}
 }
 
