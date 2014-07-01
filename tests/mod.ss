@@ -15,15 +15,14 @@ mod_index
 	{@@['a' + 'b']}
 
 	{with b}
-		{with c}
-			{#[e]}
+		{with @c}
+			{#[@e]}
 			{var tmp}
 			{@[2 == 2 && (tmp = (1 + 1|repeat))] = 5}
 			{tmp}
 			{@[(1 + 1|repeat)]}
 		{/}
 	{/}
-	{&-}
 {/template}
 
 ###

@@ -6,18 +6,18 @@ scope_index ; {child: {name: 'Koba', child: {name: 'none'}}}
 {template scope_index(obj)}
 	{name = 'bar'}
 	{with obj.child}
-		{name}{&}
+		{@name}{&}
 		{var e = 'test'}
-		{with child}
+		{with @child}
 			{
-				@name + ' ' +
+				name + ' ' +
 				#99name + ' ' +
 				#name + ' ' +
 				#1name + ' ' +
 				#2name + ' ' +
 				@@name + ' ' +
-				name + ' ' +
-				e
+				@name + ' ' +
+				@e
 			}
 		{end}
 	{end}

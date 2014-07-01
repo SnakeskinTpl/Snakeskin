@@ -29,7 +29,7 @@ proto_recursive2
 	{a = {a: 1}}
 	{with a}{&}
 		{proto f4(i)}
-			{a} {i}
+			{@a} {i}
 		{/}
 	{/}
 
