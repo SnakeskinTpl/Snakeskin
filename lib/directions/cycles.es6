@@ -2,8 +2,10 @@ Snakeskin.addDirective(
 	'for',
 
 	{
+		block: true,
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		group: 'cycle'
 	},
 
 	function (command) {
@@ -34,8 +36,10 @@ Snakeskin.addDirective(
 	'while',
 
 	{
+		block: true,
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		group: 'cycle'
 	},
 
 	function (command) {
@@ -70,7 +74,9 @@ Snakeskin.addDirective(
 	'repeat',
 
 	{
+		block: true,
 		placement: 'template',
+		group: 'cycle',
 		after: {
 			'until': true
 		}
@@ -90,7 +96,9 @@ Snakeskin.addDirective(
 	'do',
 
 	{
+		block: true,
 		placement: 'template',
+		group: 'cycle',
 		after: {
 			'while': true
 		}

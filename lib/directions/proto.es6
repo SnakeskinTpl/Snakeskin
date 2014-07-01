@@ -47,8 +47,9 @@ Snakeskin.addDirective(
 
 	{
 		sys: true,
-		template: true,
-		notEmpty: true
+		block: true,
+		notEmpty: true,
+		group: 'template'
 	},
 
 	function (command, commandLength) {

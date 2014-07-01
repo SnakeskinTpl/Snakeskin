@@ -2,8 +2,10 @@ Snakeskin.addDirective(
 	'forEach',
 
 	{
+		block: true,
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		group: 'cycle'
 	},
 
 	function (command) {
@@ -212,8 +214,10 @@ Snakeskin.addDirective(
 	'$forEach',
 
 	{
+		block: true,
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		group: 'cycle'
 	},
 
 	function (command) {
@@ -260,8 +264,10 @@ Snakeskin.addDirective(
 	'forIn',
 
 	{
+		block: true,
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		group: 'cycle'
 	},
 
 	function (command) {

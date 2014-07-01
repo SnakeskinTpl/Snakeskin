@@ -25,6 +25,7 @@ Snakeskin.addDirective(
 	'bem',
 
 	{
+		block: true,
 		placement: 'template',
 		notEmpty: true,
 		text: true

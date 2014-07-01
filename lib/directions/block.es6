@@ -2,6 +2,7 @@ Snakeskin.addDirective(
 	'block',
 
 	{
+		block: true,
 		placement: 'template',
 		sys: true,
 		notEmpty: true
