@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 					val = `return ${this.prepareOutput(command, true)};`;
 
 				} else {
-					val = `return __SNAKESKIN_RESULT__${this.stringBuffer ? '.join(\'\')' : ''};`;
+					val = `return __RESULT__${this.stringBuffer ? '.join(\'\')' : ''};`;
 				}
 
 				if (useForEach) {

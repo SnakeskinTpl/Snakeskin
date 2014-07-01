@@ -159,7 +159,7 @@ function DirObj(src, params) {
 				`{__appendLine__ ${(data.match(/[\n\r]/g) || '').length}}` +
 
 				// Метка для замены CDATA
-				`__SNAKESKIN_CDATA__${this.cDataContent.length - 1}_`
+				`__CDATA__${this.cDataContent.length - 1}_`
 			;
 		});
 

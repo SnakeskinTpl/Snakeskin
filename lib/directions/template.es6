@@ -391,7 +391,7 @@ Snakeskin.addDirective(
 
 		} else {
 			this.save(
-					`return __SNAKESKIN_RESULT__${this.stringBuffer ? '.join(\'\')' : ''}; ` +
+					`return __RESULT__${this.stringBuffer ? '.join(\'\')' : ''}; ` +
 				'};' +
 
 				'if (typeof Snakeskin !== \'undefined\') {' +
