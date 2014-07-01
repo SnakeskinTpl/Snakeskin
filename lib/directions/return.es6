@@ -11,7 +11,8 @@ Snakeskin.addDirective(
 		var map = this.getGroup('callback');
 		map['proto'] = true;
 
-		var useCallback = this.hasParent(map) !== 'proto';
+		var parent = this.hasParent(map);
+		var useCallback = parent && parent !== 'proto';
 
 		if (this.isSimpleOutput()) {
 			this.space = true;
