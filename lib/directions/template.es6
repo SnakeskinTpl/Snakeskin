@@ -390,16 +390,14 @@ Snakeskin.addDirective(
 			this.save('};', true);
 
 		} else {
-			this.save(
-					`return __RESULT__${this.stringBuffer ? '.join(\'\')' : ''}; ` +
-				'};' +
+			this.save(`
+					${this.returnResult()}
+				};
 
-				'if (typeof Snakeskin !== \'undefined\') {' +
-					'Snakeskin.cache[\'' +
-						this.applyDefEscape(this.pasteDangerBlocks(tplName)) +
-					'\'] = this.' + tplName + ';' +
-				'}'
-			);
+				if (typeof Snakeskin !== 'undefined') {
+					Snakeskin.cache['${this.applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};
+				}
+			`);
 		}
 
 		this.save('/* Snakeskin template. */', iface);
