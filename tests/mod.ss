@@ -2,17 +2,18 @@ mod_index
 
 ###
 
-{['a'] = 1}
-{ab = 2}
+{['mod_global'] = 1}
+{MG = 2}
 
 {template mod_index()}
 	{&+}
 	{b = {c: {e: 1, 22: 3}, 1: 2}}
 
-	{@['a'] = 10}
-	{@['a']}
-	{@@['a' + 'b'] = 4}
-	{@@['a' + 'b']}
+	{@['mod_global'] = 10}
+	{@['mod_global']}
+
+	{@@['M' + 'G'] = 4}
+	{@@['M' + 'G']}
 
 	{with b}
 		{with @c}

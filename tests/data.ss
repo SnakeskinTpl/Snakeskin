@@ -1,5 +1,6 @@
 data_index
 data_attr
+data_decl
 
 ###
 
@@ -20,6 +21,13 @@ data_attr
 	{attr 'foo' => bar; 'bar' => 'foo'}
 {/}
 
+{template data_decl()}
+	{foo = 'bar'}
+
+	{{foo}}
+	{{${foo}}}
+{/}
+
 ###
 
 {a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}
@@ -27,3 +35,7 @@ data_attr
 ***
 
 foo = "bar" foo = "bar"  foo = "bar" foo = "bar" bar = "foo" bar = "foo"
+
+***
+
+{{foo}} {{bar}}

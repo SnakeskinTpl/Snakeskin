@@ -1,6 +1,9 @@
 param_base
 param_child
 param_child2
+param_base2
+param_child22
+param_base3
 
 ###
 
@@ -16,6 +19,21 @@ param_child2
 	{b = 3}
 {/}
 
+{template param_base2(@a = {a: 1})}
+	{@a}
+{/}
+
+{template param_child22(@a) extends param_base2}
+{/}
+
+{template param_base3(@a = {a: {c: 1}})}
+	{b = 2}
+	{proto foo(@a = @a)}
+		{@c} {b}
+	{/}
+	{apply foo}
+{/}
+
 ###
 
 1
@@ -27,3 +45,15 @@ param_child2
 ***
 
 3
+
+***
+
+1
+
+***
+
+1
+
+***
+
+1 2

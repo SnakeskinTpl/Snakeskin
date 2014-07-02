@@ -1,25 +1,63 @@
 cycles_index
+cycles_index2
 
 ###
 
 {template cycles_index(i = 0)}
-	{for var j = 0; j < 3; j++}
-		{j}
-	{end}
+	{&+}
+		{for var j = 0; j < 3; j++}
+			{j}
+		{end}
+	{&-}
 
-	{while i++ < 3}
-		{i}
-	{end}
+	{&+}
+		{while i++ < 3}
+			{i}
+		{end}
+	{&-}
 
-	{repeat}
-		{i}
-	{until i--}
+	{&+}
+		{repeat}
+			{i}
+		{until i--}
+	{&-}
 
-	{do}
-		{i}
-	{while ++i < 3}
+	{&+}
+		{do}
+			{i}
+		{while ++i < 3}
+	{&-}
+{end template}
+
+{template cycles_index2(i = 0)}
+	{&+}
+		{for var j = 0; j < 3; j++}
+			{j}
+			{break}
+		{end}
+	{&-}
+
+	{&+}
+		{while i++ < 3}
+			{if i === 1}
+				{continue}
+			{/}
+			{i}
+		{end}
+	{&-}
+
+	{&+}
+		{repeat}
+			{i}
+			{break}
+		{until i--}
+	{&-}
 {end template}
 
 ###
 
-0  1  2   1  2  3   4  3  2  1  0   -1  0  1  2
+012 123 43210 -1012
+
+***
+
+0 23 4

@@ -17,7 +17,7 @@ scope_index ; {child: {name: 'Koba', child: {name: 'none'}}}
 				#2name + ' ' +
 				@@name + ' ' +
 				@name + ' ' +
-				@e
+				e
 			}
 		{end}
 	{end}
