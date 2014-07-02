@@ -150,21 +150,15 @@ Snakeskin.addDirective(
 	function () {
 		this.startInlineDir();
 
-		var parent = this.hasParent({
-			'repeat': true,
-			'while': true,
-			'do': true,
-			'$forEach': true,
-			'forEach': true,
-			'forIn': true
-		});
+		var parent = this.hasParent(this.getGroup('cycle')),
+			cb = this.hasParent(this.getGroup('callback'));
 
 		if (!parent) {
 			return this.error(`directive "${this.name}" can only be used with a cycles`);
 		}
 
 		if (this.isSimpleOutput()) {
-			if (parent === '$forEach') {
+			if (parent === cb) {
 				this.save('return false;');
 
 			} else {
@@ -186,21 +180,15 @@ Snakeskin.addDirective(
 	function () {
 		this.startInlineDir();
 
-		var parent = this.hasParent({
-			'repeat': true,
-			'while': true,
-			'do': true,
-			'$forEach': true,
-			'forEach': true,
-			'forIn': true
-		});
+		var parent = this.hasParent(this.getGroup('cycle')),
+			cb = this.hasParent(this.getGroup('callback'));
 
 		if (!parent) {
 			return this.error(`directive "${this.name}" can only be used with a cycles`);
 		}
 
 		if (this.isSimpleOutput()) {
-			if (parent === '$forEach') {
+			if (parent === cb) {
 				this.save('return;');
 
 			} else {
