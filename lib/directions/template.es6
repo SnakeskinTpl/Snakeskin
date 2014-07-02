@@ -178,10 +178,21 @@ Snakeskin.addDirective(
 		var argsList = args.split(','),
 			parentArgs = paramsCache[parentTplName];
 
-		var argsTable = paramsCache[tplName] = {};
+		var argsTable = paramsCache[tplName] = {},
+			scope;
+
 		for (let i = 0; i < argsList.length; i++) {
 			let arg = argsList[i].split('=');
 			arg[0] = arg[0].trim();
+
+			if (arg[0].charAt(0) === '@') {
+				if (scope) {
+					return this.error(`invalid "${this.name}" declaration (${command}, ${arg[0]})`);
+
+				} else {
+					scope = arg[0].substring(1);
+				}
+			}
 
 			argsTable[arg[0]] = {
 				i: i,
@@ -202,6 +213,8 @@ Snakeskin.addDirective(
 				let el = parentArgs[key],
 					current = argsTable[key];
 
+				let cVal = current && current.value === void 0;
+
 				if (el.value !== void 0) {
 					if (!argsTable[key]) {
 						argsTable[key] = {
@@ -211,11 +224,15 @@ Snakeskin.addDirective(
 							value: el.value
 						};
 
-					} else if (current && current.value === void 0) {
+					} else if (cVal) {
 						argsTable[key].value = el.value;
 					}
 				}
 			}
+		}
+
+		if (scope) {
+			this.scope.push(scope);
 		}
 
 		argsList = [];
@@ -241,6 +258,9 @@ Snakeskin.addDirective(
 		var defParams = '';
 		for (let i = 0; i < argsList.length; i++) {
 			let el = argsList[i];
+
+			el.key = el.key.charAt(0) === '@' ?
+				el.key.substring(1) : el.key;
 
 			this.save(el.key, iface);
 			constICache[tplName][el.key] = el;
@@ -269,7 +289,7 @@ Snakeskin.addDirective(
 				continue;
 			}
 
-			defs += `{__const__ ${el.key} = ${el.value}}`;
+			defs += `{__const__ ${el.key.charAt(0) === '@' ? el.key.substring(1) : el.key} = ${el.value}}`;
 		}
 
 		if (defs) {
@@ -351,6 +371,10 @@ Snakeskin.addDirective(
 			this.i = this.startTemplateI - 1;
 			this.parentTplName = null;
 			return;
+		}
+
+		if (this.scope.length) {
+			this.scope.pop();
 		}
 
 		// Вызовы не объявленных прототипов

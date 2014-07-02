@@ -175,7 +175,7 @@ Snakeskin.addDirective(
 					null,
 
 					{
-						scope: this.scope,
+						scope: this.scope.slice(),
 						vars: this.structure.vars,
 						proto: {
 							name: lastProto.name,
