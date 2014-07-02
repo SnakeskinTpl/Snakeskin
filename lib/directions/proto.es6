@@ -27,14 +27,21 @@ DirObj.prototype.returnArgs = function (protoArgs, args) {
 	var str = '';
 
 	for (let i = 0; i < protoArgs.length; i++) {
-		let val = this.prepareOutput(args[i] || 'null', true);
+		let val = this.prepareOutput(args[i] || 'void 0', true);
 
 		let arg = protoArgs[i][0],
 			def = protoArgs[i][1];
 
+		if (def !== void 0) {
+			def = this.prepareOutput(def, true);
+		}
+
+		arg = arg.charAt(0) === '@' ?
+			arg.substring(1) : arg;
+
 		str += `
 			var ${arg} = ${def !== void 0 ?
-				val ? `${val} != null ? ${val} : ${def}` : def : val || 'void 0'
+				val ? `${val} != null ? ${val} : ${this.prepareOutput(def, true)}` : def : val || 'void 0'
 			};
 		`;
 	}
@@ -93,6 +100,7 @@ Snakeskin.addDirective(
 				return this.error(`proto "${name}" is already defined`);
 			}
 
+			let scope;
 			let args = command.match(/\((.*?)\)/),
 				argsMap = [];
 
@@ -107,9 +115,24 @@ Snakeskin.addDirective(
 				}
 
 				for (let i = 0; i < argsList.length; i++) {
-					let arg = argsList[i].split('=');
+					let arg = argsList[i].split('='),
+						mod = arg[0].charAt(0) === '@';
+
+					if (mod) {
+						if (scope) {
+							return this.error(`invalid "proto" declaration (${args})`);
+
+						} else {
+							arg[0] = arg[0].substring(1);
+						}
+					}
+
 					arg[0] = this.declVar(arg[0].trim(), true) || '';
 					argsMap.push(arg);
+
+					if (mod) {
+						scope = arg[0];
+					}
 				}
 			}
 
@@ -118,6 +141,7 @@ Snakeskin.addDirective(
 				from: this.i - this.startTemplateI + 1,
 				argsDecl: args ? args[0] : '',
 				args: argsMap,
+				scope: scope,
 				calls: {}
 			};
 		}
@@ -155,15 +179,20 @@ Snakeskin.addDirective(
 					.substring(proto.from, proto.to);
 
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
+				var scope = proto.scope;
 
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					`
 						{template ${tplName}()}
-							{var __I_PROTO__ = 1}
-							{__protoWhile__ __I_PROTO__--}
-								${this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1)}
-							{end}
+							${scope ? `{with ${scope}}` : ''}
+
+								{var __I_PROTO__ = 1}
+								{__protoWhile__ __I_PROTO__--}
+									${this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1)}
+								{end}
+
+							${scope ? `{end}` : ''}
 						{end}
 					`,
 

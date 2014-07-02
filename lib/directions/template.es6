@@ -373,10 +373,6 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		if (this.scope.length) {
-			this.scope.pop();
-		}
-
 		// Вызовы не объявленных прототипов
 		if (this.backTableI) {
 			let cache = Object(this.backTable);
@@ -431,6 +427,10 @@ Snakeskin.addDirective(
 		this.tplName = null;
 
 		delete this.info['template'];
+
+		if (this.scope.length) {
+			this.scope.pop();
+		}
 	})
 );
 
