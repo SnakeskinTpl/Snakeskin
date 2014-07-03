@@ -67,12 +67,6 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			let parts = command.split(';');
-			let exec = (parts) => {
-				parts[0] = parts[0].charAt(0) === '-' ?
-					`'data-' + ${parts[0].slice(1)}` : parts[0];
-
-				parts[1] = this.prepareOutput(parts[1], true) || '';
-			};
 
 			for (let i = 0; i < parts.length; i++) {
 				let arg = parts[i].split('=>');
@@ -81,15 +75,30 @@ Snakeskin.addDirective(
 					return this.error(`invalid "${this.name}" declaration (${command}, ${parts[i]})`);
 				}
 
-				for (let j = 0; j < parts.length; j++) {
-					exec(arg);
+				this.save('__STR__ = \'\';');
+				arg[0] = arg[0].charAt(0) === '-' ?
+					`'data-' + ${arg[0].slice(1)}` : arg[0];
 
-					this.save(`
-						if (${arg[1]}) {
-							${this.wrap(`' ' + ${arg[0]} + ' = "' + (${arg[1]}) + '"'`)}
+				let vals = arg[1].split(','),
+					str = '';
+
+				for (let j = 0; j < vals.length; j++) {
+					let val = this.prepareOutput(vals[j], true) || '';
+
+					str += `
+						if (${val}) {
+							__STR__ += ' ' + ${val};
 						}
-					`);
+					`;
 				}
+
+				this.save(`
+					${str}
+
+					if (__STR__) {
+						${this.wrap(`' ' + ${arg[0]} + ' = "' + __STR__ + '"'`)}
+					}
+				`);
 			}
 		}
 	}
