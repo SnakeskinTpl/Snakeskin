@@ -56,7 +56,10 @@ Snakeskin.addDirective(
 		sys: true,
 		block: true,
 		notEmpty: true,
-		group: ['template', 'inherit']
+		group: [
+			'template',
+			'inherit'
+		]
 	},
 
 	function (command, commandLength) {
