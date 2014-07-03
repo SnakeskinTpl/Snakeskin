@@ -38,8 +38,8 @@
  *         'finally': true
  *     }
  *
- * @param {function(this:DirObj, string, number, (boolean|number))} constr - конструктор директивы
- * @param {?function(this:DirObj, string, number, (boolean|number))=} opt_destr - деструктор директивы
+ * @param {function(this:DirObj, string, number, string, (boolean|number))} constr - конструктор директивы
+ * @param {?function(this:DirObj, string, number, string, (boolean|number))=} opt_destr - деструктор директивы
  */
 Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 	params = params || {};
@@ -77,7 +77,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		}
 	}
 
-	Snakeskin.Directions[name] = function (dir, command, commandLength, jsDoc) {
+	Snakeskin.Directions[name] = function (dir, command, commandLength, type, jsDoc) {
 		var sourceName = name,
 			dirName = name;
 
@@ -128,7 +128,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			dir.text = true;
 		}
 
-		constr.call(dir, command, commandLength, jsDoc);
+		constr.call(dir, command, commandLength, type, jsDoc);
 		var newStruct = dir.structure;
 
 		if (inside[dirName]) {
