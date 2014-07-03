@@ -43,8 +43,10 @@ Snakeskin.addDirective(
 			if (args.length >= 6) {
 				objLength += `
 					${this.multiDeclVar(`__LENGTH__ = __KEYS__ ? __KEYS__.length : 0`)}
+
 					if (!${keys}) {
 						${this.multiDeclVar('__LENGTH__ = 0')}
+
 						for (${this.multiDeclVar('__KEY__', false)} in ${cacheObj}) {
 							if (!${cacheObj}.hasOwnProperty(${this.prepareOutput('__KEY__', true)})) {
 								continue;
@@ -58,6 +60,7 @@ Snakeskin.addDirective(
 
 			let resStr = `
 				${tmpObj}
+
 				if (${cacheObj}) {
 					if (Array.isArray(${cacheObj})) {
 						${this.multiDeclVar('__LENGTH__ =  __TMP__.length')}
@@ -105,6 +108,7 @@ Snakeskin.addDirective(
 			let end = `
 				} else {
 					${objLength}
+
 					if (${keys}) {
 						${this.multiDeclVar(`__LENGTH__ = __KEYS__.length`)}
 						for (${this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true)}) {
@@ -155,6 +159,7 @@ Snakeskin.addDirective(
 			let oldEnd = `
 				} else {
 					${this.multiDeclVar('__I__ = -1')}
+
 					for (${this.multiDeclVar('__KEY__', false)} in ${cacheObj}) {
 						if (!${cacheObj}.hasOwnProperty(${this.prepareOutput('__KEY__', true)})) {
 							continue;
@@ -220,8 +225,12 @@ Snakeskin.addDirective(
 				this.save('});');
 
 			} else {
-				let params = this.structure.params;
-				let part = this.res.substring(params.from);
+				let params = this.structure
+					.params;
+
+				let part = this.res
+					.substring(params.from);
+
 				this.save(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
 			}
 		}
@@ -314,6 +323,7 @@ Snakeskin.addDirective(
 			if (args.length >= 6) {
 				objLength += `
 					${this.multiDeclVar('__LENGTH__ = 0')}
+
 					for (${this.multiDeclVar('key', false)} in ${cacheObj}) {
 						${this.prepareOutput('__LENGTH__++;', true)}
 					}
@@ -322,9 +332,12 @@ Snakeskin.addDirective(
 
 			let resStr = `
 				${tmpObj}
+
 				if (${cacheObj}) {
+
 					${objLength}
 					${this.multiDeclVar('__I__ = -1')}
+
 					for (${this.multiDeclVar('__KEY__', false)} in ${cacheObj}) {
 						${this.prepareOutput('__I__++;', true)}
 			`;
