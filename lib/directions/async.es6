@@ -1,3 +1,23 @@
+/**
+ * Декларировать аргументы функции callback
+ *
+ * @param {(!Array|string)} parts - строка аргументов или массив строк
+ * @return {string}
+ */
+DirObj.prototype.declCallbackArgs = function (parts) {
+	var args = ((Array.isArray(parts) ? (parts[2] || parts[1]) : parts) || '').split(',');
+
+	for (let i = 0; i < args.length; i++) {
+		let el = args[i].trim();
+
+		if (el) {
+			args[i] = this.declVar(el);
+		}
+	}
+
+	return args.join(',');
+};
+
 Snakeskin.addDirective(
 	'callback',
 
@@ -20,26 +40,14 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let async = this.getGroup('async');
+			let async = this.getGroup('async'),
+				parent = this.structure.parent;
 
-			let parent = this.structure.parent;
 			let prfx = async[parent.name] &&
 				parent.children.length > 1 ? ', ' : '';
 
 			this.structure.params.insideAsync = async[parent.name];
-
-			let args = (parts[2] || parts[1] || ''),
-				vars = args.split(',');
-
-			for (let i = 0; i < vars.length; i++) {
-				let el = vars[i].trim();
-
-				if (el) {
-					vars[i] = this.declVar(el) || '';
-				}
-			}
-
-			this.save(`${prfx}(function (${args && this.prepareOutput(args, true)}) {`);
+			this.save(`${prfx}(function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 
@@ -82,18 +90,7 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let args = (parts[2] || parts[1] || ''),
-				vars = args.split(',');
-
-			for (let i = 0; i < vars.length; i++) {
-				let el = vars[i].trim();
-
-				if (el) {
-					vars[i] = this.declVar(el) || '';
-				}
-			}
-
-			this.save(`], function (${args && this.prepareOutput(args, true)}) {`);
+			this.save(`], function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 

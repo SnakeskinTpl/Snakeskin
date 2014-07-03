@@ -21,19 +21,13 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration (${command})`);
 			}
 
-			let args = parts[1] ?
-				parts[1].trim().split(',') : [];
-
 			if (!this.inlineIterators) {
-				for (let i = 0; i < args.length; i++) {
-					let el = args[i].trim();
+				this.save(`
+					Snakeskin.forEach(
+						${this.prepareOutput(`(${parts[0]})`, true)},
+						function (${this.declCallbackArgs(parts[1])}) {
+				`);
 
-					if (el) {
-						args[i] = this.declVar(el) || '';
-					}
-				}
-
-				this.save(`Snakeskin.forEach(${this.prepareOutput(`(${parts[0]})`, true)}, function (${args.join(',')}) {`);
 				return;
 			}
 
@@ -42,6 +36,9 @@ Snakeskin.addDirective(
 
 			let objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
 				keys = this.prepareOutput('__KEYS__', true);
+
+			let args = parts[1] ?
+				parts[1].trim().split(',') : [];
 
 			if (args.length >= 6) {
 				objLength += `
@@ -256,17 +253,7 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isSimpleOutput()) {
-			let vars = (parts[2] || parts[1] || '').split(',');
-
-			for (let i = 0; i < vars.length; i++) {
-				let el = vars[i].trim();
-
-				if (el) {
-					vars[i] = this.declVar(el) || '';
-				}
-			}
-
-			this.save(`\$C(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${vars.join(',')}) {`);
+			this.save(`\$C(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 
@@ -307,26 +294,23 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration (${command})`);
 			}
 
-			let args = parts[1] ?
-				parts[1].trim().split(',') : [];
-
 			if (!this.inlineIterators) {
-				for (let i = 0; i < args.length; i++) {
-					let el = args[i].trim();
+				this.save(`
+					Snakeskin.forIn(
+						${this.prepareOutput(`(${parts[0]})`, true)},
+						function (${this.declCallbackArgs(parts[1])}) {
+				`);
 
-					if (el) {
-						args[i] = this.declVar(el) || '';
-					}
-				}
-
-				this.save(`Snakeskin.forIn(${this.prepareOutput(`(${parts[0]})`, true)}, function (${args.join(',')}) {`);
 				return;
 			}
+
+			let objLength = '';
+			let args = parts[1] ?
+				parts[1].trim().split(',') : [];
 
 			let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
 				cacheObj = this.prepareOutput('__TMP__', true);
 
-			let objLength = '';
 			if (args.length >= 6) {
 				objLength += `
 					${this.multiDeclVar('__LENGTH__ = 0')}
