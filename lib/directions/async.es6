@@ -76,7 +76,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var async = this.getGroup('async');
+		var async = this.getGroup('series');
 
 		if (!async[this.structure.name]) {
 			return this.error(`directive "${this.name}" can only be used with a "${this.structure.name}"`);
@@ -108,7 +108,10 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		placement: 'template',
-		group: 'async',
+		group: [
+			'async',
+			'series'
+		],
 		inside: {
 			'callback': true,
 			'final': true
@@ -135,7 +138,10 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		placement: 'template',
-		group: 'async',
+		group: [
+			'async',
+			'series'
+		],
 		inside: {
 			'callback': true,
 			'final': true
@@ -162,7 +168,10 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		placement: 'template',
-		group: 'async',
+		group: [
+			'async',
+			'series'
+		],
 		inside: {
 			'callback': true,
 			'final': true
@@ -199,6 +208,33 @@ Snakeskin.addDirective(
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			this.save('async.whilst(');
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save(');');
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'when',
+
+	{
+		block: true,
+		placement: 'template',
+		notEmpty: true,
+		group: 'async',
+		inside: {
+			'callback': true
+		}
+	},
+
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			this.save(`${command}.then(`);
 		}
 	},
 
