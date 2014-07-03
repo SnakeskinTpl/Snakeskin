@@ -408,6 +408,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			} else {
 				if (struct.strong && !inside[struct.name]['text']) {
+					if (el === ' ') {
+						dir.space = false;
+						continue;
+					}
+
 					dir.error(`directive "text" can't be used within the "${struct.name}"`);
 					return false;
 				}
