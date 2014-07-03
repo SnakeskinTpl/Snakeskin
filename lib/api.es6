@@ -4,7 +4,7 @@
  * @constructor
  * @param {string} src - текст шаблона
  *
- * @param {Object} params - дополнительные параметры
+ * @param {!Object} params - дополнительные параметры
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
  *
  * @param {?function(!Error)=} [params.onError] - функция обратного вызова для обработки ошибок при трансляции
