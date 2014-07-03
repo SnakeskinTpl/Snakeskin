@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 					return this.error(`invalid "${this.name}" declaration (${command}, ${parts[i]})`);
 				}
 
-				for (let j = 0; j < arg.length; j++) {
+				for (let j = 0; j < parts.length; j++) {
 					exec(arg);
 
 					this.save(`
