@@ -11,7 +11,8 @@
  * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется
  *     с экспортом в стиле commonJS
  *
- * @param {?boolean=} [opt_params.stringBuffer] - если true, то для конкатенации строк в шаблоне
+ * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
+ * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
  *
  * @param {?boolean=} [opt_params.inlineIterators=true] - если false, то работа итераторов forEach и forIn
@@ -62,6 +63,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
 	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) !== false;
+	p.interface = s(p.interface, p['interface']) || false;
 
 	cjs = Boolean(cjs);
 	var info = opt_info || {};
@@ -105,7 +107,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		vars: opt_sysParams.vars,
 		onError: p.onError,
 		stringBuffer: p.stringBuffer,
-		inlineIterators: p.inlineIterators
+		inlineIterators: p.inlineIterators,
+		renderAsInterface: p.renderAsInterface
 	});
 
 	// Если true, то идёт содержимое директивы,
@@ -310,6 +313,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							command.replace(commandRgxp, '') : command,
 
 						commandLength,
+						commandType,
 						jsDocStart
 					);
 
