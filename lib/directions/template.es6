@@ -361,6 +361,7 @@ Snakeskin.addDirective(
 		// но уже как атомарного (без наследования)
 		if (this.parentTplName) {
 			this.info['line'] = this.startTemplateLine;
+
 			this.source = this.source.substring(0, this.startTemplateI) +
 				this.getExtStr(tplName) +
 				this.source.substring(this.i - commandLength - 1);

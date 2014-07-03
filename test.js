@@ -9,7 +9,10 @@ var tpls = {};
 
 snakeskin.compile(
 	fs.readFileSync(path.join(__dirname, 'test.ss')),
-	{context: tpls}
+	{
+		context: tpls,
+		prettyPrint: true
+	}
 );
 
 var asserts = [];
@@ -35,7 +38,7 @@ fs.readdirSync(testFolder).forEach(function(file)  {
 		asserts.push(obj);
 
 		try {
-			fs.writeFileSync((("" + src) + ".js"), snakeskin.compile(txt[1], true));
+			fs.writeFileSync((("" + src) + ".js"), snakeskin.compile(txt[1], {commonJS: true, prettyPrint: true}));
 
 		} catch (err) {
 			console.error(("File: " + file));

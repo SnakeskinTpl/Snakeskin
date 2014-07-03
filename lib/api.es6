@@ -400,6 +400,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		}
 
 		this.blockTable[key] = sub;
+
 		var deep = (obj) => {
 			for (let i = 0; i < obj.length; i++) {
 				let el = obj[i];

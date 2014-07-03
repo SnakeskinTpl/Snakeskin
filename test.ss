@@ -1,5 +1,5 @@
-{template test(asserts)}
-	{cdata}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+#{template test(asserts)}
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html>
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -25,21 +25,20 @@
 			<h2 id="qunit-userAgent"></h2>
 			<ol id="qunit-tests"></ol>
 
-	{/cdata}
-			{forEach asserts => el}
-				<script type="text/x-snakeskin-template" id="{el.id}">
-					{el.tpl|!html}
+			#{forEach asserts => el}
+				<script type="text/x-snakeskin-template" id="#{el.id}">
+					#{el.tpl|!html}
 				</script>
 
 				<script type="text/javascript">
-					Snakeskin.compile(document.getElementById('{el.id}'));
-					test('{el.id}', function () {cdata}{{/cdata}
-						{forEach el.js => el}
-							{el|!html}
-						{/}
-					{cdata}}{/cdata});
+					Snakeskin.compile(document.getElementById('#{el.id}'), {prettyPrint: true});
+					test('#{el.id}', function () {
+						#{forEach el.js => el}
+							#{el|!html}
+						#{/}
+					});
 				</script>
-			{/}
+			#{/}
 		</body>
 	</html>
-{/}
+#{/}
