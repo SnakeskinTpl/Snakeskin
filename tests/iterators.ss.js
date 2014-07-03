@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404372677885> Thu Jul 03 2014 11:31:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404375954839> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -12,6 +12,7 @@
         this.iterators_index1 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index1',
@@ -116,6 +117,7 @@
         this.iterators_index2 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index2',
@@ -232,6 +234,7 @@
         this.iterators_index3 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index3',
@@ -283,6 +286,7 @@
         this.iterators_index4 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index4',
@@ -390,6 +394,7 @@
         this.iterators_index5 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index5',
@@ -509,6 +514,7 @@
         this.iterators_index6 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index6',

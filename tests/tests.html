@@ -61,7 +61,7 @@
 	{bar = 'bar'}
 
 	{attr foo => 'bar'}
-	{attr 'foo' => bar; 'bar' => 'foo'}
+	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
 {template data_decl()}
@@ -69,7 +69,7 @@
 
 	{{foo}}
 	{{${foo}}}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_attr().trim(), 'foo = "bar" foo = "bar"  foo = "bar" foo = "bar" bar = "foo" bar = "foo"'); equal(data_decl().trim(), '{{foo}} {{bar}}'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> {a = String}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_decl().trim(), '{{foo}} {{bar}}'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> {a = String}
 {template filters_index()}
 	{a = {a: String}}
 	{with a}

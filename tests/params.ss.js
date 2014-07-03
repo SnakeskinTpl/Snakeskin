@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404372677931> Thu Jul 03 2014 11:31:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404375954884> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -13,6 +13,7 @@
             b = b != null ? b : 1;
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base',
@@ -28,6 +29,7 @@
         this.param_child = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child',
@@ -44,6 +46,7 @@
         this.param_child2 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child2',
@@ -63,6 +66,7 @@
             };
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base2',
@@ -81,6 +85,7 @@
             };
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child22',
@@ -101,6 +106,7 @@
             };
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base3',

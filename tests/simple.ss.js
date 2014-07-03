@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404372677983> Thu Jul 03 2014 11:31:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404375954932> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -12,6 +12,7 @@
         this.simple_output = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_output',
@@ -51,6 +52,7 @@
             name = name != null ? name : 'world';
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_index',
@@ -72,6 +74,7 @@
             name = name != null ? name : 'world';
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_tpl.index',
@@ -95,6 +98,7 @@
             name = name != null ? name : 'world';
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_tpl.foo[\'index\']',

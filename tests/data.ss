@@ -18,7 +18,7 @@ data_decl
 	{bar = 'bar'}
 
 	{attr foo => 'bar'}
-	{attr 'foo' => bar; 'bar' => 'foo'}
+	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
 {template data_decl()}
@@ -34,7 +34,7 @@ data_decl
 
 ***
 
-foo = "bar" foo = "bar"  foo = "bar" foo = "bar" bar = "foo" bar = "foo"
+foo = " bar"  foo = " bar foo" bar = " foo"
 
 ***
 

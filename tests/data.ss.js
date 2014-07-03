@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404372677801> Thu Jul 03 2014 11:31:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404375954754> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -12,6 +12,7 @@
         this.data_index = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'data_index',
@@ -32,6 +33,7 @@
         this.data_attr = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'data_attr',
@@ -41,24 +43,30 @@
             __RESULT__ += ' ';
             var bar = 'bar';
             __RESULT__ += ' ';
+            __STR__ = '';
             if ('bar') {
-                __RESULT__ += ' ' + foo + ' = "' + ('bar') + '"';
+                __STR__ += ' ' + 'bar';
             }
-            if ('bar') {
-                __RESULT__ += ' ' + foo + ' = "' + ('bar') + '"';
+            if (__STR__) {
+                __RESULT__ += ' ' + foo + ' = "' + __STR__ + '"';
             }
             __RESULT__ += ' ';
+            __STR__ = '';
             if (bar) {
-                __RESULT__ += ' ' + 'foo' + ' = "' + (bar) + '"';
+                __STR__ += ' ' + bar;
             }
-            if (bar) {
-                __RESULT__ += ' ' + 'foo' + ' = "' + (bar) + '"';
+            if (foo) {
+                __STR__ += ' ' + foo;
             }
+            if (__STR__) {
+                __RESULT__ += ' ' + 'foo' + ' = "' + __STR__ + '"';
+            }
+            __STR__ = '';
             if ('foo') {
-                __RESULT__ += ' ' + 'bar' + ' = "' + ('foo') + '"';
+                __STR__ += ' ' + 'foo';
             }
-            if ('foo') {
-                __RESULT__ += ' ' + 'bar' + ' = "' + ('foo') + '"';
+            if (__STR__) {
+                __RESULT__ += ' ' + 'bar' + ' = "' + __STR__ + '"';
             }
             __RESULT__ += ' ';
             return __RESULT__;
@@ -69,6 +77,7 @@
         this.data_decl = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'data_decl',

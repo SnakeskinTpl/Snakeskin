@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404372677789> Thu Jul 03 2014 11:31:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404375954741> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -13,6 +13,7 @@
             i = i != null ? i : 0;
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'cycles_index',
@@ -43,6 +44,7 @@
             i = i != null ? i : 0;
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'cycles_index2',

@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404372677846> Thu Jul 03 2014 11:31:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404375954798> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -14,6 +14,7 @@
             val2 = val2 != null ? val2 : 3;
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_base',
@@ -37,6 +38,7 @@
             val = val != null ? val : 2;
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_sub',
@@ -66,6 +68,7 @@
         this.inherit_superTestConst = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_superTestConst',
@@ -87,6 +90,7 @@
         this.inherit_childTestConst = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_childTestConst',
@@ -110,6 +114,7 @@
         this.inherit_superTestConst2 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_superTestConst2',
@@ -131,6 +136,7 @@
         this.inherit_childTestConst2 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_childTestConst2',
@@ -162,6 +168,7 @@
         this.inherit_superTestConst3 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_superTestConst3',
@@ -185,6 +192,7 @@
         this.inherit_childTestConst3 = function() {
             var __RESULT__ = '',
                 $_;
+            var __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_childTestConst3',
