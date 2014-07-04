@@ -302,11 +302,11 @@ Snakeskin.addDirective(
 				argsStr = this.returnProtoArgs(proto.args, args ? args[1].split(',') : []);
 			}
 
-			let selfProto = this.proto,
-				recursive;
-
+			let selfProto = this.proto;
 			if (selfProto) {
-				recursive = proto && proto.calls[selfProto.name];
+				if (proto && proto.calls[selfProto.name]) {
+					return this.error(`invalid form of recursion for the proto (apply "${name}" inside "${selfProto.name}")`);
+				}
 			}
 
 			// Рекурсивный вызов прототипа
@@ -316,7 +316,7 @@ Snakeskin.addDirective(
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
-			} else if (!proto || !proto.body || recursive) {
+			} else if (!proto || !proto.body) {
 				if (!this.backTable[name]) {
 					this.backTable[name] = [];
 					this.backTable[name].protoStart = this.protoStart;
@@ -333,7 +333,7 @@ Snakeskin.addDirective(
 					label: new RegExp(`\\/\\* __APPLY__${key} \\*\\/`),
 
 					args: args,
-					recursive: Boolean(proto || recursive)
+					recursive: Boolean(proto)
 				});
 
 				this.save(`/* __APPLY__${this.tplName}_${name}_${rand} */`);
