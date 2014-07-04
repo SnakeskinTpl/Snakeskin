@@ -304,7 +304,10 @@ Snakeskin.addDirective(
 			var __RESULT__ = ${this.stringBuffer ? '[]' : '\'\''},
 				\$_;
 
-			var __STR__;
+			var __FILTERS__ = Snakeskin.Filters,
+				__VARS__ = Snakeskin.Vars,
+				__STR__;
+
 			var __RETURN__ = false,
 				__RETURN_VAL__;
 
