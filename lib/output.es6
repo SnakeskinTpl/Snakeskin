@@ -77,13 +77,17 @@ DirObj.prototype.replaceTplVars = function (str) {
 		bEndRgxp = /[^\s\/]/;
 
 	var res = '';
+	var dirTable = {
+		'${': true,
+		'#{': true
+	};
 
 	for (let i = 0; i < str.length; i++) {
 		let el = str.charAt(i);
 		let next2str = el + str.charAt(i + 1);
 
 		// Начало директивы
-		if (!begin && next2str === '${') {
+		if (!begin && dirTable[next2str]) {
 			begin++;
 			dir = '';
 
