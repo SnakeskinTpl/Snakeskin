@@ -116,10 +116,7 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save(`
-				], function (${this.declCallbackArgs(parts)}) {
-					${this.deferReturn ? 'if (__RETURN__) { return false; }' : ''}
-			`);
+			this.save(`], function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 
