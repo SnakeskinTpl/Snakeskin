@@ -39,23 +39,42 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let async = this.getGroup('async'),
-				parent = this.structure.parent;
+			let async = this.getGroup('async');
 
-			let prfx = async[parent.name] &&
+			let parent = this.structure.parent,
+				name = parent.name;
+
+			let prfx = async[name] &&
 				parent.children.length > 1 ? ', ' : '';
 
-			this.structure.params.insideAsync = async[parent.name];
-			this.save(`
-				${prfx}(function (${this.declCallbackArgs(parts)}) {
-					${this.deferReturn ? `if (__RETURN__) {
-						if (typeof arguments[0] === 'function') {
-							return arguments[0](false);
-						}
+			this.structure.params.insideAsync = async[name];
 
-						return false;
-					}` : ''}
-			`);
+			if (async[name]) {
+				if (name === 'waterfall') {
+					this.save(`
+						${prfx}(function (${this.declCallbackArgs(parts)}) {
+							${this.deferReturn ? 'if (__RETURN__) { return arguments[arguments.length - 1](false); }' : ''}
+					`);
+
+				} else {
+					this.save(`
+						${prfx}(function (${this.declCallbackArgs(parts)}) {
+							${this.deferReturn ? `if (__RETURN__) {
+								if (typeof arguments[] === 'function') {
+									return arguments[0](false);
+								}
+
+								return false;
+							}` : ''}
+					`);
+				}
+
+			} else {
+				this.save(`
+					${prfx}(function (${this.declCallbackArgs(parts)}) {
+						${this.deferReturn ? 'if (__RETURN__) { return false; }' : ''}
+				`);
+			}
 		}
 	},
 
@@ -107,8 +126,9 @@ Snakeskin.addDirective(
 	function () {
 		if (this.isSimpleOutput()) {
 			this.save('});');
-			this.endDir();
 		}
+
+		this.endDir();
 	}
 );
 
