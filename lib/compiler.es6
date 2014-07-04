@@ -439,7 +439,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 			if (!beginStr) {
-				jsDoc = false;
+				if (jsDoc) {
+					jsDoc = false;
+					dir.space = true;
+				}
 			}
 		}
 	}
