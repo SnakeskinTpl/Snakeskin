@@ -6,7 +6,7 @@ var jossy = require('jossy');
 /**
  * Скомпилировать указанный файл шаблонов Snakeskin
  *
- * @expose
+ * @see export.compile
  * @param {string} src - путь к файлу c шаблонами
  * @param {function(Error, string=)} callback - функция обратного вызова
  *
