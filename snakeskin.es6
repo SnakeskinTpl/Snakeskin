@@ -4,17 +4,16 @@ var compile = exports['compile'];
 var jossy = require('jossy');
 
 /**
- * Скомпилировать указанные шаблоны Snakeskin
+ * Скомпилировать указанный файл шаблонов Snakeskin
  *
  * @expose
- * @param {string} src - исходный текст шаблонов или путь к файлу (если opt_params.file = true)
+ * @param {string} src - путь к файлу c шаблонами
  * @param {function(Error, string=)} callback - функция обратного вызова
  *
  * @param {Object=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
  * @see https://github.com/Kolyaj/Jossy
- * @param {?boolean=} [opt_params.file=false] - если true, то параметр src считается адресом файла
  * @param {Object=} [opt_params.builder] - объект настроек для сборщика файлов
  * @param {Array=} [opt_params.builder.labels] - массив меток для сборщика файлов (jossy)
  * @param {Object=} [opt_params.builder.flags] - таблица флагов для сборщика файлов (jossy)
@@ -36,33 +35,24 @@ var jossy = require('jossy');
  * @param {?boolean=} [opt_params.prettyPrint] - если true, то полученный JS код шаблона
  *     отображается в удобном для чтения виде
  */
-exports.compile = function (src, callback, opt_params) {
+exports.compileFile = function (src, callback, opt_params) {
 	opt_params = opt_params || {};
 	opt_params.onError = callback;
 
 	var builder = opt_params.builder || {};
 	var res = false,
-		info = {file: opt_params.file};
+		info = {file: src};
 
-	if (opt_params.file) {
-		jossy.compile(src, builder.labels || null, builder.flags || null, (err, data) => {
-			if (err) {
-				callback(err);
+	jossy.compile(src, builder.labels || null, builder.flags || null, (err, data) => {
+		if (err) {
+			callback(err);
 
-			} else {
-				res = compile(data, opt_params, info);
+		} else {
+			res = compile(data, opt_params, info);
 
-				if (res !== false) {
-					callback(null, String(res));
-				}
+			if (res !== false) {
+				callback(null, String(res));
 			}
-		});
-
-	} else {
-		res = compile(src, opt_params, info);
-
-		if (res !== false) {
-			callback(null, String(res));
 		}
-	}
+	});
 };
