@@ -71,14 +71,14 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'repeat',
+	'do',
 
 	{
 		block: true,
 		placement: 'template',
 		group: 'cycle',
 		after: {
-			'until': true
+			'while': true
 		}
 	},
 
@@ -93,14 +93,14 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'do',
+	'repeat',
 
 	{
 		block: true,
 		placement: 'template',
 		group: 'cycle',
 		after: {
-			'while': true
+			'until': true
 		}
 	},
 
@@ -137,65 +137,5 @@ Snakeskin.addDirective(
 				name: 'until'
 			});
 		});
-	}
-);
-
-Snakeskin.addDirective(
-	'break',
-
-	{
-		placement: 'template'
-	},
-
-	function () {
-		this.startInlineDir();
-
-		var parent = this.hasParent(this.getGroup('cycle')),
-			cb = this.hasParent(this.getGroup('callback'));
-
-		if (!parent) {
-			return this.error(`directive "${this.name}" can only be used with a cycles`);
-		}
-
-		if (this.isSimpleOutput()) {
-			if (parent === cb) {
-				this.save('return false;');
-
-			} else {
-				this.save('break;');
-			}
-
-			this.space = true;
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'continue',
-
-	{
-		placement: 'template'
-	},
-
-	function () {
-		this.startInlineDir();
-
-		var parent = this.hasParent(this.getGroup('cycle')),
-			cb = this.hasParent(this.getGroup('callback'));
-
-		if (!parent) {
-			return this.error(`directive "${this.name}" can only be used with a cycles`);
-		}
-
-		if (this.isSimpleOutput()) {
-			if (parent === cb) {
-				this.save('return;');
-
-			} else {
-				this.save('continue;');
-			}
-
-			this.space = true;
-		}
 	}
 );
