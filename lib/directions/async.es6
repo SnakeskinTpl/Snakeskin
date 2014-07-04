@@ -88,7 +88,10 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			this.save(`], function (${this.declCallbackArgs(parts)}) {`);
+			this.save(`
+				], function (${this.declCallbackArgs(parts)}) {
+					${this.deferReturn ? 'return false;' : ''}
+			`);
 		}
 	},
 

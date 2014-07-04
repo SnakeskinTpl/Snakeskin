@@ -34,8 +34,28 @@ Snakeskin.addDirective(
 
 		this.endDir();
 
+		struct = this.structure;
+		name = struct.name;
+
 		if (this.deferReturn) {
-			if (!this.getGroup('callback')[this.structure.name]) {
+			let series = this.getGroup('series');
+
+			if (this.getGroup('callback')[name]) {
+				let parent = struct.parent.name;
+
+				if (series[parent]) {
+					if (parent === 'waterfall') {
+						this.save('return arguments[arguments.length - 1](false);');
+
+					} else {
+						this.save('return arguments[0](false);');
+					}
+
+				} else {
+					this.save('return false;');
+				}
+
+			} else if (!series[name]) {
 				this.save(`
 					if (__RETURN__) {
 						${this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;'}
@@ -43,9 +63,6 @@ Snakeskin.addDirective(
 				`);
 
 				this.deferReturn = null;
-
-			} else {
-				this.save('return false;');
 			}
 		}
 
