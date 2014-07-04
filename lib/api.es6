@@ -2,14 +2,14 @@
  * Объект управления директивами
  *
  * @constructor
- * @param {string} src - текст шаблона
+ * @param {string} src - исходный текст шаблона
  *
  * @param {!Object} params - дополнительные параметры
- * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
- *
  * @param {?function(!Error)=} [params.onError] - функция обратного вызова для обработки ошибок при трансляции
  *
+ * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {boolean} [params.interface] - если true, то все директивы template трактуются как interface
+ *
  * @param {boolean} [params.inlineIterators] - если false, то работа итераторов forEach и forIn
  *     будет реализовываться через встроенные методы Snakeskin, а не через циклы
  *
@@ -42,12 +42,6 @@ function DirObj(src, params) {
 	/** @type {boolean} */
 	this.interface = params.interface;
 
-	/**
-	 * Если true, то трансляция сбрасывается
-	 * @type {boolean}
-	 */
-	this.brk = false;
-
 	/** @type {Object} */
 	this.commonJS = params.commonJS;
 
@@ -59,6 +53,12 @@ function DirObj(src, params) {
 
 	/** @type {Object} */
 	this.info = params.info;
+
+	/**
+	 * Если true, то трансляция сбрасывается
+	 * @type {boolean}
+	 */
+	this.brk = false;
 
 	/**
 	 * Название активной директивы
@@ -520,31 +520,32 @@ DirObj.prototype.applyQueue = function () {
 };
 
 /**
- * Вернуть заданную группу директив
+ * Вернуть таблицу названий директивы,
+ * которые принадлежат к заданным группам
  *
- * @param {string} name - название группы
+ * @param {...string} names - название группы
  * @return {!Object}
  */
-DirObj.prototype.getGroup = function (name) {
-	var map = {};
-	var cb = groups[name],
+DirObj.prototype.getGroup = function (/*= names  */...names) {
+	var map = {},
 		ignore = {};
 
-	if (name === 'callback' && this.inlineIterators) {
-		ignore['forEach'] = true;
-		ignore['forIn'] = true;
-	}
+	for (let i = 0; i < names.length; i++) {
+		let name = names[i],
+			group = groups[name];
 
-	for (let key in cb) {
-		if (!cb.hasOwnProperty(key)) {
-			continue;
+		if (name === 'callback' && this.inlineIterators) {
+			ignore['forEach'] = true;
+			ignore['forIn'] = true;
 		}
 
-		if (ignore[key]) {
-			continue;
-		}
+		for (let key in group) {
+			if (!group.hasOwnProperty(key) || ignore[key]) {
+				continue;
+			}
 
-		map[key] = true;
+			map[key] = true;
+		}
 	}
 
 	return map;
