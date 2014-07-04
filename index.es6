@@ -25,7 +25,7 @@ var params = {
 
 var input;
 
-if (!Program['source']) {
+if (!Program['source'] && process.argv.length > 2) {
 	input = process.argv[process.argv.length - 1];
 }
 
@@ -58,7 +58,7 @@ function action(data) {
 				process.exit(1);
 
 			} else {
-				console.log(`File "${file}" has been successfully compiled (${newFile}).`);
+				console.log(`File "${file}" has been successfully compiled "${newFile}".`);
 				process.exit(0);
 			}
 		});
