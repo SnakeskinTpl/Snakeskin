@@ -526,7 +526,7 @@ DirObj.prototype.applyQueue = function () {
  * @param {...string} names - название группы
  * @return {!Object}
  */
-DirObj.prototype.getGroup = function (/*= names  */...names) {
+DirObj.prototype.getGroup = function (/*= names */...names) {
 	var map = {},
 		ignore = {};
 
