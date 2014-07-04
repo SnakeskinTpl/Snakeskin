@@ -46,7 +46,16 @@ Snakeskin.addDirective(
 				parent.children.length > 1 ? ', ' : '';
 
 			this.structure.params.insideAsync = async[parent.name];
-			this.save(`${prfx}(function (${this.declCallbackArgs(parts)}) {`);
+			this.save(`
+				${prfx}(function (${this.declCallbackArgs(parts)}) {
+					${this.deferReturn ? `if (__RETURN__) {
+						if (typeof arguments[0] === 'function') {
+							return arguments[0](false);
+						}
+
+						return false;
+					}` : ''}
+			`);
 		}
 	},
 
@@ -90,7 +99,7 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			this.save(`
 				], function (${this.declCallbackArgs(parts)}) {
-					${this.deferReturn ? 'return false;' : ''}
+					${this.deferReturn ? 'if (__RETURN__) { return false; }' : ''}
 			`);
 		}
 	},
@@ -103,11 +112,11 @@ Snakeskin.addDirective(
 	}
 );
 
-var async = ['parallel', 'series', 'waterfall'];
+var series = ['parallel', 'series', 'waterfall'];
 
-for (let i = 0; i < async.length; i++) {
+for (let i = 0; i < series.length; i++) {
 	Snakeskin.addDirective(
-		async[i],
+		series[i],
 
 		{
 			block: true,
@@ -139,31 +148,35 @@ for (let i = 0; i < async.length; i++) {
 	);
 }
 
-Snakeskin.addDirective(
-	'whilst',
+var async = ['whilst', 'doWhilst', 'until', 'doUntil', 'forever'];
 
-	{
-		block: true,
-		placement: 'template',
-		group: 'async',
-		inside: {
-			'callback': true
-		}
-	},
+for (let i = 0; i < async.length; i++) {
+	Snakeskin.addDirective(
+		async[i],
 
-	function () {
-		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save('async.whilst(');
-		}
-	},
+		{
+			block: true,
+			placement: 'template',
+			group: 'async',
+			inside: {
+				'callback': true
+			}
+		},
 
-	function () {
-		if (this.isSimpleOutput()) {
-			this.save(');');
+		function (command, commandLength, type) {
+			this.startDir();
+			if (this.isSimpleOutput()) {
+				this.save(`async.${type}(`);
+			}
+		},
+
+		function () {
+			if (this.isSimpleOutput()) {
+				this.save(');');
+			}
 		}
-	}
-);
+	);
+}
 
 Snakeskin.addDirective(
 	'when',

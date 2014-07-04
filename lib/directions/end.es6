@@ -38,24 +38,40 @@ Snakeskin.addDirective(
 		name = struct.name;
 
 		if (this.deferReturn) {
-			let series = this.getGroup('series');
+			let async = this.getGroup('async');
 
 			if (this.getGroup('callback')[name]) {
 				let parent = struct.parent.name;
 
-				if (series[parent]) {
+				if (async[parent]) {
 					if (parent === 'waterfall') {
-						this.save('return arguments[arguments.length - 1](false);');
+						this.save(`
+							if (__RETURN__) {
+								return arguments[arguments.length - 1](false);
+							}
+						`);
 
 					} else {
-						this.save('return arguments[0](false);');
+						this.save(`
+							if (__RETURN__) {
+								if (typeof arguments[0] === 'function') {
+									return arguments[0](false);
+								}
+
+								return false;
+							}
+						`);
 					}
 
 				} else {
-					this.save('return false;');
+					this.save(`
+						if (__RETURN__) {
+							return false;
+						}
+					`);
 				}
 
-			} else if (!series[name]) {
+			} else if (!async[name]) {
 				this.save(`
 					if (__RETURN__) {
 						${this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;'}
