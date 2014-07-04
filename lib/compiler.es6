@@ -208,11 +208,22 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (!bOpen) {
+			let currentEscape = escape;
+
+			// Обработка экранирования
+			if (el === '\\' || escape) {
+				escape = !escape;
+			}
+
+			if (escape) {
+				continue;
+			}
+
 			let next2str = el + next,
 				next3str = next2str + str.charAt(dir.i + 2);
 
 			// Обработка комментариев
-			if (!escape) {
+			if (!currentEscape) {
 				if (el === '/') {
 					if (next3str === '///') {
 						comment = next3str;
@@ -249,14 +260,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			}
 
-			let currentEscape = escape;
-
-			// Обработка экранирования
-			if (el === '\\' || escape) {
-				escape = !escape;
-			}
-
-			if (comment || escape) {
+			if (comment) {
 				continue;
 			}
 
