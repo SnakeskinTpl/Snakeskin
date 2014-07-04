@@ -47,6 +47,8 @@ var sysConst = {
 	'__KEYS__': true,
 	'__KEY__': true,
 	'__STR__': true,
+	'__FILTERS__': true,
+	'__VARS__': true,
 	'$_': true
 };
 
