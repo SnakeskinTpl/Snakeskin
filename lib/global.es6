@@ -32,7 +32,7 @@ var replacers = {},
 	groups = {},
 	groupsList = [],
 
-	bem = {},
+	ui = {},
 	write = {};
 
 var sysConst = {
