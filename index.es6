@@ -2,41 +2,64 @@ global.Snakeskin = require('./snakeskin');
 var Program = require('commander');
 
 Program
-	.version(Snakeskin.VERSION.join('.'))
-	.option('-s, --source [src]', 'source file')
-	.option('-o, --output [src]', 'output file')
-	.option('-n, --commonjs', 'compile templates as commonJS module')
+	['version'](Snakeskin.VERSION.join('.'))
+
+	.option('-s, --source [src]')
+	.option('-o, --output [src]')
+
+	.option('-n, --commonJS')
+	.option('--localization')
+	.option('--interface')
+	.option('--stringBuffer')
+	.option('--inlineIterators')
+
 	.parse(process.argv);
+
+var params = {
+	commonJS: Program['commonJS'],
+	localization: Program['localization'],
+	interface: Program['interface'],
+	stringBuffer: Program['stringBuffer'],
+	inlineIterators: Program['inlineIterators']
+};
 
 var input;
 
-if (!Program.source) {
-	input = process.argv[2];
+if (!Program['source']) {
+	input = process.argv[process.argv.length - 1];
 }
 
 var fs = require('fs');
 var jossy = require('jossy');
 
-var file = Program.source,
-	newFile = Program.output || (file + '.js');
+var file = Program['source'],
+	newFile = Program['output'];
 
 function action(data) {
 	if (!data) {
-		Program.help();
+		Program['help']();
 	}
 
 	var str = String(data);
 
-	if (input && !Program.output) {
-		console.log(Snakeskin.compile(str, Program.commonjs, {file: file}));
+	if (input && !Program['output'] || !newFile) {
+		params.onError = (err) => {
+			console.error(err);
+			process.exit(1);
+		};
+
+		console.log(Snakeskin.compile(str, params, {file: file}));
+		process.exit(0);
 
 	} else {
-		fs.writeFile(newFile, Snakeskin.compile(str, Program.commonjs, {file: file}), (err) => {
+		fs.writeFile(newFile, Snakeskin.compile(str, params, {file: file}), (err) => {
 			if (err) {
-				console.log(err);
+				console.error(err);
+				process.exit(1);
 
 			} else {
 				console.log(`File "${file}" has been successfully compiled (${newFile}).`);
+				process.exit(0);
 			}
 		});
 	}
@@ -45,7 +68,8 @@ function action(data) {
 if (file) {
 	jossy.compile(file, null, null, (err, data) => {
 		if (err) {
-			console.log(err);
+			console.error(err);
+			process.exit(1);
 
 		} else {
 			action(data);
