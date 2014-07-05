@@ -1,7 +1,7 @@
 global.Snakeskin = require('./snakeskin');
-var Program = require('commander');
+var program = require('commander');
 
-Program
+program
 	['version'](Snakeskin.VERSION.join('.'))
 
 	.option('-s, --source [src]')
@@ -16,33 +16,33 @@ Program
 	.parse(process.argv);
 
 var params = {
-	commonJS: Program['commonJS'],
-	localization: Program['localization'],
-	interface: Program['interface'],
-	stringBuffer: Program['stringBuffer'],
-	inlineIterators: Program['inlineIterators']
+	commonJS: program['commonJS'],
+	localization: program['localization'],
+	interface: program['interface'],
+	stringBuffer: program['stringBuffer'],
+	inlineIterators: program['inlineIterators']
 };
 
 var input;
 
-if (!Program['source'] && process.argv.length > 2) {
+if (!program['source'] && process.argv.length > 2) {
 	input = process.argv[process.argv.length - 1];
 }
 
 var fs = require('fs');
 var jossy = require('jossy');
 
-var file = Program['source'],
-	newFile = Program['output'];
+var file = program['source'],
+	newFile = program['output'];
 
 function action(data) {
 	if (!data) {
-		Program['help']();
+		program['help']();
 	}
 
 	var str = String(data);
 
-	if (input && !Program['output'] || !newFile) {
+	if (input && !program['output'] || !newFile) {
 		params.onError = function(err)  {
 			console.error(err);
 			process.exit(1);
