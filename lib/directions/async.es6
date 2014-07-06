@@ -165,7 +165,7 @@ for (let i = 0; i < series.length; i++) {
 	);
 }
 
-var async = ['whilst', 'doWhilst', 'until', 'doUntil', 'forever'];
+var async = ['whilst', 'doWhilst', 'forever'];
 
 for (let i = 0; i < async.length; i++) {
 	Snakeskin.addDirective(
