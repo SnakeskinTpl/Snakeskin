@@ -533,7 +533,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 						if (canParse) {
 							vres = addScope(rfWord);
 
-						} else if (rfWord === 'this' && struct.parent.name !== '$forEach') {
+						} else if (rfWord === 'this' && !this.hasParent('$forEach')) {
 							vres = '__THIS__';
 
 						} else {
