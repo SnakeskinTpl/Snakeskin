@@ -301,6 +301,7 @@ for (let i = 0; i < template.length; i++) {
 			this.save(`
 				${defParams}
 
+				var __THIS__ = this;
 				var __RESULT__ = ${this.stringBuffer ? '[]' : '\'\''},
 					\$_;
 
