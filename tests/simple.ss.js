@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954932> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065192> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -10,9 +10,12 @@
 
     function exec() { /* Snakeskin template: simple_output;  */
         this.simple_output = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_output',
@@ -33,11 +36,11 @@
             __RESULT__ += ' ';
             __RESULT__ += e[a['n']][a['foo']](1, 2, 3);
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(new String([1, 2, 3]).indexOf()));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(new String([1, 2, 3]).indexOf()));
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(($_ = Snakeskin.Filters['replace']('{foo}', /^{/gim, '')));
+            __RESULT__ += __FILTERS__.html(($_ = __FILTERS__['replace']('{foo}', /^{/gim, '')));
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(2 / 2);
+            __RESULT__ += __FILTERS__.html(2 / 2);
             __RESULT__ += ' ';
             return __RESULT__;
         };
@@ -50,16 +53,19 @@
          */
         this.simple_index = function(name, lname) {
             name = name != null ? name : 'world';
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_index',
                 PARENT_TPL_NAME;
             __RESULT__ += ' <h1>Hello ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(name));
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(lname) ? ' ' + lname : '');
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
             __RESULT__ += '!</h1> Foo';
             __RESULT__ += 'bar///1 ';
             return __RESULT__;
@@ -72,16 +78,19 @@
         }
         this.simple_tpl.index = function index(name, lname) {
             name = name != null ? name : 'world';
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_tpl.index',
                 PARENT_TPL_NAME;
             __RESULT__ += ' <h1>Hello ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(name));
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(lname) ? ' ' + lname : '');
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
             __RESULT__ += '!</h1>  ';
             return __RESULT__;
         };
@@ -96,21 +105,24 @@
         }
         this.simple_tpl.foo['index'] = function(name, lname) {
             name = name != null ? name : 'world';
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_tpl.foo[\'index\']',
                 PARENT_TPL_NAME;
             __RESULT__ += ' <h1>Hello ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(name));
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(lname) ? ' ' + lname : '');
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
             __RESULT__ += '!</h1> ';
             var a = 1;
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(a) === 1 ? 1 : 2);
-            __RESULT__ += '  ';
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a) === 1 ? 1 : 2);
+            __RESULT__ += ' '; /**<h1>Hello {name}{lname ? \' \' + lname : \'\'}!</h1>*/
             return __RESULT__;
         };
         if (typeof Snakeskin !== 'undefined') {

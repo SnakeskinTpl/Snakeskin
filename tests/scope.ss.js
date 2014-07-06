@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954920> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065171> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -13,9 +13,12 @@
             Snakeskin.Vars.name = 'foo';
         } /* Snakeskin template: scope_index; obj */
         this.scope_index = function(obj) {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'scope_index',
@@ -24,11 +27,11 @@
             var name = 'bar';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(obj.child.name));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(obj.child.name));
             var __e__with_112 = 'test';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(name) + ' ' + Snakeskin.Filters.undef(name) + ' ' + Snakeskin.Filters.undef(obj.child.name) + ' ' + Snakeskin.Filters.undef(obj.child.name) + ' ' + Snakeskin.Filters.undef(name) + ' ' + Snakeskin.Filters.undef(Snakeskin.Vars.name) + ' ' + Snakeskin.Filters.undef(obj.child.child.name) + ' ' + Snakeskin.Filters.undef(__e__with_112));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(__VARS__.name) + ' ' + __FILTERS__.undef(obj.child.child.name) + ' ' + __FILTERS__.undef(__e__with_112));
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             __RESULT__ += ' ';

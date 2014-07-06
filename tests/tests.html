@@ -184,14 +184,6 @@
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
-	{if i == 1}
-		1
-	{elseIf i == 2}
-		2
-	{else}
-		3
-	{/}
-
 	{switch i}
 
 		{> 1}
@@ -205,6 +197,14 @@
 		{default}
 			3
 		{/}
+	{/}
+
+	{if i == 1}
+		1
+	{elseIf i == 2}
+		2
+	{else}
+		3
 	{/}
 {/}
 
@@ -281,7 +281,7 @@
 	{if 1}
 		{@pref_global}
 		#{@pref_global2}
-	#\{/}
+	\#{/}
 {/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('pref'), {prettyPrint: true}); test('pref', function () { equal(pref_index().trim(), '{if 2} 1 {pref_global2} {/}   1 2 #'); }); </script>  <script type="text/x-snakeskin-template" id="proto"> {proto proto_index->begin}
 	{apply f1(1)}
 {/}

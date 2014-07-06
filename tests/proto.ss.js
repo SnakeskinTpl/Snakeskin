@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954910> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065160> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -10,9 +10,12 @@
 
     function exec() { /* Snakeskin template: proto_index; i */
         this.proto_index = function(i) {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_index',
@@ -29,7 +32,7 @@
                     var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_386));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_386));
                         __RESULT__ += ' ';
                     }
                     __RESULT__ += ' ';
@@ -37,7 +40,7 @@
                     var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_386));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_386));
                         __RESULT__ += ' ';
                     }
                     __RESULT__ += ' ';
@@ -49,7 +52,7 @@
             var ____I_PROTO___f3_template_44 = 1;
             ____I_PROTO___f3_template_44: while (____I_PROTO___f3_template_44--) {
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_311) * 2);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_311) * 2);
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -63,9 +66,9 @@
             var ____I_PROTO___f4_template_44 = 1;
             ____I_PROTO___f4_template_44: while (____I_PROTO___f4_template_44--) {
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(a.a));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_450));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_450));
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -81,9 +84,12 @@
             this.proto_index2.a = {};
         }
         this.proto_index2.a['foo'] = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_index2.a[\'foo\']',
@@ -97,7 +103,7 @@
                 var ____I_PROTO___f1_template_54 = 1;
                 ____I_PROTO___f1_template_54: while (____I_PROTO___f1_template_54--) {
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_748));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_748));
                     __RESULT__ += ' ';
                 }
                 __RESULT__ += ' ';
@@ -109,9 +115,12 @@
             Snakeskin.cache['proto_index2.a[\'foo\']'] = this.proto_index2.a['foo'];
         } /* Snakeskin template. */ /* Snakeskin template: proto_recursive;  */
         this.proto_recursive = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_recursive',
@@ -122,7 +131,7 @@
             var ____I_PROTO___begin_template_48 = 1;
             ____I_PROTO___begin_template_48: while (____I_PROTO___begin_template_48--) {
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_834));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_834));
                 __RESULT__ += ' ';
                 if (__i__proto_834) {
                     __RESULT__ += ' ';
@@ -139,9 +148,12 @@
             Snakeskin.cache['proto_recursive'] = this.proto_recursive;
         } /* Snakeskin template. */ /* Snakeskin template: proto_recursive2;  */
         this.proto_recursive2 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_recursive2',
@@ -153,7 +165,7 @@
             ____I_PROTO___begin_template_49: while (____I_PROTO___begin_template_49--) {
                 __RESULT__ += ' ';
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__proto_967));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_967));
                 __RESULT__ += ' ';
                 if (__i__proto_967) {
                     __RESULT__ += ' ';

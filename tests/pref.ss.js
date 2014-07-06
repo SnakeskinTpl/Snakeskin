@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954892> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065141> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -16,9 +16,12 @@
             Snakeskin.Vars.pref_global2 = 2;
         } /* Snakeskin template: pref_index;  */
         this.pref_index = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'pref_index',
@@ -26,15 +29,15 @@
             __RESULT__ += ' ';
             if (1) {
                 __RESULT__ += '{if 2} ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(Snakeskin.Vars.pref_global));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global));
                 __RESULT__ += ' {pref_global2} {/} ';
             }
             __RESULT__ += ' ';
             if (1) {
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(Snakeskin.Vars.pref_global));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global));
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(Snakeskin.Vars.pref_global2));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global2));
                 __RESULT__ += ' #';
             }
             __RESULT__ += ' ';

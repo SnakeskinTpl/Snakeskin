@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954865> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065111> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -10,25 +10,21 @@
 
     function exec() { /* Snakeskin template: logic_index; i */
         this.logic_index = function(i) {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_index',
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
-            if (i == 1) {
-                __RESULT__ += ' 1 ';
-            } else if (i == 2) {
-                __RESULT__ += '2 ';
-            } else {
-                __RESULT__ += '3 ';
-            }
             switch (i) {
                 case 1:
                     {
-                        __RESULT__ += '1 ';
+                        __RESULT__ += ' 1 ';
                     }
                     break;
                 case 2:
@@ -41,15 +37,25 @@
                         __RESULT__ += '3 ';
                     }
             }
+            if (i == 1) {
+                __RESULT__ += '1 ';
+            } else if (i == 2) {
+                __RESULT__ += '2 ';
+            } else {
+                __RESULT__ += '3 ';
+            }
             return __RESULT__;
         };
         if (typeof Snakeskin !== 'undefined') {
             Snakeskin.cache['logic_index'] = this.logic_index;
         } /* Snakeskin template. */ /* Snakeskin template: logic_base;  */
         this.logic_base = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_base',
@@ -61,9 +67,12 @@
             Snakeskin.cache['logic_base'] = this.logic_base;
         } /* Snakeskin template. */ /* Snakeskin template: logic_sub;  */
         this.logic_sub = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_sub',

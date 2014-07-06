@@ -6,14 +6,6 @@ logic_sub
 ###
 
 {template logic_index(i)}
-	{if i == 1}
-		1
-	{elseIf i == 2}
-		2
-	{else}
-		3
-	{/}
-
 	{switch i}
 
 		{> 1}
@@ -27,6 +19,14 @@ logic_sub
 		{default}
 			3
 		{/}
+	{/}
+
+	{if i == 1}
+		1
+	{elseIf i == 2}
+		2
+	{else}
+		3
 	{/}
 {/}
 

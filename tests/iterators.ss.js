@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954839> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065085> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -10,9 +10,12 @@
 
     function exec() { /* Snakeskin template: iterators_index1;  */
         this.iterators_index1 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index1',
@@ -30,17 +33,17 @@
                         var __isLast__forEach_89 = ____I____forEach_89 === ____LENGTH____forEach_89 - 1;
                         var __length__forEach_89 = ____LENGTH____forEach_89;
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_89));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_89));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_89));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_89[__i__forEach_89]));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_89[__i__forEach_89]));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_89));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_89));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_89));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_89));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_89));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_89));
                         __RESULT__ += ' --- ';
                     }
                 } else {
@@ -65,17 +68,17 @@
                             var __isLast__forEach_89 = ____I____forEach_89 === 0;
                             var __length__forEach_89 = ____I____forEach_89 === ____LENGTH____forEach_89 - 1;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_89[__i__forEach_89]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_89[__i__forEach_89]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_89));
                             __RESULT__ += ' --- ';
                         }
                     } else {
@@ -92,17 +95,17 @@
                             var __isLast__forEach_89 = ____I____forEach_89 === 0;
                             var __length__forEach_89 = ____I____forEach_89 === ____LENGTH____forEach_89 - 1;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_89[__i__forEach_89]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_89[__i__forEach_89]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_89));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_89));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_89));
                             __RESULT__ += ' --- ';
                         }
                     }
@@ -115,9 +118,12 @@
             Snakeskin.cache['iterators_index1'] = this.iterators_index1;
         } /* Snakeskin template. */ /* Snakeskin template: iterators_index2;  */
         this.iterators_index2 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index2',
@@ -139,19 +145,19 @@
                         var __isLast__forEach_255 = ____LENGTH____forEach_255;
                         var __length__forEach_255 = void 0;
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_255));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forEach_255));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_255));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_255[__key__forEach_255]));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_255[__key__forEach_255]));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_255));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_255));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_255));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_255));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_255));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_255));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_255));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_255));
                         __RESULT__ += ' --- ';
                     }
                 } else {
@@ -177,19 +183,19 @@
                             var __isLast__forEach_255 = ____I____forEach_255 === ____LENGTH____forEach_255 - 1;
                             var __length__forEach_255 = ____LENGTH____forEach_255;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_255[__key__forEach_255]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_255[__key__forEach_255]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_255));
                             __RESULT__ += ' --- ';
                         }
                     } else {
@@ -207,19 +213,19 @@
                             var __isLast__forEach_255 = ____I____forEach_255 === ____LENGTH____forEach_255 - 1;
                             var __length__forEach_255 = ____LENGTH____forEach_255;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_255[__key__forEach_255]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_255[__key__forEach_255]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_255));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_255));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_255));
                             __RESULT__ += ' --- ';
                         }
                     }
@@ -232,9 +238,12 @@
             Snakeskin.cache['iterators_index2'] = this.iterators_index2;
         } /* Snakeskin template. */ /* Snakeskin template: iterators_index3;  */
         this.iterators_index3 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index3',
@@ -261,19 +270,19 @@
                     var __isLast__forIn_448 = ____I____forIn_448 === ____LENGTH____forIn_448 - 1;
                     var __length__forIn_448 = ____LENGTH____forIn_448;
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forIn_448));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_448));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forIn_448));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forIn_448));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forIn_448[__key__forIn_448]));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forIn_448[__key__forIn_448]));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forIn_448));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forIn_448));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forIn_448));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forIn_448));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forIn_448));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forIn_448));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forIn_448));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forIn_448));
                     __RESULT__ += ' --- ';
                 }
             }
@@ -284,9 +293,12 @@
             Snakeskin.cache['iterators_index3'] = this.iterators_index3;
         } /* Snakeskin template. */ /* Snakeskin template: iterators_index4;  */
         this.iterators_index4 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index4',
@@ -304,18 +316,18 @@
                         var __isLast__forEach_614 = ____I____forEach_614 === ____LENGTH____forEach_614 - 1;
                         var __length__forEach_614 = ____LENGTH____forEach_614;
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_614));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_614));
                         __RESULT__ += ' ';
                         continue;
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_614));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_614));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_614[__i__forEach_614]));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_614[__i__forEach_614]));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_614));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_614));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_614));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_614));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_614));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_614));
                         __RESULT__ += ' --- ';
                     }
                 } else {
@@ -340,18 +352,18 @@
                             var __isLast__forEach_614 = ____I____forEach_614 === 0;
                             var __length__forEach_614 = ____I____forEach_614 === ____LENGTH____forEach_614 - 1;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_614));
                             __RESULT__ += ' ';
                             continue;
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_614));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_614[__i__forEach_614]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_614[__i__forEach_614]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_614));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_614));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_614));
                             __RESULT__ += ' --- ';
                         }
                     } else {
@@ -368,18 +380,18 @@
                             var __isLast__forEach_614 = ____I____forEach_614 === 0;
                             var __length__forEach_614 = ____I____forEach_614 === ____LENGTH____forEach_614 - 1;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_614));
                             __RESULT__ += ' ';
                             continue;
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_614));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_614[__i__forEach_614]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_614[__i__forEach_614]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_614));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_614));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_614));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_614));
                             __RESULT__ += ' --- ';
                         }
                     }
@@ -392,9 +404,12 @@
             Snakeskin.cache['iterators_index4'] = this.iterators_index4;
         } /* Snakeskin template. */ /* Snakeskin template: iterators_index5;  */
         this.iterators_index5 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index5',
@@ -416,19 +431,19 @@
                         var __isLast__forEach_797 = ____LENGTH____forEach_797;
                         var __length__forEach_797 = void 0;
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_797));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_797));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forEach_797));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_797));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_797[__key__forEach_797]));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_797[__key__forEach_797]));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_797));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_797));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_797));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_797));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_797));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_797));
                         __RESULT__ += ' ';
-                        __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_797));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_797));
                         __RESULT__ += ' --- ';
                         break;
                     }
@@ -455,19 +470,19 @@
                             var __isLast__forEach_797 = ____I____forEach_797 === ____LENGTH____forEach_797 - 1;
                             var __length__forEach_797 = ____LENGTH____forEach_797;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_797[__key__forEach_797]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_797[__key__forEach_797]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_797));
                             __RESULT__ += ' --- ';
                             break;
                         }
@@ -486,19 +501,19 @@
                             var __isLast__forEach_797 = ____I____forEach_797 === ____LENGTH____forEach_797 - 1;
                             var __length__forEach_797 = ____LENGTH____forEach_797;
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forEach_797[__key__forEach_797]));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_797[__key__forEach_797]));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_797));
                             __RESULT__ += ' ';
-                            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forEach_797));
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_797));
                             __RESULT__ += ' --- ';
                             break;
                         }
@@ -512,9 +527,12 @@
             Snakeskin.cache['iterators_index5'] = this.iterators_index5;
         } /* Snakeskin template. */ /* Snakeskin template: iterators_index6;  */
         this.iterators_index6 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index6',
@@ -542,19 +560,19 @@
                     var __length__forIn_1001 = ____LENGTH____forIn_1001;
                     __RESULT__ += ' ';
                     break;
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__el__forIn_1001));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_1001));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__key__forIn_1001));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forIn_1001));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__obj__forIn_1001[__key__forIn_1001]));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forIn_1001[__key__forIn_1001]));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__i__forIn_1001));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forIn_1001));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isFirst__forIn_1001));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forIn_1001));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__isLast__forIn_1001));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forIn_1001));
                     __RESULT__ += ' ';
-                    __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__length__forIn_1001));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forIn_1001));
                     __RESULT__ += ' --- ';
                 }
             }

@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404375954884> Thu Jul 03 2014 12:25:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404663065132> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -11,15 +11,18 @@
     function exec() { /* Snakeskin template: param_base; a, b  */
         this.param_base = function(a, b) {
             b = b != null ? b : 1;
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base',
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(b));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b));
             __RESULT__ += ' ';
             return __RESULT__;
         };
@@ -27,16 +30,19 @@
             Snakeskin.cache['param_base'] = this.param_base;
         } /* Snakeskin template. */ /* Snakeskin template: param_child;  */
         this.param_child = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child',
                 PARENT_TPL_NAME = 'param_base';
             var b = 2;
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(b));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b));
             __RESULT__ += ' ';
             return __RESULT__;
         };
@@ -44,16 +50,19 @@
             Snakeskin.cache['param_child'] = this.param_child;
         } /* Snakeskin template. */ /* Snakeskin template: param_child2;  */
         this.param_child2 = function() {
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child2',
                 PARENT_TPL_NAME = 'param_child';
             var b = 3;
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(b));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b));
             __RESULT__ += ' ';
             return __RESULT__;
         };
@@ -64,15 +73,18 @@
             a = a != null ? a : {
                 a: 1
             };
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base2',
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(a.a));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
             __RESULT__ += ' ';
             return __RESULT__;
         };
@@ -83,15 +95,18 @@
             a = a != null ? a : {
                 a: 1
             };
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child22',
                 PARENT_TPL_NAME = 'param_base2';
             __RESULT__ += ' ';
-            __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(a.a));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
             __RESULT__ += ' ';
             return __RESULT__;
         };
@@ -104,9 +119,12 @@
                     c: 1
                 }
             };
+            var __THIS__ = this;
             var __RESULT__ = '',
                 $_;
-            var __STR__;
+            var __FILTERS__ = Snakeskin.Filters,
+                __VARS__ = Snakeskin.Vars,
+                __STR__;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base3',
@@ -119,9 +137,9 @@
             var ____I_PROTO___foo_with_65 = 1;
             ____I_PROTO___foo_with_65: while (____I_PROTO___foo_with_65--) {
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(__a__proto_365.c));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_365.c));
                 __RESULT__ += ' ';
-                __RESULT__ += Snakeskin.Filters.html(Snakeskin.Filters.undef(b));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b));
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';

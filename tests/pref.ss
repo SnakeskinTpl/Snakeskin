@@ -16,7 +16,7 @@ pref_index
 	{if 1}
 		{@pref_global}
 		#{@pref_global2}
-	#\{/}
+	\#{/}
 {/template}
 
 ###
