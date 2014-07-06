@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 			let parts = command.split(';');
 
 			if (parts.length !== 3) {
-				return this.error(`invalid "${this.name}" declaration (${command})`);
+				return this.error(`invalid "${this.name}" declaration`);
 			}
 
 			let varDeclRgxp = /var /;

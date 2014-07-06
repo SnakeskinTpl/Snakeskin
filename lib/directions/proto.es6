@@ -66,7 +66,7 @@ Snakeskin.addDirective(
 		var name = command.match(/[^(]+/)[0];
 
 		if (!name) {
-			return this.error(`invalid "${this.name}" declaration (${command})`);
+			return this.error(`invalid "${this.name}" declaration`);
 		}
 
 		var parts = name.split('->');
@@ -89,7 +89,7 @@ Snakeskin.addDirective(
 		}
 
 		if (!name || !this.tplName) {
-			return this.error(`invalid "${this.name}" declaration (${command})`);
+			return this.error(`invalid "${this.name}" declaration`);
 		}
 
 		this.startDir(null, {
@@ -114,7 +114,7 @@ Snakeskin.addDirective(
 					argsList = args[1].split(',');
 
 				} catch (ignore) {
-					return this.error(`invalid "${this.name}" declaration (${command})`);
+					return this.error(`invalid "${this.name}" declaration`);
 				}
 
 				for (let i = 0; i < argsList.length; i++) {

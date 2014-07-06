@@ -34,7 +34,7 @@ Snakeskin.addDirective(
 		var parts = command.split('=>');
 
 		if (!parts.length || parts.length > 2) {
-			return this.error(`invalid "${this.name}" declaration (${command})`);
+			return this.error(`invalid "${this.name}" declaration`);
 		}
 
 		this.startDir();
@@ -111,7 +111,7 @@ Snakeskin.addDirective(
 		var parts = command.split('=>');
 
 		if (!parts.length || parts.length > 2) {
-			return this.error(`invalid "${this.name}" declaration (${command})`);
+			return this.error(`invalid "${this.name}" declaration`);
 		}
 
 		this.startDir();
