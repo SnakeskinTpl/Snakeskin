@@ -122,7 +122,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
-	var begin = false;
+	var begin = false,
+		pseudoI = false;
 
 	// Содержимое директивы
 	var command = '';
@@ -181,12 +182,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (whiteSpaceRgxp.test(el)) {
 			// Внутри директивы
 			if (begin) {
-				if (!bOpen) {
-					el = ' ';
-
-				// Внутри строки внутри директивы
-				} else {
+				if (bOpen) {
 					el = dir.escapeNextLine(el);
+
+				} else {
+					if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
+						el = ' ';
+
+						if (el) {
+							dir.space = true;
+						}
+
+					} else {
+						continue;
+					}
 				}
 
 			// Простой ввод вне деклараций шаблона
@@ -283,6 +292,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (escape || el !== '`') {
+						if (pseudoI !== false) {
+							continue;
+						}
+
 						i18nStr += el;
 
 						if (lang) {
@@ -292,12 +305,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				let isPrefStart = !currentEscape &&
+					!begin &&
 					el === pref &&
 					next === '{';
 
 				// Начало управляющей конструкции
 				// (не забываем следить за уровнем вложенностей {)
-				if (isPrefStart || el === '{') {
+				if (isPrefStart || (el === '{' && (begin || !currentEscape))) {
 					if (begin) {
 						fakeBegin++;
 
@@ -309,10 +323,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 						bEnd = true;
 						begin = true;
-
-						if (i18nStr) {
-							i18nStr = i18nStr.slice(0, -1);
-						}
 
 						continue;
 					}
@@ -394,24 +404,44 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 
 				} else if (i18n && !currentEscape && el === '`') {
-					if (i18nStart) {
-						if (lang) {
+					if (lang) {
+						if (i18nStart) {
 							let word = lang[i18nStr] || '';
 							el = begin ?
 								`'${dir.applyDefEscape(word)}'` : word;
 
 						} else {
-							el = '")';
+							el = '';
 						}
 
-						i18nStart = false;
-						i18nStr = '';
-
 					} else {
-						el = lang ?
-							'' : 'i18n("';
+						if (i18nStart) {
+							i18nStart = false;
+							i18nStr = '';
 
-						i18nStart = true;
+							if (begin) {
+								el = '")';
+
+							} else {
+								dir.source = str.substring(0, dir.i + 1) + '}' + str.substring(dir.i + 1);
+								dir.i = pseudoI;
+								pseudoI = false;
+								continue;
+							}
+
+						} else {
+							i18nStart = true;
+
+							if (begin) {
+								el = 'i18n("';
+
+							} else {
+								dir.source = str.substring(0, dir.i) + '{' + str.substring(dir.i);
+								pseudoI = dir.i - 1;
+								dir.i++;
+								continue;
+							}
+						}
 					}
 				}
 			}
