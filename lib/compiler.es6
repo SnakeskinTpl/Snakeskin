@@ -291,7 +291,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						el = '\\"';
 					}
 
-					if (escape || el !== '`') {
+					if (currentEscape || el !== '`') {
 						if (pseudoI !== false) {
 							continue;
 						}
@@ -410,8 +410,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							el = begin ?
 								`'${dir.applyDefEscape(word)}'` : word;
 
+							i18nStart = false;
+							i18nStr = '';
+
 						} else {
 							el = '';
+							i18nStart = true;
 						}
 
 					} else {
@@ -424,7 +428,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 							} else {
 								dir.source = str.substring(0, dir.i + 1) + '}' + str.substring(dir.i + 1);
-								dir.i = pseudoI;
+								dir.i = Number(pseudoI);
 								pseudoI = false;
 								continue;
 							}
