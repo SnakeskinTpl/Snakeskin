@@ -63,6 +63,7 @@ var Snakeskin = {
 	//#include ./compiler.js
 	//#include ./directions.js
 	//#include ./output.js
+	//#include ./include.js
 
 	//#endif
 

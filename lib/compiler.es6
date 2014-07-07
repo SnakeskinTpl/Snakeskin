@@ -500,7 +500,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (jsDoc) {
 				dir.save(dir.applyDefEscape(el));
 
-			} else if (!struct.parent) {
+			} else if (!dir.tplName) {
+				if (el === ' ') {
+					continue;
+				}
+
 				dir.error('text can\'t be used in the global space (except jsDoc)');
 				return false;
 

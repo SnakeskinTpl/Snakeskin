@@ -620,10 +620,11 @@ DirObj.prototype.hasParentBlock = function (name) {
  */
 DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	opt_protoParams = opt_protoParams || false;
+	var tplName = this.tplName;
 
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
-	if (!opt_protoParams && (constCache[this.tplName][varName] || constICache[this.tplName][varName])) {
+	if (!opt_protoParams && tplName && (!constCache[tplName][varName] || constICache[tplName][varName])) {
 		this.error(`variable "${varName}" is already defined as constant`);
 		return '';
 	}
@@ -640,7 +641,10 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 		scope: this.scope.length
 	};
 
-	this.varCache[this.tplName][varName] = true;
+	if (tplName) {
+		this.varCache[tplName][varName] = true;
+	}
+
 	return realVar;
 };
 

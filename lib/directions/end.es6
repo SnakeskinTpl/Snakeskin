@@ -32,6 +32,7 @@ Snakeskin.addDirective(
 			this.save('};');
 		}
 
+		Snakeskin.Directions[`${name}BaseEnd`].apply(this, arguments);
 		this.endDir();
 
 		struct = this.structure;

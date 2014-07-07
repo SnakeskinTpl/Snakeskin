@@ -128,8 +128,16 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			dir.text = true;
 		}
 
+		var from = dir.res.length;
+
 		constr.call(dir, command, commandLength, type, jsDoc);
-		var newStruct = dir.structure;
+
+		if (!dir.inline) {
+			dir.structure.params._from = from;
+		}
+
+		var newStruct = dir.structure,
+			to = dir.res.length;
 
 		if (inside[dirName]) {
 			newStruct.strong = true;
@@ -169,9 +177,31 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 				dir.blockStructure = dir.blockStructure.parent;
 			}
 		}
+
+		if (!dir.structure.parent && name !== 'end' && from !== to) {
+			eval(dir.pasteDangerBlocks(dir.res.substring(from, to)));
+
+			if (fsStack.length) {
+				dir.source = dir.source.substring(0, dir.i + 1) + fsStack.join('') + dir.source.substring(dir.i + 1);
+				fsStack.splice(0, fsStack.length);
+			}
+		}
 	};
 
 	Snakeskin.Directions[`${name}End`] = opt_destr;
+	Snakeskin.Directions[`${name}BaseEnd`] = function () {
+		var from = this.structure.params._from,
+			to = this.res.length;
+
+		if (this.structure.parent.name === 'root' && !this.getGroup('template')[name] && from !== to) {
+			eval(this.pasteDangerBlocks(this.res.substring(from, to)));
+
+			if (fsStack.length) {
+				this.source = this.source.substring(0, this.i + 1) + fsStack.join('') + this.source.substring(this.i + 1);
+				fsStack.splice(0, fsStack.length);
+			}
+		}
+	};
 };
 
 //#include ./directions/ui.js
