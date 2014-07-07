@@ -624,7 +624,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
-	if (!opt_protoParams && tplName && (!constCache[tplName][varName] || constICache[tplName][varName])) {
+	if (!opt_protoParams && tplName && (constCache[tplName][varName] || constICache[tplName][varName])) {
 		this.error(`variable "${varName}" is already defined as constant`);
 		return '';
 	}

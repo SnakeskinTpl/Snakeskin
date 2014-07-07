@@ -135,7 +135,6 @@ for (let i = 0; i < series.length; i++) {
 
 		{
 			block: true,
-			placement: 'template',
 
 			group: [
 				'async',
