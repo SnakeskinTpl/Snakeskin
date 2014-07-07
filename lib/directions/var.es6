@@ -8,7 +8,6 @@ Snakeskin.addDirective(
 	'var',
 
 	{
-		placement: 'template',
 		notEmpty: true,
 		replacers: {
 			':': (cmd) => cmd.replace(/^:/, 'var ')
