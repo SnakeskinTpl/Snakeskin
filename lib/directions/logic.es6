@@ -3,7 +3,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		notEmpty: true
 	},
 
@@ -22,10 +21,31 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'unless',
+
+	{
+		block: true,
+		notEmpty: true
+	},
+
+	function (command) {
+		this.startDir('if');
+		if (this.isSimpleOutput()) {
+			this.save(`if (!(${this.prepareOutput(command, true)})) {`);
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save('}');
+		}
+	}
+);
+
+Snakeskin.addDirective(
 	'elseIf',
 
 	{
-		placement: 'template',
 		notEmpty: true
 	},
 
@@ -41,10 +61,28 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'elseUnless',
+
+	{
+		notEmpty: true
+	},
+
+	function (command) {
+		if (this.structure.name !== 'if') {
+			return this.error(`directive "${this.name}" can only be used with a "if"`);
+		}
+
+		if (this.isSimpleOutput()) {
+			this.save(`} else if (!(${this.prepareOutput(command, true)})) {`);
+		}
+	}
+);
+
+Snakeskin.addDirective(
 	'else',
 
 	{
-		placement: 'template'
+
 	},
 
 	function () {
@@ -63,7 +101,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		notEmpty: true,
 		inside: {
 			'case': true,
@@ -90,7 +127,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		notEmpty: true,
 		replacers: {
 			'>': (cmd) => cmd.replace(/^>/, 'case '),
@@ -121,8 +157,7 @@ Snakeskin.addDirective(
 	'default',
 
 	{
-		block: true,
-		placement: 'template'
+		block: true
 	},
 
 	function () {
