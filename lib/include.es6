@@ -8,6 +8,10 @@ var fsStack = [];
  * @return {(string|boolean)}
  */
 Snakeskin['include'] = function (base, url) {
+	if (!IS_NODE) {
+		return false;
+	}
+
 	var fs = require('fs'),
 		path = require('path');
 

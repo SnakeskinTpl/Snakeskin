@@ -6,10 +6,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!IS_NODE) {
-			return;
-		}
-
 		if (this.tplName) {
 			return this.error(`directive "${this.name}" can't be used within a ${groupsList['template'].join(', ')}`);
 		}
