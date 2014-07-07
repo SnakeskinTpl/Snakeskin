@@ -43,6 +43,26 @@ for (let i = 0; i < template.length; i++) {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
 
+			var file = this.info['file'];
+
+			if (IS_NODE && file) {
+				let path = require('path');
+				command = this.replaceDangerBlocks(command.replace(/(.?)%fileName%/, (sstr, $1) => {
+					var str = path.basename(this.info['file'], '.ss');
+
+					if ($1) {
+						if ($1 !== '.') {
+							str = `${$1}'${str}'`;
+
+						} else {
+							str = $1 + str;
+						}
+					}
+
+					return str;
+				}));
+			}
+
 			try {
 				var tmpTplName = /(.*?)\(/.exec(command)[1],
 					tplName = this.pasteDangerBlocks(tmpTplName);
