@@ -22,8 +22,8 @@ Snakeskin['include'] = function (base, url) {
 
 		return true;
 
-	} catch (ignore) {
-
+	} catch (err) {
+		fsStack.push(`{__setError__ ${err.message}}`);
 	}
 
 	return false;

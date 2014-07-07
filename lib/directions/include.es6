@@ -2,7 +2,7 @@ Snakeskin.addDirective(
 	'include',
 
 	{
-
+		notEmpty: true
 	},
 
 	function (command) {
