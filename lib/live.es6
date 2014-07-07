@@ -5,11 +5,10 @@ if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
 /**
  * Итератор массива или объекта (с проверкой hasOwnProperty)
  *
- * @expose
  * @param {(Array|Object)} obj - исходный объект
  * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
  */
-Snakeskin.forEach = function (obj, callback) {
+Snakeskin['forEach'] = function (obj, callback) {
 	if (!obj) {
 		return;
 	}
@@ -60,11 +59,10 @@ Snakeskin.forEach = function (obj, callback) {
 /**
  * Итератор объекта без проверки hasOwnProperty
  *
- * @expose
  * @param {Object} obj - исходный объект
  * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
  */
-Snakeskin.forIn = function (obj, callback) {
+Snakeskin['forIn'] = function (obj, callback) {
 	if (!obj) {
 		return;
 	}
