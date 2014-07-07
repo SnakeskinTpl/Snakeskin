@@ -19,7 +19,7 @@ Snakeskin.forEach = function (obj, callback) {
 	if (Array.isArray(obj)) {
 		length = obj.length;
 		for (let i = -1; ++i < length;) {
-			if (callback(obj[i], i, obj, i === 0, i === length - 1, length)) {
+			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
 				break;
 			}
 		}
