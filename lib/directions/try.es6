@@ -21,7 +21,8 @@ Snakeskin.addDirective(
 		block: true,
 		after: {
 			'catch': true,
-			'finally': true
+			'finally': true,
+			'end': true
 		}
 	},
 
@@ -34,7 +35,12 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			this.save('}');
+			if (this.structure.params.chain) {
+				this.save('}');
+
+			} else {
+				this.save('} catch (ignore) {}');
+			}
 		}
 	}
 );
@@ -43,11 +49,7 @@ Snakeskin.addDirective(
 	'catch',
 
 	{
-		notEmpty: true,
-		after: {
-			'finally': true,
-			'end': true
-		}
+		notEmpty: true
 	},
 
 	function (command) {
@@ -55,22 +57,10 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can only be used with a "try"`);
 		}
 
-		this.toQueue(() => {
-			Snakeskin.Directions['end']({
-				ctx: this,
-				name: 'catch'
-			});
+		this.structure.params.chain = true;
 
-			this.startDir();
-			if (this.isSimpleOutput()) {
-				this.save(` catch (${this.declVar(command)}) {`);
-			}
-		});
-	},
-
-	function () {
 		if (this.isSimpleOutput()) {
-			this.save('}');
+			this.save(`} catch (${this.declVar(command)}) {`);
 		}
 	}
 );
@@ -83,26 +73,14 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!{'try': true, 'catch': true}[this.structure.name]) {
+		if (this.structure.name !== 'try') {
 			return this.error(`directive "${this.name}" can only be used with a "try"`);
 		}
 
-		this.toQueue(() => {
-			Snakeskin.Directions['end']({
-				ctx: this,
-				name: 'finally'
-			});
+		this.structure.params.chain = true;
 
-			this.startDir();
-			if (this.isSimpleOutput()) {
-				this.save(' finally {');
-			}
-		});
-	},
-
-	function () {
 		if (this.isSimpleOutput()) {
-			this.save('}');
+			this.save('} finally {');
 		}
 	}
 );
