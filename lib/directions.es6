@@ -182,7 +182,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			eval(dir.pasteDangerBlocks(dir.res.substring(from, to)));
 
 			if (fsStack.length) {
-				dir.source = dir.source.substring(0, dir.i + 1) + fsStack.join('') + dir.source.substring(dir.i + 1);
+				dir.source = dir.source.substring(0, dir.i + 1) +
+					fsStack.join('') +
+					dir.source.substring(dir.i + 1);
+
 				fsStack.splice(0, fsStack.length);
 			}
 		}
@@ -197,7 +200,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			eval(this.pasteDangerBlocks(this.res.substring(from, to)));
 
 			if (fsStack.length) {
-				this.source = this.source.substring(0, this.i + 1) + fsStack.join('') + this.source.substring(this.i + 1);
+				this.source = this.source.substring(0, this.i + 1) +
+					fsStack.join('') +
+					this.source.substring(this.i + 1);
+
 				fsStack.splice(0, fsStack.length);
 			}
 		}

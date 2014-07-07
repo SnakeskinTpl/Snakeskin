@@ -80,6 +80,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	info['file'] = s(info.file, info['file']);
 	info['line'] = info['line'] || 1;
 
+	if (IS_NODE) {
+		let path = require('path');
+		info['file'] = applyDefEscape(path.normalize(info['file']));
+	}
+
 	var html = src.innerHTML;
 
 	if (html) {
