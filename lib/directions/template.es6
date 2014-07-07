@@ -312,8 +312,8 @@ for (let i = 0; i < template.length; i++) {
 				var __RETURN__ = false,
 					__RETURN_VAL__;
 
-				var TPL_NAME = '${this.applyDefEscape(this.pasteDangerBlocks(tmpTplName))}',
-					PARENT_TPL_NAME${parentTplName ? ` = '${this.applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
+				var TPL_NAME = '${applyDefEscape(this.pasteDangerBlocks(tmpTplName))}',
+					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
 			`);
 
 			// Подкючение "внешних" прототипов
@@ -422,7 +422,7 @@ for (let i = 0; i < template.length; i++) {
 					};
 
 					if (typeof Snakeskin !== 'undefined') {
-						Snakeskin.cache['${this.applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};
+						Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};
 					}
 				`);
 			}

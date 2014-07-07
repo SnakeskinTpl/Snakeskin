@@ -6,7 +6,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.info['file'] = this.applyDefEscape(command);
+		this.info['file'] = applyDefEscape(command);
 	}
 );
 
