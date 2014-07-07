@@ -23,7 +23,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		group: 'callback',
 		replacers: {
 			'()': (cmd) => cmd.replace(/^\(\)/, 'callback ')
@@ -97,7 +96,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		group: 'callback'
 	},
 
@@ -173,7 +171,6 @@ for (let i = 0; i < async.length; i++) {
 
 		{
 			block: true,
-			placement: 'template',
 			group: 'async',
 			inside: {
 				'callback': true
@@ -200,7 +197,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		notEmpty: true,
 		group: 'async',
 		inside: {

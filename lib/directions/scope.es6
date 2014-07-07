@@ -4,7 +4,6 @@ Snakeskin.addDirective(
 	{
 		sys: true,
 		block: true,
-		placement: 'template',
 		notEmpty: true
 	},
 

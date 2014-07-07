@@ -2,7 +2,7 @@ Snakeskin.addDirective(
 	'break',
 
 	{
-		placement: 'template'
+
 	},
 
 	function () {
@@ -52,7 +52,7 @@ Snakeskin.addDirective(
 	'continue',
 
 	{
-		placement: 'template'
+
 	},
 
 	function () {

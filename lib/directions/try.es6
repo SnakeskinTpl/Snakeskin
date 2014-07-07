@@ -2,7 +2,6 @@ Snakeskin.addDirective(
 	'throw',
 
 	{
-		placement: 'template',
 		notEmpty: true
 	},
 
@@ -20,7 +19,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		after: {
 			'catch': true,
 			'finally': true
@@ -45,7 +43,6 @@ Snakeskin.addDirective(
 	'catch',
 
 	{
-		placement: 'template',
 		notEmpty: true,
 		after: {
 			'finally': true,
