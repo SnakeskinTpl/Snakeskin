@@ -355,8 +355,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						command = replacers[short1](command);
 					}
 
-					let commandType = commandTypeRgxp.exec(command)[0];
-					let isConst = commandType === 'const';
+					let commandType = commandTypeRgxp.exec(command)[0],
+						isConst = commandType === 'const';
 
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
