@@ -45,6 +45,7 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 		`;
 	}
 
+	console.log(str);
 	return str;
 };
 
@@ -107,14 +108,7 @@ Snakeskin.addDirective(
 				argsMap = [];
 
 			if (args) {
-				let argsList;
-
-				try {
-					argsList = args[1].split(',');
-
-				} catch (ignore) {
-					return this.error(`invalid "${this.name}" declaration`);
-				}
+				let argsList = args.split(',');
 
 				for (let i = 0; i < argsList.length; i++) {
 					let arg = argsList[i].split('='),
