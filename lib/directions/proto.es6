@@ -265,6 +265,9 @@ Snakeskin.addDirective(
 	}
 );
 
+/**
+ * Таблица обратных вызовов прототипа
+ */
 DirObj.prototype.backTable = {
 	init: function () {
 		return {};
