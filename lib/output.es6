@@ -396,8 +396,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	var varsNm = tplName ?
 		'__VARS__' : 'Snakeskin.Vars';
 
-	var escaperRgxp = /^__ESCAPER_QUOT__\d+_/,
-		ssfRgxp = new RegExp(filtersNm.replace('.', '\\.'));
+	var ssfRgxp = new RegExp(filtersNm.replace('.', '\\.'));
 
 	var nextCharRgxp = /[@#$+\-~!\w]/i,
 		newWordRgxp = /[^@#$\w\[\].]/,

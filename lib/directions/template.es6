@@ -25,6 +25,44 @@ DirObj.prototype.tplName = null;
 DirObj.prototype.parentTplName = null;
 
 var template = ['template', 'interface', 'placeholder'];
+var scopeModRgxp = /^@/;
+
+/**
+ * Вернуть строку декларации аргументов функции
+ * из заданной строки
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+function getArgs(str) {
+	let pOpen = 0,
+		res = '';
+
+	for (let i = 0; i < str.length; i++) {
+		let el = str[i];
+
+		if (el === '(') {
+			pOpen++;
+
+			if (pOpen === 1) {
+				continue;
+			}
+
+		} else if (el === ')') {
+			pOpen--;
+
+			if (!pOpen) {
+				break;
+			}
+		}
+
+		if (pOpen) {
+			res += el;
+		}
+	}
+
+	return res;
+}
 
 for (let i = 0; i < template.length; i++) {
 	Snakeskin.addDirective(
@@ -128,15 +166,8 @@ for (let i = 0; i < template.length; i++) {
 			this.initTemplateCache(tplName);
 			extMap[tplName] = parentTplName;
 
-			// Входные параметры
-			try {
-				var args = /\((.*?)\)/.exec(command)[1];
-
-			} catch (ignore) {
-				return this.error(`invalid "${this.name}" declaration`);
-			}
-
-			var pos;
+			var args = getArgs(command),
+				pos;
 
 			// Для возможности удобного пост-парсинга,
 			// каждая функция снабжается комментарием вида:
@@ -157,7 +188,6 @@ for (let i = 0; i < template.length; i++) {
 			// с пространством имён или при экспорте в common.js
 			if (/\.|\[/m.test(tmpTplName) || this.commonJS) {
 				lastName = '';
-				let escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
 				let tmpArr = tmpTplName
 
 					// Заменяем [] на .
@@ -212,12 +242,12 @@ for (let i = 0; i < template.length; i++) {
 				let arg = argsList[i].split('=');
 				arg[0] = arg[0].trim();
 
-				if (arg[0].charAt(0) === '@') {
+				if (scopeModRgxp.test(arg[0])) {
 					if (scope) {
 						return this.error(`invalid "${this.name}" declaration`);
 
 					} else {
-						scope = arg[0].substring(1);
+						scope = arg[0].replace(scopeModRgxp, '');
 					}
 				}
 
@@ -240,7 +270,8 @@ for (let i = 0; i < template.length; i++) {
 					let el = parentArgs[key],
 						current = argsTable[key];
 
-					let cVal = current && current.value === void 0;
+					let cVal = current &&
+						current.value === void 0;
 
 					if (el.value !== void 0) {
 						if (!argsTable[key]) {
@@ -285,9 +316,7 @@ for (let i = 0; i < template.length; i++) {
 			var defParams = '';
 			for (let i = 0; i < argsList.length; i++) {
 				let el = argsList[i];
-
-				el.key = el.key.charAt(0) === '@' ?
-					el.key.substring(1) : el.key;
+				el.key = el.key.replace(scopeModRgxp, '');
 
 				this.save(el.key, iface);
 				constICache[tplName][el.key] = el;
@@ -316,7 +345,7 @@ for (let i = 0; i < template.length; i++) {
 					continue;
 				}
 
-				defs += `{__const__ ${el.key.charAt(0) === '@' ? el.key.substring(1) : el.key} = ${el.value}}`;
+				defs += `{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
 			}
 
 			if (defs) {

@@ -36,8 +36,7 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 			def = this.prepareOutput(def, true);
 		}
 
-		arg = arg.charAt(0) === '@' ?
-			arg.substring(1) : arg;
+		arg = arg.replace(scopeModRgxp, '');
 
 		str += `
 			var ${arg} = ${def !== void 0 ?
@@ -119,7 +118,7 @@ Snakeskin.addDirective(
 
 				for (let i = 0; i < argsList.length; i++) {
 					let arg = argsList[i].split('='),
-						mod = arg[0].charAt(0) === '@';
+						mod = scopeModRgxp.test(arg[0]);
 
 					if (mod) {
 						if (scope) {

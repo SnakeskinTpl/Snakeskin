@@ -17,6 +17,8 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 
 //#include ../node_modules/escaper/lib/escaper.js
 
+var escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
+
 /**
  * Заметить блоки вида ' ... ', " ... ", / ... /, ` ... `, // ..., /* ... *\/ на
  * __ESCAPER_QUOT__номер_ в указанной строке
