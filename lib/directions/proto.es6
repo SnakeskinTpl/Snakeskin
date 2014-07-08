@@ -229,11 +229,9 @@ Snakeskin.addDirective(
 					let el = back[i];
 
 					if (this.canWrite) {
-						let argsDecl = this.returnProtoArgs(args, el.args);
-
 						if (!el.outer) {
 							this.res = this.res.substring(0, el.pos) +
-								argsDecl +
+								this.returnProtoArgs(args, el.args) +
 								protoCache[tplName][lastProto.name].body +
 								this.res.substring(el.pos);
 
@@ -241,7 +239,7 @@ Snakeskin.addDirective(
 							let tmp = this.structure.vars;
 
 							this.structure.vars = el.vars;
-							el.argsStr = argsDecl;
+							el.argsStr = this.returnProtoArgs(args, el.args);
 							this.structure.vars = tmp;
 
 							fin = false;
