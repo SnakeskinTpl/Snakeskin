@@ -1,5 +1,6 @@
 /**
  * Декларировать аргументы функции callback
+ * и вернуть строку декларации
  *
  * @param {(!Array|string)} parts - строка аргументов или массив параметров директивы
  * @return {string}
@@ -150,7 +151,17 @@ for (let i = 0; i < series.length; i++) {
 		function (command, commandLength, type) {
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				this.save(`async.${type}([`);
+				let asyncExport;
+
+				if (this.tplName) {
+					asyncExport = 'async';
+
+				} else {
+					let tmp = this.prepareOutput('async', true);
+					asyncExport = `(typeof ${tmp} !== 'undefined' ? ${tmp} : Snakeskin.Vars.async)`;
+				}
+
+				this.save(`${asyncExport}.${type}([`);
 			}
 		},
 
@@ -179,7 +190,17 @@ for (let i = 0; i < async.length; i++) {
 		function (command, commandLength, type) {
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				this.save(`async.${type}(`);
+				let asyncExport;
+
+				if (this.tplName) {
+					asyncExport = 'async';
+
+				} else {
+					let tmp = this.prepareOutput('async', true);
+					asyncExport = `(typeof ${tmp} !== 'undefined' ? ${tmp} : Snakeskin.Vars.async)`;
+				}
+
+				this.save(`${asyncExport}.${type}(`);
 			}
 		},
 
