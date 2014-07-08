@@ -39,15 +39,16 @@ function getFnName(str) {
 }
 
 /**
- * Вернуть строку декларации аргументов функции
+ * Вернуть массив аргументов функции
  * из заданной строки
  *
  * @param {string} str - исходная строка
- * @return {string}
+ * @return {!Array}
  */
 function getArgs(str) {
-	let pOpen = 0,
-		res = '';
+	var res = [];
+	var pOpen = 0,
+		arg = '';
 
 	for (let i = 0; i < str.length; i++) {
 		let el = str[i];
@@ -67,9 +68,19 @@ function getArgs(str) {
 			}
 		}
 
-		if (pOpen) {
-			res += el;
+		if (el === ',' && pOpen === 1) {
+			res.push(arg);
+			arg = '';
+			continue;
 		}
+
+		if (pOpen) {
+			arg += el;
+		}
+	}
+
+	if (arg) {
+		res.push(arg);
 	}
 
 	return res;
@@ -174,7 +185,8 @@ for (let i = 0; i < template.length; i++) {
 			this.initTemplateCache(tplName);
 			extMap[tplName] = parentTplName;
 
-			var args = getArgs(command),
+			var argsList = getArgs(command);
+			var args = argsList.join(', '),
 				pos;
 
 			// Для возможности удобного пост-парсинга,
@@ -240,15 +252,15 @@ for (let i = 0; i < template.length; i++) {
 			this.save(`this.${tmpTplName} = function ${prfx}${lastName !== null ? lastName : tmpTplName}(`, iface);
 
 			// Входные параметры
-			var argsList = args.split(','),
-				parentArgs = paramsCache[parentTplName];
-
-			var argsTable = paramsCache[tplName] = {},
+			var parentArgs = paramsCache[parentTplName],
+				argsTable = paramsCache[tplName] = {},
 				scope;
 
 			for (let i = 0; i < argsList.length; i++) {
 				let arg = argsList[i].split('=');
+
 				arg[0] = arg[0].trim();
+				arg[1] = arg.slice(1).join('=').trim();
 
 				if (scopeModRgxp.test(arg[0])) {
 					if (scope) {

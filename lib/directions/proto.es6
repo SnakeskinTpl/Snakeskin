@@ -103,38 +103,38 @@ Snakeskin.addDirective(
 			}
 
 			let scope;
-			let args = getArgs(command),
+			let argsList = getArgs(command),
 				argsMap = [];
 
-			if (args) {
-				let argsList = args.split(',');
+			for (let i = 0; i < argsList.length; i++) {
+				let arg = argsList[i].split('='),
+					mod = scopeModRgxp.test(arg[0]);
 
-				for (let i = 0; i < argsList.length; i++) {
-					let arg = argsList[i].split('='),
-						mod = scopeModRgxp.test(arg[0]);
+				if (mod) {
+					if (scope) {
+						return this.error(`invalid "${this.name}" declaration`);
 
-					if (mod) {
-						if (scope) {
-							return this.error(`invalid "${this.name}" declaration`);
-
-						} else {
-							arg[0] = arg[0].substring(1);
-						}
-					}
-
-					arg[0] = this.declVar(arg[0].trim(), true) || '';
-					argsMap.push(arg);
-
-					if (mod) {
-						scope = arg[0];
+					} else {
+						arg[0] = arg[0].replace(scopeModRgxp, '');
 					}
 				}
+
+				arg[0] = this.declVar(arg[0].trim(), true) || '';
+
+				arg[1] = arg.slice(1).join('=').trim();
+				arg[1] = arg[1] && this.prepareOutput(arg[1], true);
+
+				if (mod) {
+					scope = arg[0];
+				}
+
+				argsMap.push(arg);
 			}
 
 			protoCache[this.tplName][name] = {
 				length: commandLength,
 				from: this.i - this.startTemplateI + 1,
-				argsDecl: args ? args[0] : '',
+				argsDecl: `(${argsList.join(', ')})`,
 				args: argsMap,
 				scope: scope,
 				calls: {}
@@ -227,9 +227,11 @@ Snakeskin.addDirective(
 					let el = back[i];
 
 					if (this.canWrite) {
+						let argsDecl = this.returnProtoArgs(args, el.args);
+
 						if (!el.outer) {
 							this.res = this.res.substring(0, el.pos) +
-								this.returnProtoArgs(args, el.args) +
+								argsDecl +
 								protoCache[tplName][lastProto.name].body +
 								this.res.substring(el.pos);
 
@@ -237,7 +239,7 @@ Snakeskin.addDirective(
 							let tmp = this.structure.vars;
 
 							this.structure.vars = el.vars;
-							el.argsStr = this.returnProtoArgs(args, el.args);
+							el.argsStr = argsDecl;
 							this.structure.vars = tmp;
 
 							fin = false;
@@ -295,7 +297,7 @@ Snakeskin.addDirective(
 				argsStr = '';
 
 			if (proto) {
-				argsStr = this.returnProtoArgs(proto.args, args ? args[1].split(',') : []);
+				argsStr = this.returnProtoArgs(proto.args, args);
 			}
 
 			let selfProto = this.proto;
