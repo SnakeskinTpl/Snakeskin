@@ -13,7 +13,6 @@ Snakeskin.addDirective(
 	}
 );
 
-
 Snakeskin.addDirective(
 	'try',
 
