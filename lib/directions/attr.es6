@@ -10,13 +10,11 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			if (this.isSimpleOutput()) {
-				let groups = splitGroup(command);
+			let groups = splitGroup(command);
 
-				for (let i = 0; i < groups.length; i++) {
-					let el = groups[i];
-					this.save(this.returnDeclAttr(el.attr, el.group, el.separator));
-				}
+			for (let i = 0; i < groups.length; i++) {
+				let el = groups[i];
+				this.save(this.returnDeclAttr(el.attr, el.group, el.separator));
 			}
 		}
 	}
