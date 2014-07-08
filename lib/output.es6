@@ -743,7 +743,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					.trim()
 					.replace(/^\[/, '$[')
 					.replace(/\byield\b/g, '')
-					.replace(/break [_]{2,}I_PROTO__\w+;/, '')
+					.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '')
 			);
 
 		} catch (err) {

@@ -9,14 +9,16 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 
 		var combo = this.getGroup('cycle', 'async');
+		combo['proto'] = true;
+
 		var cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
 		var inside = this.hasParent(combo),
 			insideCallback = this.hasParent(this.getGroup('callback'));
 
-		if (!cycles[inside] && !async[inside]) {
-			return this.error(`directive "${this.name}" can only be used with a cycles or a async series`);
+		if (!cycles[inside] && !async[inside] && inside !== 'proto' && !this.proto) {
+			return this.error(`directive "${this.name}" can only be used with a cycles, "proto" or a async series`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -28,7 +30,7 @@ Snakeskin.addDirective(
 					this.save('break;');
 				}
 
-			} else {
+			} else if (async[inside]) {
 				if (inside === 'waterfall') {
 					this.save('return arguments[arguments.length - 1](false);');
 
@@ -41,6 +43,9 @@ Snakeskin.addDirective(
 						return false;
 					`);
 				}
+
+			} else {
+				this.save(this.prepareOutput('break __I_PROTO__;', true));
 			}
 
 			this.space = true;
@@ -59,14 +64,16 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 
 		var combo = this.getGroup('cycle', 'async');
+		combo['proto'] = true;
+
 		var cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
 		var inside = this.hasParent(combo),
 			insideCallback = this.hasParent(this.getGroup('callback'));
 
-		if (!cycles[inside] && !async[inside]) {
-			return this.error(`directive "${this.name}" can only be used with a cycles or a async series`);
+		if (!cycles[inside] && !async[inside] && inside !== 'proto' && !this.proto) {
+			return this.error(`directive "${this.name}" can only be used with a cycles, "proto" or a async series`);
 		}
 
 		if (this.isSimpleOutput()) {
@@ -78,7 +85,7 @@ Snakeskin.addDirective(
 					this.save('continue;');
 				}
 
-			} else {
+			} else if (async[inside]) {
 				if (inside === 'waterfall') {
 					this.save('return arguments[arguments.length - 1]();');
 
@@ -91,6 +98,9 @@ Snakeskin.addDirective(
 						return;
 					`);
 				}
+
+			} else {
+				this.save(this.prepareOutput('continue __I_PROTO__;', true));
 			}
 
 			this.space = true;
