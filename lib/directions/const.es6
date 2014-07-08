@@ -87,6 +87,12 @@ Snakeskin.addDirective(
 	}
 );
 
+/**
+ * Вернуть true, если в строке идёт присвоенеи значения переменной
+ *
+ * @param {string} str - исходная строка
+ * @return {boolean}
+ */
 function isAssign(str) {
 	var first = str.charAt(0);
 
