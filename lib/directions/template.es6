@@ -362,6 +362,9 @@ for (let i = 0; i < template.length; i++) {
 					this.source.substring(this.i + 1);
 			}
 
+			var $CExport = this.prepareOutput('$C', true),
+				asyncExport = this.prepareOutput('async', true);
+
 			this.save(`
 				${defParams}
 
@@ -378,6 +381,9 @@ for (let i = 0; i < template.length; i++) {
 
 				var TPL_NAME = '${applyDefEscape(this.pasteDangerBlocks(tmpTplName))}',
 					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
+
+				var \$C = typeof ${$CExport} !== 'undefined' ? ${$CExport} : Snakeskin.Vars.\$C,
+					async = typeof ${asyncExport} !== 'undefined' ? ${asyncExport} : Snakeskin.Vars.async;
 			`);
 
 			// Подкючение "внешних" прототипов

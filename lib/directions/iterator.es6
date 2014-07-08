@@ -260,7 +260,17 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isSimpleOutput()) {
-			this.save(`\$C(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+			let $CExport;
+
+			if (this.tplName) {
+				$CExport = '$C';
+
+			} else {
+				let tmp = this.prepareOutput('$C', true);
+				$CExport = `(typeof ${tmp} !== 'undefined' ? ${tmp} : Snakeskin.Vars.\$C)`;
+			}
+
+			this.save(`${$CExport}(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 
