@@ -28,6 +28,17 @@ var template = ['template', 'interface', 'placeholder'];
 var scopeModRgxp = /^@/;
 
 /**
+ * Вернуть имя функции из заданной строки
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+function getFnName(str) {
+	var val = /[^(]+/.exec(str);
+	return val ? val[0] : '';
+}
+
+/**
  * Вернуть строку декларации аргументов функции
  * из заданной строки
  *
@@ -108,11 +119,8 @@ for (let i = 0; i < template.length; i++) {
 				command = command.replace(/\*/, '');
 			}
 
-			try {
-				var tmpTplName = /(.*?)\(/.exec(command)[1],
-					tplName = this.pasteDangerBlocks(tmpTplName);
-
-			} catch (ignore) {}
+			var tmpTplName = getFnName(command),
+				tplName = this.pasteDangerBlocks(tmpTplName);
 
 			if (!tplName) {
 				return this.error(`invalid "${this.name}" declaration`);

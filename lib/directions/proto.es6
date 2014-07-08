@@ -62,7 +62,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var name = command.match(/[^(]+/)[0];
+		var name = getFnName(command);
 
 		if (!name) {
 			return this.error(`invalid "${this.name}" declaration`);
@@ -103,7 +103,7 @@ Snakeskin.addDirective(
 			}
 
 			let scope;
-			let args = command.match(/\((.*?)\)/),
+			let args = getArgs(command),
 				argsMap = [];
 
 			if (args) {
@@ -291,8 +291,8 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 
 		if (this.isSimpleOutput()) {
-			let name = /[^(]+/.exec(command)[0],
-				args = /\((.*?)\)/.exec(command);
+			let name = getFnName(command),
+				args = getArgs(command);
 
 			let cache = protoCache[this.tplName];
 			let proto = cache[name],
