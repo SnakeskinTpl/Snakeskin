@@ -74,6 +74,12 @@ DirObj.prototype.returnDeclAttr = function declAttr(command, opt_group, opt_sepa
 	return res;
 };
 
+/**
+ * Разбить строку декларации атрибута на группы
+ *
+ * @param {string} str - исходная строка
+ * @return {!Array}
+ */
 function splitGroup(str) {
 	var groups = [];
 
