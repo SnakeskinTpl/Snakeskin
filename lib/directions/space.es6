@@ -7,9 +7,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.space = true;
-		}
+		this.space = true;
 	}
 );
 
@@ -22,9 +20,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.superStrongSpace = true;
-		}
+		this.superStrongSpace = true;
 	}
 );
 
@@ -37,9 +33,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.superStrongSpace = false;
-		}
+		this.superStrongSpace = false;
 	}
 );
 

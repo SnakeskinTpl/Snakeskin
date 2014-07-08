@@ -7,6 +7,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
+		this.space = true;
 
 		var combo = this.getGroup('cycle', 'async');
 		combo['proto'] = true;
@@ -47,8 +48,6 @@ Snakeskin.addDirective(
 			} else {
 				this.save(this.prepareOutput('break __I_PROTO__;', true));
 			}
-
-			this.space = true;
 		}
 	}
 );
@@ -62,6 +61,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
+		this.space = true;
 
 		var combo = this.getGroup('cycle', 'async');
 		combo['proto'] = true;
@@ -102,8 +102,6 @@ Snakeskin.addDirective(
 			} else {
 				this.save(this.prepareOutput('continue __I_PROTO__;', true));
 			}
-
-			this.space = true;
 		}
 	}
 );
