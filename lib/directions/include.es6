@@ -11,7 +11,6 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-
 		var path = this.prepareOutput(command, true);
 
 		if (path !== void 0) {

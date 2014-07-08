@@ -23,12 +23,13 @@ Snakeskin.addDirective(
 			this.strongSpace = struct.parent.strong;
 		}
 
-		var destruct = Snakeskin.Directions[`${name}End`];
+		var destruct = Snakeskin.Directions[`${name}End`],
+			isSimpleOutput = this.isSimpleOutput();
 
 		if (destruct) {
 			destruct.apply(this, arguments);
 
-		} else if (!struct.sys && this.isSimpleOutput()) {
+		} else if (!struct.sys && isSimpleOutput) {
 			this.save('};');
 		}
 
@@ -38,7 +39,7 @@ Snakeskin.addDirective(
 		struct = this.structure;
 		name = struct.name;
 
-		if (this.deferReturn) {
+		if (this.deferReturn && isSimpleOutput) {
 			let async = this.getGroup('async');
 
 			if (this.getGroup('callback')[name]) {
