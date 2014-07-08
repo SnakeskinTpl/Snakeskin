@@ -45,7 +45,6 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 		`;
 	}
 
-	console.log(str);
 	return str;
 };
 
