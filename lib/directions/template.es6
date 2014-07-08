@@ -258,9 +258,12 @@ for (let i = 0; i < template.length; i++) {
 
 			for (let i = 0; i < argsList.length; i++) {
 				let arg = argsList[i].split('=');
-
 				arg[0] = arg[0].trim();
-				arg[1] = arg.slice(1).join('=').trim();
+
+				if (arg.length > 1) {
+					arg[1] = arg.slice(1).join('=').trim();
+					arg.splice(2, arg.length);
+				}
 
 				if (scopeModRgxp.test(arg[0])) {
 					if (scope) {
