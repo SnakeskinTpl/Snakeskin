@@ -8,7 +8,12 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			this.save(`yield ${this.prepareOutput(command, true)};`);
+			if (command) {
+				this.save(`yield ${this.prepareOutput(command, true)};`);
+
+			} else {
+				this.save(`yield __RESULT__;`);
+			}
 		}
 	}
 );
