@@ -123,7 +123,7 @@ Snakeskin.addDirective(
 
 					if (mod) {
 						if (scope) {
-							return this.error(`invalid "proto" declaration (${args})`);
+							return this.error(`invalid "${this.name}" declaration`);
 
 						} else {
 							arg[0] = arg[0].substring(1);
@@ -284,7 +284,8 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		notEmpty: true
+		notEmpty: true,
+		text: true
 	},
 
 	function (command) {
