@@ -103,7 +103,7 @@ Snakeskin.addDirective(
 			}
 
 			let scope;
-			let argsList = getArgs(command),
+			let argsList = this.getFnArgs(command),
 				argsMap = [];
 
 			for (let i = 0; i < argsList.length; i++) {
@@ -136,7 +136,7 @@ Snakeskin.addDirective(
 			protoCache[this.tplName][name] = {
 				length: commandLength,
 				from: this.i - this.startTemplateI + 1,
-				argsDecl: `(${argsList.join(', ')})`,
+				argsDecl: argsList.params ? `(${argsList.join(',')})` : '',
 				args: argsMap,
 				scope: scope,
 				calls: {}
@@ -292,7 +292,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			let name = getFnName(command),
-				args = getArgs(command);
+				args = this.getFnArgs(command);
 
 			let cache = protoCache[this.tplName];
 			let proto = cache[name],
