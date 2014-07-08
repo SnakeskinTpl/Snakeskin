@@ -1,21 +1,9 @@
-/**
- * Применить к указанной строке стандартное экранирование Snakeskin
- *
- * @param {string} str - исходная строка
- * @return {string}
- */
 function applyDefEscape(str) {
 	return str
 		.replace(/\\/gm, '\\\\')
 		.replace(/'/gm, '\\\'');
 }
 
-/**
- * Экранировать символы перевода строки в указанной строке
- *
- * @param {string} str - исходная строка
- * @return {string}
- */
 function escapeNextLine(str) {
 	return str
 		.replace(/\n/gm, '\\n')
@@ -23,7 +11,7 @@ function escapeNextLine(str) {
 		.replace(/\r/gm, '\\r');
 }
 
-if (typeof window === 'undefined') {
+if (typeof window === 'undefined' && typeof global !== 'undefined') {
 	global.EscaperIsLocal = true;
 }
 
