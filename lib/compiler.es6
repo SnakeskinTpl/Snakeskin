@@ -27,6 +27,9 @@
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (только при экспорте в commonJS)
  *
+ * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
+ *     которые будут добавлены в Snakeskin.Vars
+ *
  * @param {?function(!Error)=} [opt_params.onError] - функция обратного вызова для обработки ошибок при трансляции
  * @param {?boolean=} [opt_params.prettyPrint] - если true, то полученный JS код шаблона
  *     отображается в удобном для чтения виде
@@ -71,6 +74,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
+
+	var vars =
+		p.vars = s(p.vars, p['vars']) || {};
+
+	for (let key in vars) {
+		if (!vars.hasOwnProperty(key)) {
+			continue;
+		}
+
+		Snakeskin.Vars[key] = vars[key];
+	}
 
 	var i18n =
 		p.localization = s(p.localization, p['localization']) !== false;
