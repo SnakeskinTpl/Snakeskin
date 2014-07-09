@@ -50,6 +50,7 @@ var sysConst = {
 	'__FILTERS__': true,
 	'__VARS__': true,
 	'__THIS__': true,
+	'__INCLUDE__': true,
 	'$_': true
 };
 

@@ -171,6 +171,12 @@ function DirObj(src, params) {
 	this.cDataContent = [];
 
 	/**
+	 * Таблица подключённых файлов
+	 * @type {!Object}
+	 */
+	this.files = {};
+
+	/**
 	 * Исходный текст шаблона
 	 * @type {string}
 	 */
@@ -198,6 +204,8 @@ function DirObj(src, params) {
 			This code is generated automatically, don\'t alter it. */
 			(function () {
 		`;
+
+		this.source = '{__INCLUDE__ = {}}' + this.source;
 
 		if (this.commonJS) {
 			this.res += `

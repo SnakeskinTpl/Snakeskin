@@ -16,13 +16,16 @@ Snakeskin['include'] = function (base, url) {
 		path = require('path');
 
 	try {
-		let src = path.join(path.dirname(base), path.normalize(url));
+		let src = path.resolve(path.dirname(base), path.normalize(url));
 
-		fsStack.push(`
-			{__setFile__ ${applyDefEscape(src)}}
-			${fs.readFileSync(src).toString()}
-			{__setFile__ ${applyDefEscape(base)}}
-		`);
+		if (!Snakeskin.Vars.__INCLUDE__[src]) {
+			Snakeskin.Vars.__INCLUDE__[src] = true;
+			fsStack.push(`
+				{__setFile__ ${applyDefEscape(src)}}
+				${fs.readFileSync(src).toString()}
+				{__setFile__ ${applyDefEscape(base)}}
+			`);
+		}
 
 		return true;
 
