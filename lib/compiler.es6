@@ -21,8 +21,8 @@
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
  *
- * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то вывод значений выражений
- *     не будет принудительно экранироваться фильтром html
+ * @param {?boolean=} [opt_params.escapeOutput=true] - если афдыу, то работа итераторов forEach и forIn
+ *     будет развёртвываться в циклы
  *
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (только при экспорте в commonJS)
@@ -61,15 +61,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	var pref = '#',
-		prefI = 0,
-		needPref = false;
+	var prfx = '#',
+		prfxI = 0,
+		needPrfx = false;
 
 	p.onError = s(p.onError, p['onError']);
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
 	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
-	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
 
 	var i18n =
@@ -126,7 +125,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		onError: p.onError,
 		stringBuffer: p.stringBuffer,
 		inlineIterators: p.inlineIterators,
-		escapeOutput: p.escapeOutput,
 		renderAsInterface: p.renderAsInterface
 	});
 
@@ -173,8 +171,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var prevSpace;
 
-	var i18nStr = '';
-	var i18nStart = false;
+	var i18nStr = '',
+		i18nStart = false;
 
 	while (++dir.i < dir.source.length) {
 		let str = dir.source;
@@ -231,7 +229,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
-			if ((needPref ? el !== pref : el !== '{') && !begin) {
+			if ((needPrfx ? el !== prfx : el !== '{') && !begin) {
 				prevSpace = dir.space;
 			}
 
@@ -316,7 +314,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				let isPrefStart = !currentEscape &&
 					!begin &&
-					el === pref &&
+					el === prfx &&
 					next === '{';
 
 				// Начало управляющей конструкции
@@ -325,10 +323,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (begin) {
 						fakeBegin++;
 
-					} else if (!needPref || isPrefStart) {
+					} else if (!needPrfx || isPrefStart) {
 						if (isPrefStart) {
 							dir.i++;
-							needPref = true;
+							needPrfx = true;
 						}
 
 						bEnd = true;
@@ -382,21 +380,21 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						return false;
 					}
 
-					if (needPref) {
+					if (needPrfx) {
 						if (dir.inline !== false) {
 							if (commandType === 'end') {
-								prefI--;
+								prfxI--;
 
-								if (!prefI) {
-									needPref = false;
+								if (!prfxI) {
+									needPrfx = false;
 								}
 
-							} else if (!prefI) {
-								needPref = false;
+							} else if (!prfxI) {
+								needPrfx = false;
 							}
 
 						} else {
-							prefI++;
+							prfxI++;
 						}
 					}
 
@@ -616,7 +614,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Живая компиляция в браузере
 	} else {
-		console.log(dir.res);
+		//console.log(dir.res);
 		new Function(dir.res)();
 	}
 
