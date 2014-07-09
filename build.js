@@ -4,6 +4,8 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var fs = require('fs');
 
+var V = require('./lib/core')['VERSION'].join('.');
+
 function build(file, flags) {
 	jossy.compile(path.join(__dirname, 'lib/core.js'), null, flags, function(err, res)  {
 		if (err) {
@@ -17,8 +19,26 @@ function build(file, flags) {
 
 			// Всякие хаки, чтобы GCC не ругался
 			.replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/gm, '$1 $2')
+			.replace(/{\.\.\.\(?([^}]+)\)?}/gm, '{...($1|Array)}')
+			.replace(/\/\*, (\w+) \*\//gm, ', $1')
+			.replace(/\/\*= (\w+) \*\//gm, '$1')
 			.replace(/\/\/= (.*)/gm, '$1')
 			.replace(/^\\n/gm, '');
+
+		var desc = file !== 'snakeskin' ? ((" (" + (file.replace(/snakeskin\./, ''))) + ")") : '';
+
+		res =
+(("/*!\
+\n * Snakeskin v" + V) + ("" + desc) + ("\
+\n * https://github.com/kobezzza/Snakeskin\
+\n *\
+\n * Released under the MIT license\
+\n * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE\
+\n *\
+\n * Date: " + (new Date().toUTCString())) + "\
+\n */\
+\n\
+\n") + res;
 
 		fs.writeFileSync(path.join(__dirname, (("build/" + file) + ".js")), res);
 
@@ -54,13 +74,19 @@ function build(file, flags) {
 		gcc.on('close', function(code)  {
 			var min = path.join(__dirname, (("build/" + file) + ".min.js"));
 
-			fs.writeFileSync(
-				min,
-				// Хакерски вырезаем лишнее :)
-				fs.readFileSync(min).toString().replace(/\\t/gm, '')
-			);
+			// Хакерски вырезаем лишнее :)
+			var res = fs.readFileSync(min).toString().replace(/\\t/gm, '');
+			res = (("/*! Snakeskin v" + V) + ("" + desc) + " | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */") + res;
 
+			fs.writeFileSync(min, res);
 			console.log((("" + file) + (" compiled, code " + code) + ""));
+
+			function updateManifest(url) {
+				fs.writeFileSync(url, fs.readFileSync(url).toString().replace(/"version": ".*?"/gm, (("\"version\": \"" + V) + "\"")));
+			}
+
+			updateManifest(path.join(__dirname, 'package.json'));
+			updateManifest(path.join(__dirname, 'bower.json'));
 		});
 	});
 }
