@@ -384,7 +384,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		filterAddEnd = 0;
 
 	// true, если применяется фильтр !html
-	var unEscape = false;
+	var unEscape = !this.escapeOutput;
 
 	var vars = struct.children ?
 		struct.vars :

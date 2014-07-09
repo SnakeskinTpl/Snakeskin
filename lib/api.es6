@@ -13,6 +13,9 @@
  * @param {?boolean=} [params.inlineIterators] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
  *
+ * @param {?boolean=} [params.escapeOutput=true] - если false, то вывод значений выражений
+ *     не будет принудительно экранироваться фильтром html
+ *
  * @param {boolean} [params.stringBuffer] - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
  *
@@ -38,6 +41,9 @@ function DirObj(src, params) {
 
 	/** @type {boolean} */
 	this.inlineIterators = params.inlineIterators;
+
+	/** @type {boolean} */
+	this.escapeOutput = params.escapeOutput;
 
 	/** @type {boolean} */
 	this.interface = params.interface;
