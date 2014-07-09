@@ -647,12 +647,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				ctx['init'](Snakeskin);
 				globalFnCache[cjs][text] = ctx;
 
-				// Простая компиляция
+			// Простая компиляция
 			} else {
 				global.eval(dir.res);
 			}
 
-			// Живая компиляция в браузере
+		// Живая компиляция в браузере
 		} else {
 			new Function(dir.res)();
 		}
