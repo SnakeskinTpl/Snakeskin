@@ -87,6 +87,9 @@ function build(file, flags) {
 
 			updateManifest(path.join(__dirname, 'package.json'));
 			updateManifest(path.join(__dirname, 'bower.json'));
+
+			var index = path.join(__dirname, 'index.js');
+			fs.writeFileSync(index, fs.readFileSync(index).toString().replace(/^\/\//, ''));
 		});
 	});
 }
