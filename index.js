@@ -59,14 +59,20 @@ function action(data) {
 		program['help']();
 	}
 
-	var str = String(data);
+	var str = String(data),
+		res = Snakeskin.compile(str, params, {file: file});
 
-	if (input && !program['output'] || !newFile) {
-		console.log(Snakeskin.compile(str, params, {file: file}));
+	if (res !== false) {
+		if (input && !program['output'] || !newFile) {
+			console.log(res);
+
+		} else {
+			fs.writeFileSync(newFile, res);
+			console.log((("File \"" + file) + ("\" has been successfully compiled \"" + newFile) + "\"."));
+		}
 
 	} else {
-		fs.writeFileSync(newFile, Snakeskin.compile(str, params, {file: file}));
-		console.log((("File \"" + file) + ("\" has been successfully compiled \"" + newFile) + "\"."));
+		process.exit(1);
 	}
 
 	if (words) {
