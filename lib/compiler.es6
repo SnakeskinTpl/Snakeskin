@@ -584,7 +584,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
 	// то кидаем исключение
-	if (dir.structure.parent) {
+	if (begin || dir.structure.parent) {
 		dir.error('missing closing or opening tag in the template');
 		return false;
 	}

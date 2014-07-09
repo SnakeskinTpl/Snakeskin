@@ -59,6 +59,11 @@ Snakeskin.addDirective(
 
 			} else {
 				this.startInlineDir('superGlobalVar');
+
+				if (!isAssign(command)) {
+					return this.error(`invalid ${this.name} declaration`);
+				}
+
 				this.save(`
 					if (typeof Snakeskin !== 'undefined') {
 						Snakeskin.Vars${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
