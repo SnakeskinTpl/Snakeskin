@@ -15,55 +15,64 @@ snakeskin.compile(
 	}
 );
 
-var asserts = [];
+var asserts = [],
+	pref = -1;
 
-fs.readdirSync(testFolder).forEach((file) => {
-	if (path.extname(file) === '.ss') {
-		let src = path.join(testFolder, file);
-		let txt = String(fs.readFileSync(src)).split('###');
+function run(params) {
+	pref++;
+	fs.readdirSync(testFolder).forEach((file) => {
+		if (path.extname(file) === '.ss') {
+			let src = path.join(testFolder, file),
+				txt = String(fs.readFileSync(src)).split('###');
 
-		txt.forEach((el, i) => {
-			txt[i] = el.trim();
-		});
+			txt.forEach((el, i) => {
+				txt[i] = el.trim();
+			});
 
-		let starts = txt[0].split(/[\n\r]+/);
-		let results = txt[2].split('***');
+			let starts = txt[0].split(/[\n\r]+/),
+				results = txt[2].split('***');
 
-		let obj = {
-			tpl: txt[1],
-			id: path.basename(file, '.ss'),
-			js: []
-		};
+			let obj = {
+				tpl: txt[1],
+				id: path.basename(file, '.ss'),
+				js: []
+			};
 
-		asserts.push(obj);
-
-		try {
-			fs.writeFileSync(`${src}.js`, snakeskin.compile(txt[1], {commonJS: true, prettyPrint: true}));
-
-		} catch (err) {
-			console.error(`File: ${file}`);
-			throw err;
-		}
-
-		let tpl = require(`./tests/${file}.js`).init(snakeskin);
-
-		starts.forEach((el, i) => {
-			let params = el.split(' ; ');
+			asserts.push(obj);
 
 			try {
-				obj.js.push(`equal(${params[0]}(${params.slice(1)}).trim(), '${results[i].trim()}');`);
-
-				assert.equal(
-					eval(`tpl.${params[0]}(${params.slice(1)}).trim()`),
-					results[i].trim()
-				);
+				fs.writeFileSync(`${src}_${pref}.js`, snakeskin.compile(txt[1], params));
 
 			} catch (err) {
 				console.error(`File: ${file}`);
 				throw err;
 			}
-		});
-	}
-});
+
+			let tpl = require(`./tests/${file}_${pref}.js`).init(snakeskin);
+
+			starts.forEach((el, i) => {
+				let params = el.split(' ; ');
+
+				try {
+					obj.js.push(`equal(${params[0]}(${params.slice(1)}).trim(), '${results[i].trim()}');`);
+
+					assert.equal(
+						eval(`tpl.${params[0]}(${params.slice(1)}).trim()`),
+						results[i].trim()
+					);
+
+				} catch (err) {
+					console.error(`File: ${file}, Tpl: ${params[0]}`);
+					throw err;
+				}
+			});
+		}
+	});
+}
+
+run({commonJS: true, prettyPrint: true});
+run({commonJS: true, prettyPrint: true, inlineIterators: true});
+run({commonJS: true, prettyPrint: true, stringBuffer: true});
+run({commonJS: true, prettyPrint: true, stringBuffer: true, inlineIterators: true});
 
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
