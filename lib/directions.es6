@@ -251,3 +251,5 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 //#include ./directions/yield.js
 //#include ./directions/doctype.js
 //#include ./directions/script.js
+//#include ./directions/style.js
+//#include ./directions/link.js
