@@ -34,6 +34,8 @@ Snakeskin['forEach'] = function (obj, callback) {
 		}
 
 	} else {
+		let i = 0;
+
 		if (callback.length >= 6) {
 			for (let key in obj) {
 				if (!obj.hasOwnProperty(key)) {
@@ -52,6 +54,8 @@ Snakeskin['forEach'] = function (obj, callback) {
 			if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
 				break;
 			}
+
+			i++;
 		}
 	}
 };
@@ -67,7 +71,8 @@ Snakeskin['forIn'] = function (obj, callback) {
 		return;
 	}
 
-	var length = 0;
+	var length = 0,
+		i = 0;
 
 	if (callback.length >= 6) {
 		for (let key in obj) {
@@ -79,5 +84,7 @@ Snakeskin['forIn'] = function (obj, callback) {
 		if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
 			break;
 		}
+
+		i++;
 	}
 };
