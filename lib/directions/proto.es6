@@ -119,12 +119,12 @@ Snakeskin.addDirective(
 					}
 				}
 
-				arg[0] = this.declVar(arg[0].trim(), true) || '';
-
 				if (arg.length > 1) {
 					arg[1] = arg.slice(1).join('=').trim();
 					arg[1] = arg[1] && this.prepareOutput(arg[1], true);
 				}
+
+				arg[0] = this.declVar(arg[0].trim(), true) || '';
 
 				if (mod) {
 					scope = arg[0];
