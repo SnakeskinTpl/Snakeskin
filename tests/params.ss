@@ -7,7 +7,7 @@ param_base3
 
 ###
 
-{template param_base(a, b = 1)}
+{template param_base(a, b = 1 ? Math.round(1) : 0)}
 	{b}
 {/}
 
@@ -28,7 +28,7 @@ param_base3
 
 {template param_base3(@a = {a: {c: 1}})}
 	{b = 2}
-	{proto foo(@a = @a)}
+	{proto foo(@a = 1 ? @a : Math.round(0))}
 		{@c} {b}
 	{/}
 	{apply foo}

@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404663065160> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404885838116> Wed Jul 09 2014 10:03:58 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -20,15 +20,17 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_index',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             var ____I_PROTO___begin_template_44 = 1;
             ____I_PROTO___begin_template_44: while (____I_PROTO___begin_template_44--) {
                 __RESULT__ += ' ';
-                var __i__proto_257 = (1);
+                var __i__proto_257 = 1;
                 var ____I_PROTO___f1_template_44 = 1;
                 ____I_PROTO___f1_template_44: while (____I_PROTO___f1_template_44--) {
                     __RESULT__ += ' ';
-                    var __i__proto_386 = (__i__proto_257);
+                    var __i__proto_386 = __i__proto_257;
                     var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
@@ -36,7 +38,7 @@
                         __RESULT__ += ' ';
                     }
                     __RESULT__ += ' ';
-                    var __i__proto_386 = (__i__proto_257 + 1);
+                    var __i__proto_386 = __i__proto_257 + 1;
                     var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
@@ -94,12 +96,14 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_index2.a[\'foo\']',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             var __i__proto_691 = 1;
             var ____I_PROTO___begin_template_54 = 1;
             ____I_PROTO___begin_template_54: while (____I_PROTO___begin_template_54--) {
                 __RESULT__ += ' ';
-                var __i__proto_748 = (1);
+                var __i__proto_748 = 1;
                 var ____I_PROTO___f1_template_54 = 1;
                 ____I_PROTO___f1_template_54: while (____I_PROTO___f1_template_54--) {
                     __RESULT__ += ' ';
@@ -125,6 +129,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_recursive',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var __i__proto_834 = 5;
@@ -158,6 +164,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'proto_recursive2',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var __i__proto_967 = 5;
@@ -175,10 +183,10 @@
                         __RESULT__ += ' ';
                         if (__i__proto_985 === 2) {
                             __RESULT__ += ' ';
-                            break ____I_PROTO___foo_template_49;
+                            return __RESULT__;
                         }
                         __RESULT__ += ' ';
-                        var __i__proto_967 = (__i__proto_985);
+                        var __i__proto_967 = __i__proto_985;
                         ____I_PROTO___begin_template_49++;
                         __RESULT__ += ' ';
                     }

@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404663065214> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404885838165> Wed Jul 09 2014 10:03:58 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -20,17 +20,22 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'try_index',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             try {
                 foo();
-            } catch (__err__catch_68) {
+            } catch (ignore) {}
+            try {
+                foo();
+            } catch (__err__try_100) {
                 __RESULT__ += 'bar';
             } finally {
                 __RESULT__ += '2';
             }
             try {
                 foo();
-            } catch (__err__catch_142) {
+            } catch (__err__try_174) {
                 __RESULT__ += 'bar';
             }
             try {

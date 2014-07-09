@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404663064985> Sun Jul 06 2014 20:11:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404885958036> Wed Jul 09 2014 10:05:58 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -21,6 +21,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'cycles_index',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             for (var __j__for_67 = 0; __j__for_67 < 3; __j__for_67++) {
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_67));
@@ -55,6 +57,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'cycles_index2',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             for (var __j__for_334 = 0; __j__for_334 < 3; __j__for_334++) {
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_334));

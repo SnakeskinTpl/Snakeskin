@@ -6,6 +6,10 @@ try_index
 	{&+}
 	{try}
 		{void foo()}
+	{/}
+
+	{try}
+		{void foo()}
 
 	{catch err}
 		bar

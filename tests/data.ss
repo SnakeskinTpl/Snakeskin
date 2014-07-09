@@ -1,5 +1,4 @@
 data_index
-data_attr
 data_decl
 
 ###
@@ -13,19 +12,12 @@ data_decl
 	{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}{/cdata}
 {/}
 
-{template data_attr()}
-	{foo = 'foo'}
-	{bar = 'bar'}
-
-	{attr foo => 'bar'}
-	{attr 'foo' => bar, foo; 'bar' => 'foo'}
-{/}
-
 {template data_decl()}
 	{foo = 'bar'}
 
 	{{foo}}
-	{{${foo}}}
+	{{#{foo}}}
+	#{{#{foo}}}
 {/}
 
 ###
@@ -34,8 +26,4 @@ data_decl
 
 ***
 
-foo = " bar"  foo = " bar foo" bar = " foo"
-
-***
-
-{{foo}} {{bar}}
+{{foo}} {{bar}} {{bar}}

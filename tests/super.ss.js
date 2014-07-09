@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404663065205> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404885838158> Wed Jul 09 2014 10:03:58 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -20,6 +20,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'super_base',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             var a = 1;
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a));
@@ -43,6 +45,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'super_child',
                 PARENT_TPL_NAME = 'super_base';
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             var a = 2;
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a));
             var ____I_PROTO___bar_template_44 = 1;

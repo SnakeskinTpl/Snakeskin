@@ -1,4 +1,18 @@
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <title>Snakeskin.compile</title> <link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" /> <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script> <script type="text/javascript" src="../build/snakeskin.min.js"></script> <script type="text/javascript"> Object.create = Object.create || function (obj) { var F = function () {}; F.prototype = obj; return new F(); }; </script> </head> <body> <h1 id="qunit-header">Test: Snakeskin.compile</h1> <h2 id="qunit-banner"></h2> <div id="qunit-testrunner-toolbar"></div> <h2 id="qunit-userAgent"></h2> <ol id="qunit-tests"></ol>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <title>Snakeskin.compile</title> <link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" /> <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script> <script type="text/javascript" src="../build/snakeskin.min.js"></script> <script type="text/javascript"> Object.create = Object.create || function (obj) { var F = function () {}; F.prototype = obj; return new F(); }; </script> </head> <body> <h1 id="qunit-header">Test: Snakeskin.compile</h1> <h2 id="qunit-banner"></h2> <div id="qunit-testrunner-toolbar"></div> <h2 id="qunit-userAgent"></h2> <ol id="qunit-tests"></ol>  <script type="text/x-snakeskin-template" id="attr"> {template data_attr()}
+	{foo = 'foo'}
+	{bar = 'bar'}
+
+	{attr foo => 'bar'}
+	{attr 'foo' => bar, foo; 'bar' => 'foo'}
+{/}
+
+{template data_attr2()}
+	{foo = 'foo'}
+	{bar = 'bar'}
+
+	{attr ng-('foo' => bar, foo; 'bar' => 'foo'), foo => 'bar'}
+	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar')}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_attr2().trim(), 'ng-foo = " bar foo" ng-bar = " foo" foo = " bar"  ng-foo = " bar foo" ng-bar = " foo" foo:foo = " bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
 			{j}
@@ -56,20 +70,12 @@
 	{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}{/cdata}
 {/}
 
-{template data_attr()}
-	{foo = 'foo'}
-	{bar = 'bar'}
-
-	{attr foo => 'bar'}
-	{attr 'foo' => bar, foo; 'bar' => 'foo'}
-{/}
-
 {template data_decl()}
 	{foo = 'bar'}
 
 	{{foo}}
-	{{${foo}}}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_decl().trim(), '{{foo}} {{bar}}'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> {a = String}
+	{{#{foo}}}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_decl().trim(), '{{foo}} {{bar}}'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> {a = String}
 {template filters_index()}
 	{a = {a: String}}
 	{with a}
@@ -242,7 +248,7 @@
 			{@[(1 + 1|repeat)]}
 		{/}
 	{/}
-{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('mod'), {prettyPrint: true}); test('mod', function () { equal(mod_index().trim(), '1042225'); }); </script>  <script type="text/x-snakeskin-template" id="params"> {template param_base(a, b = 1)}
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('mod'), {prettyPrint: true}); test('mod', function () { equal(mod_index().trim(), '1042225'); }); </script>  <script type="text/x-snakeskin-template" id="params"> {template param_base(a, b = 1 ? Math.round(1) : 0)}
 	{b}
 {/}
 
@@ -263,7 +269,7 @@
 
 {template param_base3(@a = {a: {c: 1}})}
 	{b = 2}
-	{proto foo(@a = @a)}
+	{proto foo(@a = 1 ? @a : Math.round(0))}
 		{@c} {b}
 	{/}
 	{apply foo}
@@ -434,6 +440,10 @@
 	{end}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('super'), {prettyPrint: true}); test('super', function () { equal(super_child().trim(), '221'); }); </script>  <script type="text/x-snakeskin-template" id="try"> {template try_index()}
 	{&+}
+	{try}
+		{void foo()}
+	{/}
+
 	{try}
 		{void foo()}
 

@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404663065111> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404885838069> Wed Jul 09 2014 10:03:58 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -20,6 +20,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_index',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             switch (i) {
                 case 1:
@@ -60,6 +62,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_base',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += '<span class=""></span> ';
             return __RESULT__;
         };
@@ -77,6 +81,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_sub',
                 PARENT_TPL_NAME = 'logic_base';
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += '<span class=""></span> ';
             __RESULT__ += ' ';
             switch (1) {

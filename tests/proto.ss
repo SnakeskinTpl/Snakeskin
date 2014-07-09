@@ -80,7 +80,6 @@ proto_recursive2
 	{apply begin(5)}
 {/}
 
-
 ###
 
 1   2     4      1 2

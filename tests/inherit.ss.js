@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404663065044> Sun Jul 06 2014 20:11:05 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404885837984> Wed Jul 09 2014 10:03:57 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -22,6 +22,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_base',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val2));
             __RESULT__ += ' ';
@@ -49,6 +51,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_sub',
                 PARENT_TPL_NAME = 'inherit_base';
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             var val2 = 3;
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val2));
@@ -82,6 +86,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_superTestConst',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_55 = 1;
@@ -107,6 +113,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_childTestConst',
                 PARENT_TPL_NAME = 'inherit_superTestConst';
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_55 = 1;
@@ -134,6 +142,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_superTestConst2',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_56 = 1;
@@ -159,6 +169,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_childTestConst2',
                 PARENT_TPL_NAME = 'inherit_superTestConst2';
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_56 = 1;
@@ -194,6 +206,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_superTestConst3',
                 PARENT_TPL_NAME;
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             var a = {};
             __RESULT__ += ' ';
@@ -221,6 +235,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_childTestConst3',
                 PARENT_TPL_NAME = 'inherit_superTestConst3';
+            var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
+                async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
             var a = {};
             __RESULT__ += ' ';
