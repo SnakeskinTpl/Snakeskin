@@ -377,20 +377,22 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						return false;
 					}
 
-					if (dir.inline !== false) {
-						if (commandType === 'end') {
-							prefI--;
+					if (needPref) {
+						if (dir.inline !== false) {
+							if (commandType === 'end') {
+								prefI--;
 
-							if (!prefI) {
+								if (!prefI) {
+									needPref = false;
+								}
+
+							} else if (!prefI) {
 								needPref = false;
 							}
 
-						} else if (!prefI) {
-							needPref = false;
+						} else {
+							prefI++;
 						}
-
-					} else if (needPref) {
-						prefI++;
 					}
 
 					if (!dir.text && prevSpace) {
