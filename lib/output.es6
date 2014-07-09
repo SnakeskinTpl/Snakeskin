@@ -388,7 +388,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	// true, если применяется фильтр !undef
 	var unUndef = false,
-		undefLabel = '%undef%';
+		undefLabel = '{undef}';
 
 	var unMap = {
 		'!html': true,
@@ -565,7 +565,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				if (comboBlackWordList[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse && (!opt_sys || opt_isys) && !filterStart && !unUndef) {
+				} else if (canParse && (!opt_sys || opt_isys) && !filterStart) {
 					vres = `${undefLabel}(${vres})`;
 				}
 
