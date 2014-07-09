@@ -3,7 +3,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		notEmpty: true,
 		group: 'cycle'
 	},
@@ -37,7 +36,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		notEmpty: true,
 		group: 'cycle'
 	},
@@ -75,7 +73,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		group: 'cycle',
 		after: {
 			'while': true
@@ -97,7 +94,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		placement: 'template',
 		group: 'cycle',
 		after: {
 			'until': true
