@@ -629,23 +629,30 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		dir.res = beautify(dir.res);
 	}
 
-	// Компиляция на сервере
-	if (IS_NODE) {
-		// Экспорт
-		if (cjs) {
-			new Function('exports', 'require', dir.res)(ctx, require);
-			ctx['init'](Snakeskin);
-			globalFnCache[cjs][text] = ctx;
+	try {
+		// Компиляция на сервере
+		if (IS_NODE) {
+			// Экспорт
+			if (cjs) {
+				new Function('exports', 'require', dir.res)(ctx, require);
+				ctx['init'](Snakeskin);
+				globalFnCache[cjs][text] = ctx;
 
-		// Простая компиляция
+				// Простая компиляция
+			} else {
+				global.eval(dir.res);
+			}
+
+			// Живая компиляция в браузере
 		} else {
-			global.eval(dir.res);
+			new Function(dir.res)();
 		}
 
-	// Живая компиляция в браузере
-	} else {
-		console.log(dir.res);
-		new Function(dir.res)();
+	} catch (err) {
+		delete info['line'];
+		delete info['template'];
+		dir.error(err.message);
+		return false;
 	}
 
 	globalCache[cjs][text] = dir.res;
