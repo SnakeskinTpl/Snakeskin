@@ -360,11 +360,10 @@ for (let i = 0; i < template.length; i++) {
 				// После последнего параметра запятая не ставится
 				if (i !== argsList.length - 1) {
 					this.save(',', iface);
-
-				} else {
-					this.save(') {', iface);
 				}
 			}
+
+			this.save(') {', iface);
 
 			// Входные параметры родительского шаблона,
 			// для которых есть значение по умолчанию,
