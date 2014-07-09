@@ -40,13 +40,11 @@ DirObj.prototype.error = function (msg) {
 	if (this.onError) {
 		this.onError(error);
 
-
 	} else {
-		if (IS_NODE) {
-			console.error(report);
-
-		} else {
+		if (typeof console === 'undefined' || 'log' in console === false || this.throws) {
 			throw error;
 		}
+
+		console.error(report);
 	}
 };
