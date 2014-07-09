@@ -187,7 +187,7 @@ for (let i = 0; i < template.length; i++) {
 				}
 
 				if (cache[parentTplName] === void 0) {
-					return this.error(`the specified template ("${parentTplName}" -> "${tplName}") for inheritance is not defined`);
+					return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
 				}
 			}
 
