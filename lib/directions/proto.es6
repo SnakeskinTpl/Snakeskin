@@ -65,7 +65,7 @@ Snakeskin.addDirective(
 		var name = getFnName(command);
 
 		if (!name) {
-			return this.error(`invalid "${this.name}" declaration`);
+			return this.error(`invalid "${this.name}" name`);
 		}
 
 		var parts = name.split('->');
