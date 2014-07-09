@@ -83,7 +83,7 @@ DirObj.prototype.getFnArgs = function (str) {
 	}
 
 	if (pOpen) {
-		this.error('invalid syntax');
+		this.error(`invalid "${this.name}" declaration`);
 		return [];
 	}
 
