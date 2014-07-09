@@ -28,6 +28,14 @@ logic_sub
 	{else}
 		3
 	{/}
+
+	#{unless i == 1}
+		1
+	#{elseIf i == 2}
+		2
+	#{else}
+		3
+	#{/}
 {/}
 
 {template logic_base()}
@@ -46,15 +54,15 @@ logic_sub
 
 ###
 
-1 1
+1 1 3
 
 ***
 
-2 2
+2 2 1
 
 ***
 
-3 3
+3 3 1
 
 ***
 
