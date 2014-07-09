@@ -386,6 +386,15 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	// true, если применяется фильтр !html
 	var unEscape = !this.escapeOutput;
 
+	// true, если применяется фильтр !undef
+	var unUndef = false,
+		undefLabel = '%undef%';
+
+	var unMap = {
+		'!html': true,
+		'!undef': true
+	};
+
 	var vars = struct.children ?
 		struct.vars :
 		struct.parent.vars;
@@ -556,8 +565,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				if (comboBlackWordList[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse && (!opt_sys || opt_isys) && !filterStart) {
-					vres = `${filtersNm}.undef(${vres})`;
+				} else if (canParse && (!opt_sys || opt_isys) && !filterStart && !unUndef) {
+					vres = `${undefLabel}(${vres})`;
 				}
 
 				wordAddEnd += vres.length - word.length;
@@ -629,11 +638,18 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			let arr = [];
 			for (let j = 0; j < filter.length; j++) {
-				if (filter[j] !== '!html') {
-					arr.push(filter[j]);
+				let f = filter[j];
 
-				} else if (!pCount) {
-					unEscape = true;
+				if (!unMap[f]) {
+					arr.push(f);
+
+				} else {
+					if (f === '!html' && !pCount) {
+						unEscape = true;
+
+					} else if (f === '!undef') {
+						unUndef = true;
+					}
 				}
 			}
 
@@ -735,6 +751,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}
 		}
 	}
+
+	res = res.replace(new RegExp(undefLabel, 'g'), unUndef ? '' : `${filtersNm}.undef`);
 
 	if (opt_validate !== false) {
 		try {
