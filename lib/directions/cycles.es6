@@ -42,16 +42,13 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name == 'do') {
+			this.structure.params.chain = true;
+
 			if (this.isSimpleOutput()) {
 				this.save(`} while (${this.prepareOutput(command, true)});`);
 			}
 
-			this.toQueue(() => {
-				Snakeskin.Directions['end']({
-					ctx: this,
-					name: 'while'
-				});
-			});
+			Snakeskin.Directions['end'](this);
 
 		} else {
 			this.startDir();
@@ -75,7 +72,8 @@ Snakeskin.addDirective(
 		block: true,
 		group: 'cycle',
 		after: {
-			'while': true
+			'while': true,
+			'end': true
 		}
 	},
 
@@ -86,7 +84,11 @@ Snakeskin.addDirective(
 		}
 	},
 
-	function () {}
+	function () {
+		if (this.isSimpleOutput() && !this.structure.params.chain) {
+			this.save('} while (true);');
+		}
+	}
 );
 
 Snakeskin.addDirective(
@@ -96,7 +98,8 @@ Snakeskin.addDirective(
 		block: true,
 		group: 'cycle',
 		after: {
-			'until': true
+			'until': true,
+			'end': true
 		}
 	},
 
@@ -107,7 +110,11 @@ Snakeskin.addDirective(
 		}
 	},
 
-	function () {}
+	function () {
+		if (this.isSimpleOutput() && !this.structure.params.chain) {
+			this.save('} while (true);');
+		}
+	}
 );
 
 Snakeskin.addDirective(
@@ -123,15 +130,12 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can only be used with a "repeat"`);
 		}
 
+		this.structure.params.chain = true;
+
 		if (this.isSimpleOutput()) {
 			this.save(`} while (${this.prepareOutput(command, true)});`);
 		}
 
-		this.toQueue(() => {
-			Snakeskin.Directions['end']({
-				ctx: this,
-				name: 'until'
-			});
-		});
+		Snakeskin.Directions['end'](this);
 	}
 );
