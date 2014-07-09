@@ -445,7 +445,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (lang) {
 						if (i18nStart) {
-							let word = lang[i18nStr] || '';
+							let word = String(lang[i18nStr] || '');
+
 							el = begin ?
 								`'${applyDefEscape(word)}'` : word;
 
