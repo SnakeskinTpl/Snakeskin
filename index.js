@@ -4,33 +4,52 @@ var program = require('commander');
 program
 	['version'](Snakeskin.VERSION.join('.'))
 
-	.option('-s, --source [src]')
-	.option('-o, --output [src]')
+	.option('-s, --source [src]', 'path to the template file')
+	.option('-o, --output [src]', 'path to the file to save')
+	.option('-n, --common-js', 'common.js export (for node.js)')
 
-	.option('-n, --commonJS')
-	.option('--localization')
-	.option('--interface')
-	.option('--stringBuffer')
-	.option('--inlineIterators')
+	.option('--disable-localization', 'disable support for localization')
+	.option('--language [src]', 'path to the localization file (JSON)')
+	.option('--words [src]', 'path to the localization file to save')
+
+	.option('--interface', 'render all templates as interface')
+	.option('--string-buffer', 'use StringBuffer for concatenate strings')
+	.option('--inline-iterators', 'inline forEach and forIn')
+	.option('--disable-escape-output', 'disable default "html" filter')
+	.option('--pretty-print', 'formatting output')
 
 	.parse(process.argv);
 
+var fs = require('fs');
+var jossy = require('jossy');
+
 var params = {
-	commonJS: program['commonJS'],
-	localization: program['localization'],
+	commonJS: program['commonJs'],
+	localization: !program['disableLocalization'],
+	language: program['language'],
+	words: program['words'],
 	interface: program['interface'],
 	stringBuffer: program['stringBuffer'],
-	inlineIterators: program['inlineIterators']
+	inlineIterators: program['inlineIterators'],
+	escapeOutput: !program['disableEscapeOutput'],
+	prettyPrint: program['prettyPrint']
 };
+
+if (params.language) {
+	params.language = JSON.parse(fs.readFileSync(params.language).toString());
+}
+
+var words = params.words;
+
+if (words) {
+	params.words = [];
+}
 
 var input;
 
 if (!program['source'] && process.argv.length > 2) {
 	input = process.argv[process.argv.length - 1];
 }
-
-var fs = require('fs');
-var jossy = require('jossy');
 
 var file = program['source'],
 	newFile = program['output'];
@@ -43,26 +62,18 @@ function action(data) {
 	var str = String(data);
 
 	if (input && !program['output'] || !newFile) {
-		params.onError = function(err)  {
-			console.error(err);
-			process.exit(1);
-		};
-
 		console.log(Snakeskin.compile(str, params, {file: file}));
-		process.exit(0);
 
 	} else {
-		fs.writeFile(newFile, Snakeskin.compile(str, params, {file: file}), function(err)  {
-			if (err) {
-				console.error(err);
-				process.exit(1);
-
-			} else {
-				console.log((("File \"" + file) + ("\" has been successfully compiled \"" + newFile) + "\"."));
-				process.exit(0);
-			}
-		});
+		fs.writeFileSync(newFile, Snakeskin.compile(str, params, {file: file}));
+		console.log((("File \"" + file) + ("\" has been successfully compiled \"" + newFile) + "\"."));
 	}
+
+	if (words) {
+		fs.writeFileSync(words, JSON.stringify(params.words));
+	}
+
+	process.exit(0);
 }
 
 if (file) {
