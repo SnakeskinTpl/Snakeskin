@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404888384237> Wed Jul 09 2014 10:46:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404916624728> Wed Jul 09 2014 18:37:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -9,6 +9,9 @@
     };
 
     function exec() {
+        if (typeof Snakeskin !== 'undefined') {
+            Snakeskin.Vars.__INCLUDE__ = {};
+        }
         if (typeof Snakeskin !== 'undefined') {
             Snakeskin.Vars.pref_global = 1;
         }
@@ -28,7 +31,6 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             if (1) {
                 __RESULT__ += '{if 2} ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global));

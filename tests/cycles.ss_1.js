@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404888384065> Wed Jul 09 2014 10:46:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404916624587> Wed Jul 09 2014 18:37:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -8,7 +8,10 @@
         return exports;
     };
 
-    function exec() { /* Snakeskin template: cycles_index; i  */
+    function exec() {
+        if (typeof Snakeskin !== 'undefined') {
+            Snakeskin.Vars.__INCLUDE__ = {};
+        } /* Snakeskin template: cycles_index; i  */
         this.cycles_index = function(i) {
             i = i != null ? i : 0;
             var __THIS__ = this;
@@ -23,9 +26,8 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
-            for (var __j__for_67 = 0; __j__for_67 < 3; __j__for_67++) {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_67));
+            for (var __j__for_85 = 0; __j__for_85 < 3; __j__for_85++) {
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_85));
             }
             __RESULT__ += ' ';
             while (i++ < 3) {
@@ -59,9 +61,8 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
-            for (var __j__for_334 = 0; __j__for_334 < 3; __j__for_334++) {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_334));
+            for (var __j__for_352 = 0; __j__for_352 < 3; __j__for_352++) {
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_352));
                 break;
             }
             __RESULT__ += ' ';

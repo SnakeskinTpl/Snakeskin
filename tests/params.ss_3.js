@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404888384229> Wed Jul 09 2014 10:46:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404916624715> Wed Jul 09 2014 18:37:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -8,7 +8,10 @@
         return exports;
     };
 
-    function exec() { /* Snakeskin template: param_base; a, b  */
+    function exec() {
+        if (typeof Snakeskin !== 'undefined') {
+            Snakeskin.Vars.__INCLUDE__ = {};
+        } /* Snakeskin template: param_base; a, b  */
         this.param_base = function(a, b) {
             b = b != null ? b : 1 ? Math.round(1) : 0;
             var __THIS__ = this;
@@ -23,7 +26,6 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b));
             __RESULT__ += ' ';
             return __RESULT__;
@@ -91,7 +93,6 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
             __RESULT__ += ' ';
             return __RESULT__;
@@ -115,7 +116,6 @@
                 PARENT_TPL_NAME = 'param_base2';
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
             __RESULT__ += ' ';
             return __RESULT__;
@@ -141,15 +141,14 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             var b = 2;
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            var __a__proto_405 = void 0 != null ? void 0 : 1 ? a.a : Math.round(0);
+            var __a__proto_423 = void 0 != null ? void 0 : 1 ? a.a : Math.round(0);
             var ____I_PROTO___foo_with_65 = 1;
             ____I_PROTO___foo_with_65: while (____I_PROTO___foo_with_65--) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_405.c));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_423.c));
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b));
                 __RESULT__ += ' ';

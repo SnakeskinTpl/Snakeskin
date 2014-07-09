@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404888384202> Wed Jul 09 2014 10:46:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404916624703> Wed Jul 09 2014 18:37:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -9,6 +9,9 @@
     };
 
     function exec() {
+        if (typeof Snakeskin !== 'undefined') {
+            Snakeskin.Vars.__INCLUDE__ = {};
+        }
         if (typeof Snakeskin !== 'undefined') {
             Snakeskin.Vars['mod_global'] = 1;
         }
@@ -28,7 +31,6 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             var b = {
                 c: {
                     e: 1,
@@ -41,9 +43,9 @@
             __VARS__['M' + 'G'] = 4;
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__['M' + 'G']));
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b[b.c.e]));
-            var __tmp__with_236 = void 0;
-            b.c[2 == 2 && (__tmp__with_236 = ($_ = __FILTERS__['repeat'](1 + 1)))] = 5;
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__tmp__with_236));
+            var __tmp__with_254 = void 0;
+            b.c[2 == 2 && (__tmp__with_254 = ($_ = __FILTERS__['repeat'](1 + 1)))] = 5;
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__tmp__with_254));
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b.c[($_ = __FILTERS__['repeat'](1 + 1))]));
             return __RESULT__;
         };

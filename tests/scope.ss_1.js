@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404888384275> Wed Jul 09 2014 10:46:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404916624761> Wed Jul 09 2014 18:37:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -9,6 +9,9 @@
     };
 
     function exec() {
+        if (typeof Snakeskin !== 'undefined') {
+            Snakeskin.Vars.__INCLUDE__ = {};
+        }
         if (typeof Snakeskin !== 'undefined') {
             Snakeskin.Vars.name = 'foo';
         } /* Snakeskin template: scope_index; obj */
@@ -25,15 +28,14 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             var name = 'bar';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(obj.child.name));
-            var __e__with_112 = 'test';
+            var __e__with_130 = 'test';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(__VARS__.name) + ' ' + __FILTERS__.undef(obj.child.child.name) + ' ' + __FILTERS__.undef(__e__with_112));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(__VARS__.name) + ' ' + __FILTERS__.undef(obj.child.child.name) + ' ' + __FILTERS__.undef(__e__with_130));
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             __RESULT__ += ' ';

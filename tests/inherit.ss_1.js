@@ -1,4 +1,4 @@
-/* Snakeskin v3.4.0, generated at <1404888384126> Wed Jul 09 2014 10:46:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v3.4.0, generated at <1404916624644> Wed Jul 09 2014 18:37:04 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -8,7 +8,10 @@
         return exports;
     };
 
-    function exec() { /* Snakeskin template: inherit_base; val  val2  */
+    function exec() {
+        if (typeof Snakeskin !== 'undefined') {
+            Snakeskin.Vars.__INCLUDE__ = {};
+        } /* Snakeskin template: inherit_base; val  val2  */
         this.inherit_base = function(val, val2) {
             val = val != null ? val : 1;
             val2 = val2 != null ? val2 : 3;
@@ -60,11 +63,11 @@
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val));
             __RESULT__ += ' ';
-            var __i__proto_314 = void 0 != null ? void 0 : 11;
+            var __i__proto_332 = void 0 != null ? void 0 : 11;
             var ____I_PROTO___bar_template_44 = 1;
             ____I_PROTO___bar_template_44: while (____I_PROTO___bar_template_44--) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_314));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_332));
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -88,7 +91,6 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_55 = 1;
             ____I_PROTO___a_template_55: while (____I_PROTO___a_template_55--) {
@@ -115,7 +117,6 @@
                 PARENT_TPL_NAME = 'inherit_superTestConst';
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_55 = 1;
             ____I_PROTO___a_template_55: while (____I_PROTO___a_template_55--) {
@@ -145,7 +146,6 @@
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += ' ';
-            __RESULT__ += ' ';
             var ____I_PROTO___a_template_56 = 1;
             ____I_PROTO___a_template_56: while (____I_PROTO___a_template_56--) {
                 __RESULT__ += ' ';
@@ -171,7 +171,6 @@
                 PARENT_TPL_NAME = 'inherit_superTestConst2';
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             __RESULT__ += ' ';
             var ____I_PROTO___a_template_56 = 1;
             ____I_PROTO___a_template_56: while (____I_PROTO___a_template_56--) {
@@ -208,7 +207,6 @@
                 PARENT_TPL_NAME;
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             var a = {};
             __RESULT__ += ' ';
             a.a = 1;
@@ -237,7 +235,6 @@
                 PARENT_TPL_NAME = 'inherit_superTestConst3';
             var $C = typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C,
                 async = typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            __RESULT__ += ' ';
             var a = {};
             __RESULT__ += ' ';
             a.a = 2;
