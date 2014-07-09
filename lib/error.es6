@@ -24,13 +24,14 @@ DirObj.prototype.genErrorAdvInfo = function () {
 	}
 
 	str = str.replace(/, $/, '');
-	var line = info['line'];
+	var line = info['line'],
+		cutRgxp = /^{__INCLUDE__ = {}}/;
 
 	if (line) {
 		let prev = this.lines[line - 2],
-			current = this.lines[line - 1].trim();
+			current = this.lines[line - 1].replace(cutRgxp, '').trim();
 
-		prev = prev ? prev.trim() : '';
+		prev = prev ? prev.replace(cutRgxp, '').trim() : '';
 		let sep = new Array(Math.max(prev ? prev.length : 0, current.length) || 5).join('-');
 
 		str += `\n${sep}${prev ? `\n  ${line - 1} ${prev}` : ''}\n> ${line} ${current}\n${sep}`;
