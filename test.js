@@ -16,10 +16,12 @@ snakeskin.compile(
 );
 
 var asserts = [],
-	pref = -1;
+	prfx = -1;
 
 function run(params) {
-	pref++;
+	var options = JSON.stringify(params);
+	prfx++;
+
 	fs.readdirSync(testFolder).forEach(function(file)  {
 		if (path.extname(file) === '.ss') {
 			var src = path.join(testFolder, file),
@@ -41,14 +43,14 @@ function run(params) {
 			asserts.push(obj);
 
 			try {
-				fs.writeFileSync((("" + src) + ("_" + pref) + ".js"), snakeskin.compile(txt[1], params));
+				fs.writeFileSync((("" + src) + ("_" + prfx) + ".js"), snakeskin.compile(txt[1], params));
 
 			} catch (err) {
 				console.error(("File: " + file));
 				throw err;
 			}
 
-			var tpl = require((("./tests/" + file) + ("_" + pref) + ".js")).init(snakeskin);
+			var tpl = require((("./tests/" + file) + ("_" + prfx) + ".js")).init(snakeskin);
 
 			starts.forEach(function(el, i)  {
 				var params = el.split(' ; ');
@@ -62,7 +64,7 @@ function run(params) {
 					);
 
 				} catch (err) {
-					console.error((("File: " + file) + (", Tpl: " + (params[0])) + ""));
+					console.error((("File: " + file) + (" - " + prfx) + (" (" + options) + ("), Tpl: " + (params[0])) + ""));
 					throw err;
 				}
 			});
