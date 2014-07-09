@@ -212,6 +212,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		if (nextLineRgxp.test(el)) {
 			info['line']++;
+			dir.lines.push('');
+
+		} else {
+			dir.lines[dir.lines.length - 1] += el;
 		}
 
 		if (whiteSpaceRgxp.test(el)) {

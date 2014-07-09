@@ -183,6 +183,12 @@ function DirObj(src, params) {
 	this.files = {};
 
 	/**
+	 * Массив исходных строк
+	 * @type {!Array}
+	 */
+	this.lines = [''];
+
+	/**
 	 * Исходный текст шаблона
 	 * @type {string}
 	 */
