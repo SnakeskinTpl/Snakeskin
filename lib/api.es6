@@ -10,8 +10,8 @@
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {boolean} [params.interface] - если true, то все директивы template трактуются как interface
  *
- * @param {boolean} [params.inlineIterators] - если false, то работа итераторов forEach и forIn
- *     будет реализовываться через встроенные методы Snakeskin, а не через циклы
+ * @param {?boolean=} [params.inlineIterators] - если true, то работа итераторов forEach и forIn
+ *     будет развёртвываться в циклы
  *
  * @param {boolean} [params.stringBuffer] - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
