@@ -217,14 +217,14 @@ function DirObj(src, params) {
 			(function () {
 		`;
 
-		this.source = '{__INCLUDE__ = {}}' + this.source;
+		this.source = '{var __INCLUDE__ = {}}' + this.source;
 
 		if (this.commonJS) {
 			this.res += `
 				var Snakeskin = global.Snakeskin;
 
 				exports.init = function (obj) {
-					Snakeskin = obj instanceof Object ?
+					Snakeskin = Snakeskin || obj instanceof Object ?
 						obj : require(obj);
 
 					delete exports.init;

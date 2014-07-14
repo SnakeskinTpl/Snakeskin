@@ -640,7 +640,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (IS_NODE) {
 			// Экспорт
 			if (cjs) {
-				new Function('Snakeskin', 'exports', 'require', dir.res)(Snakeskin, ctx, require);
+				new Function('exports', 'require', dir.res)(ctx, require);
 				ctx['init'](Snakeskin);
 				globalFnCache[cjs][text] = ctx;
 
@@ -651,7 +651,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Живая компиляция в браузере
 		} else {
-			new Function('Snakeskin', dir.res)(Snakeskin);
+			new Function(dir.res)();
 		}
 
 	} catch (err) {
