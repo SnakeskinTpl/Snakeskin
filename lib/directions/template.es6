@@ -13,6 +13,12 @@ DirObj.prototype.startTemplateI = 0;
 DirObj.prototype.startTemplateLine = null;
 
 /**
+ * True, если декларируется шаблон-генератор
+ * @type {?boolean}
+ */
+DirObj.prototype.generator = null;
+
+/**
  * Название активного шаблона
  * @type {?string}
  */
@@ -136,10 +142,12 @@ for (let i = 0; i < template.length; i++) {
 
 			if (/\*/.test(command)) {
 				prfx = '*';
-				command = command.replace(/\*/, '');
+				command = command.replace(prfx, '');
 			}
 
-			var nameRgxp = /^[^a-z_$*]/i;
+			this.generator = Boolean(prfx);
+
+			var nameRgxp = /^[^a-z_$]/i;
 			var tmpTplName = getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
@@ -404,7 +412,7 @@ for (let i = 0; i < template.length; i++) {
 				${defParams}
 
 				var __THIS__ = this;
-				var __RESULT__ = ${this.stringBuffer ? '[]' : '\'\''},
+				var __RESULT__ = ${this.declResult()},
 					\$_;
 
 				var __FILTERS__ = Snakeskin.Filters,

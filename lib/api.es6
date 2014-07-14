@@ -276,6 +276,14 @@ DirObj.prototype.returnResult = function () {
 };
 
 /**
+ * Вернуть строку декларации содержимого шаблона
+ * @return {string}
+ */
+DirObj.prototype.declResult = function () {
+	return this.stringBuffer ? '[]' : '\'\'';
+};
+
+/**
  * Добавить указанную строку в результирующую строку JavaScript
  *
  * @param {string=} str - исходная строка

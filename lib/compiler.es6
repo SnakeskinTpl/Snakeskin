@@ -654,6 +654,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Живая компиляция в браузере
 		} else {
+			console.log(dir.res);
 			new Function(dir.res)();
 		}
 
