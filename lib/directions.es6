@@ -203,7 +203,13 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		if ((!parent || parent.name === 'root') && !this.getGroup('template')[name] && from !== to) {
 			try {
-				eval(this.pasteDangerBlocks(res.substring(from, to)));
+				let str = this.pasteDangerBlocks(res.substring(from, to));
+
+				if (IS_NODE && str === 'Snakeskin._Vars.__INCLUDE__ = {};') {
+					Snakeskin._Vars.__INCLUDE__[this.info['file']] = true;
+				}
+
+				eval(str);
 
 			} catch (err) {
 				return this.error(err.message);

@@ -18,8 +18,8 @@ Snakeskin['include'] = function (base, url) {
 	try {
 		let src = path.resolve(path.dirname(base), path.normalize(url));
 
-		if (!Snakeskin.Vars.__INCLUDE__[src]) {
-			Snakeskin.Vars.__INCLUDE__[src] = true;
+		if (!Snakeskin._Vars.__INCLUDE__[src]) {
+			Snakeskin._Vars.__INCLUDE__[src] = true;
 			fsStack.push(`
 				{__setFile__ ${applyDefEscape(src)}}
 				${fs.readFileSync(src).toString()}
