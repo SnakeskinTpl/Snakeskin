@@ -416,6 +416,13 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	this.structure = obj;
 
 	if (this.blockStructure && {'block': true, 'proto': true}[opt_name]) {
+		let bTable = this.blockTable,
+			key = `${opt_name}_${opt_params.name}`;
+
+		if (bTable[key] && bTable[key] !== true) {
+			return this;
+		}
+
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
@@ -423,24 +430,21 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 			children: []
 		};
 
-		let key = `${opt_name}_${opt_params.name}`;
-
-		if (this.blockTable[key] === true) {
+		if (bTable[key] === true) {
 			sub.drop = true;
 		}
 
-		this.blockTable[key] = sub;
-
+		bTable[key] = sub;
 		var deep = (obj) => {
 			for (let i = 0; i < obj.length; i++) {
 				let el = obj[i];
 				let key = `${el.name}_${el.params.name}`;
 
-				if (this.blockTable[key]) {
-					this.blockTable[key].drop = true;
+				if (bTable[key]) {
+					bTable[key].drop = true;
 
 				} else {
-					this.blockTable[key] = true;
+					bTable[key] = true;
 				}
 
 				if (el.children) {
@@ -491,13 +495,24 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 	this.structure = obj;
 
 	if (this.blockStructure && opt_name === 'const') {
+		let bTable = this.blockTable,
+			key = `${opt_name}_${opt_params.name}`;
+
+		if (bTable[key] && bTable[key] !== true) {
+			return this;
+		}
+
 		let sub = {
 			name: opt_name,
 			parent: this.blockStructure,
 			params: opt_params
 		};
 
-		this.blockTable[`${opt_name}_${opt_params.name}`] = sub;
+		if (bTable[key] === true) {
+			sub.drop = true;
+		}
+
+		this.blockTable[key] = sub;
 		this.blockStructure.children.push(sub);
 		this.blockStructure = sub;
 	}
