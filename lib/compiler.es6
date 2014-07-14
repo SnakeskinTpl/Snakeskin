@@ -141,6 +141,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return globalCache[cjs][text];
 	}
 
+	Snakeskin._Vars = {};
 	var dir = new DirObj(String(text), {
 		info: info,
 		commonJS: cjs,

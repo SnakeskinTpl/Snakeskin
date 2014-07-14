@@ -534,9 +534,7 @@ for (let i = 0; i < template.length; i++) {
 						${this.returnResult()}
 					};
 
-					if (typeof Snakeskin !== 'undefined') {
-						Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};
-					}
+					Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};
 				`);
 			}
 

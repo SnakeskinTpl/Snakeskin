@@ -65,9 +65,7 @@ Snakeskin.addDirective(
 				}
 
 				this.save(`
-					if (typeof Snakeskin !== 'undefined') {
-						Snakeskin.Vars${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
-					}
+					Snakeskin.Vars${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
 				`);
 			}
 
