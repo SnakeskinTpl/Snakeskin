@@ -13,8 +13,8 @@
  *
  * @param {?boolean=} [opt_params.localization=true] - если false, то блоки ` ... ` не заменяются на вызов i18n
  * @param {Object=} [opt_params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
- * @param {Array=} [opt_params.words] - массив, который будет заполнен всеми фразами для локализации,
- *     которые заданы в шаблоне
+ * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
+ *     которые используются в шаблоне
  *
  * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется
  *     с экспортом в стиле commonJS
@@ -98,7 +98,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var lang =
 		p.language = s(p.language, p['language']);
 
-	var wcache = {};
 	var words =
 		p.words = s(p.words, p['words']);
 
@@ -446,11 +445,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 
 				} else if (i18n && !currentEscape && el === '`') {
-					if (i18nStart && i18nStr) {
-						if (words && !wcache[i18nStr]) {
-							words.push(i18nStr);
-							wcache[i18nStr] = true;
-						}
+					if (i18nStart && i18nStr && words && !words[i18nStr]) {
+						words[i18nStr] = i18nStr;
 					}
 
 					if (lang) {
