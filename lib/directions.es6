@@ -132,7 +132,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		constr.call(dir, command, commandLength, type, jsDoc);
 
-		if (dir.structure.params._from !== void 0) {
+		if (dir.structure.params._from === void 0) {
 			dir.structure.params._from = from;
 		}
 
