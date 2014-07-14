@@ -25,7 +25,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 
 	str = str.replace(/, $/, '');
 	var line = info['line'],
-		cutRgxp = /^{__INCLUDE__ = {}}/;
+		cutRgxp = /^{var __INCLUDE__ = {}}/;
 
 	if (line) {
 		let prev = this.lines[line - 2],
@@ -59,6 +59,6 @@ DirObj.prototype.error = function (msg) {
 			throw error;
 		}
 
-		console.error(report);
+		console.error(`SnakeskinError: ${report}`);
 	}
 };
