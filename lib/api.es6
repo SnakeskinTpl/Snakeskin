@@ -576,10 +576,15 @@ DirObj.prototype.applyQueue = function () {
  * @return {!Object}
  */
 DirObj.prototype.getGroup = function (/*= names */...names) {
-	var map = {},
+	function F() {
+
+	}
+
+	F.prototype = groups[names[0]];
+	var map = new F(),
 		ignore = {};
 
-	for (let i = 0; i < names.length; i++) {
+	for (let i = 1; i < names.length; i++) {
 		let name = names[i],
 			group = groups[name];
 
