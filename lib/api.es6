@@ -212,22 +212,25 @@ function DirObj(src, params) {
 	this.res = '';
 
 	if (!this.proto) {
+		let decl = `
+			var \$C = this.\$C != null ? this.\$C : Snakeskin.Vars.\$C,
+				async = this.async != null ? this.async: Snakeskin.Vars.async;
+
+			var __\$C__ = \$C,
+				__async__ = async;
+
+			var __FILTERS__ = Snakeskin.Filters,
+				__VARS__ = Snakeskin.Vars,
+				__LOCAL__ = Snakeskin.LocalVars,
+				__STR__,
+				__J__;
+
+			var \$_;
+		`;
+
 		this.res += `
 			This code is generated automatically, don\'t alter it. */
 			(function () {
-				var \$C = this.\$C != null ? this.\$C : Snakeskin.Vars.\$C,
-					async = this.async != null ? this.async: Snakeskin.Vars.async;
-
-				var __\$C__ = \$C,
-					__async__ = async;
-
-				var __FILTERS__ = Snakeskin.Filters,
-					__VARS__ = Snakeskin.Vars,
-					__LOCAL__ = Snakeskin.LocalVars,
-					__STR__,
-					__J__;
-
-				var \$_;
 		`;
 
 		if (this.commonJS) {
@@ -245,7 +248,11 @@ function DirObj(src, params) {
 				};
 
 				function exec() {
+					${decl}
 			`;
+
+		} else {
+			this.res += decl;
 		}
 	}
 }
