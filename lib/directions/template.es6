@@ -167,10 +167,8 @@ for (let i = 0; i < template.length; i++) {
 
 			this.info['template'] = tplName;
 
-			if (this.name !== 'template') {
-				if (!write[tplName]) {
-					write[tplName] = false;
-				}
+			if (this.name !== 'template' && !write[tplName]) {
+				write[tplName] = false;
 			}
 
 			this.tplName = tplName;
@@ -445,8 +443,8 @@ for (let i = 0; i < template.length; i++) {
 
 			// Вызовы не объявленных прототипов внутри прототипа
 			if (this.backTableI && this.proto) {
-				let cache = Object(this.backTable);
-				let ctx = this.proto.ctx;
+				let cache = Object(this.backTable),
+					ctx = this.proto.ctx;
 
 				ctx.backTableI += this.backTableI;
 				for (let key in cache) {
@@ -489,6 +487,10 @@ for (let i = 0; i < template.length; i++) {
 
 				this.i = this.startTemplateI - 1;
 				this.parentTplName = null;
+
+				this.blockTable = {};
+				this.varCache[tplName] = {};
+
 				return;
 			}
 

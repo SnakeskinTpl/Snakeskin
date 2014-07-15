@@ -178,6 +178,21 @@ Snakeskin.addDirective(
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 				var scope = proto.scope;
 
+				/*if (this.tplName === 'inherit_childTestConst2') {
+					console.log(lastProto.name, this.parentTplName, `
+						{template ${tplName}()}
+							${scope ? `{with ${scope}}` : ''}
+
+								{var __I_PROTO__ = 1}
+								{__protoWhile__ __I_PROTO__--}
+									${this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1)}
+								{end}
+
+							${scope ? `{end}` : ''}
+						{end}
+					`);
+				}*/
+
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					`
@@ -319,13 +334,14 @@ Snakeskin.addDirective(
 					this.backTableI++;
 				}
 
-				let rand = Math.random().toString();
-				let key = `${this.tplName.replace(/([.\[])/g, '\\$1')}_${name}_${rand.replace('.', '\\.')}`;
+				let rand = Math.random().toString(),
+					key = `${this.tplName.replace(/([.\[])/g, '\\$1')}_${name}_${rand.replace('.', '\\.')}`;
 
 				this.backTable[name].push({
-					proto: selfProto ? cache[selfProto.name] : null,
-					pos: this.res.length,
+					proto: selfProto ?
+						cache[selfProto.name] : null,
 
+					pos: this.res.length,
 					label: new RegExp(`\\/\\* __APPLY__${key} \\*\\/`),
 
 					args: args,
