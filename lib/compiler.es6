@@ -140,7 +140,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return globalCache[cjs][text];
 	}
 
-	Snakeskin._Vars = {};
+	Snakeskin.LocalVars = {
+		/** @expose */
+		__INCLUDE__: null
+	};
+
 	var dir = new DirObj(String(text), {
 		info: info,
 		commonJS: cjs,
@@ -202,8 +206,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nStart = false;
 
 	while (++dir.i < dir.source.length) {
-		let str = dir.source;
-		let struct = dir.structure;
+		let str = dir.source,
+			struct = dir.structure;
 
 		let el = str.charAt(dir.i),
 			next = str.charAt(dir.i + 1);
@@ -646,12 +650,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Простая компиляция
 			} else {
-				global.eval(dir.res);
+				evalStr(dir.res);
 			}
 
 		// Живая компиляция в браузере
 		} else {
-			new Function(dir.res)();
+			//console.log(dir.res);
+			evalStr(dir.res);
 		}
 
 	} catch (err) {
@@ -677,3 +682,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	return dir.res;
 };
+
+/**
+ * Выполнить заданную строку как JavaScript
+ *
+ * @param {string} str - исходная строка
+ * @return {?}
+ */
+function evalStr(str) {
+	return new Function('Snakeskin', str)(Snakeskin);
+}

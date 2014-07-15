@@ -576,11 +576,13 @@ DirObj.prototype.applyQueue = function () {
  * @return {!Object}
  */
 DirObj.prototype.getGroup = function (/*= names */...names) {
+	F.prototype = groups[names[0]];
+
+	/** @constructor */
 	function F() {
 
 	}
 
-	F.prototype = groups[names[0]];
 	var map = new F(),
 		ignore = {};
 
@@ -690,7 +692,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	var realVar;
 	if (struct.name === 'root') {
-		realVar = `Snakeskin._Vars.${varName}`;
+		realVar = `Snakeskin.LocalVars.${varName}`;
 
 	} else {
 		realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${struct.name}_${this.i}`;

@@ -33,10 +33,13 @@ var Snakeskin = {
 	Vars: {},
 
 	/**
-	 * @private
+	 * Пространство имён для локальных переменных
+	 * области декларации шаблонов
+	 *
+	 * @expose
 	 * @type {Object}
 	 */
-	_Vars: null,
+	LocalVars: null,
 
 	/**
 	 * Кеш шаблонов
