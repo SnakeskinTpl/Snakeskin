@@ -66,6 +66,12 @@ function DirObj(src, params) {
 	/** @type {Object} */
 	this.info = params.info;
 
+	/** @type {number} */
+	this.prfxI = params.prfxI || 0;
+
+	/** @type {boolean} */
+	this.needPrfx = params.needPrfx || false;
+
 	/**
 	 * Если true, то трансляция сбрасывается
 	 * @type {boolean}

@@ -178,21 +178,6 @@ Snakeskin.addDirective(
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 				var scope = proto.scope;
 
-				/*if (this.tplName === 'inherit_childTestConst2') {
-					console.log(lastProto.name, this.parentTplName, `
-						{template ${tplName}()}
-							${scope ? `{with ${scope}}` : ''}
-
-								{var __I_PROTO__ = 1}
-								{__protoWhile__ __I_PROTO__--}
-									${this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1)}
-								{end}
-
-							${scope ? `{end}` : ''}
-						{end}
-					`);
-				}*/
-
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					`
@@ -218,6 +203,7 @@ Snakeskin.addDirective(
 					{
 						scope: this.scope.slice(),
 						vars: this.structure.vars,
+
 						proto: {
 							name: lastProto.name,
 							recursive: lastProto.recursive,
