@@ -6,21 +6,21 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.startInlineDir();
-		this.space = true;
-
 		var combo = this.getGroup('cycle', 'async');
 		combo['proto'] = true;
 
 		var cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
-		var inside = this.hasParent(combo),
-			insideCallback = this.hasParent(this.getGroup('callback'));
+		var inside = this.has(combo),
+			insideCallback = this.has(this.getGroup('callback'));
 
 		if (!cycles[inside] && !async[inside] && inside !== 'proto' && !this.proto) {
 			return this.error(`directive "${this.name}" can only be used with a cycles, "proto" or a async series`);
 		}
+
+		this.startInlineDir();
+		this.space = true;
 
 		if (this.isSimpleOutput()) {
 			if (cycles[inside]) {
@@ -60,21 +60,21 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.startInlineDir();
-		this.space = true;
-
 		var combo = this.getGroup('cycle', 'async');
 		combo['proto'] = true;
 
 		var cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
-		var inside = this.hasParent(combo),
-			insideCallback = this.hasParent(this.getGroup('callback'));
+		var inside = this.has(combo),
+			insideCallback = this.has(this.getGroup('callback'));
 
 		if (!cycles[inside] && !async[inside] && inside !== 'proto' && !this.proto) {
 			return this.error(`directive "${this.name}" can only be used with a cycles, "proto" or a async series`);
 		}
+
+		this.startInlineDir();
+		this.space = true;
 
 		if (this.isSimpleOutput()) {
 			if (cycles[inside]) {
