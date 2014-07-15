@@ -52,6 +52,7 @@ var Snakeskin = {
 
 //= (function () {
 	const IS_NODE = typeof window === 'undefined' && typeof exports !== 'undefined';
+	var root = this;
 
 	//#include ./filters.js
 	//#include ./live.js

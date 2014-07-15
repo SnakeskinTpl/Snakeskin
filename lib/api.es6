@@ -218,6 +218,9 @@ function DirObj(src, params) {
 				var \$C = this.\$C != null ? this.\$C : Snakeskin.Vars.\$C,
 					async = this.async != null ? this.async: Snakeskin.Vars.async;
 
+				var __\$C__ = \$C,
+					__async__ = async;
+
 				var __FILTERS__ = Snakeskin.Filters,
 					__VARS__ = Snakeskin.Vars,
 					__LOCAL__ = Snakeskin.LocalVars,

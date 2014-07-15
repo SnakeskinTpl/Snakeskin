@@ -419,8 +419,8 @@ for (let i = 0; i < template.length; i++) {
 				var TPL_NAME = '${applyDefEscape(this.pasteDangerBlocks(tmpTplName))}',
 					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
 
-				var \$C = typeof ${$CExport} !== 'undefined' ? ${$CExport} : Snakeskin.Vars.\$C,
-					async = typeof ${asyncExport} !== 'undefined' ? ${asyncExport} : Snakeskin.Vars.async;
+				var \$C = __\$C__ || typeof ${$CExport} !== 'undefined' ? ${$CExport} : Snakeskin.Vars.\$C,
+					async = __async__ || typeof ${asyncExport} !== 'undefined' ? ${asyncExport} : Snakeskin.Vars.async;
 			`);
 
 			// Подкючение "внешних" прототипов
