@@ -151,17 +151,7 @@ for (let i = 0; i < series.length; i++) {
 		function (command, commandLength, type) {
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				let asyncExport;
-
-				if (this.tplName) {
-					asyncExport = 'async';
-
-				} else {
-					let tmp = this.prepareOutput('async', true);
-					asyncExport = `(typeof ${tmp} !== 'undefined' ? ${tmp} : Snakeskin.Vars.async)`;
-				}
-
-				this.save(`${asyncExport}.${type}([`);
+				this.save(`async.${type}([`);
 			}
 		},
 
@@ -190,17 +180,7 @@ for (let i = 0; i < async.length; i++) {
 		function (command, commandLength, type) {
 			this.startDir();
 			if (this.isSimpleOutput()) {
-				let asyncExport;
-
-				if (this.tplName) {
-					asyncExport = 'async';
-
-				} else {
-					let tmp = this.prepareOutput('async', true);
-					asyncExport = `(typeof ${tmp} !== 'undefined' ? ${tmp} : Snakeskin.Vars.async)`;
-				}
-
-				this.save(`${asyncExport}.${type}(`);
+				this.save(`async.${type}(`);
 			}
 		},
 

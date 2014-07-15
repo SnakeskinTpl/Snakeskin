@@ -42,7 +42,10 @@ DirObj.prototype.returnDeclAttr = function (command, opt_group, opt_separator) {
 			return '';
 		}
 
-		res += '__STR__ = \'\'; __J__ = 0;';
+		res += `
+			__STR__ = \'\';
+			__J__ = 0;
+		`;
 
 		if (opt_group) {
 			arg[0] = `'${opt_group + opt_separator}' + ${arg[0]}`;

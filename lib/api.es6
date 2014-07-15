@@ -215,9 +215,16 @@ function DirObj(src, params) {
 		this.res += `
 			This code is generated automatically, don\'t alter it. */
 			(function () {
-				var __STR__,
-					__J__,
-					\$_;
+				var \$C = this.\$C != null ? this.\$C : Snakeskin.Vars.\$C,
+					async = this.async != null ? this.async: Snakeskin.Vars.async;
+
+				var __FILTERS__ = Snakeskin.Filters,
+					__VARS__ = Snakeskin.Vars,
+					__LOCAL__ = Snakeskin.LocalVars,
+					__STR__,
+					__J__;
+
+				var \$_;
 		`;
 
 		this.source = '{var __INCLUDE__ = {}}' + this.source;
@@ -695,7 +702,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	var realVar;
 	if (struct.name === 'root') {
-		realVar = `Snakeskin.LocalVars.${varName}`;
+		realVar = `__LOCAL__.${varName}`;
 
 	} else {
 		realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${struct.name}_${this.i}`;
