@@ -6,10 +6,11 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var map = this.getGroup('inherit');
-
+		this.startInlineDir();
 		if (this.parentTplName) {
-			let obj = this.blockStructure;
+			let map = this.getGroup('inherit'),
+				obj = this.blockStructure;
+
 			let cache,
 				drop;
 
