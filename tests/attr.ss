@@ -1,17 +1,17 @@
-data_attr
-data_attr2
+attr_index
+attr_index2
 
 ###
 
-{template data_attr()}
+{template attr_index()}
 	{foo = 'foo'}
-	{bar = 'bar'}
+	{bar = ''}
 
 	{attr foo => 'bar'}
 	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
-{template data_attr2()}
+{template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
@@ -21,8 +21,8 @@ data_attr2
 
 ###
 
-foo = " bar"  foo = " bar foo" bar = " foo"
+foo = "bar"  foo = "foo" bar = "foo"
 
 ***
 
-ng-foo = " bar foo" ng-bar = " foo" foo = " bar"  ng-foo = " bar foo" ng-bar = " foo" foo:foo = " bar"
+ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar"

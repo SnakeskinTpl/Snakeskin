@@ -1,18 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <title>Snakeskin.compile</title> <link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" /> <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script> <script type="text/javascript" src="../build/snakeskin.min.js"></script> <script type="text/javascript"> Object.create = Object.create || function (obj) { var F = function () {}; F.prototype = obj; return new F(); }; </script> </head> <body> <h1 id="qunit-header">Test: Snakeskin.compile</h1> <h2 id="qunit-banner"></h2> <div id="qunit-testrunner-toolbar"></div> <h2 id="qunit-userAgent"></h2> <ol id="qunit-tests"></ol>  <script type="text/x-snakeskin-template" id="attr"> {template data_attr()}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <title>Snakeskin.compile</title> <link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" /> <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script> <script type="text/javascript" src="../build/snakeskin.min.js"></script> <script type="text/javascript"> Object.create = Object.create || function (obj) { var F = function () {}; F.prototype = obj; return new F(); }; </script> </head> <body> <h1 id="qunit-header">Test: Snakeskin.compile</h1> <h2 id="qunit-banner"></h2> <div id="qunit-testrunner-toolbar"></div> <h2 id="qunit-userAgent"></h2> <ol id="qunit-tests"></ol>  <script type="text/x-snakeskin-template" id="attr"> {template attr_index()}
 	{foo = 'foo'}
-	{bar = 'bar'}
+	{bar = ''}
 
 	{attr foo => 'bar'}
 	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
-{template data_attr2()}
+{template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
 	{attr ng-('foo' => bar, foo; 'bar' => 'foo'), foo => 'bar'}
 	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar')}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_attr2().trim(), 'ng-foo = " bar foo" ng-bar = " foo" foo = " bar"  ng-foo = " bar foo" ng-bar = " foo" foo:foo = " bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo = "bar"  foo = "foo" bar = "foo"'); equal(attr_index2().trim(), 'ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
 			{j}
@@ -190,7 +190,17 @@
 		{break}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="link"> {template link_index()}
+	{link}foo{/}
+	{link css}foo{/}
+	{link acss}foo{/}
+{/}
+
+{template link_index2()}
+	{link css ng-('class' => 'foo'; 'id' => 'bar')}
+		foo
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="alternate stylesheet" href="foo" />'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class = "foo" ng-id = "bar" href="foo " />'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
 	{switch i}
 
 		{> 1}
@@ -389,7 +399,25 @@
 			}
 		{end}
 	{end}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="script"> {template script_index()}
+	{script}
+		var a = [];
+	{/}
+
+	{script coffee}
+		var a = [];
+	{/}
+
+	{script coffee2}
+		var a = [];
+	{/}
+{/}
+
+{template script_index2()}
+	{script ts ng-('class' => 'foo'; 'id' => 'bar')}
+		var a = [];
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true}); test('script', function () { equal(script_index().trim(), '<script type="text/javascript">var a = []; </script> <script type="application/coffeescript">var a = []; </script> <script type="coffee2">var a = []; </script>'); equal(script_index2().trim(), '<script type="application/typescript" ng-class = "foo" ng-id = "bar">var a = []; </script>'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
 	{e = {foo: {my: function () { return 1; }}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
@@ -421,7 +449,25 @@
 	{a = 1}
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="style"> {template style_index()}
+	#{style}
+		.a {}
+	#{/}
+
+	#{style css}
+		.a {}
+	#{/}
+
+	#{style css2}
+		.a {}
+	#{/}
+{/}
+
+{template style_index2()}
+	#{style css ng-('class' => 'foo'; 'id' => 'bar')}
+		.a {}
+	#{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('style'), {prettyPrint: true}); test('style', function () { equal(style_index().trim(), '<style type="text/css">.a {} </style> <style type="text/css">.a {} </style> <style type="css2">.a {} </style>'); equal(style_index2().trim(), '<style type="text/css" ng-class = "foo" ng-id = "bar">.a {} </style>'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
 	{&+}
 
 	{block bar}
@@ -476,21 +522,21 @@
 	{finally}
 		1
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="attr"> {template data_attr()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="attr"> {template attr_index()}
 	{foo = 'foo'}
-	{bar = 'bar'}
+	{bar = ''}
 
 	{attr foo => 'bar'}
 	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
-{template data_attr2()}
+{template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
 	{attr ng-('foo' => bar, foo; 'bar' => 'foo'), foo => 'bar'}
 	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar')}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_attr2().trim(), 'ng-foo = " bar foo" ng-bar = " foo" foo = " bar"  ng-foo = " bar foo" ng-bar = " foo" foo:foo = " bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo = "bar"  foo = "foo" bar = "foo"'); equal(attr_index2().trim(), 'ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
 			{j}
@@ -668,7 +714,17 @@
 		{break}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="link"> {template link_index()}
+	{link}foo{/}
+	{link css}foo{/}
+	{link acss}foo{/}
+{/}
+
+{template link_index2()}
+	{link css ng-('class' => 'foo'; 'id' => 'bar')}
+		foo
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="alternate stylesheet" href="foo" />'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class = "foo" ng-id = "bar" href="foo " />'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
 	{switch i}
 
 		{> 1}
@@ -867,7 +923,25 @@
 			}
 		{end}
 	{end}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="script"> {template script_index()}
+	{script}
+		var a = [];
+	{/}
+
+	{script coffee}
+		var a = [];
+	{/}
+
+	{script coffee2}
+		var a = [];
+	{/}
+{/}
+
+{template script_index2()}
+	{script ts ng-('class' => 'foo'; 'id' => 'bar')}
+		var a = [];
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true}); test('script', function () { equal(script_index().trim(), '<script type="text/javascript">var a = []; </script> <script type="application/coffeescript">var a = []; </script> <script type="coffee2">var a = []; </script>'); equal(script_index2().trim(), '<script type="application/typescript" ng-class = "foo" ng-id = "bar">var a = []; </script>'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
 	{e = {foo: {my: function () { return 1; }}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
@@ -899,7 +973,25 @@
 	{a = 1}
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="style"> {template style_index()}
+	#{style}
+		.a {}
+	#{/}
+
+	#{style css}
+		.a {}
+	#{/}
+
+	#{style css2}
+		.a {}
+	#{/}
+{/}
+
+{template style_index2()}
+	#{style css ng-('class' => 'foo'; 'id' => 'bar')}
+		.a {}
+	#{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('style'), {prettyPrint: true}); test('style', function () { equal(style_index().trim(), '<style type="text/css">.a {} </style> <style type="text/css">.a {} </style> <style type="css2">.a {} </style>'); equal(style_index2().trim(), '<style type="text/css" ng-class = "foo" ng-id = "bar">.a {} </style>'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
 	{&+}
 
 	{block bar}
@@ -954,21 +1046,21 @@
 	{finally}
 		1
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="attr"> {template data_attr()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="attr"> {template attr_index()}
 	{foo = 'foo'}
-	{bar = 'bar'}
+	{bar = ''}
 
 	{attr foo => 'bar'}
 	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
-{template data_attr2()}
+{template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
 	{attr ng-('foo' => bar, foo; 'bar' => 'foo'), foo => 'bar'}
 	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar')}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_attr2().trim(), 'ng-foo = " bar foo" ng-bar = " foo" foo = " bar"  ng-foo = " bar foo" ng-bar = " foo" foo:foo = " bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo = "bar"  foo = "foo" bar = "foo"'); equal(attr_index2().trim(), 'ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
 			{j}
@@ -1146,7 +1238,17 @@
 		{break}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="link"> {template link_index()}
+	{link}foo{/}
+	{link css}foo{/}
+	{link acss}foo{/}
+{/}
+
+{template link_index2()}
+	{link css ng-('class' => 'foo'; 'id' => 'bar')}
+		foo
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="alternate stylesheet" href="foo" />'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class = "foo" ng-id = "bar" href="foo " />'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
 	{switch i}
 
 		{> 1}
@@ -1345,7 +1447,25 @@
 			}
 		{end}
 	{end}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="script"> {template script_index()}
+	{script}
+		var a = [];
+	{/}
+
+	{script coffee}
+		var a = [];
+	{/}
+
+	{script coffee2}
+		var a = [];
+	{/}
+{/}
+
+{template script_index2()}
+	{script ts ng-('class' => 'foo'; 'id' => 'bar')}
+		var a = [];
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true}); test('script', function () { equal(script_index().trim(), '<script type="text/javascript">var a = []; </script> <script type="application/coffeescript">var a = []; </script> <script type="coffee2">var a = []; </script>'); equal(script_index2().trim(), '<script type="application/typescript" ng-class = "foo" ng-id = "bar">var a = []; </script>'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
 	{e = {foo: {my: function () { return 1; }}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
@@ -1377,7 +1497,25 @@
 	{a = 1}
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="style"> {template style_index()}
+	#{style}
+		.a {}
+	#{/}
+
+	#{style css}
+		.a {}
+	#{/}
+
+	#{style css2}
+		.a {}
+	#{/}
+{/}
+
+{template style_index2()}
+	#{style css ng-('class' => 'foo'; 'id' => 'bar')}
+		.a {}
+	#{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('style'), {prettyPrint: true}); test('style', function () { equal(style_index().trim(), '<style type="text/css">.a {} </style> <style type="text/css">.a {} </style> <style type="css2">.a {} </style>'); equal(style_index2().trim(), '<style type="text/css" ng-class = "foo" ng-id = "bar">.a {} </style>'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
 	{&+}
 
 	{block bar}
@@ -1432,21 +1570,21 @@
 	{finally}
 		1
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="attr"> {template data_attr()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="attr"> {template attr_index()}
 	{foo = 'foo'}
-	{bar = 'bar'}
+	{bar = ''}
 
 	{attr foo => 'bar'}
 	{attr 'foo' => bar, foo; 'bar' => 'foo'}
 {/}
 
-{template data_attr2()}
+{template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
 	{attr ng-('foo' => bar, foo; 'bar' => 'foo'), foo => 'bar'}
 	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar')}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(data_attr().trim(), 'foo = " bar"  foo = " bar foo" bar = " foo"'); equal(data_attr2().trim(), 'ng-foo = " bar foo" ng-bar = " foo" foo = " bar"  ng-foo = " bar foo" ng-bar = " foo" foo:foo = " bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo = "bar"  foo = "foo" bar = "foo"'); equal(attr_index2().trim(), 'ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar"'); }); </script>  <script type="text/x-snakeskin-template" id="cycles"> {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
 			{j}
@@ -1624,7 +1762,17 @@
 		{break}
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} ---
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 ---  2 1 2 false false 3 ---  3 2 3 false true 3 ---'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 ---  2 b 2 1 false true 2 ---'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 ---'); equal(iterators_index4().trim(), '1  2  3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 ---'); equal(iterators_index6().trim(), ''); }); </script>  <script type="text/x-snakeskin-template" id="link"> {template link_index()}
+	{link}foo{/}
+	{link css}foo{/}
+	{link acss}foo{/}
+{/}
+
+{template link_index2()}
+	{link css ng-('class' => 'foo'; 'id' => 'bar')}
+		foo
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="alternate stylesheet" href="foo" />'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class = "foo" ng-id = "bar" href="foo " />'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> {template logic_index(i)}
 	{switch i}
 
 		{> 1}
@@ -1823,7 +1971,25 @@
 			}
 		{end}
 	{end}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Koba  bar bar Koba Koba bar foo none test'); }); </script>  <script type="text/x-snakeskin-template" id="script"> {template script_index()}
+	{script}
+		var a = [];
+	{/}
+
+	{script coffee}
+		var a = [];
+	{/}
+
+	{script coffee2}
+		var a = [];
+	{/}
+{/}
+
+{template script_index2()}
+	{script ts ng-('class' => 'foo'; 'id' => 'bar')}
+		var a = [];
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true}); test('script', function () { equal(script_index().trim(), '<script type="text/javascript">var a = []; </script> <script type="application/coffeescript">var a = []; </script> <script type="coffee2">var a = []; </script>'); equal(script_index2().trim(), '<script type="application/typescript" ng-class = "foo" ng-id = "bar">var a = []; </script>'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> {template simple_output()}
 	{e = {foo: {my: function () { return 1; }}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
@@ -1855,7 +2021,25 @@
 	{a = 1}
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1>  1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1>  1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>  1'); }); </script>  <script type="text/x-snakeskin-template" id="style"> {template style_index()}
+	#{style}
+		.a {}
+	#{/}
+
+	#{style css}
+		.a {}
+	#{/}
+
+	#{style css2}
+		.a {}
+	#{/}
+{/}
+
+{template style_index2()}
+	#{style css ng-('class' => 'foo'; 'id' => 'bar')}
+		.a {}
+	#{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('style'), {prettyPrint: true}); test('style', function () { equal(style_index().trim(), '<style type="text/css">.a {} </style> <style type="text/css">.a {} </style> <style type="css2">.a {} </style>'); equal(style_index2().trim(), '<style type="text/css" ng-class = "foo" ng-id = "bar">.a {} </style>'); }); </script>  <script type="text/x-snakeskin-template" id="super"> {template super_base()}
 	{&+}
 
 	{block bar}
