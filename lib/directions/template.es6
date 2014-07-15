@@ -210,7 +210,7 @@ for (let i = 0; i < template.length; i++) {
 					}
 
 					parentTplName =
-						this.parentTplName = void 0;
+						this.parentTplName = null;
 				}
 			}
 
