@@ -6,16 +6,15 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.startDir();
-
 		var parts = command.split(' '),
-			type = parts[0];
+			type = parts[0] || 'css';
 
 		var types = {
 			'css': 'type="text/css" rel="stylesheet"',
 			'acss': 'type="text/css" rel="alternate stylesheet"'
 		};
 
+		this.startDir();
 		this.space = true;
 
 		if (this.isSimpleOutput()) {
@@ -26,9 +25,13 @@ Snakeskin.addDirective(
 				this.inline = false;
 			}
 
-			this.save(this.wrap('\'/>\''));
+			this.save(this.wrap('\' href="\''));
 		}
+	},
 
-		this.endDir();
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save(this.wrap('\'" />\''));
+		}
 	}
 );

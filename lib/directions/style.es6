@@ -7,8 +7,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.startDir();
-
 		var parts = command.split(' '),
 			type = parts[0] || 'css';
 
@@ -16,6 +14,7 @@ Snakeskin.addDirective(
 			'css': 'text/css'
 		};
 
+		this.startDir();
 		this.space = true;
 
 		if (this.isSimpleOutput()) {
