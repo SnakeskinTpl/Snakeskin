@@ -206,10 +206,6 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 				let str = this.pasteDangerBlocks(res.substring(from, to));
 				evalStr(str);
 
-				if (IS_NODE && str === '__LOCAL__.__INCLUDE__ = {};') {
-					Snakeskin.LocalVars.__INCLUDE__[this.info['file']] = true;
-				}
-
 			} catch (err) {
 				return this.error(err.message);
 			}

@@ -230,8 +230,6 @@ function DirObj(src, params) {
 				var \$_;
 		`;
 
-		this.source = '{var __INCLUDE__ = {}}' + this.source;
-
 		if (this.commonJS) {
 			this.res += `
 				var Snakeskin = global.Snakeskin;
