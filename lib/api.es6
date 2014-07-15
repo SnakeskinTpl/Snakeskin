@@ -215,6 +215,9 @@ function DirObj(src, params) {
 		this.res += `
 			This code is generated automatically, don\'t alter it. */
 			(function () {
+				var __STR__,
+					__J__,
+					\$_;
 		`;
 
 		this.source = '{var __INCLUDE__ = {}}' + this.source;

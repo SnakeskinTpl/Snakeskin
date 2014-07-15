@@ -415,7 +415,8 @@ for (let i = 0; i < template.length; i++) {
 
 				var __FILTERS__ = Snakeskin.Filters,
 					__VARS__ = Snakeskin.Vars,
-					__STR__;
+					__STR__,
+					__J__;
 
 				var __RETURN__ = false,
 					__RETURN_VAL__;

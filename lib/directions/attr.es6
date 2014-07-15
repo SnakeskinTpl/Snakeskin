@@ -28,7 +28,7 @@ Snakeskin.addDirective(
  * @param {?string=} [opt_separator='-'] - разделитель группы
  * @return {string}
  */
-DirObj.prototype.returnDeclAttr = function declAttr(command, opt_group, opt_separator) {
+DirObj.prototype.returnDeclAttr = function (command, opt_group, opt_separator) {
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
 	var parts = command.split(';'),
@@ -42,7 +42,7 @@ DirObj.prototype.returnDeclAttr = function declAttr(command, opt_group, opt_sepa
 			return '';
 		}
 
-		res += '__STR__ = \'\';';
+		res += '__STR__ = \'\'; __J__ = 0;';
 
 		if (opt_group) {
 			arg[0] = `'${opt_group + opt_separator}' + ${arg[0]}`;
@@ -59,7 +59,8 @@ DirObj.prototype.returnDeclAttr = function declAttr(command, opt_group, opt_sepa
 
 			res += `
 				if (${val}) {
-					__STR__ += ' ' + ${val};
+					__STR__ += __J__ ? ' ' + ${val} : ${val};
+					__J__++;
 				}
 			`;
 		}
