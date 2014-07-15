@@ -22,6 +22,9 @@
  * @param {boolean} params.stringBuffer - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
  *
+ * @param {?boolean=} [params.needPrfx] - если true, то директивы декларируются как #{ ... }
+ * @param {?number=} [params.prfxI] - глубина префиксных директив
+ *
  * @param {Array=} [params.scope] - область видимости (контекст) директив
  * @param {Object=} [params.vars] - объект локальных переменных
  *
