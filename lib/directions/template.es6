@@ -120,10 +120,11 @@ for (let i = 0; i < template.length; i++) {
 
 			var file = this.info['file'];
 
+			// Замена %fileName% на имя файла в node.js
 			if (IS_NODE && file) {
 				let path = require('path');
 				command = this.replaceDangerBlocks(command.replace(/(.?)%fileName%/, (sstr, $1) => {
-					var str = path.basename(this.info['file'], '.ss');
+					var str = path.basename(file, '.ss');
 
 					if ($1) {
 						if ($1 !== '.') {
@@ -138,6 +139,7 @@ for (let i = 0; i < template.length; i++) {
 				}));
 			}
 
+			// Определение декларации генератора
 			var prfx = '';
 
 			if (/\*/.test(command)) {
@@ -147,6 +149,7 @@ for (let i = 0; i < template.length; i++) {
 
 			this.generator = Boolean(prfx);
 
+			// Валидация имени шаблона
 			var nameRgxp = /^[^a-z_$]/i;
 			var tmpTplName = getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
@@ -190,6 +193,7 @@ for (let i = 0; i < template.length; i++) {
 				return;
 			}
 
+			// Валидация шаблона для наследования
 			var parentTplName;
 			if (/\bextends\b/m.test(command)) {
 				try {
@@ -464,7 +468,8 @@ for (let i = 0; i < template.length; i++) {
 						el.vars = this.structure.vars;
 					}
 
-					ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(cache[key]) : cache[key];
+					ctx.backTable[key] = ctx.backTable[key] ?
+						ctx.backTable[key].concat(cache[key]) : cache[key];
 				}
 			}
 
