@@ -11,13 +11,24 @@ var globalFnCache = {
 var cache = {},
 	table = {};
 
-var blockCache = {},
-	protoCache = {},
+var blockCache = {};
+var protoCache = {},
 	fromProtoCache = {};
 
 var constCache = {},
 	fromConstCache = {},
 	constICache = {};
+
+var routerCache = {
+	'block': blockCache,
+	'const': constCache,
+	'proto': protoCache
+};
+
+var routerFromCache = {
+	'const': fromConstCache,
+	'proto': fromProtoCache
+};
 
 var paramsCache = {};
 var extMap = {};
