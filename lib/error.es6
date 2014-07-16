@@ -54,7 +54,7 @@ DirObj.prototype.error = function (msg) {
 		this.onError(error);
 
 	} else {
-		if (typeof console === 'undefined' || typeof console.error === 'function' || this.throws) {
+		if (typeof console === 'undefined' || typeof console.error !== 'function' || this.throws) {
 			throw error;
 		}
 
