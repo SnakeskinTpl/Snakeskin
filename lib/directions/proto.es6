@@ -91,10 +91,13 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
+		var start = this.i - this.startTemplateI;
+
 		this.startDir(null, {
 			name: name,
 			startTemplateI: this.i + 1,
-			from: this.i - this.getDiff(commandLength)
+			from: this.i - this.getDiff(commandLength),
+			fromBody: start + 1
 		});
 
 		if (this.isAdvTest()) {
@@ -135,7 +138,7 @@ Snakeskin.addDirective(
 
 			protoCache[this.tplName][name] = {
 				length: commandLength,
-				from: this.i - this.startTemplateI + 1,
+				from: start - this.getDiff(commandLength),
 
 				argsDecl: argsList.params ?
 					`(${argsList.join(',')})` : '',
@@ -172,7 +175,8 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.protoLink) {
-			let proto = protoCache[tplName][lastProto.name];
+			let proto = protoCache[tplName][lastProto.name],
+				start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
 				let diff = this.getDiff(commandLength),
@@ -181,10 +185,10 @@ Snakeskin.addDirective(
 				let _ = this.needPrfx ?
 					PRFX : '';
 
-				proto.to = this.i - this.startTemplateI - diff;
+				proto.to = start + 1;
 				proto.content = this.source
 					.substring(this.startTemplateI)
-					.substring(proto.from, proto.to);
+					.substring(lastProto.fromBody, start - this.getDiff(commandLength));
 
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
@@ -205,7 +209,8 @@ Snakeskin.addDirective(
 
 					{
 						inlineIterators: this.inlineIterators,
-						stringBuffer: this.stringBuffer
+						stringBuffer: this.stringBuffer,
+						escapeOutput: this.escapeOutput
 					},
 
 					null,
