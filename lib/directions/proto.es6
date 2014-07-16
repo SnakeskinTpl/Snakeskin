@@ -170,27 +170,32 @@ Snakeskin.addDirective(
 			let proto = protoCache[tplName][lastProto.name];
 
 			if (this.isAdvTest()) {
-				proto.to = this.i - this.startTemplateI - commandLength - 1;
+				let diff = Number(this.needPrfx) + 1,
+					scope = proto.scope;
+
+				let _ = this.needPrfx ?
+					PRFX : '';
+
+				proto.to = this.i - this.startTemplateI - commandLength - diff;
 				proto.content = this.source
 					.substring(this.startTemplateI)
 					.substring(proto.from, proto.to);
 
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
-				var scope = proto.scope;
 
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					`
-						{template ${tplName}()}
-							${scope ? `{with ${scope}}` : ''}
+						${_}{template ${tplName}()}
+							${scope ? `${_}{with ${scope}}` : ''}
 
-								{var __I_PROTO__ = 1}
-								{__protoWhile__ __I_PROTO__--}
-									${this.source.substring(lastProto.startTemplateI, this.i - commandLength - 1)}
-								{end}
+								${_}{var __I_PROTO__ = 1}
+								${_}{__protoWhile__ __I_PROTO__--}
+									${this.source.substring(lastProto.startTemplateI, this.i - commandLength - diff)}
+								${_}{end}
 
-							${scope ? `{end}` : ''}
-						{end}
+							${scope ? `${_}{end}` : ''}
+						${_}{end}
 					`,
 
 					{
@@ -201,6 +206,9 @@ Snakeskin.addDirective(
 					null,
 
 					{
+						needPrfx: this.needPrfx,
+						prfxI: this.prfxI,
+
 						scope: this.scope.slice(),
 						vars: this.structure.vars,
 
@@ -223,8 +231,8 @@ Snakeskin.addDirective(
 			// Применение обратных прототипов
 			let back = this.backTable[lastProto.name];
 			if (back && !back.protoStart) {
-				let args = proto.args;
-				let fin = true;
+				let args = proto.args,
+					fin = true;
 
 				for (let i = 0; i < back.length; i++) {
 					let el = back[i];
