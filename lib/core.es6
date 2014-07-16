@@ -67,6 +67,7 @@ var Snakeskin = {
 	//#include ../node_modules/esprima/esprima.js
 	var esprima = this.esprima || this;
 
+	//#include ./decl.js
 	//#include ./global.js
 	//#include ./api.js
 	//#include ./escape.js
