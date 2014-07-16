@@ -188,7 +188,7 @@ Snakeskin.addDirective(
 				proto.to = start + 1;
 				proto.content = this.source
 					.substring(this.startTemplateI)
-					.substring(lastProto.fromBody, start - this.getDiff(commandLength));
+					.substring(lastProto.fromBody, start - diff);
 
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
