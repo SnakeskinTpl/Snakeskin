@@ -403,7 +403,7 @@ for (let i = 0; i < template.length; i++) {
 					continue;
 				}
 
-				defs += `{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
+				defs += `${this.needPrfx ? PRFX : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
 			}
 
 			if (defs) {
@@ -488,10 +488,6 @@ for (let i = 0; i < template.length; i++) {
 			// но уже как атомарного (без наследования)
 			if (this.parentTplName) {
 				this.info['line'] = this.startTemplateLine;
-
-				console.log(this.source.substring(0, this.startTemplateI) +
-					this.getFullBody(tplName) +
-					this.source.substring(this.i - diff));
 
 				this.source = this.source.substring(0, this.startTemplateI) +
 					this.getFullBody(tplName) +

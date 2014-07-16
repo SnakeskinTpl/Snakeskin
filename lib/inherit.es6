@@ -2,10 +2,10 @@
  * Вернуть полное тело заданного шаблона
  * при наследовании
  *
- * @param {string} parentName - название родительского шаблона
+ * @param {string} tplName - название шаблона
  * @return {string}
  */
-DirObj.prototype.getFullBody = function (parentName) {
+DirObj.prototype.getFullBody = function (tplName) {
 	var protoLength = 'proto'.length,
 		constLength = 1;
 
@@ -19,14 +19,14 @@ DirObj.prototype.getFullBody = function (parentName) {
 		is[i + j] = `${isDecl[i]}_add`;
 	}
 
-	var parentTpl = extMap[parentName],
+	var parentTpl = extMap[tplName],
 		res = cache[parentTpl];
 
 	var from = 0,
 		advDiff = [];
 
 	var sornFn = (a, b) => a.val - b.val;
-	var tb = table[parentName],
+	var tb = table[tplName],
 		k;
 
 	var el,
@@ -41,7 +41,7 @@ DirObj.prototype.getFullBody = function (parentName) {
 		if (routerCache[type]) {
 			k = `${type}_`;
 
-			el = routerCache[type][parentName];
+			el = routerCache[type][tplName];
 			prev = routerCache[type][parentTpl];
 
 			if (routerFromCache[type]) {
@@ -62,7 +62,7 @@ DirObj.prototype.getFullBody = function (parentName) {
 			let current = el[key],
 				parent = !tb[k + key].drop && prev[key];
 
-			let block = cache[parentName]
+			let block = cache[tplName]
 				.substring(current.from, current.to);
 
 			// Разница между дочерним и родительским блоком
@@ -77,7 +77,7 @@ DirObj.prototype.getFullBody = function (parentName) {
 			advDiff.sort(sornFn);
 
 			for (let j = 0; j < advDiff.length; j++) {
-				if (advDiff[j].val < diff) {
+				if (advDiff[j].val <= diff) {
 					adv += advDiff[j].adv;
 
 				} else {
