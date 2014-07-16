@@ -87,7 +87,7 @@ DirObj.prototype.getFullBody = function (parentName) {
 
 			// Переопределение
 			if (parent && (i % 2 === 0)) {
-				if (i > 1) {
+				if (type !== 'block' && (type !== 'const' || !current.proto)) {
 					newFrom = parent.from + adv + block.length;
 					from += blockDiff;
 
