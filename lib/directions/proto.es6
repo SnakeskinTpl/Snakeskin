@@ -296,7 +296,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-
 		if (this.isSimpleOutput()) {
 			let name = getFnName(command),
 				args = this.getFnArgs(command);
