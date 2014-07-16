@@ -8,15 +8,15 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		var parts = command.split(';');
+
+		if (parts.length !== 3) {
+			return this.error(`invalid "${this.name}" declaration`);
+		}
+
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let parts = command.split(';');
-
-			if (parts.length !== 3) {
-				return this.error(`invalid "${this.name}" declaration`);
-			}
-
-			let varDeclRgxp = /var /;
+			let varDeclRgxp = /\bvar\b/;
 			let decl = varDeclRgxp.test(parts[0]) ?
 				this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
