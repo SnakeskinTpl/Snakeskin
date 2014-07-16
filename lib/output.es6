@@ -201,8 +201,8 @@ DirObj.prototype.getWord = function (str, pos) {
 
 	var diff = 0;
 
-	var j = 0;
-	var nextCharRgxp = /[@#$+\-~!\w\[\]().]/;
+	var j = 0,
+		nextCharRgxp = /[@#$+\-~!\w\[\]().]/;
 
 	for (let i = pos; i < str.length; i++, j++) {
 		let el = str.charAt(i);
@@ -270,8 +270,8 @@ DirObj.prototype.getWord = function (str, pos) {
  * @return {boolean}
  */
 function isSyOL(str, start, end) {
-	var rgxp = /\S/;
-	var res;
+	var rgxp = /\S/,
+		res;
 
 	for (let i = start; i--;) {
 		let el = str.charAt(i);
@@ -704,12 +704,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			pCountFilter--;
 
 			if (!pCountFilter) {
-				let last = filter.length - 1;
-				let cache = filter[last];
+				let last = filter.length - 1,
+					cache = filter[last];
 
 				filter[last] = this.prepareOutput(cache, true, null, true, false);
-				wordAddEnd += filter[last].length - cache.length;
-				filterAddEnd += filter[last].length - cache.length;
+				let length = filter[last].length - cache.length;
+
+				wordAddEnd += length;
+				filterAddEnd += length;
 
 				if (i === commandLength - 1) {
 					i--;

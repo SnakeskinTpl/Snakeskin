@@ -403,7 +403,7 @@ for (let i = 0; i < template.length; i++) {
 					continue;
 				}
 
-				defs += `${this.needPrfx ? PRFX : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
+				defs += `${this.needPrfx ? '#' : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
 			}
 
 			if (defs) {

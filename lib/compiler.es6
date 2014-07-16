@@ -1,5 +1,3 @@
-const PRFX = '#';
-
 /**
  * Скомпилировать указанные шаблоны Snakeskin
  *
@@ -273,7 +271,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
-			if ((dir.needPrfx ? el !== PRFX : el !== '{') && !begin) {
+			if ((dir.needPrfx ? el !== '#' : el !== '{') && !begin) {
 				prevSpace = dir.space;
 			}
 
@@ -358,7 +356,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				let isPrefStart = !currentEscape &&
 					!begin &&
-					el === PRFX &&
+					el === '#' &&
 					next === '{';
 
 				// Начало управляющей конструкции
