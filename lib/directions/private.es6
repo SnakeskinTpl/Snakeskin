@@ -84,13 +84,15 @@ Snakeskin.addDirective(
 		}
 
 		if (this.isAdvTest()) {
+			let start = this.i - this.startTemplateI;
+
 			constCache[this.tplName][name] = {
-				from: this.i - this.startTemplateI - commandLength,
-				to: this.i - this.startTemplateI,
+				from: start - commandLength,
+				to: start,
 				tmp: true
 			};
 
-			fromConstCache[this.tplName] = this.i - this.startTemplateI + 1;
+			fromConstCache[this.tplName] = start + 1;
 		}
 	}
 );
