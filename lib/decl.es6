@@ -1,11 +1,8 @@
 // Общие разделители директивы
 // >>>
+
 const LB = '{';
 const RB = '}';
-
-const SC = '///';
-const MCS = '/*';
-const MCE = '*/';
 
 // <<<
 // Дополнительные разделители директивы
@@ -13,7 +10,11 @@ const MCE = '*/';
 
 const ALB = '#';
 
-var dirMap = {
+const SC = '///';
+const MCS = '/*';
+const MCE = '*/';
+
+var includeDirMap = {
 	'${': true,
 	'#{': true
 };
