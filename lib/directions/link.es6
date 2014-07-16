@@ -6,18 +6,18 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var parts = command.split(' '),
-			type = parts[0] || 'css';
-
-		var types = {
-			'css': 'type="text/css" rel="stylesheet"',
-			'acss': 'type="text/css" rel="alternate stylesheet"'
-		};
-
 		this.startDir();
 		this.space = true;
 
 		if (this.isSimpleOutput()) {
+			let parts = command.split(' '),
+				type = parts[0] || 'css';
+
+			let types = {
+				'css': 'type="text/css" rel="stylesheet"',
+				'acss': 'type="text/css" rel="alternate stylesheet"'
+			};
+
 			this.save(this.wrap(`'<link ${types[type]}'`));
 
 			if (parts.length > 1) {
