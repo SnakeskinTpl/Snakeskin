@@ -35,11 +35,13 @@ Snakeskin.addDirective(
 			}
 
 			if (cache && !drop) {
-				this.source = this.source.substring(0, this.i - commandLength - 1) +
+				let diff = this.getDiff(commandLength);
+
+				this.source = this.source.substring(0, this.i - diff) +
 					cache.content +
 					this.source.substring(this.i + 1);
 
-				this.i -= commandLength + 1;
+				this.i -= diff;
 			}
 		}
 	}
