@@ -7,7 +7,7 @@
  */
 DirObj.prototype.getFullBody = function (parentName) {
 	var protoLength = 'proto'.length,
-		constLength = ''.length;
+		constLength = 1;
 
 	var isDecl = ['block', 'const', 'proto'],
 		length = isDecl.length * 2,
