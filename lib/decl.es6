@@ -3,11 +3,20 @@
 const LB = '{';
 const RB = '}';
 
+const SC = '///';
+const MCS = '/*';
+const MCE = '*/';
+
 // <<<
 // Дополнительные разделители директивы
 // >>>
 
 const ALB = '#';
+
+var dirMap = {
+	'${': true,
+	'#{': true
+};
 
 // <<<
 // Модификаторы контекста
@@ -15,6 +24,17 @@ const ALB = '#';
 
 const L_MOD = '#';
 const G_MOD = '@';
+
+var modMap = {
+	'@': true,
+	'#': true
+};
+
+// <<<
+// Механизм фильтров
+// >>>
+
+const F = '|';
 
 // <<<
 // Различные таблицы констант
@@ -72,4 +92,14 @@ var closeBMap = {
 	')': true,
 	']': true,
 	'}': true
+};
+
+var pMap = {
+	'(': true,
+	'[': true
+};
+
+var closePMap = {
+	')': true,
+	']': true
 };
