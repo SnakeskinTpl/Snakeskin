@@ -7,9 +7,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.startInlineDir();
-
-		var type = command.split(' ')[0];
+		var type = command.split(' ')[0] || 'html';
 		var types = {
 			'html': '<!DOCTYPE html>',
 			'xml': '<?xml version="1.0" encoding="utf-8" ?>',
@@ -25,6 +23,7 @@ Snakeskin.addDirective(
 			return this.error('invalid doctype');
 		}
 
+		this.startInlineDir();
 		this.space = true;
 
 		if (this.isSimpleOutput()) {
