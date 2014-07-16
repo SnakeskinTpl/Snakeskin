@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1405420931598> Tue Jul 15 2014 14:42:11 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1405516215778> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {

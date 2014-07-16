@@ -10,9 +10,9 @@ super_child
 		{a}
 	{end}
 
-	{proto bar}
+	#{proto bar}
 		2
-	{end}
+	#{end}
 
 	{apply bar}
 {/}

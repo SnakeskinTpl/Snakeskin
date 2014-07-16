@@ -148,7 +148,69 @@
 {template inherit_childTestConst3() extends inherit_superTestConst3}
 	{a.a = 2}
 	{a.b = 3}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="inherit2"> {template inherit2_base()}
+	#{a1 = 1}
+
+	{proto foo}
+		{const a = 1}
+		{b = 3}
+	{/}
+{/template}
+
+#{template inherit2_sub() extends inherit2_base}
+	#{const a1 = 22}
+	#{const b = 2}
+	#{b33 = 34}
+	#{const b13 = 2}
+
+	#{block e}
+		#{a1} #{b33} #{b13}
+
+		#{try}
+			#{a}
+		#{catch err}
+			%
+		#{/}
+
+		#{try}
+			#{b}
+		#{catch err}
+			%
+		#{/}
+	#{/}
+#{/template}
+
+#{template inherit2_base2(val = 1)}
+	#{a1 = 1}
+
+	#{proto foo}
+		#{const a = 1}
+		#{b = 3}
+	#{/}
+#{/template}
+
+{template inherit2_sub2() extends inherit2_base2}
+	{const a1 = 22}
+	{const b = 2}
+	{b33 = 34}
+	{const b13 = 2}
+
+	{block e}
+		{a1} #{b33} #{b13} {val}
+
+		{try}
+			{a}
+		{catch err}
+			%
+		{/}
+
+		{try}
+			#{b}
+		{catch err}
+			%
+		{/}
+	{/}
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit2'), {prettyPrint: true}); test('inherit2', function () { equal(inherit2_sub().trim(), '22 34 2 % %'); equal(inherit2_sub2().trim(), '22 34 2 1 % %'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
 	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
 		{el} {i} {obj[i]} {isFirst} {isLast} {length} ---
 	{/}
@@ -475,9 +537,9 @@
 		{a}
 	{end}
 
-	{proto bar}
+	#{proto bar}
 		2
-	{end}
+	#{end}
 
 	{apply bar}
 {/}
@@ -672,7 +734,69 @@
 {template inherit_childTestConst3() extends inherit_superTestConst3}
 	{a.a = 2}
 	{a.b = 3}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="inherit2"> {template inherit2_base()}
+	#{a1 = 1}
+
+	{proto foo}
+		{const a = 1}
+		{b = 3}
+	{/}
+{/template}
+
+#{template inherit2_sub() extends inherit2_base}
+	#{const a1 = 22}
+	#{const b = 2}
+	#{b33 = 34}
+	#{const b13 = 2}
+
+	#{block e}
+		#{a1} #{b33} #{b13}
+
+		#{try}
+			#{a}
+		#{catch err}
+			%
+		#{/}
+
+		#{try}
+			#{b}
+		#{catch err}
+			%
+		#{/}
+	#{/}
+#{/template}
+
+#{template inherit2_base2(val = 1)}
+	#{a1 = 1}
+
+	#{proto foo}
+		#{const a = 1}
+		#{b = 3}
+	#{/}
+#{/template}
+
+{template inherit2_sub2() extends inherit2_base2}
+	{const a1 = 22}
+	{const b = 2}
+	{b33 = 34}
+	{const b13 = 2}
+
+	{block e}
+		{a1} #{b33} #{b13} {val}
+
+		{try}
+			{a}
+		{catch err}
+			%
+		{/}
+
+		{try}
+			#{b}
+		{catch err}
+			%
+		{/}
+	{/}
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit2'), {prettyPrint: true}); test('inherit2', function () { equal(inherit2_sub().trim(), '22 34 2 % %'); equal(inherit2_sub2().trim(), '22 34 2 1 % %'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
 	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
 		{el} {i} {obj[i]} {isFirst} {isLast} {length} ---
 	{/}
@@ -999,9 +1123,9 @@
 		{a}
 	{end}
 
-	{proto bar}
+	#{proto bar}
 		2
-	{end}
+	#{end}
 
 	{apply bar}
 {/}
@@ -1196,7 +1320,69 @@
 {template inherit_childTestConst3() extends inherit_superTestConst3}
 	{a.a = 2}
 	{a.b = 3}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="inherit2"> {template inherit2_base()}
+	#{a1 = 1}
+
+	{proto foo}
+		{const a = 1}
+		{b = 3}
+	{/}
+{/template}
+
+#{template inherit2_sub() extends inherit2_base}
+	#{const a1 = 22}
+	#{const b = 2}
+	#{b33 = 34}
+	#{const b13 = 2}
+
+	#{block e}
+		#{a1} #{b33} #{b13}
+
+		#{try}
+			#{a}
+		#{catch err}
+			%
+		#{/}
+
+		#{try}
+			#{b}
+		#{catch err}
+			%
+		#{/}
+	#{/}
+#{/template}
+
+#{template inherit2_base2(val = 1)}
+	#{a1 = 1}
+
+	#{proto foo}
+		#{const a = 1}
+		#{b = 3}
+	#{/}
+#{/template}
+
+{template inherit2_sub2() extends inherit2_base2}
+	{const a1 = 22}
+	{const b = 2}
+	{b33 = 34}
+	{const b13 = 2}
+
+	{block e}
+		{a1} #{b33} #{b13} {val}
+
+		{try}
+			{a}
+		{catch err}
+			%
+		{/}
+
+		{try}
+			#{b}
+		{catch err}
+			%
+		{/}
+	{/}
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit2'), {prettyPrint: true}); test('inherit2', function () { equal(inherit2_sub().trim(), '22 34 2 % %'); equal(inherit2_sub2().trim(), '22 34 2 1 % %'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
 	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
 		{el} {i} {obj[i]} {isFirst} {isLast} {length} ---
 	{/}
@@ -1523,9 +1709,9 @@
 		{a}
 	{end}
 
-	{proto bar}
+	#{proto bar}
 		2
-	{end}
+	#{end}
 
 	{apply bar}
 {/}
@@ -1720,7 +1906,69 @@
 {template inherit_childTestConst3() extends inherit_superTestConst3}
 	{a.a = 2}
 	{a.b = 3}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3  2  11   my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="inherit2"> {template inherit2_base()}
+	#{a1 = 1}
+
+	{proto foo}
+		{const a = 1}
+		{b = 3}
+	{/}
+{/template}
+
+#{template inherit2_sub() extends inherit2_base}
+	#{const a1 = 22}
+	#{const b = 2}
+	#{b33 = 34}
+	#{const b13 = 2}
+
+	#{block e}
+		#{a1} #{b33} #{b13}
+
+		#{try}
+			#{a}
+		#{catch err}
+			%
+		#{/}
+
+		#{try}
+			#{b}
+		#{catch err}
+			%
+		#{/}
+	#{/}
+#{/template}
+
+#{template inherit2_base2(val = 1)}
+	#{a1 = 1}
+
+	#{proto foo}
+		#{const a = 1}
+		#{b = 3}
+	#{/}
+#{/template}
+
+{template inherit2_sub2() extends inherit2_base2}
+	{const a1 = 22}
+	{const b = 2}
+	{b33 = 34}
+	{const b13 = 2}
+
+	{block e}
+		{a1} #{b33} #{b13} {val}
+
+		{try}
+			{a}
+		{catch err}
+			%
+		{/}
+
+		{try}
+			#{b}
+		{catch err}
+			%
+		{/}
+	{/}
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit2'), {prettyPrint: true}); test('inherit2', function () { equal(inherit2_sub().trim(), '22 34 2 % %'); equal(inherit2_sub2().trim(), '22 34 2 1 % %'); }); </script>  <script type="text/x-snakeskin-template" id="iterators"> {template iterators_index1()}
 	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
 		{el} {i} {obj[i]} {isFirst} {isLast} {length} ---
 	{/}
@@ -2047,9 +2295,9 @@
 		{a}
 	{end}
 
-	{proto bar}
+	#{proto bar}
 		2
-	{end}
+	#{end}
 
 	{apply bar}
 {/}
