@@ -11,15 +11,15 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		var parts = command.split('=>'),
+			obj = parts[0];
+
+		if (!parts.length || parts.length > 2) {
+			return this.error(`invalid "${this.name}" declaration`);
+		}
+
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let parts = command.split('=>'),
-				obj = parts[0];
-
-			if (!parts.length || parts.length > 2) {
-				return this.error(`invalid "${this.name}" declaration`);
-			}
-
 			if (!this.inlineIterators) {
 				this.save(`
 					Snakeskin.forEach(
@@ -291,15 +291,15 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		var parts = command.split('=>'),
+			obj = parts[0];
+
+		if (!parts.length || parts.length > 2) {
+			return this.error(`invalid "${this.name}" declaration`);
+		}
+
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let parts = command.split('=>'),
-				obj = parts[0];
-
-			if (!parts.length || parts.length > 2) {
-				return this.error(`invalid "${this.name}" declaration`);
-			}
-
 			if (!this.inlineIterators) {
 				this.save(`
 					Snakeskin.forIn(
