@@ -489,6 +489,10 @@ for (let i = 0; i < template.length; i++) {
 			if (this.parentTplName) {
 				this.info['line'] = this.startTemplateLine;
 
+				console.log(this.source.substring(0, this.startTemplateI) +
+					this.getExtStr(tplName) +
+					this.source.substring(this.i - diff));
+
 				this.source = this.source.substring(0, this.startTemplateI) +
 					this.getExtStr(tplName) +
 					this.source.substring(this.i - diff);

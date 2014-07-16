@@ -142,7 +142,9 @@ Snakeskin.addDirective(
 
 				args: argsMap,
 				scope: scope,
-				calls: {}
+
+				calls: {},
+				needPrfx: this.needPrfx
 			};
 		}
 
