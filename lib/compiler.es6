@@ -58,8 +58,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var sp = opt_sysParams || {},
 		p = opt_params ? Object(opt_params) : {};
 
-	var ctx = (cjs = s(p.context, p['context'])) || {},
-		cjs;
+	var cjs,
+		ctx =
+			(cjs = s(p.context, p['context'])) || {};
 
 	if (!cjs) {
 		if (typeof opt_params === 'boolean') {
@@ -70,6 +71,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	cjs = Boolean(cjs);
 	p.onError = s(p.onError, p['onError']);
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
 	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
@@ -102,7 +104,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var words =
 		p.words = s(p.words, p['words']);
 
-	cjs = Boolean(cjs);
 	var info = opt_info || {};
 
 	info['file'] = s(info.file, info['file']);
@@ -141,7 +142,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return globalCache[cjs][text];
 	}
 
-	Snakeskin.LocalVars = {include: {}};
+	Snakeskin.LocalVars = {
+		include: {},
+		$_: void 0
+	};
 
 	if (IS_NODE) {
 		Snakeskin.LocalVars.include[info['file']] = true;
