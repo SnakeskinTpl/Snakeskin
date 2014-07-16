@@ -94,7 +94,7 @@ Snakeskin.addDirective(
 		this.startDir(null, {
 			name: name,
 			startTemplateI: this.i + 1,
-			from: this.i - commandLength - 1
+			from: this.i - this.getDiff(commandLength)
 		});
 
 		if (this.isAdvTest()) {
@@ -136,7 +136,10 @@ Snakeskin.addDirective(
 			protoCache[this.tplName][name] = {
 				length: commandLength,
 				from: this.i - this.startTemplateI + 1,
-				argsDecl: argsList.params ? `(${argsList.join(',')})` : '',
+
+				argsDecl: argsList.params ?
+					`(${argsList.join(',')})` : '',
+
 				args: argsMap,
 				scope: scope,
 				calls: {}
@@ -170,13 +173,13 @@ Snakeskin.addDirective(
 			let proto = protoCache[tplName][lastProto.name];
 
 			if (this.isAdvTest()) {
-				let diff = Number(this.needPrfx) + 1,
+				let diff = this.getDiff(commandLength),
 					scope = proto.scope;
 
 				let _ = this.needPrfx ?
 					PRFX : '';
 
-				proto.to = this.i - this.startTemplateI - commandLength - diff;
+				proto.to = this.i - this.startTemplateI - diff;
 				proto.content = this.source
 					.substring(this.startTemplateI)
 					.substring(proto.from, proto.to);
@@ -191,7 +194,7 @@ Snakeskin.addDirective(
 
 								${_}{var __I_PROTO__ = 1}
 								${_}{__protoWhile__ __I_PROTO__--}
-									${this.source.substring(lastProto.startTemplateI, this.i - commandLength - diff)}
+									${this.source.substring(lastProto.startTemplateI, this.i - diff)}
 								${_}{end}
 
 							${scope ? `${_}{end}` : ''}
