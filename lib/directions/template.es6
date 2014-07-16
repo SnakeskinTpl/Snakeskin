@@ -462,7 +462,6 @@ for (let i = 0; i < template.length; i++) {
 
 					for (let i = 0; i < cache[key].length; i++) {
 						let el = cache[key][i];
-
 						el.pos += this.proto.pos;
 						el.outer = true;
 						el.vars = this.structure.vars;
