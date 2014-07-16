@@ -11,6 +11,7 @@ const RB = '}';
 const ALB = '#';
 
 const SC = '///';
+const JD = '/**';
 const MCS = '/*';
 const MCE = '*/';
 
