@@ -317,7 +317,7 @@ DirObj.prototype.returnResult = function () {
  * @return {string}
  */
 DirObj.prototype.declResult = function () {
-	return this.stringBuffer ? '[]' : '\'\'';
+	return this.stringBuffer ? 'new Snakeskin.StringBuffer()' : '\'\'';
 };
 
 /**
