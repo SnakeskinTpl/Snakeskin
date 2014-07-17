@@ -197,18 +197,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		bEscape = false;
 
 	var filterStart = false;
-
 	var nextLineRgxp = /[\r\n\v]/,
 		whiteSpaceRgxp = /\s/,
 		bEndRgxp = /[^\s\/]/;
 
 	var filterStartRgxp = /[a-z]/i;
-
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
 
 	var prevSpace;
-
 	var i18nStr = '',
 		i18nStart = false;
 
@@ -489,9 +486,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = '")';
 
 							} else {
-								dir.source = str.substring(0, dir.i + 1) + RB + str.substring(dir.i + 1);
+								dir.source = str.substring(0, dir.i + 1) +
+									RB +
+									str.substring(dir.i + 1);
+
 								dir.i = Number(pseudoI);
 								pseudoI = false;
+
 								continue;
 							}
 
@@ -502,9 +503,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = 'i18n("';
 
 							} else {
-								dir.source = str.substring(0, dir.i) + LB + str.substring(dir.i);
-								pseudoI = dir.i - 1;
-								dir.i++;
+								let diff = Number(dir.needPrfx) + 1;
+
+								dir.source = str.substring(0, dir.i) +
+									(dir.needPrfx ? ALB : '') +
+									LB +
+									str.substring(dir.i);
+
+								pseudoI = dir.i - diff;
+								dir.i += diff;
+
 								continue;
 							}
 						}
@@ -667,7 +675,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Живая компиляция в браузере
 		} else {
-			//console.log(dir.res);
+			console.log(dir.res);
 			evalStr(dir.res);
 		}
 
