@@ -271,7 +271,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
-			if ((dir.needPrfx ? el !== '#' : el !== '{') && !begin) {
+			if ((dir.needPrfx ? el !== ALB : el !== LB) && !begin) {
 				prevSpace = dir.space;
 			}
 
@@ -295,13 +295,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Обработка комментариев
 			if (!currentEscape) {
-				if (el === '/') {
-					if (next3str === '///') {
+				if (el === SC.charAt(0) || el === MCS.charAt(0)) {
+					if (next3str === SC) {
 						comment = next3str;
 						dir.i += 2;
 
-					} else if (next2str === '/*') {
-						if (next3str === '/**') {
+					} else if (next2str === MCS) {
+						if (next3str === JD) {
 							if (beginStr && dir.isSimpleOutput()) {
 								dir.save(`'${dir.$$()};`);
 							}
@@ -315,8 +315,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.i++;
 						}
 
-					} else if (str.charAt(dir.i - 1) === '*') {
-						if (comment === '/*') {
+					} else if (str.charAt(dir.i - 1) === MCE.charAt(0)) {
+						if (comment === MCS) {
 							comment = false;
 							continue;
 
@@ -325,7 +325,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 					}
 
-				} else if (nextLineRgxp.test(rEl) && comment === '///') {
+				} else if (nextLineRgxp.test(rEl) && comment === SC) {
 					comment = false;
 					continue;
 				}
@@ -341,7 +341,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						el = '\\"';
 					}
 
-					if (currentEscape || el !== '`') {
+					if (currentEscape || el !== I18N) {
 						if (pseudoI !== false) {
 							continue;
 						}
@@ -356,12 +356,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				let isPrefStart = !currentEscape &&
 					!begin &&
-					el === '#' &&
-					next === '{';
+					el === ALB &&
+					next === LB;
 
 				// Начало управляющей конструкции
 				// (не забываем следить за уровнем вложенностей {)
-				if (isPrefStart || (el === '{' && (begin || !currentEscape))) {
+				if (isPrefStart || (el === LB && (begin || !currentEscape))) {
 					if (begin) {
 						fakeBegin++;
 
@@ -378,7 +378,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 				// Упраляющая конструкция завершилась
-				} else if (el === '}' && begin && (!fakeBegin || !(fakeBegin--))) {
+				} else if (el === RB && begin && (!fakeBegin || !(fakeBegin--))) {
 					begin = false;
 
 					let commandLength = command.length;
@@ -460,7 +460,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = '';
 					continue;
 
-				} else if (i18n && !currentEscape && el === '`') {
+				} else if (i18n && !currentEscape && el === I18N) {
 					if (i18nStart && i18nStr && words && !words[i18nStr]) {
 						words[i18nStr] = i18nStr;
 					}
@@ -489,7 +489,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = '")';
 
 							} else {
-								dir.source = str.substring(0, dir.i + 1) + '}' + str.substring(dir.i + 1);
+								dir.source = str.substring(0, dir.i + 1) + RB + str.substring(dir.i + 1);
 								dir.i = Number(pseudoI);
 								pseudoI = false;
 								continue;
@@ -502,7 +502,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = 'i18n("';
 
 							} else {
-								dir.source = str.substring(0, dir.i) + '{' + str.substring(dir.i);
+								dir.source = str.substring(0, dir.i) + LB + str.substring(dir.i);
 								pseudoI = dir.i - 1;
 								dir.i++;
 								continue;
@@ -524,7 +524,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (!bOpen) {
 				let skip = false;
 
-				if (el === '|' && filterStartRgxp.test(str.charAt(dir.i + 1))) {
+				if (el === F && filterStartRgxp.test(str.charAt(dir.i + 1))) {
 					filterStart = true;
 					bEnd = false;
 					skip = true;

@@ -9,9 +9,11 @@ const RB = '}';
 // >>>
 
 const ALB = '#';
+const I18N = '`';
 
 const SC = '///';
 const JD = '/**';
+
 const MCS = '/*';
 const MCE = '*/';
 
