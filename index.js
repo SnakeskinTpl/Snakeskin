@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 var program = require('commander');
@@ -78,7 +78,7 @@ function action(data) {
 	}
 
 	if (words) {
-		fs.writeFileSync(words, JSON.stringify(params.words));
+		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
 
 	process.exit(0);

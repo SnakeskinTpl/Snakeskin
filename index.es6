@@ -78,7 +78,7 @@ function action(data) {
 	}
 
 	if (words) {
-		fs.writeFileSync(words, JSON.stringify(params.words));
+		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
 
 	process.exit(0);
