@@ -159,7 +159,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	};
 
 	if (IS_NODE) {
-		Snakeskin.LocalVars.include[file] = true;
+		Snakeskin.LocalVars.include[file] = 'index';
 	}
 
 	var dir = new DirObj(String(text), {
@@ -718,13 +718,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Простая компиляция
 			} else {
-				evalStr(dir.res, info['file']);
+				evalStr(dir.res, file);
 			}
 
 		// Живая компиляция в браузере
 		} else {
 			console.log(dir.res);
-			evalStr(dir.res, info['file']);
+			evalStr(dir.res, file);
 		}
 
 	} catch (err) {
@@ -772,6 +772,7 @@ function evalStr(str, opt_file, opt_exports) {
 		filename = opt_file;
 	}
 
+	var ctx = {};
 	return new Function(
 		'Snakeskin',
 
@@ -813,8 +814,20 @@ function evalStr(str, opt_file, opt_exports) {
 		root['async'] != null ?
 			root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
 
-		IS_NODE ? module : void 0,
-		opt_exports || IS_NODE ? exports : void 0,
+		{
+			exports: ctx,
+			require: require,
+
+			id: filename,
+			filename: filename,
+
+			parent: module,
+			children: [],
+
+			loaded: true
+		},
+
+		opt_exports || ctx,
 		IS_NODE ? require : void 0,
 
 		dirname,

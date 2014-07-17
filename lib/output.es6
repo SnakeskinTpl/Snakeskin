@@ -624,8 +624,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			let resTmp = fbody;
 
 			for (let j = 0; j < filter.length; j++) {
-				let params = filter[j].split(' ');
-				let input = params.slice(1).join('').trim();
+				let params = filter[j].split(' '),
+					input = params.slice(1).join('').trim();
 
 				let current = params.shift().split('.'),
 					f = '';
