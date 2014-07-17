@@ -145,7 +145,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	Snakeskin.LocalVars = {
+		/** @expose */
 		include: {},
+
+		/** @expose */
 		$_: void 0
 	};
 
@@ -739,7 +742,7 @@ function evalStr(str) {
 
 		void 0,
 		void 0,
-		void 0,
+		Snakeskin.Vars.$_,
 
 		root['$C'] != null ?
 			root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],

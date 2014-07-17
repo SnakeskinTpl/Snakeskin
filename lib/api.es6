@@ -234,7 +234,7 @@ function DirObj(src, params) {
 				__STR__,
 				__J__;
 
-			var \$_;
+			var \$_ = __VARS__.\$_;
 		`;
 
 		this.res += `
