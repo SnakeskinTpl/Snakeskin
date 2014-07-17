@@ -11,6 +11,7 @@
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
+ * @param {?string=} [opt_params.i18nFn='i18n'] - название функции для i18n
  * @param {?boolean=} [opt_params.localization=true] - если false, то блоки ` ... ` не заменяются на вызов i18n
  * @param {Object=} [opt_params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
@@ -93,6 +94,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		Snakeskin.Vars[key] = vars[key];
 	}
+
+	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
 
 	var i18n =
 		p.localization = s(p.localization, p['localization']) !== false;
@@ -500,7 +503,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStart = true;
 
 							if (begin) {
-								el = 'i18n("';
+								el = `${p.i18nFn}("`;
 
 							} else {
 								let diff = Number(dir.needPrfx) + 1;
