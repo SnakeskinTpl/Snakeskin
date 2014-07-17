@@ -11,10 +11,17 @@
 			<script type="text/javascript" src="../build/snakeskin.min.js"></script>
 			<script type="text/javascript">
 				Object.create = Object.create || function (obj) {
-					var F = function () {};
+					function F() {
+
+					};
+
 					F.prototype = obj;
 					return new F();
 				};
+
+				function i18n(str) {
+					return str;
+				}
 			</script>
 		</head>
 

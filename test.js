@@ -7,6 +7,10 @@ var testFolder = path.resolve(__dirname, 'tests');
 
 var tpls = {};
 
+global.i18n = function (str) {
+	return str;
+};
+
 snakeskin.compile(
 	fs.readFileSync(path.join(__dirname, 'test.ss')),
 	{
