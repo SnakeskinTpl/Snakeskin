@@ -12,11 +12,7 @@ Snakeskin.addDirective(
 		this.space = true;
 
 		if (this.isSimpleOutput()) {
-			let map = this.getGroup('callback');
-			map['proto'] = true;
-
-			let parent = this.hasParent(map),
-				useCallback = parent && parent !== 'proto';
+			let useCallback = this.hasParent(this.getGroup('callback'));
 
 			let async = this.getGroup('async');
 			let chunk,
