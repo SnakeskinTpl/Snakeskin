@@ -124,7 +124,7 @@ for (let i = 0; i < template.length; i++) {
 			if (IS_NODE && file) {
 				let path = require('path');
 				command = this.replaceDangerBlocks(command.replace(/(.?)%fileName%/, (sstr, $1) => {
-					var str = path.basename(file, '.ss');
+					var str = path['basename'](file, '.ss');
 
 					if ($1) {
 						if ($1 !== '.') {

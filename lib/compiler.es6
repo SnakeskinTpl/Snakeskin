@@ -113,7 +113,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (IS_NODE && info['file']) {
 		let path = require('path');
-		info['file'] = applyDefEscape(path.normalize(info['file']));
+		info['file'] = applyDefEscape(path['normalize'](info['file']));
 	}
 
 	var html = src.innerHTML;
