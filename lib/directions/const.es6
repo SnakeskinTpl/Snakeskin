@@ -2,7 +2,10 @@ Snakeskin.addDirective(
 	'const',
 
 	{
-		group: 'inherit'
+		group: [
+			'inherit',
+			'inlineInherit'
+		]
 	},
 
 	function (command, commandLength) {

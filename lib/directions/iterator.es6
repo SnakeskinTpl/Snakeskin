@@ -260,7 +260,8 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		group: [
 			'cycle',
-			'callback'
+			'callback',
+			'selfThis'
 		]
 	},
 

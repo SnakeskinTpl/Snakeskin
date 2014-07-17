@@ -6,7 +6,10 @@ Snakeskin.addDirective(
 		block: true,
 		notEmpty: true,
 		placement: 'template',
-		group: 'inherit'
+		group: [
+			'inherit',
+			'blockInherit'
+		]
 	},
 
 	function (command, commandLength) {
