@@ -6,7 +6,8 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		group: [
 			'cycle',
-			'callback'
+			'callback',
+			'inlineIterator'
 		]
 	},
 
@@ -303,7 +304,8 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		group: [
 			'cycle',
-			'callback'
+			'callback',
+			'inlineIterator'
 		]
 	},
 

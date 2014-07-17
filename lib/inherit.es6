@@ -9,8 +9,18 @@ DirObj.prototype.getFullBody = function (tplName) {
 	var protoLength = 'proto'.length,
 		constLength = 1;
 
-	var isDecl = ['block', 'const', 'proto'],
-		length = isDecl.length * 2,
+	var isDecl = [],
+		inherit = this.getGroup('inherit');
+
+	for (let key in inherit) {
+		if (!inherit.hasOwnProperty(key)) {
+			continue;
+		}
+
+		isDecl.push(key);
+	}
+
+	var length = isDecl.length * 2,
 		is = {};
 
 	for (let i = 0, j = 0; i < isDecl.length; i++) {

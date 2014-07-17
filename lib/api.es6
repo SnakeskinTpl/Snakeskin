@@ -613,23 +613,23 @@ DirObj.prototype.applyQueue = function () {
  * @return {!Object}
  */
 DirObj.prototype.getGroup = function (/*= names */...names) {
-	F.prototype = groups[names[0]];
-
-	/** @constructor */
-	function F() {
-
-	}
-
-	var map = new F(),
+	var map = {},
 		ignore = {};
 
-	for (let i = 1; i < names.length; i++) {
+	for (let i = 0; i < names.length; i++) {
 		let name = names[i],
 			group = groups[name];
 
 		if (name === 'callback' && this.inlineIterators) {
-			ignore['forEach'] = true;
-			ignore['forIn'] = true;
+			let inline = groups['inlineIterator'];
+
+			for (let key in inline) {
+				if (!inline.hasOwnProperty(key)) {
+					continue;
+				}
+
+				ignore[key] = true;
+			}
 		}
 
 		for (let key in group) {
