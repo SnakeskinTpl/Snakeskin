@@ -1,3 +1,7 @@
+var nextLineRgxp = /[\r\n\v]/,
+	whiteSpaceRgxp = /\s/,
+	bEndRgxp = /[^\s\/]/;
+
 /**
  * Скомпилировать указанные шаблоны Snakeskin
  *
@@ -204,12 +208,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		bEnd,
 		bEscape = false;
 
-	var filterStart = false;
-	var nextLineRgxp = /[\r\n\v]/,
-		whiteSpaceRgxp = /\s/,
-		bEndRgxp = /[^\s\/]/;
+	var filterStart = false,
+		filterStartRgxp = /[a-z]/i;
 
-	var filterStartRgxp = /[a-z]/i;
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
 

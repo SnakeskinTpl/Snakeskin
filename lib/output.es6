@@ -62,7 +62,8 @@ var comboBlackWordList = {
 DirObj.prototype.replaceTplVars = function (str) {
 	str = this.pasteDangerBlocks(str);
 	var begin = 0,
-		dir = '';
+		dir = '',
+		res = '';
 
 	var escape = false,
 		comment = false;
@@ -73,21 +74,12 @@ DirObj.prototype.replaceTplVars = function (str) {
 
 	var replacer = (str) => str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
 
-	var nextLineRgxp = /[\r\n\v]/,
-		bEndRgxp = /[^\s\/]/;
-
-	var res = '';
-	var dirTable = {
-		'${': true,
-		'#{': true
-	};
-
 	for (let i = 0; i < str.length; i++) {
 		let el = str.charAt(i);
 		let next2str = el + str.charAt(i + 1);
 
 		// Начало директивы
-		if (!begin && dirTable[next2str]) {
+		if (!begin && includeDirMap[next2str]) {
 			begin++;
 			dir = '';
 
@@ -107,21 +99,21 @@ DirObj.prototype.replaceTplVars = function (str) {
 			// Обработка комментариев
 			if (!escape) {
 				let next3str = next2str + str.charAt(i + 2);
-				if (el === '/') {
-					if (next3str === '///') {
-						comment = '///';
+				if (el === SC.charAt(0) || el === MCS.charAt(0)) {
+					if (next3str === SC) {
+						comment = next3str;
 						i+= 2;
 
-					} else if (next2str === '/*') {
-						comment = '/*';
+					} else if (next2str === MCS) {
+						comment = next2str;
 						i++;
 
-					} else if (str.charAt(i - 1) === '*' && comment === '/*') {
+					} else if (str.charAt(i - 1) === MCE.charAt(0) && comment === MCS) {
 						comment = false;
 						continue;
 					}
 
-				} else if (nextLineRgxp.test(el) && comment === '///') {
+				} else if (nextLineRgxp.test(el) && comment === SC) {
 					comment = false;
 				}
 			}
