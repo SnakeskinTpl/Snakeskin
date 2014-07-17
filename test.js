@@ -47,7 +47,7 @@ function run(params) {
 			asserts.push(obj);
 
 			try {
-				fs.writeFileSync((("" + src) + ("_" + prfx) + ".js"), snakeskin.compile(txt[1], params));
+				fs.writeFileSync((("" + src) + ("_" + prfx) + ".js"), snakeskin.compile(txt[1], params, {file: path.join(testFolder, file)}));
 
 			} catch (err) {
 				console.error(("File: " + file));
