@@ -8,7 +8,11 @@ include_index
 	{: url = path.join(__dirname, 'test')}
 
 	{forEach fs.readdirSync(url) => file}
-		{include path.join(url, file)}
+		{if path.extname(file) === '.ss'}
+			{include path.join(url, file)}
+			{include path.join(url, file)}
+			{include path.join(url, file)}
+		{/}
 	{/}
 {/}
 
