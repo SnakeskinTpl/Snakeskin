@@ -221,7 +221,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 	};
 };
 
-//#include ./directions/ui.js
+//#include ./directions/bem.js
 //#include ./directions/block.js
 //#include ./directions/call.js
 //#include ./directions/const.js

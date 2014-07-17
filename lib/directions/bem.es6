@@ -1,5 +1,5 @@
 Snakeskin.addDirective(
-	'setUI',
+	'setBEM',
 
 	{
 		placement: 'global',
@@ -8,7 +8,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		var parts = command.match(/(.*?),\s+(.*)/);
+		var parts = command.match(/([^,]+),\s+(.*)/);
 
 		try {
 			ui[parts[1]] = (new Function('return {' +
@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'ui',
+	'bem',
 
 	{
 		block: true,
@@ -38,22 +38,22 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isSimpleOutput()) {
-			let lastBEM = this.structure.params;
+			let params = this.structure.params;
 
-			command = lastBEM.tag ?
-				command.replace(/^.*?\)(.*)/, '$1') : command;
+			command = params.tag ?
+				command.replace(/^[^)]+\)(.*)/, '$1') : command;
 
-			let parts = command.trim().split(',');
-			let bemName = parts[0];
+			let parts = command.trim().split(','),
+				bemName = parts[0];
 
 			parts[0] += '\'';
 			command = parts.join(',');
 
-			lastBEM.original = ui[bemName] &&
+			params.original = ui[bemName] &&
 				ui[bemName].tag;
 
 			this.save(this.wrap(`
-				'<${lastBEM.tag || lastBEM.original || 'div'}
+				'<${params.tag || params.original || 'div'}
 					class="i-block"
 					data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
 				>'
@@ -63,8 +63,8 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			let lastBEM = this.structure.params;
-			this.save(this.wrap(`'</${(lastBEM.tag || lastBEM.original || 'div')}>'`));
+			let params = this.structure.params;
+			this.save(this.wrap(`'</${(params.tag || params.original || 'div')}>'`));
 		}
 	}
 );
