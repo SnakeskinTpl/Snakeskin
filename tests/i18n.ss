@@ -4,17 +4,17 @@ i18n_index2
 ###
 
 {template i18n_index()}
-	`hello` {`world`}
+	`hel\`lo` {`world`} \`bar
 {/}
 
 #{template i18n_index2()}
-	`hello` #{`world`}
+	`hel\`lo` #{`world`} \`bar
 #{/}
 
 ###
 
-hello world
+hel`lo world `bar
 
 ***
 
-hello world
+hel`lo world `bar
