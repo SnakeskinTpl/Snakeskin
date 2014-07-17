@@ -120,7 +120,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 
 					block = type === 'const_add' ?
-						`${current.needPrfx ? '#' : ''}{${block}}` : block;
+						`${current.needPrfx ? ALB : ''}{${block}}` : block;
 
 					res = res.substring(0, from) +
 						block +
