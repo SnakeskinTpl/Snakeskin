@@ -106,14 +106,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var words =
 		p.words = s(p.words, p['words']);
 
-	var info = opt_info || {};
+	var info = opt_info || {},
+		file;
 
 	info['file'] = s(info.file, info['file']);
 	info['line'] = info['line'] || 1;
 
 	if (IS_NODE && info['file']) {
 		let path = require('path');
-		info['file'] = applyDefEscape(path['normalize'](info['file']));
+		file =
+			info['file'] = applyDefEscape(path['normalize'](info['file']));
 	}
 
 	var html = src.innerHTML;
@@ -153,7 +155,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	};
 
 	if (IS_NODE) {
-		Snakeskin.LocalVars.include[info['file']] = true;
+		Snakeskin.LocalVars.include[file] = true;
 	}
 
 	var dir = new DirObj(String(text), {
@@ -670,8 +672,46 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (IS_NODE) {
 			// Экспорт
 			if (cjs) {
-				//evalStr(dir.res, info['file'], ctx);
-				new Function('exports', 'require', dir.res)(ctx, require);
+				let dirname,
+					filename;
+
+				if (file) {
+					let path = require('path');
+					dirname = path['dirname'](file);
+					filename = file;
+				}
+
+				new Function(
+					'module',
+
+					'exports',
+					'require',
+
+					'__dirname',
+					'__filename',
+
+					dir.res
+				)(
+					{
+						exports: ctx,
+						require: require,
+
+						id: filename,
+						filename: filename,
+
+						parent: module,
+						children: [],
+
+						loaded: true
+					},
+
+					ctx,
+					require,
+
+					dirname,
+					filename
+				);
+
 				ctx['init'](Snakeskin);
 				globalFnCache[cjs][text] = ctx;
 
