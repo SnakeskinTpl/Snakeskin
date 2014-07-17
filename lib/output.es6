@@ -177,33 +177,22 @@ DirObj.prototype.getWord = function (str, pos) {
 	var res = '',
 		nres = '';
 
-	var pOpen = {
-		'(': true,
-		'[': true
-	};
-
-	var pClose = {
-		')': true,
-		']': true
-	};
-
 	var pCount = 0;
 	var start = 0,
 		pContent = null;
 
-	var diff = 0;
-	var j = 0,
-		nextCharRgxp = /[@#$+\-~!\w\[\]().]/;
+	var diff = 0,
+		nextCharRgxp = new RegExp(`[${G_MOD + L_MOD}$+\\-~!\\w[\\]().]`);
 
-	for (let i = pos; i < str.length; i++, j++) {
+	for (let i = pos, j = 0; i < str.length; i++, j++) {
 		let el = str.charAt(i);
 
 		if (pCount || nextCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
-			if (pContent !== null && (pCount > 1 || (pCount === 1 && !pClose[el]))) {
+			if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
 				pContent += el;
 			}
 
-			if (pOpen[el]) {
+			if (pMap[el]) {
 				if (pContent === null) {
 					start = j + 1;
 					pContent = '';
@@ -211,7 +200,7 @@ DirObj.prototype.getWord = function (str, pos) {
 
 				pCount++;
 
-			} else if (pClose[el]) {
+			} else if (closePMap[el]) {
 				if (pCount) {
 					pCount--;
 
