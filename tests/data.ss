@@ -6,7 +6,9 @@ data_decl
 {template data_index()}
 	{a = ' foo '}
 
-	{= {a: "${a|trim|ucfirst}"}}
+	{= {a: "${a|trim|ucfirst}"}
+		/// 1212
+	}
 	{{${a|trim|ucfirst}}}
 
 	{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}{/cdata}
@@ -15,8 +17,8 @@ data_decl
 {template data_decl()}
 	{foo = 'bar'}
 
-	{{foo}}
-	{{#{foo}}}
+	{{/* 1212121212 */foo}}
+	{{#{foo/* 1111 */}}}
 	#{{#{foo}}}
 {/}
 
