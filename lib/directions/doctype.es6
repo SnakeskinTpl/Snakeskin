@@ -2,8 +2,7 @@ Snakeskin.addDirective(
 	'doctype',
 
 	{
-		placement: 'template',
-		notEmpty: true
+		placement: 'template'
 	},
 
 	function (command) {
