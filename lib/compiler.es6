@@ -670,19 +670,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (IS_NODE) {
 			// Экспорт
 			if (cjs) {
+				//evalStr(dir.res, info['file'], ctx);
 				new Function('exports', 'require', dir.res)(ctx, require);
 				ctx['init'](Snakeskin);
 				globalFnCache[cjs][text] = ctx;
 
 			// Простая компиляция
 			} else {
-				evalStr(dir.res);
+				evalStr(dir.res, info['file']);
 			}
 
 		// Живая компиляция в браузере
 		} else {
 			console.log(dir.res);
-			evalStr(dir.res);
+			evalStr(dir.res, info['file']);
 		}
 
 	} catch (err) {
@@ -713,9 +714,23 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
  * Выполнить заданную строку как JavaScript
  *
  * @param {string} str - исходная строка
+ * @param {?string=} [opt_file] - путь к файлу, в контексте которого идёт выполнение
+ * @param {Object=} [opt_exports] - объект exports
  * @return {?}
  */
-function evalStr(str) {
+function evalStr(str, opt_file, opt_exports) {
+	opt_file = opt_file || '';
+
+	var dirname,
+		filename;
+
+	if (IS_NODE && opt_file) {
+		let path = require('path');
+
+		dirname = path['dirname'](opt_file);
+		filename = opt_file;
+	}
+
 	return new Function(
 		'Snakeskin',
 
@@ -729,6 +744,13 @@ function evalStr(str) {
 
 		'$C',
 		'async',
+
+		'module',
+		'exports',
+		'require',
+
+		'__dirname',
+		'__filename',
 
 		str
 
@@ -748,6 +770,13 @@ function evalStr(str) {
 			root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
 
 		root['async'] != null ?
-			root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async']
+			root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
+
+		IS_NODE ? module : void 0,
+		opt_exports || IS_NODE ? exports : void 0,
+		IS_NODE ? require : void 0,
+
+		dirname,
+		filename
 	);
 }

@@ -17,7 +17,8 @@ Snakeskin.include = function (base, url) {
 		path = require('path');
 
 	try {
-		let src = path['resolve'](path.dirname(base), path.normalize(url)),
+		let extname = path['extname'](url);
+		let src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
 			include = Snakeskin.LocalVars.include;
 
 		if (!include[src]) {
