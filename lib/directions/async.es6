@@ -60,7 +60,7 @@ Snakeskin.addDirective(
 					this.save(`
 						${prfx}(function (${this.declCallbackArgs(parts)}) {
 							${this.deferReturn ? `if (__RETURN__) {
-								if (typeof arguments[] === 'function') {
+								if (typeof arguments[0] === 'function') {
 									return arguments[0](false);
 								}
 
