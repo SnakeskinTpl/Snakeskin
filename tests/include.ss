@@ -16,7 +16,7 @@ include_index
 	{/}
 {/}
 
-{template include_index(name) extends foo}
+{template include_index(name) extends include['foo' + '--']}
 {/template}
 
 ###

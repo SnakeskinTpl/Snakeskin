@@ -1,4 +1,4 @@
 {include './foo/bar.ss'}
 
-{template %fileName%(name) extends bar}
+{template include[%fileName% + '--'](name) extends include.bar}
 {/template}
