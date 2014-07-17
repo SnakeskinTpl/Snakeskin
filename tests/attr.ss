@@ -16,7 +16,7 @@ attr_index2
 	{bar = 'bar'}
 
 	{attr ng-('foo' => bar, foo; 'bar' => 'foo'), foo => 'bar'}
-	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar')}
+	{attr ng-('foo' => (1 ? bar : null), ((foo)); 'bar' => 'foo'), foo:(foo => 'bar'), b-foo:(foo => 'bar'), b:foo-(foo => 'bar')}
 {/}
 
 ###
@@ -25,4 +25,4 @@ foo = "bar"  foo = "foo" bar = "foo"
 
 ***
 
-ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar"
+ng-foo = "bar foo" ng-bar = "foo" foo = "bar"  ng-foo = "bar foo" ng-bar = "foo" foo:foo = "bar" b-foo:foo = "bar" b:foo-foo = "bar"
