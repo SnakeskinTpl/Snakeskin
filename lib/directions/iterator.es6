@@ -11,21 +11,30 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		command = command.replace(/=>>/g, '=>=>');
 		var parts = command.split('=>'),
 			obj = parts[0];
 
-		if (!parts.length || parts.length > 2) {
+		if (!parts.length || parts.length > 3) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		this.startDir();
+		this.startDir(null, {
+			params: parts[2] ? parts[1] : null
+		});
+
 		if (this.isSimpleOutput()) {
 			if (!this.inlineIterators) {
-				this.save(`
-					Snakeskin.forEach(
-						${this.prepareOutput(`(${parts[0]})`, true)},
-						function (${this.declCallbackArgs(parts[1])}) {
-				`);
+				if (parts.length === 3) {
+					this.save(`\$C(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+
+				} else {
+					this.save(`
+						Snakeskin.forEach(
+							${this.prepareOutput(`(${parts[0]})`, true)},
+							function (${this.declCallbackArgs(parts[1])}) {
+					`);
+				}
 
 				return;
 			}
@@ -220,10 +229,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			if (!this.inlineIterators) {
-				this.save('});');
-
-			} else {
+			if (this.inlineIterators) {
 				let params = this.structure
 					.params;
 
@@ -231,6 +237,16 @@ Snakeskin.addDirective(
 					.substring(params.from);
 
 				this.save(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
+
+			} else {
+				let params = this.structure.params.params;
+
+				if (params) {
+					this.save(`}, ${this.prepareOutput(`(${params})`, true)});`);
+
+				} else {
+					this.save('});');
+				}
 			}
 		}
 	}
@@ -269,7 +285,7 @@ Snakeskin.addDirective(
 			let params = this.structure.params.params;
 
 			if (params) {
-				this.save(`}, ${this.prepareOutput(params, true)});`);
+				this.save(`}, ${this.prepareOutput(`(${params})`, true)});`);
 
 			} else {
 				this.save('});');
@@ -387,11 +403,11 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isSimpleOutput()) {
-			if (!this.inlineIterators) {
-				this.save('});');
+			if (this.inlineIterators) {
+				this.save('}}');
 
 			} else {
-				this.save('}}');
+				this.save('});');
 			}
 		}
 	}
