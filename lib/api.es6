@@ -748,7 +748,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	}
 
 	var tmp = struct.vars[varName];
-	if (tmp && !tmp.inherited) {
+	if (tmp && !tmp.inherited && struct.name !== 'root') {
 		return tmp.value;
 	}
 
@@ -844,55 +844,90 @@ DirObj.prototype.evalStr = function (str) {
 
 	if (IS_NODE) {
 		dirname = require('path')['dirname'](filename);
-	}
+		return new Function(
+			'Snakeskin',
 
-	return new Function(
-		'Snakeskin',
+			'__FILTERS__',
+			'__VARS__',
+			'__LOCAL__',
 
-		'__FILTERS__',
-		'__VARS__',
-		'__LOCAL__',
+			'__STR__',
+			'__J__',
+			'$_',
 
-		'__STR__',
-		'__J__',
-		'$_',
+			'$C',
+			'async',
 
-		'$C',
-		'async',
+			'module',
+			'exports',
+			'require',
 
-		'module',
-		'exports',
-		'require',
+			'__dirname',
+			'__filename',
 
-		'__dirname',
-		'__filename',
+			str
 
-		str
+		).call(
+			root,
+			Snakeskin,
 
-	).call(
-		root,
-		Snakeskin,
+			Snakeskin.Filters,
+			Snakeskin.Vars,
+			Snakeskin.LocalVars,
 
-		Snakeskin.Filters,
-		Snakeskin.Vars,
-		Snakeskin.LocalVars,
-
-		void 0,
-		void 0,
-		Snakeskin.Vars.$_,
+			void 0,
+			void 0,
+			Snakeskin.Vars.$_,
 
 			root['$C'] != null ?
-			root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
+				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
 
 			root['async'] != null ?
-			root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
+				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
 
-		module,
-		module.exports,
-		IS_NODE ?
-			require : void 0,
+			module,
+			module.exports,
+			IS_NODE ?
+				require : void 0,
 
-		dirname,
-		filename
-	);
+			dirname,
+			filename
+		);
+
+	} else {
+		return new Function(
+			'Snakeskin',
+
+			'__FILTERS__',
+			'__VARS__',
+			'__LOCAL__',
+
+			'__STR__',
+			'__J__',
+			'$_',
+
+			'$C',
+			'async',
+
+			str
+
+		).call(
+			root,
+			Snakeskin,
+
+			Snakeskin.Filters,
+			Snakeskin.Vars,
+			Snakeskin.LocalVars,
+
+			void 0,
+			void 0,
+			Snakeskin.Vars.$_,
+
+			root['$C'] != null ?
+				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
+
+			root['async'] != null ?
+				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async']
+		);
+	}
 };
