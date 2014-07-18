@@ -428,8 +428,8 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_params = opt_params || {};
 	this.inline = false;
 
-	var vars = opt_vars || {};
-	var struct = this.structure;
+	var vars = opt_vars || {},
+		struct = this.structure;
 
 	// Установка ссылок на локальные переменные родительское директивы
 	if (struct.vars) {
@@ -440,6 +440,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 			}
 
 			vars[key] = parentVars[key];
+			vars[key].inherited = true;
 		}
 	}
 
@@ -482,8 +483,8 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		bTable[key] = sub;
 		var deep = (obj) => {
 			for (let i = 0; i < obj.length; i++) {
-				let el = obj[i];
-				let key = `${el.name}_${el.params.name}`;
+				let el = obj[i],
+					key = `${el.name}_${el.params.name}`;
 
 				if (bTable[key]) {
 					bTable[key].drop = true;
@@ -725,6 +726,11 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	var struct = this.structure;
 	while (!struct.vars) {
 		struct = this.structure.parent;
+	}
+
+	var tmp = struct.vars[varName];
+	if (tmp && !tmp.inherited) {
+		return tmp.value;
 	}
 
 	var realVar;
