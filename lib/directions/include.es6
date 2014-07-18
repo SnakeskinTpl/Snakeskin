@@ -17,8 +17,8 @@ Snakeskin.addDirective(
 		var path = this.prepareOutput(command, true);
 
 		if (path !== void 0) {
-			path = this.pasteDangerBlocks(String(path));
-			this.save(`Snakeskin.include('${this.info['file'] || ''}', ${path});`);
+			path = applyDefEscape(this.pasteDangerBlocks(String(path)));
+			this.save(`Snakeskin.include('${applyDefEscape(this.info['file'] || '')}', ${path});`);
 		}
 	},
 
