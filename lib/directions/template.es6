@@ -25,7 +25,7 @@ DirObj.prototype.tplName = null;
 DirObj.prototype.parentTplName = null;
 
 var template = ['template', 'interface', 'placeholder'];
-var scopeModRgxp = /^@/;
+var scopeModRgxp = new RegExp(`^${G_MOD}`);
 
 /**
  * Вернуть имя функции из заданной строки
