@@ -43,7 +43,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 				let part;
 
 				if (prev.trim()) {
-					part = `\n  ${pos} ${space}${prev}`;
+					part = `\n  ${pos + 1} ${space}${prev}`;
 
 				} else {
 					part = '\n  ...';
