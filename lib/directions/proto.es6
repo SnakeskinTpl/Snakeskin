@@ -166,7 +166,7 @@ Snakeskin.addDirective(
 		if (this.protoLink === lastProto.name) {
 			let obj = this.preProtos[this.tplName];
 
-			obj.text += this.source.substring(lastProto.from, this.i + 1);
+			obj.text += '\n' + this.source.substring(lastProto.from, this.i + 1);
 			obj.line += this.info['line'] - obj.startLine;
 
 			this.protoLink = null;

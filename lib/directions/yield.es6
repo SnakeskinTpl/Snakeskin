@@ -12,6 +12,10 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can't be used within the "${cb}"`);
 		}
 
+		if (!this.parentTplName && !this.generator && !this.proto && !this.protoLink) {
+			return this.error(`directive "${this.name}" can be used only with a generator`);
+		}
+
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
 			if (command) {
