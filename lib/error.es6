@@ -30,9 +30,10 @@ DirObj.prototype.genErrorAdvInfo = function () {
 		let prev = this.lines[line - 2],
 			current = this.lines[line - 1].trim();
 
-		prev = prev ? prev.trim() : '';
-		let sep = new Array(Math.max(prev ? prev.length : 0, current.length) || 5).join('-');
+		prev = prev ?
+			prev.trim() : '';
 
+		let sep = new Array(Math.max(prev ? prev.length : 0, current.length) || 5).join('-');
 		str += `\n${sep}${prev ? `\n  ${line - 1} ${prev}` : ''}\n> ${line} ${current}\n${sep}`;
 	}
 
