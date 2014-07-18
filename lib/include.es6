@@ -27,7 +27,7 @@ Snakeskin.include = function (base, url) {
 			fsStack.push(`
 				{__setFile__ ${applyDefEscape(src)}}
 				${fs['readFileSync'](src).toString()}
-				{__setFile__ ${applyDefEscape(base)}}
+				{__endSetFile__}
 			`);
 		}
 
