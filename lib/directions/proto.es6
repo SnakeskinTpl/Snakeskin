@@ -98,7 +98,8 @@ Snakeskin.addDirective(
 			name: name,
 			startTemplateI: this.i + 1,
 			from: this.i - this.getDiff(commandLength),
-			fromBody: start + 1
+			fromBody: start + 1,
+			line: this.info['line']
 		});
 
 		if (this.isAdvTest()) {
@@ -201,7 +202,7 @@ Snakeskin.addDirective(
 
 								${_}{var __I_PROTO__ = 1}
 								${_}{__protoWhile__ __I_PROTO__--}
-									${this.source.substring(lastProto.startTemplateI, this.i - diff)}
+									{__setLine__ ${lastProto.line}}${this.source.substring(lastProto.startTemplateI, this.i - diff)}
 								${_}{end}
 
 							${scope ? `${_}{end}` : ''}
@@ -217,6 +218,8 @@ Snakeskin.addDirective(
 					null,
 
 					{
+						lines: this.lines.slice(),
+
 						needPrfx: this.needPrfx,
 						prfxI: this.prfxI,
 

@@ -22,6 +22,7 @@
  * @param {boolean} params.stringBuffer - если true, то для конкатенации строк в шаблоне
  *     используется техника [].join
  *
+ * @param {Array=} [params.lines] - массив строк шаблона
  * @param {?boolean=} [params.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [params.prfxI] - глубина префиксных директив
  *
@@ -74,6 +75,9 @@ function DirObj(src, params) {
 
 	/** @type {boolean} */
 	this.needPrfx = params.needPrfx || false;
+
+	/** @type {!Array} */
+	this.lines = params.lines || [''];
 
 	/**
 	 * Если true, то трансляция сбрасывается
@@ -190,12 +194,6 @@ function DirObj(src, params) {
 	 * @type {!Object}
 	 */
 	this.files = {};
-
-	/**
-	 * Массив исходных строк
-	 * @type {!Array}
-	 */
-	this.lines = [''];
 
 	/**
 	 * Объект модуля
@@ -739,7 +737,6 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 	// которая установлена как константа
 	if (!opt_protoParams && tplName && (constCache[tplName][varName] || constICache[tplName][varName])) {
 		this.error(`variable "${varName}" is already defined as constant`);
-		return '';
 	}
 
 	var struct = this.structure;
@@ -825,7 +822,6 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 
 	if (isSys) {
 		this.error(`invalid "${this.name}" declaration`);
-		return '';
 	}
 
 	return fin.slice(0, -1) + (opt_end ? ';' : '');
