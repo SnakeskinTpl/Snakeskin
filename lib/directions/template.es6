@@ -168,6 +168,85 @@ for (let i = 0; i < template.length; i++) {
 			var iface =
 				this.name === 'interface';
 
+			var lastName = null,
+				proto = this.proto;
+
+			var argsList,
+				args,
+				pos;
+
+			if (!proto) {
+				argsList = this.getFnArgs(command);
+				args = argsList.join(',');
+
+				// Для возможности удобного пост-парсинга,
+				// каждая функция снабжается комментарием вида:
+				// /* Snakeskin template: название шаблона; параметры через запятую */
+				this.save(
+					(pos = `/* Snakeskin template: ${tplName}; ${args.replace(/=(.*?)(?:,|$)/g, '')} */`),
+					iface,
+					jsDoc
+				);
+
+				if (jsDoc) {
+					jsDoc += pos.length;
+				}
+
+				// Декларация функции
+				// с пространством имён или при экспорте в common.js
+				if (/\.|\[/m.test(tmpTplName) || this.commonJS) {
+					lastName = '';
+					let tmpArr = tmpTplName
+
+						// Заменяем [] на .
+						.replace(/\[/gm, '.%')
+						.replace(/]/gm, '')
+
+						.split('.');
+
+					let str = tmpArr[0],
+						length = tmpArr.length;
+
+					for (let i = 1; i < length; i++) {
+						let el = tmpArr[i],
+							custom = el.charAt(0) === '%';
+
+						if (custom) {
+							el = el.substring(1);
+						}
+
+						this.save(
+							(pos = `
+								if (this.${str} == null) {
+									this.${str} = {};
+								}
+							`),
+
+							iface,
+							jsDoc
+						);
+
+						if (jsDoc) {
+							jsDoc += pos.length;
+						}
+
+						if (custom) {
+							str += `['${this.evalStr(`return ${this.pasteDangerBlocks(el)}`)}']`;
+							continue;
+
+						} else if (i === length - 1) {
+							lastName = el;
+						}
+
+						str += `.${el}`;
+					}
+
+					tplName = str;
+				}
+
+				this.save(`this.${tplName} = function ${prfx}${lastName !== null ? lastName : tplName}(`, iface);
+			}
+
 			this.info['template'] = tplName;
 
 			if (this.name !== 'template' && !write[tplName]) {
@@ -183,8 +262,6 @@ for (let i = 0; i < template.length; i++) {
 
 			this.blockTable = {};
 			this.varCache[tplName] = {};
-
-			var proto = this.proto;
 
 			if (proto) {
 				this.superStrongSpace = proto.superStrongSpace;
@@ -220,72 +297,6 @@ for (let i = 0; i < template.length; i++) {
 
 			this.initTemplateCache(tplName);
 			extMap[tplName] = parentTplName;
-
-			var argsList = this.getFnArgs(command);
-			var args = argsList.join(','),
-				pos;
-
-			// Для возможности удобного пост-парсинга,
-			// каждая функция снабжается комментарием вида:
-			// /* Snakeskin template: название шаблона; параметры через запятую */
-			this.save(
-				(pos = `/* Snakeskin template: ${tplName}; ${args.replace(/=(.*?)(?:,|$)/g, '')} */`),
-				iface,
-				jsDoc
-			);
-
-			if (jsDoc) {
-				jsDoc += pos.length;
-			}
-
-			var lastName = null;
-
-			// Декларация функции
-			// с пространством имён или при экспорте в common.js
-			if (/\.|\[/m.test(tmpTplName) || this.commonJS) {
-				lastName = '';
-				let tmpArr = tmpTplName
-
-					// Заменяем [] на .
-					.replace(/\[/gm, '.')
-					.replace(/]/gm, '')
-
-					.split('.');
-
-				let str = tmpArr[0],
-					length = tmpArr.length;
-
-				for (let i = 1; i < length; i++) {
-					let el = tmpArr[i];
-
-					this.save(
-						(pos = `
-							if (this.${str} == null) {
-								this.${str} = {};
-							}
-						`),
-
-						iface,
-						jsDoc
-					);
-
-					if (jsDoc) {
-						jsDoc += pos.length;
-					}
-
-					if (escaperRgxp.test(el) || !isNaN(Number(el))) {
-						str += `[${el}]`;
-						continue;
-
-					} else if (i === length - 1) {
-						lastName = el;
-					}
-
-					str += `.${el}`;
-				}
-			}
-
-			this.save(`this.${tmpTplName} = function ${prfx}${lastName !== null ? lastName : tmpTplName}(`, iface);
 
 			// Входные параметры
 			var parentArgs = paramsCache[parentTplName],
@@ -425,7 +436,7 @@ for (let i = 0; i < template.length; i++) {
 				var __RETURN__ = false,
 					__RETURN_VAL__;
 
-				var TPL_NAME = '${applyDefEscape(this.pasteDangerBlocks(tmpTplName))}',
+				var TPL_NAME = '${applyDefEscape(tplName)}',
 					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
 
 				var \$C = __\$C__ || typeof ${$CExport} !== 'undefined' ?
@@ -447,12 +458,13 @@ for (let i = 0; i < template.length; i++) {
 		},
 
 		function (command, commandLength) {
-			var tplName = String(this.tplName);
+			var tplName = String(this.tplName),
+				proto = this.proto;
 
 			// Вызовы не объявленных прототипов внутри прототипа
-			if (this.backTableI && this.proto) {
+			if (this.backTableI && proto) {
 				let cache = Object(this.backTable),
-					ctx = this.proto.ctx;
+					ctx = proto.ctx;
 
 				ctx.backTableI += this.backTableI;
 				for (let key in cache) {
@@ -462,7 +474,7 @@ for (let i = 0; i < template.length; i++) {
 
 					for (let i = 0; i < cache[key].length; i++) {
 						let el = cache[key][i];
-						el.pos += this.proto.pos;
+						el.pos += proto.pos;
 						el.outer = true;
 						el.vars = this.structure.vars;
 					}
@@ -472,7 +484,7 @@ for (let i = 0; i < template.length; i++) {
 				}
 			}
 
-			if (this.proto) {
+			if (proto) {
 				return;
 			}
 
@@ -520,15 +532,15 @@ for (let i = 0; i < template.length; i++) {
 							continue;
 						}
 
-						let proto = protoCache[tplName][key];
-						if (!proto) {
+						let tmp = protoCache[tplName][key];
+						if (!tmp) {
 							return this.error(`proto "${key}" is not defined`);
 						}
 
 						this.res = this.res.substring(0, el.pos) +
 							this.res.substring(el.pos).replace(
 								el.label,
-									(el.argsStr || '') + (el.recursive ? proto.i + '++;' : proto.body)
+									(el.argsStr || '') + (el.recursive ? tmp.i + '++;' : tmp.body)
 							);
 					}
 				}
