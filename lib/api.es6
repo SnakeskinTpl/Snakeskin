@@ -203,14 +203,16 @@ function DirObj(src, params) {
 	 */
 	this.module = {
 		exports: {},
-		require: IS_NODE ? require : null,
+		require: IS_NODE ?
+			require : null,
 
 		id: this.info['file'],
 		filename: this.info['file'],
 
-		parent: IS_NODE ? module : null,
-		children: [],
+		parent: IS_NODE ?
+			module : null,
 
+		children: [],
 		loaded: true
 	};
 
