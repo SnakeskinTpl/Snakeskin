@@ -154,17 +154,6 @@ for (let i = 0; i < template.length; i++) {
 			var tmpTplName = getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
-			try {
-				if (!tplName || nameRgxp.test(tplName)) {
-					throw false;
-				}
-
-				esprima.parse(tplName);
-
-			} catch (ignore) {
-				return this.error(`invalid "${this.name}" name`);
-			}
-
 			var iface =
 				this.name === 'interface';
 
@@ -176,6 +165,17 @@ for (let i = 0; i < template.length; i++) {
 				pos;
 
 			if (!proto) {
+				try {
+					if (!tplName || nameRgxp.test(tplName)) {
+						throw false;
+					}
+
+					esprima.parse(tplName);
+
+				} catch (ignore) {
+					return this.error(`invalid "${this.name}" name`);
+				}
+
 				argsList = this.getFnArgs(command);
 				args = argsList.join(',');
 
