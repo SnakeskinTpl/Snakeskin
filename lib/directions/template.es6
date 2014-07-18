@@ -13,12 +13,6 @@ DirObj.prototype.startTemplateI = 0;
 DirObj.prototype.startTemplateLine = null;
 
 /**
- * True, если декларируется шаблон-генератор
- * @type {?boolean}
- */
-DirObj.prototype.generator = null;
-
-/**
  * Название активного шаблона
  * @type {?string}
  */
