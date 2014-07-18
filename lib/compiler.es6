@@ -1,4 +1,3 @@
-var DirObj;
 var nextLineRgxp = /[\r\n\v]/,
 	whiteSpaceRgxp = /\s/,
 	bEndRgxp = /[^\s\/]/;

@@ -70,6 +70,7 @@ var Snakeskin = {
 	//#include ./decl.js
 	//#include ./global.js
 	//#include ./api.js
+	//#include ./eval.js
 	//#include ./escape.js
 	//#include ./inherit.js
 	//#include ./error.js
