@@ -33,10 +33,16 @@ var scopeModRgxp = /^@/;
  * @param {string} str - исходная строка
  * @return {string}
  */
-function getFnName(str) {
-	var val = /[^(]+/.exec(str);
-	return val ? val[0] : '';
-}
+DirObj.prototype.getFnName = function (str) {
+	var tmp = /[^(]+/.exec(str),
+		val = tmp ? tmp[0].trim() : '';
+
+	if (!val) {
+		this.error(`invalid "${this.name}" declaration`);
+	}
+
+	return val;
+};
 
 /**
  * Вернуть массив аргументов функции
@@ -113,7 +119,7 @@ for (let i = 0; i < template.length; i++) {
 			this.startTemplateLine = this.info['line'];
 
 			var nameRgxp = /^[^a-z_$]/i;
-			var tmpTplName = getFnName(command),
+			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
 			var file = this.info['file'],

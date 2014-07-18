@@ -63,7 +63,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var name = getFnName(command);
+		var name = this.getFnName(command);
 
 		if (!name) {
 			return this.error(`invalid "${this.name}" name`);
@@ -308,7 +308,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let name = getFnName(command),
+			let name = this.getFnName(command),
 				args = this.getFnArgs(command);
 
 			let cache = protoCache[this.tplName];
