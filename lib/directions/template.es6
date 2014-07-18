@@ -552,7 +552,7 @@ for (let i = 0; i < template.length; i++) {
 
 			} else {
 				this.save(`
-						${this.returnResult()}
+						return ${this.returnResult()};
 					};
 
 					Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};

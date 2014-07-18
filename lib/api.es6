@@ -328,7 +328,7 @@ DirObj.prototype.wrap = function (opt_str) {
  * @return {string}
  */
 DirObj.prototype.returnResult = function () {
-	return `return __RESULT__${this.stringBuffer ? '.join(\'\')' : ''};`
+	return `__RESULT__${this.stringBuffer ? '.join(\'\')' : ''}`
 };
 
 /**

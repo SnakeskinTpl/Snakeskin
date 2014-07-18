@@ -19,7 +19,7 @@ Snakeskin.addDirective(
 
 			} else {
 				this.save(`
-					yield __RESULT__;
+					yield ${this.returnResult()};
 					__RESULT__ = ${this.declResult()};
 				`);
 			}
