@@ -208,7 +208,7 @@ for (let i = 0; i < template.length; i++) {
 					return this.error(`invalid "${this.name}" name for extend`);
 				}
 
-				if (cache[parentTplName] === void 0) {
+				if (cache[parentTplName] == null) {
 					if (!this.interface) {
 						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
 					}
@@ -260,7 +260,7 @@ for (let i = 0; i < template.length; i++) {
 
 					this.save(
 						(pos = `
-							if (this.${str} === void 0) {
+							if (this.${str} == null) {
 								this.${str} = {};
 							}
 						`),
