@@ -10,7 +10,7 @@ Snakeskin.addDirective(
 			exports: {},
 			require: require,
 
-			id: command,
+			id: this.module.id + 1,
 			filename: command,
 
 			parent: this.module,

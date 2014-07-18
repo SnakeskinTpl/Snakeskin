@@ -82,7 +82,7 @@ Snakeskin.addDirective(
 				}
 
 				this.save(`
-					Snakeskin.Vars${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
+					__VARS__${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
 				`);
 			}
 
