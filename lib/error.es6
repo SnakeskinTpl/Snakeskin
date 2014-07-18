@@ -27,14 +27,39 @@ DirObj.prototype.genErrorAdvInfo = function () {
 	var line = info['line'];
 
 	if (line) {
-		let prev = this.lines[line - 2],
-			current = this.lines[line - 1].trim();
+		let prfx = '',
+			max = 0;
 
-		prev = prev ?
-			prev.trim() : '';
+		for (let i = 4; i--;) {
+			let pos = line - i - 2,
+				prev = this.lines[pos];
 
-		let sep = new Array(Math.max(prev ? prev.length : 0, current.length) || 5).join('-');
-		str += `\n${sep}${prev ? `\n  ${line - 1} ${prev}` : ''}\n> ${line} ${current}\n${sep}`;
+			if (prev != null) {
+				prev = prev.trim();
+				let part;
+
+				if (prev) {
+					part = `\n  ${pos} ${prev}`;
+
+				} else {
+					part = '\n  ...';
+				}
+
+				prfx += part;
+				if (max < part.length) {
+					max = part.length;
+				}
+			}
+		}
+
+		let current = this.lines[line - 1].trim(),
+			part = `> ${line} ${current}`;
+
+		let sep = new Array(
+			Math.max(max, part.length) || 5
+		).join('-');
+
+		str += `\n${sep}${prfx}\n${part}\n${sep}`;
 	}
 
 	return str;
