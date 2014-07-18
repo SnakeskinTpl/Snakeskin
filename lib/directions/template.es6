@@ -450,13 +450,15 @@ for (let i = 0; i < template.length; i++) {
 					${asyncExport} : Snakeskin.Vars.async;
 			`);
 
+			var preProtos = this.preProtos[tplName];
+
 			// Подкючение "внешних" прототипов
-			if ((!extMap[tplName] || parentTplName) && this.preProtos[tplName]) {
+			if ((!extMap[tplName] || parentTplName) && preProtos) {
 				this.source = this.source.substring(0, this.i + 1) +
-					this.preProtos[tplName].text +
+					preProtos.text +
 					this.source.substring(this.i + 1);
 
-				this.info['line'] -= this.preProtos[tplName].line;
+				this.info['line'] -= preProtos.line;
 				delete this.preProtos[tplName];
 			}
 		},
