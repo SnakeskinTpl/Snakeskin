@@ -251,7 +251,6 @@ for (let i = 0; i < template.length; i++) {
 			}
 
 			this.info['template'] = tplName;
-
 			if (this.name !== 'template' && !write[tplName]) {
 				write[tplName] = false;
 			}
@@ -464,30 +463,30 @@ for (let i = 0; i < template.length; i++) {
 			var tplName = String(this.tplName),
 				proto = this.proto;
 
-			// Вызовы не объявленных прототипов внутри прототипа
-			if (this.backTableI && proto) {
-				let cache = Object(this.backTable),
-					ctx = proto.ctx;
-
-				ctx.backTableI += this.backTableI;
-				for (let key in cache) {
-					if (!cache.hasOwnProperty(key)) {
-						continue;
-					}
-
-					for (let i = 0; i < cache[key].length; i++) {
-						let el = cache[key][i];
-						el.pos += proto.pos;
-						el.outer = true;
-						el.vars = this.structure.vars;
-					}
-
-					ctx.backTable[key] = ctx.backTable[key] ?
-						ctx.backTable[key].concat(cache[key]) : cache[key];
-				}
-			}
-
 			if (proto) {
+				// Вызовы не объявленных прототипов внутри прототипа
+				if (this.backTableI) {
+					let cache = Object(this.backTable),
+						ctx = proto.ctx;
+
+					ctx.backTableI += this.backTableI;
+					for (let key in cache) {
+						if (!cache.hasOwnProperty(key)) {
+							continue;
+						}
+
+						for (let i = 0; i < cache[key].length; i++) {
+							let el = cache[key][i];
+							el.pos += proto.pos;
+							el.outer = true;
+							el.vars = this.structure.vars;
+						}
+
+						ctx.backTable[key] = ctx.backTable[key] ?
+							ctx.backTable[key].concat(cache[key]) : cache[key];
+					}
+				}
+
 				return;
 			}
 
