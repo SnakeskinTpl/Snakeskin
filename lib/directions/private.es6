@@ -73,6 +73,20 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'__setLine__',
+
+	{
+
+	},
+
+	function (command) {
+		this.startInlineDir();
+		this.isSimpleOutput();
+		this.info['line'] = parseInt(command, 10);
+	}
+);
+
+Snakeskin.addDirective(
 	'__protoWhile__',
 
 	{
