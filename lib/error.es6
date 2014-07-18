@@ -24,7 +24,8 @@ DirObj.prototype.genErrorAdvInfo = function () {
 	}
 
 	str = str.replace(/, $/, '');
-	var line = info['line'];
+	var line = info['line'],
+		styleRgxp = /\t|[ ]{4}/g;
 
 	if (line) {
 		let prfx = '',
@@ -34,12 +35,15 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			let pos = line - i - 2,
 				prev = this.lines[pos];
 
+			let space = new Array(String(line - 1).length - String(pos).length + 1)
+				.join(' ');
+
 			if (prev != null) {
-				prev = prev.trim();
+				prev = prev.replace(styleRgxp, '  ');
 				let part;
 
-				if (prev) {
-					part = `\n  ${pos} ${prev}`;
+				if (prev.trim()) {
+					part = `\n  ${pos} ${space}${prev}`;
 
 				} else {
 					part = '\n  ...';
@@ -52,7 +56,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			}
 		}
 
-		let current = this.lines[line - 1].trim(),
+		let current = this.lines[line - 1].replace(styleRgxp, '  '),
 			part = `> ${line} ${current}`;
 
 		let sep = new Array(
