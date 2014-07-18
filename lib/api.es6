@@ -197,6 +197,19 @@ function DirObj(src, params) {
 	 */
 	this.lines = [''];
 
+	this.module = {
+		exports: {},
+		require: require,
+
+		id: this.info['file'],
+		filename: this.info['file'],
+
+		parent: module,
+		children: [],
+
+		loaded: true
+	};
+
 	/**
 	 * Исходный текст шаблона
 	 * @type {string}
@@ -810,4 +823,70 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 	}
 
 	return fin.slice(0, -1) + (opt_end ? ';' : '');
+};
+
+/**
+ * Выполнить заданную строку как JavaScript
+ *
+ * @param {string} str - исходная строка
+ * @return {?}
+ */
+DirObj.prototype.evalStr = function (str) {
+	var module = this.module;
+	var filename = module.filename,
+		dirname;
+
+	if (IS_NODE) {
+		dirname = require('path')['dirname'](filename);
+	}
+
+	return new Function(
+		'Snakeskin',
+
+		'__FILTERS__',
+		'__VARS__',
+		'__LOCAL__',
+
+		'__STR__',
+		'__J__',
+		'$_',
+
+		'$C',
+		'async',
+
+		'module',
+		'exports',
+		'require',
+
+		'__dirname',
+		'__filename',
+
+		str
+
+	).call(
+		root,
+		Snakeskin,
+
+		Snakeskin.Filters,
+		Snakeskin.Vars,
+		Snakeskin.LocalVars,
+
+		void 0,
+		void 0,
+		Snakeskin.Vars.$_,
+
+			root['$C'] != null ?
+			root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
+
+			root['async'] != null ?
+			root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
+
+		module,
+		module.exports,
+		IS_NODE ?
+			require : void 0,
+
+		dirname,
+		filename
+	);
 };
