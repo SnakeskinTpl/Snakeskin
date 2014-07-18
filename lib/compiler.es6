@@ -655,7 +655,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return dir.res;
 	}
 
-	dir.res += `${cjs ? '}' : ''}}).call(this);`;
+	dir.res += `
+		Snakeskin.LocalVars = {
+			include: {},
+			\$_: {}
+		};
+
+		${cjs ? '}' : ''}}).call(this);
+	`;
 
 	for (let key in dir.preProtos) {
 		if (!dir.preProtos.hasOwnProperty(key)) {
@@ -730,7 +737,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	Snakeskin.LocalVars = null;
 	globalCache[cjs][text] = dir.res;
 
 	if (!IS_NODE && !cjs) {
