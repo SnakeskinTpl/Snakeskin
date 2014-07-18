@@ -37,7 +37,7 @@ Snakeskin.addDirective(
 	function () {
 		let last = moduleStack.length - 1;
 		moduleStack[last] = moduleStack[last].parent;
-		this.info['file'] = moduleStack[last].parent.filename;
+		this.info['file'] = moduleStack[last].filename;
 	}
 );
 
