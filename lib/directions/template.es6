@@ -458,7 +458,6 @@ for (let i = 0; i < template.length; i++) {
 					preProtos.text +
 					this.source.substring(this.i + 1);
 
-				this.info['line'] -= preProtos.line;
 				delete this.preProtos[tplName];
 			}
 		},

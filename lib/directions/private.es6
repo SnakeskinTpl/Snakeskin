@@ -81,8 +81,30 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		this.isSimpleOutput();
 		this.info['line'] = parseInt(command, 10);
+	}
+);
+
+Snakeskin.addDirective(
+	'__switchLine__',
+
+	{
+
+	},
+
+	function (command) {
+		var val = parseInt(command, 10);
+
+		this.startDir(null, {
+			line: this.info['line']
+		});
+
+		this.info['_line'] = this.info['line'];
+		this.info['line'] = val;
+	},
+
+	function () {
+		this.info['line'] = this.structure.params.line;
 	}
 );
 
