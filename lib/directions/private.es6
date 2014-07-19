@@ -99,7 +99,6 @@ Snakeskin.addDirective(
 			line: this.info['line']
 		});
 
-		this.info['_line'] = this.info['line'];
 		this.info['line'] = val;
 	},
 
