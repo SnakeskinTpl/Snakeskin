@@ -2,11 +2,14 @@ Snakeskin.addDirective(
 	'import',
 
 	{
-		placement: 'global',
 		notEmpty: true
 	},
 
 	function (command) {
+		if (!{'root': true, 'head': true}[this.structure.name]) {
+			return this.error(`directive "${this.name}" can be used only within the global space or a "head"`);
+		}
+
 		var parts = command.split('='),
 			obj = parts[0].trim();
 
