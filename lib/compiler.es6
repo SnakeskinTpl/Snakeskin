@@ -171,9 +171,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		/** @expose */
 		Snakeskin.LocalVars.include = {};
 
-		/** @expose */
-		Snakeskin.LocalVars.$_ = void 0;
-
 		if (IS_NODE && info['file']) {
 			filename =
 				info['file'] = require('path')['normalize'](info['file']);

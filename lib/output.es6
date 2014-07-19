@@ -637,7 +637,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					f += `['${current[k]}']`;
 				}
 
-				resTmp = `(${this.tplName ? '$_' : '__LOCAL__.$_'} = __FILTERS__${f}` +
+				resTmp = `(${this.tplName ? '$_' : `__LOCAL__['\$_${uid}']`} = __FILTERS__${f}` +
 					(filterWrapper || !pCount ? '(' : '') +
 					resTmp +
 					(input ? ',' + input : '') +
