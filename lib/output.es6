@@ -100,13 +100,15 @@ DirObj.prototype.replaceTplVars = function (str) {
 			if (!escape) {
 				let next3str = next2str + str.charAt(i + 2);
 				if (el === SC.charAt(0) || el === MCS.charAt(0)) {
-					if (next3str === SC) {
-						comment = next3str;
-						i+= 2;
+					if (!comment) {
+						if (next3str === SC) {
+							comment = next3str;
+							i+= 2;
 
-					} else if (next2str === MCS) {
-						comment = next2str;
-						i++;
+						} else if (next2str === MCS) {
+							comment = next2str;
+							i++;
+						}
 
 					} else if (str.charAt(i - 1) === MCE.charAt(0) && comment === MCS) {
 						comment = false;
