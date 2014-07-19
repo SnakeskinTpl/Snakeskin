@@ -1,12 +1,5 @@
-var globalCache = {
-	'true': {},
-	'false': {}
-};
-
-var globalFnCache = {
-	'true': {},
-	'false': {}
-};
+var globalCache = {},
+	globalFnCache = {};
 
 var cache = {},
 	table = {};

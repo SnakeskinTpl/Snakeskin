@@ -154,10 +154,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	var text = html || src;
+	var cacheKey = [
+		cjs,
+		p.inlineIterators,
+		p.stringBuffer,
+		p.escapeOutput,
+		p.interface,
+		p.prettyPrint
+	].join();
 
 	// Кеширование шаблонов в node.js
-	if (IS_NODE && cjs && globalFnCache[cjs][text]) {
-		let cache = globalFnCache[cjs][text];
+	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
+		let cache = globalFnCache[cacheKey][text];
 
 		for (let key in cache) {
 			if (!cache.hasOwnProperty(key)) {
@@ -167,11 +175,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			ctx[key] = cache[key];
 		}
 
-		return globalCache[cjs][text];
+		return globalCache[cacheKey][text];
 	}
 
-	if (globalCache[cjs][text]) {
-		return globalCache[cjs][text];
+	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
+		return globalCache[cacheKey][text];
 	}
 
 	var dir = new DirObj(String(text), {
@@ -693,7 +701,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	try {
 		// Компиляция на сервере
 		if (IS_NODE) {
-			if (cjs && ctx !== NULL) {
+			if (ctx !== NULL) {
 				new Function(
 					'module',
 
@@ -726,11 +734,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				);
 
 				ctx['init'](Snakeskin);
-				globalFnCache[cjs][text] = ctx;
+
+				if (!globalFnCache[cacheKey]) {
+					globalFnCache[cacheKey] = {};
+				}
+
+				globalFnCache[cacheKey][text] = ctx;
 			}
 
 		// Живая компиляция в браузере
-		} else {
+		} else if (!cjs) {
 			console.log(dir.res);
 			dir.evalStr(dir.res);
 		}
@@ -743,7 +756,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	globalCache[cjs][text] = dir.res;
+	if (!globalCache[cacheKey]) {
+		globalCache[cacheKey] = {};
+	}
+
+	globalCache[cacheKey][text] = dir.res;
 
 	if (!IS_NODE && !cjs) {
 		setTimeout(() => {
