@@ -44,7 +44,7 @@ DirObj.prototype.evalStr = function (str) {
 
 			void 0,
 			void 0,
-			Snakeskin.Vars.$_,
+			Snakeskin.LocalVars.$_,
 
 				root['$C'] != null ?
 				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
@@ -88,7 +88,7 @@ DirObj.prototype.evalStr = function (str) {
 
 			void 0,
 			void 0,
-			Snakeskin.Vars.$_,
+			Snakeskin.LocalVars.$_,
 
 				root['$C'] != null ?
 				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
