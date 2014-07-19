@@ -61,7 +61,7 @@ DirObj.prototype.returnDeclAttr = function (command, opt_group, opt_separator) {
 			let val = this.prepareOutput(vals[j], true) || '';
 
 			res += `
-				if (${val} != null) {
+				if ((${val}) != null) {
 					__STR__ += __J__ ? ' ' + ${val} : ${val};
 					__J__++;
 				}
@@ -69,7 +69,7 @@ DirObj.prototype.returnDeclAttr = function (command, opt_group, opt_separator) {
 		}
 
 		res += `
-			if (${arg[0]} != null && __STR__) {
+			if ((${arg[0]}) != null && __STR__) {
 				${this.wrap(`' ' + ${arg[0]} + ' = "' + __STR__ + '"'`)}
 			}
 		`;
