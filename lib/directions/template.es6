@@ -107,6 +107,80 @@ DirObj.prototype.getFnArgs = function (str) {
 	return res;
 };
 
+/**
+ * Заменить %fileName% в заданной строке на имя активного файла
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.replaceFileName = function (str) {
+	var file = this.info['file'];
+
+	if (IS_NODE && file) {
+		let path = require('path');
+		str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (sstr, $1) => {
+			var str = path['basename'](file, '.ss');
+
+			if ($1) {
+				if ($1 !== '.') {
+					str = `${$1}'${str}'`;
+
+				} else {
+					str = $1 + str;
+				}
+			}
+
+			return str;
+		}));
+	}
+
+	return str;
+};
+
+var nmRgxp = /\.|\[/m,
+	nmsRgxp = /\[/gm,
+	nmeRgxp = /]/gm;
+
+/**
+ * Подготовить заданную строку декларации имени шаблона
+ * (вычисление выражений и т.д.)
+ *
+ * @param {string} name - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.prepareNameDecl = function (name) {
+	name = this.replaceFileName(name);
+	if (nmRgxp.test(name)) {
+		let tmpArr = name
+			.replace(nmsRgxp, '.%')
+			.replace(nmeRgxp, '')
+			.split('.');
+
+		let str = tmpArr[0],
+			length = tmpArr.length;
+
+		for (let i = 1; i < length; i++) {
+			let el = tmpArr[i],
+				custom = el.charAt(0) === '%';
+
+			if (custom) {
+				el = el.substring(1);
+			}
+
+			if (custom) {
+				str += `['${this.evalStr(`return ${this.pasteDangerBlocks(el)}`)}']`;
+				continue;
+			}
+
+			str += `.${el}`;
+		}
+
+		name = str;
+	}
+
+	return name.trim();
+};
+
 for (let i = 0; i < template.length; i++) {
 	Snakeskin.addDirective(
 		template[i],
@@ -128,9 +202,8 @@ for (let i = 0; i < template.length; i++) {
 			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
-			var file = this.info['file'],
-				iface =
-					this.name === 'interface';
+			var iface =
+				this.name === 'interface';
 
 			var lastName = null,
 				proto = this.proto;
@@ -139,35 +212,8 @@ for (let i = 0; i < template.length; i++) {
 				args,
 				pos;
 
-			var nmRgxp = /\.|\[/m,
-				nmsRgxp = /\[/gm,
-				nmeRgxp = /]/gm;
-
-			// Замена %fileName% на имя файла в node.js
-			var replaceFileName = (tplName) => {
-				if (IS_NODE && file) {
-					let path = require('path');
-					tplName = this.replaceDangerBlocks(tplName.replace(/(.?)%fileName%/g, (sstr, $1) => {
-						var str = path['basename'](file, '.ss');
-
-						if ($1) {
-							if ($1 !== '.') {
-								str = `${$1}'${str}'`;
-
-							} else {
-								str = $1 + str;
-							}
-						}
-
-						return str;
-					}));
-				}
-
-				return tplName;
-			};
-
 			if (!proto) {
-				tmpTplName = replaceFileName(tmpTplName);
+				tmpTplName = this.replaceFileName(tmpTplName);
 				let prfx = '';
 
 				if (/\*/.test(tmpTplName)) {
@@ -294,35 +340,7 @@ for (let i = 0; i < template.length; i++) {
 					return this.error(`invalid "${this.name}" name for extend`);
 				}
 
-				parentTplName = replaceFileName(parentTplName);
-				if (nmRgxp.test(parentTplName)) {
-					let tmpArr = parentTplName
-						.replace(nmsRgxp, '.%')
-						.replace(nmeRgxp, '')
-						.split('.');
-
-					let str = tmpArr[0],
-						length = tmpArr.length;
-
-					for (let i = 1; i < length; i++) {
-						let el = tmpArr[i],
-							custom = el.charAt(0) === '%';
-
-						if (custom) {
-							el = el.substring(1);
-						}
-
-						if (custom) {
-							str += `['${this.evalStr(`return ${this.pasteDangerBlocks(el)}`)}']`;
-							continue;
-						}
-
-						str += `.${el}`;
-					}
-
-					parentTplName = str;
-				}
-
+				parentTplName = this.prepareNameDecl(parentTplName);
 				if (cache[parentTplName] == null) {
 					if (!this.interface) {
 						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
