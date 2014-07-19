@@ -201,7 +201,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		var parent = this.structure.parent;
 
-		if ((!parent || parent.name === 'root') && !this.getGroup('template')[name] && from !== to) {
+		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
 			try {
 				let str = this.pasteDangerBlocks(res.substring(from, to));
 				this.evalStr(str);
@@ -244,6 +244,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 //#include ./directions/async.js
 //#include ./directions/control.js
 //#include ./directions/eval.js
+//#include ./directions/head.js
 //#include ./directions/include.js
 //#include ./directions/yield.js
 //#include ./directions/doctype.js

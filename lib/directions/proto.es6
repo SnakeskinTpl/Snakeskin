@@ -57,6 +57,7 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		group: [
 			'template',
+			'define',
 			'inherit',
 			'blockInherit'
 		]
