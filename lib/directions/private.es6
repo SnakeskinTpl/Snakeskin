@@ -68,7 +68,16 @@ Snakeskin.addDirective(
 		this.startInlineDir('cdata');
 		this.isSimpleOutput();
 
-		this.info['line'] += parseInt(command, 10);
+		var val = parseInt(command, 10),
+			line = this.info['line'];
+
+		this.info['line'] += val;
+
+		if (!this.proto) {
+			for (let i = 0; i < val; i++) {
+				this.lines[line + i] = '';
+			}
+		}
 	}
 );
 
