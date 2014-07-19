@@ -80,6 +80,10 @@ DirObj.prototype.error = function (msg) {
 	error.name = 'SnakeskinError';
 	this.brk = true;
 
+	if (this.proto) {
+		this.parent.brk = true;
+	}
+
 	if (this.onError) {
 		this.onError(error);
 

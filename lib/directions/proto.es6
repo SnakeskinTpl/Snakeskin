@@ -220,6 +220,7 @@ Snakeskin.addDirective(
 					null,
 
 					{
+						parent: this,
 						lines: this.lines.slice(),
 
 						needPrfx: this.needPrfx,

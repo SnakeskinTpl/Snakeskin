@@ -55,6 +55,8 @@ var nextLineRgxp = /[\r\n\v]/,
  * @param {Object=} [opt_sysParams.proto] - объект настроек прототипа
  *
  * @param {Array=} [opt_sysParams.lines] - массив строк шаблона
+ * @param {DirObj=} [opt_sysParams.parent] - ссылка на родительский объект
+ *
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
@@ -89,6 +91,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	sp.needPrfx = s(sp.needPrfx, sp['needPrfx']);
 	sp.prfxI = s(sp.prfxI, sp['prfxI']);
 	sp.lines = s(sp.lines, sp['lines']);
+	sp.parent = s(sp.parent, sp['parent']);
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -179,7 +182,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		throws: p.throws,
 		needPrfx: sp.needPrfx,
 		prfxI: sp.prfxI,
-		lines: sp.lines
+		lines: sp.lines,
+		parent: sp.parent
 	});
 
 	// Если true, то идёт содержимое директивы,
