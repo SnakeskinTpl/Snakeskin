@@ -86,6 +86,7 @@ function run(params) {
 }
 
 run({commonJS: true, prettyPrint: true, throws: true});
+run({commonJS: true, prettyPrint: true, throws: true});
 run({commonJS: true, prettyPrint: true, throws: true, inlineIterators: true});
 run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true});
 run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true, inlineIterators: true});
