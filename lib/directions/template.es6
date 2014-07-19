@@ -139,11 +139,15 @@ for (let i = 0; i < template.length; i++) {
 				args,
 				pos;
 
-			if (!proto) {
-				// Замена %fileName% на имя файла в node.js
+			var nmRgxp = /\.|\[/m,
+				nmsRgxp = /\[/gm,
+				nmeRgxp = /]/gm;
+
+			// Замена %fileName% на имя файла в node.js
+			var replaceFileName = (tplName) => {
 				if (IS_NODE && file) {
 					let path = require('path');
-					tmpTplName = this.replaceDangerBlocks(tmpTplName.replace(/(.?)%fileName%/g, (sstr, $1) => {
+					tplName = this.replaceDangerBlocks(tplName.replace(/(.?)%fileName%/g, (sstr, $1) => {
 						var str = path['basename'](file, '.ss');
 
 						if ($1) {
@@ -159,7 +163,11 @@ for (let i = 0; i < template.length; i++) {
 					}));
 				}
 
-				// Определение декларации генератора
+				return tplName;
+			};
+
+			if (!proto) {
+				tmpTplName = replaceFileName(tmpTplName);
 				let prfx = '';
 
 				if (/\*/.test(tmpTplName)) {
@@ -199,14 +207,11 @@ for (let i = 0; i < template.length; i++) {
 
 				// Декларация функции
 				// с пространством имён или при экспорте в common.js
-				if (/\.|\[/m.test(tmpTplName) || this.commonJS) {
+				if (nmRgxp.test(tmpTplName) || this.commonJS) {
 					lastName = '';
 					let tmpArr = tmpTplName
-
-						// Заменяем [] на .
-						.replace(/\[/gm, '.%')
-						.replace(/]/gm, '')
-
+						.replace(nmsRgxp, '.%')
+						.replace(nmeRgxp, '')
 						.split('.');
 
 					let str = tmpArr[0],
@@ -278,7 +283,7 @@ for (let i = 0; i < template.length; i++) {
 			var parentTplName;
 			if (/\bextends\b/m.test(command)) {
 				try {
-					parentTplName = this.pasteDangerBlocks(/\s+extends\s+(.*)/m.exec(command)[1]);
+					parentTplName = /\s+extends\s+(.*)/m.exec(command)[1];
 					this.parentTplName = parentTplName;
 
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
@@ -287,6 +292,35 @@ for (let i = 0; i < template.length; i++) {
 
 				} catch (ignore) {
 					return this.error(`invalid "${this.name}" name for extend`);
+				}
+
+				parentTplName = replaceFileName(parentTplName);
+				if (nmRgxp.test(parentTplName)) {
+					let tmpArr = parentTplName
+						.replace(nmsRgxp, '.%')
+						.replace(nmeRgxp, '')
+						.split('.');
+
+					let str = tmpArr[0],
+						length = tmpArr.length;
+
+					for (let i = 1; i < length; i++) {
+						let el = tmpArr[i],
+							custom = el.charAt(0) === '%';
+
+						if (custom) {
+							el = el.substring(1);
+						}
+
+						if (custom) {
+							str += `['${this.evalStr(`return ${this.pasteDangerBlocks(el)}`)}']`;
+							continue;
+						}
+
+						str += `.${el}`;
+					}
+
+					parentTplName = str;
 				}
 
 				if (cache[parentTplName] == null) {
