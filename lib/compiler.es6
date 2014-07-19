@@ -91,6 +91,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
 
+	var vars =
+		p.vars = s(p.vars, p['vars']) || {};
+
+	for (let key in vars) {
+		if (!vars.hasOwnProperty(key)) {
+			continue;
+		}
+
+		Snakeskin.Vars[key] = vars[key];
+	}
+
 	var info = opt_info || {};
 
 	info['file'] = s(info.file, info['file']);
@@ -136,17 +147,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	sp.prfxI = s(sp.prfxI, sp['prfxI']);
 	sp.lines = s(sp.lines, sp['lines']);
 	sp.parent = s(sp.parent, sp['parent']);
-
-	var vars =
-		p.vars = s(p.vars, p['vars']) || {};
-
-	for (let key in vars) {
-		if (!vars.hasOwnProperty(key)) {
-			continue;
-		}
-
-		Snakeskin.Vars[key] = vars[key];
-	}
 
 	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
 
