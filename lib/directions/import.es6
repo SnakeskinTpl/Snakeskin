@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			this.save(`
 				var __${obj}__,
-					${obj} = __${obj}__ = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
+					${obj} = __${obj}__ = __LOCAL__.${obj} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
 				`);
 		}
 	}
