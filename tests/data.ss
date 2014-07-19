@@ -7,7 +7,7 @@ data_decl
 	{a = ' foo '}
 
 	{= {a: "${a|trim|ucfirst}"}
-		/// 1212
+		/// 1212/*4545*/
 	}
 	{{${a|trim|ucfirst}}}
 
@@ -17,7 +17,7 @@ data_decl
 {template data_decl()}
 	{foo = 'bar'}
 
-	{{/* 1212121212 */foo}}
+	{{/* 1212///121212 */foo}}
 	{{#{foo/* 1111 */}}}
 	#{{#{foo}}}
 {/}
