@@ -644,13 +644,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
+	if (dir.proto) {
+		return dir.res;
+	}
+
 	dir.res = dir.pasteDangerBlocks(dir.res)
 
 		// Обратная замена cdata областей
 		.replace(
-			/__CDATA__(\d+)_/g,
-			(sstr, pos) => escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
-		);
+		/__CDATA__(\d+)_/g,
+		(sstr, pos) => escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
+	);
 
 	// Удаление пустых операций
 	if (p.stringBuffer) {
@@ -660,15 +664,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		dir.res = dir.res.replace(/__RESULT__ \+= '';/g, '');
 	}
 
-	// Конец шаблона
-	if (!dir.proto) {
-		dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
-	}
-
-	if (dir.proto) {
-		return dir.res;
-	}
-
+	dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
 	dir.res += `
 		Snakeskin.LocalVars = {
 			include: {},
