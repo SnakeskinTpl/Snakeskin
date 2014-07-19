@@ -421,7 +421,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 	for (let i = 0; i < commandLength; i++) {
 		let el = command.charAt(i),
 			next = command.charAt(i + 1),
-			nnext = command.charAt(i + 2);
+			nNext = command.charAt(i + 2);
 
 		if (!breakNum) {
 			if (el === '(') {
@@ -443,7 +443,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				let word = nextStep.word,
 					finalWord = nextStep.finalWord;
 
-				let uadd = wordAddEnd + addition,
+				let uAdd = wordAddEnd + addition,
 					vres;
 
 				// true,
@@ -544,14 +544,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 				if (filterStart) {
 					let last = filter.length - 1;
-
 					filter[last] += vres;
 					rvFilter[last] += word;
-
 					filterAddEnd += vres.length - word.length;
 
 				} else {
-					res = res.substring(0, i + uadd) + vres + res.substring(i + word.length + uadd);
+					res = res.substring(0, i + uAdd) + vres + res.substring(i + word.length + uAdd);
 				}
 
 				// Дело сделано, теперь с чистой совестью матаем на позицию:
@@ -574,7 +572,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			if (!filterStart) {
 				if (el === ')') {
 					// Закрылась скобка, а последующие 2 символа не являются фильтром
-					if (next !== F || !filterRgxp.test(nnext)) {
+					if (next !== F || !filterRgxp.test(nNext)) {
 						if (pCount) {
 							pCount--;
 						}
@@ -604,8 +602,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
 			let pos = pContent[0];
 
-			let fadd = wordAddEnd - filterAddEnd + addition,
-				fbody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fadd);
+			let fAdd = wordAddEnd - filterAddEnd + addition,
+				fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
 
 			let arr = [];
 			for (let j = 0; j < filter.length; j++) {
@@ -625,7 +623,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			}
 
 			filter = arr;
-			let resTmp = fbody;
+			let resTmp = fBody;
 
 			for (let j = 0; j < filter.length; j++) {
 				let params = filter[j].split(' '),
@@ -654,15 +652,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 				res.substring(0, pos[0] + addition) +
 					resTmp +
-					res.substring(pos[1] + fadd + fstr) :
+					res.substring(pos[1] + fAdd + fstr) :
 
 				resTmp;
 
 			pContent.shift();
-
 			filter = [];
 			rvFilter = [];
-
 			filterStart = false;
 
 			if (pCount) {
@@ -670,11 +666,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				filterWrapper = false;
 			}
 
-			wordAddEnd += resTmp.length - fbody.length - fstr;
+			wordAddEnd += resTmp.length - fBody.length - fstr;
 
 			if (!pCount) {
 				addition += wordAddEnd - filterAddEnd;
-
 				wordAddEnd = 0;
 				filterAddEnd = 0;
 			}
@@ -707,7 +702,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 
 		// Через 2 итерации начнётся фильтр
-		if (next === F && filterRgxp.test(nnext)) {
+		if (next === F && filterRgxp.test(nNext)) {
 			nword = false;
 
 			if (!filterStart) {
@@ -721,8 +716,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 			filterStart = true;
 			if (!pCountFilter) {
-				filter.push(nnext);
-				rvFilter.push(nnext);
+				filter.push(nNext);
+				rvFilter.push(nNext);
 				i += 2;
 			}
 		}
