@@ -20,7 +20,7 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 	{2 / 2}
 {/template}
 
-/* Foo */
+/*/ Foo */
 /// bar
 
 /**
@@ -42,7 +42,7 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
 	{a = 1}
 	{a === 1 ? 1 : 2}
-	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*/
+	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*////3
 {/}
 
 ###
