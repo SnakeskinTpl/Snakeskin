@@ -92,7 +92,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		switch (params.placement) {
 			case 'template': {
 				if (!struct.parent) {
-					dir.error(`directive "${dirName}" can only be used within a ${groupsList['template'].join(', ')}`);
+					dir.error(`directive "${dirName}" can be used only within a ${groupsList['template'].join(', ')}`);
 				}
 
 			} break;

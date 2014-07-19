@@ -89,7 +89,7 @@ Snakeskin.addDirective(
 		// Вывод значения
 		} else {
 			if (!this.structure.parent) {
-				return this.error(`Directive "output" can only be used within a ${groupsList['template'].join(', ')}`);
+				return this.error(`Directive "output" can be used only within a ${groupsList['template'].join(', ')}`);
 			}
 
 			this.startInlineDir('output');

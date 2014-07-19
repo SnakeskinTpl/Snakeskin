@@ -104,7 +104,7 @@ Snakeskin.addDirective(
 		var async = this.getGroup('series');
 
 		if (!async[this.structure.name]) {
-			return this.error(`directive "${this.name}" can only be used with a "${this.structure.name}"`);
+			return this.error(`directive "${this.name}" can be used only with a "${this.structure.name}"`);
 		}
 
 		var parts = command.split('=>');

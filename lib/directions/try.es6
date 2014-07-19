@@ -53,7 +53,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'try') {
-			return this.error(`directive "${this.name}" can only be used with a "try"`);
+			return this.error(`directive "${this.name}" can be used only with a "try"`);
 		}
 
 		this.structure.params.chain = true;
@@ -73,7 +73,7 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.structure.name !== 'try') {
-			return this.error(`directive "${this.name}" can only be used with a "try"`);
+			return this.error(`directive "${this.name}" can be used only with a "try"`);
 		}
 
 		this.structure.params.chain = true;

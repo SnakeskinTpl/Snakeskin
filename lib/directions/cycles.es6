@@ -127,7 +127,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.structure.name !== 'repeat') {
-			return this.error(`directive "${this.name}" can only be used with a "repeat"`);
+			return this.error(`directive "${this.name}" can be used only with a "repeat"`);
 		}
 
 		this.structure.params.chain = true;
