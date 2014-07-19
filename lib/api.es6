@@ -756,7 +756,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	var realVar;
 	if (struct.name === 'root') {
-		realVar = `__LOCAL__.${varName}_${this.module.id}`;
+		realVar = `__LOCAL__.${varName}_${this.module.id}_${uid}`;
 
 	} else {
 		realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${struct.name}_${this.i}`;

@@ -2,6 +2,8 @@ var nextLineRgxp = /[\r\n\v]/,
 	whiteSpaceRgxp = /\s/,
 	bEndRgxp = /[^\s\/]/;
 
+var uid;
+
 /**
  * Скомпилировать указанные шаблоны Snakeskin
  *
@@ -121,13 +123,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		filename;
 
 	if (!sp.proto) {
-		Snakeskin.LocalVars = {
-			/** @expose */
-			include: {},
+		uid = Math.random()
+			.toString(16)
+			.replace('0.', '')
+			.substring(0, 5);
 
-			/** @expose */
-			$_: void 0
-		};
+		/** @expose */
+		Snakeskin.LocalVars.include = {};
+
+		/** @expose */
+		Snakeskin.LocalVars.$_ = void 0;
 
 		if (IS_NODE && info['file']) {
 			filename =
@@ -670,14 +675,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
-	dir.res += `
-		Snakeskin.LocalVars = {
-			include: {},
-			\$_: {}
-		};
-
-		${cjs ? '}' : ''}}).call(this);
-	`;
+	dir.res += `${cjs ? '}' : ''}}).call(this);`;
 
 	for (let key in dir.preProtos) {
 		if (!dir.preProtos.hasOwnProperty(key)) {
@@ -738,8 +736,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 	} catch (err) {
-		Snakeskin.LocalVars = null;
-
 		delete info['line'];
 		delete info['template'];
 
