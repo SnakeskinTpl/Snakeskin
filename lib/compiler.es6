@@ -91,57 +91,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
 
-	sp.needPrfx = s(sp.needPrfx, sp['needPrfx']);
-	sp.prfxI = s(sp.prfxI, sp['prfxI']);
-	sp.lines = s(sp.lines, sp['lines']);
-	sp.parent = s(sp.parent, sp['parent']);
-
-	var vars =
-		p.vars = s(p.vars, p['vars']) || {};
-
-	for (let key in vars) {
-		if (!vars.hasOwnProperty(key)) {
-			continue;
-		}
-
-		Snakeskin.Vars[key] = vars[key];
-	}
-
-	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
-
-	var i18n =
-		p.localization = s(p.localization, p['localization']) !== false;
-
-	var lang =
-		p.language = s(p.language, p['language']);
-
-	var words =
-		p.words = s(p.words, p['words']);
-
 	var info = opt_info || {};
-	var dirname,
-		filename;
-
-	if (!sp.proto) {
-		uid = Math.random()
-			.toString(16)
-			.replace('0.', '')
-			.substring(0, 5);
-
-		/** @expose */
-		Snakeskin.LocalVars.include = {};
-
-		/** @expose */
-		Snakeskin.LocalVars.$_ = void 0;
-
-		if (IS_NODE && info['file']) {
-			filename =
-				info['file'] = require('path')['normalize'](info['file']);
-
-			dirname = require('path')['dirname'](filename);
-			Snakeskin.LocalVars.include[filename] = 'index';
-		}
-	}
 
 	info['file'] = s(info.file, info['file']);
 	info['line'] = info['line'] || 1;
@@ -180,6 +130,57 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
 		return globalCache[cacheKey][text];
+	}
+
+	sp.needPrfx = s(sp.needPrfx, sp['needPrfx']);
+	sp.prfxI = s(sp.prfxI, sp['prfxI']);
+	sp.lines = s(sp.lines, sp['lines']);
+	sp.parent = s(sp.parent, sp['parent']);
+
+	var vars =
+		p.vars = s(p.vars, p['vars']) || {};
+
+	for (let key in vars) {
+		if (!vars.hasOwnProperty(key)) {
+			continue;
+		}
+
+		Snakeskin.Vars[key] = vars[key];
+	}
+
+	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
+
+	var i18n =
+		p.localization = s(p.localization, p['localization']) !== false;
+
+	var lang =
+		p.language = s(p.language, p['language']);
+
+	var words =
+		p.words = s(p.words, p['words']);
+
+	var dirname,
+		filename;
+
+	if (!sp.proto) {
+		uid = Math.random()
+			.toString(16)
+			.replace('0.', '')
+			.substring(0, 5);
+
+		/** @expose */
+		Snakeskin.LocalVars.include = {};
+
+		/** @expose */
+		Snakeskin.LocalVars.$_ = void 0;
+
+		if (IS_NODE && info['file']) {
+			filename =
+				info['file'] = require('path')['normalize'](info['file']);
+
+			dirname = require('path')['dirname'](filename);
+			Snakeskin.LocalVars.include[filename] = 'index';
+		}
 	}
 
 	var dir = new DirObj(String(text), {

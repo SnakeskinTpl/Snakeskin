@@ -482,9 +482,6 @@ for (let i = 0; i < template.length; i++) {
 					this.source.substring(this.i + 1);
 			}
 
-			var $CExport = this.prepareOutput('$C', true),
-				asyncExport = this.prepareOutput('async', true);
-
 			this.save(`
 				${defParams}
 
@@ -497,12 +494,6 @@ for (let i = 0; i < template.length; i++) {
 
 				var TPL_NAME = '${applyDefEscape(tplName)}',
 					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
-
-				var \$C = __\$C__ || typeof ${$CExport} !== 'undefined' ?
-					${$CExport} : Snakeskin.Vars.\$C;
-
-				var async = __async__ || typeof ${asyncExport} !== 'undefined' ?
-					${asyncExport} : Snakeskin.Vars.async;
 			`);
 
 			var preProtos = this.preProtos[tplName];
