@@ -21,8 +21,10 @@ Snakeskin.addDirective(
 
 		this.module.children.push(module);
 		this.module = module;
-
 		this.info['file'] = command;
+
+		this._varsTmp = this.structure.vars;
+		this.structure.vars = {};
 	}
 );
 
@@ -36,6 +38,7 @@ Snakeskin.addDirective(
 	function () {
 		this.module = this.module.parent;
 		this.info['file'] = this.module.filename;
+		this.structure.vars = this._varsTmp;
 	}
 );
 

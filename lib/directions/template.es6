@@ -168,7 +168,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 			}
 
 			if (custom) {
-				str += `['${this.evalStr(`return ${this.pasteDangerBlocks(el)}`)}']`;
+				str += `['${this.evalStr(`return ${this.pasteDangerBlocks(this.prepareOutput(el, true))}`)}']`;
 				continue;
 			}
 
@@ -287,7 +287,7 @@ for (let i = 0; i < template.length; i++) {
 						}
 
 						if (custom) {
-							str += `['${this.evalStr(`return ${this.pasteDangerBlocks(el)}`)}']`;
+							str += `['${this.evalStr(`return ${this.pasteDangerBlocks(this.prepareOutput(el, true))}`)}']`;
 							continue;
 
 						} else if (i === length - 1) {
