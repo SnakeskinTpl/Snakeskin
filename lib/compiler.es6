@@ -340,7 +340,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.i += 2;
 
 						} else if (next2str === MCS) {
-							if (next3str === JD) {
+							if (next3str === JD && !begin) {
 								if (beginStr && dir.isSimpleOutput()) {
 									dir.save(`'${dir.$$()};`);
 								}
