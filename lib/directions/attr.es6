@@ -94,7 +94,8 @@ function splitGroup(str) {
 	var pOpen = 0;
 	var separator = {
 		'-': true,
-		':': true
+		':': true,
+		'_': true
 	};
 
 	for (let i = 0; i < str.length; i++) {
