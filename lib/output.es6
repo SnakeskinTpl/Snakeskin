@@ -599,6 +599,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 			return '';
 		}
 
+		// Закрылся локальный или глобальный фильтр
 		if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
 			let pos = pContent[0];
 
