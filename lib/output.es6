@@ -368,7 +368,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	// true, если применяется фильтр !undef
 	var unUndef = false,
-		undefLabel = '{undef}';
+		unUndefLabel = '{undef}',
+		unUndefRgxp = new RegExp(unUndefLabel, 'g');
 
 	var unMap = {
 		'!html': true,
@@ -535,7 +536,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					posNWord = 2;
 
 				} else if (canParse && (!opt_sys || opt_isys) && !filterStart) {
-					vres = `${undefLabel}(${vres})`;
+					vres = `${unUndefLabel}(${vres})`;
 				}
 
 				wordAddEnd += vres.length - word.length;
@@ -645,7 +646,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 				')';
 			}
 
-			resTmp = resTmp.replace(new RegExp(undefLabel, 'g'), unUndef ? '' : '__FILTERS__.undef');
+			resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
 			unUndef = false;
 
 			let fstr = rvFilter.join().length + 1;
@@ -727,7 +728,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 		}
 	}
 
-	res = res.replace(new RegExp(undefLabel, 'g'), '__FILTERS__.undef');
+	res = res.replace(unUndefRgxp, '__FILTERS__.undef');
 
 	if (opt_validate !== false) {
 		try {
