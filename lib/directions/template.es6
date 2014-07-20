@@ -137,10 +137,11 @@ for (let i = 0; i < template.length; i++) {
 			var lastName = null,
 				proto = this.proto;
 
-			var pos;
 			if (!proto) {
 				tmpTplName = this.replaceFileName(tmpTplName);
-				let prfx = '';
+
+				let prfx = '',
+					pos;
 
 				if (/\*/.test(tmpTplName)) {
 					prfx = '*';
@@ -278,24 +279,23 @@ for (let i = 0; i < template.length; i++) {
 
 			argsCache[tplName] = {};
 			argsResCache[tplName] = {};
-
 			extMap[tplName] = parentTplName;
 
-			var argsTable = this.prepareArgs(command, 'template', tplName, parentTplName);
-			this.save(`${argsTable.str}) {`, iface);
+			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
+			this.save(`${args.str}) {`, iface);
 
-			if (argsTable.scope) {
-				this.scope.push(argsTable.scope);
+			if (args.scope) {
+				this.scope.push(args.scope);
 			}
 
-			if (argsTable.defs) {
+			if (args.defs) {
 				this.source = this.source.substring(0, this.i + 1) +
-					argsTable.defs +
+					args.defs +
 					this.source.substring(this.i + 1);
 			}
 
 			this.save(`
-				${argsTable.defParams}
+				${args.defParams}
 
 				var __THIS__ = this;
 				var __RESULT__ = ${this.declResult()},
