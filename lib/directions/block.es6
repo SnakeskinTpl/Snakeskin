@@ -13,19 +13,35 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var start = this.i - this.startTemplateI;
+		var name = this.getFnName(command),
+			start = this.i - this.startTemplateI;
 
 		this.startDir(null, {
-			name: command,
+			name: name,
 			from: start + 1
 		});
 
+		if (this.isSimpleOutput()) {
+			let argsList = this.getFnArgs(command);
+
+			if (argsList.params) {
+				let fnDecl = `__THIS__.${this.tplName}.${name}`;
+				this.structure.params.fn = fnDecl;
+
+				this.save(`
+					if (!${fnDecl}) {
+						(${fnDecl} = function () {
+							var __RESULT__ = ${this.declResult()};
+				`);
+			}
+		}
+
 		if (this.isAdvTest()) {
-			if (blockCache[this.tplName][command]) {
-				return this.error(`block "${command}" is already defined`);
+			if (blockCache[this.tplName][name]) {
+				return this.error(`block "${name}" is already defined`);
 			}
 
-			blockCache[this.tplName][command] = {
+			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx
 			};
@@ -33,14 +49,27 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
+		var params = this.structure.params;
+
+		if (this.isSimpleOutput() && params.fn) {
+			this.save(`
+						return ${this.returnResult()};
+					})();
+
+				} else {
+					${params.fn}();
+				}
+			`);
+		}
+
 		if (this.isAdvTest()) {
-			let block = blockCache[this.tplName][this.structure.params.name],
+			let block = blockCache[this.tplName][params.name],
 				start = this.i - this.startTemplateI;
 
 			block.to = start + 1;
 			block.content = this.source
 				.substring(this.startTemplateI)
-				.substring(this.structure.params.from, start - this.getDiff(commandLength));
+				.substring(params.from, start - this.getDiff(commandLength));
 		}
 	}
 );
