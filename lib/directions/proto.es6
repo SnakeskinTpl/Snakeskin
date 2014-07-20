@@ -142,9 +142,6 @@ Snakeskin.addDirective(
 				length: commandLength,
 				from: start - this.getDiff(commandLength),
 
-				argsDecl: argsList.params ?
-					`(${argsList.join(',')})` : '',
-
 				args: argsMap,
 				scope: scope,
 

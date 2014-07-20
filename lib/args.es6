@@ -64,34 +64,40 @@ DirObj.prototype.getFnArgs = function (str) {
  * @param {string} tplName - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
  * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
- * @return {{str: string, defs: string, defParams: string, scope: (string|undefined)}}
+ * @return {{args: !Array, str: string, defs: string, defParams: string, scope: (string|undefined)}}
  */
 DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplName, opt_name) {
 	var parentArgs,
 		argsTable;
 
-	if (!argsCache[type]) {
-		argsCache[type] = {};
+	if (!argsCache[tplName]) {
+		argsCache[tplName] = {};
+		argsResCache[tplName] = {};
 	}
 
-	if (!argsCache[type][tplName]) {
-		argsCache[type][tplName] = {};
+	if (!argsCache[tplName][type]) {
+		argsCache[tplName][type] = {};
+		argsResCache[tplName][type] = {};
 	}
 
 	if (opt_name) {
 		if (opt_parentTplName) {
-			parentArgs = argsCache[type][opt_parentTplName][opt_name];
+			parentArgs = argsCache[opt_parentTplName][type][opt_name];
 		}
 
-		if (!argsCache[type][tplName][opt_name]) {
-			argsCache[type][tplName][opt_name] = {};
-		}
+		if (argsCache[tplName][type][opt_name]) {
+			return argsResCache[tplName][type][opt_name];
 
-		argsTable = argsCache[type][tplName][opt_name] = {};
+		} else {
+			argsTable = argsCache[tplName][type][opt_name] = {};
+		}
 
 	} else {
-		parentArgs = argsCache[type][opt_parentTplName];
-		argsTable = argsCache[type][tplName];
+		if (opt_parentTplName) {
+			parentArgs = argsCache[opt_parentTplName][type];
+		}
+
+		argsTable = argsCache[tplName][type];
 	}
 
 	var scope;
@@ -110,6 +116,7 @@ DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplN
 
 				return {
 					str: '',
+					args: [],
 					defs: '',
 					defParams: '',
 					scope: void 0
@@ -203,10 +210,17 @@ DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplN
 		defs += `${this.needPrfx ? ALB : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
 	}
 
-	return {
+	var res = {
 		str: str,
+		args: argsList,
+		scope: scope,
 		defs: defs,
-		defParams: defParams,
-		scope: scope
+		defParams: defParams
 	};
+
+	if (opt_name) {
+		argsResCache[tplName][type][opt_name] = res;
+	}
+
+	return res;
 };

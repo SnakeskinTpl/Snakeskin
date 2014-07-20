@@ -281,6 +281,10 @@ for (let i = 0; i < template.length; i++) {
 			}
 
 			this.initTemplateCache(tplName);
+
+			argsCache[tplName] = {};
+			argsResCache[tplName] = {};
+
 			extMap[tplName] = parentTplName;
 
 			var argsTable = this.prepareArgs(Object(argsList), 'template', tplName, parentTplName);

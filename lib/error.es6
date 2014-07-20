@@ -25,7 +25,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 
 	str = str.replace(/, $/, '');
 	var line = info['line'],
-		styleRgxp = /	|[ ]{4}/g;
+		styleRgxp = /\t|[ ]{4}/g;
 
 	if (line) {
 		let prfx = '',
