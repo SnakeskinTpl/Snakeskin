@@ -60,47 +60,20 @@ DirObj.prototype.getFnArgs = function (str) {
  * на наличие аргументов функции и вернуть результат
  *
  * @param {string} str - исходная строка
- * @param {string} type - тип функции (template, proto и т.д.)
  * @param {string} tplName - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
- * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
- * @return {{args: !Array, str: string, defs: string, defParams: string, scope: (string|undefined)}}
+ * @return {{str: string, defs: string, defParams: string, scope: (string|undefined)}}
  */
-DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
+DirObj.prototype.prepareArgs = function (str, tplName, opt_parentTplName) {
 	var argsList = this.getFnArgs(str);
-
 	var parentArgs,
 		argsTable;
 
-	if (!argsCache[tplName]) {
-		argsCache[tplName] = {};
-		argsResCache[tplName] = {};
+	if (opt_parentTplName) {
+		parentArgs = argsCache[opt_parentTplName];
 	}
 
-	if (!argsCache[tplName][type]) {
-		argsCache[tplName][type] = {};
-		argsResCache[tplName][type] = {};
-	}
-
-	if (opt_name) {
-		if (opt_parentTplName) {
-			parentArgs = argsCache[opt_parentTplName][type][opt_name];
-		}
-
-		if (argsCache[tplName][type][opt_name]) {
-			return argsResCache[tplName][type][opt_name];
-
-		} else {
-			argsTable = argsCache[tplName][type][opt_name] = {};
-		}
-
-	} else {
-		if (opt_parentTplName) {
-			parentArgs = argsCache[opt_parentTplName][type];
-		}
-
-		argsTable = argsCache[tplName][type];
-	}
+	argsTable = argsCache[tplName] = {};
 
 	var scope;
 	for (let i = 0; i < argsList.length; i++) {
@@ -118,7 +91,6 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 
 				return {
 					str: '',
-					args: [],
 					defs: '',
 					defParams: '',
 					scope: void 0
@@ -212,17 +184,10 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		defs += `${this.needPrfx ? ALB : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
 	}
 
-	var res = {
+	return {
 		str: decl,
-		args: argsList,
 		scope: scope,
 		defs: defs,
 		defParams: defParams
 	};
-
-	if (opt_name) {
-		argsResCache[tplName][type][opt_name] = res;
-	}
-
-	return res;
 };

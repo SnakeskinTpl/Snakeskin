@@ -276,12 +276,9 @@ for (let i = 0; i < template.length; i++) {
 			}
 
 			this.initTemplateCache(tplName);
-
-			argsCache[tplName] = {};
-			argsResCache[tplName] = {};
 			extMap[tplName] = parentTplName;
 
-			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
+			var args = this.prepareArgs(command, tplName, parentTplName);
 			this.save(`${args.str}) {`, iface);
 
 			if (args.scope) {

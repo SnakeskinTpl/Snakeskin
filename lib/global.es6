@@ -23,10 +23,9 @@ var routerFromCache = {
 	'proto': fromProtoCache
 };
 
-var argsCache = {},
-	argsResCache = {};
-
+var argsCache = {};
 var extMap = {};
+
 var replacers = {},
 	sys = {},
 	block = {},
