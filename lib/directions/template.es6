@@ -51,63 +51,6 @@ DirObj.prototype.getFnName = function (str) {
 };
 
 /**
- * Вернуть массив аргументов функции
- * из заданной строки
- *
- * @param {string} str - исходная строка
- * @return {!Array}
- */
-DirObj.prototype.getFnArgs = function (str) {
-	var res = [],
-		params = false;
-
-	var pOpen = 0,
-		arg = '';
-
-	for (let i = 0; i < str.length; i++) {
-		let el = str[i];
-
-		if (el === '(') {
-			pOpen++;
-			params = true;
-
-			if (pOpen === 1) {
-				continue;
-			}
-
-		} else if (el === ')') {
-			pOpen--;
-
-			if (!pOpen) {
-				break;
-			}
-		}
-
-		if (el === ',' && pOpen === 1) {
-			res.push(arg);
-			arg = '';
-			continue;
-		}
-
-		if (pOpen) {
-			arg += el;
-		}
-	}
-
-	if (pOpen) {
-		this.error(`invalid "${this.name}" declaration`);
-		return [];
-	}
-
-	if (arg) {
-		res.push(arg);
-	}
-
-	res.params = params;
-	return res;
-};
-
-/**
  * Заменить %fileName% в заданной строке на имя активного файла
  *
  * @param {string} str - исходная строка
@@ -357,133 +300,21 @@ for (let i = 0; i < template.length; i++) {
 			this.initTemplateCache(tplName);
 			extMap[tplName] = parentTplName;
 
-			// Входные параметры
-			var parentArgs = paramsCache[parentTplName],
-				argsTable = paramsCache[tplName] = {},
-				scope;
+			var argsTable = this.prepareArgs(Object(argsList), 'template', tplName, parentTplName);
+			this.save(`${argsTable.str}) {`, iface);
 
-			for (let i = 0; i < argsList.length; i++) {
-				let arg = argsList[i].split('=');
-				arg[0] = arg[0].trim();
-
-				if (arg.length > 1) {
-					arg[1] = arg.slice(1).join('=').trim();
-					arg.splice(2, arg.length);
-				}
-
-				if (scopeModRgxp.test(arg[0])) {
-					if (scope) {
-						return this.error(`invalid "${this.name}" declaration`);
-
-					} else {
-						scope = arg[0].replace(scopeModRgxp, '');
-					}
-				}
-
-				argsTable[arg[0]] = {
-					i: i,
-					key: arg[0],
-					value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
-				};
+			if (argsTable.scope) {
+				this.scope.push(argsTable.scope);
 			}
 
-			// Если шаблон наследуется,
-			// то подмешиваем ко входым параметрам шаблона
-			// входные параметры родителя
-			if (parentArgs) {
-				for (let key in parentArgs) {
-					if (!parentArgs.hasOwnProperty(key)) {
-						continue;
-					}
-
-					let el = parentArgs[key],
-						current = argsTable[key];
-
-					let cVal = current &&
-						current.value === void 0;
-
-					if (el.value !== void 0) {
-						if (!argsTable[key]) {
-							argsTable[key] = {
-								local: true,
-								i: el.i,
-								key: key,
-								value: el.value
-							};
-
-						} else if (cVal) {
-							argsTable[key].value = el.value;
-						}
-					}
-				}
-			}
-
-			if (scope) {
-				this.scope.push(scope);
-			}
-
-			argsList = [];
-			var localVars = [];
-
-			for (let key in argsTable) {
-				if (!argsTable.hasOwnProperty(key)) {
-					continue;
-				}
-
-				let el = argsTable[key];
-
-				if (el.local) {
-					localVars[el.i] = el;
-
-				} else {
-					argsList[el.i] = el;
-				}
-			}
-
-			// Инициализация параметров по умолчанию
-			// (эээххх, когда же настанет ECMAScript 6 :()
-			var defParams = '';
-			for (let i = 0; i < argsList.length; i++) {
-				let el = argsList[i];
-				el.key = el.key.replace(scopeModRgxp, '');
-
-				this.save(el.key, iface);
-				constICache[tplName][el.key] = el;
-
-				if (el.value !== void 0) {
-					defParams += `${el.key} = ${el.key} != null ? ${el.key} : ${this.prepareOutput(el.value, true)};`;
-				}
-
-				// После последнего параметра запятая не ставится
-				if (i !== argsList.length - 1) {
-					this.save(',', iface);
-				}
-			}
-
-			this.save(') {', iface);
-
-			// Входные параметры родительского шаблона,
-			// для которых есть значение по умолчанию,
-			// ставятся как локальные переменные
-			var defs = '';
-			for (let i = 0; i < localVars.length; i++) {
-				let el = localVars[i];
-
-				if (!el) {
-					continue;
-				}
-
-				defs += `${this.needPrfx ? ALB : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
-			}
-
-			if (defs) {
+			if (argsTable.defs) {
 				this.source = this.source.substring(0, this.i + 1) +
-					defs +
+					argsTable.defs +
 					this.source.substring(this.i + 1);
 			}
 
 			this.save(`
-				${defParams}
+				${argsTable.defParams}
 
 				var __THIS__ = this;
 				var __RESULT__ = ${this.declResult()},
