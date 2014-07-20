@@ -34,23 +34,6 @@ var template = ['template', 'interface', 'placeholder'];
 var scopeModRgxp = new RegExp(`^${G_MOD}`);
 
 /**
- * Вернуть имя функции из заданной строки
- *
- * @param {string} str - исходная строка
- * @return {string}
- */
-DirObj.prototype.getFnName = function (str) {
-	var tmp = /[^(]+/.exec(str),
-		val = tmp ? tmp[0].trim() : '';
-
-	if (!val) {
-		this.error(`invalid "${this.name}" declaration`);
-	}
-
-	return val;
-};
-
-/**
  * Заменить %fileName% в заданной строке на имя активного файла
  *
  * @param {string} str - исходная строка
