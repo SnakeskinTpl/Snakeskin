@@ -56,17 +56,19 @@ DirObj.prototype.getFnArgs = function (str) {
 };
 
 /**
- * Произвести анализ массива аргументов функции
- * и вернуть таблицу-результат
+ * Произвести анализ заданной строки
+ * на наличие аргументов функции и вернуть результат
  *
- * @param {!Array} argsList - массив аргументов
+ * @param {string} str - исходная строка
  * @param {string} type - тип функции (template, proto и т.д.)
  * @param {string} tplName - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
  * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
  * @return {{args: !Array, str: string, defs: string, defParams: string, scope: (string|undefined)}}
  */
-DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplName, opt_name) {
+DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
+	var argsList = this.getFnArgs(str);
+
 	var parentArgs,
 		argsTable;
 
@@ -180,14 +182,14 @@ DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplN
 		}
 	}
 
-	var str = '',
+	var decl = '',
 		defParams = '';
 
 	for (let i = 0; i < argsList.length; i++) {
 		let el = argsList[i];
 		el.key = el.key.replace(scopeModRgxp, '');
 
-		str += el.key;
+		decl += el.key;
 		constICache[tplName][el.key] = el;
 
 		if (el.value !== void 0) {
@@ -195,7 +197,7 @@ DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplN
 		}
 
 		if (i !== argsList.length - 1) {
-			str += ',';
+			decl += ',';
 		}
 	}
 
@@ -211,7 +213,7 @@ DirObj.prototype.prepareArgs = function (argsList, type, tplName, opt_parentTplN
 	}
 
 	var res = {
-		str: str,
+		str: decl,
 		args: argsList,
 		scope: scope,
 		defs: defs,
