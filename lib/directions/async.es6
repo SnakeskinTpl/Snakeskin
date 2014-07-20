@@ -6,14 +6,34 @@
  * @return {string}
  */
 DirObj.prototype.declCallbackArgs = function (parts) {
-	var args = ((Array.isArray(parts) ? (parts[2] || parts[1]) : parts) || '').split(',');
+	var args = ((Array.isArray(parts) ? (parts[2] || parts[1]) : parts) || '').split(','),
+		scope;
 
 	for (let i = 0; i < args.length; i++) {
-		let el = args[i].trim();
+		let el = args[i].trim(),
+			mod = scopeModRgxp.test(el);
+
+		if (mod) {
+			if (scope) {
+				this.error(`invalid "${this.name}" declaration`);
+
+			} else {
+				el = el.replace(scopeModRgxp, '');
+			}
+		}
 
 		if (el) {
 			args[i] = this.declVar(el);
+
+			if (mod) {
+				scope = args[i];
+			}
 		}
+	}
+
+	if (scope) {
+		this.scope.push(scope);
+		this.structure.params._scope = true;
 	}
 
 	return args.join(',');
