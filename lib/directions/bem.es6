@@ -11,7 +11,7 @@ Snakeskin.addDirective(
 		var parts = command.match(/([^,]+),\s+(.*)/);
 
 		try {
-			ui[parts[1]] = this.evalStr(`{${this.prepareOutput(parts[2], true, null, null, false)}}`);
+			bem[parts[1]] = this.evalStr(`{${this.prepareOutput(parts[2], true, null, null, false)}}`);
 
 		} catch (ignore) {
 			return this.error(`invalid "${this.name}" declaration`);
@@ -47,8 +47,8 @@ Snakeskin.addDirective(
 			parts[0] += '\'';
 			command = parts.join(',');
 
-			params.original = ui[bemName] &&
-				ui[bemName].tag;
+			params.original = bem[bemName] &&
+				bem[bemName].tag;
 
 			this.save(this.wrap(`
 				'<${params.tag || params.original || 'div'}

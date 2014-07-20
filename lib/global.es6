@@ -37,7 +37,7 @@ var replacers = {},
 	groups = {},
 	groupsList = [],
 
-	ui = {},
+	bem = {},
 	write = {};
 
 /**
