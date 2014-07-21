@@ -52,6 +52,34 @@ Snakeskin.addDirective(
 							var __RESULT__ = ${this.declResult()};
 							${args.defParams}
 				`);
+
+				let struct = this.structure;
+				let params = command.split('=>'),
+					str = '';
+
+				if (params.length > 2) {
+					return this.error(`invalid "${this.name}" declaration`);
+				}
+
+				let self = params.length === 1;
+				if (self) {
+					params = args.list;
+
+				} else {
+					params = this.getFnArgs(`(${params[1]})`);
+				}
+
+				let vars = struct.vars;
+				struct.vars = struct.parent.vars;
+
+				for (let i = 0; i < params.length; i++) {
+					str += `${this.prepareOutput(self ? params[i][2] : params[i], true)},`
+				}
+
+				struct.vars = vars;
+				str = str.slice(0, -1);
+
+				struct.params.params = str;
 			}
 		}
 	},
@@ -62,25 +90,12 @@ Snakeskin.addDirective(
 			block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
-			let args = block.args.list,
-				str = '';
-
-			let vars = struct.vars;
-			struct.vars = struct.parent.vars;
-
-			for (let i = 0; i < args.length; i++) {
-				str += `${this.prepareOutput(args[i][2], true)},`
-			}
-
-			struct.vars = vars;
-			str = str.slice(0, -1);
-
 			this.save(`
 						return ${this.returnResult()};
 					};
 				}
 
-				${this.wrap(`${params.fn}(${str})`)}
+				${this.wrap(`${params.fn}(${params.params})`)}
 			`);
 		}
 
