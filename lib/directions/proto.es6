@@ -107,43 +107,20 @@ Snakeskin.addDirective(
 				return this.error(`proto "${name}" is already defined`);
 			}
 
-			let scope;
-			let argsList = this.getFnArgs(command),
-				argsMap = [];
-
-			for (let i = 0; i < argsList.length; i++) {
-				let arg = argsList[i].split('='),
-					mod = scopeModRgxp.test(arg[0]);
-
-				if (mod) {
-					if (scope) {
-						return this.error(`invalid "${this.name}" declaration`);
-
-					} else {
-						arg[0] = arg[0].replace(scopeModRgxp, '');
-					}
-				}
-
-				if (arg.length > 1) {
-					arg[1] = arg.slice(1).join('=').trim();
-					arg[1] = arg[1] && this.prepareOutput(arg[1], true);
-				}
-
-				arg[0] = this.declVar(arg[0].trim(), true) || '';
-
-				if (mod) {
-					scope = arg[0];
-				}
-
-				argsMap.push(arg);
-			}
+			let args = this.prepareArgs(
+				command,
+				this.name,
+				this.tplName,
+				this.parentTplName,
+				name
+			);
 
 			protoCache[this.tplName][name] = {
 				length: commandLength,
 				from: start - this.getDiff(commandLength),
 
-				args: argsMap,
-				scope: scope,
+				args: args.list,
+				scope: args.scope,
 
 				calls: {},
 				needPrfx: this.needPrfx

@@ -64,7 +64,7 @@ DirObj.prototype.getFnArgs = function (str) {
  * @param {string} tplName - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
  * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
- * @return {{str: string, defs: string, defParams: string, scope: (string|undefined)}}
+ * @return {{str: string, list: !Array, defs: string, defParams: string, scope: (string|undefined)}}
  */
 DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
 	var argsList = this.getFnArgs(str);
@@ -87,7 +87,14 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		}
 
 		if (argsCache[tplName][type][opt_name]) {
-			return argsResCache[tplName][type][opt_name];
+			let tmp = argsResCache[tplName][type][opt_name],
+				list = tmp.list;
+
+			for (let i = 0; i < list.length; i++) {
+				this.declVar(list[i][2], true);
+			}
+
+			return tmp;
 
 		} else {
 			argsTable = argsCache[tplName][type][opt_name] = {};
@@ -117,6 +124,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 
 				return {
 					str: '',
+					list: [],
 					defs: '',
 					defParams: '',
 					scope: void 0
@@ -162,7 +170,8 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	}
 
 	argsList = [];
-	var localVars = [];
+	var localVars = [],
+		args = [];
 
 	for (let key in argsTable) {
 		if (!argsTable.hasOwnProperty(key)) {
@@ -184,7 +193,19 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 
 	for (let i = 0; i < argsList.length; i++) {
 		let el = argsList[i];
+
 		el.key = el.key.replace(scopeModRgxp, '');
+		let old = el.key;
+
+		if (opt_name) {
+			el.key = this.declVar(el.key, true);
+		}
+
+		args.push([
+			el.key,
+			el.value,
+			old
+		]);
 
 		decl += el.key;
 		constICache[tplName][el.key] = el;
@@ -206,13 +227,33 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			continue;
 		}
 
-		defs += `${this.needPrfx ? ALB : ''}{__const__ ${el.key.replace(scopeModRgxp, '')} = ${el.value}}`;
+		el.key = el.key.replace(scopeModRgxp, '');
+		let old = el.key;
+
+		if (opt_name) {
+			el.key = this.declVar(el.key, true);
+		}
+
+		args.push([
+			el.key,
+			el.value,
+			old
+		]);
+
+		defs += `${this.needPrfx ? ALB : ''}{__const__ ${el.key} = ${el.value}}`;
 	}
 
-	return {
+	var res = {
 		str: decl,
+		list: args,
 		scope: scope,
 		defs: defs,
 		defParams: defParams
 	};
+
+	if (opt_name) {
+		argsResCache[tplName][type][opt_name] = res;
+	}
+
+	return res;
 };
