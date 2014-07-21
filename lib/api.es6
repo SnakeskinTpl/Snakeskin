@@ -244,6 +244,8 @@ function DirObj(src, params) {
 
 	if (!this.proto) {
 		let decl = `
+			var __ROOT__ = this;
+
 			var \$C = this.\$C != null ? this.\$C : Snakeskin.Vars.\$C,
 				async = this.async != null ? this.async: Snakeskin.Vars.async;
 

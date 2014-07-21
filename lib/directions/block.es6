@@ -43,7 +43,7 @@ Snakeskin.addDirective(
 			let args = blockCache[this.tplName][name].args;
 
 			if (args.params) {
-				let fnDecl = `__THIS__.${this.tplName}.${name}`;
+				let fnDecl = `__ROOT__.${this.tplName}.${name}`;
 				this.structure.params.fn = fnDecl;
 
 				this.save(`
