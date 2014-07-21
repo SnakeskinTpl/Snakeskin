@@ -21,21 +21,6 @@ Snakeskin.addDirective(
 			from: start + 1
 		});
 
-		if (this.isSimpleOutput()) {
-			let argsList = this.getFnArgs(command);
-
-			if (argsList.params) {
-				let fnDecl = `__THIS__.${this.tplName}.${name}`;
-				this.structure.params.fn = fnDecl;
-
-				this.save(`
-					if (!${fnDecl}) {
-						(${fnDecl} = function () {
-							var __RESULT__ = ${this.declResult()};
-				`);
-			}
-		}
-
 		if (this.isAdvTest()) {
 			if (blockCache[this.tplName][name]) {
 				return this.error(`block "${name}" is already defined`);
@@ -43,29 +28,64 @@ Snakeskin.addDirective(
 
 			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
-				needPrfx: this.needPrfx
+				needPrfx: this.needPrfx,
+				args: this.prepareArgs(
+					command,
+					this.name,
+					this.tplName,
+					this.parentTplName,
+					name
+				)
 			};
+		}
+
+		if (this.isSimpleOutput()) {
+			let args = blockCache[this.tplName][name].args;
+
+			if (args.params) {
+				let fnDecl = `__THIS__.${this.tplName}.${name}`;
+				this.structure.params.fn = fnDecl;
+
+				this.save(`
+					if (!${fnDecl}) {
+						${fnDecl} = function (${args.str}) {
+							var __RESULT__ = ${this.declResult()};
+							${args.defParams}
+				`);
+			}
 		}
 	},
 
 	function (command, commandLength) {
-		var params = this.structure.params;
+		var struct = this.structure,
+			params = struct.params,
+			block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
+			let args = block.args.list,
+				str = '';
+
+			let vars = struct.vars;
+			struct.vars = struct.parent.vars;
+
+			for (let i = 0; i < args.length; i++) {
+				str += `${this.prepareOutput(args[i][2], true)},`
+			}
+
+			struct.vars = vars;
+			str = str.slice(0, -1);
+
 			this.save(`
 						return ${this.returnResult()};
-					})();
-
-				} else {
-					${params.fn}();
+					};
 				}
+
+				${this.wrap(`${params.fn}(${str})`)}
 			`);
 		}
 
 		if (this.isAdvTest()) {
-			let block = blockCache[this.tplName][params.name],
-				start = this.i - this.startTemplateI;
-
+			let start = this.i - this.startTemplateI;
 			block.to = start + 1;
 			block.content = this.source
 				.substring(this.startTemplateI)
