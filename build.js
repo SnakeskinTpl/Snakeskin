@@ -1,4 +1,5 @@
 var jossy = require('jossy');
+var escaper = require('escaper');
 var spawn = require('child_process').spawn;
 
 var path = require('path');
@@ -73,9 +74,13 @@ function build(file, flags) {
 
 		gcc.on('close', function(code)  {
 			var min = path.join(__dirname, (("build/" + file) + ".min.js"));
+			var content = escaper.replace(fs.readFileSync(min).toString(), {
+				'\'': true,
+				'/': true
+			});
 
 			// Хакерски вырезаем лишнее :)
-			var res = fs.readFileSync(min).toString().replace(/\\t/gm, '');
+			var res = escaper.paste(content.replace(/\\t/gm, ''));
 			res = (("/*! Snakeskin v" + V) + ("" + desc) + " | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */") + res;
 
 			fs.writeFileSync(min, res);
