@@ -60,20 +60,46 @@ DirObj.prototype.getFnArgs = function (str) {
  * на наличие аргументов функции и вернуть результат
  *
  * @param {string} str - исходная строка
+ * @param {string} type - тип функции (template, proto и т.д.)
  * @param {string} tplName - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
+ * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
  * @return {{str: string, defs: string, defParams: string, scope: (string|undefined)}}
  */
-DirObj.prototype.prepareArgs = function (str, tplName, opt_parentTplName) {
+DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
 	var argsList = this.getFnArgs(str);
 	var parentArgs,
 		argsTable;
 
-	if (opt_parentTplName) {
-		parentArgs = argsCache[opt_parentTplName];
+	if (!argsCache[tplName]) {
+		argsCache[tplName] = {};
+		argsResCache[tplName] = {};
 	}
 
-	argsTable = argsCache[tplName] = {};
+	if (!argsCache[tplName][type]) {
+		argsCache[tplName][type] = {};
+		argsResCache[tplName][type] = {};
+	}
+
+	if (opt_name) {
+		if (opt_parentTplName) {
+			parentArgs = argsCache[opt_parentTplName][type][opt_name];
+		}
+
+		if (argsCache[tplName][type][opt_name]) {
+			return argsResCache[tplName][type][opt_name];
+
+		} else {
+			argsTable = argsCache[tplName][type][opt_name] = {};
+		}
+
+	} else {
+		if (opt_parentTplName) {
+			parentArgs = argsCache[opt_parentTplName][type];
+		}
+
+		argsTable = argsCache[tplName][type];
+	}
 
 	var scope;
 	for (let i = 0; i < argsList.length; i++) {
