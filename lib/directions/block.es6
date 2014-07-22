@@ -36,6 +36,10 @@ Snakeskin.addDirective(
 				name
 			);
 
+			if (args.params && /^[^a-z_$][^\w$]*|[^\w$]+/i.test(name)) {
+				return this.error(`invalid "${this.name}" declaration`);
+			}
+
 			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
@@ -52,7 +56,7 @@ Snakeskin.addDirective(
 			let args = blockCache[this.tplName][name].args;
 
 			if (args.params) {
-				let fnDecl = `__ROOT__.${this.tplName}.${name}`;
+				let fnDecl = `__ROOT__.${this.tplName}.Blocks.${name}`;
 				struct.params.fn = fnDecl;
 
 				this.save(`
