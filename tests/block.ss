@@ -16,7 +16,7 @@ block_sub2
 		{a} {b} {c}
 	{/}
 
-	{call callee.base2(5, 4, b)}
+	{call blocks.base2(5, 4, b)}
 {/}
 
 {template block_sub() extends block_base}
