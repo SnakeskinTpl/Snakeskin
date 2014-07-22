@@ -300,6 +300,10 @@ for (let i = 0; i < template.length; i++) {
 				var __THIS__ = this,
 					callee = __ROOT__.${tplName};
 
+				if (!callee.Blocks) {
+					var blocks = callee.Blocks = {};
+				}
+
 				var __RESULT__ = ${this.declResult()},
 					\$_;
 
