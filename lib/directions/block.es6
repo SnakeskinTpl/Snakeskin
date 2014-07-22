@@ -21,22 +21,31 @@ Snakeskin.addDirective(
 			from: start + 1
 		});
 
+		var struct = this.structure;
+
 		if (this.isAdvTest()) {
 			if (blockCache[this.tplName][name]) {
 				return this.error(`block "${name}" is already defined`);
 			}
 
+			let args = this.prepareArgs(
+				command,
+				String(this.name),
+				String(this.tplName),
+				this.parentTplName,
+				name
+			);
+
 			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
-				args: this.prepareArgs(
-					command,
-					String(this.name),
-					String(this.tplName),
-					this.parentTplName,
-					name
-				)
+				args: args
 			};
+
+			if (args.scope) {
+				this.scope.push(args.scope);
+				struct.params._scope = true;
+			}
 		}
 
 		if (this.isSimpleOutput()) {
@@ -44,7 +53,7 @@ Snakeskin.addDirective(
 
 			if (args.params) {
 				let fnDecl = `__ROOT__.${this.tplName}.${name}`;
-				this.structure.params.fn = fnDecl;
+				struct.params.fn = fnDecl;
 
 				this.save(`
 					if (!${fnDecl}) {
@@ -53,7 +62,6 @@ Snakeskin.addDirective(
 							${args.defParams}
 				`);
 
-				let struct = this.structure;
 				let params = command.split('=>'),
 					str = '';
 
