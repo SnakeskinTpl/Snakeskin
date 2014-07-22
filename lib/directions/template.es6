@@ -297,7 +297,9 @@ for (let i = 0; i < template.length; i++) {
 			this.save(`
 				${args.defParams}
 
-				var __THIS__ = this;
+				var __THIS__ = this,
+					callee = __ROOT__.${tplName};
+
 				var __RESULT__ = ${this.declResult()},
 					\$_;
 
