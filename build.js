@@ -101,7 +101,7 @@ function build(file, flags) {
 
 var builds = Object(require('./builds'));
 
-for (var key in builds)  {
+for (var key in builds) {
 	if (!builds.hasOwnProperty(key)) {
 		continue;
 	}
