@@ -120,6 +120,9 @@ function DirObj(src, params) {
 	/** @type {boolean} */
 	this.superStrongSpace = false;
 
+	/** @type {boolean} */
+	this.freezeLine = false;
+
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
 

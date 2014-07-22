@@ -251,15 +251,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		let line = info['line'],
 			modLine = !dir.proto && dir.lines.length === line;
 
-		if (nextLineRgxp.test(el)) {
-			if (modLine) {
-				dir.lines[line] = '';
+		if (!dir.freezeLine) {
+			if (nextLineRgxp.test(el)) {
+				if (modLine) {
+					dir.lines[line] = '';
+				}
+
+				info['line']++;
+
+			} else if (modLine) {
+				dir.lines[line - 1] += el;
 			}
-
-			info['line']++;
-
-		} else if (modLine) {
-			dir.lines[line - 1] += el;
 		}
 
 		if (whiteSpaceRgxp.test(el)) {
