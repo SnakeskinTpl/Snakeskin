@@ -84,7 +84,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	}
 
 	if (opt_name) {
-		if (opt_parentTplName) {
+		if (opt_parentTplName && argsCache[opt_parentTplName][type]) {
 			parentArgs = argsCache[opt_parentTplName][type][opt_name];
 		}
 
