@@ -24,7 +24,9 @@ DirObj.prototype.genErrorAdvInfo = function () {
 	}
 
 	str = str.replace(/, $/, '');
-	var line = info['line'],
+	var line = info['line'];
+
+	var cutRgxp = /\/\*!!= (.*?) =\*\//g,
 		styleRgxp = /\t|[ ]{4}/g;
 
 	if (line) {
@@ -39,7 +41,10 @@ DirObj.prototype.genErrorAdvInfo = function () {
 				.join(' ');
 
 			if (prev != null) {
-				prev = prev.replace(styleRgxp, '  ');
+				prev = prev
+					.replace(styleRgxp, '  ')
+					.replace(cutRgxp, '$1');
+
 				let part;
 
 				if (prev.trim()) {
@@ -56,9 +61,11 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			}
 		}
 
-		let current = this.lines[line - 1].replace(styleRgxp, '  '),
-			part = `> ${line} ${current}`;
+		let current = this.lines[line - 1]
+			.replace(styleRgxp, '  ')
+			.replace(cutRgxp, '$1');
 
+		let part = `> ${line} ${current}`;
 		let sep = new Array(
 			Math.max(max, part.length) || 5
 		).join('-');

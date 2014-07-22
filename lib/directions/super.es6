@@ -38,7 +38,7 @@ Snakeskin.addDirective(
 				let diff = this.getDiff(commandLength);
 
 				this.source = this.source.substring(0, this.i - diff) +
-					`{__freezeLine__ ${this.info['line']}}${cache.content}{end}` +
+					`/*!!= {super} =*/{__freezeLine__ ${this.info['line']}}${cache.content}{end}` +
 					this.source.substring(this.i + 1);
 
 				this.i -= diff + 1;

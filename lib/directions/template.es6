@@ -364,6 +364,7 @@ for (let i = 0; i < template.length; i++) {
 			// но уже как атомарного (без наследования)
 			if (this.parentTplName) {
 				this.info['line'] = this.startTemplateLine;
+				this.lines.splice(this.startTemplateLine, this.lines.length);
 
 				this.source = this.source.substring(0, this.startTemplateI) +
 					this.getFullBody(tplName) +
