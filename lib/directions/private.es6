@@ -169,33 +169,14 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'__const__',
+	'__var__',
 
 	{
 
 	},
 
-	function (command, commandLength) {
-		let name = command.split('=')[0].trim();
-
-		this.startInlineDir('const', {
-			name: name
-		});
-
-		if (this.isSimpleOutput()) {
-			this.save(this.prepareOutput(`var ${command};`, true));
-		}
-
-		if (this.isAdvTest()) {
-			let start = this.i - this.startTemplateI;
-
-			constCache[this.tplName][name] = {
-				from: start - commandLength,
-				to: start,
-				tmp: true
-			};
-
-			fromConstCache[this.tplName] = start + 1;
-		}
+	function (command) {
+		this.startInlineDir('var');
+		this.save(this.prepareOutput(`var ${command};`, true));
 	}
 );

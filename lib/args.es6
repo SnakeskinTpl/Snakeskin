@@ -67,6 +67,7 @@ DirObj.prototype.getFnArgs = function (str) {
  * @return {{str: string, list: !Array, defs: string, defParams: string, scope: (string|undefined)}}
  */
 DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
+	var struct = this.structure;
 	var argsList = this.getFnArgs(str),
 		params = argsList.params;
 
@@ -93,7 +94,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 				list = tmp.list;
 
 			for (let i = 0; i < list.length; i++) {
-				this.structure.vars[list[i][2]] = {
+				struct.vars[list[i][2]] = {
 					value: list[i][0],
 					scope: this.scope.length
 				};
@@ -202,6 +203,9 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		}
 	}
 
+	var consts = constCache[this.tplName],
+		constsCache = {};
+
 	var decl = '',
 		defParams = '';
 
@@ -210,6 +214,11 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 
 		el.key = el.key.replace(scopeModRgxp, '');
 		let old = el.key;
+
+		if (consts[old] && opt_name) {
+			constsCache[old] = consts[old];
+			delete consts[old];
+		}
 
 		if (opt_name) {
 			el.key = this.declVar(el.key, true);
@@ -222,7 +231,6 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		]);
 
 		decl += el.key;
-		constICache[tplName][el.key] = el;
 
 		if (el.value !== void 0) {
 			defParams += `${el.key} = ${el.key} != null ? ${el.key} : ${this.prepareOutput(el.value, true)};`;
@@ -233,7 +241,9 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		}
 	}
 
+	struct.params._consts = constsCache;
 	var defs = '';
+
 	for (let i = 0; i < localVars.length; i++) {
 		let el = localVars[i];
 
@@ -254,7 +264,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			old
 		]);
 
-		defs += `${this.needPrfx ? ALB : ''}{__const__ ${el.key} = ${el.value}}`;
+		defs += `${this.needPrfx ? ALB : ''}{__var__ ${el.key} = ${el.value}}`;
 
 		if (opt_name) {
 			defParams += `var ${el.key} = ${this.prepareOutput(el.value, true)};`;

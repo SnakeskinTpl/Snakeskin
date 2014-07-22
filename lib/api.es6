@@ -447,7 +447,6 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 
 	constCache[tplName] = {};
 	fromConstCache[tplName] = 0;
-	constICache[tplName] = {};
 
 	this.superStrongSpace = false;
 	this.strongSpace = false;
@@ -766,7 +765,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	// Попытка повторной инициализации переменной,
 	// которая установлена как константа
-	if (!opt_protoParams && tplName && (constCache[tplName][varName] || constICache[tplName][varName])) {
+	if (!opt_protoParams && tplName && constCache[tplName][varName]) {
 		this.error(`variable "${varName}" is already defined as constant`);
 	}
 

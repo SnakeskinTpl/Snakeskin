@@ -38,7 +38,7 @@ Snakeskin.addDirective(
 
 				if (this.isAdvTest()) {
 					// Попытка повторной инициализации константы
-					if (constCache[tplName][name] ? !constCache[tplName][name].tmp : constICache[tplName][name]) {
+					if (constCache[tplName][name]) {
 						return this.error(`constant "${name}" is already defined`);
 					}
 

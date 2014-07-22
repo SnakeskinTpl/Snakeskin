@@ -9,8 +9,7 @@ var protoCache = {},
 	fromProtoCache = {};
 
 var constCache = {},
-	fromConstCache = {},
-	constICache = {};
+	fromConstCache = {};
 
 var routerCache = {
 	'block': blockCache,
