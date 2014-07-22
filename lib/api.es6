@@ -506,8 +506,10 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	struct.children.push(obj);
 	this.structure = obj;
 
-	if (this.blockStructure && this.getGroup('blockInherit')[opt_name]) {
-		let bTable = this.blockTable,
+	let blockStruct = this.blockStructure;
+	if (blockStruct && this.getGroup('blockInherit')[opt_name]) {
+		let bTable = this.blockTable;
+		let parent = this.parentTplName,
 			key = `${opt_name}_${opt_params.name}`;
 
 		if (bTable[key] && bTable[key] !== true) {
@@ -544,11 +546,11 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 			}
 		};
 
-		if (this.parentTplName && table[this.parentTplName][key] && table[this.parentTplName][key].children) {
-			deep(table[this.parentTplName][key].children);
+		if (parent && table[parent][key] && table[parent][key].children) {
+			deep(table[parent][key].children);
 		}
 
-		this.blockStructure.children.push(sub);
+		blockStruct.children.push(sub);
 		this.blockStructure = sub;
 	}
 

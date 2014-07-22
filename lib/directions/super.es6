@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 				if (map[obj.name]) {
 					let name = obj.params.name;
 
-					cache = (obj.name === 'proto' ? protoCache : blockCache)[this.parentTplName][name];
+					cache = routerCache[obj.name][this.parentTplName][name];
 					drop = this.blockTable[`${obj.name}_${name}`].drop;
 
 					if (cache) {
