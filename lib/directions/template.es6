@@ -301,7 +301,8 @@ for (let i = 0; i < template.length; i++) {
 					callee = __ROOT__.${tplName};
 
 				if (!callee.Blocks) {
-					var blocks = callee.Blocks = {};
+					var __BLOCKS__ = callee.Blocks = {},
+						blocks = __BLOCKS__;
 				}
 
 				var __RESULT__ = ${this.declResult()},

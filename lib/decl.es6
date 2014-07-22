@@ -46,6 +46,7 @@ const F = '|';
 
 var sysConst = {
 	'__ROOT__': true,
+	'__BLOCKS__': true,
 	'__RESULT__': true,
 	'__CDATA__': true,
 	'__RETURN__': true,
