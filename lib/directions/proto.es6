@@ -109,8 +109,8 @@ Snakeskin.addDirective(
 
 			let args = this.prepareArgs(
 				command,
-				this.name,
-				this.tplName,
+				String(this.name),
+				String(this.tplName),
 				this.parentTplName,
 				name
 			);

@@ -31,8 +31,8 @@ Snakeskin.addDirective(
 				needPrfx: this.needPrfx,
 				args: this.prepareArgs(
 					command,
-					this.name,
-					this.tplName,
+					String(this.name),
+					String(this.tplName),
 					this.parentTplName,
 					name
 				)
@@ -85,8 +85,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var struct = this.structure,
-			params = struct.params,
+		var params = this.structure.params,
 			block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
