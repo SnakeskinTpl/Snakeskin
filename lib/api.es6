@@ -704,9 +704,11 @@ DirObj.prototype.has = function (name, opt_obj) {
 	var obj = opt_obj || this.structure;
 
 	while (true) {
-		if (name[obj.name] || obj.name === name) {
-			if (name[obj.name]) {
-				return obj.name;
+		let nm = obj.name;
+
+		if (name[nm] || nm === name) {
+			if (name[nm]) {
+				return nm;
 			}
 
 			return true;
@@ -771,7 +773,7 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	var struct = this.structure;
 	while (!struct.vars) {
-		struct = this.structure.parent;
+		struct = struct.parent;
 	}
 
 	var tmp = struct.vars[varName];
@@ -817,7 +819,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 
 	var struct = this.structure;
 	while (!struct.vars) {
-		struct = this.structure.parent;
+		struct = struct.parent;
 	}
 
 	if (!struct.parent || struct.name === 'head') {
