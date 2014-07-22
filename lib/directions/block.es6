@@ -107,6 +107,10 @@ Snakeskin.addDirective(
 		}
 
 		if (this.isAdvTest()) {
+			if (!block) {
+				return this.error('invalid "block" declaration');
+			}
+
 			let start = this.i - this.startTemplateI;
 			block.to = start + 1;
 			block.content = this.source

@@ -157,6 +157,10 @@ Snakeskin.addDirective(
 			let proto = protoCache[tplName][lastProto.name],
 				start = this.i - this.startTemplateI;
 
+			if (!proto) {
+				return this.error('invalid "proto" declaration');
+			}
+
 			if (this.isAdvTest()) {
 				let diff = this.getDiff(commandLength),
 					scope = proto.scope;
