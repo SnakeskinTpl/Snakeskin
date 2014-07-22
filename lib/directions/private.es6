@@ -167,16 +167,3 @@ Snakeskin.addDirective(
 		}
 	}
 );
-
-Snakeskin.addDirective(
-	'__var__',
-
-	{
-
-	},
-
-	function (command) {
-		this.startInlineDir('var');
-		this.save(this.prepareOutput(`var ${command};`, true));
-	}
-);

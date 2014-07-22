@@ -288,12 +288,6 @@ for (let i = 0; i < template.length; i++) {
 				this.scope.push(args.scope);
 			}
 
-			if (args.defs) {
-				this.source = this.source.substring(0, this.i + 1) +
-					args.defs +
-					this.source.substring(this.i + 1);
-			}
-
 			this.save(`
 				${args.defParams}
 
