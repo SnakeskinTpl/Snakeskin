@@ -298,7 +298,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						dir.space = true;
 					}
 
-				} else {
+				} else if (!comment && !jsDoc) {
 					continue;
 				}
 			}
