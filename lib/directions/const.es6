@@ -107,6 +107,35 @@ Snakeskin.addDirective(
 	}
 );
 
+Snakeskin.addDirective(
+	'output',
+
+	{
+		placement: 'template',
+		notEmpty: true
+	},
+
+	function (command, commandLength, type, jsDoc) {
+		Snakeskin.Directions['const'](this, command, commandLength, type, jsDoc);
+	}
+);
+
+Snakeskin.addDirective(
+	'global',
+
+	{
+		notEmpty: true
+	},
+
+	function (command, commandLength, type, jsDoc) {
+		if (this.tplName) {
+			return this.error(`directive "${this.name}" can be used only within the global space`);
+		}
+
+		Snakeskin.Directions['const'](this, command, commandLength, type, jsDoc);
+	}
+);
+
 /**
  * Вернуть true, если в строке идёт присвоение значения переменной
  *
