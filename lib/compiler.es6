@@ -238,9 +238,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var commandTypeRgxp = /[^\s]+/m,
 		commandRgxp = /[^\s]+\s*/m;
 
-	var prevSpace;
+	var prevSpace,
+		freezeI = 0;
+
 	var i18nStr = '',
-		i18nStart = false;
+		i18nStart = false,
+		i18nDirStart = false;
 
 	while (++dir.i < dir.source.length) {
 		let str = dir.source,
@@ -251,7 +254,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		let rEl = el;
 		let line = info['line'],
-			modLine = !dir.proto && dir.lines.length === line;
+			modLine = !dir.freezeLine && !dir.proto && dir.lines.length === line;
+
+		if (freezeI) {
+			freezeI--;
+			modLine = false;
+		}
 
 		if (!dir.freezeLine) {
 			if (nextLineRgxp.test(el)) {
@@ -420,6 +428,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						if (isPrefStart) {
 							dir.i++;
 							dir.needPrfx = true;
+
+							if (modLine) {
+								dir.lines[line - 1] += LB;
+							}
 						}
 
 						bEnd = true;
@@ -436,8 +448,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = dir.replaceDangerBlocks(command).trim();
 
 					if (!command) {
-						dir.error('directive\'s body is not defined');
-						return false;
+						continue;
 					}
 
 					let short1 = command.charAt(0),
@@ -549,14 +560,21 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							if (begin) {
 								el = '")';
 
+								if (i18nDirStart) {
+									freezeI++;
+									dir.freezeLine = false;
+									i18nDirStart = false;
+								}
+
 							} else {
 								dir.source = str.substring(0, dir.i + 1) +
 									RB +
 									str.substring(dir.i + 1);
 
 								dir.i = Number(pseudoI);
-								pseudoI = false;
+								dir.freezeLine = true;
 
+								pseudoI = false;
 								continue;
 							}
 
@@ -577,6 +595,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								pseudoI = dir.i - diff;
 								dir.i += diff;
 
+								i18nDirStart = true;
 								continue;
 							}
 						}
@@ -617,14 +636,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			}
 
-			if (escapeMap[el] && (el === '/' ? bEnd && command : true) && !bOpen) {
-				bOpen = el;
+			if (!i18nStart) {
+				if (escapeMap[el] && (el === '/' ? bEnd && command : true) && !bOpen) {
+					bOpen = el;
 
-			} else if (bOpen && (el === '\\' || bEscape)) {
-				bEscape = !bEscape;
+				} else if (bOpen && (el === '\\' || bEscape)) {
+					bEscape = !bEscape;
 
-			} else if (escapeMap[el] && bOpen === el && !bEscape) {
-				bOpen = false;
+				} else if (escapeMap[el] && bOpen === el && !bEscape) {
+					bOpen = false;
+				}
 			}
 
 			command += el;
