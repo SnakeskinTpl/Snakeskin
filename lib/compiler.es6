@@ -468,7 +468,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					// Обработка команд
-					let fnRes = Snakeskin.Directions[commandType](
+					let fnRes = Snakeskin.Directions[commandType].call(
 						dir,
 
 						isConst || commandType !== 'const' ?

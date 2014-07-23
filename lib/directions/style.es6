@@ -21,7 +21,12 @@ Snakeskin.addDirective(
 			this.save(this.wrap(`'<style type="${types[type] || this.prepareOutput(type, true)}"'`));
 
 			if (parts.length > 1) {
-				Snakeskin.Directions['attr'](this, parts.slice(1).join(' '));
+				let args = [].slice.call(arguments);
+
+				args[0] = parts.slice(1).join(' ');
+				args[1] = args[0].length;
+
+				Snakeskin.Directions['attr'].apply(this, args);
 				this.inline = false;
 			}
 

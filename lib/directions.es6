@@ -77,7 +77,8 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		}
 	}
 
-	Snakeskin.Directions[name] = function (dir, command, commandLength, type, jsDoc) {
+	Snakeskin.Directions[name] = function (command, commandLength, type, jsDoc) {
+		var dir = this;
 		var sourceName = name,
 			dirName = name;
 

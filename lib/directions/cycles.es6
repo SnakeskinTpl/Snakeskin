@@ -48,7 +48,7 @@ Snakeskin.addDirective(
 				this.save(`} while (${this.prepareOutput(command, true)});`);
 			}
 
-			Snakeskin.Directions['end'](this);
+			Snakeskin.Directions['end'].call(this);
 
 		} else {
 			this.startDir();
@@ -136,6 +136,6 @@ Snakeskin.addDirective(
 			this.save(`} while (${this.prepareOutput(command, true)});`);
 		}
 
-		Snakeskin.Directions['end'](this);
+		Snakeskin.Directions['end'].call(this);
 	}
 );

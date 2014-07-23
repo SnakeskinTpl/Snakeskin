@@ -115,8 +115,8 @@ Snakeskin.addDirective(
 		notEmpty: true
 	},
 
-	function (command, commandLength, type, jsDoc) {
-		Snakeskin.Directions['const'](this, command, commandLength, type, jsDoc);
+	function () {
+		Snakeskin.Directions['const'].apply(this, arguments);
 	}
 );
 
@@ -127,12 +127,12 @@ Snakeskin.addDirective(
 		notEmpty: true
 	},
 
-	function (command, commandLength, type, jsDoc) {
+	function () {
 		if (this.tplName) {
 			return this.error(`directive "${this.name}" can be used only within the global space`);
 		}
 
-		Snakeskin.Directions['const'](this, command, commandLength, type, jsDoc);
+		Snakeskin.Directions['const'].apply(this, arguments);
 	}
 );
 
