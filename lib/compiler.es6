@@ -459,8 +459,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandType : 'const';
 
 					if (!dir.proto && commandType.charAt(0) === '_') {
+						let source = `\\s*${dir.needPrfx ? ALB : ''}${LB}\\s*${command}\\s*${RB}\\s*`,
+							rgxp = rgxpCache[source] || new RegExp(source);
+
 						dir.lines[line - 1] = dir.lines[line - 1]
-							.replace(new RegExp(`\\s*${dir.needPrfx ? ALB : ''}${LB}\\s*${command}\\s*${RB}\\s*`), '');
+							.replace(rgxp, '');
+
+						rgxpCache[source] = rgxp;
 					}
 
 					// Обработка команд
