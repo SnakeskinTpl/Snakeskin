@@ -1,4 +1,5 @@
-var constNameRgxp = /\[(['"`])(.*?)\1]/g;
+var constNameRgxp = /\[(['"`])(.*?)\1]/g,
+	propAssignRgxp = /[.\[]/;
 
 Snakeskin.addDirective(
 	'const',
@@ -28,7 +29,7 @@ Snakeskin.addDirective(
 				let name = this.pasteDangerBlocks(parts[0].trim());
 
 				if (name.charAt(0) === L_MOD) {
-					return this.error(`can\'t declare constant "${name.substring(1)}" with the context modifier (${L_MOD})`);
+					return this.error(`can't declare constant "${name.substring(1)}" with the context modifier (${L_MOD})`);
 				}
 
 				name = name.replace(constNameRgxp, '.$2');
@@ -37,7 +38,7 @@ Snakeskin.addDirective(
 				});
 
 				if (this.isSimpleOutput()) {
-					this.save((!/[.\[]/.test(name) ? 'var ' : '') + this.prepareOutput(command, true, null, true) + ';');
+					this.save((!propAssignRgxp.test(name) ? 'var ' : '') + this.prepareOutput(command, true, null, true) + ';');
 				}
 
 				if (this.isAdvTest()) {
