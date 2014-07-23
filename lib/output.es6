@@ -53,6 +53,8 @@ var comboBlackWordList = {
 	'let': true
 };
 
+var replaceTplVarsFn = (str) => str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
+
 /**
  * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
  *
@@ -72,13 +74,10 @@ DirObj.prototype.replaceTplVars = function (str) {
 		bEnd = true,
 		bEscape = false;
 
-	var replacer = (str) => str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
-
 	for (let i = 0; i < str.length; i++) {
 		let el = str.charAt(i);
 		let next2str = el + str.charAt(i + 1);
 
-		// Начало директивы
 		if (!begin && includeDirMap[next2str]) {
 			begin++;
 			dir = '';
@@ -88,7 +87,7 @@ DirObj.prototype.replaceTplVars = function (str) {
 		}
 
 		if (!begin) {
-			res += replacer(el);
+			res += replaceTplVarsFn(el);
 		}
 
 		if (begin) {
@@ -124,7 +123,6 @@ DirObj.prototype.replaceTplVars = function (str) {
 				continue;
 			}
 
-			// Экранирование
 			if (!bOpen) {
 				if (escapeEndMap[el]) {
 					bEnd = true;
@@ -168,6 +166,8 @@ DirObj.prototype.replaceTplVars = function (str) {
 	return res;
 };
 
+var nextWordCharRgxp = new RegExp(`[${G_MOD + L_MOD}$+\\-~!\\w[\\]().]`);
+
 /**
  * Вернуть целое слово из заданной строки, начиная с указанной позиции
  *
@@ -179,17 +179,16 @@ DirObj.prototype.getWord = function (str, pos) {
 	var res = '',
 		nres = '';
 
-	var pCount = 0;
+	var pCount = 0,
+		diff = 0;
+
 	var start = 0,
 		pContent = null;
-
-	var diff = 0,
-		nextCharRgxp = new RegExp(`[${G_MOD + L_MOD}$+\\-~!\\w[\\]().]`);
 
 	for (let i = pos, j = 0; i < str.length; i++, j++) {
 		let el = str.charAt(i);
 
-		if (pCount || nextCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
+		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
 				pContent += el;
 			}
@@ -243,6 +242,8 @@ DirObj.prototype.getWord = function (str, pos) {
 	};
 };
 
+var unSRgxp = /\S/;
+
 /**
  * Вернуть true, если указанное cлово является свойством в литерале объекта
  *
@@ -252,13 +253,12 @@ DirObj.prototype.getWord = function (str, pos) {
  * @return {boolean}
  */
 function isSyOL(str, start, end) {
-	var rgxp = /\S/,
-		res;
+	var res;
 
 	for (let i = start; i--;) {
 		let el = str.charAt(i);
 
-		if (rgxp.test(el)) {
+		if (unSRgxp.test(el)) {
 			res = el === '?';
 			break;
 		}
@@ -268,7 +268,7 @@ function isSyOL(str, start, end) {
 		for (let i = end; i < str.length; i++) {
 			let el = str.charAt(i);
 
-			if (rgxp.test(el)) {
+			if (unSRgxp.test(el)) {
 				return el === ':';
 			}
 		}
@@ -286,12 +286,10 @@ function isSyOL(str, start, end) {
  * @return {boolean}
  */
 function isNextAssign(str, pos) {
-	var rgxp = /\S/;
-
 	for (let i = pos; i < str.length; i++) {
 		let el = str.charAt(i);
 
-		if (rgxp.test(el)) {
+		if (unSRgxp.test(el)) {
 			return el === '=' && str.charAt(i + 1) !== '=';
 		}
 	}
