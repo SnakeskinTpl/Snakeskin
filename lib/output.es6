@@ -319,6 +319,12 @@ var multPropRgxp = /\[|\./,
 
 var propValRgxp = /[^-+!]+/;
 
+var exprimaHackFn = (str) => str
+	.trim()
+	.replace(/^\[/, '$[')
+	.replace(/\byield\b/g, '')
+	.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '');
+
 /**
  * Подготовить указанную комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
@@ -729,13 +735,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 	if (opt_validate !== false) {
 		try {
-			esprima.parse(
-				res
-					.trim()
-					.replace(/^\[/, '$[')
-					.replace(/\byield\b/g, '')
-					.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '')
-			);
+			esprima.parse(exprimaHackFn(res));
 
 		} catch (err) {
 			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
