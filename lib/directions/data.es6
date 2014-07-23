@@ -6,7 +6,7 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		text: true,
 		replacers: {
-			'=': (cmd) => cmd.replace(/^=/, 'data ')
+			'=': (cmd) => cmd.replace('=', 'data ')
 		}
 	},
 
@@ -18,6 +18,9 @@ Snakeskin.addDirective(
 	}
 );
 
+var declStartRgxp = /^\{+/,
+	declEndRgxp = /\}+$/;
+
 Snakeskin.addDirective(
 	'decl',
 
@@ -26,7 +29,7 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		text: true,
 		replacers: {
-			'{': (cmd) => cmd.replace(/^\{/, 'decl ')
+			'{': (cmd) => cmd.replace('{', 'decl ')
 		}
 	},
 
@@ -35,10 +38,10 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			let code = this.replaceTplVars(command);
 
-			let start = /^\{+/.exec(code) ||
+			let start = declStartRgxp.exec(code) ||
 				[''];
 
-			let end = /\}+$/.exec(code) ||
+			let end = declEndRgxp.exec(code) ||
 				[''];
 
 			let add;

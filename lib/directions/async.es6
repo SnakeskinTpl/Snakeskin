@@ -46,7 +46,7 @@ Snakeskin.addDirective(
 		block: true,
 		group: 'callback',
 		replacers: {
-			'()': (cmd) => cmd.replace(/^\(\)/, 'callback ')
+			'()': (cmd) => cmd.replace('()', 'callback ')
 		}
 	},
 

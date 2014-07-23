@@ -1,3 +1,5 @@
+var $COverloadRgxp = /=>>/g;
+
 Snakeskin.addDirective(
 	'forEach',
 
@@ -12,7 +14,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		command = command.replace(/=>>/g, '=>=>');
+		command = command.replace($COverloadRgxp, '=>=>');
 		var parts = command.split('=>'),
 			obj = parts[0];
 

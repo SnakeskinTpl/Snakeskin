@@ -111,8 +111,8 @@ Snakeskin.addDirective(
 		block: true,
 		notEmpty: true,
 		replacers: {
-			'>': (cmd) => cmd.replace(/^>/, 'case '),
-			'/>': (cmd) => cmd.replace(/^\/>/, 'end case')
+			'>': (cmd) => cmd.replace('>', 'case '),
+			'/>': (cmd) => cmd.replace('\/>', 'end case')
 		}
 	},
 

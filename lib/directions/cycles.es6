@@ -1,3 +1,5 @@
+var varDeclRgxp = /\bvar\b/;
+
 Snakeskin.addDirective(
 	'for',
 
@@ -16,7 +18,6 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isSimpleOutput()) {
-			let varDeclRgxp = /\bvar\b/;
 			let decl = varDeclRgxp.test(parts[0]) ?
 				this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
