@@ -117,11 +117,11 @@ function DirObj(src, params) {
 	/** @type {boolean} */
 	this.strongSpace = false;
 
-	/** @type {boolean} */
-	this.superStrongSpace = false;
+	/** @type {number} */
+	this.superStrongSpace = 0;
 
-	/** @type {boolean} */
-	this.freezeLine = false;
+	/** @type {number} */
+	this.freezeLine = 0;
 
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
@@ -448,7 +448,7 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	constCache[tplName] = {};
 	fromConstCache[tplName] = 0;
 
-	this.superStrongSpace = false;
+	this.superStrongSpace = 0;
 	this.strongSpace = false;
 	this.space = true;
 
