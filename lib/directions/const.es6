@@ -8,13 +8,13 @@ Snakeskin.addDirective(
 		]
 	},
 
-	function (command, commandLength) {
+	function (command, commandLength, type) {
 		var tplName = this.tplName,
 			rgxp = new RegExp(`^[\$a-z_${!this.scope.length ? L_MOD : ''}][$\\w\\[\\].\\s]*=[^=]`);
 
 		// Инициализация констант
-		if (!tplName || rgxp.test(command)) {
-			if (tplName) {
+		if ((!tplName || rgxp.test(command)) && type !== 'output') {
+			if (tplName && type !== 'global') {
 				let parts = command.split('=');
 
 				if (!parts[1] || !parts[1].trim()) {
@@ -75,7 +75,11 @@ Snakeskin.addDirective(
 				}
 
 			} else {
-				this.startInlineDir('superGlobalVar');
+				this.startInlineDir('global');
+
+				if (this.tplName) {
+					return this.error(`directive "${this.name}" can be used only within the global space`);
+				}
 
 				if (!isAssign(command, true)) {
 					return this.error(`invalid "${this.name}" declaration`);
@@ -88,14 +92,14 @@ Snakeskin.addDirective(
 
 		// Вывод значения
 		} else {
-			if (!this.structure.parent) {
+			if (!tplName) {
 				return this.error(`Directive "output" can be used only within a ${groupsList['template'].join(', ')}`);
 			}
 
 			this.startInlineDir('output');
-			if (this.isSimpleOutput()) {
-				this.text = true;
+			this.text = true;
 
+			if (this.isSimpleOutput()) {
 				if (isAssign(command)) {
 					this.save(`${this.prepareOutput(command, true)};`);
 					return;
@@ -144,8 +148,10 @@ Snakeskin.addDirective(
  * @return {boolean}
  */
 function isAssign(str, opt_global) {
-	var rgxp = new RegExp(`^[${G_MOD + L_MOD}$a-z_${opt_global ? '[' : ''}]`, 'i');
+	let source = `^[${G_MOD + L_MOD}$a-z_${opt_global ? '[' : ''}]`,
+		rgxp = rgxpCache[source] || new RegExp(source, 'i');
 
+	rgxpCache[source] = rgxp;
 	if (!rgxp.test(str)) {
 		return false;
 	}
