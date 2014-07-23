@@ -13,7 +13,7 @@ Snakeskin.addDirective(
 	{
 		notEmpty: true,
 		replacers: {
-			':': (cmd) => cmd.replace(/^:/, 'var ')
+			':': (cmd) => cmd.replace(':', 'var ')
 		}
 	},
 

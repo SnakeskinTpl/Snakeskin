@@ -1,15 +1,17 @@
+var voidRgxp = /(?:^|\s+)(?:var|const|let) /;
+
 Snakeskin.addDirective(
 	'void',
 
 	{
 		notEmpty: true,
 		replacers: {
-			'?': (cmd) => cmd.replace(/^\?/, 'void ')
+			'?': (cmd) => cmd.replace('?', 'void ')
 		}
 	},
 
 	function (command) {
-		if (/(?:^|\s+)(?:var|const|let) /.test(command)) {
+		if (voidRgxp.test(command)) {
 			return this.error('can\'t declare variables within "void"');
 		}
 
