@@ -239,6 +239,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		commandRgxp = /[^\s]+\s*/m;
 
 	var prevSpace,
+		prevCommentSpace = false,
 		freezeI = 0;
 
 	var i18nStr = '',
@@ -321,6 +322,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				prevSpace = dir.space;
 			}
 
+			if (!comment) {
+				prevCommentSpace = dir.space;
+			}
+
 			dir.space = false;
 		}
 
@@ -377,6 +382,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					} else if (str.charAt(dir.i - 1) === MCE.charAt(0) && dir.i - commentStart > 2) {
 						if (comment === MCS) {
 							comment = false;
+							dir.space = prevCommentSpace;
+							prevCommentSpace = false;
 							continue;
 
 						} else if (beginStr) {
@@ -386,6 +393,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				} else if (nextLineRgxp.test(rEl) && comment === SC) {
 					comment = false;
+					dir.space = prevCommentSpace;
+					prevCommentSpace = false;
 					continue;
 				}
 			}
