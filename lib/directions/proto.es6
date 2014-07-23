@@ -64,7 +64,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var name = this.getFnName(command);
+		var name = this.getFnName(command),
+			tplName = this.tplName;
 
 		if (!name) {
 			return this.error(`invalid "${this.name}" name`);
@@ -76,19 +77,20 @@ Snakeskin.addDirective(
 			name = parts[1].trim();
 
 			// Идёт декларация внешнего прототипа
-			if (!this.tplName) {
-				this.tplName = this.prepareNameDecl(parts[0]);
+			if (!tplName) {
+				tplName =
+					this.tplName = this.prepareNameDecl(parts[0]);
 
-				this.preProtos[this.tplName] = this.preProtos[this.tplName] || {
+				this.preProtos[tplName] = this.preProtos[tplName] || {
 					text: ''
 				};
 
-				this.preProtos[this.tplName].startLine = this.info['line'];
+				this.preProtos[tplName].startLine = this.info['line'];
 				this.protoLink = name;
 			}
 		}
 
-		if (!name || !this.tplName) {
+		if (!name || !tplName) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
@@ -103,19 +105,19 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isAdvTest()) {
-			if (protoCache[this.tplName][name]) {
+			if (protoCache[tplName][name]) {
 				return this.error(`proto "${name}" is already defined`);
 			}
 
 			let args = this.prepareArgs(
 				command,
 				String(this.name),
-				String(this.tplName),
+				String(tplName),
 				this.parentTplName,
 				name
 			);
 
-			protoCache[this.tplName][name] = {
+			protoCache[tplName][name] = {
 				length: commandLength,
 				from: start - this.getDiff(commandLength),
 
@@ -134,15 +136,15 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var tplName = this.tplName,
-			lastProto = this.structure.params;
+			params = this.structure.params;
 
 		// Закрылся "внешний" прототип
-		if (this.protoLink === lastProto.name) {
-			let obj = this.preProtos[this.tplName];
+		if (this.protoLink === params.name) {
+			let obj = this.preProtos[tplName];
 
 			obj.text += `
 				{__switchLine__ ${obj.startLine}}
-					${this.source.substring(lastProto.from, this.i + 1)}
+					${this.source.substring(params.from, this.i + 1)}
 				{end}
 			`;
 
@@ -154,7 +156,7 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.protoLink) {
-			let proto = protoCache[tplName][lastProto.name],
+			let proto = protoCache[tplName][params.name],
 				start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
@@ -167,7 +169,7 @@ Snakeskin.addDirective(
 				proto.to = start + 1;
 				proto.content = this.source
 					.substring(this.startTemplateI)
-					.substring(lastProto.fromBody, start - diff);
+					.substring(params.fromBody, start - diff);
 
 				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
@@ -179,7 +181,7 @@ Snakeskin.addDirective(
 
 								${_}{var __I_PROTO__ = 1}
 								${_}{__protoWhile__ __I_PROTO__--}
-									{__setLine__ ${lastProto.line}}${this.source.substring(lastProto.startTemplateI, this.i - diff)}
+									{__setLine__ ${params.line}}${this.source.substring(params.startTemplateI, this.i - diff)}
 								${_}{end}
 
 							${scope ? `${_}{end}` : ''}
@@ -205,8 +207,8 @@ Snakeskin.addDirective(
 						vars: this.structure.vars,
 
 						proto: {
-							name: lastProto.name,
-							recursive: lastProto.recursive,
+							name: params.name,
+							recursive: params.recursive,
 							parentTplName: this.parentTplName,
 
 							pos: this.res.length,
@@ -221,7 +223,7 @@ Snakeskin.addDirective(
 			}
 
 			// Применение обратных прототипов
-			let back = this.backTable[lastProto.name];
+			let back = this.backTable[params.name];
 			if (back && !back.protoStart) {
 				let args = proto.args,
 					fin = true;
@@ -233,7 +235,7 @@ Snakeskin.addDirective(
 						if (!el.outer) {
 							this.res = this.res.substring(0, el.pos) +
 								this.returnProtoArgs(args, el.args) +
-								protoCache[tplName][lastProto.name].body +
+								protoCache[tplName][params.name].body +
 								this.res.substring(el.pos);
 
 						} else {
@@ -249,13 +251,13 @@ Snakeskin.addDirective(
 				}
 
 				if (fin) {
-					delete this.backTable[lastProto.name];
+					delete this.backTable[params.name];
 					this.backTableI--;
 				}
 			}
 		}
 
-		if ((!this.protoLink || this.protoLink === lastProto.name) && !this.hasParentBlock('proto')) {
+		if ((!this.protoLink || this.protoLink === params.name) && !this.hasParentBlock('proto')) {
 			this.protoStart = false;
 		}
 	}
@@ -289,10 +291,11 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
+			let tplName = this.tplName;
 			let name = this.getFnName(command),
 				args = this.getFnArgs(command);
 
-			let cache = protoCache[this.tplName];
+			let cache = protoCache[tplName];
 			let proto = cache[name],
 				argsStr = '';
 
@@ -313,16 +316,18 @@ Snakeskin.addDirective(
 			// (запоминаем место вызова, чтобы вернуться к нему,
 			// когда прототип будет объявлен)
 			} else if (!proto || !proto.body) {
-				if (!this.backTable[name]) {
-					this.backTable[name] = [];
-					this.backTable[name].protoStart = this.protoStart;
+				let back = this.backTable;
+
+				if (!back[name]) {
+					back[name] = [];
+					back[name].protoStart = this.protoStart;
 					this.backTableI++;
 				}
 
 				let rand = Math.random().toString(),
-					key = `${this.tplName.replace(/([.\[])/g, '\\$1')}_${name}_${rand.replace('.', '\\.')}`;
+					key = `${tplName.replace(/([.\[])/g, '\\$1')}_${name}_${rand.replace('.', '\\.')}`;
 
-				this.backTable[name].push({
+				back[name].push({
 					proto: selfProto ?
 						cache[selfProto.name] : null,
 
@@ -333,7 +338,7 @@ Snakeskin.addDirective(
 					recursive: Boolean(proto)
 				});
 
-				this.save(`/* __APPLY__${this.tplName}_${name}_${rand} */`);
+				this.save(`/* __APPLY__${tplName}_${name}_${rand} */`);
 
 				if (selfProto && !proto) {
 					cache[selfProto.name].calls[name] = true;
