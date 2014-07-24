@@ -42,6 +42,10 @@ function prepareDecl(str, i) {
 				let last = struct[struct.length - 1],
 					decl = getDir(str, dir ? j + 1 : j, dir);
 
+				if (!dir) {
+					getTag(decl.command);
+				}
+
 				let obj = {
 					dir: dir,
 					name: decl.name,
@@ -130,7 +134,50 @@ function prepareDecl(str, i) {
 	}
 }
 
-function getDir(str, i, command) {
+function getTag(str) {
+	var action = '';
+
+	var tag = '',
+		id = '',
+		classes = [];
+
+	var pOpen = 0;
+	var attrs = {};
+
+	for (let i = 0; i < str.length; i++) {
+		let el = str.charAt(i);
+
+		if (el === '#' || el === '.') {
+			if (!tag) {
+				tag = 'div';
+			}
+
+			action = el;
+
+			if (el === '.') {
+				classes.push('');
+			}
+
+			continue;
+		}
+
+		if (action === '#') {
+			id += el;
+		}
+
+		if (action === '.') {
+			classes[classes.length - 1] += el;
+		}
+
+		if (!action) {
+			tag += el;
+		}
+	}
+
+	console.log(tag, id, classes);
+}
+
+function getDir(str, i) {
 	var res = '',
 		name = '';
 
