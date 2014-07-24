@@ -1,64 +1,91 @@
 function prepareDecl(str, i) {
 	var clrL = true,
-		spaces = 0;
+		spaces = 0,
+		space = '';
 
-	var struct = [];
+	var struct = [],
+		res = '';
+
 	for (let j = i; j < str.length; j++) {
-		let el = str.charAt(j),
-			currentClrL = clrL;
+		let el = str.charAt(j);
 
 		if (nextLineRgxp.test(el)) {
 			clrL = true;
 			spaces = 0;
+			space = '\n';
 
 		} else {
 			if (whiteSpaceRgxp.test(el)) {
 				spaces++;
+				space += el;
 
-			} else if (currentClrL && shortMap[el]) {
+			} else if (clrL && shortMap[el]) {
 				clrL = false;
-				let last = struct[struct.length - 1];
+
+				let last = struct[struct.length - 1],
+					decl = getDir(str, j + 1);
+
+				let obj = {
+					command: decl.command,
+					spaces: spaces,
+					space: space,
+					children: [],
+					parent: null,
+					block: Boolean(block[decl.name])
+				};
 
 				if (last) {
 					if (last.spaces < spaces) {
-						let decl = getDir(dir.source, j + 1);
-
-						last.children.push({
-							command: decl.command,
-							spaces: spaces,
-							children: []
-						});
-
-						last.children[0].parent = struct;
+						obj.parent = struct;
+						last.children.push(obj);
 						struct = last.children;
-						j += decl.command.length;
+
+					} else if (last.spaces === spaces) {
+						struct.push(obj);
 
 					} else {
-						let decl = getDir(dir.source, j + 1);
+						while (last.spaces >= spaces) {
+							if (last.block) {
+								res += `${LB}end${RB}`;
+							}
 
-						struct.push({
-							command: decl.command,
-							spaces: spaces,
-							children: [],
-							parent: null
-						});
+							if (struct[0].parent) {
+								struct = struct[0].parent;
+								last = struct[0];
 
-						j += decl.command.length;
+							} else {
+								return res;
+							}
+						}
+
+						obj.parent = struct;
+						last.children.push(obj);
+						struct = last.children;
 					}
 
 				} else {
-					let decl = getDir(dir.source, j + 1);
-
-					struct.push({
-						command: decl.command,
-						spaces: spaces,
-						children: [],
-						parent: null
-					});
-
-					j += decl.command.length;
+					struct.push(obj);
 				}
+
+				res += space + LB + decl.command + RB;
+				j += decl.command.length;
 			}
+		}
+	}
+
+	var old = struct[struct.length - 1];
+
+	while (true) {
+		if (old.block) {
+			res += `${LB}end${RB}`;
+		}
+
+		if (struct[0].parent) {
+			struct = struct[0].parent;
+			old = struct[0];
+
+		} else {
+			return res;
 		}
 	}
 }
@@ -108,7 +135,9 @@ function getDir(str, i) {
 				name += el;
 			}
 
-			res += el;
+			if (nmBrk !== null) {
+				res += el;
+			}
 		}
 	}
 }
