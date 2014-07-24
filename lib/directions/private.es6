@@ -42,7 +42,6 @@ Snakeskin.addDirective(
 	}
 );
 
-
 Snakeskin.addDirective(
 	'__setError__',
 
@@ -55,6 +54,17 @@ Snakeskin.addDirective(
 	}
 );
 
+Snakeskin.addDirective(
+	'__end__',
+
+	{
+
+	},
+
+	function () {
+		Snakeskin.Directions['end'].apply(this, arguments);
+	}
+);
 
 Snakeskin.addDirective(
 	'__appendLine__',
