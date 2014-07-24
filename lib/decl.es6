@@ -22,6 +22,11 @@ var includeDirMap = {
 	'#{': true
 };
 
+var shortMap = {
+	'-': true,
+	'#': true
+};
+
 // <<<
 // Модификаторы контекста
 // >>>

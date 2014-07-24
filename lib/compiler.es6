@@ -246,6 +246,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nStart = false,
 		i18nDirStart = false;
 
+	var clrL = true;
 	while (++dir.i < dir.source.length) {
 		let str = dir.source,
 			struct = dir.structure;
@@ -262,8 +263,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			modLine = false;
 		}
 
+		let nextLine = nextLineRgxp.test(el),
+			currentClrL = clrL;
+
+		if (nextLine) {
+			clrL = true;
+		}
+
 		if (!dir.freezeLine) {
-			if (nextLineRgxp.test(el)) {
+			if (nextLine) {
 				if (modLine) {
 					dir.lines[line] = '';
 				}
@@ -318,6 +326,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
+			clrL = false;
+
 			if ((dir.needPrfx ? el !== ALB : el !== LB) && !begin) {
 				prevSpace = dir.space;
 			}
@@ -667,6 +677,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			} else if (!dir.tplName) {
 				if (el === ' ') {
 					continue;
+				}
+
+				if (currentClrL && shortMap[el]) {
+
 				}
 
 				dir.error('text can\'t be used in the global space');
