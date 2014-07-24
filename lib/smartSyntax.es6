@@ -1,10 +1,10 @@
-Snakeskin.prepareDecl = function (dir) {
+function prepareDecl(str, i) {
 	var clrL = true,
 		spaces = 0;
 
 	var struct = [];
-	for (let i = dir.i; i < dir.source.length; i++) {
-		let el = dir.source.charAt(i),
+	for (let j = i; j < str.length; j++) {
+		let el = str.charAt(j),
 			currentClrL = clrL;
 
 		if (nextLineRgxp.test(el)) {
@@ -17,38 +17,51 @@ Snakeskin.prepareDecl = function (dir) {
 
 			} else if (currentClrL && shortMap[el]) {
 				clrL = false;
-
 				let last = struct[struct.length - 1];
 
 				if (last) {
 					if (last.spaces < spaces) {
+						let decl = getDir(dir.source, j + 1);
+
 						last.children.push({
-							command: el,
+							command: decl.command,
 							spaces: spaces,
 							children: []
 						});
 
 						last.children[0].parent = struct;
 						struct = last.children;
+						j += decl.command.length;
 
 					} else {
+						let decl = getDir(dir.source, j + 1);
 
+						struct.push({
+							command: decl.command,
+							spaces: spaces,
+							children: [],
+							parent: null
+						});
+
+						j += decl.command.length;
 					}
 
 				} else {
-					console.log(getDir(dir.source, i + 1));
+					let decl = getDir(dir.source, j + 1);
 
 					struct.push({
-						command: el,
+						command: decl.command,
 						spaces: spaces,
 						children: [],
 						parent: null
-					})
+					});
+
+					j += decl.command.length;
 				}
 			}
 		}
 	}
-};
+}
 
 function getDir(str, i) {
 	var res = '',
@@ -71,7 +84,7 @@ function getDir(str, i) {
 
 			} else {
 				lastEl = '';
-				res = res.substring(0, lastElI) + res.substring(lastElI + 1);
+				res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
 			}
 
 		} else {
