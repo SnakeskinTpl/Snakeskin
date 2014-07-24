@@ -6,8 +6,10 @@ function prepareDecl(str, i) {
 	var struct = [],
 		res = '';
 
+	var length = 0;
 	for (let j = i; j < str.length; j++) {
 		let el = str.charAt(j);
+		length++;
 
 		if (nextLineRgxp.test(el)) {
 			clrL = true;
@@ -46,7 +48,7 @@ function prepareDecl(str, i) {
 					} else {
 						while (last.spaces >= spaces) {
 							if (last.block) {
-								res += `${LB}end${RB}`;
+								res += `${LB}__end__${RB}`;
 							}
 
 							if (struct[0].parent) {
@@ -54,7 +56,10 @@ function prepareDecl(str, i) {
 								last = struct[0];
 
 							} else {
-								return res;
+								return {
+									str: res,
+									length: length
+								};
 							}
 						}
 
@@ -67,7 +72,12 @@ function prepareDecl(str, i) {
 					struct.push(obj);
 				}
 
-				res += space + LB + decl.command + RB;
+				res += space +
+					LB +
+					decl.command +
+					RB;
+
+				length += decl.command.length;
 				j += decl.command.length;
 			}
 		}
@@ -77,7 +87,7 @@ function prepareDecl(str, i) {
 
 	while (true) {
 		if (old.block) {
-			res += `${LB}end${RB}`;
+			res += `${LB}__end__${RB}`;
 		}
 
 		if (struct[0].parent) {
@@ -85,7 +95,10 @@ function prepareDecl(str, i) {
 			old = struct[0];
 
 		} else {
-			return res;
+			return {
+				str: res,
+				length: length
+			};
 		}
 	}
 }
