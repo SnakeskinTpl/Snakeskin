@@ -14,7 +14,14 @@ Snakeskin.addDirective(
 
 			for (let i = 0; i < groups.length; i++) {
 				let el = groups[i];
-				this.save(this.returnAttrDecl(el.attr, el.group, el.separator));
+
+				this.save(
+					this.returnAttrDecl(
+						el.attr,
+						el.group,
+						el.separator
+					)
+				);
 			}
 		}
 	}
