@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		if (this.isSimpleOutput()) {
 			let parts = command.split(' '),
-				desc = returnTagDesc(parts[0]);
+				desc = this.returnTagDesc(parts[0]);
 
 			let params = this.structure.params;
 
@@ -152,7 +152,7 @@ DirObj.prototype.returnTagAttrDecl = function (command, opt_group, opt_separator
  * @param {string} str - исходная строка
  * @return {{tag: string, id: string, classes: !Array}}
  */
-function returnTagDesc(str) {
+DirObj.prototype.returnTagDesc = function (str) {
 	var action = '';
 
 	var tag = '',
@@ -191,9 +191,13 @@ function returnTagDesc(str) {
 		}
 	}
 
+	for (let i = 0; i < classes.length; i++) {
+		classes[i] = this.replaceTplVars(classes[i]);
+	}
+
 	return {
-		tag: tag,
-		id: id,
+		tag: this.replaceTplVars(tag),
+		id: this.replaceTplVars(id),
 		classes: classes
 	};
-}
+};
