@@ -76,7 +76,7 @@ DirObj.prototype.returnAttrDecl = function (command, opt_group, opt_separator) {
 
 		res += `
 			if ((${arg[0]}) != null && (${arg[0]}) != '' && __STR__) {
-				${this.wrap(`' ' + ${arg[0]} + ' = "' + __STR__ + '"'`)}
+				${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
 			}
 		`;
 	}

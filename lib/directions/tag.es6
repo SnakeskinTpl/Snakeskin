@@ -136,7 +136,7 @@ DirObj.prototype.returnTagAttrDecl = function (command, opt_group, opt_separator
 					__TMP__[(${arg[0]})] += __STR__;
 
 				} else {
-					${this.wrap(`' ' + ${arg[0]} + ' = "' + __STR__ + '"'`)}
+					${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
 				}
 			}
 		`;
