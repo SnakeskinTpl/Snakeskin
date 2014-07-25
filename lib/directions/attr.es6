@@ -49,7 +49,7 @@ DirObj.prototype.returnAttrDecl = function (command, opt_group, opt_separator) {
 		}
 
 		res += `
-			__STR__ = \'\';
+			__STR__ = '';
 			__J__ = 0;
 		`;
 
