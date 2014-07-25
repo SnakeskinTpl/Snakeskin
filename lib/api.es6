@@ -449,6 +449,7 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	constCache[tplName] = {};
 	fromConstCache[tplName] = 0;
 
+	this.bemRef = '';
 	this.superStrongSpace = 0;
 	this.strongSpace = false;
 	this.space = true;

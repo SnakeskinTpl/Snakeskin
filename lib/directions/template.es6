@@ -30,6 +30,12 @@ DirObj.prototype.tplName = null;
  */
 DirObj.prototype.parentTplName = null;
 
+/**
+ * Название родительского BEM класса
+ * @type {string}
+ */
+DirObj.prototype.bemRef = '';
+
 var template = ['template', 'interface', 'placeholder'];
 var scopeModRgxp = new RegExp(`^${G_MOD}`);
 
@@ -117,6 +123,7 @@ for (let i = 0; i < template.length; i++) {
 			notEmpty: true,
 			group: [
 				'template',
+				'rootTemplate',
 				'define'
 			]
 		},
