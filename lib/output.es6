@@ -1,4 +1,4 @@
-var blackWordList = {
+var blackWordMap = {
 	'+': true,
 	'++': true,
 	'-': true,
@@ -43,11 +43,11 @@ var blackWordList = {
 	'interface': true
 };
 
-var unaryBlackWordList = {
+var unaryBlackWordMap = {
 	'new': true
 };
 
-var comboBlackWordList = {
+var comboBlackWordMap = {
 	'var': true,
 	'const': true,
 	'let': true
@@ -188,7 +188,7 @@ DirObj.prototype.getWord = function (str, pos) {
 	for (let i = pos, j = 0; i < str.length; i++, j++) {
 		let el = str.charAt(i);
 
-		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && unaryBlackWordList[res])) {
+		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && unaryBlackWordMap[res])) {
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
 				pContent += el;
 			}
@@ -455,12 +455,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 					vres;
 
 				// true,
-				// если полученное слово не является зарезервированным (blackWordList),
+				// если полученное слово не является зарезервированным (blackWordMap),
 				// не является фильтром,
 				// не является числом,
 				// не является константой замены Escaper,
 				// не является названием свойства в литерале объекта ({свойство: )
-				let canParse = !blackWordList[word] &&
+				let canParse = !blackWordMap[word] &&
 					!pCountFilter &&
 					!ssfRgxp.test(word) &&
 					!isFilter &&
@@ -540,7 +540,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_isys, opt_break
 
 				// Данное слово является составным системным,
 				// т.е. пропускаем его и следующее за ним
-				if (comboBlackWordList[finalWord]) {
+				if (comboBlackWordMap[finalWord]) {
 					posNWord = 2;
 
 				} else if (canParse && (!opt_sys || opt_isys) && !filterStart) {

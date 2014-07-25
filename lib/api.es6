@@ -260,6 +260,7 @@ function DirObj(src, params) {
 				__VARS__ = Snakeskin.Vars,
 				__LOCAL__ = Snakeskin.LocalVars,
 				__STR__,
+				__TMP__,
 				__J__;
 
 			var \$_ = __LOCAL__['\$_${uid}'];
