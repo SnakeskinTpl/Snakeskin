@@ -26,7 +26,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.startDir();
+		this.startDir(null, {
+			bemRef: this.bemRef
+		});
+
 		if (this.isSimpleOutput()) {
 			let parts = command.split(' '),
 				desc = this.returnTagDesc(parts[0]);
@@ -67,9 +70,10 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			let params = this.structure.params;
+		var params = this.structure.params;
+		this.bemRef = params.bemRef;
 
+		if (this.isSimpleOutput()) {
 			if (params.block) {
 				this.save(this.wrap(`'</${params.tag}>'`));
 			}
@@ -191,11 +195,28 @@ DirObj.prototype.returnTagDesc = function (str) {
 		}
 	}
 
-	for (let i = 0; i < classes.length; i++) {
-		classes[i] = this.replaceTplVars(classes[i]);
+	var ref = this.bemRef,
+		newRef = '';
+
+	for (let i = classes.length; i--;) {
+		let el = classes[i];
+
+		if (el.charAt(0) === '&') {
+			el = ref + el.substring(1);
+
+		} else if (!newRef && el) {
+			newRef = el;
+		}
+
+		classes[i] = this.replaceTplVars(el);
+	}
+
+	if (newRef) {
+		this.bemRef = newRef;
 	}
 
 	return {
+		ref: ref,
 		tag: this.replaceTplVars(tag),
 		id: this.replaceTplVars(id),
 		classes: classes
