@@ -30,15 +30,15 @@ Snakeskin.addDirective(
 /**
  * Вернуть строку декларации XML атрибутов
  *
- * @param {string} command - исходная команда
+ * @param {string} str - исходная строка
  * @param {?string=} [opt_group] - название группы
  * @param {?string=} [opt_separator='-'] - разделитель группы
  * @return {string}
  */
-DirObj.prototype.returnAttrDecl = function (command, opt_group, opt_separator) {
+DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator) {
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
-	var parts = command.split(';'),
+	var parts = str.split(';'),
 		res = '';
 
 	for (let i = 0; i < parts.length; i++) {

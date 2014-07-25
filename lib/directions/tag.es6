@@ -85,15 +85,15 @@ Snakeskin.addDirective(
  *     returnTagAttrDecl #{foo}-bar
  * )
  *
- * @param {string} command - исходная команда
+ * @param {string} str - исходная строка
  * @param {?string=} [opt_group] - название группы
  * @param {?string=} [opt_separator='-'] - разделитель группы
  * @return {string}
  */
-DirObj.prototype.returnTagAttrDecl = function (command, opt_group, opt_separator) {
+DirObj.prototype.returnTagAttrDecl = function (str, opt_group, opt_separator) {
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
-	var parts = command.split(';'),
+	var parts = str.split(';'),
 		res = '';
 
 	for (let i = 0; i < parts.length; i++) {
