@@ -1,4 +1,4 @@
-var inline = {
+var inlineTagMap = {
 	'img': true,
 	'link': true,
 	'embed': true,
@@ -27,20 +27,42 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startDir();
 		if (this.isSimpleOutput()) {
+			let parts = command.split(' '),
+				desc = returnTagDesc(parts[0]);
 
+			let params = this.structure.params;
+
+			params.tag = desc.tag;
+			params.block = !inlineTagMap[desc.tag];
+
+			this.save(this.wrap(`'<${desc.tag}${desc.id ? ` id="${desc.id}"` : ''}${desc.classes.length ? ` class="${desc.classes.join(' ')}"` : ''}${!params.block ? '/' : ''}>'`));
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			let params = this.structure.params;
+
+			if (params.block) {
+				this.save(this.wrap(`'</${params.tag}>'`));
+			}
 		}
 	}
 );
 
-function getTag(str) {
+/**
+ * Анализировать заданную строку на декларацию тега
+ * и вернуть объект-описание
+ *
+ * @param {string} str - исходная строка
+ * @return {{tag: string, id: string, classes: !Array}}
+ */
+function returnTagDesc(str) {
 	var action = '';
 
 	var tag = '',
 		id = '',
 		classes = [];
-
-	var pOpen = 0;
-	var attrs = {};
 
 	for (let i = 0; i < str.length; i++) {
 		let el = str.charAt(i);
@@ -59,18 +81,24 @@ function getTag(str) {
 			continue;
 		}
 
-		if (action === '#') {
-			id += el;
-		}
+		switch (action) {
+			case '#': {
+				id += el;
+			} break;
 
-		if (action === '.') {
-			classes[classes.length - 1] += el;
-		}
+			case '.': {
+				classes[classes.length - 1] += el;
+			} break;
 
-		if (!action) {
-			tag += el;
+			default: {
+				tag += el;
+			}
 		}
 	}
 
-	console.log(tag, id, classes);
+	return {
+		tag: tag,
+		id: id,
+		classes: classes
+	};
 }
