@@ -8,8 +8,10 @@ function prepareDecl(str, i) {
 
 	var length = 0;
 	for (let j = i; j < str.length; j++) {
-		let el = str.charAt(j);
 		length++;
+
+		let el = str.charAt(j),
+			next2str = el + str.charAt(j + 1);
 
 		if (nextLineRgxp.test(el)) {
 			clrL = true;
@@ -24,11 +26,16 @@ function prepareDecl(str, i) {
 			} else if (clrL && el) {
 				clrL = false;
 
-				let dir = shortMap[el],
-					decl = getDir(str, dir ? j + 1 : j, dir);
+				let dir = shortMap[el] || shortMap[next2str],
+					decl = getDir(str, baseShortMap[el] ? j + 1 : j, dir);
+
+				let replacer = replacers[next2str] || replacers[el];
+
+				if (replacer) {
+					decl.name = replacer(decl.name).trim();
+				}
 
 				let obj = {
-					command: decl.command,
 					dir: dir,
 					name: decl.name,
 					spaces: spaces,
