@@ -513,7 +513,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (dir.needPrfx) {
 						if (dir.inline !== false) {
-							if (commandType === 'end') {
+							if (commandType === 'end' || commandType === '__end__') {
 								if (dir.prfxI) {
 									dir.prfxI--;
 
