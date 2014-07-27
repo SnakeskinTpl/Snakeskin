@@ -101,39 +101,53 @@ function prepareDecl(str, i) {
 	};
 }
 
+var lineWhiteSpaceRgxp = /[ \t]/;
+
 function getDir(str, i) {
 	var res = '',
 		name = '';
 
 	var lastEl = '',
-		lastElI = 0,
-		nmBrk = null;
+		lastElI = 0;
+
+	var concatLine = false;
+	var nmBrk = null;
 
 	for (let j = i; j < str.length; j++) {
 		let el = str.charAt(j);
 
 		if (nextLineRgxp.test(el)) {
-			if (lastEl !== '&') {
-				return {
-					command: res,
-					name: name,
-					lastEl: lastEl
-				};
+			let prevEl = lastEl;
+			lastEl = '';
 
-			} else {
-				lastEl = '';
+			if (prevEl === '&' || prevEl === '.') {
 				res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
 			}
 
+			if (concatLine && prevEl !== '.') {
+				continue;
+			}
+
+			if (prevEl === '&') {
+				concatLine = true;
+				continue
+			}
+
+			return {
+				command: res,
+				name: name,
+				lastEl: lastEl
+			};
+
 		} else {
-			let whiteSpace = whiteSpaceRgxp.test(el);
+			let whiteSpace = lineWhiteSpaceRgxp.test(el);
 
 			if (whiteSpace) {
 				if (nmBrk === false) {
 					nmBrk = true;
 				}
 
-			} else if (whiteSpaceRgxp.test(res.charAt(res.length - 1))) {
+			} else {
 				lastEl = el;
 				lastElI = res.length;
 			}
