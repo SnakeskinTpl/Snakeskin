@@ -22,10 +22,20 @@ var includeDirMap = {
 	'#{': true
 };
 
-var shortMap = {
+var baseShortMap = {
 	'-': true,
 	'#': true
 };
+
+var shortMap = {};
+
+for (let key in baseShortMap) {
+	if (!baseShortMap.hasOwnProperty(key)) {
+		continue;
+	}
+
+	shortMap[key] = true;
+}
 
 // <<<
 // Модификаторы контекста
