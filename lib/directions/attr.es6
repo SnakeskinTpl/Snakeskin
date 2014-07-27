@@ -33,9 +33,12 @@ Snakeskin.addDirective(
  * @param {string} str - исходная строка
  * @param {?string=} [opt_group] - название группы
  * @param {?string=} [opt_separator='-'] - разделитель группы
+ * @param {?boolean=} [opt_classLink=false] - если true, то значения для атрибута class
+ *     будут сохраняться во временную переменную
+ *
  * @return {string}
  */
-DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator) {
+DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
 	var parts = str.split(';'),
@@ -49,22 +52,23 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator) {
 		}
 
 		res += `
-			__STR__ = '';
+			__STR__ = \'\';
 			__J__ = 0;
 		`;
 
 		if (opt_group) {
-			arg[0] = `'${opt_group + opt_separator}' + ${arg[0]}`;
+			arg[0] = opt_group + opt_separator + arg[0];
 
 		} else {
 			arg[0] = arg[0].charAt(0) === '-' ?
-				`'data-' + ${arg[0].slice(1)}` : arg[0];
+				`data-${arg[0].slice(1)}` : arg[0];
 		}
 
+		arg[0] = `'${this.replaceTplVars(arg[0].trim())}'`;
 		let vals = arg[1].split(',');
 
 		for (let j = 0; j < vals.length; j++) {
-			let val = this.prepareOutput(vals[j], true) || '';
+			let val = this.prepareOutput(`'${this.replaceTplVars(vals[j].trim())}'`, true) || '';
 
 			res += `
 				if ((${val}) != null && (${val}) !== '') {
@@ -74,11 +78,23 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator) {
 			`;
 		}
 
-		res += `
-			if ((${arg[0]}) != null && (${arg[0]}) != '' && __STR__) {
-				${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
-			}
-		`;
+		res += `if ((${arg[0]}) != null && (${arg[0]}) != '' && __STR__) {`;
+
+		if (opt_classLink) {
+			res += `
+				if (__TMP__[(${arg[0]})] != null) {
+					__TMP__[(${arg[0]})] += __STR__;
+
+				} else {
+					${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
+				}
+			`;
+
+		} else {
+			res += this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`);
+		}
+
+		res += '}';
 	}
 
 	return res;
