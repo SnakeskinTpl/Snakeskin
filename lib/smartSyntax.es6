@@ -6,7 +6,9 @@ function prepareDecl(str, i) {
 	var struct,
 		res = '';
 
-	var length = 0;
+	var length = 0,
+		tSpace = 0;
+
 	for (let j = i; j < str.length; j++) {
 		length++;
 
@@ -17,13 +19,15 @@ function prepareDecl(str, i) {
 			clrL = true;
 			spaces = 0;
 			space = '\n';
+			tSpace++;
 
 		} else {
 			if (whiteSpaceRgxp.test(el)) {
 				spaces++;
 				space += el;
+				tSpace++;
 
-			} else if (clrL && el) {
+			} else if (clrL) {
 				clrL = false;
 
 				let dir = shortMap[el] || shortMap[next2str],
@@ -69,7 +73,7 @@ function prepareDecl(str, i) {
 							if (!struct) {
 								return {
 									str: res,
-									length: length
+									length: length - tSpace
 								};
 							}
 						}
@@ -87,8 +91,10 @@ function prepareDecl(str, i) {
 					decl.command +
 					(dir ? RB : '');
 
-				length += decl.command.length;
+				length += decl.command.length - 1;
 				j += decl.command.length - 1;
+
+				tSpace = 0;
 			}
 		}
 	}

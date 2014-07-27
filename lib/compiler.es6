@@ -252,7 +252,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			struct = dir.structure;
 
 		let el = str.charAt(dir.i),
-			next = str.charAt(dir.i + 1);
+			next = str.charAt(dir.i + 1),
+			next2str = el + next;
 
 		let rEl = el;
 		let line = info['line'],
@@ -351,8 +352,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				continue;
 			}
 
-			let next2str = el + next,
-				next3str = next2str + str.charAt(dir.i + 2);
+			let next3str = next2str + str.charAt(dir.i + 2);
 
 			// Обработка комментариев
 			if (!currentEscape) {
@@ -473,12 +473,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					let short1 = command.charAt(0),
 						short2 = command.substr(0, 2);
 
-					// Поддержка коротких форм записи директив
-					if (replacers[short2]) {
-						command = replacers[short2](command);
+					let replacer = replacers[short2] || replacers[short1];
 
-					} else if (replacers[short1]) {
-						command = replacers[short1](command);
+					if (replacer) {
+						command = replacer(command);
 					}
 
 					let commandType = commandTypeRgxp.exec(command)[0],
@@ -679,11 +677,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				if (currentClrL && shortMap[el]) {
-					let adv = dir.lines[line - 1].length + 1,
+				if (currentClrL && (shortMap[el] || shortMap[next2str])) {
+					let adv = dir.lines[line - 1].length - 1,
 						source = prepareDecl(dir.source, dir.i - adv);
 
-					dir.source = dir.source.substring(0, dir.i) +
+					dir.source = dir.source.substring(0, dir.i - adv) +
 						source.str +
 						dir.source.substring(dir.i + source.length - adv - 1);
 
@@ -750,12 +748,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	);
 
 	// Удаление пустых операций
-	if (p.stringBuffer) {
-		dir.res = dir.res.replace(/__RESULT__\.push\(''\);/g, '');
+	dir.res = dir.res.replace(p.stringBuffer ?
+		/__RESULT__ \+= '';/g : /__RESULT__ \+= '';/g,
 
-	} else {
-		dir.res = dir.res.replace(/__RESULT__ \+= '';/g, '');
-	}
+	'');
 
 	dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
 	dir.res += `${cjs ? '}' : ''}}).call(this);`;
@@ -819,7 +815,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Живая компиляция в браузере
 		} else if (!cjs) {
-			console.log(dir.res);
+			//console.log(dir.res);
 			dir.evalStr(dir.res);
 		}
 
