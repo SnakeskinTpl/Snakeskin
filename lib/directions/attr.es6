@@ -10,7 +10,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let groups = splitAttrGroup(command);
+			let groups = splitAttrsGroup(command);
 
 			for (let i = 0; i < groups.length; i++) {
 				let el = groups[i];
@@ -79,6 +79,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		}
 
 		res += `if ((${arg[0]}) != null && (${arg[0]}) != '' && __STR__) {`;
+		let tmp = this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`);
 
 		if (opt_classLink) {
 			res += `
@@ -86,12 +87,12 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 					__TMP__[(${arg[0]})] += __STR__;
 
 				} else {
-					${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
+					${tmp}
 				}
 			`;
 
 		} else {
-			res += this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`);
+			res += tmp;
 		}
 
 		res += '}';
@@ -106,7 +107,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
  * @param {string} str - исходная строка
  * @return {!Array}
  */
-function splitAttrGroup(str) {
+function splitAttrsGroup(str) {
 	var groups = [];
 
 	var group = '',
