@@ -1,4 +1,4 @@
-//#!/usr/bin/env node
+#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 var program = require('commander');
@@ -44,7 +44,7 @@ if (params.language) {
 var words = params.words;
 
 if (words) {
-	params.words = [];
+	params.words = {};
 }
 
 var input;

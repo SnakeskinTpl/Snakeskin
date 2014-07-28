@@ -44,7 +44,7 @@ if (params.language) {
 var words = params.words;
 
 if (words) {
-	params.words = [];
+	params.words = {};
 }
 
 var input;
