@@ -130,7 +130,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 							if (!struct) {
 								return {
 									str: res,
-									length: length - tSpace
+									length: length - tSpace - 1
 								};
 							}
 						}
@@ -165,7 +165,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 
 	return {
 		str: res,
-		length: length + 1
+		length: length
 	};
 };
 

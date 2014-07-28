@@ -685,7 +685,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					dir.source = dir.source.substring(0, dir.i - adv) +
 						source.str +
-						dir.source.substring(dir.i + source.length - adv - 1);
+						dir.source.substring(dir.i + source.length - adv);
 
 					dir.lines[line - 1] = '';
 					dir.i--;
