@@ -335,7 +335,7 @@ DirObj.prototype.getDiff = function (length) {
  * @return {string}
  */
 DirObj.prototype.$ = function () {
-	return `__RESULT__ ${this.stringBuffer ? '.push(' : '+= '}`;
+	return `__RESULT__${this.stringBuffer ? '.push(' : '+= '}`;
 };
 
 /**

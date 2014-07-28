@@ -186,7 +186,7 @@ Snakeskin.addDirective(
 
 							${scope ? `${_}{end}` : ''}
 						${_}{end}
-					`,
+					`.trim(),
 
 					{
 						inlineIterators: this.inlineIterators,
