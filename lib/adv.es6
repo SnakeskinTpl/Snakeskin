@@ -1,8 +1,14 @@
-function getEnd(struct) {
-	return `${struct.adv + LB}__end__${RB}`;
-}
+var commandRgxp = /([^\s]+).*/;
 
-function prepareDecl(str, i) {
+/**
+ * Вернуть объект-описание преобразованной части шаблона из
+ * jade-like синтаксиса в стандартный
+ *
+ * @param {string} str - исходная строка
+ * @param {number} i - номер начальной итерации
+ * @return {{str: string, length: number}}
+ */
+DirObj.prototype.toBaseSyntax = function (str, i) {
 	var clrL = true,
 		spaces = 0,
 		space = '';
@@ -35,15 +41,15 @@ function prepareDecl(str, i) {
 				clrL = false;
 
 				let dir = shortMap[el] || shortMap[next2str],
-					decl = getDir(str, baseShortMap[el] || el === '|' ? j + 1 : j, dir);
+					decl = getLineDesc(str, baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j);
 
 				let replacer = replacers[next2str] || replacers[el];
 
 				if (replacer) {
-					decl.name = replacer(decl.name).replace(/([^\s]+).*/, '$1');
+					decl.name = replacer(decl.name).replace(commandRgxp, '$1');
 				}
 
-				let adv = el === ALB ? ALB : '';
+				let adv = el === ADV_LEFT_BLOCK ? ADV_LEFT_BLOCK : '';
 				let obj = {
 					dir: dir,
 					name: decl.name,
@@ -61,7 +67,7 @@ function prepareDecl(str, i) {
 
 					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
 						if (struct.block) {
-							res += getEnd(struct);
+							res += genEndDir(struct);
 						}
 
 						obj.parent = struct.parent;
@@ -70,7 +76,7 @@ function prepareDecl(str, i) {
 					} else {
 						while (struct.spaces >= spaces) {
 							if (struct.block) {
-								res += getEnd(struct);
+								res += genEndDir(struct);
 							}
 
 							struct = struct
@@ -87,16 +93,15 @@ function prepareDecl(str, i) {
 						obj.parent = struct;
 					}
 
-				// Первичная инициализация
 				} else {
 					struct = obj;
 				}
 
 				res += space +
 					adv +
-					(dir ? LB : '') +
+					(dir ? LEFT_BLOCK : '') +
 					decl.command +
-					(dir ? RB : '');
+					(dir ? RIGHT_BLOCK : '');
 
 				length += decl.command.length - 1;
 				j += decl.command.length - 1;
@@ -108,7 +113,7 @@ function prepareDecl(str, i) {
 
 	while (struct) {
 		if (struct.block) {
-			res += getEnd(struct);
+			res += genEndDir(struct);
 		}
 
 		struct = struct
@@ -119,11 +124,26 @@ function prepareDecl(str, i) {
 		str: res,
 		length: length
 	};
+};
+
+/**
+ * Вернуть строку окончания блоковой директивы
+ *
+ * @param {!Object} dir - объект-описание директивы
+ * @return {string}
+ */
+function genEndDir(dir) {
+	return `${dir.adv + LEFT_BLOCK}__end__${RIGHT_BLOCK}`;
 }
 
-var lineWhiteSpaceRgxp = /[ \t]/;
-
-function getDir(str, i) {
+/**
+ * Вернуть объект описание строки в jade-like синтаксисе
+ *
+ * @param {string} str - исходная строка
+ * @param {number} i - номер начальной итерации
+ * @return {{command: string, name: string, lastEl: string}}
+ */
+function getLineDesc(str, i) {
 	var res = '',
 		name = '';
 
@@ -140,11 +160,11 @@ function getDir(str, i) {
 			let prevEl = lastEl;
 			lastEl = '';
 
-			if (prevEl === '&' || prevEl === '.') {
+			if (prevEl === CONCAT_COMMAND || prevEl === CONCAT_END) {
 				res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
 			}
 
-			if (concatLine && prevEl !== '.') {
+			if (concatLine && prevEl !== CONCAT_END) {
 				continue;
 			}
 

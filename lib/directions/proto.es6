@@ -164,7 +164,7 @@ Snakeskin.addDirective(
 					scope = proto.scope;
 
 				let _ = this.needPrfx ?
-					ALB : '';
+					ADV_LEFT_BLOCK : '';
 
 				proto.to = start + 1;
 				proto.content = this.source

@@ -1,21 +1,23 @@
 // Общие разделители директивы
 // >>>
 
-const LB = '{';
-const RB = '}';
+const LEFT_BLOCK = '{';
+const RIGHT_BLOCK = '}';
 
 // <<<
 // Дополнительные разделители директивы
 // >>>
 
-const ALB = '#';
+const ADV_LEFT_BLOCK = '#';
 const I18N = '`';
 
-const SC = '///';
-const JD = '/**';
+const SINGLE_COMMENT = '///';
+const JS_DOC = '/**';
 
-const MCS = '/*';
-const MCE = '*/';
+// !!! MULT_COMMENT_START[0] == MULT_COMMENT_END[1]
+
+const MULT_COMMENT_START = '/*';
+const MULT_COMMENT_END = '*/';
 
 var includeDirMap = {
 	'${': true,
@@ -50,10 +52,18 @@ var modMap = {
 };
 
 // <<<
+// Константы jade-like синтаксиса
+// >>>
+
+const CONCAT_COMMAND = '&';
+const CONCAT_END = '.';
+const IGNORE_COMMAND = '|';
+
+// <<<
 // Механизм фильтров
 // >>>
 
-const F = '|';
+const FILTER = '|';
 
 // <<<
 // Различные таблицы констант

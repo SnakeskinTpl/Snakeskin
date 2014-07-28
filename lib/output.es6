@@ -99,23 +99,23 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys) {
 			// Обработка комментариев
 			if (!escape) {
 				let next3str = next2str + str.charAt(i + 2);
-				if (el === SC.charAt(0) || el === MCS.charAt(0)) {
+				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
 					if (!comment) {
-						if (next3str === SC) {
+						if (next3str === SINGLE_COMMENT) {
 							comment = next3str;
 							i+= 2;
 
-						} else if (next2str === MCS) {
+						} else if (next2str === MULT_COMMENT_START) {
 							comment = next2str;
 							i++;
 						}
 
-					} else if (str.charAt(i - 1) === MCE.charAt(0) && comment === MCS) {
+					} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
 						comment = false;
 						continue;
 					}
 
-				} else if (nextLineRgxp.test(el) && comment === SC) {
+				} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
 					comment = false;
 				}
 			}
@@ -580,7 +580,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			if (!filterStart) {
 				if (el === ')') {
 					// Закрылась скобка, а последующие 2 символа не являются фильтром
-					if (next !== F || !filterRgxp.test(nNext)) {
+					if (next !== FILTER || !filterRgxp.test(nNext)) {
 						if (pCount) {
 							pCount--;
 						}
@@ -704,13 +704,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			}
 		}
 
-		isFilter = el === F;
+		isFilter = el === FILTER;
 		if (breakNum) {
 			breakNum--;
 		}
 
 		// Через 2 итерации начнётся фильтр
-		if (next === F && filterRgxp.test(nNext)) {
+		if (next === FILTER && filterRgxp.test(nNext)) {
 			nword = false;
 
 			if (!filterStart) {
