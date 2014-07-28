@@ -86,7 +86,7 @@ Snakeskin.addDirective(
 
 		this.info['line'] += val;
 		if (!this.proto) {
-			for (let i = 0; i < val; i++) {
+			for (let i = -1; ++i < val;) {
 				this.lines[line + i] = '';
 			}
 		}

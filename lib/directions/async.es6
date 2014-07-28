@@ -9,7 +9,7 @@ DirObj.prototype.declCallbackArgs = function (parts) {
 	var args = ((Array.isArray(parts) ? (parts[2] || parts[1]) : parts) || '').split(','),
 		scope;
 
-	for (let i = 0; i < args.length; i++) {
+	for (let i = -1; ++i < args.length;) {
 		let el = args[i].trim(),
 			mod = scopeModRgxp.test(el);
 
@@ -150,7 +150,7 @@ Snakeskin.addDirective(
 
 var series = ['parallel', 'series', 'waterfall'];
 
-for (let i = 0; i < series.length; i++) {
+for (let i = -1; ++i < series.length;) {
 	Snakeskin.addDirective(
 		series[i],
 
@@ -185,7 +185,7 @@ for (let i = 0; i < series.length; i++) {
 
 var async = ['whilst', 'doWhilst', 'forever'];
 
-for (let i = 0; i < async.length; i++) {
+for (let i = -1; ++i < async.length;) {
 	Snakeskin.addDirective(
 		async[i],
 

@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 			resStr += (() => {
 				var str = '';
 
-				for (let i = 0; i < args.length; i++) {
+				for (let i = -1; ++i < args.length;) {
 					let tmp = args[i];
 
 					switch (i) {
@@ -128,7 +128,7 @@ Snakeskin.addDirective(
 			end += (() => {
 				var str = '';
 
-				for (let i = 0; i < args.length; i++) {
+				for (let i = -1; ++i < args.length;) {
 					let tmp = args[i];
 
 					switch (i) {
@@ -182,7 +182,7 @@ Snakeskin.addDirective(
 			oldEnd += (() => {
 				var str = '';
 
-				for (let i = 0; i < args.length; i++) {
+				for (let i = -1; ++i < args.length;) {
 					let tmp = args[i];
 
 					switch (i) {
@@ -363,7 +363,7 @@ Snakeskin.addDirective(
 			resStr += (() => {
 				var str = '';
 
-				for (let i = 0; i < args.length; i++) {
+				for (let i = -1; ++i < args.length;) {
 					let tmp = args[i];
 
 					switch (i) {

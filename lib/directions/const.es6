@@ -167,7 +167,7 @@ function isAssign(str, opt_global) {
 	var count = 0,
 		eq = false;
 
-	for (var i = 0; i < str.length; i++) {
+	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i);
 
 		if (bMap[el]) {

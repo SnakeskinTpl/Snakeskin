@@ -97,7 +97,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 		let str = tmpArr[0],
 			length = tmpArr.length;
 
-		for (let i = 1; i < length; i++) {
+		for (let i = 0; ++i < length;) {
 			let el = tmpArr[i],
 				custom = el.charAt(0) === '%';
 
@@ -119,7 +119,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 	return name.trim();
 };
 
-for (let i = 0; i < template.length; i++) {
+for (let i = -1; ++i < template.length;) {
 	Snakeskin.addDirective(
 		template[i],
 
@@ -200,7 +200,7 @@ for (let i = 0; i < template.length; i++) {
 					let str = tmpArr[0],
 						length = tmpArr.length;
 
-					for (let i = 1; i < length; i++) {
+					for (let i = 0; ++i < length;) {
 						let el = tmpArr[i],
 							custom = el.charAt(0) === '%';
 
@@ -350,7 +350,7 @@ for (let i = 0; i < template.length; i++) {
 							continue;
 						}
 
-						for (let i = 0; i < cache[key].length; i++) {
+						for (let i = -1; ++i < cache[key].length;) {
 							let el = cache[key][i];
 							el.pos += proto.pos;
 							el.outer = true;
@@ -403,7 +403,7 @@ for (let i = 0; i < template.length; i++) {
 						continue;
 					}
 
-					for (let i = 0; i < cache[key].length; i++) {
+					for (let i = -1; ++i < cache[key].length;) {
 						let el = cache[key][i];
 
 						if (!el.outer) {

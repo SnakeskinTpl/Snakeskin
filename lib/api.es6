@@ -536,7 +536,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 
 		bTable[key] = sub;
 		var deep = (obj) => {
-			for (let i = 0; i < obj.length; i++) {
+			for (let i = -1; ++i < obj.length;) {
 				let el = obj[i],
 					key = `${el.name}_${el.params.name}`;
 
@@ -651,7 +651,7 @@ DirObj.prototype.toQueue = function (fn) {
 DirObj.prototype.applyQueue = function () {
 	var stack = this.structure.stack;
 
-	for (let i = 0; i < stack.length; i++) {
+	for (let i = -1; ++i < stack.length;) {
 		stack[i].call(this);
 		stack.shift();
 		i--;
@@ -671,7 +671,7 @@ DirObj.prototype.getGroup = function (/*= names */...names) {
 	var map = {},
 		ignore = {};
 
-	for (let i = 0; i < names.length; i++) {
+	for (let i = -1; ++i < names.length;) {
 		let name = names[i],
 			group = groups[name];
 
@@ -831,7 +831,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 		fin = '';
 	}
 
-	for (let i = 0; i < length; i++) {
+	for (let i = -1; ++i < length;) {
 		let el = str.charAt(i);
 
 		if (bMap[el]) {

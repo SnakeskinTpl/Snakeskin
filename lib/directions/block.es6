@@ -84,7 +84,7 @@ Snakeskin.addDirective(
 				let vars = struct.vars;
 				struct.vars = struct.parent.vars;
 
-				for (let i = 0; i < params.length; i++) {
+				for (let i = -1; ++i < params.length;) {
 					str += `${this.prepareOutput(self ? params[i][2] : params[i], true)},`
 				}
 

@@ -48,7 +48,7 @@ Snakeskin.addDirective(
 				${this.wrap(`'<${desc.tag}'`)}
 			`;
 
-			for (let i = 0; i < groups.length; i++) {
+			for (let i = -1; ++i < groups.length;) {
 				let el = groups[i];
 				str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
 			}
@@ -95,7 +95,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 		id = '',
 		classes = [];
 
-	for (let i = 0; i < str.length; i++) {
+	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i);
 
 		if (el === '#' || el === '.') {

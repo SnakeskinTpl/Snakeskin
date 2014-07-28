@@ -10,7 +10,7 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 
 	if (opt_namespace) {
 		let parts = opt_namespace.split('.');
-		for (let i = 0; i < parts.length; i++) {
+		for (let i = -1; ++i < parts.length;) {
 			if (!obj[parts[i]]) {
 				obj[parts[i]] = {};
 			}

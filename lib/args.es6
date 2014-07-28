@@ -12,7 +12,7 @@ DirObj.prototype.getFnArgs = function (str) {
 	var pOpen = 0,
 		arg = '';
 
-	for (let i = 0; i < str.length; i++) {
+	for (let i = -1; ++i < str.length;) {
 		let el = str[i];
 
 		if (el === '(') {
@@ -93,7 +93,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			let tmp = argsResCache[tplName][type][opt_name],
 				list = tmp.list;
 
-			for (let i = 0; i < list.length; i++) {
+			for (let i = -1; ++i < list.length;) {
 				struct.vars[list[i][2]] = {
 					value: list[i][0],
 					scope: this.scope.length
@@ -115,7 +115,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	}
 
 	var scope;
-	for (let i = 0; i < argsList.length; i++) {
+	for (let i = -1; ++i < argsList.length;) {
 		let arg = argsList[i].split('=');
 		arg[0] = arg[0].trim();
 
@@ -208,7 +208,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	var decl = '',
 		defParams = '';
 
-	for (let i = 0; i < argsList.length; i++) {
+	for (let i = -1; ++i < argsList.length;) {
 		let el = argsList[i];
 
 		el.key = el.key.replace(scopeModRgxp, '');
@@ -242,7 +242,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 
 	struct.params._consts = constsCache;
 
-	for (let i = 0; i < localVars.length; i++) {
+	for (let i = -1; ++i < localVars.length;) {
 		let el = localVars[i];
 
 		if (!el) {

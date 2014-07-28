@@ -12,7 +12,7 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			let groups = splitAttrsGroup(command);
 
-			for (let i = 0; i < groups.length; i++) {
+			for (let i = -1; ++i < groups.length;) {
 				let el = groups[i];
 
 				this.save(
@@ -44,7 +44,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 	var parts = str.split(';'),
 		res = '';
 
-	for (let i = 0; i < parts.length; i++) {
+	for (let i = -1; ++i < parts.length;) {
 		let arg = parts[i].split('=>');
 
 		if (arg.length !== 2) {
@@ -70,7 +70,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		arg[0] = `'${this.replaceTplVars(arg[0])}'`;
 		let vals = arg[1].split(',');
 
-		for (let j = 0; j < vals.length; j++) {
+		for (let j = -1; ++j < vals.length;) {
 			let val = this.prepareOutput(`'${this.replaceTplVars(vals[j].trim())}'`, true) || '';
 
 			res += `
@@ -124,7 +124,7 @@ function splitAttrsGroup(str) {
 		'_': true
 	};
 
-	for (let i = 0; i < str.length; i++) {
+	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i),
 			next = str.charAt(i + 1);
 

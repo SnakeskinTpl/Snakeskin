@@ -23,7 +23,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 	var length = isDecl.length * 2,
 		is = {};
 
-	for (let i = 0, j = 0; i < isDecl.length; i++) {
+	for (let i = -1, j = 0; ++i < isDecl.length;) {
 		is[i + j] = isDecl[i];
 		j++;
 		is[i + j] = `${isDecl[i]}_add`;
@@ -45,7 +45,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 	var newFrom,
 		blockDiff;
 
-	for (let i = 0; i < length; i++) {
+	for (let i = -1; ++i < length;) {
 		let type = is[i];
 
 		if (routerCache[type]) {
@@ -86,7 +86,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			advDiff.sort(sornFn);
 
-			for (let j = 0; j < advDiff.length; j++) {
+			for (let j = -1; ++j < advDiff.length;) {
 				if (advDiff[j].val <= diff) {
 					adv += advDiff[j].adv;
 

@@ -19,7 +19,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 	var length = 0,
 		tSpace = 0;
 
-	for (let j = i; j < str.length; j++) {
+	for (let j = i - 1; ++j < str.length;) {
 		length++;
 
 		let el = str.charAt(j),
@@ -196,7 +196,7 @@ function getLineDesc(str, i) {
 	var concatLine = false;
 	var nmBrk = null;
 
-	for (let j = i; j < str.length; j++) {
+	for (let j = i - 1; ++j < str.length;) {
 		let el = str.charAt(j);
 
 		if (nextLineRgxp.test(el)) {

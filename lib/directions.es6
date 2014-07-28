@@ -67,7 +67,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		let group = Array.isArray(params.group) ?
 			params.group : [params.group];
 
-		for (let i = 0; i < group.length; i++) {
+		for (let i = -1; ++i < group.length;) {
 			if (!groups[group[i]]) {
 				groups[group[i]] = {};
 				groupsList[group[i]] = [];

@@ -26,7 +26,7 @@ DirObj.prototype.protoLink = null;
 DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 	var str = '';
 
-	for (let i = 0; i < protoArgs.length; i++) {
+	for (let i = -1; ++i < protoArgs.length;) {
 		let val = this.prepareOutput(args[i] || 'void 0', true);
 
 		let arg = protoArgs[i][0],
@@ -229,7 +229,7 @@ Snakeskin.addDirective(
 				let args = proto.args,
 					fin = true;
 
-				for (let i = 0; i < back.length; i++) {
+				for (let i = -1; ++i < back.length;) {
 					let el = back[i];
 
 					if (this.canWrite) {

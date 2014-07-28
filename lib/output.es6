@@ -75,7 +75,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys) {
 		bEnd = true,
 		bEscape = false;
 
-	for (let i = 0; i < str.length; i++) {
+	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i);
 		let next2str = el + str.charAt(i + 1);
 
@@ -426,7 +426,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 	var isFilter,
 		breakNum;
 
-	for (let i = 0; i < commandLength; i++) {
+	for (let i = -1; ++i < commandLength;) {
 		let el = command.charAt(i),
 			next = command.charAt(i + 1),
 			nNext = command.charAt(i + 2);
@@ -615,7 +615,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 				fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
 
 			let arr = [];
-			for (let j = 0; j < filter.length; j++) {
+			for (let j = -1; ++j < filter.length;) {
 				let f = filter[j];
 
 				if (!unMap[f]) {
@@ -634,14 +634,14 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			filter = arr;
 			let resTmp = fBody;
 
-			for (let j = 0; j < filter.length; j++) {
+			for (let j = -1; ++j < filter.length;) {
 				let params = filter[j].split(' '),
 					input = params.slice(1).join('').trim();
 
 				let current = params.shift().split('.'),
 					f = '';
 
-				for (let k = 0; k < current.length; k++) {
+				for (let k = -1; ++k < current.length;) {
 					f += `['${current[k]}']`;
 				}
 
