@@ -44,7 +44,9 @@ function run(params) {
 				js: []
 			};
 
-			asserts.push(obj);
+			if (!prfx) {
+				asserts.push(obj);
+			}
 
 			try {
 				var start = Date.now();
