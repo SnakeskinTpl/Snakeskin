@@ -59,10 +59,20 @@ Snakeskin.addDirective(
 					}
 
 					let start = this.i - this.startTemplateI;
+					let parent,
+						parentTpl = this.parentTplName;
+
+					if (parentTpl) {
+						parent = constCache[parentTpl][name];
+					}
 
 					constCache[tplName][name] = {
 						from: start - commandLength,
 						to: start,
+
+						proto: this.protoStart ||
+							Boolean(parentTpl && parent && parent.proto),
+
 						needPrfx: this.needPrfx
 					};
 
