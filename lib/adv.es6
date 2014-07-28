@@ -40,7 +40,7 @@ function prepareDecl(str, i) {
 				let replacer = replacers[next2str] || replacers[el];
 
 				if (replacer) {
-					decl.name = replacer(decl.name).trim();
+					decl.name = replacer(decl.name).replace(/([^\s]+).*/, '$1');
 				}
 
 				let adv = el === ALB ? ALB : '';
