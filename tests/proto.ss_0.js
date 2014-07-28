@@ -1,14 +1,14 @@
-/* Snakeskin v4.0.0, generated at <1406554038889> Mon Jul 28 2014 17:27:18 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
-(function() {						
-    var Snakeskin = global.Snakeskin;				
-    exports.init = function(obj) {					
-        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
-        delete exports.init;					
-        exec.call(exports);					
-        return exports;				
-    };				
+/* Snakeskin v4.0.0, generated at <1406555716788> Mon Jul 28 2014 17:55:16 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+(function() {
+    var Snakeskin = global.Snakeskin;
+    exports.init = function(obj) {
+        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
+        delete exports.init;
+        exec.call(exports);
+        return exports;
+    };
 
-    function exec() {					
+    function exec() {
         var __ROOT__ = this,
             self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_07d49'];			 /* Snakeskin template: proto_index; i */
+        var $_ = __LOCAL__['$_72163']; /* Snakeskin template: proto_index; i */
         this.proto_index = function(i) {
             var __THIS__ = this,
                 callee = __ROOT__.proto_index;

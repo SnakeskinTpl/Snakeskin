@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 28 Jul 2014 13:27:08 GMT
+ * Date: Mon, 28 Jul 2014 13:55:03 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -7364,7 +7364,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 }
 
 /*!
- * Escaper v1.2.0
+ * Escaper v1.2.1
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
@@ -7372,7 +7372,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
  */
 
 var Escaper = {
-	VERSION: [1, 2, 0],
+	VERSION: [1, 2, 1],
 	isLocal: typeof window === 'undefined' && typeof global !== 'undefined' ?
 		!!(global.EscaperIsLocal || global['EscaperIsLocal']) : false
 };
@@ -7399,7 +7399,8 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		'/*!': true
 	};
 
-	var keyArr = [];
+	var keyArr = [],
+		finalMap = {};
 
 	for (var key in escapeMap) {
 		if (!escapeMap.hasOwnProperty(key)) {
@@ -7407,6 +7408,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		}
 
 		keyArr.push(key);
+		finalMap[key] = true;
 	}
 
 	for (var key$0 in sCommentsMap) {
@@ -7415,6 +7417,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		}
 
 		keyArr.push(key$0);
+		finalMap[key$0] = true;
 	}
 
 	for (var key$1 in mCommentsMap) {
@@ -7423,6 +7426,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		}
 
 		keyArr.push(key$1);
+		finalMap[key$1] = true;
 	}
 
 	var rgxpFlagsMap = {
@@ -7626,14 +7630,14 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 					templateVar++;
 				}
 
-				if (p[el$0] && (el$0 === '/' ? end : true) && !begin) {
+				if (finalMap[el$0] && (el$0 === '/' ? end : true) && !begin) {
 					begin = el$0;
 					selectionStart = i$0;
 
 				} else if (begin && (el$0 === '\\' || escape)) {
 					escape = !escape;
 
-				} else if (p[el$0] && begin === el$0 && !escape && (begin === '/' ? !block : true)) {
+				} else if (finalMap[el$0] && begin === el$0 && !escape && (begin === '/' ? !block : true)) {
 					if (el$0 === '/') {
 						for (var j = -1; ++j < rgxpFlags.length;) {
 							if (rgxpFlagsMap[str.charAt(i$0 + 1)]) {
@@ -7644,13 +7648,15 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 
 					begin = false;
 
-					cut = str.substring(selectionStart, i$0 + 1);
-					label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
+					if (p[el$0]) {
+						cut = str.substring(selectionStart, i$0 + 1);
+						label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
 
-					stack.push(cut);
-					str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
+						stack.push(cut);
+						str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
 
-					i$0 += label.length - cut.length;
+						i$0 += label.length - cut.length;
+					}
 				}
 
 			} else if ((next === '\n' && sCommentsMap[comment]) ||
