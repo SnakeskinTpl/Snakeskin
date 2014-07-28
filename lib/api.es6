@@ -86,7 +86,7 @@ function DirObj(src, params) {
 	this.lines = params.lines || [''];
 
 	if (params.consts) {
-		/** @type {Array=} */
+		/** @type {(Array|undefined)} */
 		this.consts = params.consts;
 	}
 
