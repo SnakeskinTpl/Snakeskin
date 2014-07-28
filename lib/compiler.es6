@@ -682,6 +682,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					let adv = dir.lines[line - 1].length - 1,
 						source = dir.toBaseSyntax(dir.source, dir.i - adv);
 
+					if (source.error) {
+						return false;
+					}
+
 					dir.source = dir.source.substring(0, dir.i - adv) +
 						source.str +
 						dir.source.substring(dir.i + source.length - adv - 1);
