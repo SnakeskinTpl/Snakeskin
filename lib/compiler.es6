@@ -750,7 +750,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Удаление пустых операций
 	dir.res = dir.res.replace(p.stringBuffer ?
-		/__RESULT__ \+= '';/g : /__RESULT__ \+= '';/g,
+		/__RESULT__\.push('');/g : /__RESULT__ \+= '';/g,
 
 	'');
 
