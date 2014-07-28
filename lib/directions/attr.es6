@@ -51,6 +51,9 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 			arg[1] = arg[0];
 		}
 
+		arg[0] = arg[0].trim();
+		arg[1] = arg[1].trim();
+
 		res += `
 			__STR__ = \'\';
 			__J__ = 0;
@@ -64,7 +67,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				`data-${arg[0].slice(1)}` : arg[0];
 		}
 
-		arg[0] = `'${this.replaceTplVars(arg[0].trim())}'`;
+		arg[0] = `'${this.replaceTplVars(arg[0])}'`;
 		let vals = arg[1].split(',');
 
 		for (let j = 0; j < vals.length; j++) {
