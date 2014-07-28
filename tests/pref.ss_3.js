@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215810> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554039637> Mon Jul 28 2014 17:27:19 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,35 +18,38 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_;
-        Snakeskin.Vars.pref_global = 1;
-        Snakeskin.Vars.pref_global2 = 2; /* Snakeskin template: pref_index;  */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_f5c44'];			
+        __VARS__.pref_global = 1;
+        __VARS__.pref_global2 = 2; /* Snakeskin template: pref_index;  */
         this.pref_index = function() {
-            var __THIS__ = this;
-            var __RESULT__ = '',
+            var __THIS__ = this,
+                callee = __ROOT__.pref_index;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
+            var __RESULT__ = new Snakeskin.StringBuffer(),
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'pref_index',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             if (1) {
-                __RESULT__ += '{if 2} ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global));
-                __RESULT__ += ' {pref_global2} {/} ';
+                __RESULT__.push('{if 2} ');
+                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global)));
+                __RESULT__.push(' {pref_global2} {/} ');
             }
-            __RESULT__ += ' ';
+            __RESULT__.push(' ');
             if (1) {
-                __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global));
-                __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global2));
-                __RESULT__ += ' #';
+                __RESULT__.push(' ');
+                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global)));
+                __RESULT__.push(' ');
+                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__VARS__.pref_global2)));
+                __RESULT__.push(' #');
             }
-            __RESULT__ += ' ';
-            return __RESULT__;
+            __RESULT__.push(' ');
+            return __RESULT__.join('');
         };
         Snakeskin.cache['pref_index'] = this.pref_index; /* Snakeskin template. */
     }

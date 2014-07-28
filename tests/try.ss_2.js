@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215899> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554039431> Mon Jul 28 2014 17:27:19 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,18 +18,21 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_; /* Snakeskin template: try_index;  */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_b43ac'];			 /* Snakeskin template: try_index;  */
         this.try_index = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.try_index;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'try_index',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             try {
                 foo();
             } catch (ignore) {}

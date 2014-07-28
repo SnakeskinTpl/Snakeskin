@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215778> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554039295> Mon Jul 28 2014 17:27:19 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,18 +18,21 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_; /* Snakeskin template: logic_index; i */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_7aac1'];			 /* Snakeskin template: logic_index; i */
         this.logic_index = function(i) {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.logic_index;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_index',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             switch (i) {
                 case 1:
                     {
@@ -61,29 +66,35 @@
         };
         Snakeskin.cache['logic_index'] = this.logic_index; /* Snakeskin template. */ /* Snakeskin template: logic_base;  */
         this.logic_base = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.logic_base;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_base',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += '<span class=""></span> ';
             return __RESULT__;
         };
         Snakeskin.cache['logic_base'] = this.logic_base; /* Snakeskin template. */ /* Snakeskin template: logic_sub;  */
         this.logic_sub = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.logic_sub;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'logic_sub',
                 PARENT_TPL_NAME = 'logic_base';
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             __RESULT__ += '<span class=""></span> ';
             __RESULT__ += ' ';
             switch (1) {

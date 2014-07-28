@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215666> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554039473> Mon Jul 28 2014 17:27:19 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,47 +18,55 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_; /* Snakeskin template: data_index;  */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_5b4ad'];			 /* Snakeskin template: data_index;  */
         this.data_index = function() {
-            var __THIS__ = this;
-            var __RESULT__ = '',
+            var __THIS__ = this,
+                callee = __ROOT__.data_index;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
+            var __RESULT__ = new Snakeskin.StringBuffer(),
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'data_index',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            var a = ' foo ';
-            __RESULT__ += ' ';
-            __RESULT__ += '{a: \"' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['trim'](__FILTERS__.undef(a)))))) + '\"}';
-            __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['trim'](__FILTERS__.undef(a)))))) + '}}';
-            __RESULT__ += ' ';
-            __RESULT__ += '{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}} ';
-            return __RESULT__;
+            a = ' foo ';
+            __RESULT__.push(' ');
+            __RESULT__.push('{a: \"' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['trim'](__FILTERS__.undef(a)))))) + '\"}');
+            __RESULT__.push(' ');
+            __RESULT__.push('{{' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['trim'](__FILTERS__.undef(a)))))) + '}}');
+            __RESULT__.push(' ');
+            __RESULT__.push('{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}} ');
+            var a;
+            return __RESULT__.join('');
         };
         Snakeskin.cache['data_index'] = this.data_index; /* Snakeskin template. */ /* Snakeskin template: data_decl;  */
         this.data_decl = function() {
-            var __THIS__ = this;
-            var __RESULT__ = '',
+            var __THIS__ = this,
+                callee = __ROOT__.data_decl;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
+            var __RESULT__ = new Snakeskin.StringBuffer(),
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'data_decl',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            var foo = 'bar';
-            __RESULT__ += ' ';
-            __RESULT__ += '{{foo}}';
-            __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(__FILTERS__.undef(foo)) + '}}';
-            __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(__FILTERS__.undef(foo)) + '}}';
-            __RESULT__ += ' ';
-            return __RESULT__;
+            foo = 'bar';
+            __RESULT__.push(' ');
+            __RESULT__.push('{{foo}}');
+            __RESULT__.push(' ');
+            __RESULT__.push('{{' + __FILTERS__.html(__FILTERS__.undef(foo)) + '}}');
+            __RESULT__.push(' ');
+            __RESULT__.push('{{' + __FILTERS__.html(__FILTERS__.undef(foo)) + '}}');
+            __RESULT__.push(' ');
+            var foo;
+            return __RESULT__.join('');
         };
         Snakeskin.cache['data_decl'] = this.data_decl; /* Snakeskin template. */
     }

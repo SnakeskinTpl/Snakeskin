@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215678> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554039165> Mon Jul 28 2014 17:27:19 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,20 +18,23 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_;
-        Snakeskin.Vars.a = String; /* Snakeskin template: filters_index;  */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_7bf46'];			
+        __VARS__.a = String; /* Snakeskin template: filters_index;  */
         this.filters_index = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.filters_index;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'filters_index',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            var a = {
+            a = {
                 a: String
             };
             __RESULT__ += ' ';
@@ -41,6 +46,7 @@
             __RESULT__ += __FILTERS__.html(($_ = __FILTERS__['remove']($_ = __FILTERS__['repeat']($_ = __FILTERS__['ucfirst']($_ = __FILTERS__['collapse']('   foo   bar ')), 3), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim'](__VARS__.a('   Foo bar')))))) + '<b>1</b>');
             __RESULT__ += ' ';
             __RESULT__ += ' ';
+            var a;
             return __RESULT__;
         };
         Snakeskin.cache['filters_index'] = this.filters_index; /* Snakeskin template. */

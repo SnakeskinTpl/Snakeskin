@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215752> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554038769> Mon Jul 28 2014 17:27:18 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,18 +18,21 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_; /* Snakeskin template: iterators_index1;  */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_18629'];			 /* Snakeskin template: iterators_index1;  */
         this.iterators_index1 = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.iterators_index1;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index1',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             Snakeskin.forEach(([1, 2, 3]), function(__el__forEach_89, __i__forEach_89, __obj__forEach_89, __isFirst__forEach_89, __isLast__forEach_89, __length__forEach_89) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
@@ -48,15 +53,18 @@
         };
         Snakeskin.cache['iterators_index1'] = this.iterators_index1; /* Snakeskin template. */ /* Snakeskin template: iterators_index2;  */
         this.iterators_index2 = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.iterators_index2;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index2',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             Snakeskin.forEach(({
                 a: 1,
                 b: 2
@@ -82,16 +90,19 @@
         };
         Snakeskin.cache['iterators_index2'] = this.iterators_index2; /* Snakeskin template. */ /* Snakeskin template: iterators_index3;  */
         this.iterators_index3 = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.iterators_index3;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index3',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            var a = Object.create({
+            a = Object.create({
                 a: 1
             });
             __RESULT__ += ' ';
@@ -113,19 +124,23 @@
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';
+            var a;
             return __RESULT__;
         };
         Snakeskin.cache['iterators_index3'] = this.iterators_index3; /* Snakeskin template. */ /* Snakeskin template: iterators_index4;  */
         this.iterators_index4 = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.iterators_index4;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index4',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             Snakeskin.forEach(([1, 2, 3]), function(__el__forEach_614, __i__forEach_614, __obj__forEach_614, __isFirst__forEach_614, __isLast__forEach_614, __length__forEach_614) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_614));
@@ -147,15 +162,18 @@
         };
         Snakeskin.cache['iterators_index4'] = this.iterators_index4; /* Snakeskin template. */ /* Snakeskin template: iterators_index5;  */
         this.iterators_index5 = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.iterators_index5;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index5',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             Snakeskin.forEach(({
                 a: 1,
                 b: 2
@@ -182,16 +200,19 @@
         };
         Snakeskin.cache['iterators_index5'] = this.iterators_index5; /* Snakeskin template. */ /* Snakeskin template: iterators_index6;  */
         this.iterators_index6 = function() {
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.iterators_index6;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index6',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
-            var a = Object.create({
+            a = Object.create({
                 a: 1
             });
             __RESULT__ += ' ';
@@ -214,6 +235,7 @@
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';
+            var a;
             return __RESULT__;
         };
         Snakeskin.cache['iterators_index6'] = this.iterators_index6; /* Snakeskin template. */

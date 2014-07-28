@@ -1,14 +1,16 @@
-/* Snakeskin v4.0.0, generated at <1405516215656> Wed Jul 16 2014 17:10:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
-(function() {
-    var Snakeskin = global.Snakeskin;
-    exports.init = function(obj) {
-        Snakeskin = Snakeskin || obj instanceof Object ? obj : require(obj);
-        delete exports.init;
-        exec.call(exports);
-        return exports;
-    };
+/* Snakeskin v4.0.0, generated at <1406554039142> Mon Jul 28 2014 17:27:19 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */ 			
+(function() {						
+    var Snakeskin = global.Snakeskin;				
+    exports.init = function(obj) {					
+        Snakeskin = Snakeskin || obj instanceof Object ? 						obj : require(obj);					
+        delete exports.init;					
+        exec.call(exports);					
+        return exports;				
+    };				
 
-    function exec() {
+    function exec() {					
+        var __ROOT__ = this,
+            self = this;
         var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,
             async = this.async != null ? this.async : Snakeskin.Vars.async;
         var __$C__ = $C,
@@ -16,19 +18,22 @@
         var __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
-            __STR__, __J__;
-        var $_; /* Snakeskin template: cycles_index; i  */
+            __STR__, __TMP__, __J__;
+        var $_ = __LOCAL__['$_42cac'];			 /* Snakeskin template: cycles_index; i  */
         this.cycles_index = function(i) {
             i = i != null ? i : 0;
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.cycles_index;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'cycles_index',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             for (var __j__for_67 = 0; __j__for_67 < 3; __j__for_67++) {
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_67));
             }
@@ -50,15 +55,18 @@
         Snakeskin.cache['cycles_index'] = this.cycles_index; /* Snakeskin template. */ /* Snakeskin template: cycles_index2; i  */
         this.cycles_index2 = function(i) {
             i = i != null ? i : 0;
-            var __THIS__ = this;
+            var __THIS__ = this,
+                callee = __ROOT__.cycles_index2;
+            if (!callee.Blocks) {
+                var __BLOCKS__ = callee.Blocks = {},
+                    blocks = __BLOCKS__;
+            }
             var __RESULT__ = '',
                 $_;
             var __RETURN__ = false,
                 __RETURN_VAL__;
             var TPL_NAME = 'cycles_index2',
                 PARENT_TPL_NAME;
-            var $C = __$C__ || typeof $C !== 'undefined' ? $C : Snakeskin.Vars.$C;
-            var async = __async__ || typeof async !== 'undefined' ? async : Snakeskin.Vars.async;
             for (var __j__for_334 = 0; __j__for_334 < 3; __j__for_334++) {
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_334));
                 break;
