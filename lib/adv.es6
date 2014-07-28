@@ -93,8 +93,11 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					decl.name = replacer(decl.name).replace(commandRgxp, '$1');
 				}
 
-				let adv = el === ADV_LEFT_BLOCK ? ADV_LEFT_BLOCK : '';
+				let adv = el === ADV_LEFT_BLOCK ?
+					ADV_LEFT_BLOCK : '';
+
 				let obj = {
+					command: decl.command,
 					dir: dir,
 					name: decl.name,
 					spaces: spaces,
@@ -107,7 +110,6 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				if (struct) {
 					if (struct.spaces < spaces && struct.block) {
 						obj.parent = struct;
-						struct = obj;
 
 					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
 						if (struct.block) {
@@ -115,7 +117,6 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 						}
 
 						obj.parent = struct.parent;
-						struct = obj;
 
 					} else {
 						while (struct.spaces >= spaces) {
@@ -136,11 +137,9 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 
 						obj.parent = struct;
 					}
-
-				} else {
-					struct = obj;
 				}
 
+				struct = obj;
 				res += space +
 					adv +
 					(dir ? LEFT_BLOCK : '') +
@@ -166,7 +165,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 
 	return {
 		str: res,
-		length: length
+		length: length + 1
 	};
 };
 
@@ -249,4 +248,10 @@ function getLineDesc(str, i) {
 			}
 		}
 	}
+
+	return {
+		command: res,
+		name: name,
+		lastEl: lastEl
+	};
 }
