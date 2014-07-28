@@ -38,7 +38,11 @@ Snakeskin.addDirective(
 				});
 
 				if (this.isSimpleOutput()) {
-					this.save((!propAssignRgxp.test(name) ? 'var ' : '') + this.prepareOutput(command, true, null, true) + ';');
+					if (!propAssignRgxp.test(name)) {
+						this.consts.push(`var ${parts[0]};`);
+					}
+
+					this.save(this.prepareOutput(command, true, null, true) + ';');
 				}
 
 				if (this.isAdvTest()) {
@@ -55,20 +59,10 @@ Snakeskin.addDirective(
 					}
 
 					let start = this.i - this.startTemplateI;
-					let parent,
-						parentTpl = this.parentTplName;
-
-					if (parentTpl) {
-						parent = constCache[parentTpl][name];
-					}
 
 					constCache[tplName][name] = {
 						from: start - commandLength,
 						to: start,
-
-						proto: this.protoStart ||
-							Boolean(parentTpl && parent && parent.proto),
-
 						needPrfx: this.needPrfx
 					};
 

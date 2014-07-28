@@ -55,11 +55,12 @@ var uid;
  *
  * @param {Array=} [opt_sysParams.scope] - область видимости (контекст) директив
  * @param {Object=} [opt_sysParams.vars] - объект локальных переменных
- * @param {Object=} [opt_sysParams.proto] - объект настроек прототипа
+ * @param {Array=} [opt_sysParams.consts] - массив деклараций констант
  *
- * @param {Array=} [opt_sysParams.lines] - массив строк шаблона
+ * @param {Object=} [opt_sysParams.proto] - объект настроек прототипа
  * @param {DirObj=} [opt_sysParams.parent] - ссылка на родительский объект
  *
+ * @param {Array=} [opt_sysParams.lines] - массив строк шаблона
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
@@ -145,11 +146,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return globalCache[cacheKey][text];
 	}
 
-	sp.needPrfx = s(sp.needPrfx, sp['needPrfx']);
-	sp.prfxI = s(sp.prfxI, sp['prfxI']);
-	sp.lines = s(sp.lines, sp['lines']);
-	sp.parent = s(sp.parent, sp['parent']);
-
 	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
 
 	var i18n =
@@ -190,6 +186,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		proto: sp.proto,
 		scope: sp.scope,
 		vars: sp.vars,
+		consts: sp.consts,
 		onError: p.onError,
 		stringBuffer: p.stringBuffer,
 		inlineIterators: p.inlineIterators,
@@ -818,7 +815,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Живая компиляция в браузере
 		} else if (!cjs) {
-			//console.log(dir.res);
+			console.log(dir.res);
 			dir.evalStr(dir.res);
 		}
 

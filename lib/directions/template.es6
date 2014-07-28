@@ -31,6 +31,12 @@ DirObj.prototype.tplName = null;
 DirObj.prototype.parentTplName = null;
 
 /**
+ * Массив декларированных констант
+ * @type {Array}
+ */
+DirObj.prototype.consts = null;
+
+/**
  * Название родительского BEM класса
  * @type {string}
  */
@@ -427,6 +433,7 @@ for (let i = 0; i < template.length; i++) {
 
 			} else {
 				this.save(`
+						${this.consts.join('')}
 						return ${this.returnResult()};
 					};
 
