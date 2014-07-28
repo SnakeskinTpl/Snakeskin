@@ -741,12 +741,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	dir.res = dir.pasteDangerBlocks(dir.res)
-
-		// Обратная замена cdata областей
 		.replace(
-		/__CDATA__(\d+)_/g,
-		(sstr, pos) => escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
-	);
+			/__CDATA__(\d+)_/g,
+			(sstr, pos) => escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
+		);
 
 	// Удаление пустых операций
 	dir.res = dir.res.replace(p.stringBuffer ?
