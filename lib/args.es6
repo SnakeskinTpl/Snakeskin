@@ -208,6 +208,33 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	var decl = '',
 		defParams = '';
 
+	for (let i = -1; ++i < localVars.length;) {
+		let el = localVars[i];
+
+		if (!el) {
+			continue;
+		}
+
+		el.key = el.key.replace(scopeModRgxp, '');
+		let old = el.key;
+
+		if (opt_name) {
+			el.key = this.declVar(el.key, true);
+		}
+
+		args.push([
+			el.key,
+			el.value,
+			old
+		]);
+
+		defParams += `var ${el.key} = ${this.prepareOutput(el.value, true)};`;
+		struct.vars[el.key] = {
+			value: el.key,
+			scope: this.scope.length
+		};
+	}
+
 	for (let i = -1; ++i < argsList.length;) {
 		let el = argsList[i];
 
@@ -241,29 +268,6 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	}
 
 	struct.params._consts = constsCache;
-
-	for (let i = -1; ++i < localVars.length;) {
-		let el = localVars[i];
-
-		if (!el) {
-			continue;
-		}
-
-		el.key = el.key.replace(scopeModRgxp, '');
-		let old = el.key;
-
-		if (opt_name) {
-			el.key = this.declVar(el.key, true);
-		}
-
-		args.push([
-			el.key,
-			el.value,
-			old
-		]);
-
-		defParams += `var ${el.key} = ${this.prepareOutput(el.value, true)};`;
-	}
 
 	var res = {
 		params: params,

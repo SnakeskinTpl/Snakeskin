@@ -301,9 +301,16 @@ for (let i = -1; ++i < template.length;) {
 				this.scope.push(args.scope);
 			}
 
-			this.save(`
-				${args.defParams}
+			var predefs = ['callee', 'blocks', '$_', 'TPL_NAME', 'PARENT_TPL_NAME'];
 
+			for (let i = -1; ++i < predefs.length;) {
+				this.structure.vars[predefs[i]] = {
+					value: predefs[i],
+					scope: 0
+				};
+			}
+
+			this.save(`
 				var __THIS__ = this,
 					callee = __ROOT__.${tplName};
 
@@ -320,6 +327,8 @@ for (let i = -1; ++i < template.length;) {
 
 				var TPL_NAME = '${applyDefEscape(tplName)}',
 					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
+
+				${args.defParams}
 			`);
 
 			var preProtos = this.preProtos[tplName];
