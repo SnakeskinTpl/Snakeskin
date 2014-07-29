@@ -259,7 +259,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		decl += el.key;
 
 		if (el.value !== void 0) {
-			defParams += `${el.key} = ${el.key} != null ? ${el.key} : ${this.prepareOutput(el.value, true)};`;
+			defParams += `${el.key} = arguments[${i}] = ${el.key} != null ? ${el.key} : ${this.prepareOutput(el.value, true)};`;
 		}
 
 		if (i !== argsList.length - 1) {
