@@ -184,8 +184,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	}
 
 	argsList = [];
-	var localVars = [],
-		args = [];
+	var localVars = [];
 
 	for (let key in argsTable) {
 		if (!argsTable.hasOwnProperty(key)) {
@@ -208,6 +207,8 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	var decl = '',
 		defParams = '';
 
+	var locals = [];
+
 	for (let i = -1; ++i < localVars.length;) {
 		let el = localVars[i];
 
@@ -222,7 +223,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			el.key = this.declVar(el.key, true);
 		}
 
-		args.push([
+		locals.push([
 			el.key,
 			el.value,
 			old
@@ -234,6 +235,8 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			scope: this.scope.length
 		};
 	}
+
+	var args = [];
 
 	for (let i = -1; ++i < argsList.length;) {
 		let el = argsList[i];
@@ -267,6 +270,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		}
 	}
 
+	args = args.concat(locals);
 	struct.params._consts = constsCache;
 
 	var res = {
