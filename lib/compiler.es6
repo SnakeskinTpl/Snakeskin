@@ -40,7 +40,7 @@ var uid;
  *     будет развёртвываться в циклы
  *
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
- *     (только при экспорте в commonJS)
+ *     (устанавливает экспорт commonJS)
  *
  * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
  *     которые будут добавлены в Snakeskin.Vars
@@ -814,6 +814,31 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				globalFnCache[cacheKey][text] = ctx;
 			}
+
+		} else if (ctx !== NULL) {
+			new Function(
+				'module',
+
+				'exports',
+				'global',
+
+				dir.res
+			)(
+				{
+					exports: ctx
+				},
+
+				ctx,
+				root
+			);
+
+			ctx['init'](Snakeskin);
+
+			if (!globalFnCache[cacheKey]) {
+				globalFnCache[cacheKey] = {};
+			}
+
+			globalFnCache[cacheKey][text] = ctx;
 
 		// Живая компиляция в браузере
 		} else if (!cjs) {
