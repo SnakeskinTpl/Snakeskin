@@ -10,7 +10,7 @@ link_index2
 {/}
 
 {template link_index2()}
-	{link css ng-(class => foo; id => bar)}
+	{link css ng-(class = foo | id = bar)}
 		foo
 	{/}
 {/}

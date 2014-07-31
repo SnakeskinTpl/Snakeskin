@@ -3,7 +3,7 @@ tag_index
 ###
 
 {template tag_index()}
-	{tag span.foo class => bar, car}
+	{tag span.foo class = bar car}
 		{tag .&__bar#my}
 			1
 		{/}

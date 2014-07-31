@@ -7,16 +7,16 @@ attr_index2
 	{foo = 'foo'}
 	{bar = ''}
 
-	{attr #{foo} => bar}
-	{attr foo => ${bar}, ${foo}; bar => foo}
+	{attr #{foo} = bar}
+	{attr foo = ${bar} ${foo} | bar = foo}
 {/}
 
 {template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
-	{attr ng-(foo => #{bar}, #{foo}; bar => foo), ${foo} => bar}
-	{attr ng-(foo => ${(1 ? bar : null)}, ${((foo))}; bar => foo), foo:(#{foo} => bar), b-foo:(#{foo} => bar), b:foo-(${foo} => bar)}
+	{attr ng-(foo = #{bar} #{foo} | bar = foo) ${foo} = bar}
+	{attr ng-(foo = ${(1 ? bar : null)} ${((foo))} | bar = foo), foo:(#{foo} = bar) b-foo:(#{foo} = bar) b:foo-(${foo} = bar)}
 {/}
 
 ###

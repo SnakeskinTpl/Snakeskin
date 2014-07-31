@@ -18,7 +18,7 @@ script_index2
 {/}
 
 {template script_index2()}
-	{script ts ng-(class => foo; id => bar)}
+	{script ts ng-(class = foo | id = bar)}
 		var a = [];
 	{/}
 {/}

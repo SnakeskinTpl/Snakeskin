@@ -18,7 +18,7 @@ style_index2
 {/}
 
 {template style_index2()}
-	#{style css ng-(class => foo; id => bar)}
+	#{style css ng-(class = foo | id = bar)}
 		.a {}
 	#{/}
 {/}

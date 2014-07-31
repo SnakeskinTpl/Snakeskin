@@ -4,7 +4,7 @@ syntax_index2
 ###
 
 - template syntax_index()
-	< span.foo class => bar, car
+	< span.foo class = bar car
 		- tag .&__bar#my
 			1
 
