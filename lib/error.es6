@@ -77,10 +77,21 @@ DirObj.prototype.genErrorAdvInfo = function () {
 };
 
 /**
+ * @private
+ * @type {?boolean}
+ */
+DirObj.prototype._error = null;
+
+/**
  * Генерировать заданную ошибку
  * @param {string} msg - сообщение ошибки
  */
 DirObj.prototype.error = function (msg) {
+	if (this._error) {
+		return;
+	}
+
+	this._error = true;
 	var report = `${msg}, ${this.genErrorAdvInfo()}`,
 		error = new Error(report);
 
