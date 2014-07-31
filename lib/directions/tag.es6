@@ -73,10 +73,8 @@ Snakeskin.addDirective(
 		var params = this.structure.params;
 		this.bemRef = params.bemRef;
 
-		if (this.isSimpleOutput()) {
-			if (params.block) {
-				this.save(this.wrap(`'</${params.tag}>'`));
-			}
+		if (this.isSimpleOutput() && params.block) {
+			this.save(this.wrap(`'</${params.tag}>'`));
 		}
 	}
 );
