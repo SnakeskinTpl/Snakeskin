@@ -610,13 +610,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			// Составление тела фильтра
 			} else if (el !== ')' || pCountFilter) {
 				let last = filter.length - 1;
-
 				filter[last] += el;
 				rvFilter[last] += el;
 			}
 		}
 
-		if (i === commandLength - 1 && pCount && el !== ')') {
+		if (i === commandLength - 1 && pCount && !filterWrapper && el !== ')') {
 			this.error('missing closing or opening parenthesis in the template');
 			return '';
 		}
@@ -636,7 +635,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 					arr.push(f);
 
 				} else {
-					if (f === '!html' && !pCount) {
+					if (f === '!html' && (!pCount || filterWrapper)) {
 						unEscape = true;
 
 					} else if (f === '!undef') {
