@@ -39,7 +39,7 @@ Snakeskin.addDirective(
 			params.tag = desc.tag;
 			params.block = !inlineTagMap[desc.tag];
 
-			let groups = splitAttrsGroup(parts.slice(1).join(' '));
+			let groups = this.splitAttrsGroup(parts.slice(1).join(' '));
 			let str = `
 				__TMP__ = {
 					'class': ''

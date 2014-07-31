@@ -10,7 +10,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let groups = splitAttrsGroup(this.replaceTplVars(command, null, true));
+			let groups = this.splitAttrsGroup(command);
 
 			for (let i = -1; ++i < groups.length;) {
 				let el = groups[i];
@@ -110,7 +110,8 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
  * @param {string} str - исходная строка
  * @return {!Array}
  */
-function splitAttrsGroup(str) {
+DirObj.prototype.splitAttrsGroup = function (str) {
+	str = this.replaceTplVars(str, null, true);
 	var groups = [];
 
 	var group = '',
@@ -176,4 +177,4 @@ function splitAttrsGroup(str) {
 	}
 
 	return groups;
-}
+};
