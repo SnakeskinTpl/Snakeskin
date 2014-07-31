@@ -10,7 +10,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			let groups = splitAttrsGroup(command);
+			let groups = splitAttrsGroup(this.replaceTplVars(command, null, true));
 
 			for (let i = -1; ++i < groups.length;) {
 				let el = groups[i];
@@ -41,11 +41,11 @@ Snakeskin.addDirective(
 DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
-	var parts = str.split(';'),
+	var parts = str.split('|'),
 		res = '';
 
 	for (let i = -1; ++i < parts.length;) {
-		let arg = parts[i].split('=>');
+		let arg = parts[i].split('=');
 
 		if (arg.length !== 2) {
 			arg[1] = arg[0];
@@ -67,11 +67,11 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				`data-${arg[0].slice(1)}` : arg[0];
 		}
 
-		arg[0] = `'${this.replaceTplVars(arg[0])}'`;
-		let vals = arg[1].split(',');
+		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
+		let vals = arg[1].split(' ');
 
 		for (let j = -1; ++j < vals.length;) {
-			let val = this.prepareOutput(`'${this.replaceTplVars(vals[j].trim())}'`, true) || '';
+			let val = this.prepareOutput(`'${this.pasteTplVarBlocks(vals[j].trim())}'`, true) || '';
 
 			res += `
 				if ((${val}) != null && (${val}) !== '') {
@@ -131,7 +131,6 @@ function splitAttrsGroup(str) {
 		if (separator[el] && !pOpen && next === '(') {
 			pOpen++;
 			i++;
-
 			sep = el;
 			continue;
 		}
