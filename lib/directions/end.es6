@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 		}
 
 		if (command && command !== name) {
-			return this.error(`invalid closing tag, expected: "${name}", declared: "${command}"`);
+			return this.error(`invalid closing directive, expected: "${name}", declared: "${command}"`);
 		}
 
 		if (inside[name]) {
