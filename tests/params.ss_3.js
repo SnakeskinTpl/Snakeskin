@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406555717599> Mon Jul 28 2014 17:55:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406791321854> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,9 +19,8 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_01473']; /* Snakeskin template: param_base; a,b  */
+        var $_ = __LOCAL__['$_67a06']; /* Snakeskin template: param_base; a,b  */
         this.param_base = function(a, b) {
-            b = b != null ? b : 1 ? Math.round(1) : 0;
             var __THIS__ = this,
                 callee = __ROOT__.param_base;
             if (!callee.Blocks) {
@@ -34,14 +33,13 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base',
                 PARENT_TPL_NAME;
+            b = arguments[1] = b != null ? b : 1 ? Math.round(1) : 0;
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
         Snakeskin.cache['param_base'] = this.param_base; /* Snakeskin template. */ /* Snakeskin template: param_child;  */
         this.param_child = function() {
-            var a = void 0;
-            var b = 1 ? Math.round(1) : 0;
             var __THIS__ = this,
                 callee = __ROOT__.param_child;
             if (!callee.Blocks) {
@@ -54,6 +52,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child',
                 PARENT_TPL_NAME = 'param_base';
+            var a = void 0;
+            var b = 1 ? Math.round(1) : 0;
             b = 2;
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
@@ -63,8 +63,6 @@
         };
         Snakeskin.cache['param_child'] = this.param_child; /* Snakeskin template. */ /* Snakeskin template: param_child2;  */
         this.param_child2 = function() {
-            var a = void 0;
-            var b = 1 ? Math.round(1) : 0;
             var __THIS__ = this,
                 callee = __ROOT__.param_child2;
             if (!callee.Blocks) {
@@ -77,6 +75,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child2',
                 PARENT_TPL_NAME = 'param_child';
+            var a = void 0;
+            var b = 1 ? Math.round(1) : 0;
             b = 3;
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
@@ -86,9 +86,6 @@
         };
         Snakeskin.cache['param_child2'] = this.param_child2; /* Snakeskin template. */ /* Snakeskin template: param_base2; @a  */
         this.param_base2 = function(a) {
-            a = a != null ? a : {
-                a: 1
-            };
             var __THIS__ = this,
                 callee = __ROOT__.param_base2;
             if (!callee.Blocks) {
@@ -101,15 +98,15 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base2',
                 PARENT_TPL_NAME;
+            a = arguments[0] = a != null ? a : {
+                a: 1
+            };
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(a.a)));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
         Snakeskin.cache['param_base2'] = this.param_base2; /* Snakeskin template. */ /* Snakeskin template: param_child22; @a */
         this.param_child22 = function(a) {
-            a = a != null ? a : {
-                a: 1
-            };
             var __THIS__ = this,
                 callee = __ROOT__.param_child22;
             if (!callee.Blocks) {
@@ -122,17 +119,15 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'param_child22',
                 PARENT_TPL_NAME = 'param_base2';
+            a = arguments[0] = a != null ? a : {
+                a: 1
+            };
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(a.a)));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
         Snakeskin.cache['param_child22'] = this.param_child22; /* Snakeskin template. */ /* Snakeskin template: param_base3; @a  */
         this.param_base3 = function(a) {
-            a = a != null ? a : {
-                a: {
-                    c: 1
-                }
-            };
             var __THIS__ = this,
                 callee = __ROOT__.param_base3;
             if (!callee.Blocks) {
@@ -145,6 +140,11 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'param_base3',
                 PARENT_TPL_NAME;
+            a = arguments[0] = a != null ? a : {
+                a: {
+                    c: 1
+                }
+            };
             b = 2;
             __RESULT__.push(' ');
             __RESULT__.push(' ');

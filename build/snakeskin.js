@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 28 Jul 2014 13:55:03 GMT
+ * Date: Thu, 31 Jul 2014 07:21:36 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6297,6 +6297,12 @@ function DirObj(src, params) {var this$0 = this;
 	this.quotContent = [];
 
 	/**
+	 * Содержимое директив (для replaceTplVars)
+	 * @type {!Array}
+	 */
+	this.dirContent = [];
+
+	/**
 	 * Содержимое блоков cdata
 	 * @type {!Array}
 	 */
@@ -7151,8 +7157,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	}
 
 	argsList = [];
-	var localVars = [],
-		args = [];
+	var localVars = [];
 
 	for (var key$0 in argsTable) {
 		if (!argsTable.hasOwnProperty(key$0)) {
@@ -7175,49 +7180,47 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	var decl = '',
 		defParams = '';
 
-	for (var i$1 = -1; ++i$1 < argsList.length;) {
-		var el$1 = argsList[i$1];
+	var locals = [];
+
+	for (var i$1 = -1; ++i$1 < localVars.length;) {
+		var el$1 = localVars[i$1];
+
+		if (!el$1) {
+			continue;
+		}
 
 		el$1.key = el$1.key.replace(scopeModRgxp, '');
 		var old = el$1.key;
-
-		if (consts[old] && opt_name) {
-			constsCache[old] = consts[old];
-			delete consts[old];
-		}
 
 		if (opt_name) {
 			el$1.key = this.declVar(el$1.key, true);
 		}
 
-		args.push([
+		locals.push([
 			el$1.key,
 			el$1.value,
 			old
 		]);
 
-		decl += el$1.key;
-
-		if (el$1.value !== void 0) {
-			defParams += (("" + (el$1.key)) + (" = " + (el$1.key)) + (" != null ? " + (el$1.key)) + (" : " + (this.prepareOutput(el$1.value, true))) + ";");
-		}
-
-		if (i$1 !== argsList.length - 1) {
-			decl += ',';
-		}
+		defParams += (("var " + (el$1.key)) + (" = " + (this.prepareOutput(el$1.value, true))) + ";");
+		struct.vars[el$1.key] = {
+			value: el$1.key,
+			scope: this.scope.length
+		};
 	}
 
-	struct.params._consts = constsCache;
+	var args = [];
 
-	for (var i$2 = -1; ++i$2 < localVars.length;) {
-		var el$2 = localVars[i$2];
-
-		if (!el$2) {
-			continue;
-		}
+	for (var i$2 = -1; ++i$2 < argsList.length;) {
+		var el$2 = argsList[i$2];
 
 		el$2.key = el$2.key.replace(scopeModRgxp, '');
 		var old$0 = el$2.key;
+
+		if (consts[old$0] && opt_name) {
+			constsCache[old$0] = consts[old$0];
+			delete consts[old$0];
+		}
 
 		if (opt_name) {
 			el$2.key = this.declVar(el$2.key, true);
@@ -7229,8 +7232,19 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			old$0
 		]);
 
-		defParams += (("var " + (el$2.key)) + (" = " + (this.prepareOutput(el$2.value, true))) + ";");
+		decl += el$2.key;
+
+		if (el$2.value !== void 0) {
+			defParams += (("" + (el$2.key)) + (" = arguments[" + i$2) + ("] = " + (el$2.key)) + (" != null ? " + (el$2.key)) + (" : " + (this.prepareOutput(el$2.value, true))) + ";");
+		}
+
+		if (i$2 !== argsList.length - 1) {
+			decl += ',';
+		}
 	}
+
+	args = args.concat(locals);
+	struct.params._consts = constsCache;
 
 	var res = {
 		params: params,
@@ -7718,6 +7732,16 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
  */
 DirObj.prototype.pasteDangerBlocks = function (str) {
 	return Escaper.paste(str, this.quotContent);
+};
+
+/**
+ * Заметить __SNAKESKIN__номер_ в указанной строке на реальное содержимое
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.pasteTplVarBlocks = function (str) {var this$0 = this;
+	return str.replace(/__SNAKESKIN__(\d+)_/gm, function(sstr, pos)  {return this$0.dirContent[pos]});
 };/**
  * Вернуть полное тело заданного шаблона
  * при наследовании
@@ -7947,10 +7971,21 @@ DirObj.prototype.genErrorAdvInfo = function () {
 };
 
 /**
+ * @private
+ * @type {?boolean}
+ */
+DirObj.prototype._error = null;
+
+/**
  * Генерировать заданную ошибку
  * @param {string} msg - сообщение ошибки
  */
 DirObj.prototype.error = function (msg) {
+	if (this._error) {
+		return;
+	}
+
+	this._error = true;
 	var report = (("" + msg) + (", " + (this.genErrorAdvInfo())) + ""),
 		error = new Error(report);
 
@@ -7973,7 +8008,9 @@ DirObj.prototype.error = function (msg) {
 	}
 };var nextLineRgxp = /[\r\n\v]/,
 	whiteSpaceRgxp = /\s/,
-	lineWhiteSpaceRgxp = /[ \t]/,
+	lineWhiteSpaceRgxp = /[ \t]/;
+
+var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
 	bEndRgxp = /[^\s\/]/;
 
 var uid;
@@ -8007,11 +8044,11 @@ var uid;
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
  *
- * @param {?boolean=} [opt_params.escapeOutput=true] - если афдыу, то работа итераторов forEach и forIn
+ * @param {?boolean=} [opt_params.escapeOutput=true] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
  *
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
- *     (только при экспорте в commonJS)
+ *     (устанавливает экспорт commonJS)
  *
  * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
  *     которые будут добавлены в Snakeskin.Vars
@@ -8457,7 +8494,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandType : 'const';
 
 					if (!dir.proto && commandType.charAt(0) === '_') {
-						var source = (("\\s*" + (dir.needPrfx ? ADV_LEFT_BLOCK : '')) + ("" + LEFT_BLOCK) + ("\\s*" + command) + ("\\s*" + RIGHT_BLOCK) + "\\s*"),
+						var source = (("\\s*" + (dir.needPrfx ? ADV_LEFT_BLOCK : '')) + ("" + LEFT_BLOCK) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + RIGHT_BLOCK) + "\\s*"),
 							rgxp = rgxpCache[source] || new RegExp(source);
 
 						dir.lines[line - 1] = dir.lines[line - 1]
@@ -8785,6 +8822,31 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				globalFnCache[cacheKey][text] = ctx;
 			}
+
+		} else if (ctx !== NULL) {
+			new Function(
+				'module',
+
+				'exports',
+				'global',
+
+				dir.res
+			)(
+				{
+					exports: ctx
+				},
+
+				ctx,
+				root
+			);
+
+			ctx['init'](Snakeskin);
+
+			if (!globalFnCache[cacheKey]) {
+				globalFnCache[cacheKey] = {};
+			}
+
+			globalFnCache[cacheKey][text] = ctx;
 
 		// Живая компиляция в браузере
 		} else if (!cjs) {
@@ -9923,7 +9985,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 		if (this.isSimpleOutput()) {
-			var groups = splitAttrsGroup(command);
+			var groups = this.splitAttrsGroup(command);
 
 			for (var i = -1; ++i < groups.length;) {
 				var el = groups[i];
@@ -9954,11 +10016,11 @@ Snakeskin.addDirective(
 DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
-	var parts = str.split(';'),
+	var parts = str.split('|'),
 		res = '';
 
 	for (var i = -1; ++i < parts.length;) {
-		var arg = parts[i].split('=>');
+		var arg = parts[i].split('=');
 
 		if (arg.length !== 2) {
 			arg[1] = arg[0];
@@ -9980,11 +10042,11 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				("data-" + (arg[0].slice(1))) : arg[0];
 		}
 
-		arg[0] = (("'" + (this.replaceTplVars(arg[0]))) + "'");
-		var vals = arg[1].split(',');
+		arg[0] = (("'" + (this.pasteTplVarBlocks(arg[0]))) + "'");
+		var vals = arg[1].split(' ');
 
 		for (var j = -1; ++j < vals.length;) {
-			var val = this.prepareOutput((("'" + (this.replaceTplVars(vals[j].trim()))) + "'"), true) || '';
+			var val = this.prepareOutput((("'" + (this.pasteTplVarBlocks(vals[j].trim()))) + "'"), true) || '';
 
 			res += (("\
 				if ((" + val) + (") != null && (" + val) + (") !== '') {\
@@ -10023,7 +10085,8 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
  * @param {string} str - исходная строка
  * @return {!Array}
  */
-function splitAttrsGroup(str) {
+DirObj.prototype.splitAttrsGroup = function (str) {
+	str = this.replaceTplVars(str, null, true);
 	var groups = [];
 
 	var group = '',
@@ -10044,7 +10107,6 @@ function splitAttrsGroup(str) {
 		if (separator[el] && !pOpen && next === '(') {
 			pOpen++;
 			i++;
-
 			sep = el;
 			continue;
 		}
@@ -10090,7 +10152,7 @@ function splitAttrsGroup(str) {
 	}
 
 	return groups;
-}Snakeskin.addDirective(
+};Snakeskin.addDirective(
 	'end',
 
 	{
@@ -11790,9 +11852,16 @@ for (var i = -1; ++i < template.length;) {
 				this.scope.push(args.scope);
 			}
 
+			var predefs = ['callee', 'blocks', '$_', 'TPL_NAME', 'PARENT_TPL_NAME'];
+
+			for (var i$0 = -1; ++i$0 < predefs.length;) {
+				this.structure.vars[predefs[i$0]] = {
+					value: predefs[i$0],
+					scope: 0
+				};
+			}
+
 			this.save((("\
-				" + (args.defParams)) + ("\
-\
 				var __THIS__ = this,\
 					callee = __ROOT__." + tplName) + (";\
 \
@@ -11808,7 +11877,9 @@ for (var i = -1; ++i < template.length;) {
 					__RETURN_VAL__;\
 \
 				var TPL_NAME = '" + (applyDefEscape(tplName))) + ("',\
-					PARENT_TPL_NAME" + (parentTplName ? ((" = '" + (applyDefEscape(this.pasteDangerBlocks(parentTplName)))) + "'") : '')) + ";\
+					PARENT_TPL_NAME" + (parentTplName ? ((" = '" + (applyDefEscape(this.pasteDangerBlocks(parentTplName)))) + "'") : '')) + (";\
+\
+				" + (args.defParams)) + "\
 			"));
 
 			var preProtos = this.preProtos[tplName];
@@ -11892,8 +11963,8 @@ for (var i = -1; ++i < template.length;) {
 						continue;
 					}
 
-					for (var i$0 = -1; ++i$0 < cache$1[key$0].length;) {
-						var el$0 = cache$1[key$0][i$0];
+					for (var i$1 = -1; ++i$1 < cache$1[key$0].length;) {
+						var el$0 = cache$1[key$0][i$1];
 
 						if (!el$0.outer) {
 							continue;
@@ -12796,7 +12867,7 @@ Snakeskin.addDirective(
 			params.tag = desc.tag;
 			params.block = !inlineTagMap[desc.tag];
 
-			var groups = splitAttrsGroup(parts.slice(1).join(' '));
+			var groups = this.splitAttrsGroup(parts.slice(1).join(' '));
 			var str = (("\
 				__TMP__ = {\
 					'class': ''\
@@ -12830,10 +12901,8 @@ Snakeskin.addDirective(
 		var params = this.structure.params;
 		this.bemRef = params.bemRef;
 
-		if (this.isSimpleOutput()) {
-			if (params.block) {
-				this.save(this.wrap((("'</" + (params.tag)) + ">'")));
-			}
+		if (this.isSimpleOutput() && params.block) {
+			this.save(this.wrap((("'</" + (params.tag)) + ">'")));
 		}
 	}
 );
@@ -12999,10 +13068,13 @@ var replaceTplVarsFn = function(str)  {return str.replace(/\\/gm, '\\\\').replac
  *
  * @param {string} str - исходная строка
  * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
+ * @param {?boolean=} [opt_replace=false] - если true, то директивы экранируются (заменяются на __SNAKESKIN__\d+_)
  * @return {string}
  */
-DirObj.prototype.replaceTplVars = function (str, opt_sys) {
+DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 	str = this.pasteDangerBlocks(str);
+
+	var start = 0;
 	var begin = 0,
 		dir = '',
 		res = '';
@@ -13022,7 +13094,9 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys) {
 			begin++;
 			dir = '';
 
+			start = i;
 			i++;
+
 			continue;
 		}
 
@@ -13096,9 +13170,18 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys) {
 
 			} else {
 				escape = false;
-				res += '\' + ' +
+
+				var tmp = '\' + ' +
 					this.prepareOutput(this.replaceDangerBlocks(dir), opt_sys) +
 				' + \'';
+
+				if (opt_replace) {
+					res += (("__SNAKESKIN__" + (this.dirContent.length)) + "_");
+					this.dirContent.push(tmp);
+
+				} else {
+					res += tmp;
+				}
 			}
 		}
 	}

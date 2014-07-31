@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406555717518> Mon Jul 28 2014 17:55:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406791321763> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,10 +19,8 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_a063c']; /* Snakeskin template: inherit_base; val val2  */
+        var $_ = __LOCAL__['$_60cc6']; /* Snakeskin template: inherit_base; val val2  */
         this.inherit_base = function(val, val2) {
-            val = val != null ? val : 1;
-            val2 = val2 != null ? val2 : 3;
             var __THIS__ = this,
                 callee = __ROOT__.inherit_base;
             if (!callee.Blocks) {
@@ -35,6 +33,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_base',
                 PARENT_TPL_NAME;
+            val = arguments[0] = val != null ? val : 1;
+            val2 = arguments[1] = val2 != null ? val2 : 3;
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(val2)));
             __RESULT__.push(' ');
@@ -49,8 +49,6 @@
         };
         Snakeskin.cache['inherit_base'] = this.inherit_base; /* Snakeskin template. */ /* Snakeskin template: inherit_sub; val  */
         this.inherit_sub = function(val) {
-            val = val != null ? val : 2;
-            var val2 = 3;
             var __THIS__ = this,
                 callee = __ROOT__.inherit_sub;
             if (!callee.Blocks) {
@@ -63,6 +61,8 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'inherit_sub',
                 PARENT_TPL_NAME = 'inherit_base';
+            var val2 = 3;
+            val = arguments[0] = val != null ? val : 2;
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(val2)));
             __RESULT__.push(' ');

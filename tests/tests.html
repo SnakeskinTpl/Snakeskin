@@ -10,16 +10,16 @@
 	{foo = 'foo'}
 	{bar = ''}
 
-	{attr #{foo} => bar}
-	{attr foo => ${bar}, ${foo}; bar => foo}
+	{attr #{foo} = bar}
+	{attr foo = ${bar} ${foo} | bar = foo}
 {/}
 
 {template attr_index2()}
 	{foo = 'foo'}
 	{bar = 'bar'}
 
-	{attr ng-(foo => #{bar}, #{foo}; bar => foo), ${foo} => bar}
-	{attr ng-(foo => ${(1 ? bar : null)}, ${((foo))}; bar => foo), foo:(#{foo} => bar), b-foo:(#{foo} => bar), b:foo-(${foo} => bar)}
+	{attr ng-(foo = #{bar} #{foo} | bar = foo) ${foo} = bar}
+	{attr ng-(foo = ${(1 ? bar : null)} ${((foo))} | bar = foo), foo:(#{foo} = bar) b-foo:(#{foo} = bar) b:foo-(${foo} = bar)}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo="bar"  foo="foo" bar="foo"'); equal(attr_index2().trim(), 'ng-foo="bar foo" ng-bar="foo" foo="bar"  ng-foo="bar foo" ng-bar="foo" foo:foo="bar" b-foo:foo="bar" b:foo-foo="bar"'); }); </script>  <script type="text/x-snakeskin-template" id="block"> 
 {template block_base()}
 	{&+}
@@ -349,7 +349,7 @@
 {/}
 
 {template link_index2()}
-	{link css ng-(class => foo; id => bar)}
+	{link css ng-(class = foo | id = bar)}
 		foo
 	{/}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="alternate stylesheet" href="foo" />'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class="foo" ng-id="bar" href="foo " />'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> 
@@ -624,7 +624,7 @@
 {/}
 
 {template script_index2()}
-	{script ts ng-(class => foo; id => bar)}
+	{script ts ng-(class = foo | id = bar)}
 		var a = [];
 	{/}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true}); test('script', function () { equal(script_index().trim(), '<script type="text/javascript">var a = []; </script> <script type="application/coffeescript">var a = []; </script> <script type="coffee2">var a = []; </script>'); equal(script_index2().trim(), '<script type="application/typescript" ng-class="foo" ng-id="bar">var a = []; </script>'); }); </script>  <script type="text/x-snakeskin-template" id="simple"> 
@@ -676,7 +676,7 @@
 {/}
 
 {template style_index2()}
-	#{style css ng-(class => foo; id => bar)}
+	#{style css ng-(class = foo | id = bar)}
 		.a {}
 	#{/}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('style'), {prettyPrint: true}); test('style', function () { equal(style_index().trim(), '<style type="text/css">.a {} </style> <style type="text/css">.a {} </style> <style type="css2">.a {} </style>'); equal(style_index2().trim(), '<style type="text/css" ng-class="foo" ng-id="bar">.a {} </style>'); }); </script>  <script type="text/x-snakeskin-template" id="super"> 
@@ -708,7 +708,7 @@
 	{end}
 {/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('super'), {prettyPrint: true}); test('super', function () { equal(super_child().trim(), '221'); }); </script>  <script type="text/x-snakeskin-template" id="syntax"> 
 - template syntax_index()
-	< span.foo class => bar, car
+	< span.foo class = bar car
 		- tag .&__bar#my
 			1
 
@@ -724,7 +724,7 @@
 
 - template syntax_index2() extends syntax_index </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
 {template tag_index()}
-	{tag span.foo class => bar, car}
+	{tag span.foo class = bar car}
 		{tag .&__bar#my}
 			1
 		{/}
