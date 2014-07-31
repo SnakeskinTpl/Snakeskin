@@ -103,4 +103,7 @@ run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true});
 run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true, inlineIterators: true});
 
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
-fs.unlinkSync(errorPath);
+
+if (fs.existsSync(errorPath)) {
+	fs.unlinkSync(errorPath);
+}
