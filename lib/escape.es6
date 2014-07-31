@@ -39,3 +39,13 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
 DirObj.prototype.pasteDangerBlocks = function (str) {
 	return Escaper.paste(str, this.quotContent);
 };
+
+/**
+ * Заметить __SNAKESKIN__номер_ в указанной строке на реальное содержимое
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.pasteTplVarBlocks = function (str) {
+	return str.replace(/__SNAKESKIN__(\d+)_/gm, (sstr, pos) => this.dirContent[pos]);
+};

@@ -198,6 +198,12 @@ function DirObj(src, params) {
 	this.quotContent = [];
 
 	/**
+	 * Содержимое директив (для replaceTplVars)
+	 * @type {!Array}
+	 */
+	this.dirContent = [];
+
+	/**
 	 * Содержимое блоков cdata
 	 * @type {!Array}
 	 */
