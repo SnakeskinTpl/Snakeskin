@@ -19,6 +19,7 @@ snakeskin.compile(
 	}
 );
 
+var errorPath = path.join(__dirname, 'error.txt');
 var asserts = [],
 	prfx = -1;
 
@@ -62,24 +63,32 @@ function run(params) {
 
 			} catch (err) {
 				console.error(("File: " + file));
+				fs.writeFileSync(errorPath, (("File: " + file) + ("\n\n" + (err.message)) + ""));
 				throw err;
 			}
 
 			var tpl = require((("./tests/" + file) + ("_" + prfx) + ".js")).init(snakeskin);
 
 			starts.forEach(function(el, i)  {
-				var params = el.split(' ; ');
+				var params = el.split(' ; '),
+					res = '';
 
 				try {
 					obj.js.push((("equal(" + (params[0])) + ("(" + (params.slice(1))) + (").trim(), '" + (results[i].trim())) + "');"));
 
 					assert.equal(
-						eval((("tpl." + (params[0])) + ("(" + (params.slice(1))) + ").trim()")),
+						(res = eval((("tpl." + (params[0])) + ("(" + (params.slice(1))) + ").trim()"))),
 						results[i].trim()
 					);
 
 				} catch (err) {
 					console.error((("File: " + file) + (" - " + prfx) + (" (" + options) + ("), Tpl: " + (params[0])) + ""));
+
+					fs.writeFileSync(
+						errorPath,
+						(("File: " + file) + (" - " + prfx) + (" (" + options) + ("), Tpl: " + (params[0])) + ("\n\nResult:\n" + res) + ("\n\nExpected:\n" + (results[i].trim())) + ("\n\nTest:\n" + (txt[1])) + "")
+					);
+
 					throw err;
 				}
 			});
@@ -94,3 +103,4 @@ run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true});
 run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true, inlineIterators: true});
 
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
+fs.unlinkSync(errorPath);
