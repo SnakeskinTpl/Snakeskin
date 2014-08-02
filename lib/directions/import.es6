@@ -23,7 +23,13 @@ Snakeskin.addDirective(
 			var ${obj} = __LOCAL__.${obj} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
 		`);
 
-		this.structure.parent.vars[obj] = {
+		var root = this.structure;
+
+		while (root.name !== 'root') {
+			root = root.parent;
+		}
+
+		root.vars[obj] = {
 			value: `__LOCAL__.${obj}`,
 			scope: 0
 		};
