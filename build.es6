@@ -1,11 +1,16 @@
 var jossy = require('jossy');
 var escaper = require('escaper');
-var spawn = require('child_process').spawn;
 
+var spawn = require('child_process').spawn;
 var path = require('path');
 var fs = require('fs');
 
 var V = require('./lib/core')['VERSION'].join('.');
+var program = require('commander');
+
+program
+	.option('-d, --dev')
+	.parse(process.argv);
 
 function build(file, flags) {
 	jossy.compile(path.join(__dirname, 'lib/core.js'), null, flags, (err, res) => {
@@ -42,6 +47,10 @@ function build(file, flags) {
 ` + res;
 
 		fs.writeFileSync(path.join(__dirname, `build/${file}.js`), res);
+
+		if (program['dev']) {
+			return;
+		}
 
 		var gcc = spawn('java', [
 			'-jar',
