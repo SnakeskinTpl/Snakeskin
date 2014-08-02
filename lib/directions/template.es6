@@ -43,7 +43,7 @@ DirObj.prototype.consts = null;
 DirObj.prototype.bemRef = '';
 
 var template = ['template', 'interface', 'placeholder'];
-var scopeModRgxp = new RegExp(`^${G_MOD}`);
+var scopeModRgxp = new RegExp(`^${G_MOD}+`);
 
 /**
  * Заменить %fileName% в заданной строке на имя активного файла
