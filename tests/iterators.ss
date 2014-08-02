@@ -19,7 +19,6 @@ iterators_index6
 	{/}
 {/}
 
-
 {template iterators_index3()}
 	{a = Object.create({a: 1})}
 	{forIn a => el, key, obj, i, isFirst, isLast, length}
@@ -41,7 +40,6 @@ iterators_index6
 		{break}
 	{/}
 {/}
-
 
 {template iterators_index6()}
 	{a = Object.create({a: 1})}

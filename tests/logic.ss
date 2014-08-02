@@ -7,7 +7,6 @@ logic_sub
 
 {template logic_index(i)}
 	{switch i}
-
 		{> 1}
 			1
 		{/}

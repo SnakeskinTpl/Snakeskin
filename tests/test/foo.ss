@@ -1,3 +1,5 @@
+{var foo = 2}
+
 {eval}
 	{: fs = require('fs')}
 	{: path = require('path')}
