@@ -1,3 +1,8 @@
+var importMap = {
+	'root': true,
+	'head': true
+};
+
 Snakeskin.addDirective(
 	'import',
 
@@ -6,8 +11,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!{'root': true, 'head': true, 'eval': true}[this.structure.name]) {
-			return this.error(`directive "${this.name}" can be used only within the global space or a "head" / "eval"`);
+		if (!importMap[this.structure.name]) {
+			return this.error(`directive "${this.name}" can be used only within the global space or a "head"`);
 		}
 
 		var parts = command.split('='),

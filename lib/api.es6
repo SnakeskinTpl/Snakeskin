@@ -796,8 +796,8 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 		id = this.module.id,
 		global = false;
 
-	if ({'head': true, 'root': true}[struct.name]) {
-		if (struct.name === 'head') {
+	if (importMap[struct.name]) {
+		if (struct.name !== 'root') {
 			struct = struct.parent;
 		}
 
@@ -844,7 +844,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 		struct = struct.parent;
 	}
 
-	if (!struct.parent || struct.name === 'head') {
+	if (importMap[struct.name]) {
 		fin = '';
 	}
 
