@@ -18,10 +18,14 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save(`
-				var ${obj} = __LOCAL__.${obj} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
-			`);
-		}
+
+		this.save(`
+			var ${obj} = __LOCAL__.${obj} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
+		`);
+
+		this.structure.parent.vars[obj] = {
+			value: `__LOCAL__.${obj}`,
+			scope: 0
+		};
 	}
 );
