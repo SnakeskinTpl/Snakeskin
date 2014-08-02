@@ -24,7 +24,9 @@ var asserts = [],
 	prfx = -1;
 
 function run(params) {
-	var options = JSON.stringify(params);
+	var options = JSON.stringify(params),
+		debug = {};
+
 	prfx++;
 
 	fs.readdirSync(testFolder).forEach(function(file)  {
@@ -52,7 +54,8 @@ function run(params) {
 			try {
 				var start = Date.now();
 				var res = snakeskin.compile(txt[1], params, {
-					file: path.join(testFolder, file)
+					file: path.join(testFolder, file),
+					debug: debug
 				});
 
 				if (!prfx) {
@@ -62,8 +65,7 @@ function run(params) {
 				fs.writeFileSync((("" + src) + ("_" + prfx) + ".js"), res);
 
 			} catch (err) {
-				console.error(("File: " + file));
-				fs.writeFileSync(errorPath, (("File: " + file) + ("\n\n" + (err.message)) + ""));
+				fs.writeFileSync(errorPath, (("File: " + file) + ("\n\n" + (err.message)) + ("" + (debug['code'] ? ("\n\nCode:\n\n" + (debug['code'])) : '')) + ""));
 				throw err;
 			}
 
@@ -75,9 +77,10 @@ function run(params) {
 
 				try {
 					obj.js.push((("equal(" + (params[0])) + ("(" + (params.slice(1))) + (").trim(), '" + (results[i].trim())) + "');"));
+					res = tpl[params[0]].apply(tpl[params[0]], params.slice(1)).trim();
 
 					assert.equal(
-						(res = eval((("tpl." + (params[0])) + ("(" + (params.slice(1))) + ").trim()"))),
+						res,
 						results[i].trim()
 					);
 
@@ -86,7 +89,7 @@ function run(params) {
 
 					fs.writeFileSync(
 						errorPath,
-						(("File: " + file) + (" - " + prfx) + (" (" + options) + ("), Tpl: " + (params[0])) + ("\n\nResult:\n" + res) + ("\n\nExpected:\n" + (results[i].trim())) + ("\n\nTest:\n" + (txt[1])) + "")
+						(("File: " + file) + (" - " + prfx) + (" (" + options) + ("), Tpl: " + (params[0])) + ("\n\nResult:\n" + res) + ("\n\nExpected:\n" + (results[i].trim())) + ("\n\nTest:\n" + (txt[1])) + ("\n\nCode:\n" + (tpl[params[0]].toString())) + "")
 					);
 
 					throw err;
