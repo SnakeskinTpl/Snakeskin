@@ -6,8 +6,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!{'root': true, 'head': true}[this.structure.name]) {
-			return this.error(`directive "${this.name}" can be used only within the global space or a "head"`);
+		if (!{'root': true, 'head': true, 'eval': true}[this.structure.name]) {
+			return this.error(`directive "${this.name}" can be used only within the global space or a "head" / "eval"`);
 		}
 
 		var parts = command.split('='),
