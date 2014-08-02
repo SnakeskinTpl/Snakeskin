@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406791321219> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406969019987> Sat Aug 02 2014 12:43:39 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_a475c']; /* Snakeskin template: simple_output;  */
+        var $_ = __LOCAL__['$_41acd']; /* Snakeskin template: simple_output;  */
         this.simple_output = function() {
             var __THIS__ = this,
                 callee = __ROOT__.simple_output;
@@ -33,18 +33,18 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'simple_output',
                 PARENT_TPL_NAME;
-            e = {
+            e = ({
                 foo: {
                     my: function() {
                         return 1;
                     }
                 }
-            };
+            });
             __RESULT__ += ' ';
-            a = {
+            a = ({
                 foo: 'my',
                 n: 'foo'
-            };
+            });
             __RESULT__ += ' ';
             __RESULT__ += e[a['n']][a['foo']](1, 2, 3);
             __RESULT__ += ' ';
@@ -133,7 +133,7 @@
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
             __RESULT__ += '!</h1> ';
-            a = 1;
+            a = (1);
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a) === 1 ? 1 : 2);
             __RESULT__ += ' '; /**<h1>Hello {name}{lname ? \' \' + lname : \'\'}!</h1>*/

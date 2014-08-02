@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406791321638> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406969020415> Sat Aug 02 2014 12:43:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_8b2a5']; /* Snakeskin template: super_base;  */
+        var $_ = __LOCAL__['$_8abc0']; /* Snakeskin template: super_base;  */
         this.super_base = function() {
             var __THIS__ = this,
                 callee = __ROOT__.super_base;
@@ -33,9 +33,9 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'super_base',
                 PARENT_TPL_NAME;
-            a = 1;
+            a = (1);
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a));
-            var ____I_PROTO___bar_template_45 = 1;
+            var ____I_PROTO___bar_template_45 = (1);
             ____I_PROTO___bar_template_45: while (____I_PROTO___bar_template_45--) {
                 __RESULT__ += '{__setLine__17}2';
             }
@@ -56,9 +56,9 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'super_child',
                 PARENT_TPL_NAME = 'super_base';
-            a = 2;
+            a = (2);
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a));
-            var ____I_PROTO___bar_template_44 = 1;
+            var ____I_PROTO___bar_template_44 = (1);
             ____I_PROTO___bar_template_44: while (____I_PROTO___bar_template_44--) {
                 __RESULT__ += '2';
                 __RESULT__ += '1';

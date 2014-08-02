@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406791321536> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406969020310> Sat Aug 02 2014 12:43:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_0c96d'];
+        var $_ = __LOCAL__['$_0a431'];
         __VARS__['mod_global'] = 1;
         __VARS__.MG = 2; /* Snakeskin template: mod_index;  */
         this.mod_index = function() {
@@ -35,19 +35,19 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'mod_index',
                 PARENT_TPL_NAME;
-            b = {
+            b = ({
                 c: {
                     e: 1,
                     22: 3
                 },
                 1: 2
-            };
+            });
             __VARS__['mod_global'] = 10;
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__['mod_global']));
             __VARS__['M' + 'G'] = 4;
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__VARS__['M' + 'G']));
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b[b.c.e]));
-            var __tmp__with_236 = void 0;
+            var __tmp__with_236 = (void 0);
             b.c[2 == 2 && (__tmp__with_236 = ($_ = __FILTERS__['repeat'](1 + 1)))] = 5;
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__tmp__with_236));
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(b.c[($_ = __FILTERS__['repeat'](1 + 1))]));

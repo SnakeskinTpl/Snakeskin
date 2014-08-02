@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406791321854> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406969020665> Sat Aug 02 2014 12:43:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_67a06']; /* Snakeskin template: param_base; a,b  */
+        var $_ = __LOCAL__['$_4ecd5']; /* Snakeskin template: param_base; a,b  */
         this.param_base = function(a, b) {
             var __THIS__ = this,
                 callee = __ROOT__.param_base;
@@ -54,7 +54,7 @@
                 PARENT_TPL_NAME = 'param_base';
             var a = void 0;
             var b = 1 ? Math.round(1) : 0;
-            b = 2;
+            b = (2);
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
             __RESULT__.push(' ');
@@ -77,7 +77,7 @@
                 PARENT_TPL_NAME = 'param_child';
             var a = void 0;
             var b = 1 ? Math.round(1) : 0;
-            b = 3;
+            b = (3);
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
             __RESULT__.push(' ');
@@ -145,11 +145,11 @@
                     c: 1
                 }
             };
-            b = 2;
+            b = (2);
             __RESULT__.push(' ');
             __RESULT__.push(' ');
             var __a__proto_405 = void 0 != null ? void 0 : 1 ? a.a : Math.round(0);
-            var ____I_PROTO___foo_with_52 = 1;
+            var ____I_PROTO___foo_with_52 = (1);
             ____I_PROTO___foo_with_52: while (____I_PROTO___foo_with_52--) {
                 __RESULT__.push(' ');
                 __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__a__proto_405.c)));

@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 31 Jul 2014 07:21:36 GMT
+ * Date: Sat, 02 Aug 2014 08:43:29 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6891,9 +6891,18 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 		return tmp.value;
 	}
 
-	var realVar;
-	if (!struct.parent || struct.name === 'head') {
-		realVar = (("__LOCAL__." + varName) + ("_" + (this.module.id)) + ("_" + uid) + "");
+	var realVar,
+		id = this.module.id,
+		global = false;
+
+	if (importMap[struct.name]) {
+		if (struct.name !== 'root') {
+			struct = struct.parent;
+		}
+
+		realVar = (("__LOCAL__." + varName) + ("_" + id) + ("_" + uid) + "");
+		varName += ("_" + id);
+		global = true;
 
 	} else {
 		realVar = (("__" + varName) + ("_" + (this.proto ? this.proto.name : '')) + ("_" + (struct.name)) + ("_" + (this.i)) + "");
@@ -6901,6 +6910,8 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
 
 	struct.vars[varName] = {
 		value: realVar,
+		id: id,
+		global: global,
 		scope: this.scope.length
 	};
 
@@ -6932,7 +6943,7 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 		struct = struct.parent;
 	}
 
-	if (!struct.parent || struct.name === 'head') {
+	if (importMap[struct.name]) {
 		fin = '';
 	}
 
@@ -6954,10 +6965,10 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 			var parts = cache.split('='),
 				realVar = this.declVar(parts[0].trim());
 
-			parts[0] = realVar + ' ';
+			parts[0] = realVar + '=';
 			parts[1] = parts[1] || 'void 0';
 
-			fin += this.prepareOutput(parts.join('='), true, null, true) + ',';
+			fin += parts[0] + this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true) + ',';
 
 			cache = '';
 			continue;
@@ -8022,11 +8033,12 @@ var uid;
  * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны,
  *     или исходный текст шаблонов
  *
- * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
- *     будет сгенерирована ошибка
- *
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
+ *
+ * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
+ * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
+ *     будет сгенерирована ошибка
  *
  * @param {?string=} [opt_params.i18nFn='i18n'] - название функции для i18n
  * @param {?boolean=} [opt_params.localization=true] - если false, то блоки ` ... ` не заменяются на вызов i18n
@@ -8103,6 +8115,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
+	p.debug = s(p.debug, p['debug']) || null;
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -8777,6 +8790,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (p.prettyPrint) {
 		dir.res = beautify(dir.res);
+	}
+
+	if (p.debug) {
+		p.debug['code'] = dir.res;
 	}
 
 	try {
@@ -9608,13 +9625,14 @@ Snakeskin.addDirective(
 
 		if ((!tplName || rgxp.test(command)) && type !== 'output') {
 			if (tplName && type !== 'global') {
-				var parts = command.split('=');
+				var parts = command.split('='),
+					prop = parts[0] && parts[0].trim();
 
 				if (!parts[1] || !parts[1].trim()) {
 					return this.error(("invalid \"constant\" declaration"));
 				}
 
-				var name = this.pasteDangerBlocks(parts[0].trim());
+				var name = this.pasteDangerBlocks(prop);
 
 				if (name.charAt(0) === L_MOD) {
 					return this.error((("can\'t declare constant \"" + (name.substring(1))) + ("\" with the context modifier (" + L_MOD) + ")"));
@@ -9626,11 +9644,11 @@ Snakeskin.addDirective(
 				});
 
 				if (this.isSimpleOutput()) {
-					if (!propAssignRgxp.test(name)) {
-						this.consts.push((("var " + (parts[0])) + ";"));
+					if (!propAssignRgxp.test(prop)) {
+						this.consts.push((("var " + prop) + ";"));
 					}
 
-					this.save(this.prepareOutput(command, true, null, true) + ';');
+					this.save((("" + prop) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";"));
 				}
 
 				if (this.isAdvTest()) {
@@ -9676,12 +9694,14 @@ Snakeskin.addDirective(
 					return this.error((("directive \"" + (this.name)) + "\" can be used only within the global space"));
 				}
 
-				if (!isAssign(command, true)) {
+				var desc = isAssign(command, true);
+
+				if (!desc) {
 					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 				}
 
 				this.save((("\
-					__VARS__" + ((command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true))) + ";\
+					__VARS__" + ((command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.key.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true))) + ";\
 				"));
 			}
 
@@ -9694,8 +9714,11 @@ Snakeskin.addDirective(
 			}
 
 			if (this.isSimpleOutput()) {
-				if (isAssign(command)) {
-					this.save((("" + (this.prepareOutput(command, true))) + ";"));
+				var desc$0 = isAssign(command);
+
+				if (desc$0) {
+					this.text = false;
+					this.save((("" + (this.prepareOutput(desc$0.key, true) + '=' + this.prepareOutput(desc$0.value, true))) + ";"));
 					return;
 				}
 
@@ -9735,11 +9758,13 @@ Snakeskin.addDirective(
 );
 
 /**
- * Вернуть true, если в строке идёт присвоение значения переменной или свойству
+ * Вернуть объект-описание выражения,
+ * если в строке идёт присвоение значения переменной или свойству,
+ * или false
  *
  * @param {string} str - исходная строка
  * @param {?boolean=} [opt_global=false] - если true, то идёт проверка суперглобальной переменной
- * @return {boolean}
+ * @return {({key: string, value: string}|boolean)}
  */
 function isAssign(str, opt_global) {
 	var source = (("^[" + (G_MOD + L_MOD)) + ("$a-z_" + (opt_global ? '[' : '')) + "]"),
@@ -9752,11 +9777,13 @@ function isAssign(str, opt_global) {
 		return false;
 	}
 
+	var prop = '';
 	var count = 0,
 		eq = false;
 
 	for (var i = -1; ++i < str.length;) {
 		var el = str.charAt(i);
+		prop += el;
 
 		if (bMap[el]) {
 			count++;
@@ -9768,7 +9795,10 @@ function isAssign(str, opt_global) {
 		}
 
 		if (el === '=' && !eq && !count && str.charAt(i + 1) !== '=') {
-			return true;
+			return {
+				key: prop.slice(0, -1),
+				value: str.substring(i + 1)
+			};
 		}
 
 		eq = el === '=';
@@ -10170,7 +10200,7 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 		}
 
 		if (command && command !== name) {
-			return this.error((("invalid closing tag, expected: \"" + name) + ("\", declared: \"" + command) + "\""));
+			return this.error((("invalid closing directive, expected: \"" + name) + ("\", declared: \"" + command) + "\""));
 		}
 
 		if (inside[name]) {
@@ -10892,9 +10922,6 @@ Snakeskin.addDirective(
 		this.module.children.push(module);
 		this.module = module;
 		this.info['file'] = command;
-
-		this._varsTmp = this.structure.vars;
-		this.structure.vars = {};
 	}
 );
 
@@ -10908,7 +10935,6 @@ Snakeskin.addDirective(
 	function () {
 		this.module = this.module.parent;
 		this.info['file'] = this.module.filename;
-		this.structure.vars = this._varsTmp;
 	}
 );
 
@@ -11594,7 +11620,7 @@ DirObj.prototype.consts = null;
 DirObj.prototype.bemRef = '';
 
 var template = ['template', 'interface', 'placeholder'];
-var scopeModRgxp = new RegExp(("^" + G_MOD));
+var scopeModRgxp = new RegExp((("^" + G_MOD) + "+"));
 
 /**
  * Заменить %fileName% в заданной строке на имя активного файла
@@ -12770,7 +12796,12 @@ Snakeskin.addDirective(
 			this.save(this.wrap('\'" />\''));
 		}
 	}
-);Snakeskin.addDirective(
+);var importMap = {
+	'root': true,
+	'head': true
+};
+
+Snakeskin.addDirective(
 	'import',
 
 	{
@@ -12778,7 +12809,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!{'root': true, 'head': true}[this.structure.name]) {
+		if (!importMap[this.structure.name]) {
 			return this.error((("directive \"" + (this.name)) + "\" can be used only within the global space or a \"head\""));
 		}
 
@@ -12790,11 +12821,21 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save((("\
-				var " + obj) + (" = __LOCAL__." + obj) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";\
-			"));
+
+		this.save((("\
+			var " + obj) + (" = __LOCAL__." + obj) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";\
+		"));
+
+		var root = this.structure;
+
+		while (root.name !== 'root') {
+			root = root.parent;
 		}
+
+		root.vars[obj] = {
+			value: ("__LOCAL__." + obj),
+			scope: 0
+		};
 	}
 );Snakeskin.addDirective(
 	'comment',
@@ -13358,7 +13399,7 @@ var exprimaHackFn = function(str)  {return str
  * @param {?boolean=} [opt_validate=true] - если false, то полученная конструкция не валидируется
  * @return {string}
  */
-DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {
+DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {var this$0 = this;
 	var tplName = this.tplName,
 		struct = this.structure;
 
@@ -13423,8 +13464,21 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		struct.vars :
 		struct.parent.vars;
 
-	var setMod = function(str)  {return str.charAt(0) === '[' ? str : ("." + str)},
-		replacePropVal = function(sstr)  {return vars[sstr] ? vars[sstr].value : sstr};
+	var setMod = function(str)  {return str.charAt(0) === '[' ? str : ("." + str)};
+	var replacePropVal = function(sstr)  {
+		var id = this$0.module.id,
+			def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")];
+
+		if (def) {
+			if (!def.global || def.global && id == def.id) {
+				return def.value;
+			}
+
+			return sstr;
+		}
+
+		return sstr;
+	};
 
 	function addScope(str) {
 		if (multPropRgxp.test(str)) {
@@ -13618,13 +13672,12 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			// Составление тела фильтра
 			} else if (el !== ')' || pCountFilter) {
 				var last$0 = filter.length - 1;
-
 				filter[last$0] += el;
 				rvFilter[last$0] += el;
 			}
 		}
 
-		if (i === commandLength - 1 && pCount && el !== ')') {
+		if (i === commandLength - 1 && pCount && !filterWrapper && el !== ')') {
 			this.error('missing closing or opening parenthesis in the template');
 			return '';
 		}
@@ -13644,7 +13697,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 					arr.push(f);
 
 				} else {
-					if (f === '!html' && !pCount) {
+					if (f === '!html' && (!pCount || filterWrapper)) {
 						unEscape = true;
 
 					} else if (f === '!undef') {
@@ -13760,6 +13813,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			esprima.parse(exprimaHackFn(res));
 
 		} catch (err) {
+			console.log(res);
 			this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
 			return '';
 		}

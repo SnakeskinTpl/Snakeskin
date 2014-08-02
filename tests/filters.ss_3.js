@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1406791321720> Thu Jul 31 2014 11:22:01 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1406969020506> Sat Aug 02 2014 12:43:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_2fcec'];
+        var $_ = __LOCAL__['$_9364f'];
         __VARS__.a = String; /* Snakeskin template: filters_index;  */
         this.filters_index = function() {
             var __THIS__ = this,
@@ -34,9 +34,9 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'filters_index',
                 PARENT_TPL_NAME;
-            a = {
+            a = ({
                 a: String
-            };
+            });
             __RESULT__.push(' ');
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(($_ = __FILTERS__['remove'](($_ = __FILTERS__['repeat'](($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['collapse']('   foo   bar ')))), 3)), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim']('   Foo bar')))))));
