@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 02 Aug 2014 08:43:29 GMT
+ * Date: Sat, 02 Aug 2014 08:52:06 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -13469,12 +13469,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		var id = this$0.module.id,
 			def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")];
 
-		if (def) {
-			if (!def.global || def.global && id == def.id) {
-				return def.value;
-			}
-
-			return sstr;
+		if (def && (!def.global || def.global && id == def.id)) {
+			return def.value;
 		}
 
 		return sstr;
