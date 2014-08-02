@@ -25,10 +25,9 @@ var asserts = [],
 
 function run(params) {
 	var options = JSON.stringify(params),
-		debug = {};
+		debug = params.debug = {};
 
 	prfx++;
-
 	fs.readdirSync(testFolder).forEach((file) => {
 		if (path.extname(file) === '.ss') {
 			let src = path.join(testFolder, file),
@@ -54,8 +53,7 @@ function run(params) {
 			try {
 				let start = Date.now();
 				let res = snakeskin.compile(txt[1], params, {
-					file: path.join(testFolder, file),
-					debug: debug
+					file: path.join(testFolder, file)
 				});
 
 				if (!prfx) {
@@ -77,7 +75,9 @@ function run(params) {
 
 				try {
 					obj.js.push(`equal(${params[0]}(${params.slice(1)}).trim(), '${results[i].trim()}');`);
-					res = tpl[params[0]].apply(tpl[params[0]], params.slice(1)).trim();
+
+					// eval нужен чтобы сохранить информацию о типах
+					res = eval(`tpl.${params[0]}(${params.slice(1)}).trim()`);
 
 					assert.equal(
 						res,
@@ -89,7 +89,7 @@ function run(params) {
 
 					fs.writeFileSync(
 						errorPath,
-						`File: ${file} - ${prfx} (${options}), Tpl: ${params[0]}\n\nResult:\n${res}\n\nExpected:\n${results[i].trim()}\n\nTest:\n${txt[1]}\n\nCode:\n${tpl[params[0]].toString()}`
+						`File: ${file} - ${prfx} (${options}), Tpl: ${params[0]}\n\nResult:\n${res}\n\nExpected:\n${results[i].trim()}\n\nTest:\n${txt[1]}\n\nCode:\n${debug['code']}`
 					);
 
 					throw err;
