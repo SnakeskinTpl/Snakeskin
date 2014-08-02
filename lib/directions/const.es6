@@ -20,13 +20,14 @@ Snakeskin.addDirective(
 
 		if ((!tplName || rgxp.test(command)) && type !== 'output') {
 			if (tplName && type !== 'global') {
-				let parts = command.split('=');
+				let parts = command.split('='),
+					prop = parts[0] && parts[0].trim();
 
 				if (!parts[1] || !parts[1].trim()) {
 					return this.error(`invalid "constant" declaration`);
 				}
 
-				let name = this.pasteDangerBlocks(parts[0].trim());
+				let name = this.pasteDangerBlocks(prop);
 
 				if (name.charAt(0) === L_MOD) {
 					return this.error(`can\'t declare constant "${name.substring(1)}" with the context modifier (${L_MOD})`);
@@ -39,10 +40,10 @@ Snakeskin.addDirective(
 
 				if (this.isSimpleOutput()) {
 					if (!propAssignRgxp.test(name)) {
-						this.consts.push(`var ${parts[0]};`);
+						this.consts.push(`var ${prop};`);
 					}
 
-					this.save(this.prepareOutput(command, true, null, true) + ';');
+					this.save(`${prop} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};`);
 				}
 
 				if (this.isAdvTest()) {
@@ -88,12 +89,14 @@ Snakeskin.addDirective(
 					return this.error(`directive "${this.name}" can be used only within the global space`);
 				}
 
-				if (!isAssign(command, true)) {
+				let desc = isAssign(command, true);
+
+				if (!desc) {
 					return this.error(`invalid "${this.name}" declaration`);
 				}
 
 				this.save(`
-					__VARS__${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(command, true, null, true)};
+					__VARS__${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.prop.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true)};
 				`);
 			}
 
@@ -106,8 +109,11 @@ Snakeskin.addDirective(
 			}
 
 			if (this.isSimpleOutput()) {
-				if (isAssign(command)) {
-					this.save(`${this.prepareOutput(command, true)};`);
+				let desc = isAssign(command);
+
+				if (desc) {
+					this.text = false;
+					this.save(`${this.prepareOutput(desc.prop, true) + '=' + this.prepareOutput(desc.value, true)};`);
 					return;
 				}
 
@@ -147,11 +153,13 @@ Snakeskin.addDirective(
 );
 
 /**
- * Вернуть true, если в строке идёт присвоение значения переменной или свойству
+ * Вернуть объект-описание выражения,
+ * если в строке идёт присвоение значения переменной или свойству,
+ * или false
  *
  * @param {string} str - исходная строка
  * @param {?boolean=} [opt_global=false] - если true, то идёт проверка суперглобальной переменной
- * @return {boolean}
+ * @return {({prop: string, value: string}|boolean)}
  */
 function isAssign(str, opt_global) {
 	var source = `^[${G_MOD + L_MOD}$a-z_${opt_global ? '[' : ''}]`,
@@ -164,11 +172,13 @@ function isAssign(str, opt_global) {
 		return false;
 	}
 
+	var prop = '';
 	var count = 0,
 		eq = false;
 
 	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i);
+		prop += el;
 
 		if (bMap[el]) {
 			count++;
@@ -180,7 +190,10 @@ function isAssign(str, opt_global) {
 		}
 
 		if (el === '=' && !eq && !count && str.charAt(i + 1) !== '=') {
-			return true;
+			return {
+				prop: prop.slice(0, -1),
+				value: str.substring(i + 1)
+			};
 		}
 
 		eq = el === '=';
