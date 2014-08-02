@@ -39,7 +39,7 @@ Snakeskin.addDirective(
 				});
 
 				if (this.isSimpleOutput()) {
-					if (!propAssignRgxp.test(name)) {
+					if (!propAssignRgxp.test(prop)) {
 						this.consts.push(`var ${prop};`);
 					}
 
