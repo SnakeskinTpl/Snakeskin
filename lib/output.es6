@@ -415,8 +415,21 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		struct.vars :
 		struct.parent.vars;
 
-	var setMod = (str) => str.charAt(0) === '[' ? str : `.${str}`,
-		replacePropVal = (sstr) => vars[sstr] ? vars[sstr].value : sstr;
+	var setMod = (str) => str.charAt(0) === '[' ? str : `.${str}`;
+	var replacePropVal = (sstr) => {
+		var id = this.module.id,
+			def = vars[sstr] || vars[`${sstr}_${id}`];
+
+		if (def) {
+			if (!def.global || def.global && id == def.id) {
+				return def.value;
+			}
+
+			return sstr;
+		}
+
+		return sstr;
+	};
 
 	function addScope(str) {
 		if (multPropRgxp.test(str)) {
@@ -751,6 +764,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			esprima.parse(exprimaHackFn(res));
 
 		} catch (err) {
+			console.log(res);
 			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
 			return '';
 		}
