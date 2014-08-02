@@ -420,12 +420,8 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		var id = this.module.id,
 			def = vars[sstr] || vars[`${sstr}_${id}`];
 
-		if (def) {
-			if (!def.global || def.global && id == def.id) {
-				return def.value;
-			}
-
-			return sstr;
+		if (def && (!def.global || def.global && id == def.id)) {
+			return def.value;
 		}
 
 		return sstr;
