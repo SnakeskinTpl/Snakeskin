@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 02 Aug 2014 08:52:06 GMT
+ * Date: Sun, 03 Aug 2014 04:00:57 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -12821,9 +12821,10 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
+		var key = (("" + obj) + ("_00_" + uid) + "");
 
 		this.save((("\
-			var " + obj) + (" = __LOCAL__." + obj) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";\
+			var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";\
 		"));
 
 		var root = this.structure;
@@ -12832,8 +12833,8 @@ Snakeskin.addDirective(
 			root = root.parent;
 		}
 
-		root.vars[obj] = {
-			value: ("__LOCAL__." + obj),
+		root.vars[(("" + obj) + "_00")] = {
+			value: ("__LOCAL__." + key),
 			scope: 0
 		};
 	}
@@ -13467,7 +13468,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 	var setMod = function(str)  {return str.charAt(0) === '[' ? str : ("." + str)};
 	var replacePropVal = function(sstr)  {
 		var id = this$0.module.id,
-			def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")];
+			def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")] || vars[(("" + sstr) + "_00")];
 
 		if (def && (!def.global || def.global && id == def.id)) {
 			return def.value;
