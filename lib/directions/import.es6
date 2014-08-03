@@ -23,9 +23,10 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
+		var key = `${obj}_00_${uid}`;
 
 		this.save(`
-			var ${obj} = __LOCAL__.${obj} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
+			var ${key} = __LOCAL__.${key} = ${this.prepareOutput(`(${parts.slice(1).join('=')})`, true)};
 		`);
 
 		var root = this.structure;
@@ -34,8 +35,8 @@ Snakeskin.addDirective(
 			root = root.parent;
 		}
 
-		root.vars[obj] = {
-			value: `__LOCAL__.${obj}`,
+		root.vars[`${obj}_00`] = {
+			value: `__LOCAL__.${key}`,
 			scope: 0
 		};
 	}

@@ -418,7 +418,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 	var setMod = (str) => str.charAt(0) === '[' ? str : `.${str}`;
 	var replacePropVal = (sstr) => {
 		var id = this.module.id,
-			def = vars[sstr] || vars[`${sstr}_${id}`];
+			def = vars[sstr] || vars[`${sstr}_${id}`] || vars[`${sstr}_00`];
 
 		if (def && (!def.global || def.global && id == def.id)) {
 			return def.value;
