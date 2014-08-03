@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407038467386> Sun Aug 03 2014 08:01:07 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407040134250> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_3bf92'];
+        var $_ = __LOCAL__['$_3b2bf'];
         __VARS__.a = String; /* Snakeskin template: filters_index;  */
         this.filters_index = function() {
             var __THIS__ = this,
@@ -39,7 +39,7 @@
             });
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(($_ = __FILTERS__['remove'](($_ = __FILTERS__['repeat'](($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['collapse']('   foo   bar ')))), 3)), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim']('   Foo bar'))))));
+            __RESULT__ += __FILTERS__.html(($_ = __FILTERS__['remove'].call(this, ($_ = __FILTERS__['repeat'].call(this, ($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['collapse'].call(this, '   foo   bar ')))), 3)), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim']('   Foo bar'))))));
             __RESULT__ += ' ';
             __RESULT__ += ($_ = __FILTERS__['remove']($_ = __FILTERS__['repeat']($_ = __FILTERS__['ucfirst']($_ = __FILTERS__['collapse']('   foo   bar ')), 3), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim'](a.a('   Foo bar')))))) + '<b>1</b>';
             __RESULT__ += ' ';

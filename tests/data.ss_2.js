@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407038467372> Sun Aug 03 2014 08:01:07 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407040134235> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_673a6']; /* Snakeskin template: data_index;  */
+        var $_ = __LOCAL__['$_4bd19']; /* Snakeskin template: data_index;  */
         this.data_index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.data_index;
@@ -35,9 +35,9 @@
                 PARENT_TPL_NAME;
             a = (' foo ');
             __RESULT__ += ' ';
-            __RESULT__ += '{a: \"' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['trim'](__FILTERS__.undef(a)))))) + '\"}';
+            __RESULT__ += '{a: \"' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['trim'].call(this, __FILTERS__.undef(a)))))) + '\"}';
             __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'](($_ = __FILTERS__['trim'](__FILTERS__.undef(a)))))) + '}}';
+            __RESULT__ += '{{' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['trim'].call(this, __FILTERS__.undef(a)))))) + '}}';
             __RESULT__ += ' ';
             __RESULT__ += '{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}} ';
             var a;
