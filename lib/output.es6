@@ -654,7 +654,11 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			}
 
 			filter = arr;
-			let resTmp = fBody;
+			let resTmp = fBody.trim();
+
+			if (!resTmp) {
+				resTmp = 'void 0';
+			}
 
 			for (let j = -1; ++j < filter.length;) {
 				let params = filter[j].split(' '),
@@ -668,7 +672,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 				}
 
 				resTmp = `(${this.tplName ? '$_' : `\$_ = __LOCAL__['\$_${uid}']`} = __FILTERS__${f}` +
-					(filterWrapper || !pCount ? '(' : '') +
+					(filterWrapper || !pCount ? '.call(this,' : '') +
 					resTmp +
 					(input ? ',' + input : '') +
 					(filterWrapper || !pCount ? ')' : '') +
@@ -749,6 +753,20 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 				filter.push(nNext);
 				rvFilter.push(nNext);
 				i += 2;
+			}
+
+		} else if (i === 0 && el === FILTER && filterRgxp.test(next)) {
+			nword = false;
+
+			if (!filterStart) {
+				pContent.push([0, i]);
+			}
+
+			filterStart = true;
+			if (!pCountFilter) {
+				filter.push(next);
+				rvFilter.push(next);
+				i++;
 			}
 		}
 	}
