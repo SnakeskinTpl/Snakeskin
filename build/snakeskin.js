@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 04 Aug 2014 08:50:20 GMT
+ * Date: Mon, 04 Aug 2014 09:00:37 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9699,8 +9699,11 @@ Snakeskin.addDirective(
 					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 				}
 
+				desc.key = desc.key
+					.replace(scopeModRgxp, '');
+
 				this.save((("\
-					__VARS__" + ((command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.key.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true))) + ";\
+					__VARS__" + ((desc.key.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.key.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true))) + ";\
 				"));
 			}
 
