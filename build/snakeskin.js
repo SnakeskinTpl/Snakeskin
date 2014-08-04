@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 04 Aug 2014 10:10:24 GMT
+ * Date: Mon, 04 Aug 2014 11:41:51 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -7003,7 +7003,7 @@ DirObj.prototype.getFnArgs = function (str) {
 	for (var i = -1; ++i < str.length;) {
 		var el = str[i];
 
-		if (el === '(') {
+		if (pOpen ? bMap[el] : el === '(') {
 			pOpen++;
 			params = true;
 
@@ -7011,7 +7011,7 @@ DirObj.prototype.getFnArgs = function (str) {
 				continue;
 			}
 
-		} else if (el === ')') {
+		} else if (pOpen ? closeBMap[el] : el === ')') {
 			pOpen--;
 
 			if (!pOpen) {
