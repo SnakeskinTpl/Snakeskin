@@ -90,8 +90,11 @@ Snakeskin.addDirective(
 					return this.error(`invalid "${this.name}" declaration`);
 				}
 
+				desc.key = desc.key
+					.replace(scopeModRgxp, '');
+
 				this.save(`
-					__VARS__${(command.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.key.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true)};
+					__VARS__${(desc.key.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.key.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true)};
 				`);
 			}
 
