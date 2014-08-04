@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040134045> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137003881> Mon Aug 04 2014 11:23:23 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_5adfb']; /* Snakeskin template: simple_output;  */
+        var $_ = __LOCAL__['$_97c49']; /* Snakeskin template: simple_output;  */
         this.simple_output = function() {
             var __THIS__ = this,
                 callee = __ROOT__.simple_output;
@@ -133,7 +133,7 @@
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
             __RESULT__ += '!</h1> ';
-            a = (1);
+            a = 1;
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a) === 1 ? 1 : 2);
             __RESULT__ += ' '; /**<h1>Hello {name}{lname ? \' \' + lname : \'\'}!</h1>*/

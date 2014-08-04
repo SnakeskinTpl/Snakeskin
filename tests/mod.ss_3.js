@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040134704> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137004559> Mon Aug 04 2014 11:23:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_8b8c5'];
+        var $_ = __LOCAL__['$_744dd'];
         __VARS__['mod_global'] = 1;
         __VARS__.MG = 2; /* Snakeskin template: mod_index;  */
         this.mod_index = function() {
@@ -47,7 +47,7 @@
             __VARS__['M' + 'G'] = 4;
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__VARS__['M' + 'G'])));
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b[b.c.e])));
-            var __tmp__with_236 = (void 0);
+            var __tmp__with_236 = void 0;
             b.c[2 == 2 && (__tmp__with_236 = ($_ = __FILTERS__['repeat'](1 + 1)))] = 5;
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__tmp__with_236)));
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b.c[($_ = __FILTERS__['repeat'](1 + 1))])));

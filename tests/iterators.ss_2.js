@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040134344> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137004200> Mon Aug 04 2014 11:23:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_aaa36']; /* Snakeskin template: iterators_index1;  */
+        var $_ = __LOCAL__['$_ee693']; /* Snakeskin template: iterators_index1;  */
         this.iterators_index1 = function() {
             var __THIS__ = this,
                 callee = __ROOT__.iterators_index1;
@@ -33,17 +33,17 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index1',
                 PARENT_TPL_NAME;
-            var ____TMP____forEach_89 = ([1, 2, 3]);
+            var ____TMP____forEach_89 = [1, 2, 3];
             if (____TMP____forEach_89) {
                 if (Array.isArray(____TMP____forEach_89)) {
-                    var ____LENGTH____forEach_89 = (____TMP____forEach_89.length);
-                    for (var ____I____forEach_89 = (-1); ++____I____forEach_89 < ____LENGTH____forEach_89;) {
-                        var __el__forEach_89 = (____TMP____forEach_89[____I____forEach_89]);
-                        var __i__forEach_89 = (____I____forEach_89);
-                        var __obj__forEach_89 = (____TMP____forEach_89);
-                        var __isFirst__forEach_89 = (____I____forEach_89 === 0);
-                        var __isLast__forEach_89 = (____I____forEach_89 === ____LENGTH____forEach_89 - 1);
-                        var __length__forEach_89 = (____LENGTH____forEach_89);
+                    var ____LENGTH____forEach_89 = ____TMP____forEach_89.length;
+                    for (var ____I____forEach_89 = -1; ++____I____forEach_89 < ____LENGTH____forEach_89;) {
+                        var __el__forEach_89 = ____TMP____forEach_89[____I____forEach_89];
+                        var __i__forEach_89 = ____I____forEach_89;
+                        var __obj__forEach_89 = ____TMP____forEach_89;
+                        var __isFirst__forEach_89 = ____I____forEach_89 === 0;
+                        var __isLast__forEach_89 = ____I____forEach_89 === ____LENGTH____forEach_89 - 1;
+                        var __length__forEach_89 = ____LENGTH____forEach_89;
                         __RESULT__ += ' ';
                         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                         __RESULT__ += ' ';
@@ -59,11 +59,11 @@
                         __RESULT__ += ' --- ';
                     }
                 } else {
-                    var ____KEYS____forEach_89 = (Object.keys ? Object.keys(____TMP____forEach_89) : null);
-                    var ____LENGTH____forEach_89 = (____KEYS____forEach_89 ? ____KEYS____forEach_89.length : 0);
+                    var ____KEYS____forEach_89 = Object.keys ? Object.keys(____TMP____forEach_89) : null;
+                    var ____LENGTH____forEach_89 = ____KEYS____forEach_89 ? ____KEYS____forEach_89.length : 0;
                     if (!____KEYS____forEach_89) {
-                        var ____LENGTH____forEach_89 = (0);
-                        for (var ____KEY____forEach_89 = (void 0) in ____TMP____forEach_89) {
+                        var ____LENGTH____forEach_89 = 0;
+                        for (var ____KEY____forEach_89 = void 0 in ____TMP____forEach_89) {
                             if (!____TMP____forEach_89.hasOwnProperty(____KEY____forEach_89)) {
                                 continue;
                             }
@@ -71,14 +71,14 @@
                         }
                     }
                     if (____KEYS____forEach_89) {
-                        var ____LENGTH____forEach_89 = (____KEYS____forEach_89.length);
-                        for (var ____I____forEach_89 = (-1); ++____I____forEach_89 < ____LENGTH____forEach_89;) {
-                            var __el__forEach_89 = (____TMP____forEach_89[____KEYS____forEach_89[____I____forEach_89]]);
-                            var __i__forEach_89 = (____KEYS____forEach_89[____I____forEach_89]);
-                            var __obj__forEach_89 = (____TMP____forEach_89);
-                            var __isFirst__forEach_89 = (____I____forEach_89);
-                            var __isLast__forEach_89 = (____I____forEach_89 === 0);
-                            var __length__forEach_89 = (____I____forEach_89 === ____LENGTH____forEach_89 - 1);
+                        var ____LENGTH____forEach_89 = ____KEYS____forEach_89.length;
+                        for (var ____I____forEach_89 = -1; ++____I____forEach_89 < ____LENGTH____forEach_89;) {
+                            var __el__forEach_89 = ____TMP____forEach_89[____KEYS____forEach_89[____I____forEach_89]];
+                            var __i__forEach_89 = ____KEYS____forEach_89[____I____forEach_89];
+                            var __obj__forEach_89 = ____TMP____forEach_89;
+                            var __isFirst__forEach_89 = ____I____forEach_89;
+                            var __isLast__forEach_89 = ____I____forEach_89 === 0;
+                            var __length__forEach_89 = ____I____forEach_89 === ____LENGTH____forEach_89 - 1;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                             __RESULT__ += ' ';
@@ -94,18 +94,18 @@
                             __RESULT__ += ' --- ';
                         }
                     } else {
-                        var ____I____forEach_89 = (-1);
-                        for (var ____KEY____forEach_89 = (void 0) in ____TMP____forEach_89) {
+                        var ____I____forEach_89 = -1;
+                        for (var ____KEY____forEach_89 = void 0 in ____TMP____forEach_89) {
                             if (!____TMP____forEach_89.hasOwnProperty(____KEY____forEach_89)) {
                                 continue;
                             }
                             ____I____forEach_89++;
-                            var __el__forEach_89 = (____TMP____forEach_89[____KEY____forEach_89]);
-                            var __i__forEach_89 = (____KEY____forEach_89);
-                            var __obj__forEach_89 = (____TMP____forEach_89);
-                            var __isFirst__forEach_89 = (____I____forEach_89);
-                            var __isLast__forEach_89 = (____I____forEach_89 === 0);
-                            var __length__forEach_89 = (____I____forEach_89 === ____LENGTH____forEach_89 - 1);
+                            var __el__forEach_89 = ____TMP____forEach_89[____KEY____forEach_89];
+                            var __i__forEach_89 = ____KEY____forEach_89;
+                            var __obj__forEach_89 = ____TMP____forEach_89;
+                            var __isFirst__forEach_89 = ____I____forEach_89;
+                            var __isLast__forEach_89 = ____I____forEach_89 === 0;
+                            var __length__forEach_89 = ____I____forEach_89 === ____LENGTH____forEach_89 - 1;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                             __RESULT__ += ' ';
@@ -146,15 +146,15 @@
             });
             if (____TMP____forEach_255) {
                 if (Array.isArray(____TMP____forEach_255)) {
-                    var ____LENGTH____forEach_255 = (____TMP____forEach_255.length);
-                    for (var ____I____forEach_255 = (-1); ++____I____forEach_255 < ____LENGTH____forEach_255;) {
-                        var __el__forEach_255 = (____TMP____forEach_255[____I____forEach_255]);
-                        var __key__forEach_255 = (____I____forEach_255);
-                        var __obj__forEach_255 = (____TMP____forEach_255);
-                        var __i__forEach_255 = (____I____forEach_255 === 0);
-                        var __isFirst__forEach_255 = (____I____forEach_255 === ____LENGTH____forEach_255 - 1);
-                        var __isLast__forEach_255 = (____LENGTH____forEach_255);
-                        var __length__forEach_255 = (void 0);
+                    var ____LENGTH____forEach_255 = ____TMP____forEach_255.length;
+                    for (var ____I____forEach_255 = -1; ++____I____forEach_255 < ____LENGTH____forEach_255;) {
+                        var __el__forEach_255 = ____TMP____forEach_255[____I____forEach_255];
+                        var __key__forEach_255 = ____I____forEach_255;
+                        var __obj__forEach_255 = ____TMP____forEach_255;
+                        var __i__forEach_255 = ____I____forEach_255 === 0;
+                        var __isFirst__forEach_255 = ____I____forEach_255 === ____LENGTH____forEach_255 - 1;
+                        var __isLast__forEach_255 = ____LENGTH____forEach_255;
+                        var __length__forEach_255 = void 0;
                         __RESULT__ += ' ';
                         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
                         __RESULT__ += ' ';
@@ -172,11 +172,11 @@
                         __RESULT__ += ' --- ';
                     }
                 } else {
-                    var ____KEYS____forEach_255 = (Object.keys ? Object.keys(____TMP____forEach_255) : null);
-                    var ____LENGTH____forEach_255 = (____KEYS____forEach_255 ? ____KEYS____forEach_255.length : 0);
+                    var ____KEYS____forEach_255 = Object.keys ? Object.keys(____TMP____forEach_255) : null;
+                    var ____LENGTH____forEach_255 = ____KEYS____forEach_255 ? ____KEYS____forEach_255.length : 0;
                     if (!____KEYS____forEach_255) {
-                        var ____LENGTH____forEach_255 = (0);
-                        for (var ____KEY____forEach_255 = (void 0) in ____TMP____forEach_255) {
+                        var ____LENGTH____forEach_255 = 0;
+                        for (var ____KEY____forEach_255 = void 0 in ____TMP____forEach_255) {
                             if (!____TMP____forEach_255.hasOwnProperty(____KEY____forEach_255)) {
                                 continue;
                             }
@@ -184,15 +184,15 @@
                         }
                     }
                     if (____KEYS____forEach_255) {
-                        var ____LENGTH____forEach_255 = (____KEYS____forEach_255.length);
-                        for (var ____I____forEach_255 = (-1); ++____I____forEach_255 < ____LENGTH____forEach_255;) {
-                            var __el__forEach_255 = (____TMP____forEach_255[____KEYS____forEach_255[____I____forEach_255]]);
-                            var __key__forEach_255 = (____KEYS____forEach_255[____I____forEach_255]);
-                            var __obj__forEach_255 = (____TMP____forEach_255);
-                            var __i__forEach_255 = (____I____forEach_255);
-                            var __isFirst__forEach_255 = (____I____forEach_255 === 0);
-                            var __isLast__forEach_255 = (____I____forEach_255 === ____LENGTH____forEach_255 - 1);
-                            var __length__forEach_255 = (____LENGTH____forEach_255);
+                        var ____LENGTH____forEach_255 = ____KEYS____forEach_255.length;
+                        for (var ____I____forEach_255 = -1; ++____I____forEach_255 < ____LENGTH____forEach_255;) {
+                            var __el__forEach_255 = ____TMP____forEach_255[____KEYS____forEach_255[____I____forEach_255]];
+                            var __key__forEach_255 = ____KEYS____forEach_255[____I____forEach_255];
+                            var __obj__forEach_255 = ____TMP____forEach_255;
+                            var __i__forEach_255 = ____I____forEach_255;
+                            var __isFirst__forEach_255 = ____I____forEach_255 === 0;
+                            var __isLast__forEach_255 = ____I____forEach_255 === ____LENGTH____forEach_255 - 1;
+                            var __length__forEach_255 = ____LENGTH____forEach_255;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
                             __RESULT__ += ' ';
@@ -210,19 +210,19 @@
                             __RESULT__ += ' --- ';
                         }
                     } else {
-                        var ____I____forEach_255 = (-1);
-                        for (var ____KEY____forEach_255 = (void 0) in ____TMP____forEach_255) {
+                        var ____I____forEach_255 = -1;
+                        for (var ____KEY____forEach_255 = void 0 in ____TMP____forEach_255) {
                             if (!____TMP____forEach_255.hasOwnProperty(____KEY____forEach_255)) {
                                 continue;
                             }
                             ____I____forEach_255++;
-                            var __el__forEach_255 = (____TMP____forEach_255[____KEY____forEach_255]);
-                            var __key__forEach_255 = (____KEY____forEach_255);
-                            var __obj__forEach_255 = (____TMP____forEach_255);
-                            var __i__forEach_255 = (____I____forEach_255);
-                            var __isFirst__forEach_255 = (____I____forEach_255 === 0);
-                            var __isLast__forEach_255 = (____I____forEach_255 === ____LENGTH____forEach_255 - 1);
-                            var __length__forEach_255 = (____LENGTH____forEach_255);
+                            var __el__forEach_255 = ____TMP____forEach_255[____KEY____forEach_255];
+                            var __key__forEach_255 = ____KEY____forEach_255;
+                            var __obj__forEach_255 = ____TMP____forEach_255;
+                            var __i__forEach_255 = ____I____forEach_255;
+                            var __isFirst__forEach_255 = ____I____forEach_255 === 0;
+                            var __isLast__forEach_255 = ____I____forEach_255 === ____LENGTH____forEach_255 - 1;
+                            var __length__forEach_255 = ____LENGTH____forEach_255;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
                             __RESULT__ += ' ';
@@ -259,26 +259,26 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index3',
                 PARENT_TPL_NAME;
-            a = (Object.create({
+            a = Object.create(({
                 a: 1
             }));
             __RESULT__ += ' ';
-            var ____TMP____forIn_446 = (a);
+            var ____TMP____forIn_446 = a;
             if (____TMP____forIn_446) {
-                var ____LENGTH____forIn_446 = (0);
-                for (var __key__forIn_446 = (void 0) in ____TMP____forIn_446) {
+                var ____LENGTH____forIn_446 = 0;
+                for (var __key__forIn_446 = void 0 in ____TMP____forIn_446) {
                     ____LENGTH____forIn_446++;
                 }
-                var ____I____forIn_446 = (-1);
-                for (var ____KEY____forIn_446 = (void 0) in ____TMP____forIn_446) {
+                var ____I____forIn_446 = -1;
+                for (var ____KEY____forIn_446 = void 0 in ____TMP____forIn_446) {
                     ____I____forIn_446++;
-                    var __el__forIn_446 = (____TMP____forIn_446[____KEY____forIn_446]);
-                    var __key__forIn_446 = (____KEY____forIn_446);
-                    var __obj__forIn_446 = (____TMP____forIn_446);
-                    var __i__forIn_446 = (____I____forIn_446);
-                    var __isFirst__forIn_446 = (____I____forIn_446 === 0);
-                    var __isLast__forIn_446 = (____I____forIn_446 === ____LENGTH____forIn_446 - 1);
-                    var __length__forIn_446 = (____LENGTH____forIn_446);
+                    var __el__forIn_446 = ____TMP____forIn_446[____KEY____forIn_446];
+                    var __key__forIn_446 = ____KEY____forIn_446;
+                    var __obj__forIn_446 = ____TMP____forIn_446;
+                    var __i__forIn_446 = ____I____forIn_446;
+                    var __isFirst__forIn_446 = ____I____forIn_446 === 0;
+                    var __isLast__forIn_446 = ____I____forIn_446 === ____LENGTH____forIn_446 - 1;
+                    var __length__forIn_446 = ____LENGTH____forIn_446;
                     __RESULT__ += ' ';
                     __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_446));
                     __RESULT__ += ' ';
@@ -314,17 +314,17 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index4',
                 PARENT_TPL_NAME;
-            var ____TMP____forEach_612 = ([1, 2, 3]);
+            var ____TMP____forEach_612 = [1, 2, 3];
             if (____TMP____forEach_612) {
                 if (Array.isArray(____TMP____forEach_612)) {
-                    var ____LENGTH____forEach_612 = (____TMP____forEach_612.length);
-                    for (var ____I____forEach_612 = (-1); ++____I____forEach_612 < ____LENGTH____forEach_612;) {
-                        var __el__forEach_612 = (____TMP____forEach_612[____I____forEach_612]);
-                        var __i__forEach_612 = (____I____forEach_612);
-                        var __obj__forEach_612 = (____TMP____forEach_612);
-                        var __isFirst__forEach_612 = (____I____forEach_612 === 0);
-                        var __isLast__forEach_612 = (____I____forEach_612 === ____LENGTH____forEach_612 - 1);
-                        var __length__forEach_612 = (____LENGTH____forEach_612);
+                    var ____LENGTH____forEach_612 = ____TMP____forEach_612.length;
+                    for (var ____I____forEach_612 = -1; ++____I____forEach_612 < ____LENGTH____forEach_612;) {
+                        var __el__forEach_612 = ____TMP____forEach_612[____I____forEach_612];
+                        var __i__forEach_612 = ____I____forEach_612;
+                        var __obj__forEach_612 = ____TMP____forEach_612;
+                        var __isFirst__forEach_612 = ____I____forEach_612 === 0;
+                        var __isLast__forEach_612 = ____I____forEach_612 === ____LENGTH____forEach_612 - 1;
+                        var __length__forEach_612 = ____LENGTH____forEach_612;
                         __RESULT__ += ' ';
                         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_612));
                         __RESULT__ += ' ';
@@ -341,11 +341,11 @@
                         __RESULT__ += ' --- ';
                     }
                 } else {
-                    var ____KEYS____forEach_612 = (Object.keys ? Object.keys(____TMP____forEach_612) : null);
-                    var ____LENGTH____forEach_612 = (____KEYS____forEach_612 ? ____KEYS____forEach_612.length : 0);
+                    var ____KEYS____forEach_612 = Object.keys ? Object.keys(____TMP____forEach_612) : null;
+                    var ____LENGTH____forEach_612 = ____KEYS____forEach_612 ? ____KEYS____forEach_612.length : 0;
                     if (!____KEYS____forEach_612) {
-                        var ____LENGTH____forEach_612 = (0);
-                        for (var ____KEY____forEach_612 = (void 0) in ____TMP____forEach_612) {
+                        var ____LENGTH____forEach_612 = 0;
+                        for (var ____KEY____forEach_612 = void 0 in ____TMP____forEach_612) {
                             if (!____TMP____forEach_612.hasOwnProperty(____KEY____forEach_612)) {
                                 continue;
                             }
@@ -353,14 +353,14 @@
                         }
                     }
                     if (____KEYS____forEach_612) {
-                        var ____LENGTH____forEach_612 = (____KEYS____forEach_612.length);
-                        for (var ____I____forEach_612 = (-1); ++____I____forEach_612 < ____LENGTH____forEach_612;) {
-                            var __el__forEach_612 = (____TMP____forEach_612[____KEYS____forEach_612[____I____forEach_612]]);
-                            var __i__forEach_612 = (____KEYS____forEach_612[____I____forEach_612]);
-                            var __obj__forEach_612 = (____TMP____forEach_612);
-                            var __isFirst__forEach_612 = (____I____forEach_612);
-                            var __isLast__forEach_612 = (____I____forEach_612 === 0);
-                            var __length__forEach_612 = (____I____forEach_612 === ____LENGTH____forEach_612 - 1);
+                        var ____LENGTH____forEach_612 = ____KEYS____forEach_612.length;
+                        for (var ____I____forEach_612 = -1; ++____I____forEach_612 < ____LENGTH____forEach_612;) {
+                            var __el__forEach_612 = ____TMP____forEach_612[____KEYS____forEach_612[____I____forEach_612]];
+                            var __i__forEach_612 = ____KEYS____forEach_612[____I____forEach_612];
+                            var __obj__forEach_612 = ____TMP____forEach_612;
+                            var __isFirst__forEach_612 = ____I____forEach_612;
+                            var __isLast__forEach_612 = ____I____forEach_612 === 0;
+                            var __length__forEach_612 = ____I____forEach_612 === ____LENGTH____forEach_612 - 1;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_612));
                             __RESULT__ += ' ';
@@ -377,18 +377,18 @@
                             __RESULT__ += ' --- ';
                         }
                     } else {
-                        var ____I____forEach_612 = (-1);
-                        for (var ____KEY____forEach_612 = (void 0) in ____TMP____forEach_612) {
+                        var ____I____forEach_612 = -1;
+                        for (var ____KEY____forEach_612 = void 0 in ____TMP____forEach_612) {
                             if (!____TMP____forEach_612.hasOwnProperty(____KEY____forEach_612)) {
                                 continue;
                             }
                             ____I____forEach_612++;
-                            var __el__forEach_612 = (____TMP____forEach_612[____KEY____forEach_612]);
-                            var __i__forEach_612 = (____KEY____forEach_612);
-                            var __obj__forEach_612 = (____TMP____forEach_612);
-                            var __isFirst__forEach_612 = (____I____forEach_612);
-                            var __isLast__forEach_612 = (____I____forEach_612 === 0);
-                            var __length__forEach_612 = (____I____forEach_612 === ____LENGTH____forEach_612 - 1);
+                            var __el__forEach_612 = ____TMP____forEach_612[____KEY____forEach_612];
+                            var __i__forEach_612 = ____KEY____forEach_612;
+                            var __obj__forEach_612 = ____TMP____forEach_612;
+                            var __isFirst__forEach_612 = ____I____forEach_612;
+                            var __isLast__forEach_612 = ____I____forEach_612 === 0;
+                            var __length__forEach_612 = ____I____forEach_612 === ____LENGTH____forEach_612 - 1;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_612));
                             __RESULT__ += ' ';
@@ -430,15 +430,15 @@
             });
             if (____TMP____forEach_795) {
                 if (Array.isArray(____TMP____forEach_795)) {
-                    var ____LENGTH____forEach_795 = (____TMP____forEach_795.length);
-                    for (var ____I____forEach_795 = (-1); ++____I____forEach_795 < ____LENGTH____forEach_795;) {
-                        var __el__forEach_795 = (____TMP____forEach_795[____I____forEach_795]);
-                        var __key__forEach_795 = (____I____forEach_795);
-                        var __obj__forEach_795 = (____TMP____forEach_795);
-                        var __i__forEach_795 = (____I____forEach_795 === 0);
-                        var __isFirst__forEach_795 = (____I____forEach_795 === ____LENGTH____forEach_795 - 1);
-                        var __isLast__forEach_795 = (____LENGTH____forEach_795);
-                        var __length__forEach_795 = (void 0);
+                    var ____LENGTH____forEach_795 = ____TMP____forEach_795.length;
+                    for (var ____I____forEach_795 = -1; ++____I____forEach_795 < ____LENGTH____forEach_795;) {
+                        var __el__forEach_795 = ____TMP____forEach_795[____I____forEach_795];
+                        var __key__forEach_795 = ____I____forEach_795;
+                        var __obj__forEach_795 = ____TMP____forEach_795;
+                        var __i__forEach_795 = ____I____forEach_795 === 0;
+                        var __isFirst__forEach_795 = ____I____forEach_795 === ____LENGTH____forEach_795 - 1;
+                        var __isLast__forEach_795 = ____LENGTH____forEach_795;
+                        var __length__forEach_795 = void 0;
                         __RESULT__ += ' ';
                         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_795));
                         __RESULT__ += ' ';
@@ -457,11 +457,11 @@
                         break;
                     }
                 } else {
-                    var ____KEYS____forEach_795 = (Object.keys ? Object.keys(____TMP____forEach_795) : null);
-                    var ____LENGTH____forEach_795 = (____KEYS____forEach_795 ? ____KEYS____forEach_795.length : 0);
+                    var ____KEYS____forEach_795 = Object.keys ? Object.keys(____TMP____forEach_795) : null;
+                    var ____LENGTH____forEach_795 = ____KEYS____forEach_795 ? ____KEYS____forEach_795.length : 0;
                     if (!____KEYS____forEach_795) {
-                        var ____LENGTH____forEach_795 = (0);
-                        for (var ____KEY____forEach_795 = (void 0) in ____TMP____forEach_795) {
+                        var ____LENGTH____forEach_795 = 0;
+                        for (var ____KEY____forEach_795 = void 0 in ____TMP____forEach_795) {
                             if (!____TMP____forEach_795.hasOwnProperty(____KEY____forEach_795)) {
                                 continue;
                             }
@@ -469,15 +469,15 @@
                         }
                     }
                     if (____KEYS____forEach_795) {
-                        var ____LENGTH____forEach_795 = (____KEYS____forEach_795.length);
-                        for (var ____I____forEach_795 = (-1); ++____I____forEach_795 < ____LENGTH____forEach_795;) {
-                            var __el__forEach_795 = (____TMP____forEach_795[____KEYS____forEach_795[____I____forEach_795]]);
-                            var __key__forEach_795 = (____KEYS____forEach_795[____I____forEach_795]);
-                            var __obj__forEach_795 = (____TMP____forEach_795);
-                            var __i__forEach_795 = (____I____forEach_795);
-                            var __isFirst__forEach_795 = (____I____forEach_795 === 0);
-                            var __isLast__forEach_795 = (____I____forEach_795 === ____LENGTH____forEach_795 - 1);
-                            var __length__forEach_795 = (____LENGTH____forEach_795);
+                        var ____LENGTH____forEach_795 = ____KEYS____forEach_795.length;
+                        for (var ____I____forEach_795 = -1; ++____I____forEach_795 < ____LENGTH____forEach_795;) {
+                            var __el__forEach_795 = ____TMP____forEach_795[____KEYS____forEach_795[____I____forEach_795]];
+                            var __key__forEach_795 = ____KEYS____forEach_795[____I____forEach_795];
+                            var __obj__forEach_795 = ____TMP____forEach_795;
+                            var __i__forEach_795 = ____I____forEach_795;
+                            var __isFirst__forEach_795 = ____I____forEach_795 === 0;
+                            var __isLast__forEach_795 = ____I____forEach_795 === ____LENGTH____forEach_795 - 1;
+                            var __length__forEach_795 = ____LENGTH____forEach_795;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_795));
                             __RESULT__ += ' ';
@@ -496,19 +496,19 @@
                             break;
                         }
                     } else {
-                        var ____I____forEach_795 = (-1);
-                        for (var ____KEY____forEach_795 = (void 0) in ____TMP____forEach_795) {
+                        var ____I____forEach_795 = -1;
+                        for (var ____KEY____forEach_795 = void 0 in ____TMP____forEach_795) {
                             if (!____TMP____forEach_795.hasOwnProperty(____KEY____forEach_795)) {
                                 continue;
                             }
                             ____I____forEach_795++;
-                            var __el__forEach_795 = (____TMP____forEach_795[____KEY____forEach_795]);
-                            var __key__forEach_795 = (____KEY____forEach_795);
-                            var __obj__forEach_795 = (____TMP____forEach_795);
-                            var __i__forEach_795 = (____I____forEach_795);
-                            var __isFirst__forEach_795 = (____I____forEach_795 === 0);
-                            var __isLast__forEach_795 = (____I____forEach_795 === ____LENGTH____forEach_795 - 1);
-                            var __length__forEach_795 = (____LENGTH____forEach_795);
+                            var __el__forEach_795 = ____TMP____forEach_795[____KEY____forEach_795];
+                            var __key__forEach_795 = ____KEY____forEach_795;
+                            var __obj__forEach_795 = ____TMP____forEach_795;
+                            var __i__forEach_795 = ____I____forEach_795;
+                            var __isFirst__forEach_795 = ____I____forEach_795 === 0;
+                            var __isLast__forEach_795 = ____I____forEach_795 === ____LENGTH____forEach_795 - 1;
+                            var __length__forEach_795 = ____LENGTH____forEach_795;
                             __RESULT__ += ' ';
                             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_795));
                             __RESULT__ += ' ';
@@ -546,26 +546,26 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index6',
                 PARENT_TPL_NAME;
-            a = (Object.create({
+            a = Object.create(({
                 a: 1
             }));
             __RESULT__ += ' ';
-            var ____TMP____forIn_997 = (a);
+            var ____TMP____forIn_997 = a;
             if (____TMP____forIn_997) {
-                var ____LENGTH____forIn_997 = (0);
-                for (var __key__forIn_997 = (void 0) in ____TMP____forIn_997) {
+                var ____LENGTH____forIn_997 = 0;
+                for (var __key__forIn_997 = void 0 in ____TMP____forIn_997) {
                     ____LENGTH____forIn_997++;
                 }
-                var ____I____forIn_997 = (-1);
-                for (var ____KEY____forIn_997 = (void 0) in ____TMP____forIn_997) {
+                var ____I____forIn_997 = -1;
+                for (var ____KEY____forIn_997 = void 0 in ____TMP____forIn_997) {
                     ____I____forIn_997++;
-                    var __el__forIn_997 = (____TMP____forIn_997[____KEY____forIn_997]);
-                    var __key__forIn_997 = (____KEY____forIn_997);
-                    var __obj__forIn_997 = (____TMP____forIn_997);
-                    var __i__forIn_997 = (____I____forIn_997);
-                    var __isFirst__forIn_997 = (____I____forIn_997 === 0);
-                    var __isLast__forIn_997 = (____I____forIn_997 === ____LENGTH____forIn_997 - 1);
-                    var __length__forIn_997 = (____LENGTH____forIn_997);
+                    var __el__forIn_997 = ____TMP____forIn_997[____KEY____forIn_997];
+                    var __key__forIn_997 = ____KEY____forIn_997;
+                    var __obj__forIn_997 = ____TMP____forIn_997;
+                    var __i__forIn_997 = ____I____forIn_997;
+                    var __isFirst__forIn_997 = ____I____forIn_997 === 0;
+                    var __isLast__forIn_997 = ____I____forIn_997 === ____LENGTH____forIn_997 - 1;
+                    var __length__forIn_997 = ____LENGTH____forIn_997;
                     __RESULT__ += ' ';
                     break;
                     __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_997));

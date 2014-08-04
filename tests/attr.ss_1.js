@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040133657> Sun Aug 03 2014 08:28:53 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137003468> Mon Aug 04 2014 11:23:23 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_711d0']; /* Snakeskin template: attr_index;  */
+        var $_ = __LOCAL__['$_21655']; /* Snakeskin template: attr_index;  */
         this.attr_index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.attr_index;
@@ -33,9 +33,9 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'attr_index',
                 PARENT_TPL_NAME;
-            foo = ('foo');
+            foo = 'foo';
             __RESULT__ += ' ';
-            bar = ('');
+            bar = '';
             __RESULT__ += ' ';
             __STR__ = '';
             __J__ = 0;
@@ -88,9 +88,9 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'attr_index2',
                 PARENT_TPL_NAME;
-            foo = ('foo');
+            foo = 'foo';
             __RESULT__ += ' ';
-            bar = ('bar');
+            bar = 'bar';
             __RESULT__ += ' ';
             __STR__ = '';
             __J__ = 0;

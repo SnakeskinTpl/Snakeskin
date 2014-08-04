@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040133842> Sun Aug 03 2014 08:28:53 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137003678> Mon Aug 04 2014 11:23:23 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_6a2bb']; /* Snakeskin template: iterators_index1;  */
+        var $_ = __LOCAL__['$_433e6']; /* Snakeskin template: iterators_index1;  */
         this.iterators_index1 = function() {
             var __THIS__ = this,
                 callee = __ROOT__.iterators_index1;
@@ -33,7 +33,7 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index1',
                 PARENT_TPL_NAME;
-            Snakeskin.forEach(([1, 2, 3]), function(__el__forEach_89, __i__forEach_89, __obj__forEach_89, __isFirst__forEach_89, __isLast__forEach_89, __length__forEach_89) {
+            Snakeskin.forEach([1, 2, 3], function(__el__forEach_89, __i__forEach_89, __obj__forEach_89, __isFirst__forEach_89, __isLast__forEach_89, __length__forEach_89) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
                 __RESULT__ += ' ';
@@ -102,11 +102,11 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index3',
                 PARENT_TPL_NAME;
-            a = (Object.create({
+            a = Object.create(({
                 a: 1
             }));
             __RESULT__ += ' ';
-            Snakeskin.forIn((a), function(__el__forIn_446, __key__forIn_446, __obj__forIn_446, __i__forIn_446, __isFirst__forIn_446, __isLast__forIn_446, __length__forIn_446) {
+            Snakeskin.forIn(a, function(__el__forIn_446, __key__forIn_446, __obj__forIn_446, __i__forIn_446, __isFirst__forIn_446, __isLast__forIn_446, __length__forIn_446) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_446));
                 __RESULT__ += ' ';
@@ -141,7 +141,7 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index4',
                 PARENT_TPL_NAME;
-            Snakeskin.forEach(([1, 2, 3]), function(__el__forEach_612, __i__forEach_612, __obj__forEach_612, __isFirst__forEach_612, __isLast__forEach_612, __length__forEach_612) {
+            Snakeskin.forEach([1, 2, 3], function(__el__forEach_612, __i__forEach_612, __obj__forEach_612, __isFirst__forEach_612, __isLast__forEach_612, __length__forEach_612) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_612));
                 __RESULT__ += ' ';
@@ -212,11 +212,11 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'iterators_index6',
                 PARENT_TPL_NAME;
-            a = (Object.create({
+            a = Object.create(({
                 a: 1
             }));
             __RESULT__ += ' ';
-            Snakeskin.forIn((a), function(__el__forIn_997, __key__forIn_997, __obj__forIn_997, __i__forIn_997, __isFirst__forIn_997, __isLast__forIn_997, __length__forIn_997) {
+            Snakeskin.forIn(a, function(__el__forIn_997, __key__forIn_997, __obj__forIn_997, __i__forIn_997, __isFirst__forIn_997, __isLast__forIn_997, __length__forIn_997) {
                 __RESULT__ += ' ';
                 return false;
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_997));

@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040134413> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137004271> Mon Aug 04 2014 11:23:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_e9147']; /* Snakeskin template: proto_index; i */
+        var $_ = __LOCAL__['$_70f47']; /* Snakeskin template: proto_index; i */
         this.proto_index = function(i) {
             var __THIS__ = this,
                 callee = __ROOT__.proto_index;
@@ -34,15 +34,15 @@
             var TPL_NAME = 'proto_index',
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
-            var ____I_PROTO___begin_template_44 = (1);
+            var ____I_PROTO___begin_template_44 = 1;
             ____I_PROTO___begin_template_44: while (____I_PROTO___begin_template_44--) {
                 __RESULT__ += ' ';
                 var __i__proto_298 = 1;
-                var ____I_PROTO___f1_template_44 = (1);
+                var ____I_PROTO___f1_template_44 = 1;
                 ____I_PROTO___f1_template_44: while (____I_PROTO___f1_template_44--) {
                     __RESULT__ += ' ';
                     var __i__proto_432 = __i__proto_298;
-                    var ____I_PROTO___f2_template_44 = (1);
+                    var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
                         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_432));
@@ -50,7 +50,7 @@
                     }
                     __RESULT__ += ' ';
                     var __i__proto_432 = __i__proto_298 + 1;
-                    var ____I_PROTO___f2_template_44 = (1);
+                    var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
                         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_432));
@@ -62,7 +62,7 @@
             }
             __RESULT__ += ' ';
             var __i__proto_352 = 2;
-            var ____I_PROTO___f3_template_44 = (1);
+            var ____I_PROTO___f3_template_44 = 1;
             ____I_PROTO___f3_template_44: while (____I_PROTO___f3_template_44--) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_352) * 2);
@@ -76,7 +76,7 @@
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             var __i__proto_496 = 2;
-            var ____I_PROTO___f4_template_44 = (1);
+            var ____I_PROTO___f4_template_44 = 1;
             ____I_PROTO___f4_template_44: while (____I_PROTO___f4_template_44--) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
@@ -110,11 +110,11 @@
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
             var __i__proto_756 = 1;
-            var ____I_PROTO___begin_template_54 = (1);
+            var ____I_PROTO___begin_template_54 = 1;
             ____I_PROTO___begin_template_54: while (____I_PROTO___begin_template_54--) {
                 __RESULT__ += ' ';
                 var __i__proto_837 = 1;
-                var ____I_PROTO___f1_template_54 = (1);
+                var ____I_PROTO___f1_template_54 = 1;
                 ____I_PROTO___f1_template_54: while (____I_PROTO___f1_template_54--) {
                     __RESULT__ += ' ';
                     __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_837));
@@ -141,7 +141,7 @@
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
             var __i__proto_928 = 5;
-            var ____I_PROTO___begin_template_48 = (1);
+            var ____I_PROTO___begin_template_48 = 1;
             ____I_PROTO___begin_template_48: while (____I_PROTO___begin_template_48--) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_928));
@@ -173,7 +173,7 @@
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
             var __i__proto_1061 = 5;
-            var ____I_PROTO___begin_template_49 = (1);
+            var ____I_PROTO___begin_template_49 = 1;
             ____I_PROTO___begin_template_49: while (____I_PROTO___begin_template_49--) {
                 __RESULT__ += ' ';
                 __RESULT__ += ' ';
@@ -182,7 +182,7 @@
                 if (__i__proto_1061) {
                     __RESULT__ += ' ';
                     var __i__proto_1079 = --__i__proto_1061;
-                    var ____I_PROTO___foo_template_49 = (1);
+                    var ____I_PROTO___foo_template_49 = 1;
                     ____I_PROTO___foo_template_49: while (____I_PROTO___foo_template_49--) {
                         __RESULT__ += ' ';
                         if (__i__proto_1079 === 2) {

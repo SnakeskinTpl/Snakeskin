@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040134443> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137004301> Mon Aug 04 2014 11:23:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_dd09e'];
+        var $_ = __LOCAL__['$_54246'];
         __VARS__.name = 'foo'; /* Snakeskin template: scope_index; obj */
         this.scope_index = function(obj) {
             var __THIS__ = this,
@@ -34,11 +34,11 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'scope_index',
                 PARENT_TPL_NAME;
-            name = ('bar');
+            name = 'bar';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(obj.child.name));
-            var __e__with_112 = ('test');
+            var __e__with_112 = 'test';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(__VARS__.name) + ' ' + __FILTERS__.undef(obj.child.child.name) + ' ' + __FILTERS__.undef(__e__with_112));

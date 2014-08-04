@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 03 Aug 2014 04:28:42 GMT
+ * Date: Mon, 04 Aug 2014 07:23:05 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6928,10 +6928,13 @@ DirObj.prototype.declVar = function (varName, opt_protoParams) {
  *
  * @param {string} str - исходная строка
  * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
+ * @param {?string=} [opt_init] - значение для инициализации переменной по умолчанию
  * @return {string}
  */
-DirObj.prototype.multiDeclVar = function (str, opt_end) {
+DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
+	opt_init = opt_init || 'void 0';
 	opt_end = opt_end !== false;
+
 	var isSys = 0,
 		cache = '';
 
@@ -6965,10 +6968,11 @@ DirObj.prototype.multiDeclVar = function (str, opt_end) {
 			var parts = cache.split('='),
 				realVar = this.declVar(parts[0].trim());
 
-			parts[0] = realVar + '=';
-			parts[1] = parts[1] || 'void 0';
+			parts[0] = realVar + (opt_init || parts[1] ? '=' : '');
+			parts[1] = parts[1] || opt_init;
 
-			fin += parts[0] + this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true) + ',';
+			var val = parts.slice(1).join('=');
+			fin += parts[0] + (val ? this.prepareOutput(val, true) : '') + ',';
 
 			cache = '';
 			continue;
@@ -9648,7 +9652,7 @@ Snakeskin.addDirective(
 						this.consts.push((("var " + prop) + ";"));
 					}
 
-					this.save((("" + prop) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";"));
+					this.save((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
 				}
 
 				if (this.isAdvTest()) {
@@ -9805,7 +9809,9 @@ function isAssign(str, opt_global) {
 	}
 
 	return false;
-}var varDeclRgxp = /\bvar\b/;
+}var varDeclRgxp = /\bvar\b/,
+	splitDeclRgxp = /;/,
+	forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
 
 Snakeskin.addDirective(
 	'for',
@@ -9817,18 +9823,38 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var parts = command.split(';');
-
-		if (parts.length !== 3) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			var decl = varDeclRgxp.test(parts[0]) ?
-				this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
-			this.save((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
+		if (splitDeclRgxp.test(command)) {
+			var parts = command.split(';');
+
+			if (parts.length !== 3) {
+				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+			}
+
+			if (this.isSimpleOutput()) {
+				var decl = varDeclRgxp.test(parts[0]) ?
+					this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
+
+				parts[1] = parts[1] && (("(" + (parts[1])) + ")");
+				parts[2] = parts[2] && (("(" + (parts[2])) + ")");
+
+				this.save((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
+			}
+
+		} else {
+			var parts$0 = forRgxp.exec(command);
+
+			if (!parts$0) {
+				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+			}
+
+			if (this.isSimpleOutput()) {
+				var decl$0 = parts$0[1] ?
+					this.multiDeclVar(parts$0[2], false, '') : this.prepareOutput(parts$0[2], true);
+
+				this.save((("for (" + decl$0) + (" " + (parts$0[3])) + (" " + (this.prepareOutput(parts$0[4], true))) + ") {"));
+			}
 		}
 	},
 
@@ -10350,12 +10376,12 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			if (!this.inlineIterators) {
 				if (parts.length === 3) {
-					this.save((("$C(" + (this.prepareOutput((("(" + (parts[0])) + ")"), true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
+					this.save((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
 
 				} else {
 					this.save((("\
 						Snakeskin.forEach(\
-							" + (this.prepareOutput((("(" + (parts[0])) + ")"), true))) + (",\
+							" + (this.prepareOutput(parts[0], true))) + (",\
 							function (" + (this.declCallbackArgs(parts[1]))) + ") {\
 					"));
 				}
@@ -10566,7 +10592,7 @@ Snakeskin.addDirective(
 				var params$0 = this.structure.params.params;
 
 				if (params$0) {
-					this.save((("}, " + (this.prepareOutput((("(" + params$0) + ")"), true))) + ");"));
+					this.save((("}, " + (this.prepareOutput(params$0, true))) + ");"));
 
 				} else {
 					this.save('});');
@@ -10601,7 +10627,7 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isSimpleOutput()) {
-			this.save((("$C(" + (this.prepareOutput((("(" + (parts[0])) + ")"), true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
+			this.save((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
 		}
 	},
 
@@ -10610,7 +10636,7 @@ Snakeskin.addDirective(
 			var params = this.structure.params.params;
 
 			if (params) {
-				this.save((("}, " + (this.prepareOutput((("(" + params) + ")"), true))) + ");"));
+				this.save((("}, " + (this.prepareOutput(params, true))) + ");"));
 
 			} else {
 				this.save('});');
@@ -10645,7 +10671,7 @@ Snakeskin.addDirective(
 			if (!this.inlineIterators) {
 				this.save((("\
 					Snakeskin.forIn(\
-						" + (this.prepareOutput((("(" + (parts[0])) + ")"), true))) + (",\
+						" + (this.prepareOutput(parts[0], true))) + (",\
 						function (" + (this.declCallbackArgs(parts[1]))) + ") {\
 				"));
 
@@ -12824,7 +12850,7 @@ Snakeskin.addDirective(
 		var key = (("" + obj) + ("_00_" + uid) + "");
 
 		this.save((("\
-			var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput((("(" + (parts.slice(1).join('='))) + ")"), true))) + ";\
+			var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";\
 		"));
 
 		var root = this.structure;
@@ -13389,6 +13415,8 @@ var exprimaHackFn = function(str)  {return str
 	.replace(/\byield\b/g, '')
 	.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '')};
 
+var wrapRgxp = /^\s*{/;
+
 /**
  * Подготовить указанную комманду к выводу:
  * осуществляется привязка к scope и инициализация фильтров
@@ -13823,12 +13851,15 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 
 	res = res.replace(unUndefRgxp, '__FILTERS__.undef');
 
+	if (wrapRgxp.test(res)) {
+		res = (("(" + res) + ")");
+	}
+
 	if (opt_validate !== false) {
 		try {
 			esprima.parse(exprimaHackFn(res));
 
 		} catch (err) {
-			console.log(res);
 			this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
 			return '';
 		}

@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407040134294> Sun Aug 03 2014 08:28:54 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407137004151> Mon Aug 04 2014 11:23:24 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_3dade']; /* Snakeskin template: inherit_base; val val2  */
+        var $_ = __LOCAL__['$_28b9f']; /* Snakeskin template: inherit_base; val val2  */
         this.inherit_base = function(val, val2) {
             var __THIS__ = this,
                 callee = __ROOT__.inherit_base;
@@ -41,7 +41,7 @@
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val));
             __RESULT__ += ' ';
-            var ____I_PROTO___bar_template_45 = (1);
+            var ____I_PROTO___bar_template_45 = 1;
             ____I_PROTO___bar_template_45: while (____I_PROTO___bar_template_45--) {}
             __RESULT__ += ' ';
             __RESULT__ += ' ';
@@ -70,7 +70,7 @@
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val));
             __RESULT__ += ' ';
             var __i__proto_336 = void 0 != null ? void 0 : 11;
-            var ____I_PROTO___bar_template_44 = (1);
+            var ____I_PROTO___bar_template_44 = 1;
             ____I_PROTO___bar_template_44: while (____I_PROTO___bar_template_44--) {
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_336));
@@ -96,10 +96,10 @@
             var TPL_NAME = 'inherit_superTestConst',
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
-            var ____I_PROTO___a_template_55 = (1);
+            var ____I_PROTO___a_template_55 = 1;
             ____I_PROTO___a_template_55: while (____I_PROTO___a_template_55--) {
                 __RESULT__ += ' ';
-                foo = (1);
+                foo = 1;
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -121,10 +121,10 @@
             var TPL_NAME = 'inherit_childTestConst',
                 PARENT_TPL_NAME = 'inherit_superTestConst';
             __RESULT__ += ' ';
-            var ____I_PROTO___a_template_55 = (1);
+            var ____I_PROTO___a_template_55 = 1;
             ____I_PROTO___a_template_55: while (____I_PROTO___a_template_55--) {
                 __RESULT__ += ' ';
-                foo = (2);
+                foo = 2;
                 __RESULT__ += ' ';
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(foo));
                 __RESULT__ += ' ';
@@ -148,10 +148,10 @@
             var TPL_NAME = 'inherit_superTestConst2',
                 PARENT_TPL_NAME;
             __RESULT__ += ' ';
-            var ____I_PROTO___a_template_56 = (1);
+            var ____I_PROTO___a_template_56 = 1;
             ____I_PROTO___a_template_56: while (____I_PROTO___a_template_56--) {
                 __RESULT__ += ' ';
-                a = (1);
+                a = 1;
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -173,16 +173,16 @@
             var TPL_NAME = 'inherit_childTestConst2',
                 PARENT_TPL_NAME = 'inherit_superTestConst2';
             __RESULT__ += ' ';
-            var ____I_PROTO___a_template_56 = (1);
+            var ____I_PROTO___a_template_56 = 1;
             ____I_PROTO___a_template_56: while (____I_PROTO___a_template_56--) {
                 __RESULT__ += ' ';
-                a = (2);
+                a = 2;
                 __RESULT__ += ' ';
                 __RESULT__ += ' ';
-                var ____I_PROTO___e_template_56 = (1);
+                var ____I_PROTO___e_template_56 = 1;
                 ____I_PROTO___e_template_56: while (____I_PROTO___e_template_56--) {
                     __RESULT__ += ' ';
-                    j = (1);
+                    j = 1;
                     __RESULT__ += ' ';
                     __RESULT__ += __FILTERS__.html(__FILTERS__.undef(j));
                     __RESULT__ += ' ';
@@ -210,9 +210,9 @@
                 PARENT_TPL_NAME;
             a = ({});
             __RESULT__ += ' ';
-            a.a = (1);
+            a.a = 1;
             __RESULT__ += ' ';
-            a['b'] = (2);
+            a['b'] = 2;
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
             __RESULT__ += ' ';
@@ -237,9 +237,9 @@
                 PARENT_TPL_NAME = 'inherit_superTestConst3';
             a = ({});
             __RESULT__ += ' ';
-            a.a = (2);
+            a.a = 2;
             __RESULT__ += ' ';
-            a.b = (3);
+            a.b = 3;
             __RESULT__ += ' ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
             __RESULT__ += ' ';
