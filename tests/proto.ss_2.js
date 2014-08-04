@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, generated at <1407142912362> Mon Aug 04 2014 13:01:52 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, generated at <1407147049165> Mon Aug 04 2014 14:10:49 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports.init = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_3facc']; /* Snakeskin template: proto_index; i */
+        var $_ = __LOCAL__['$_b1ee9']; /* Snakeskin template: proto_index; i */
         this.proto_index = function(i) {
             var __THIS__ = this,
                 callee = __ROOT__.proto_index;
