@@ -1,4 +1,6 @@
-var varDeclRgxp = /\bvar\b/;
+var varDeclRgxp = /\bvar\b/,
+	splitDeclRgxp = /;/,
+	forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
 
 Snakeskin.addDirective(
 	'for',
@@ -10,18 +12,38 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var parts = command.split(';');
-
-		if (parts.length !== 3) {
-			return this.error(`invalid "${this.name}" declaration`);
-		}
-
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			let decl = varDeclRgxp.test(parts[0]) ?
-				this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
-			this.save(`for (${decl + this.prepareOutput(parts.slice(1).join(';'), true)}) {`);
+		if (splitDeclRgxp.test(command)) {
+			let parts = command.split(';');
+
+			if (parts.length !== 3) {
+				return this.error(`invalid "${this.name}" declaration`);
+			}
+
+			if (this.isSimpleOutput()) {
+				let decl = varDeclRgxp.test(parts[0]) ?
+					this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
+
+				parts[1] = parts[1] && `(${parts[1]})`;
+				parts[2] = parts[2] && `(${parts[2]})`;
+
+				this.save(`for (${decl + this.prepareOutput(parts.slice(1).join(';'), true)}) {`);
+			}
+
+		} else {
+			let parts = forRgxp.exec(command);
+
+			if (!parts) {
+				return this.error(`invalid "${this.name}" declaration`);
+			}
+
+			if (this.isSimpleOutput()) {
+				let decl = parts[1] ?
+					this.multiDeclVar(parts[2], false, '') : this.prepareOutput(parts[2], true);
+
+				this.save(`for (${decl} ${parts[3]} ${this.prepareOutput(parts[4], true)}) {`);
+			}
 		}
 	},
 

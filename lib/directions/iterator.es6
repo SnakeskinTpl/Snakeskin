@@ -29,12 +29,12 @@ Snakeskin.addDirective(
 		if (this.isSimpleOutput()) {
 			if (!this.inlineIterators) {
 				if (parts.length === 3) {
-					this.save(`\$C(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+					this.save(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
 
 				} else {
 					this.save(`
 						Snakeskin.forEach(
-							${this.prepareOutput(`(${parts[0]})`, true)},
+							${this.prepareOutput(parts[0], true)},
 							function (${this.declCallbackArgs(parts[1])}) {
 					`);
 				}
@@ -245,7 +245,7 @@ Snakeskin.addDirective(
 				let params = this.structure.params.params;
 
 				if (params) {
-					this.save(`}, ${this.prepareOutput(`(${params})`, true)});`);
+					this.save(`}, ${this.prepareOutput(params, true)});`);
 
 				} else {
 					this.save('});');
@@ -280,7 +280,7 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isSimpleOutput()) {
-			this.save(`\$C(${this.prepareOutput(`(${parts[0]})`, true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+			this.save(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 
@@ -289,7 +289,7 @@ Snakeskin.addDirective(
 			let params = this.structure.params.params;
 
 			if (params) {
-				this.save(`}, ${this.prepareOutput(`(${params})`, true)});`);
+				this.save(`}, ${this.prepareOutput(params, true)});`);
 
 			} else {
 				this.save('});');
@@ -324,7 +324,7 @@ Snakeskin.addDirective(
 			if (!this.inlineIterators) {
 				this.save(`
 					Snakeskin.forIn(
-						${this.prepareOutput(`(${parts[0]})`, true)},
+						${this.prepareOutput(parts[0], true)},
 						function (${this.declCallbackArgs(parts[1])}) {
 				`);
 
