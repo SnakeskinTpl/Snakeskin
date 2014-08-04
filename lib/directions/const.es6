@@ -84,11 +84,6 @@ Snakeskin.addDirective(
 
 			} else {
 				this.startInlineDir('global');
-
-				if (tplName) {
-					return this.error(`directive "${this.name}" can be used only within the global space`);
-				}
-
 				let desc = isAssign(command, true);
 
 				if (!desc) {
