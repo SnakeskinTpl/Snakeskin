@@ -90,12 +90,17 @@ Snakeskin.addDirective(
 					return this.error(`invalid "${this.name}" declaration`);
 				}
 
-				desc.key = desc.key
-					.replace(scopeModRgxp, '');
+				let mod = G_MOD + G_MOD;
 
-				this.save(`
-					__VARS__${(desc.key.charAt(0) !== '[' ? '.' : '') + this.prepareOutput(desc.key.replace(scopeModRgxp, ''), true) + '=' + this.prepareOutput(desc.value, true)};
-				`);
+				if (command.charAt(0) !== G_MOD) {
+					command = mod + command;
+
+				} else {
+					command = command
+						.replace(scopeModRgxp, mod);
+				}
+
+				this.save(`${this.prepareOutput(command, true)};`);
 			}
 
 		} else {
@@ -111,7 +116,7 @@ Snakeskin.addDirective(
 
 				if (desc) {
 					this.text = false;
-					this.save(`${this.prepareOutput(desc.key, true) + '=' + this.prepareOutput(desc.value, true)};`);
+					this.save(`${this.prepareOutput(command, true)};`);
 					return;
 				}
 
