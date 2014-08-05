@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 05 Aug 2014 12:39:25 GMT
+ * Date: Tue, 05 Aug 2014 14:51:42 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -11755,6 +11755,7 @@ DirObj.prototype.replaceFileName = function (str) {
 };
 
 var nmRgxp = /\.|\[/m,
+	nmssRgxp = /^\[/,
 	nmsRgxp = /\[/gm,
 	nmeRgxp = /]/gm;
 
@@ -11769,14 +11770,15 @@ DirObj.prototype.prepareNameDecl = function (name) {
 	name = this.replaceFileName(name);
 	if (nmRgxp.test(name)) {
 		var tmpArr = name
+			.replace(nmssRgxp, '%')
 			.replace(nmsRgxp, '.%')
 			.replace(nmeRgxp, '')
 			.split('.');
 
-		var str = tmpArr[0],
+		var str = '',
 			length = tmpArr.length;
 
-		for (var i = 0; ++i < length;) {
+		for (var i = -1; ++i < length;) {
 			var el = tmpArr[i],
 				custom = el.charAt(0) === '%';
 
@@ -11789,7 +11791,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 				continue;
 			}
 
-			str += ("." + el);
+			str += str ? ("." + el) : el;
 		}
 
 		name = str;
@@ -11797,6 +11799,10 @@ DirObj.prototype.prepareNameDecl = function (name) {
 
 	return name.trim();
 };
+
+function concatProp(str) {
+	return str.charAt(0) === '[' ? str : ("." + str);
+}
 
 for (var i = -1; ++i < template.length;) {
 	Snakeskin.addDirective(
@@ -11819,7 +11825,7 @@ for (var i = -1; ++i < template.length;) {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
 
-			var nameRgxp = /^[^a-z_$]/i;
+			var nameRgxp = /^[^a-z_$[]/i;
 			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
@@ -11876,12 +11882,18 @@ for (var i = -1; ++i < template.length;) {
 				if (nmRgxp.test(tmpTplName) || this.commonJS) {
 					lastName = '';
 					var tmpArr = tmpTplName
+						.replace(nmssRgxp, '%')
 						.replace(nmsRgxp, '.%')
 						.replace(nmeRgxp, '')
 						.split('.');
 
 					var str = tmpArr[0],
-						length = tmpArr.length;
+						length = tmpArr.length,
+						first = str.charAt(0);
+
+					if (first === '%') {
+						str = (("['" + (this.evalStr(("return " + (this.pasteDangerBlocks(this.prepareOutput(str.substring(1), true))))))) + "']");
+					}
 
 					for (var i = 0; ++i < length;) {
 						var el = tmpArr[i],
@@ -11891,10 +11903,12 @@ for (var i = -1; ++i < template.length;) {
 							el = el.substring(1);
 						}
 
+						var def = ("this" + (concatProp(str)));
+
 						this.save(
 							(pos = (("\
-								if (this." + str) + (" == null) {\
-									this." + str) + " = {};\
+								if (" + def) + (" == null) {\
+									" + def) + " = {};\
 								}\
 							")),
 
@@ -11920,7 +11934,7 @@ for (var i = -1; ++i < template.length;) {
 					tplName = str;
 				}
 
-				this.save((("this." + tplName) + (" = function " + prfx) + ("" + (lastName !== null ? lastName : tplName)) + "("), iface);
+				this.save((("this" + (concatProp(tplName))) + (" = function " + prfx) + ("" + (lastName !== null ? lastName : tplName)) + "("), iface);
 			}
 
 			this.info['template'] = tplName;
@@ -11995,7 +12009,7 @@ for (var i = -1; ++i < template.length;) {
 
 			this.save((("\
 				var __THIS__ = this,\
-					callee = __ROOT__." + tplName) + (";\
+					callee = __ROOT__" + (concatProp(tplName))) + (";\
 \
 				if (!callee.Blocks) {\
 					var __BLOCKS__ = callee.Blocks = {},\
@@ -12129,7 +12143,7 @@ for (var i = -1; ++i < template.length;) {
 						return " + (this.returnResult())) + (";\
 					};\
 \
-					Snakeskin.cache['" + (applyDefEscape(this.pasteDangerBlocks(tplName)))) + ("'] = this." + tplName) + ";\
+					Snakeskin.cache['" + (applyDefEscape(this.pasteDangerBlocks(tplName)))) + ("'] = this" + (concatProp(tplName))) + ";\
 				"));
 			}
 
@@ -13573,7 +13587,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		struct.vars :
 		struct.parent.vars;
 
-	var setMod = function(str)  {return str.charAt(0) === '[' ? str : ("." + str)};
 	var replacePropVal = function(sstr)  {
 		var id = this$0.module.id,
 			def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")] || vars[(("" + sstr) + "_00")];
@@ -13662,7 +13675,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 
 						// Супер глобальная переменная внутри with
 						if (next === G_MOD) {
-							vres = ("__VARS__" + (setMod(vres)));
+							vres = ("__VARS__" + (concatProp(vres)));
 
 						} else {
 							vres = addScope(vres);
@@ -13670,7 +13683,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 
 					// Супер глобальная переменная вне with
 					} else {
-						vres = ("__VARS__" + (setMod(finalWord.substring(next === G_MOD ? 2 : 1))));
+						vres = ("__VARS__" + (concatProp(finalWord.substring(next === G_MOD ? 2 : 1))));
 					}
 
 				} else {
@@ -13693,7 +13706,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 							vres = addScope(rfWord);
 
 						} else {
-							vres = addScope(scope[scope.length - 1 - num]) + setMod(rfWord);
+							vres = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
 						}
 
 					} else {
