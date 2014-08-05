@@ -287,7 +287,7 @@ function DirObj(src, params) {
 			this.res += `
 				var Snakeskin = global.Snakeskin;
 
-				exports.init = function (obj) {
+				exports['init'] = function (obj) {
 					Snakeskin = Snakeskin || obj instanceof Object ?
 						obj : require(obj);
 
