@@ -35,7 +35,7 @@ exports.check = function (source, result) {
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
  * @return {Function}
  */
-exports.compileFile = function (src, opt_params) {
+exports.execFile = function (src, opt_params) {
 	opt_params = opt_params || {};
 	opt_params.commonJS = true;
 
