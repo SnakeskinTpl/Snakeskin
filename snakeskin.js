@@ -29,13 +29,13 @@ exports.check = function (source, result) {
 };
 
 /**
- * Скомпилировать заданный файл и вернуть ссылку на главную функцию
+ * Скомпилировать заданный файл и вернуть ссылку на полученный объект
  *
  * @param {string} src - путь к файлу шаблонов
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
- * @return {Function}
+ * @return {!Object}
  */
-exports.execFile = function (src, opt_params) {
+exports.compileFile = function (src, opt_params) {
 	opt_params = opt_params || {};
 	opt_params.commonJS = true;
 
@@ -54,5 +54,17 @@ exports.execFile = function (src, opt_params) {
 		tpl.init(this);
 	}
 
+	return tpl;
+};
+
+/**
+ * Скомпилировать заданный файл и вернуть ссылку на главную функцию
+ *
+ * @param {string} src - путь к файлу шаблонов
+ * @param {Object=} [opt_params] - дополнительные параметры компиляции
+ * @return {Function}
+ */
+exports.execFile = function (src, opt_params) {
+	var tpl = this.compileFile(src, opt_params);
 	return tpl[path.basename(src, '.ss')] || tpl.main || tpl[Object.keys(tpl)[0]] || null;
 };
