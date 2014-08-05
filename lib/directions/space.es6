@@ -2,7 +2,8 @@ Snakeskin.addDirective(
 	'&',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		group: 'ignore'
 	},
 
 	function () {

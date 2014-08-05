@@ -310,6 +310,16 @@ function DirObj(src, params) {
 Snakeskin.DirObj = DirObj;
 
 /**
+ * Вернуть истинное имя директивы
+ *
+ * @param {?string} name - исходное имя
+ * @return {?string}
+ */
+function getName(name) {
+	return aliases[name] || name;
+}
+
+/**
  * Вернуть имя функции из заданной строки
  *
  * @param {string} str - исходная строка
@@ -412,7 +422,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
  * @return {boolean}
  */
 DirObj.prototype.isSimpleOutput = function () {
-	if (this.name !== 'end' && this.strong) {
+	if (getName(this.name) !== 'end' && this.strong) {
 		this.error(`directive "${this.structure.name}" can not be used with a "${this.strong}"`);
 		return false;
 	}
