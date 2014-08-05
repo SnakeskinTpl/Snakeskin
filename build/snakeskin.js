@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 04 Aug 2014 11:41:51 GMT
+ * Date: Tue, 05 Aug 2014 04:49:10 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -5958,12 +5958,13 @@ var modMap = {
 };
 
 // <<<
-// Константы jade-like синтаксиса
+// Константы Jade-Like синтаксиса
 // >>>
 
 var CONCAT_COMMAND = '&';
 var CONCAT_END = '.';
 var IGNORE_COMMAND = '|';
+var INLINE_COMMAND = '::';
 
 // <<<
 // Механизм фильтров
@@ -9001,7 +9002,6 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					ADV_LEFT_BLOCK : '';
 
 				var obj = {
-					command: decl.command,
 					dir: dir,
 					name: decl.name,
 					spaces: spaces,
@@ -9043,17 +9043,37 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					}
 				}
 
+				var parts = decl.command.split(INLINE_COMMAND),
+					txt = parts.slice(1).join(INLINE_COMMAND);
+
 				struct = obj;
 				res += space +
 					adv +
 					(dir ? LEFT_BLOCK : '') +
-					decl.command +
+					parts[0] +
 					(dir ? RIGHT_BLOCK : '');
 
-				length += decl.command.length - 1;
-				j += decl.command.length - 1;
-
+				length += parts[0].length - 1;
+				j += parts[0].length - 1;
 				tSpace = 0;
+
+				if (txt) {
+					var inline = {
+						dir: false,
+						spaces: spaces + 1,
+						space: '',
+						parent: obj,
+						block: false,
+						adv: ''
+					};
+
+					inline.parent = obj;
+					struct = inline;
+					res += txt;
+
+					length += txt.length - 1;
+					j += txt.length - 1;
+				}
 			}
 		}
 	}
