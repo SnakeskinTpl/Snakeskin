@@ -195,7 +195,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
  * @return {string}
  */
 function genEndDir(dir) {
-	return `${dir.adv + LEFT_BLOCK}__end__${RIGHT_BLOCK}`;
+	return `\n${dir.adv + LEFT_BLOCK}__end__${RIGHT_BLOCK}`;
 }
 
 /**
