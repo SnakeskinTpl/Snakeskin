@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 05 Aug 2014 05:57:57 GMT
+ * Date: Tue, 05 Aug 2014 06:09:21 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
