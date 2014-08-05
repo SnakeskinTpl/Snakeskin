@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 05 Aug 2014 06:09:21 GMT
+ * Date: Tue, 05 Aug 2014 12:39:25 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -256,7 +256,7 @@ Snakeskin.Filters['collapse'] = function (str) {
 
 /**
  * Обрезание строки до заданной длины
- * (в конце, если нужно, ставится троеточие)
+ * (в конце, если нужно, ставится многоточие)
  *
  * @param {*} str - исходная строка
  * @param {number} length - максимальная длина текста
@@ -293,7 +293,7 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
  * @return {string}
  */
 Snakeskin.Filters['repeat'] = function (str, opt_num) {
-	return new Array((opt_num + 1) || 3).join(str);
+	return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
 };
 
 /**
@@ -330,7 +330,21 @@ Snakeskin.Filters['json'] = function (obj) {
 		return JSON.stringify(obj);
 	}
 
-	return ((str) + '');
+	return ((obj) + '');
+};
+
+/**
+ * Преобразование JSON в объект
+ *
+ * @param {*} val - исходное значение
+ * @return {?}
+ */
+Snakeskin.Filters['parse'] = function (val) {
+	if (typeof val !== 'string') {
+		return val;
+	}
+
+	return JSON.parse(val);
 };
 
 /**

@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 05 Aug 2014 06:09:21 GMT
+ * Date: Tue, 05 Aug 2014 12:39:25 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -256,7 +256,7 @@ Snakeskin.Filters['collapse'] = function (str) {
 
 /**
  * Обрезание строки до заданной длины
- * (в конце, если нужно, ставится троеточие)
+ * (в конце, если нужно, ставится многоточие)
  *
  * @param {*} str - исходная строка
  * @param {number} length - максимальная длина текста
@@ -293,7 +293,7 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
  * @return {string}
  */
 Snakeskin.Filters['repeat'] = function (str, opt_num) {
-	return new Array((opt_num + 1) || 3).join(str);
+	return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
 };
 
 /**
@@ -330,7 +330,21 @@ Snakeskin.Filters['json'] = function (obj) {
 		return JSON.stringify(obj);
 	}
 
-	return ((str) + '');
+	return ((obj) + '');
+};
+
+/**
+ * Преобразование JSON в объект
+ *
+ * @param {*} val - исходное значение
+ * @return {?}
+ */
+Snakeskin.Filters['parse'] = function (val) {
+	if (typeof val !== 'string') {
+		return val;
+	}
+
+	return JSON.parse(val);
 };
 
 /**
@@ -6388,7 +6402,7 @@ function DirObj(src, params) {var this$0 = this;
 			this.res += (("\
 				var Snakeskin = global.Snakeskin;\
 \
-				exports.init = function (obj) {\
+				exports['init'] = function (obj) {\
 					Snakeskin = Snakeskin || obj instanceof Object ?\
 						obj : require(obj);\
 \
@@ -8199,6 +8213,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var dirname,
 		filename;
 
+	var label = '';
+
 	if (!sp.proto) {
 		uid = Math.random()
 			.toString(16)
@@ -8216,6 +8232,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			dirname = path['dirname'](filename);
 			Snakeskin.LocalVars.include[filename] = 'index';
+
+			var fs = require('fs');
+			if (fs['existsSync'](filename)) {
+				var stat = fs['statSync'](filename);
+				label = stat['mtime'];
+			}
 		}
 	}
 
@@ -8792,7 +8814,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	'');
 
-	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
+	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", label <" + (label.valueOf())) + (">, generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
 	dir.res += (("" + (cjs ? '}' : '')) + "}).call(this);");
 
 	for (var key$1 in dir.preProtos) {
@@ -9066,9 +9088,11 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					parts[0] +
 					(dir ? RIGHT_BLOCK : '');
 
-				length += parts[0].length - 1;
-				j += parts[0].length - 1;
+				var tmp = decl.command.length - 1;
 				tSpace = 0;
+
+				length += tmp;
+				j += tmp;
 
 				if (txt) {
 					var inline = {
@@ -9083,9 +9107,6 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					inline.parent = obj;
 					struct = inline;
 					res += txt;
-
-					length += txt.length - 1;
-					j += txt.length - 1;
 				}
 			}
 		}
@@ -10970,11 +10991,12 @@ Snakeskin.addDirective(
 	'__&__',
 
 	{
-		alias: true
+		group: 'ignore'
 	},
 
 	function () {
-		Snakeskin.Directions['&'].apply(this, arguments);
+		this.startInlineDir();
+		this.space = true;
 	}
 );
 
@@ -11591,8 +11613,7 @@ Snakeskin.addDirective(
 	'&',
 
 	{
-		placement: 'template',
-		group: 'ignore'
+		placement: 'template'
 	},
 
 	function () {
@@ -11831,6 +11852,10 @@ for (var i = -1; ++i < template.length;) {
 
 				} catch (ignore) {
 					return this.error((("invalid \"" + (this.name)) + "\" name"));
+				}
+
+				if (tplName === 'init') {
+					return this.error((("can't declare template \"" + tplName) + "\", try another name"));
 				}
 
 				// Для возможности удобного пост-парсинга,
