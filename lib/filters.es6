@@ -253,7 +253,21 @@ Snakeskin.Filters['json'] = function (obj) {
 		return JSON.stringify(obj);
 	}
 
-	return String(str);
+	return String(obj);
+};
+
+/**
+ * Преобразование JSON в объект
+ *
+ * @param {*} val - исходное значение
+ * @return {string}
+ */
+Snakeskin.Filters['parse'] = function (val) {
+	if (typeof val !== 'string') {
+		return val;
+	}
+
+	return JSON.parse(val);
 };
 
 /**
