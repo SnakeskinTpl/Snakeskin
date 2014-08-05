@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 05 Aug 2014 04:49:10 GMT
+ * Date: Tue, 05 Aug 2014 05:57:57 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6076,6 +6076,7 @@ var replacers = {},
 	inside = {},
 	after = {},
 
+	aliases = {},
 	groups = {},
 	groupsList = [],
 
@@ -6410,6 +6411,16 @@ function DirObj(src, params) {var this$0 = this;
 Snakeskin.DirObj = DirObj;
 
 /**
+ * Вернуть истинное имя директивы
+ *
+ * @param {?string} name - исходное имя
+ * @return {?string}
+ */
+function getName(name) {
+	return aliases[name] || name;
+}
+
+/**
  * Вернуть имя функции из заданной строки
  *
  * @param {string} str - исходная строка
@@ -6512,7 +6523,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
  * @return {boolean}
  */
 DirObj.prototype.isSimpleOutput = function () {
-	if (this.name !== 'end' && this.strong) {
+	if (getName(this.name) !== 'end' && this.strong) {
 		this.error((("directive \"" + (this.structure.name)) + ("\" can not be used with a \"" + (this.strong)) + "\""));
 		return false;
 	}
@@ -8539,7 +8550,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (dir.needPrfx) {
 						if (dir.inline !== false) {
-							if (commandType === 'end' || commandType === '__end__') {
+							if (getName(commandType) === 'end') {
 								if (dir.prfxI) {
 									dir.prfxI--;
 
@@ -9100,7 +9111,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
  * @return {string}
  */
 function genEndDir(dir) {
-	return (("" + (dir.adv + LEFT_BLOCK)) + ("__end__" + RIGHT_BLOCK) + "");
+	return (("" + (dir.adv + LEFT_BLOCK)) + ("__&__" + RIGHT_BLOCK) + ("\n" + (dir.adv + LEFT_BLOCK)) + ("__end__" + RIGHT_BLOCK) + "");
 }
 
 /**
@@ -9178,11 +9189,16 @@ function getLineDesc(str, i) {
 		name: name,
 		lastEl: lastEl
 	};
-}/**
+}var aliasRgxp = /__(.*?)__/;
+
+/**
  * Добавить новую директиву в пространство имён Snakeskin
  *
  * @param {string} name - название добавляемой директивы
  * @param {Object} params - дополнительные параметры
+ *
+ * @param {?boolean=} [params.alias=false] - если true, то директива считается псевдонимом
+ *     (только для приватных директив)
  *
  * @param {?boolean=} [params.text=false] - если true, то декларируется,
  *     что директива выводится как текст
@@ -9243,6 +9259,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 	sys[name] = !!(params.sys);
 	block[name] = !!(params.block);
 
+	if (params.alias) {
+		aliases[name] = name.replace(aliasRgxp, '$1');
+	}
+
 	if (params.group) {
 		var group = Array.isArray(params.group) ?
 			params.group : [params.group];
@@ -9260,17 +9280,18 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 	Snakeskin.Directions[name] = function (command, commandLength, type, jsDoc) {
 		var dir = this;
-		var sourceName = name,
-			dirName = name;
+		var sourceName = getName(name),
+			dirName = getName(name);
 
 		if (dir.ctx) {
 			dirName = dir.name || dirName;
 			dir = dir.ctx;
 		}
 
-		var struct = dir.structure;
-		dir.name = dirName;
+		var ignore = groups['ignore'][dirName],
+			struct = dir.structure;
 
+		dir.name = dirName;
 		switch (params.placement) {
 			case 'template': {
 				if (!struct.parent) {
@@ -9301,7 +9322,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			if (inside[struct.name][dirName]) {
 				dir.strongSpace = false;
 
-			} else if (sourceName === dirName && dirName !== 'end') {
+			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
 				return dir.error((("directive \"" + dirName) + ("\" can't be used within the \"" + (struct.name)) + "\""));
 			}
 		}
@@ -9327,7 +9348,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		if (dirName === sourceName) {
 			if (struct === newStruct) {
-				if (after[struct.name] && !after[struct.name][dirName]) {
+				if (!ignore && after[struct.name] && !after[struct.name][dirName]) {
 					return dir.error((("directive \"" + dirName) + ("\" can't be used after the \"" + (struct.name)) + "\""));
 				}
 
@@ -9343,7 +9364,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 						j++;
 					}
 
-					if (prev && after[prev.name] && !after[prev.name][dirName]) {
+					if (!ignore && prev && after[prev.name] && !after[prev.name][dirName]) {
 						return dir.error((("directive \"" + dirName) + ("\" can't be used after the \"" + (prev.name)) + "\""));
 					}
 				}
@@ -10944,6 +10965,18 @@ Snakeskin.addDirective(
 		}
 	}
 );Snakeskin.addDirective(
+	'__&__',
+
+	{
+		alias: true
+	},
+
+	function () {
+		Snakeskin.Directions['&'].apply(this, arguments);
+	}
+);
+
+Snakeskin.addDirective(
 	'__setFile__',
 
 	{
@@ -10999,7 +11032,7 @@ Snakeskin.addDirective(
 	'__end__',
 
 	{
-
+		alias: true
 	},
 
 	function () {
@@ -11556,7 +11589,8 @@ Snakeskin.addDirective(
 	'&',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		group: 'ignore'
 	},
 
 	function () {
