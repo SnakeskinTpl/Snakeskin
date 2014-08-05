@@ -150,9 +150,11 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					parts[0] +
 					(dir ? RIGHT_BLOCK : '');
 
-				length += parts[0].length - 1;
-				j += parts[0].length - 1;
+				let tmp = decl.command.length - 1;
 				tSpace = 0;
+
+				length += tmp;
+				j += tmp;
 
 				if (txt) {
 					let inline = {
@@ -167,9 +169,6 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					inline.parent = obj;
 					struct = inline;
 					res += txt;
-
-					length += txt.length - 1;
-					j += txt.length - 1;
 				}
 			}
 		}
