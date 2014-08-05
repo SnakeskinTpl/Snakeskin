@@ -260,7 +260,7 @@ Snakeskin.Filters['json'] = function (obj) {
  * Преобразование JSON в объект
  *
  * @param {*} val - исходное значение
- * @return {string}
+ * @return {?}
  */
 Snakeskin.Filters['parse'] = function (val) {
 	if (typeof val !== 'string') {
