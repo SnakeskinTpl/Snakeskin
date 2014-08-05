@@ -97,7 +97,6 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					ADV_LEFT_BLOCK : '';
 
 				let obj = {
-					command: decl.command,
 					dir: dir,
 					name: decl.name,
 					spaces: spaces,
@@ -139,17 +138,37 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					}
 				}
 
+				let parts = decl.command.split(INLINE_COMMAND),
+					txt = parts.slice(1).join(INLINE_COMMAND);
+
 				struct = obj;
 				res += space +
 					adv +
 					(dir ? LEFT_BLOCK : '') +
-					decl.command +
+					parts[0] +
 					(dir ? RIGHT_BLOCK : '');
 
-				length += decl.command.length - 1;
-				j += decl.command.length - 1;
-
+				length += parts[0].length - 1;
+				j += parts[0].length - 1;
 				tSpace = 0;
+
+				if (txt) {
+					let inline = {
+						dir: false,
+						spaces: spaces + 1,
+						space: '',
+						parent: obj,
+						block: false,
+						adv: ''
+					};
+
+					inline.parent = obj;
+					struct = inline;
+					res += txt;
+
+					length += txt.length - 1;
+					j += txt.length - 1;
+				}
 			}
 		}
 	}

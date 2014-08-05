@@ -52,12 +52,13 @@ var modMap = {
 };
 
 // <<<
-// Константы jade-like синтаксиса
+// Константы Jade-Like синтаксиса
 // >>>
 
 const CONCAT_COMMAND = '&';
 const CONCAT_END = '.';
 const IGNORE_COMMAND = '|';
+const INLINE_COMMAND = '::';
 
 // <<<
 // Механизм фильтров
