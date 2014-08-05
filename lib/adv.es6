@@ -141,7 +141,9 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				let parts = decl.command.split(INLINE_COMMAND),
 					txt = parts.slice(1).join(INLINE_COMMAND);
 
+				txt = txt && txt.trim();
 				struct = obj;
+
 				res += space +
 					adv +
 					(dir ? LEFT_BLOCK : '') +
