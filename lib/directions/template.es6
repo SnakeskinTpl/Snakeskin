@@ -76,6 +76,7 @@ DirObj.prototype.replaceFileName = function (str) {
 };
 
 var nmRgxp = /\.|\[/m,
+	nmssRgxp = /^\[/,
 	nmsRgxp = /\[/gm,
 	nmeRgxp = /]/gm;
 
@@ -90,14 +91,15 @@ DirObj.prototype.prepareNameDecl = function (name) {
 	name = this.replaceFileName(name);
 	if (nmRgxp.test(name)) {
 		let tmpArr = name
+			.replace(nmssRgxp, '%')
 			.replace(nmsRgxp, '.%')
 			.replace(nmeRgxp, '')
 			.split('.');
 
-		let str = tmpArr[0],
+		let str = '',
 			length = tmpArr.length;
 
-		for (let i = 0; ++i < length;) {
+		for (let i = -1; ++i < length;) {
 			let el = tmpArr[i],
 				custom = el.charAt(0) === '%';
 
@@ -110,7 +112,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 				continue;
 			}
 
-			str += `.${el}`;
+			str += str ? `.${el}` : el;
 		}
 
 		name = str;
@@ -118,6 +120,10 @@ DirObj.prototype.prepareNameDecl = function (name) {
 
 	return name.trim();
 };
+
+function concatProp(str) {
+	return str.charAt(0) === '[' ? str : `.${str}`;
+}
 
 for (let i = -1; ++i < template.length;) {
 	Snakeskin.addDirective(
@@ -140,7 +146,7 @@ for (let i = -1; ++i < template.length;) {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
 
-			var nameRgxp = /^[^a-z_$]/i;
+			var nameRgxp = /^[^a-z_$[]/i;
 			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
@@ -197,12 +203,18 @@ for (let i = -1; ++i < template.length;) {
 				if (nmRgxp.test(tmpTplName) || this.commonJS) {
 					lastName = '';
 					let tmpArr = tmpTplName
+						.replace(nmssRgxp, '%')
 						.replace(nmsRgxp, '.%')
 						.replace(nmeRgxp, '')
 						.split('.');
 
 					let str = tmpArr[0],
-						length = tmpArr.length;
+						length = tmpArr.length,
+						first = str.charAt(0);
+
+					if (first === '%') {
+						str = `['${this.evalStr(`return ${this.pasteDangerBlocks(this.prepareOutput(str.substring(1), true))}`)}']`;
+					}
 
 					for (let i = 0; ++i < length;) {
 						let el = tmpArr[i],
@@ -212,10 +224,12 @@ for (let i = -1; ++i < template.length;) {
 							el = el.substring(1);
 						}
 
+						let def = `this${concatProp(str)}`;
+
 						this.save(
 							(pos = `
-								if (this.${str} == null) {
-									this.${str} = {};
+								if (${def} == null) {
+									${def} = {};
 								}
 							`),
 
@@ -241,7 +255,7 @@ for (let i = -1; ++i < template.length;) {
 					tplName = str;
 				}
 
-				this.save(`this.${tplName} = function ${prfx}${lastName !== null ? lastName : tplName}(`, iface);
+				this.save(`this${concatProp(tplName)} = function ${prfx}${lastName !== null ? lastName : tplName}(`, iface);
 			}
 
 			this.info['template'] = tplName;
@@ -316,7 +330,7 @@ for (let i = -1; ++i < template.length;) {
 
 			this.save(`
 				var __THIS__ = this,
-					callee = __ROOT__.${tplName};
+					callee = __ROOT__${concatProp(tplName)};
 
 				if (!callee.Blocks) {
 					var __BLOCKS__ = callee.Blocks = {},
@@ -450,7 +464,7 @@ for (let i = -1; ++i < template.length;) {
 						return ${this.returnResult()};
 					};
 
-					Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this.${tplName};
+					Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this${concatProp(tplName)};
 				`);
 			}
 
