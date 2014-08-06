@@ -17,16 +17,15 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			if (command) {
-				this.save(`yield ${this.prepareOutput(command, true)};`);
 
-			} else {
-				this.save(`
-					yield ${this.returnResult()};
-					__RESULT__ = ${this.declResult()};
-				`);
-			}
+		if (command) {
+			this.append(`yield ${this.prepareOutput(command, true)};`);
+
+		} else {
+			this.append(`
+				yield ${this.returnResult()};
+				__RESULT__ = ${this.declResult()};
+			`);
 		}
 	}
 );
