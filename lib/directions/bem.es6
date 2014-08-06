@@ -49,12 +49,14 @@ Snakeskin.addDirective(
 		params.original = bem[bemName] &&
 			bem[bemName].tag;
 
-		this.append(this.wrap(`
-			'<${params.tag || params.original || 'div'}
-				class="i-block"
-				data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
-			>'
-		`));
+		if (this.isReady()) {
+			this.append(this.wrap(`
+				'<${params.tag || params.original || 'div'}
+					class="i-block"
+					data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
+				>'
+			`));
+		}
 	},
 
 	function () {
