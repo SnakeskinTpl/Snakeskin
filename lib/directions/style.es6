@@ -10,26 +10,28 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		var parts = command.split(' '),
-			type = parts[0] || 'css';
+		if (this.isReady()) {
+			let parts = command.split(' '),
+				type = parts[0] || 'css';
 
-		var types = {
-			'css': 'text/css'
-		};
+			let types = {
+				'css': 'text/css'
+			};
 
-		this.append(this.wrap(`'<style type="${types[type] || this.prepareOutput(type, true)}"'`));
+			this.append(this.wrap(`'<style type="${types[type] || this.prepareOutput(type, true)}"'`));
 
-		if (parts.length > 1) {
-			let args = [].slice.call(arguments);
+			if (parts.length > 1) {
+				let args = [].slice.call(arguments);
 
-			args[0] = parts.slice(1).join(' ');
-			args[1] = args[0].length;
+				args[0] = parts.slice(1).join(' ');
+				args[1] = args[0].length;
 
-			Snakeskin.Directions['attr'].apply(this, args);
-			this.inline = false;
+				Snakeskin.Directions['attr'].apply(this, args);
+				this.inline = false;
+			}
+
+			this.append(this.wrap('\'>\''));
 		}
-
-		this.append(this.wrap('\'>\''));
 	},
 
 	function () {

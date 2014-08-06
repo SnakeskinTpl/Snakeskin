@@ -31,40 +31,42 @@ Snakeskin.addDirective(
 			bemRef: this.bemRef
 		});
 
-		var parts = command.split(' '),
-			desc = this.returnTagDesc(parts[0]);
+		if (this.isReady()) {
+			let parts = command.split(' '),
+				desc = this.returnTagDesc(parts[0]);
 
-		var params = this.structure.params;
-		params.tag = desc.tag;
-		params.block = !inlineTagMap[desc.tag];
+			let params = this.structure.params;
+			params.tag = desc.tag;
+			params.block = !inlineTagMap[desc.tag];
 
-		var groups = this.splitAttrsGroup(parts.slice(1).join(' '));
-		var str = `
-			__TMP__ = {
-				'class': ''
-			};
+			let groups = this.splitAttrsGroup(parts.slice(1).join(' '));
+			let str = `
+				__TMP__ = {
+					'class': ''
+				};
 
-			${this.wrap(`'<${desc.tag}'`)}
-		`;
-
-		for (let i = -1; ++i < groups.length;) {
-			let el = groups[i];
-			str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
-		}
-
-		if (desc.id) {
-			str += this.wrap(`' id="${desc.id}"'`);
-		}
-
-		if (desc.classes.length) {
-			str += `
-				__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
-				${this.wrap(`' class="' + __TMP__['class'] + '"'`)}
+				${this.wrap(`'<${desc.tag}'`)}
 			`;
-		}
 
-		str += this.wrap(`'${!params.block ? '/' : ''}>'`);
-		this.append(str);
+			for (let i = -1; ++i < groups.length;) {
+				let el = groups[i];
+				str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
+			}
+
+			if (desc.id) {
+				str += this.wrap(`' id="${desc.id}"'`);
+			}
+
+			if (desc.classes.length) {
+				str += `
+					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
+					${this.wrap(`' class="' + __TMP__['class'] + '"'`)}
+				`;
+			}
+
+			str += this.wrap(`'${!params.block ? '/' : ''}>'`);
+			this.append(str);
+		}
 	},
 
 	function () {

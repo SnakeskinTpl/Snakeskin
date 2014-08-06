@@ -11,7 +11,7 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			let useCallback = this.hasParent(this.getGroup('callback'));
 
 			let async = this.getGroup('async');
@@ -34,13 +34,13 @@ Snakeskin.addDirective(
 
 				if (async[strongParent]) {
 					if (strongParent === 'waterfall') {
-						this.save(`
+						this.append(`
 							${prfx}
 							return arguments[arguments.length - 1](false);
 						`);
 
 					} else {
-						this.save(`
+						this.append(`
 							${prfx}
 
 							if (typeof arguments[0] === 'function') {
@@ -52,7 +52,7 @@ Snakeskin.addDirective(
 					}
 
 				} else {
-					this.save(`
+					this.append(`
 						${prfx}
 						return false;
 					`);
@@ -61,7 +61,7 @@ Snakeskin.addDirective(
 				this.deferReturn = chunk ? true : val;
 
 			} else {
-				this.save(val);
+				this.append(val);
 			}
 		}
 	}
