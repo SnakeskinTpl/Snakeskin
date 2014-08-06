@@ -796,9 +796,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						} else if (tOpen && el === '=') {
 							tAttr = true;
 						}
+
+						dir.attr = Boolean(tOpen);
 					}
 
-					dir.attr = Boolean(tOpen);
 					dir.save(applyDefEscape(el));
 				}
 
