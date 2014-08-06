@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1405794235971>, generated at <1407325060113> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1405794235971>, generated at <1407338185974> Wed Aug 06 2014 19:16:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_f3b2b']; /* Snakeskin template: data_index;  */
+        var $_ = __LOCAL__['$_1349c']; /* Snakeskin template: data_index;  */
         this.data_index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.data_index;
@@ -35,9 +35,9 @@
                 PARENT_TPL_NAME;
             a = ' foo ';
             __RESULT__ += ' ';
-            __RESULT__ += '{a: \"' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['trim'].call(this, __FILTERS__.undef(a)))))) + '\"}';
+            __RESULT__ += '{a: \"' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['trim'].call(this, __FILTERS__.undef(a))))), false) + '\"}';
             __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['trim'].call(this, __FILTERS__.undef(a)))))) + '}}';
+            __RESULT__ += '{{' + __FILTERS__.html(($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['trim'].call(this, __FILTERS__.undef(a))))), false) + '}}';
             __RESULT__ += ' ';
             __RESULT__ += '{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}} ';
             var a;
@@ -61,9 +61,9 @@
             __RESULT__ += ' ';
             __RESULT__ += '{{foo}}';
             __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(__FILTERS__.undef(foo)) + '}}';
+            __RESULT__ += '{{' + __FILTERS__.html(__FILTERS__.undef(foo), false) + '}}';
             __RESULT__ += ' ';
-            __RESULT__ += '{{' + __FILTERS__.html(__FILTERS__.undef(foo)) + '}}';
+            __RESULT__ += '{{' + __FILTERS__.html(__FILTERS__.undef(foo), false) + '}}';
             __RESULT__ += ' ';
             var foo;
             return __RESULT__;

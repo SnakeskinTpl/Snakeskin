@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 06 Aug 2014 11:37:27 GMT
+ * Date: Wed, 06 Aug 2014 15:16:16 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -115,6 +115,8 @@ var entityMap = {
 };
 
 var escapeHTMLRgxp = /[&<>"'\/]/g,
+	escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>=]+)/g,
+	escapeJavaScript = /(javascript)(:|;)/,
 	escapeHTML = function(s)  {return entityMap[s]};
 
 /**
@@ -122,10 +124,23 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  *
  * @expose
  * @param {*} str - исходная строка
+ * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
  * @return {string}
  */
-Snakeskin.Filters.html = function (str) {
-	return ((str) + '').replace(escapeHTMLRgxp, escapeHTML);
+Snakeskin.Filters.html = function (str, opt_attr) {
+	var res = ((str) + '');
+
+	if (opt_attr) {
+		res = res.replace(escapeAttrRgxp, '$1"$2"');
+	}
+
+	res = res.replace(escapeHTMLRgxp, escapeHTML);
+
+	if (opt_attr) {
+		res = res.replace(escapeJavaScript, '$1&#31;$2');
+	}
+
+	return res;
 };
 
 /**
@@ -6131,6 +6146,9 @@ function s(a, b, opt_c) {
  * @param {boolean} params.inlineIterators - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
  *
+ * @param {boolean} params.xml - если false, то snakeskin не делает дополнительных
+ *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ *
  * @param {boolean} params.escapeOutput - если false, то вывод значений выражений
  *     не будет принудительно экранироваться фильтром html
  *
@@ -6172,6 +6190,9 @@ function DirObj(src, params) {var this$0 = this;
 
 	/** @type {boolean} */
 	this.inlineIterators = params.inlineIterators;
+
+	/** @type {boolean} */
+	this.xml = params.xml;
 
 	/** @type {boolean} */
 	this.escapeOutput = params.escapeOutput;
@@ -6246,6 +6267,9 @@ function DirObj(src, params) {var this$0 = this;
 
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
+
+	/** @type {boolean} */
+	this.attr = false;
 
 	// <<<
 
@@ -8078,6 +8102,7 @@ DirObj.prototype.error = function (msg) {
 var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
 	bEndRgxp = /[^\s\/]/;
 
+var tAttrRgxp = /[^'" ]/;
 var uid;
 
 /**
@@ -8109,6 +8134,9 @@ var uid;
  *
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
+ *
+ * @param {?boolean=} [opt_params.xml=true] - если false, то snakeskin не делает дополнительных
+ *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
  *
  * @param {?boolean=} [opt_params.escapeOutput=true] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
@@ -8170,6 +8198,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
 	p.debug = s(p.debug, p['debug']) || null;
+
+	var xml =
+		p.xml = s(p.xml, p['xml']) !== false;
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -8275,6 +8306,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		onError: p.onError,
 		stringBuffer: p.stringBuffer,
 		inlineIterators: p.inlineIterators,
+		xml: xml,
 		escapeOutput: p.escapeOutput,
 		interface: p.interface,
 		throws: p.throws,
@@ -8314,6 +8346,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var bOpen = false,
 		bEnd,
 		bEscape = false;
+
+	var tOpen = 0,
+		tAttr = false,
+		tAttrBegin = false,
+		tAttrEscape = false;
 
 	var filterStart = false,
 		filterStartRgxp = /[a-z]/i;
@@ -8711,7 +8748,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		// Запись команды
 		if (begin) {
 			if (beginStr && dir.isSimpleOutput()) {
-				dir.save((("'" + (dir.$$())) + ";"));
+				var prfx = '';
+
+				if (xml && tAttr && !tAttrBegin) {
+					prfx = '"';
+					tAttrBegin = true;
+					tAttrEscape = true;
+				}
+
+				dir.save((("" + prfx) + ("'" + (dir.$$())) + ";"));
 				beginStr = false;
 			}
 
@@ -8803,6 +8848,55 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
+					if (xml) {
+						if (el === '<') {
+							tOpen++;
+
+						} else if (el === '>') {
+							if (tOpen) {
+								tOpen--;
+
+							} else {
+								el = '&gt;'
+							}
+						}
+
+						if (tOpen > 1) {
+							dir.error(("invalid XML declaration"));
+							return false;
+						}
+
+						if (tAttr) {
+							if (el === ' ' || !tOpen) {
+								if (tAttrBegin) {
+									tAttr = false;
+									tAttrBegin = false;
+
+									if (tAttrEscape) {
+										el = ("\"" + el);
+										tAttrEscape = false;
+									}
+
+								} else if (!tOpen) {
+									tAttr = false;
+								}
+
+							} else if (!tAttrBegin) {
+								tAttrBegin = true;
+
+								if (el !== '"' && el !== '\'') {
+									tAttrEscape = true;
+									el = ("\"" + el);
+								}
+							}
+
+						} else if (tOpen && el === '=') {
+							tAttr = true;
+						}
+
+						dir.attr = !!(tOpen);
+					}
+
 					dir.save(applyDefEscape(el));
 				}
 
@@ -8817,6 +8911,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			}
 		}
+	}
+
+	if (tOpen) {
+		dir.error(("invalid XML declaration"));
+		return false;
 	}
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
@@ -10154,8 +10253,12 @@ Snakeskin.addDirective(
  * @return {string}
  */
 DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
+	var rAttr = this.attr;
+	this.attr = true;
+
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
+
 	var parts = str.split('|'),
 		res = '';
 
@@ -10216,6 +10319,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		res += '}';
 	}
 
+	this.attr = rAttr;
 	return res;
 };
 
@@ -10226,6 +10330,9 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
  * @return {!Array}
  */
 DirObj.prototype.splitAttrsGroup = function (str) {
+	var rAttr = this.attr;
+	this.attr = true;
+
 	str = this.replaceTplVars(str, null, true);
 	var groups = [];
 
@@ -10291,6 +10398,7 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 		});
 	}
 
+	this.attr = rAttr;
 	return groups;
 };Snakeskin.addDirective(
 	'end',
@@ -11366,7 +11474,8 @@ Snakeskin.addDirective(
 					{
 						inlineIterators: this.inlineIterators,
 						stringBuffer: this.stringBuffer,
-						escapeOutput: this.escapeOutput
+						escapeOutput: this.escapeOutput,
+						xml: this.xml
 					},
 
 					null,
@@ -13917,7 +14026,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		}
 	}
 
-	return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
+	return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') + res + (!unEscape && !opt_sys ? ((", " + (this.attr)) + ")") : '');
 };var fsStack = [];
 
 /**

@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1404294968011>, generated at <1407325059904> Wed Aug 06 2014 15:37:39 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1404294968011>, generated at <1407338185759> Wed Aug 06 2014 19:16:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_dfd86'];
+        var $_ = __LOCAL__['$_5bc85'];
         __VARS__.name = 'foo'; /* Snakeskin template: scope_index; obj */
         this.scope_index = function(obj) {
             var __THIS__ = this,
@@ -37,11 +37,11 @@
             name = 'bar';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(obj.child.name));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(obj.child.name), false);
             var __e__with_112 = 'test';
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(__VARS__.name) + ' ' + __FILTERS__.undef(obj.child.child.name) + ' ' + __FILTERS__.undef(__e__with_112));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(obj.child.name) + ' ' + __FILTERS__.undef(name) + ' ' + __FILTERS__.undef(__VARS__.name) + ' ' + __FILTERS__.undef(obj.child.child.name) + ' ' + __FILTERS__.undef(__e__with_112), false);
             __RESULT__ += ' ';
             __RESULT__ += ' ';
             __RESULT__ += ' ';

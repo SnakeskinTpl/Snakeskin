@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1404818331666>, generated at <1407325059854> Wed Aug 06 2014 15:37:39 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1404818331666>, generated at <1407338185712> Wed Aug 06 2014 19:16:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_a806f']; /* Snakeskin template: proto_index; i */
+        var $_ = __LOCAL__['$_a773f']; /* Snakeskin template: proto_index; i */
         this.proto_index = function(i) {
             var __THIS__ = this,
                 callee = __ROOT__.proto_index;
@@ -45,7 +45,7 @@
                     var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
-                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_432));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_432), false);
                         __RESULT__ += ' ';
                     }
                     __RESULT__ += ' ';
@@ -53,7 +53,7 @@
                     var ____I_PROTO___f2_template_44 = 1;
                     ____I_PROTO___f2_template_44: while (____I_PROTO___f2_template_44--) {
                         __RESULT__ += ' ';
-                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_432));
+                        __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_432), false);
                         __RESULT__ += ' ';
                     }
                     __RESULT__ += ' ';
@@ -65,7 +65,7 @@
             var ____I_PROTO___f3_template_44 = 1;
             ____I_PROTO___f3_template_44: while (____I_PROTO___f3_template_44--) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_352) * 2);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_352) * 2, false);
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -79,9 +79,9 @@
             var ____I_PROTO___f4_template_44 = 1;
             ____I_PROTO___f4_template_44: while (____I_PROTO___f4_template_44--) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_496));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_496), false);
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -117,7 +117,7 @@
                 var ____I_PROTO___f1_template_54 = 1;
                 ____I_PROTO___f1_template_54: while (____I_PROTO___f1_template_54--) {
                     __RESULT__ += ' ';
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_837));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_837), false);
                     __RESULT__ += ' ';
                 }
                 __RESULT__ += ' ';
@@ -144,7 +144,7 @@
             var ____I_PROTO___begin_template_48 = 1;
             ____I_PROTO___begin_template_48: while (____I_PROTO___begin_template_48--) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_928));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_928), false);
                 __RESULT__ += ' ';
                 if (__i__proto_928) {
                     __RESULT__ += ' ';
@@ -177,7 +177,7 @@
             ____I_PROTO___begin_template_49: while (____I_PROTO___begin_template_49--) {
                 __RESULT__ += ' ';
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_1061));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_1061), false);
                 __RESULT__ += ' ';
                 if (__i__proto_1061) {
                     __RESULT__ += ' ';

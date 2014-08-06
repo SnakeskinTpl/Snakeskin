@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1405615142208>, generated at <1407325060177> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1405615142208>, generated at <1407338186036> Wed Aug 06 2014 19:16:26 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_df108']; /* Snakeskin template: inherit_base; val val2  */
+        var $_ = __LOCAL__['$_214bb']; /* Snakeskin template: inherit_base; val val2  */
         this.inherit_base = function(val, val2) {
             var __THIS__ = this,
                 callee = __ROOT__.inherit_base;
@@ -36,10 +36,10 @@
             val = arguments[0] = val != null ? val : 1;
             val2 = arguments[1] = val2 != null ? val2 : 3;
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val2));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val2), false);
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val), false);
             __RESULT__ += ' ';
             var ____I_PROTO___bar_template_45 = 1;
             ____I_PROTO___bar_template_45: while (____I_PROTO___bar_template_45--) {}
@@ -64,16 +64,16 @@
             var val2 = 3;
             val = arguments[0] = val != null ? val : 2;
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val2));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val2), false);
             __RESULT__ += ' ';
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(val), false);
             __RESULT__ += ' ';
             var __i__proto_336 = void 0 != null ? void 0 : 11;
             var ____I_PROTO___bar_template_44 = 1;
             ____I_PROTO___bar_template_44: while (____I_PROTO___bar_template_44--) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_336));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__proto_336), false);
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -127,7 +127,7 @@
                 __RESULT__ += ' ';
                 foo = 2;
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(foo));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(foo), false);
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
@@ -187,7 +187,7 @@
                     __RESULT__ += ' ';
                     j = 1;
                     __RESULT__ += ' ';
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(j));
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(j), false);
                     __RESULT__ += ' ';
                 }
                 __RESULT__ += ' ';
@@ -220,9 +220,9 @@
             __RESULT__ += ' ';
             a['b'] = 2;
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.b));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.b), false);
             __RESULT__ += ' ';
             var a;
             return __RESULT__;
@@ -247,9 +247,9 @@
             __RESULT__ += ' ';
             a.b = 3;
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.a), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.b));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a.b), false);
             __RESULT__ += ' ';
             var a;
             return __RESULT__;

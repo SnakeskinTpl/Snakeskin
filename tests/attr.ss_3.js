@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406782358626>, generated at <1407325060499> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1407337353699>, generated at <1407338186327> Wed Aug 06 2014 19:16:26 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_cb830']; /* Snakeskin template: attr_index;  */
+        var $_ = __LOCAL__['$_616ae']; /* Snakeskin template: attr_index;  */
         this.attr_index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.attr_index;
@@ -43,18 +43,18 @@
                 __STR__ += __J__ ? ' ' + 'bar' : 'bar';
                 __J__++;
             }
-            if (('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != '' && __STR__) {
-                __RESULT__.push(' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' + '="' + __STR__ + '"');
+            if (('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != '' && __STR__) {
+                __RESULT__.push(' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' + '="' + __STR__ + '"');
             }
             __RESULT__.push(' ');
             __STR__ = '';
             __J__ = 0;
-            if (('' + __FILTERS__.html(__FILTERS__.undef(bar)) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(bar)) + '') !== '') {
-                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(bar)) + '' : '' + __FILTERS__.html(__FILTERS__.undef(bar)) + '';
+            if (('' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '') !== '') {
+                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '' : '' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '';
                 __J__++;
             }
-            if (('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') !== '') {
-                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' : '' + __FILTERS__.html(__FILTERS__.undef(foo)) + '';
+            if (('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') !== '') {
+                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' : '' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '';
                 __J__++;
             }
             if (('foo') != null && ('foo') != '' && __STR__) {
@@ -94,12 +94,12 @@
             __RESULT__.push(' ');
             __STR__ = '';
             __J__ = 0;
-            if (('' + __FILTERS__.html(__FILTERS__.undef(bar)) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(bar)) + '') !== '') {
-                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(bar)) + '' : '' + __FILTERS__.html(__FILTERS__.undef(bar)) + '';
+            if (('' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '') !== '') {
+                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '' : '' + __FILTERS__.html(__FILTERS__.undef(bar), true) + '';
                 __J__++;
             }
-            if (('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') !== '') {
-                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' : '' + __FILTERS__.html(__FILTERS__.undef(foo)) + '';
+            if (('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') !== '') {
+                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' : '' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '';
                 __J__++;
             }
             if (('ng-foo') != null && ('ng-foo') != '' && __STR__) {
@@ -120,18 +120,18 @@
                 __STR__ += __J__ ? ' ' + 'bar' : 'bar';
                 __J__++;
             }
-            if (('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != '' && __STR__) {
-                __RESULT__.push(' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' + '="' + __STR__ + '"');
+            if (('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != '' && __STR__) {
+                __RESULT__.push(' ' + '' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' + '="' + __STR__ + '"');
             }
             __RESULT__.push(' ');
             __STR__ = '';
             __J__ = 0;
-            if (('' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null)) + '') != null && ('' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null)) + '') !== '') {
-                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null)) + '' : '' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null)) + '';
+            if (('' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null), true) + '') != null && ('' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null), true) + '') !== '') {
+                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null), true) + '' : '' + __FILTERS__.html((1 ? __FILTERS__.undef(bar) : null), true) + '';
                 __J__++;
             }
-            if (('' + __FILTERS__.html(((__FILTERS__.undef(foo)))) + '') != null && ('' + __FILTERS__.html(((__FILTERS__.undef(foo)))) + '') !== '') {
-                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(((__FILTERS__.undef(foo)))) + '' : '' + __FILTERS__.html(((__FILTERS__.undef(foo)))) + '';
+            if (('' + __FILTERS__.html(((__FILTERS__.undef(foo))), true) + '') != null && ('' + __FILTERS__.html(((__FILTERS__.undef(foo))), true) + '') !== '') {
+                __STR__ += __J__ ? ' ' + '' + __FILTERS__.html(((__FILTERS__.undef(foo))), true) + '' : '' + __FILTERS__.html(((__FILTERS__.undef(foo))), true) + '';
                 __J__++;
             }
             if (('ng-foo') != null && ('ng-foo') != '' && __STR__) {
@@ -152,8 +152,8 @@
                 __STR__ += __J__ ? ' ' + 'bar' : 'bar';
                 __J__++;
             }
-            if (('foo:' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('foo:' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != '' && __STR__) {
-                __RESULT__.push(' ' + 'foo:' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' + '="' + __STR__ + '"');
+            if (('foo:' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('foo:' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != '' && __STR__) {
+                __RESULT__.push(' ' + 'foo:' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' + '="' + __STR__ + '"');
             }
             __STR__ = '';
             __J__ = 0;
@@ -161,8 +161,8 @@
                 __STR__ += __J__ ? ' ' + 'bar' : 'bar';
                 __J__++;
             }
-            if (('b-foo:' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('b-foo:' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != '' && __STR__) {
-                __RESULT__.push(' ' + 'b-foo:' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' + '="' + __STR__ + '"');
+            if (('b-foo:' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('b-foo:' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != '' && __STR__) {
+                __RESULT__.push(' ' + 'b-foo:' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' + '="' + __STR__ + '"');
             }
             __STR__ = '';
             __J__ = 0;
@@ -170,8 +170,8 @@
                 __STR__ += __J__ ? ' ' + 'bar' : 'bar';
                 __J__++;
             }
-            if (('b:foo-' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != null && ('b:foo-' + __FILTERS__.html(__FILTERS__.undef(foo)) + '') != '' && __STR__) {
-                __RESULT__.push(' ' + 'b:foo-' + __FILTERS__.html(__FILTERS__.undef(foo)) + '' + '="' + __STR__ + '"');
+            if (('b:foo-' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != null && ('b:foo-' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '') != '' && __STR__) {
+                __RESULT__.push(' ' + 'b:foo-' + __FILTERS__.html(__FILTERS__.undef(foo), true) + '' + '="' + __STR__ + '"');
             }
             __RESULT__.push(' ');
             var foo;

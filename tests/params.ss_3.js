@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1404885798245>, generated at <1407325060667> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1404885798245>, generated at <1407338186485> Wed Aug 06 2014 19:16:26 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_08382']; /* Snakeskin template: param_base; a,b  */
+        var $_ = __LOCAL__['$_35236']; /* Snakeskin template: param_base; a,b  */
         this.param_base = function(a, b) {
             var __THIS__ = this,
                 callee = __ROOT__.param_base;
@@ -34,7 +34,7 @@
             var TPL_NAME = 'param_base',
                 PARENT_TPL_NAME;
             b = arguments[1] = b != null ? b : 1 ? Math.round(1) : 0;
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b), false));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
@@ -56,7 +56,7 @@
             var b = 1 ? Math.round(1) : 0;
             b = 2;
             __RESULT__.push(' ');
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b), false));
             __RESULT__.push(' ');
             var b;
             return __RESULT__.join('');
@@ -79,7 +79,7 @@
             var b = 1 ? Math.round(1) : 0;
             b = 3;
             __RESULT__.push(' ');
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b), false));
             __RESULT__.push(' ');
             var b;
             return __RESULT__.join('');
@@ -101,7 +101,7 @@
             a = arguments[0] = a != null ? a : ({
                 a: 1
             });
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(a.a)));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(a.a), false));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
@@ -122,7 +122,7 @@
             a = arguments[0] = a != null ? a : ({
                 a: 1
             });
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(a.a)));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(a.a), false));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
@@ -152,9 +152,9 @@
             var ____I_PROTO___foo_with_52 = 1;
             ____I_PROTO___foo_with_52: while (____I_PROTO___foo_with_52--) {
                 __RESULT__.push(' ');
-                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__a__proto_405.c)));
+                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__a__proto_405.c), false));
                 __RESULT__.push(' ');
-                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b)));
+                __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(b), false));
                 __RESULT__.push(' ');
             }
             __RESULT__.push(' ');

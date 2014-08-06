@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406953399891>, generated at <1407325059740> Wed Aug 06 2014 15:37:39 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1406953399891>, generated at <1407338185596> Wed Aug 06 2014 19:16:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_89e55']; /* Snakeskin template: iterators_index1;  */
+        var $_ = __LOCAL__['$_a755d']; /* Snakeskin template: iterators_index1;  */
         this.iterators_index1 = function() {
             var __THIS__ = this,
                 callee = __ROOT__.iterators_index1;
@@ -35,17 +35,17 @@
                 PARENT_TPL_NAME;
             Snakeskin.forEach([1, 2, 3], function(__el__forEach_89, __i__forEach_89, __obj__forEach_89, __isFirst__forEach_89, __isLast__forEach_89, __length__forEach_89) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_89), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_89));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_89), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_89[__i__forEach_89]));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_89[__i__forEach_89]), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_89));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_89), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_89));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_89), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_89));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_89), false);
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';
@@ -70,19 +70,19 @@
                 b: 2
             }), function(__el__forEach_255, __key__forEach_255, __obj__forEach_255, __i__forEach_255, __isFirst__forEach_255, __isLast__forEach_255, __length__forEach_255) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_255), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_255));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_255), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_255[__key__forEach_255]));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_255[__key__forEach_255]), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_255));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_255), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_255));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_255), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_255));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_255), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_255));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_255), false);
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';
@@ -108,19 +108,19 @@
             __RESULT__ += ' ';
             Snakeskin.forIn(a, function(__el__forIn_446, __key__forIn_446, __obj__forIn_446, __i__forIn_446, __isFirst__forIn_446, __isLast__forIn_446, __length__forIn_446) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_446));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_446), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forIn_446));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forIn_446), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forIn_446[__key__forIn_446]));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forIn_446[__key__forIn_446]), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forIn_446));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forIn_446), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forIn_446));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forIn_446), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forIn_446));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forIn_446), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forIn_446));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forIn_446), false);
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';
@@ -143,18 +143,18 @@
                 PARENT_TPL_NAME;
             Snakeskin.forEach([1, 2, 3], function(__el__forEach_612, __i__forEach_612, __obj__forEach_612, __isFirst__forEach_612, __isLast__forEach_612, __length__forEach_612) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_612));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_612), false);
                 __RESULT__ += ' ';
                 return;
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_612));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_612), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_612[__i__forEach_612]));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_612[__i__forEach_612]), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_612));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_612), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_612));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_612), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_612));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_612), false);
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';
@@ -179,19 +179,19 @@
                 b: 2
             }), function(__el__forEach_795, __key__forEach_795, __obj__forEach_795, __i__forEach_795, __isFirst__forEach_795, __isLast__forEach_795, __length__forEach_795) {
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_795));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forEach_795), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_795));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forEach_795), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_795[__key__forEach_795]));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forEach_795[__key__forEach_795]), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_795));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forEach_795), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_795));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forEach_795), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_795));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forEach_795), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_795));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forEach_795), false);
                 __RESULT__ += ' --- ';
                 return false;
             });
@@ -219,19 +219,19 @@
             Snakeskin.forIn(a, function(__el__forIn_997, __key__forIn_997, __obj__forIn_997, __i__forIn_997, __isFirst__forIn_997, __isLast__forIn_997, __length__forIn_997) {
                 __RESULT__ += ' ';
                 return false;
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_997));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__el__forIn_997), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forIn_997));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__key__forIn_997), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forIn_997[__key__forIn_997]));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__obj__forIn_997[__key__forIn_997]), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forIn_997));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__i__forIn_997), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forIn_997));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isFirst__forIn_997), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forIn_997));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__isLast__forIn_997), false);
                 __RESULT__ += ' ';
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forIn_997));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__length__forIn_997), false);
                 __RESULT__ += ' --- ';
             });
             __RESULT__ += ' ';

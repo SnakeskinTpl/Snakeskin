@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1404212981664>, generated at <1407325060554> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1404212981664>, generated at <1407338186377> Wed Aug 06 2014 19:16:26 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_8d8b4'];
+        var $_ = __LOCAL__['$_954b8'];
         __VARS__.a = String; /* Snakeskin template: filters_index;  */
         this.filters_index = function() {
             var __THIS__ = this,
@@ -39,11 +39,11 @@
             });
             __RESULT__.push(' ');
             __RESULT__.push(' ');
-            __RESULT__.push(__FILTERS__.html(($_ = __FILTERS__['remove'].call(this, ($_ = __FILTERS__['repeat'].call(this, ($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['collapse'].call(this, '   foo   bar ')))), 3)), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim']('   Foo bar')))))));
+            __RESULT__.push(__FILTERS__.html(($_ = __FILTERS__['remove'].call(this, ($_ = __FILTERS__['repeat'].call(this, ($_ = __FILTERS__['ucfirst'].call(this, ($_ = __FILTERS__['collapse'].call(this, '   foo   bar ')))), 3)), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim']('   Foo bar'))))), false));
             __RESULT__.push(' ');
             __RESULT__.push(($_ = __FILTERS__['remove']($_ = __FILTERS__['repeat']($_ = __FILTERS__['ucfirst']($_ = __FILTERS__['collapse']('   foo   bar ')), 3), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim'](a.a('   Foo bar')))))) + '<b>1</b>');
             __RESULT__.push(' ');
-            __RESULT__.push(__FILTERS__.html(($_ = __FILTERS__['remove']($_ = __FILTERS__['repeat']($_ = __FILTERS__['ucfirst']($_ = __FILTERS__['collapse']('   foo   bar ')), 3), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim'](__VARS__.a('   Foo bar')))))) + '<b>1</b>'));
+            __RESULT__.push(__FILTERS__.html(($_ = __FILTERS__['remove']($_ = __FILTERS__['repeat']($_ = __FILTERS__['ucfirst']($_ = __FILTERS__['collapse']('   foo   bar ')), 3), ($_ = __FILTERS__['repeat']($_ = __FILTERS__['trim'](__VARS__.a('   Foo bar')))))) + '<b>1</b>', false));
             __RESULT__.push(' ');
             __RESULT__.push(' ');
             var a;

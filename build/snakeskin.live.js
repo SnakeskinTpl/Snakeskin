@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 06 Aug 2014 11:37:27 GMT
+ * Date: Wed, 06 Aug 2014 15:16:16 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -115,6 +115,8 @@ var entityMap = {
 };
 
 var escapeHTMLRgxp = /[&<>"'\/]/g,
+	escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>=]+)/g,
+	escapeJavaScript = /(javascript)(:|;)/,
 	escapeHTML = function(s)  {return entityMap[s]};
 
 /**
@@ -122,10 +124,23 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  *
  * @expose
  * @param {*} str - исходная строка
+ * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
  * @return {string}
  */
-Snakeskin.Filters.html = function (str) {
-	return ((str) + '').replace(escapeHTMLRgxp, escapeHTML);
+Snakeskin.Filters.html = function (str, opt_attr) {
+	var res = ((str) + '');
+
+	if (opt_attr) {
+		res = res.replace(escapeAttrRgxp, '$1"$2"');
+	}
+
+	res = res.replace(escapeHTMLRgxp, escapeHTML);
+
+	if (opt_attr) {
+		res = res.replace(escapeJavaScript, '$1&#31;$2');
+	}
+
+	return res;
 };
 
 /**

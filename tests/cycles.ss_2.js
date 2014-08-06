@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1404298266902>, generated at <1407325060105> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1404298266902>, generated at <1407338185967> Wed Aug 06 2014 19:16:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_ae8f9']; /* Snakeskin template: cycles_index; i  */
+        var $_ = __LOCAL__['$_f3ac7']; /* Snakeskin template: cycles_index; i  */
         this.cycles_index = function(i) {
             var __THIS__ = this,
                 callee = __ROOT__.cycles_index;
@@ -37,19 +37,19 @@
             for (var __j__for_67 = 0;
                 (__j__for_67 < 3);
                 (__j__for_67++)) {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_67));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_67), false);
             }
             __RESULT__ += ' ';
             while (i++ < 3) {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i), false);
             }
             __RESULT__ += ' ';
             do {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i), false);
             } while (i--);
             __RESULT__ += ' ';
             do {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i), false);
             } while (++i < 3);
             __RESULT__ += ' ';
             return __RESULT__;
@@ -72,7 +72,7 @@
             for (var __j__for_334 = 0;
                 (__j__for_334 < 3);
                 (__j__for_334++)) {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_334));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__j__for_334), false);
                 break;
             }
             __RESULT__ += ' ';
@@ -80,11 +80,11 @@
                 if (i === 1) {
                     continue;
                 }
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i), false);
             }
             __RESULT__ += ' ';
             do {
-                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i));
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(i), false);
                 break;
             } while (i--);
             __RESULT__ += ' ';

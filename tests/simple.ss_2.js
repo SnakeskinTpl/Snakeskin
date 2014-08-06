@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1405794071621>, generated at <1407325060416> Wed Aug 06 2014 15:37:40 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1405794071621>, generated at <1407338186269> Wed Aug 06 2014 19:16:26 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_95efa']; /* Snakeskin template: simple_output;  */
+        var $_ = __LOCAL__['$_fb95e']; /* Snakeskin template: simple_output;  */
         this.simple_output = function() {
             var __THIS__ = this,
                 callee = __ROOT__.simple_output;
@@ -48,11 +48,11 @@
             __RESULT__ += ' ';
             __RESULT__ += e[a['n']][a['foo']](1, 2, 3);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(new String([1, 2, 3]).indexOf()));
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(new String([1, 2, 3]).indexOf()), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(($_ = __FILTERS__['replace'].call(this, '{foo}', /^{/gim, '')));
+            __RESULT__ += __FILTERS__.html(($_ = __FILTERS__['replace'].call(this, '{foo}', /^{/gim, '')), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(2 / 2);
+            __RESULT__ += __FILTERS__.html(2 / 2, false);
             __RESULT__ += ' ';
             var e;
             var a;
@@ -78,8 +78,8 @@
                 PARENT_TPL_NAME;
             name = arguments[0] = name != null ? name : 'world';
             __RESULT__ += '<h1>Hello ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '', false);
             __RESULT__ += '!</h1> Foo';
             __RESULT__ += 'bar///1 ';
             return __RESULT__;
@@ -103,8 +103,8 @@
                 PARENT_TPL_NAME;
             name = arguments[0] = name != null ? name : 'world';
             __RESULT__ += '<h1>Hello ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '', false);
             __RESULT__ += '!</h1> ';
             return __RESULT__;
         };
@@ -130,12 +130,12 @@
                 PARENT_TPL_NAME;
             name = arguments[0] = name != null ? name : 'world';
             __RESULT__ += '<h1>Hello ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name));
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '');
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(lname) ? ' ' + lname : '', false);
             __RESULT__ += '!</h1> ';
             a = 1;
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a) === 1 ? 1 : 2);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(a) === 1 ? 1 : 2, false);
             __RESULT__ += ' '; /**<h1>Hello {name}{lname ? \' \' + lname : \'\'}!</h1>*/
             var a;
             return __RESULT__;
