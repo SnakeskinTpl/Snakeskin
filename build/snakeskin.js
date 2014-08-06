@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 06 Aug 2014 10:26:55 GMT
+ * Date: Wed, 06 Aug 2014 11:37:27 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -7267,7 +7267,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			old
 		]);
 
-		defParams += (("var " + (el$1.key)) + (" = " + (this.prepareOutput(el$1.value, true))) + ";");
+		defParams += (("var " + (el$1.key)) + (" = " + (this.prepareOutput(this.replaceDangerBlocks(el$1.value), true))) + ";");
 		struct.vars[el$1.key] = {
 			value: el$1.key,
 			scope: this.scope.length
@@ -7300,7 +7300,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		decl += el$2.key;
 
 		if (el$2.value !== void 0) {
-			defParams += (("" + (el$2.key)) + (" = arguments[" + i$2) + ("] = " + (el$2.key)) + (" != null ? " + (el$2.key)) + (" : " + (this.prepareOutput(el$2.value, true))) + ";");
+			defParams += (("" + (el$2.key)) + (" = arguments[" + i$2) + ("] = " + (el$2.key)) + (" != null ? " + (el$2.key)) + (" : " + (this.prepareOutput(this.replaceDangerBlocks(el$2.value), true))) + ";");
 		}
 
 		if (i$2 !== argsList.length - 1) {
