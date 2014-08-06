@@ -26,13 +26,13 @@ Snakeskin.addDirective(
 			params: parts[2] ? parts[1] : null
 		});
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (!this.inlineIterators) {
 				if (parts.length === 3) {
-					this.save(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+					this.append(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
 
 				} else {
-					this.save(`
+					this.append(`
 						Snakeskin.forEach(
 							${this.prepareOutput(parts[0], true)},
 							function (${this.declCallbackArgs(parts[1])}) {
@@ -221,7 +221,7 @@ Snakeskin.addDirective(
 				return str;
 			})();
 
-			this.save(resStr);
+			this.append(resStr);
 			this.structure.params = {
 				from: this.res.length,
 				end: end,
@@ -231,7 +231,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (this.inlineIterators) {
 				let params = this.structure
 					.params;
@@ -239,16 +239,16 @@ Snakeskin.addDirective(
 				let part = this.res
 					.substring(params.from);
 
-				this.save(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
+				this.append(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
 
 			} else {
 				let params = this.structure.params.params;
 
 				if (params) {
-					this.save(`}, ${this.prepareOutput(params, true)});`);
+					this.append(`}, ${this.prepareOutput(params, true)});`);
 
 				} else {
-					this.save('});');
+					this.append('});');
 				}
 			}
 		}
@@ -279,20 +279,20 @@ Snakeskin.addDirective(
 			params: parts[2] ? parts[1] : null
 		});
 
-		if (this.isSimpleOutput()) {
-			this.save(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+		if (this.isReady()) {
+			this.append(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			let params = this.structure.params.params;
 
 			if (params) {
-				this.save(`}, ${this.prepareOutput(params, true)});`);
+				this.append(`}, ${this.prepareOutput(params, true)});`);
 
 			} else {
-				this.save('});');
+				this.append('});');
 			}
 		}
 	}
@@ -320,9 +320,9 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (!this.inlineIterators) {
-				this.save(`
+				this.append(`
 					Snakeskin.forIn(
 						${this.prepareOutput(parts[0], true)},
 						function (${this.declCallbackArgs(parts[1])}) {
@@ -402,18 +402,13 @@ Snakeskin.addDirective(
 				return str;
 			})();
 
-			this.save(resStr);
+			this.append(resStr);
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			if (this.inlineIterators) {
-				this.save('}}');
-
-			} else {
-				this.save('});');
-			}
+		if (this.isReady()) {
+			this.append(this.inlineIterators ? '}}' : '});');
 		}
 	}
 );
