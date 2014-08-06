@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 06 Aug 2014 09:59:40 GMT
+ * Date: Wed, 06 Aug 2014 10:22:05 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9547,19 +9547,19 @@ Snakeskin.addDirective(
 		params.original = bem[bemName] &&
 			bem[bemName].tag;
 
-		this.append(this.wrap((("\
-			'<" + (params.tag || params.original || 'div')) + ("\
-				class=\"i-block\"\
-				data-params=\"{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}\"\
-			>'\
-		")));
+		if (this.isReady()) {
+			this.append(this.wrap((("\
+				'<" + (params.tag || params.original || 'div')) + ("\
+					class=\"i-block\"\
+					data-params=\"{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}\"\
+				>'\
+			")));
+		}
 	},
 
 	function () {
 		var params = this.structure.params;
-		if (this.isReady()) {
-			this.append(this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'")));
-		}
+		this.append(this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'")));
 	}
 );Snakeskin.addDirective(
 	'block',
