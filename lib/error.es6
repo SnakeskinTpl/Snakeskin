@@ -33,7 +33,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 		let prfx = '',
 			max = 0;
 
-		for (let i = 4; i--;) {
+		for (let i = 8; i--;) {
 			let pos = line - i - 2,
 				prev = this.lines[pos];
 
