@@ -129,6 +129,9 @@ function DirObj(src, params) {
 	/** @type {number} */
 	this.freezeLine = 0;
 
+	/** @type {boolean} */
+	this.ignoreDirDesc = false;
+
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
 

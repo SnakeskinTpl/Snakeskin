@@ -458,9 +458,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.i++;
 							dir.needPrfx = true;
 
-							if (modLine) {
+							if (!dir.ignoreDirDesc && modLine) {
 								dir.lines[line - 1] += LEFT_BLOCK;
 							}
+						}
+
+						if (dir.ignoreDirDesc) {
+							dir.lines[line - 1] = dir.lines[line - 1].slice(0, -1);
 						}
 
 						bEnd = true;
@@ -471,6 +475,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				// Упраляющая конструкция завершилась
 				} else if (el === RIGHT_BLOCK && begin && (!fakeBegin || !(fakeBegin--))) {
+					if (dir.ignoreDirDesc) {
+						dir.ignoreDirDesc = false;
+						dir.lines[line - 1] = dir.lines[line - 1].slice(0, -1);
+					}
+
 					begin = false;
 
 					let commandLength = command.length;
@@ -496,7 +505,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandType : 'const';
 
 					if (!dir.proto && commandType.charAt(0) === '_') {
-						let source = `\\s*${dir.needPrfx ? ADV_LEFT_BLOCK : ''}${LEFT_BLOCK}\\s*${command.replace(rgxpRgxp, '\\$1')}\\s*${RIGHT_BLOCK}\\s*`,
+						let source = `${dir.needPrfx ? ADV_LEFT_BLOCK : ''}${LEFT_BLOCK}\\s*${command.replace(rgxpRgxp, '\\$1')}\\s*${RIGHT_BLOCK}`,
 							rgxp = rgxpCache[source] || new RegExp(source);
 
 						dir.lines[line - 1] = dir.lines[line - 1]
