@@ -40,8 +40,14 @@ Snakeskin.addDirective(
  * @return {string}
  */
 DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
+	var rAttr = this.attr;
+
+	this.attr = true;
+	this.space = true;
+
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
+
 	var parts = str.split('|'),
 		res = '';
 
@@ -102,6 +108,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		res += '}';
 	}
 
+	this.attr = rAttr;
 	return res;
 };
 
@@ -112,6 +119,9 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
  * @return {!Array}
  */
 DirObj.prototype.splitAttrsGroup = function (str) {
+	var rAttr = this.attr;
+	this.attr = true;
+
 	str = this.replaceTplVars(str, null, true);
 	var groups = [];
 
@@ -177,5 +187,6 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 		});
 	}
 
+	this.attr = rAttr;
 	return groups;
 };
