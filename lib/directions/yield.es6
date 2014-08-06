@@ -18,14 +18,16 @@ Snakeskin.addDirective(
 
 		this.startInlineDir();
 
-		if (command) {
-			this.append(`yield ${this.prepareOutput(command, true)};`);
+		if (this.isReady()) {
+			if (command) {
+				this.append(`yield ${this.prepareOutput(command, true)};`);
 
-		} else {
-			this.append(`
-				yield ${this.returnResult()};
-				__RESULT__ = ${this.declResult()};
-			`);
+			} else {
+				this.append(`
+					yield ${this.returnResult()};
+					__RESULT__ = ${this.declResult()};
+				`);
+			}
 		}
 	}
 );
