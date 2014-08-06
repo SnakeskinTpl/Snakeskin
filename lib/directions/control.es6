@@ -23,43 +23,45 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (command === 'proto') {
-			if (!insideProto) {
-				return this.error('proto is not defined');
+		if (this.isReady()) {
+			if (command === 'proto') {
+				if (!insideProto) {
+					return this.error('proto is not defined');
+				}
+
+				if (insideCallback) {
+					return this.error('can\'t break proto inside a callback');
+				}
+
+				this.append(this.prepareOutput('break __I_PROTO__;', true));
+				return;
 			}
 
-			if (insideCallback) {
-				return this.error('can\'t break proto inside a callback');
-			}
+			if (cycles[inside]) {
+				if (inside === insideCallback) {
+					this.append('return false;');
 
-			this.append(this.prepareOutput('break __I_PROTO__;', true));
-			return;
-		}
+				} else {
+					this.append('break;');
+				}
 
-		if (cycles[inside]) {
-			if (inside === insideCallback) {
-				this.append('return false;');
+			} else if (async[inside]) {
+				if (inside === 'waterfall') {
+					this.append('return arguments[arguments.length - 1](false);');
+
+				} else {
+					this.append(`
+						if (typeof arguments[0] === 'function') {
+							return arguments[0](false);
+						}
+
+						return false;
+					`);
+				}
 
 			} else {
-				this.append('break;');
+				this.append(this.prepareOutput('break __I_PROTO__;', true));
 			}
-
-		} else if (async[inside]) {
-			if (inside === 'waterfall') {
-				this.append('return arguments[arguments.length - 1](false);');
-
-			} else {
-				this.append(`
-					if (typeof arguments[0] === 'function') {
-						return arguments[0](false);
-					}
-
-					return false;
-				`);
-			}
-
-		} else {
-			this.append(this.prepareOutput('break __I_PROTO__;', true));
 		}
 	}
 );
@@ -89,43 +91,45 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (command === 'proto') {
-			if (!insideProto) {
-				return this.error(`proto is not defined`);
+		if (this.isReady()) {
+			if (command === 'proto') {
+				if (!insideProto) {
+					return this.error(`proto is not defined`);
+				}
+
+				if (insideCallback) {
+					return this.error('can\'t continue proto inside a callback');
+				}
+
+				this.append(this.prepareOutput('continue __I_PROTO__;', true));
+				return;
 			}
 
-			if (insideCallback) {
-				return this.error('can\'t continue proto inside a callback');
-			}
+			if (cycles[inside]) {
+				if (inside === insideCallback) {
+					this.append('return;');
 
-			this.append(this.prepareOutput('continue __I_PROTO__;', true));
-			return;
-		}
+				} else {
+					this.append('continue;');
+				}
 
-		if (cycles[inside]) {
-			if (inside === insideCallback) {
-				this.append('return;');
+			} else if (async[inside]) {
+				if (inside === 'waterfall') {
+					this.append('return arguments[arguments.length - 1]();');
+
+				} else {
+					this.append(`
+						if (typeof arguments[0] === 'function') {
+							return arguments[0]();
+						}
+
+						return;
+					`);
+				}
 
 			} else {
-				this.append('continue;');
+				this.append(this.prepareOutput('continue __I_PROTO__;', true));
 			}
-
-		} else if (async[inside]) {
-			if (inside === 'waterfall') {
-				this.append('return arguments[arguments.length - 1]();');
-
-			} else {
-				this.append(`
-					if (typeof arguments[0] === 'function') {
-						return arguments[0]();
-					}
-
-					return;
-				`);
-			}
-
-		} else {
-			this.append(this.prepareOutput('continue __I_PROTO__;', true));
 		}
 	}
 );

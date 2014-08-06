@@ -28,7 +28,7 @@ Snakeskin.addDirective(
 				return this.error(`block "${name}" is already defined`);
 			}
 
-			let desc = this.prepareArgs(
+			let args = this.prepareArgs(
 				command,
 				String(this.name),
 				String(this.tplName),
@@ -36,61 +36,63 @@ Snakeskin.addDirective(
 				name
 			);
 
-			if (desc.params && /^[^a-z_$][^\w$]*|[^\w$]+/i.test(name)) {
+			if (args.params && /^[^a-z_$][^\w$]*|[^\w$]+/i.test(name)) {
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
 			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
-				args: desc
+				args: args
 			};
 
-			if (desc.scope) {
-				this.scope.push(desc.scope);
+			if (args.scope) {
+				this.scope.push(args.scope);
 				struct.params._scope = true;
 			}
 		}
 
-		var args = blockCache[this.tplName][name].args;
+		if (this.isReady()) {
+			let args = blockCache[this.tplName][name].args;
 
-		if (args.params) {
-			let fnDecl = `__BLOCKS__.${name}`;
-			struct.params.fn = fnDecl;
+			if (args.params) {
+				let fnDecl = `__BLOCKS__.${name}`;
+				struct.params.fn = fnDecl;
 
-			this.append(`
-				if (!${fnDecl}) {
-					${fnDecl} = function (${args.str}) {
-						var __RESULT__ = ${this.declResult()};
-						${args.defParams}
-			`);
+				this.append(`
+					if (!${fnDecl}) {
+						${fnDecl} = function (${args.str}) {
+							var __RESULT__ = ${this.declResult()};
+							${args.defParams}
+				`);
 
-			let params = command.split('=>'),
-				str = '';
+				let params = command.split('=>'),
+					str = '';
 
-			if (params.length > 2) {
-				return this.error(`invalid "${this.name}" declaration`);
+				if (params.length > 2) {
+					return this.error(`invalid "${this.name}" declaration`);
+				}
+
+				let self = params.length === 1;
+				if (self) {
+					params = args.list;
+
+				} else {
+					params = this.getFnArgs(`(${params[1]})`);
+				}
+
+				let vars = struct.vars;
+				struct.vars = struct.parent.vars;
+
+				for (let i = -1; ++i < params.length;) {
+					str += `${this.prepareOutput(self ? params[i][2] : params[i], true)},`
+				}
+
+				struct.vars = vars;
+				str = str.slice(0, -1);
+
+				struct.params.params = str;
 			}
-
-			let self = params.length === 1;
-			if (self) {
-				params = args.list;
-
-			} else {
-				params = this.getFnArgs(`(${params[1]})`);
-			}
-
-			let vars = struct.vars;
-			struct.vars = struct.parent.vars;
-
-			for (let i = -1; ++i < params.length;) {
-				str += `${this.prepareOutput(self ? params[i][2] : params[i], true)},`
-			}
-
-			struct.vars = vars;
-			str = str.slice(0, -1);
-
-			struct.params.params = str;
 		}
 	},
 
@@ -98,7 +100,7 @@ Snakeskin.addDirective(
 		var params = this.structure.params,
 			block = blockCache[this.tplName][params.name];
 
-		if (params.fn) {
+		if (this.isReady() && params.fn) {
 			this.append(`
 						return ${this.returnResult()};
 					};

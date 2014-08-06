@@ -9,21 +9,22 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
+		if (this.isReady()) {
+			let str = '',
+				groups = this.splitAttrsGroup(command);
 
-		var str = '',
-			groups = this.splitAttrsGroup(command);
+			for (let i = -1; ++i < groups.length;) {
+				let el = groups[i];
 
-		for (let i = -1; ++i < groups.length;) {
-			let el = groups[i];
+				str += this.returnAttrDecl(
+					el.attr,
+					el.group,
+					el.separator
+				);
+			}
 
-			str += this.returnAttrDecl(
-				el.attr,
-				el.group,
-				el.separator
-			);
+			this.append(str);
 		}
-
-		this.append(str);
 	}
 );
 

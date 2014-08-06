@@ -124,7 +124,9 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-		this.append(`], function (${this.declCallbackArgs(parts)}) {`);
+		if (this.isReady()) {
+			this.append(`], function (${this.declCallbackArgs(parts)}) {`);
+		}
 	},
 
 	function () {
