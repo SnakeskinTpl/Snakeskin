@@ -555,6 +555,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 				if (canParse &&
 					isNextAssign(command, i + word.length) &&
 					tplName &&
+					constCache[tplName] &&
 					constCache[tplName][vres]
 				) {
 
