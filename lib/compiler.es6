@@ -267,7 +267,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		let rEl = el;
 		let line = info['line'],
-			modLine = !dir.freezeLine && !dir.proto && dir.lines.length === line;
+			lastLine = line - 1;
+
+		let modLine = !dir.freezeLine &&
+				!dir.proto &&
+				dir.lines.length === line;
 
 		if (freezeI) {
 			freezeI--;
@@ -290,7 +294,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				info['line']++;
 
 			} else if (modLine) {
-				dir.lines[line - 1] += el;
+				dir.lines[lastLine] += el;
 			}
 		}
 
@@ -372,7 +376,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							comment = next3str;
 
 							if (modLine) {
-								dir.lines[line - 1] += next3str.substring(1, 3);
+								dir.lines[lastLine] += next3str.substring(1, 3);
 							}
 
 							dir.i += 2;
@@ -392,7 +396,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								commentStart = dir.i;
 
 								if (modLine) {
-									dir.lines[line - 1] += next2str.charAt(1);
+									dir.lines[lastLine] += next2str.charAt(1);
 								}
 
 								dir.i++;
@@ -459,12 +463,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.needPrfx = true;
 
 							if (!dir.ignoreDirDesc && modLine) {
-								dir.lines[line - 1] += LEFT_BLOCK;
+								dir.lines[lastLine] += LEFT_BLOCK;
 							}
 						}
 
 						if (dir.ignoreDirDesc) {
-							dir.lines[line - 1] = dir.lines[line - 1].slice(0, -1);
+							dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
 						}
 
 						bEnd = true;
@@ -477,7 +481,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				} else if (el === RIGHT_BLOCK && begin && (!fakeBegin || !(fakeBegin--))) {
 					if (dir.ignoreDirDesc) {
 						dir.ignoreDirDesc = false;
-						dir.lines[line - 1] = dir.lines[line - 1].slice(0, -1);
+						dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
 					}
 
 					begin = false;
@@ -508,7 +512,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						let source = `${dir.needPrfx ? ADV_LEFT_BLOCK : ''}${LEFT_BLOCK}\\s*${command.replace(rgxpRgxp, '\\$1')}\\s*${RIGHT_BLOCK}`,
 							rgxp = rgxpCache[source] || new RegExp(source);
 
-						dir.lines[line - 1] = dir.lines[line - 1]
+						dir.lines[lastLine] = dir.lines[lastLine]
 							.replace(rgxp, '');
 
 						rgxpCache[source] = rgxp;
@@ -697,7 +701,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				if (currentClrL && !dir.structure.parent && (shortMap[el] || shortMap[next2str])) {
-					let adv = dir.lines[line - 1].length - 1,
+					let adv = dir.lines[lastLine].length - 1,
 						source = dir.toBaseSyntax(dir.source, dir.i - adv);
 
 					if (source.error) {
@@ -708,7 +712,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						source.str +
 						dir.source.substring(dir.i + source.length - adv);
 
-					dir.lines[line - 1] = dir.lines[line - 1].slice(0, -1);
+					dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
 					dir.i--;
 
 					continue;
