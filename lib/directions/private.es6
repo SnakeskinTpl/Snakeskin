@@ -128,7 +128,7 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startDir();
 
-		if (this.lines.length >= parseInt(command, 10)) {
+		if (!command || this.lines.length >= parseInt(command, 10)) {
 			this.freezeLine++;
 		}
 	},
