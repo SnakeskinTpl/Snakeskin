@@ -12,22 +12,6 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'__ignoreDirDesc__',
-
-	{
-		group: 'ignore'
-	},
-
-	function (command) {
-		this.startInlineDir();
-		this.ignoreDirDesc = true;
-		if (!this.freezeLine) {
-			this.lines[this.info['line'] - 1] += command;
-		}
-	}
-);
-
-Snakeskin.addDirective(
 	'__setFile__',
 
 	{

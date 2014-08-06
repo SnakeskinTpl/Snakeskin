@@ -462,13 +462,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.i++;
 							dir.needPrfx = true;
 
-							if (!dir.ignoreDirDesc && modLine) {
+							if (modLine) {
 								dir.lines[lastLine] += LEFT_BLOCK;
 							}
-						}
-
-						if (dir.ignoreDirDesc) {
-							dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
 						}
 
 						bEnd = true;
@@ -479,11 +475,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				// Упраляющая конструкция завершилась
 				} else if (el === RIGHT_BLOCK && begin && (!fakeBegin || !(fakeBegin--))) {
-					if (dir.ignoreDirDesc) {
-						dir.ignoreDirDesc = false;
-						dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
-					}
-
 					begin = false;
 
 					let commandLength = command.length;
