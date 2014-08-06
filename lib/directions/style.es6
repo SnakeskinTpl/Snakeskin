@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 			'css': 'text/css'
 		};
 
-		var str = this.wrap(`'<style type="${types[type] || this.prepareOutput(type, true)}"'`);
+		this.append(this.wrap(`'<style type="${types[type] || this.prepareOutput(type, true)}"'`));
 
 		if (parts.length > 1) {
 			let args = [].slice.call(arguments);
@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 			this.inline = false;
 		}
 
-		this.append(str + this.wrap('\'>\''));
+		this.append(this.wrap('\'>\''));
 	},
 
 	function () {

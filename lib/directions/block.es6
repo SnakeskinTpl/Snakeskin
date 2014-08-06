@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 			let fnDecl = `__BLOCKS__.${name}`;
 			struct.params.fn = fnDecl;
 
-			this.save(`
+			this.append(`
 				if (!${fnDecl}) {
 					${fnDecl} = function (${args.str}) {
 						var __RESULT__ = ${this.declResult()};
