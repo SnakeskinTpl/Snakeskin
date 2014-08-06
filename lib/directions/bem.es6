@@ -35,34 +35,30 @@ Snakeskin.addDirective(
 				/\((.*?)\)/.exec(command)[1] : null
 		});
 
-		if (this.isSimpleOutput()) {
-			let params = this.structure.params;
+		var params = this.structure.params;
 
-			command = params.tag ?
-				command.replace(/^[^)]+\)(.*)/, '$1') : command;
+		command = params.tag ?
+			command.replace(/^[^)]+\)(.*)/, '$1') : command;
 
-			let parts = command.trim().split(','),
-				bemName = parts[0];
+		var parts = command.trim().split(','),
+			bemName = parts[0];
 
-			parts[0] += '\'';
-			command = parts.join(',');
+		parts[0] += '\'';
+		command = parts.join(',');
 
-			params.original = bem[bemName] &&
-				bem[bemName].tag;
+		params.original = bem[bemName] &&
+			bem[bemName].tag;
 
-			this.save(this.wrap(`
-				'<${params.tag || params.original || 'div'}
-					class="i-block"
-					data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
-				>'
-			`));
-		}
+		this.append(this.wrap(`
+			'<${params.tag || params.original || 'div'}
+				class="i-block"
+				data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
+			>'
+		`));
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			let params = this.structure.params;
-			this.save(this.wrap(`'</${(params.tag || params.original || 'div')}>'`));
-		}
+		var params = this.structure.params;
+		this.append(this.wrap(`'</${(params.tag || params.original || 'div')}>'`));
 	}
 );
