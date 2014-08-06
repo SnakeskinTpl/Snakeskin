@@ -789,5 +789,5 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 		}
 	}
 
-	return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') + res + (!unEscape && !opt_sys ? ')' : '');
+	return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') + res + (!unEscape && !opt_sys ? `, ${this.attr})` : '');
 };

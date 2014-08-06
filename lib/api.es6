@@ -138,6 +138,9 @@ function DirObj(src, params) {
 	/** @type {RegExp} */
 	this.ignoreRgxp = null;
 
+	/** @type {boolean} */
+	this.attr = false;
+
 	// <<<
 
 	/**

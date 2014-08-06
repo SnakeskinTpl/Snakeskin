@@ -47,12 +47,18 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  *
  * @expose
  * @param {*} str - исходная строка
+ * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
  * @return {string}
  */
-Snakeskin.Filters.html = function (str) {
-	return String(str)
-		.replace(escapeAttrRgxp, '$1&quot;$2&quot;')
-		.replace(escapeHTMLRgxp, escapeHTML)
+Snakeskin.Filters.html = function (str, opt_attr) {
+	var res = String(str);
+
+	if (opt_attr) {
+		res = res.replace(escapeAttrRgxp, '$1"$2"')
+			.replace(escapeHTMLRgxp, escapeHTML);
+	}
+
+	return res
 		.replace(escapeJavaScript, '$1&#31;$2');
 };
 
