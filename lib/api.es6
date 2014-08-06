@@ -420,6 +420,21 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 };
 
 /**
+ * Добавить указанную строку в результирующую строку JavaScript
+ * (с проверкой this.isSimpleOutput())
+ *
+ * @param {string=} str - исходная строка
+ * @return {boolean}
+ */
+DirObj.prototype.append = function (str) {
+	if (!this.isSimpleOutput()) {
+		return false;
+	}
+
+	return this.save(str);
+};
+
+/**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
  * @return {boolean}
