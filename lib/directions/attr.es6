@@ -41,9 +41,7 @@ Snakeskin.addDirective(
  */
 DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
 	var rAttr = this.attr;
-
 	this.attr = true;
-	this.space = true;
 
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';

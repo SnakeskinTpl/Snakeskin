@@ -54,12 +54,16 @@ Snakeskin.Filters.html = function (str, opt_attr) {
 	var res = String(str);
 
 	if (opt_attr) {
-		res = res.replace(escapeAttrRgxp, '$1"$2"')
-			.replace(escapeHTMLRgxp, escapeHTML);
+		res = res.replace(escapeAttrRgxp, '$1"$2"');
 	}
 
-	return res
-		.replace(escapeJavaScript, '$1&#31;$2');
+	res = res.replace(escapeHTMLRgxp, escapeHTML);
+
+	if (opt_attr) {
+		res = res.replace(escapeJavaScript, '$1&#31;$2');
+	}
+
+	return res;
 };
 
 /**
