@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1405615142208>, generated at <1407250258752> Tue Aug 05 2014 18:50:58 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1405615142208>, generated at <1407319257849> Wed Aug 06 2014 14:00:57 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_0648a']; /* Snakeskin template: inherit_base; val val2  */
+        var $_ = __LOCAL__['$_df6de']; /* Snakeskin template: inherit_base; val val2  */
         this.inherit_base = function(val, val2) {
             var __THIS__ = this,
                 callee = __ROOT__.inherit_base;
@@ -104,6 +104,7 @@
             }
             __RESULT__ += ' ';
             var foo;
+            var foo;
             return __RESULT__;
         };
         Snakeskin.cache['inherit_superTestConst'] = this.inherit_superTestConst; /* Snakeskin template. */ /* Snakeskin template: inherit_childTestConst;  */
@@ -131,6 +132,7 @@
             }
             __RESULT__ += ' ';
             var foo;
+            var foo;
             return __RESULT__;
         };
         Snakeskin.cache['inherit_childTestConst'] = this.inherit_childTestConst; /* Snakeskin template. */ /* Snakeskin template: inherit_superTestConst2;  */
@@ -155,6 +157,7 @@
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
+            var a;
             var a;
             return __RESULT__;
         };
@@ -190,8 +193,11 @@
                 __RESULT__ += ' ';
             }
             __RESULT__ += ' ';
+            var a;
+            var j;
             var j;
             var a;
+            var j;
             return __RESULT__;
         };
         Snakeskin.cache['inherit_childTestConst2'] = this.inherit_childTestConst2; /* Snakeskin template. */ /* Snakeskin template: inherit_superTestConst3;  */

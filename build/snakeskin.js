@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 05 Aug 2014 14:51:42 GMT
+ * Date: Wed, 06 Aug 2014 09:59:40 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6532,6 +6532,21 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 };
 
 /**
+ * Добавить указанную строку в результирующую строку JavaScript
+ * (с проверкой this.isSimpleOutput())
+ *
+ * @param {string=} str - исходная строка
+ * @return {boolean}
+ */
+DirObj.prototype.append = function (str) {
+	if (!this.isSimpleOutput()) {
+		return false;
+	}
+
+	return this.save(str);
+};
+
+/**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
  * @return {boolean}
@@ -6543,6 +6558,15 @@ DirObj.prototype.isSimpleOutput = function () {
 	}
 
 	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
+};
+
+/**
+ * Вернуть true,
+ * если возможна проверка валидности директивы
+ * @return {boolean}
+ */
+DirObj.prototype.isReady = function () {
+	return !this.proto || !this.proto.parentTplName;
 };
 
 /**
@@ -7968,7 +7992,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 		var prfx = '',
 			max = 0;
 
-		for (var i = 4; i--;) {
+		for (var i = 8; i--;) {
 			var pos = line - i - 2,
 				prev = this.lines[pos];
 
@@ -8316,7 +8340,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		var rEl = el;
 		var line = info['line'],
-			modLine = !dir.freezeLine && !dir.proto && dir.lines.length === line;
+			lastLine = line - 1;
+
+		var modLine = !dir.freezeLine &&
+				!dir.proto &&
+				dir.lines.length === line;
 
 		if (freezeI) {
 			freezeI--;
@@ -8339,7 +8367,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				info['line']++;
 
 			} else if (modLine) {
-				dir.lines[line - 1] += el;
+				dir.lines[lastLine] += el;
 			}
 		}
 
@@ -8421,7 +8449,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							comment = next3str;
 
 							if (modLine) {
-								dir.lines[line - 1] += next3str.substring(1, 3);
+								dir.lines[lastLine] += next3str.substring(1, 3);
 							}
 
 							dir.i += 2;
@@ -8441,7 +8469,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								commentStart = dir.i;
 
 								if (modLine) {
-									dir.lines[line - 1] += next2str.charAt(1);
+									dir.lines[lastLine] += next2str.charAt(1);
 								}
 
 								dir.i++;
@@ -8508,7 +8536,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.needPrfx = true;
 
 							if (modLine) {
-								dir.lines[line - 1] += LEFT_BLOCK;
+								dir.lines[lastLine] += LEFT_BLOCK;
 							}
 						}
 
@@ -8545,10 +8573,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandType : 'const';
 
 					if (!dir.proto && commandType.charAt(0) === '_') {
-						var source = (("\\s*" + (dir.needPrfx ? ADV_LEFT_BLOCK : '')) + ("" + LEFT_BLOCK) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + RIGHT_BLOCK) + "\\s*"),
+						var source = (("" + (dir.needPrfx ? ADV_LEFT_BLOCK : '')) + ("" + LEFT_BLOCK) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + RIGHT_BLOCK) + ""),
 							rgxp = rgxpCache[source] || new RegExp(source);
 
-						dir.lines[line - 1] = dir.lines[line - 1]
+						dir.lines[lastLine] = dir.lines[lastLine]
 							.replace(rgxp, '');
 
 						rgxpCache[source] = rgxp;
@@ -8737,7 +8765,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				if (currentClrL && !dir.structure.parent && (shortMap[el] || shortMap[next2str])) {
-					var adv = dir.lines[line - 1].length - 1,
+					var adv = dir.lines[lastLine].length - 1,
 						source$0 = dir.toBaseSyntax(dir.source, dir.i - adv);
 
 					if (source$0.error) {
@@ -8748,7 +8776,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						source$0.str +
 						dir.source.substring(dir.i + source$0.length - adv);
 
-					dir.lines[line - 1] = '';
+					dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
 					dir.i--;
 
 					continue;
@@ -8972,13 +9000,13 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 			space = '\n';
 			tSpace++;
 
-		} else {
+		} else if (clrL) {
 			if (whiteSpaceRgxp.test(el)) {
 				spaces++;
 				space += el;
 				tSpace++;
 
-			} else if (clrL) {
+			} else {
 				clrL = false;
 				var nextSpace = false;
 
@@ -9134,7 +9162,10 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
  * @return {string}
  */
 function genEndDir(dir) {
-	return (("" + (dir.adv + LEFT_BLOCK)) + ("__&__" + RIGHT_BLOCK) + ("\n" + (dir.adv + LEFT_BLOCK)) + ("__end__" + RIGHT_BLOCK) + "");
+	var s = dir.adv + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
+
+	return (("" + s) + ("__&__" + e) + ("" + s) + ("__freezeLine__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__end__" + e) + "");
 }
 
 /**
@@ -9502,34 +9533,32 @@ Snakeskin.addDirective(
 				/\((.*?)\)/.exec(command)[1] : null
 		});
 
-		if (this.isSimpleOutput()) {
-			var params = this.structure.params;
+		var params = this.structure.params;
 
-			command = params.tag ?
-				command.replace(/^[^)]+\)(.*)/, '$1') : command;
+		command = params.tag ?
+			command.replace(/^[^)]+\)(.*)/, '$1') : command;
 
-			var parts = command.trim().split(','),
-				bemName = parts[0];
+		var parts = command.trim().split(','),
+			bemName = parts[0];
 
-			parts[0] += '\'';
-			command = parts.join(',');
+		parts[0] += '\'';
+		command = parts.join(',');
 
-			params.original = bem[bemName] &&
-				bem[bemName].tag;
+		params.original = bem[bemName] &&
+			bem[bemName].tag;
 
-			this.save(this.wrap((("\
-				'<" + (params.tag || params.original || 'div')) + ("\
-					class=\"i-block\"\
-					data-params=\"{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}\"\
-				>'\
-			")));
-		}
+		this.append(this.wrap((("\
+			'<" + (params.tag || params.original || 'div')) + ("\
+				class=\"i-block\"\
+				data-params=\"{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}\"\
+			>'\
+		")));
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			var params = this.structure.params;
-			this.save(this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'")));
+		var params = this.structure.params;
+		if (this.isReady()) {
+			this.append(this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'")));
 		}
 	}
 );Snakeskin.addDirective(
@@ -9667,8 +9696,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap(this.prepareOutput(command, true)));
+		if (this.isReady()) {
+			this.append(this.wrap(this.prepareOutput(command, true)));
 		}
 	}
 );var constNameRgxp = /\[(['"`])(.*?)\1]/g,
@@ -9711,12 +9740,12 @@ Snakeskin.addDirective(
 					name: name
 				});
 
-				if (this.isSimpleOutput()) {
+				if (this.isReady()) {
 					if (!propAssignRgxp.test(prop)) {
 						this.consts.push((("var " + prop) + ";"));
 					}
 
-					this.save((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
+					this.append((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
 				}
 
 				if (this.isAdvTest()) {
@@ -9784,16 +9813,16 @@ Snakeskin.addDirective(
 				return this.error((("Directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
 			}
 
-			if (this.isSimpleOutput()) {
+			if (this.isReady()) {
 				var desc$0 = isAssign(command);
 
 				if (desc$0) {
 					this.text = false;
-					this.save((("" + (this.prepareOutput(command, true))) + ";"));
+					this.append((("" + (this.prepareOutput(command, true))) + ";"));
 					return;
 				}
 
-				this.save(this.wrap(this.prepareOutput(command)));
+				this.append(this.wrap(this.prepareOutput(command)));
 			}
 		}
 	}
@@ -9895,14 +9924,14 @@ Snakeskin.addDirective(
 				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			if (this.isSimpleOutput()) {
+			if (this.isReady()) {
 				var decl = varDeclRgxp.test(parts[0]) ?
 					this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
 				parts[1] = parts[1] && (("(" + (parts[1])) + ")");
 				parts[2] = parts[2] && (("(" + (parts[2])) + ")");
 
-				this.save((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
+				this.append((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
 			}
 
 		} else {
@@ -9912,19 +9941,17 @@ Snakeskin.addDirective(
 				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			if (this.isSimpleOutput()) {
+			if (this.isReady()) {
 				var decl$0 = parts$0[1] ?
 					this.multiDeclVar(parts$0[2], false, '') : this.prepareOutput(parts$0[2], true);
 
-				this.save((("for (" + decl$0) + (" " + (parts$0[3])) + (" " + (this.prepareOutput(parts$0[4], true))) + ") {"));
+				this.append((("for (" + decl$0) + (" " + (parts$0[3])) + (" " + (this.prepareOutput(parts$0[4], true))) + ") {"));
 			}
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -9941,24 +9968,22 @@ Snakeskin.addDirective(
 		if (this.structure.name == 'do') {
 			this.structure.params.chain = true;
 
-			if (this.isSimpleOutput()) {
-				this.save((("} while (" + (this.prepareOutput(command, true))) + ");"));
+			if (this.isReady()) {
+				this.append((("} while (" + (this.prepareOutput(command, true))) + ");"));
 			}
 
 			Snakeskin.Directions['end'].call(this);
 
 		} else {
 			this.startDir();
-			if (this.isSimpleOutput()) {
-				this.save((("while (" + (this.prepareOutput(command, true))) + ") {"));
+			if (this.isReady()) {
+				this.append((("while (" + (this.prepareOutput(command, true))) + ") {"));
 			}
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -9976,14 +10001,12 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save('do {');
-		}
+		this.append('do {');
 	},
 
 	function () {
-		if (this.isSimpleOutput() && !this.structure.params.chain) {
-			this.save('} while (true);');
+		if (!this.structure.params.chain) {
+			this.append('} while (true);');
 		}
 	}
 );
@@ -10002,14 +10025,12 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save('do {');
-		}
+		this.append('do {');
 	},
 
 	function () {
-		if (this.isSimpleOutput() && !this.structure.params.chain) {
-			this.save('} while (true);');
+		if (!this.structure.params.chain) {
+			this.append('} while (true);');
 		}
 	}
 );
@@ -10029,8 +10050,8 @@ Snakeskin.addDirective(
 
 		this.structure.params.chain = true;
 
-		if (this.isSimpleOutput()) {
-			this.save((("} while (" + (this.prepareOutput(command, true))) + ");"));
+		if (this.isReady()) {
+			this.append((("} while (" + (this.prepareOutput(command, true))) + ");"));
 		}
 
 		Snakeskin.Directions['end'].call(this);
@@ -10049,8 +10070,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap((("'" + (this.replaceTplVars(command))) + "'")));
+		if (this.isReady()) {
+			this.append(this.wrap((("'" + (this.replaceTplVars(command))) + "'")));
 		}
 	}
 );
@@ -10072,9 +10093,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var code = this.replaceTplVars(command);
-
 			var start = declStartRgxp.exec(code) ||
 				[''];
 
@@ -10089,7 +10109,7 @@ Snakeskin.addDirective(
 				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			this.save(this.wrap((("'{" + (add + code)) + "}'")));
+			this.append(this.wrap((("'{" + (add + code)) + "}'")));
 		}
 	}
 );Snakeskin.addDirective(
@@ -10103,20 +10123,21 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			var groups = this.splitAttrsGroup(command);
+		if (this.isReady()) {
+			var str = '',
+				groups = this.splitAttrsGroup(command);
 
 			for (var i = -1; ++i < groups.length;) {
 				var el = groups[i];
 
-				this.save(
-					this.returnAttrDecl(
-						el.attr,
-						el.group,
-						el.separator
-					)
+				str += this.returnAttrDecl(
+					el.attr,
+					el.group,
+					el.separator
 				);
 			}
+
+			this.append(str);
 		}
 	}
 );
@@ -10436,13 +10457,13 @@ Snakeskin.addDirective(
 			params: parts[2] ? parts[1] : null
 		});
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (!this.inlineIterators) {
 				if (parts.length === 3) {
-					this.save((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
+					this.append((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
 
 				} else {
-					this.save((("\
+					this.append((("\
 						Snakeskin.forEach(\
 							" + (this.prepareOutput(parts[0], true))) + (",\
 							function (" + (this.declCallbackArgs(parts[1]))) + ") {\
@@ -10631,7 +10652,7 @@ Snakeskin.addDirective(
 				return str;
 			})();
 
-			this.save(resStr);
+			this.append(resStr);
 			this.structure.params = {
 				from: this.res.length,
 				end: end,
@@ -10641,7 +10662,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (this.inlineIterators) {
 				var params = this.structure
 					.params;
@@ -10649,16 +10670,16 @@ Snakeskin.addDirective(
 				var part = this.res
 					.substring(params.from);
 
-				this.save((("} " + (params.end + part)) + (" } " + (params.oldEnd + part)) + " }}}}"));
+				this.append((("} " + (params.end + part)) + (" } " + (params.oldEnd + part)) + " }}}}"));
 
 			} else {
 				var params$0 = this.structure.params.params;
 
 				if (params$0) {
-					this.save((("}, " + (this.prepareOutput(params$0, true))) + ");"));
+					this.append((("}, " + (this.prepareOutput(params$0, true))) + ");"));
 
 				} else {
-					this.save('});');
+					this.append('});');
 				}
 			}
 		}
@@ -10689,20 +10710,20 @@ Snakeskin.addDirective(
 			params: parts[2] ? parts[1] : null
 		});
 
-		if (this.isSimpleOutput()) {
-			this.save((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
+		if (this.isReady()) {
+			this.append((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var params = this.structure.params.params;
 
 			if (params) {
-				this.save((("}, " + (this.prepareOutput(params, true))) + ");"));
+				this.append((("}, " + (this.prepareOutput(params, true))) + ");"));
 
 			} else {
-				this.save('});');
+				this.append('});');
 			}
 		}
 	}
@@ -10730,9 +10751,9 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (!this.inlineIterators) {
-				this.save((("\
+				this.append((("\
 					Snakeskin.forIn(\
 						" + (this.prepareOutput(parts[0], true))) + (",\
 						function (" + (this.declCallbackArgs(parts[1]))) + ") {\
@@ -10812,18 +10833,13 @@ Snakeskin.addDirective(
 				return str;
 			})();
 
-			this.save(resStr);
+			this.append(resStr);
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			if (this.inlineIterators) {
-				this.save('}}');
-
-			} else {
-				this.save('});');
-			}
+		if (this.isReady()) {
+			this.append(this.inlineIterators ? '}}' : '});');
 		}
 	}
 );Snakeskin.addDirective(
@@ -10836,15 +10852,13 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save((("if (" + (this.prepareOutput(command, true))) + ") {"));
+		if (this.isReady()) {
+			this.append((("if (" + (this.prepareOutput(command, true))) + ") {"));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -10858,15 +10872,13 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir('if');
-		if (this.isSimpleOutput()) {
-			this.save((("if (!(" + (this.prepareOutput(command, true))) + ")) {"));
+		if (this.isReady()) {
+			this.append((("if (!(" + (this.prepareOutput(command, true))) + ")) {"));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -10882,8 +10894,8 @@ Snakeskin.addDirective(
 			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"if\""));
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save((("} else if (" + (this.prepareOutput(command, true))) + ") {"));
+		if (this.isReady()) {
+			this.append((("} else if (" + (this.prepareOutput(command, true))) + ") {"));
 		}
 	}
 );
@@ -10900,9 +10912,7 @@ Snakeskin.addDirective(
 			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"if\""));
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save('} else {');
-		}
+		this.append('} else {');
 	}
 );
 
@@ -10920,15 +10930,13 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save((("switch (" + (this.prepareOutput(command, true))) + ") {"));
+		if (this.isReady()) {
+			this.append((("switch (" + (this.prepareOutput(command, true))) + ") {"));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -10951,15 +10959,13 @@ Snakeskin.addDirective(
 			return this.error((("directive \"" + (this.name)) + "\" can be used only within a \"switch\""));
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save((("case " + (this.prepareOutput(command, true))) + ": {"));
+		if (this.isReady()) {
+			this.append((("case " + (this.prepareOutput(command, true))) + ": {"));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('} break;');
-		}
+		this.append('} break;');
 	}
 );
 
@@ -10977,15 +10983,11 @@ Snakeskin.addDirective(
 			return this.error((("directive \"" + (this.name)) + "\" can be used only within a \"switch\""));
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save('default: {');
-		}
+		this.append('default: {');
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );Snakeskin.addDirective(
 	'__&__',
@@ -11068,7 +11070,7 @@ Snakeskin.addDirective(
 	'__appendLine__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function (command) {
@@ -11095,7 +11097,7 @@ Snakeskin.addDirective(
 	'__setLine__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function (command) {
@@ -11111,13 +11113,13 @@ Snakeskin.addDirective(
 	'__freezeLine__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function (command) {
 		this.startDir();
 
-		if (this.lines.length >= parseInt(command, 10)) {
+		if (!command || this.lines.length >= parseInt(command, 10)) {
 			this.freezeLine++;
 		}
 	},
@@ -11131,7 +11133,7 @@ Snakeskin.addDirective(
 	'__switchLine__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function (command) {
@@ -11538,7 +11540,7 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var useCallback = this.hasParent(this.getGroup('callback'));
 
 			var async = this.getGroup('async');
@@ -11561,13 +11563,13 @@ Snakeskin.addDirective(
 
 				if (async[strongParent]) {
 					if (strongParent === 'waterfall') {
-						this.save((("\
+						this.append((("\
 							" + prfx) + "\
 							return arguments[arguments.length - 1](false);\
 						"));
 
 					} else {
-						this.save((("\
+						this.append((("\
 							" + prfx) + "\
 \
 							if (typeof arguments[0] === 'function') {\
@@ -11579,7 +11581,7 @@ Snakeskin.addDirective(
 					}
 
 				} else {
-					this.save((("\
+					this.append((("\
 						" + prfx) + "\
 						return false;\
 					"));
@@ -11588,7 +11590,7 @@ Snakeskin.addDirective(
 				this.deferReturn = chunk ? true : val;
 
 			} else {
-				this.save(val);
+				this.append(val);
 			}
 		}
 	}
@@ -12168,8 +12170,8 @@ for (var i = -1; ++i < template.length;) {
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save((("throw " + (this.prepareOutput(command, true))) + ";"));
+		if (this.isReady()) {
+			this.append((("throw " + (this.prepareOutput(command, true))) + ";"));
 		}
 	}
 );
@@ -12188,19 +12190,15 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save('try {');
-		}
+		this.append('try {');
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			if (this.structure.params.chain) {
-				this.save('}');
+		if (this.structure.params.chain) {
+			this.append('}');
 
-			} else {
-				this.save('} catch (ignore) {}');
-			}
+		} else {
+			this.append('} catch (ignore) {}');
 		}
 	}
 );
@@ -12219,8 +12217,8 @@ Snakeskin.addDirective(
 
 		this.structure.params.chain = true;
 
-		if (this.isSimpleOutput()) {
-			this.save((("} catch (" + (this.declVar(command))) + ") {"));
+		if (this.isReady()) {
+			this.append((("} catch (" + (this.declVar(command))) + ") {"));
 		}
 	}
 );
@@ -12238,10 +12236,7 @@ Snakeskin.addDirective(
 		}
 
 		this.structure.params.chain = true;
-
-		if (this.isSimpleOutput()) {
-			this.save('} finally {');
-		}
+		this.append('} finally {');
 	}
 );/**
  * Таблица созданных переменных
@@ -12264,8 +12259,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save(this.multiDeclVar(command));
+		if (this.isReady()) {
+			this.append(this.multiDeclVar(command));
 		}
 	}
 );var voidRgxp = /(?:^|\s+)(?:var|const|let) /;
@@ -12286,8 +12281,8 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			this.save((("" + (this.prepareOutput(command, true))) + ";"));
+		if (this.isReady()) {
+			this.append((("" + (this.prepareOutput(command, true))) + ";"));
 		}
 	}
 );/**
@@ -12350,26 +12345,25 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var async = this.getGroup('async');
-
 			var parent = this.structure.parent,
 				name = parent.name;
 
 			var prfx = async[name] &&
-				parent.children.length > 1 ? ', ' : '';
+			parent.children.length > 1 ? ', ' : '';
 
 			this.structure.params.insideAsync = async[name];
 
 			if (async[name]) {
 				if (name === 'waterfall') {
-					this.save((("\
+					this.append((("\
 						" + prfx) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
 							" + (this.deferReturn ? 'if (__RETURN__) { return arguments[arguments.length - 1](false); }' : '')) + "\
 					"));
 
 				} else {
-					this.save((("\
+					this.append((("\
 						" + prfx) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
 							" + (this.deferReturn ? ("if (__RETURN__) {\
 								if (typeof arguments[0] === 'function') {\
@@ -12382,7 +12376,7 @@ Snakeskin.addDirective(
 				}
 
 			} else {
-				this.save((("\
+				this.append((("\
 					" + prfx) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
 						" + (this.deferReturn ? 'if (__RETURN__) { return false; }' : '')) + "\
 				"));
@@ -12391,16 +12385,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			var params = this.structure.params;
-
-			if (params.insideAsync) {
-				this.save('})');
-
-			} else {
-				this.save('});');
-			}
-		}
+		this.append('})' + (this.structure.params.insideAsync ? '' : ';'));
 	}
 );
 
@@ -12426,16 +12411,13 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save((("], function (" + (this.declCallbackArgs(parts))) + ") {"));
+		if (this.isReady()) {
+			this.append((("], function (" + (this.declCallbackArgs(parts))) + ") {"));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('});');
-		}
-
+		this.append('});');
 		this.endDir();
 	}
 );
@@ -12462,15 +12444,11 @@ for (var i = -1; ++i < series.length;) {
 
 		function (command, commandLength, type) {
 			this.startDir();
-			if (this.isSimpleOutput()) {
-				this.save((("async." + type) + "(["));
-			}
+			this.append((("async." + type) + "(["));
 		},
 
 		function () {
-			if (this.isSimpleOutput()) {
-				this.save(']);');
-			}
+			this.append(']);');
 		}
 	);
 }
@@ -12491,15 +12469,11 @@ for (var i$0 = -1; ++i$0 < async.length;) {
 
 		function (command, commandLength, type) {
 			this.startDir();
-			if (this.isSimpleOutput()) {
-				this.save((("async." + type) + "("));
-			}
+			this.append((("async." + type) + "("));
 		},
 
 		function () {
-			if (this.isSimpleOutput()) {
-				this.save(');');
-			}
+			this.append(');');
 		}
 	);
 }
@@ -12518,15 +12492,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save((("" + command) + ".then("));
-		}
+		this.append((("" + command) + ".then("));
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(');');
-		}
+		this.append(');');
 	}
 );Snakeskin.addDirective(
 	'break',
@@ -12553,7 +12523,7 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (command === 'proto') {
 				if (!insideProto) {
 					return this.error('proto is not defined');
@@ -12563,24 +12533,24 @@ Snakeskin.addDirective(
 					return this.error('can\'t break proto inside a callback');
 				}
 
-				this.save(this.prepareOutput('break __I_PROTO__;', true));
+				this.append(this.prepareOutput('break __I_PROTO__;', true));
 				return;
 			}
 
 			if (cycles[inside]) {
 				if (inside === insideCallback) {
-					this.save('return false;');
+					this.append('return false;');
 
 				} else {
-					this.save('break;');
+					this.append('break;');
 				}
 
 			} else if (async[inside]) {
 				if (inside === 'waterfall') {
-					this.save('return arguments[arguments.length - 1](false);');
+					this.append('return arguments[arguments.length - 1](false);');
 
 				} else {
-					this.save(("\
+					this.append(("\
 						if (typeof arguments[0] === 'function') {\
 							return arguments[0](false);\
 						}\
@@ -12590,7 +12560,7 @@ Snakeskin.addDirective(
 				}
 
 			} else {
-				this.save(this.prepareOutput('break __I_PROTO__;', true));
+				this.append(this.prepareOutput('break __I_PROTO__;', true));
 			}
 		}
 	}
@@ -12621,7 +12591,7 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			if (command === 'proto') {
 				if (!insideProto) {
 					return this.error(("proto is not defined"));
@@ -12631,24 +12601,24 @@ Snakeskin.addDirective(
 					return this.error('can\'t continue proto inside a callback');
 				}
 
-				this.save(this.prepareOutput('continue __I_PROTO__;', true));
+				this.append(this.prepareOutput('continue __I_PROTO__;', true));
 				return;
 			}
 
 			if (cycles[inside]) {
 				if (inside === insideCallback) {
-					this.save('return;');
+					this.append('return;');
 
 				} else {
-					this.save('continue;');
+					this.append('continue;');
 				}
 
 			} else if (async[inside]) {
 				if (inside === 'waterfall') {
-					this.save('return arguments[arguments.length - 1]();');
+					this.append('return arguments[arguments.length - 1]();');
 
 				} else {
-					this.save(("\
+					this.append(("\
 						if (typeof arguments[0] === 'function') {\
 							return arguments[0]();\
 						}\
@@ -12658,7 +12628,7 @@ Snakeskin.addDirective(
 				}
 
 			} else {
-				this.save(this.prepareOutput('continue __I_PROTO__;', true));
+				this.append(this.prepareOutput('continue __I_PROTO__;', true));
 			}
 		}
 	}
@@ -12745,12 +12715,13 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (this.isSimpleOutput()) {
+
+		if (this.isReady()) {
 			if (command) {
-				this.save((("yield " + (this.prepareOutput(command, true))) + ";"));
+				this.append((("yield " + (this.prepareOutput(command, true))) + ";"));
 
 			} else {
-				this.save((("\
+				this.append((("\
 					yield " + (this.returnResult())) + (";\
 					__RESULT__ = " + (this.declResult())) + ";\
 				"));
@@ -12784,9 +12755,7 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap((("'" + (types[type])) + "'")));
-		}
+		this.append(this.wrap((("'" + (types[type])) + "'")));
 	}
 );Snakeskin.addDirective(
 	'script',
@@ -12800,7 +12769,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var parts = command.split(' '),
 				type = parts[0] || 'js';
 
@@ -12813,7 +12782,7 @@ Snakeskin.addDirective(
 				'html': 'text/html'
 			};
 
-			this.save(this.wrap((("'<script type=\"" + (types[type] || this.prepareOutput(type, true))) + "\"'")));
+			this.append(this.wrap((("'<script type=\"" + (types[type] || this.prepareOutput(type, true))) + "\"'")));
 
 			if (parts.length > 1) {
 				var args = [].slice.call(arguments);
@@ -12825,14 +12794,12 @@ Snakeskin.addDirective(
 				this.inline = false;
 			}
 
-			this.save(this.wrap('\'>\''));
+			this.append(this.wrap('\'>\''));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap('\'</script>\''));
-		}
+		this.append(this.wrap('\'</script>\''));
 	}
 );Snakeskin.addDirective(
 	'style',
@@ -12846,7 +12813,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var parts = command.split(' '),
 				type = parts[0] || 'css';
 
@@ -12854,7 +12821,7 @@ Snakeskin.addDirective(
 				'css': 'text/css'
 			};
 
-			this.save(this.wrap((("'<style type=\"" + (types[type] || this.prepareOutput(type, true))) + "\"'")));
+			this.append(this.wrap((("'<style type=\"" + (types[type] || this.prepareOutput(type, true))) + "\"'")));
 
 			if (parts.length > 1) {
 				var args = [].slice.call(arguments);
@@ -12866,14 +12833,12 @@ Snakeskin.addDirective(
 				this.inline = false;
 			}
 
-			this.save(this.wrap('\'>\''));
+			this.append(this.wrap('\'>\''));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap('\'</style>\''));
-		}
+		this.append(this.wrap('\'</style>\''));
 	}
 );Snakeskin.addDirective(
 	'link',
@@ -12886,7 +12851,7 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var parts = command.split(' '),
 				type = parts[0] || 'css';
 
@@ -12895,7 +12860,7 @@ Snakeskin.addDirective(
 				'acss': 'type="text/css" rel="alternate stylesheet"'
 			};
 
-			this.save(this.wrap((("'<link " + (types[type])) + "'")));
+			this.append(this.wrap((("'<link " + (types[type])) + "'")));
 
 			if (parts.length > 1) {
 				var args = [].slice.call(arguments);
@@ -12907,14 +12872,12 @@ Snakeskin.addDirective(
 				this.inline = false;
 			}
 
-			this.save(this.wrap('\' href="\''));
+			this.append(this.wrap('\' href="\''));
 		}
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap('\'" />\''));
-		}
+		this.append(this.wrap('\'" />\''));
 	}
 );var importMap = {
 	'root': true,
@@ -12974,19 +12937,17 @@ Snakeskin.addDirective(
 			command: !!(command)
 		});
 
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap('\'<!--\''));
+		var str = this.wrap('\'<!--\'');
 
-			if (command) {
-				this.save(this.wrap((("'[if " + command) + "]>'")));
-			}
+		if (command) {
+			str += this.wrap((("'[if " + command) + "]>'"));
 		}
+
+		this.append(str);
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap((("'" + (this.structure.params.command ? ' <![endif]' : '')) + "-->'")));
-		}
+		this.append(this.wrap((("'" + (this.structure.params.command ? ' <![endif]' : '')) + "-->'")));
 	}
 );var inlineTagMap = {
 	'img': true,
@@ -13021,7 +12982,7 @@ Snakeskin.addDirective(
 			bemRef: this.bemRef
 		});
 
-		if (this.isSimpleOutput()) {
+		if (this.isReady()) {
 			var parts = command.split(' '),
 				desc = this.returnTagDesc(parts[0]);
 
@@ -13055,7 +13016,7 @@ Snakeskin.addDirective(
 			}
 
 			str += this.wrap((("'" + (!params.block ? '/' : '')) + ">'"));
-			this.save(str);
+			this.append(str);
 		}
 	},
 
@@ -13063,8 +13024,8 @@ Snakeskin.addDirective(
 		var params = this.structure.params;
 		this.bemRef = params.bemRef;
 
-		if (this.isSimpleOutput() && params.block) {
-			this.save(this.wrap((("'</" + (params.tag)) + ">'")));
+		if (params.block) {
+			this.append(this.wrap((("'</" + (params.tag)) + ">'")));
 		}
 	}
 );
@@ -13078,7 +13039,6 @@ Snakeskin.addDirective(
  */
 DirObj.prototype.returnTagDesc = function (str) {
 	var action = '';
-
 	var tag = '',
 		id = '',
 		classes = [];
@@ -13725,6 +13685,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 				if (canParse &&
 					isNextAssign(command, i + word.length) &&
 					tplName &&
+					constCache[tplName] &&
 					constCache[tplName][vres]
 				) {
 
