@@ -52,14 +52,14 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if (this.isReady()) {
+		if (this.isSimpleOutput()) {
 			let args = blockCache[this.tplName][name].args;
 
 			if (args.params) {
 				let fnDecl = `__BLOCKS__.${name}`;
 				struct.params.fn = fnDecl;
 
-				this.append(`
+				this.save(`
 					if (!${fnDecl}) {
 						${fnDecl} = function (${args.str}) {
 							var __RESULT__ = ${this.declResult()};
@@ -100,8 +100,8 @@ Snakeskin.addDirective(
 		var params = this.structure.params,
 			block = blockCache[this.tplName][params.name];
 
-		if (this.isReady() && params.fn) {
-			this.append(`
+		if (this.isSimpleOutput() && params.fn) {
+			this.save(`
 						return ${this.returnResult()};
 					};
 				}
