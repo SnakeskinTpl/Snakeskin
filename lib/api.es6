@@ -16,6 +16,9 @@
  * @param {boolean} params.inlineIterators - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
  *
+ * @param {boolean} params.xml - если false, то snakeskin не делает дополнительных
+ *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ *
  * @param {boolean} params.escapeOutput - если false, то вывод значений выражений
  *     не будет принудительно экранироваться фильтром html
  *
@@ -57,6 +60,9 @@ function DirObj(src, params) {
 
 	/** @type {boolean} */
 	this.inlineIterators = params.inlineIterators;
+
+	/** @type {boolean} */
+	this.xml = params.xml;
 
 	/** @type {boolean} */
 	this.escapeOutput = params.escapeOutput;

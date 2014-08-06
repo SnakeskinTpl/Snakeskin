@@ -191,7 +191,8 @@ Snakeskin.addDirective(
 					{
 						inlineIterators: this.inlineIterators,
 						stringBuffer: this.stringBuffer,
-						escapeOutput: this.escapeOutput
+						escapeOutput: this.escapeOutput,
+						xml: this.xml
 					},
 
 					null,

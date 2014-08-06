@@ -5,6 +5,7 @@ var nextLineRgxp = /[\r\n\v]/,
 var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
 	bEndRgxp = /[^\s\/]/;
 
+var tAttrRgxp = /[^'" ]/;
 var uid;
 
 /**
@@ -36,6 +37,9 @@ var uid;
  *
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
+ *
+ * @param {?boolean=} [opt_params.xml=true] - если false, то snakeskin не делает дополнительных
+ *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
  *
  * @param {?boolean=} [opt_params.escapeOutput=true] - если true, то работа итераторов forEach и forIn
  *     будет развёртвываться в циклы
@@ -97,6 +101,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
 	p.debug = s(p.debug, p['debug']) || null;
+
+	var xml =
+		p.xml = s(p.xml, p['xml']) !== false;
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -202,6 +209,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		onError: p.onError,
 		stringBuffer: p.stringBuffer,
 		inlineIterators: p.inlineIterators,
+		xml: xml,
 		escapeOutput: p.escapeOutput,
 		interface: p.interface,
 		throws: p.throws,
@@ -241,6 +249,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var bOpen = false,
 		bEnd,
 		bEscape = false;
+
+	var tOpen = 0,
+		tAttr = false,
+		tAttrBegin = false,
+		tAttrEscape = false;
 
 	var filterStart = false,
 		filterStartRgxp = /[a-z]/i;
@@ -638,7 +651,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		// Запись команды
 		if (begin) {
 			if (beginStr && dir.isSimpleOutput()) {
-				dir.save(`'${dir.$$()};`);
+				let prfx = '';
+
+				if (xml && tAttr && !tAttrBegin) {
+					prfx = '"';
+					tAttrBegin = true;
+					tAttrEscape = true;
+				}
+
+				dir.save(`${prfx}'${dir.$$()};`);
 				beginStr = false;
 			}
 
@@ -730,6 +751,53 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
+					if (xml) {
+						if (el === '<') {
+							tOpen++;
+
+						} else if (el === '>') {
+							if (tOpen) {
+								tOpen--;
+
+							} else {
+								el = '&gt;'
+							}
+						}
+
+						if (tOpen > 1) {
+							dir.error(`invalid XML declaration`);
+							return false;
+						}
+
+						if (tAttr) {
+							if (el === ' ' || !tOpen) {
+								if (tAttrBegin) {
+									tAttr = false;
+									tAttrBegin = false;
+
+									if (tAttrEscape) {
+										el = `"${el}`;
+										tAttrEscape = false;
+									}
+
+								} else if (!tOpen) {
+									tAttr = false;
+								}
+
+							} else if (!tAttrBegin) {
+								tAttrBegin = true;
+
+								if (el !== '"' && el !== '\'') {
+									tAttrEscape = true;
+									el = `"${el}`;
+								}
+							}
+
+						} else if (tOpen && el === '=') {
+							tAttr = true;
+						}
+					}
+
 					dir.save(applyDefEscape(el));
 				}
 
@@ -744,6 +812,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			}
 		}
+	}
+
+	if (tOpen) {
+		dir.error(`invalid XML declaration`);
+		return false;
 	}
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
