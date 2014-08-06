@@ -34,13 +34,13 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 			space = '\n';
 			tSpace++;
 
-		} else {
+		} else if (clrL) {
 			if (whiteSpaceRgxp.test(el)) {
 				spaces++;
 				space += el;
 				tSpace++;
 
-			} else if (clrL) {
+			} else {
 				clrL = false;
 				let nextSpace = false;
 
