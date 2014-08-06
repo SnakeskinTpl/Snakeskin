@@ -229,7 +229,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			old
 		]);
 
-		defParams += `var ${el.key} = ${this.prepareOutput(el.value, true)};`;
+		defParams += `var ${el.key} = ${this.prepareOutput(this.replaceDangerBlocks(el.value), true)};`;
 		struct.vars[el.key] = {
 			value: el.key,
 			scope: this.scope.length
@@ -262,7 +262,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 		decl += el.key;
 
 		if (el.value !== void 0) {
-			defParams += `${el.key} = arguments[${i}] = ${el.key} != null ? ${el.key} : ${this.prepareOutput(el.value, true)};`;
+			defParams += `${el.key} = arguments[${i}] = ${el.key} != null ? ${el.key} : ${this.prepareOutput(this.replaceDangerBlocks(el.value), true)};`;
 		}
 
 		if (i !== argsList.length - 1) {
