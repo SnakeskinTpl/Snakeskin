@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 06 Aug 2014 10:22:05 GMT
+ * Date: Wed, 06 Aug 2014 10:26:55 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -11102,7 +11102,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-
 		if (!this.freezeLine) {
 			this.info['line'] = parseInt(command, 10);
 		}
@@ -11118,7 +11117,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-
 		if (!command || this.lines.length >= parseInt(command, 10)) {
 			this.freezeLine++;
 		}
