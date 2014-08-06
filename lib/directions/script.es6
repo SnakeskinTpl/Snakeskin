@@ -10,38 +10,34 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
-			let parts = command.split(' '),
-				type = parts[0] || 'js';
+		var parts = command.split(' '),
+			type = parts[0] || 'js';
 
-			let types = {
-				'js': 'text/javascript',
-				'dart': 'application/dart',
-				'coffee': 'application/coffeescript',
-				'ts': 'application/typescript',
-				'json': 'application/json',
-				'html': 'text/html'
-			};
+		var types = {
+			'js': 'text/javascript',
+			'dart': 'application/dart',
+			'coffee': 'application/coffeescript',
+			'ts': 'application/typescript',
+			'json': 'application/json',
+			'html': 'text/html'
+		};
 
-			this.save(this.wrap(`'<script type="${types[type] || this.prepareOutput(type, true)}"'`));
+		var str = this.wrap(`'<script type="${types[type] || this.prepareOutput(type, true)}"'`);
 
-			if (parts.length > 1) {
-				let args = [].slice.call(arguments);
+		if (parts.length > 1) {
+			let args = [].slice.call(arguments);
 
-				args[0] = parts.slice(1).join(' ');
-				args[1] = args[0].length;
+			args[0] = parts.slice(1).join(' ');
+			args[1] = args[0].length;
 
-				Snakeskin.Directions['attr'].apply(this, args);
-				this.inline = false;
-			}
-
-			this.save(this.wrap('\'>\''));
+			Snakeskin.Directions['attr'].apply(this, args);
+			this.inline = false;
 		}
+
+		this.save(str + this.wrap('\'>\''));
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap('\'</script>\''));
-		}
+		this.append(this.wrap('\'</script>\''));
 	}
 );

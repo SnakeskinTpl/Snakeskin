@@ -25,8 +25,6 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		this.space = true;
 
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap(`'${types[type]}'`));
-		}
+		this.append(this.wrap(`'${types[type]}'`));
 	}
 );

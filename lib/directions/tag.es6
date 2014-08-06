@@ -31,50 +31,48 @@ Snakeskin.addDirective(
 			bemRef: this.bemRef
 		});
 
-		if (this.isSimpleOutput()) {
-			let parts = command.split(' '),
-				desc = this.returnTagDesc(parts[0]);
+		var parts = command.split(' '),
+			desc = this.returnTagDesc(parts[0]);
 
-			let params = this.structure.params;
-			params.tag = desc.tag;
-			params.block = !inlineTagMap[desc.tag];
+		var params = this.structure.params;
+		params.tag = desc.tag;
+		params.block = !inlineTagMap[desc.tag];
 
-			let groups = this.splitAttrsGroup(parts.slice(1).join(' '));
-			let str = `
-				__TMP__ = {
-					'class': ''
-				};
+		var groups = this.splitAttrsGroup(parts.slice(1).join(' '));
+		var str = `
+			__TMP__ = {
+				'class': ''
+			};
 
-				${this.wrap(`'<${desc.tag}'`)}
-			`;
+			${this.wrap(`'<${desc.tag}'`)}
+		`;
 
-			for (let i = -1; ++i < groups.length;) {
-				let el = groups[i];
-				str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
-			}
-
-			if (desc.id) {
-				str += this.wrap(`' id="${desc.id}"'`);
-			}
-
-			if (desc.classes.length) {
-				str += `
-					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
-					${this.wrap(`' class="' + __TMP__['class'] + '"'`)}
-				`;
-			}
-
-			str += this.wrap(`'${!params.block ? '/' : ''}>'`);
-			this.save(str);
+		for (let i = -1; ++i < groups.length;) {
+			let el = groups[i];
+			str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
 		}
+
+		if (desc.id) {
+			str += this.wrap(`' id="${desc.id}"'`);
+		}
+
+		if (desc.classes.length) {
+			str += `
+				__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
+				${this.wrap(`' class="' + __TMP__['class'] + '"'`)}
+			`;
+		}
+
+		str += this.wrap(`'${!params.block ? '/' : ''}>'`);
+		this.append(str);
 	},
 
 	function () {
 		var params = this.structure.params;
 		this.bemRef = params.bemRef;
 
-		if (this.isSimpleOutput() && params.block) {
-			this.save(this.wrap(`'</${params.tag}>'`));
+		if (params.block) {
+			this.append(this.wrap(`'</${params.tag}>'`));
 		}
 	}
 );
@@ -88,7 +86,6 @@ Snakeskin.addDirective(
  */
 DirObj.prototype.returnTagDesc = function (str) {
 	var action = '';
-
 	var tag = '',
 		id = '',
 		classes = [];
