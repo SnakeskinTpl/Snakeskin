@@ -14,18 +14,16 @@ Snakeskin.addDirective(
 			command: Boolean(command)
 		});
 
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap('\'<!--\''));
+		var str = this.wrap('\'<!--\'');
 
-			if (command) {
-				this.save(this.wrap(`'[if ${command}]>'`));
-			}
+		if (command) {
+			str += this.wrap(`'[if ${command}]>'`);
 		}
+
+		this.append(str);
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save(this.wrap(`'${this.structure.params.command ? ' <![endif]' : ''}-->'`));
-		}
+		this.append(this.wrap(`'${this.structure.params.command ? ' <![endif]' : ''}-->'`));
 	}
 );

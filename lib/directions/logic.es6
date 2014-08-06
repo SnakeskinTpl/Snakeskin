@@ -8,15 +8,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save(`if (${this.prepareOutput(command, true)}) {`);
-		}
+		this.append(`if (${this.prepareOutput(command, true)}) {`);
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -30,15 +26,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir('if');
-		if (this.isSimpleOutput()) {
-			this.save(`if (!(${this.prepareOutput(command, true)})) {`);
-		}
+		this.append(`if (!(${this.prepareOutput(command, true)})) {`);
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -54,9 +46,7 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can be used only with a "if"`);
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save(`} else if (${this.prepareOutput(command, true)}) {`);
-		}
+		this.append(`} else if (${this.prepareOutput(command, true)}) {`);
 	}
 );
 
@@ -72,9 +62,7 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can be used only with a "if"`);
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save('} else {');
-		}
+		this.append('} else {');
 	}
 );
 
@@ -92,15 +80,11 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		if (this.isSimpleOutput()) {
-			this.save(`switch (${this.prepareOutput(command, true)}) {`);
-		}
+		this.append(`switch (${this.prepareOutput(command, true)}) {`);
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
 
@@ -123,15 +107,11 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can be used only within a "switch"`);
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save(`case ${this.prepareOutput(command, true)}: {`);
-		}
+		this.append(`case ${this.prepareOutput(command, true)}: {`);
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('} break;');
-		}
+		this.append('} break;');
 	}
 );
 
@@ -149,14 +129,10 @@ Snakeskin.addDirective(
 			return this.error(`directive "${this.name}" can be used only within a "switch"`);
 		}
 
-		if (this.isSimpleOutput()) {
-			this.save('default: {');
-		}
+		this.append('default: {');
 	},
 
 	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
+		this.append('}');
 	}
 );
