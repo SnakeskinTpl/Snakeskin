@@ -38,7 +38,8 @@ var entityMap = {
 };
 
 var escapeHTMLRgxp = /[&<>"'\/]/g,
-	escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>]+)/g,
+	escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>=]+)/g,
+	escapeJavaScript = /(javascript)(:|;)/,
 	escapeHTML = (s) => entityMap[s];
 
 /**
@@ -50,8 +51,9 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  */
 Snakeskin.Filters.html = function (str) {
 	return String(str)
+		.replace(escapeAttrRgxp, '$1&quot;$2&quot;')
 		.replace(escapeHTMLRgxp, escapeHTML)
-		.replace(escapeAttrRgxp, '$1&quot;$2&quot;');
+		.replace(escapeJavaScript, '$1&#31;$2');
 };
 
 /**
