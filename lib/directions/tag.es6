@@ -21,7 +21,8 @@ Snakeskin.addDirective(
 		notEmpty: true,
 		text: true,
 		replacers: {
-			'<': (cmd) => cmd.replace('<', 'tag ')
+			'<': (cmd) => cmd.replace('<', 'tag '),
+			'/<': (cmd) => cmd.replace('\/<', 'end tag')
 		}
 	},
 
