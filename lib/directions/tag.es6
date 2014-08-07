@@ -1,3 +1,4 @@
+var tagRgxp = /^([^\s]+?\(|\()/;
 var inlineTagMap = {
 	'img': true,
 	'link': true,
@@ -18,7 +19,6 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		placement: 'template',
-		notEmpty: true,
 		text: true,
 		replacers: {
 			'<': (cmd) => cmd.replace('<', 'tag '),
@@ -33,6 +33,13 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isReady()) {
+			if (command) {
+				command = command.replace(tagRgxp, 'div $1');
+
+			} else {
+				command = 'div';
+			}
+
 			let parts = command.split(' '),
 				desc = this.returnTagDesc(parts[0]);
 
@@ -41,6 +48,7 @@ Snakeskin.addDirective(
 			params.block = !inlineTagMap[desc.tag];
 
 			let groups = this.splitAttrsGroup(parts.slice(1).join(' '));
+
 			let str = `
 				__TMP__ = {
 					'class': ''
@@ -61,11 +69,10 @@ Snakeskin.addDirective(
 			if (desc.classes.length) {
 				str += `
 					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
-					${this.wrap(`' class="' + __TMP__['class'] + '"'`)}
 				`;
 			}
 
-			str += this.wrap(`'${!params.block ? '/' : ''}>'`);
+			str += this.wrap(`' class="' + __TMP__['class'] + '"${!params.block ? '/' : ''}>'`);
 			this.append(str);
 		}
 	},
