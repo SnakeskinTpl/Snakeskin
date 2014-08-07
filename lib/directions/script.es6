@@ -30,7 +30,7 @@ Snakeskin.addDirective(
 				'html': 'text/html'
 			};
 
-			this.append(this.wrap(`'<script type="${types[type] || this.prepareOutput(type, true)}"'`));
+			this.append(this.wrap(`'<script type="${types[type] || this.replaceTplVars(type)}"'`));
 
 			if (parts.length > 1) {
 				let args = [].slice.call(arguments);

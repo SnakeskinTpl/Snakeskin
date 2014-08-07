@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 				'acss': 'type="text/css" rel="alternate stylesheet"'
 			};
 
-			this.append(this.wrap(`'<link ${types[type]}'`));
+			this.append(this.wrap(`'<link ${types[type] || this.replaceTplVars(type)}'`));
 
 			if (parts.length > 1) {
 				let args = [].slice.call(arguments);
