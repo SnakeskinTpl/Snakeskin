@@ -42,6 +42,6 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.append(this.wrap('\'" />\''));
+		this.append(this.wrap('\'"/>\''));
 	}
 );

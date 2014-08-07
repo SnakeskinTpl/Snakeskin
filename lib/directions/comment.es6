@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 		var str = this.wrap('\'<!--\'');
 
 		if (command) {
-			str += this.wrap(`'[if ${command}]>'`);
+			str += this.wrap(`'[if ${this.replaceTplVars(command)}]>'`);
 		}
 
 		this.append(str);
