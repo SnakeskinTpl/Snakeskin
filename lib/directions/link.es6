@@ -10,8 +10,15 @@ Snakeskin.addDirective(
 		this.space = true;
 
 		if (this.isReady()) {
+			if (command) {
+				command = command.replace(tagRgxp, 'css $1');
+
+			} else {
+				command = 'css';
+			}
+
 			let parts = command.split(' '),
-				type = parts[0] || 'css';
+				type = parts[0];
 
 			let types = {
 				'css': 'type="text/css" rel="stylesheet"',
