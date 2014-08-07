@@ -5,7 +5,8 @@ Snakeskin.addDirective(
 		placement: 'template',
 		text: true,
 		replacers: {
-			'#!': (cmd) => cmd.replace('#!', 'comment ')
+			'#!': (cmd) => cmd.replace('#!', 'comment '),
+			'/#': (cmd) => cmd.replace('\/#', 'end comment')
 		}
 	},
 
