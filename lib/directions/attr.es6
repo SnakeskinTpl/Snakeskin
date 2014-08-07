@@ -138,11 +138,19 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 		let el = str.charAt(i),
 			next = str.charAt(i + 1);
 
-		if (separator[el] && !pOpen && next === '(') {
-			pOpen++;
-			i++;
-			sep = el;
-			continue;
+		if (!pOpen) {
+			if (separator[el] && next === '(') {
+				pOpen++;
+				i++;
+				sep = el;
+				continue;
+			}
+
+			if (el === '(') {
+				pOpen++;
+				sep = '';
+				continue;
+			}
 		}
 
 		if (pOpen) {
