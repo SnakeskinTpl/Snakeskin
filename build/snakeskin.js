@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 08 Aug 2014 08:19:20 GMT
+ * Date: Fri, 08 Aug 2014 11:31:06 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6108,6 +6108,7 @@ var replacers = {},
 	aliases = {},
 	groups = {},
 	groupsList = [],
+	chains = {},
 
 	bem = {},
 	write = {};
@@ -8809,7 +8810,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				if (currentClrL && !dir.structure.parent && (shortMap[el] || shortMap[next2str])) {
+				if (currentClrL && !dir.tplName && (shortMap[el] || shortMap[next2str])) {
 					var adv = dir.lines[lastLine].length - 1,
 						source$0 = dir.toBaseSyntax(dir.source, dir.i - adv);
 
@@ -9185,7 +9186,13 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					} else {
 						while (struct.spaces >= spaces) {
 							if (struct.block) {
-								res += genEndDir(struct);
+								if (chains[struct.name] && chains[struct.name][obj.name]) {
+									obj.block = true;
+									obj.name = struct.name;
+
+								} else {
+									res += genEndDir(struct);
+								}
 							}
 
 							struct = struct
@@ -9360,6 +9367,10 @@ function getLineDesc(str, i) {
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
+ *
+ * @param {(Array|string)=} [params.chain] - название главной директивы (цепи), к которой принадлежит директива,
+ *     или массив названий
+ *
  * @param {(Array|string)=} [params.group] - название группы, к которой принадлежит директива,
  *     или массив названий
  *
@@ -9428,6 +9439,19 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 			groups[group[i]][name] = true;
 			groupsList[group[i]].push((("\"" + name) + "\""));
+		}
+	}
+
+	if (params.chain) {
+		var chain = Array.isArray(params.chain) ?
+			params.chain : [params.chain];
+
+		for (var i$0 = -1; ++i$0 < chain.length;) {
+			if (!chains[chain[i$0]]) {
+				chains[chain[i$0]] = {};
+			}
+
+			chains[chain[i$0]][name] = true;
 		}
 	}
 
@@ -11007,7 +11031,11 @@ Snakeskin.addDirective(
 	'elseIf',
 
 	{
-		notEmpty: true
+		notEmpty: true,
+		chain: [
+			'if',
+			'unless'
+		]
 	},
 
 	function (command) {
@@ -11025,7 +11053,11 @@ Snakeskin.addDirective(
 	'elseUnless',
 
 	{
-		notEmpty: true
+		notEmpty: true,
+		chain: [
+			'if',
+			'unless'
+		]
 	},
 
 	function (command) {
@@ -11043,12 +11075,15 @@ Snakeskin.addDirective(
 	'else',
 
 	{
-
+		chain: [
+			'if',
+			'unless'
+		]
 	},
 
 	function (command) {
 		if (!this.getGroup('if')[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a a " + (groupsList['template'].join(', '))) + ""));
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a " + (groupsList['if'].join(', '))) + ""));
 		}
 
 		if (command) {
@@ -12362,7 +12397,8 @@ Snakeskin.addDirective(
 	'catch',
 
 	{
-		notEmpty: true
+		notEmpty: true,
+		chain: 'try'
 	},
 
 	function (command) {
@@ -12382,7 +12418,8 @@ Snakeskin.addDirective(
 	'finally',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		chain: 'try'
 	},
 
 	function () {
