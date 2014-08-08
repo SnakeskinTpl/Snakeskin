@@ -111,17 +111,18 @@ function action(data) {
 				process.exit(1);
 			}
 
-			let dtd;
+			let dtd = null;
 
-			try {
-				dtd = JSON.parse(dataSrc);
+			if (dtd && dtd !== true) {
+				try {
+					dtd = JSON.parse(dataSrc);
 
-			} catch (ignore) {
-				dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
+				} catch (ignore) {
+					dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
+				}
 			}
 
 			res = tpl(dtd);
-
 			if (prettyPrint) {
 				if (toConsole) {
 					res = beautify['html'](res);
