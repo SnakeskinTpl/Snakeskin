@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 08 Aug 2014 07:17:12 GMT
+ * Date: Fri, 08 Aug 2014 08:19:20 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -10426,7 +10426,10 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 		}
 
 		if (command && command !== name) {
-			return this.error((("invalid closing directive, expected: \"" + name) + ("\", declared: \"" + command) + "\""));
+			var group = this.getGroup('rootTemplate');
+			if (!(this.interface && group[name] && group[command])) {
+				return this.error((("invalid closing directive, expected: \"" + name) + ("\", declared: \"" + command) + "\""));
+			}
 		}
 
 		if (inside[name]) {
@@ -12014,6 +12017,13 @@ for (var i = -1; ++i < template.length;) {
 					return this.error((("can't declare template \"" + tplName) + "\", try another name"));
 				}
 
+				this.info['template'] =
+					this.tplName = tplName;
+
+				if (this.name !== 'template' && !write[tplName]) {
+					write[tplName] = false;
+				}
+
 				// Для возможности удобного пост-парсинга,
 				// каждая функция снабжается комментарием вида:
 				// /* Snakeskin template: название шаблона; параметры через запятую */
@@ -12087,12 +12097,9 @@ for (var i = -1; ++i < template.length;) {
 				this.save((("this" + (concatProp(tplName))) + (" = function " + prfx) + ("" + (lastName !== null ? lastName : tplName)) + "("), iface);
 			}
 
-			this.info['template'] = tplName;
-			if (this.name !== 'template' && !write[tplName]) {
-				write[tplName] = false;
-			}
+			this.info['template'] =
+				this.tplName = tplName;
 
-			this.tplName = tplName;
 			this.blockStructure = {
 				name: 'root',
 				parent: null,
