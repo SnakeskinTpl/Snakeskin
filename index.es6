@@ -83,20 +83,21 @@ function action(data) {
 	var str = String(data),
 		res = Snakeskin.compile(str, params, {file: file});
 
-	var toConsole = input && !program['output'] || !newFile;
+	var toConsole = input && !program['output'] ||
+		!newFile;
 
 	if (res !== false) {
 		if (dataSrc) {
-			let main;
+			let tpl;
 
 			if (file) {
-				main = tpls[file.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
+				tpl = tpls[file.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
 
 			} else {
-				main = tpls.main || tpls[Object.keys(tpls)[0]];
+				tpl = tpls.main || tpls[Object.keys(tpls)[0]];
 			}
 
-			if (!main) {
+			if (!tpl) {
 				console.error('Template is not defined');
 				process.exit(1);
 			}
@@ -110,7 +111,7 @@ function action(data) {
 				dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
 			}
 
-			res = main(dtd);
+			res = tpl(dtd);
 
 			if (prettyPrint) {
 				if (toConsole) {
