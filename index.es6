@@ -15,7 +15,7 @@ program
 	.option('--language [src]', 'path to the localization file (JSON) or localization JSON')
 	.option('--words [src]', 'path to the localization file to save')
 
-	.option('--disable-xml-validation', 'disable default xml validation')
+	.option('--disable-xml', 'disable default xml validation')
 	.option('--interface', 'render all templates as interface')
 	.option('--string-buffer', 'use StringBuffer for concatenate strings')
 	.option('--inline-iterators', 'inline forEach and forIn')
@@ -26,7 +26,7 @@ program
 
 var fs = require('fs');
 var params = {
-	xml: !program['disableXmlValidation'],
+	xml: !program['disableXml'],
 	commonJS: program['commonJs'],
 	localization: !program['disableLocalization'],
 	language: program['language'],
@@ -107,33 +107,24 @@ function action(data) {
 				dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
 			}
 
-			let txt = main(dtd);
+			res = main(dtd);
 
 			if (params.prettyPrint) {
 				if (toConsole) {
-					txt = beautify['html'](txt);
+					res = beautify['html'](res);
 
 				} else {
-					txt = beautify[newFile.split('.').slice(-1)](txt);
+					res = beautify[newFile.split('.').slice(-1)](res);
 				}
 			}
+		}
 
-			if (toConsole) {
-				console.log(txt);
-
-			} else {
-				fs.writeFileSync(newFile, txt);
-				console.log(`File "${file}" has been successfully compiled "${newFile}".`);
-			}
+		if (toConsole) {
+			console.log(res);
 
 		} else {
-			if (toConsole) {
-				console.log(res);
-
-			} else {
-				fs.writeFileSync(newFile, res);
-				console.log(`File "${file}" has been successfully compiled "${newFile}".`);
-			}
+			fs.writeFileSync(newFile, res);
+			console.log(`File "${file}" has been successfully compiled "${newFile}".`);
 		}
 
 	} else {
