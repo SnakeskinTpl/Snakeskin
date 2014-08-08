@@ -712,7 +712,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				if (currentClrL && !dir.structure.parent && (shortMap[el] || shortMap[next2str])) {
+				if (currentClrL && !dir.tplName && (shortMap[el] || shortMap[next2str])) {
 					let adv = dir.lines[lastLine].length - 1,
 						source = dir.toBaseSyntax(dir.source, dir.i - adv);
 
