@@ -1,4 +1,4 @@
-//#!/usr/bin/env node
+#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 var program = require('commander');

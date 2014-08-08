@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 08 Aug 2014 15:37:20 GMT
+ * Date: Fri, 08 Aug 2014 15:48:15 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -10059,7 +10059,7 @@ function isAssign(str, opt_global) {
 
 		if (!eq && !count &&
 			(
-				el === '=' && next !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
+				el === '=' && next !== '=' && prev !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
 				advEqMap[el] && next === '=' ||
 				bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === '='
 			)
