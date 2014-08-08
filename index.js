@@ -9,7 +9,9 @@ program
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('-n, --common-js', 'common.js export (for node.js)')
+
 	.option('-d, --data [src]', 'path to the data file (JSON) or data JSON')
+	.option('-t, --tpl [name]', 'name of the main template')
 
 	.option('--disable-localization', 'disable support for localization')
 	.option('--language [src]', 'path to the localization file (JSON) or localization JSON')
@@ -50,9 +52,11 @@ if (lang) {
 	}
 }
 
+var dataSrc = program['data'],
+	mainTpl = program['tpl'];
+
 var beautify = require('js-beautify');
-var words = params.words,
-	dataSrc = program['data'];
+var words = params.words;
 
 if (words) {
 	params.words = {};
@@ -74,7 +78,7 @@ function action(data) {
 
 	var tpls = {};
 
-	if (dataSrc) {
+	if (dataSrc || mainTpl) {
 		params.commonJS = true;
 		params.context = tpls;
 		params.prettyPrint = false;
@@ -87,14 +91,19 @@ function action(data) {
 		!newFile;
 
 	if (res !== false) {
-		if (dataSrc) {
+		if (dataSrc || mainTpl) {
 			var tpl;
 
-			if (file) {
-				tpl = tpls[file.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
+			if (mainTpl) {
+				tpl = tpls[mainTpl];
 
 			} else {
-				tpl = tpls.main || tpls[Object.keys(tpls)[0]];
+				if (file) {
+					tpl = tpls[file.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
+
+				} else {
+					tpl = tpls.main || tpls[Object.keys(tpls)[0]];
+				}
 			}
 
 			if (!tpl) {
