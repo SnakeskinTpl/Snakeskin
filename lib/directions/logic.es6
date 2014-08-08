@@ -3,7 +3,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true
+		notEmpty: true,
+		group: 'if'
 	},
 
 	function (command) {
@@ -23,11 +24,12 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true
+		notEmpty: true,
+		group: 'if'
 	},
 
 	function (command) {
-		this.startDir('if');
+		this.startDir();
 		if (this.isReady()) {
 			this.append(`if (!(${this.prepareOutput(command, true)})) {`);
 		}
@@ -46,8 +48,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (this.structure.name !== 'if') {
-			return this.error(`directive "${this.name}" can be used only with a "if"`);
+		if (!this.getGroup('if')[this.structure.name]) {
+			return this.error(`directive "${this.name}" can be used only with a ${groupsList['if'].join(', ')}`);
 		}
 
 		if (this.isReady()) {
@@ -64,8 +66,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.structure.name !== 'if') {
-			return this.error(`directive "${this.name}" can be used only with a "if"`);
+		if (!this.getGroup('if')[this.structure.name]) {
+			return this.error(`directive "${this.name}" can be used only with a a ${groupsList['template'].join(', ')}`);
 		}
 
 		this.append('} else {');
