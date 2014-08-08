@@ -63,7 +63,6 @@ if (words) {
 }
 
 var input;
-
 if (!program['source'] && process.argv.length > 2) {
 	input = process.argv[process.argv.length - 1];
 }
