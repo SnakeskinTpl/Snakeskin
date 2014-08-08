@@ -85,7 +85,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (!this.getGroup('if')[this.structure.name]) {
-			return this.error(`directive "${this.name}" can be used only with a a ${groupsList['template'].join(', ')}`);
+			return this.error(`directive "${this.name}" can be used only with a ${groupsList['if'].join(', ')}`);
 		}
 
 		if (command) {
