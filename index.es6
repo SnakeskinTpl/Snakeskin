@@ -111,8 +111,7 @@ function action(data) {
 				process.exit(1);
 			}
 
-			let dtd = null;
-
+			let dtd = void 0;
 			if (dtd && dtd !== true) {
 				try {
 					dtd = JSON.parse(dataSrc);
