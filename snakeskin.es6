@@ -1,7 +1,5 @@
 module.exports = exports = require('./build/snakeskin.min');
-
 var fs = require('fs');
-var path = require('path');
 
 /**
  * Вернуть true, если заданный файл шаблонов соответствует скомпилированному
@@ -66,5 +64,5 @@ exports.compileFile = function (src, opt_params) {
  */
 exports.execFile = function (src, opt_params) {
 	var tpl = this.compileFile(src, opt_params);
-	return tpl[path.basename(src, '.ss')] || tpl.main || tpl[Object.keys(tpl)[0]] || null;
+	return tpl[src.split('.').slice(-1)] || tpl.main || tpl[Object.keys(tpl)[0]] || null;
 };
