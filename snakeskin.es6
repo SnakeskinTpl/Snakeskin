@@ -28,10 +28,11 @@ exports.check = function (source, result) {
 
 /**
  * Скомпилировать заданный файл и вернуть ссылку на полученный объект
+ * или false, если произошла ошибка при компиляции
  *
  * @param {string} src - путь к файлу шаблонов
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
- * @return {!Object}
+ * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
 	opt_params = opt_params || {};
@@ -40,19 +41,28 @@ exports.compileFile = function (src, opt_params) {
 	var source = fs.readFileSync(src).toString(),
 		resSrc = `${src}.js`;
 
-	var tpls;
+	var tpls,
+		res = true;
 
 	if (!this.check(src, resSrc)) {
-		fs.writeFileSync(resSrc, this.compile(source, opt_params, {file: src}));
+		res = this.compile(source, opt_params, {file: src});
+
+		if (res !== false) {
+			fs.writeFileSync(resSrc, res);
+		}
 	}
 
-	tpls = require(resSrc);
+	if (res !== false) {
+		tpls = require(resSrc);
 
-	if (tpls.init) {
-		tpls.init(this);
+		if (tpls.init) {
+			tpls.init(this);
+		}
+
+		return tpls;
 	}
 
-	return tpls;
+	return false;
 };
 
 /**
