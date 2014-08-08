@@ -185,6 +185,13 @@ for (let i = -1; ++i < template.length;) {
 					return this.error(`can't declare template "${tplName}", try another name`);
 				}
 
+				this.info['template'] =
+					this.tplName = tplName;
+
+				if (this.name !== 'template' && !write[tplName]) {
+					write[tplName] = false;
+				}
+
 				// Для возможности удобного пост-парсинга,
 				// каждая функция снабжается комментарием вида:
 				// /* Snakeskin template: название шаблона; параметры через запятую */
@@ -258,12 +265,9 @@ for (let i = -1; ++i < template.length;) {
 				this.save(`this${concatProp(tplName)} = function ${prfx}${lastName !== null ? lastName : tplName}(`, iface);
 			}
 
-			this.info['template'] = tplName;
-			if (this.name !== 'template' && !write[tplName]) {
-				write[tplName] = false;
-			}
+			this.info['template'] =
+				this.tplName = tplName;
 
-			this.tplName = tplName;
 			this.blockStructure = {
 				name: 'root',
 				parent: null,
