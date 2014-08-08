@@ -12,13 +12,20 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength, type) {
+		var output = false;
+
+		if (command.slice(-1) === '?') {
+			output = true;
+			command = command.slice(0, -1);
+		}
+
 		var tplName = this.tplName,
 			source = `^[\$a-z_${!this.scope.length ? L_MOD : ''}][$\\w\\[\\].\\s]*=[^=]`;
 
 		var rgxp = rgxpCache[source] || new RegExp(source, 'i');
 		rgxpCache[source] = rgxp;
 
-		if ((!tplName || rgxp.test(command)) && type !== 'output') {
+		if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
 			if (tplName && type !== 'global') {
 				let parts = command.split('='),
 					prop = parts[0] && parts[0].trim();
@@ -43,7 +50,13 @@ Snakeskin.addDirective(
 						this.consts.push(`var ${prop};`);
 					}
 
-					this.append(`${prop} = ${this.prepareOutput(parts.slice(1).join('='), true)};`);
+					if (output) {
+						this.text = true;
+						this.append(this.wrap(`${prop} = ${this.prepareOutput(parts.slice(1).join('='))};`));
+
+					} else {
+						this.append(`${prop} = ${this.prepareOutput(parts.slice(1).join('='), true)};`);
+					}
 				}
 
 				if (this.isAdvTest()) {
@@ -100,7 +113,12 @@ Snakeskin.addDirective(
 						.replace(scopeModRgxp, mod);
 				}
 
-				this.save(`${this.prepareOutput(command, true)};`);
+				if (output && tplName) {
+					this.append(this.wrap(`${this.prepareOutput(desc.key, true)} = ${this.prepareOutput(desc.value)};`));
+
+				} else {
+					this.save(`${this.prepareOutput(command, true)};`);
+				}
 			}
 
 		} else {
@@ -115,8 +133,14 @@ Snakeskin.addDirective(
 				let desc = isAssign(command);
 
 				if (desc) {
-					this.text = false;
-					this.append(`${this.prepareOutput(command, true)};`);
+					if (output) {
+						this.append(this.wrap(`${this.prepareOutput(desc.key, true)} = ${this.prepareOutput(desc.value)};`));
+
+					} else {
+						this.text = false;
+						this.append(`${this.prepareOutput(command, true)};`);
+					}
+
 					return;
 				}
 
