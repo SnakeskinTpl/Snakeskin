@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1405575685051>, generated at <1407497480552> Fri Aug 08 2014 15:31:20 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1405575685051>, generated at <1407502635537> Fri Aug 08 2014 16:57:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,9 +19,9 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_50249'];
-        ($_ = __LOCAL__['$_50249'] = __FILTERS__['trim'].call(this, ' bar '));
-        __LOCAL__.tmp_0_50249 = $_; /* Snakeskin template: $__index;  */
+        var $_ = __LOCAL__['$_dac4a'];
+        ($_ = __LOCAL__['$_dac4a'] = __FILTERS__['trim'].call(this, ' bar '));
+        __LOCAL__.tmp_0_dac4a = $_; /* Snakeskin template: $__index;  */
         this.$__index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.$__index;
@@ -39,7 +39,7 @@
             __RESULT__.push(' ');
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef($_), false));
             __RESULT__.push(' ');
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__LOCAL__.tmp_0_50249), false));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__LOCAL__.tmp_0_dac4a), false));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };

@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406786697649>, generated at <1407497481009> Fri Aug 08 2014 15:31:21 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1406786697649>, generated at <1407502635874> Fri Aug 08 2014 16:57:15 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_434cb']; /* Snakeskin template: tag_index;  */
+        var $_ = __LOCAL__['$_6e46b']; /* Snakeskin template: tag_index;  */
         this.tag_index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.tag_index;
@@ -55,14 +55,14 @@
                 }
             }
             __TMP__['class'] += (__TMP__['class'] ? ' ' : '') + 'foo';
-            __RESULT__.push(' class="' + __TMP__['class'] + '">');
+            __RESULT__.push((__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '>');
             __TMP__ = {
                 'class': ''
             };
             __RESULT__.push('<div');
             __RESULT__.push(' id="my"');
             __TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '' + __FILTERS__.html(($_ = __FILTERS__['bem'].call(this, 'foo', '__bar')), false) + '';
-            __RESULT__.push(' class="' + __TMP__['class'] + '">');
+            __RESULT__.push((__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '>');
             __RESULT__.push('1 ');
             __RESULT__.push('</div>');
             __RESULT__.push('</span>');
@@ -72,7 +72,7 @@
             __RESULT__.push('<div');
             __RESULT__.push(' id="my"');
             __TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '&__bar';
-            __RESULT__.push(' class="' + __TMP__['class'] + '">');
+            __RESULT__.push((__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '>');
             __RESULT__.push('1 ');
             __RESULT__.push('</div>');
             __TMP__ = {
@@ -81,7 +81,7 @@
             __RESULT__.push('<div');
             __RESULT__.push(' id="my"');
             __TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '' + __FILTERS__.html(($_ = __FILTERS__['bem'].call(this, 'foo', '__bar')), false) + '';
-            __RESULT__.push(' class="' + __TMP__['class'] + '">');
+            __RESULT__.push((__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '>');
             __RESULT__.push('1 ');
             __RESULT__.push('</div>');
             return __RESULT__.join('');
