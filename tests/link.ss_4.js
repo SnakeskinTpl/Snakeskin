@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406784764450>, generated at <1407338186799> Wed Aug 06 2014 19:16:26 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1407482292619>, generated at <1407482294492> Fri Aug 08 2014 11:18:14 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_89e6a']; /* Snakeskin template: link_index;  */
+        var $_ = __LOCAL__['$_116ff']; /* Snakeskin template: link_index;  */
         this.link_index = function() {
             var __THIS__ = this,
                 callee = __ROOT__.link_index;
@@ -36,17 +36,17 @@
             __RESULT__.push('<link type="text/css" rel="stylesheet"');
             __RESULT__.push(' href="');
             __RESULT__.push('foo');
-            __RESULT__.push('" />');
+            __RESULT__.push('"/>');
             __RESULT__.push(' ');
             __RESULT__.push('<link type="text/css" rel="stylesheet"');
             __RESULT__.push(' href="');
             __RESULT__.push('foo');
-            __RESULT__.push('" />');
+            __RESULT__.push('"/>');
             __RESULT__.push(' ');
             __RESULT__.push('<link type="text/css" rel="alternate stylesheet"');
             __RESULT__.push(' href="');
             __RESULT__.push('foo');
-            __RESULT__.push('" />');
+            __RESULT__.push('"/>');
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };
@@ -85,7 +85,7 @@
             }
             __RESULT__.push(' href="');
             __RESULT__.push('foo ');
-            __RESULT__.push('" />');
+            __RESULT__.push('"/>');
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };

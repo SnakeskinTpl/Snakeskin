@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406961838471>, generated at <1407338185505> Wed Aug 06 2014 19:16:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1406961838471>, generated at <1407482292953> Fri Aug 08 2014 11:18:12 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,10 +19,10 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_f6ec9'];
-        __LOCAL__.foo_0_f6ec9 = 1;
-        __LOCAL__.foo_1_f6ec9 = 2;
-        __LOCAL__.foo_2_f6ec9 = 3; /* Snakeskin template: include.bar; name  */
+        var $_ = __LOCAL__['$_97afa'];
+        __LOCAL__.foo_0_97afa = 1;
+        __LOCAL__.foo_1_97afa = 2;
+        __LOCAL__.foo_2_97afa = 3; /* Snakeskin template: include.bar; name  */
         if (this.include == null) {
             this.include = {};
         }
@@ -43,7 +43,7 @@
             __RESULT__ += '<h1>Hello ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_2_f6ec9), false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_2_97afa), false);
             __RESULT__ += '!</h1> ';
             return __RESULT__;
         };
@@ -68,7 +68,7 @@
             __RESULT__ += '<h1>Hello ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_1_f6ec9), false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_1_97afa), false);
             __RESULT__ += '!</h1> ';
             return __RESULT__;
         };
@@ -90,7 +90,7 @@
             __RESULT__ += '<h1>Hello ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_0_f6ec9), false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_0_97afa), false);
             __RESULT__ += '!</h1> ';
             return __RESULT__;
         };

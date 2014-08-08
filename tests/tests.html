@@ -352,7 +352,7 @@
 	{link css ng-(class = foo | id = bar)}
 		foo
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="stylesheet" href="foo" /> <link type="text/css" rel="alternate stylesheet" href="foo" />'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class="foo" ng-id="bar" href="foo " />'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo"/> <link type="text/css" rel="stylesheet" href="foo"/> <link type="text/css" rel="alternate stylesheet" href="foo"/>'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class="foo" ng-id="bar" href="foo "/>'); }); </script>  <script type="text/x-snakeskin-template" id="logic"> 
 {template logic_index(i)}
 	{switch i}
 		{> 1}

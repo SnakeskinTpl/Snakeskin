@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 06 Aug 2014 15:16:16 GMT
+ * Date: Fri, 08 Aug 2014 07:17:12 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -10351,11 +10351,19 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 		var el = str.charAt(i),
 			next = str.charAt(i + 1);
 
-		if (separator[el] && !pOpen && next === '(') {
-			pOpen++;
-			i++;
-			sep = el;
-			continue;
+		if (!pOpen) {
+			if (separator[el] && next === '(') {
+				pOpen++;
+				i++;
+				sep = el;
+				continue;
+			}
+
+			if (el === '(') {
+				pOpen++;
+				sep = '';
+				continue;
+			}
 		}
 
 		if (pOpen) {
@@ -10955,7 +10963,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true
+		notEmpty: true,
+		group: 'if'
 	},
 
 	function (command) {
@@ -10975,11 +10984,12 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true
+		notEmpty: true,
+		group: 'if'
 	},
 
 	function (command) {
-		this.startDir('if');
+		this.startDir();
 		if (this.isReady()) {
 			this.append((("if (!(" + (this.prepareOutput(command, true))) + ")) {"));
 		}
@@ -10998,12 +11008,30 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (this.structure.name !== 'if') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"if\""));
+		if (!this.getGroup('if')[this.structure.name]) {
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a " + (groupsList['if'].join(', '))) + ""));
 		}
 
 		if (this.isReady()) {
 			this.append((("} else if (" + (this.prepareOutput(command, true))) + ") {"));
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'elseUnless',
+
+	{
+		notEmpty: true
+	},
+
+	function (command) {
+		if (!this.getGroup('if')[this.structure.name]) {
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a " + (groupsList['if'].join(', '))) + ""));
+		}
+
+		if (this.isReady()) {
+			this.append((("} else if (!(" + (this.prepareOutput(command, true))) + ")) {"));
 		}
 	}
 );
@@ -11015,12 +11043,25 @@ Snakeskin.addDirective(
 
 	},
 
-	function () {
-		if (this.structure.name !== 'if') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"if\""));
+	function (command) {
+		if (!this.getGroup('if')[this.structure.name]) {
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a a " + (groupsList['template'].join(', '))) + ""));
 		}
 
-		this.append('} else {');
+		if (command) {
+			var parts = command.split(' '),
+				unless = parts[0] === 'unless' ?
+					'!' : '';
+
+			if (unless || parts[0] === 'if') {
+				parts = parts.slice(1);
+			}
+
+			this.append((("} else if (" + unless) + ("(" + (this.prepareOutput(parts.join(' '), true))) + ")) {"));
+
+		} else {
+			this.append('} else {');
+		}
 	}
 );
 
@@ -12877,8 +12918,15 @@ Snakeskin.addDirective(
 		this.space = true;
 
 		if (this.isReady()) {
+			if (command) {
+				command = command.replace(tagRgxp, 'js $1');
+
+			} else {
+				command = 'js';
+			}
+
 			var parts = command.split(' '),
-				type = parts[0] || 'js';
+				type = parts[0];
 
 			var types = {
 				'js': 'text/javascript',
@@ -12889,7 +12937,7 @@ Snakeskin.addDirective(
 				'html': 'text/html'
 			};
 
-			this.append(this.wrap((("'<script type=\"" + (types[type] || this.prepareOutput(type, true))) + "\"'")));
+			this.append(this.wrap((("'<script type=\"" + (types[type] || this.replaceTplVars(type))) + "\"'")));
 
 			if (parts.length > 1) {
 				var args = [].slice.call(arguments);
@@ -12921,14 +12969,21 @@ Snakeskin.addDirective(
 		this.space = true;
 
 		if (this.isReady()) {
+			if (command) {
+				command = command.replace(tagRgxp, 'css $1');
+
+			} else {
+				command = 'css';
+			}
+
 			var parts = command.split(' '),
-				type = parts[0] || 'css';
+				type = parts[0];
 
 			var types = {
 				'css': 'text/css'
 			};
 
-			this.append(this.wrap((("'<style type=\"" + (types[type] || this.prepareOutput(type, true))) + "\"'")));
+			this.append(this.wrap((("'<style type=\"" + (types[type] || this.replaceTplVars(type))) + "\"'")));
 
 			if (parts.length > 1) {
 				var args = [].slice.call(arguments);
@@ -12959,15 +13014,22 @@ Snakeskin.addDirective(
 		this.space = true;
 
 		if (this.isReady()) {
+			if (command) {
+				command = command.replace(tagRgxp, 'css $1');
+
+			} else {
+				command = 'css';
+			}
+
 			var parts = command.split(' '),
-				type = parts[0] || 'css';
+				type = parts[0];
 
 			var types = {
 				'css': 'type="text/css" rel="stylesheet"',
 				'acss': 'type="text/css" rel="alternate stylesheet"'
 			};
 
-			this.append(this.wrap((("'<link " + (types[type])) + "'")));
+			this.append(this.wrap((("'<link " + (types[type] || this.replaceTplVars(type))) + "'")));
 
 			if (parts.length > 1) {
 				var args = [].slice.call(arguments);
@@ -12984,7 +13046,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.append(this.wrap('\'" />\''));
+		this.append(this.wrap('\'"/>\''));
 	}
 );var importMap = {
 	'root': true,
@@ -13035,7 +13097,8 @@ Snakeskin.addDirective(
 		placement: 'template',
 		text: true,
 		replacers: {
-			'#!': function(cmd)  {return cmd.replace('#!', 'comment ')}
+			'#!': function(cmd)  {return cmd.replace('#!', 'comment ')},
+			'/#': function(cmd)  {return cmd.replace('\/#', 'end comment')}
 		}
 	},
 
@@ -13047,7 +13110,7 @@ Snakeskin.addDirective(
 		var str = this.wrap('\'<!--\'');
 
 		if (command) {
-			str += this.wrap((("'[if " + command) + "]>'"));
+			str += this.wrap((("'[if " + (this.replaceTplVars(command))) + "]>'"));
 		}
 
 		this.append(str);
@@ -13056,7 +13119,8 @@ Snakeskin.addDirective(
 	function () {
 		this.append(this.wrap((("'" + (this.structure.params.command ? ' <![endif]' : '')) + "-->'")));
 	}
-);var inlineTagMap = {
+);var tagRgxp = /^([^\s]+?\(|\()/;
+var inlineTagMap = {
 	'img': true,
 	'link': true,
 	'embed': true,
@@ -13076,10 +13140,10 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		placement: 'template',
-		notEmpty: true,
 		text: true,
 		replacers: {
-			'<': function(cmd)  {return cmd.replace('<', 'tag ')}
+			'<': function(cmd)  {return cmd.replace('<', 'tag ')},
+			'/<': function(cmd)  {return cmd.replace('\/<', 'end tag')}
 		}
 	},
 
@@ -13090,6 +13154,13 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isReady()) {
+			if (command) {
+				command = command.replace(tagRgxp, 'div $1');
+
+			} else {
+				command = 'div';
+			}
+
 			var parts = command.split(' '),
 				desc = this.returnTagDesc(parts[0]);
 
@@ -13098,6 +13169,7 @@ Snakeskin.addDirective(
 			params.block = !inlineTagMap[desc.tag];
 
 			var groups = this.splitAttrsGroup(parts.slice(1).join(' '));
+
 			var str = (("\
 				__TMP__ = {\
 					'class': ''\
@@ -13117,12 +13189,11 @@ Snakeskin.addDirective(
 
 			if (desc.classes.length) {
 				str += (("\
-					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + ("';\
-					" + (this.wrap(("' class=\"' + __TMP__['class'] + '\"'")))) + "\
+					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + "';\
 				");
 			}
 
-			str += this.wrap((("'" + (!params.block ? '/' : '')) + ">'"));
+			str += this.wrap((("' class=\"' + __TMP__['class'] + '\"" + (!params.block ? '/' : '')) + ">'"));
 			this.append(str);
 		}
 	},
