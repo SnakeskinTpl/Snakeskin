@@ -9,11 +9,13 @@ program
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('-n, --common-js', 'common.js export (for node.js)')
+	.option('-d, --data [src]', 'path to the data file (JSON) or data JSON')
 
 	.option('--disable-localization', 'disable support for localization')
-	.option('--language [src]', 'path to the localization file (JSON)')
+	.option('--language [src]', 'path to the localization file (JSON) or localization JSON')
 	.option('--words [src]', 'path to the localization file to save')
 
+	.option('--disable-xml-validation', 'disable default xml validation')
 	.option('--interface', 'render all templates as interface')
 	.option('--string-buffer', 'use StringBuffer for concatenate strings')
 	.option('--inline-iterators', 'inline forEach and forIn')
@@ -23,9 +25,10 @@ program
 	.parse(process.argv);
 
 var fs = require('fs');
-var jossy = require('jossy');
+var path = require('path');
 
 var params = {
+	xml: !program['disableXmlValidation'],
 	commonJS: program['commonJs'],
 	localization: !program['disableLocalization'],
 	language: program['language'],
@@ -37,11 +40,18 @@ var params = {
 	prettyPrint: program['prettyPrint']
 };
 
-if (params.language) {
-	params.language = JSON.parse(fs.readFileSync(params.language).toString());
+var lang = params.language;
+if (lang) {
+	try {
+		params.language = JSON.parse(lang);
+
+	} catch (ignore) {
+		params.language = JSON.parse(fs.readFileSync(lang).toString());
+	}
 }
 
-var words = params.words;
+var words = params.words,
+	dataSrc = program['data'];
 
 if (words) {
 	params.words = {};
@@ -57,20 +67,61 @@ var file = program['source'],
 	newFile = program['output'];
 
 function action(data) {
-	if (!data) {
+	if (!data && !file) {
 		program['help']();
+	}
+
+	var tpls = {};
+
+	if (dataSrc) {
+		params.commonJS = true;
+		params.context = tpls;
 	}
 
 	var str = String(data),
 		res = Snakeskin.compile(str, params, {file: file});
 
 	if (res !== false) {
-		if (input && !program['output'] || !newFile) {
-			console.log(res);
+		if (dataSrc) {
+			let main;
+
+			if (file) {
+				main = tpls[path.basename(file, '.ss')] || tpls.main || tpls[Object.keys(tpls)[0]];
+
+			} else {
+				main = tpls.main || tpls[Object.keys(tpls)[0]];
+			}
+
+			if (!main) {
+				console.error('Template is not defined');
+				process.exit(1);
+			}
+
+			let dtd;
+
+			try {
+				dtd = JSON.parse(dataSrc);
+
+			} catch (ignore) {
+				dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
+			}
+
+			if (input && !program['output'] || !newFile) {
+				console.log(main(dtd));
+
+			} else {
+				fs.writeFileSync(newFile, main(dtd));
+				console.log(`File "${file}" has been successfully compiled "${newFile}".`);
+			}
 
 		} else {
-			fs.writeFileSync(newFile, res);
-			console.log(`File "${file}" has been successfully compiled "${newFile}".`);
+			if (input && !program['output'] || !newFile) {
+				console.log(res);
+
+			} else {
+				fs.writeFileSync(newFile, res);
+				console.log(`File "${file}" has been successfully compiled "${newFile}".`);
+			}
 		}
 
 	} else {
@@ -84,17 +135,4 @@ function action(data) {
 	process.exit(0);
 }
 
-if (file) {
-	jossy.compile(file, null, null, (err, data) => {
-		if (err) {
-			console.error(err);
-			process.exit(1);
-
-		} else {
-			action(data);
-		}
-	});
-
-} else {
-	action(input);
-}
+action(file ? fs.readFileSync(file).toString() : input);
