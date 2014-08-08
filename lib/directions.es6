@@ -16,6 +16,10 @@ var aliasRgxp = /__(.*?)__/;
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
+ *
+ * @param {(Array|string)=} [params.chain] - название главной директивы (цепи), к которой принадлежит директива,
+ *     или массив названий
+ *
  * @param {(Array|string)=} [params.group] - название группы, к которой принадлежит директива,
  *     или массив названий
  *
@@ -84,6 +88,19 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 			groups[group[i]][name] = true;
 			groupsList[group[i]].push(`"${name}"`);
+		}
+	}
+
+	if (params.chain) {
+		let chain = Array.isArray(params.chain) ?
+			params.chain : [params.chain];
+
+		for (let i = -1; ++i < chain.length;) {
+			if (!chains[chain[i]]) {
+				chains[chain[i]] = {};
+			}
+
+			chains[chain[i]][name] = true;
 		}
 	}
 

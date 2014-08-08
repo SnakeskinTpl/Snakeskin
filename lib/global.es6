@@ -37,6 +37,7 @@ var replacers = {},
 	aliases = {},
 	groups = {},
 	groupsList = [],
+	chains = {},
 
 	bem = {},
 	write = {};
