@@ -40,19 +40,19 @@ exports.compileFile = function (src, opt_params) {
 	var source = fs.readFileSync(src).toString(),
 		resSrc = `${src}.js`;
 
-	var tpl;
+	var tpls;
 
 	if (!this.check(src, resSrc)) {
 		fs.writeFileSync(resSrc, this.compile(source, opt_params, {file: src}));
 	}
 
-	tpl = require(resSrc);
+	tpls = require(resSrc);
 
-	if (tpl.init) {
-		tpl.init(this);
+	if (tpls.init) {
+		tpls.init(this);
 	}
 
-	return tpl;
+	return tpls;
 };
 
 /**
@@ -60,9 +60,46 @@ exports.compileFile = function (src, opt_params) {
  *
  * @param {string} src - путь к файлу шаблонов
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
+ * @param {?string=} [opt_tplName] - имя запускаемого шаблона
  * @return {Function}
  */
-exports.execFile = function (src, opt_params) {
-	var tpl = this.compileFile(src, opt_params);
-	return tpl[src.split('.').slice(0, -1).join('.')] || tpl.main || tpl[Object.keys(tpl)[0]] || null;
+exports.execFile = function (src, opt_params, opt_tplName) {
+	var tpls = this.compileFile(src, opt_params),
+		tpl;
+
+	if (opt_tplName) {
+		tpl = tpls[opt_tplName];
+
+	} else {
+		tpl = tpls[src.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
+	}
+
+	return tpl || null;
+};
+
+/**
+ * Скомпилировать заданный текст и вернуть ссылку на главную функцию
+ *
+ * @param {string} txt - исходный текст
+ * @param {Object=} [opt_params] - дополнительные параметры компиляции
+ * @param {?string=} [opt_tplName] - имя запускаемого шаблона
+ * @return {Function}
+ */
+exports.exec = function (txt, opt_params, opt_tplName) {
+	var tpls = {},
+		tpl;
+
+	opt_params = opt_params || {};
+	opt_params.context = tpls;
+
+	this.compile(txt, opt_params);
+
+	if (opt_tplName) {
+		tpl = tpls[opt_tplName];
+
+	} else {
+		tpl = tpls.main || tpls[Object.keys(tpls)[0]];
+	}
+
+	return tpl || null;
 };
