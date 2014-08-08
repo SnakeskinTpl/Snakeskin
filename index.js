@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 var program = require('commander');
@@ -38,7 +38,9 @@ var params = {
 	prettyPrint: program['prettyPrint']
 };
 
-var lang = params.language;
+var lang = params.language,
+	prettyPrint = params.prettyPrint;
+
 if (lang) {
 	try {
 		params.language = JSON.parse(lang);
@@ -75,6 +77,7 @@ function action(data) {
 	if (dataSrc) {
 		params.commonJS = true;
 		params.context = tpls;
+		params.prettyPrint = false;
 	}
 
 	var str = String(data),
@@ -109,7 +112,7 @@ function action(data) {
 
 			res = main(dtd);
 
-			if (params.prettyPrint) {
+			if (prettyPrint) {
 				if (toConsole) {
 					res = beautify['html'](res);
 
