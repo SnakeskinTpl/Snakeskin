@@ -59,18 +59,49 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'elseUnless',
+
+	{
+		notEmpty: true
+	},
+
+	function (command) {
+		if (!this.getGroup('if')[this.structure.name]) {
+			return this.error(`directive "${this.name}" can be used only with a ${groupsList['if'].join(', ')}`);
+		}
+
+		if (this.isReady()) {
+			this.append(`} else if (!(${this.prepareOutput(command, true)})) {`);
+		}
+	}
+);
+
+Snakeskin.addDirective(
 	'else',
 
 	{
 
 	},
 
-	function () {
+	function (command) {
 		if (!this.getGroup('if')[this.structure.name]) {
 			return this.error(`directive "${this.name}" can be used only with a a ${groupsList['template'].join(', ')}`);
 		}
 
-		this.append('} else {');
+		if (command) {
+			let parts = command.split(' '),
+				unless = parts[0] === 'unless' ?
+					'!' : '';
+
+			if (unless || parts[0] === 'if') {
+				parts = parts.slice(1);
+			}
+
+			this.append(`} else if (${unless}(${this.prepareOutput(parts.join(' '), true)})) {`);
+
+		} else {
+			this.append('} else {');
+		}
 	}
 );
 
