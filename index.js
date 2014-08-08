@@ -25,8 +25,6 @@ program
 	.parse(process.argv);
 
 var fs = require('fs');
-var path = require('path');
-
 var params = {
 	xml: !program['disableXmlValidation'],
 	commonJS: program['commonJs'],
@@ -50,6 +48,7 @@ if (lang) {
 	}
 }
 
+var beautify = require('js-beautify');
 var words = params.words,
 	dataSrc = program['data'];
 
@@ -81,12 +80,14 @@ function action(data) {
 	var str = String(data),
 		res = Snakeskin.compile(str, params, {file: file});
 
+	var toConsole = input && !program['output'] || !newFile;
+
 	if (res !== false) {
 		if (dataSrc) {
 			var main;
 
 			if (file) {
-				main = tpls[path.basename(file, '.ss')] || tpls.main || tpls[Object.keys(tpls)[0]];
+				main = tpls[file.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
 
 			} else {
 				main = tpls.main || tpls[Object.keys(tpls)[0]];
@@ -106,16 +107,27 @@ function action(data) {
 				dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
 			}
 
-			if (input && !program['output'] || !newFile) {
-				console.log(main(dtd));
+			var txt = main(dtd);
+
+			if (params.prettyPrint) {
+				if (toConsole) {
+					txt = beautify['html'](txt);
+
+				} else {
+					txt = beautify[newFile.split('.').slice(-1)](txt);
+				}
+			}
+
+			if (toConsole) {
+				console.log(txt);
 
 			} else {
-				fs.writeFileSync(newFile, main(dtd));
+				fs.writeFileSync(newFile, txt);
 				console.log((("File \"" + file) + ("\" has been successfully compiled \"" + newFile) + "\"."));
 			}
 
 		} else {
-			if (input && !program['output'] || !newFile) {
+			if (toConsole) {
 				console.log(res);
 
 			} else {
