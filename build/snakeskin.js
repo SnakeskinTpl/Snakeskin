@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 08 Aug 2014 13:07:59 GMT
+ * Date: Fri, 08 Aug 2014 15:37:20 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9837,13 +9837,20 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength, type) {
+		var output = false;
+
+		if (command.slice(-1) === '?') {
+			output = true;
+			command = command.slice(0, -1);
+		}
+
 		var tplName = this.tplName,
 			source = (("^[$a-z_" + (!this.scope.length ? L_MOD : '')) + "][$\\w\\[\\].\\s]*=[^=]");
 
 		var rgxp = rgxpCache[source] || new RegExp(source, 'i');
 		rgxpCache[source] = rgxp;
 
-		if ((!tplName || rgxp.test(command)) && type !== 'output') {
+		if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
 			if (tplName && type !== 'global') {
 				var parts = command.split('='),
 					prop = parts[0] && parts[0].trim();
@@ -9868,7 +9875,13 @@ Snakeskin.addDirective(
 						this.consts.push((("var " + prop) + ";"));
 					}
 
-					this.append((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
+					if (output) {
+						this.text = true;
+						this.append(this.wrap((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('=')))) + ";")));
+
+					} else {
+						this.append((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
+					}
 				}
 
 				if (this.isAdvTest()) {
@@ -9925,7 +9938,13 @@ Snakeskin.addDirective(
 						.replace(scopeModRgxp, mod);
 				}
 
-				this.save((("" + (this.prepareOutput(command, true))) + ";"));
+				if (output && tplName) {
+					this.text = true;
+					this.append(this.wrap((("" + (this.prepareOutput(desc.key, true))) + (" = " + (this.prepareOutput(desc.value))) + ";")));
+
+				} else {
+					this.save((("" + (this.prepareOutput(command, true))) + ";"));
+				}
 			}
 
 		} else {
@@ -9940,8 +9959,14 @@ Snakeskin.addDirective(
 				var desc$0 = isAssign(command);
 
 				if (desc$0) {
-					this.text = false;
-					this.append((("" + (this.prepareOutput(command, true))) + ";"));
+					if (output) {
+						this.append(this.wrap((("" + (this.prepareOutput(desc$0.key, true))) + (" = " + (this.prepareOutput(desc$0.value))) + ";")));
+
+					} else {
+						this.text = false;
+						this.append((("" + (this.prepareOutput(command, true))) + ";"));
+					}
+
 					return;
 				}
 
@@ -10000,6 +10025,22 @@ function isAssign(str, opt_global) {
 	var count = 0,
 		eq = false;
 
+	var advEqMap = {
+		'+': true,
+		'-': true,
+		'*': true,
+		'/': true,
+		'^': true,
+		'~': true,
+		'|': true,
+		'&': true
+	};
+
+	var bAdvMap = {
+		'<': true,
+		'>': true
+	};
+
 	for (var i = -1; ++i < str.length;) {
 		var el = str.charAt(i);
 		prop += el;
@@ -10013,10 +10054,29 @@ function isAssign(str, opt_global) {
 			continue;
 		}
 
-		if (el === '=' && !eq && !count && str.charAt(i + 1) !== '=') {
+		var prev = str.charAt(i - 1),
+			next = str.charAt(i + 1);
+
+		if (!eq && !count &&
+			(
+				el === '=' && next !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
+				advEqMap[el] && next === '=' ||
+				bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === '='
+			)
+		) {
+
+			var diff = 1;
+
+			if (advEqMap[el]) {
+				diff = 2;
+
+			} else if (bAdvMap[el]) {
+				diff = 3;
+			}
+
 			return {
 				key: prop.slice(0, -1),
-				value: str.substring(i + 1)
+				value: str.substring(i + diff)
 			};
 		}
 
