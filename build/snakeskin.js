@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 09 Aug 2014 10:53:27 GMT
+ * Date: Sat, 09 Aug 2014 11:17:39 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -12723,14 +12723,19 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'callback'
+		group: 'callback',
+		chain: [
+			'parallel',
+			'series',
+			'waterfall'
+		]
 	},
 
 	function (command) {
 		var async = this.getGroup('series');
 
 		if (!async[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a \"" + (this.structure.name)) + "\""));
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a \"" + (groupsList['series'].join(', '))) + "\""));
 		}
 
 		var parts = command.split('=>');
