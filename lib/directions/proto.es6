@@ -252,8 +252,8 @@ Snakeskin.addDirective(
 
 						} else {
 							let tmp = this.structure.vars;
-
 							this.structure.vars = el.vars;
+
 							el.argsStr = this.returnProtoArgs(args, el.args);
 							this.structure.vars = tmp;
 
@@ -275,7 +275,10 @@ Snakeskin.addDirective(
 
 		var ouptupCache = this.getBlockOutput('proto');
 		if (ouptupCache[params.name] != null && this.isSimpleOutput()) {
+			let tmp = this.structure.vars;
+			this.structure.vars = this.structure.parent.vars;
 			this.save(this.returnProtoArgs(proto.args, this.getFnArgs(`(${ouptupCache[params.name]})`)) + proto.body);
+			this.structure.vars = tmp;
 		}
 	}
 );
