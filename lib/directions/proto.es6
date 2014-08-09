@@ -134,7 +134,7 @@ Snakeskin.addDirective(
 				calls: {},
 				needPrfx: this.needPrfx,
 
-				ouptup: output
+				output: output
 			};
 		}
 
