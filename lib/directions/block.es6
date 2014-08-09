@@ -21,14 +21,16 @@ Snakeskin.addDirective(
 			from: start + 1
 		});
 
-		var struct = this.structure;
+		var struct = this.structure,
+			dir = String(this.name);
+
 		var params,
 			output;
 
 		if (name !== command) {
 			output = command.split('=>')[1];
 
-			let ouptupCache = this.getBlockOutput(String(this.name));
+			let ouptupCache = this.getBlockOutput(dir);
 			params = ouptupCache[name];
 
 			if (output != null) {
@@ -44,8 +46,8 @@ Snakeskin.addDirective(
 
 			let args = this.prepareArgs(
 				command,
-				String(this.name),
-				String(this.tplName),
+				dir,
+				null,
 				this.parentTplName,
 				name
 			);
