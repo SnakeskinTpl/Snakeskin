@@ -22,6 +22,20 @@ Snakeskin.addDirective(
 		});
 
 		var struct = this.structure;
+		var params,
+			output;
+
+		if (name !== command) {
+			output = command.split('=>')[1];
+
+			let ouptupCache = this.getBlockOutput(this.name);
+			params = ouptupCache[name];
+
+			if (output != null) {
+				params =
+					ouptupCache[name] = output;
+			}
+		}
 
 		if (this.isAdvTest()) {
 			if (blockCache[this.tplName][name]) {
@@ -43,7 +57,8 @@ Snakeskin.addDirective(
 			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
-				args: args
+				args: args,
+				output: output
 			};
 
 			if (args.scope) {
@@ -66,19 +81,14 @@ Snakeskin.addDirective(
 							${args.defParams}
 				`);
 
-				let params = command.split('=>'),
-					str = '';
+				let str = '',
+					self = !params;
 
-				if (params.length > 2) {
-					return this.error(`invalid "${this.name}" declaration`);
-				}
-
-				let self = params.length === 1;
 				if (self) {
 					params = args.list;
 
 				} else {
-					params = this.getFnArgs(`(${params[1]})`);
+					params = this.getFnArgs(`(${params})`);
 				}
 
 				let vars = struct.vars;
@@ -90,7 +100,6 @@ Snakeskin.addDirective(
 
 				struct.vars = vars;
 				str = str.slice(0, -1);
-
 				struct.params.params = str;
 			}
 		}
