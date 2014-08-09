@@ -104,12 +104,14 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isAdvTest()) {
+			let dir = String(this.name);
+
 			if (protoCache[tplName][name]) {
 				return this.error(`proto "${name}" is already defined`);
 			}
 
 			let output = command.split('=>')[1],
-				ouptupCache = this.getBlockOutput(String(this.name));
+				ouptupCache = this.getBlockOutput(dir);
 
 			if (output != null) {
 				ouptupCache[name] = output;
@@ -117,8 +119,8 @@ Snakeskin.addDirective(
 
 			let args = this.prepareArgs(
 				command,
-				String(this.name),
-				String(tplName),
+				dir,
+				null,
 				this.parentTplName,
 				name
 			);
