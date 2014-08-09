@@ -135,7 +135,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 
 					block = type === 'const_add' ?
-						`${(current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK}${block + RIGHT_BLOCK}` : block;
+						`${(current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK}${block}${RIGHT_BLOCK}` : block;
 
 					res = res.substring(0, from) +
 						block +

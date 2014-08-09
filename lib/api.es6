@@ -256,7 +256,7 @@ function DirObj(src, params) {
 
 			return '' +
 				// Количество добавляемых строк
-				`${s}__appendLine__ ${(data.match(/[\n\r]/g) || '').length + e}` +
+				`${s}__appendLine__ ${(data.match(/[\n\r]/g) || '').length}${e}` +
 
 				// Метка для замены CDATA
 				`__CDATA__${this.cDataContent.length - 1}_`

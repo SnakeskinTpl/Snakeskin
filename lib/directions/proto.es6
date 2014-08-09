@@ -181,11 +181,11 @@ Snakeskin.addDirective(
 				proto.body = Snakeskin.compile(
 					`
 						${s}template ${tplName}()${e}
-							${scope ? `${s}with ${scope + e}` : ''}
+							${scope ? `${s}with ${scope}${e}` : ''}
 
 								${s}var __I_PROTO__ = 1${e}
 								${s}__protoWhile__ __I_PROTO__--${e}
-									${s}__setLine__ ${params.line + e}
+									${s}__setLine__ ${params.line}${e}
 									${this.source.substring(params.startTemplateI, this.i - diff)}
 								${s}end${e}
 
