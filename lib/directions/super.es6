@@ -34,11 +34,14 @@ Snakeskin.addDirective(
 				}
 			}
 
+			let s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+				e = RIGHT_BLOCK;
+
 			if (cache && !drop) {
 				let diff = this.getDiff(commandLength);
 
 				this.source = this.source.substring(0, this.i - diff) +
-					`/*!!= {super} =*/{__freezeLine__ ${this.info['line']}}${cache.content}{end}` +
+					`/*!!= ${s}super${e} =*/${s}__freezeLine__ ${this.info['line']}${e}${cache.content}${s}end${e}` +
 					this.source.substring(this.i + 1);
 
 				this.i -= diff + 1;
