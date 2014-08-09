@@ -81,26 +81,21 @@ Snakeskin.addDirective(
 							${args.defParams}
 				`);
 
-				let str = '',
-					self = !params;
+				if (params != null) {
+					let str = '',
+						vars = struct.vars;
 
-				if (self) {
-					params = args.list;
-
-				} else {
+					struct.vars = struct.parent.vars;
 					params = this.getFnArgs(`(${params})`);
+
+					for (let i = -1; ++i < params.length;) {
+						str += `${this.prepareOutput(params[i], true)},`
+					}
+
+					struct.vars = vars;
+					str = str.slice(0, -1);
+					struct.params.params = str;
 				}
-
-				let vars = struct.vars;
-				struct.vars = struct.parent.vars;
-
-				for (let i = -1; ++i < params.length;) {
-					str += `${this.prepareOutput(self ? params[i][2] : params[i], true)},`
-				}
-
-				struct.vars = vars;
-				str = str.slice(0, -1);
-				struct.params.params = str;
 			}
 		}
 	},
@@ -115,7 +110,7 @@ Snakeskin.addDirective(
 					};
 				}
 
-				${this.wrap(`${params.fn}(${params.params})`)}
+				${params.params != null ? this.wrap(`${params.fn}(${params.params})`) : ''}
 			`);
 		}
 
