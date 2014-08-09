@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 09 Aug 2014 10:43:22 GMT
+ * Date: Sat, 09 Aug 2014 10:53:27 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9741,14 +9741,16 @@ Snakeskin.addDirective(
 			from: start + 1
 		});
 
-		var struct = this.structure;
+		var struct = this.structure,
+			dir = ((this.name) + '');
+
 		var params,
 			output;
 
 		if (name !== command) {
 			output = command.split('=>')[1];
 
-			var ouptupCache = this.getBlockOutput(((this.name) + ''));
+			var ouptupCache = this.getBlockOutput(dir);
 			params = ouptupCache[name];
 
 			if (output != null) {
@@ -9764,8 +9766,8 @@ Snakeskin.addDirective(
 
 			var args = this.prepareArgs(
 				command,
-				((this.name) + ''),
-				((this.tplName) + ''),
+				dir,
+				null,
 				this.parentTplName,
 				name
 			);
