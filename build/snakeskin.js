@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 09 Aug 2014 10:20:25 GMT
+ * Date: Sat, 09 Aug 2014 10:43:22 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9801,26 +9801,21 @@ Snakeskin.addDirective(
 							" + (args$0.defParams)) + "\
 				"));
 
-				var str = '',
-					self = !params;
+				if (params != null) {
+					var str = '',
+						vars = struct.vars;
 
-				if (self) {
-					params = args$0.list;
-
-				} else {
+					struct.vars = struct.parent.vars;
 					params = this.getFnArgs((("(" + params) + ")"));
+
+					for (var i = -1; ++i < params.length;) {
+						str += (("" + (this.prepareOutput(params[i], true))) + ",")
+					}
+
+					struct.vars = vars;
+					str = str.slice(0, -1);
+					struct.params.params = str;
 				}
-
-				var vars = struct.vars;
-				struct.vars = struct.parent.vars;
-
-				for (var i = -1; ++i < params.length;) {
-					str += (("" + (this.prepareOutput(self ? params[i][2] : params[i], true))) + ",")
-				}
-
-				struct.vars = vars;
-				str = str.slice(0, -1);
-				struct.params.params = str;
 			}
 		}
 	},
@@ -9835,7 +9830,7 @@ Snakeskin.addDirective(
 					};\
 				}\
 \
-				" + (this.wrap((("" + (params.fn)) + ("(" + (params.params)) + ")")))) + "\
+				" + (params.params != null ? this.wrap((("" + (params.fn)) + ("(" + (params.params)) + ")")) : '')) + "\
 			"));
 		}
 

@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406783485267>, generated at <1407579637418> Sat Aug 09 2014 14:20:37 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1407581329779>, generated at <1407581333371> Sat Aug 09 2014 14:48:53 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_6a132']; /* Snakeskin template: block_base;  */
+        var $_ = __LOCAL__['$_9ec96']; /* Snakeskin template: block_base;  */
         this.block_base = function() {
             var __THIS__ = this,
                 callee = __ROOT__.block_base;
@@ -47,15 +47,15 @@
                     return __RESULT__;
                 };
             }
-            __RESULT__ += __BLOCKS__.base(__a__template_49, __b__template_49, __c__template_49);
+            __RESULT__ += blocks.base(__a__template_49, __b__template_49, __c__template_49);
             if (!__BLOCKS__.base2) {
-                __BLOCKS__.base2 = function(__a__block_150, __b__block_150, __c__block_150) {
+                __BLOCKS__.base2 = function(__a__block_182, __b__block_182, __c__block_182) {
                     var __RESULT__ = '';
-                    __a__block_150 = arguments[0] = __a__block_150 != null ? __a__block_150 : 1;
-                    __b__block_150 = arguments[1] = __b__block_150 != null ? __b__block_150 : 2;
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_150), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_150), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_150), false);
+                    __a__block_182 = arguments[0] = __a__block_182 != null ? __a__block_182 : 1;
+                    __b__block_182 = arguments[1] = __b__block_182 != null ? __b__block_182 : 2;
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_182), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_182), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_182), false);
                     return __RESULT__;
                 };
             }
@@ -77,39 +77,39 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'block_sub',
                 PARENT_TPL_NAME = 'block_base';
-            var __a__template_281 = 2,
-                __b__template_281 = void 0,
-                __c__template_281 = void 0;
+            var __a__template_313 = 2,
+                __b__template_313 = void 0,
+                __c__template_313 = void 0;
             if (!__BLOCKS__.base) {
-                __BLOCKS__.base = function(__a__block_272) {
+                __BLOCKS__.base = function(__a__block_304) {
                     var __RESULT__ = '';
-                    var __b__block_272 = 2;
-                    var __c__block_272 = void 0;
-                    __a__block_272 = arguments[0] = __a__block_272 != null ? __a__block_272 : 1;
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_272), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_272), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_272), false);
+                    var __b__block_304 = 2;
+                    var __c__block_304 = void 0;
+                    __a__block_304 = arguments[0] = __a__block_304 != null ? __a__block_304 : 1;
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_304), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_304), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_304), false);
                     return __RESULT__;
                 };
             }
-            __RESULT__ += __BLOCKS__.base(__a__template_281, __b__template_281, __c__template_281);
+            __RESULT__ += blocks.base(__a__template_313, __b__template_313, __c__template_313);
             if (!__BLOCKS__.base2) {
-                __BLOCKS__.base2 = function(__a__block_381) {
+                __BLOCKS__.base2 = function(__a__block_413) {
                     var __RESULT__ = '';
-                    var __b__block_381 = 2;
-                    var __c__block_381 = void 0;
-                    __a__block_381 = arguments[0] = __a__block_381 != null ? __a__block_381 : ({
+                    var __b__block_413 = 2;
+                    var __c__block_413 = void 0;
+                    __a__block_413 = arguments[0] = __a__block_413 != null ? __a__block_413 : ({
                         aa: 9
                     });
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_381), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_381), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_381), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_381.aa), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_413), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_413), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_413), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_413.aa), false);
                     return __RESULT__;
                 };
             }
             __RESULT__ += __BLOCKS__.base2(null);
-            __RESULT__ += blocks.base2(5, 4, __b__template_281);
+            __RESULT__ += blocks.base2(5, 4, __b__template_313);
             return __RESULT__;
         };
         Snakeskin.cache['block_sub'] = this.block_sub; /* Snakeskin template. */ /* Snakeskin template: block_base2;  */
@@ -126,33 +126,33 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'block_base2',
                 PARENT_TPL_NAME;
-            var __a__template_581 = 2,
-                __b__template_581 = void 0,
-                __c__template_581 = void 0;
+            var __a__template_645 = 2,
+                __b__template_645 = void 0,
+                __c__template_645 = void 0;
             if (!__BLOCKS__.base) {
-                __BLOCKS__.base = function(__a__block_615, __b__block_615, __c__block_615) {
+                __BLOCKS__.base = function(__a__block_679, __b__block_679, __c__block_679) {
                     var __RESULT__ = '';
-                    __a__block_615 = arguments[0] = __a__block_615 != null ? __a__block_615 : 1;
-                    __b__block_615 = arguments[1] = __b__block_615 != null ? __b__block_615 : 2;
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_615), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_615), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_615), false);
+                    __a__block_679 = arguments[0] = __a__block_679 != null ? __a__block_679 : 1;
+                    __b__block_679 = arguments[1] = __b__block_679 != null ? __b__block_679 : 2;
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_679), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_679), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_679), false);
                     if (!__BLOCKS__.base2) {
-                        __BLOCKS__.base2 = function(__a__block_677, __b__block_677, __c__block_677) {
+                        __BLOCKS__.base2 = function(__a__block_741, __b__block_741, __c__block_741) {
                             var __RESULT__ = '';
-                            __a__block_677 = arguments[0] = __a__block_677 != null ? __a__block_677 : 1;
-                            __b__block_677 = arguments[1] = __b__block_677 != null ? __b__block_677 : 2;
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_677), false);
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_677), false);
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_677), false);
+                            __a__block_741 = arguments[0] = __a__block_741 != null ? __a__block_741 : 1;
+                            __b__block_741 = arguments[1] = __b__block_741 != null ? __b__block_741 : 2;
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_741), false);
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_741), false);
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_741), false);
                             return __RESULT__;
                         };
                     }
-                    __RESULT__ += __BLOCKS__.base2(0, __a__block_615, 1);
+                    __RESULT__ += __BLOCKS__.base2(0, __a__block_679, 1);
                     return __RESULT__;
                 };
             }
-            __RESULT__ += __BLOCKS__.base(__a__template_581, __b__template_581, __c__template_581);
+            __RESULT__ += blocks.base(__a__template_645, __b__template_645, __c__template_645);
             return __RESULT__;
         };
         Snakeskin.cache['block_base2'] = this.block_base2; /* Snakeskin template. */ /* Snakeskin template: block_sub2;  */
@@ -169,29 +169,29 @@
                 __RETURN_VAL__;
             var TPL_NAME = 'block_sub2',
                 PARENT_TPL_NAME = 'block_base2';
-            var __a__template_785 = 2,
-                __b__template_785 = void 0,
-                __c__template_785 = void 0;
+            var __a__template_881 = 2,
+                __b__template_881 = void 0,
+                __c__template_881 = void 0;
             if (!__BLOCKS__.base) {
-                __BLOCKS__.base = function(__a__block_819, __b__block_819, __c__block_819) {
+                __BLOCKS__.base = function(__a__block_915, __b__block_915, __c__block_915) {
                     var __RESULT__ = '';
-                    __a__block_819 = arguments[0] = __a__block_819 != null ? __a__block_819 : 1;
-                    __b__block_819 = arguments[1] = __b__block_819 != null ? __b__block_819 : 2;
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_819), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_819), false);
-                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_819), false);
+                    __a__block_915 = arguments[0] = __a__block_915 != null ? __a__block_915 : 1;
+                    __b__block_915 = arguments[1] = __b__block_915 != null ? __b__block_915 : 2;
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_915), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_915), false);
+                    __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_915), false);
                     if (!__BLOCKS__.base2) {
-                        __BLOCKS__.base2 = function(__a__block_796) {
+                        __BLOCKS__.base2 = function(__a__block_892) {
                             var __RESULT__ = '';
-                            var __b__block_796 = 2;
-                            var __c__block_796 = void 0;
-                            __a__block_796 = arguments[0] = __a__block_796 != null ? __a__block_796 : ({
+                            var __b__block_892 = 2;
+                            var __c__block_892 = void 0;
+                            __a__block_892 = arguments[0] = __a__block_892 != null ? __a__block_892 : ({
                                 aa: 9
                             });
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_796), false);
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_796), false);
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_796), false);
-                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_796.aa), false);
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_892), false);
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__block_892), false);
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__block_892), false);
+                            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__block_892.aa), false);
                             return __RESULT__;
                         };
                     }
@@ -199,7 +199,7 @@
                     return __RESULT__;
                 };
             }
-            __RESULT__ += __BLOCKS__.base(__a__template_785, __b__template_785, __c__template_785);
+            __RESULT__ += blocks.base(__a__template_881, __b__template_881, __c__template_881);
             return __RESULT__;
         };
         Snakeskin.cache['block_sub2'] = this.block_sub2; /* Snakeskin template. */

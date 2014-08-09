@@ -29,6 +29,8 @@
 		{a} {b} {c}
 	{/}
 
+	{call blocks.base(a, b, c)}
+
 	{block base2(a = 1, b = 2, c) => 0, a, 1}
 		{a} {b} {c}
 	{/}
@@ -58,6 +60,8 @@
 			{a} {b} {c}
 		{/}
 	{/}
+
+	{call blocks.base(a, b, c)}
 {/}
 
 {template block_sub2() extends block_base2}
