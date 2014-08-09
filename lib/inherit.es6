@@ -97,9 +97,9 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			// Переопределение
 			if (parent && (i % 2 === 0)) {
-				if (type === 'const' && parent.output && !current.output) {
-					current.output = true;
-					block += '?';
+				if (parent.output && !current.output) {
+					current.output = parent.output;
+					block += parent.output;
 				}
 
 				if (type !== 'block' && (type !== 'const' || !current.proto)) {
