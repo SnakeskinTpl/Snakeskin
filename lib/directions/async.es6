@@ -107,14 +107,19 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'callback'
+		group: 'callback',
+		chain: [
+			'parallel',
+			'series',
+			'waterfall'
+		]
 	},
 
 	function (command) {
 		var async = this.getGroup('series');
 
 		if (!async[this.structure.name]) {
-			return this.error(`directive "${this.name}" can be used only with a "${this.structure.name}"`);
+			return this.error(`directive "${this.name}" can be used only with a "${groupsList['series'].join(', ')}"`);
 		}
 
 		var parts = command.split('=>');
