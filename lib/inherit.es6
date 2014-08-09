@@ -77,9 +77,15 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			// Разница между дочерним и родительским блоком
 			if (parent) {
-				if (parent.output && !current.output && (i % 2 === 0)) {
+				if (parent.output != null && current.output == null && (i % 2 === 0)) {
 					current.output = parent.output;
-					block += parent.output;
+
+					if (type === 'const') {
+						block += parent.output;
+
+					} else {
+						this.getBlockOutput(type, tplName)[key] = current.output;
+					}
 				}
 
 				blockDiff = block.length -

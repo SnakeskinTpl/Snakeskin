@@ -97,13 +97,18 @@ Snakeskin.addDirective(
 		var start = this.i - this.startTemplateI,
 			output = command.split('=>')[1];
 
+		var ouptupCache = this.getBlockOutput('proto');
+
+		if (output != null) {
+			ouptupCache[name] = output;
+		}
+
 		this.startDir(null, {
 			name: name,
 			startTemplateI: this.i + 1,
 			from: this.i - this.getDiff(commandLength),
 			fromBody: start + 1,
-			line: this.info['line'],
-			output: output
+			line: this.info['line']
 		});
 
 		if (this.isAdvTest()) {
@@ -128,8 +133,8 @@ Snakeskin.addDirective(
 
 				calls: {},
 				needPrfx: this.needPrfx,
-				output: output != null ?
-					`${(this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK}apply ${name}(${output})${RIGHT_BLOCK}` : ''
+
+				ouptup: output
 			};
 		}
 
@@ -142,6 +147,7 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			params = this.structure.params;
 
+		var proto = protoCache[tplName][params.name];
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
@@ -163,8 +169,7 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.protoLink) {
-			let proto = protoCache[tplName][params.name],
-				start = this.i - this.startTemplateI;
+			let start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
 				let diff = this.getDiff(commandLength),
@@ -264,12 +269,13 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if ((!this.protoLink || this.protoLink === params.name) && !this.hasParentBlock('proto')) {
+		if (!this.protoLink && !this.hasParentBlock('proto')) {
 			this.protoStart = false;
 		}
 
-		if (params.output != null) {
-			Snakeskin.Directions['apply'].call(this, `${params.name}(${params.output.trim()})`);
+		var ouptupCache = this.getBlockOutput('proto');
+		if (ouptupCache[params.name] != null && this.isSimpleOutput()) {
+			this.save(this.returnProtoArgs(proto.args, this.getFnArgs(`(${ouptupCache[params.name]})`)) + proto.body);
 		}
 	}
 );

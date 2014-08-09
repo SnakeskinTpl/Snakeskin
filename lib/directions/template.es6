@@ -314,6 +314,8 @@ for (let i = -1; ++i < template.length;) {
 
 			argsCache[tplName] = {};
 			argsResCache[tplName] = {};
+
+			outputCache[tplName] = {};
 			extMap[tplName] = parentTplName;
 
 			var args = this.prepareArgs(command, 'template', tplName, parentTplName);

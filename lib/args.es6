@@ -61,12 +61,13 @@ DirObj.prototype.getFnArgs = function (str) {
  *
  * @param {string} str - исходная строка
  * @param {string} type - тип функции (template, proto и т.д.)
- * @param {string} tplName - название шаблона
+ * @param {?string=} [opt_tplName] - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
  * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
  * @return {{str: string, list: !Array, defParams: string, scope: (string|undefined)}}
  */
-DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
+DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplName, opt_name) {
+	opt_tplName = this.tplName;
 	var struct = this.structure;
 	var argsList = this.getFnArgs(str),
 		params = argsList.params;
@@ -74,14 +75,14 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	var parentArgs,
 		argsTable;
 
-	if (!argsCache[tplName]) {
-		argsCache[tplName] = {};
-		argsResCache[tplName] = {};
+	if (!argsCache[opt_tplName]) {
+		argsCache[opt_tplName] = {};
+		argsResCache[opt_tplName] = {};
 	}
 
-	if (!argsCache[tplName][type]) {
-		argsCache[tplName][type] = {};
-		argsResCache[tplName][type] = {};
+	if (!argsCache[opt_tplName][type]) {
+		argsCache[opt_tplName][type] = {};
+		argsResCache[opt_tplName][type] = {};
 	}
 
 	if (opt_name) {
@@ -89,8 +90,8 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			parentArgs = argsCache[opt_parentTplName][type][opt_name];
 		}
 
-		if (argsCache[tplName][type][opt_name]) {
-			let tmp = argsResCache[tplName][type][opt_name],
+		if (argsCache[opt_tplName][type][opt_name]) {
+			let tmp = argsResCache[opt_tplName][type][opt_name],
 				list = tmp.list;
 
 			for (let i = -1; ++i < list.length;) {
@@ -103,7 +104,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			return tmp;
 
 		} else {
-			argsTable = argsCache[tplName][type][opt_name] = {};
+			argsTable = argsCache[opt_tplName][type][opt_name] = {};
 		}
 
 	} else {
@@ -111,7 +112,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			parentArgs = argsCache[opt_parentTplName][type];
 		}
 
-		argsTable = argsCache[tplName][type];
+		argsTable = argsCache[opt_tplName][type];
 	}
 
 	var scope;
@@ -282,7 +283,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	};
 
 	if (opt_name) {
-		argsResCache[tplName][type][opt_name] = res;
+		argsResCache[opt_tplName][type][opt_name] = res;
 	}
 
 	return res;
