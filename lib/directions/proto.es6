@@ -97,7 +97,7 @@ Snakeskin.addDirective(
 		var start = this.i - this.startTemplateI,
 			output = command.split('=>')[1];
 
-		var ouptupCache = this.getBlockOutput('proto');
+		var ouptupCache = this.getBlockOutput(this.name);
 
 		if (output != null) {
 			ouptupCache[name] = output;
@@ -145,7 +145,10 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var tplName = this.tplName,
-			params = this.structure.params;
+			struct = this.structure;
+
+		var vars = struct.vars,
+			params = struct.params;
 
 		var proto = protoCache[tplName][params.name];
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
@@ -215,7 +218,7 @@ Snakeskin.addDirective(
 						prfxI: this.prfxI,
 
 						scope: this.scope.slice(),
-						vars: this.structure.vars,
+						vars: struct.vars,
 						consts: this.consts,
 
 						proto: {
@@ -251,12 +254,9 @@ Snakeskin.addDirective(
 								this.res.substring(el.pos);
 
 						} else {
-							let tmp = this.structure.vars;
-							this.structure.vars = el.vars;
-
+							struct.vars = el.vars;
 							el.argsStr = this.returnProtoArgs(args, el.args);
-							this.structure.vars = tmp;
-
+							struct.vars = vars;
 							fin = false;
 						}
 					}
@@ -275,10 +275,9 @@ Snakeskin.addDirective(
 
 		var ouptupCache = this.getBlockOutput('proto');
 		if (ouptupCache[params.name] != null && this.isSimpleOutput()) {
-			let tmp = this.structure.vars;
-			this.structure.vars = this.structure.parent.vars;
+			struct.vars = struct.parent.vars;
 			this.save(this.returnProtoArgs(proto.args, this.getFnArgs(`(${ouptupCache[params.name]})`)) + proto.body);
-			this.structure.vars = tmp;
+			struct.vars = vars;
 		}
 	}
 );
