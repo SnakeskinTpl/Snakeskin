@@ -88,7 +88,8 @@ Snakeskin.addDirective(
 							Boolean(parentTpl && parent && parent.proto),
 
 						needPrfx: this.needPrfx,
-						output: output && '?'
+						output: output ?
+							'?' : null
 					};
 
 					if (!this.protoStart) {
