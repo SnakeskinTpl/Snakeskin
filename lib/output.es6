@@ -149,10 +149,10 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 			if (!bOpen) {
-				if (el === '{') {
+				if (el === LEFT_BLOCK) {
 					begin++;
 
-				} else if (el === '}') {
+				} else if (el === RIGHT_BLOCK) {
 					begin--;
 				}
 			}
