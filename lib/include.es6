@@ -16,6 +16,9 @@ Snakeskin.include = function (base, url) {
 	var fs = require('fs'),
 		path = require('path');
 
+	var lb = LEFT_BLOCK,
+		rb = RIGHT_BLOCK;
+
 	try {
 		let extname = path['extname'](url);
 		let src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
@@ -25,16 +28,16 @@ Snakeskin.include = function (base, url) {
 			include[src] = true;
 
 			fsStack.push(`
-				{__setFile__ ${applyDefEscape(src)}}
+				${lb}__setFile__ ${applyDefEscape(src) + rb}
 				${fs['readFileSync'](src).toString()}
-				{__endSetFile__}
+				${lb}__endSetFile__${rb}
 			`);
 		}
 
 		return true;
 
 	} catch (err) {
-		fsStack.push(`{__setError__ ${err.message}}`);
+		fsStack.push(`${lb}__setError__ ${err.message + rb}`);
 	}
 
 	return false;
