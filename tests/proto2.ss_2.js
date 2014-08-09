@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1406035741658>, generated at <1407512905874> Fri Aug 08 2014 19:48:25 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1407565807542>, generated at <1407579287553> Sat Aug 09 2014 14:14:47 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_14b6a']; /* Snakeskin template: proto2_base;  */
+        var $_ = __LOCAL__['$_5f8b4']; /* Snakeskin template: proto2_base;  */
         this.proto2_base = function() {
             var __THIS__ = this,
                 callee = __ROOT__.proto2_base;
@@ -44,6 +44,15 @@
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_84), false);
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__proto_84), false);
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__proto_84), false);
+            }
+            var __a__proto_177 = 0 != null ? 0 : 1;
+            var __b__proto_177 = __a__template_50 != null ? __a__template_50 : 2;
+            var __c__proto_177 = 1;
+            var ____I_PROTO___base2_template_44 = 1;
+            ____I_PROTO___base2_template_44: while (____I_PROTO___base2_template_44--) {
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_177), false);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__proto_177), false);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__proto_177), false);
             }
             var __a__proto_177 = null != null ? null : 1;
             var __b__proto_177 = __a__template_50 != null ? __a__template_50 : 2;
@@ -81,6 +90,18 @@
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_298), false);
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__proto_298), false);
                 __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__proto_298), false);
+            }
+            var __a__proto_399 = 0 != null ? 0 : ({
+                aa: 9
+            });
+            var __b__proto_399 = __a__template_307 != null ? __a__template_307 : 2;
+            var __c__proto_399 = 1 != null ? 1 : void 0;
+            var ____I_PROTO___base2_with_51 = 1;
+            ____I_PROTO___base2_with_51: while (____I_PROTO___base2_with_51--) {
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_399), false);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__b__proto_399), false);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__c__proto_399), false);
+                __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__a__proto_399.aa), false);
             }
             var __a__proto_399 = null != null ? null : ({
                 aa: 9

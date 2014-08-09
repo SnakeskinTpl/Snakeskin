@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 08 Aug 2014 15:48:15 GMT
+ * Date: Sat, 09 Aug 2014 10:14:35 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6094,6 +6094,7 @@ var routerFromCache = {
 	'proto': fromProtoCache
 };
 
+var outputCache = {};
 var argsCache = {},
 	argsResCache = {};
 
@@ -6374,17 +6375,20 @@ function DirObj(src, params) {var this$0 = this;
 		loaded: true
 	};
 
+	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
+
 	/**
 	 * Исходный текст шаблона
 	 * @type {string}
 	 */
 	this.source = ((src) + '')
-		.replace(/{cdata}([\s\S]*?){(?:\/cdata|end cdata)}/gm, function(sstr, data)  {
+		.replace(new RegExp((("" + s) + ("cdata" + e) + ("([\\s\\S]*?)" + s) + ("(?:\\/cdata|end cdata)" + e) + ""), 'gm'), function(sstr, data)  {
 			this$0.cDataContent.push(data);
 
 			return '' +
 				// Количество добавляемых строк
-				(("{__appendLine__ " + ((data.match(/[\n\r]/g) || '').length)) + "}") +
+				(("" + s) + ("__appendLine__ " + ((data.match(/[\n\r]/g) || '').length)) + ("" + e) + "") +
 
 				// Метка для замены CDATA
 				(("__CDATA__" + (this$0.cDataContent.length - 1)) + "_")
@@ -6569,6 +6573,24 @@ DirObj.prototype.append = function (str) {
 	}
 
 	return this.save(str);
+};
+
+/**
+ * Вернуть объект кеша вывода заданного блока
+ *
+ * @param {string} type - тип блока (block, proto и т.д.)
+ * @param {?string=} [opt_tplName] - название шаблона
+ * @return {!Object}
+ */
+DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
+	opt_tplName = opt_tplName || this.tplName;
+	var output = outputCache[opt_tplName];
+
+	if (!output[type]) {
+		output[type] = {};
+	}
+
+	return output[type];
 };
 
 /**
@@ -7124,12 +7146,13 @@ DirObj.prototype.getFnArgs = function (str) {
  *
  * @param {string} str - исходная строка
  * @param {string} type - тип функции (template, proto и т.д.)
- * @param {string} tplName - название шаблона
+ * @param {?string=} [opt_tplName] - название шаблона
  * @param {?string=} [opt_parentTplName] - название родительского шаблона
  * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
  * @return {{str: string, list: !Array, defParams: string, scope: (string|undefined)}}
  */
-DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, opt_name) {
+DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplName, opt_name) {
+	opt_tplName = this.tplName;
 	var struct = this.structure;
 	var argsList = this.getFnArgs(str),
 		params = argsList.params;
@@ -7137,14 +7160,14 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	var parentArgs,
 		argsTable;
 
-	if (!argsCache[tplName]) {
-		argsCache[tplName] = {};
-		argsResCache[tplName] = {};
+	if (!argsCache[opt_tplName]) {
+		argsCache[opt_tplName] = {};
+		argsResCache[opt_tplName] = {};
 	}
 
-	if (!argsCache[tplName][type]) {
-		argsCache[tplName][type] = {};
-		argsResCache[tplName][type] = {};
+	if (!argsCache[opt_tplName][type]) {
+		argsCache[opt_tplName][type] = {};
+		argsResCache[opt_tplName][type] = {};
 	}
 
 	if (opt_name) {
@@ -7152,8 +7175,8 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			parentArgs = argsCache[opt_parentTplName][type][opt_name];
 		}
 
-		if (argsCache[tplName][type][opt_name]) {
-			var tmp = argsResCache[tplName][type][opt_name],
+		if (argsCache[opt_tplName][type][opt_name]) {
+			var tmp = argsResCache[opt_tplName][type][opt_name],
 				list = tmp.list;
 
 			for (var i = -1; ++i < list.length;) {
@@ -7166,7 +7189,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			return tmp;
 
 		} else {
-			argsTable = argsCache[tplName][type][opt_name] = {};
+			argsTable = argsCache[opt_tplName][type][opt_name] = {};
 		}
 
 	} else {
@@ -7174,7 +7197,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 			parentArgs = argsCache[opt_parentTplName][type];
 		}
 
-		argsTable = argsCache[tplName][type];
+		argsTable = argsCache[opt_tplName][type];
 	}
 
 	var scope;
@@ -7345,7 +7368,7 @@ DirObj.prototype.prepareArgs = function (str, type, tplName, opt_parentTplName, 
 	};
 
 	if (opt_name) {
-		argsResCache[tplName][type][opt_name] = res;
+		argsResCache[opt_tplName][type][opt_name] = res;
 	}
 
 	return res;
@@ -7911,6 +7934,17 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			// Разница между дочерним и родительским блоком
 			if (parent) {
+				if (parent.output != null && current.output == null && (i$0 % 2 === 0)) {
+					current.output = parent.output;
+
+					if (type === 'const') {
+						block += current.output;
+
+					} else {
+						this.getBlockOutput(type, tplName)[key$0] = current.output;
+					}
+				}
+
 				blockDiff = block.length -
 					cache[parentTpl].substring(parent.from, parent.to).length;
 			}
@@ -7964,7 +7998,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 
 					block = type === 'const_add' ?
-						(("" + (current.needPrfx ? ADV_LEFT_BLOCK : '')) + ("{" + block) + "}") : block;
+						(("" + ((current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK)) + ("" + block) + ("" + RIGHT_BLOCK) + "") : block;
 
 					res = res.substring(0, from) +
 						block +
@@ -9708,6 +9742,20 @@ Snakeskin.addDirective(
 		});
 
 		var struct = this.structure;
+		var params,
+			output;
+
+		if (name !== command) {
+			output = command.split('=>')[1];
+
+			var ouptupCache = this.getBlockOutput(((this.name) + ''));
+			params = ouptupCache[name];
+
+			if (output != null) {
+				params =
+					ouptupCache[name] = output;
+			}
+		}
 
 		if (this.isAdvTest()) {
 			if (blockCache[this.tplName][name]) {
@@ -9729,7 +9777,8 @@ Snakeskin.addDirective(
 			blockCache[this.tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
-				args: args
+				args: args,
+				output: output
 			};
 
 			if (args.scope) {
@@ -9752,19 +9801,14 @@ Snakeskin.addDirective(
 							" + (args$0.defParams)) + "\
 				"));
 
-				var params = command.split('=>'),
-					str = '';
+				var str = '',
+					self = !params;
 
-				if (params.length > 2) {
-					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-				}
-
-				var self = params.length === 1;
 				if (self) {
 					params = args$0.list;
 
 				} else {
-					params = this.getFnArgs((("(" + (params[1])) + ")"));
+					params = this.getFnArgs((("(" + params) + ")"));
 				}
 
 				var vars = struct.vars;
@@ -9776,7 +9820,6 @@ Snakeskin.addDirective(
 
 				struct.vars = vars;
 				str = str.slice(0, -1);
-
 				struct.params.params = str;
 			}
 		}
@@ -9912,7 +9955,9 @@ Snakeskin.addDirective(
 						proto: this.protoStart ||
 							!!(parentTpl && parent && parent.proto),
 
-						needPrfx: this.needPrfx
+						needPrfx: this.needPrfx,
+						output: output ?
+							'?' : null
 					};
 
 					if (!this.protoStart) {
@@ -10621,11 +10666,14 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 				}
 			}
 
+			var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+				e = RIGHT_BLOCK;
+
 			if (cache && !drop) {
 				var diff = this.getDiff(commandLength);
 
 				this.source = this.source.substring(0, this.i - diff) +
-					(("/*!!= {super} =*/{__freezeLine__ " + (this.info['line'])) + ("}" + (cache.content)) + "{end}") +
+					(("/*!!= " + s) + ("super" + e) + (" =*/" + s) + ("__freezeLine__ " + (this.info['line'])) + ("" + e) + ("" + (cache.content)) + ("" + s) + ("end" + e) + "") +
 					this.source.substring(this.i + 1);
 
 				this.i -= diff + 1;
@@ -11517,7 +11565,6 @@ Snakeskin.addDirective(
 		}
 
 		var start = this.i - this.startTemplateI;
-
 		this.startDir(null, {
 			name: name,
 			startTemplateI: this.i + 1,
@@ -11527,14 +11574,23 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isAdvTest()) {
+			var dir = ((this.name) + '');
+
 			if (protoCache[tplName][name]) {
 				return this.error((("proto \"" + name) + "\" is already defined"));
 			}
 
+			var output = command.split('=>')[1],
+				ouptupCache = this.getBlockOutput(dir);
+
+			if (output != null) {
+				ouptupCache[name] = output;
+			}
+
 			var args = this.prepareArgs(
 				command,
-				((this.name) + ''),
-				((tplName) + ''),
+				dir,
+				null,
 				this.parentTplName,
 				name
 			);
@@ -11547,7 +11603,9 @@ Snakeskin.addDirective(
 				scope: args.scope,
 
 				calls: {},
-				needPrfx: this.needPrfx
+				needPrfx: this.needPrfx,
+
+				output: output
 			};
 		}
 
@@ -11558,16 +11616,23 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var tplName = this.tplName,
-			params = this.structure.params;
+			struct = this.structure;
+
+		var vars = struct.vars,
+			params = struct.params;
+
+		var proto;
+		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
 
 		// Закрылся "внешний" прототип
 		if (this.protoLink === params.name) {
 			var obj = this.preProtos[tplName];
 
 			obj.text += (("\
-				{__switchLine__ " + (obj.startLine)) + ("}\
-					" + (this.source.substring(params.from, this.i + 1))) + "\
-				{end}\
+				" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
+					" + (this.source.substring(params.from, this.i + 1))) + ("\
+				" + s) + ("end" + e) + "\
 			");
 
 			this.protoLink = null;
@@ -11578,15 +11643,12 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.protoLink) {
-			var proto = protoCache[tplName][params.name],
-				start = this.i - this.startTemplateI;
+			proto = protoCache[tplName][params.name];
+			var start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
 				var diff = this.getDiff(commandLength),
 					scope = proto.scope;
-
-				var _ = this.needPrfx ?
-					ADV_LEFT_BLOCK : '';
 
 				proto.to = start + 1;
 				proto.content = this.source
@@ -11598,16 +11660,17 @@ Snakeskin.addDirective(
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					(("\
-						" + _) + ("{template " + tplName) + ("()}\
-							" + (scope ? (("" + _) + ("{with " + scope) + "}") : '')) + ("\
+						" + s) + ("template " + tplName) + ("()" + e) + ("\
+							" + (scope ? (("" + s) + ("with " + scope) + ("" + e) + "") : '')) + ("\
 \
-								" + _) + ("{var __I_PROTO__ = 1}\
-								" + _) + ("{__protoWhile__ __I_PROTO__--}\
-									{__setLine__ " + (params.line)) + ("}" + (this.source.substring(params.startTemplateI, this.i - diff))) + ("\
-								" + _) + ("{end}\
+								" + s) + ("var __I_PROTO__ = 1" + e) + ("\
+								" + s) + ("__protoWhile__ __I_PROTO__--" + e) + ("\
+									" + s) + ("__setLine__ " + (params.line)) + ("" + e) + ("\
+									" + (this.source.substring(params.startTemplateI, this.i - diff))) + ("\
+								" + s) + ("end" + e) + ("\
 \
-							" + (scope ? (("" + _) + "{end}") : '')) + ("\
-						" + _) + "{end}\
+							" + (scope ? (("" + s) + ("end" + e) + "") : '')) + ("\
+						" + s) + ("end" + e) + "\
 					").trim(),
 
 					{
@@ -11627,7 +11690,7 @@ Snakeskin.addDirective(
 						prfxI: this.prfxI,
 
 						scope: this.scope.slice(),
-						vars: this.structure.vars,
+						vars: struct.vars,
 						consts: this.consts,
 
 						proto: {
@@ -11663,12 +11726,9 @@ Snakeskin.addDirective(
 								this.res.substring(el.pos);
 
 						} else {
-							var tmp = this.structure.vars;
-
-							this.structure.vars = el.vars;
+							struct.vars = el.vars;
 							el.argsStr = this.returnProtoArgs(args, el.args);
-							this.structure.vars = tmp;
-
+							struct.vars = vars;
 							fin = false;
 						}
 					}
@@ -11679,10 +11739,28 @@ Snakeskin.addDirective(
 					this.backTableI--;
 				}
 			}
-		}
 
-		if ((!this.protoLink || this.protoLink === params.name) && !this.hasParentBlock('proto')) {
-			this.protoStart = false;
+			if (this.protoStart && !this.protoLink && !this.hasParentBlock('proto')) {
+				this.protoStart = false;
+			}
+
+			if (proto) {
+				var ouptupCache = this.getBlockOutput('proto');
+				if (ouptupCache[params.name] != null && this.isSimpleOutput()) {
+					struct.vars = struct.parent.vars;
+
+					this.save(
+							this.returnProtoArgs(
+								proto.args,
+								this.getFnArgs((("(" + (ouptupCache[params.name])) + ")"))
+							) +
+
+							proto.body
+					);
+
+					struct.vars = vars;
+				}
+			}
 		}
 	}
 );
@@ -12241,6 +12319,8 @@ for (var i = -1; ++i < template.length;) {
 
 			argsCache[tplName] = {};
 			argsResCache[tplName] = {};
+
+			outputCache[tplName] = {};
 			extMap[tplName] = parentTplName;
 
 			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
@@ -14220,6 +14300,9 @@ Snakeskin.include = function (base, url) {
 	var fs = require('fs'),
 		path = require('path');
 
+	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
+
 	try {
 		var extname = path['extname'](url);
 		var src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
@@ -14229,16 +14312,16 @@ Snakeskin.include = function (base, url) {
 			include[src] = true;
 
 			fsStack.push((("\
-				{__setFile__ " + (applyDefEscape(src))) + ("}\
-				" + (fs['readFileSync'](src).toString())) + "\
-				{__endSetFile__}\
+				" + s) + ("__setFile__ " + (applyDefEscape(src))) + ("" + e) + ("\
+				" + (fs['readFileSync'](src).toString())) + ("\
+				" + s) + ("__endSetFile__" + e) + "\
 			"));
 		}
 
 		return true;
 
 	} catch (err) {
-		fsStack.push((("{__setError__ " + (err.message)) + "}"));
+		fsStack.push((("" + s) + ("__setError__ " + (err.message)) + ("" + e) + ""));
 	}
 
 	return false;

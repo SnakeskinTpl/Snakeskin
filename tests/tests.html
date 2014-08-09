@@ -124,7 +124,7 @@
 	}
 	{{${a|trim|ucfirst}}}
 
-	{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}{/cdata}
+	#{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}#{/cdata}
 {/}
 
 {template data_decl()}
@@ -587,7 +587,7 @@
 		{super}
 		{@aa}
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto2'), {prettyPrint: true}); test('proto2', function () { equal(proto2_base().trim(), '22121'); equal(proto2_sub().trim(), '22[object Object]219'); equal(proto2_sub2().trim(), '22[object Object]219'); }); </script>  <script type="text/x-snakeskin-template" id="scope"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto2'), {prettyPrint: true}); test('proto2', function () { equal(proto2_base().trim(), '22021121'); equal(proto2_sub().trim(), '22021[object Object]219'); equal(proto2_sub2().trim(), '22[object Object]219'); }); </script>  <script type="text/x-snakeskin-template" id="scope"> 
 {name = 'foo'}
 {template scope_index(obj)}
 	{name = 'bar'}

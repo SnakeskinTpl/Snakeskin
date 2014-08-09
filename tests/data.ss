@@ -11,7 +11,7 @@ data_decl
 	}
 	{{${a|trim|ucfirst}}}
 
-	{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}{/cdata}
+	#{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}#{/cdata}
 {/}
 
 {template data_decl()}
