@@ -77,6 +77,11 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			// Разница между дочерним и родительским блоком
 			if (parent) {
+				if (parent.output && !current.output && (i % 2 === 0)) {
+					current.output = parent.output;
+					block += parent.output;
+				}
+
 				blockDiff = block.length -
 					cache[parentTpl].substring(parent.from, parent.to).length;
 			}
@@ -97,11 +102,6 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			// Переопределение
 			if (parent && (i % 2 === 0)) {
-				if (parent.output && !current.output) {
-					current.output = parent.output;
-					block += parent.output;
-				}
-
 				if (type !== 'block' && (type !== 'const' || !current.proto)) {
 					newFrom = parent.from + adv + block.length;
 					from += blockDiff;
