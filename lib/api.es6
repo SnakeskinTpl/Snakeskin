@@ -243,20 +243,20 @@ function DirObj(src, params) {
 		loaded: true
 	};
 
-	var lb = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
+	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
 
 	/**
 	 * Исходный текст шаблона
 	 * @type {string}
 	 */
 	this.source = String(src)
-		.replace(new RegExp(`${lb}cdata${rb}([\\s\\S]*?)${lb}(?:\\/cdata|end cdata)${rb}`, 'gm'), (sstr, data) => {
+		.replace(new RegExp(`${s}cdata${e}([\\s\\S]*?)${s}(?:\\/cdata|end cdata)${e}`, 'gm'), (sstr, data) => {
 			this.cDataContent.push(data);
 
 			return '' +
 				// Количество добавляемых строк
-				`${lb}__appendLine__ ${(data.match(/[\n\r]/g) || '').length + rb}` +
+				`${s}__appendLine__ ${(data.match(/[\n\r]/g) || '').length + e}` +
 
 				// Метка для замены CDATA
 				`__CDATA__${this.cDataContent.length - 1}_`

@@ -142,17 +142,17 @@ Snakeskin.addDirective(
 		var tplName = this.tplName,
 			params = this.structure.params;
 
-		var lb = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-			rb = RIGHT_BLOCK;
+		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
 
 		// Закрылся "внешний" прототип
 		if (this.protoLink === params.name) {
 			let obj = this.preProtos[tplName];
 
 			obj.text += `
-				${lb}__switchLine__ ${obj.startLine}${rb}
+				${s}__switchLine__ ${obj.startLine}${e}
 					${this.source.substring(params.from, this.i + 1)}
-				${lb}end${rb}
+				${s}end${e}
 			`;
 
 			this.protoLink = null;
@@ -180,17 +180,17 @@ Snakeskin.addDirective(
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
 					`
-						${lb}template ${tplName}()${rb}
-							${scope ? `${lb}with ${scope + rb}` : ''}
+						${s}template ${tplName}()${e}
+							${scope ? `${s}with ${scope + e}` : ''}
 
-								${lb}var __I_PROTO__ = 1${rb}
-								${lb}__protoWhile__ __I_PROTO__--${rb}
-									${lb}__setLine__ ${params.line + rb}
+								${s}var __I_PROTO__ = 1${e}
+								${s}__protoWhile__ __I_PROTO__--${e}
+									${s}__setLine__ ${params.line + e}
 									${this.source.substring(params.startTemplateI, this.i - diff)}
-								${lb}end${rb}
+								${s}end${e}
 
-							${scope ? `${lb}end${rb}` : ''}
-						${lb}end${rb}
+							${scope ? `${s}end${e}` : ''}
+						${s}end${e}
 					`.trim(),
 
 					{
