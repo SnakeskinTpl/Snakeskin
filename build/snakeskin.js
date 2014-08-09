@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 09 Aug 2014 10:14:35 GMT
+ * Date: Sat, 09 Aug 2014 10:20:25 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -13641,10 +13641,10 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 			if (!bOpen) {
-				if (el === '{') {
+				if (el === LEFT_BLOCK) {
 					begin++;
 
-				} else if (el === '}') {
+				} else if (el === RIGHT_BLOCK) {
 					begin--;
 				}
 			}
