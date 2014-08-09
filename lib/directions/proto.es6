@@ -262,14 +262,14 @@ Snakeskin.addDirective(
 					this.backTableI--;
 				}
 			}
-
-			if (params.output != null) {
-				Snakeskin.Directions['apply'].call(this, `${params.name}(${params.output.trim()})`);
-			}
 		}
 
 		if ((!this.protoLink || this.protoLink === params.name) && !this.hasParentBlock('proto')) {
 			this.protoStart = false;
+		}
+
+		if (params.output != null) {
+			Snakeskin.Directions['apply'].call(this, `${params.name}(${params.output.trim()})`);
 		}
 	}
 );
