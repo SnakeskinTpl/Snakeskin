@@ -28,7 +28,7 @@ Snakeskin.addDirective(
 		if (name !== command) {
 			output = command.split('=>')[1];
 
-			let ouptupCache = this.getBlockOutput(this.name);
+			let ouptupCache = this.getBlockOutput(String(this.name));
 			params = ouptupCache[name];
 
 			if (output != null) {

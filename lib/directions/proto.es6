@@ -97,7 +97,7 @@ Snakeskin.addDirective(
 		var start = this.i - this.startTemplateI,
 			output = command.split('=>')[1];
 
-		var ouptupCache = this.getBlockOutput(this.name);
+		var ouptupCache = this.getBlockOutput(String(this.name));
 
 		if (output != null) {
 			ouptupCache[name] = output;
