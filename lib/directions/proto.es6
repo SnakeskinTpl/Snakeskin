@@ -278,7 +278,16 @@ Snakeskin.addDirective(
 				let ouptupCache = this.getBlockOutput('proto');
 				if (ouptupCache[params.name] != null && this.isSimpleOutput()) {
 					struct.vars = struct.parent.vars;
-					this.save(this.returnProtoArgs(proto.args, this.getFnArgs(`(${ouptupCache[params.name]})`)) + proto.body);
+
+					this.save(
+							this.returnProtoArgs(
+								proto.args,
+								this.getFnArgs(`(${ouptupCache[params.name]})`)
+							) +
+
+							proto.body
+					);
+
 					struct.vars = vars;
 				}
 			}
