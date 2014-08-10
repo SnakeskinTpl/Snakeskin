@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 10 Aug 2014 09:50:09 GMT
+ * Date: Sun, 10 Aug 2014 10:39:22 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -10390,7 +10390,11 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 	opt_separator = opt_separator || '-';
 
 	var parts = str.split('|'),
-		res = '';
+		res = '',
+		ref = this.bemRef;
+
+	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
 
 	for (var i = -1; ++i < parts.length;) {
 		var arg = parts[i].split('=');
@@ -10419,7 +10423,14 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		var vals = arg[1].split(' ');
 
 		for (var j = -1; ++j < vals.length;) {
-			var val = this.prepareOutput((("'" + (this.pasteTplVarBlocks(vals[j].trim()))) + "'"), true) || '';
+			var val = vals[j].trim();
+
+			if (val.charAt(0) === '&' && ref) {
+				val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring(1), true))) + ("'" + e) + "");
+				val = this.replaceTplVars(val);
+			}
+
+			val = this.prepareOutput((("'" + (this.pasteTplVarBlocks(val))) + "'"), true) || '';
 
 			res += (("\
 				if ((" + val) + (") != null && (" + val) + (") !== '') {\
@@ -13433,6 +13444,9 @@ DirObj.prototype.returnTagDesc = function (str) {
 		id = '',
 		classes = [];
 
+	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
+
 	for (var i = -1; ++i < str.length;) {
 		var el = str.charAt(i);
 
@@ -13473,7 +13487,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 		if (el$0.charAt(0) === '&') {
 			if (ref) {
-				el$0 = (("#{'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(el$0.substring(1), true))) + "'}");
+				el$0 = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(el$0.substring(1), true))) + ("'" + e) + "");
 			}
 
 		} else if (!newRef && el$0) {
