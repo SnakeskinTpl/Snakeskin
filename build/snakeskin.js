@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 09 Aug 2014 11:17:39 GMT
+ * Date: Sun, 10 Aug 2014 08:21:28 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9305,7 +9305,7 @@ function genEndDir(dir) {
 	var s = dir.adv + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
-	return (("" + s) + ("__&__" + e) + ("" + s) + ("__freezeLine__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__end__" + e) + "");
+	return (("" + s) + ("__&__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__cutLine__" + e) + "");
 }
 
 /**
@@ -11409,6 +11409,12 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
+
+		if (!command && !this.freezeLine) {
+			this.lines.pop();
+			this.info['line']--;
+		}
+
 		if (!command || this.lines.length >= parseInt(command, 10)) {
 			this.freezeLine++;
 		}
@@ -11416,6 +11422,22 @@ Snakeskin.addDirective(
 
 	function () {
 		this.freezeLine--;
+	}
+);
+
+Snakeskin.addDirective(
+	'__cutLine__',
+
+	{
+		group: 'ignore'
+	},
+
+	function () {
+		this.startInlineDir();
+		if (!this.freezeLine) {
+			this.lines.pop();
+			this.info['line']--;
+		}
 	}
 );
 
