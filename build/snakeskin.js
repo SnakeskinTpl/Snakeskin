@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 10 Aug 2014 08:21:28 GMT
+ * Date: Sun, 10 Aug 2014 09:50:09 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -8397,6 +8397,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		prevCommentSpace = false,
 		freezeI = 0;
 
+	var alb = ADV_LEFT_BLOCK,
+		lb = LEFT_BLOCK,
+		rb = RIGHT_BLOCK;
+
 	var i18nStr = '',
 		i18nStart = false,
 		i18nDirStart = false;
@@ -8488,7 +8492,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else {
 			clrL = false;
 
-			if ((dir.needPrfx ? el !== ADV_LEFT_BLOCK : el !== LEFT_BLOCK) && !begin) {
+			if ((dir.needPrfx ? el !== alb : el !== lb) && !begin) {
 				prevSpace = dir.space;
 			}
 
@@ -8593,12 +8597,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				var isPrefStart = !currentEscape &&
 					!begin &&
-					el === ADV_LEFT_BLOCK &&
-					next === LEFT_BLOCK;
+					el === alb &&
+					next === lb;
 
 				// Начало управляющей конструкции
 				// (не забываем следить за уровнем вложенностей {)
-				if (isPrefStart || (el === LEFT_BLOCK && (begin || !currentEscape))) {
+				if (isPrefStart || (el === lb && (begin || !currentEscape))) {
 					if (begin) {
 						fakeBegin++;
 
@@ -8608,7 +8612,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							dir.needPrfx = true;
 
 							if (modLine) {
-								dir.lines[lastLine] += LEFT_BLOCK;
+								dir.lines[lastLine] += lb;
 							}
 						}
 
@@ -8619,7 +8623,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 				// Упраляющая конструкция завершилась
-				} else if (el === RIGHT_BLOCK && begin && (!fakeBegin || !(fakeBegin--))) {
+				} else if (el === rb && begin && (!fakeBegin || !(fakeBegin--))) {
 					begin = false;
 
 					var commandLength = command.length;
@@ -8645,7 +8649,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandType : 'const';
 
 					if (!dir.proto && commandType.charAt(0) === '_') {
-						var source = (("" + (dir.needPrfx ? ADV_LEFT_BLOCK : '')) + ("" + LEFT_BLOCK) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + RIGHT_BLOCK) + ""),
+						var source = (("" + (dir.needPrfx ? alb : '')) + ("" + lb) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + rb) + ""),
 							rgxp = rgxpCache[source] || new RegExp(source);
 
 						dir.lines[lastLine] = dir.lines[lastLine]
@@ -8744,7 +8748,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 							} else {
 								dir.source = str.substring(0, dir.i + 1) +
-									RIGHT_BLOCK +
+									rb +
 									str.substring(dir.i + 1);
 
 								dir.i = +(pseudoI);
@@ -8764,8 +8768,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								var diff = +(dir.needPrfx) + 1;
 
 								dir.source = str.substring(0, dir.i) +
-									(dir.needPrfx ? ADV_LEFT_BLOCK : '') +
-									LEFT_BLOCK +
+									(dir.needPrfx ? alb : '') +
+									lb +
 									str.substring(dir.i);
 
 								pseudoI = dir.i - diff;
