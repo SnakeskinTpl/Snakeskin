@@ -1,5 +1,7 @@
 module.exports = exports = require('./build/snakeskin.min');
+
 var fs = require('fs');
+var cache = {};
 
 /**
  * Вернуть true, если заданный файл шаблонов соответствует скомпилированному
@@ -38,6 +40,10 @@ exports.compileFile = function (src, opt_params) {
 	opt_params = opt_params || {};
 	opt_params.commonJS = true;
 
+	if (cache[src]) {
+		return cache[src];
+	}
+
 	var source = fs.readFileSync(src).toString(),
 		resSrc = `${src}.js`;
 
@@ -53,7 +59,8 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (res !== false) {
-		tpls = require(resSrc);
+		cache[src] =
+			tpls = require(resSrc);
 
 		if (tpls.init) {
 			tpls.init(this);
