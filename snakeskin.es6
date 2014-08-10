@@ -77,6 +77,10 @@ exports.execFile = function (src, opt_params, opt_tplName) {
 	var tpls = this.compileFile(src, opt_params),
 		tpl;
 
+	if (!tpls) {
+		return null;
+	}
+
 	if (opt_tplName) {
 		tpl = tpls[opt_tplName];
 
