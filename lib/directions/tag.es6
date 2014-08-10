@@ -100,6 +100,9 @@ DirObj.prototype.returnTagDesc = function (str) {
 		id = '',
 		classes = [];
 
+	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
+
 	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i);
 
@@ -140,7 +143,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 		if (el.charAt(0) === '&') {
 			if (ref) {
-				el = `#{'${this.replaceTplVars(ref, true)}'|bem '${this.replaceTplVars(el.substring(1), true)}'}`;
+				el = `${s}'${this.replaceTplVars(ref, true)}'|bem '${this.replaceTplVars(el.substring(1), true)}'${e}`;
 			}
 
 		} else if (!newRef && el) {
