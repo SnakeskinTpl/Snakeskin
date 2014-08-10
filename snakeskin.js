@@ -37,12 +37,12 @@ exports.check = function (source, result) {
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
-	opt_params = opt_params || {};
-	opt_params.commonJS = true;
-
 	if (cache[src]) {
 		return cache[src];
 	}
+
+	opt_params = opt_params || {};
+	opt_params.commonJS = true;
 
 	var source = fs.readFileSync(src).toString(),
 		resSrc = (("" + src) + ".js");
