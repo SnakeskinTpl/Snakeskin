@@ -108,6 +108,10 @@ exports.exec = function (txt, opt_params, opt_tplName) {
 
 	this.compile(txt, opt_params);
 
+	if (!tpls) {
+		return null;
+	}
+
 	if (opt_tplName) {
 		tpl = tpls[opt_tplName];
 
