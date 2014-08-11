@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 11 Aug 2014 04:35:08 GMT
+ * Date: Mon, 11 Aug 2014 04:49:04 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -8351,8 +8351,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		parent: sp.parent
 	});
 
-	Snakeskin['_include'] = Snakeskin.include.bind(dir);
-
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
 	var begin = false,
@@ -11321,6 +11319,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		command = this.pasteDangerBlocks(command);
+
 		var module = {
 			exports: {},
 			require: require,
@@ -13060,7 +13060,7 @@ Snakeskin.addDirective(
 
 		if (path !== void 0) {
 			path = this.pasteDangerBlocks(((path) + ''));
-			this.save((("Snakeskin._include('" + (applyDefEscape(this.info['file'] || ''))) + ("', " + path) + ");"));
+			this.save((("Snakeskin.include('" + (applyDefEscape(this.info['file'] || ''))) + ("', " + path) + ");"));
 		}
 	},
 
@@ -14350,7 +14350,6 @@ Snakeskin.include = function (base, url) {
 		e = RIGHT_BLOCK;
 
 	try {
-		url = this.pasteDangerBlocks(url);
 		var extname = path['extname'](url);
 		var src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
 			include = Snakeskin.LocalVars.include;
