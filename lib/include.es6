@@ -20,6 +20,7 @@ Snakeskin.include = function (base, url) {
 		e = RIGHT_BLOCK;
 
 	try {
+		url = this.pasteDangerBlocks(url);
 		let extname = path['extname'](url);
 		let src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
 			include = Snakeskin.LocalVars.include;
