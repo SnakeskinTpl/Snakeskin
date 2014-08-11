@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 11 Aug 2014 04:27:11 GMT
+ * Date: Mon, 11 Aug 2014 04:35:08 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -7381,8 +7381,6 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
  * @return {?}
  */
 DirObj.prototype.evalStr = function (str) {
-	str = this.pasteDangerBlocks(str);
-
 	var module = this.module;
 	var filename = module.filename,
 		dirname;
@@ -8352,6 +8350,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		lines: sp.lines,
 		parent: sp.parent
 	});
+
+	Snakeskin['_include'] = Snakeskin.include.bind(dir);
 
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
@@ -13060,7 +13060,7 @@ Snakeskin.addDirective(
 
 		if (path !== void 0) {
 			path = this.pasteDangerBlocks(((path) + ''));
-			this.save((("Snakeskin.include('" + (applyDefEscape(this.info['file'] || ''))) + ("', " + path) + ");"));
+			this.save((("Snakeskin._include('" + (applyDefEscape(this.info['file'] || ''))) + ("', " + path) + ");"));
 		}
 	},
 
@@ -14350,6 +14350,7 @@ Snakeskin.include = function (base, url) {
 		e = RIGHT_BLOCK;
 
 	try {
+		url = this.pasteDangerBlocks(url);
 		var extname = path['extname'](url);
 		var src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
 			include = Snakeskin.LocalVars.include;
