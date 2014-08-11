@@ -1,4 +1,4 @@
-/* Snakeskin v4.0.0, label <1407660751625>, generated at <1407732657248> Mon Aug 11 2014 08:50:57 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.0.0, label <1407660751625>, generated at <1407744454976> Mon Aug 11 2014 12:07:34 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
     exports['init'] = function(obj) {
@@ -19,7 +19,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_63d8b'];
+        var $_ = __LOCAL__['$_a41a1'];
         __VARS__['mod_global'] = 1;
         __VARS__.MG = 2; /* Snakeskin template: mod_index;  */
         this.mod_index = function() {

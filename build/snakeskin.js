@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 11 Aug 2014 04:49:04 GMT
+ * Date: Mon, 11 Aug 2014 08:07:22 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -11586,6 +11586,11 @@ Snakeskin.addDirective(
 
 			// Идёт декларация внешнего прототипа
 			if (!tplName) {
+				if (this.structure.parent) {
+					this.error(("directive \"outer proto\" can be used only within the global space"));
+					return;
+				}
+
 				tplName =
 					this.tplName = this.prepareNameDecl(parts[0]);
 
@@ -12721,7 +12726,7 @@ Snakeskin.addDirective(
 				name = parent.name;
 
 			var prfx = async[name] &&
-			parent.children.length > 1 ? ', ' : '';
+				parent.children.length > 1 ? ', ' : '';
 
 			this.structure.params.insideAsync = async[name];
 
@@ -12867,7 +12872,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir();
-		this.append((("" + command) + ".then("));
+		this.append((("" + (this.prepareOutput(command, true))) + ".then("));
 	},
 
 	function () {
@@ -12921,13 +12926,15 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
+				var val = command ? this.prepareOutput(command, true) : 'false';
+
 				if (inside === 'waterfall') {
-					this.append('return arguments[arguments.length - 1](false);');
+					this.append((("return arguments[arguments.length - 1](" + val) + ");"));
 
 				} else {
-					this.append(("\
+					this.append((("\
 						if (typeof arguments[0] === 'function') {\
-							return arguments[0](false);\
+							return arguments[0](" + val) + ");\
 						}\
 \
 						return false;\
@@ -12989,13 +12996,15 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
+				var val = command ? ("null," + (this.prepareOutput(command, true))) : '';
+
 				if (inside === 'waterfall') {
-					this.append('return arguments[arguments.length - 1]();');
+					this.append((("return arguments[arguments.length - 1](" + val) + ");"));
 
 				} else {
-					this.append(("\
+					this.append((("\
 						if (typeof arguments[0] === 'function') {\
-							return arguments[0]();\
+							return arguments[0](" + val) + ");\
 						}\
 \
 						return;\
