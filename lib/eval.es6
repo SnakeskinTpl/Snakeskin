@@ -7,6 +7,8 @@ var uid;
  * @return {?}
  */
 DirObj.prototype.evalStr = function (str) {
+	str = this.pasteDangerBlocks(str);
+
 	var module = this.module;
 	var filename = module.filename,
 		dirname;
