@@ -46,7 +46,7 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
-				let val = command ? `null,${this.prepareOutput(command, true)}` : 'false';
+				let val = command ? this.prepareOutput(command, true) : 'false';
 
 				if (inside === 'waterfall') {
 					this.append(`return arguments[arguments.length - 1](${val});`);
