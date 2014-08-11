@@ -2,6 +2,9 @@
 
 Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
 
+[![NPM version](https://badge.fury.io/js/snakeskin.svg)](http://badge.fury.io/js/snakeskin)
+[![dependencies](https://david-dm.org/kobezzza/snakeskin.png)](https://david-dm.org/kobezzza/snakeskin)
+
 [Онлайн-демо](http://jsfiddle.net/kobezzza/NAPWB/10/)
 
 ## Основные особенности
