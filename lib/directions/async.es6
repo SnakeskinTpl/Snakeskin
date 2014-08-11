@@ -64,7 +64,7 @@ Snakeskin.addDirective(
 				name = parent.name;
 
 			let prfx = async[name] &&
-			parent.children.length > 1 ? ', ' : '';
+				parent.children.length > 1 ? ', ' : '';
 
 			this.structure.params.insideAsync = async[name];
 
