@@ -46,7 +46,7 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
-				let val = command ? this.prepareOutput(command, true) : 'false';
+				let val = command ? `null,${this.prepareOutput(command, true)}` : 'false';
 
 				if (inside === 'waterfall') {
 					this.append(`return arguments[arguments.length - 1](${val});`);
@@ -116,13 +116,15 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
+				let val = command ? `null,${this.prepareOutput(command, true)}` : '';
+
 				if (inside === 'waterfall') {
-					this.append(`return arguments[arguments.length - 1](${command ? this.prepareOutput(command, true) : ''});`);
+					this.append(`return arguments[arguments.length - 1](${val});`);
 
 				} else {
 					this.append(`
 						if (typeof arguments[0] === 'function') {
-							return arguments[0]();
+							return arguments[0](${val});
 						}
 
 						return;
