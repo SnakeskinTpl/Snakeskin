@@ -19,6 +19,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		command = this.pasteDangerBlocks(command);
+
 		let module = {
 			exports: {},
 			require: require,
