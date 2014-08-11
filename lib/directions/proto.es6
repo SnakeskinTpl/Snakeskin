@@ -78,6 +78,11 @@ Snakeskin.addDirective(
 
 			// Идёт декларация внешнего прототипа
 			if (!tplName) {
+				if (this.structure.parent) {
+					this.error(`directive "outer proto" can be used only within the global space`);
+					return;
+				}
+
 				tplName =
 					this.tplName = this.prepareNameDecl(parts[0]);
 
