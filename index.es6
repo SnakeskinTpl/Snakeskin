@@ -32,6 +32,7 @@ var params = {
 	xml: !program['disableXml'],
 	commonJS: program['commonJs'],
 	localization: !program['disableLocalization'],
+	i18nFn: program['i18nFn'],
 	language: program['language'],
 	words: program['words'],
 	interface: program['interface'],
