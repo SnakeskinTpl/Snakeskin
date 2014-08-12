@@ -14,6 +14,7 @@ program
 	.option('-t, --tpl [name]', 'name of the main template')
 
 	.option('--disable-localization', 'disable support for localization')
+	.option('--i18n-fn', 'i18n function name')
 	.option('--language [src]', 'path to the localization file (JSON) or localization JSON')
 	.option('--words [src]', 'path to the localization file to save')
 
