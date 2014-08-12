@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 12 Aug 2014 09:26:33 GMT
+ * Date: Tue, 12 Aug 2014 09:53:15 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -13069,7 +13069,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.tplName || this.hasParent('head')) {
-			return this.error((("directive \"" + (this.name)) + ("\" can't be used within a " + (groupsList['template'].join(', '))) + ", \"head\""));
+			return this.error((("directive \"" + (this.name)) + ("\" can't be used within a " + (groupsList['template'].join(', '))) + " or a \"head\""));
 		}
 
 		this.startInlineDir(null, {
