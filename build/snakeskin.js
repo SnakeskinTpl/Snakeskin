@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 12 Aug 2014 05:50:17 GMT
+ * Date: Tue, 12 Aug 2014 06:44:18 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -7230,7 +7230,8 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		argsTable[arg[0]] = {
 			i: i$0,
 			key: arg[0],
-			value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
+			value: arg[1] && this.pasteDangerBlocks(arg[1].trim()),
+			scope: scope
 		};
 	}
 
@@ -7240,12 +7241,6 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				continue;
 			}
 
-			var el = parentArgs[key],
-				current = argsTable[key];
-
-			var cVal = current &&
-				current.value === void 0;
-
 			var aKey = void 0;
 			if (scopeModRgxp.test(key)) {
 				aKey = key.replace(scopeModRgxp, '');
@@ -7254,7 +7249,16 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				aKey = ("@" + key);
 			}
 
-			if (!argsTable[key] && !argsTable[aKey]) {
+			var rKey = argsTable[key] ?
+				key : aKey;
+
+			var el = parentArgs[key],
+				current = argsTable[rKey];
+
+			var cVal = current &&
+				current.value === void 0;
+
+			if (!argsTable[rKey]) {
 				argsTable[key] = {
 					local: true,
 					i: el.i,
@@ -7263,8 +7267,15 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 						el.value : 'void 0'
 				};
 
-			} else if (cVal) {
-				argsTable[argsTable[key] ? key : aKey].value = el.value;
+			} else {
+				if (!scope && el.scope) {
+					scope = el.scope;
+					argsTable[rKey].scope = scope;
+				}
+
+				if (cVal) {
+					argsTable[rKey].value = el.value;
+				}
 			}
 		}
 	}
