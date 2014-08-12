@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 12 Aug 2014 06:44:18 GMT
+ * Date: Tue, 12 Aug 2014 08:43:38 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6613,7 +6613,7 @@ DirObj.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 DirObj.prototype.isReady = function () {
-	return !this.proto || !this.proto.parentTplName;
+	return !this.protoStart && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
