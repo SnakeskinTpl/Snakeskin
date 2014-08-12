@@ -145,7 +145,8 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		argsTable[arg[0]] = {
 			i: i,
 			key: arg[0],
-			value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
+			value: arg[1] && this.pasteDangerBlocks(arg[1].trim()),
+			scope: scope
 		};
 	}
 
@@ -155,12 +156,6 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				continue;
 			}
 
-			let el = parentArgs[key],
-				current = argsTable[key];
-
-			let cVal = current &&
-				current.value === void 0;
-
 			let aKey;
 			if (scopeModRgxp.test(key)) {
 				aKey = key.replace(scopeModRgxp, '');
@@ -169,7 +164,16 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				aKey = `@${key}`;
 			}
 
-			if (!argsTable[key] && !argsTable[aKey]) {
+			let rKey = argsTable[key] ?
+				key : aKey;
+
+			let el = parentArgs[key],
+				current = argsTable[rKey];
+
+			let cVal = current &&
+				current.value === void 0;
+
+			if (!argsTable[rKey]) {
 				argsTable[key] = {
 					local: true,
 					i: el.i,
@@ -178,8 +182,15 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 						el.value : 'void 0'
 				};
 
-			} else if (cVal) {
-				argsTable[argsTable[key] ? key : aKey].value = el.value;
+			} else {
+				if (!scope && el.scope) {
+					scope = el.scope;
+					argsTable[rKey].scope = scope;
+				}
+
+				if (cVal) {
+					argsTable[rKey].value = el.value;
+				}
 			}
 		}
 	}
