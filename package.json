@@ -1,6 +1,6 @@
 {
   "name": "snakeskin",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "main": "snakeskin.js",
   "bin": {
     "snakeskin": "index.js"
