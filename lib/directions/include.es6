@@ -7,7 +7,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (this.tplName || this.hasParent('head')) {
-			return this.error(`directive "${this.name}" can't be used within a ${groupsList['template'].join(', ')}, "head"`);
+			return this.error(`directive "${this.name}" can't be used within a ${groupsList['template'].join(', ')} or a "head"`);
 		}
 
 		this.startInlineDir(null, {
