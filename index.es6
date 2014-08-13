@@ -1,10 +1,19 @@
 //#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
+
 var program = require('commander');
+var beautify = require('js-beautify');
+
+var path = require('path');
+var fs = require('fs'),
+	exists = fs.existsSync || path.existsSync;
 
 program
-	['version'](Snakeskin.VERSION.join('.'))
+	.version(Snakeskin.VERSION.join('.'))
+
+	.usage('[options] [text ...]')
+	.option('-p, --params', 'javascript options object')
 
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-o, --output [src]', 'path to the file to save')
@@ -27,50 +36,70 @@ program
 
 	.parse(process.argv);
 
-var fs = require('fs');
-var params = {
-	xml: !program['disableXml'],
-	commonJS: program['commonJs'],
-	localization: !program['disableLocalization'],
-	i18nFn: program['i18nFn'],
-	language: program['language'],
-	words: program['words'],
-	interface: program['interface'],
-	stringBuffer: program['stringBuffer'],
-	inlineIterators: program['inlineIterators'],
-	escapeOutput: !program['disableEscapeOutput'],
-	prettyPrint: program['prettyPrint']
-};
+var params = program['params'];
+
+if (params) {
+	params = parse(params);
+
+} else {
+	params = {
+		xml: !program['disableXml'],
+		commonJS: program['commonJs'],
+		localization: !program['disableLocalization'],
+		i18nFn: program['i18nFn'],
+		language: program['language'],
+		words: program['words'],
+		interface: program['interface'],
+		stringBuffer: program['stringBuffer'],
+		inlineIterators: program['inlineIterators'],
+		escapeOutput: !program['disableEscapeOutput'],
+		prettyPrint: program['prettyPrint']
+	};
+}
 
 var lang = params.language,
 	prettyPrint = params.prettyPrint;
 
 if (lang) {
-	try {
-		params.language = JSON.parse(lang);
-
-	} catch (ignore) {
-		params.language = JSON.parse(fs.readFileSync(lang).toString());
-	}
+	params.language = parse(lang);
 }
 
-var dataSrc = program['data'],
+var tplData = program['data'],
 	mainTpl = program['tpl'];
 
-var beautify = require('js-beautify');
 var words = params.words;
 
 if (words) {
 	params.words = {};
 }
 
-var input;
-if (!program['source'] && process.argv.length > 2) {
-	input = process.argv[process.argv.length - 1];
-}
+var args = program['args'],
+	input;
 
 var file = program['source'],
 	newFile = program['output'];
+
+if (!file) {
+	if (args.length) {
+		input = args.join(' ');
+
+	} else if (process.argv.length > 2) {
+		input = process.argv[process.argv.length - 1];
+	}
+
+	if (exists(input)) {
+		file = input;
+		input = void 0;
+	}
+}
+
+function parse(val) {
+	if (exists(val)) {
+		return JSON.parse(fs.readFileSync(val));
+	}
+
+	return eval(`(${val})`);
+}
 
 function action(data) {
 	if (!data && !file) {
@@ -79,7 +108,7 @@ function action(data) {
 
 	var tpls = {};
 
-	if (dataSrc || mainTpl) {
+	if (tplData || mainTpl) {
 		params.commonJS = true;
 		params.context = tpls;
 		params.prettyPrint = false;
@@ -92,10 +121,10 @@ function action(data) {
 		!newFile;
 
 	if (res !== false) {
-		if (dataSrc || mainTpl) {
+		if (tplData || mainTpl) {
 			let tpl;
 
-			if (mainTpl) {
+			if (mainTpl && mainTpl !== true) {
 				tpl = tpls[mainTpl];
 
 			} else {
@@ -112,17 +141,15 @@ function action(data) {
 				process.exit(1);
 			}
 
-			let dtd = void 0;
-			if (dtd && dtd !== true) {
-				try {
-					dtd = JSON.parse(dataSrc);
+			if (tplData && tplData !== true) {
+				tplData = parse(tplData);
 
-				} catch (ignore) {
-					dtd = JSON.parse(fs.readFileSync(dataSrc).toString());
-				}
+			} else {
+				tplData = void 0;
 			}
 
-			res = tpl(dtd);
+			res = tpl(tplData);
+
 			if (prettyPrint) {
 				if (toConsole) {
 					res = beautify['html'](res);
@@ -152,4 +179,28 @@ function action(data) {
 	process.exit(0);
 }
 
-action(file ? fs.readFileSync(file).toString() : input);
+if (!input) {
+	let buf = '';
+	let stdin = process.stdin,
+		stdout = process.stdout;
+
+	stdin.setEncoding('utf8');
+	stdin.on('data', (chunk) => {
+		buf += chunk;
+	});
+
+	stdin.on('end', () => {
+		action(buf);
+	}).resume();
+
+	process.on('SIGINT', () => {
+		stdout.write('\n');
+		stdin.emit('end');
+		stdout.write('\n');
+		process.exit();
+	});
+
+} else {
+	action(file ? fs.readFileSync(file).toString() : input);
+}
+
