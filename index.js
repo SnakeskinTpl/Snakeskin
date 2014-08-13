@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 
@@ -16,6 +16,7 @@ program
 	.option('-p, --params [options]', 'path to the options file (JSON) or options JSON')
 
 	.option('-s, --source [src]', 'path to the template file')
+	.option('-f, --file [src]', 'path to the template file (meta-information)')
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('-n, --common-js', 'common.js export (for node.js)')
 
@@ -122,10 +123,6 @@ function parse(val) {
 }
 
 function action(data) {
-	if (!data && !file) {
-		program['help']();
-	}
-
 	var tpls = {};
 
 	if (tplData || mainTpl || exec) {
@@ -135,7 +132,7 @@ function action(data) {
 	}
 
 	var str = String(data),
-		res = Snakeskin.compile(str, params, {file: file});
+		res = Snakeskin.compile(str, params, {file: program['file'] || file});
 
 	var toConsole = input && !program['output'] ||
 		!newFile;
@@ -199,7 +196,7 @@ function action(data) {
 	process.exit(0);
 }
 
-if (input == null) {
+if (!file && input == null) {
 	var buf = '';
 	var stdin = process.stdin,
 		stdout = process.stdout;
