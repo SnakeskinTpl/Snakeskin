@@ -57,11 +57,10 @@ if (params) {
 	};
 }
 
-var lang = params.language,
-	prettyPrint = params.prettyPrint;
+var prettyPrint = params.prettyPrint;
 
-if (lang) {
-	params.language = parse(lang);
+if (params.language) {
+	params.language = parse(params.language);
 }
 
 var tplData = program['data'],
