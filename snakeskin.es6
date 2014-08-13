@@ -1,6 +1,9 @@
 module.exports = exports = require('./build/snakeskin.min');
 
-var fs = require('fs');
+var path = require('path');
+var fs = require('fs'),
+	exists = fs.existsSync || path.existsSync;
+
 var cache = {};
 
 /**
@@ -12,7 +15,7 @@ var cache = {};
  * @return {boolean}
  */
 exports.check = function (source, result) {
-	if (!fs.existsSync(result)) {
+	if (!exists(result)) {
 		return false;
 	}
 

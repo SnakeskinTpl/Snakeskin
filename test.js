@@ -1,7 +1,8 @@
-var fs = require('fs');
 var path = require('path');
-var assert = require('assert');
+var fs = require('fs'),
+	exists = fs.existsSync || path.existsSync;
 
+var assert = require('assert');
 var snakeskin = require('./build/snakeskin.min');
 var testFolder = path.resolve(__dirname, 'tests');
 
@@ -107,6 +108,6 @@ run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true, inline
 
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
 
-if (fs.existsSync(errorPath)) {
+if (exists(errorPath)) {
 	fs.unlinkSync(errorPath);
 }

@@ -191,8 +191,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			dirname = path['dirname'](filename);
 			Snakeskin.LocalVars.include[filename] = 'index';
 
-			let fs = require('fs');
-			if (fs['existsSync'](filename)) {
+			let fs = require('fs'),
+				exists = fs['existsSync'] || path['existsSync'];
+
+			if (exists(filename)) {
 				let stat = fs['statSync'](filename);
 				label = stat['mtime'];
 			}
