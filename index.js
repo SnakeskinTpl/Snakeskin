@@ -12,13 +12,14 @@ var fs = require('fs'),
 program
 	.version(Snakeskin.VERSION.join('.'))
 
-	.usage('[options] [text ...]')
-	.option('-p, --params', 'javascript options object')
+	.usage('[options] [dir|file ...]')
+	.option('-p, --params[options]', 'javascript options object')
 
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('-n, --common-js', 'common.js export (for node.js)')
 
+	.option('-e, --exec', 'execute compiled template')
 	.option('-d, --data [src]', 'path to the data file (JSON) or data JSON')
 	.option('-t, --tpl [name]', 'name of the main template')
 
@@ -36,26 +37,41 @@ program
 
 	.parse(process.argv);
 
-var params = program['params'];
+var params = program['params'] ?
+	parse(params) : {};
 
-if (params) {
-	params = parse(params);
+params.xml = 'disableXml' in program ?
+	!program['disableXml'] : params.xml;
 
-} else {
-	params = {
-		xml: !program['disableXml'],
-		commonJS: program['commonJs'],
-		localization: !program['disableLocalization'],
-		i18nFn: program['i18nFn'],
-		language: program['language'],
-		words: program['words'],
-		interface: program['interface'],
-		stringBuffer: program['stringBuffer'],
-		inlineIterators: program['inlineIterators'],
-		escapeOutput: !program['disableEscapeOutput'],
-		prettyPrint: program['prettyPrint']
-	};
-}
+params.commonJS = 'commonJs' in program ?
+	program['commonJs'] : params.commonJS;
+
+params.localization = 'disableLocalization' in program ?
+	!program['disableLocalization'] : params.localization;
+
+params.i18nFn = 'i18nFn' in program ?
+	program['i18nFn'] : params.i18nFn;
+
+params.language = 'language' in program ?
+	program['language'] : params.language;
+
+params.words = 'words' in program ?
+	program['words'] : params.words;
+
+params.interface = 'interface' in program ?
+	program['interface'] : params.interface;
+
+params.stringBuffer = 'stringBuffer' in program ?
+	program['stringBuffer'] : params.stringBuffer;
+
+params.inlineIterators = 'inlineIterators' in program ?
+	program['inlineIterators'] : params.inlineIterators;
+
+params.escapeOutput = 'disableEscapeOutput' in program ?
+	!program['disableEscapeOutput'] : params.escapeOutput;
+
+params.prettyPrint = 'prettyPrint' in program ?
+	program['prettyPrint'] : params.prettyPrint;
 
 var prettyPrint = params.prettyPrint;
 
@@ -63,6 +79,7 @@ if (params.language) {
 	params.language = parse(params.language);
 }
 
+var exec = program['exec'];
 var tplData = program['data'],
 	mainTpl = program['tpl'];
 
@@ -92,7 +109,16 @@ function parse(val) {
 		return JSON.parse(fs.readFileSync(val));
 	}
 
-	return eval((("(" + val) + ")"));
+	var res;
+
+	try {
+		res =  eval((("(" + val) + ")"));
+
+	} catch (ignore) {
+		res = {};
+	}
+
+	return res || {};
 }
 
 function action(data) {
@@ -102,7 +128,7 @@ function action(data) {
 
 	var tpls = {};
 
-	if (tplData || mainTpl) {
+	if (tplData || mainTpl || exec) {
 		params.commonJS = true;
 		params.context = tpls;
 		params.prettyPrint = false;
@@ -115,7 +141,7 @@ function action(data) {
 		!newFile;
 
 	if (res !== false) {
-		if (tplData || mainTpl) {
+		if (tplData || mainTpl || exec) {
 			var tpl;
 
 			if (mainTpl && mainTpl !== true) {
