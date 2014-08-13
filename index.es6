@@ -112,7 +112,7 @@ function parse(val) {
 	var res;
 
 	try {
-		res =  eval(`(${val})`);
+		res = eval(`(${val})`);
 
 	} catch (ignore) {
 		res = {};
