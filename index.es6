@@ -78,17 +78,12 @@ var args = program['args'],
 var file = program['source'],
 	newFile = program['output'];
 
-if (!file) {
-	if (args.length) {
-		input = args.join(' ');
-
-	} else if (process.argv.length > 2) {
-		input = process.argv[process.argv.length - 1];
-	}
+if (!file && args.length) {
+	input = args.join(' ');
 
 	if (exists(input)) {
 		file = input;
-		input = void 0;
+		input = false;
 	}
 }
 
@@ -178,7 +173,7 @@ function action(data) {
 	process.exit(0);
 }
 
-if (!input) {
+if (input == null) {
 	let buf = '';
 	let stdin = process.stdin,
 		stdout = process.stdout;
