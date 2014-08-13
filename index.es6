@@ -13,7 +13,7 @@ program
 	.version(Snakeskin.VERSION.join('.'))
 
 	.usage('[options] [dir|file ...]')
-	.option('-p, --params[options]', 'javascript options object')
+	.option('-p, --params [options]', 'path to the options file (JSON) or options JSON')
 
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-o, --output [src]', 'path to the file to save')
