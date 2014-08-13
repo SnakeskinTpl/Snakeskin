@@ -12,7 +12,7 @@ var uid;
  * Скомпилировать указанные шаблоны Snakeskin
  *
  * @expose
- * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны,
+ * @param {(!Element|string)} src - ссылка на DOM узел, где декларированы шаблоны,
  *     или исходный текст шаблонов
  *
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
@@ -618,7 +618,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 							} else {
 								dir.source = str.substring(0, dir.i + 1) +
-									rb +
+									FILTER + '!html' + rb +
 									str.substring(dir.i + 1);
 
 								dir.i = Number(pseudoI);
