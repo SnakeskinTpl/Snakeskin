@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.5
+ * Snakeskin v4.0.6
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 13 Aug 2014 07:29:54 GMT
+ * Date: Wed, 13 Aug 2014 08:35:56 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 5],
+	VERSION: [4, 0, 6],
 
 	/**
 	 * Пространство имён для директив
@@ -8155,7 +8155,7 @@ var uid;
  * Скомпилировать указанные шаблоны Snakeskin
  *
  * @expose
- * @param {(!Element|string)} src - ссылка на DOM узел, где декларированны шаблоны,
+ * @param {(!Element|string)} src - ссылка на DOM узел, где декларированы шаблоны,
  *     или исходный текст шаблонов
  *
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
@@ -8761,7 +8761,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 							} else {
 								dir.source = str.substring(0, dir.i + 1) +
-									rb +
+									FILTER + '!html' + rb +
 									str.substring(dir.i + 1);
 
 								dir.i = +(pseudoI);
