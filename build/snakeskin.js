@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.9
+ * Snakeskin v4.0.10
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 14 Aug 2014 14:06:46 GMT
+ * Date: Thu, 14 Aug 2014 15:46:01 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 9],
+	VERSION: [4, 0, 10],
 
 	/**
 	 * Пространство имён для директив
@@ -8155,7 +8155,7 @@ var uid;
  * Скомпилировать указанные шаблоны Snakeskin
  *
  * @expose
- * @param {(!Element|string)} src - ссылка на DOM узел, где декларированы шаблоны,
+ * @param {(Element|string)} src - ссылка на DOM узел, где декларированы шаблоны,
  *     или исходный текст шаблонов
  *
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
@@ -8200,6 +8200,7 @@ var uid;
  * @param {Object=} [opt_info] - дополнительная информация о запуске
  *     (используется для сообщений об ошибках)
  *
+ * @param {?boolean=} [opt_info.cacheKey=false] - если true, то возвращается кеш-ключ шаблона
  * @param {?string=} [opt_info.file] - адрес исходного файла шаблонов
  * @param {Object=} [opt_sysParams] - служебные параметры запуска
  *
@@ -8214,9 +8215,10 @@ var uid;
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
- * @return {(string|boolean)}
+ * @return {(string|boolean|null)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
+	src = src || '';
 	var sp = opt_sysParams || {},
 		p = opt_params ?
 			Object(opt_params) : {};
@@ -8299,6 +8301,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.i18nFn
 	].join();
 
+	if (info.cacheKey || info['cacheKey']) {
+		return cacheKey;
+	}
+
 	// Кеширование шаблонов в node.js
 	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
 		var cache = globalFnCache[cacheKey][text];
@@ -8313,15 +8319,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		var res = globalCache[cacheKey][text],
+		var tmp = globalCache[cacheKey][text],
 			skip = false;
 
 		if (words) {
-			if (!res.words) {
+			if (!tmp.words) {
 				skip = true;
 
 			} else {
-				var w = Object(res.words);
+				var w = Object(tmp.words);
 
 				for (var key$1 in w) {
 					if (!w.hasOwnProperty(key$1)) {
@@ -8334,11 +8340,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (debug) {
-			if (!res.debug) {
+			if (!tmp.debug) {
 				skip = true;
 
 			} else {
-				var d = Object(res.debug);
+				var d = Object(tmp.debug);
 
 				for (var key$2 in d) {
 					if (!d.hasOwnProperty(key$2)) {
@@ -8351,7 +8357,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (!skip) {
-			return res.text;
+			return tmp.text;
 		}
 	}
 
@@ -9037,7 +9043,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	'');
 
-	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", label <" + (label.valueOf())) + (">, generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
+	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
 	dir.res += (("" + (cjs ? '}' : '')) + "}).call(this);");
 
 	for (var key$3 in dir.preProtos) {
