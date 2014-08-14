@@ -142,7 +142,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	var text = html || src;
-	var cacheKey = [
+	var cacheKey = lang ? 'break' : [
 		cjs,
 
 		p.inlineIterators,
@@ -154,12 +154,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		xml,
 		i18n,
 
-		p.i18nFn,
-		lang ?
-			JSON.stringify(lang) : false,
-
-		Boolean(debug),
-		Boolean(words)
+		p.i18nFn
 	].join();
 
 	// Кеширование шаблонов в node.js
@@ -176,35 +171,46 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		let res = globalCache[cacheKey][text];
-
-		console.log(res);
+		let res = globalCache[cacheKey][text],
+			skip = false;
 
 		if (words) {
-			let w = Object(res.words);
+			if (!res.words) {
+				skip = true;
 
-			for (let key in w) {
-				if (!w.hasOwnProperty(key)) {
-					continue;
+			} else {
+				let w = Object(res.words);
+
+				for (let key in w) {
+					if (!w.hasOwnProperty(key)) {
+						continue;
+					}
+
+					words[key] = w[key];
 				}
-
-				words[key] = w[key];
 			}
 		}
 
 		if (debug) {
-			let d = Object(res.debug);
+			if (!res.debug) {
+				skip = true;
 
-			for (let key in d) {
-				if (!d.hasOwnProperty(key)) {
-					continue;
+			} else {
+				let d = Object(res.debug);
+
+				for (let key in d) {
+					if (!d.hasOwnProperty(key)) {
+						continue;
+					}
+
+					debug[key] = d[key];
 				}
-
-				debug[key] = d[key];
 			}
 		}
 
-		return res.text;
+		if (!skip) {
+			return res.text;
+		}
 	}
 
 	var dirname,
