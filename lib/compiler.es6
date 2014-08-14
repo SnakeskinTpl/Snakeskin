@@ -100,7 +100,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
-	p.debug = s(p.debug, p['debug']) || null;
+
+	var debug =
+		p.debug = s(p.debug, p['debug']);
 
 	var xml =
 		p.xml = s(p.xml, p['xml']) !== false;
@@ -115,6 +117,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		Snakeskin.Vars[key] = vars[key];
 	}
+
+	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
+
+	var i18n =
+		p.localization = s(p.localization, p['localization']) !== false;
+
+	var lang =
+		p.language = s(p.language, p['language']);
+
+	var words =
+		p.words = s(p.words, p['words']);
 
 	var info = opt_info || {};
 
@@ -131,11 +144,22 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var text = html || src;
 	var cacheKey = [
 		cjs,
+
 		p.inlineIterators,
 		p.stringBuffer,
 		p.escapeOutput,
 		p.interface,
-		p.prettyPrint
+		p.prettyPrint,
+
+		xml,
+		i18n,
+
+		p.i18nFn,
+		lang ?
+			JSON.stringify(lang) : false,
+
+		Boolean(debug),
+		Boolean(words)
 	].join();
 
 	// Кеширование шаблонов в node.js
@@ -149,24 +173,39 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			ctx[key] = cache[key];
 		}
-
-		return globalCache[cacheKey][text];
 	}
 
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		return globalCache[cacheKey][text];
+		let res = globalCache[cacheKey][text];
+
+		console.log(res);
+
+		if (words) {
+			let w = Object(res.words);
+
+			for (let key in w) {
+				if (!w.hasOwnProperty(key)) {
+					continue;
+				}
+
+				words[key] = w[key];
+			}
+		}
+
+		if (debug) {
+			let d = Object(res.debug);
+
+			for (let key in d) {
+				if (!d.hasOwnProperty(key)) {
+					continue;
+				}
+
+				debug[key] = d[key];
+			}
+		}
+
+		return res.text;
 	}
-
-	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
-
-	var i18n =
-		p.localization = s(p.localization, p['localization']) !== false;
-
-	var lang =
-		p.language = s(p.language, p['language']);
-
-	var words =
-		p.words = s(p.words, p['words']);
 
 	var dirname,
 		filename;
@@ -956,7 +995,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		globalCache[cacheKey] = {};
 	}
 
-	globalCache[cacheKey][text] = dir.res;
+	globalCache[cacheKey][text] = {
+		text: dir.res,
+		words: words,
+		debug: debug
+	};
 
 	if (!IS_NODE && !cjs) {
 		setTimeout(() => {
