@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.7
+ * Snakeskin v4.0.8
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 14 Aug 2014 06:21:35 GMT
+ * Date: Thu, 14 Aug 2014 11:26:11 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 7],
+	VERSION: [4, 0, 8],
 
 	/**
 	 * Пространство имён для директив
@@ -10386,6 +10386,28 @@ Snakeskin.addDirective(
 	}
 );
 
+var escapeEqRgxp = /===|==|\\=/g,
+	escapeOrRgxp = /\|\||\\\|/g;
+
+var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_/g,
+	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_/g;
+
+function escapeEq(sstr) {
+	return (("__SNAKESKIN_EQ__" + (sstr.split('=').length)) + "_");
+}
+
+function escapeOr(sstr) {
+	return (("__SNAKESKIN_OR__" + (sstr.split('|').length)) + "_");
+}
+
+function unEscapeEq(sstr, $1) {
+	return new Array(+($1)).join('=');
+}
+
+function unEscapeOr(sstr, $1) {
+	return new Array(+($1)).join('|');
+}
+
 /**
  * Вернуть строку декларации XML атрибутов
  *
@@ -10403,6 +10425,9 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
+	str = str
+		.replace(escapeHTMLRgxp, escapeHTML)
+		.replace(escapeOrRgxp, escapeOr);
 
 	var parts = str.split('|'),
 		res = '',
@@ -10412,14 +10437,18 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		e = RIGHT_BLOCK;
 
 	for (var i = -1; ++i < parts.length;) {
+		parts[i] = parts[i]
+			.replace(unEscapeOrRgxp, unEscapeOr)
+			.replace(escapeEqRgxp, escapeEq);
+
 		var arg = parts[i].split('=');
 
 		if (arg.length !== 2) {
 			arg[1] = arg[0];
 		}
 
-		arg[0] = arg[0].trim();
-		arg[1] = arg[1].trim();
+		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
+		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
 		res += ("\
 			__STR__ = \'\';\

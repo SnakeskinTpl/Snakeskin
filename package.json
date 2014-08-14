@@ -1,6 +1,6 @@
 {
   "name": "snakeskin",
-  "version": "4.0.7",
+  "version": "4.0.8",
   "main": "snakeskin.js",
   "bin": {
     "snakeskin": "index.js"
@@ -14,8 +14,8 @@
     "test": "node ./test.js"
   },
   "dependencies": {
-    "commander": "~2.3",
-    "js-beautify": "~1.5"
+    "commander": "~2",
+    "js-beautify": "~1"
   },
   "devDependencies": {
     "escaper": "~1",
