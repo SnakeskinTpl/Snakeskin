@@ -4,6 +4,8 @@ var path = require('path');
 var fs = require('fs'),
 	exists = fs.existsSync || path.existsSync;
 
+var cache = {};
+
 /**
  * Вернуть true, если заданный файл шаблонов соответствует скомпилированному
  * по временной метке
@@ -41,6 +43,12 @@ exports.compileFile = function (src, opt_params) {
 	opt_params = opt_params || {};
 	opt_params.commonJS = true;
 
+	var cacheKey = this.compile(null, opt_params, {cacheKey: true});
+
+	if (cache[cacheKey] && cache[cacheKey][src]) {
+		return cache[cacheKey][src];
+	}
+
 	var source = fs.readFileSync(src).toString(),
 		resSrc = `${src}.js`;
 
@@ -56,7 +64,9 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (res !== false) {
-		tpls = require(resSrc);
+		cache[cacheKey] = cache[cacheKey] || {};
+		cache[cacheKey][src]
+			= tpls = require(resSrc);
 
 		if (tpls.init) {
 			tpls.init(this);
