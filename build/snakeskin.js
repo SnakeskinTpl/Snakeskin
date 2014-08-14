@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.8
+ * Snakeskin v4.0.9
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 14 Aug 2014 11:26:11 GMT
+ * Date: Thu, 14 Aug 2014 12:51:07 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 8],
+	VERSION: [4, 0, 9],
 
 	/**
 	 * Пространство имён для директив
@@ -10463,7 +10463,10 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				("data-" + (arg[0].slice(1))) : arg[0];
 		}
 
-		arg[0] = (("'" + (this.pasteTplVarBlocks(arg[0]))) + "'");
+		arg[0] = this.replaceDangerBlocks(
+			(("'" + (this.pasteTplVarBlocks(arg[0]))) + "'")
+		);
+
 		var vals = arg[1].split(' ');
 
 		for (var j = -1; ++j < vals.length;) {
@@ -10474,7 +10477,9 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				val = this.replaceTplVars(val);
 			}
 
-			val = this.prepareOutput((("'" + (this.pasteTplVarBlocks(val))) + "'"), true) || '';
+			val = this.prepareOutput(
+				this.replaceDangerBlocks((("'" + (this.pasteTplVarBlocks(val))) + "'")), true
+			) || '';
 
 			res += (("\
 				if ((" + val) + (") != null && (" + val) + (") !== '') {\
