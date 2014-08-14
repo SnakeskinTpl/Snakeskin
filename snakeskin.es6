@@ -12,9 +12,10 @@ var cache = {};
  *
  * @param {string} source - путь к исходному файлу
  * @param {string} result - путь к скомпилированному файлу
+ * @param {?string=} [opt_key] - ключ параметров компиляции
  * @return {boolean}
  */
-exports.check = function (source, result) {
+exports.check = function (source, result, opt_key) {
 	if (!exists(result)) {
 		return false;
 	}
@@ -26,6 +27,14 @@ exports.check = function (source, result) {
 
 	if (!resLabel) {
 		return false;
+	}
+
+	if (opt_key) {
+		let key = /key <(.*?)>/.exec(code);
+
+		if (!key || key[1] != opt_key) {
+			return false;
+		}
 	}
 
 	return label.valueOf() == resLabel[1];
@@ -40,13 +49,52 @@ exports.check = function (source, result) {
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
-	opt_params = opt_params || {};
-	opt_params.commonJS = true;
+	var p = opt_params || {};
+	p.commonJS = true;
 
-	var cacheKey = this.compile(null, opt_params, {cacheKey: true});
+	var cacheKey = this.compile(null, p, {cacheKey: true}),
+		fromCache = cache[cacheKey] && cache[cacheKey][src];
 
-	if (cache[cacheKey] && cache[cacheKey][src]) {
-		return cache[cacheKey][src];
+	if (fromCache) {
+		let tmp = cache[cacheKey][src];
+
+		if (p.words) {
+			if (!tmp.words) {
+				fromCache = false;
+
+			} else {
+				let w = Object(tmp.words);
+
+				for (let key in w) {
+					if (!w.hasOwnProperty(key)) {
+						continue;
+					}
+
+					p.words[key] = w[key];
+				}
+			}
+		}
+
+		if (p.debug) {
+			if (!tmp.debug) {
+				fromCache = false;
+
+			} else {
+				let d = Object(tmp.debug);
+
+				for (let key in d) {
+					if (!d.hasOwnProperty(key)) {
+						continue;
+					}
+
+					p.debug[key] = d[key];
+				}
+			}
+		}
+
+		if (fromCache) {
+			return tmp.tpls;
+		}
 	}
 
 	var source = fs.readFileSync(src).toString(),
@@ -55,8 +103,8 @@ exports.compileFile = function (src, opt_params) {
 	var tpls,
 		res = true;
 
-	if (!this.check(src, resSrc)) {
-		res = this.compile(source, opt_params, {file: src});
+	if (!this.check(src, resSrc, cacheKey)) {
+		res = this.compile(source, p, {file: src});
 
 		if (res !== false) {
 			fs.writeFileSync(resSrc, res);
@@ -64,9 +112,16 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (res !== false) {
-		cache[cacheKey] = cache[cacheKey] || {};
-		cache[cacheKey][src]
-			= tpls = require(resSrc);
+		if (cacheKey) {
+			tpls = require(resSrc);
+
+			cache[cacheKey] = cache[cacheKey] || {};
+			cache[cacheKey][src] = {
+				tpls: tpls,
+				debug: p.debug,
+				words: p.words
+			};
+		}
 
 		if (tpls.init) {
 			tpls.init(this);
