@@ -105,7 +105,10 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				`data-${arg[0].slice(1)}` : arg[0];
 		}
 
-		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
+		arg[0] = this.replaceDangerBlocks(
+			`'${this.pasteTplVarBlocks(arg[0])}'`
+		);
+
 		let vals = arg[1].split(' ');
 
 		for (let j = -1; ++j < vals.length;) {
@@ -116,7 +119,9 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 				val = this.replaceTplVars(val);
 			}
 
-			val = this.prepareOutput(`'${this.pasteTplVarBlocks(val)}'`, true) || '';
+			val = this.prepareOutput(
+				this.replaceDangerBlocks(`'${this.pasteTplVarBlocks(val)}'`), true
+			) || '';
 
 			res += `
 				if ((${val}) != null && (${val}) !== '') {
