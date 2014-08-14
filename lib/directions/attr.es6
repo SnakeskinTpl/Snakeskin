@@ -28,6 +28,28 @@ Snakeskin.addDirective(
 	}
 );
 
+var escapeEqRgxp = /===|==|\\=/g,
+	escapeOrRgxp = /\|\||\\\|/g;
+
+var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_/g,
+	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_/g;
+
+function escapeEq(sstr) {
+	return `__SNAKESKIN_EQ__${sstr.split('=').length}_`;
+}
+
+function escapeOr(sstr) {
+	return `__SNAKESKIN_OR__${sstr.split('|').length}_`;
+}
+
+function unEscapeEq(sstr, $1) {
+	return new Array(Number($1)).join('=');
+}
+
+function unEscapeOr(sstr, $1) {
+	return new Array(Number($1)).join('|');
+}
+
 /**
  * Вернуть строку декларации XML атрибутов
  *
@@ -45,6 +67,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
+	str = str.replace(escapeOrRgxp, escapeOr);
 
 	var parts = str.split('|'),
 		res = '',
@@ -54,14 +77,18 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		e = RIGHT_BLOCK;
 
 	for (let i = -1; ++i < parts.length;) {
+		parts[i] = parts[i]
+			.replace(unEscapeOrRgxp, unEscapeOr)
+			.replace(escapeEqRgxp, escapeEq);
+
 		let arg = parts[i].split('=');
 
 		if (arg.length !== 2) {
 			arg[1] = arg[0];
 		}
 
-		arg[0] = arg[0].trim();
-		arg[1] = arg[1].trim();
+		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
+		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
 		res += `
 			__STR__ = \'\';
