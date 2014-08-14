@@ -346,6 +346,10 @@ for (let i = -1; ++i < template.length;) {
 				var __RESULT__ = ${this.declResult()},
 					\$_;
 
+				var getTplResult = function () {
+					return ${this.returnResult()};
+				};
+
 				var __RETURN__ = false,
 					__RETURN_VAL__;
 
