@@ -68,8 +68,8 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
 	str = str
-		.replace(escapeOrRgxp, escapeOr)
-		.replace(/"/g, '&quot;');
+		.replace(escapeHTMLRgxp, escapeHTML)
+		.replace(escapeOrRgxp, escapeOr);
 
 	var parts = str.split('|'),
 		res = '',
