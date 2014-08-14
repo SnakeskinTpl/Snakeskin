@@ -220,4 +220,3 @@ if (!file && input == null) {
 } else {
 	action(file ? fs.readFileSync(file).toString() : input);
 }
-
