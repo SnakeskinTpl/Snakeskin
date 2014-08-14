@@ -4,3 +4,5 @@ node_modules
 npm-debug.log
 tmp
 compiler.jar
+tests/*.js
+build/log.txt
