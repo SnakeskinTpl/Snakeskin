@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 14 Aug 2014 12:51:07 GMT
+ * Date: Thu, 14 Aug 2014 13:55:45 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -8243,7 +8243,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
-	p.debug = s(p.debug, p['debug']) || null;
+
+	var debug =
+		p.debug = s(p.debug, p['debug']);
 
 	var xml =
 		p.xml = s(p.xml, p['xml']) !== false;
@@ -8259,6 +8261,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		Snakeskin.Vars[key] = vars[key];
 	}
 
+	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
+
+	var i18n =
+		p.localization = s(p.localization, p['localization']) !== false;
+
+	var lang =
+		p.language = s(p.language, p['language']);
+
+	var words =
+		p.words = s(p.words, p['words']);
+
 	var info = opt_info || {};
 
 	info['line'] = info['line'] || 1;
@@ -8272,13 +8285,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	var text = html || src;
-	var cacheKey = [
+	var cacheKey = lang ? null : [
 		cjs,
+		xml,
+
 		p.inlineIterators,
 		p.stringBuffer,
 		p.escapeOutput,
 		p.interface,
-		p.prettyPrint
+		p.prettyPrint,
+
+		i18n,
+		p.i18nFn
 	].join();
 
 	// Кеширование шаблонов в node.js
@@ -8292,24 +8310,50 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			ctx[key$0] = cache[key$0];
 		}
-
-		return globalCache[cacheKey][text];
 	}
 
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		return globalCache[cacheKey][text];
+		var res = globalCache[cacheKey][text],
+			skip = false;
+
+		if (words) {
+			if (!res.words) {
+				skip = true;
+
+			} else {
+				var w = Object(res.words);
+
+				for (var key$1 in w) {
+					if (!w.hasOwnProperty(key$1)) {
+						continue;
+					}
+
+					words[key$1] = w[key$1];
+				}
+			}
+		}
+
+		if (debug) {
+			if (!res.debug) {
+				skip = true;
+
+			} else {
+				var d = Object(res.debug);
+
+				for (var key$2 in d) {
+					if (!d.hasOwnProperty(key$2)) {
+						continue;
+					}
+
+					debug[key$2] = d[key$2];
+				}
+			}
+		}
+
+		if (!skip) {
+			return res.text;
+		}
 	}
-
-	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
-
-	var i18n =
-		p.localization = s(p.localization, p['localization']) !== false;
-
-	var lang =
-		p.language = s(p.language, p['language']);
-
-	var words =
-		p.words = s(p.words, p['words']);
 
 	var dirname,
 		filename;
@@ -8814,20 +8858,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Обработка литералов строки и регулярных выражений внутри директивы
 			if (!bOpen) {
-				var skip = false;
+				var skip$0 = false;
 
 				if (el === FILTER && filterStartRgxp.test(str.charAt(dir.i + 1))) {
 					filterStart = true;
 					bEnd = false;
-					skip = true;
+					skip$0 = true;
 
 				} else if (filterStart && whiteSpaceRgxp.test(el)) {
 					filterStart = false;
 					bEnd = true;
-					skip = true;
+					skip$0 = true;
 				}
 
-				if (!skip) {
+				if (!skip$0) {
 					if (escapeEndMap[el]) {
 						bEnd = true;
 
@@ -8996,12 +9040,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", label <" + (label.valueOf())) + (">, generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
 	dir.res += (("" + (cjs ? '}' : '')) + "}).call(this);");
 
-	for (var key$1 in dir.preProtos) {
-		if (!dir.preProtos.hasOwnProperty(key$1)) {
+	for (var key$3 in dir.preProtos) {
+		if (!dir.preProtos.hasOwnProperty(key$3)) {
 			continue;
 		}
 
-		dir.error((("template \"" + key$1) + "\" is not defined"));
+		dir.error((("template \"" + key$3) + "\" is not defined"));
 		return false;
 	}
 
@@ -9009,8 +9053,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		dir.res = beautify(dir.res);
 	}
 
-	if (p.debug) {
-		p.debug['code'] = dir.res;
+	if (debug) {
+		debug['code'] = dir.res;
 	}
 
 	try {
@@ -9047,14 +9091,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					dirname,
 					filename
 				);
-
-				ctx['init'](Snakeskin);
-
-				if (!globalFnCache[cacheKey]) {
-					globalFnCache[cacheKey] = {};
-				}
-
-				globalFnCache[cacheKey][text] = ctx;
 			}
 
 		} else if (ctx !== NULL) {
@@ -9074,17 +9110,21 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				root
 			);
 
-			ctx['init'](Snakeskin);
-
-			if (!globalFnCache[cacheKey]) {
-				globalFnCache[cacheKey] = {};
-			}
-
-			globalFnCache[cacheKey][text] = ctx;
-
 		// Живая компиляция в браузере
 		} else if (!cjs) {
 			dir.evalStr(dir.res);
+		}
+
+		if (ctx !== NULL) {
+			ctx['init'](Snakeskin);
+
+			if (cacheKey) {
+				if (!globalFnCache[cacheKey]) {
+					globalFnCache[cacheKey] = {};
+				}
+
+				globalFnCache[cacheKey][text] = ctx;
+			}
 		}
 
 	} catch (err) {
@@ -9095,11 +9135,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	if (!globalCache[cacheKey]) {
-		globalCache[cacheKey] = {};
-	}
+	if (cacheKey) {
+		if (!globalCache[cacheKey]) {
+			globalCache[cacheKey] = {};
+		}
 
-	globalCache[cacheKey][text] = dir.res;
+		globalCache[cacheKey][text] = {
+			text: dir.res,
+			words: words,
+			debug: debug
+		};
+	}
 
 	if (!IS_NODE && !cjs) {
 		setTimeout(function()  {
@@ -9182,7 +9228,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				}
 
 				var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
-					decl = getLineDesc(str, baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j);
+					decl = getLineDesc(str, nextSpace && (baseShortMap[el]) || el === IGNORE_COMMAND ? j + 1 : j);
 
 				if (!decl) {
 					this.error('invalid syntax');
@@ -12440,6 +12486,10 @@ for (var i = -1; ++i < template.length;) {
 \
 				var __RESULT__ = " + (this.declResult())) + (",\
 					$_;\
+\
+				var getTplResult = function () {\
+					return " + (this.returnResult())) + (";\
+				};\
 \
 				var __RETURN__ = false,\
 					__RETURN_VAL__;\
