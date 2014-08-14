@@ -131,8 +131,14 @@ function action(data) {
 		params.prettyPrint = false;
 	}
 
-	var str = String(data),
-		res = Snakeskin.compile(str, params, {file: program['file'] || file});
+	var res = Snakeskin.compile(
+		String(data),
+		params,
+
+		{
+			file: program['file'] || file
+		}
+	);
 
 	var toConsole = input && !program['output'] ||
 		!newFile;
@@ -218,5 +224,5 @@ if (!file && input == null) {
 	});
 
 } else {
-	action(file ? fs.readFileSync(file).toString() : input);
+	action(file ? fs.readFileSync(file) : input);
 }
