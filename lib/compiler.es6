@@ -176,15 +176,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		let res = globalCache[cacheKey][text],
+		let tmp = globalCache[cacheKey][text],
 			skip = false;
 
 		if (words) {
-			if (!res.words) {
+			if (!tmp.words) {
 				skip = true;
 
 			} else {
-				let w = Object(res.words);
+				let w = Object(tmp.words);
 
 				for (let key in w) {
 					if (!w.hasOwnProperty(key)) {
@@ -197,11 +197,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (debug) {
-			if (!res.debug) {
+			if (!tmp.debug) {
 				skip = true;
 
 			} else {
-				let d = Object(res.debug);
+				let d = Object(tmp.debug);
 
 				for (let key in d) {
 					if (!d.hasOwnProperty(key)) {
@@ -214,7 +214,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (!skip) {
-			return res.text;
+			return tmp.text;
 		}
 	}
 
