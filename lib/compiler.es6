@@ -900,7 +900,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	'');
 
-	dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, label <${label.valueOf()}>, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
+	dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, key <${cacheKey}>, label <${label.valueOf()}>, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
 	dir.res += `${cjs ? '}' : ''}}).call(this);`;
 
 	for (let key in dir.preProtos) {
