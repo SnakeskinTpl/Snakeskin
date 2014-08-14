@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.6
+ * Snakeskin v4.0.7
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 13 Aug 2014 08:35:56 GMT
+ * Date: Thu, 14 Aug 2014 06:21:35 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 6],
+	VERSION: [4, 0, 7],
 
 	/**
 	 * Пространство имён для директив
@@ -7502,7 +7502,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 }
 
 /*!
- * Escaper v1.2.1
+ * Escaper v1.2.3
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
@@ -7510,7 +7510,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
  */
 
 var Escaper = {
-	VERSION: [1, 2, 1],
+	VERSION: [1, 2, 3],
 	isLocal: typeof window === 'undefined' && typeof global !== 'undefined' ?
 		!!(global.EscaperIsLocal || global['EscaperIsLocal']) : false
 };
