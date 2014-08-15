@@ -78,6 +78,9 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		bEnd = true,
 		bEscape = false;
 
+	var part = '',
+		rPart = '';
+
 	for (let i = -1; ++i < str.length;) {
 		let currentEscape = escape;
 		let el = str.charAt(i),
@@ -122,11 +125,19 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 			if (!bOpen) {
-				if (escapeEndMap[el]) {
+				if (escapeEndMap[el] || escapeEndWord[rPart]) {
 					bEnd = true;
 
 				} else if (bEndRgxp.test(el)) {
 					bEnd = false;
+				}
+
+				if (partRgxp.test(el)) {
+					part += el;
+
+				} else {
+					rPart = part;
+					part = '';
 				}
 			}
 

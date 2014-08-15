@@ -33,15 +33,31 @@ var escapeEndMap = {
 	'-': true,
 	'+': true,
 	'*': true,
+	'%': true,
+	'~': true,
+	'>': true,
+	'<': true,
+	'^': true,
 	',': true,
 	';': true,
 	'=': true,
 	'|': true,
 	'&': true,
+	'!': true,
 	'?': true,
 	':': true,
 	'(': true,
-	'{': true
+	'{': true,
+	'[': true
+};
+
+var escapeEndWord = {
+	'typeof': true,
+	'void': true,
+	'instaceof': true,
+	'delete': true,
+	'in': true,
+	'new': true
 };
 
 var bMap = {
