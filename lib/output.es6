@@ -79,30 +79,41 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		bEscape = false;
 
 	for (let i = -1; ++i < str.length;) {
-		let el = str.charAt(i);
-		let next2str = el + str.charAt(i + 1);
+		let currentEscape;
+		let el = str.charAt(i),
+			next = str.charAt(i + 1),
+			next2str = el + next;
 
-		if (!begin && includeDirMap[next2str]) {
-			begin++;
-			dir = '';
+		if (!bOpen) {
+			currentEscape = escape;
 
-			start = i;
-			i++;
+			// Обработка экранирования
+			if ((el === '\\' && (next === '\\' || includeSysEscapeMap[next])) || escape) {
+				escape = !escape;
+			}
 
-			continue;
+			if (escape) {
+				continue;
+			}
 		}
 
 		if (!begin) {
+			if (!currentEscape && includeDirMap[next2str]) {
+				begin++;
+				dir = '';
+
+				start = i;
+				i++;
+
+				continue;
+			}
+
 			res += replaceTplVarsFn(el);
 		}
 
 		if (begin) {
-			if (el === '\\' || escape) {
-				escape = !escape;
-			}
-
 			// Обработка комментариев
-			if (!escape) {
+			if (!currentEscape) {
 				let next3str = next2str + str.charAt(i + 2);
 				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
 					if (!comment) {
