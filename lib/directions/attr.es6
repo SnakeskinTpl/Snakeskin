@@ -28,26 +28,34 @@ Snakeskin.addDirective(
 	}
 );
 
-var escapeEqRgxp = /===|==|\\=/g,
-	escapeOrRgxp = /\|\||\\\|/g;
+var escapeEqRgxp = /===|==|([\\]+)=/g,
+	escapeOrRgxp = /\|\||([\\]+)\|/g;
 
-var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_/g,
-	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_/g;
+var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g,
+	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
 
-function escapeEq(sstr) {
-	return `__SNAKESKIN_EQ__${sstr.split('=').length}_`;
+function escapeEq(sstr, $1) {
+	if ($1 && $1.length % 2 === 0) {
+		return sstr;
+	}
+
+	return `__SNAKESKIN_EQ__${sstr.split('=').length}_${$1.length}_`;
 }
 
-function escapeOr(sstr) {
-	return `__SNAKESKIN_OR__${sstr.split('|').length}_`;
+function escapeOr(sstr, $1) {
+	if ($1 && $1.length % 2 === 0) {
+		return sstr;
+	}
+
+	return `__SNAKESKIN_OR__${sstr.split('|').length}_${$1.length}_`;
 }
 
-function unEscapeEq(sstr, $1) {
-	return new Array(Number($1)).join('=');
+function unEscapeEq(sstr, $1, $2) {
+	return new Array(Number($2)).join('\\') + new Array(Number($1)).join('=');
 }
 
-function unEscapeOr(sstr, $1) {
-	return new Array(Number($1)).join('|');
+function unEscapeOr(sstr, $1, $2) {
+	return new Array(Number($2)).join('\\') + new Array(Number($1)).join('|');
 }
 
 /**
@@ -67,6 +75,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
+
 	str = str
 		.replace(escapeHTMLRgxp, escapeHTML)
 		.replace(escapeOrRgxp, escapeOr);

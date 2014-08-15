@@ -169,7 +169,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 		} else {
-			if ((el === '\\' && (next === '\\' || includeSysEscapeMap[next])) || escape) {
+			if ((el === '\\' && includeSysEscapeMap[next]) || escape) {
 				escape = !escape;
 			}
 
