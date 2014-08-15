@@ -142,7 +142,16 @@
 	{doctype}
 	{doctype html}
 	{doctype strict}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('doctype'), {prettyPrint: true}); test('doctype', function () { equal(doctype_index().trim(), '<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('doctype'), {prettyPrint: true}); test('doctype', function () { equal(doctype_index().trim(), '<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'); }); </script>  <script type="text/x-snakeskin-template" id="escape"> 
+{template escape_index()}
+	{attr \#{foo} = 1 \\\| 2}
+	{data '#{/* 1 + */2}'}
+	{data '\#{/* 1 + */2}'}
+{/}
+
+{template escape_index2()}
+	{attr a = {"b": '2'}}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}''); equal(escape_index2().trim(), 'a="{&quot;b&quot;: &#39;2&#39;}"'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> 
 {a = String}
 {template filters_index()}
 	{a = {a: String}}
