@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.10
+ * Snakeskin v4.0.11
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 14 Aug 2014 15:46:01 GMT
+ * Date: Fri, 15 Aug 2014 08:28:13 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 10],
+	VERSION: [4, 0, 11],
 
 	/**
 	 * Пространство имён для директив
@@ -6026,49 +6026,6 @@ var sysConst = {
 	'__THIS__': true,
 	'__INCLUDE__': true,
 	'$_': true
-};
-
-var escapeMap = {
-	'"': true,
-	'\'': true,
-	'/': true
-};
-
-var escapeEndMap = {
-	'-': true,
-	'+': true,
-	'*': true,
-	',': true,
-	';': true,
-	'=': true,
-	'|': true,
-	'&': true,
-	'?': true,
-	':': true,
-	'(': true,
-	'{': true
-};
-
-var bMap = {
-	'(': true,
-	'[': true,
-	'{': true
-};
-
-var closeBMap = {
-	')': true,
-	']': true,
-	'}': true
-};
-
-var pMap = {
-	'(': true,
-	'[': true
-};
-
-var closePMap = {
-	')': true,
-	']': true
 };var rgxpCache = {};
 var globalCache = {},
 	globalFnCache = {};
@@ -7484,7 +7441,75 @@ DirObj.prototype.evalStr = function (str) {
 				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async']
 		);
 	}
-};function applyDefEscape(str) {
+};var sysEscapeMap = {};
+
+sysEscapeMap['\\'] = true;
+sysEscapeMap[I18N] = true;
+sysEscapeMap[LEFT_BLOCK] = true;
+sysEscapeMap[ADV_LEFT_BLOCK] = true;
+sysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
+sysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
+
+var strongSysEscapeMap = {};
+
+strongSysEscapeMap['\\'] = true;
+strongSysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
+strongSysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
+
+var includeSysEscapeMap = {};
+
+for (var key in includeDirMap) {
+	if (!includeDirMap.hasOwnProperty(key)) {
+		continue;
+	}
+
+	includeSysEscapeMap[key.charAt(0)] = true
+}
+
+var escapeMap = {
+	'"': true,
+	'\'': true,
+	'/': true
+};
+
+var escapeEndMap = {
+	'-': true,
+	'+': true,
+	'*': true,
+	',': true,
+	';': true,
+	'=': true,
+	'|': true,
+	'&': true,
+	'?': true,
+	':': true,
+	'(': true,
+	'{': true
+};
+
+var bMap = {
+	'(': true,
+	'[': true,
+	'{': true
+};
+
+var closeBMap = {
+	')': true,
+	']': true,
+	'}': true
+};
+
+var pMap = {
+	'(': true,
+	'[': true
+};
+
+var closePMap = {
+	')': true,
+	']': true
+};
+
+function applyDefEscape(str) {
 	return str
 		.replace(/\\/gm, '\\\\')
 		.replace(/'/gm, '\\\'');
@@ -8279,14 +8304,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	info['line'] = info['line'] || 1;
 	info['file'] = s(info.file, info['file']);
 
-	var html = src.innerHTML;
+	var text;
 
-	if (html) {
+	if (typeof src === 'object' && 'innerHTML' in src) {
 		info['node'] = src;
-		html = html.replace(/\s*?\n/, '');
+		text = src.innerHTML.replace(/\s*?\n/, '');
+
+	} else {
+		text = ((src) + '');
 	}
 
-	var text = html || src;
 	var cacheKey = lang ? null : [
 		cjs,
 		xml,
@@ -8301,6 +8328,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.i18nFn
 	].join();
 
+	// Хакерство :)
 	if (info.cacheKey || info['cacheKey']) {
 		return cacheKey;
 	}
@@ -8318,6 +8346,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	// Базовое кешироние шаблонов
 	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
 		var tmp = globalCache[cacheKey][text],
 			skip = false;
@@ -8482,8 +8511,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			lastLine = line - 1;
 
 		var modLine = !dir.freezeLine &&
-				!dir.proto &&
-				dir.lines.length === line;
+			!dir.proto &&
+			dir.lines.length === line;
 
 		if (freezeI) {
 			freezeI--;
@@ -8570,7 +8599,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			var currentEscape = escape;
 
 			// Обработка экранирования
-			if (el === '\\' || escape) {
+			if ((el === '\\' && (sysEscapeMap[next] && (begin ? !includeSysEscapeMap[next] : true))) || escape) {
 				escape = !escape;
 			}
 
@@ -8711,6 +8740,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
 
+					// Директивы начинающиеся с _ считаются приватными
+					// и вырезаются из листинга
 					if (!dir.proto && commandType.charAt(0) === '_') {
 						var source = (("" + (dir.needPrfx ? alb : '')) + ("" + lb) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + rb) + ""),
 							rgxp = rgxpCache[source] || new RegExp(source);
@@ -8721,13 +8752,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						rgxpCache[source] = rgxp;
 					}
 
-					// Обработка команд
+					command = dir.replaceDangerBlocks((isConst || commandType !== 'const' ?
+						command.replace(commandRgxp, '') : command));
+
 					var fnRes = Snakeskin.Directions[commandType].call(
 						dir,
-
-						dir.replaceDangerBlocks((isConst || commandType !== 'const' ?
-							command.replace(commandRgxp, '') : command)),
-
+						command,
 						commandLength,
 						commandType,
 						jsDocStart
@@ -10438,26 +10468,34 @@ Snakeskin.addDirective(
 	}
 );
 
-var escapeEqRgxp = /===|==|\\=/g,
-	escapeOrRgxp = /\|\||\\\|/g;
+var escapeEqRgxp = /===|==|([\\]+)=/g,
+	escapeOrRgxp = /\|\||([\\]+)\|/g;
 
-var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_/g,
-	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_/g;
+var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g,
+	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
 
-function escapeEq(sstr) {
-	return (("__SNAKESKIN_EQ__" + (sstr.split('=').length)) + "_");
+function escapeEq(sstr, $1) {
+	if ($1 && $1.length % 2 === 0) {
+		return sstr;
+	}
+
+	return (("__SNAKESKIN_EQ__" + (sstr.split('=').length)) + ("_" + ($1.length)) + "_");
 }
 
-function escapeOr(sstr) {
-	return (("__SNAKESKIN_OR__" + (sstr.split('|').length)) + "_");
+function escapeOr(sstr, $1) {
+	if ($1 && $1.length % 2 === 0) {
+		return sstr;
+	}
+
+	return (("__SNAKESKIN_OR__" + (sstr.split('|').length)) + ("_" + ($1.length)) + "_");
 }
 
-function unEscapeEq(sstr, $1) {
-	return new Array(+($1)).join('=');
+function unEscapeEq(sstr, $1, $2) {
+	return new Array(+($2)).join('\\') + new Array(+($1)).join('=');
 }
 
-function unEscapeOr(sstr, $1) {
-	return new Array(+($1)).join('|');
+function unEscapeOr(sstr, $1, $2) {
+	return new Array(+($2)).join('\\') + new Array(+($1)).join('|');
 }
 
 /**
@@ -10477,6 +10515,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 
 	opt_group = opt_group || '';
 	opt_separator = opt_separator || '-';
+
 	str = str
 		.replace(escapeHTMLRgxp, escapeHTML)
 		.replace(escapeOrRgxp, escapeOr);
@@ -13703,7 +13742,7 @@ var comboBlackWordMap = {
 	'let': true
 };
 
-var replaceTplVarsFn = function(str)  {return str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1')};
+var escapeBRgxp = /('|")/g;
 
 /**
  * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
@@ -13729,30 +13768,22 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		bEscape = false;
 
 	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i);
-		var next2str = el + str.charAt(i + 1);
-
-		if (!begin && includeDirMap[next2str]) {
-			begin++;
-			dir = '';
-
-			start = i;
-			i++;
-
-			continue;
-		}
-
-		if (!begin) {
-			res += replaceTplVarsFn(el);
-		}
+		var currentEscape = escape;
+		var el = str.charAt(i),
+			next = str.charAt(i + 1),
+			next2str = el + next;
 
 		if (begin) {
-			if (el === '\\' || escape) {
+			if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
 				escape = !escape;
 			}
 
+			if (escape) {
+				continue;
+			}
+
 			// Обработка комментариев
-			if (!escape) {
+			if (!currentEscape) {
 				var next3str = next2str + str.charAt(i + 2);
 				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
 					if (!comment) {
@@ -13825,6 +13856,28 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 					res += tmp;
 				}
 			}
+
+		} else {
+			if ((el === '\\' && includeSysEscapeMap[next]) || escape) {
+				escape = !escape;
+			}
+
+			if (escape) {
+				continue;
+			}
+
+			if (!currentEscape && includeDirMap[next2str]) {
+				begin++;
+				dir = '';
+
+				start = i;
+				i++;
+
+				escape = false;
+				continue;
+			}
+
+			res += el.replace(escapeBRgxp, '\\$1');
 		}
 	}
 
