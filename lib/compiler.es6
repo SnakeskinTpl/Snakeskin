@@ -572,6 +572,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
 
+					// Директивы начинающиеся с _ считаются приватными
+					// и вырезаются из листинга
 					if (!dir.proto && commandType.charAt(0) === '_') {
 						let source = `${dir.needPrfx ? alb : ''}${lb}\\s*${command.replace(rgxpRgxp, '\\$1')}\\s*${rb}`,
 							rgxp = rgxpCache[source] || new RegExp(source);
@@ -585,7 +587,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = dir.replaceDangerBlocks((isConst || commandType !== 'const' ?
 						command.replace(commandRgxp, '') : command));
 
-					// Обработка команд
 					let fnRes = Snakeskin.Directions[commandType].call(
 						dir,
 						command,
