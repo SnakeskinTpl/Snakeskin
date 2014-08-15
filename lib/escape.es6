@@ -1,3 +1,46 @@
+var escapeMap = {
+	'"': true,
+	'\'': true,
+	'/': true
+};
+
+var escapeEndMap = {
+	'-': true,
+	'+': true,
+	'*': true,
+	',': true,
+	';': true,
+	'=': true,
+	'|': true,
+	'&': true,
+	'?': true,
+	':': true,
+	'(': true,
+	'{': true
+};
+
+var bMap = {
+	'(': true,
+	'[': true,
+	'{': true
+};
+
+var closeBMap = {
+	')': true,
+	']': true,
+	'}': true
+};
+
+var pMap = {
+	'(': true,
+	'[': true
+};
+
+var closePMap = {
+	')': true,
+	']': true
+};
+
 function applyDefEscape(str) {
 	return str
 		.replace(/\\/gm, '\\\\')
