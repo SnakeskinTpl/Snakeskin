@@ -756,7 +756,18 @@
 	{tag .&__bar#my}
 		1
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('tag'), {prettyPrint: true}); test('tag', function () { equal(tag_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1 </div></span><div id="my" class="&__bar">1 </div><div id="my" class="foo__bar">1 </div>'); }); </script>  <script type="text/x-snakeskin-template" id="try"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('tag'), {prettyPrint: true}); test('tag', function () { equal(tag_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1 </div></span><div id="my" class="&__bar">1 </div><div id="my" class="foo__bar">1 </div>'); }); </script>  <script type="text/x-snakeskin-template" id="template"> 
+{template %fileName% ()}
+	{'foo'|repeat}
+{/template}
+
+{template ['template_' + %fileName%]()}
+	{'foo'|repeat}
+{/template}
+
+{template template[%fileName% + 1] ()}
+	{'foo'|repeat}
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('template'), {prettyPrint: true}); test('template', function () { equal(template().trim(), 'foofoo'); equal(template_template().trim(), 'foofoo'); equal(template['template1']().trim(), 'foofoo'); }); </script>  <script type="text/x-snakeskin-template" id="try"> 
 {template try_index()}
 	{&+}
 	{try}
