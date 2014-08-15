@@ -761,13 +761,17 @@
 	{'foo'|repeat}
 {/template}
 
+{template template.%fileName%.bar ()}
+	{'foo'|repeat}
+{/template}
+
 {template ['template_' + %fileName%]()}
 	{'foo'|repeat}
 {/template}
 
 {template template[%fileName% + 1] ()}
 	{'foo'|repeat}
-{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('template'), {prettyPrint: true}); test('template', function () { equal(template().trim(), 'foofoo'); equal(template_template().trim(), 'foofoo'); equal(template['template1']().trim(), 'foofoo'); }); </script>  <script type="text/x-snakeskin-template" id="try"> 
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('template'), {prettyPrint: true}); test('template', function () { equal(template().trim(), 'foofoo'); equal(template.template.bar().trim(), 'foofoo'); equal(template_template().trim(), 'foofoo'); equal(template['template1']().trim(), 'foofoo'); }); </script>  <script type="text/x-snakeskin-template" id="try"> 
 {template try_index()}
 	{&+}
 	{try}

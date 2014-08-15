@@ -1,10 +1,15 @@
 template
+template.template.bar
 template_template
 template['template1']
 
 ###
 
 {template %fileName% ()}
+	{'foo'|repeat}
+{/template}
+
+{template template.%fileName%.bar ()}
 	{'foo'|repeat}
 {/template}
 
@@ -17,6 +22,10 @@ template['template1']
 {/template}
 
 ###
+
+foofoo
+
+***
 
 foofoo
 
