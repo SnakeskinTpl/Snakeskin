@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.12
+ * Snakeskin v4.0.13
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 15 Aug 2014 11:01:33 GMT
+ * Date: Fri, 15 Aug 2014 12:52:35 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 12],
+	VERSION: [4, 0, 13],
 
 	/**
 	 * Пространство имён для директив
@@ -8533,7 +8533,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var prevSpace,
 		prevCommentSpace = false,
-		freezeI = 0;
+		freezeI = 0,
+		freezeTmp = 0;
 
 	var alb = ADV_LEFT_BLOCK,
 		lb = LEFT_BLOCK,
@@ -8883,14 +8884,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = '")';
 
 								if (i18nDirStart) {
-									freezeI++;
+									freezeI += freezeTmp;
+									freezeTmp = 0;
+
 									dir.freezeLine--;
 									i18nDirStart = false;
 								}
 
 							} else {
+								var advStr = (("" + FILTER) + ("!html" + rb) + "");
+								freezeTmp = advStr.length;
+
 								dir.source = str.substring(0, dir.i + 1) +
-									FILTER + '!html' + rb +
+									advStr +
 									str.substring(dir.i + 1);
 
 								dir.i = +(pseudoI);
@@ -8984,6 +8990,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				} else if (escapeMap[el] && bOpen === el && !bEscape) {
 					bOpen = false;
+					bEnd = false;
 				}
 			}
 
@@ -13896,6 +13903,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 
 			} else if (escapeMap[el] && bOpen === el && !bEscape) {
 				bOpen = false;
+				bEnd = false;
 			}
 
 			if (!bOpen) {
