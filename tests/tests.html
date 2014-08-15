@@ -156,7 +156,14 @@
 	\/* 2 */
 	\1
 	\" 2 "
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {"b": '2'}} /// 1 /* 2 */ \1 \" 2 "'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> 
+{/}
+
+{template escape_index3()}
+	{typeof /foo["]bar\/\//}
+	{!/foo/.test('foo')}
+	{!/foo/.test('foo') % /[\/]/}
+	{= #{!/foo/.test('foo')}}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {"b": '2'}} /// 1 /* 2 */ \1 \" 2 "'); equal(escape_index3().trim(), 'object false NaN false'); }); </script>  <script type="text/x-snakeskin-template" id="filters"> 
 {a = String}
 {template filters_index()}
 	{a = {a: String}}
