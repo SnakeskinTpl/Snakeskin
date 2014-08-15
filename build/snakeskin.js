@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.11
+ * Snakeskin v4.0.12
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 15 Aug 2014 08:28:13 GMT
+ * Date: Fri, 15 Aug 2014 11:01:33 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 11],
+	VERSION: [4, 0, 12],
 
 	/**
 	 * Пространство имён для директив
@@ -7476,15 +7476,31 @@ var escapeEndMap = {
 	'-': true,
 	'+': true,
 	'*': true,
+	'%': true,
+	'~': true,
+	'>': true,
+	'<': true,
+	'^': true,
 	',': true,
 	';': true,
 	'=': true,
 	'|': true,
 	'&': true,
+	'!': true,
 	'?': true,
 	':': true,
 	'(': true,
-	'{': true
+	'{': true,
+	'[': true
+};
+
+var escapeEndWord = {
+	'typeof': true,
+	'void': true,
+	'instaceof': true,
+	'delete': true,
+	'in': true,
+	'new': true
 };
 
 var bMap = {
@@ -7527,7 +7543,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 }
 
 /*!
- * Escaper v1.2.3
+ * Escaper v1.2.5
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
@@ -7535,7 +7551,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
  */
 
 var Escaper = {
-	VERSION: [1, 2, 3],
+	VERSION: [1, 2, 5],
 	isLocal: typeof window === 'undefined' && typeof global !== 'undefined' ?
 		!!(global.EscaperIsLocal || global['EscaperIsLocal']) : false
 };
@@ -7613,15 +7629,31 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		'-': true,
 		'+': true,
 		'*': true,
+		'%': true,
+		'~': true,
+		'>': true,
+		'<': true,
+		'^': true,
 		',': true,
 		';': true,
 		'=': true,
 		'|': true,
 		'&': true,
+		'!': true,
 		'?': true,
 		':': true,
 		'(': true,
-		'{': true
+		'{': true,
+		'[': true
+	};
+
+	var escapeEndWord = {
+		'typeof': true,
+		'void': true,
+		'instaceof': true,
+		'delete': true,
+		'in': true,
+		'new': true
 	};
 
 	var cache = {},
@@ -7706,6 +7738,10 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 			wRgxp = /[a-z]/i,
 			sRgxp = /\s/;
 
+		var partRgxp = /[a-z]/,
+			part = '',
+			rPart = '';
+
 		for (var i$0 = -1; ++i$0 < str.length;) {
 			var el$0 = str.charAt(i$0),
 				prev = str.charAt(i$0 - 1),
@@ -7732,15 +7768,23 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 						}
 					}
 
-					if (escapeEndMap[el$0]) {
+					if (escapeEndMap[el$0] || escapeEndWord[rPart]) {
 						end = true;
+						rPart = '';
 
 					} else if (uSRgxp.test(el$0)) {
 						end = false;
 					}
 
-					var skip = false;
+					if (partRgxp.test(el$0)) {
+						part += el$0;
 
+					} else {
+						rPart = part;
+						part = '';
+					}
+
+					var skip = false;
 					if (opt_snakeskin) {
 						if (el$0 === '|' && wRgxp.test(next)) {
 							filterStart = true;
@@ -7810,6 +7854,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 					}
 
 					begin = false;
+					end = false;
 
 					if (p[el$0]) {
 						cut = str.substring(selectionStart, i$0 + 1);
@@ -8171,7 +8216,8 @@ DirObj.prototype.error = function (msg) {
 	lineWhiteSpaceRgxp = /[ \t]/;
 
 var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
-	bEndRgxp = /[^\s\/]/;
+	bEndRgxp = /[^\s\/]/,
+	partRgxp = /[a-z]/;
 
 var tAttrRgxp = /[^'" ]/;
 var uid;
@@ -8496,6 +8542,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var i18nStr = '',
 		i18nStart = false,
 		i18nDirStart = false;
+
+	var part = '',
+		rPart = '';
 
 	var clrL = true;
 	while (++dir.i < dir.source.length) {
@@ -8908,11 +8957,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				if (!skip$0) {
-					if (escapeEndMap[el]) {
+					if (escapeEndMap[el] || escapeEndWord[rPart]) {
 						bEnd = true;
+						rPart = '';
 
 					} else if (bEndRgxp.test(el)) {
 						bEnd = false;
+					}
+
+					if (partRgxp.test(el)) {
+						part += el;
+
+					} else {
+						rPart = part;
+						part = '';
 					}
 				}
 			}
@@ -13767,6 +13825,9 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		bEnd = true,
 		bEscape = false;
 
+	var part = '',
+		rPart = '';
+
 	for (var i = -1; ++i < str.length;) {
 		var currentEscape = escape;
 		var el = str.charAt(i),
@@ -13811,11 +13872,19 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 			if (!bOpen) {
-				if (escapeEndMap[el]) {
+				if (escapeEndMap[el] || escapeEndWord[rPart]) {
 					bEnd = true;
 
 				} else if (bEndRgxp.test(el)) {
 					bEnd = false;
+				}
+
+				if (partRgxp.test(el)) {
+					part += el;
+
+				} else {
+					rPart = part;
+					part = '';
 				}
 			}
 
