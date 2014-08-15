@@ -53,7 +53,7 @@ var comboBlackWordMap = {
 	'let': true
 };
 
-var replaceTplVarsFn = (str) => str.replace(/\\/gm, '\\\\').replace(/('|")/gm, '\\$1');
+var escapeBRgxp = /('|")/g;
 
 /**
  * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
@@ -188,7 +188,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 				continue;
 			}
 
-			res += replaceTplVarsFn(el);
+			res += el.replace(escapeBRgxp, '\\$1');
 		}
 	}
 
