@@ -79,39 +79,20 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		bEscape = false;
 
 	for (let i = -1; ++i < str.length;) {
-		let currentEscape;
+		let currentEscape = escape;
 		let el = str.charAt(i),
 			next = str.charAt(i + 1),
 			next2str = el + next;
 
-		if (!bOpen) {
-			currentEscape = escape;
-
-			// Обработка экранирования
-			if ((el === '\\' && (next === '\\' || includeSysEscapeMap[next])) || escape) {
+		if (begin) {
+			if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
 				escape = !escape;
 			}
 
 			if (escape) {
 				continue;
 			}
-		}
 
-		if (!begin) {
-			if (!currentEscape && includeDirMap[next2str]) {
-				begin++;
-				dir = '';
-
-				start = i;
-				i++;
-
-				continue;
-			}
-
-			res += replaceTplVarsFn(el);
-		}
-
-		if (begin) {
 			// Обработка комментариев
 			if (!currentEscape) {
 				let next3str = next2str + str.charAt(i + 2);
@@ -186,6 +167,28 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 					res += tmp;
 				}
 			}
+
+		} else {
+			if ((el === '\\' && (next === '\\' || includeSysEscapeMap[next])) || escape) {
+				escape = !escape;
+			}
+
+			if (escape) {
+				continue;
+			}
+
+			if (!currentEscape && includeDirMap[next2str]) {
+				begin++;
+				dir = '';
+
+				start = i;
+				i++;
+
+				escape = false;
+				continue;
+			}
+
+			res += replaceTplVarsFn(el);
 		}
 	}
 
