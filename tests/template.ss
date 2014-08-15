@@ -5,7 +5,7 @@ template['template1']
 
 ###
 
-{template %fileName% ()}
+{template %fileName%()}
 	{'foo'|repeat}
 {/template}
 
