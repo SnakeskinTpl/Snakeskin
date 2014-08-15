@@ -7,6 +7,12 @@ sysEscapeMap[ADV_LEFT_BLOCK] = true;
 sysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
 sysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
 
+var strongSysEscapeMap = {};
+
+strongSysEscapeMap['\\'] = true;
+strongSysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
+strongSysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
+
 var includeSysEscapeMap = {};
 
 for (let key in includeDirMap) {
