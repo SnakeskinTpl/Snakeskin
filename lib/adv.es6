@@ -221,7 +221,7 @@ function getLineDesc(str, i) {
 
 	var lastEl = '',
 		lastElI = 0,
-		length = 0;
+		length = -1;
 
 	var concatLine = false,
 		nmBrk = null;
