@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.17
+ * Snakeskin v4.0.18
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 14:40:23 GMT
+ * Date: Sat, 16 Aug 2014 16:00:58 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 17],
+	VERSION: [4, 0, 18],
 
 	/**
 	 * Пространство имён для директив
@@ -9333,7 +9333,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				}
 
 				var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
-					decl = getLineDesc(str, nextSpace && (baseShortMap[el]) || el === IGNORE_COMMAND ? j + 1 : j);
+					decl = getLineDesc(str, nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j, !!(dir));
 
 				if (!decl) {
 					this.error('invalid syntax');
@@ -9484,9 +9484,10 @@ function genEndDir(dir) {
  *
  * @param {string} str - исходная строка
  * @param {number} i - номер начальной итерации
+ * @param {?boolean=} dir - если true, то идёт декларация директивы
  * @return {{command: string, length: number, name: string, lastEl: string}}
  */
-function getLineDesc(str, i) {
+function getLineDesc(str, i, dir) {
 	var res = '',
 		name = '';
 
@@ -9506,7 +9507,7 @@ function getLineDesc(str, i) {
 				brk = false;
 
 			lastEl = '';
-			if (str.charAt(j - 2) === ' ') {
+			if (dir && str.charAt(j - 2) === ' ') {
 				brk = prevEl === CONCAT_END;
 
 				if (prevEl === CONCAT_COMMAND || brk) {
@@ -9561,7 +9562,7 @@ function getLineDesc(str, i) {
 		}
 	}
 
-	if (lastEl === CONCAT_END && concatLine && res.charAt(lastElI - 1) === ' ') {
+	if (dir && lastEl === CONCAT_END && concatLine && res.charAt(lastElI - 1) === ' ') {
 		res = res.substring(0, lastElI) + res.substring(lastElI + 1);
 	}
 

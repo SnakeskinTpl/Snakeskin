@@ -8,7 +8,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 17],
+	VERSION: [4, 0, 18],
 
 	/**
 	 * Пространство имён для директив
