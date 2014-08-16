@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 16:00:58 GMT
+ * Date: Sat, 16 Aug 2014 16:17:50 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9270,7 +9270,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 /**
  * Вернуть объект-описание преобразованной части шаблона из
- * jade-like синтаксиса в стандартный
+ * Jade-Like синтаксиса в стандартный
  *
  * @param {string} str - исходная строка
  * @param {number} i - номер начальной итерации
@@ -9480,7 +9480,7 @@ function genEndDir(dir) {
 }
 
 /**
- * Вернуть объект описание строки в jade-like синтаксисе
+ * Вернуть объект описание строки в Jade-Like синтаксисе
  *
  * @param {string} str - исходная строка
  * @param {number} i - номер начальной итерации
