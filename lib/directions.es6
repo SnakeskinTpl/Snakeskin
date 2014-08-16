@@ -62,7 +62,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			}
 
 			replacers[key] = repls[key];
-			shortMap[key] = true;
+
+			if (key.charAt(0) !== '/') {
+				shortMap[key] = true;
+			}
 		}
 	}
 
