@@ -16,7 +16,7 @@ function clone(obj) {
  *
  * @param {string} source - путь к исходному файлу
  * @param {string} result - путь к скомпилированному файлу
- * @param {?string=} [opt_key] - ключ параметров компиляции
+ * @param {(string|boolean|null)=} [opt_key] - ключ параметров компиляции
  * @return {boolean}
  */
 exports.check = function (source, result, opt_key) {
