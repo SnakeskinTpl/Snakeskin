@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.16
+ * Snakeskin v4.0.17
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 12:38:32 GMT
+ * Date: Sat, 16 Aug 2014 14:40:23 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 16],
+	VERSION: [4, 0, 17],
 
 	/**
 	 * Пространство имён для директив
@@ -9635,7 +9635,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			}
 
 			replacers[key] = repls[key];
-			shortMap[key] = true;
+
+			if (key.charAt(0) !== '/') {
+				shortMap[key] = true;
+			}
 		}
 	}
 
