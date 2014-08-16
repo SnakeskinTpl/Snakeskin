@@ -19,6 +19,7 @@ var uid;
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
+ * @param {?boolean=} [opt_params.cache=true] - если false, то шаблоны не кешируются
  * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
  * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
  *     будет сгенерирована ошибка
@@ -103,6 +104,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
+	p.cache = s(p.cache, p['cache']) !== false;
 
 	var debug =
 		p.debug = s(p.debug, p['debug']);
@@ -147,7 +149,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		text = String(src);
 	}
 
-	var cacheKey = lang ? null : [
+	var cacheKey = lang || !p.cache ? null : [
 		cjs,
 		xml,
 
