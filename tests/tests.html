@@ -788,7 +788,18 @@
 		class = foo |
 		bar = foo
 	) .
-		foo </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
+		foo
+
+- var usingSnakeskin = true
+
+- template syntax_index5(name = 'friend')
+    < h1.b-hello
+        - if usingSnakeskin
+            < span.&__msg style = color: blue | -info = some description
+                Hello {name}! You are amazing!
+
+        - else
+            < span.&__warning :: You wrong!!! </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); equal(syntax_index5().trim(), '<h1 class="b-hello"> <span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span> </h1>'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
 {template tag_index()}
 	{tag span.foo class = bar car}
 		{tag .&__bar#my}

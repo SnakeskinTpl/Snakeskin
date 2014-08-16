@@ -2,6 +2,7 @@ syntax_index
 syntax_index2
 syntax_index3
 syntax_index4
+syntax_index5
 
 ###
 
@@ -35,6 +36,17 @@ syntax_index4
 	) .
 		foo
 
+- var usingSnakeskin = true
+
+- template syntax_index5(name = 'friend')
+    < h1.b-hello
+        - if usingSnakeskin
+            < span.&__msg style = color: blue | -info = some description
+                Hello {name}! You are amazing!
+
+        - else
+            < span.&__warning :: You wrong!!!
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -50,3 +62,7 @@ ng-class="foo" ng-bar="foo"
 ***
 
 <div ng-class="foo" ng-bar="foo">foo</div>
+
+***
+
+<h1 class="b-hello"> <span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span> </h1>
