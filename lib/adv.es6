@@ -294,7 +294,7 @@ function getLineDesc(str, i, dir) {
 		}
 	}
 
-	if (dir && lastEl === CONCAT_END && concatLine && res.charAt(lastElI - 1) === ' ') {
+	if (dir && lastEl === CONCAT_END && res.charAt(lastElI - 1) === ' ') {
 		res = res.substring(0, lastElI) + res.substring(lastElI + 1);
 	}
 
