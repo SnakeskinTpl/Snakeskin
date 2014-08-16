@@ -63,7 +63,7 @@ exports.compileFile = function (src, opt_params) {
 			cache[cacheKey][src];
 
 	if (fromCache) {
-		let tmp = cache[cacheKey][src];
+		let tmp = fromCache;
 
 		if (p.words) {
 			if (!tmp.words) {

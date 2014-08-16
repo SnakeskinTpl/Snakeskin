@@ -63,7 +63,7 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
 			cache[cacheKey][src];
 
 	if (fromCache) {
-		var tmp = cache[cacheKey][src];
+		var tmp = fromCache;
 
 		if (p.words) {
 			if (!tmp.words) {
