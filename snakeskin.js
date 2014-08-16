@@ -49,7 +49,10 @@ exports.check = function (source, result, opt_key) {
  * или false, если произошла ошибка при компиляции
  *
  * @param {string} src - путь к файлу шаблонов
+ *
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
+ * @see Snakeskin.compile
+ *
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {var this$0 = this;
@@ -137,7 +140,10 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
  * Скомпилировать заданный файл и вернуть ссылку на главный шаблон (функцию)
  *
  * @param {string} src - путь к файлу шаблонов
+ *
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
+ * @see Snakeskin.compile
+ *
  * @param {?string=} [opt_tplName] - имя главного шаблона
  * @return {Function}
  */
@@ -163,7 +169,10 @@ exports.execFile = function (src, opt_params, opt_tplName) {
  * Скомпилировать заданный текст и вернуть ссылку на главный шаблон (функцию)
  *
  * @param {string} txt - исходный текст
+ *
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
+ * @see Snakeskin.compile
+ *
  * @param {?string=} [opt_tplName] - имя главного шаблона
  * @return {Function}
  */
