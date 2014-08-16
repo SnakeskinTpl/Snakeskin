@@ -52,25 +52,38 @@ var scopeModRgxp = new RegExp(`^${G_MOD}+`);
  * @return {string}
  */
 DirObj.prototype.replaceFileName = function (str) {
-	var file = this.info['file'];
+	var file = this.info['file'],
+		basename;
 
-	if (IS_NODE && file) {
-		let path = require('path');
-		str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (sstr, $1) => {
-			var str = path['basename'](file, '.ss');
+	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (sstr, $1) => {
+		if (!file) {
+			this.error('placeholder %fileName% can\'t be used without "file" option');
+			return '';
+		}
 
-			if ($1) {
-				if ($1 !== '.') {
-					str = `${$1}'${str}'`;
+		if (!IS_NODE) {
+			this.error('placeholder %fileName% can\'t be used with live compilation in browser');
+			return '';
+		}
 
-				} else {
-					str = $1 + str;
-				}
+		if (!basename) {
+			let path = require('path');
+			basename = path['basename'](file, path['extname'](file));
+		}
+
+		var str = basename;
+
+		if ($1) {
+			if ($1 !== '.') {
+				str = `${$1}'${str}'`;
+
+			} else {
+				str = $1 + str;
 			}
+		}
 
-			return str;
-		}));
-	}
+		return str;
+	}));
 
 	return str;
 };
