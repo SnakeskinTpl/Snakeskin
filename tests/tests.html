@@ -20,7 +20,31 @@
 
 	{attr ng-(foo = #{bar} #{foo} | bar = foo) ${foo} = bar}
 	{attr ng-(foo = ${(1 ? bar : null)} ${((foo))} | bar = foo), foo:(#{foo} = bar) b-foo:(#{foo} = bar) b:foo-(${foo} = bar)}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo="bar"  foo="foo" bar="foo"'); equal(attr_index2().trim(), 'ng-foo="bar foo" ng-bar="foo" foo="bar"  ng-foo="bar foo" ng-bar="foo" foo:foo="bar" b-foo:foo="bar" b:foo-foo="bar"'); }); </script>  <script type="text/x-snakeskin-template" id="block"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true}); test('attr', function () { equal(attr_index().trim(), 'foo="bar"  foo="foo" bar="foo"'); equal(attr_index2().trim(), 'ng-foo="bar foo" ng-bar="foo" foo="bar"  ng-foo="bar foo" ng-bar="foo" foo:foo="bar" b-foo:foo="bar" b:foo-foo="bar"'); }); </script>  <script type="text/x-snakeskin-template" id="bem"> 
+- template bem_index()
+	< h1.b-hello
+		< span.&__msg style = color: blue | class = &__bar
+			You are amazing!
+
+- template bem_index2()
+	< h1.b-hello
+		< h2.b-desc
+			< span.&__msg class = &__bar
+				You are amazing!
+
+- template bem_index3()
+	< h1.b-hello
+		< h2.&__desc
+			< span.&__msg class = &__bar
+				You are amazing!
+
+
+- template bem_index4()
+	- set & b-hello
+	< h1.&
+		< h2.&__desc
+			< span.&__msg class = &__bar
+				You are amazing! </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('bem'), {prettyPrint: true}); test('bem', function () { equal(bem_index().trim(), '<h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>'); equal(bem_index2().trim(), '<h1 class="b-hello"><h2 class="b-desc"><span class="b-desc__bar b-desc__msg">You are amazing!</span></h2></h1>'); equal(bem_index3().trim(), '<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>'); equal(bem_index4().trim(), '<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>'); }); </script>  <script type="text/x-snakeskin-template" id="block"> 
 {template block_base()}
 	{&+}
 	{var a = 2, b, c}
