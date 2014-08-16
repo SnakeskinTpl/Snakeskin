@@ -3,6 +3,7 @@ syntax_index2
 syntax_index3
 syntax_index4
 syntax_index5
+syntax_index6
 
 ###
 
@@ -47,6 +48,14 @@ syntax_index5
         - else
             < span.&__warning :: You wrong!!!
 
+
+- template syntax_index6()
+    < h1.b-hello
+        foo bar
+        car my
+            mooo
+                boo
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -65,4 +74,8 @@ ng-class="foo" ng-bar="foo"
 
 ***
 
-<h1 class="b-hello"> <span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span> </h1>
+<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>
+
+***
+
+<h1 class="b-hello">foo bar car my mooo boo</h1>
