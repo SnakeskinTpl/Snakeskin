@@ -56,8 +56,11 @@ exports.compileFile = function (src, opt_params) {
 	var p = opt_params || {};
 	p.commonJS = true;
 
+	var cacheEnabled = p.cache !== false;
 	var cacheKey = this.compile(null, p, {cacheKey: true}),
-		fromCache = cache[cacheKey] && cache[cacheKey][src];
+		fromCache = cacheEnabled &&
+			cache[cacheKey] &&
+			cache[cacheKey][src];
 
 	if (fromCache) {
 		let tmp = cache[cacheKey][src];
@@ -91,12 +94,21 @@ exports.compileFile = function (src, opt_params) {
 	var tpls,
 		res = true;
 
-	if (!this.check(src, resSrc, cacheKey)) {
+	var compile = () => {
 		res = this.compile(source, p, {file: src});
 
 		if (res !== false) {
 			fs.writeFileSync(resSrc, res);
 		}
+	};
+
+	if (cacheEnabled) {
+		if (!this.check(src, resSrc, cacheKey)) {
+			compile();
+		}
+
+	} else {
+		compile();
 	}
 
 	if (res !== false) {

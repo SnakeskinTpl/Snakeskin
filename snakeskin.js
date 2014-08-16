@@ -52,12 +52,15 @@ exports.check = function (source, result, opt_key) {
  * @param {Object=} [opt_params] - дополнительные параметры компиляции
  * @return {(!Object|boolean)}
  */
-exports.compileFile = function (src, opt_params) {
+exports.compileFile = function (src, opt_params) {var this$0 = this;
 	var p = opt_params || {};
 	p.commonJS = true;
 
+	var cacheEnabled = p.cache !== false;
 	var cacheKey = this.compile(null, p, {cacheKey: true}),
-		fromCache = cache[cacheKey] && cache[cacheKey][src];
+		fromCache = cacheEnabled &&
+			cache[cacheKey] &&
+			cache[cacheKey][src];
 
 	if (fromCache) {
 		var tmp = cache[cacheKey][src];
@@ -91,12 +94,21 @@ exports.compileFile = function (src, opt_params) {
 	var tpls,
 		res = true;
 
-	if (!this.check(src, resSrc, cacheKey)) {
-		res = this.compile(source, p, {file: src});
+	var compile = function()  {
+		res = this$0.compile(source, p, {file: src});
 
 		if (res !== false) {
 			fs.writeFileSync(resSrc, res);
 		}
+	};
+
+	if (cacheEnabled) {
+		if (!this.check(src, resSrc, cacheKey)) {
+			compile();
+		}
+
+	} else {
+		compile();
 	}
 
 	if (res !== false) {
