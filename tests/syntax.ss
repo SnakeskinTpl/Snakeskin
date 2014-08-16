@@ -5,6 +5,7 @@ syntax_index4
 syntax_index5
 syntax_index6
 syntax_index7
+syntax_index8
 
 ###
 
@@ -64,6 +65,11 @@ syntax_index7
 
 	bar
 
+- template syntax_index8()
+	Hello man &
+		foo bar
+    < div style = color: red :: bar
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -91,3 +97,7 @@ ng-class="foo" ng-bar="foo"
 ***
 
 foobar
+
+***
+
+Hello man & foo bar <div style="color: red">bar</div>
