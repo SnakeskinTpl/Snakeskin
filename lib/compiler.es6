@@ -19,7 +19,7 @@ var uid;
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
- * @param {?boolean=} [opt_params.cache=true] - если false, то шаблоны не кешируются
+ * @param {?boolean=} [opt_params.cache=true] - если false, то наличие шаблона в кеше не будет проверятся
  * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
  * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
  *     будет сгенерирована ошибка
