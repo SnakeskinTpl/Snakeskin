@@ -1,5 +1,7 @@
 syntax_index
 syntax_index2
+syntax_index3
+syntax_index4
 
 ###
 
@@ -20,6 +22,19 @@ syntax_index2
 
 - template syntax_index2() extends syntax_index
 
+- template syntax_index3()
+	- attr ng-( &
+		class = foo |
+		bar = foo
+	) .
+
+- template syntax_index4()
+	< div ng-( &
+		class = foo |
+		bar = foo
+	) .
+		foo
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -27,3 +42,11 @@ syntax_index2
 ***
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
+
+***
+
+ng-class="foo" ng-bar="foo"
+
+***
+
+<div ng-class="foo" ng-bar="foo">foo</div>

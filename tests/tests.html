@@ -775,7 +775,20 @@
 
 
 
-- template syntax_index2() extends syntax_index </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
+- template syntax_index2() extends syntax_index
+
+- template syntax_index3()
+	- attr ng-( &
+		class = foo |
+		bar = foo
+	) .
+
+- template syntax_index4()
+	< div ng-( &
+		class = foo |
+		bar = foo
+	) .
+		foo </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
 {template tag_index()}
 	{tag span.foo class = bar car}
 		{tag .&__bar#my}
