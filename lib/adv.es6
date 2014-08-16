@@ -96,6 +96,9 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				let adv = el === ADV_LEFT_BLOCK ?
 					ADV_LEFT_BLOCK : '';
 
+				var s = dir ? adv + LEFT_BLOCK : '',
+					e = dir ? RIGHT_BLOCK : '';
+
 				let obj = {
 					dir: dir,
 					name: decl.name,
@@ -150,11 +153,11 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				txt = txt && txt.trim();
 				struct = obj;
 
-				res += space +
-					adv +
-					(dir ? LEFT_BLOCK : '') +
-					parts[0] +
-					(dir ? RIGHT_BLOCK : '');
+				res += space + s + parts[0] + e;
+
+				if (obj.block) {
+					res += `${s}__&__${e}`;
+				}
 
 				let tmp = decl.length - 1;
 				tSpace = 0;
@@ -205,7 +208,7 @@ function genEndDir(dir) {
 	var s = dir.adv + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
-	return `${s}__&__${e}\n${s}__end__${e}${s}__cutLine__${e}`;
+	return `${s}__&__${e}\n${s}__end__${e}${s}__cutLine__${e}${s}__&__${e}`;
 }
 
 /**
