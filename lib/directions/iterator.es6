@@ -232,20 +232,17 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isReady()) {
-			if (this.inlineIterators) {
-				let params = this.structure
-					.params;
+			let params = this.structure.params;
 
+			if (this.inlineIterators) {
 				let part = this.res
 					.substring(params.from);
 
 				this.append(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
 
 			} else {
-				let params = this.structure.params.params;
-
-				if (params) {
-					this.append(`}, ${this.prepareOutput(params, true)});`);
+				if (params.params) {
+					this.append(`}, ${this.prepareOutput(params.params, true)});`);
 
 				} else {
 					this.append('});');
