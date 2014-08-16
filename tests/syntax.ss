@@ -4,6 +4,7 @@ syntax_index3
 syntax_index4
 syntax_index5
 syntax_index6
+syntax_index7
 
 ###
 
@@ -56,6 +57,13 @@ syntax_index6
             mooo
                 boo
 
+- template syntax_index7()
+	- switch 1
+		> 1
+			foo
+
+	bar
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -79,3 +87,7 @@ ng-class="foo" ng-bar="foo"
 ***
 
 <h1 class="b-hello">foo bar car my mooo boo</h1>
+
+***
+
+foobar

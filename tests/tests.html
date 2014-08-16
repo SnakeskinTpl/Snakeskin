@@ -807,7 +807,14 @@
         foo bar
         car my
             mooo
-                boo </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); equal(syntax_index5().trim(), '<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>'); equal(syntax_index6().trim(), '<h1 class="b-hello">foo bar car my mooo boo</h1>'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
+                boo
+
+- template syntax_index7()
+	- switch 1
+		> 1
+			foo
+
+	bar </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); equal(syntax_index5().trim(), '<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>'); equal(syntax_index6().trim(), '<h1 class="b-hello">foo bar car my mooo boo</h1>'); equal(syntax_index7().trim(), 'foobar'); }); </script>  <script type="text/x-snakeskin-template" id="tag"> 
 {template tag_index()}
 	{tag span.foo class = bar car}
 		{tag .&__bar#my}
