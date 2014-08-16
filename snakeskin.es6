@@ -112,9 +112,9 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (res !== false) {
-		if (cacheKey) {
-			tpls = require(resSrc);
+		tpls = require(resSrc);
 
+		if (cacheKey) {
 			cache[cacheKey] = cache[cacheKey] || {};
 			cache[cacheKey][src] = {
 				tpls: tpls,
