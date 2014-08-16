@@ -152,7 +152,7 @@ function action(data) {
 
 			} else {
 				if (file) {
-					tpl = tpls[file.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
+					tpl = tpls[path.basename(file, path.extname(file))] || tpls.main || tpls[Object.keys(tpls)[0]];
 
 				} else {
 					tpl = tpls.main || tpls[Object.keys(tpls)[0]];
@@ -178,7 +178,7 @@ function action(data) {
 					res = beautify['html'](res);
 
 				} else {
-					res = beautify[newFile.split('.').slice(-1)](res);
+					res = beautify[path.extname(newFile).replace(/^\./, '')](res);
 				}
 			}
 		}

@@ -6,6 +6,10 @@ var fs = require('fs'),
 
 var cache = {};
 
+function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}
+
 /**
  * Вернуть true, если заданный файл шаблонов соответствует скомпилированному
  * по временной метке
@@ -63,15 +67,7 @@ exports.compileFile = function (src, opt_params) {
 				fromCache = false;
 
 			} else {
-				var w = Object(tmp.words);
-
-				for (var key in w) {
-					if (!w.hasOwnProperty(key)) {
-						continue;
-					}
-
-					p.words[key] = w[key];
-				}
+				p.words = clone(tmp.words);
 			}
 		}
 
@@ -80,15 +76,7 @@ exports.compileFile = function (src, opt_params) {
 				fromCache = false;
 
 			} else {
-				var d = Object(tmp.debug);
-
-				for (var key$0 in d) {
-					if (!d.hasOwnProperty(key$0)) {
-						continue;
-					}
-
-					p.debug[key$0] = d[key$0];
-				}
+				p.debug = clone(tmp.debug);
 			}
 		}
 
@@ -153,7 +141,7 @@ exports.execFile = function (src, opt_params, opt_tplName) {
 		tpl = tpls[opt_tplName];
 
 	} else {
-		tpl = tpls[src.split('.').slice(0, -1).join('.')] || tpls.main || tpls[Object.keys(tpls)[0]];
+		tpl = tpls[path.basename(src, path.extname(src))] || tpls.main || tpls[Object.keys(tpls)[0]];
 	}
 
 	return tpl || null;
