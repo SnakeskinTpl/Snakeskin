@@ -149,7 +149,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		text = String(src);
 	}
 
-	var cacheKey = lang || !p.cache ? null : [
+	var cacheKey = lang ? null : [
 		cjs,
 		xml,
 
@@ -168,60 +168,62 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return cacheKey;
 	}
 
-	// Кеширование шаблонов в node.js
-	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
-		let cache = globalFnCache[cacheKey][text];
+	if (p.cache) {
+		// Кеширование шаблонов в node.js
+		if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
+			let cache = globalFnCache[cacheKey][text];
 
-		for (let key in cache) {
-			if (!cache.hasOwnProperty(key)) {
-				continue;
+			for (let key in cache) {
+				if (!cache.hasOwnProperty(key)) {
+					continue;
+				}
+
+				ctx[key] = cache[key];
 			}
-
-			ctx[key] = cache[key];
 		}
-	}
 
-	// Базовое кешироние шаблонов
-	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		let tmp = globalCache[cacheKey][text],
-			skip = false;
+		// Базовое кешироние шаблонов
+		if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
+			let tmp = globalCache[cacheKey][text],
+				skip = false;
 
-		if (words) {
-			if (!tmp.words) {
-				skip = true;
+			if (words) {
+				if (!tmp.words) {
+					skip = true;
 
-			} else {
-				let w = Object(tmp.words);
+				} else {
+					let w = Object(tmp.words);
 
-				for (let key in w) {
-					if (!w.hasOwnProperty(key)) {
-						continue;
+					for (let key in w) {
+						if (!w.hasOwnProperty(key)) {
+							continue;
+						}
+
+						words[key] = w[key];
 					}
-
-					words[key] = w[key];
 				}
 			}
-		}
 
-		if (debug) {
-			if (!tmp.debug) {
-				skip = true;
+			if (debug) {
+				if (!tmp.debug) {
+					skip = true;
 
-			} else {
-				let d = Object(tmp.debug);
+				} else {
+					let d = Object(tmp.debug);
 
-				for (let key in d) {
-					if (!d.hasOwnProperty(key)) {
-						continue;
+					for (let key in d) {
+						if (!d.hasOwnProperty(key)) {
+							continue;
+						}
+
+						debug[key] = d[key];
 					}
-
-					debug[key] = d[key];
 				}
 			}
-		}
 
-		if (!skip) {
-			return tmp.text;
+			if (!skip) {
+				return tmp.text;
+			}
 		}
 	}
 
