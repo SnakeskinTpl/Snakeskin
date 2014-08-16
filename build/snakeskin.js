@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.13
+ * Snakeskin v4.0.14
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 15 Aug 2014 12:52:35 GMT
+ * Date: Sat, 16 Aug 2014 08:27:53 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 13],
+	VERSION: [4, 0, 14],
 
 	/**
 	 * Пространство имён для директив
@@ -8232,6 +8232,7 @@ var uid;
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
+ * @param {?boolean=} [opt_params.cache=true] - если false, то наличие шаблона в кеше не будет проверятся
  * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
  * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
  *     будет сгенерирована ошибка
@@ -8316,6 +8317,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
 	p.throws = s(p.throws, p['throws']) || false;
+	p.cache = s(p.cache, p['cache']) !== false;
 
 	var debug =
 		p.debug = s(p.debug, p['debug']);
@@ -8379,60 +8381,62 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return cacheKey;
 	}
 
-	// Кеширование шаблонов в node.js
-	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
-		var cache = globalFnCache[cacheKey][text];
+	if (p.cache) {
+		// Кеширование шаблонов в node.js
+		if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
+			var cache = globalFnCache[cacheKey][text];
 
-		for (var key$0 in cache) {
-			if (!cache.hasOwnProperty(key$0)) {
-				continue;
+			for (var key$0 in cache) {
+				if (!cache.hasOwnProperty(key$0)) {
+					continue;
+				}
+
+				ctx[key$0] = cache[key$0];
 			}
-
-			ctx[key$0] = cache[key$0];
 		}
-	}
 
-	// Базовое кешироние шаблонов
-	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		var tmp = globalCache[cacheKey][text],
-			skip = false;
+		// Базовое кешироние шаблонов
+		if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
+			var tmp = globalCache[cacheKey][text],
+				skip = false;
 
-		if (words) {
-			if (!tmp.words) {
-				skip = true;
+			if (words) {
+				if (!tmp.words) {
+					skip = true;
 
-			} else {
-				var w = Object(tmp.words);
+				} else {
+					var w = Object(tmp.words);
 
-				for (var key$1 in w) {
-					if (!w.hasOwnProperty(key$1)) {
-						continue;
+					for (var key$1 in w) {
+						if (!w.hasOwnProperty(key$1)) {
+							continue;
+						}
+
+						words[key$1] = w[key$1];
 					}
-
-					words[key$1] = w[key$1];
 				}
 			}
-		}
 
-		if (debug) {
-			if (!tmp.debug) {
-				skip = true;
+			if (debug) {
+				if (!tmp.debug) {
+					skip = true;
 
-			} else {
-				var d = Object(tmp.debug);
+				} else {
+					var d = Object(tmp.debug);
 
-				for (var key$2 in d) {
-					if (!d.hasOwnProperty(key$2)) {
-						continue;
+					for (var key$2 in d) {
+						if (!d.hasOwnProperty(key$2)) {
+							continue;
+						}
+
+						debug[key$2] = d[key$2];
 					}
-
-					debug[key$2] = d[key$2];
 				}
 			}
-		}
 
-		if (!skip) {
-			return tmp.text;
+			if (!skip) {
+				return tmp.text;
+			}
 		}
 	}
 
@@ -11131,20 +11135,17 @@ Snakeskin.addDirective(
 
 	function () {
 		if (this.isReady()) {
-			if (this.inlineIterators) {
-				var params = this.structure
-					.params;
+			var params = this.structure.params;
 
+			if (this.inlineIterators) {
 				var part = this.res
 					.substring(params.from);
 
 				this.append((("} " + (params.end + part)) + (" } " + (params.oldEnd + part)) + " }}}}"));
 
 			} else {
-				var params$0 = this.structure.params.params;
-
-				if (params$0) {
-					this.append((("}, " + (this.prepareOutput(params$0, true))) + ");"));
+				if (params.params) {
+					this.append((("}, " + (this.prepareOutput(params.params, true))) + ");"));
 
 				} else {
 					this.append('});');
@@ -12302,26 +12303,39 @@ var scopeModRgxp = new RegExp((("^" + G_MOD) + "+"));
  * @param {string} str - исходная строка
  * @return {string}
  */
-DirObj.prototype.replaceFileName = function (str) {
-	var file = this.info['file'];
+DirObj.prototype.replaceFileName = function (str) {var this$0 = this;
+	var file = this.info['file'],
+		basename;
 
-	if (IS_NODE && file) {
-		var path = require('path');
-		str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, function(sstr, $1)  {
-			var str = path['basename'](file, '.ss');
+	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, function(sstr, $1)  {
+		if (!file) {
+			this$0.error('placeholder %fileName% can\'t be used without "file" option');
+			return '';
+		}
 
-			if ($1) {
-				if ($1 !== '.') {
-					str = (("" + $1) + ("'" + str) + "'");
+		if (!IS_NODE) {
+			this$0.error('placeholder %fileName% can\'t be used with live compilation in browser');
+			return '';
+		}
 
-				} else {
-					str = $1 + str;
-				}
+		if (!basename) {
+			var path = require('path');
+			basename = path['basename'](file, path['extname'](file));
+		}
+
+		var str = basename;
+
+		if ($1) {
+			if ($1 !== '.') {
+				str = (("" + $1) + ("'" + str) + "'");
+
+			} else {
+				str = $1 + str;
 			}
+		}
 
-			return str;
-		}));
-	}
+		return str;
+	}));
 
 	return str;
 };
@@ -12397,7 +12411,9 @@ for (var i = -1; ++i < template.length;) {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
 
-			var nameRgxp = /^[^a-z_$[]/i;
+			var nameRgxp = /^[^a-z_$[]/i,
+				esprimaNameHackRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "]"), 'g');
+
 			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
@@ -12426,7 +12442,7 @@ for (var i = -1; ++i < template.length;) {
 						throw false;
 					}
 
-					esprima.parse(tplName);
+					esprima.parse(tplName.replace(esprimaNameHackRgxp, ''));
 
 				} catch (ignore) {
 					return this.error((("invalid \"" + (this.name)) + "\" name"));
@@ -12545,6 +12561,8 @@ for (var i = -1; ++i < template.length;) {
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
 						throw false;
 					}
+
+					esprima.parse(parentTplName.replace(esprimaNameHackRgxp, ''));
 
 				} catch (ignore) {
 					return this.error((("invalid \"" + (this.name)) + "\" name for extend"));
