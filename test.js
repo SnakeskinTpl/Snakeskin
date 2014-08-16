@@ -3,7 +3,7 @@ var fs = require('fs'),
 	exists = fs.existsSync || path.existsSync;
 
 var assert = require('assert');
-var snakeskin = require('./build/snakeskin.min');
+var snakeskin = require('./snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
 var tpls = {};
