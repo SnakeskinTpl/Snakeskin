@@ -29,7 +29,7 @@ exports.check = function (source, result, opt_key) {
 
 	var resLabel = /label <([\d]+)>/.exec(code);
 
-	if (!resLabel) {
+	if (!resLabel || opt_key === null) {
 		return false;
 	}
 
