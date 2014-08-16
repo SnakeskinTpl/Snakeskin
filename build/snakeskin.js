@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.15
+ * Snakeskin v4.0.16
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 12:12:29 GMT
+ * Date: Sat, 16 Aug 2014 12:38:32 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 15],
+	VERSION: [4, 0, 16],
 
 	/**
 	 * Пространство имён для директив
@@ -9364,6 +9364,9 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				var adv = el === ADV_LEFT_BLOCK ?
 					ADV_LEFT_BLOCK : '';
 
+				var s = dir ? adv + LEFT_BLOCK : '',
+					e = dir ? RIGHT_BLOCK : '';
+
 				var obj = {
 					dir: dir,
 					name: decl.name,
@@ -9418,11 +9421,11 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				txt = txt && txt.trim();
 				struct = obj;
 
-				res += space +
-					adv +
-					(dir ? LEFT_BLOCK : '') +
-					parts[0] +
-					(dir ? RIGHT_BLOCK : '');
+				res += space + s + parts[0] + e;
+
+				if (obj.block) {
+					res += (("" + s) + ("__&__" + e) + "");
+				}
 
 				var tmp = decl.length - 1;
 				tSpace = 0;
@@ -9473,7 +9476,7 @@ function genEndDir(dir) {
 	var s = dir.adv + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
-	return (("" + s) + ("__&__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__cutLine__" + e) + "");
+	return (("" + s) + ("__&__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__cutLine__" + e) + ("" + s) + ("__&__" + e) + "");
 }
 
 /**
