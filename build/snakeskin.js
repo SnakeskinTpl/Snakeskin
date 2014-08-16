@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 11:24:32 GMT
+ * Date: Sat, 16 Aug 2014 12:12:29 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -9489,7 +9489,7 @@ function getLineDesc(str, i) {
 
 	var lastEl = '',
 		lastElI = 0,
-		length = 0;
+		length = -1;
 
 	var concatLine = false,
 		nmBrk = null;
