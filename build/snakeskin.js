@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.14
+ * Snakeskin v4.0.15
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 08:27:53 GMT
+ * Date: Sat, 16 Aug 2014 11:13:12 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 14],
+	VERSION: [4, 0, 15],
 
 	/**
 	 * Пространство имён для директив
@@ -9424,7 +9424,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					parts[0] +
 					(dir ? RIGHT_BLOCK : '');
 
-				var tmp = decl.command.length - 1;
+				var tmp = decl.length - 1;
 				tSpace = 0;
 
 				length += tmp;
@@ -9481,40 +9481,52 @@ function genEndDir(dir) {
  *
  * @param {string} str - исходная строка
  * @param {number} i - номер начальной итерации
- * @return {{command: string, name: string, lastEl: string}}
+ * @return {{command: string, length: number, name: string, lastEl: string}}
  */
 function getLineDesc(str, i) {
 	var res = '',
 		name = '';
 
 	var lastEl = '',
-		lastElI = 0;
+		lastElI = 0,
+		length = 0;
 
-	var concatLine = false;
-	var nmBrk = null;
+	var concatLine = false,
+		nmBrk = null;
 
 	for (var j = i - 1; ++j < str.length;) {
 		var el = str.charAt(j);
+		length++;
 
 		if (nextLineRgxp.test(el)) {
-			var prevEl = lastEl;
+			var prevEl = lastEl,
+				brk = false;
+
 			lastEl = '';
+			if (str.charAt(j - 2) === ' ') {
+				brk = prevEl === CONCAT_END;
 
-			if (prevEl === CONCAT_COMMAND || prevEl === CONCAT_END) {
-				res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
+				if (prevEl === CONCAT_COMMAND || brk) {
+					res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
+				}
+
+				if (concatLine && !brk) {
+					continue;
+				}
+
+				if (prevEl === CONCAT_COMMAND) {
+					concatLine = true;
+					continue
+				}
 			}
 
-			if (concatLine && prevEl !== CONCAT_END) {
+			if (concatLine && !brk) {
 				continue;
-			}
-
-			if (prevEl === '&') {
-				concatLine = true;
-				continue
 			}
 
 			return {
 				command: res,
+				length: length,
 				name: name,
 				lastEl: lastEl
 			};
@@ -9546,8 +9558,13 @@ function getLineDesc(str, i) {
 		}
 	}
 
+	if (lastEl === CONCAT_END && concatLine && res.charAt(lastElI - 1) === ' ') {
+		res = res.substring(0, lastElI) + res.substring(lastElI + 1);
+	}
+
 	return {
 		command: res,
+		length: length,
 		name: name,
 		lastEl: lastEl
 	};
@@ -10633,7 +10650,7 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 			var val = vals[j].trim();
 
 			if (val.charAt(0) === '&' && ref) {
-				val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring(1), true))) + ("'" + e) + "");
+				val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring('&amp;'.length), true))) + ("'" + e) + "");
 				val = this.replaceTplVars(val);
 			}
 
@@ -13745,8 +13762,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 		id: this.replaceTplVars(id),
 		classes: classes
 	};
-};
-Snakeskin.addDirective(
+};Snakeskin.addDirective(
 	'set',
 
 	{
