@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.18
+ * Snakeskin v4.0.19
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 16 Aug 2014 16:21:29 GMT
+ * Date: Sun, 17 Aug 2014 09:03:41 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 18],
+	VERSION: [4, 0, 19],
 
 	/**
 	 * Пространство имён для директив
@@ -9415,13 +9415,17 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					}
 				}
 
-				var parts = decl.command.split(INLINE_COMMAND),
+				var parts = void 0,
+					txt = void 0;
+
+				if (dir) {
+					parts = decl.command.split(INLINE_COMMAND);
 					txt = parts.slice(1).join(INLINE_COMMAND);
+					txt = txt && txt.trim();
+				}
 
-				txt = txt && txt.trim();
 				struct = obj;
-
-				res += space + s + parts[0] + e;
+				res += space + s + (dir ? parts[0] : decl.command) + e;
 
 				if (obj.block) {
 					res += (("" + s) + ("__&__" + e) + "");
@@ -9433,7 +9437,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				length += tmp;
 				j += tmp;
 
-				if (txt) {
+				if (dir && txt) {
 					var inline = {
 						dir: false,
 						spaces: spaces + 1,
