@@ -69,6 +69,7 @@ syntax_index8
 	Hello man &
 		foo bar
     < div style = color: red :: bar
+    foo :: bar
 
 ###
 
@@ -100,4 +101,4 @@ foobar
 
 ***
 
-Hello man & foo bar <div style="color: red">bar</div>
+Hello man & foo bar <div style="color: red">bar</div>foo :: bar
