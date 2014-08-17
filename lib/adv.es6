@@ -147,13 +147,17 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 					}
 				}
 
-				let parts = decl.command.split(INLINE_COMMAND),
+				let parts,
+					txt;
+
+				if (dir) {
+					parts = decl.command.split(INLINE_COMMAND);
 					txt = parts.slice(1).join(INLINE_COMMAND);
+					txt = txt && txt.trim();
+				}
 
-				txt = txt && txt.trim();
 				struct = obj;
-
-				res += space + s + parts[0] + e;
+				res += space + s + (dir ? parts[0] : decl.command) + e;
 
 				if (obj.block) {
 					res += `${s}__&__${e}`;
@@ -165,7 +169,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				length += tmp;
 				j += tmp;
 
-				if (txt) {
+				if (dir && txt) {
 					let inline = {
 						dir: false,
 						spaces: spaces + 1,
