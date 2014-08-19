@@ -58,7 +58,7 @@ var modMap = {
 const CONCAT_COMMAND = '&';
 const CONCAT_END = '.';
 const IGNORE_COMMAND = '|';
-const INLINE_COMMAND = '::';
+const INLINE_COMMAND = ' :: ';
 
 // <<<
 // Механизм фильтров
