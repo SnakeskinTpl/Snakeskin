@@ -70,7 +70,7 @@ syntax_index8
 		foo bar
     < div style = color: red :: bar
     foo :: bar
-
+    < div class = \:: bar
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -101,4 +101,4 @@ foobar
 
 ***
 
-Hello man & foo bar <div style="color: red">bar</div>foo :: bar
+Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>
