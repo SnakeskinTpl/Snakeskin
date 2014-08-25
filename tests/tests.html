@@ -900,4 +900,5 @@
 	{new Object}
 	{'valueOf' in Object.prototype}
 	{typeof typeof foo}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('unary'), {prettyPrint: true}); test('unary', function () { equal(unary_index().trim(), 'undefined false [object Object] true string'); }); </script>  </body> </html> 
+	{1 instanceof Number instanceof Boolean}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('unary'), {prettyPrint: true}); test('unary', function () { equal(unary_index().trim(), 'undefined false [object Object] true string false'); }); </script>  </body> </html> 
