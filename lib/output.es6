@@ -224,7 +224,7 @@ var nextWordCharRgxp = new RegExp(`[${G_MOD + L_MOD}$+\\-~!\\w[\\]().]`);
  * @return {{word: string, finalWord: string, unary: string}}
  */
 DirObj.prototype.getWord = function (str, pos) {
-	let word = '';
+	var word = '';
 	var res = '',
 		nres = '';
 
