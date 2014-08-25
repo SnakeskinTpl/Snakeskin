@@ -44,7 +44,10 @@ var blackWordMap = {
 };
 
 var unaryBlackWordMap = {
-	'new': true
+	'new': true,
+	'typeof': true,
+	'instanceof': true,
+	'in': true
 };
 
 var comboBlackWordMap = {
