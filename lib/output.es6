@@ -224,6 +224,7 @@ var nextWordCharRgxp = new RegExp(`[${G_MOD + L_MOD}$+\\-~!\\w[\\]().]`);
  * @return {{word: string, finalWord: string, unary: string}}
  */
 DirObj.prototype.getWord = function (str, pos) {
+	let word = '';
 	var res = '',
 		nres = '';
 
@@ -234,15 +235,20 @@ DirObj.prototype.getWord = function (str, pos) {
 		pContent = null;
 
 	var unary,
-		unaryStr = '',
-		lastUnary = '';
+		unaryStr = '';
 
 	for (let i = pos, j = 0; i < str.length; i++, j++) {
 		let el = str.charAt(i);
 
-		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[res] || unaryBlackWordMap[lastUnary]))) {
+		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[word]))) {
+			if (el === ' ') {
+				word = '';
+
+			} else {
+				word += el;
+			}
+
 			if (unary) {
-				lastUnary = res;
 				unaryStr = unaryStr ||
 					res;
 
