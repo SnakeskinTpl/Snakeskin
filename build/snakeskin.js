@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 25 Aug 2014 09:26:11 GMT
+ * Date: Mon, 25 Aug 2014 10:03:53 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -13849,6 +13849,10 @@ var unaryBlackWordMap = {
 	'in': true
 };
 
+var undefUnaryBlackWordMap = {
+	'new': true
+};
+
 var comboBlackWordMap = {
 	'var': true,
 	'const': true,
@@ -14016,7 +14020,7 @@ var nextWordCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w[\\]().]
  *
  * @param {string} str - исходная строка
  * @param {number} pos - начальная позиция
- * @return {{word: string, finalWord: string}}
+ * @return {{word: string, finalWord: string, unary: string}}
  */
 DirObj.prototype.getWord = function (str, pos) {
 	var res = '',
@@ -14028,10 +14032,22 @@ DirObj.prototype.getWord = function (str, pos) {
 	var start = 0,
 		pContent = null;
 
+	var unary,
+		unaryStr = '',
+		lastUnary = '';
+
 	for (var i = pos, j = 0; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
-		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && unaryBlackWordMap[res])) {
+		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[res] || unaryBlackWordMap[lastUnary]))) {
+			if (unary) {
+				lastUnary = res;
+				unaryStr = unaryStr ||
+					res;
+
+				unary = false;
+			}
+
 			if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
 				pContent += el;
 			}
@@ -14081,7 +14097,8 @@ DirObj.prototype.getWord = function (str, pos) {
 
 	return {
 		word: res,
-		finalWord: nres || res
+		finalWord: nres || res,
+		unary: unaryStr
 	};
 };
 
@@ -14396,7 +14413,13 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 				if (comboBlackWordMap[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse && (!opt_sys || opt_iSys) && !filterStart) {
+				} else if (
+					canParse &&
+					(!opt_sys || opt_iSys) &&
+					!filterStart &&
+					(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary])
+				) {
+
 					vres = (("" + unUndefLabel) + ("(" + vres) + ")");
 				}
 
@@ -14612,6 +14635,7 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			esprima.parse(exprimaHackFn(res));
 
 		} catch (err) {
+			console.log(res);
 			this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
 			return '';
 		}
