@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.20
+ * Snakeskin v4.0.21
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 19 Aug 2014 07:26:45 GMT
+ * Date: Mon, 25 Aug 2014 09:26:11 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 20],
+	VERSION: [4, 0, 21],
 
 	/**
 	 * Пространство имён для директив
@@ -13843,7 +13843,10 @@ DirObj.prototype.returnTagDesc = function (str) {
 };
 
 var unaryBlackWordMap = {
-	'new': true
+	'new': true,
+	'typeof': true,
+	'instanceof': true,
+	'in': true
 };
 
 var comboBlackWordMap = {
