@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 25 Aug 2014 10:03:53 GMT
+ * Date: Mon, 25 Aug 2014 10:14:09 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -14023,6 +14023,7 @@ var nextWordCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w[\\]().]
  * @return {{word: string, finalWord: string, unary: string}}
  */
 DirObj.prototype.getWord = function (str, pos) {
+	var word = '';
 	var res = '',
 		nres = '';
 
@@ -14033,15 +14034,20 @@ DirObj.prototype.getWord = function (str, pos) {
 		pContent = null;
 
 	var unary,
-		unaryStr = '',
-		lastUnary = '';
+		unaryStr = '';
 
 	for (var i = pos, j = 0; i < str.length; i++, j++) {
 		var el = str.charAt(i);
 
-		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[res] || unaryBlackWordMap[lastUnary]))) {
+		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[word]))) {
+			if (el === ' ') {
+				word = '';
+
+			} else {
+				word += el;
+			}
+
 			if (unary) {
-				lastUnary = res;
 				unaryStr = unaryStr ||
 					res;
 
