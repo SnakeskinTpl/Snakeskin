@@ -893,4 +893,11 @@
 	{finally}
 		1
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  </body> </html> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script>  <script type="text/x-snakeskin-template" id="unary"> 
+{template unary_index()}
+	{typeof foo}
+	{1 instanceof Number}
+	{new Object}
+	{'valueOf' in Object.prototype}
+	{typeof typeof foo}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('unary'), {prettyPrint: true}); test('unary', function () { equal(unary_index().trim(), 'undefined false [object Object] true string'); }); </script>  </body> </html> 

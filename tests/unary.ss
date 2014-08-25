@@ -1,0 +1,15 @@
+unary_index
+
+###
+
+{template unary_index()}
+	{typeof foo}
+	{1 instanceof Number}
+	{new Object}
+	{'valueOf' in Object.prototype}
+	{typeof typeof foo}
+{/}
+
+###
+
+undefined false [object Object] true string
