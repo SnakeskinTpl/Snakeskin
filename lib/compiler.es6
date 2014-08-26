@@ -103,13 +103,46 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	cjs = Boolean(cjs);
 	p.onError = s(p.onError, p['onError']);
+
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
 	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
+
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
+
+	p.typography = s(p.typography, p['typography']) !== false;
+	var tMap =
+		p.typographyMap = s(p.typographyMap, p['typographyMap']);
+
+	var comboTMap = {
+		'.': true,
+		'-': true
+	};
+
+	if (tMap) {
+		let map = {
+			'"': [['«', '»'], ['„', '“']],
+			'\'': [['“', '”'], ['‘', '’']],
+			'(c)': '©',
+			'(tm)': '™',
+			'<-': '←',
+			'->': '→',
+			'...': '…',
+			'-': '−',
+			'--': '—'
+		};
+
+		for (let key in map) {
+			if (!map.hasOwnProperty(key)) {
+				continue;
+			}
+
+			tMap[key] = tMap[key] || map[key];
+		}
+	}
 
 	var debug =
 		p.debug = s(p.debug, p['debug']);
@@ -355,23 +388,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Флаги для обработки типографских последовательностей
 	var expr = '',
 		exprPos = 0;
-
-	var r = {
-		'"': [['«', '»'], ['„', '“']],
-		'\'': [['“', '”'], ['‘', '’']],
-		'(c)': '©',
-		'(tm)': '™',
-		'<-': '←',
-		'->': '→',
-		'...': '…',
-		'-': '−',
-		'--': '—'
-	};
-
-	var comboR = {
-		'.': true,
-		'-': true
-	};
 
 	var prevSpace,
 		prevCommentSpace = false,
@@ -941,7 +957,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (!tOpen || !tAttrBegin) {
 						if (el === '"' || el === '\'') {
-							let val = r[qType || el];
+							let val = tMap[qType || el];
 
 							if (!qType) {
 								qType = el;
@@ -962,7 +978,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							if (whiteSpaceRgxp.test(el)) {
 								expr = '';
 
-							} else if (comboR[el] && !comboR[str.charAt(dir.i - 1)]) {
+							} else if (comboTMap[el] && !comboTMap[str.charAt(dir.i - 1)]) {
 								exprPos = dir.res.length;
 								expr = el;
 
@@ -976,14 +992,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 					}
 
-					if (r[expr]) {
+					if (tMap[expr]) {
 						let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length);
 
 						dir.mod(() => {
 							dir.res = modStr;
 						});
 
-						dir.save(r[expr]);
+						dir.save(tMap[expr]);
 
 					} else {
 						dir.save(applyDefEscape(el));
