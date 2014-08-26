@@ -6,8 +6,8 @@ var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
 	bEndRgxp = /[^\s\/]/,
 	partRgxp = /[a-z]/;
 
-var tAttrRgxp = /[^'" ]/;
-var uid;
+var tAttrRgxp = /[^'" ]/,
+	uid;
 
 /**
  * Скомпилировать указанные шаблоны Snakeskin
@@ -93,6 +93,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	// GCC экспорт
+	// >>>
+
 	cjs = Boolean(cjs);
 	p.onError = s(p.onError, p['onError']);
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
@@ -131,6 +134,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var words =
 		p.words = s(p.words, p['words']);
 
+	// <<<
+	// Отладочная информация
+	// >>>
+
 	var info = opt_info || {};
 
 	info['line'] = info['line'] || 1;
@@ -146,6 +153,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		text = String(src);
 	}
 
+	// <<<
+	// Работа с кешем
+	// >>>
+
 	var cacheKey = lang ? null : [
 		cjs,
 		xml,
@@ -160,7 +171,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.i18nFn
 	].join();
 
-	// Хакерство :)
 	if (sp.cacheKey || sp['cacheKey']) {
 		return cacheKey;
 	}
@@ -224,6 +234,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	// <<<
+	// Обработка подключений файлов
+	// >>>
+
 	var dirname,
 		filename;
 
@@ -256,6 +270,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 		}
 	}
+
+	// <<<
+	// Основная логика
+	// >>>
 
 	var dir = new DirObj(String(text), {
 		info: info,
