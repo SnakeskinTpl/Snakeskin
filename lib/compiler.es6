@@ -113,7 +113,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
 
-	p.typography = s(p.typography, p['typography']) !== false;
+	var typography =
+		p.typography = s(p.typography, p['typography']) !== false;
+
 	var tMap =
 		p.typographyMap = s(p.typographyMap, p['typographyMap']);
 
@@ -122,26 +124,29 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		'-': true
 	};
 
-	if (tMap) {
-		let map = {
-			'"': [['«', '»'], ['„', '“']],
-			'\'': [['“', '”'], ['‘', '’']],
-			'(c)': '©',
-			'(tm)': '™',
-			'<-': '←',
-			'->': '→',
-			'...': '…',
-			'-': '−',
-			'--': '—'
-		};
+	var tMapDef = {
+		'"': [['«', '»'], ['„', '“']],
+		'\'': [['“', '”'], ['‘', '’']],
+		'(c)': '©',
+		'(tm)': '™',
+		'<-': '←',
+		'->': '→',
+		'...': '…',
+		'-': '−',
+		'--': '—'
+	};
 
-		for (let key in map) {
-			if (!map.hasOwnProperty(key)) {
+	if (tMap) {
+		for (let key in tMapDef) {
+			if (!tMapDef.hasOwnProperty(key)) {
 				continue;
 			}
 
-			tMap[key] = tMap[key] || map[key];
+			tMap[key] = tMap[key] || tMapDef[key];
 		}
+
+	} else {
+		tMap = tMapDef;
 	}
 
 	var debug =
@@ -206,7 +211,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.prettyPrint,
 
 		i18n,
-		p.i18nFn
+		p.i18nFn,
+
+		typography
 	].join();
 
 	if (sp.cacheKey || sp['cacheKey']) {
@@ -955,51 +962,56 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						dir.attr = Boolean(tOpen);
 					}
 
-					if (!tOpen || !tAttrBegin) {
-						if (el === '"' || el === '\'') {
-							let val = tMap[qType || el];
+					if (typography) {
+						if (!tOpen || !tAttrBegin) {
+							if (el === '"' || el === '\'') {
+								let val = tMap[qType || el];
 
-							if (!qType) {
-								qType = el;
-								el = val[0][0];
-								qOpen++;
+								if (!qType) {
+									qType = el;
+									el = val[0][0];
+									qOpen++;
 
-							} else if (el === qType) {
-								qType = null;
-								el = val[0][1];
-								qOpen = 0;
+								} else if (el === qType) {
+									qType = null;
+									el = val[0][1];
+									qOpen = 0;
 
-							} else {
-								el = val[1][qOpen % 2 ? 0 : 1];
-								qOpen++;
-							}
-
-						} else {
-							if (whiteSpaceRgxp.test(el)) {
-								expr = '';
-
-							} else if (comboTMap[el] && !comboTMap[str.charAt(dir.i - 1)]) {
-								exprPos = dir.res.length;
-								expr = el;
-
-							} else {
-								if (!expr) {
-									exprPos = dir.res.length;
+								} else {
+									el = val[1][qOpen % 2 ? 0 : 1];
+									qOpen++;
 								}
 
-								expr += el;
+							} else {
+								if (whiteSpaceRgxp.test(el)) {
+									expr = '';
+
+								} else if (comboTMap[el] && !comboTMap[str.charAt(dir.i - 1)]) {
+									exprPos = dir.res.length;
+									expr = el;
+
+								} else {
+									if (!expr) {
+										exprPos = dir.res.length;
+									}
+
+									expr += el;
+								}
 							}
 						}
-					}
 
-					if (tMap[expr]) {
-						let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length);
+						if (tMap[expr]) {
+							let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length);
 
-						dir.mod(() => {
-							dir.res = modStr;
-						});
+							dir.mod(() => {
+								dir.res = modStr;
+							});
 
-						dir.save(tMap[expr]);
+							dir.save(tMap[expr]);
+
+						} else {
+							dir.save(applyDefEscape(el));
+						}
 
 					} else {
 						dir.save(applyDefEscape(el));
