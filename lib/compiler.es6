@@ -31,11 +31,16 @@ var tAttrRgxp = /[^'" ]/,
  * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
  *     будет сгенерирована ошибка
  *
- * @param {?string=} [opt_params.i18nFn='i18n'] - название функции для i18n
  * @param {?boolean=} [opt_params.localization=true] - если false, то блоки ` ... ` не заменяются на вызов i18n
+ * @param {?string=} [opt_params.i18nFn='i18n'] - название функции для i18n
  * @param {Object=} [opt_params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
+ *
+ * @param {?boolean=} [opt_params.typography=true] - если false, то Snakeskin не делает дополнительных преобразований
+ *     последовательностей типографии
+ *
+ * @param {Object=} [opt_params.typographyMap] - таблица символов для преобразования в типографские последовательности
  *
  * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
  * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
@@ -308,6 +313,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Содержимое директивы
 	var command = '';
 
+	var commandTypeRgxp = /[^\s]+/m,
+		commandRgxp = /[^\s]+\s*/m;
+
+	var filterStart = false,
+		filterStartRgxp = /[a-z]/i;
+
 	// Количество открытых { внутри директивы
 	var fakeBegin = 0;
 
@@ -361,12 +372,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		'.': true,
 		'-': true
 	};
-
-	var filterStart = false,
-		filterStartRgxp = /[a-z]/i;
-
-	var commandTypeRgxp = /[^\s]+/m,
-		commandRgxp = /[^\s]+\s*/m;
 
 	var prevSpace,
 		prevCommentSpace = false,
