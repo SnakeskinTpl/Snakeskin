@@ -23,6 +23,9 @@ var uid;
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (устанавливает экспорт commonJS)
  *
+ * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
+ *     которые будут добавлены в Snakeskin.Vars
+ *
  * @param {?boolean=} [opt_params.cache=true] - если false, то наличие шаблона в кеше не будет проверятся
  * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
  * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
@@ -46,9 +49,6 @@ var uid;
  *
  * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
- *
- * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
- *     которые будут добавлены в Snakeskin.Vars
  *
  * @param {?function(!Error)=} [opt_params.onError] - функция обратного вызова для обработки ошибок при трансляции
  * @param {?boolean=} [opt_params.prettyPrint] - если true, то полученный JS код шаблона
