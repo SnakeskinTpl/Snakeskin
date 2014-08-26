@@ -1030,11 +1030,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				dir.structure = dir.structure.parent;
 			}
 
-			if (!beginStr) {
-				if (jsDoc) {
-					jsDoc = false;
-					dir.space = true;
-				}
+			if (jsDoc && !beginStr) {
+				jsDoc = false;
+				dir.space = true;
 			}
 		}
 	}
