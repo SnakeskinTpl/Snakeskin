@@ -41,6 +41,17 @@ var tAttrRgxp = /[^'" ]/,
  *     последовательностей типографии
  *
  * @param {Object=} [opt_params.typographyMap] - таблица символов для преобразования в типографские последовательности
+ *     {
+ *         '"'   : [['«', '»'], ['„', '“']],
+ *         '\''  : [['“', '”'], ['‘', '’']],
+ *         '(c)' : '©',
+ *         '(tm)': '™',
+ *         '<-'  : '←',
+ *         '->'  : '→',
+ *         '...' : '…',
+ *         '-'   : '−',
+ *         '--'  : '—'
+ *     }
  *
  * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
  * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
@@ -72,7 +83,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Object=} [opt_sysParams.proto] - объект настроек прототипа
  * @param {DirObj=} [opt_sysParams.parent] - ссылка на родительский объект
  *
- * @param {Array=} [opt_sysParams.lines] - массив строк шаблона
+ * @param {Array=} [opt_sysParams.lines] - массив строк шаблона (листинг)
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
