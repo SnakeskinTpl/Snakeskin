@@ -60,7 +60,7 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
 	p.commonJS = true;
 
 	var cacheEnabled = p.cache !== false;
-	var cacheKey = this.compile(null, p, {cacheKey: true}),
+	var cacheKey = this.compile(null, p, null, {cacheKey: true}),
 		fromCache = cacheEnabled &&
 			cache[cacheKey] &&
 			cache[cacheKey][src];
