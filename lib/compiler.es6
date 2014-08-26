@@ -316,6 +316,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		tAttrBegin = false,
 		tAttrEscape = false;
 
+	var qOpen = 0,
+		qType = null,
+		expr = '';
+
+	var r = {
+		'"': [['«', '»'], ['„', '“']],
+		'\'': [['“', '”'], ['‘', '’']],
+		'(c)': '©',
+		'(tm)': '™',
+		'<-': '←',
+		'->': '→',
+		'...': '…'
+	};
+
 	var filterStart = false,
 		filterStartRgxp = /[a-z]/i;
 
@@ -883,6 +897,30 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 
 						dir.attr = Boolean(tOpen);
+					}
+
+					if (!tOpen || !tAttrBegin) {
+						if (el === '"' || el === '\'') {
+							let val = r[qType || el];
+
+							if (!qType) {
+								qType = el;
+								el = val[0][0];
+								qOpen++;
+
+							} else if (el === qType) {
+								qType = null;
+								el = val[0][1];
+								qOpen = 0;
+
+							} else {
+								el = val[1][qOpen % 2 ? 0 : 1];
+								qOpen++;
+							}
+
+						} else {
+							expr += el;
+						}
 					}
 
 					dir.save(applyDefEscape(el));
