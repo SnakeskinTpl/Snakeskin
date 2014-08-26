@@ -238,10 +238,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Обработка подключений файлов
 	// >>>
 
+	var label = '';
 	var dirname,
 		filename;
-
-	var label = '';
 
 	if (!sp.proto) {
 		uid = Math.random()
@@ -275,6 +274,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Основная логика
 	// >>>
 
+	var alb = ADV_LEFT_BLOCK,
+		lb = LEFT_BLOCK,
+		rb = RIGHT_BLOCK;
+
 	var dir = new DirObj(String(text), {
 		info: info,
 		commonJS: cjs,
@@ -294,6 +297,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		lines: sp.lines,
 		parent: sp.parent
 	});
+
+	var templateMap = dir.getGroup('rootTemplate');
 
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
@@ -326,14 +331,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		bEnd,
 		bEscape = false;
 
+	// Флаги для обработки XML тегов и атрибутов
 	var tOpen = 0,
 		tAttr = false,
 		tAttrBegin = false,
 		tAttrEscape = false;
 
+	// Флаги для обработки скобок при типографии
 	var qOpen = 0,
 		qType = null;
 
+	// Флаги для обработки типографских последовательностей
 	var expr = '',
 		exprPos = 0;
 
@@ -365,10 +373,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		freezeI = 0,
 		freezeTmp = 0;
 
-	var alb = ADV_LEFT_BLOCK,
-		lb = LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
-
+	// Флаги для обработки строк-локализации
 	var i18nStr = '',
 		i18nStart = false,
 		i18nDirStart = false;
@@ -377,7 +382,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var part = '',
 		rPart = '';
 
-	var template = dir.getGroup('rootTemplate');
 	while (++dir.i < dir.source.length) {
 		let str = dir.source,
 			struct = dir.structure;
@@ -620,7 +624,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
 
-					if (template[commandType]) {
+					if (templateMap[commandType]) {
 						qOpen = 0;
 						qType = null;
 						expr = '';
