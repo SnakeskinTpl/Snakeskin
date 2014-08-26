@@ -51,7 +51,7 @@ var escapeEndMap = {
 	'[': true
 };
 
-var escapeEndWord = {
+var escapeEndWordMap = {
 	'typeof': true,
 	'void': true,
 	'instaceof': true,

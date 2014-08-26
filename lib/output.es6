@@ -132,7 +132,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 			if (!bOpen) {
-				if (escapeEndMap[el] || escapeEndWord[rPart]) {
+				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
 					bEnd = true;
 
 				} else if (bEndRgxp.test(el)) {

@@ -754,7 +754,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				if (!skip) {
-					if (escapeEndMap[el] || escapeEndWord[rPart]) {
+					if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
 						bEnd = true;
 						rPart = '';
 
