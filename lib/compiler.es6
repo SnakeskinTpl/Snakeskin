@@ -19,6 +19,10 @@ var uid;
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
+ * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
+ * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
+ *     (устанавливает экспорт commonJS)
+ *
  * @param {?boolean=} [opt_params.cache=true] - если false, то наличие шаблона в кеше не будет проверятся
  * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
  * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
@@ -30,24 +34,18 @@ var uid;
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
  *
- * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется
- *     с экспортом в стиле commonJS
- *
  * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
  * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
- *     используется техника [].join
+ *     используется Snakeskin.StringBuffer
  *
- * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то работа итераторов forEach и forIn
- *     будет развёртвываться в циклы
+ * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
+ *     будут развёрнуты в циклы
  *
- * @param {?boolean=} [opt_params.xml=true] - если false, то snakeskin не делает дополнительных
+ * @param {?boolean=} [opt_params.xml=true] - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
  *
- * @param {?boolean=} [opt_params.escapeOutput=true] - если true, то работа итераторов forEach и forIn
- *     будет развёртвываться в циклы
- *
- * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
- *     (устанавливает экспорт commonJS)
+ * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр html
  *
  * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
  *     которые будут добавлены в Snakeskin.Vars
@@ -317,8 +315,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		tAttrEscape = false;
 
 	var qOpen = 0,
-		qType = null,
-		expr = '';
+		qType = null;
+
+	var expr = '',
+		exprPos = 0;
 
 	var r = {
 		'"': [['«', '»'], ['„', '“']],
@@ -327,7 +327,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		'(tm)': '™',
 		'<-': '←',
 		'->': '→',
-		'...': '…'
+		'...': '…',
+		'-': '−',
+		'--': '—'
+	};
+
+	var comboR = {
+		'.': true,
+		'-': true
 	};
 
 	var filterStart = false,
@@ -349,10 +356,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nStart = false,
 		i18nDirStart = false;
 
+	var clrL = true;
 	var part = '',
 		rPart = '';
 
-	var clrL = true;
+	var template = dir.getGroup('rootTemplate');
 	while (++dir.i < dir.source.length) {
 		let str = dir.source,
 			struct = dir.structure;
@@ -594,6 +602,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
+
+					if (template[commandType]) {
+						qOpen = 0;
+						qType = null;
+						expr = '';
+					}
 
 					// Директивы начинающиеся с _ считаются приватными
 					// и вырезаются из листинга
@@ -919,11 +933,35 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							}
 
 						} else {
-							expr += el;
+							if (whiteSpaceRgxp.test(el)) {
+								expr = '';
+
+							} else if (comboR[el] && !comboR[str.charAt(dir.i - 1)]) {
+								exprPos = dir.res.length;
+								expr = el;
+
+							} else {
+								if (!expr) {
+									exprPos = dir.res.length;
+								}
+
+								expr += el;
+							}
 						}
 					}
 
-					dir.save(applyDefEscape(el));
+					if (r[expr]) {
+						let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length);
+
+						dir.mod(() => {
+							dir.res = modStr;
+						});
+
+						dir.save(r[expr]);
+
+					} else {
+						dir.save(applyDefEscape(el));
+					}
 				}
 
 				dir.inline = null;
