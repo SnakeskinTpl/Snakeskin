@@ -305,3 +305,4 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 //#include ./directions/comment.js
 //#include ./directions/tag.js
 //#include ./directions/set.js
+//#include ./directions/plain.js
