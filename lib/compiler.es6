@@ -130,8 +130,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var macros =
 		p.macros = s(p.macros, p['macros']) || {};
 
-	var tMapKey = '';
+	var macroKey = '';
 	var comboTMap = {
+		'\\': true,
 		'.': true,
 		'-': true
 	};
@@ -141,25 +142,37 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (p.autoCorrect) {
 		let def = {
-			'"': [['«', '»'], ['„', '“']],
-			'\'': [['“', '”'], ['‘', '’']],
+			//'@quotes': {
+				'"': [['«', '»'], ['„', '“']],
+				'\'': [['“', '”'], ['‘', '’']],
+			//},
 
-			'(c)': '©',
-			'(tm)': '™',
+			//'@shorts': {
+				'(c)': '©',
+				'(tm)': '™',
 
-			'[v]': '☑',
-			'[x]': '☒',
-			'[_]': '☐',
+				'[v]': '☑',
+				'[x]': '☒',
+				'[_]': '☐',
 
-			'<-': '←',
-			'<-|': '↤',
-			'->': '→',
-			'|->': '↦',
-			'<->': '↔',
+				'<-': '←',
+				'<-|': '↤',
+				'->': '→',
+				'|->': '↦',
+				'<->': '↔',
 
-			'...': '…',
-			'-': '−',
-			'--': '—'
+				'...': '…',
+				'-': '−',
+				'--': '—',
+			//},
+
+			//'@symbols': {
+				'\\n': '\\n',
+				'\\t': '\\t',
+				'\\v': '\\v',
+				'\\r': '\\r',
+				'\\s': '&nbsp;'
+			//}
 		};
 
 		for (let key in def) {
@@ -169,7 +182,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			if (macros[key] !== null) {
 				macros[key] = macros[key] || def[key];
-				tMapKey += `${key}:${macros[key].toString()}`;
+				macroKey += `${key}:${macros[key].toString()}`;
 
 				if (key.charAt && key.length > 1) {
 					if (key.charAt(0) === '<') {
@@ -245,7 +258,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.interface,
 		p.prettyPrint,
 		p.autoCorrect,
-		tMapKey,
+		macroKey,
 
 		i18n,
 		p.i18nFn
@@ -1027,9 +1040,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									expr = '';
 									advExprPos = 0;
 
-								/*} else if (comboTMap[el] && !comboTMap[prev]) {
+								} else if (comboTMap[el] && !comboTMap[prev] && !macros[expr + el]) {
 									exprPos = dir.res.length;
-									expr = el;*/
+									expr = el;
 
 								} else {
 									if (!expr) {
