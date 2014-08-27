@@ -127,27 +127,53 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.cache = s(p.cache, p['cache']) !== false;
 
 	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) !== false;
-	var macros =
-		p.macros = s(p.macros, p['macros']) || {};
+	p.macros = s(p.macros, p['macros']) || {};
 
-	var macroKey = '';
-	var comboTMap = {
-		'\\': true,
-		'.': true,
-		'-': true
-	};
+	var macros = {},
+		macroKey = '';
 
-	var beforeArr = {},
-		afterArr = {};
+	var inlineMacro = {},
+		comboMacro = {};
+
+	var beforeTag = {},
+		afterTag = {};
+
+	function setMacros(obj, opt_include) {
+		for (let key in obj) {
+			if (!obj.hasOwnProperty(key)) {
+				continue;
+			}
+
+			let el = obj[key];
+
+			if (key.charAt(0) === '@' && !opt_include) {
+				setMacros(el, true);
+
+			} else if (el != null && !macros[key]) {
+				macros[key] = el.value || el;
+
+				if (Array.isArray(macros[key])) {
+					comboMacro[key] = true;
+				}
+
+				let inline = el['inline'] ||
+					el.inline;
+
+				if (inline) {
+					inlineMacro[key.charAt(0)] = true;
+				}
+			}
+		}
+	}
 
 	if (p.autoCorrect) {
 		let def = {
-			//'@quotes': {
+			'@quotes': {
 				'"': [['«', '»'], ['„', '“']],
-				'\'': [['“', '”'], ['‘', '’']],
-			//},
+				'\'': [['“', '”'], ['‘', '’']]
+			},
 
-			//'@shorts': {
+			'@shorts': {
 				'(c)': '©',
 				'(tm)': '™',
 
@@ -161,40 +187,33 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				'|->': '↦',
 				'<->': '↔',
 
-				'...': '…',
-				'-': '−',
-				'--': '—',
-			//},
+				'...': {
+					inline: true,
+					value: '…'
+				},
 
-			//'@symbols': {
+				'-': {
+					inline: true,
+					value: '−'
+				},
+
+				'--': {
+					inline: true,
+					value: '—'
+				}
+			},
+
+			'@symbols': {
 				'\\n': '\\n',
 				'\\t': '\\t',
 				'\\v': '\\v',
 				'\\r': '\\r',
 				'\\s': '&nbsp;'
-			//}
+			}
 		};
 
-		for (let key in def) {
-			if (!def.hasOwnProperty(key)) {
-				continue;
-			}
-
-			if (macros[key] !== null) {
-				macros[key] = macros[key] || def[key];
-				macroKey += `${key}:${macros[key].toString()}`;
-
-				if (key.charAt && key.length > 1) {
-					if (key.charAt(0) === '<') {
-						afterArr[key.charAt(1)] = true;
-					}
-
-					if (key.length > 1 && key.slice(-1) === '>') {
-						beforeArr[key.charAt(key.length - 2)] = true;
-					}
-				}
-			}
-		}
+		setMacros(p.macros);
+		setMacros(def);
 	}
 
 	var debug =
@@ -967,10 +986,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (xml) {
-						if (el === '<' && !afterArr[next]) {
+						if (el === '<' && !afterTag[next]) {
 							tOpen++;
 
-						} else if (el === '>' && !beforeArr[prev]) {
+						} else if (el === '>' && !beforeTag[prev]) {
 							if (tOpen) {
 								tOpen--;
 
@@ -1017,7 +1036,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (dir.autoCorrect) {
 						if (!tOpen || !tAttrBegin) {
-							if (el === '"' || el === '\'') {
+							if (comboMacro[el]) {
 								let val = macros[qType || el];
 
 								if (!qType) {
@@ -1040,7 +1059,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									expr = '';
 									advExprPos = 0;
 
-								} else if (comboTMap[el] && !comboTMap[prev] && !macros[expr + el]) {
+								} else if (inlineMacro[el] && !inlineMacro[prev] && !macros[expr + el]) {
 									exprPos = dir.res.length;
 									expr = el;
 
