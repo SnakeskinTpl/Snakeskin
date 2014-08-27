@@ -18,7 +18,7 @@
  *     будут развёрнуты в циклы
  *
  * @param {boolean} params.typography - если false, то Snakeskin не делает дополнительных преобразований
- *     последовательностей типографии
+ *     последовательностей
  *
  * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
@@ -96,7 +96,7 @@ function DirObj(src, params) {
 	this.lines = params.lines || [''];
 
 	/** @type {boolean} */
-	this.typography = params.typography !== false;
+	this.autoCorrect = params.autoCorrect !== false;
 
 	if (params.consts) {
 		/** @type {(Array|undefined)} */

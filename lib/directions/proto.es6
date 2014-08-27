@@ -213,7 +213,7 @@ Snakeskin.addDirective(
 						stringBuffer: this.stringBuffer,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
-						typography: this.typography
+						autoCorrect: this.autoCorrect
 					},
 
 					null,
