@@ -140,10 +140,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		let tMapDef = {
 			'"': [['«', '»'], ['„', '“']],
 			'\'': [['“', '”'], ['‘', '’']],
+
 			'(c)': '©',
 			'(tm)': '™',
+
+			'[v]': '☑',
+			'[x]': '☒',
+			'[_]': '☐',
+
 			'<-': '←',
+			'<-|': '↤',
 			'->': '→',
+			'|->': '↦',
+			'<->': '↔',
+
 			'...': '…',
 			'-': '−',
 			'--': '—'
@@ -426,6 +436,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			struct = dir.structure;
 
 		let el = str.charAt(dir.i),
+			prev = str.charAt(dir.i - 1),
 			next = str.charAt(dir.i + 1),
 			next2str = el + next;
 
@@ -567,7 +578,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							}
 						}
 
-					} else if (str.charAt(dir.i - 1) === MULT_COMMENT_END.charAt(0) && dir.i - commentStart > 2) {
+					} else if (prev === MULT_COMMENT_END.charAt(0) && dir.i - commentStart > 2) {
 						if (comment === MULT_COMMENT_START) {
 							comment = false;
 							dir.space = prevCommentSpace;
@@ -663,10 +674,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
 
+					expr = '';
 					if (templateMap[commandType]) {
 						qOpen = 0;
 						qType = null;
-						expr = '';
 					}
 
 					// Директивы начинающиеся с _ считаются приватными
@@ -830,7 +841,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (!bOpen) {
 				let skip = false;
 
-				if (el === FILTER && filterStartRgxp.test(str.charAt(dir.i + 1))) {
+				if (el === FILTER && filterStartRgxp.test(next)) {
 					filterStart = true;
 					bEnd = false;
 					skip = true;
@@ -925,10 +936,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (xml) {
-						if (el === '<') {
+						if (el === '<' && next !== '-') {
 							tOpen++;
 
-						} else if (el === '>') {
+						} else if (el === '>' && prev !== '-') {
 							if (tOpen) {
 								tOpen--;
 
@@ -997,9 +1008,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								if (whiteSpaceRgxp.test(el)) {
 									expr = '';
 
-								} else if (comboTMap[el] && !comboTMap[str.charAt(dir.i - 1)]) {
+								/*} else if (comboTMap[el] && !comboTMap[prev]) {
 									exprPos = dir.res.length;
-									expr = el;
+									expr = el;*/
 
 								} else {
 									if (!expr) {
@@ -1010,6 +1021,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								}
 							}
 						}
+
+						console.log(expr);
 
 						if (tMap[expr]) {
 							let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length);
