@@ -689,7 +689,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (!jsDoc) {
 				if (i18nStart) {
 					if (!currentEscape && el === '"' && !lang) {
-						el = '\"';
+						el = '\\"';
 					}
 
 					if (currentEscape || el !== I18N) {
