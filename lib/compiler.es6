@@ -151,11 +151,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			'[x]': '☒',
 			'[_]': '☐',
 
-			'<-': 'ba123456',
+			'<-': '←',
 			'<-|': '↤',
 			'->': '→',
 			'|->': '↦',
-			'<->': 'foo bar!!!!',
+			'<->': '↔',
 
 			'...': '…',
 			'-': '−',
