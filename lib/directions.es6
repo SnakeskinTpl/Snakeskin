@@ -29,6 +29,9 @@ var aliasRgxp = /__(.*?)__/;
  * @param {?boolean=} [params.block=false] - если true, то директива считается блочной
  *     (т.е. требует закрывающей директивы)
  *
+ * @param {?boolean=} [params.selfInclude=true] - если false, то директива не может быть вложена
+ *     в директиву схожего типа
+ *
  * @param {Object=} [params.replacers] - таблица коротких сокращений директивы
  *     replacers: {
  *         // В ключе должно быть не более 2-х символов
@@ -107,6 +110,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		}
 	}
 
+	if (!params.selfInclude) {
+		params.block = true;
+	}
+
 	Snakeskin.Directions[name] = function (command, commandLength, type, jsDoc) {
 		var dir = this;
 		var sourceName = getName(name),
@@ -154,6 +161,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
 				return dir.error(`directive "${dirName}" can't be used within the "${struct.name}"`);
 			}
+		}
+
+		if (!params.selfInclude && dir.has(dirName)) {
+			return dir.error(`directive "${dirName}" can't be used within the "${dirName}"`);
 		}
 
 		if (params.text) {
