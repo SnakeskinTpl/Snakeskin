@@ -110,6 +110,8 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		}
 	}
 
+	params.selfInclude = params.selfInclude !== false;
+
 	if (!params.selfInclude) {
 		params.block = true;
 	}
