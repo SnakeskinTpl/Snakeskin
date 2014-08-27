@@ -2,7 +2,9 @@ Snakeskin.addDirective(
 	'link',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		block: true,
+		selfInclude: false
 	},
 
 	function (command) {
