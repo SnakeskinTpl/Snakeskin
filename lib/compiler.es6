@@ -54,6 +54,8 @@ var tAttrRgxp = /[^'" ]/,
  *     }
  *
  * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
+ *     и при наследовании можно задавать необъявленные родительские шаблоны
+ *
  * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
  *     используется Snakeskin.StringBuffer
  *
