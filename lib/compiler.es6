@@ -151,11 +151,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			'[x]': '☒',
 			'[_]': '☐',
 
-			'<-': '←',
+			'<-': 'ba123456',
 			'<-|': '↤',
 			'->': '→',
 			'|->': '↦',
-			'<->': '↔',
+			'<->': 'foo bar!!!!',
 
 			'...': '…',
 			'-': '−',
@@ -430,7 +430,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Флаги для обработки типографских последовательностей
 	var expr = '',
-		exprPos = 0;
+		exprPos = 0,
+		advExprPos = 0;
 
 	var prevSpace,
 		prevCommentSpace = false,
@@ -690,6 +691,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						commandType : 'const';
 
 					expr = '';
+					advExprPos = 0;
+
 					if (templateMap[commandType]) {
 						qOpen = 0;
 						qType = null;
@@ -1022,6 +1025,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							} else {
 								if (whiteSpaceRgxp.test(el)) {
 									expr = '';
+									advExprPos = 0;
 
 								/*} else if (comboTMap[el] && !comboTMap[prev]) {
 									exprPos = dir.res.length;
@@ -1037,10 +1041,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							}
 						}
 
-						console.log(expr);
-
 						if (macros[expr]) {
-							let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length);
+							let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length + advExprPos);
+							advExprPos += macros[expr].length;
 
 							dir.mod(() => {
 								dir.res = modStr;
