@@ -451,7 +451,14 @@
 			{/}
 		{/}
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById(“logic”), {prettyPrint: true}); test(“logic”, function () { equal(logic_index(1).trim(), '1 1 3'); equal(logic_index(2).trim(), '2 2 1'); equal(logic_index(3).trim(), '3 3 1'); equal(logic_sub().trim(), '<span class=""></span>   1'); }); </script>  <script type="text/x-snakeskin-template" id="mod"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById(“logic”), {prettyPrint: true}); test(“logic”, function () { equal(logic_index(1).trim(), '1 1 3'); equal(logic_index(2).trim(), '2 2 1'); equal(logic_index(3).trim(), '3 3 1'); equal(logic_sub().trim(), '<span class=""></span>   1'); }); </script>  <script type="text/x-snakeskin-template" id="macros"> 
+{template macros_index()}
+	"Hello 'friend'" -- bar...
+
+	{plain}
+		"Hello 'friend'" -- bar...
+	{/}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById(“macros”), {prettyPrint: true}); test(“macros”, function () { equal(macros_index().trim(), '«Hello „friend“» — bar…  "Hello 'friend'" -- bar...'); }); </script>  <script type="text/x-snakeskin-template" id="mod"> 
 {['mod_global'] = 1}
 {MG = 2}
 
