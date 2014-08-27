@@ -437,6 +437,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 
 /**
  * Выполнить заданную функцию, если возможна запись в результирующую строку
+ * (this.isSimpleOutput())
  *
  * @param {function(this:DirObj)} callback - функция обратного вызова
  * @return {boolean}
