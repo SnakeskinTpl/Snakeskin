@@ -136,8 +136,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		'-': true
 	};
 
+	var beforeArr = {},
+		afterArr = {};
+
 	if (p.autoCorrect) {
-		let tMapDef = {
+		let def = {
 			'"': [['«', '»'], ['„', '“']],
 			'\'': [['“', '”'], ['‘', '’']],
 
@@ -159,14 +162,24 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			'--': '—'
 		};
 
-		for (let key in tMapDef) {
-			if (!tMapDef.hasOwnProperty(key)) {
+		for (let key in def) {
+			if (!def.hasOwnProperty(key)) {
 				continue;
 			}
 
 			if (macros[key] !== null) {
-				macros[key] = macros[key] || tMapDef[key];
+				macros[key] = macros[key] || def[key];
 				tMapKey += `${key}:${macros[key].toString()}`;
+
+				if (key.charAt && key.length > 1) {
+					if (key.charAt(0) === '<') {
+						afterArr[key.charAt(1)] = true;
+					}
+
+					if (key.length > 1 && key.slice(-1) === '>') {
+						beforeArr[key.charAt(key.length - 2)] = true;
+					}
+				}
 			}
 		}
 	}
@@ -938,10 +951,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (xml) {
-						if (el === '<' && next !== '-') {
+						if (el === '<' && !afterArr[next]) {
 							tOpen++;
 
-						} else if (el === '>' && prev !== '-') {
+						} else if (el === '>' && !beforeArr[prev]) {
 							if (tOpen) {
 								tOpen--;
 
