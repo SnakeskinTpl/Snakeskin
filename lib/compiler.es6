@@ -132,6 +132,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var macros = {},
 		macroKey = '';
 
+	var mGroups = {};
 	var inlineMacro = {},
 		comboMacro = {};
 
@@ -139,28 +140,63 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		afterTag = {};
 
 	function setMacros(obj, opt_include) {
-		for (let key in obj) {
-			if (!obj.hasOwnProperty(key)) {
-				continue;
+		if (obj == null) {
+			obj = mGroups[opt_include];
+
+			if (obj) {
+				for (let key in obj) {
+					if (!obj.hasOwnProperty(key)) {
+						continue;
+					}
+
+					delete obj[key];
+					delete macros[key];
+					delete comboMacro[key];
+				}
 			}
 
-			let el = obj[key];
-
-			if (key.charAt(0) === '@' && !opt_include) {
-				setMacros(el, true);
-
-			} else if (el != null && !macros[key]) {
-				macros[key] = el.value || el;
-
-				if (Array.isArray(macros[key])) {
-					comboMacro[key] = true;
+		} else {
+			for (let key in obj) {
+				if (!obj.hasOwnProperty(key)) {
+					continue;
 				}
 
-				let inline = el['inline'] ||
-					el.inline;
+				let el = obj[key];
 
-				if (inline) {
-					inlineMacro[key.charAt(0)] = true;
+				if (key.charAt(0) === '@' && !opt_include) {
+					setMacros(el, key);
+
+				} else {
+					if (opt_include) {
+						mGroups[opt_include] = mGroups[opt_include] || {};
+					}
+
+					if (el) {
+						macros[key] = el.value || el;
+
+						if (Array.isArray(macros[key])) {
+							comboMacro[key] = true;
+						}
+
+						let inline = el['inline'] ||
+							el.inline;
+
+						if (inline) {
+							inlineMacro[key.charAt(0)] = true;
+						}
+
+						if (opt_include) {
+							mGroups[opt_include][key] = macros[key];
+						}
+
+					} else {
+						delete macros[key];
+						delete comboMacro[key];
+
+						if (opt_include) {
+							delete mGroups[opt_include][key];
+						}
+					}
 				}
 			}
 		}
@@ -212,8 +248,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 		};
 
-		setMacros(p.macros);
 		setMacros(def);
+		setMacros(p.macros);
 	}
 
 	var debug =
