@@ -13,19 +13,22 @@
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {boolean} params.interface - если true, то все директивы template трактуются как interface
  *
- * @param {boolean} params.inlineIterators - если true, то работа итераторов forEach и forIn
- *     будет развёртвываться в циклы
+ * @param {boolean} params.inlineIterators - если true, то итераторы forEach и forIn
+ *     будут развёрнуты в циклы
  *
- * @param {boolean} params.xml - если false, то snakeskin не делает дополнительных
+ * @param {boolean} params.typography - если false, то Snakeskin не делает дополнительных преобразований
+ *     последовательностей типографии
+ *
+ * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
  *
- * @param {boolean} params.escapeOutput - если false, то вывод значений выражений
- *     не будет принудительно экранироваться фильтром html
+ * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр html
  *
  * @param {boolean} params.stringBuffer - если true, то для конкатенации строк в шаблоне
- *     используется техника [].join
+ *     используется Snakeskin.StringBuffer
  *
- * @param {Array=} [params.lines] - массив строк шаблона
+ * @param {Array=} [params.lines] - массив строк шаблона (листинг)
  * @param {DirObj=} [params.parent] - ссылка на родительский объект
  *
  * @param {?boolean=} [params.needPrfx] - если true, то директивы декларируются как #{ ... }
@@ -36,8 +39,8 @@
  * @param {Array=} [params.consts] - массив деклараций констант
  *
  * @param {Object=} [params.proto] - объект корневого прототипа
- * @param {Object=} [params.info] - дополнительная информация о запуске:
- *     используется для сообщений об ошибках
+ * @param {Object=} [params.info] - дополнительная информация о запуске
+ *     (используется для сообщений об ошибках)
  */
 function DirObj(src, params) {
 	for (let key in this) {
@@ -90,6 +93,9 @@ function DirObj(src, params) {
 
 	/** @type {!Array} */
 	this.lines = params.lines || [''];
+
+	/** @type {boolean} */
+	this.typography = params.typography !== false;
 
 	if (params.consts) {
 		/** @type {(Array|undefined)} */

@@ -76,7 +76,7 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 
-			// Идёт декларация внешнего прототипа
+			// Декларация внешнего прототипа
 			if (!tplName) {
 				if (this.structure.parent) {
 					this.error(`directive "outer proto" can be used only within the global space`);
@@ -212,7 +212,8 @@ Snakeskin.addDirective(
 						inlineIterators: this.inlineIterators,
 						stringBuffer: this.stringBuffer,
 						escapeOutput: this.escapeOutput,
-						xml: this.xml
+						xml: this.xml,
+						typography: this.typography
 					},
 
 					null,
