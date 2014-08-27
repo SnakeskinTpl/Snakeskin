@@ -199,9 +199,10 @@ Snakeskin.Filters['collapse'] = function (str) {
  * @param {*} str - исходная строка
  * @param {number} length - максимальная длина текста
  * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
+ * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
  * @return {string}
  */
-Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
+Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
 	str = String(str);
 	if (!str || str.length <= length) {
 		return str;
@@ -220,7 +221,7 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
 		}
 	}
 
-	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + '…';
+	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
 };
 
 /**
