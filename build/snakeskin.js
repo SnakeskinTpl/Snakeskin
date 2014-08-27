@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.0.21
+ * Snakeskin v4.1.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 25 Aug 2014 10:14:09 GMT
+ * Date: Wed, 27 Aug 2014 13:06:54 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 0, 21],
+	VERSION: [4, 1, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -276,9 +276,10 @@ Snakeskin.Filters['collapse'] = function (str) {
  * @param {*} str - исходная строка
  * @param {number} length - максимальная длина текста
  * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
+ * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
  * @return {string}
  */
-Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
+Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
 	str = ((str) + '');
 	if (!str || str.length <= length) {
 		return str;
@@ -297,7 +298,7 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly) {
 		}
 	}
 
-	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + '…';
+	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
 };
 
 /**
@@ -6101,20 +6102,24 @@ function s(a, b, opt_c) {
  *
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {boolean} params.interface - если true, то все директивы template трактуются как interface
+ *     и при наследовании можно задавать необъявленные родительские шаблоны
  *
- * @param {boolean} params.inlineIterators - если true, то работа итераторов forEach и forIn
- *     будет развёртвываться в циклы
+ * @param {boolean} params.inlineIterators - если true, то итераторы forEach и forIn
+ *     будут развёрнуты в циклы
  *
- * @param {boolean} params.xml - если false, то snakeskin не делает дополнительных
+ * @param {boolean} params.autoCorrect - если false, то Snakeskin не делает дополнительных преобразований
+ *     последовательностей
+ *
+ * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
  *
- * @param {boolean} params.escapeOutput - если false, то вывод значений выражений
- *     не будет принудительно экранироваться фильтром html
+ * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр html
  *
  * @param {boolean} params.stringBuffer - если true, то для конкатенации строк в шаблоне
- *     используется техника [].join
+ *     используется Snakeskin.StringBuffer
  *
- * @param {Array=} [params.lines] - массив строк шаблона
+ * @param {Array=} [params.lines] - массив строк шаблона (листинг)
  * @param {DirObj=} [params.parent] - ссылка на родительский объект
  *
  * @param {?boolean=} [params.needPrfx] - если true, то директивы декларируются как #{ ... }
@@ -6125,8 +6130,8 @@ function s(a, b, opt_c) {
  * @param {Array=} [params.consts] - массив деклараций констант
  *
  * @param {Object=} [params.proto] - объект корневого прототипа
- * @param {Object=} [params.info] - дополнительная информация о запуске:
- *     используется для сообщений об ошибках
+ * @param {Object=} [params.info] - дополнительная информация о запуске
+ *     (используется для сообщений об ошибках)
  */
 function DirObj(src, params) {var this$0 = this;
 	for (var key in this) {
@@ -6179,6 +6184,9 @@ function DirObj(src, params) {var this$0 = this;
 
 	/** @type {!Array} */
 	this.lines = params.lines || [''];
+
+	/** @type {boolean} */
+	this.autoCorrect = params.autoCorrect !== false;
 
 	if (params.consts) {
 		/** @type {(Array|undefined)} */
@@ -6511,6 +6519,26 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 			this.res += str;
 		}
 
+		return true;
+	}
+
+	return false;
+};
+
+/**
+ * Выполнить заданную функцию, если возможна запись в результирующую строку
+ * (this.isSimpleOutput())
+ *
+ * @param {function(this:DirObj)} callback - функция обратного вызова
+ * @return {boolean}
+ */
+DirObj.prototype.mod = function (callback) {
+	if (!this.isSimpleOutput()) {
+		return false;
+	}
+
+	if (!this.tplName || write[this.tplName] !== false) {
+		callback.call(this);
 		return true;
 	}
 
@@ -7494,7 +7522,7 @@ var escapeEndMap = {
 	'[': true
 };
 
-var escapeEndWord = {
+var escapeEndWordMap = {
 	'typeof': true,
 	'void': true,
 	'instaceof': true,
@@ -8219,8 +8247,8 @@ var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
 	bEndRgxp = /[^\s\/]/,
 	partRgxp = /[a-z]/;
 
-var tAttrRgxp = /[^'" ]/;
-var uid;
+var tAttrRgxp = /[^'" ]/,
+	uid;
 
 /**
  * Скомпилировать указанные шаблоны Snakeskin
@@ -8232,49 +8260,53 @@ var uid;
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
- * @param {?boolean=} [opt_params.cache=true] - если false, то наличие шаблона в кеше не будет проверятся
- * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
- * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
- *     будет сгенерирована ошибка
- *
- * @param {?string=} [opt_params.i18nFn='i18n'] - название функции для i18n
- * @param {?boolean=} [opt_params.localization=true] - если false, то блоки ` ... ` не заменяются на вызов i18n
- * @param {Object=} [opt_params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
- * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
- *     которые используются в шаблоне
- *
- * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется
- *     с экспортом в стиле commonJS
- *
- * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
- * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
- *     используется техника [].join
- *
- * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то работа итераторов forEach и forIn
- *     будет развёртвываться в циклы
- *
- * @param {?boolean=} [opt_params.xml=true] - если false, то snakeskin не делает дополнительных
- *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
- *
- * @param {?boolean=} [opt_params.escapeOutput=true] - если true, то работа итераторов forEach и forIn
- *     будет развёртвываться в циклы
- *
+ * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (устанавливает экспорт commonJS)
  *
  * @param {Object=} [opt_params.vars] - таблица суперглобальных переменных,
  *     которые будут добавлены в Snakeskin.Vars
  *
+ * @param {?boolean=} [opt_params.cache=true] - если false, то наличие шаблона в кеше не будет проверятся
+ * @param {Object=} [opt_params.debug] - объект, который будет содержать в себе отладочную информацию
+ * @param {?boolean=} [opt_params.throws=false] - если true, то в случае ошибки и отсутствия обработчика ошибок -
+ *     будет сгенерирована ошибка
+ *
+ * @param {?boolean=} [opt_params.localization=true] - если false, то блоки ` ... ` не заменяются на вызов i18n
+ * @param {?string=} [opt_params.i18nFn='i18n'] - название функции для i18n
+ * @param {Object=} [opt_params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
+ * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
+ *     которые используются в шаблоне
+ *
+ * @param {?boolean=} [opt_params.autoCorrect=true] - если false, то Snakeskin не делает дополнительных преобразований
+ *     последовательностей
+ *
+ * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
+ *
+ * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
+ *     и при наследовании можно задавать необъявленные родительские шаблоны
+ *
+ * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
+ *     используется Snakeskin.StringBuffer
+ *
+ * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
+ *     будут развёрнуты в циклы
+ *
+ * @param {?boolean=} [opt_params.xml=true] - если false, то Snakeskin не делает дополнительных
+ *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ *
+ * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр html
+ *
  * @param {?function(!Error)=} [opt_params.onError] - функция обратного вызова для обработки ошибок при трансляции
  * @param {?boolean=} [opt_params.prettyPrint] - если true, то полученный JS код шаблона
  *     отображается в удобном для чтения виде
  *
- * @param {Object=} [opt_info] - дополнительная информация о запуске
- *     (используется для сообщений об ошибках)
- *
- * @param {?boolean=} [opt_info.cacheKey=false] - если true, то возвращается кеш-ключ шаблона
+ * @param {Object=} [opt_info] - дополнительная информация о запуске (используется для сообщений об ошибках)
  * @param {?string=} [opt_info.file] - адрес исходного файла шаблонов
+ *
  * @param {Object=} [opt_sysParams] - служебные параметры запуска
+ * @param {?boolean=} [opt_sysParams.cacheKey=false] - если true, то возвращается кеш-ключ шаблона
  *
  * @param {Array=} [opt_sysParams.scope] - область видимости (контекст) директив
  * @param {Object=} [opt_sysParams.vars] - объект локальных переменных
@@ -8283,7 +8315,7 @@ var uid;
  * @param {Object=} [opt_sysParams.proto] - объект настроек прототипа
  * @param {DirObj=} [opt_sysParams.parent] - ссылка на родительский объект
  *
- * @param {Array=} [opt_sysParams.lines] - массив строк шаблона
+ * @param {Array=} [opt_sysParams.lines] - массив строк шаблона (листинг)
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
@@ -8309,15 +8341,148 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	// GCC экспорт
+	// >>>
+
 	cjs = !!(cjs);
 	p.onError = s(p.onError, p['onError']);
+
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
 	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
+
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
+
+	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) !== false;
+	p.macros = s(p.macros, p['macros']) || {};
+
+	var macros = {},
+		macroKey = '';
+
+	var mGroups = {};
+	var inlineMacro = {},
+		comboMacro = {};
+
+	var beforeTag = {},
+		afterTag = {};
+
+	/**
+	 * @param {Object} obj
+	 * @param {?string=} [opt_include]
+	 */
+	function setMacros(obj, opt_include) {
+		if (obj == null) {
+			obj = mGroups[opt_include];
+
+			if (obj) {
+				for (var key in obj) {
+					if (!obj.hasOwnProperty(key)) {
+						continue;
+					}
+
+					delete obj[key];
+					delete macros[key];
+					delete comboMacro[key];
+				}
+			}
+
+		} else {
+			for (var key$0 in obj) {
+				if (!obj.hasOwnProperty(key$0)) {
+					continue;
+				}
+
+				var el = obj[key$0];
+
+				if (key$0.charAt(0) === '@' && !opt_include) {
+					setMacros(el, key$0);
+
+				} else {
+					if (opt_include) {
+						mGroups[opt_include] = mGroups[opt_include] || {};
+					}
+
+					if (el) {
+						macros[key$0] = el.value || el;
+
+						if (Array.isArray(macros[key$0])) {
+							comboMacro[key$0] = true;
+						}
+
+						var inline = el['inline'] ||
+							el.inline;
+
+						if (inline) {
+							inlineMacro[key$0.charAt(0)] = true;
+						}
+
+						if (opt_include) {
+							mGroups[opt_include][key$0] = macros[key$0];
+						}
+
+					} else {
+						delete macros[key$0];
+						delete comboMacro[key$0];
+
+						if (opt_include) {
+							delete mGroups[opt_include][key$0];
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (p.autoCorrect) {
+		var def = {
+			'@quotes': {
+				'"': [['«', '»'], ['„', '“']],
+				'\'': [['“', '”'], ['‘', '’']]
+			},
+
+			'@shorts': {
+				'(c)': '©',
+				'(tm)': '™',
+
+				'[v]': '☑',
+				'[x]': '☒',
+				'[_]': '☐',
+
+				'<-': '←',
+				'<-|': '↤',
+				'->': '→',
+				'|->': '↦',
+				'<->': '↔',
+
+				'...': {
+					inline: true,
+					value: '…'
+				},
+
+				'-': {
+					inline: true,
+					value: '−'
+				},
+
+				'--': {
+					inline: true,
+					value: '—'
+				}
+			},
+
+			'@symbols': {
+				'\\n': '\\n',
+				'\\r': '\\r',
+				'\\s': '&nbsp;'
+			}
+		};
+
+		setMacros(def);
+		setMacros(p.macros);
+	}
 
 	var debug =
 		p.debug = s(p.debug, p['debug']);
@@ -8347,6 +8512,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var words =
 		p.words = s(p.words, p['words']);
 
+	// <<<
+	// Отладочная информация
+	// >>>
+
 	var info = opt_info || {};
 
 	info['line'] = info['line'] || 1;
@@ -8362,6 +8531,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		text = ((src) + '');
 	}
 
+	// <<<
+	// Работа с кешем
+	// >>>
+
 	var cacheKey = lang ? null : [
 		cjs,
 		xml,
@@ -8371,13 +8544,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.escapeOutput,
 		p.interface,
 		p.prettyPrint,
+		p.autoCorrect,
+		macroKey,
 
 		i18n,
 		p.i18nFn
 	].join();
 
-	// Хакерство :)
-	if (info.cacheKey || info['cacheKey']) {
+	if (sp.cacheKey || sp['cacheKey']) {
 		return cacheKey;
 	}
 
@@ -8386,12 +8560,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
 			var cache = globalFnCache[cacheKey][text];
 
-			for (var key$0 in cache) {
-				if (!cache.hasOwnProperty(key$0)) {
+			for (var key$1 in cache) {
+				if (!cache.hasOwnProperty(key$1)) {
 					continue;
 				}
 
-				ctx[key$0] = cache[key$0];
+				ctx[key$1] = cache[key$1];
 			}
 		}
 
@@ -8407,12 +8581,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				} else {
 					var w = Object(tmp.words);
 
-					for (var key$1 in w) {
-						if (!w.hasOwnProperty(key$1)) {
+					for (var key$2 in w) {
+						if (!w.hasOwnProperty(key$2)) {
 							continue;
 						}
 
-						words[key$1] = w[key$1];
+						words[key$2] = w[key$2];
 					}
 				}
 			}
@@ -8424,12 +8598,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				} else {
 					var d = Object(tmp.debug);
 
-					for (var key$2 in d) {
-						if (!d.hasOwnProperty(key$2)) {
+					for (var key$3 in d) {
+						if (!d.hasOwnProperty(key$3)) {
 							continue;
 						}
 
-						debug[key$2] = d[key$2];
+						debug[key$3] = d[key$3];
 					}
 				}
 			}
@@ -8440,10 +8614,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	var dirname,
-		filename;
+	// <<<
+	// Обработка подключений файлов
+	// >>>
 
 	var label = '';
+	var dirname,
+		filename;
 
 	if (!sp.proto) {
 		uid = Math.random()
@@ -8473,6 +8650,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
+	// <<<
+	// Основная логика
+	// >>>
+
+	var alb = ADV_LEFT_BLOCK,
+		lb = LEFT_BLOCK,
+		rb = RIGHT_BLOCK;
+
 	var dir = new DirObj(((text) + ''), {
 		info: info,
 		commonJS: cjs,
@@ -8483,6 +8668,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		onError: p.onError,
 		stringBuffer: p.stringBuffer,
 		inlineIterators: p.inlineIterators,
+		autoCorrect: p.autoCorrect,
 		xml: xml,
 		escapeOutput: p.escapeOutput,
 		interface: p.interface,
@@ -8493,6 +8679,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		parent: sp.parent
 	});
 
+	var templateMap = dir.getGroup('rootTemplate');
+
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
 	var begin = false,
@@ -8500,6 +8688,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Содержимое директивы
 	var command = '';
+
+	var commandTypeRgxp = /[^\s]+/m,
+		commandRgxp = /[^\s]+\s*/m;
+
+	var filterStart = false,
+		filterStartRgxp = /[a-z]/i;
 
 	// Количество открытых { внутри директивы
 	var fakeBegin = 0;
@@ -8524,39 +8718,41 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		bEnd,
 		bEscape = false;
 
+	// Флаги для обработки XML тегов и атрибутов
 	var tOpen = 0,
 		tAttr = false,
 		tAttrBegin = false,
 		tAttrEscape = false;
 
-	var filterStart = false,
-		filterStartRgxp = /[a-z]/i;
+	// Флаги для обработки скобок при типографии
+	var qOpen = 0,
+		qType = null;
 
-	var commandTypeRgxp = /[^\s]+/m,
-		commandRgxp = /[^\s]+\s*/m;
+	// Флаги для обработки типографских последовательностей
+	var expr = '',
+		exprPos = 0,
+		advExprPos = 0;
 
 	var prevSpace,
 		prevCommentSpace = false,
 		freezeI = 0,
 		freezeTmp = 0;
 
-	var alb = ADV_LEFT_BLOCK,
-		lb = LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
-
+	// Флаги для обработки строк-локализации
 	var i18nStr = '',
 		i18nStart = false,
 		i18nDirStart = false;
 
+	var clrL = true;
 	var part = '',
 		rPart = '';
 
-	var clrL = true;
-	while (++dir.i < dir.source.length) {
+	while (++dir.i < dir.source.length) {;var $retPrim$0, $value$0 = (function(){
 		var str = dir.source,
 			struct = dir.structure;
 
 		var el = str.charAt(dir.i),
+			prev = str.charAt(dir.i - 1),
 			next = str.charAt(dir.i + 1),
 			next2str = el + next;
 
@@ -8608,7 +8804,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 
 					} else if (!comment) {
-						continue;
+						return;
 					}
 				}
 
@@ -8617,7 +8813,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				// Для JSDoc все символы остаются неизменны,
 				// а в остальных случаях они игнорируются
 				if (!comment && !jsDoc) {
-					continue;
+					return;
 				}
 
 			// Простой ввод внутри декларации шаблона
@@ -8631,7 +8827,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 				} else if (!comment && !jsDoc) {
-					continue;
+					return;
 				}
 			}
 
@@ -8658,7 +8854,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 			if (escape) {
-				continue;
+				return;
 			}
 
 			var next3str = next2str + str.charAt(dir.i + 2);
@@ -8698,12 +8894,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							}
 						}
 
-					} else if (str.charAt(dir.i - 1) === MULT_COMMENT_END.charAt(0) && dir.i - commentStart > 2) {
+					} else if (prev === MULT_COMMENT_END.charAt(0) && dir.i - commentStart > 2) {
 						if (comment === MULT_COMMENT_START) {
 							comment = false;
 							dir.space = prevCommentSpace;
 							prevCommentSpace = false;
-							continue;
+							return;
 
 						} else if (beginStr) {
 							beginStr = false;
@@ -8714,29 +8910,29 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					comment = false;
 					dir.space = prevCommentSpace;
 					prevCommentSpace = false;
-					continue;
+					return;
 				}
 			}
 
 			if (comment) {
-				continue;
+				return;
 			}
 
 			if (!jsDoc) {
 				if (i18nStart) {
 					if (!currentEscape && el === '"' && !lang) {
-						el = '\"';
+						el = '\\"';
 					}
 
 					if (currentEscape || el !== I18N) {
 						if (pseudoI !== false) {
-							continue;
+							return;
 						}
 
 						i18nStr += el;
 
 						if (lang) {
-							continue;
+							return;
 						}
 					}
 				}
@@ -8765,7 +8961,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						bEnd = true;
 						begin = true;
 
-						continue;
+						return;
 					}
 
 				// Упраляющая конструкция завершилась
@@ -8776,7 +8972,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = command.trim();
 
 					if (!command) {
-						continue;
+						return;
 					}
 
 					var short1 = command.charAt(0),
@@ -8793,6 +8989,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
+
+					expr = '';
+					advExprPos = 0;
+
+					if (templateMap[commandType]) {
+						qOpen = 0;
+						qType = null;
+					}
 
 					// Директивы начинающиеся с _ считаются приватными
 					// и вырезаются из листинга
@@ -8818,7 +9022,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					);
 
 					if (dir.brk) {
-						return false;
+						{$retPrim$0 = true;return false;}
 					}
 
 					if (dir.needPrfx) {
@@ -8857,7 +9061,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					command = '';
-					continue;
+					return;
 
 				} else if (i18n && !currentEscape && el === I18N) {
 					if (i18nStart && i18nStr && words && !words[i18nStr]) {
@@ -8907,7 +9111,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								dir.freezeLine++;
 
 								pseudoI = false;
-								continue;
+								return;
 							}
 
 						} else {
@@ -8928,7 +9132,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								dir.i += diff;
 
 								i18nDirStart = true;
-								continue;
+								return;
 							}
 						}
 					}
@@ -8953,21 +9157,21 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Обработка литералов строки и регулярных выражений внутри директивы
 			if (!bOpen) {
-				var skip$0 = false;
+				var skip = false;
 
-				if (el === FILTER && filterStartRgxp.test(str.charAt(dir.i + 1))) {
+				if (el === FILTER && filterStartRgxp.test(next)) {
 					filterStart = true;
 					bEnd = false;
-					skip$0 = true;
+					skip = true;
 
 				} else if (filterStart && whiteSpaceRgxp.test(el)) {
 					filterStart = false;
 					bEnd = true;
-					skip$0 = true;
+					skip = true;
 				}
 
-				if (!skip$0) {
-					if (escapeEndMap[el] || escapeEndWord[rPart]) {
+				if (!skip) {
+					if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
 						bEnd = true;
 						rPart = '';
 
@@ -9007,7 +9211,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			} else if (!dir.tplName) {
 				if (el === ' ') {
-					continue;
+					return;
 				}
 
 				if (currentClrL && !dir.tplName && (shortMap[el] || shortMap[next2str])) {
@@ -9015,7 +9219,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						source$0 = dir.toBaseSyntax(dir.source, dir.i - adv);
 
 					if (source$0.error) {
-						return false;
+						{$retPrim$0 = true;return false;}
 					}
 
 					dir.source = dir.source.substring(0, dir.i - adv) +
@@ -9025,21 +9229,21 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
 					dir.i--;
 
-					continue;
+					return;
 				}
 
 				dir.error('text can\'t be used in the global space');
-				return false;
+				{$retPrim$0 = true;return false;}
 
 			} else {
 				if (struct.strong && !inside[struct.name]['text']) {
 					if (el === ' ') {
 						dir.space = false;
-						continue;
+						return;
 					}
 
 					dir.error((("directive \"text\" can't be used within the \"" + (struct.name)) + "\""));
-					return false;
+					{$retPrim$0 = true;return false;}
 				}
 
 				dir.startInlineDir('text');
@@ -9050,10 +9254,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (xml) {
-						if (el === '<') {
+						if (el === '<' && !afterTag[next]) {
 							tOpen++;
 
-						} else if (el === '>') {
+						} else if (el === '>' && !beforeTag[prev]) {
 							if (tOpen) {
 								tOpen--;
 
@@ -9064,7 +9268,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 						if (tOpen > 1) {
 							dir.error(("invalid XML declaration"));
-							return false;
+							{$retPrim$0 = true;return false;}
 						}
 
 						if (tAttr) {
@@ -9098,29 +9302,84 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						dir.attr = !!(tOpen);
 					}
 
-					dir.save(applyDefEscape(el));
+					if (dir.autoCorrect) {
+						if (!tOpen || !tAttrBegin) {
+							if (comboMacro[el]) {
+								var val = macros[qType || el];
+
+								if (!qType) {
+									qType = el;
+									el = val[0][0];
+									qOpen++;
+
+								} else if (el === qType) {
+									qType = null;
+									el = val[0][1];
+									qOpen = 0;
+
+								} else {
+									el = val[1][qOpen % 2 ? 0 : 1];
+									qOpen++;
+								}
+
+							} else {
+								if (whiteSpaceRgxp.test(el)) {
+									expr = '';
+									advExprPos = 0;
+
+								} else if (inlineMacro[el] && !inlineMacro[prev] && !macros[expr + el]) {
+									exprPos = dir.res.length;
+									expr = el;
+
+								} else {
+									if (!expr) {
+										exprPos = dir.res.length;
+									}
+
+									expr += el;
+								}
+							}
+						}
+
+						if (macros[expr]) {
+							var modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length + advExprPos);
+							advExprPos += macros[expr].length;
+
+							dir.mod(function()  {
+								dir.res = modStr;
+							});
+
+							dir.save(macros[expr]);
+
+						} else {
+							dir.save(applyDefEscape(el));
+						}
+
+					} else {
+						dir.save(applyDefEscape(el));
+					}
 				}
 
 				dir.inline = null;
 				dir.structure = dir.structure.parent;
 			}
 
-			if (!beginStr) {
-				if (jsDoc) {
-					jsDoc = false;
-					dir.space = true;
-				}
+			if (jsDoc && !beginStr) {
+				jsDoc = false;
+				dir.space = true;
 			}
 		}
-	}
+	})();if($retPrim$0===true){$retPrim$0=void 0;return $value$0}}
 
+	// Если есть не закрытый XML тег,
+	// то генерируем ошибку
 	if (tOpen) {
 		dir.error(("invalid XML declaration"));
 		return false;
 	}
 
 	// Если количество открытых блоков не совпадает с количеством закрытых,
-	// то кидаем исключение
+	// то генерируем ошибку
 	if (begin || dir.structure.parent) {
 		dir.error('missing closing or opening tag in the template');
 		return false;
@@ -9130,6 +9389,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return dir.res;
 	}
 
+	// Обратная замена CDATA
 	dir.res = dir.pasteDangerBlocks(dir.res)
 		.replace(
 			/__CDATA__(\d+)_/g,
@@ -9145,12 +9405,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
 	dir.res += (("" + (cjs ? '}' : '')) + "}).call(this);");
 
-	for (var key$3 in dir.preProtos) {
-		if (!dir.preProtos.hasOwnProperty(key$3)) {
+	// Если остались внешние прототипы,
+	// которые не были подключены к своему шаблону,
+	// то генерируем ошибку
+	for (var key$4 in dir.preProtos) {
+		if (!dir.preProtos.hasOwnProperty(key$4)) {
 			continue;
 		}
 
-		dir.error((("template \"" + key$3) + "\" is not defined"));
+		dir.error((("template \"" + key$4) + "\" is not defined"));
 		return false;
 	}
 
@@ -9198,6 +9461,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				);
 			}
 
+		// commonJS компиляция в браузере
 		} else if (ctx !== NULL) {
 			new Function(
 				'module',
@@ -9220,6 +9484,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			dir.evalStr(dir.res);
 		}
 
+		// Кеширование полученной функции
 		if (ctx !== NULL) {
 			ctx['init'](Snakeskin);
 
@@ -9235,11 +9500,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	} catch (err) {
 		delete info['line'];
 		delete info['template'];
-
 		dir.error(err.message);
 		return false;
 	}
 
+	// Кеширование текста
 	if (cacheKey) {
 		if (!globalCache[cacheKey]) {
 			globalCache[cacheKey] = {};
@@ -9252,13 +9517,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		};
 	}
 
+	// Если брайзер поддерживает FileAPI,
+	// то подключаем скомпилированный шаблон как внешний скрипт
 	if (!IS_NODE && !cjs) {
 		setTimeout(function()  {
 			try {
-				var blob = new Blob([dir.res], {type: 'application/javascript'});
-				var script = document.createElement('script');
+				var blob = new Blob([dir.res], {
+					type: 'application/javascript'
+				});
 
+				var script = document.createElement('script');
 				script.src = URL.createObjectURL(blob);
+
 				document.head.appendChild(script);
 
 			} catch (ignore) {}
@@ -9607,6 +9877,9 @@ function getLineDesc(str, i, dir) {
  * @param {?boolean=} [params.block=false] - если true, то директива считается блочной
  *     (т.е. требует закрывающей директивы)
  *
+ * @param {?boolean=} [params.selfInclude=true] - если false, то директива не может быть вложена
+ *     в директиву схожего типа
+ *
  * @param {Object=} [params.replacers] - таблица коротких сокращений директивы
  *     replacers: {
  *         // В ключе должно быть не более 2-х символов
@@ -9685,6 +9958,12 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		}
 	}
 
+	params.selfInclude = params.selfInclude !== false;
+
+	if (!params.selfInclude) {
+		params.block = true;
+	}
+
 	Snakeskin.Directions[name] = function (command, commandLength, type, jsDoc) {
 		var dir = this;
 		var sourceName = getName(name),
@@ -9732,6 +10011,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
 				return dir.error((("directive \"" + dirName) + ("\" can't be used within the \"" + (struct.name)) + "\""));
 			}
+		}
+
+		if (!params.selfInclude && dir.has(dirName)) {
+			return dir.error((("directive \"" + dirName) + ("\" can't be used within the \"" + dirName) + "\""));
 		}
 
 		if (params.text) {
@@ -11816,7 +12099,7 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 
-			// Идёт декларация внешнего прототипа
+			// Декларация внешнего прототипа
 			if (!tplName) {
 				if (this.structure.parent) {
 					this.error(("directive \"outer proto\" can be used only within the global space"));
@@ -11952,7 +12235,8 @@ Snakeskin.addDirective(
 						inlineIterators: this.inlineIterators,
 						stringBuffer: this.stringBuffer,
 						escapeOutput: this.escapeOutput,
-						xml: this.xml
+						xml: this.xml,
+						autoCorrect: this.autoCorrect
 					},
 
 					null,
@@ -12581,9 +12865,9 @@ for (var i = -1; ++i < template.length;) {
 
 			// Валидация шаблона для наследования
 			var parentTplName;
-			if (/\bextends\b/m.test(command)) {
+			if (/\)\s+extends\s+/m.test(command)) {
 				try {
-					parentTplName = /\s+extends\s+(.*)/m.exec(command)[1];
+					parentTplName = /\)\s+extends\s+(.*)/m.exec(command)[1];
 					this.parentTplName = parentTplName;
 
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
@@ -13399,12 +13683,18 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		block: true
+		block: true,
+		selfInclude: false
 	},
 
 	function (command) {
 		this.startDir();
 		this.space = true;
+
+		if (this.autoCorrect) {
+			this.autoCorrect = false;
+			this.structure.params.autoCorrect = true;
+		}
 
 		if (this.isReady()) {
 			if (command) {
@@ -13443,6 +13733,10 @@ Snakeskin.addDirective(
 	},
 
 	function () {
+		if (this.structure.params.autoCorrect) {
+			this.autoCorrect = true;
+		}
+
 		this.append(this.wrap('\'</script>\''));
 	}
 );Snakeskin.addDirective(
@@ -13450,12 +13744,18 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		block: true
+		block: true,
+		selfInclude: false
 	},
 
 	function (command) {
 		this.startDir();
 		this.space = true;
+
+		if (this.autoCorrect) {
+			this.autoCorrect = false;
+			this.structure.params.autoCorrect = true;
+		}
 
 		if (this.isReady()) {
 			if (command) {
@@ -13489,18 +13789,29 @@ Snakeskin.addDirective(
 	},
 
 	function () {
+		if (this.structure.params.autoCorrect) {
+			this.autoCorrect = true;
+		}
+
 		this.append(this.wrap('\'</style>\''));
 	}
 );Snakeskin.addDirective(
 	'link',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		block: true,
+		selfInclude: false
 	},
 
 	function (command) {
 		this.startDir();
 		this.space = true;
+
+		if (this.autoCorrect) {
+			this.autoCorrect = false;
+			this.structure.params.autoCorrect = true;
+		}
 
 		if (this.isReady()) {
 			if (command) {
@@ -13535,6 +13846,10 @@ Snakeskin.addDirective(
 	},
 
 	function () {
+		if (this.structure.params.autoCorrect) {
+			this.autoCorrect = true;
+		}
+
 		this.append(this.wrap('\'"/>\''));
 	}
 );var importMap = {
@@ -13797,6 +14112,30 @@ DirObj.prototype.returnTagDesc = function (str) {
 			this.bemRef = parts.slice(1).join(' ');
 		}
 	}
+);Snakeskin.addDirective(
+	'plain',
+
+	{
+		sys: true,
+		placement: 'template',
+		block: true,
+		selfInclude: false
+	},
+
+	function () {
+		this.startDir();
+
+		if (this.autoCorrect) {
+			this.autoCorrect = false;
+			this.structure.params.enabled = true;
+		}
+	},
+
+	function () {
+		if (this.structure.params.enabled) {
+			this.autoCorrect = true;
+		}
+	}
 );var blackWordMap = {
 	'+': true,
 	'++': true,
@@ -13931,7 +14270,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			}
 
 			if (!bOpen) {
-				if (escapeEndMap[el] || escapeEndWord[rPart]) {
+				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
 					bEnd = true;
 
 				} else if (bEndRgxp.test(el)) {
@@ -14641,7 +14980,6 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 			esprima.parse(exprimaHackFn(res));
 
 		} catch (err) {
-			console.log(res);
 			this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
 			return '';
 		}
