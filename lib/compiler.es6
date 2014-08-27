@@ -41,17 +41,6 @@ var tAttrRgxp = /[^'" ]/,
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
- *     {
- *         '"'   : [['«', '»'], ['„', '“']],
- *         '\''  : [['“', '”'], ['‘', '’']],
- *         '(c)' : '©',
- *         '(tm)': '™',
- *         '<-'  : '←',
- *         '->'  : '→',
- *         '...' : '…',
- *         '-'   : '−',
- *         '--'  : '—'
- *     }
  *
  * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
  *     и при наследовании можно задавать необъявленные родительские шаблоны
@@ -139,6 +128,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var beforeTag = {},
 		afterTag = {};
 
+	/**
+	 * @param {Object} obj
+	 * @param {?string=} [opt_include]
+	 */
 	function setMacros(obj, opt_include) {
 		if (obj == null) {
 			obj = mGroups[opt_include];
@@ -241,8 +234,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			'@symbols': {
 				'\\n': '\\n',
-				'\\t': '\\t',
-				'\\v': '\\v',
 				'\\r': '\\r',
 				'\\s': '&nbsp;'
 			}
