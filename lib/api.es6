@@ -251,7 +251,7 @@ function DirObj(src, params) {
 
 	/**
 	 * Объект модуля
-	 * @type {{exports, require, id, filename, parent, children, loaded}}
+	 * @type {{exports, require, id, key, root, filename, parent, children, loaded}}
 	 */
 	this.module = {
 		exports: {},
@@ -259,8 +259,10 @@ function DirObj(src, params) {
 			require : null,
 
 		id: 0,
-		filename: this.info['file'],
+		key: [],
 
+		root: null,
+		filename: this.info['file'],
 		parent: IS_NODE ?
 			module : null,
 
