@@ -20,8 +20,14 @@
  * @param {boolean} params.autoCorrect - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
+ * @param {Object=} [params.macros] - таблица символов для преобразования последовательностей
+ *
  * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ *
+ * @param {boolean} params.localization - если false, то блоки ` ... ` не заменяются на вызов i18n
+ * @param {string} params.i18nFn - название функции для i18n
+ * @param {Object=} [params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
  *
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
@@ -97,6 +103,18 @@ function DirObj(src, params) {
 
 	/** @type {boolean} */
 	this.autoCorrect = params.autoCorrect !== false;
+
+	/** @type {(Object|undefined)} */
+	this.macros = params.macros;
+
+	/** @type {boolean} */
+	this.localization = params.localization;
+
+	/** @type {string} */
+	this.i18nFn = params.i18nFn;
+
+	/** @type {(Object|undefined)} */
+	this.language = params.language;
 
 	if (params.consts) {
 		/** @type {(Array|undefined)} */
