@@ -210,6 +210,7 @@
 	`hel\`lo` #{`world`} \`bar
 #{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById(“i18n”), {prettyPrint: true}); test(“i18n”, function () { equal(i18n_index().trim(), 'hel`lo world `bar'); equal(i18n_index2().trim(), 'hel`lo world `bar'); }); </script>  <script type="text/x-snakeskin-template" id="include"> 
 {var foo = 1}
+{import bar = 1}
 
 {eval}
 	{: fs = require('fs')}
@@ -226,7 +227,7 @@
 {/}
 
 {template include_index(name) extends include['foo--']}
-{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById(“include”), {prettyPrint: true}); test(“include”, function () { equal(include_index().trim(), '<h1>Hello world 1!</h1>'); }); </script>  <script type="text/x-snakeskin-template" id="inherit"> 
+{/template} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById(“include”), {prettyPrint: true}); test(“include”, function () { equal(include_index().trim(), '<h1>Hello world 1!</h1> 1'); }); </script>  <script type="text/x-snakeskin-template" id="inherit"> 
 {proto inherit_base->bar}{/}
 {template inherit_base(val = 1, val2 = 3)}
 	{val2}

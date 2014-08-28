@@ -1,4 +1,5 @@
 {var foo = 2}
+{import bar = 2}
 
 {eval}
 	{: fs = require('fs')}

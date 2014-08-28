@@ -3,6 +3,7 @@ include_index
 ###
 
 {var foo = 1}
+{import bar = 1}
 
 {eval}
 	{: fs = require('fs')}
@@ -23,4 +24,4 @@ include_index
 
 ###
 
-<h1>Hello world 1!</h1>
+<h1>Hello world 1!</h1> 1
