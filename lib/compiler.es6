@@ -1083,6 +1083,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									qOpen++;
 								}
 
+								el = el.call ? el() : el;
+								el = String(el);
+
 							} else {
 								if (whiteSpaceRgxp.test(el)) {
 									expr = '';
@@ -1103,14 +1106,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 
 						if (macros[expr]) {
-							let modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length + advExprPos);
-							advExprPos += macros[expr].length;
+							let modStr = dir.res.substring(0, exprPos) +
+								dir.res.substring(exprPos + expr.length + advExprPos);
+
+							let val = macros[expr].call ? macros[expr]() : macros[expr];
+							val = String(val);
+
+							advExprPos += val.length;
 
 							dir.mod(() => {
 								dir.res = modStr;
 							});
 
-							dir.save(macros[expr]);
+							dir.save(val);
 
 						} else {
 							dir.save(applyDefEscape(el));
