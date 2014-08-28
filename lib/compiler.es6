@@ -37,7 +37,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
  *
- * @param {?boolean=} [opt_params.autoCorrect=true] - если false, то Snakeskin не делает дополнительных преобразований
+ * @param {?boolean=} [opt_params.autoCorrect=false] - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
@@ -115,7 +115,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
 
-	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) !== false;
+	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) || false;
 	p.macros = s(p.macros, p['macros']);
 
 	var debug =
@@ -1182,7 +1182,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var includes = '';
 
-	if (label) {
+	if (dir.module.key.length) {
 		includes = JSON.stringify(dir.module.key);
 	}
 
