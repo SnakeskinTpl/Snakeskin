@@ -9,6 +9,8 @@ syntax_index8
 
 ###
 
+: a = 1 /// 1
+
 - template syntax_index()
 	< span.foo class = bar car
 		- tag .&__bar#my
