@@ -100,11 +100,44 @@ function run(params) {
 	});
 }
 
-run({commonJS: true, prettyPrint: true, throws: true});
-run({commonJS: true, prettyPrint: true, throws: true});
-run({commonJS: true, prettyPrint: true, throws: true, inlineIterators: true});
-run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true});
-run({commonJS: true, prettyPrint: true, throws: true, stringBuffer: true, inlineIterators: true});
+run({
+	commonJS: true,
+	prettyPrint: true,
+	throws: true,
+	autoCorrect: true
+});
+
+run({
+	commonJS: true,
+	prettyPrint: true,
+	throws: true,
+	autoCorrect: true
+});
+
+run({
+	commonJS: true,
+	prettyPrint: true,
+	throws: true,
+	autoCorrect: true,
+	inlineIterators: true
+});
+
+run({
+	commonJS: true,
+	prettyPrint: true,
+	throws: true,
+	autoCorrect: true,
+	stringBuffer: true
+});
+
+run({
+	commonJS: true,
+	prettyPrint: true,
+	throws: true,
+	autoCorrect: true,
+	stringBuffer: true,
+	inlineIterators: true
+});
 
 fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
 
