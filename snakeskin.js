@@ -24,12 +24,10 @@ exports.check = function (source, result, opt_key) {
 		return false;
 	}
 
-	var label = fs.statSync(source).mtime,
-		code = fs.readFileSync(result).toString();
+	var code = fs.readFileSync(result).toString(),
+		label = /label <([\d]+)>/.exec(code);
 
-	var resLabel = /label <([\d]+)>/.exec(code);
-
-	if (!resLabel || opt_key === null) {
+	if (opt_key === null || !label || fs.statSync(source).mtime.valueOf() != label[1]) {
 		return false;
 	}
 
@@ -41,7 +39,30 @@ exports.check = function (source, result, opt_key) {
 		}
 	}
 
-	return label.valueOf() == resLabel[1];
+	var includes = /includes <([\d]+)>/.exec(code);
+
+	if (!includes) {
+		return false;
+	}
+
+	if (includes[1]) {
+		includes = JSON.parse(includes[1]);
+
+		for (var i = 0; i < includes.length; i++) {
+			var el = includes[i];
+
+			if (exists(el[0])) {
+				if (fs.statSync(el[0]).mtime.valueOf() != el[1]) {
+					return false;
+				}
+
+			} else {
+				return false;
+			}
+		}
+	}
+
+	return true;
 };
 
 /**
