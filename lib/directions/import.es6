@@ -23,21 +23,23 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		var key = `${obj}_00_${uid}`;
+		if (this.module.id === 0) {
+			let key = `${obj}_00_${uid}`;
 
-		this.save(`
-			var ${key} = __LOCAL__.${key} = ${this.prepareOutput(parts.slice(1).join('='), true)};
-		`);
+			this.save(`
+				var ${key} = __LOCAL__.${key} = ${this.prepareOutput(parts.slice(1).join('='), true)};
+			`);
 
-		var root = this.structure;
+			let root = this.structure;
 
-		while (root.name !== 'root') {
-			root = root.parent;
+			while (root.name !== 'root') {
+				root = root.parent;
+			}
+
+			root.vars[`${obj}_00`] = {
+				value: `__LOCAL__.${key}`,
+				scope: 0
+			};
 		}
-
-		root.vars[`${obj}_00`] = {
-			value: `__LOCAL__.${key}`,
-			scope: 0
-		};
 	}
 );
