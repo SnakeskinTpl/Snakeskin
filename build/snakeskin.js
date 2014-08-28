@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 27 Aug 2014 13:06:54 GMT
+ * Date: Thu, 28 Aug 2014 13:43:17 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -6110,8 +6110,14 @@ function s(a, b, opt_c) {
  * @param {boolean} params.autoCorrect - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
+ * @param {Object=} [params.macros] - таблица символов для преобразования последовательностей
+ *
  * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ *
+ * @param {boolean} params.localization - если false, то блоки ` ... ` не заменяются на вызов i18n
+ * @param {string} params.i18nFn - название функции для i18n
+ * @param {Object=} [params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
  *
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
@@ -6187,6 +6193,18 @@ function DirObj(src, params) {var this$0 = this;
 
 	/** @type {boolean} */
 	this.autoCorrect = params.autoCorrect !== false;
+
+	/** @type {(Object|undefined)} */
+	this.macros = params.macros;
+
+	/** @type {boolean} */
+	this.localization = params.localization;
+
+	/** @type {string} */
+	this.i18nFn = params.i18nFn;
+
+	/** @type {(Object|undefined)} */
+	this.language = params.language;
 
 	if (params.consts) {
 		/** @type {(Array|undefined)} */
@@ -6323,7 +6341,7 @@ function DirObj(src, params) {var this$0 = this;
 
 	/**
 	 * Объект модуля
-	 * @type {{exports, require, id, filename, parent, children, loaded}}
+	 * @type {{exports, require, id, key, root, filename, parent, children, loaded}}
 	 */
 	this.module = {
 		exports: {},
@@ -6331,8 +6349,10 @@ function DirObj(src, params) {var this$0 = this;
 			require : null,
 
 		id: 0,
-		filename: this.info['file'],
+		key: [],
 
+		root: null,
+		filename: this.info['file'],
 		parent: IS_NODE ?
 			module : null,
 
@@ -8278,7 +8298,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
  *
- * @param {?boolean=} [opt_params.autoCorrect=true] - если false, то Snakeskin не делает дополнительных преобразований
+ * @param {?boolean=} [opt_params.autoCorrect=false] - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
@@ -8356,13 +8376,136 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
 
-	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) !== false;
-	p.macros = s(p.macros, p['macros']) || {};
+	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) || false;
+	p.macros = s(p.macros, p['macros']);
+
+	var debug =
+		p.debug = s(p.debug, p['debug']);
+
+	p.xml = s(p.xml, p['xml']) !== false;
+
+	var vars =
+		p.vars = s(p.vars, p['vars']) || {};
+
+	for (var key in vars) {
+		if (!vars.hasOwnProperty(key)) {
+			continue;
+		}
+
+		Snakeskin.Vars[key] = vars[key];
+	}
+
+	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
+	p.localization = s(p.localization, p['localization']) !== false;
+	p.language = s(p.language, p['language']);
+
+	var words =
+		p.words = s(p.words, p['words']);
+
+	// <<<
+	// Отладочная информация
+	// >>>
+
+	var info = opt_info || {};
+
+	info['line'] = info['line'] || 1;
+	info['file'] = s(info.file, info['file']);
+
+	var text;
+
+	if (typeof src === 'object' && 'innerHTML' in src) {
+		info['node'] = src;
+		text = src.innerHTML.replace(/\s*?\n/, '');
+
+	} else {
+		text = ((src) + '');
+	}
+
+	// <<<
+	// Работа с кешем
+	// >>>
+
+	var cacheKey = p.language || p.macros ? null : [
+		cjs,
+		p.xml,
+
+		p.inlineIterators,
+		p.stringBuffer,
+		p.escapeOutput,
+		p.interface,
+		p.prettyPrint,
+		p.autoCorrect,
+
+		p.localization,
+		p.i18nFn
+	].join();
+
+	if (sp.cacheKey || sp['cacheKey']) {
+		return cacheKey;
+	}
+
+	if (p.cache) {
+		// Кеширование шаблонов в node.js
+		if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
+			var cache = globalFnCache[cacheKey][text];
+
+			for (var key$0 in cache) {
+				if (!cache.hasOwnProperty(key$0)) {
+					continue;
+				}
+
+				ctx[key$0] = cache[key$0];
+			}
+		}
+
+		// Базовое кешироние шаблонов
+		if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
+			var tmp = globalCache[cacheKey][text],
+				skip = false;
+
+			if (words) {
+				if (!tmp.words) {
+					skip = true;
+
+				} else {
+					var w = Object(tmp.words);
+
+					for (var key$1 in w) {
+						if (!w.hasOwnProperty(key$1)) {
+							continue;
+						}
+
+						words[key$1] = w[key$1];
+					}
+				}
+			}
+
+			if (debug) {
+				if (!tmp.debug) {
+					skip = true;
+
+				} else {
+					var d = Object(tmp.debug);
+
+					for (var key$2 in d) {
+						if (!d.hasOwnProperty(key$2)) {
+							continue;
+						}
+
+						debug[key$2] = d[key$2];
+					}
+				}
+			}
+
+			if (!skip) {
+				return tmp.text;
+			}
+		}
+	}
 
 	var macros = {},
-		macroKey = '';
+		mGroups = {};
 
-	var mGroups = {};
 	var inlineMacro = {},
 		comboMacro = {};
 
@@ -8390,15 +8533,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
-			for (var key$0 in obj) {
-				if (!obj.hasOwnProperty(key$0)) {
+			for (var key$3 in obj) {
+				if (!obj.hasOwnProperty(key$3)) {
 					continue;
 				}
 
-				var el = obj[key$0];
+				var el = obj[key$3];
 
-				if (key$0.charAt(0) === '@' && !opt_include) {
-					setMacros(el, key$0);
+				if (key$3.charAt(0) === '@' && !opt_include) {
+					setMacros(el, key$3);
 
 				} else {
 					if (opt_include) {
@@ -8406,29 +8549,29 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (el) {
-						macros[key$0] = el.value || el;
+						macros[key$3] = el.value || el;
 
-						if (Array.isArray(macros[key$0])) {
-							comboMacro[key$0] = true;
+						if (Array.isArray(macros[key$3])) {
+							comboMacro[key$3] = true;
 						}
 
 						var inline = el['inline'] ||
 							el.inline;
 
 						if (inline) {
-							inlineMacro[key$0.charAt(0)] = true;
+							inlineMacro[key$3.charAt(0)] = true;
 						}
 
 						if (opt_include) {
-							mGroups[opt_include][key$0] = macros[key$0];
+							mGroups[opt_include][key$3] = macros[key$3];
 						}
 
 					} else {
-						delete macros[key$0];
-						delete comboMacro[key$0];
+						delete macros[key$3];
+						delete comboMacro[key$3];
 
 						if (opt_include) {
-							delete mGroups[opt_include][key$0];
+							delete mGroups[opt_include][key$3];
 						}
 					}
 				}
@@ -8439,8 +8582,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	if (p.autoCorrect) {
 		var def = {
 			'@quotes': {
-				'"': [['«', '»'], ['„', '“']],
-				'\'': [['“', '”'], ['‘', '’']]
+				'"': [['«', '»'], ['‘', '’']],
+				'\'': [['“', '”'], ['„', '“']]
 			},
 
 			'@shorts': {
@@ -8473,6 +8616,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			},
 
+			'@adv': {
+				'%lorem%': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor dolores error facilis iusto magnam nisi praesentium voluptas. Delectus laudantium minus quia sapiente sunt temporibus voluptates! Explicabo iusto molestias quis voluptatibus.'
+			},
+
 			'@symbols': {
 				'\\n': '\\n',
 				'\\r': '\\r',
@@ -8480,138 +8627,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 		};
 
-		setMacros(def);
+		if (!sp.proto) {
+			setMacros(def);
+		}
+
 		setMacros(p.macros);
-	}
-
-	var debug =
-		p.debug = s(p.debug, p['debug']);
-
-	var xml =
-		p.xml = s(p.xml, p['xml']) !== false;
-
-	var vars =
-		p.vars = s(p.vars, p['vars']) || {};
-
-	for (var key in vars) {
-		if (!vars.hasOwnProperty(key)) {
-			continue;
-		}
-
-		Snakeskin.Vars[key] = vars[key];
-	}
-
-	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
-
-	var i18n =
-		p.localization = s(p.localization, p['localization']) !== false;
-
-	var lang =
-		p.language = s(p.language, p['language']);
-
-	var words =
-		p.words = s(p.words, p['words']);
-
-	// <<<
-	// Отладочная информация
-	// >>>
-
-	var info = opt_info || {};
-
-	info['line'] = info['line'] || 1;
-	info['file'] = s(info.file, info['file']);
-
-	var text;
-
-	if (typeof src === 'object' && 'innerHTML' in src) {
-		info['node'] = src;
-		text = src.innerHTML.replace(/\s*?\n/, '');
-
-	} else {
-		text = ((src) + '');
-	}
-
-	// <<<
-	// Работа с кешем
-	// >>>
-
-	var cacheKey = lang ? null : [
-		cjs,
-		xml,
-
-		p.inlineIterators,
-		p.stringBuffer,
-		p.escapeOutput,
-		p.interface,
-		p.prettyPrint,
-		p.autoCorrect,
-		macroKey,
-
-		i18n,
-		p.i18nFn
-	].join();
-
-	if (sp.cacheKey || sp['cacheKey']) {
-		return cacheKey;
-	}
-
-	if (p.cache) {
-		// Кеширование шаблонов в node.js
-		if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
-			var cache = globalFnCache[cacheKey][text];
-
-			for (var key$1 in cache) {
-				if (!cache.hasOwnProperty(key$1)) {
-					continue;
-				}
-
-				ctx[key$1] = cache[key$1];
-			}
-		}
-
-		// Базовое кешироние шаблонов
-		if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-			var tmp = globalCache[cacheKey][text],
-				skip = false;
-
-			if (words) {
-				if (!tmp.words) {
-					skip = true;
-
-				} else {
-					var w = Object(tmp.words);
-
-					for (var key$2 in w) {
-						if (!w.hasOwnProperty(key$2)) {
-							continue;
-						}
-
-						words[key$2] = w[key$2];
-					}
-				}
-			}
-
-			if (debug) {
-				if (!tmp.debug) {
-					skip = true;
-
-				} else {
-					var d = Object(tmp.debug);
-
-					for (var key$3 in d) {
-						if (!d.hasOwnProperty(key$3)) {
-							continue;
-						}
-
-						debug[key$3] = d[key$3];
-					}
-				}
-			}
-
-			if (!skip) {
-				return tmp.text;
-			}
-		}
 	}
 
 	// <<<
@@ -8660,23 +8680,34 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var dir = new DirObj(((text) + ''), {
 		info: info,
-		commonJS: cjs,
+		onError: p.onError,
+
+		parent: sp.parent,
 		proto: sp.proto,
 		scope: sp.scope,
 		vars: sp.vars,
 		consts: sp.consts,
-		onError: p.onError,
-		stringBuffer: p.stringBuffer,
-		inlineIterators: p.inlineIterators,
-		autoCorrect: p.autoCorrect,
-		xml: xml,
-		escapeOutput: p.escapeOutput,
-		interface: p.interface,
-		throws: p.throws,
+
 		needPrfx: sp.needPrfx,
 		prfxI: sp.prfxI,
 		lines: sp.lines,
-		parent: sp.parent
+
+		xml: p.xml,
+		commonJS: cjs,
+
+		stringBuffer: p.stringBuffer,
+		inlineIterators: p.inlineIterators,
+		escapeOutput: p.escapeOutput,
+
+		autoCorrect: p.autoCorrect,
+		macros: macros,
+
+		localization: p.localization,
+		i18nFn: p.i18nFn,
+		language: p.language,
+
+		interface: p.interface,
+		throws: p.throws
 	});
 
 	var templateMap = dir.getGroup('rootTemplate');
@@ -8920,7 +8951,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			if (!jsDoc) {
 				if (i18nStart) {
-					if (!currentEscape && el === '"' && !lang) {
+					if (!currentEscape && el === '"' && !dir.language) {
 						el = '\\"';
 					}
 
@@ -8931,7 +8962,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 						i18nStr += el;
 
-						if (lang) {
+						if (dir.language) {
 							return;
 						}
 					}
@@ -9063,14 +9094,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = '';
 					return;
 
-				} else if (i18n && !currentEscape && el === I18N) {
+				} else if (dir.localization && !currentEscape && el === I18N) {
 					if (i18nStart && i18nStr && words && !words[i18nStr]) {
 						words[i18nStr] = i18nStr;
 					}
 
-					if (lang) {
+					if (dir.language) {
 						if (i18nStart) {
-							var word = ((lang[i18nStr] || '') + '');
+							var word = ((dir.language[i18nStr] || '') + '');
 
 							el = begin ?
 								(("'" + (applyDefEscape(word))) + "'") : word;
@@ -9118,7 +9149,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStart = true;
 
 							if (begin) {
-								el = (("" + (p.i18nFn)) + "(\"");
+								el = (("" + (dir.i18nFn)) + "(\"");
 
 							} else {
 								var diff = +(dir.needPrfx) + 1;
@@ -9145,7 +9176,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (beginStr && dir.isSimpleOutput()) {
 				var prfx = '';
 
-				if (xml && tAttr && !tAttrBegin) {
+				if (dir.xml && tAttr && !tAttrBegin) {
 					prfx = '"';
 					tAttrBegin = true;
 					tAttrEscape = true;
@@ -9253,7 +9284,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
-					if (xml) {
+					if (dir.xml) {
 						if (el === '<' && !afterTag[next]) {
 							tOpen++;
 
@@ -9305,7 +9336,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (dir.autoCorrect) {
 						if (!tOpen || !tAttrBegin) {
 							if (comboMacro[el]) {
-								var val = macros[qType || el];
+								var val = dir.macros[el];
 
 								if (!qType) {
 									qType = el;
@@ -9318,16 +9349,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									qOpen = 0;
 
 								} else {
-									el = val[1][qOpen % 2 ? 0 : 1];
+									el = (val[1] || val[0])[qOpen % 2 ? 0 : 1];
 									qOpen++;
 								}
+
+								el = el.call ? el() : el;
+								el = ((el) + '');
 
 							} else {
 								if (whiteSpaceRgxp.test(el)) {
 									expr = '';
 									advExprPos = 0;
 
-								} else if (inlineMacro[el] && !inlineMacro[prev] && !macros[expr + el]) {
+								} else if (inlineMacro[el] && !inlineMacro[prev] && !dir.macros[expr + el]) {
 									exprPos = dir.res.length;
 									expr = el;
 
@@ -9341,15 +9375,20 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							}
 						}
 
-						if (macros[expr]) {
-							var modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length + advExprPos);
-							advExprPos += macros[expr].length;
+						if (dir.macros[expr]) {
+							var modStr = dir.res.substring(0, exprPos) +
+								dir.res.substring(exprPos + expr.length + advExprPos);
+
+							var val$0 = dir.macros[expr].call ? dir.macros[expr]() : dir.macros[expr];
+							val$0 = ((val$0) + '');
+
+							advExprPos += val$0.length;
 
 							dir.mod(function()  {
 								dir.res = modStr;
 							});
 
-							dir.save(macros[expr]);
+							dir.save(val$0);
 
 						} else {
 							dir.save(applyDefEscape(el));
@@ -9397,13 +9436,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		);
 
 	// Удаление пустых операций
-	dir.res = dir.res.replace(p.stringBuffer ?
+	dir.res = dir.res.replace(dir.stringBuffer ?
 		/__RESULT__\.push\(''\);/g : /__RESULT__ \+= '';/g,
 
 	'');
 
-	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, generated at <" + (new Date().valueOf())) + ("> " + (new Date().toString())) + (". " + (dir.res)) + "");
-	dir.res += (("" + (cjs ? '}' : '')) + "}).call(this);");
+	var includes = '';
+
+	if (dir.module.key.length) {
+		includes = JSON.stringify(dir.module.key);
+	}
+
+	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">.\n   " + (dir.res)) + "");
+	dir.res += (("" + (dir.commonJS ? '}' : '')) + "}).call(this);");
 
 	// Если остались внешние прототипы,
 	// которые не были подключены к своему шаблону,
@@ -9480,7 +9525,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			);
 
 		// Живая компиляция в браузере
-		} else if (!cjs) {
+		} else if (!dir.commonJS) {
 			dir.evalStr(dir.res);
 		}
 
@@ -9519,7 +9564,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Если брайзер поддерживает FileAPI,
 	// то подключаем скомпилированный шаблон как внешний скрипт
-	if (!IS_NODE && !cjs) {
+	if (!IS_NODE && !dir.commonJS) {
 		setTimeout(function()  {
 			try {
 				var blob = new Blob([dir.res], {
@@ -9536,7 +9581,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	return dir.res;
-};var commandRgxp = /([^\s]+).*/;
+};var commandRgxp = /([^\s]+).*/,
+	nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/;
 
 /**
  * Вернуть объект-описание преобразованной части шаблона из
@@ -9695,7 +9741,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				}
 
 				struct = obj;
-				res += space + s + (dir ? parts[0] : decl.command) + e;
+				res += space + s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
 				if (obj.block) {
 					res += (("" + s) + ("__&__" + e) + "");
@@ -11841,15 +11887,19 @@ Snakeskin.addDirective(
 			require: require,
 
 			id: this.module.id + 1,
+			key: null,
+
 			filename: command,
-
 			parent: this.module,
-			children: [],
+			root: this.module.root || this.module,
 
+			children: [],
 			loaded: true
 		};
 
+		module.root.key.push([command, require('fs')['statSync'](command)['mtime'].valueOf()]);
 		this.module.children.push(module);
+
 		this.module = module;
 		this.info['file'] = command;
 	}
@@ -12236,7 +12286,8 @@ Snakeskin.addDirective(
 						stringBuffer: this.stringBuffer,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
-						autoCorrect: this.autoCorrect
+						autoCorrect: this.autoCorrect,
+						macros: this.macros
 					},
 
 					null,
@@ -12309,12 +12360,12 @@ Snakeskin.addDirective(
 					struct.vars = struct.parent.vars;
 
 					this.save(
-							this.returnProtoArgs(
-								proto.args,
-								this.getFnArgs((("(" + (ouptupCache[params.name])) + ")"))
-							) +
+						this.returnProtoArgs(
+							proto.args,
+							this.getFnArgs((("(" + (ouptupCache[params.name])) + ")"))
+						) +
 
-							proto.body
+						proto.body
 					);
 
 					struct.vars = vars;
@@ -13877,22 +13928,24 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		var key = (("" + obj) + ("_00_" + uid) + "");
+		if (this.module.id === 0) {
+			var key = (("" + obj) + ("_00_" + uid) + "");
 
-		this.save((("\
-			var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";\
-		"));
+			this.save((("\
+				var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";\
+			"));
 
-		var root = this.structure;
+			var root = this.structure;
 
-		while (root.name !== 'root') {
-			root = root.parent;
+			while (root.name !== 'root') {
+				root = root.parent;
+			}
+
+			root.vars[(("" + obj) + "_00")] = {
+				value: ("__LOCAL__." + key),
+				scope: 0
+			};
 		}
-
-		root.vars[(("" + obj) + "_00")] = {
-			value: ("__LOCAL__." + key),
-			scope: 0
-		};
 	}
 );Snakeskin.addDirective(
 	'comment',
