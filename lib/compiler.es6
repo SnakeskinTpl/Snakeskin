@@ -249,8 +249,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var debug =
 		p.debug = s(p.debug, p['debug']);
 
-	var xml =
-		p.xml = s(p.xml, p['xml']) !== false;
+	p.xml = s(p.xml, p['xml']) !== false;
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -264,12 +263,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	p.i18nFn = s(p.i18nFn, p['i18nFn']) || 'i18n';
-
-	var i18n =
-		p.localization = s(p.localization, p['localization']) !== false;
-
-	var lang =
-		p.language = s(p.language, p['language']);
+	p.localization = s(p.localization, p['localization']) !== false;
+	p.language = s(p.language, p['language']);
 
 	var words =
 		p.words = s(p.words, p['words']);
@@ -297,9 +292,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Работа с кешем
 	// >>>
 
-	var cacheKey = lang || p.macros ? null : [
+	var cacheKey = p.language || p.macros ? null : [
 		cjs,
-		xml,
+		p.xml,
 
 		p.inlineIterators,
 		p.stringBuffer,
@@ -308,7 +303,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.prettyPrint,
 		p.autoCorrect,
 
-		i18n,
+		p.localization,
 		p.i18nFn
 	].join();
 
@@ -421,23 +416,34 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var dir = new DirObj(String(text), {
 		info: info,
-		commonJS: cjs,
+		onError: p.onError,
+
+		parent: sp.parent,
 		proto: sp.proto,
 		scope: sp.scope,
 		vars: sp.vars,
 		consts: sp.consts,
-		onError: p.onError,
-		stringBuffer: p.stringBuffer,
-		inlineIterators: p.inlineIterators,
-		autoCorrect: p.autoCorrect,
-		xml: xml,
-		escapeOutput: p.escapeOutput,
-		interface: p.interface,
-		throws: p.throws,
+
 		needPrfx: sp.needPrfx,
 		prfxI: sp.prfxI,
 		lines: sp.lines,
-		parent: sp.parent
+
+		xml: p.xml,
+		commonJS: cjs,
+
+		stringBuffer: p.stringBuffer,
+		inlineIterators: p.inlineIterators,
+		escapeOutput: p.escapeOutput,
+
+		autoCorrect: p.autoCorrect,
+		macros: p.macros,
+
+		localization: p.localization,
+		i18nFn: p.i18nFn,
+		language: p.language,
+
+		interface: p.interface,
+		throws: p.throws
 	});
 
 	var templateMap = dir.getGroup('rootTemplate');
@@ -681,7 +687,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			if (!jsDoc) {
 				if (i18nStart) {
-					if (!currentEscape && el === '"' && !lang) {
+					if (!currentEscape && el === '"' && !dir.language) {
 						el = '\\"';
 					}
 
@@ -692,7 +698,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 						i18nStr += el;
 
-						if (lang) {
+						if (dir.language) {
 							continue;
 						}
 					}
@@ -824,14 +830,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = '';
 					continue;
 
-				} else if (i18n && !currentEscape && el === I18N) {
+				} else if (dir.localization && !currentEscape && el === I18N) {
 					if (i18nStart && i18nStr && words && !words[i18nStr]) {
 						words[i18nStr] = i18nStr;
 					}
 
-					if (lang) {
+					if (dir.language) {
 						if (i18nStart) {
-							let word = String(lang[i18nStr] || '');
+							let word = String(dir.language[i18nStr] || '');
 
 							el = begin ?
 								`'${applyDefEscape(word)}'` : word;
@@ -879,7 +885,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStart = true;
 
 							if (begin) {
-								el = `${p.i18nFn}("`;
+								el = `${dir.i18nFn}("`;
 
 							} else {
 								let diff = Number(dir.needPrfx) + 1;
@@ -906,7 +912,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (beginStr && dir.isSimpleOutput()) {
 				let prfx = '';
 
-				if (xml && tAttr && !tAttrBegin) {
+				if (dir.xml && tAttr && !tAttrBegin) {
 					prfx = '"';
 					tAttrBegin = true;
 					tAttrEscape = true;
@@ -1014,7 +1020,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
-					if (xml) {
+					if (dir.xml) {
 						if (el === '<' && !afterTag[next]) {
 							tOpen++;
 
@@ -1066,7 +1072,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (dir.autoCorrect) {
 						if (!tOpen || !tAttrBegin) {
 							if (comboMacro[el]) {
-								let val = macros[el];
+								let val = dir.macros[el];
 
 								if (!qType) {
 									qType = el;
@@ -1091,7 +1097,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									expr = '';
 									advExprPos = 0;
 
-								} else if (inlineMacro[el] && !inlineMacro[prev] && !macros[expr + el]) {
+								} else if (inlineMacro[el] && !inlineMacro[prev] && !dir.macros[expr + el]) {
 									exprPos = dir.res.length;
 									expr = el;
 
@@ -1105,11 +1111,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							}
 						}
 
-						if (macros[expr]) {
+						if (dir.macros[expr]) {
 							let modStr = dir.res.substring(0, exprPos) +
 								dir.res.substring(exprPos + expr.length + advExprPos);
 
-							let val = macros[expr].call ? macros[expr]() : macros[expr];
+							let val = dir.macros[expr].call ? dir.macros[expr]() : dir.macros[expr];
 							val = String(val);
 
 							advExprPos += val.length;
@@ -1172,7 +1178,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	'');
 
 	dir.res = `/* Snakeskin v${Snakeskin.VERSION.join('.')}, key <${cacheKey}>, label <${label.valueOf()}>, generated at <${new Date().valueOf()}> ${new Date().toString()}. ${dir.res}`;
-	dir.res += `${cjs ? '}' : ''}}).call(this);`;
+	dir.res += `${dir.commonJS ? '}' : ''}}).call(this);`;
 
 	// Если остались внешние прототипы,
 	// которые не были подключены к своему шаблону,
@@ -1249,7 +1255,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			);
 
 		// Живая компиляция в браузере
-		} else if (!cjs) {
+		} else if (!dir.commonJS) {
 			dir.evalStr(dir.res);
 		}
 
@@ -1288,7 +1294,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Если брайзер поддерживает FileAPI,
 	// то подключаем скомпилированный шаблон как внешний скрипт
-	if (!IS_NODE && !cjs) {
+	if (!IS_NODE && !dir.commonJS) {
 		setTimeout(() => {
 			try {
 				let blob = new Blob([dir.res], {
