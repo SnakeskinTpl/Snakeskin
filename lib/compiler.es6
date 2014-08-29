@@ -292,6 +292,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 						if (Array.isArray(macros[key])) {
 							comboMacro[key] = true;
+
+						} else if (key.length > 1) {
+							if (key.charAt(0) === '<') {
+								afterTag[key.charAt(1)] = true;
+							}
+
+							if (key.length > 1 && key.slice(-1) === '>') {
+								beforeTag[key.charAt(key.length - 2)] = true;
+							}
 						}
 
 						let inline = el['inline'] ||
