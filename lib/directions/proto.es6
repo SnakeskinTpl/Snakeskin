@@ -240,7 +240,7 @@ Snakeskin.addDirective(
 
 							superStrongSpace: this.superStrongSpace,
 							strongSpace: this.strongSpace,
-							space: this.space
+							space: this.prevSpace
 						}
 					}
 				);

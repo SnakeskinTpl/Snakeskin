@@ -793,6 +793,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = dir.replaceDangerBlocks((isConst || commandType !== 'const' ?
 						command.replace(commandRgxp, '') : command));
 
+					dir.prevSpace = !dir.text && prevSpace && !dir.strongSpace && !dir.superStrongSpace;
 					let fnRes = Snakeskin.Directions[commandType].call(
 						dir,
 						command,
