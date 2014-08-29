@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.1.2
+ * Snakeskin v4.1.3
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 29 Aug 2014 11:27:33 GMT
+ * Date: Fri, 29 Aug 2014 13:22:32 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 1, 2],
+	VERSION: [4, 1, 3],
 
 	/**
 	 * Пространство имён для директив
@@ -11109,7 +11109,7 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 
 				if (!pOpen) {
 					groups.push({
-						group: group.trim(),
+						group: Snakeskin.Filters.html(group, true).trim(),
 						separator: sep,
 						attr: attr.trim()
 					});
