@@ -53,6 +53,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
+		this.space = true;
 		if (this.structure.params.autoReplace) {
 			this.autoReplace = true;
 		}

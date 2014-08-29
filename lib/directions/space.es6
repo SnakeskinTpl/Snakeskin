@@ -37,6 +37,10 @@ Snakeskin.addDirective(
 		if (this.superStrongSpace) {
 			this.superStrongSpace--;
 		}
+
+		if (!this.superStrongSpace) {
+			this.text = true;
+		}
 	}
 );
 
