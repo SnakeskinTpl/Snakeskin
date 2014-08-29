@@ -25,4 +25,4 @@ scope_index ; {child: {name: 'Koba', child: {name: 'none'}}}
 
 ###
 
-Koba  bar bar Koba Koba bar foo none test
+Kobabar bar Koba Koba bar foo none test

@@ -75,12 +75,12 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 
 ***
 
-<h1>Hello world!</h1>  1
+<h1>Hello world!</h1> 1
 
 ***
 
-<h1>Hello Bob!</h1>  1
+<h1>Hello Bob!</h1> 1
 
 ***
 
-<h1>Hello Bob Cache!</h1>  1
+<h1>Hello Bob Cache!</h1> 1

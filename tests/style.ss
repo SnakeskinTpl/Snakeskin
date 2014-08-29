@@ -25,7 +25,7 @@ style_index2
 
 ###
 
-<style type="text/css">.a {} </style> <style type="text/css">.a {} </style> <style type="css2">.a {} </style>
+<style type="text/css">.a {} </style><style type="text/css">.a {} </style><style type="css2">.a {} </style>
 
 ***
 

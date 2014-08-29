@@ -25,7 +25,7 @@ script_index2
 
 ###
 
-<script type="text/javascript">var a = []; </script> <script type="application/coffeescript">var a = []; </script> <script type="coffee2">var a = []; </script>
+<script type="text/javascript">var a = []; </script><script type="application/coffeescript">var a = []; </script><script type="coffee2">var a = []; </script>
 
 ***
 

@@ -51,11 +51,11 @@ iterators_index6
 
 ###
 
-1 0 1 true false 3 —  2 1 2 false false 3 —  3 2 3 false true 3 —
+1 0 1 true false 3 — 2 1 2 false false 3 — 3 2 3 false true 3 —
 
 ***
 
-1 a 1 0 true false 2 —  2 b 2 1 false true 2 —
+1 a 1 0 true false 2 — 2 b 2 1 false true 2 —
 
 ***
 
@@ -63,7 +63,7 @@ iterators_index6
 
 ***
 
-1  2  3
+1 2 3
 
 ***
 

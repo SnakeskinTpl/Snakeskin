@@ -21,4 +21,4 @@ pref_index
 
 ###
 
-{if 2} 1 {pref_global2} {/}   1 2 #
+{if 2} 1 {pref_global2} {/} 1 2 #
