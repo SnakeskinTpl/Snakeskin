@@ -1,4 +1,5 @@
-/* Snakeskin v4.0.16, key <false,true,false,false,true,false,true,true,i18n>, label <1408105354743>, generated at <1408193057145> Sat Aug 16 2014 16:44:17 GMT+0400 (Московское время (зима)). This code is generated automatically, don't alter it. */
+/* Snakeskin v4.1.0, key <false,true,false,false,true,false,true,false,true,i18n>, label <1409295656628>, includes <>, generated at <1409295731479>.
+   This code is generated automatically, don't alter it. */
 (function() {
     var __ROOT__ = this,
         self = this;
@@ -10,7 +11,7 @@
         __VARS__ = Snakeskin.Vars,
         __LOCAL__ = Snakeskin.LocalVars,
         __STR__, __TMP__, __J__;
-    var $_ = __LOCAL__['$_9f636']; /* Snakeskin template: helloWorld; name  */
+    var $_ = __LOCAL__['$_52629']; /* Snakeskin template: helloWorld; name  */
     this.helloWorld = function helloWorld(name) {
         var __THIS__ = this,
             callee = __ROOT__.helloWorld;

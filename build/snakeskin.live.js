@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 28 Aug 2014 13:43:17 GMT
+ * Date: Fri, 29 Aug 2014 07:00:31 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -372,6 +372,17 @@ Snakeskin.Filters['parse'] = function (val) {
  */
 Snakeskin.Filters['bem'] = function (block, part) {
 	return ((block) + '') + ((part) + '');
+};
+
+/**
+ * Задача значения по умолчанию для объекта
+ *
+ * @param {*} val - исходное значение
+ * @param {*} def - значение по умолчанию
+ * @return {*}
+ */
+Snakeskin.Filters['default'] = function (val, def) {
+	return val === void 0 ? def : val;
 };if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
 	var keys = Object.keys;
 }

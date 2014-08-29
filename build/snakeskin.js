@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 28 Aug 2014 13:43:17 GMT
+ * Date: Fri, 29 Aug 2014 07:00:31 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -372,6 +372,17 @@ Snakeskin.Filters['parse'] = function (val) {
  */
 Snakeskin.Filters['bem'] = function (block, part) {
 	return ((block) + '') + ((part) + '');
+};
+
+/**
+ * Задача значения по умолчанию для объекта
+ *
+ * @param {*} val - исходное значение
+ * @param {*} def - значение по умолчанию
+ * @return {*}
+ */
+Snakeskin.Filters['default'] = function (val, def) {
+	return val === void 0 ? def : val;
 };if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
 	var keys = Object.keys;
 }
@@ -6107,7 +6118,7 @@ function s(a, b, opt_c) {
  * @param {boolean} params.inlineIterators - если true, то итераторы forEach и forIn
  *     будут развёрнуты в циклы
  *
- * @param {boolean} params.autoCorrect - если false, то Snakeskin не делает дополнительных преобразований
+ * @param {boolean} params.autoReplace - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
  * @param {Object=} [params.macros] - таблица символов для преобразования последовательностей
@@ -6192,7 +6203,7 @@ function DirObj(src, params) {var this$0 = this;
 	this.lines = params.lines || [''];
 
 	/** @type {boolean} */
-	this.autoCorrect = params.autoCorrect !== false;
+	this.autoReplace = params.autoReplace !== false;
 
 	/** @type {(Object|undefined)} */
 	this.macros = params.macros;
@@ -8298,7 +8309,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
  *
- * @param {?boolean=} [opt_params.autoCorrect=false] - если false, то Snakeskin не делает дополнительных преобразований
+ * @param {?boolean=} [opt_params.autoReplace=false] - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
@@ -8376,7 +8387,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
 
-	p.autoCorrect = s(p.autoCorrect, p['autoCorrect']) || false;
+	p.autoReplace = s(p.autoReplace, p['autoReplace']) || false;
 	p.macros = s(p.macros, p['macros']);
 
 	var debug =
@@ -8434,7 +8445,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.escapeOutput,
 		p.interface,
 		p.prettyPrint,
-		p.autoCorrect,
+		p.autoReplace,
 
 		p.localization,
 		p.i18nFn
@@ -8579,7 +8590,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	if (p.autoCorrect) {
+	if (p.autoReplace) {
 		var def = {
 			'@quotes': {
 				'"': [['«', '»'], ['‘', '’']],
@@ -8699,7 +8710,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
-		autoCorrect: p.autoCorrect,
+		autoReplace: p.autoReplace,
 		macros: macros,
 
 		localization: p.localization,
@@ -9333,7 +9344,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						dir.attr = !!(tOpen);
 					}
 
-					if (dir.autoCorrect) {
+					if (dir.autoReplace) {
 						if (!tOpen || !tAttrBegin) {
 							if (comboMacro[el]) {
 								var val = dir.macros[el];
@@ -9533,7 +9544,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (ctx !== NULL) {
 			ctx['init'](Snakeskin);
 
-			if (cacheKey) {
+			if (cacheKey && (p.cache || globalFnCache[cacheKey])) {
 				if (!globalFnCache[cacheKey]) {
 					globalFnCache[cacheKey] = {};
 				}
@@ -9550,7 +9561,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// Кеширование текста
-	if (cacheKey) {
+	if (cacheKey && (p.cache || globalCache[cacheKey])) {
 		if (!globalCache[cacheKey]) {
 			globalCache[cacheKey] = {};
 		}
@@ -12286,7 +12297,7 @@ Snakeskin.addDirective(
 						stringBuffer: this.stringBuffer,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
-						autoCorrect: this.autoCorrect,
+						autoReplace: this.autoReplace,
 						macros: this.macros
 					},
 
@@ -13742,9 +13753,9 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.autoCorrect) {
-			this.autoCorrect = false;
-			this.structure.params.autoCorrect = true;
+		if (this.autoReplace) {
+			this.autoReplace = false;
+			this.structure.params.autoReplace = true;
 		}
 
 		if (this.isReady()) {
@@ -13784,8 +13795,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.structure.params.autoCorrect) {
-			this.autoCorrect = true;
+		if (this.structure.params.autoReplace) {
+			this.autoReplace = true;
 		}
 
 		this.append(this.wrap('\'</script>\''));
@@ -13803,9 +13814,9 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.autoCorrect) {
-			this.autoCorrect = false;
-			this.structure.params.autoCorrect = true;
+		if (this.autoReplace) {
+			this.autoReplace = false;
+			this.structure.params.autoReplace = true;
 		}
 
 		if (this.isReady()) {
@@ -13840,8 +13851,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.structure.params.autoCorrect) {
-			this.autoCorrect = true;
+		if (this.structure.params.autoReplace) {
+			this.autoReplace = true;
 		}
 
 		this.append(this.wrap('\'</style>\''));
@@ -13859,9 +13870,9 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.autoCorrect) {
-			this.autoCorrect = false;
-			this.structure.params.autoCorrect = true;
+		if (this.autoReplace) {
+			this.autoReplace = false;
+			this.structure.params.autoReplace = true;
 		}
 
 		if (this.isReady()) {
@@ -13897,8 +13908,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.structure.params.autoCorrect) {
-			this.autoCorrect = true;
+		if (this.structure.params.autoReplace) {
+			this.autoReplace = true;
 		}
 
 		this.append(this.wrap('\'"/>\''));
@@ -14178,15 +14189,15 @@ DirObj.prototype.returnTagDesc = function (str) {
 	function () {
 		this.startDir();
 
-		if (this.autoCorrect) {
-			this.autoCorrect = false;
+		if (this.autoReplace) {
+			this.autoReplace = false;
 			this.structure.params.enabled = true;
 		}
 	},
 
 	function () {
 		if (this.structure.params.enabled) {
-			this.autoCorrect = true;
+			this.autoReplace = true;
 		}
 	}
 );var blackWordMap = {
@@ -14893,6 +14904,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
 
 				if (!unMap[f]) {
 					arr.push(f);
+
+					if (f.split(' ')[0] === 'default') {
+						unUndef = true;
+					}
 
 				} else {
 					if (f === '!html' && (!pCount || filterWrapper)) {
