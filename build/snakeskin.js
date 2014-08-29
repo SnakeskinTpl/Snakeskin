@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.1.1
+ * Snakeskin v4.1.2
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 29 Aug 2014 11:05:56 GMT
+ * Date: Fri, 29 Aug 2014 11:27:33 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 1, 1],
+	VERSION: [4, 1, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -8521,7 +8521,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var macros = {},
 		mGroups = {};
 
-	var inlineMacro = {},
+	var inlineMacro = {'\\': true},
 		comboMacro = {};
 
 	var beforeTag = {},
