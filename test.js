@@ -6,14 +6,12 @@ var assert = require('assert');
 var snakeskin = require('./snakeskin');
 var testFolder = path.resolve(__dirname, 'tests');
 
-var tpls = {};
-
 global.i18n = function (str) {
 	return str;
 };
 
-snakeskin.compile(
-	fs.readFileSync(path.join(__dirname, 'test.ss')),
+var tpls = snakeskin.compileFile(
+	path.join(__dirname, 'test.ss'),
 	{
 		context: tpls,
 		prettyPrint: true
