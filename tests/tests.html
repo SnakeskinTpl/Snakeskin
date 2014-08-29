@@ -292,7 +292,7 @@
 {template inherit_childTestConst3() extends inherit_superTestConst3}
 	{a.a = 2}
 	{a.b = 3}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3 2  11  my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="inherit2"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true}); test('inherit', function () { equal(inherit_sub().trim(), '3 2 11  my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script>  <script type="text/x-snakeskin-template" id="inherit2"> 
 {template inherit2_base()}
 	#{a1 = 1}
 
@@ -598,7 +598,7 @@
 	{/}
 
 	{apply begin(5)}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto'), {prettyPrint: true}); test('proto', function () { equal(proto_index().trim(), '1   2     4   1 2'); equal(proto_index2.a['foo']().trim(), '1'); equal(proto_recursive().trim(), '5   4   3   2   1   0'); equal(proto_recursive2().trim(), '5     4     3'); }); </script>  <script type="text/x-snakeskin-template" id="proto2"> 
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto'), {prettyPrint: true}); test('proto', function () { equal(proto_index().trim(), '1  2    4  1 2'); equal(proto_index2.a['foo']().trim(), '1'); equal(proto_recursive().trim(), '5  4  3  2  1  0'); equal(proto_recursive2().trim(), '5   4   3'); }); </script>  <script type="text/x-snakeskin-template" id="proto2"> 
 {template proto2_base()}
 	{&+}
 	{var a = 2, b, c}

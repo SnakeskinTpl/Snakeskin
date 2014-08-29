@@ -73,7 +73,7 @@ inherit_childTestConst3
 
 ###
 
-3 2  11  my
+3 2 11  my
 
 ***
 
