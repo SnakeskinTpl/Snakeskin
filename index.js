@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 
@@ -13,7 +13,7 @@ program
 	.version(Snakeskin.VERSION.join('.'))
 
 	.usage('[options] [dir|file ...]')
-	.option('-p, --params [options]', 'path to the options file (JSON) or options JSON')
+	.option('-p, --params [options]', 'path to the options file or options object')
 
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-f, --file [src]', 'path to the template file (meta-information)')
@@ -21,13 +21,16 @@ program
 	.option('-n, --common-js', 'common.js export (for node.js)')
 
 	.option('-e, --exec', 'execute compiled template')
-	.option('-d, --data [src]', 'path to the data file (JSON) or data JSON')
+	.option('-d, --data [src]', 'path to the data file or data object')
 	.option('-t, --tpl [name]', 'name of the main template')
 
 	.option('--disable-localization', 'disable support for localization')
 	.option('--i18n-fn', 'i18n function name')
-	.option('--language [src]', 'path to the localization file (JSON) or localization JSON')
+	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
+
+	.option('--auto-replace', 'enable macros support')
+	.option('--macros [src]', 'path to the macros file or macros object')
 
 	.option('--disable-xml', 'disable default xml validation')
 	.option('--interface', 'render all templates as interface')
@@ -74,10 +77,20 @@ params.escapeOutput = 'disableEscapeOutput' in program ?
 params.prettyPrint = 'prettyPrint' in program ?
 	program['prettyPrint'] : params.prettyPrint;
 
+params.autoReplace = 'autoReplace' in program ?
+	program['autoReplace'] : params.autoReplace;
+
+params.macros = 'macros' in program ?
+	program['macros'] : params.macros;
+
 var prettyPrint = params.prettyPrint;
 
 if (params.language) {
 	params.language = parse(params.language);
+}
+
+if (params.macros) {
+	params.macros = parse(params.macros);
 }
 
 var exec = program['exec'];
@@ -106,17 +119,26 @@ if (!file && args.length) {
 }
 
 function parse(val) {
+	if (typeof val !== 'string') {
+		return val;
+	}
+
 	if (exists(val)) {
-		return JSON.parse(fs.readFileSync(val));
+		val = fs.readFileSync(val).toString();
 	}
 
 	var res;
 
 	try {
-		res = eval((("(" + val) + ")"));
+		res = JSON.parse(val);
 
 	} catch (ignore) {
-		res = {};
+		try {
+			res = eval((("(" + val) + ")"));
+
+		} catch (ignore) {
+			res = {};
+		}
 	}
 
 	return res || {};
