@@ -512,7 +512,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		exprPos = 0,
 		advExprPos = 0;
 
-	var prevSpace,
+	var prevSpace = false,
 		prevCommentSpace = false,
 		freezeI = 0,
 		freezeTmp = 0;
@@ -577,10 +577,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				} else {
 					if (!dir.space) {
 						el = ' ';
-
-						if (el) {
-							dir.space = true;
-						}
+						dir.space = true;
 
 					} else if (!comment) {
 						continue;
@@ -613,8 +610,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else {
 			clrL = false;
 
-			if ((dir.needPrfx ? el !== alb : el !== lb) && !begin) {
-				prevSpace = dir.space;
+			if (!begin && !dir.strongSpace && !dir.superStrongSpace) {
+				if ((dir.needPrfx ? el === alb : el === lb)) {
+					prevSpace = dir.space;
+
+				} else {
+					prevSpace = false;
+				}
 			}
 
 			if (!comment) {
@@ -829,6 +831,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (!dir.text && prevSpace) {
 						dir.space = true;
+						prevSpace = false;
 					}
 
 					jsDocStart = false;
