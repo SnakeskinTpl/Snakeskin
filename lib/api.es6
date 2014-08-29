@@ -149,7 +149,7 @@ function DirObj(src, params) {
 	// >>>
 
 	/** @type {boolean} */
-	this.space = true;
+	this.space = false;
 
 	/** @type {boolean} */
 	this.strongSpace = false;
