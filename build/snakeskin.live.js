@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v4.1.0 (live)
+ * Snakeskin v4.1.1 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 29 Aug 2014 07:00:31 GMT
+ * Date: Fri, 29 Aug 2014 11:05:56 GMT
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -27,7 +27,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 1, 0],
+	VERSION: [4, 1, 1],
 
 	/**
 	 * Пространство имён для директив
