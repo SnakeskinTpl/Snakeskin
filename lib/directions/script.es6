@@ -11,9 +11,9 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.space = true;
 
-		if (this.autoCorrect) {
-			this.autoCorrect = false;
-			this.structure.params.autoCorrect = true;
+		if (this.autoReplace) {
+			this.autoReplace = false;
+			this.structure.params.autoReplace = true;
 		}
 
 		if (this.isReady()) {
@@ -53,8 +53,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.structure.params.autoCorrect) {
-			this.autoCorrect = true;
+		if (this.structure.params.autoReplace) {
+			this.autoReplace = true;
 		}
 
 		this.append(this.wrap('\'</script>\''));

@@ -104,21 +104,21 @@ run({
 	commonJS: true,
 	prettyPrint: true,
 	throws: true,
-	autoCorrect: true
+	autoReplace: true
 });
 
 run({
 	commonJS: true,
 	prettyPrint: true,
 	throws: true,
-	autoCorrect: true
+	autoReplace: true
 });
 
 run({
 	commonJS: true,
 	prettyPrint: true,
 	throws: true,
-	autoCorrect: true,
+	autoReplace: true,
 	inlineIterators: true
 });
 
@@ -126,7 +126,7 @@ run({
 	commonJS: true,
 	prettyPrint: true,
 	throws: true,
-	autoCorrect: true,
+	autoReplace: true,
 	stringBuffer: true
 });
 
@@ -134,7 +134,7 @@ run({
 	commonJS: true,
 	prettyPrint: true,
 	throws: true,
-	autoCorrect: true,
+	autoReplace: true,
 	stringBuffer: true,
 	inlineIterators: true
 });

@@ -11,15 +11,15 @@ Snakeskin.addDirective(
 	function () {
 		this.startDir();
 
-		if (this.autoCorrect) {
-			this.autoCorrect = false;
+		if (this.autoReplace) {
+			this.autoReplace = false;
 			this.structure.params.enabled = true;
 		}
 	},
 
 	function () {
 		if (this.structure.params.enabled) {
-			this.autoCorrect = true;
+			this.autoReplace = true;
 		}
 	}
 );
