@@ -138,7 +138,7 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
 	if (res !== false) {
 		tpls = require(resSrc);
 
-		if (cacheKey) {
+		if (cacheKey && (cacheEnabled || cache[cacheKey])) {
 			cache[cacheKey] = cache[cacheKey] || {};
 			cache[cacheKey][src] = {
 				tpls: tpls,
