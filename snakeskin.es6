@@ -20,7 +20,7 @@ function clone(obj) {
  * @return {boolean}
  */
 exports.check = function (source, result, opt_key) {
-	if (!exists(source) || !exists(result)) {
+	if (!exists(result)) {
 		return false;
 	}
 
@@ -39,7 +39,7 @@ exports.check = function (source, result, opt_key) {
 		}
 	}
 
-	var includes = /includes <([\d]+)>/.exec(code);
+	var includes = /includes <(.*?)>/.exec(code);
 
 	if (!includes) {
 		return false;
