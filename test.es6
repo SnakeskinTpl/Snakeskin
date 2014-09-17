@@ -125,7 +125,7 @@ run({
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
-	stringBuffer: true
+	renderMode: 'stringBuffer'
 });
 
 run({
@@ -133,7 +133,7 @@ run({
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
-	stringBuffer: true,
+	renderMode: 'stringBuffer',
 	inlineIterators: true
 });
 

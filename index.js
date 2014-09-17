@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('./snakeskin');
 
@@ -65,8 +65,8 @@ params.words = 'words' in program ?
 params.interface = 'interface' in program ?
 	program['interface'] : params.interface;
 
-params.stringBuffer = 'stringBuffer' in program ?
-	program['stringBuffer'] : params.stringBuffer;
+params.renderMode = 'renderMode' in program ?
+	program['renderMode'] : params.renderMode;
 
 params.inlineIterators = 'inlineIterators' in program ?
 	program['inlineIterators'] : params.inlineIterators;
