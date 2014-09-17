@@ -94,10 +94,7 @@ Snakeskin.addDirective(
 						__NODE__ .className = __TMP__['class'];
 					}
 
-					${this.wrap('__NODE__')}
-
-					__RESULT__.push(__NODE__);
-					__NODE__ = null;
+					${this.returnPushNodeDecl()}
 				`;
 
 			} else {
