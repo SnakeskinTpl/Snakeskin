@@ -45,8 +45,11 @@ var tAttrRgxp = /[^'" ]/,
  * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
  *     и при наследовании можно задавать необъявленные родительские шаблоны
  *
- * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
- *     используется Snakeskin.StringBuffer
+ * @param {?string=} [opt_params.renderMode='stringConcat'] - режим ренедеринга шаблонов, доступные варианты:
+ *
+ *     1) stringConcat - рендеринг шаблона в строку с простой конкатенацией через оператор сложения;
+ *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
+ *     3) dom - рендеринг шаблона в набор команд из DOM API.
  *
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
  *     будут развёрнуты в циклы
@@ -78,7 +81,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
- * @return {(string|boolean|null)}
+ * @return {(DocumentFragment|string|boolean)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	src = src || '';
@@ -107,7 +110,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.onError = s(p.onError, p['onError']);
 
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
-	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
+	p.renderMode = s(p.renderMode, p['renderMode']);
+
+	var renderMode = {
+		'stringConcat': true,
+		'stringBuffer': true,
+		'dom': true
+	};
+
+	if (!renderMode[p.renderMode]) {
+		p.renderMode = 'stringConcat';
+	}
+
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 	p.interface = s(p.interface, p['interface']) || false;
@@ -447,7 +461,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		xml: p.xml,
 		commonJS: cjs,
 
-		stringBuffer: p.stringBuffer,
+		renderMode: p.renderMode,
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
