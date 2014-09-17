@@ -423,6 +423,19 @@ DirObj.prototype.wrap = function (opt_str) {
 };
 
 /**
+ * Вернуть текст добавления узла в стек
+ * (для renderMode == dom)
+ * @return {string}
+ */
+DirObj.prototype.returnPushNodeDecl = function () {
+	return `
+		${this.wrap('__NODE__')}
+		__RESULT__.push(__NODE__);
+		__NODE__ = null;
+	`;
+};
+
+/**
  * Вернуть строку возврата содержимого шаблона
  * @return {string}
  */
