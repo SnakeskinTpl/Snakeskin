@@ -313,7 +313,8 @@ function DirObj(src, params) {
 			var __\$C__ = \$C,
 				__async__ = async;
 
-			var __FILTERS__ = Snakeskin.Filters,
+			var __APPEND__ = Snakeskin.appendChild,
+				__FILTERS__ = Snakeskin.Filters,
 				__VARS__ = Snakeskin.Vars,
 				__LOCAL__ = Snakeskin.LocalVars,
 				__STR__,
@@ -396,7 +397,11 @@ DirObj.prototype.getDiff = function (length) {
  * @return {string}
  */
 DirObj.prototype.$ = function () {
-	return `__RESULT__${this.stringBuffer ? '.push(' : '+= '}`;
+	switch (this.renderMode) {
+		case 'stringConcat': return '__RESULT__ +=';
+		case 'stringBuffer': return '__RESULT__.push(';
+		case 'dom': return '__APPEND__(__RESULT__[__RESULT__.length - 1],';
+	}
 };
 
 /**
@@ -404,7 +409,7 @@ DirObj.prototype.$ = function () {
  * @return {string}
  */
 DirObj.prototype.$$ = function () {
-	return this.stringBuffer ? ')' : '';
+	return this.renderMode !== 'stringConcat' ? ')' : '';
 };
 
 /**
@@ -422,7 +427,7 @@ DirObj.prototype.wrap = function (opt_str) {
  * @return {string}
  */
 DirObj.prototype.returnResult = function () {
-	return `__RESULT__${this.stringBuffer ? '.join(\'\')' : ''}`
+	return `__RESULT__${this.renderMode === 'stringBuffer' ? '.join(\'\')' : ''}`
 };
 
 /**
@@ -430,7 +435,11 @@ DirObj.prototype.returnResult = function () {
  * @return {string}
  */
 DirObj.prototype.declResult = function () {
-	return this.stringBuffer ? 'new Snakeskin.StringBuffer()' : '\'\'';
+	switch (this.renderMode) {
+		case 'stringConcat': return '\'\'';
+		case 'stringBuffer': return 'new Snakeskin.StringBuffer()';
+		case 'dom': return '[document.createDocumentFragment()]';
+	}
 };
 
 /**
