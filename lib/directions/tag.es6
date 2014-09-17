@@ -50,15 +50,23 @@ Snakeskin.addDirective(
 			params.tag = desc.tag;
 			params.block = !inlineTagMap[desc.tag];
 
-			let groups = this.splitAttrsGroup(parts.slice(1).join(' '));
+			let groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
+				dom = this.renderMode === 'dom';
 
 			let str = `
 				__TMP__ = {
 					'class': ''
 				};
-
-				${this.wrap(`'<${desc.tag}'`)}
 			`;
+
+			if (dom) {
+				str += `
+					__NODE__ = document.createElement('${desc.tag}');
+				`;
+
+			} else {
+				str += this.wrap(`'<${desc.tag}'`);
+			}
 
 			for (let i = -1; ++i < groups.length;) {
 				let el = groups[i];
@@ -66,7 +74,12 @@ Snakeskin.addDirective(
 			}
 
 			if (desc.id) {
-				str += this.wrap(`' id="${desc.id}"'`);
+				if (dom) {
+					str += `__NODE__.id = '${desc.id}';`;
+
+				} else {
+					str += this.wrap(`' id="${desc.id}"'`);
+				}
 			}
 
 			if (desc.classes.length) {
@@ -75,7 +88,22 @@ Snakeskin.addDirective(
 				`;
 			}
 
-			str += this.wrap(`(__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '${!params.block ? '/' : ''}>'`);
+			if (dom) {
+				str += `
+					if (__TMP__['class']) {
+						__NODE__ .className = __TMP__['class'];
+					}
+
+					${this.wrap('__NODE__')}
+
+					__RESULT__.push(__NODE__);
+					__NODE__ = null;
+				`;
+
+			} else {
+				str += this.wrap(`(__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '${!params.block ? '/' : ''}>'`);
+			}
+
 			this.append(str);
 		}
 	},
@@ -85,7 +113,16 @@ Snakeskin.addDirective(
 		this.bemRef = params.bemRef;
 
 		if (params.block) {
-			this.append(this.wrap(`'</${params.tag}>'`));
+			let str;
+
+			if (this.renderMode === 'dom') {
+				str = '__RESULT__.pop();';
+
+			} else {
+				str = this.wrap(`'</${params.tag}>'`);
+			}
+
+			this.append(str);
 		}
 	}
 );

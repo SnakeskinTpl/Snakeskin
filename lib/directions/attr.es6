@@ -141,7 +141,14 @@ DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_c
 		}
 
 		res += `if ((${arg[0]}) != null && (${arg[0]}) != '' && __STR__) {`;
-		let tmp = this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`);
+		let tmp = `
+			if (__NODE__) {
+				__NODE__.setAttribute(${arg[0]}, __STR__);
+
+			} else {
+				${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
+			}
+		`;
 
 		if (opt_classLink) {
 			res += `
