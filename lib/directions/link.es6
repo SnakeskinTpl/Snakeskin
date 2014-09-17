@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 						typesStr[key] += `__NODE__.${attr} = '${el[attr]}';`;
 
 					} else {
-						typesStr[key] += `${attr}="${el[attr]}"`;
+						typesStr[key] += ` ${attr}="${el[attr]}"`;
 					}
 				}
 			}
@@ -74,7 +74,7 @@ Snakeskin.addDirective(
 				`;
 
 			} else {
-				str = this.wrap(`'<link ${typesStr[type] || this.replaceTplVars(type)}'`);
+				str = this.wrap(`'<link ${(typesStr[type] || this.replaceTplVars(type)).trim()}'`);
 			}
 
 			this.append(str);
