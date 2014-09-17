@@ -102,6 +102,23 @@ Snakeskin.forIn = function (obj, callback) {
 	}
 };
 
+var inlineTagMap = {
+	'img': true,
+	'link': true,
+	'embed': true,
+	'br': true,
+	'hr': true,
+	'wbr': true,
+	'meta': true,
+	'input': true,
+	'source': true,
+	'track': true,
+	'base': true,
+	'area': true,
+	'col': true,
+	'param': true
+};
+
 /**
  * Вставить заданный узел или текст в исходный
  *
@@ -111,7 +128,7 @@ Snakeskin.forIn = function (obj, callback) {
  * @return {(!Node|string)}
  */
 Snakeskin.appendChild = function (node, obj) {
-	if (node['tagName'] && node['tagName'].toLowerCase() === 'link') {
+	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
 		return obj;
 	}
 

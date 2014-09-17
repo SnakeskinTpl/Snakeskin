@@ -1,20 +1,4 @@
 var tagRgxp = /^([^\s]+?\(|\()/;
-var inlineTagMap = {
-	'img': true,
-	'link': true,
-	'embed': true,
-	'br': true,
-	'hr': true,
-	'wbr': true,
-	'meta': true,
-	'input': true,
-	'source': true,
-	'track': true,
-	'base': true,
-	'area': true,
-	'col': true,
-	'param': true
-};
 
 Snakeskin.addDirective(
 	'tag',
