@@ -427,7 +427,11 @@ DirObj.prototype.wrap = function (opt_str) {
  * @return {string}
  */
 DirObj.prototype.returnResult = function () {
-	return `__RESULT__${this.renderMode === 'stringBuffer' ? '.join(\'\')' : ''}`
+	switch (this.renderMode) {
+		case 'stringConcat': return '__RESULT__';
+		case 'stringBuffer': return '__RESULT__.join(\'\')';
+		case 'dom': return '__RESULT__[0]';
+	}
 };
 
 /**
