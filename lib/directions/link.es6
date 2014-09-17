@@ -110,7 +110,6 @@ Snakeskin.addDirective(
 
 		if (this.renderMode === 'dom') {
 			str = `
-				${this.wrap('__NODE__')}
 				__RESULT__.pop();
 				__NODE__ = null;
 			`;
@@ -120,6 +119,5 @@ Snakeskin.addDirective(
 		}
 
 		this.append(str);
-
 	}
 );
