@@ -135,7 +135,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var debug =
 		p.debug = s(p.debug, p['debug']);
 
-	p.xml = s(p.xml, p['xml']) !== false;
+	p.xml = s(p.xml, p['xml']) !== false && p.renderMode !== 'dom';
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
