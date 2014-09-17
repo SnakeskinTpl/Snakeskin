@@ -210,7 +210,7 @@ Snakeskin.addDirective(
 
 					{
 						inlineIterators: this.inlineIterators,
-						stringBuffer: this.stringBuffer,
+						renderMode: this.renderMode,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
 						autoReplace: this.autoReplace,

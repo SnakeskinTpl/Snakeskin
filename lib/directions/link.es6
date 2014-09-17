@@ -25,14 +25,59 @@ Snakeskin.addDirective(
 			}
 
 			let parts = command.split(' '),
-				type = parts[0];
+				type = parts[0],
+				dom = this.renderMode === 'dom';
 
 			let types = {
-				'css': 'type="text/css" rel="stylesheet"',
-				'acss': 'type="text/css" rel="alternate stylesheet"'
+				'css': {
+					'type': 'text/css',
+					'rel': 'stylesheet'
+				},
+
+				'acss': {
+					'type': 'text/css',
+					'rel': 'alternate stylesheet'
+				}
 			};
 
-			this.append(this.wrap(`'<link ${types[type] || this.replaceTplVars(type)}'`));
+			let typesStr = {};
+			for (let key in types) {
+				if (!types.hasOwnProperty(key)) {
+					continue;
+				}
+
+				let el = types[key];
+				for (let attr in el) {
+					if (!el.hasOwnProperty(attr)) {
+						continue;
+					}
+
+					typesStr[key] = typesStr[key] || '';
+
+					if (dom) {
+						typesStr[key] += `__NODE__.${attr} = '${el[attr]}';`;
+
+					} else {
+						typesStr[key] += `${attr}="${el[attr]}"`;
+					}
+				}
+			}
+
+			let str;
+
+			if (dom) {
+				str = `
+					__NODE__ = document.createElement('link');
+					${typesStr[type] || ''}
+					${this.wrap('__NODE__')}
+					__RESULT__.push(__NODE__);
+				`;
+
+			} else {
+				str = this.wrap(`'<link ${typesStr[type] || this.replaceTplVars(type)}'`);
+			}
+
+			this.append(str);
 
 			if (parts.length > 1) {
 				let args = [].slice.call(arguments);
@@ -44,7 +89,14 @@ Snakeskin.addDirective(
 				this.inline = false;
 			}
 
-			this.append(this.wrap('\' href="\''));
+			if (dom) {
+				str = '__NODE__.href =';
+
+			} else {
+				str = this.wrap('\' href="\'');
+			}
+
+			this.append(str);
 		}
 	},
 
@@ -54,6 +106,20 @@ Snakeskin.addDirective(
 			this.autoReplace = true;
 		}
 
-		this.append(this.wrap('\'"/>\''));
+		let str;
+
+		if (this.renderMode === 'dom') {
+			str = `
+				${this.wrap('__NODE__')}
+				__RESULT__.pop();
+				__NODE__ = null;
+			`;
+
+		} else {
+			str = this.wrap('\'"/>\'');
+		}
+
+		this.append(str);
+
 	}
 );
