@@ -2,7 +2,7 @@
  * Таблица созданных переменных
  */
 DirObj.prototype.varCache = {
-	init: function () {
+	init() {
 		return {};
 	}
 };
