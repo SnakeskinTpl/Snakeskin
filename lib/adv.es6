@@ -97,7 +97,7 @@ DirObj.prototype.toBaseSyntax = function (str, i) {
 				let adv = el === ADV_LEFT_BLOCK ?
 					ADV_LEFT_BLOCK : '';
 
-				var s = dir ? adv + LEFT_BLOCK : '',
+				let s = dir ? adv + LEFT_BLOCK : '',
 					e = dir ? RIGHT_BLOCK : '';
 
 				let obj = {
