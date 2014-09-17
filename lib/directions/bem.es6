@@ -50,17 +50,42 @@ Snakeskin.addDirective(
 			bem[bemName].tag;
 
 		if (this.isReady()) {
-			this.append(this.wrap(`
-				'<${params.tag || params.original || 'div'}
-					class="i-block"
-					data-params="{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}"
-				>'
-			`));
+			let str,
+				tag = params.tag || params.original || 'div',
+				desc = `{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}`;
+
+			if (this.renderMode === 'dom') {
+				str = `
+					__NODE__ = document.createElement('${tag}');
+					__NODE__.className = 'i-block';
+					__NODE__.setAttribute('data-params', '${desc}');
+					${this.returnPushNodeDecl()}
+				`;
+
+			} else {
+				str = this.wrap(`
+					'<${tag}
+						class="i-block"
+						data-params="${desc}"
+					>'
+				`);
+			}
+
+			this.append(str);
 		}
 	},
 
 	function () {
-		var params = this.structure.params;
-		this.append(this.wrap(`'</${(params.tag || params.original || 'div')}>'`));
+		var params = this.structure.params,
+			str;
+
+		if (this.renderMode == 'dom') {
+			str = '__RESULT__.pop();';
+
+		} else {
+			str = this.wrap(`'</${(params.tag || params.original || 'div')}>'`);
+		}
+
+		this.append(str);
 	}
 );
