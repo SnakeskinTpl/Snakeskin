@@ -25,13 +25,27 @@ Snakeskin.addDirective(
 			}
 
 			let parts = command.split(' '),
-				type = parts[0];
+				type = parts[0],
+				dom = this.renderMode === 'dom';
 
 			let types = {
 				'css': 'text/css'
 			};
 
-			this.append(this.wrap(`'<style type="${types[type] || this.replaceTplVars(type)}"'`));
+			let str,
+				desc = types[type] || this.replaceTplVars(type);
+
+			if (dom) {
+				str = `
+					__NODE__ = document.createElement('style');
+					__NODE__.type = '${desc}';
+				`;
+
+			} else {
+				str = this.wrap(`'<style type="${desc}"'`);
+			}
+
+			this.append(str);
 
 			if (parts.length > 1) {
 				let args = [].slice.call(arguments);
@@ -43,7 +57,14 @@ Snakeskin.addDirective(
 				this.inline = false;
 			}
 
-			this.append(this.wrap('\'>\''));
+			if (dom) {
+				str = this.returnPushNodeDecl();
+
+			} else {
+				str = this.wrap('\'>\'');
+			}
+
+			this.append(str);
 		}
 	},
 
@@ -53,6 +74,15 @@ Snakeskin.addDirective(
 			this.autoReplace = true;
 		}
 
-		this.append(this.wrap('\'</style>\''));
+		let str;
+
+		if (this.renderMode === 'dom') {
+			str = '__RESULT__.pop();';
+
+		} else {
+			str = this.wrap('\'</style>\'');
+		}
+
+		this.append(str);
 	}
 );
