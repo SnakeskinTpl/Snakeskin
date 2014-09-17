@@ -365,7 +365,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			},
 
 			'@adv': {
-				'%lorem%': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor dolores error facilis iusto magnam nisi praesentium voluptas. Delectus laudantium minus quia sapiente sunt temporibus voluptates! Explicabo iusto molestias quis voluptatibus.'
+				'%lorem%':
+					'Lorem ipsum dolor sit amet, consectetur adipisicing elit. ' +
+					'Dolor dolores error facilis iusto magnam nisi praesentium voluptas. ' +
+					'Delectus laudantium minus quia sapiente sunt temporibus voluptates! ' +
+					'Explicabo iusto molestias quis voluptatibus.'
 			},
 
 			'@symbols': {
