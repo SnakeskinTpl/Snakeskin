@@ -108,11 +108,17 @@ Snakeskin.forIn = function (obj, callback) {
  * @expose
  * @param {!Node} node - исходный элемент
  * @param {(!Node|string)} obj - элемент для вставки или текст
+ * @return {(!Node|string)}
  */
 Snakeskin.appendChild = function (node, obj) {
+	if (node['tagName'] && node['tagName'].toLowerCase() === 'link') {
+		return obj;
+	}
+
 	if (typeof obj === 'string') {
 		obj = document.createTextNode(obj);
 	}
 
 	node.appendChild(obj);
+	return obj;
 };
