@@ -259,7 +259,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var macros = {},
 		mGroups = {};
 
-	var inlineMacro = {'\\': true},
+	var inlineMacro = {},
 		comboMacro = {};
 
 	var beforeTag = {},
@@ -268,8 +268,74 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	/**
 	 * @param {Object} obj
 	 * @param {?string=} [opt_include]
+	 * @param {?boolean=} [opt_init]
+	 * @param {?boolean=} [opt_def]
 	 */
-	function setMacros(obj, opt_include) {
+	function setMacros(obj, opt_include, opt_init, opt_def) {
+		if (opt_init) {
+			macros = {};
+			mGroups = {};
+
+			inlineMacro = {'\\': true};
+			comboMacro = {};
+
+			beforeTag = {};
+			afterTag = {};
+		}
+
+		if (opt_def) {
+			setMacros({
+				'@quotes': {
+					'"': [['«', '»'], ['‘', '’']],
+					'\'': [['“', '”'], ['„', '“']]
+				},
+
+				'@shorts': {
+					'(c)': '©',
+					'(tm)': '™',
+
+					'[v]': '☑',
+					'[x]': '☒',
+					'[_]': '☐',
+
+					'<-': '←',
+					'<-|': '↤',
+					'->': '→',
+					'|->': '↦',
+					'<->': '↔',
+
+					'...': {
+						inline: true,
+						value: '…'
+					},
+
+					'-': {
+						inline: true,
+						value: '−'
+					},
+
+					'--': {
+						inline: true,
+						value: '—'
+					}
+				},
+
+				'@adv': {
+					'%lorem%':
+						'Lorem ipsum dolor sit amet, consectetur adipisicing elit. ' +
+						'Dolor dolores error facilis iusto magnam nisi praesentium voluptas. ' +
+						'Delectus laudantium minus quia sapiente sunt temporibus voluptates! ' +
+						'Explicabo iusto molestias quis voluptatibus.'
+				},
+
+				'@symbols': {
+					'\\n': '\\n',
+					'\\r': '\\r',
+					'\\s': '&nbsp;'
+				}
+			});
+		}
+
 		if (obj == null) {
 			obj = mGroups[opt_include];
 
@@ -342,62 +408,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	if (p.autoReplace) {
-		let def = {
-			'@quotes': {
-				'"': [['«', '»'], ['‘', '’']],
-				'\'': [['“', '”'], ['„', '“']]
-			},
-
-			'@shorts': {
-				'(c)': '©',
-				'(tm)': '™',
-
-				'[v]': '☑',
-				'[x]': '☒',
-				'[_]': '☐',
-
-				'<-': '←',
-				'<-|': '↤',
-				'->': '→',
-				'|->': '↦',
-				'<->': '↔',
-
-				'...': {
-					inline: true,
-					value: '…'
-				},
-
-				'-': {
-					inline: true,
-					value: '−'
-				},
-
-				'--': {
-					inline: true,
-					value: '—'
-				}
-			},
-
-			'@adv': {
-				'%lorem%':
-					'Lorem ipsum dolor sit amet, consectetur adipisicing elit. ' +
-					'Dolor dolores error facilis iusto magnam nisi praesentium voluptas. ' +
-					'Delectus laudantium minus quia sapiente sunt temporibus voluptates! ' +
-					'Explicabo iusto molestias quis voluptatibus.'
-			},
-
-			'@symbols': {
-				'\\n': '\\n',
-				'\\r': '\\r',
-				'\\s': '&nbsp;'
-			}
-		};
-
-		if (!sp.proto) {
-			setMacros(def);
-		}
-
-		setMacros(p.macros);
+		setMacros(p.macros, null, true, !sp.proto);
 	}
 
 	// <<<
@@ -476,6 +487,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		throws: p.throws
 	});
 
+	dir.setMacros = setMacros;
 	var templateMap = dir.getGroup('rootTemplate');
 
 	// Если true, то идёт содержимое директивы,

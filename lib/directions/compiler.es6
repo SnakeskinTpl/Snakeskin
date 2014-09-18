@@ -162,6 +162,10 @@ Snakeskin.addDirective(
 					init ?
 						null : params
 				);
+
+				if (flag === 'macros') {
+					this.setMacros(value, null, init, init);
+				}
 			}
 
 			params[flag] = value;
