@@ -159,6 +159,7 @@ function DirObj(src, params) {
 	 */
 	this.params = [
 		{
+			'@root': true,
 			renderMode: this.renderMode,
 			inlineIterators: this.inlineIterators,
 			xml: this.xml,
