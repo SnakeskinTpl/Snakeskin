@@ -180,7 +180,7 @@ exports.execFile = function (src, opt_params, opt_tplName) {
 		tpl = tpls[opt_tplName];
 
 	} else {
-		tpl = tpls[path.basename(src, path.extname(src))] || tpls.main || tpls[Object.keys(tpls)[0]];
+		tpl = tpls[path.basename(src, path.extname(src))] || tpls.main || tpls.index || tpls[Object.keys(tpls)[0]];
 	}
 
 	return tpl || null;
@@ -214,7 +214,7 @@ exports.exec = function (txt, opt_params, opt_tplName) {
 		tpl = tpls[opt_tplName];
 
 	} else {
-		tpl = tpls.main || tpls[Object.keys(tpls)[0]];
+		tpl = tpls.main || tpls.index || tpls[Object.keys(tpls)[0]];
 	}
 
 	return tpl || null;
