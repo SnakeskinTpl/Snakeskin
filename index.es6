@@ -42,7 +42,7 @@ program
 	.parse(process.argv);
 
 var params = program['params'] ?
-	parse(params) : {};
+	Snakeskin.toObj(params) : {};
 
 params.xml = 'disableXml' in program ?
 	!program['disableXml'] : params.xml;
@@ -86,11 +86,11 @@ params.macros = 'macros' in program ?
 var prettyPrint = params.prettyPrint;
 
 if (params.language) {
-	params.language = parse(params.language);
+	params.language = Snakeskin.toObj(params.language);
 }
 
 if (params.macros) {
-	params.macros = parse(params.macros);
+	params.macros = Snakeskin.toObj(params.macros);
 }
 
 var exec = program['exec'];
@@ -116,32 +116,6 @@ if (!file && args.length) {
 		file = input;
 		input = false;
 	}
-}
-
-function parse(val) {
-	if (typeof val !== 'string') {
-		return val;
-	}
-
-	if (exists(val)) {
-		val = fs.readFileSync(val).toString();
-	}
-
-	var res;
-
-	try {
-		res = JSON.parse(val);
-
-	} catch (ignore) {
-		try {
-			res = eval(`(${val})`);
-
-		} catch (ignore) {
-			res = {};
-		}
-	}
-
-	return res || {};
 }
 
 function action(data) {
@@ -187,7 +161,7 @@ function action(data) {
 			}
 
 			if (tplData && tplData !== true) {
-				tplData = parse(tplData);
+				tplData = Snakeskin.toObj(tplData);
 
 			} else {
 				tplData = void 0;
