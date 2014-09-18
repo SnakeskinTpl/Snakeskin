@@ -114,11 +114,12 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 
+		var file = this.info['file'];
 		var root = this.params[0],
 			last = this.params[this.params.length - 1],
 			params = last;
 
-		if (last['@root'] || (this.info['file'] === void 0 || last['@file'] !== this.info['file'])) {
+		if (last['@root'] || (file === void 0 || last['@file'] !== file)) {
 			params = {
 				'@file': this.info['file']
 			};
@@ -148,7 +149,7 @@ Snakeskin.addDirective(
 
 		if (flag in root) {
 			if (includeMap[flag]) {
-				value = mix(Snakeskin.toObj(value, this.info['file']), params[flag]);
+				value = mix(Snakeskin.toObj(value, file), params[flag]);
 			}
 
 			params[flag] = value;
