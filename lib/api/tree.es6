@@ -1,41 +1,6 @@
-/**
- * Вернуть таблицу названий директивы,
- * которые принадлежат к заданным группам
- *
- * @param {...string} names - название группы
- * @return {!Object}
+/*!
+ * API для работы с деревом шаблона
  */
-DirObj.prototype.getGroup = function (/*= names */...names) {
-	var map = {},
-		ignore = {};
-
-	for (let i = -1; ++i < names.length;) {
-		let name = names[i],
-			group = groups[name];
-
-		if (name === 'callback' && this.inlineIterators) {
-			let inline = groups['inlineIterator'];
-
-			for (let key in inline) {
-				if (!inline.hasOwnProperty(key)) {
-					continue;
-				}
-
-				ignore[key] = true;
-			}
-		}
-
-		for (let key in group) {
-			if (!group.hasOwnProperty(key) || ignore[key]) {
-				continue;
-			}
-
-			map[key] = true;
-		}
-	}
-
-	return map;
-};
 
 /**
  * Проверить начилие указанной директивы в цепочке структуры,
