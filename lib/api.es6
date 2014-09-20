@@ -11,3 +11,5 @@
 //#include ./api/inherit.js
 //#include ./api/eval.js
 //#include ./api/args.js
+//#include ./api/jadeLike.js
+//#include ./api/error.js
