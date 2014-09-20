@@ -1,3 +1,7 @@
+/*!
+ * Методы live библиотеки Snakeskin
+ */
+
 if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
 	var keys = Object.keys;
 }

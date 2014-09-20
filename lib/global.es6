@@ -1,3 +1,7 @@
+/*!
+ * Основные глобальные переменные библиотеки
+ */
+
 var rgxpCache = {};
 var globalCache = {},
 	globalFnCache = {};
