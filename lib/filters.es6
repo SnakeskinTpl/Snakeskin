@@ -2,86 +2,86 @@
  * Набор базовых фильтров и методы для работы с ними
  */
 
+/**
+ * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
+ *
+ * @expose
+ * @param {!Object} filters - импортируемый объект
+ * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
+ */
+Snakeskin.importFilters = function (filters, opt_namespace) {
+	var obj = Snakeskin.Filters;
+
+	if (opt_namespace) {
+		let parts = opt_namespace.split('.');
+		for (let i = -1; ++i < parts.length;) {
+			if (!obj[parts[i]]) {
+				obj[parts[i]] = {};
+			}
+
+			obj = obj[parts[i]];
+		}
+	}
+
+	for (let key in filters) {
+		if (!filters.hasOwnProperty(key)) {
+			continue;
+		}
+
+		obj[key] = filters[key];
+	}
+};
+
+var entityMap = {
+	'&': '&amp;',
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	'\'': '&#39;',
+	'/': '&#x2F;'
+};
+
+var escapeHTMLRgxp = /[&<>"'\/]/g,
+	escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>=]+)/g,
+	escapeJavaScript = /(javascript)(:|;)/,
+	escapeHTML = (s) => entityMap[s];
+
+/**
+ * Экранирование HTML сущностей
+ *
+ * @expose
+ * @param {*} str - исходная строка
+ * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
+ * @return {string}
+ */
+Snakeskin.Filters.html = function (str, opt_attr) {
+	var res = String(str);
+
+	if (opt_attr) {
+		res = res.replace(escapeAttrRgxp, '$1"$2"');
+	}
+
+	res = res.replace(escapeHTMLRgxp, escapeHTML);
+
+	if (opt_attr) {
+		res = res.replace(escapeJavaScript, '$1&#31;$2');
+	}
+
+	return res;
+};
+
+/**
+ * Замена undefined на ''
+ *
+ * @expose
+ * @param {*} str - исходная строка
+ * @return {*}
+ */
+Snakeskin.Filters.undef = function (str) {
+	return str !== void 0 ? str : '';
+};
+
 (() => {
-	/**
-	 * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
-	 *
-	 * @expose
-	 * @param {!Object} filters - импортируемый объект
-	 * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
-	 */
-	Snakeskin.importFilters = function (filters, opt_namespace) {
-		var obj = Snakeskin.Filters;
-
-		if (opt_namespace) {
-			let parts = opt_namespace.split('.');
-			for (let i = -1; ++i < parts.length;) {
-				if (!obj[parts[i]]) {
-					obj[parts[i]] = {};
-				}
-
-				obj = obj[parts[i]];
-			}
-		}
-
-		for (let key in filters) {
-			if (!filters.hasOwnProperty(key)) {
-				continue;
-			}
-
-			obj[key] = filters[key];
-		}
-	};
-
-	var entityMap = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		'\'': '&#39;',
-		'/': '&#x2F;'
-	};
-
-	var escapeHTMLRgxp = /[&<>"'\/]/g,
-		escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>=]+)/g,
-		escapeJavaScript = /(javascript)(:|;)/,
-		escapeHTML = (s) => entityMap[s];
-
-	/**
-	 * Экранирование HTML сущностей
-	 *
-	 * @expose
-	 * @param {*} str - исходная строка
-	 * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
-	 * @return {string}
-	 */
-	Snakeskin.Filters.html = function (str, opt_attr) {
-		var res = String(str);
-
-		if (opt_attr) {
-			res = res.replace(escapeAttrRgxp, '$1"$2"');
-		}
-
-		res = res.replace(escapeHTMLRgxp, escapeHTML);
-
-		if (opt_attr) {
-			res = res.replace(escapeJavaScript, '$1&#31;$2');
-		}
-
-		return res;
-	};
-
-	/**
-	 * Замена undefined на ''
-	 *
-	 * @expose
-	 * @param {*} str - исходная строка
-	 * @return {*}
-	 */
-	Snakeskin.Filters.undef = function (str) {
-		return str !== void 0 ? str : '';
-	};
-
 	var uentityMap = {
 		'&amp;': '&',
 		'&lt;': '<',
