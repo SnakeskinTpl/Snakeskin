@@ -26,7 +26,7 @@ Snakeskin.addDirective(
 
 			let parts = command.split(' '),
 				type = parts[0],
-				dom = this.renderMode === 'dom';
+				dom = !this.domComment && this.renderMode === 'dom';
 
 			let types = {
 				'js': 'text/javascript',
@@ -83,7 +83,7 @@ Snakeskin.addDirective(
 
 		let str;
 
-		if (this.renderMode === 'dom') {
+		if (!this.domComment && this.renderMode === 'dom') {
 			str = '__RESULT__.pop();';
 
 		} else {
