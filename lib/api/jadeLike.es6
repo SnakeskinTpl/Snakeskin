@@ -4,7 +4,8 @@
 
 (() => {
 	var commandRgxp = /([^\s]+).*/,
-		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/;
+		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
+		lastHashRgxp = /#$/;
 
 	/**
 	 * Вернуть объект-описание преобразованной части шаблона из
@@ -156,6 +157,8 @@
 					let parts,
 						txt;
 
+					decl.command = decl.command.replace(lastHashRgxp, '\\#');
+
 					if (dir) {
 						parts = decl.command.split(INLINE_COMMAND);
 						txt = parts.slice(1).join(INLINE_COMMAND);
@@ -218,7 +221,7 @@
 		var s = dir.adv + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		return ` ${s}__&__${e}\n${s}__end__${e}${s}__cutLine__${e}${s}__&__${e}`;
+		return `${s}__&__${e}\n${s}__end__${e}${s}__cutLine__${e}${s}__&__${e}`;
 	}
 
 	/**
