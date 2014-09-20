@@ -1,9 +1,17 @@
+/**
+ * Если true, то идёт декларация XML комментария
+ * в режиме рендеренга dom
+ * @type {number}
+ */
+DirObj.prototype.domComment = false;
+
 Snakeskin.addDirective(
 	'comment',
 
 	{
 		text: true,
 		block: true,
+		selfInclude: false,
 		placement: 'template',
 		replacers: {
 			'@!': (cmd) => cmd.replace('@!', 'comment '),
@@ -19,7 +27,7 @@ Snakeskin.addDirective(
 		var str;
 
 		if (this.renderMode === 'dom') {
-			this.advRenderMode = 'tmp';
+			this.domComment = true;
 			str = '__TMP_RESULT__ = \'\';';
 
 		} else {
@@ -39,7 +47,7 @@ Snakeskin.addDirective(
 
 		if (this.renderMode === 'dom') {
 			str = this.wrap(`'${comment}'`);
-			this.advRenderMode = null;
+			this.domComment = false;
 			str += `
 				__NODE__ = document.createComment(__TMP_RESULT__);
 				${this.returnPushNodeDecl()}
