@@ -1,3 +1,8 @@
+/*!
+ * API для обработки JS-like конструкций в шаблоне
+ * (фильтры, scope и т.д.)
+ */
+
 (() => {
 	var blackWordMap = {
 		'+': true,
@@ -451,7 +456,7 @@
 						tplName &&
 						constCache[tplName] &&
 						constCache[tplName][vres]
-						) {
+					) {
 
 						this.error(`constant "${vres}" is already defined`);
 						return '';
@@ -466,7 +471,7 @@
 						canParse &&
 						(!opt_sys || opt_iSys) && !filterStart &&
 						(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary])
-						) {
+					) {
 
 						vres = `${unUndefLabel}(${vres})`;
 					}
@@ -517,7 +522,7 @@
 						}
 					}
 
-					// Составление тела фильтра
+				// Составление тела фильтра
 				} else if (el !== ')' || pCountFilter) {
 					let last = filter.length - 1;
 					filter[last] += el;
@@ -581,7 +586,7 @@
 						resTmp +
 						(input ? ',' + input : '') +
 						(filterWrapper || !pCount ? ')' : '') +
-						')';
+					')';
 				}
 
 				resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
@@ -590,8 +595,8 @@
 				let fstr = rvFilter.join().length + 1;
 				res = pCount ?
 					res.substring(0, pos[0] + addition) +
-					resTmp +
-					res.substring(pos[1] + fAdd + fstr) :
+						resTmp +
+						res.substring(pos[1] + fAdd + fstr) :
 
 					resTmp;
 
@@ -692,6 +697,8 @@
 			}
 		}
 
-		return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') + res + (!unEscape && !opt_sys ? `, ${this.attr})` : '');
+		return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') +
+			res +
+			(!unEscape && !opt_sys ? `, ${this.attr})` : '');
 	};
 })();
