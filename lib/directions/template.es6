@@ -361,6 +361,7 @@ for (let i = -1; ++i < template.length;) {
 				}
 
 				var __RESULT__ = ${this.declResult()},
+					__TMP_RESULT__,
 					__NODE__,
 					\$_;
 
