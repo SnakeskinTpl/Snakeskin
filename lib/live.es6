@@ -133,7 +133,7 @@ var inlineTagMap = {
  */
 Snakeskin.appendChild = function (node, obj) {
 	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
-		return obj;
+		return String(obj).trim();
 	}
 
 	if (typeof obj === 'string') {
