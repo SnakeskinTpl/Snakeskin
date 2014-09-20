@@ -1,7 +1,7 @@
 /**
  * Если true, то идёт декларация XML комментария
  * в режиме рендеренга dom
- * @type {number}
+ * @type {boolean}
  */
 DirObj.prototype.domComment = false;
 
