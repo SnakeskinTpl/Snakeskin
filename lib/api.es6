@@ -13,3 +13,4 @@
 //#include ./api/args.js
 //#include ./api/jadeLike.js
 //#include ./api/error.js
+//#include ./api/escape.js
