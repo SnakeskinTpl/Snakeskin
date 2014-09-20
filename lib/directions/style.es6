@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 
 		if (this.isReady()) {
 			if (command) {
-				command = command.replace(tagRgxp, 'css $1');
+				command = command.replace(emptyCommandParamsRgxp, 'css $1');
 
 			} else {
 				command = 'css';

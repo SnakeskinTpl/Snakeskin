@@ -1,4 +1,4 @@
-var tagRgxp = /^([^\s]+?\(|\()/;
+var emptyCommandParamsRgxp = /^([^\s]+?\(|\()/;
 
 Snakeskin.addDirective(
 	'tag',
@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 
 		if (this.isReady()) {
 			if (command) {
-				command = command.replace(tagRgxp, 'div $1');
+				command = command.replace(emptyCommandParamsRgxp, 'div $1');
 
 			} else {
 				command = 'div';
@@ -35,7 +35,7 @@ Snakeskin.addDirective(
 			params.block = !inlineTagMap[desc.tag];
 
 			let groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
-				dom = this.renderMode === 'dom';
+				dom = !this.domComment && this.renderMode === 'dom';
 
 			let str = `
 				__TMP__ = {
@@ -96,7 +96,7 @@ Snakeskin.addDirective(
 		if (params.block) {
 			let str;
 
-			if (this.renderMode === 'dom') {
+			if (!this.domComment && this.renderMode === 'dom') {
 				str = '__RESULT__.pop();';
 
 			} else {
