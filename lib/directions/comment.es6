@@ -2,24 +2,29 @@ Snakeskin.addDirective(
 	'comment',
 
 	{
-		placement: 'template',
 		text: true,
+		block: true,
+		placement: 'template',
 		replacers: {
-			'#!': (cmd) => cmd.replace('#!', 'comment '),
-			'/#': (cmd) => cmd.replace('\/#', 'end comment')
+			'@!': (cmd) => cmd.replace('@!', 'comment '),
+			'/@': (cmd) => cmd.replace('\/@', 'end comment')
 		}
 	},
 
 	function (command) {
 		this.startDir(null, {
-			command: Boolean(command)
+			conditional: Boolean(command)
 		});
 
-		if (this.renderMode === 'dom') {
-			return this.error(`directive "${this.name}" can't be used with a "dom" render mode`);
-		}
+		var str;
 
-		var str = this.wrap('\'<!--\'');
+		if (this.renderMode === 'dom') {
+			this.advRenderMode = 'tmp';
+			str = '__TMP_RESULT__ = \'\';';
+
+		} else {
+			str = this.wrap('\'<!--\'');
+		}
 
 		if (command) {
 			str += this.wrap(`'[if ${this.replaceTplVars(command)}]>'`);
@@ -29,6 +34,23 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.append(this.wrap(`'${this.structure.params.command ? ' <![endif]' : ''}-->'`));
+		var comment = this.structure.params.conditional ? ' <![endif]' : '',
+			str;
+
+		if (this.renderMode === 'dom') {
+			str = this.wrap(`'${comment}'`);
+			this.advRenderMode = null;
+			str += `
+				__NODE__ = document.createComment(__TMP_RESULT__);
+				${this.returnPushNodeDecl()}
+				__TMP_RESULT__ = \'\';
+				__RESULT__.pop();
+			`;
+
+		} else {
+			str = this.wrap(`'${comment}-->'`);
+		}
+
+		this.append(str);
 	}
 );
