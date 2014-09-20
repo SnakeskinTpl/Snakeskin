@@ -395,7 +395,7 @@
 					if (numRgxp.test(el)) {
 						vres = finalWord;
 
-						// Экспорт глобальный и супер глобальных переменных
+					// Экспорт глобальный и супер глобальных переменных
 					} else if ((useWith && !modMap[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
 
 						if (useWith) {
@@ -410,7 +410,7 @@
 								vres = addScope(vres);
 							}
 
-							// Супер глобальная переменная вне with
+						// Супер глобальная переменная вне with
 						} else {
 							vres = `__VARS__${concatProp(finalWord.substring(next === G_MOD ? 2 : 1))}`;
 						}
