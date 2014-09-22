@@ -41,13 +41,7 @@ Snakeskin.addDirective(
 						str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 					} else {
-						str += `
-							if (typeof arguments[0] === 'function') {
-								return arguments[0](__RETURN_VAL__);
-							}
-
-							return false;
-						`;
+						str += 'return arguments[0](__RETURN_VAL__);';
 					}
 
 				} else {
