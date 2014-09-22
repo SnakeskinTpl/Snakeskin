@@ -29,12 +29,12 @@ Snakeskin.addDirective(
 
 				if (this.getGroup('async')[fnParent]) {
 					if (fnParent === 'waterfall') {
-						str += `return arguments[arguments.length - 1](${val});`;
+						str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 					} else {
 						str += `
 							if (typeof arguments[0] === 'function') {
-								return arguments[0](${val});
+								return arguments[0](__RETURN_VAL__);
 							}
 
 							return false;
