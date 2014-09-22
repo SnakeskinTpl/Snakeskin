@@ -16,22 +16,28 @@ Snakeskin.addDirective(
 		this.space = true;
 
 		if (this.isReady()) {
-			let fnParent = this.hasParent(this.getGroup('callback', 'async'));
+			let callback = this.hasParent(this.getGroup('callback'));
 			let val = command ?
 				this.prepareOutput(command, true) : this.returnResult();
 
-			if (fnParent) {
+			if (callback) {
 				let str = '';
 
-				if (fnParent !== 'final') {
+				if (callback !== 'final') {
 					str += `
 						__RETURN__ = true;
 						__RETURN_VAL__ = ${val};
 					`;
 				}
 
-				if (this.getGroup('async')[fnParent]) {
-					if (fnParent === 'waterfall') {
+				let asyncParent;
+
+				if (callback === 'callback') {
+					callback = this.hasParent(this.getGroup('Async'));
+				}
+
+				if (asyncParent) {
+					if (asyncParent === 'waterfall') {
 						str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 					} else {
@@ -46,7 +52,7 @@ Snakeskin.addDirective(
 
 				} else {
 					str += 'return false;';
-					this.deferReturn = fnParent !== 'final' ?
+					this.deferReturn = callback !== 'final' ?
 						1 : 0;
 				}
 
