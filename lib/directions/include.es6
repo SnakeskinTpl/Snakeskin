@@ -43,3 +43,64 @@ Snakeskin.addDirective(
 		this.res = this.res.substring(0, this.structure.params.from);
 	}
 );
+
+Snakeskin.addDirective(
+	'__setFile__',
+
+	{
+
+	},
+
+	function (command) {
+		command = this.pasteDangerBlocks(command);
+
+		let module = {
+			exports: {},
+			require: require,
+
+			id: this.module.id + 1,
+			key: null,
+
+			filename: command,
+			parent: this.module,
+			root: this.module.root || this.module,
+
+			children: [],
+			loaded: true
+		};
+
+		module.root.key.push([command, require('fs')['statSync'](command)['mtime'].valueOf()]);
+		this.module.children.push(module);
+
+		this.module = module;
+		this.info['file'] = command;
+	}
+);
+
+Snakeskin.addDirective(
+	'__endSetFile__',
+
+	{
+
+	},
+
+	function () {
+		var file = this.module.filename;
+
+		this.module = this.module.parent;
+		this.info['file'] = this.module.filename;
+
+		if (this.params[this.params.length - 1]['@file'] === file) {
+			this.params.pop();
+
+			let p = this.params[this.params.length - 1];
+			for (let key in p) {
+				if (!p.hasOwnProperty(key)) {
+					continue;
+				}
+
+				this[key] = p[key];
+			}
+		}
+	}
+);

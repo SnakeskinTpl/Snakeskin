@@ -12,6 +12,19 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'__&__',
+
+	{
+		group: 'ignore'
+	},
+
+	function () {
+		this.startInlineDir();
+		this.space = true;
+	}
+);
+
+Snakeskin.addDirective(
 	'&+',
 
 	{

@@ -386,3 +386,26 @@ Snakeskin.addDirective(
 		}
 	}
 );
+
+Snakeskin.addDirective(
+	'__protoWhile__',
+
+	{
+
+	},
+
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			let i = this.prepareOutput('__I_PROTO__', true);
+			protoCache[this.tplName][this.proto.name].i = i;
+			this.save(`${i}:while (${this.prepareOutput(command, true)}) {`);
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save('}');
+		}
+	}
+);
