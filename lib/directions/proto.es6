@@ -213,8 +213,7 @@ Snakeskin.addDirective(
 						renderMode: this.renderMode,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
-						autoReplace: this.autoReplace,
-						macros: this.macros
+						autoReplace: this.autoReplace
 					},
 
 					null,
