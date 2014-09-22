@@ -490,6 +490,46 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	dir.setMacros = setMacros;
 	var templateMap = dir.getGroup('rootTemplate');
 
+	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType}} */
+	dir.getCompileVars = function () {
+		return {
+			macros,
+			afterTag,
+			beforeTag,
+			mGroups,
+			inlineMacro,
+			comboMacro,
+
+			tOpen,
+			tAttr,
+			tAttrBegin,
+			tAttrEscape,
+
+			qOpen,
+			qType
+		};
+	};
+
+	// Устанавливаем значения переменных родительской операции
+	if (sp.proto) {
+		let pVars = sp.parent.getCompileVars();
+
+		macros = pVars.macros;
+		afterTag = pVars.afterTag;
+		beforeTag = pVars.beforeTag;
+		mGroups = pVars.mGroups;
+		inlineMacro = pVars.inlineMacro;
+		comboMacro = pVars.comboMacro;
+
+		tOpen = pVars.tOpen;
+		tAttr = pVars.tAttr;
+		tAttrBegin = pVars.tAttrBegin;
+		tAttrEscape = pVars.tAttrEscape;
+
+		qOpen = pVars.qOpen;
+		qType = pVars.qType;
+	}
+
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
 	var begin = false,
