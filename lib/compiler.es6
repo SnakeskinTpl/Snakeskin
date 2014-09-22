@@ -41,13 +41,13 @@ var tAttrRgxp = /[^'" ]/,
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
- * @param {?string=} [opt_params.renderAs] - тип рендеренга шаблонов, доступные варианты:
+ * @param {?string=} [opt_params.renderAs] - тип рендеринга шаблонов, доступные варианты:
  *
  *     1) placeholder - все шаблоны рендерятся как placeholder-ы;
  *     2) interface - все шаблоны рендерятся как interface-ы;
  *     3) template - все шаблоны рендерятся как template-ы.
  *
- * @param {?string=} [opt_params.renderMode='stringConcat'] - режим ренедеринга шаблонов, доступные варианты:
+ * @param {?string=} [opt_params.renderMode='stringConcat'] - режим рендеринга шаблонов, доступные варианты:
  *
  *     1) stringConcat - рендеринг шаблона в строку с простой конкатенацией через оператор сложения;
  *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
