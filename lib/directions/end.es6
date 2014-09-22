@@ -43,13 +43,15 @@ Snakeskin.addDirective(
 		name = struct.name;
 
 		if (this.deferReturn && isSimpleOutput) {
-			let async = this.getGroup('Async');
+			let async = this.getGroup('async');
 
 			if (this.getGroup('callback')[name]) {
 				let parent = struct.parent.name;
 
 				if (async[parent]) {
-					if (name === 'final') {
+					let asyncPart = this.getGroup('asyncPart');
+
+					if (asyncPart[name] || asyncPart[parent]) {
 						this.save(`
 							if (__RETURN__) {
 								return false;
@@ -66,7 +68,11 @@ Snakeskin.addDirective(
 					} else {
 						this.save(`
 							if (__RETURN__) {
-								return arguments[0](__RETURN_VAL__);
+								if (typeof arguments[0] === 'function') {
+									return arguments[0](__RETURN_VAL__);
+								}
+
+								return false;
 							}
 						`);
 					}

@@ -22,29 +22,45 @@ Snakeskin.addDirective(
 
 			if (callback) {
 				let str = '';
-
-				if (callback !== 'final') {
-					str += `
-						__RETURN__ = true;
-						__RETURN_VAL__ = ${val};
-					`;
-				}
+				let def = `
+					__RETURN__ = true;
+					__RETURN_VAL__ = ${val};
+				`;
 
 				let asyncParent;
-
 				if (callback === 'callback') {
-					asyncParent = this.hasParent(this.getGroup('Async'));
+					asyncParent = this.hasParent(this.getGroup('async'));
 				}
 
 				if (asyncParent) {
-					if (asyncParent === 'waterfall') {
-						str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
+					if (this.getGroup('Async')[asyncParent]) {
+						str += def;
+
+						if (asyncParent === 'waterfall') {
+							str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
+
+						} else {
+							str += `
+								if (typeof arguments[0] === 'function') {
+									return arguments[0](__RETURN_VAL__);
+								}
+
+								return false;
+							`;
+						}
 
 					} else {
-						str += 'return arguments[0](__RETURN_VAL__);';
+						str += 'return false;'
 					}
 
 				} else {
+					if (!this.getGroup('asyncPart')[callback]) {
+						str += `
+							__RETURN__ = true;
+							__RETURN_VAL__ = ${val};
+						`;
+					}
+
 					str += 'return false;';
 					this.deferReturn = callback !== 'final' ?
 						1 : 0;
