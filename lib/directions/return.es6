@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 					}
 
 				} else {
-					str += 'return false';
+					str += 'return false;';
 				}
 
 				this.append(str);
