@@ -41,9 +41,11 @@ var tAttrRgxp = /[^'" ]/,
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
+ * @param {?string=} [opt_params.renderAs] - тип рендеренга шаблонов, доступные варианты:
  *
- * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
- *     и при наследовании можно задавать необъявленные родительские шаблоны
+ *     1) placeholder - все шаблоны рендерятся как placeholder-ы;
+ *     2) interface - все шаблоны рендерятся как interface-ы;
+ *     3) template - все шаблоны рендерятся как template-ы.
  *
  * @param {?string=} [opt_params.renderMode='stringConcat'] - режим ренедеринга шаблонов, доступные варианты:
  *
@@ -121,9 +123,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.renderMode = 'stringConcat';
 	}
 
+	p.renderAs = s(p.renderAs, p['renderAs']);
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
-	p.interface = s(p.interface, p['interface']) || false;
 
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
@@ -182,9 +184,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.xml,
 
 		p.inlineIterators,
+		p.renderAs,
 		p.renderMode,
 		p.escapeOutput,
-		p.interface,
 		p.prettyPrint,
 		p.autoReplace,
 
@@ -467,7 +469,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		xml: p.xml,
 		commonJS: cjs,
 
+		renderAs: p.renderAs,
 		renderMode: p.renderMode,
+
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
@@ -478,7 +482,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nFn: p.i18nFn,
 		language: p.language,
 
-		interface: p.interface,
 		throws: p.throws
 	});
 

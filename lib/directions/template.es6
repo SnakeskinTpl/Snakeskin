@@ -154,7 +154,7 @@ for (let i = -1; ++i < template.length;) {
 		},
 
 		function (command, commandLength, type, jsDoc) {
-			this.startDir(type === 'template' && this.interface ? 'interface' : null);
+			this.startDir(this.renderAs || null);
 
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
@@ -318,7 +318,7 @@ for (let i = -1; ++i < template.length;) {
 
 				parentTplName = this.prepareNameDecl(parentTplName);
 				if (cache[parentTplName] == null) {
-					if (!this.interface) {
+					if (!this.renderAs || this.renderAs === 'template') {
 						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
 					}
 
