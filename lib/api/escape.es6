@@ -87,13 +87,13 @@ var closePMap = {
 };
 
 function applyDefEscape(str) {
-	return str
+	return String(str)
 		.replace(/\\/gm, '\\\\')
 		.replace(/'/gm, '\\\'');
 }
 
 function escapeNextLine(str) {
-	return str
+	return String(str)
 		.replace(/\n/gm, '\\n')
 		.replace(/\v/gm, '\\v')
 		.replace(/\r/gm, '\\r');
