@@ -173,3 +173,15 @@ Snakeskin.addDirective(
 		}
 	}
 );
+
+Snakeskin.addDirective(
+	'__setSSFlag__',
+
+	{
+		alias: true
+	},
+
+	function () {
+		Snakeskin.Directions['setSSFlag'].apply(this, arguments);
+	}
+);
