@@ -268,9 +268,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	 * @param {Object} obj
 	 * @param {?string=} [opt_include]
 	 * @param {?boolean=} [opt_init]
-	 * @param {?boolean=} [opt_def]
 	 */
-	function setMacros(obj, opt_include, opt_init, opt_def) {
+	function setMacros(obj, opt_include, opt_init) {
 		if (opt_init) {
 			macros = {};
 			mGroups = {};
@@ -280,9 +279,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			beforeTag = {};
 			afterTag = {};
-		}
 
-		if (opt_def) {
 			setMacros({
 				'@quotes': {
 					'"': [['«', '»'], ['‘', '’']],
@@ -406,7 +403,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	setMacros(p.macros, null, true, !sp.proto);
+	if (!sp.proto) {
+		setMacros(p.macros, null, true);
+	}
 
 	// <<<
 	// Обработка подключений файлов

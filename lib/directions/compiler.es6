@@ -164,7 +164,7 @@ Snakeskin.addDirective(
 				);
 
 				if (flag === 'macros') {
-					this.setMacros(value, null, init, init);
+					this.setMacros(value, null, init);
 				}
 			}
 
