@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 		struct = this.structure;
 		name = struct.name;
 
-		if (this.deferReturn !== false && isSimpleOutput) {
+		if (this.deferReturn && isSimpleOutput) {
 			let async = this.getGroup('async');
 
 			if (this.getGroup('callback')[name]) {
@@ -68,14 +68,18 @@ Snakeskin.addDirective(
 						`);
 					}
 
-					this.deferReturn = false;
+					this.deferReturn = 0;
 
-				} else {
+				} else if (this.deferReturn > 1) {
 					this.save(`
 						if (__RETURN__) {
 							return false;
 						}
 					`);
+				}
+
+				if (this.deferReturn !== 0) {
+					this.deferReturn++;
 				}
 
 			} else if (!async[name]) {
@@ -85,7 +89,7 @@ Snakeskin.addDirective(
 					}
 				`);
 
-				this.deferReturn = false;
+				this.deferReturn = 0;
 			}
 		}
 
