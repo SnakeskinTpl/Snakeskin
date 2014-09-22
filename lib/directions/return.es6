@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 				let asyncParent;
 
 				if (callback === 'callback') {
-					callback = this.hasParent(this.getGroup('Async'));
+					asyncParent = this.hasParent(this.getGroup('Async'));
 				}
 
 				if (asyncParent) {
