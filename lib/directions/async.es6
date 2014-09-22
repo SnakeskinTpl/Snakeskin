@@ -136,6 +136,7 @@ for (let i = -1; ++i < series.length;) {
 
 			group: [
 				'async',
+				'Async',
 				'series'
 			],
 
@@ -164,7 +165,12 @@ for (let i = -1; ++i < async.length;) {
 
 		{
 			block: true,
-			group: 'async',
+
+			group: [
+				'async',
+				'Async'
+			],
+
 			inside: {
 				'callback': true
 			}
