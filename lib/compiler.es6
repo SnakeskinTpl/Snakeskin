@@ -79,7 +79,6 @@ var tAttrRgxp = /[^'" ]/,
  *
  * @param {Array=} [opt_sysParams.lines] - массив строк шаблона (листинг)
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
- * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
  * @return {(DocumentFragment|string|boolean)}
  */
@@ -407,9 +406,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	if (p.autoReplace) {
-		setMacros(p.macros, null, true, !sp.proto);
-	}
+	setMacros(p.macros, null, true, !sp.proto);
 
 	// <<<
 	// Обработка подключений файлов
@@ -466,7 +463,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		consts: sp.consts,
 
 		needPrfx: sp.needPrfx,
-		prfxI: sp.prfxI,
 		lines: sp.lines,
 
 		xml: p.xml,
@@ -488,46 +484,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	});
 
 	dir.setMacros = setMacros;
-
-	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType}} */
-	dir.getCompileVars = function () {
-		return {
-			macros,
-			afterTag,
-			beforeTag,
-			mGroups,
-			inlineMacro,
-			comboMacro,
-
-			tOpen,
-			tAttr,
-			tAttrBegin,
-			tAttrEscape,
-
-			qOpen,
-			qType
-		};
-	};
-
-	// Устанавливаем значения переменных родительской операции
-	if (sp.proto) {
-		let pVars = sp.parent.getCompileVars();
-
-		macros = pVars.macros;
-		afterTag = pVars.afterTag;
-		beforeTag = pVars.beforeTag;
-		mGroups = pVars.mGroups;
-		inlineMacro = pVars.inlineMacro;
-		comboMacro = pVars.comboMacro;
-
-		tOpen = pVars.tOpen;
-		tAttr = pVars.tAttr;
-		tAttrBegin = pVars.tAttrBegin;
-		tAttrEscape = pVars.tAttrEscape;
-
-		qOpen = pVars.qOpen;
-		qType = pVars.qType;
-	}
 
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
@@ -576,6 +532,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var qOpen = 0,
 		qType = null;
 
+	var prfxI = 0;
+
 	// Флаги для обработки типографских последовательностей
 	var expr = '',
 		exprPos = 0,
@@ -596,6 +554,51 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var part = '',
 		rPart = '';
+
+	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
+	dir.getCompileVars = function () {
+		return {
+			afterTag,
+			beforeTag,
+			mGroups,
+			inlineMacro,
+			comboMacro,
+
+			tOpen,
+			tAttr,
+			tAttrBegin,
+			tAttrEscape,
+
+			qOpen,
+			qType,
+
+			prfxI
+		};
+	};
+
+	/** @param {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
+	dir.setCompileVars = function (obj) {
+		afterTag = obj.afterTag;
+		beforeTag = obj.beforeTag;
+		mGroups = obj.mGroups;
+		inlineMacro = obj.inlineMacro;
+		comboMacro = obj.comboMacro;
+
+		tOpen = obj.tOpen;
+		tAttr = obj.tAttr;
+		tAttrBegin = obj.tAttrBegin;
+		tAttrEscape = obj.tAttrEscape;
+
+		qOpen = obj.qOpen;
+		qType = obj.qType;
+
+		prfxI = obj.prfxI;
+	};
+
+	// Устанавливаем значения переменных родительской операции
+	if (sp.proto) {
+		dir.setCompileVars(sp.parent.getCompileVars());
+	}
 
 	while (++dir.i < dir.source.length) {
 		let str = dir.source,
@@ -844,7 +847,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					expr = '';
 					advExprPos = 0;
 
-					if (templateMap[commandType]) {
+					if (templateMap[commandType] && !sp.proto) {
 						qOpen = 0;
 						qType = null;
 					}
@@ -880,10 +883,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (dir.needPrfx) {
 						if (dir.inline !== false) {
 							if (getName(commandType) === 'end') {
-								if (dir.prfxI) {
-									dir.prfxI--;
+								if (prfxI) {
+									prfxI--;
 
-									if (!dir.prfxI) {
+									if (!prfxI) {
 										dir.needPrfx = false;
 									}
 
@@ -891,12 +894,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									dir.needPrfx = false;
 								}
 
-							} else if (!dir.prfxI) {
+							} else if (!prfxI) {
 								dir.needPrfx = false;
 							}
 
 						} else {
-							dir.prfxI++;
+							prfxI++;
 						}
 					}
 
@@ -1247,6 +1250,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	if (dir.proto) {
+		sp.parent.setCompileVars(dir.getCompileVars());
 		return dir.res;
 	}
 

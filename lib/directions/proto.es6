@@ -213,7 +213,8 @@ Snakeskin.addDirective(
 						renderMode: this.renderMode,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
-						autoReplace: this.autoReplace
+						autoReplace: this.autoReplace,
+						macros: this.macros
 					},
 
 					null,
@@ -221,10 +222,7 @@ Snakeskin.addDirective(
 					{
 						parent: this,
 						lines: this.lines.slice(),
-
 						needPrfx: this.needPrfx,
-						prfxI: this.prfxI,
-
 						scope: this.scope.slice(),
 						vars: struct.vars,
 						consts: this.consts,
