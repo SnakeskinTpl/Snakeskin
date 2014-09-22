@@ -1,3 +1,10 @@
+/**
+ * Текст, который будет возвращён шаблоном
+ * после выхода из директив группы callback
+ * @type {(string|boolean)}
+ */
+DirObj.prototype.deferReturn = false;
+
 Snakeskin.addDirective(
 	'return',
 
@@ -6,62 +13,43 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var strongParent = this.structure.parent.name;
-
 		this.startInlineDir();
 		this.space = true;
 
 		if (this.isReady()) {
-			let useCallback = this.hasParent(this.getGroup('callback'));
+			let fnParent = this.hasParent(this.getGroup('callback', 'async'));
+			let val = command ?
+				this.prepareOutput(command, true) : this.returnResult();
 
-			let async = this.getGroup('async');
-			let chunk,
-				val;
-
-			if (command) {
-				chunk = this.prepareOutput(command, true);
-				val = `return ${chunk};`;
-
-			} else {
-				val = `return ${this.returnResult()};`;
-			}
-
-			if (useCallback) {
-				let prfx = `
+			if (fnParent) {
+				let str = `
 					__RETURN__ = true;
-					${chunk ? `__RETURN_VAL__ = ${chunk};` : ''}
+					__RETURN_VAL__ = ${val};
 				`;
 
-				if (async[strongParent]) {
-					if (strongParent === 'waterfall') {
-						this.append(`
-							${prfx}
-							return arguments[arguments.length - 1](false);
-						`);
+				if (this.getGroup('async')[fnParent]) {
+					if (fnParent === 'waterfall') {
+						str += `return arguments[arguments.length - 1](${val});`;
 
 					} else {
-						this.append(`
-							${prfx}
-
+						str += `
 							if (typeof arguments[0] === 'function') {
-								return arguments[0](false);
+								return arguments[0](${val});
 							}
 
 							return false;
-						`);
+						`;
 					}
 
 				} else {
-					this.append(`
-						${prfx}
-						return false;
-					`);
+					str += 'return false';
 				}
 
-				this.deferReturn = chunk ? true : val;
+				this.append(str);
+				this.deferReturn = true;
 
 			} else {
-				this.append(val);
+				this.append(`return ${val};`);
 			}
 		}
 	}
