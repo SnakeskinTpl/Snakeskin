@@ -54,7 +54,7 @@ Snakeskin.addDirective(
 					}
 
 				} else {
-					if (!this.getGroup('asyncPart')[callback]) {
+					if (!this.getGroup('basicAsync')[callback]) {
 						str += `
 							__RETURN__ = true;
 							__RETURN_VAL__ = ${val};

@@ -49,9 +49,9 @@ Snakeskin.addDirective(
 				let parent = struct.parent.name;
 
 				if (async[parent]) {
-					let asyncPart = this.getGroup('asyncPart');
+					let basicAsync = this.getGroup('basicAsync');
 
-					if (asyncPart[name] || asyncPart[parent]) {
+					if (basicAsync[name] || basicAsync[parent]) {
 						this.save(`
 							if (__RETURN__) {
 								return false;

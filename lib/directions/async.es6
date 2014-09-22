@@ -95,7 +95,7 @@ Snakeskin.addDirective(
 
 		group: [
 			'callback',
-			'asyncPart'
+			'basicAsync'
 		],
 
 		chain: [
@@ -201,7 +201,7 @@ Snakeskin.addDirective(
 
 		group: [
 			'async',
-			'asyncPart'
+			'basicAsync'
 		],
 
 		inside: {
