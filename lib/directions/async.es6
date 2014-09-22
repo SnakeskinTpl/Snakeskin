@@ -59,41 +59,26 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isReady()) {
-			let async = this.getGroup('async');
-			let parent = this.structure.parent,
-				name = parent.name;
+			let async = this.getGroup('async'),
+				parent = this.structure.parent;
 
-			let prfx = async[name] &&
-				parent.children.length > 1 ? ', ' : '';
+			this.structure.params.insideAsync = async[parent.name];
+			var children = parent.children,
+				length = 0;
 
-			this.structure.params.insideAsync = async[name];
-
-			if (async[name]) {
-				if (name === 'waterfall') {
-					this.append(`
-						${prfx}(function (${this.declCallbackArgs(parts)}) {
-							${this.deferReturn ? 'if (__RETURN__) { return arguments[arguments.length - 1](false); }' : ''}
-					`);
-
-				} else {
-					this.append(`
-						${prfx}(function (${this.declCallbackArgs(parts)}) {
-							${this.deferReturn ? `if (__RETURN__) {
-								if (typeof arguments[0] === 'function') {
-									return arguments[0](false);
-								}
-
-								return false;
-							}` : ''}
-					`);
+			for (let i = -1; ++i < children.length;) {
+				if (children[i].name === 'callback') {
+					length++;
 				}
 
-			} else {
-				this.append(`
-					${prfx}(function (${this.declCallbackArgs(parts)}) {
-						${this.deferReturn ? 'if (__RETURN__) { return false; }' : ''}
-				`);
+				if (length > 1) {
+					break;
+				}
 			}
+
+			this.append(`
+				${async[parent.name] && length > 1 ? ', ' : ''}(function (${this.declCallbackArgs(parts)}) {
+			`);
 		}
 	},
 
