@@ -22,10 +22,14 @@ Snakeskin.addDirective(
 				this.prepareOutput(command, true) : this.returnResult();
 
 			if (fnParent) {
-				let str = `
-					__RETURN__ = true;
-					__RETURN_VAL__ = ${val};
-				`;
+				let str = '';
+
+				if (fnParent !== 'final') {
+					str += `
+						__RETURN__ = true;
+						__RETURN_VAL__ = ${val};
+					`;
+				}
 
 				if (this.getGroup('async')[fnParent]) {
 					if (fnParent === 'waterfall') {
@@ -46,7 +50,7 @@ Snakeskin.addDirective(
 				}
 
 				this.append(str);
-				this.deferReturn = true;
+				this.deferReturn = fnParent !== 'final';
 
 			} else {
 				this.append(`return ${val};`);

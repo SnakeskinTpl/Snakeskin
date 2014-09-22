@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 		struct = this.structure;
 		name = struct.name;
 
-		if (this.deferReturn && isSimpleOutput) {
+		if (this.deferReturn !== false && isSimpleOutput) {
 			let async = this.getGroup('async');
 
 			if (this.getGroup('callback')[name]) {
@@ -52,7 +52,7 @@ Snakeskin.addDirective(
 					if (parent === 'waterfall') {
 						this.save(`
 							if (__RETURN__) {
-								return arguments[arguments.length - 1](false);
+								return arguments[arguments.length - 1](__RETURN_VAL__);
 							}
 						`);
 
@@ -60,13 +60,15 @@ Snakeskin.addDirective(
 						this.save(`
 							if (__RETURN__) {
 								if (typeof arguments[0] === 'function') {
-									return arguments[0](false);
+									return arguments[0](__RETURN_VAL__);
 								}
 
 								return false;
 							}
 						`);
 					}
+
+					this.deferReturn = false;
 
 				} else {
 					this.save(`
@@ -79,11 +81,11 @@ Snakeskin.addDirective(
 			} else if (!async[name]) {
 				this.save(`
 					if (__RETURN__) {
-						${this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;'}
+						return __RETURN_VAL__;
 					}
 				`);
 
-				this.deferReturn = null;
+				this.deferReturn = false;
 			}
 		}
 
