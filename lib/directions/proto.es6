@@ -95,7 +95,7 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if (!name || !tplName || blockNameRgxp.test(name)) {
+		if (!name || !tplName || callBlockNameRgxp.test(name)) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
