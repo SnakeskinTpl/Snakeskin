@@ -399,7 +399,7 @@ for (let i = -1; ++i < template.length;) {
 
 			var preProtos = this.preDefs[tplName];
 
-			// Подкючение "внешних" прототипов
+			// Подкючение внешних блоков и прототипов
 			if ((!extMap[tplName] || parentTplName) && preProtos) {
 				this.source = this.source.substring(0, this.i + 1) +
 					preProtos.text +
