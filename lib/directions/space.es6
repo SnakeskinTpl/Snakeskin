@@ -65,31 +65,3 @@ Snakeskin.addDirective(
 		}
 	}
 );
-
-Snakeskin.addDirective(
-	'ignore',
-
-	{
-		placement: 'global'
-	},
-
-	function (command) {
-		this.startInlineDir();
-
-		var rgxp = '[',
-			arr = command.split(' ');
-
-		for (let i = arr.length; i--;) {
-			if (arr[i]) {
-				if (arr[i].length !== 2 || arr[i].charAt(0) !== '%') {
-					return this.error(`invalid "${this.name}" declaration`);
-				}
-
-				rgxp += `\\${arr[i].charAt(1)}`;
-			}
-		}
-
-		rgxp += ']';
-		this.ignoreRgxp = new RegExp(rgxp);
-	}
-);

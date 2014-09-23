@@ -37,6 +37,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
  *
+ * @param {RegExp=} [opt_params.ignore] - регулярное выражение, которое задаёт пробельные символы для игнорирования
  * @param {?boolean=} [opt_params.autoReplace=false] - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
@@ -130,6 +131,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
 
+	p.ignore = s(p.ignore, p['ignore']);
 	p.autoReplace = s(p.autoReplace, p['autoReplace']) || false;
 	p.macros = s(p.macros, p['macros']);
 
@@ -188,6 +190,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.renderMode,
 		p.escapeOutput,
 		p.prettyPrint,
+		p.ignore,
 		p.autoReplace,
 
 		p.localization,
@@ -475,6 +478,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
+		ignore: p.ignore,
 		autoReplace: p.autoReplace,
 		macros: macros,
 
@@ -671,7 +675,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			// Простой ввод внутри декларации шаблона
 			} else {
 				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
-					el = dir.ignoreRgxp && dir.ignoreRgxp.test(el) ?
+					el = dir.ignore && dir.ignore.test(el) ?
 						'' : ' ';
 
 					if (el) {
