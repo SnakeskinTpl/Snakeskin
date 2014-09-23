@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 			from: this.res.length
 		});
 
-		var parts = command.split('as');
+		var parts = command.split(' as ');
 
 		if (!parts[0]) {
 			return this.error(`invalid "${this.name}" declaration`);
@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 
 		var path = this.prepareOutput(parts[0], true),
 			type = parts[1] ?
-				`'${parts[1]}'` : '\'\'';
+				`'${parts[1].trim()}'` : '\'\'';
 
 		if (path !== void 0 && type !== void 0) {
 			this.save(`
