@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 
 		if (command && command !== name) {
 			let group = this.getGroup('rootTemplate');
-			if (!(this.interface && group[name] && group[command])) {
+			if (!(this.renderAs && group[name] && group[command])) {
 				return this.error(`invalid closing directive, expected: "${name}", declared: "${command}"`);
 			}
 		}

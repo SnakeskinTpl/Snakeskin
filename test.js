@@ -76,7 +76,8 @@ function run(params) {
 					obj.js.push((("equal(" + (params[0])) + ("(" + (params.slice(1))) + (").trim(), '" + (results[i].trim())) + "');"));
 
 					// eval нужен чтобы сохранить информацию о типах
-					res = eval((("tpl." + (params[0])) + ("(" + (params.slice(1))) + ").trim()"));
+					res = eval((("tpl." + (params[0])) + ("(" + (params.slice(1))) + ")"));
+					res = res != null ? res.trim() : '';
 
 					assert.equal(
 						res,
