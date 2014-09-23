@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 			from: this.res.length
 		});
 
-		var parts = command.split('->');
+		var parts = command.split('as');
 
 		if (!parts[0]) {
 			return this.error(`invalid "${this.name}" declaration`);
@@ -22,14 +22,14 @@ Snakeskin.addDirective(
 
 		var path = this.prepareOutput(parts[0], true),
 			type = parts[1] ?
-				this.prepareOutput(parts[1], true) : '';
+				`'${parts[1]}'` : '\'\'';
 
 		if (path !== void 0 && type !== void 0) {
 			this.save(`
 				Snakeskin.include(
 					'${applyDefEscape(this.info['file'] || '')}',
 					${this.pasteDangerBlocks(path)},
-					${this.pasteDangerBlocks(type) || '\'\''}
+					${type}
 				);
 			`);
 		}
