@@ -7,7 +7,6 @@ Snakeskin.addDirective(
 		sys: true,
 		block: true,
 		notEmpty: true,
-		placement: 'template',
 		group: [
 			'inherit',
 			'blockInherit'
@@ -16,8 +15,40 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var name = this.getFnName(command),
-			start = this.i - this.startTemplateI;
+			tplName = this.tplName;
 
+		if (!name) {
+			return this.error(`invalid "${this.name}" name`);
+		}
+
+		var parts = name.split('->');
+
+		if (parts[1]) {
+			name = parts[1].trim();
+
+			if (!tplName) {
+				if (this.structure.parent) {
+					this.error(`directive "outer block" can be used only within the global space`);
+					return;
+				}
+
+				tplName =
+					this.tplName = this.prepareNameDecl(parts[0]);
+
+				this.preProtos[tplName] = this.preProtos[tplName] || {
+					text: ''
+				};
+
+				this.preProtos[tplName].startLine = this.info['line'];
+				this.protoLink = name;
+			}
+		}
+
+		if (!name || !tplName || blockNameRgxp.test(name)) {
+			return this.error(`invalid "${this.name}" declaration`);
+		}
+
+		var start = this.i - this.startTemplateI;
 		this.startDir(null, {
 			name: name,
 			from: start + 1
@@ -29,20 +60,20 @@ Snakeskin.addDirective(
 		var params,
 			output;
 
-		if (name !== command) {
-			output = command.split('=>')[1];
-
-			let ouptupCache = this.getBlockOutput(dir);
-			params = ouptupCache[name];
-
-			if (output != null) {
-				params =
-					ouptupCache[name] = output;
-			}
-		}
-
 		if (this.isAdvTest()) {
-			if (blockCache[this.tplName][name]) {
+			if (name !== command) {
+				output = command.split('=>')[1];
+
+				let ouptupCache = this.getBlockOutput(dir);
+				params = ouptupCache[name];
+
+				if (output != null) {
+					params =
+						ouptupCache[name] = output;
+				}
+			}
+
+			if (blockCache[tplName][name]) {
 				return this.error(`block "${name}" is already defined`);
 			}
 
@@ -58,7 +89,7 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
-			blockCache[this.tplName][name] = {
+			blockCache[tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
 				args: args,
@@ -72,7 +103,7 @@ Snakeskin.addDirective(
 		}
 
 		if (this.isSimpleOutput()) {
-			let args = blockCache[this.tplName][name].args;
+			let args = blockCache[tplName][name].args;
 
 			if (args.params) {
 				let fnDecl = `__BLOCKS__.${name}`;
@@ -105,8 +136,28 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var params = this.structure.params,
-			block = blockCache[this.tplName][params.name];
+		var tplName = this.tplName,
+			params = this.structure.params;
+
+		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
+
+		if (this.protoLink === params.name) {
+			let obj = this.preProtos[tplName];
+
+			obj.text += `
+				${s}__switchLine__ ${obj.startLine}${e}
+					${this.source.substring(params.from, this.i + 1)}
+				${s}__end__${e}
+			`;
+
+			this.protoLink = null;
+			this.tplName = null;
+
+			return;
+		}
+
+		var block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
 			this.save(`
