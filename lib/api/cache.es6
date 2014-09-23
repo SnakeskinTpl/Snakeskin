@@ -7,11 +7,15 @@
  *
  * @param {string} type - тип блока (block, proto и т.д.)
  * @param {?string=} [opt_tplName] - название шаблона
- * @return {!Object}
+ * @return {Object}
  */
 DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
 	opt_tplName = opt_tplName || this.tplName;
 	var output = outputCache[opt_tplName];
+
+	if (!output) {
+		return null;
+	}
 
 	if (!output[type]) {
 		output[type] = {};
