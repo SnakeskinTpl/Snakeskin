@@ -1,4 +1,5 @@
 include_index
+include['foo--']
 
 ###
 
@@ -12,9 +13,9 @@ include_index
 
 	{forEach fs.readdirSync(url) => file}
 		{if path.extname(file) === '.ss'}
-			{include path.join(url, file)}
-			{include path.join(url, file)}
-			{include path.join(url, file)}
+			{include path.join(url, file) as interface}
+			{include path.join(url, file) as interface}
+			{include path.join(url, file) as interface}
 		{/}
 	{/}
 {/}
@@ -25,3 +26,6 @@ include_index
 ###
 
 <h1>Hello world 1!</h1> 1
+
+***
+
