@@ -351,7 +351,7 @@ for (let i = -1; ++i < template.length;) {
 				this.scope.push(args.scope);
 			}
 
-			var predefs = ['callee', 'blocks', '$_', 'TPL_NAME', 'PARENT_TPL_NAME'];
+			var predefs = ['callee', 'blocks', 'getTplResult', 'clearTplResult', '$_', 'TPL_NAME', 'PARENT_TPL_NAME'];
 
 			for (let i = -1; ++i < predefs.length;) {
 				this.structure.vars[predefs[i]] = {
@@ -374,8 +374,18 @@ for (let i = -1; ++i < template.length;) {
 					__NODE__,
 					\$_;
 
-				function getTplResult() {
-					return ${this.returnResult()};
+				function getTplResult(opt_clear) {
+					var res = ${this.returnResult()};
+
+					if (opt_clear) {
+						__RESULT__ = ${this.declResult()};
+					}
+
+					return res;
+				}
+
+				function clearTplResult() {
+					__RESULT__ = ${this.declResult()};
 				}
 
 				var __RETURN__ = false,
