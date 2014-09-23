@@ -103,7 +103,7 @@ DirObj.prototype.isSimpleOutput = function () {
 		return false;
 	}
 
-	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
+	return !this.parentTplName && !this.protoStart && !this.outerLink && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
@@ -128,7 +128,7 @@ DirObj.prototype.isReady = function () {
  */
 DirObj.prototype.isAdvTest = function () {
 	var res = (
-		!this.proto && !this.protoLink &&
+		!this.proto && !this.outerLink &&
 		(
 			(this.parentTplName && !this.hasParentBlock({
 				'block': true,
