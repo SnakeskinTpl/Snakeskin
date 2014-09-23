@@ -565,15 +565,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			mGroups,
 			inlineMacro,
 			comboMacro,
-
 			tOpen,
 			tAttr,
 			tAttrBegin,
 			tAttrEscape,
-
 			qOpen,
 			qType,
-
 			prfxI
 		};
 	};
@@ -585,15 +582,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		mGroups = obj.mGroups;
 		inlineMacro = obj.inlineMacro;
 		comboMacro = obj.comboMacro;
-
 		tOpen = obj.tOpen;
 		tAttr = obj.tAttr;
 		tAttrBegin = obj.tAttrBegin;
 		tAttrEscape = obj.tAttrEscape;
-
 		qOpen = obj.qOpen;
 		qType = obj.qType;
-
 		prfxI = obj.prfxI;
 	};
 
