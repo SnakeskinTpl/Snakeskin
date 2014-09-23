@@ -125,7 +125,7 @@ Snakeskin.addDirective(
 		if (last['@root'] || (file === void 0 || last['@file'] !== file)) {
 			init = true;
 			params = {
-				'@file': this.info['file']
+				'@file': file
 			};
 
 			for (let key in last) {
@@ -144,7 +144,7 @@ Snakeskin.addDirective(
 
 		var parts = command.split(' ');
 		var flag = parts[0].trim(),
-			value = this.evalStr('return ' + this.pasteDangerBlocks(parts.slice(1).join(' ')));
+			value = parts.slice(1).join(' ').trim();
 
 		var includeMap = {
 			'language': true,

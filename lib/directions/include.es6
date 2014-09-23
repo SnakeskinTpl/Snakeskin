@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 				Snakeskin.include(
 					'${applyDefEscape(this.info['file'] || '')}',
 					${this.pasteDangerBlocks(path)},
-					${this.pasteDangerBlocks(type)}
+					${this.pasteDangerBlocks(type) || '\'\''}
 				);
 			`);
 		}
