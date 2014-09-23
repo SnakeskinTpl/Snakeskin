@@ -146,11 +146,9 @@ Snakeskin.addDirective(
 		var vars = struct.vars,
 			params = struct.params;
 
-		var proto;
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		// Закрылся "внешний" прототип
 		if (this.outerLink === params.name) {
 			let obj = this.preDefs[tplName];
 
@@ -168,8 +166,8 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.outerLink) {
-			proto = protoCache[tplName][params.name];
-			let start = this.i - this.startTemplateI;
+			let proto = protoCache[tplName][params.name],
+				start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
 				let diff = this.getDiff(commandLength),
