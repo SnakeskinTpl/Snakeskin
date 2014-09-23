@@ -1,8 +1,11 @@
 Snakeskin.addDirective(
-	'&',
+	'ignoreWhitespaces',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		replacers: {
+			'&': (cmd) => cmd.replace('&', 'ignoreWhitespaces ')
+		}
 	},
 
 	function () {
@@ -25,10 +28,13 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'&+',
+	'ignoreAllWhitespaces',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		replacers: {
+			'&+': (cmd) => cmd.replace('&+', 'ignoreAllWhitespaces ')
+		}
 	},
 
 	function () {
@@ -38,10 +44,13 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'&-',
+	'unIgnoreAllWhitespaces',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		replacers: {
+			'&-': (cmd) => cmd.replace('&-', 'unIgnoreAllWhitespaces ')
+		}
 	},
 
 	function () {
@@ -67,8 +76,8 @@ Snakeskin.addDirective(
 	function (command) {
 		this.startInlineDir();
 
-		var rgxp = '[';
-		var arr = command.split(' ');
+		var rgxp = '[',
+			arr = command.split(' ');
 
 		for (let i = arr.length; i--;) {
 			if (arr[i]) {
