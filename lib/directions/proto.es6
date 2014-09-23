@@ -64,7 +64,6 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 
-			// Декларация внешнего прототипа
 			if (!tplName) {
 				if (this.structure.parent) {
 					this.error(`directive "outer proto" can be used only within the global space`);
@@ -81,6 +80,9 @@ Snakeskin.addDirective(
 				this.preDefs[tplName].startLine = this.info['line'];
 				this.outerLink = name;
 			}
+
+		} else if (!this.has('template')) {
+			return this.error(`directive "${this.name}" can be used only within a ${groupsList['template'].join(', ')}`);
 		}
 
 		if (!name || !tplName || callBlockNameRgxp.test(name)) {
@@ -155,7 +157,7 @@ Snakeskin.addDirective(
 			obj.text += `
 				${s}__switchLine__ ${obj.startLine}${e}
 					${this.source.substring(params.from, this.i + 1)}
-				${s}end${e}
+				${s}__end__${e}
 			`;
 
 			this.outerLink = null;
@@ -190,7 +192,7 @@ Snakeskin.addDirective(
 								${s}__protoWhile__ __I_PROTO__--${e}
 									${s}__setLine__ ${params.line}${e}
 									${this.source.substring(params.startTemplateI, this.i - diff)}
-								${s}end${e}
+								${s}__end__${e}
 
 							${scope ? `${s}end${e}` : ''}
 						${s}end${e}
