@@ -248,6 +248,18 @@ function DirObj(src, params) {
 	this.blockTable = null;
 
 	/**
+	 * Кеш внешних блоков и прототипов
+	 * @type {!Object}
+	 */
+	this.preDefs = {};
+
+	/**
+	 * Название активного внешнего прототипа или блока
+	 * @type {?string}
+	 */
+	this.outerLink = null;
+
+	/**
 	 * Структура шаблонов
 	 * @type {!Object}
 	 */

@@ -5,18 +5,6 @@
 DirObj.prototype.protoStart = false;
 
 /**
- * Кеш внешних прототипов
- * @type {!Object}
- */
-DirObj.prototype.preProtos = {};
-
-/**
- * Название активного внешнего прототипа
- * @type {?string}
- */
-DirObj.prototype.protoLink = null;
-
-/**
  * Вернуть строку декларации заданных аргументов прототипа
  *
  * @param {!Array.<!Array>} protoArgs - массив аргументов прототипа [название, значение по умолчанию]
@@ -86,12 +74,12 @@ Snakeskin.addDirective(
 				tplName =
 					this.tplName = this.prepareNameDecl(parts[0]);
 
-				this.preProtos[tplName] = this.preProtos[tplName] || {
+				this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
 
-				this.preProtos[tplName].startLine = this.info['line'];
-				this.protoLink = name;
+				this.preDefs[tplName].startLine = this.info['line'];
+				this.outerLink = name;
 			}
 		}
 
@@ -161,8 +149,8 @@ Snakeskin.addDirective(
 			e = RIGHT_BLOCK;
 
 		// Закрылся "внешний" прототип
-		if (this.protoLink === params.name) {
-			let obj = this.preProtos[tplName];
+		if (this.outerLink === params.name) {
+			let obj = this.preDefs[tplName];
 
 			obj.text += `
 				${s}__switchLine__ ${obj.startLine}${e}
@@ -170,14 +158,14 @@ Snakeskin.addDirective(
 				${s}end${e}
 			`;
 
-			this.protoLink = null;
+			this.outerLink = null;
 			this.tplName = null;
 
 			if (!this.hasParentBlock('proto')) {
 				this.protoStart = false;
 			}
 
-		} else if (!this.protoLink) {
+		} else if (!this.outerLink) {
 			proto = protoCache[tplName][params.name];
 			let start = this.i - this.startTemplateI;
 
@@ -274,7 +262,7 @@ Snakeskin.addDirective(
 				}
 			}
 
-			if (this.protoStart && !this.protoLink && !this.hasParentBlock('proto')) {
+			if (this.protoStart && !this.outerLink && !this.hasParentBlock('proto')) {
 				this.protoStart = false;
 			}
 

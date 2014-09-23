@@ -35,12 +35,12 @@ Snakeskin.addDirective(
 				tplName =
 					this.tplName = this.prepareNameDecl(parts[0]);
 
-				this.preProtos[tplName] = this.preProtos[tplName] || {
+				this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
 
-				this.preProtos[tplName].startLine = this.info['line'];
-				this.protoLink = name;
+				this.preDefs[tplName].startLine = this.info['line'];
+				this.outerLink = name;
 			}
 		}
 
@@ -51,7 +51,8 @@ Snakeskin.addDirective(
 		var start = this.i - this.startTemplateI;
 		this.startDir(null, {
 			name: name,
-			from: start + 1
+			from: this.outerLink ?
+				this.i - this.getDiff(commandLength) : start + 1
 		});
 
 		var struct = this.structure,
@@ -60,11 +61,11 @@ Snakeskin.addDirective(
 		var params,
 			output;
 
-		if (this.isAdvTest()) {
-			if (name !== command) {
-				output = command.split('=>')[1];
+		if (name !== command) {
+			let ouptupCache = this.getBlockOutput(dir);
 
-				let ouptupCache = this.getBlockOutput(dir);
+			if (ouptupCache) {
+				output = command.split('=>')[1];
 				params = ouptupCache[name];
 
 				if (output != null) {
@@ -72,7 +73,9 @@ Snakeskin.addDirective(
 						ouptupCache[name] = output;
 				}
 			}
+		}
 
+		if (this.isAdvTest()) {
 			if (blockCache[tplName][name]) {
 				return this.error(`block "${name}" is already defined`);
 			}
@@ -136,14 +139,12 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var tplName = this.tplName,
-			params = this.structure.params;
-
+		var params = this.structure.params;
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		if (this.protoLink === params.name) {
-			let obj = this.preProtos[tplName];
+		if (this.outerLink === params.name) {
+			let obj = this.preDefs[this.tplName];
 
 			obj.text += `
 				${s}__switchLine__ ${obj.startLine}${e}
@@ -151,7 +152,7 @@ Snakeskin.addDirective(
 				${s}__end__${e}
 			`;
 
-			this.protoLink = null;
+			this.outerLink = null;
 			this.tplName = null;
 
 			return;

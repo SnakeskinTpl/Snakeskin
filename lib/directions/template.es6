@@ -387,7 +387,7 @@ for (let i = -1; ++i < template.length;) {
 				${args.defParams}
 			`);
 
-			var preProtos = this.preProtos[tplName];
+			var preProtos = this.preDefs[tplName];
 
 			// Подкючение "внешних" прототипов
 			if ((!extMap[tplName] || parentTplName) && preProtos) {
@@ -395,7 +395,7 @@ for (let i = -1; ++i < template.length;) {
 					preProtos.text +
 					this.source.substring(this.i + 1);
 
-				delete this.preProtos[tplName];
+				delete this.preDefs[tplName];
 			}
 		},
 
