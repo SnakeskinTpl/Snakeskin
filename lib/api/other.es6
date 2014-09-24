@@ -77,3 +77,22 @@ DirObj.prototype.getGroup = function (/*= names */...names) {
 
 	return map;
 };
+
+/**
+ * Сбросить слой параметров компиляции
+ * @return {!DirObj}
+ */
+DirObj.prototype.popParams = function () {
+	this.params.pop();
+
+	let p = this.params[this.params.length - 1];
+	for (let key in p) {
+		if (!p.hasOwnProperty(key)) {
+			continue;
+		}
+
+		this[key] = p[key];
+	}
+
+	return this;
+};
