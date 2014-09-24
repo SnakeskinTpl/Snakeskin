@@ -177,7 +177,7 @@
 			val[0] = val[0].toLowerCase();
 
 			if (!lib[val[0]]) {
-				return this.error(`requested is not found`);
+				return this.error(`requested library is not found`);
 			}
 
 			this.append(
