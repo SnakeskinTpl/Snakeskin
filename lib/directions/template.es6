@@ -362,7 +362,15 @@ for (let i = -1; ++i < template.length;) {
 				this.scope.push(args.scope);
 			}
 
-			var predefs = ['callee', 'blocks', 'getTplResult', 'clearTplResult', '$_', 'TPL_NAME', 'PARENT_TPL_NAME'];
+			var predefs = [
+				'callee',
+				'blocks',
+				'getTplResult',
+				'clearTplResult',
+				'$_',
+				'TPL_NAME',
+				'PARENT_TPL_NAME'
+			];
 
 			for (let i = -1; ++i < predefs.length;) {
 				this.structure.vars[predefs[i]] = {
