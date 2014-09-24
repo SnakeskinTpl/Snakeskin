@@ -112,22 +112,43 @@
 			last = this.params[this.params.length - 1],
 			params = last;
 
-		if (last['@root'] || (file === void 0 || last['@file'] !== file) || (this.tplName && last['@tplName'] !== this.tplName)) {
+		var cache,
+			parentCache,
+			tplName = this.tplName;
+
+		if (tplName) {
+			cache =
+				outputCache[tplName]['flag'] = outputCache[tplName]['flag'] || {};
+
+			if (this.parentTplName) {
+				parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]['flag'];
+			}
+		}
+
+		if (last['@root'] || (file === void 0 || last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
 			init = true;
 			params = {
 				'@file': file,
-				'@tplName': this.tplName
+				'@tplName': tplName
 			};
 
-			for (let key in last) {
-				if (!last.hasOwnProperty(key)) {
-					continue;
-				}
+			let inherit = (obj) => {
+				for (let key in obj) {
+					if (!obj.hasOwnProperty(key)) {
+						continue;
+					}
 
-				if (key.charAt(0) !== '@' && key in root) {
-					params[key] =
-						this[key] = last[key];
+					if (key.charAt(0) !== '@' && key in root) {
+						params[key] =
+							this[key] = obj[key];
+					}
 				}
+			};
+
+			inherit(last);
+
+			if (parentCache) {
+				inherit(parentCache);
 			}
 
 			this.params.push(params);
@@ -161,6 +182,14 @@
 
 			params[flag] = value;
 			this[flag] = value;
+
+			if (cache) {
+				if (flag === 'inlineIterators' && parentCache && value !== parentCache[flag]) {
+					return this.error('flag "inlineIterators" can\'t be overridden in the child template');
+				}
+
+				cache[flag] = value;
+			}
 		}
 	}
 
