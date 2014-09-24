@@ -1,88 +1,90 @@
-Snakeskin.addDirective(
-	'style',
+(() => {
+	var types = {
+		'css': 'text/css'
+	};
 
-	{
-		placement: 'template',
-		block: true,
-		selfInclude: false
-	},
+	Snakeskin.addDirective(
+		'style',
 
-	function (command) {
-		this.startDir();
-		this.space = true;
+		{
+			placement: 'template',
+			block: true,
+			selfInclude: false
+		},
 
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.autoReplace = true;
-		}
+		function (command) {
+			this.startDir();
+			this.space = true;
 
-		if (this.isReady()) {
-			if (command) {
-				command = command.replace(emptyCommandParamsRgxp, 'css $1');
-
-			} else {
-				command = 'css';
+			if (this.autoReplace) {
+				this.autoReplace = false;
+				this.structure.params.autoReplace = true;
 			}
 
-			let parts = command.split(' '),
-				type = parts[0],
-				dom = !this.domComment && this.renderMode === 'dom';
+			if (this.isReady()) {
+				if (command) {
+					command = command.replace(emptyCommandParamsRgxp, 'css $1');
 
-			let types = {
-				'css': 'text/css'
-			};
+				} else {
+					command = 'css';
+				}
 
-			let str,
-				desc = types[type] || this.replaceTplVars(type);
+				let parts = command.split(' '),
+					type = parts[0],
+					dom = !this.domComment && this.renderMode === 'dom';
 
-			if (dom) {
-				str = `
-					__NODE__ = document.createElement('style');
-					__NODE__.type = '${desc}';
-				`;
+				let str,
+					desc = types[type] || this.replaceTplVars(type);
+
+				if (dom) {
+					str = `
+						__NODE__ = document.createElement('style');
+						__NODE__.type = '${desc}';
+					`;
+
+				} else {
+					str = this.wrap(`'<style type="${desc}"'`);
+				}
+
+				this.append(str);
+
+				if (parts.length > 1) {
+					let args = [].slice.call(arguments);
+
+					args[0] = parts.slice(1).join(' ');
+					args[1] = args[0].length;
+
+					Snakeskin.Directions['attr'].apply(this, args);
+					this.inline = false;
+				}
+
+				if (dom) {
+					str = this.returnPushNodeDecl();
+
+				} else {
+					str = this.wrap('\'>\'');
+				}
+
+				this.append(str);
+			}
+		},
+
+		function () {
+			this.space = true;
+			if (this.structure.params.autoReplace) {
+				this.autoReplace = true;
+			}
+
+			let str;
+
+			if (!this.domComment && this.renderMode === 'dom') {
+				str = '__RESULT__.pop();';
 
 			} else {
-				str = this.wrap(`'<style type="${desc}"'`);
+				str = this.wrap('\'</style>\'');
 			}
 
 			this.append(str);
-
-			if (parts.length > 1) {
-				let args = [].slice.call(arguments);
-
-				args[0] = parts.slice(1).join(' ');
-				args[1] = args[0].length;
-
-				Snakeskin.Directions['attr'].apply(this, args);
-				this.inline = false;
-			}
-
-			if (dom) {
-				str = this.returnPushNodeDecl();
-
-			} else {
-				str = this.wrap('\'>\'');
-			}
-
-			this.append(str);
 		}
-	},
-
-	function () {
-		this.space = true;
-		if (this.structure.params.autoReplace) {
-			this.autoReplace = true;
-		}
-
-		let str;
-
-		if (!this.domComment && this.renderMode === 'dom') {
-			str = '__RESULT__.pop();';
-
-		} else {
-			str = this.wrap('\'</style>\'');
-		}
-
-		this.append(str);
-	}
-);
+	);
+})();
