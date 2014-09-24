@@ -1,118 +1,108 @@
-/**
- * Преобразовать заданное значение в объект
- *
- * @expose
- * @param {?} val - объект, строка для парсинга или URL
- * @param {?string=} [opt_base] - базовый URL
- * @return {!Object}
- */
-Snakeskin.toObj = function (val, opt_base) {
-	if (typeof val !== 'string') {
-		return val;
-	}
-
-	var res;
-
-	if (IS_NODE) {
-		let path = require('path');
-		let fs = require('fs'),
-			exists = fs['existsSync'] || path['existsSync'];
-
-		let old = val;
-		if (opt_base) {
-			val = path['resolve'](path['dirname'](opt_base), path['normalize'](val));
+(() => {
+	/**
+	 * Преобразовать заданное значение в объект
+	 *
+	 * @expose
+	 * @param {?} val - объект, строка для парсинга или URL
+	 * @param {?string=} [opt_base] - базовый URL
+	 * @return {!Object}
+	 */
+	Snakeskin.toObj = function (val, opt_base) {
+		if (typeof val !== 'string') {
+			return val;
 		}
 
-		if (exists(val)) {
-			res = require(val);
+		var res;
 
-			if (res) {
-				return res;
+		if (IS_NODE) {
+			let path = require('path');
+			let fs = require('fs'),
+				exists = fs['existsSync'] || path['existsSync'];
+
+			let old = val;
+			if (opt_base) {
+				val = path['resolve'](path['dirname'](opt_base), path['normalize'](val));
 			}
 
-			val = fs['readFileSync'](val).toString();
+			if (exists(val)) {
+				res = require(val);
 
-		} else {
-			val = old;
+				if (res) {
+					return res;
+				}
+
+				val = fs['readFileSync'](val).toString();
+
+			} else {
+				val = old;
+			}
 		}
-	}
 
-	try {
-		res = JSON.parse(val);
-
-	} catch (ignore) {
 		try {
-			res = eval(`(${val})`);
+			res = JSON.parse(val);
 
 		} catch (ignore) {
-			res = {};
-		}
-	}
+			try {
+				res = eval(`(${val})`);
 
-	return Object(res || {});
-};
-
-/**
- * Расширить объект a объектом b
- * (глубокое расширение)
- *
- * @param {!Object} a
- * @param {!Object} b
- * @return {!Object}
- */
-function extend(a, b) {
-	for (let key in b) {
-		if (!b.hasOwnProperty(key)) {
-			continue;
+			} catch (ignore) {
+				res = {};
+			}
 		}
 
-		if (a[key] instanceof Object && b[key] instanceof Object) {
-			extend(a[key], b[key]);
+		return Object(res || {});
+	};
 
-		} else {
-			a[key] = b[key];
-		}
-	}
-
-	return a;
-}
-
-/**
- * Вернуть объект, расширенный с помощью заданных объектов
- *
- * @param {!Object} base - базовый расширяющий объект
- * @param {Object=} [opt_adv] - дополнительный расширяющий объект
- * @param {Object=} [opt_initial] - объект инициализации
- * @return {!Object}
- */
-function mix(base, opt_adv, opt_initial) {
-	var obj = opt_initial || {};
-
-	if (opt_adv) {
-		for (let key in opt_adv) {
-			if (!opt_adv.hasOwnProperty(key)) {
+	/**
+	 * Расширить объект a объектом b
+	 * (глубокое расширение)
+	 *
+	 * @param {!Object} a
+	 * @param {!Object} b
+	 * @return {!Object}
+	 */
+	function extend(a, b) {
+		for (let key in b) {
+			if (!b.hasOwnProperty(key)) {
 				continue;
 			}
 
-			obj[key] = opt_adv[key];
+			if (a[key] instanceof Object && b[key] instanceof Object) {
+				extend(a[key], b[key]);
+
+			} else {
+				a[key] = b[key];
+			}
 		}
+
+		return a;
 	}
 
-	return extend(obj, base);
-}
+	/**
+	 * Вернуть объект, расширенный с помощью заданных объектов
+	 *
+	 * @param {!Object} base - базовый расширяющий объект
+	 * @param {Object=} [opt_adv] - дополнительный расширяющий объект
+	 * @param {Object=} [opt_initial] - объект инициализации
+	 * @return {!Object}
+	 */
+	function mix(base, opt_adv, opt_initial) {
+		var obj = opt_initial || {};
 
-Snakeskin.addDirective(
-	'setSSFlag',
+		if (opt_adv) {
+			for (let key in opt_adv) {
+				if (!opt_adv.hasOwnProperty(key)) {
+					continue;
+				}
 
-	{
-		placement: 'global',
-		notEmpty: true,
-		replacers: {
-			'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
+				obj[key] = opt_adv[key];
+			}
 		}
-	},
 
-	function (command) {
+		return extend(obj, base);
+	}
+
+	function setSSFlag(command) {
 		this.startInlineDir();
 
 		var file = this.info['file'],
@@ -122,10 +112,11 @@ Snakeskin.addDirective(
 			last = this.params[this.params.length - 1],
 			params = last;
 
-		if (last['@root'] || (file === void 0 || last['@file'] !== file)) {
+		if (last['@root'] || (file === void 0 || last['@file'] !== file) || (this.tplName && last['@tplName'] !== this.tplName)) {
 			init = true;
 			params = {
-				'@file': file
+				'@file': file,
+				'@tplName': this.tplName
 			};
 
 			for (let key in last) {
@@ -172,16 +163,31 @@ Snakeskin.addDirective(
 			this[flag] = value;
 		}
 	}
-);
 
-Snakeskin.addDirective(
-	'__setSSFlag__',
+	Snakeskin.addDirective(
+		'setSSFlag',
 
-	{
-		alias: true
-	},
+		{
+			placement: 'global',
+			notEmpty: true,
+			replacers: {
+				'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
+			}
+		},
 
-	function () {
-		Snakeskin.Directions['setSSFlag'].apply(this, arguments);
-	}
-);
+		setSSFlag
+	);
+
+	Snakeskin.addDirective(
+		'__setSSFlag__',
+
+		{
+			notEmpty: true,
+			replacers: {
+				'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
+			}
+		},
+
+		setSSFlag
+	);
+})();
