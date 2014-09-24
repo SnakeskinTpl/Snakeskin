@@ -12,6 +12,10 @@ syntax_index8
 : a = 1 /// 1
 
 - template syntax_index()
+	/* < div. fooo
+		- a = 1 2 3
+	*/
+
 	< span.foo class = bar car
 		- tag .&__bar#my
 			1

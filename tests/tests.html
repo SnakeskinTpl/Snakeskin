@@ -93,7 +93,22 @@
 		{super}
 		{@aa}
 	{/}
-{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('block'), {prettyPrint: true}); test('block', function () { equal(block_base().trim(), '2202154'); equal(block_sub().trim(), '22[object Object]2952'); equal(block_sub2().trim(), '22[object Object]29'); }); </script> <script type="text/x-snakeskin-template" id="cycles"> 
+{/}
+
+{block block_base3->foo()}
+	121
+{/}
+
+{template block_base3()}
+	{call blocks.foo()}
+{/}
+
+{block block_sub3->foo()}
+	222
+{/}
+
+{template block_sub3() extends block_base3}
+{/} </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('block'), {prettyPrint: true}); test('block', function () { equal(block_base().trim(), '2202154'); equal(block_sub().trim(), '22[object Object]2952'); equal(block_sub2().trim(), '22[object Object]29'); equal(block_sub3().trim(), '222'); }); </script> <script type="text/x-snakeskin-template" id="cycles"> 
 {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
@@ -771,6 +786,10 @@
 : a = 1 /// 1
 
 - template syntax_index()
+	/* < div. fooo
+		- a = 1 2 3
+	*/
+
 	< span.foo class = bar car
 		- tag .&__bar#my
 			1

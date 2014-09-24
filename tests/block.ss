@@ -1,6 +1,7 @@
 block_base
 block_sub
 block_sub2
+block_sub3
 
 ###
 
@@ -54,6 +55,21 @@ block_sub2
 	{/}
 {/}
 
+{block block_base3->foo()}
+	121
+{/}
+
+{template block_base3()}
+	{call blocks.foo()}
+{/}
+
+{block block_sub3->foo()}
+	222
+{/}
+
+{template block_sub3() extends block_base3}
+{/}
+
 ###
 
 2202154
@@ -65,3 +81,7 @@ block_sub2
 ***
 
 22[object Object]29
+
+***
+
+222
