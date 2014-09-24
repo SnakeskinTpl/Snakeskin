@@ -180,7 +180,11 @@
 				return this.error(`requested is not found`);
 			}
 
-			this.append(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]));
+			this.append(
+				this.wrap(
+					`'${(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(val[1])}'`
+				)
+			);
 		}
 	);
 })();
