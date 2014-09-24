@@ -344,6 +344,11 @@ for (let i = -1; ++i < template.length;) {
 			outputCache[tplName] = {};
 			extMap[tplName] = parentTplName;
 
+			var flags = command.split('@=');
+			for (let i = 0; ++i < flags.length;) {
+				Snakeskin.Directions['__setSSFlag__'].call(this, flags[i].trim());
+			}
+
 			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
 			this.save(`${args.str}) {`, iface);
 
@@ -517,6 +522,10 @@ for (let i = -1; ++i < template.length;) {
 			}
 
 			this.save('/* Snakeskin template. */', iface);
+
+			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
+				this.popParams();
+			}
 
 			this.canWrite = true;
 			this.tplName = null;
