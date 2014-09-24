@@ -1,6 +1,6 @@
 (() => {
 	var lib = {
-		'angular': {
+		'angularjs': {
 			'google': (v) => `
 				<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/${v}/angular.min.js"></script>
 			`,
