@@ -130,67 +130,69 @@ Snakeskin.addDirective(
 	}
 );
 
-var series = ['parallel', 'series', 'waterfall'];
+(() => {
+	var series = ['parallel', 'series', 'waterfall'];
 
-for (let i = -1; ++i < series.length;) {
-	Snakeskin.addDirective(
-		series[i],
+	for (let i = -1; ++i < series.length;) {
+		Snakeskin.addDirective(
+			series[i],
 
-		{
-			block: true,
+			{
+				block: true,
 
-			group: [
-				'async',
-				'Async',
-				'series'
-			],
+				group: [
+					'async',
+					'Async',
+					'series'
+				],
 
-			inside: {
-				'callback': true,
-				'final': true
+				inside: {
+					'callback': true,
+					'final': true
+				}
+			},
+
+			function (command, commandLength, type) {
+				this.startDir();
+				this.append(`async.${type}([`);
+			},
+
+			function () {
+				this.append(']);');
 			}
-		},
+		);
+	}
 
-		function (command, commandLength, type) {
-			this.startDir();
-			this.append(`async.${type}([`);
-		},
+	var async = ['whilst', 'doWhilst', 'forever'];
 
-		function () {
-			this.append(']);');
-		}
-	);
-}
+	for (let i = -1; ++i < async.length;) {
+		Snakeskin.addDirective(
+			async[i],
 
-var async = ['whilst', 'doWhilst', 'forever'];
+			{
+				block: true,
 
-for (let i = -1; ++i < async.length;) {
-	Snakeskin.addDirective(
-		async[i],
+				group: [
+					'async',
+					'Async'
+				],
 
-		{
-			block: true,
+				inside: {
+					'callback': true
+				}
+			},
 
-			group: [
-				'async',
-				'Async'
-			],
+			function (command, commandLength, type) {
+				this.startDir();
+				this.append(`async.${type}(`);
+			},
 
-			inside: {
-				'callback': true
+			function () {
+				this.append(');');
 			}
-		},
-
-		function (command, commandLength, type) {
-			this.startDir();
-			this.append(`async.${type}(`);
-		},
-
-		function () {
-			this.append(');');
-		}
-	);
-}
+		);
+	}
+})();
 
 Snakeskin.addDirective(
 	'when',
