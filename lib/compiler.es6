@@ -112,19 +112,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.onError = s(p.onError, p['onError']);
 
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
-	p.renderMode = s(p.renderMode, p['renderMode']);
-
-	var renderMode = {
-		'stringConcat': true,
-		'stringBuffer': true,
-		'dom': true
-	};
-
-	if (!renderMode[p.renderMode]) {
-		p.renderMode = 'stringConcat';
-	}
-
+	p.renderMode = s(p.renderMode, p['renderMode']) || 'stringConcat';
 	p.renderAs = s(p.renderAs, p['renderAs']);
+
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 
@@ -1264,16 +1254,16 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Удаление пустых операций
 	switch (dir.renderMode) {
-		case 'stringConcat': {
-			dir.res = dir.res.replace(/__RESULT__ \+= '';/g, '');
-		} break;
-
 		case 'stringBuffer': {
 			dir.res = dir.res.replace(/__RESULT__\.push\(''\);/g, '');
 		} break;
 
 		case 'dom': {
 			dir.res = dir.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
+		} break;
+
+		default: {
+			dir.res = dir.res.replace(/__RESULT__ \+= '';/g, '');
 		} break;
 	}
 
