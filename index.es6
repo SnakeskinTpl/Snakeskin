@@ -33,10 +33,12 @@ program
 	.option('--macros [src]', 'path to the macros file or macros object')
 
 	.option('--disable-xml', 'disable default xml validation')
-	.option('--interface', 'render all templates as interface')
-	.option('--string-buffer', 'use StringBuffer for concatenate strings')
 	.option('--inline-iterators', 'inline forEach and forIn')
 	.option('--disable-escape-output', 'disable default "html" filter')
+
+	.option('--render-as', 'render all templates as "interface" or "placeholder"')
+	.option('--render-mode', 'render all templates in "stringConcat", "stringBuffer" or "dom"')
+
 	.option('--pretty-print', 'formatting output')
 
 	.parse(process.argv);
@@ -62,8 +64,8 @@ params.language = 'language' in program ?
 params.words = 'words' in program ?
 	program['words'] : params.words;
 
-params.interface = 'interface' in program ?
-	program['interface'] : params.interface;
+params.renderAs = 'renderAs' in program ?
+	program['renderAs'] : params.renderAs;
 
 params.renderMode = 'renderMode' in program ?
 	program['renderMode'] : params.renderMode;
