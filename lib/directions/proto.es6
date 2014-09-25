@@ -182,19 +182,19 @@ Snakeskin.addDirective(
 
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
-					`
-						${s}template ${tplName}()${e}
-							${scope ? `${s}with ${scope}${e}` : ''}
+					(
+						`${s}template ${tplName}()${e}` +
+							(scope ? `${s}with ${scope}${e}` : '') +
 
-								${s}var __I_PROTO__ = 1${e}
-								${s}__protoWhile__ __I_PROTO__--${e}
-									${s}__setLine__ ${params.line}${e}
-									${this.source.substring(params.startTemplateI, this.i - diff)}
-								${s}__end__${e}
+								`${s}var __I_PROTO__ = 1${e}` +
+								`${s}__protoWhile__ __I_PROTO__--${e}` +
+									`${s}__setLine__ ${params.line}${e}` +
+									this.source.substring(params.startTemplateI, this.i - diff) +
+								`${s}__end__${e}` +
 
-							${scope ? `${s}end${e}` : ''}
-						${s}end${e}
-					`.trim(),
+							(scope ? `${s}end${e}` : '') +
+						`${s}end${e}`
+					).trim(),
 
 					{
 						inlineIterators: this.inlineIterators,
