@@ -227,15 +227,20 @@ if (!file && input == null) {
 
 } else {
 	if (file) {
+		var mask = program['mask'];
+		mask = mask && new RegExp(mask);
+
 		if (fs.statSync(file).isDirectory()) {
 			fs.readdirSync(file).forEach(function(el)  {
-				if (path.extname(el) === '.ss') {
+				if (mask ? mask.test(el) : path.extname(el) === '.ss') {
 					action(fs.readFileSync(path.join(file, el)));
 				}
 			});
 
 		} else {
-			action(fs.readFileSync(file));
+			if (!mask || mask.test(file)) {
+				action(fs.readFileSync(file));
+			}
 		}
 
 	} else {
