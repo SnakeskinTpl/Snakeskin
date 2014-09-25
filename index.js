@@ -17,6 +17,9 @@ program
 
 	.option('-s, --source [src]', 'path to the template file')
 	.option('-f, --file [src]', 'path to the template file (meta-information)')
+	.option('-m, --mask [mask]', 'mask for template file (RegExp)')
+	.option('-w, --watch', 'watch files for changes and automatically re-render')
+
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('-n, --common-js', 'common.js export (for node.js)')
 
@@ -29,6 +32,7 @@ program
 	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
 
+	.option('--ignore', 'regular expression to ignore the empty space')
 	.option('--auto-replace', 'enable macros support')
 	.option('--macros [src]', 'path to the macros file or macros object')
 
@@ -36,11 +40,10 @@ program
 	.option('--inline-iterators', 'inline forEach and forIn')
 	.option('--disable-escape-output', 'disable default "html" filter')
 
-	.option('--render-as', 'render all templates as "interface" or "placeholder"')
-	.option('--render-mode', 'render all templates in "stringConcat", "stringBuffer" or "dom"')
+	.option('--render-as [mode]', 'render all templates as "interface" or "placeholder"')
+	.option('--render-mode [mode]', 'render all templates in "stringConcat", "stringBuffer" or "dom"')
 
 	.option('--pretty-print', 'formatting output')
-
 	.parse(process.argv);
 
 var params = program['params'] ?
@@ -78,6 +81,9 @@ params.escapeOutput = 'disableEscapeOutput' in program ?
 
 params.prettyPrint = 'prettyPrint' in program ?
 	program['prettyPrint'] : params.prettyPrint;
+
+params.ignore = 'ignore' in program ?
+	program['ignore'] : params.ignore;
 
 params.autoReplace = 'autoReplace' in program ?
 	program['autoReplace'] : params.autoReplace;
@@ -196,8 +202,6 @@ function action(data) {
 	if (words) {
 		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
-
-	process.exit(0);
 }
 
 if (!file && input == null) {
@@ -222,5 +226,19 @@ if (!file && input == null) {
 	});
 
 } else {
-	action(file ? fs.readFileSync(file) : input);
+	if (file) {
+		if (fs.statSync(file).isDirectory()) {
+			fs.readdirSync(file).forEach(function(el)  {
+				if (path.extname(el) === '.ss') {
+					action(fs.readFileSync(path.join(file, el)));
+				}
+			});
+
+		} else {
+			action(fs.readFileSync(file));
+		}
+
+	} else {
+		action(input);
+	}
 }
