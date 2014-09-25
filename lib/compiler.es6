@@ -1,4 +1,4 @@
-var nextLineRgxp = /[\r\n\v]/,
+var nextLineRgxp = /\n/,
 	whiteSpaceRgxp = /\s/,
 	lineWhiteSpaceRgxp = /[ \t]/;
 
