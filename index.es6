@@ -126,7 +126,7 @@ if (!file && args.length) {
 	}
 }
 
-function action(data) {
+function action(data, file) {
 	var tpls = {};
 
 	if (tplData || mainTpl || exec) {
@@ -198,7 +198,9 @@ function action(data) {
 	} else {
 		process.exit(1);
 	}
+}
 
+function end() {
 	if (words) {
 		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
@@ -216,6 +218,7 @@ if (!file && input == null) {
 
 	stdin.on('end', () => {
 		action(buf);
+		end();
 	}).resume();
 
 	process.on('SIGINT', () => {
@@ -233,17 +236,20 @@ if (!file && input == null) {
 		if (fs.statSync(file).isDirectory()) {
 			fs.readdirSync(file).forEach((el) => {
 				if (mask ? mask.test(el) : path.extname(el) === '.ss') {
-					action(fs.readFileSync(path.join(file, el)));
+					let src = path.join(file, el);
+					action(fs.readFileSync(src), src);
 				}
 			});
 
 		} else {
 			if (!mask || mask.test(file)) {
-				action(fs.readFileSync(file));
+				action(fs.readFileSync(file), file);
 			}
 		}
 
 	} else {
 		action(input);
 	}
+
+	end();
 }
