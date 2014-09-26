@@ -177,7 +177,9 @@
 					let parts,
 						txt;
 
-					decl.command = decl.command.replace(lastHashRgxp, '\\#');
+					if (ADV_LEFT_BLOCK === '#') {
+						decl.command = decl.command.replace(lastHashRgxp, '\\#');
+					}
 
 					if (dir) {
 						if (decl.sComment) {
