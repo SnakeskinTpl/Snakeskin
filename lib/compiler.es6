@@ -160,7 +160,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (typeof src === 'object' && 'innerHTML' in src) {
 		info['node'] = src;
-		text = src.innerHTML.replace(/\s*?\n/, '');
+		text = src.innerHTML.replace(/\s*?\r?\n/, '');
 
 	} else {
 		text = String(src);
