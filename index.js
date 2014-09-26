@@ -115,7 +115,7 @@ var args = program['args'],
 	input;
 
 var file = program['source'],
-	newFile = program['output'];
+	out = program['output'];
 
 if (!file && args.length) {
 	input = args.join(' ');
@@ -127,7 +127,13 @@ if (!file && args.length) {
 }
 
 function action(data, file) {
-	var tpls = {};
+	file = file || program['file'];
+	var tpls = {},
+		fileName = '';
+
+	if (file) {
+		fileName = path.basename(file, path.dirname(file));
+	}
 
 	if (tplData || mainTpl || exec) {
 		params.commonJS = true;
@@ -138,14 +144,11 @@ function action(data, file) {
 	var res = Snakeskin.compile(
 		String(data),
 		params,
-
-		{
-			file: program['file'] || file
-		}
+		{file: file}
 	);
 
 	var toConsole = input && !program['output'] ||
-		!newFile;
+		!out;
 
 	if (res !== false) {
 		if (tplData || mainTpl || exec) {
@@ -156,7 +159,7 @@ function action(data, file) {
 
 			} else {
 				if (file) {
-					tpl = tpls[path.basename(file, path.extname(file))] || tpls.main || tpls[Object.keys(tpls)[0]];
+					tpl = tpls[fileName] || tpls.main || tpls[Object.keys(tpls)[0]];
 
 				} else {
 					tpl = tpls.main || tpls[Object.keys(tpls)[0]];
@@ -169,7 +172,17 @@ function action(data, file) {
 			}
 
 			if (tplData && tplData !== true) {
-				tplData = Snakeskin.toObj(tplData);
+				var tmp = tplData;
+
+				if (exists(tplData) && fs.statSync(tplData).isDirectory()) {
+					tmp = path.join(tplData, fileName) + '.js';
+
+					if (!exists(tmp)) {
+						tmp += 'on';
+					}
+				}
+
+				tplData = Snakeskin.toObj(tmp);
 
 			} else {
 				tplData = void 0;
@@ -182,7 +195,7 @@ function action(data, file) {
 					res = beautify['html'](res);
 
 				} else {
-					res = beautify[path.extname(newFile).replace(/^\./, '')](res);
+					res = beautify[path.extname(out).replace(/^\./, '')](res);
 				}
 			}
 		}
@@ -191,8 +204,12 @@ function action(data, file) {
 			console.log(res);
 
 		} else {
-			fs.writeFileSync(newFile, res);
-			console.log((("File \"" + file) + ("\" has been successfully compiled \"" + newFile) + "\"."));
+			if (exists(out) && fs.statSync(out).isDirectory()) {
+				out = path.normalize(path.join(out, path.basename(file) + '.js'));
+			}
+
+			fs.writeFileSync(out, res);
+			console.log((("File \"" + file) + ("\" has been successfully compiled \"" + out) + "\"."));
 		}
 
 	} else {
