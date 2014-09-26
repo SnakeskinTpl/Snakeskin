@@ -26,6 +26,10 @@
 		var length = 0,
 			tSpace = 0;
 
+		var alb = ADV_LEFT_BLOCK,
+			lb = LEFT_BLOCK,
+			rb = RIGHT_BLOCK;
+
 		for (let j = i - 1; ++j < str.length;) {
 			length++;
 
@@ -43,7 +47,7 @@
 				}
 
 				if (clrL) {
-					res += el;
+					res += `${alb}${lb}__&__${rb}${el}`;
 				}
 
 				clrL = true;
@@ -60,7 +64,7 @@
 					clrL = false;
 					let nextSpace = false;
 
-					if (el === ADV_LEFT_BLOCK) {
+					if (el === alb) {
 						if (shortMap[diff2str]) {
 							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 3));
 
@@ -99,7 +103,7 @@
 
 					let replacer;
 
-					if (el === ADV_LEFT_BLOCK) {
+					if (el === alb) {
 						replacer = replacers[diff2str] ||
 							replacers[next] ||
 							replacers[next2str] ||
@@ -114,11 +118,11 @@
 						decl.name = replacer(decl.name).replace(commandRgxp, '$1');
 					}
 
-					let adv = el === ADV_LEFT_BLOCK ?
-						ADV_LEFT_BLOCK : '';
+					let adv = el === alb ?
+						alb : '';
 
-					let s = dir ? adv + LEFT_BLOCK : '',
-						e = dir ? RIGHT_BLOCK : '';
+					let s = dir ? adv + lb : '',
+						e = dir ? rb : '';
 
 					let obj = {
 						dir: dir,
@@ -177,7 +181,7 @@
 					let parts,
 						txt;
 
-					if (ADV_LEFT_BLOCK === '#') {
+					if (alb === '#') {
 						decl.command = decl.command.replace(lastHashRgxp, '\\#');
 					}
 
@@ -282,10 +286,6 @@
 			length++;
 
 			if (nextLineRgxp.test(el)) {
-				if (next2Str === '\r\n') {
-					continue;
-				}
-
 				let prevEl = lastEl,
 					brk = false;
 
