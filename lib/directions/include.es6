@@ -70,10 +70,12 @@ Snakeskin.addDirective(
 		};
 
 		module.root.key.push([command, require('fs')['statSync'](command)['mtime'].valueOf()]);
-		this.module.children.push(module);
 
+		this.module.children.push(module);
 		this.module = module;
+
 		this.info['file'] = command;
+		this.files[command] = true;
 	}
 );
 
