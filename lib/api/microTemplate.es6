@@ -37,6 +37,10 @@
 				next = str.charAt(i + 1),
 				next2str = el + next;
 
+			if (next2str === '\r\n') {
+				continue;
+			}
+
 			if (begin) {
 				if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
 					escape = !escape;
@@ -65,7 +69,7 @@
 							continue;
 						}
 
-					} else if (fullNextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
+					} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
 						comment = false;
 					}
 				}

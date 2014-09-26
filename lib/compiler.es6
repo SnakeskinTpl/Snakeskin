@@ -1,5 +1,4 @@
-var nextLineRgxp = /\n/,
-	fullNextLineRgxp = /[\n\r]/,
+var nextLineRgxp = /\r|\n/,
 	whiteSpaceRgxp = /\s/,
 	lineWhiteSpaceRgxp = /[ \t]/;
 
@@ -320,7 +319,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				},
 
 				'@symbols': {
-					'\\t': '\\t',
 					'\\n': '\\n',
 					'\\r': '\\r',
 					'\\s': '&nbsp;'
@@ -617,6 +615,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			currentClrL = clrL;
 
 		if (nextLine) {
+			if (next2str === '\r\n') {
+				continue;
+			}
+
 			clrL = true;
 		}
 
@@ -628,7 +630,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 				info['line']++;
 
-			} else if (modLine && !fullNextLineRgxp.test(el)) {
+			} else if (modLine) {
 				dir.lines[lastLine] += el;
 			}
 		}
@@ -756,7 +758,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 					}
 
-				} else if (fullNextLineRgxp.test(rEl) && comment === SINGLE_COMMENT) {
+				} else if (nextLineRgxp.test(rEl) && comment === SINGLE_COMMENT) {
 					comment = false;
 					dir.space = prevCommentSpace;
 					prevCommentSpace = false;
