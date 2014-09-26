@@ -92,14 +92,8 @@ params.macros = 'macros' in program ?
 	program['macros'] : params.macros;
 
 var prettyPrint = params.prettyPrint;
-
-if (params.language) {
-	params.language = Snakeskin.toObj(params.language);
-}
-
-if (params.macros) {
-	params.macros = Snakeskin.toObj(params.macros);
-}
+var language = params.language,
+	macros = params.macros;
 
 var exec = program['exec'];
 var tplData = program['data'],
@@ -141,6 +135,28 @@ function action(data, file) {
 		params.prettyPrint = false;
 	}
 
+	function load(val) {
+		let tmp = val;
+
+		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
+			tmp = path.join(val, fileName) + '.js';
+
+			if (!exists(tmp)) {
+				tmp += 'on';
+			}
+		}
+
+		return Snakeskin.toObj(tmp);
+	}
+
+	if (language) {
+		params.language = load(language);
+	}
+
+	if (macros) {
+		params.macros = load(macros);
+	}
+
 	var res = Snakeskin.compile(
 		String(data),
 		params,
@@ -171,25 +187,12 @@ function action(data, file) {
 				process.exit(1);
 			}
 
+			let dataObj;
 			if (tplData && tplData !== true) {
-				let tmp = tplData;
-
-				if (exists(tplData) && fileName && fs.statSync(tplData).isDirectory()) {
-					tmp = path.join(tplData, fileName) + '.js';
-
-					if (!exists(tmp)) {
-						tmp += 'on';
-					}
-				}
-
-				tplData = Snakeskin.toObj(tmp);
-
-			} else {
-				tplData = void 0;
+				dataObj = load(tplData);
 			}
 
-			res = tpl(tplData);
-
+			res = tpl(dataObj);
 			if (prettyPrint) {
 				if (toConsole) {
 					res = beautify['html'](res);
