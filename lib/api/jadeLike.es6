@@ -36,14 +36,14 @@
 				diff2str = str.substring(j + 1, j + 3);
 
 			if (nextLineRgxp.test(el)) {
-				if (clrL) {
-					res += el;
-				}
-
+				tSpace++;
 				clrL = true;
 				spaces = 0;
 				space = '\n';
-				tSpace++;
+
+				if (next2str !== '\r\n' && clrL) {
+					res += el;
+				}
 
 			} else if (clrL) {
 				if (whiteSpaceRgxp.test(el)) {
@@ -274,7 +274,11 @@
 
 			length++;
 
-			if (fullNextLineRgxp.test(el)) {
+			if (nextLineRgxp.test(el)) {
+				if (next2Str === '\r\n') {
+					continue;
+				}
+
 				let prevEl = lastEl,
 					brk = false;
 
