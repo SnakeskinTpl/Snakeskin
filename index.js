@@ -174,7 +174,7 @@ function action(data, file) {
 			if (tplData && tplData !== true) {
 				var tmp = tplData;
 
-				if (exists(tplData) && fs.statSync(tplData).isDirectory()) {
+				if (exists(tplData) && fileName && fs.statSync(tplData).isDirectory()) {
 					tmp = path.join(tplData, fileName) + '.js';
 
 					if (!exists(tmp)) {
