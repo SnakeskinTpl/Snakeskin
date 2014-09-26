@@ -1,11 +1,16 @@
 /*!
- * Snakeskin v4.1.3
+ * Snakeskin v5.0.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 29 Aug 2014 13:24:55 GMT
+ * Date: Fri, 26 Sep 2014 06:37:55 GMT
+ */
+
+/*!
+ * Полифилы, необходимые для работы live библиотеки
+ * в старых браузерах
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -19,6 +24,7 @@ String.prototype.trim = String.prototype.trim || function () {
 	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
 	return str.substring(0, i + 1);
 };
+
 /** @type {!Object} */
 var Snakeskin = {
 	/**
@@ -27,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 1, 3],
+	VERSION: [5, 0, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -74,6 +80,10 @@ var Snakeskin = {
 		typeof exports !== 'undefined';
 
 	var root = this;
+
+/*!
+ * Набор базовых фильтров и методы для работы с ними
+ */
 
 /**
  * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
@@ -154,236 +164,243 @@ Snakeskin.Filters.undef = function (str) {
 	return str !== void 0 ? str : '';
 };
 
-var uentityMap = {
-	'&amp;': '&',
-	'&lt;': '<',
-	'&gt;': '>',
-	'&quot;': '"',
-	'&#39;': '\'',
-	'&#x2F;': '/'
-};
+(function()  {
+	var uentityMap = {
+		'&amp;': '&',
+		'&lt;': '<',
+		'&gt;': '>',
+		'&quot;': '"',
+		'&#39;': '\'',
+		'&#x2F;': '/'
+	};
 
-var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
-	uescapeHTML = function(s)  {return uentityMap[s]};
+	var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
+		uescapeHTML = function(s)  {return uentityMap[s]};
 
-/**
- * Снятие экранирования HTML сущностей
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['uhtml'] = function (str) {
-	return ((str) + '').replace(uescapeHTMLRgxp, uescapeHTML);
-};
+	/**
+	 * Снятие экранирования HTML сущностей
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['uhtml'] = function (str) {
+		return ((str) + '').replace(uescapeHTMLRgxp, uescapeHTML);
+	};
 
-var stripTagsRgxp = /<\/?[^>]+>/g;
+	var stripTagsRgxp = /<\/?[^>]+>/g;
 
-/**
- * Удаление HTML тегов
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['stripTags'] = function (str) {
-	return ((str) + '').replace(stripTagsRgxp, '');
-};
+	/**
+	 * Удаление HTML тегов
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['stripTags'] = function (str) {
+		return ((str) + '').replace(stripTagsRgxp, '');
+	};
 
-var uriO = /%5B/g,
-	uriC = /%5D/g;
+	var uriO = /%5B/g,
+		uriC = /%5D/g;
 
-/**
- * Кодирование URL
- *
- * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['uri'] = function (str) {
-	return encodeURI(((str) + ''))
-		.replace(uriO, '[')
-		.replace(uriC, ']');
-};
+	/**
+	 * Кодирование URL
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['uri'] = function (str) {
+		return encodeURI(((str) + ''))
+			.replace(uriO, '[')
+			.replace(uriC, ']');
+	};
 
-/**
- * Перевод строки в верхний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['upper'] = function (str) {
-	return ((str) + '').toUpperCase();
-};
+	/**
+	 * Перевод строки в верхний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['upper'] = function (str) {
+		return ((str) + '').toUpperCase();
+	};
 
-/**
- * Перевод первой буквы строки в верхний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['ucfirst'] = function (str) {
-	str = ((str) + '');
-	return str.charAt(0).toUpperCase() + str.substring(1);
-};
+	/**
+	 * Перевод первой буквы строки в верхний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['ucfirst'] = function (str) {
+		str = ((str) + '');
+		return str.charAt(0).toUpperCase() + str.substring(1);
+	};
 
-/**
- * Перевод строки в нижний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['lower'] = function (str) {
-	return ((str) + '').toLowerCase();
-};
+	/**
+	 * Перевод строки в нижний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['lower'] = function (str) {
+		return ((str) + '').toLowerCase();
+	};
 
-/**
- * Перевод первой буквы строки в нижний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['lcfirst'] = function (str) {
-	str = ((str) + '');
-	return str.charAt(0).toLowerCase() + str.substring(1);
-};
+	/**
+	 * Перевод первой буквы строки в нижний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['lcfirst'] = function (str) {
+		str = ((str) + '');
+		return str.charAt(0).toLowerCase() + str.substring(1);
+	};
 
-/**
- * Срез крайних пробелов строки
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['trim'] = function (str) {
-	return ((str) + '').trim();
-};
+	/**
+	 * Срез крайних пробелов строки
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['trim'] = function (str) {
+		return ((str) + '').trim();
+	};
 
-var spaceCollapseRgxp = /\s{2,}/g;
+	var spaceCollapseRgxp = /\s{2,}/g;
 
-/**
- * Срез крайних пробелов строки
- * и свёртывание остальных пробелов в один
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['collapse'] = function (str) {
-	return ((str) + '').replace(spaceCollapseRgxp, ' ').trim();
-};
+	/**
+	 * Срез крайних пробелов строки
+	 * и свёртывание остальных пробелов в один
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['collapse'] = function (str) {
+		return ((str) + '').replace(spaceCollapseRgxp, ' ').trim();
+	};
 
-/**
- * Обрезание строки до заданной длины
- * (в конце, если нужно, ставится многоточие)
- *
- * @param {*} str - исходная строка
- * @param {number} length - максимальная длина текста
- * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
- * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
- * @return {string}
- */
-Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
-	str = ((str) + '');
-	if (!str || str.length <= length) {
-		return str;
-	}
-
-	var tmp = str.substring(0, length - 1),
-		lastInd = void 0;
-
-	var i = tmp.length;
-	while (i-- && opt_wordOnly) {
-		if (tmp.charAt(i) === ' ') {
-			lastInd = i;
-
-		} else if (lastInd !== void 0) {
-			break;
+	/**
+	 * Обрезание строки до заданной длины
+	 * (в конце, если нужно, ставится многоточие)
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {number} length - максимальная длина текста
+	 * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
+	 * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
+	 * @return {string}
+	 */
+	Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
+		str = ((str) + '');
+		if (!str || str.length <= length) {
+			return str;
 		}
-	}
 
-	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
-};
+		var tmp = str.substring(0, length - 1),
+			lastInd = void 0;
 
-/**
- * Генерация строки из повторений исходной подстроки
- *
- * @param {*} str - исходная строка
- * @param {?number=} [opt_num=2] - число повторений
- * @return {string}
+		var i = tmp.length;
+		while (i-- && opt_wordOnly) {
+			if (tmp.charAt(i) === ' ') {
+				lastInd = i;
+
+			} else if (lastInd !== void 0) {
+				break;
+			}
+		}
+
+		return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
+	};
+
+	/**
+	 * Генерация строки из повторений исходной подстроки
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {?number=} [opt_num=2] - число повторений
+	 * @return {string}
+	 */
+	Snakeskin.Filters['repeat'] = function (str, opt_num) {
+		return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
+	};
+
+	/**
+	 * Удаление подстроки из строки
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {(string|RegExp)} search - искомая подстрока
+	 * @return {string}
+	 */
+	Snakeskin.Filters['remove'] = function (str, search) {
+		return ((str) + '').replace(search, '');
+	};
+
+	/**
+	 * Замена подстроки в строке
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {(string|!RegExp)} search - искомая подстрока
+	 * @param {string} replace - строка для замены
+	 * @return {string}
+	 */
+	Snakeskin.Filters['replace'] = function (str, search, replace) {
+		return ((str) + '').replace(search, replace);
+	};
+
+	/**
+	 * Преобразование объекта в JSON
+	 *
+	 * @param {(Object|Array|string|number|boolean)} obj - исходный объект
+	 * @return {string}
+	 */
+	Snakeskin.Filters['json'] = function (obj) {
+		if (typeof obj === 'object') {
+			return JSON.stringify(obj);
+		}
+
+		return ((obj) + '');
+	};
+
+	/**
+	 * Преобразование JSON в объект
+	 *
+	 * @param {*} val - исходное значение
+	 * @return {?}
+	 */
+	Snakeskin.Filters['parse'] = function (val) {
+		if (typeof val !== 'string') {
+			return val;
+		}
+
+		return JSON.parse(val);
+	};
+
+	/**
+	 * Декларация BEM части
+	 *
+	 * @param {*} block - название блока
+	 * @param {*} part - вторая часть декларации
+	 * @return {string}
+	 */
+	Snakeskin.Filters['bem'] = function (block, part) {
+		return ((block) + '') + ((part) + '');
+	};
+
+	/**
+	 * Задача значения по умолчанию для объекта
+	 *
+	 * @param {*} val - исходное значение
+	 * @param {*} def - значение по умолчанию
+	 * @return {*}
+	 */
+	Snakeskin.Filters['default'] = function (val, def) {
+		return val === void 0 ? def : val;
+	};
+})();
+/*!
+ * Методы live библиотеки Snakeskin
  */
-Snakeskin.Filters['repeat'] = function (str, opt_num) {
-	return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
-};
 
-/**
- * Удаление подстроки из строки
- *
- * @param {*} str - исходная строка
- * @param {(string|RegExp)} search - искомая подстрока
- * @return {string}
- */
-Snakeskin.Filters['remove'] = function (str, search) {
-	return ((str) + '').replace(search, '');
-};
-
-/**
- * Замена подстроки в строке
- *
- * @param {*} str - исходная строка
- * @param {(string|!RegExp)} search - искомая подстрока
- * @param {string} replace - строка для замены
- * @return {string}
- */
-Snakeskin.Filters['replace'] = function (str, search, replace) {
-	return ((str) + '').replace(search, replace);
-};
-
-/**
- * Преобразование объекта в JSON
- *
- * @param {(Object|Array|string|number|boolean)} obj - исходный объект
- * @return {string}
- */
-Snakeskin.Filters['json'] = function (obj) {
-	if (typeof obj === 'object') {
-		return JSON.stringify(obj);
-	}
-
-	return ((obj) + '');
-};
-
-/**
- * Преобразование JSON в объект
- *
- * @param {*} val - исходное значение
- * @return {?}
- */
-Snakeskin.Filters['parse'] = function (val) {
-	if (typeof val !== 'string') {
-		return val;
-	}
-
-	return JSON.parse(val);
-};
-
-/**
- * Декларация BEM части
- *
- * @param {*} block - название блока
- * @param {*} part - вторая часть декларации
- * @return {string}
- */
-Snakeskin.Filters['bem'] = function (block, part) {
-	return ((block) + '') + ((part) + '');
-};
-
-/**
- * Задача значения по умолчанию для объекта
- *
- * @param {*} val - исходное значение
- * @param {*} def - значение по умолчанию
- * @return {*}
- */
-Snakeskin.Filters['default'] = function (val, def) {
-	return val === void 0 ? def : val;
-};if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
+if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
 	var keys = Object.keys;
 }
 
@@ -486,6 +503,45 @@ Snakeskin.forIn = function (obj, callback) {
 		i++;
 	}
 };
+
+var inlineTagMap = {
+	'img': true,
+	'link': true,
+	'embed': true,
+	'br': true,
+	'hr': true,
+	'wbr': true,
+	'meta': true,
+	'input': true,
+	'source': true,
+	'track': true,
+	'base': true,
+	'area': true,
+	'col': true,
+	'param': true
+};
+
+/**
+ * Вставить заданный узел или текст в исходный
+ *
+ * @expose
+ * @param {!Node} node - исходный элемент
+ * @param {(!Node|string)} obj - элемент для вставки или текст
+ * @return {(!Node|string)}
+ */
+Snakeskin.appendChild = function (node, obj) {
+	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
+		return ((obj) + '').trim();
+	}
+
+	if (typeof obj === 'string') {
+		obj = document.createTextNode(obj);
+	}
+
+	node.appendChild(obj);
+	return obj;
+};
+
 
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
@@ -5945,6 +6001,10 @@ parseStatement: true, parseSourceElement: true */
 /* vim: set sw=4 ts=4 et tw=80 : */
 	var esprima = this.esprima || this;
 
+/*!
+ * Различные таблицы и константы SS
+ */
+
 // Общие разделители директивы
 // >>>
 
@@ -6021,9 +6081,11 @@ var sysConst = {
 	'__ROOT__': true,
 	'__BLOCKS__': true,
 	'__RESULT__': true,
+	'__TMP_RESULT__': true,
 	'__CDATA__': true,
 	'__RETURN__': true,
 	'__RETURN_VAL__': true,
+	'__NODE__': true,
 	'__I_PROTO__': true,
 	'__I__': true,
 	'__J__': true,
@@ -6032,13 +6094,19 @@ var sysConst = {
 	'__KEYS__': true,
 	'__KEY__': true,
 	'__STR__': true,
+	'__APPEND__': true,
 	'__FILTERS__': true,
 	'__VARS__': true,
 	'__LOCAL__': true,
 	'__THIS__': true,
 	'__INCLUDE__': true,
 	'$_': true
-};var rgxpCache = {};
+};
+/*!
+ * Основные глобальные переменные библиотеки
+ */
+
+var rgxpCache = {};
 var globalCache = {},
 	globalFnCache = {};
 
@@ -6099,7 +6167,10 @@ function s(a, b, opt_c) {
 	}
 
 	return b;
-}/**
+}
+Snakeskin.DirObj = DirObj;
+
+/**
  * Объект управления директивами
  *
  * @constructor
@@ -6112,9 +6183,6 @@ function s(a, b, opt_c) {
  *     будет сгенерирована ошибка
  *
  * @param {boolean} params.commonJS - если true, то шаблон компилируется с экспортом в стиле commonJS
- * @param {boolean} params.interface - если true, то все директивы template трактуются как interface
- *     и при наследовании можно задавать необъявленные родительские шаблоны
- *
  * @param {boolean} params.inlineIterators - если true, то итераторы forEach и forIn
  *     будут развёрнуты в циклы
  *
@@ -6122,6 +6190,11 @@ function s(a, b, opt_c) {
  *     последовательностей
  *
  * @param {Object=} [params.macros] - таблица символов для преобразования последовательностей
+ * @param {?string=} [params.renderAs] - тип рендеринга шаблонов, доступные варианты:
+ *
+ *     1) placeholder - все шаблоны рендерятся как placeholder-ы;
+ *     2) interface - все шаблоны рендерятся как interface-ы;
+ *     3) template - все шаблоны рендерятся как template-ы.
  *
  * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
  *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
@@ -6133,14 +6206,17 @@ function s(a, b, opt_c) {
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
  *
- * @param {boolean} params.stringBuffer - если true, то для конкатенации строк в шаблоне
- *     используется Snakeskin.StringBuffer
+ * @param {string} params.renderMode - режим рендеринга шаблонов, доступные варианты:
+ *
+ *     1) stringConcat - рендеринг шаблона в строку с простой конкатенацией через оператор сложения;
+ *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
+ *     3) dom - рендеринг шаблона в набор команд из DOM API.
  *
  * @param {Array=} [params.lines] - массив строк шаблона (листинг)
  * @param {DirObj=} [params.parent] - ссылка на родительский объект
  *
  * @param {?boolean=} [params.needPrfx] - если true, то директивы декларируются как #{ ... }
- * @param {?number=} [params.prfxI] - глубина префиксных директив
+ * @param {RegExp=} [params.ignore] - регулярное выражение, которое задаёт пробельные символы для игнорирования
  *
  * @param {Array=} [params.scope] - область видимости (контекст) директив
  * @param {Object=} [params.vars] - объект локальных переменных
@@ -6166,24 +6242,6 @@ function DirObj(src, params) {var this$0 = this;
 	/** @type {?function(!Error)} */
 	this.onError = params.onError || null;
 
-	/** @type {boolean} */
-	this.stringBuffer = params.stringBuffer;
-
-	/** @type {boolean} */
-	this.inlineIterators = params.inlineIterators;
-
-	/** @type {boolean} */
-	this.xml = params.xml;
-
-	/** @type {boolean} */
-	this.escapeOutput = params.escapeOutput;
-
-	/** @type {boolean} */
-	this.interface = params.interface;
-
-	/** @type {Object} */
-	this.commonJS = params.commonJS;
-
 	/** @type {!Array} */
 	this.scope = params.scope || [];
 
@@ -6193,29 +6251,106 @@ function DirObj(src, params) {var this$0 = this;
 	/** @type {Object} */
 	this.info = params.info;
 
-	/** @type {number} */
-	this.prfxI = params.prfxI || 0;
-
 	/** @type {boolean} */
 	this.needPrfx = params.needPrfx || false;
 
 	/** @type {!Array} */
 	this.lines = params.lines || [''];
 
-	/** @type {boolean} */
+	/**
+	 * @expose
+	 * @type {string}
+	 */
+	this.renderMode = params.renderMode;
+
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
+	this.inlineIterators = params.inlineIterators;
+
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
+	this.xml = params.xml;
+
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
+	this.escapeOutput = params.escapeOutput;
+
+	/**
+	 * @expose
+	 * @type {(?string|undefined)}
+	 */
+	this.renderAs = params.renderAs;
+
+	/**
+	 * @expose
+	 * @type {Object}
+	 */
+	this.commonJS = params.commonJS;
+
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
 	this.autoReplace = params.autoReplace !== false;
 
-	/** @type {(Object|undefined)} */
+	/**
+	 * @expose
+	 * @type {(Object|undefined)}
+	 */
 	this.macros = params.macros;
 
-	/** @type {boolean} */
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
 	this.localization = params.localization;
 
-	/** @type {string} */
+	/**
+	 * @expose
+	 * @type {string}
+	 */
 	this.i18nFn = params.i18nFn;
 
-	/** @type {(Object|undefined)} */
+	/**
+	 * @expose
+	 * @type {(Object|undefined)}
+	 */
 	this.language = params.language;
+
+	/**
+	 * @expose
+	 * @type {(RegExp|undefined)}
+	 */
+	this.ignore = params.ignore;
+
+	/**
+	 * Стек изменямых параметров локализации
+	 * (те параметры, которые можно изменить директивой)
+	 * @type {!Array}
+	 */
+	this.params = [
+		{
+			'@root': true,
+			renderMode: this.renderMode,
+			inlineIterators: this.inlineIterators,
+			xml: this.xml,
+			escapeOutput: this.escapeOutput,
+			renderAs: this.renderAs,
+			commonJS: this.commonJS,
+			autoReplace: this.autoReplace,
+			macros: this.macros,
+			localization: this.localization,
+			i18nFn: this.i18nFn,
+			language: this.language,
+			ignore: this.ignore
+		}
+	];
 
 	if (params.consts) {
 		/** @type {(Array|undefined)} */
@@ -6264,9 +6399,6 @@ function DirObj(src, params) {var this$0 = this;
 	/** @type {number} */
 	this.freezeLine = 0;
 
-	/** @type {RegExp} */
-	this.ignoreRgxp = null;
-
 	/** @type {boolean} */
 	this.attr = false;
 
@@ -6289,6 +6421,18 @@ function DirObj(src, params) {var this$0 = this;
 	 * @type {Object}
 	 */
 	this.blockTable = null;
+
+	/**
+	 * Кеш внешних блоков и прототипов
+	 * @type {!Object}
+	 */
+	this.preDefs = {};
+
+	/**
+	 * Название активного внешнего прототипа или блока
+	 * @type {?string}
+	 */
+	this.outerLink = null;
 
 	/**
 	 * Структура шаблонов
@@ -6321,13 +6465,6 @@ function DirObj(src, params) {var this$0 = this;
 	 * @type {boolean}
 	 */
 	this.text = false;
-
-	/**
-	 * Текст, который будет возвращён шаблоном
-	 * после выхода из директив группы callback
-	 * @type {(string|boolean|null)}
-	 */
-	this.deferReturn = null;
 
 	/**
 	 * Содержимое скобок (Escaper)
@@ -6387,7 +6524,7 @@ function DirObj(src, params) {var this$0 = this;
 
 			return '' +
 				// Количество добавляемых строк
-				(("" + s) + ("__appendLine__ " + ((data.match(/[\n\r]/g) || '').length)) + ("" + e) + "") +
+				(("" + s) + ("__appendLine__ " + ((data.match(/\r\n|\r|\n/g) || '').length)) + ("" + e) + "") +
 
 				// Метка для замены CDATA
 				(("__CDATA__" + (this$0.cDataContent.length - 1)) + "_")
@@ -6411,7 +6548,8 @@ function DirObj(src, params) {var this$0 = this;
 			var __$C__ = $C,\
 				__async__ = async;\
 \
-			var __FILTERS__ = Snakeskin.Filters,\
+			var __APPEND__ = Snakeskin.appendChild,\
+				__FILTERS__ = Snakeskin.Filters,\
 				__VARS__ = Snakeskin.Vars,\
 				__LOCAL__ = Snakeskin.LocalVars,\
 				__STR__,\
@@ -6449,52 +6587,79 @@ function DirObj(src, params) {var this$0 = this;
 		}
 	}
 }
-
-Snakeskin.DirObj = DirObj;
+/*!
+ * API для работы с кешем шаблонов
+ */
 
 /**
- * Вернуть истинное имя директивы
+ * Вернуть объект кеша вывода заданного блока
  *
- * @param {?string} name - исходное имя
- * @return {?string}
+ * @param {string} type - тип блока (block, proto и т.д.)
+ * @param {?string=} [opt_tplName] - название шаблона
+ * @return {Object}
  */
-function getName(name) {
-	return aliases[name] || name;
-}
+DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
+	opt_tplName = opt_tplName || this.tplName;
+	var output = outputCache[opt_tplName];
 
-/**
- * Вернуть имя функции из заданной строки
- *
- * @param {string} str - исходная строка
- * @return {string}
- */
-DirObj.prototype.getFnName = function (str) {
-	var tmp = /[^(]+/.exec(str),
-		val = tmp ? tmp[0].trim() : '';
-
-	if (!val) {
-		this.error((("invalid \"" + (this.name)) + "\" declaration"));
+	if (!output) {
+		return null;
 	}
 
-	return val;
+	if (!output[type]) {
+		output[type] = {};
+	}
+
+	return output[type];
 };
 
 /**
- * Вернуть значение разницы длины команды с учётом типа декларации директивы
+ * (Пере)инициализировать кеш для шаблона
  *
- * @param {number} length - исходная длина
- * @return {number}
+ * @param {string} tplName - название шаблона
+ * @return {!DirObj}
  */
-DirObj.prototype.getDiff = function (length) {
-	return length + +(this.needPrfx) + 1;
+DirObj.prototype.initTemplateCache = function (tplName) {
+	protoCache[tplName] = {};
+
+	blockCache[tplName] = {};
+	fromProtoCache[tplName] = 0;
+
+	constCache[tplName] = {};
+	fromConstCache[tplName] = 0;
+
+	this.consts = [];
+	this.bemRef = '';
+
+	this.superStrongSpace = 0;
+	this.strongSpace = false;
+	this.space = true;
+
+	return this;
 };
+/*!
+ * Методы и функции для записи в результирующий JS
+ */
 
 /**
  * Вернуть строку начала конкатенации c __RESULT__
  * @return {string}
  */
 DirObj.prototype.$ = function () {
-	return ("__RESULT__" + (this.stringBuffer ? '.push(' : '+= '));
+	if (this.domComment) {
+		return '__TMP_RESULT__ +=';
+	}
+
+	switch (this.renderMode) {
+		case 'stringBuffer':
+			return '__RESULT__.push(';
+
+		case 'dom':
+			return '__APPEND__(__RESULT__[__RESULT__.length - 1],';
+
+		default:
+			return '__RESULT__ +=';
+	}
 };
 
 /**
@@ -6502,7 +6667,11 @@ DirObj.prototype.$ = function () {
  * @return {string}
  */
 DirObj.prototype.$$ = function () {
-	return this.stringBuffer ? ')' : '';
+	if (this.domComment) {
+		return '';
+	}
+
+	return this.renderMode !== 'stringConcat' ? ')' : '';
 };
 
 /**
@@ -6516,11 +6685,33 @@ DirObj.prototype.wrap = function (opt_str) {
 };
 
 /**
+ * Вернуть текст добавления узла в стек
+ * (для renderMode == dom)
+ * @return {string}
+ */
+DirObj.prototype.returnPushNodeDecl = function () {
+	return (("\
+		" + (this.wrap('__NODE__'))) + "\
+		__RESULT__.push(__NODE__);\
+		__NODE__ = null;\
+	");
+};
+
+/**
  * Вернуть строку возврата содержимого шаблона
  * @return {string}
  */
 DirObj.prototype.returnResult = function () {
-	return ("__RESULT__" + (this.stringBuffer ? '.join(\'\')' : ''))
+	switch (this.renderMode) {
+		case 'stringBuffer':
+			return '__RESULT__.join(\'\')';
+
+		case 'dom':
+			return '__RESULT__[0]';
+
+		default:
+			return '__RESULT__';
+	}
 };
 
 /**
@@ -6528,7 +6719,65 @@ DirObj.prototype.returnResult = function () {
  * @return {string}
  */
 DirObj.prototype.declResult = function () {
-	return this.stringBuffer ? 'new Snakeskin.StringBuffer()' : '\'\'';
+	switch (this.renderMode) {
+		case 'stringBuffer':
+			return 'new Snakeskin.StringBuffer()';
+
+		case 'dom':
+			return '[document.createDocumentFragment()]';
+
+		default:
+			return '\'\'';
+	}
+};
+
+/**
+ * Вернуть true,
+ * если возможна запись в результирующую строку JavaScript
+ * @return {boolean}
+ */
+DirObj.prototype.isSimpleOutput = function () {
+	if (getName(this.name) !== 'end' && this.strong) {
+		this.error((("directive \"" + (this.structure.name)) + ("\" can not be used with a \"" + (this.strong)) + "\""));
+		return false;
+	}
+
+	return !this.parentTplName && !this.protoStart && !this.outerLink && (!this.proto || !this.proto.parentTplName);
+};
+
+/**
+ * Вернуть true,
+ * если возможна проверка валидности директивы
+ * @return {boolean}
+ */
+DirObj.prototype.isReady = function () {
+	return !this.protoStart && (!this.proto || !this.proto.parentTplName);
+};
+
+/**
+ * Вернуть true,
+ * если ситуация соотвествует условию:
+ *     не обработка тела прототипа && не внешний прототип &&
+ *     (
+ *         не вложенный блок или прототип в родительской структуре ||
+ *         standalone шаблон
+ *     )
+ *
+ * @return {boolean}
+ */
+DirObj.prototype.isAdvTest = function () {
+	var res = (
+		!this.proto && !this.outerLink &&
+		(
+			(this.parentTplName && !this.hasParentBlock({
+				'block': true,
+				'proto': true
+			})) ||
+			!this.parentTplName
+		)
+	);
+
+	return !!(res);
 };
 
 /**
@@ -6560,6 +6809,21 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 };
 
 /**
+ * Добавить указанную строку в результирующую строку JavaScript
+ * (с проверкой this.isSimpleOutput())
+ *
+ * @param {string=} str - исходная строка
+ * @return {boolean}
+ */
+DirObj.prototype.append = function (str) {
+	if (!this.isSimpleOutput()) {
+		return false;
+	}
+
+	return this.save(str);
+};
+
+/**
  * Выполнить заданную функцию, если возможна запись в результирующую строку
  * (this.isSimpleOutput())
  *
@@ -6578,113 +6842,199 @@ DirObj.prototype.mod = function (callback) {
 
 	return false;
 };
+/*!
+ * API для работы с деревом шаблона
+ */
 
 /**
- * Добавить указанную строку в результирующую строку JavaScript
- * (с проверкой this.isSimpleOutput())
+ * Проверить начилие указанной директивы в цепочке структуры,
+ * начиная с активной
  *
- * @param {string=} str - исходная строка
- * @return {boolean}
+ * @param {(string|!Object)} name - название директивы или таблица названий
+ * @param {Object=} [opt_obj=this.structure] - проверяемый объект
+ * @return {(boolean|string)}
  */
-DirObj.prototype.append = function (str) {
-	if (!this.isSimpleOutput()) {
-		return false;
+DirObj.prototype.has = function (name, opt_obj) {
+	var obj = opt_obj || this.structure;
+
+	while (true) {
+		var nm = obj.name;
+
+		if (name[nm] || nm === name) {
+			if (name[nm]) {
+				return nm;
+			}
+
+			return true;
+
+		} else if (obj.parent && obj.parent.name !== 'root') {
+			obj = obj.parent;
+
+		} else {
+			return false;
+		}
+	}
+};
+
+/**
+ * Проверить начилие указанной директивы в цепочке структуры
+ * (начальная активная директива исключается)
+ *
+ * @param {(string|!Object)} name - название директивы или таблица названий
+ * @return {(boolean|string)}
+ */
+DirObj.prototype.hasParent = function (name) {
+	if (this.structure.parent) {
+		return this.has(name, this.structure.parent);
 	}
 
-	return this.save(str);
+	return false;
 };
 
 /**
- * Вернуть объект кеша вывода заданного блока
+ * Проверить начилие указанной директивы в цепочке блочной структуры
+ * (начальная активная директива исключается)
  *
- * @param {string} type - тип блока (block, proto и т.д.)
- * @param {?string=} [opt_tplName] - название шаблона
- * @return {!Object}
+ * @param {(string|!Object)} name - название директивы или таблица названий
+ * @return {(boolean|string)}
  */
-DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
-	opt_tplName = opt_tplName || this.tplName;
-	var output = outputCache[opt_tplName];
-
-	if (!output[type]) {
-		output[type] = {};
+DirObj.prototype.hasParentBlock = function (name) {
+	if (this.blockStructure && this.blockStructure.parent) {
+		return this.has(name, this.blockStructure.parent);
 	}
 
-	return output[type];
+	return false;
 };
+/*!
+ * API для работы с переменными
+ */
 
 /**
- * Вернуть true,
- * если возможна запись в результирующую строку JavaScript
- * @return {boolean}
+ * Декларировать указанную переменную
+ *
+ * @param {string} varName - название переменной
+ * @param {boolean=} [opt_protoParams=false] - если true, то переменная
+ *     декларируется как параметр прототипа
+ *
+ * @return {string}
  */
-DirObj.prototype.isSimpleOutput = function () {
-	if (getName(this.name) !== 'end' && this.strong) {
-		this.error((("directive \"" + (this.structure.name)) + ("\" can not be used with a \"" + (this.strong)) + "\""));
-		return false;
+DirObj.prototype.declVar = function (varName, opt_protoParams) {
+	opt_protoParams = opt_protoParams || false;
+	var tplName = this.tplName;
+
+	if (!opt_protoParams && tplName && constCache[tplName][varName]) {
+		this.error((("variable \"" + varName) + "\" is already defined as constant"));
 	}
 
-	return !this.parentTplName && !this.protoStart && (!this.proto || !this.proto.parentTplName);
+	var struct = this.structure;
+	while (!struct.vars) {
+		struct = struct.parent;
+	}
+
+	var tmp = struct.vars[varName];
+	if (tmp && !tmp.inherited && struct.parent) {
+		return tmp.value;
+	}
+
+	var realVar,
+		id = this.module.id,
+		global = false;
+
+	if (importMap[struct.name]) {
+		if (struct.name !== 'root') {
+			struct = struct.parent;
+		}
+
+		realVar = (("__LOCAL__." + varName) + ("_" + id) + ("_" + uid) + "");
+		varName += ("_" + id);
+		global = true;
+
+	} else {
+		realVar = (("__" + varName) + ("_" + (this.proto ? this.proto.name : '')) + ("_" + (struct.name)) + ("_" + (this.i)) + "");
+	}
+
+	struct.vars[varName] = {
+		value: realVar,
+		id: id,
+		global: global,
+		scope: this.scope.length
+	};
+
+	if (tplName) {
+		this.varCache[tplName][varName] = true;
+	}
+
+	return realVar;
 };
 
 /**
- * Вернуть true,
- * если возможна проверка валидности директивы
- * @return {boolean}
- */
-DirObj.prototype.isReady = function () {
-	return !this.protoStart && (!this.proto || !this.proto.parentTplName);
-};
-
-/**
- * Вернуть true,
- * если ситуация соотвествует условию:
- *     не обработка тела прототипа && не внешний прототип &&
- *     (
- *         не вложенный блок или прототип в родительской структуре ||
- *         standalone шаблон
- *     )
+ * Парсить указанную строку декларации переменных, провести инициализацию,
+ * и вернуть результирующий вариант для шаблона
  *
- * @return {boolean}
+ * @param {string} str - исходная строка
+ * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
+ * @param {?string=} [opt_init] - значение для инициализации переменной по умолчанию
+ * @return {string}
  */
-DirObj.prototype.isAdvTest = function () {
-	var res = (
-		!this.proto && !this.protoLink &&
-		(
-			(this.parentTplName && !this.hasParentBlock({
-				'block': true,
-				'proto': true
-			})) ||
-			!this.parentTplName
-		)
-	);
+DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
+	opt_init = opt_init || 'void 0';
+	opt_end = opt_end !== false;
 
-	return !!(res);
+	var isSys = 0,
+		cache = '';
+
+	var fin = 'var ',
+		length = str.length;
+
+	var struct = this.structure;
+	while (!struct.vars) {
+		struct = struct.parent;
+	}
+
+	if (importMap[struct.name]) {
+		fin = '';
+	}
+
+	for (var i = -1; ++i < length;) {
+		var el = str.charAt(i);
+
+		if (bMap[el]) {
+			isSys++;
+
+		} else if (closeBMap[el]) {
+			isSys--;
+		}
+
+		if ((el === ',' || i === length - 1) && !isSys) {
+			if (i === length - 1) {
+				cache += el;
+			}
+
+			var parts = cache.split('='),
+				realVar = this.declVar(parts[0].trim());
+
+			parts[0] = realVar + (opt_init || parts[1] ? '=' : '');
+			parts[1] = parts[1] || opt_init;
+
+			var val = parts.slice(1).join('=');
+			fin += parts[0] + (val ? this.prepareOutput(val, true) : '') + ',';
+
+			cache = '';
+			continue;
+		}
+
+		cache += el;
+	}
+
+	if (isSys) {
+		this.error((("invalid \"" + (this.name)) + "\" declaration"));
+	}
+
+	return fin.slice(0, -1) + (opt_end ? ';' : '');
 };
-
-/**
- * (Пере)инициализировать кеш для шаблона
- *
- * @param {string} tplName - название шаблона
- * @return {!DirObj}
+/*!
+ * API для работы с директивами
  */
-DirObj.prototype.initTemplateCache = function (tplName) {
-	protoCache[tplName] = {};
-
-	blockCache[tplName] = {};
-	fromProtoCache[tplName] = 0;
-
-	constCache[tplName] = {};
-	fromConstCache[tplName] = 0;
-
-	this.consts = [];
-	this.bemRef = '';
-
-	this.superStrongSpace = 0;
-	this.strongSpace = false;
-	this.space = true;
-
-	return this;
-};
 
 /**
  * Декларировать начало блочной директивы
@@ -6854,6 +7204,9 @@ DirObj.prototype.endDir = function () {
 	this.structure = this.structure.parent;
 	return this;
 };
+/*!
+ * API для организации очереди выполнения
+ */
 
 /**
  * Добавить функцию в очередь выполнения
@@ -6880,6 +7233,46 @@ DirObj.prototype.applyQueue = function () {
 	}
 
 	return this;
+};
+/*!
+ * Различные вспомогательные методы и функции
+ */
+
+/**
+ * Вернуть истинное имя директивы
+ *
+ * @param {?string} name - исходное имя
+ * @return {?string}
+ */
+function getName(name) {
+	return aliases[name] || name;
+}
+
+/**
+ * Вернуть имя функции из заданной строки
+ *
+ * @param {string} str - исходная строка
+ * @return {string}
+ */
+DirObj.prototype.getFnName = function (str) {
+	var tmp = /[^(]+/.exec(str),
+		val = tmp ? tmp[0].trim() : '';
+
+	if (!val) {
+		this.error((("invalid \"" + (this.name)) + "\" declaration"));
+	}
+
+	return val;
+};
+
+/**
+ * Вернуть значение разницы длины команды с учётом типа декларации директивы
+ *
+ * @param {number} length - исходная длина
+ * @return {number}
+ */
+DirObj.prototype.getDiff = function (length) {
+	return length + +(this.needPrfx) + 1;
 };
 
 /**
@@ -6909,12 +7302,12 @@ DirObj.prototype.getGroup = function (names) {var SLICE$0 = Array.prototype.slic
 			}
 		}
 
-		for (var key$1 = void 0 in group) {
-			if (!group.hasOwnProperty(key$1) || ignore[key$1]) {
+		for (var key$0 = void 0 in group) {
+			if (!group.hasOwnProperty(key$0) || ignore[key$0]) {
 				continue;
 			}
 
-			map[key$1] = true;
+			map[key$0] = true;
 		}
 	}
 
@@ -6922,188 +7315,1159 @@ DirObj.prototype.getGroup = function (names) {var SLICE$0 = Array.prototype.slic
 };
 
 /**
- * Проверить начилие указанной директивы в цепочке структуры,
- * начиная с активной
- *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @param {Object=} [opt_obj=this.structure] - проверяемый объект
- * @return {(boolean|string)}
+ * Сбросить слой параметров компиляции
+ * @return {!DirObj}
  */
-DirObj.prototype.has = function (name, opt_obj) {
-	var obj = opt_obj || this.structure;
+DirObj.prototype.popParams = function () {
+	this.params.pop();
 
-	while (true) {
-		var nm = obj.name;
-
-		if (name[nm] || nm === name) {
-			if (name[nm]) {
-				return nm;
-			}
-
-			return true;
-
-		} else if (obj.parent && obj.parent.name !== 'root') {
-			obj = obj.parent;
-
-		} else {
-			return false;
-		}
-	}
-};
-
-/**
- * Проверить начилие указанной директивы в цепочке структуры
- * (начальная активная директива исключается)
- *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @return {(boolean|string)}
- */
-DirObj.prototype.hasParent = function (name) {
-	if (this.structure.parent) {
-		return this.has(name, this.structure.parent);
-	}
-
-	return false;
-};
-
-/**
- * Проверить начилие указанной директивы в цепочке блочной структуры
- * (начальная активная директива исключается)
- *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @return {(boolean|string)}
- */
-DirObj.prototype.hasParentBlock = function (name) {
-	if (this.blockStructure && this.blockStructure.parent) {
-		return this.has(name, this.blockStructure.parent);
-	}
-
-	return false;
-};
-
-/**
- * Декларировать указанную переменную
- *
- * @param {string} varName - название переменной
- * @param {boolean=} [opt_protoParams=false] - если true, то переменная
- *     декларируется как параметр прототипа
- *
- * @return {string}
- */
-DirObj.prototype.declVar = function (varName, opt_protoParams) {
-	opt_protoParams = opt_protoParams || false;
-	var tplName = this.tplName;
-
-	if (!opt_protoParams && tplName && constCache[tplName][varName]) {
-		this.error((("variable \"" + varName) + "\" is already defined as constant"));
-	}
-
-	var struct = this.structure;
-	while (!struct.vars) {
-		struct = struct.parent;
-	}
-
-	var tmp = struct.vars[varName];
-	if (tmp && !tmp.inherited && struct.parent) {
-		return tmp.value;
-	}
-
-	var realVar,
-		id = this.module.id,
-		global = false;
-
-	if (importMap[struct.name]) {
-		if (struct.name !== 'root') {
-			struct = struct.parent;
-		}
-
-		realVar = (("__LOCAL__." + varName) + ("_" + id) + ("_" + uid) + "");
-		varName += ("_" + id);
-		global = true;
-
-	} else {
-		realVar = (("__" + varName) + ("_" + (this.proto ? this.proto.name : '')) + ("_" + (struct.name)) + ("_" + (this.i)) + "");
-	}
-
-	struct.vars[varName] = {
-		value: realVar,
-		id: id,
-		global: global,
-		scope: this.scope.length
-	};
-
-	if (tplName) {
-		this.varCache[tplName][varName] = true;
-	}
-
-	return realVar;
-};
-
-/**
- * Парсить указанную строку декларации переменных, провести инициализацию,
- * и вернуть результирующий вариант для шаблона
- *
- * @param {string} str - исходная строка
- * @param {?boolean=} [opt_end=true] - если true, то в конце строки ставится ;
- * @param {?string=} [opt_init] - значение для инициализации переменной по умолчанию
- * @return {string}
- */
-DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
-	opt_init = opt_init || 'void 0';
-	opt_end = opt_end !== false;
-
-	var isSys = 0,
-		cache = '';
-
-	var fin = 'var ',
-		length = str.length;
-
-	var struct = this.structure;
-	while (!struct.vars) {
-		struct = struct.parent;
-	}
-
-	if (importMap[struct.name]) {
-		fin = '';
-	}
-
-	for (var i = -1; ++i < length;) {
-		var el = str.charAt(i);
-
-		if (bMap[el]) {
-			isSys++;
-
-		} else if (closeBMap[el]) {
-			isSys--;
-		}
-
-		if ((el === ',' || i === length - 1) && !isSys) {
-			if (i === length - 1) {
-				cache += el;
-			}
-
-			var parts = cache.split('='),
-				realVar = this.declVar(parts[0].trim());
-
-			parts[0] = realVar + (opt_init || parts[1] ? '=' : '');
-			parts[1] = parts[1] || opt_init;
-
-			var val = parts.slice(1).join('=');
-			fin += parts[0] + (val ? this.prepareOutput(val, true) : '') + ',';
-
-			cache = '';
+	var p = this.params[this.params.length - 1];
+	for (var key in p) {
+		if (!p.hasOwnProperty(key)) {
 			continue;
 		}
 
-		cache += el;
+		this[key] = p[key];
 	}
 
-	if (isSys) {
-		this.error((("invalid \"" + (this.name)) + "\" declaration"));
+	return this;
+};
+/*!
+ * API для обработки JS-like конструкций в шаблоне
+ * (фильтры, scope и т.д.)
+ */
+
+(function()  {
+	var blackWordMap = {
+		'+': true,
+		'++': true,
+		'-': true,
+		'--': true,
+		'~': true,
+		'~~': true,
+		'!': true,
+		'!!': true,
+		'arguments': true,
+		'break': true,
+		'case': true,
+		'catch': true,
+		'continue': true,
+		'delete': true,
+		'do': true,
+		'else': true,
+		'false': true,
+		'finnaly': true,
+		'for': true,
+		'function': true,
+		'if': true,
+		'in': true,
+		'of': true,
+		'instanceof': true,
+		'new': true,
+		'null': true,
+		'return': true,
+		'switch': true,
+		'this': true,
+		'throw': true,
+		'true': true,
+		'try': true,
+		'typeof': true,
+		'var': true,
+		'const': true,
+		'let': true,
+		'void': true,
+		'while': true,
+		'with': true,
+		'class': true,
+		'debugger': true,
+		'interface': true
+	};
+
+	var unaryBlackWordMap = {
+		'new': true,
+		'typeof': true,
+		'instanceof': true,
+		'in': true
+	};
+
+	var undefUnaryBlackWordMap = {
+		'new': true
+	};
+
+	var comboBlackWordMap = {
+		'var': true,
+		'const': true,
+		'let': true
+	};
+
+	var nextWordCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w[\\]().]"));
+
+	/**
+	 * Вернуть целое слово из заданной строки, начиная с указанной позиции
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {number} pos - начальная позиция
+	 * @return {{word: string, finalWord: string, unary: string}}
+	 */
+	DirObj.prototype.getWord = function (str, pos) {
+		var word = '';
+		var res = '',
+			nres = '';
+
+		var pCount = 0,
+			diff = 0;
+
+		var start = 0,
+			pContent = null;
+
+		var unary,
+			unaryStr = '';
+
+		for (var i = pos, j = 0; i < str.length; i++, j++) {
+			var el = str.charAt(i);
+
+			if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[word]))) {
+				if (el === ' ') {
+					word = '';
+
+				} else {
+					word += el;
+				}
+
+				if (unary) {
+					unaryStr = unaryStr ||
+						res;
+
+					unary = false;
+				}
+
+				if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
+					pContent += el;
+				}
+
+				if (pMap[el]) {
+					if (pContent === null) {
+						start = j + 1;
+						pContent = '';
+					}
+
+					pCount++;
+
+				} else if (closePMap[el]) {
+					if (pCount) {
+						pCount--;
+
+						if (!pCount) {
+							if (nres) {
+								nres = nres.substring(0, start + diff) +
+									(pContent && this.prepareOutput(pContent, true, null, null, true)) +
+									nres.substring(j + diff + pContent.length);
+
+							} else {
+								nres = res.substring(0, start) +
+									(pContent && this.prepareOutput(pContent, true, null, null, true)) +
+									res.substring(j);
+							}
+
+							diff = nres.length - res.length;
+							pContent = null;
+						}
+
+					} else {
+						break;
+					}
+				}
+
+				res += el;
+				if (nres) {
+					nres += el;
+				}
+
+			} else {
+				break;
+			}
+		}
+
+		return {
+			word: res,
+			finalWord: nres || res,
+			unary: unaryStr
+		};
+	};
+
+	var unSRgxp = /\S/;
+
+	/**
+	 * Вернуть true, если указанное cлово является свойством в литерале объекта
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {number} start - начальная позиция слова
+	 * @param {number} end - конечная позиция слова
+	 * @return {boolean}
+	 */
+	function isSyOL(str, start, end) {
+		var res;
+
+		for (var i = start; i--;) {
+			var el = str.charAt(i);
+
+			if (unSRgxp.test(el)) {
+				res = el === '?';
+				break;
+			}
+		}
+
+		if (!res) {
+			for (var i$0 = end; i$0 < str.length; i$0++) {
+				var el$0 = str.charAt(i$0);
+
+				if (unSRgxp.test(el$0)) {
+					return el$0 === ':';
+				}
+			}
+		}
+
+		return false;
 	}
 
-	return fin.slice(0, -1) + (opt_end ? ';' : '');
-};/**
+	/**
+	 * Вернуть true, если следующий непробельный символ
+	 * в указанной строке равен присвоению (=)
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {number} pos - начальная позиция
+	 * @return {boolean}
+	 */
+	function isNextAssign(str, pos) {
+		for (var i = pos; i < str.length; i++) {
+			var el = str.charAt(i);
+
+			if (unSRgxp.test(el)) {
+				return el === '=' && str.charAt(i + 1) !== '=';
+			}
+		}
+
+		return false;
+	}
+
+	var unMap = {
+		'!html': true,
+		'!undef': true
+	};
+
+	var unUndefLabel = '{undef}',
+		unUndefRgxp = new RegExp(unUndefLabel, 'g');
+
+	var ssfRgxp = /__FILTERS__\./;
+	var nextCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w]")),
+		newWordRgxp = new RegExp((("[^" + (G_MOD + L_MOD)) + "$\\w[\\].]")),
+		filterRgxp = /[!$a-z_]/i;
+
+	var numRgxp = /[0-9]/,
+		modRgxp = new RegExp((("" + L_MOD) + "(?:\\d+|)")),
+		strongModRgxp = new RegExp((("" + L_MOD) + "(\\d+)"));
+
+	var multPropRgxp = /\[|\./,
+		firstPropRgxp = /([^.[]+)(.*)/;
+
+	var propValRgxp = /[^-+!]+/;
+	var exprimaHackFn = function(str)  {return str
+		.trim()
+		.replace(/^\[/, '$[')
+		.replace(/\byield\b/g, '')
+		.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '')};
+
+	var wrapRgxp = /^\s*{/;
+
+	/**
+	 * Подготовить указанную комманду к выводу:
+	 * осуществляется привязка к scope и инициализация фильтров
+	 *
+	 * @param {string} command - исходный текст команды
+	 * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
+	 * @param {?boolean=} [opt_iSys=false] - если true, то запуск функции считается вложенным системным вызовом
+	 * @param {?boolean=} [opt_breakFirst=false] - если true, то первое слово в команде пропускается
+	 * @param {?boolean=} [opt_validate=true] - если false, то полученная конструкция не валидируется
+	 * @return {string}
+	 */
+	DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {var this$0 = this;
+		var tplName = this.tplName,
+			struct = this.structure;
+
+		// ОПРЕДЕЛЕНИЯ:
+		// Скобка = (
+
+		var res = command;
+
+		// Количество открытых скобок в строке
+		// (скобки открытые внутри фильтра не считаются)
+		var pCount = 0;
+
+		// Количество открытых скобок внутри фильтра:
+		// |foo (1 + 2) / 3
+		var pCountFilter = 0;
+
+		// Массив позиций открытия и закрытия скобок (pCount),
+		// идёт в порядке возрастания от вложенных к внешним блокам, например:
+		// ((a + b)) => [[1, 7], [0, 8]]
+		var pContent = [];
+
+		// true, если идёт декларация фильтра
+		var filterStart = false;
+
+		// true, если идёт фильтр-враппер, т.е.
+		// (2 / 3)|round
+		var filterWrapper = false;
+
+		// Массивы итоговых фильтров и истинных фильтров,
+		// например:
+		// {with foo}
+		//     {bar |ucfisrt bar()|json}
+		// {end}
+		//
+		// rvFilter => ['ucfisrt bar()', 'json']
+		// filter => ['ucfisrt foo.bar()', 'json']
+		var filter = [],
+			rvFilter = [];
+
+		// true, то можно расчитывать слово
+		var nword = !opt_breakFirst;
+
+		// Количество слов для пропуска
+		var posNWord = 0;
+
+		// Область видимости
+		var scope = this.scope,
+			useWith = !!(scope.length);
+
+		// Сдвиги
+		var addition = 0,
+			wordAddEnd = 0,
+			filterAddEnd = 0;
+
+		// true, если применяется фильтр !html
+		var unEscape = !this.escapeOutput;
+
+		// true, если применяется фильтр !undef
+		var unUndef = false;
+
+		var vars = struct.children ?
+			struct.vars :
+			struct.parent.vars;
+
+		var replacePropVal = function(sstr)  {
+			var id = this$0.module.id,
+				def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")] || vars[(("" + sstr) + "_00")];
+
+			if (def && (!def.global || def.global && id == def.id)) {
+				return def.value;
+			}
+
+			return sstr;
+		};
+
+		function addScope(str) {
+			if (multPropRgxp.test(str)) {
+				var fistProp = firstPropRgxp.exec(str);
+				fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
+				str = fistProp.slice(1).join('');
+
+			} else {
+				str = str.replace(propValRgxp, replacePropVal);
+			}
+
+			return str;
+		}
+
+		if (!command) {
+			this.error('invalid syntax');
+			return '';
+		}
+
+		var commandLength = command.length;
+		var isFilter,
+			breakNum;
+
+		for (var i = -1; ++i < commandLength;) {
+			var el = command.charAt(i),
+				next = command.charAt(i + 1),
+				nNext = command.charAt(i + 2);
+
+			if (!breakNum) {
+				if (el === '(') {
+					// Скобка открылась внутри декларации фильтра
+					if (filterStart) {
+						pCountFilter++;
+
+					} else {
+						pContent.unshift([i + wordAddEnd]);
+						pCount++;
+					}
+				}
+
+				// Расчёт scope:
+				// флаг nword показывает, что началось новое слово;
+				// флаг posNWord показывает, сколько новых слов нужно пропустить
+				if (nword && !posNWord && nextCharRgxp.test(el)) {
+					var nextStep = this.getWord(command, i);
+					var word = nextStep.word,
+						finalWord = nextStep.finalWord;
+
+					var uAdd = wordAddEnd + addition,
+						vres = void 0;
+
+					// true,
+					// если полученное слово не является зарезервированным (blackWordMap),
+					// не является фильтром,
+					// не является числом,
+					// не является константой замены Escaper,
+					// не является названием свойства в литерале объекта ({свойство: )
+					var canParse = !blackWordMap[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
+						isNaN(+(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
+
+					// Экспорт числовых литералов
+					if (numRgxp.test(el)) {
+						vres = finalWord;
+
+					// Экспорт глобальный и супер глобальных переменных
+					} else if ((useWith && !modMap[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
+
+						if (useWith) {
+							vres = next === G_MOD ?
+								finalWord.substring(2) : finalWord;
+
+							// Супер глобальная переменная внутри with
+							if (next === G_MOD) {
+								vres = ("__VARS__" + (concatProp(vres)));
+
+							} else {
+								vres = addScope(vres);
+							}
+
+						// Супер глобальная переменная вне with
+						} else {
+							vres = ("__VARS__" + (concatProp(finalWord.substring(next === G_MOD ? 2 : 1))));
+						}
+
+					} else {
+						var rfWord = finalWord.replace(modRgxp, '');
+
+						if (canParse && useWith && modMap[el]) {
+							if (el === G_MOD) {
+								rfWord = rfWord.substring(1);
+							}
+
+							var num = 0;
+
+							// Уточнение scope
+							if (el === L_MOD) {
+								var val = strongModRgxp.exec(finalWord);
+								num = val ? val[1] : 1;
+							}
+
+							if (num && (scope.length - num) <= 0) {
+								vres = addScope(rfWord);
+
+							} else {
+								vres = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
+							}
+
+						} else {
+							if (canParse) {
+								vres = addScope(rfWord);
+
+							} else if (tplName && rfWord === 'this' && !this.hasParent(this.getGroup('selfThis'))) {
+								vres = '__THIS__';
+
+							} else {
+								vres = rfWord;
+							}
+						}
+					}
+
+					if (canParse &&
+						isNextAssign(command, i + word.length) &&
+						tplName &&
+						constCache[tplName] &&
+						constCache[tplName][vres]
+					) {
+
+						this.error((("constant \"" + vres) + "\" is already defined"));
+						return '';
+					}
+
+					// Данное слово является составным системным,
+					// т.е. пропускаем его и следующее за ним
+					if (comboBlackWordMap[finalWord]) {
+						posNWord = 2;
+
+					} else if (
+						canParse &&
+						(!opt_sys || opt_iSys) && !filterStart &&
+						(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary])
+					) {
+
+						vres = (("" + unUndefLabel) + ("(" + vres) + ")");
+					}
+
+					wordAddEnd += vres.length - word.length;
+					nword = false;
+
+					if (filterStart) {
+						var last = filter.length - 1;
+						filter[last] += vres;
+						rvFilter[last] += word;
+						filterAddEnd += vres.length - word.length;
+
+					} else {
+						res = res.substring(0, i + uAdd) + vres + res.substring(i + word.length + uAdd);
+					}
+
+					// Дело сделано, теперь с чистой совестью матаем на позицию:
+					// за один символ до конца слова
+					i += word.length - 2;
+					breakNum = 1;
+
+					continue;
+
+					// Возможно, скоро начнётся новое слово,
+					// для которого можно посчитать scope
+				} else if (newWordRgxp.test(el)) {
+					nword = true;
+
+					if (posNWord > 0) {
+						posNWord--;
+					}
+				}
+
+				if (!filterStart) {
+					if (el === ')') {
+						// Закрылась скобка, а последующие 2 символа не являются фильтром
+						if (next !== FILTER || !filterRgxp.test(nNext)) {
+							if (pCount) {
+								pCount--;
+							}
+
+							pContent.shift();
+							continue;
+
+						} else {
+							filterWrapper = true;
+						}
+					}
+
+				// Составление тела фильтра
+				} else if (el !== ')' || pCountFilter) {
+					var last$0 = filter.length - 1;
+					filter[last$0] += el;
+					rvFilter[last$0] += el;
+				}
+			}
+
+			if (i === commandLength - 1 && pCount && !filterWrapper && el !== ')') {
+				this.error('missing closing or opening parenthesis in the template');
+				return '';
+			}
+
+			// Закрылся локальный или глобальный фильтр
+			if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
+				var pos = pContent[0];
+
+				var fAdd = wordAddEnd - filterAddEnd + addition,
+					fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
+
+				var arr = [];
+				for (var j = -1; ++j < filter.length;) {
+					var f = filter[j];
+
+					if (!unMap[f]) {
+						arr.push(f);
+
+						if (f.split(' ')[0] === 'default') {
+							unUndef = true;
+						}
+
+					} else {
+						if (f === '!html' && (!pCount || filterWrapper)) {
+							unEscape = true;
+
+						} else if (f === '!undef') {
+							unUndef = true;
+						}
+					}
+				}
+
+				filter = arr;
+				var resTmp = fBody.trim();
+
+				if (!resTmp) {
+					resTmp = 'void 0';
+				}
+
+				for (var j$0 = -1; ++j$0 < filter.length;) {
+					var params = filter[j$0].split(' '),
+						input = params.slice(1).join('').trim();
+
+					var current = params.shift().split('.'),
+						f$0 = '';
+
+					for (var k = -1; ++k < current.length;) {
+						f$0 += (("['" + (current[k])) + "']");
+					}
+
+					resTmp = (("(" + (this.tplName ? '$_' : (("$_ = __LOCAL__['$_" + uid) + "']"))) + (" = __FILTERS__" + f$0) + "") +
+						(filterWrapper || !pCount ? '.call(this,' : '') +
+						resTmp +
+						(input ? ',' + input : '') +
+						(filterWrapper || !pCount ? ')' : '') +
+					')';
+				}
+
+				resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
+				unUndef = false;
+
+				var fstr = rvFilter.join().length + 1;
+				res = pCount ?
+					res.substring(0, pos[0] + addition) +
+						resTmp +
+						res.substring(pos[1] + fAdd + fstr) :
+
+					resTmp;
+
+				pContent.shift();
+				filter = [];
+				rvFilter = [];
+				filterStart = false;
+
+				if (pCount) {
+					pCount--;
+					filterWrapper = false;
+				}
+
+				wordAddEnd += resTmp.length - fBody.length - fstr;
+
+				if (!pCount) {
+					addition += wordAddEnd - filterAddEnd;
+					wordAddEnd = 0;
+					filterAddEnd = 0;
+				}
+			}
+
+			// Закрылась скобка внутри фильтра
+			if (el === ')' && pCountFilter && !breakNum) {
+				pCountFilter--;
+
+				if (!pCountFilter) {
+					var last$1 = filter.length - 1,
+						cache = filter[last$1];
+
+					filter[last$1] = this.prepareOutput(cache, true, null, true, false);
+					var length = filter[last$1].length - cache.length;
+
+					wordAddEnd += length;
+					filterAddEnd += length;
+
+					if (i === commandLength - 1) {
+						i--;
+						breakNum = 1;
+					}
+				}
+			}
+
+			isFilter = el === FILTER;
+			if (breakNum) {
+				breakNum--;
+			}
+
+			// Через 2 итерации начнётся фильтр
+			if (next === FILTER && filterRgxp.test(nNext)) {
+				nword = false;
+
+				if (!filterStart) {
+					if (pCount) {
+						pContent[0].push(i + 1);
+
+					} else {
+						pContent.push([0, i + 1]);
+					}
+				}
+
+				filterStart = true;
+				if (!pCountFilter) {
+					filter.push(nNext);
+					rvFilter.push(nNext);
+					i += 2;
+				}
+
+			} else if (i === 0 && el === FILTER && filterRgxp.test(next)) {
+				nword = false;
+
+				if (!filterStart) {
+					pContent.push([0, i]);
+				}
+
+				filterStart = true;
+				if (!pCountFilter) {
+					filter.push(next);
+					rvFilter.push(next);
+					i++;
+				}
+			}
+		}
+
+		res = res.replace(unUndefRgxp, '__FILTERS__.undef');
+
+		if (wrapRgxp.test(res)) {
+			res = (("(" + res) + ")");
+		}
+
+		if (opt_validate !== false) {
+			try {
+				esprima.parse(exprimaHackFn(res));
+
+			} catch (err) {
+				this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
+				return '';
+			}
+		}
+
+		return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') +
+			res +
+			(!unEscape && !opt_sys ? ((", " + (this.attr)) + ")") : '');
+	};
+})();
+/*!
+ * API для организации микрошаблонов внутри директивы
+ */
+
+(function()  {
+	var escapeBRgxp = /('|")/g;
+
+	/**
+	 * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
+	 * @param {?boolean=} [opt_replace=false] - если true, то директивы экранируются (заменяются на __SNAKESKIN__\d+_)
+	 * @return {string}
+	 */
+	DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
+		str = this.pasteDangerBlocks(str);
+
+		var start = 0;
+		var begin = 0,
+			dir = '',
+			res = '';
+
+		var escape = false,
+			comment = false;
+
+		var bOpen = false,
+			bEnd = true,
+			bEscape = false;
+
+		var part = '',
+			rPart = '';
+
+		for (var i = -1; ++i < str.length;) {
+			var currentEscape = escape;
+			var el = str.charAt(i),
+				next = str.charAt(i + 1),
+				next2str = el + next;
+
+			if (next2str === '\r\n') {
+				continue;
+			}
+
+			if (begin) {
+				if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
+					escape = !escape;
+				}
+
+				if (escape) {
+					continue;
+				}
+
+				// Обработка комментариев
+				if (!currentEscape) {
+					var next3str = next2str + str.charAt(i + 2);
+					if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
+						if (!comment) {
+							if (next3str === SINGLE_COMMENT) {
+								comment = next3str;
+								i += 2;
+
+							} else if (next2str === MULT_COMMENT_START) {
+								comment = next2str;
+								i++;
+							}
+
+						} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
+							comment = false;
+							continue;
+						}
+
+					} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
+						comment = false;
+					}
+				}
+
+				if (comment) {
+					continue;
+				}
+
+				if (!bOpen) {
+					if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+						bEnd = true;
+
+					} else if (bEndRgxp.test(el)) {
+						bEnd = false;
+					}
+
+					if (partRgxp.test(el)) {
+						part += el;
+
+					} else {
+						rPart = part;
+						part = '';
+					}
+				}
+
+				if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+					bOpen = el;
+
+				} else if (bOpen && (el === '\\' || bEscape)) {
+					bEscape = !bEscape;
+
+				} else if (escapeMap[el] && bOpen === el && !bEscape) {
+					bOpen = false;
+					bEnd = false;
+				}
+
+				if (!bOpen) {
+					if (el === LEFT_BLOCK) {
+						begin++;
+
+					} else if (el === RIGHT_BLOCK) {
+						begin--;
+					}
+				}
+
+				if (begin) {
+					dir += el;
+
+				} else {
+					escape = false;
+
+					var tmp = '\' + ' +
+						this.prepareOutput(this.replaceDangerBlocks(dir), opt_sys) +
+						' + \'';
+
+					if (opt_replace) {
+						res += (("__SNAKESKIN__" + (this.dirContent.length)) + "_");
+						this.dirContent.push(tmp);
+
+					} else {
+						res += tmp;
+					}
+				}
+
+			} else {
+				if ((el === '\\' && includeSysEscapeMap[next]) || escape) {
+					escape = !escape;
+				}
+
+				if (escape) {
+					continue;
+				}
+
+				if (!currentEscape && includeDirMap[next2str]) {
+					begin++;
+					dir = '';
+
+					start = i;
+					i++;
+
+					escape = false;
+					continue;
+				}
+
+				res += el.replace(escapeBRgxp, '\\$1');
+			}
+		}
+
+		return res;
+	};
+})();
+/**
+ * Вернуть полное тело заданного шаблона
+ * при наследовании
+ *
+ * @param {string} tplName - название шаблона
+ * @return {string}
+ */
+DirObj.prototype.getFullBody = function (tplName) {
+	var protoLength = 'proto'.length,
+		constLength = 1;
+
+	var isDecl = [],
+		inherit = this.getGroup('inherit');
+
+	for (var key in inherit) {
+		if (!inherit.hasOwnProperty(key)) {
+			continue;
+		}
+
+		isDecl.push(key);
+	}
+
+	var length = isDecl.length * 2,
+		is = {};
+
+	for (var i = -1, j = 0; ++i < isDecl.length;) {
+		is[i + j] = isDecl[i];
+		j++;
+		is[i + j] = (("" + (isDecl[i])) + "_add");
+	}
+
+	var parentTpl = extMap[tplName],
+		res = cache[parentTpl];
+
+	var from = 0,
+		advDiff = [];
+
+	var sornFn = function(a, b)  {return a.val - b.val};
+	var tb = table[tplName],
+		k;
+
+	var el,
+		prev;
+
+	var newFrom,
+		blockDiff;
+
+	for (var i$0 = -1; ++i$0 < length;) {
+		var type = is[i$0];
+
+		if (routerCache[type]) {
+			k = (("" + type) + "_");
+
+			el = routerCache[type][tplName];
+			prev = routerCache[type][parentTpl];
+
+			if (routerFromCache[type]) {
+				from = routerFromCache[type][parentTpl];
+				newFrom = null;
+			}
+		}
+
+		for (var key$0 = void 0 in el) {
+			if (!el.hasOwnProperty(key$0)) {
+				continue;
+			}
+
+			// Сдвиг относительно
+			// родительской позиции элемента
+			var adv = 0;
+
+			var current = el[key$0],
+				parent = !tb[k + key$0].drop && prev[key$0];
+
+			var block = cache[tplName]
+				.substring(current.from, current.to);
+
+			// Разница между дочерним и родительским блоком
+			if (parent) {
+				if (parent.output != null && current.output == null && (i$0 % 2 === 0)) {
+					current.output = parent.output;
+
+					if (type === 'const') {
+						block += current.output;
+
+					} else {
+						this.getBlockOutput(type, tplName)[key$0] = current.output;
+					}
+				}
+
+				blockDiff = block.length -
+					cache[parentTpl].substring(parent.from, parent.to).length;
+			}
+
+			var diff = parent ?
+				parent.from : from;
+
+			advDiff.sort(sornFn);
+
+			for (var j$0 = -1; ++j$0 < advDiff.length;) {
+				if (advDiff[j$0].val <= diff) {
+					adv += advDiff[j$0].adv;
+
+				} else {
+					break;
+				}
+			}
+
+			// Переопределение
+			if (parent && (i$0 % 2 === 0)) {
+				if (type !== 'block' && (type !== 'const' || !current.proto)) {
+					newFrom = parent.from + adv + block.length;
+					from += blockDiff;
+
+					if (newFrom > from) {
+						from = newFrom + (type === 'proto' ? protoLength : constLength);
+					}
+				}
+
+				res = res.substring(0, parent.from + adv) +
+					block +
+					res.substring(parent.to + adv);
+
+				advDiff.push({
+					val: parent.from,
+					adv: blockDiff
+				});
+
+			// Добавление
+			} else if (!parent) {
+				if (type === 'block_add') {
+					res += block;
+
+				} else if (type === 'const_add' || type === 'proto_add') {
+
+					// Случай, если в дочернем шаблоне нет перекрытий,
+					// но есть добавления нового
+					if (newFrom === null) {
+						newFrom = from;
+						from += adv;
+					}
+
+					block = type === 'const_add' ?
+						(("" + ((current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK)) + ("" + block) + ("" + RIGHT_BLOCK) + "") : block;
+
+					res = res.substring(0, from) +
+						block +
+						res.substring(from);
+
+					advDiff.push({
+						val: newFrom,
+						adv: block.length
+					});
+
+					from = from + block.length;
+				}
+			}
+		}
+	}
+
+	return res;
+};
+var uid;
+
+/**
+ * Выполнить заданную строку как JavaScript
+ *
+ * @param {string} str - исходная строка
+ * @return {?}
+ */
+DirObj.prototype.evalStr = function (str) {
+	var module = this.module;
+	var filename = module.filename,
+		dirname;
+
+	if (IS_NODE) {
+		dirname = require('path')['dirname'](filename);
+		return new Function(
+			'Snakeskin',
+
+			'__FILTERS__',
+			'__VARS__',
+			'__LOCAL__',
+
+			'__STR__',
+			'__J__',
+			'$_',
+
+			'$C',
+			'async',
+
+			'module',
+			'exports',
+			'require',
+
+			'__dirname',
+			'__filename',
+
+			str
+
+		).call(
+			root,
+			Snakeskin,
+
+			Snakeskin.Filters,
+			Snakeskin.Vars,
+			Snakeskin.LocalVars,
+
+			void 0,
+			void 0,
+			Snakeskin.LocalVars[("$_" + uid)],
+
+				root['$C'] != null ?
+				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
+
+				root['async'] != null ?
+				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
+
+			module,
+			module.exports,
+			IS_NODE ?
+				require : void 0,
+
+			dirname,
+			filename
+		);
+
+	} else {
+		return new Function(
+			'Snakeskin',
+
+			'__FILTERS__',
+			'__VARS__',
+			'__LOCAL__',
+
+			'__STR__',
+			'__J__',
+			'$_',
+
+			'$C',
+			'async',
+
+			str
+
+		).call(
+			root,
+			Snakeskin,
+
+			Snakeskin.Filters,
+			Snakeskin.Vars,
+			Snakeskin.LocalVars,
+
+			void 0,
+			void 0,
+			Snakeskin.LocalVars[("$_" + uid)],
+
+				root['$C'] != null ?
+				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
+
+				root['async'] != null ?
+				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async']
+		);
+	}
+};
+/*!
+ * API для работы с аргументами функций
+ */
+
+/**
  * Вернуть массив аргументов функции
  * из заданной строки
  *
@@ -7403,108 +8767,517 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	}
 
 	return res;
-};var uid;
+};
+/*!
+ * API для работы с Jade-Like синтаксисом
+ */
+
+(function()  {
+	var commandRgxp = /([^\s]+).*/,
+		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
+		lastHashRgxp = /#$/;
+
+	/**
+	 * Вернуть объект-описание преобразованной части шаблона из
+	 * Jade-Like синтаксиса в стандартный
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {number} i - номер начальной итерации
+	 * @return {{str: string, length: number, error: (boolean|null|undefined)}}
+	 */
+	DirObj.prototype.toBaseSyntax = function (str, i) {
+		var clrL = true,
+			spaces = 0,
+			space = '';
+
+		var struct,
+			res = '';
+
+		var length = 0,
+			tSpace = 0;
+
+		var alb = ADV_LEFT_BLOCK,
+			lb = LEFT_BLOCK,
+			rb = RIGHT_BLOCK;
+
+		for (var j = i - 1; ++j < str.length;) {
+			length++;
+
+			var el = str.charAt(j),
+				next = str.charAt(j + 1);
+
+			var next2str = el + next,
+				diff2str = str.substring(j + 1, j + 3);
+
+			if (nextLineRgxp.test(el)) {
+				tSpace++;
+
+				if (next2str === '\r\n') {
+					continue;
+				}
+
+				if (clrL) {
+					res += (("" + alb) + ("" + lb) + ("__&__" + rb) + ("" + el) + "");
+				}
+
+				clrL = true;
+				spaces = 0;
+				space = '\n';
+
+			} else if (clrL) {
+				if (whiteSpaceRgxp.test(el)) {
+					spaces++;
+					space += el;
+					tSpace++;
+
+				} else {
+					clrL = false;
+					var nextSpace = false;
+
+					if (el === alb) {
+						if (shortMap[diff2str]) {
+							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 3));
+
+						} else if (shortMap[next]) {
+							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 2));
+
+						} else {
+							nextSpace = whiteSpaceRgxp.test(next);
+						}
+
+					} else {
+						if (shortMap[next2str]) {
+							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 2));
+
+						} else {
+							nextSpace = whiteSpaceRgxp.test(next);
+						}
+					}
+
+					var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
+						decl = getLineDesc(
+							str,
+							nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j,
+							!!(dir),
+							next2str === MULT_COMMENT_START
+						);
+
+					if (!decl) {
+						this.error('invalid syntax');
+						return {
+							str: '',
+							length: 0,
+							error: true
+						};
+					}
+
+					var replacer = void 0;
+
+					if (el === alb) {
+						replacer = replacers[diff2str] ||
+							replacers[next] ||
+							replacers[next2str] ||
+							replacers[el];
+
+					} else {
+						replacer = replacers[next2str] ||
+							replacers[el];
+					}
+
+					if (replacer) {
+						decl.name = replacer(decl.name).replace(commandRgxp, '$1');
+					}
+
+					var adv = el === alb ?
+						alb : '';
+
+					var s = dir ? adv + lb : '',
+						e = dir ? rb : '';
+
+					var obj = {
+						dir: dir,
+						name: decl.name,
+						spaces: spaces,
+						space: space,
+						parent: null,
+						block: dir && block[decl.name],
+						adv: adv
+					};
+
+					if (struct) {
+						if (struct.spaces < spaces && struct.block) {
+							obj.parent = struct;
+
+						} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
+							if (struct.block) {
+								if (chains[struct.name] && chains[struct.name][obj.name]) {
+									obj.block = true;
+									obj.name = struct.name;
+
+								} else {
+									res += genEndDir(struct);
+								}
+							}
+
+							obj.parent = struct.parent;
+
+						} else {
+							while (struct.spaces >= spaces) {
+								if (struct.block) {
+									if (chains[struct.name] && chains[struct.name][obj.name]) {
+										obj.block = true;
+										obj.name = struct.name;
+
+									} else {
+										res += genEndDir(struct);
+									}
+								}
+
+								struct = struct
+									.parent;
+
+								if (!struct) {
+									return {
+										str: res,
+										length: length - tSpace - 1
+									};
+								}
+							}
+
+							obj.parent = struct;
+						}
+					}
+
+					var parts = void 0,
+						txt = void 0;
+
+					if (alb === '#') {
+						decl.command = decl.command.replace(lastHashRgxp, '\\#');
+					}
+
+					if (dir) {
+						if (decl.sComment) {
+							parts = [decl.command];
+
+						} else {
+							parts = decl.command.split(INLINE_COMMAND);
+						}
+
+						txt = parts.slice(1).join(INLINE_COMMAND);
+						txt = txt && txt.trim();
+					}
+
+					struct = obj;
+					res += space + s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+
+					if (obj.block) {
+						res += (("" + s) + ("__&__" + e) + "");
+					}
+
+					var tmp = decl.length - 1;
+					tSpace = 0;
+
+					length += tmp;
+					j += tmp;
+
+					if (dir && txt) {
+						var inline = {
+							dir: false,
+							spaces: spaces + 1,
+							space: '',
+							parent: obj,
+							block: false,
+							adv: ''
+						};
+
+						inline.parent = obj;
+						struct = inline;
+						res += txt;
+					}
+				}
+			}
+		}
+
+		while (struct) {
+			if (struct.block) {
+				res += genEndDir(struct);
+			}
+
+			struct = struct
+				.parent;
+		}
+
+		return {
+			str: res,
+			length: length
+		};
+	};
+
+	/**
+	 * Вернуть строку окончания блоковой директивы
+	 *
+	 * @param {!Object} dir - объект-описание директивы
+	 * @return {string}
+	 */
+	function genEndDir(dir) {
+		var s = dir.adv + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
+
+		return (("" + s) + ("__&__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__cutLine__" + e) + ("" + s) + ("__&__" + e) + "");
+	}
+
+	/**
+	 * Вернуть объект описание строки в Jade-Like синтаксисе
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {number} i - номер начальной итерации
+	 * @param {boolean} dir - если true, то идёт декларация директивы
+	 * @param {boolean} comment - если true, то идёт декларация мультистрочного комментария
+	 * @return {{command: string, length: number, name: string, lastEl: string, sComment: boolean}}
+	 */
+	function getLineDesc(str, i, dir, comment) {
+		var res = '',
+			name = '';
+
+		var lastEl = '',
+			lastElI = 0,
+			length = -1;
+
+		var sComment = false,
+			inline = false;
+
+		var concatLine = false,
+			nmBrk = null;
+
+		for (var j = i - 1; ++j < str.length;) {
+			var el = str.charAt(j),
+				next2Str = el + str.charAt(j + 1);
+
+			length++;
+
+			if (nextLineRgxp.test(el)) {
+				var prevEl = lastEl,
+					brk = false;
+
+				lastEl = '';
+
+				if (comment) {
+					res += el;
+
+				} else if (!sComment) {
+					if (dir && str.charAt(j - 2) === ' ') {
+						brk = prevEl === CONCAT_END;
+
+						if (prevEl === CONCAT_COMMAND || brk) {
+							res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
+						}
+
+						if (concatLine && !brk) {
+							continue;
+						}
+
+						if (prevEl === CONCAT_COMMAND) {
+							concatLine = true;
+							continue
+						}
+					}
+				}
+
+				if (comment || concatLine && !brk) {
+					sComment = false;
+					continue;
+				}
+
+				return {
+					command: res,
+					length: length,
+					name: name,
+					lastEl: lastEl,
+					sComment: !inline && sComment
+				};
+
+			} else {
+				if (comment) {
+					comment = next2Str !== MULT_COMMENT_END;
+
+				} else if (!sComment) {
+					comment = next2Str === MULT_COMMENT_START;
+
+					if (!comment) {
+						sComment = next2Str + str.charAt(j + 2) === SINGLE_COMMENT;
+					}
+				}
+
+				if (dir && !inline && !comment && !sComment) {
+					inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+				}
+
+				var whiteSpace = lineWhiteSpaceRgxp.test(el);
+
+				if (whiteSpace) {
+					if (nmBrk === false) {
+						nmBrk = true;
+					}
+
+				} else {
+					lastEl = el;
+					lastElI = res.length;
+				}
+
+				if (!nmBrk && !whiteSpace) {
+					if (nmBrk === null) {
+						nmBrk = false;
+					}
+
+					name += el;
+				}
+
+				if (nmBrk !== null) {
+					res += el;
+				}
+			}
+		}
+
+		if (dir && lastEl === CONCAT_END && res.charAt(lastElI - 1) === ' ') {
+			res = res.substring(0, lastElI) + res.substring(lastElI + 1);
+		}
+
+		return {
+			command: res,
+			length: length,
+			name: name,
+			lastEl: lastEl,
+			sComment: !inline && sComment
+		};
+	}
+})();
+/*!
+ * API для обработки ошибок трансляции
+ */
 
 /**
- * Выполнить заданную строку как JavaScript
- *
- * @param {string} str - исходная строка
- * @return {?}
+ * Вывести дополнительную информацию об ошибке
+ * @return {string}
  */
-DirObj.prototype.evalStr = function (str) {
-	var module = this.module;
-	var filename = module.filename,
-		dirname;
+DirObj.prototype.genErrorAdvInfo = function () {
+	var info = this.info,
+		str = '';
 
-	if (IS_NODE) {
-		dirname = require('path')['dirname'](filename);
-		return new Function(
-			'Snakeskin',
+	if (!info) {
+		return str;
+	}
 
-			'__FILTERS__',
-			'__VARS__',
-			'__LOCAL__',
+	for (var key in info) {
+		if (!info.hasOwnProperty(key) || info[key] == null) {
+			continue;
+		}
 
-			'__STR__',
-			'__J__',
-			'$_',
+		if (!info[key].innerHTML) {
+			str += (("" + key) + (": " + (info[key])) + ", ");
 
-			'$C',
-			'async',
+		} else {
+			str += (("" + key) + (": (class: " + (info[key].className || 'undefined')) + (", id: " + (info[key].id || 'undefined')) + "), ");
+		}
+	}
 
-			'module',
-			'exports',
-			'require',
+	str = str.replace(/, $/, '');
+	var line = info['line'];
 
-			'__dirname',
-			'__filename',
+	var cutRgxp = /\/\*!!= (.*?) =\*\//g,
+		privateRgxp = new RegExp((("" + ADV_LEFT_BLOCK) + ("?" + LEFT_BLOCK) + ("__.*?__.*?" + RIGHT_BLOCK) + ""), 'g'),
+		styleRgxp = /\t|[ ]{4}/g;
 
-			str
+	if (line) {
+		var prfx = '',
+			max = 0;
 
-		).call(
-			root,
-			Snakeskin,
+		for (var i = 8; i--;) {
+			var pos = line - i - 2,
+				prev = this.lines[pos];
 
-			Snakeskin.Filters,
-			Snakeskin.Vars,
-			Snakeskin.LocalVars,
+			var space = new Array(((line - 1) + '').length - ((pos) + '').length + 1)
+				.join(' ');
 
-			void 0,
-			void 0,
-			Snakeskin.LocalVars[("$_" + uid)],
+			if (prev != null) {
+				prev = prev
+					.replace(styleRgxp, '  ')
+					.replace(privateRgxp, '')
+					.replace(cutRgxp, '$1');
 
-				root['$C'] != null ?
-				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
+				var part = void 0;
 
-				root['async'] != null ?
-				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
+				if (prev.trim()) {
+					part = (("\n  " + (pos + 1)) + (" " + space) + ("" + prev) + "");
 
-			module,
-			module.exports,
-			IS_NODE ?
-				require : void 0,
+				} else {
+					part = '\n  ...';
+				}
 
-			dirname,
-			filename
-		);
+				prfx += part;
+				if (max < part.length) {
+					max = part.length;
+				}
+			}
+		}
+
+		var current = this.lines[line - 1]
+			.replace(styleRgxp, '  ')
+			.replace(privateRgxp, '')
+			.replace(cutRgxp, '$1');
+
+		var part$0 = (("> " + line) + (" " + current) + "");
+		var sep = new Array(
+				Math.max(max, part$0.length) || 5
+		).join('-');
+
+		str += (("\n" + sep) + ("" + prfx) + ("\n" + part$0) + ("\n" + sep) + "");
+	}
+
+	return str;
+};
+
+/**
+ * @private
+ * @type {?boolean}
+ */
+DirObj.prototype._error = null;
+
+/**
+ * Генерировать заданную ошибку
+ * @param {string} msg - сообщение ошибки
+ */
+DirObj.prototype.error = function (msg) {
+	if (this._error) {
+		return;
+	}
+
+	this._error = true;
+	var report = (("" + msg) + (", " + (this.genErrorAdvInfo())) + ""),
+		error = new Error(report);
+
+	error.name = 'SnakeskinError';
+	this.brk = true;
+
+	if (this.proto) {
+		this.parent.brk = true;
+	}
+
+	if (this.onError) {
+		this.onError(error);
 
 	} else {
-		return new Function(
-			'Snakeskin',
+		if (typeof console === 'undefined' || typeof console.error !== 'function' || this.throws) {
+			throw error;
+		}
 
-			'__FILTERS__',
-			'__VARS__',
-			'__LOCAL__',
-
-			'__STR__',
-			'__J__',
-			'$_',
-
-			'$C',
-			'async',
-
-			str
-
-		).call(
-			root,
-			Snakeskin,
-
-			Snakeskin.Filters,
-			Snakeskin.Vars,
-			Snakeskin.LocalVars,
-
-			void 0,
-			void 0,
-			Snakeskin.LocalVars[("$_" + uid)],
-
-				root['$C'] != null ?
-				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
-
-				root['async'] != null ?
-				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async']
-		);
+		console.error(("SnakeskinError: " + report));
 	}
-};var sysEscapeMap = {};
+};
+/*!
+ * Методы и функции для экранирования
+ */
+
+var sysEscapeMap = {};
 
 sysEscapeMap['\\'] = true;
 sysEscapeMap[I18N] = true;
@@ -7589,13 +9362,13 @@ var closePMap = {
 };
 
 function applyDefEscape(str) {
-	return str
+	return ((str) + '')
 		.replace(/\\/gm, '\\\\')
 		.replace(/'/gm, '\\\'');
 }
 
 function escapeNextLine(str) {
-	return str
+	return ((str) + '')
 		.replace(/\n/gm, '\\n')
 		.replace(/\v/gm, '\\v')
 		.replace(/\r/gm, '\\r');
@@ -7606,7 +9379,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 }
 
 /*!
- * Escaper v1.2.5
+ * Escaper v1.4.1
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
@@ -7614,7 +9387,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
  */
 
 var Escaper = {
-	VERSION: [1, 2, 5],
+	VERSION: [1, 4, 1],
 	isLocal: typeof window === 'undefined' && typeof global !== 'undefined' ?
 		!!(global.EscaperIsLocal || global['EscaperIsLocal']) : false
 };
@@ -7710,7 +9483,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		'[': true
 	};
 
-	var escapeEndWord = {
+	var escapeEndWordMap = {
 		'typeof': true,
 		'void': true,
 		'instaceof': true,
@@ -7721,6 +9494,23 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 
 	var cache = {},
 		content = [];
+
+	/**
+	 * @param {!Object} obj
+	 * @param {!Object} p
+	 * @param {(boolean|number)} val
+	 */
+	function mix(obj, p, val) {
+		for (var key in obj) {
+			if (!obj.hasOwnProperty(key)) {
+				continue;
+			}
+
+			if (key in p === false) {
+				p[key] = val;
+			}
+		}
+	}
 
 	/**
 	 * Стек содержимого
@@ -7735,6 +9525,12 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 	 * @param {string} str - исходная строка
 	 * @param {(Object|boolean)=} [opt_withCommentsOrParams=false] - таблица вырезаемых последовательностей:
 	 *
+	 *     (если установить значение параметру -1, то он будет полностью вырезаться,
+	 *     т.е. без возможности обратной замены, иначе true/false - включить/исключить последовательность)
+	 *
+	 *     *) @all - специальная команда для выделения всех последовательностей
+	 *     *) @comments - специальная команда для выделения всех видов комментариев
+	 *     *) @literals - специальная команда для выделения литералов строк и регулярных выражений
 	 *     *) `
 	 *     *) '
 	 *     *) "
@@ -7760,15 +9556,31 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 			withComments = !!(opt_withCommentsOrParams);
 		}
 
+		if ('@comments' in p) {
+			mix(mCommentsMap, p, p['@comments']);
+			mix(sCommentsMap, p, p['@comments']);
+			delete p['@comments'];
+		}
+
+		if ('@literals' in p) {
+			mix(escapeMap, p, p['@literals']);
+			delete p['@literals'];
+		}
+
+		if ('@all' in p) {
+			mix(finalMap, p, p['@all']);
+			delete p['@all'];
+		}
+
 		var cacheKey = '';
 		for (var i = -1; ++i < keyArr.length;) {
 			var el = keyArr[i];
 
 			if (mCommentsMap[el] || sCommentsMap[el]) {
-				p[el] = !!(withComments || p[el]);
+				p[el] = withComments || p[el];
 
 			} else {
-				p[el] = !!(p[el] || !isObj);
+				p[el] = p[el] || !isObj;
 			}
 
 			cacheKey += (("" + (p[el])) + ",");
@@ -7831,7 +9643,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 						}
 					}
 
-					if (escapeEndMap[el$0] || escapeEndWord[rPart]) {
+					if (escapeEndMap[el$0] || escapeEndWordMap[rPart]) {
 						end = true;
 						rPart = '';
 
@@ -7921,11 +9733,16 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 
 					if (p[el$0]) {
 						cut = str.substring(selectionStart, i$0 + 1);
-						label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
 
-						stack.push(cut);
+						if (p[el$0] === -1) {
+							label = '';
+
+						} else {
+							label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
+							stack.push(cut);
+						}
+
 						str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
-
 						i$0 += label.length - cut.length;
 					}
 				}
@@ -7936,11 +9753,16 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 			) {
 				if (p[comment]) {
 					cut = str.substring(selectionStart, i$0 + 1);
-					label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
 
-					stack.push(cut);
+					if (p[comment] === -1) {
+						label = '';
+
+					} else {
+						label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
+						stack.push(cut);
+					}
+
 					str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
-
 					i$0 += label.length - cut.length;
 				}
 
@@ -7968,6 +9790,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		return str.replace(/__ESCAPER_QUOT__(\d+)_/gm, function(sstr, pos)  {return stack[pos]});
 	};
 })();
+
 var escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
 
 /**
@@ -7999,287 +9822,12 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  */
 DirObj.prototype.pasteTplVarBlocks = function (str) {var this$0 = this;
 	return str.replace(/__SNAKESKIN__(\d+)_/gm, function(sstr, pos)  {return this$0.dirContent[pos]});
-};/**
- * Вернуть полное тело заданного шаблона
- * при наследовании
- *
- * @param {string} tplName - название шаблона
- * @return {string}
- */
-DirObj.prototype.getFullBody = function (tplName) {
-	var protoLength = 'proto'.length,
-		constLength = 1;
-
-	var isDecl = [],
-		inherit = this.getGroup('inherit');
-
-	for (var key in inherit) {
-		if (!inherit.hasOwnProperty(key)) {
-			continue;
-		}
-
-		isDecl.push(key);
-	}
-
-	var length = isDecl.length * 2,
-		is = {};
-
-	for (var i = -1, j = 0; ++i < isDecl.length;) {
-		is[i + j] = isDecl[i];
-		j++;
-		is[i + j] = (("" + (isDecl[i])) + "_add");
-	}
-
-	var parentTpl = extMap[tplName],
-		res = cache[parentTpl];
-
-	var from = 0,
-		advDiff = [];
-
-	var sornFn = function(a, b)  {return a.val - b.val};
-	var tb = table[tplName],
-		k;
-
-	var el,
-		prev;
-
-	var newFrom,
-		blockDiff;
-
-	for (var i$0 = -1; ++i$0 < length;) {
-		var type = is[i$0];
-
-		if (routerCache[type]) {
-			k = (("" + type) + "_");
-
-			el = routerCache[type][tplName];
-			prev = routerCache[type][parentTpl];
-
-			if (routerFromCache[type]) {
-				from = routerFromCache[type][parentTpl];
-				newFrom = null;
-			}
-		}
-
-		for (var key$0 = void 0 in el) {
-			if (!el.hasOwnProperty(key$0)) {
-				continue;
-			}
-
-			// Сдвиг относительно
-			// родительской позиции элемента
-			var adv = 0;
-
-			var current = el[key$0],
-				parent = !tb[k + key$0].drop && prev[key$0];
-
-			var block = cache[tplName]
-				.substring(current.from, current.to);
-
-			// Разница между дочерним и родительским блоком
-			if (parent) {
-				if (parent.output != null && current.output == null && (i$0 % 2 === 0)) {
-					current.output = parent.output;
-
-					if (type === 'const') {
-						block += current.output;
-
-					} else {
-						this.getBlockOutput(type, tplName)[key$0] = current.output;
-					}
-				}
-
-				blockDiff = block.length -
-					cache[parentTpl].substring(parent.from, parent.to).length;
-			}
-
-			var diff = parent ?
-				parent.from : from;
-
-			advDiff.sort(sornFn);
-
-			for (var j$0 = -1; ++j$0 < advDiff.length;) {
-				if (advDiff[j$0].val <= diff) {
-					adv += advDiff[j$0].adv;
-
-				} else {
-					break;
-				}
-			}
-
-			// Переопределение
-			if (parent && (i$0 % 2 === 0)) {
-				if (type !== 'block' && (type !== 'const' || !current.proto)) {
-					newFrom = parent.from + adv + block.length;
-					from += blockDiff;
-
-					if (newFrom > from) {
-						from = newFrom + (type === 'proto' ? protoLength : constLength);
-					}
-				}
-
-				res = res.substring(0, parent.from + adv) +
-					block +
-					res.substring(parent.to + adv);
-
-				advDiff.push({
-					val: parent.from,
-					adv: blockDiff
-				});
-
-			// Добавление
-			} else if (!parent) {
-				if (type === 'block_add') {
-					res += block;
-
-				} else if (type === 'const_add' || type === 'proto_add') {
-
-					// Случай, если в дочернем шаблоне нет перекрытий,
-					// но есть добавления нового
-					if (newFrom === null) {
-						newFrom = from;
-						from += adv;
-					}
-
-					block = type === 'const_add' ?
-						(("" + ((current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK)) + ("" + block) + ("" + RIGHT_BLOCK) + "") : block;
-
-					res = res.substring(0, from) +
-						block +
-						res.substring(from);
-
-					advDiff.push({
-						val: newFrom,
-						adv: block.length
-					});
-
-					from = from + block.length;
-				}
-			}
-		}
-	}
-
-	return res;
-};/**
- * Вывести дополнительную информацию об ошибке
- * @return {string}
- */
-DirObj.prototype.genErrorAdvInfo = function () {
-	var info = this.info,
-		str = '';
-
-	if (!info) {
-		return str;
-	}
-
-	for (var key in info) {
-		if (!info.hasOwnProperty(key) || info[key] == null) {
-			continue;
-		}
-
-		if (!info[key].innerHTML) {
-			str += (("" + key) + (": " + (info[key])) + ", ");
-
-		} else {
-			str += (("" + key) + (": (class: " + (info[key].className || 'undefined')) + (", id: " + (info[key].id || 'undefined')) + "), ");
-		}
-	}
-
-	str = str.replace(/, $/, '');
-	var line = info['line'];
-
-	var cutRgxp = /\/\*!!= (.*?) =\*\//g,
-		styleRgxp = /\t|[ ]{4}/g;
-
-	if (line) {
-		var prfx = '',
-			max = 0;
-
-		for (var i = 8; i--;) {
-			var pos = line - i - 2,
-				prev = this.lines[pos];
-
-			var space = new Array(((line - 1) + '').length - ((pos) + '').length + 1)
-				.join(' ');
-
-			if (prev != null) {
-				prev = prev
-					.replace(styleRgxp, '  ')
-					.replace(cutRgxp, '$1');
-
-				var part = void 0;
-
-				if (prev.trim()) {
-					part = (("\n  " + (pos + 1)) + (" " + space) + ("" + prev) + "");
-
-				} else {
-					part = '\n  ...';
-				}
-
-				prfx += part;
-				if (max < part.length) {
-					max = part.length;
-				}
-			}
-		}
-
-		var current = this.lines[line - 1]
-			.replace(styleRgxp, '  ')
-			.replace(cutRgxp, '$1');
-
-		var part$0 = (("> " + line) + (" " + current) + "");
-		var sep = new Array(
-			Math.max(max, part$0.length) || 5
-		).join('-');
-
-		str += (("\n" + sep) + ("" + prfx) + ("\n" + part$0) + ("\n" + sep) + "");
-	}
-
-	return str;
 };
-
-/**
- * @private
- * @type {?boolean}
- */
-DirObj.prototype._error = null;
-
-/**
- * Генерировать заданную ошибку
- * @param {string} msg - сообщение ошибки
- */
-DirObj.prototype.error = function (msg) {
-	if (this._error) {
-		return;
-	}
-
-	this._error = true;
-	var report = (("" + msg) + (", " + (this.genErrorAdvInfo())) + ""),
-		error = new Error(report);
-
-	error.name = 'SnakeskinError';
-	this.brk = true;
-
-	if (this.proto) {
-		this.parent.brk = true;
-	}
-
-	if (this.onError) {
-		this.onError(error);
-
-	} else {
-		if (typeof console === 'undefined' || typeof console.error !== 'function' || this.throws) {
-			throw error;
-		}
-
-		console.error(("SnakeskinError: " + report));
-	}
-};var nextLineRgxp = /[\r\n\v]/,
+var nextLineRgxp = /\r|\n/,
 	whiteSpaceRgxp = /\s/,
 	lineWhiteSpaceRgxp = /[ \t]/;
 
-var rgxpRgxp = /([./\\*+?[\](){}^$])/gm,
-	bEndRgxp = /[^\s\/]/,
+var bEndRgxp = /[^\s\/]/,
 	partRgxp = /[a-z]/;
 
 var tAttrRgxp = /[^'" ]/,
@@ -8313,16 +9861,22 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Object=} [opt_params.words] - таблица, которая будет заполнена всеми фразами для локализации,
  *     которые используются в шаблоне
  *
+ * @param {RegExp=} [opt_params.ignore] - регулярное выражение, которое задаёт пробельные символы для игнорирования
  * @param {?boolean=} [opt_params.autoReplace=false] - если false, то Snakeskin не делает дополнительных преобразований
  *     последовательностей
  *
  * @param {Object=} [opt_params.macros] - таблица символов для преобразования последовательностей
+ * @param {?string=} [opt_params.renderAs] - тип рендеринга шаблонов, доступные варианты:
  *
- * @param {?boolean=} [opt_params.interface=false] - если true, то все директивы template трактуются как interface
- *     и при наследовании можно задавать необъявленные родительские шаблоны
+ *     1) placeholder - все шаблоны рендерятся как placeholder-ы;
+ *     2) interface - все шаблоны рендерятся как interface-ы;
+ *     3) template - все шаблоны рендерятся как template-ы.
  *
- * @param {?boolean=} [opt_params.stringBuffer=false] - если true, то для конкатенации строк в шаблоне
- *     используется Snakeskin.StringBuffer
+ * @param {?string=} [opt_params.renderMode='stringConcat'] - режим рендеринга шаблонов, доступные варианты:
+ *
+ *     1) stringConcat - рендеринг шаблона в строку с простой конкатенацией через оператор сложения;
+ *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
+ *     3) dom - рендеринг шаблона в набор команд из DOM API.
  *
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
  *     будут развёрнуты в циклы
@@ -8352,9 +9906,8 @@ var tAttrRgxp = /[^'" ]/,
  *
  * @param {Array=} [opt_sysParams.lines] - массив строк шаблона (листинг)
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
- * @param {?number=} [opt_sysParams.prfxI] - глубина префиксных директив
  *
- * @return {(string|boolean|null)}
+ * @return {(DocumentFragment|string|boolean)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	src = src || '';
@@ -8383,21 +9936,23 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.onError = s(p.onError, p['onError']);
 
 	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
-	p.stringBuffer = s(p.stringBuffer, p['stringBuffer']) || false;
+	p.renderMode = s(p.renderMode, p['renderMode']) || 'stringConcat';
+	p.renderAs = s(p.renderAs, p['renderAs']);
+
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
-	p.interface = s(p.interface, p['interface']) || false;
 
 	p.throws = s(p.throws, p['throws']) || false;
 	p.cache = s(p.cache, p['cache']) !== false;
 
+	p.ignore = s(p.ignore, p['ignore']);
 	p.autoReplace = s(p.autoReplace, p['autoReplace']) || false;
 	p.macros = s(p.macros, p['macros']);
 
 	var debug =
 		p.debug = s(p.debug, p['debug']);
 
-	p.xml = s(p.xml, p['xml']) !== false;
+	p.xml = s(p.xml, p['xml']) !== false && p.renderMode !== 'dom';
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -8445,10 +10000,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.xml,
 
 		p.inlineIterators,
-		p.stringBuffer,
+		p.renderAs,
+		p.renderMode,
 		p.escapeOutput,
-		p.interface,
 		p.prettyPrint,
+		p.ignore,
 		p.autoReplace,
 
 		p.localization,
@@ -8521,7 +10077,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var macros = {},
 		mGroups = {};
 
-	var inlineMacro = {'\\': true},
+	var inlineMacro = {},
 		comboMacro = {};
 
 	var beforeTag = {},
@@ -8530,8 +10086,71 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	/**
 	 * @param {Object} obj
 	 * @param {?string=} [opt_include]
+	 * @param {?boolean=} [opt_init]
 	 */
-	function setMacros(obj, opt_include) {
+	function setMacros(obj, opt_include, opt_init) {
+		if (opt_init) {
+			macros = {};
+			mGroups = {};
+
+			inlineMacro = {'\\': true};
+			comboMacro = {};
+
+			beforeTag = {};
+			afterTag = {};
+
+			setMacros({
+				'@quotes': {
+					'"': [['«', '»'], ['‘', '’']],
+					'\'': [['“', '”'], ['„', '“']]
+				},
+
+				'@shorts': {
+					'(c)': '©',
+					'(tm)': '™',
+
+					'[v]': '☑',
+					'[x]': '☒',
+					'[_]': '☐',
+
+					'<-': '←',
+					'<-|': '↤',
+					'->': '→',
+					'|->': '↦',
+					'<->': '↔',
+
+					'...': {
+						inline: true,
+						value: '…'
+					},
+
+					'-': {
+						inline: true,
+						value: '−'
+					},
+
+					'--': {
+						inline: true,
+						value: '—'
+					}
+				},
+
+				'@adv': {
+					'%lorem%':
+						'Lorem ipsum dolor sit amet, consectetur adipisicing elit. ' +
+						'Dolor dolores error facilis iusto magnam nisi praesentium voluptas. ' +
+						'Delectus laudantium minus quia sapiente sunt temporibus voluptates! ' +
+						'Explicabo iusto molestias quis voluptatibus.'
+				},
+
+				'@symbols': {
+					'\\n': '\\n',
+					'\\r': '\\r',
+					'\\s': '&nbsp;'
+				}
+			});
+		}
+
 		if (obj == null) {
 			obj = mGroups[opt_include];
 
@@ -8603,59 +10222,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	if (p.autoReplace) {
-		var def = {
-			'@quotes': {
-				'"': [['«', '»'], ['‘', '’']],
-				'\'': [['“', '”'], ['„', '“']]
-			},
-
-			'@shorts': {
-				'(c)': '©',
-				'(tm)': '™',
-
-				'[v]': '☑',
-				'[x]': '☒',
-				'[_]': '☐',
-
-				'<-': '←',
-				'<-|': '↤',
-				'->': '→',
-				'|->': '↦',
-				'<->': '↔',
-
-				'...': {
-					inline: true,
-					value: '…'
-				},
-
-				'-': {
-					inline: true,
-					value: '−'
-				},
-
-				'--': {
-					inline: true,
-					value: '—'
-				}
-			},
-
-			'@adv': {
-				'%lorem%': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor dolores error facilis iusto magnam nisi praesentium voluptas. Delectus laudantium minus quia sapiente sunt temporibus voluptates! Explicabo iusto molestias quis voluptatibus.'
-			},
-
-			'@symbols': {
-				'\\n': '\\n',
-				'\\r': '\\r',
-				'\\s': '&nbsp;'
-			}
-		};
-
-		if (!sp.proto) {
-			setMacros(def);
-		}
-
-		setMacros(p.macros);
+	if (!sp.proto) {
+		setMacros(p.macros, null, true);
 	}
 
 	// <<<
@@ -8713,16 +10281,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		consts: sp.consts,
 
 		needPrfx: sp.needPrfx,
-		prfxI: sp.prfxI,
 		lines: sp.lines,
 
 		xml: p.xml,
 		commonJS: cjs,
 
-		stringBuffer: p.stringBuffer,
+		renderAs: p.renderAs,
+		renderMode: p.renderMode,
+
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
+		ignore: p.ignore,
 		autoReplace: p.autoReplace,
 		macros: macros,
 
@@ -8730,11 +10300,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nFn: p.i18nFn,
 		language: p.language,
 
-		interface: p.interface,
 		throws: p.throws
 	});
 
-	var templateMap = dir.getGroup('rootTemplate');
+	dir.setMacros = setMacros;
 
 	// Если true, то идёт содержимое директивы,
 	// т.е. { ... }
@@ -8783,6 +10352,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var qOpen = 0,
 		qType = null;
 
+	var prfxI = 0;
+
 	// Флаги для обработки типографских последовательностей
 	var expr = '',
 		exprPos = 0,
@@ -8798,11 +10369,52 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nStart = false,
 		i18nDirStart = false;
 
-	var clrL = true;
+	var clrL = true,
+		templateMap = dir.getGroup('rootTemplate');
+
 	var part = '',
 		rPart = '';
 
-	while (++dir.i < dir.source.length) {;var $retPrim$0, $value$0 = (function(){
+	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
+	dir.getCompileVars = function () {
+		return {
+			afterTag: afterTag,
+			beforeTag: beforeTag,
+			mGroups: mGroups,
+			inlineMacro: inlineMacro,
+			comboMacro: comboMacro,
+			tOpen: tOpen,
+			tAttr: tAttr,
+			tAttrBegin: tAttrBegin,
+			tAttrEscape: tAttrEscape,
+			qOpen: qOpen,
+			qType: qType,
+			prfxI: prfxI
+		};
+	};
+
+	/** @param {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
+	dir.setCompileVars = function (obj) {
+		afterTag = obj.afterTag;
+		beforeTag = obj.beforeTag;
+		mGroups = obj.mGroups;
+		inlineMacro = obj.inlineMacro;
+		comboMacro = obj.comboMacro;
+		tOpen = obj.tOpen;
+		tAttr = obj.tAttr;
+		tAttrBegin = obj.tAttrBegin;
+		tAttrEscape = obj.tAttrEscape;
+		qOpen = obj.qOpen;
+		qType = obj.qType;
+		prfxI = obj.prfxI;
+	};
+
+	// Устанавливаем значения переменных родительской операции
+	if (sp.proto) {
+		dir.setCompileVars(sp.parent.getCompileVars());
+	}
+
+	while (++dir.i < dir.source.length) {;var $retPrim$0;var $value$0 = (function(){
 		var str = dir.source,
 			struct = dir.structure;
 
@@ -8828,6 +10440,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			currentClrL = clrL;
 
 		if (nextLine) {
+			if (next2str === '\r\n') {
+				return;
+			}
+
 			clrL = true;
 		}
 
@@ -8877,7 +10493,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			// Простой ввод внутри декларации шаблона
 			} else {
 				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
-					el = dir.ignoreRgxp && dir.ignoreRgxp.test(el) ?
+					el = dir.ignore && dir.ignore.test(el) ?
 						'' : ' ';
 
 					if (el) {
@@ -9049,7 +10665,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					expr = '';
 					advExprPos = 0;
 
-					if (templateMap[commandType]) {
+					if (templateMap[commandType] && !sp.proto) {
 						qOpen = 0;
 						qType = null;
 					}
@@ -9057,7 +10673,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					// Директивы начинающиеся с _ считаются приватными
 					// и вырезаются из листинга
 					if (!dir.proto && commandType.charAt(0) === '_') {
-						var source = (("" + (dir.needPrfx ? alb : '')) + ("" + lb) + ("\\s*" + (command.replace(rgxpRgxp, '\\$1'))) + ("\\s*" + rb) + ""),
+						var source = (("" + alb) + ("?" + lb) + ("__.*?__.*?" + rb) + ""),
 							rgxp = rgxpCache[source] || new RegExp(source);
 
 						dir.lines[lastLine] = dir.lines[lastLine]
@@ -9085,10 +10701,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (dir.needPrfx) {
 						if (dir.inline !== false) {
 							if (getName(commandType) === 'end') {
-								if (dir.prfxI) {
-									dir.prfxI--;
+								if (prfxI) {
+									prfxI--;
 
-									if (!dir.prfxI) {
+									if (!prfxI) {
 										dir.needPrfx = false;
 									}
 
@@ -9096,12 +10712,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									dir.needPrfx = false;
 								}
 
-							} else if (!dir.prfxI) {
+							} else if (!prfxI) {
 								dir.needPrfx = false;
 							}
 
 						} else {
-							dir.prfxI++;
+							prfxI++;
 						}
 					}
 
@@ -9128,7 +10744,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (dir.language) {
 						if (i18nStart) {
-							var word = ((dir.language[i18nStr] || '') + '');
+							var word = dir.language[i18nStr] || '';
+							word = word.call ? word() : word;
 
 							el = begin ?
 								(("'" + (applyDefEscape(word))) + "'") : word;
@@ -9452,6 +11069,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	if (dir.proto) {
+		sp.parent.setCompileVars(dir.getCompileVars());
 		return dir.res;
 	}
 
@@ -9463,10 +11081,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		);
 
 	// Удаление пустых операций
-	dir.res = dir.res.replace(dir.stringBuffer ?
-		/__RESULT__\.push\(''\);/g : /__RESULT__ \+= '';/g,
+	switch (dir.renderMode) {
+		case 'stringBuffer': {
+			dir.res = dir.res.replace(/__RESULT__\.push\(''\);/g, '');
+		} break;
 
-	'');
+		case 'dom': {
+			dir.res = dir.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
+		} break;
+
+		default: {
+			dir.res = dir.res.replace(/__RESULT__ \+= '';/g, '');
+		} break;
+	}
 
 	var includes = '';
 
@@ -9475,13 +11102,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">.\n   " + (dir.res)) + "");
-	dir.res += (("" + (dir.commonJS ? '}' : '')) + "}).call(this);");
+	dir.res += (("" + (dir.commonJS ? '}' : '')) + "}).call(this);\n");
 
 	// Если остались внешние прототипы,
 	// которые не были подключены к своему шаблону,
 	// то генерируем ошибку
-	for (var key$4 in dir.preProtos) {
-		if (!dir.preProtos.hasOwnProperty(key$4)) {
+	for (var key$4 in dir.preDefs) {
+		if (!dir.preDefs.hasOwnProperty(key$4)) {
 			continue;
 		}
 
@@ -9608,318 +11235,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	return dir.res;
-};var commandRgxp = /([^\s]+).*/,
-	nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/;
-
-/**
- * Вернуть объект-описание преобразованной части шаблона из
- * Jade-Like синтаксиса в стандартный
- *
- * @param {string} str - исходная строка
- * @param {number} i - номер начальной итерации
- * @return {{str: string, length: number, error: (boolean|null|undefined)}}
- */
-DirObj.prototype.toBaseSyntax = function (str, i) {
-	var clrL = true,
-		spaces = 0,
-		space = '';
-
-	var struct,
-		res = '';
-
-	var length = 0,
-		tSpace = 0;
-
-	for (var j = i - 1; ++j < str.length;) {
-		length++;
-
-		var el = str.charAt(j),
-			next = str.charAt(j + 1);
-
-		var next2str = el + next,
-			diff2str = str.substring(j + 1, j + 3);
-
-		if (nextLineRgxp.test(el)) {
-			clrL = true;
-			spaces = 0;
-			space = '\n';
-			tSpace++;
-
-		} else if (clrL) {
-			if (whiteSpaceRgxp.test(el)) {
-				spaces++;
-				space += el;
-				tSpace++;
-
-			} else {
-				clrL = false;
-				var nextSpace = false;
-
-				if (el === ADV_LEFT_BLOCK) {
-					if (shortMap[diff2str]) {
-						nextSpace = whiteSpaceRgxp.test(str.charAt(j + 3));
-
-					} else if (shortMap[next]) {
-						nextSpace = whiteSpaceRgxp.test(str.charAt(j + 2));
-
-					} else {
-						nextSpace = whiteSpaceRgxp.test(next);
-					}
-
-				} else {
-					if (shortMap[next2str]) {
-						nextSpace = whiteSpaceRgxp.test(str.charAt(j + 2));
-
-					} else {
-						nextSpace = whiteSpaceRgxp.test(next);
-					}
-				}
-
-				var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
-					decl = getLineDesc(str, nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j, !!(dir));
-
-				if (!decl) {
-					this.error('invalid syntax');
-					return {
-						str: '',
-						length: 0,
-						error: true
-					};
-				}
-
-				var replacer = void 0;
-
-				if (el === ADV_LEFT_BLOCK) {
-					replacer = replacers[diff2str] ||
-						replacers[next] ||
-						replacers[next2str] ||
-						replacers[el];
-
-				} else {
-					replacer = replacers[next2str] ||
-						replacers[el];
-				}
-
-				if (replacer) {
-					decl.name = replacer(decl.name).replace(commandRgxp, '$1');
-				}
-
-				var adv = el === ADV_LEFT_BLOCK ?
-					ADV_LEFT_BLOCK : '';
-
-				var s = dir ? adv + LEFT_BLOCK : '',
-					e = dir ? RIGHT_BLOCK : '';
-
-				var obj = {
-					dir: dir,
-					name: decl.name,
-					spaces: spaces,
-					space: space,
-					parent: null,
-					block: dir && block[decl.name],
-					adv: adv
-				};
-
-				if (struct) {
-					if (struct.spaces < spaces && struct.block) {
-						obj.parent = struct;
-
-					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
-						if (struct.block) {
-							res += genEndDir(struct);
-						}
-
-						obj.parent = struct.parent;
-
-					} else {
-						while (struct.spaces >= spaces) {
-							if (struct.block) {
-								if (chains[struct.name] && chains[struct.name][obj.name]) {
-									obj.block = true;
-									obj.name = struct.name;
-
-								} else {
-									res += genEndDir(struct);
-								}
-							}
-
-							struct = struct
-								.parent;
-
-							if (!struct) {
-								return {
-									str: res,
-									length: length - tSpace - 1
-								};
-							}
-						}
-
-						obj.parent = struct;
-					}
-				}
-
-				var parts = void 0,
-					txt = void 0;
-
-				if (dir) {
-					parts = decl.command.split(INLINE_COMMAND);
-					txt = parts.slice(1).join(INLINE_COMMAND);
-					txt = txt && txt.trim();
-				}
-
-				struct = obj;
-				res += space + s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
-
-				if (obj.block) {
-					res += (("" + s) + ("__&__" + e) + "");
-				}
-
-				var tmp = decl.length - 1;
-				tSpace = 0;
-
-				length += tmp;
-				j += tmp;
-
-				if (dir && txt) {
-					var inline = {
-						dir: false,
-						spaces: spaces + 1,
-						space: '',
-						parent: obj,
-						block: false,
-						adv: ''
-					};
-
-					inline.parent = obj;
-					struct = inline;
-					res += txt;
-				}
-			}
-		}
-	}
-
-	while (struct) {
-		if (struct.block) {
-			res += genEndDir(struct);
-		}
-
-		struct = struct
-			.parent;
-	}
-
-	return {
-		str: res,
-		length: length
-	};
 };
-
-/**
- * Вернуть строку окончания блоковой директивы
- *
- * @param {!Object} dir - объект-описание директивы
- * @return {string}
- */
-function genEndDir(dir) {
-	var s = dir.adv + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
-
-	return (("" + s) + ("__&__" + e) + ("\n" + s) + ("__end__" + e) + ("" + s) + ("__cutLine__" + e) + ("" + s) + ("__&__" + e) + "");
-}
-
-/**
- * Вернуть объект описание строки в Jade-Like синтаксисе
- *
- * @param {string} str - исходная строка
- * @param {number} i - номер начальной итерации
- * @param {?boolean=} dir - если true, то идёт декларация директивы
- * @return {{command: string, length: number, name: string, lastEl: string}}
- */
-function getLineDesc(str, i, dir) {
-	var res = '',
-		name = '';
-
-	var lastEl = '',
-		lastElI = 0,
-		length = -1;
-
-	var concatLine = false,
-		nmBrk = null;
-
-	for (var j = i - 1; ++j < str.length;) {
-		var el = str.charAt(j);
-		length++;
-
-		if (nextLineRgxp.test(el)) {
-			var prevEl = lastEl,
-				brk = false;
-
-			lastEl = '';
-			if (dir && str.charAt(j - 2) === ' ') {
-				brk = prevEl === CONCAT_END;
-
-				if (prevEl === CONCAT_COMMAND || brk) {
-					res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
-				}
-
-				if (concatLine && !brk) {
-					continue;
-				}
-
-				if (prevEl === CONCAT_COMMAND) {
-					concatLine = true;
-					continue
-				}
-			}
-
-			if (concatLine && !brk) {
-				continue;
-			}
-
-			return {
-				command: res,
-				length: length,
-				name: name,
-				lastEl: lastEl
-			};
-
-		} else {
-			var whiteSpace = lineWhiteSpaceRgxp.test(el);
-
-			if (whiteSpace) {
-				if (nmBrk === false) {
-					nmBrk = true;
-				}
-
-			} else {
-				lastEl = el;
-				lastElI = res.length;
-			}
-
-			if (!nmBrk && !whiteSpace) {
-				if (nmBrk === null) {
-					nmBrk = false;
-				}
-
-				name += el;
-			}
-
-			if (nmBrk !== null) {
-				res += el;
-			}
-		}
-	}
-
-	if (dir && lastEl === CONCAT_END && res.charAt(lastElI - 1) === ' ') {
-		res = res.substring(0, lastElI) + res.substring(lastElI + 1);
-	}
-
-	return {
-		command: res,
-		length: length,
-		name: name,
-		lastEl: lastEl
-	};
-}var aliasRgxp = /__(.*?)__/;
+var aliasRgxp = /__(.*?)__/;
 
 /**
  * Добавить новую директиву в пространство имён Snakeskin
@@ -9937,7 +11254,6 @@ function getLineDesc(str, i, dir) {
  *     где именно размещена директива ('global', 'template', ...)
  *
  * @param {?boolean=} [params.notEmpty=false] - если true, то директива не может быть "пустой"
- *
  * @param {(Array|string)=} [params.chain] - название главной директивы (цепи), к которой принадлежит директива,
  *     или массив названий
  *
@@ -10257,20 +11573,46 @@ Snakeskin.addDirective(
 			bem[bemName].tag;
 
 		if (this.isReady()) {
-			this.append(this.wrap((("\
-				'<" + (params.tag || params.original || 'div')) + ("\
-					class=\"i-block\"\
-					data-params=\"{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}\"\
-				>'\
-			")));
+			var str,
+				tag = params.tag || params.original || 'div',
+				desc = (("{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}");
+
+			if (this.renderMode === 'dom') {
+				str = (("\
+					__NODE__ = document.createElement('" + tag) + ("');\
+					__NODE__.className = 'i-block';\
+					__NODE__.setAttribute('data-params', '" + desc) + ("');\
+					" + (this.returnPushNodeDecl())) + "\
+				");
+
+			} else {
+				str = this.wrap((("\
+					'<" + tag) + ("\
+						class=\"i-block\"\
+						data-params=\"" + desc) + "\"\
+					>'\
+				"));
+			}
+
+			this.append(str);
 		}
 	},
 
 	function () {
-		var params = this.structure.params;
-		this.append(this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'")));
+		var params = this.structure.params,
+			str;
+
+		if (this.renderMode == 'dom') {
+			str = '__RESULT__.pop();';
+
+		} else {
+			str = this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'"));
+		}
+
+		this.append(str);
 	}
-);var blockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
+);
+var callBlockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
 
 Snakeskin.addDirective(
 	'block',
@@ -10279,7 +11621,6 @@ Snakeskin.addDirective(
 		sys: true,
 		block: true,
 		notEmpty: true,
-		placement: 'template',
 		group: [
 			'inherit',
 			'blockInherit'
@@ -10288,11 +11629,48 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		var name = this.getFnName(command),
-			start = this.i - this.startTemplateI;
+			tplName = this.tplName;
 
+		if (!name) {
+			return this.error((("invalid \"" + (this.name)) + "\" name"));
+		}
+
+		var parts = name.split('->');
+
+		if (parts[1]) {
+			name = parts[1].trim();
+
+			if (!tplName) {
+				if (this.structure.parent) {
+					this.error(("directive \"outer block\" can be used only within the global space"));
+					return;
+				}
+
+				tplName =
+					this.tplName = this.prepareNameDecl(parts[0]);
+
+				this.preDefs[tplName] = this.preDefs[tplName] || {
+					text: ''
+				};
+
+				this.preDefs[tplName].startLine = this.info['line'];
+				this.outerLink = name;
+				this.protoStart = true;
+			}
+
+		} else if (!this.outerLink && !this.has('template')) {
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
+		}
+
+		if (!name || !tplName || callBlockNameRgxp.test(name)) {
+			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+		}
+
+		var start = this.i - this.startTemplateI;
 		this.startDir(null, {
 			name: name,
-			from: start + 1
+			from: this.outerLink ?
+				this.i - this.getDiff(commandLength) : start + 1
 		});
 
 		var struct = this.structure,
@@ -10302,19 +11680,21 @@ Snakeskin.addDirective(
 			output;
 
 		if (name !== command) {
-			output = command.split('=>')[1];
-
 			var ouptupCache = this.getBlockOutput(dir);
-			params = ouptupCache[name];
 
-			if (output != null) {
-				params =
-					ouptupCache[name] = output;
+			if (ouptupCache) {
+				output = command.split('=>')[1];
+				params = ouptupCache[name];
+
+				if (output != null) {
+					params =
+						ouptupCache[name] = output;
+				}
 			}
 		}
 
 		if (this.isAdvTest()) {
-			if (blockCache[this.tplName][name]) {
+			if (blockCache[tplName][name]) {
 				return this.error((("block \"" + name) + "\" is already defined"));
 			}
 
@@ -10326,11 +11706,11 @@ Snakeskin.addDirective(
 				name
 			);
 
-			if (args.params && blockNameRgxp.test(name)) {
+			if (args.params && callBlockNameRgxp.test(name)) {
 				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			blockCache[this.tplName][name] = {
+			blockCache[tplName][name] = {
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
 				args: args,
@@ -10344,7 +11724,7 @@ Snakeskin.addDirective(
 		}
 
 		if (this.isSimpleOutput()) {
-			var args$0 = blockCache[this.tplName][name].args;
+			var args$0 = blockCache[tplName][name].args;
 
 			if (args$0.params) {
 				var fnDecl = ("__BLOCKS__." + name);
@@ -10354,6 +11734,21 @@ Snakeskin.addDirective(
 					if (!" + fnDecl) + (") {\
 						" + fnDecl) + (" = function (" + (args$0.str)) + (") {\
 							var __RESULT__ = " + (this.declResult())) + (";\
+\
+							function getTplResult(opt_clear) {\
+								var res = " + (this.returnResult())) + (";\
+\
+								if (opt_clear) {\
+									__RESULT__ = " + (this.declResult())) + (";\
+								}\
+\
+								return res;\
+							}\
+\
+							function clearTplResult() {\
+								__RESULT__ = " + (this.declResult())) + (";\
+							}\
+\
 							" + (args$0.defParams)) + "\
 				"));
 
@@ -10377,8 +11772,27 @@ Snakeskin.addDirective(
 	},
 
 	function (command, commandLength) {
-		var params = this.structure.params,
-			block = blockCache[this.tplName][params.name];
+		var params = this.structure.params;
+		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
+
+		if (this.outerLink === params.name) {
+			var obj = this.preDefs[this.tplName];
+
+			obj.text += (("\
+				" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
+					" + (this.source.substring(params.from, this.i + 1))) + ("\
+				" + s) + ("__end__" + e) + "\
+			");
+
+			this.outerLink = null;
+			this.tplName = null;
+			this.protoStart = false;
+
+			return;
+		}
+
+		var block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
 			this.save((("\
@@ -10402,7 +11816,8 @@ Snakeskin.addDirective(
 				.substring(params.from, start - this.getDiff(commandLength));
 		}
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'call',
 
 	{
@@ -10417,334 +11832,421 @@ Snakeskin.addDirective(
 			this.append(this.wrap(this.prepareOutput(command, true)));
 		}
 	}
-);var constNameRgxp = /\[(['"`])(.*?)\1]/g,
-	propAssignRgxp = /[.\[]/;
+);
+(function()  {
+	var constNameRgxp = /\[(['"`])(.*?)\1]/g,
+		propAssignRgxp = /[.\[]/;
 
-Snakeskin.addDirective(
-	'const',
+	Snakeskin.addDirective(
+		'const',
 
-	{
-		group: [
-			'inherit',
-			'inlineInherit'
-		]
-	},
+		{
+			group: [
+				'inherit',
+				'inlineInherit'
+			]
+		},
 
-	function (command, commandLength, type) {
-		var output = false;
+		function (command, commandLength, type) {
+			var output = false;
 
-		if (command.slice(-1) === '?') {
-			output = true;
-			command = command.slice(0, -1);
-		}
+			if (command.slice(-1) === '?') {
+				output = true;
+				command = command.slice(0, -1);
+			}
 
-		var tplName = this.tplName,
-			source = (("^[$a-z_" + (!this.scope.length ? L_MOD : '')) + "][$\\w\\[\\].\\s]*=[^=]");
+			var tplName = this.tplName,
+				source = (("^[$a-z_" + (!this.scope.length ? L_MOD : '')) + "][$\\w\\[\\].\\s]*=[^=]");
 
-		var rgxp = rgxpCache[source] || new RegExp(source, 'i');
-		rgxpCache[source] = rgxp;
+			var rgxp = rgxpCache[source] || new RegExp(source, 'i');
+			rgxpCache[source] = rgxp;
 
-		if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
-			if (tplName && type !== 'global') {
-				var parts = command.split('='),
-					prop = parts[0] && parts[0].trim();
+			if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
+				if (tplName && type !== 'global') {
+					var parts = command.split('='),
+						prop = parts[0] && parts[0].trim();
 
-				if (!parts[1] || !parts[1].trim()) {
-					return this.error(("invalid \"constant\" declaration"));
-				}
-
-				var name = this.pasteDangerBlocks(prop);
-
-				if (name.charAt(0) === L_MOD) {
-					return this.error((("can\'t declare constant \"" + (name.substring(1))) + ("\" with the context modifier (" + L_MOD) + ")"));
-				}
-
-				name = name.replace(constNameRgxp, '.$2');
-				this.startInlineDir('const', {
-					name: name
-				});
-
-				if (this.isReady()) {
-					if (!propAssignRgxp.test(prop)) {
-						this.consts.push((("var " + prop) + ";"));
+					if (!parts[1] || !parts[1].trim()) {
+						return this.error(("invalid \"constant\" declaration"));
 					}
 
-					if (output) {
-						this.text = true;
-						this.append(this.wrap((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('=')))) + ";")));
+					var name = this.pasteDangerBlocks(prop);
+
+					if (name.charAt(0) === L_MOD) {
+						return this.error((("can\'t declare constant \"" + (name.substring(1))) + ("\" with the context modifier (" + L_MOD) + ")"));
+					}
+
+					name = name.replace(constNameRgxp, '.$2');
+					this.startInlineDir('const', {
+						name: name
+					});
+
+					if (this.isReady()) {
+						if (!propAssignRgxp.test(prop)) {
+							this.consts.push((("var " + prop) + ";"));
+						}
+
+						if (output) {
+							this.text = true;
+							this.append(this.wrap((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('=')))) + ";")));
+
+						} else {
+							this.append((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
+						}
+					}
+
+					if (this.isAdvTest()) {
+						if (constCache[tplName][name]) {
+							return this.error((("constant \"" + name) + "\" is already defined"));
+						}
+
+						if (this.varCache[tplName][name]) {
+							return this.error((("constant \"" + name) + "\" is already defined as variable"));
+						}
+
+						if (sysConst[name]) {
+							return this.error((("can't declare constant \"" + name) + "\", try another name"));
+						}
+
+						var start = this.i - this.startTemplateI;
+						var parent,
+							parentTpl = this.parentTplName;
+
+						if (parentTpl) {
+							parent = constCache[parentTpl][name];
+						}
+
+						constCache[tplName][name] = {
+							from: start - commandLength,
+							to: start,
+
+							proto: this.protoStart ||
+								!!(parentTpl && parent && parent.proto),
+
+							needPrfx: this.needPrfx,
+							output: output ?
+								'?' : null
+						};
+
+						if (!this.protoStart) {
+							fromConstCache[tplName] = start + 1;
+						}
+					}
+
+				} else {
+					this.startInlineDir('global');
+					var desc = isAssign(command, true);
+
+					if (!desc) {
+						return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+					}
+
+					var mod = G_MOD + G_MOD;
+
+					if (command.charAt(0) !== G_MOD) {
+						command = mod + command;
 
 					} else {
-						this.append((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
-					}
-				}
-
-				if (this.isAdvTest()) {
-					if (constCache[tplName][name]) {
-						return this.error((("constant \"" + name) + "\" is already defined"));
+						command = command
+							.replace(scopeModRgxp, mod);
 					}
 
-					if (this.varCache[tplName][name]) {
-						return this.error((("constant \"" + name) + "\" is already defined as variable"));
-					}
+					if (output && tplName) {
+						this.text = true;
+						this.append(this.wrap((("" + (this.prepareOutput(desc.key, true))) + (" = " + (this.prepareOutput(desc.value))) + ";")));
 
-					if (sysConst[name]) {
-						return this.error((("can't declare constant \"" + name) + "\", try another name"));
-					}
-
-					var start = this.i - this.startTemplateI;
-					var parent,
-						parentTpl = this.parentTplName;
-
-					if (parentTpl) {
-						parent = constCache[parentTpl][name];
-					}
-
-					constCache[tplName][name] = {
-						from: start - commandLength,
-						to: start,
-
-						proto: this.protoStart ||
-							!!(parentTpl && parent && parent.proto),
-
-						needPrfx: this.needPrfx,
-						output: output ?
-							'?' : null
-					};
-
-					if (!this.protoStart) {
-						fromConstCache[tplName] = start + 1;
+					} else {
+						this.save((("" + (this.prepareOutput(command, true))) + ";"));
 					}
 				}
 
 			} else {
-				this.startInlineDir('global');
-				var desc = isAssign(command, true);
+				this.startInlineDir('output');
+				this.text = true;
 
-				if (!desc) {
+				if (!tplName) {
+					return this.error((("Directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
+				}
+
+				if (this.isReady()) {
+					var desc$0 = isAssign(command);
+
+					if (desc$0) {
+						if (output) {
+							this.append(this.wrap((("" + (this.prepareOutput(desc$0.key, true))) + (" = " + (this.prepareOutput(desc$0.value))) + ";")));
+
+						} else {
+							this.text = false;
+							this.append((("" + (this.prepareOutput(command, true))) + ";"));
+						}
+
+						return;
+					}
+
+					this.append(this.wrap(this.prepareOutput(command)));
+				}
+			}
+		}
+	);
+
+	Snakeskin.addDirective(
+		'output',
+
+		{
+			placement: 'template',
+			notEmpty: true
+		},
+
+		function () {
+			Snakeskin.Directions['const'].apply(this, arguments);
+		}
+	);
+
+	Snakeskin.addDirective(
+		'global',
+
+		{
+			notEmpty: true
+		},
+
+		function () {
+			Snakeskin.Directions['const'].apply(this, arguments);
+		}
+	);
+
+	/**
+	 * Вернуть объект-описание выражения,
+	 * если в строке идёт присвоение значения переменной или свойству,
+	 * или false
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {?boolean=} [opt_global=false] - если true, то идёт проверка суперглобальной переменной
+	 * @return {({key: string, value: string}|boolean)}
+	 */
+	function isAssign(str, opt_global) {
+		var source = (("^[" + (G_MOD + L_MOD)) + ("$a-z_" + (opt_global ? '[' : '')) + "]"),
+			key = (("" + source) + "[i");
+
+		var rgxp = rgxpCache[key] || new RegExp(source, 'i');
+		rgxpCache[key] = rgxp;
+
+		if (!rgxp.test(str)) {
+			return false;
+		}
+
+		var prop = '';
+		var count = 0,
+			eq = false;
+
+		var advEqMap = {
+			'+': true,
+			'-': true,
+			'*': true,
+			'/': true,
+			'^': true,
+			'~': true,
+			'|': true,
+			'&': true
+		};
+
+		var bAdvMap = {
+			'<': true,
+			'>': true
+		};
+
+		for (var i = -1; ++i < str.length;) {
+			var el = str.charAt(i);
+			prop += el;
+
+			if (bMap[el]) {
+				count++;
+				continue;
+
+			} else if (closeBMap[el]) {
+				count--;
+				continue;
+			}
+
+			var prev = str.charAt(i - 1),
+				next = str.charAt(i + 1);
+
+			if (!eq && !count &&
+				(
+					el === '=' && next !== '=' && prev !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
+					advEqMap[el] && next === '=' ||
+					bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === '='
+					)
+				) {
+
+				var diff = 1;
+
+				if (advEqMap[el]) {
+					diff = 2;
+
+				} else if (bAdvMap[el]) {
+					diff = 3;
+				}
+
+				return {
+					key: prop.slice(0, -1),
+					value: str.substring(i + diff)
+				};
+			}
+
+			eq = el === '=';
+		}
+
+		return false;
+	}
+})();
+(function()  {
+	var varDeclRgxp = /\bvar\b/,
+		splitDeclRgxp = /;/,
+		forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
+
+	Snakeskin.addDirective(
+		'for',
+
+		{
+			block: true,
+			notEmpty: true,
+			group: 'cycle'
+		},
+
+		function (command) {
+			this.startDir();
+
+			if (splitDeclRgxp.test(command)) {
+				var parts = command.split(';');
+
+				if (parts.length !== 3) {
 					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 				}
 
-				var mod = G_MOD + G_MOD;
+				if (this.isReady()) {
+					var decl = varDeclRgxp.test(parts[0]) ?
+						this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
 
-				if (command.charAt(0) !== G_MOD) {
-					command = mod + command;
+					parts[1] = parts[1] && (("(" + (parts[1])) + ")");
+					parts[2] = parts[2] && (("(" + (parts[2])) + ")");
 
-				} else {
-					command = command
-						.replace(scopeModRgxp, mod);
+					this.append((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
 				}
 
-				if (output && tplName) {
-					this.text = true;
-					this.append(this.wrap((("" + (this.prepareOutput(desc.key, true))) + (" = " + (this.prepareOutput(desc.value))) + ";")));
+			} else {
+				var parts$0 = forRgxp.exec(command);
 
-				} else {
-					this.save((("" + (this.prepareOutput(command, true))) + ";"));
-				}
-			}
-
-		} else {
-			this.startInlineDir('output');
-			this.text = true;
-
-			if (!tplName) {
-				return this.error((("Directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
-			}
-
-			if (this.isReady()) {
-				var desc$0 = isAssign(command);
-
-				if (desc$0) {
-					if (output) {
-						this.append(this.wrap((("" + (this.prepareOutput(desc$0.key, true))) + (" = " + (this.prepareOutput(desc$0.value))) + ";")));
-
-					} else {
-						this.text = false;
-						this.append((("" + (this.prepareOutput(command, true))) + ";"));
-					}
-
-					return;
+				if (!parts$0) {
+					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 				}
 
-				this.append(this.wrap(this.prepareOutput(command)));
+				if (this.isReady()) {
+					var decl$0 = parts$0[1] ?
+						this.multiDeclVar(parts$0[2], false, '') : this.prepareOutput(parts$0[2], true);
+
+					this.append((("for (" + decl$0) + (" " + (parts$0[3])) + (" " + (this.prepareOutput(parts$0[4], true))) + ") {"));
+				}
+			}
+		},
+
+		function () {
+			this.append('}');
+		}
+	);
+
+	Snakeskin.addDirective(
+		'while',
+
+		{
+			block: true,
+			notEmpty: true,
+			group: 'cycle'
+		},
+
+		function (command) {
+			if (this.structure.name == 'do') {
+				this.structure.params.chain = true;
+
+				if (this.isReady()) {
+					this.append((("} while (" + (this.prepareOutput(command, true))) + ");"));
+				}
+
+				Snakeskin.Directions['end'].call(this);
+
+			} else {
+				this.startDir();
+				if (this.isReady()) {
+					this.append((("while (" + (this.prepareOutput(command, true))) + ") {"));
+				}
+			}
+		},
+
+		function () {
+			this.append('}');
+		}
+	);
+
+	Snakeskin.addDirective(
+		'do',
+
+		{
+			block: true,
+			group: 'cycle',
+			after: {
+				'while': true,
+				'end': true
+			}
+		},
+
+		function () {
+			this.startDir();
+			this.append('do {');
+		},
+
+		function () {
+			if (!this.structure.params.chain) {
+				this.append('} while (true);');
 			}
 		}
-	}
-);
+	);
 
-Snakeskin.addDirective(
-	'output',
+	Snakeskin.addDirective(
+		'repeat',
 
-	{
-		placement: 'template',
-		notEmpty: true
-	},
-
-	function () {
-		Snakeskin.Directions['const'].apply(this, arguments);
-	}
-);
-
-Snakeskin.addDirective(
-	'global',
-
-	{
-		notEmpty: true
-	},
-
-	function () {
-		Snakeskin.Directions['const'].apply(this, arguments);
-	}
-);
-
-/**
- * Вернуть объект-описание выражения,
- * если в строке идёт присвоение значения переменной или свойству,
- * или false
- *
- * @param {string} str - исходная строка
- * @param {?boolean=} [opt_global=false] - если true, то идёт проверка суперглобальной переменной
- * @return {({key: string, value: string}|boolean)}
- */
-function isAssign(str, opt_global) {
-	var source = (("^[" + (G_MOD + L_MOD)) + ("$a-z_" + (opt_global ? '[' : '')) + "]"),
-		key = (("" + source) + "[i");
-
-	var rgxp = rgxpCache[key] || new RegExp(source, 'i');
-	rgxpCache[key] = rgxp;
-
-	if (!rgxp.test(str)) {
-		return false;
-	}
-
-	var prop = '';
-	var count = 0,
-		eq = false;
-
-	var advEqMap = {
-		'+': true,
-		'-': true,
-		'*': true,
-		'/': true,
-		'^': true,
-		'~': true,
-		'|': true,
-		'&': true
-	};
-
-	var bAdvMap = {
-		'<': true,
-		'>': true
-	};
-
-	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i);
-		prop += el;
-
-		if (bMap[el]) {
-			count++;
-			continue;
-
-		} else if (closeBMap[el]) {
-			count--;
-			continue;
-		}
-
-		var prev = str.charAt(i - 1),
-			next = str.charAt(i + 1);
-
-		if (!eq && !count &&
-			(
-				el === '=' && next !== '=' && prev !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
-				advEqMap[el] && next === '=' ||
-				bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === '='
-			)
-		) {
-
-			var diff = 1;
-
-			if (advEqMap[el]) {
-				diff = 2;
-
-			} else if (bAdvMap[el]) {
-				diff = 3;
+		{
+			block: true,
+			group: 'cycle',
+			after: {
+				'until': true,
+				'end': true
 			}
+		},
 
-			return {
-				key: prop.slice(0, -1),
-				value: str.substring(i + diff)
-			};
-		}
+		function () {
+			this.startDir();
+			this.append('do {');
+		},
 
-		eq = el === '=';
-	}
-
-	return false;
-}var varDeclRgxp = /\bvar\b/,
-	splitDeclRgxp = /;/,
-	forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
-
-Snakeskin.addDirective(
-	'for',
-
-	{
-		block: true,
-		notEmpty: true,
-		group: 'cycle'
-	},
-
-	function (command) {
-		this.startDir();
-
-		if (splitDeclRgxp.test(command)) {
-			var parts = command.split(';');
-
-			if (parts.length !== 3) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-			}
-
-			if (this.isReady()) {
-				var decl = varDeclRgxp.test(parts[0]) ?
-					this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
-
-				parts[1] = parts[1] && (("(" + (parts[1])) + ")");
-				parts[2] = parts[2] && (("(" + (parts[2])) + ")");
-
-				this.append((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
-			}
-
-		} else {
-			var parts$0 = forRgxp.exec(command);
-
-			if (!parts$0) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-			}
-
-			if (this.isReady()) {
-				var decl$0 = parts$0[1] ?
-					this.multiDeclVar(parts$0[2], false, '') : this.prepareOutput(parts$0[2], true);
-
-				this.append((("for (" + decl$0) + (" " + (parts$0[3])) + (" " + (this.prepareOutput(parts$0[4], true))) + ") {"));
+		function () {
+			if (!this.structure.params.chain) {
+				this.append('} while (true);');
 			}
 		}
-	},
+	);
 
-	function () {
-		this.append('}');
-	}
-);
+	Snakeskin.addDirective(
+		'until',
 
-Snakeskin.addDirective(
-	'while',
+		{
+			placement: 'template',
+			notEmpty: true
+		},
 
-	{
-		block: true,
-		notEmpty: true,
-		group: 'cycle'
-	},
+		function (command) {
+			if (this.structure.name !== 'repeat') {
+				return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"repeat\""));
+			}
 
-	function (command) {
-		if (this.structure.name == 'do') {
 			this.structure.params.chain = true;
 
 			if (this.isReady()) {
@@ -10752,90 +12254,10 @@ Snakeskin.addDirective(
 			}
 
 			Snakeskin.Directions['end'].call(this);
-
-		} else {
-			this.startDir();
-			if (this.isReady()) {
-				this.append((("while (" + (this.prepareOutput(command, true))) + ") {"));
-			}
 		}
-	},
-
-	function () {
-		this.append('}');
-	}
-);
-
+	);
+})();
 Snakeskin.addDirective(
-	'do',
-
-	{
-		block: true,
-		group: 'cycle',
-		after: {
-			'while': true,
-			'end': true
-		}
-	},
-
-	function () {
-		this.startDir();
-		this.append('do {');
-	},
-
-	function () {
-		if (!this.structure.params.chain) {
-			this.append('} while (true);');
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'repeat',
-
-	{
-		block: true,
-		group: 'cycle',
-		after: {
-			'until': true,
-			'end': true
-		}
-	},
-
-	function () {
-		this.startDir();
-		this.append('do {');
-	},
-
-	function () {
-		if (!this.structure.params.chain) {
-			this.append('} while (true);');
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'until',
-
-	{
-		placement: 'template',
-		notEmpty: true
-	},
-
-	function (command) {
-		if (this.structure.name !== 'repeat') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"repeat\""));
-		}
-
-		this.structure.params.chain = true;
-
-		if (this.isReady()) {
-			this.append((("} while (" + (this.prepareOutput(command, true))) + ");"));
-		}
-
-		Snakeskin.Directions['end'].call(this);
-	}
-);Snakeskin.addDirective(
 	'data',
 
 	{
@@ -10855,294 +12277,307 @@ Snakeskin.addDirective(
 	}
 );
 
-var declStartRgxp = /^\{+/,
-	declEndRgxp = /\}+$/;
+(function()  {
+	var declStartRgxp = /^\{+/,
+		declEndRgxp = /\}+$/;
 
-Snakeskin.addDirective(
-	'decl',
+	Snakeskin.addDirective(
+		'decl',
 
-	{
-		placement: 'template',
-		notEmpty: true,
-		text: true,
-		replacers: {
-			'{': function(cmd)  {return cmd.replace('{', 'decl ')}
+		{
+			placement: 'template',
+			notEmpty: true,
+			text: true,
+			replacers: {
+				'{': function(cmd)  {return cmd.replace('{', 'decl ')}
+			}
+		},
+
+		function (command) {
+			this.startInlineDir();
+			if (this.isReady()) {
+				var code = this.replaceTplVars(command);
+				var start = declStartRgxp.exec(code) ||
+					[''];
+
+				var end = declEndRgxp.exec(code) ||
+					[''];
+
+				var add;
+				try {
+					add = new Array(end[0].length - start[0].length + 1).join('{');
+
+				} catch (ignore) {
+					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+				}
+
+				this.append(this.wrap((("'{" + (add + code)) + "}'")));
+			}
 		}
-	},
+	);
+})();
+(function()  {
+	Snakeskin.addDirective(
+		'attr',
 
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			var code = this.replaceTplVars(command);
-			var start = declStartRgxp.exec(code) ||
-				[''];
+		{
+			placement: 'template',
+			notEmpty: true,
+			text: true
+		},
 
-			var end = declEndRgxp.exec(code) ||
-				[''];
+		function (command) {
+			this.startInlineDir();
+			if (this.isReady()) {
+				var str = '',
+					groups = this.splitAttrsGroup(command);
 
-			var add;
-			try {
-				add = new Array(end[0].length - start[0].length + 1).join('{');
+				for (var i = -1; ++i < groups.length;) {
+					var el = groups[i];
 
-			} catch (ignore) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+					str += this.returnAttrDecl(
+						el.attr,
+						el.group,
+						el.separator
+					);
+				}
+
+				this.append(str);
+			}
+		}
+	);
+
+	var escapeEqRgxp = /===|==|([\\]+)=/g,
+		escapeOrRgxp = /\|\||([\\]+)\|/g;
+
+	var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g,
+		unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
+
+	function escapeEq(sstr, $1) {
+		if ($1 && $1.length % 2 === 0) {
+			return sstr;
+		}
+
+		return (("__SNAKESKIN_EQ__" + (sstr.split('=').length)) + ("_" + ($1.length)) + "_");
+	}
+
+	function escapeOr(sstr, $1) {
+		if ($1 && $1.length % 2 === 0) {
+			return sstr;
+		}
+
+		return (("__SNAKESKIN_OR__" + (sstr.split('|').length)) + ("_" + ($1.length)) + "_");
+	}
+
+	function unEscapeEq(sstr, $1, $2) {
+		return new Array(+($2)).join('\\') + new Array(+($1)).join('=');
+	}
+
+	function unEscapeOr(sstr, $1, $2) {
+		return new Array(+($2)).join('\\') + new Array(+($1)).join('|');
+	}
+
+	/**
+	 * Вернуть строку декларации XML атрибутов
+	 *
+	 * @param {string} str - исходная строка
+	 * @param {?string=} [opt_group] - название группы
+	 * @param {?string=} [opt_separator='-'] - разделитель группы
+	 * @param {?boolean=} [opt_classLink=false] - если true, то значения для атрибута class
+	 *     будут сохраняться во временную переменную
+	 *
+	 * @return {string}
+	 */
+	DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
+		var rAttr = this.attr;
+		this.attr = true;
+
+		opt_group = opt_group || '';
+		opt_separator = opt_separator || '-';
+
+		str = str
+			.replace(escapeHTMLRgxp, escapeHTML)
+			.replace(escapeOrRgxp, escapeOr);
+
+		var parts = str.split('|'),
+			res = '',
+			ref = this.bemRef;
+
+		var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
+
+		for (var i = -1; ++i < parts.length;) {
+			parts[i] = parts[i]
+				.replace(unEscapeOrRgxp, unEscapeOr)
+				.replace(escapeEqRgxp, escapeEq);
+
+			var arg = parts[i].split('=');
+
+			if (arg.length !== 2) {
+				arg[1] = arg[0];
 			}
 
-			this.append(this.wrap((("'{" + (add + code)) + "}'")));
-		}
-	}
-);Snakeskin.addDirective(
-	'attr',
+			arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
+			arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
-	{
-		placement: 'template',
-		notEmpty: true,
-		text: true
-	},
-
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			var str = '',
-				groups = this.splitAttrsGroup(command);
-
-			for (var i = -1; ++i < groups.length;) {
-				var el = groups[i];
-
-				str += this.returnAttrDecl(
-					el.attr,
-					el.group,
-					el.separator
-				);
-			}
-
-			this.append(str);
-		}
-	}
-);
-
-var escapeEqRgxp = /===|==|([\\]+)=/g,
-	escapeOrRgxp = /\|\||([\\]+)\|/g;
-
-var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g,
-	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
-
-function escapeEq(sstr, $1) {
-	if ($1 && $1.length % 2 === 0) {
-		return sstr;
-	}
-
-	return (("__SNAKESKIN_EQ__" + (sstr.split('=').length)) + ("_" + ($1.length)) + "_");
-}
-
-function escapeOr(sstr, $1) {
-	if ($1 && $1.length % 2 === 0) {
-		return sstr;
-	}
-
-	return (("__SNAKESKIN_OR__" + (sstr.split('|').length)) + ("_" + ($1.length)) + "_");
-}
-
-function unEscapeEq(sstr, $1, $2) {
-	return new Array(+($2)).join('\\') + new Array(+($1)).join('=');
-}
-
-function unEscapeOr(sstr, $1, $2) {
-	return new Array(+($2)).join('\\') + new Array(+($1)).join('|');
-}
-
-/**
- * Вернуть строку декларации XML атрибутов
- *
- * @param {string} str - исходная строка
- * @param {?string=} [opt_group] - название группы
- * @param {?string=} [opt_separator='-'] - разделитель группы
- * @param {?boolean=} [opt_classLink=false] - если true, то значения для атрибута class
- *     будут сохраняться во временную переменную
- *
- * @return {string}
- */
-DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
-	var rAttr = this.attr;
-	this.attr = true;
-
-	opt_group = opt_group || '';
-	opt_separator = opt_separator || '-';
-
-	str = str
-		.replace(escapeHTMLRgxp, escapeHTML)
-		.replace(escapeOrRgxp, escapeOr);
-
-	var parts = str.split('|'),
-		res = '',
-		ref = this.bemRef;
-
-	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
-
-	for (var i = -1; ++i < parts.length;) {
-		parts[i] = parts[i]
-			.replace(unEscapeOrRgxp, unEscapeOr)
-			.replace(escapeEqRgxp, escapeEq);
-
-		var arg = parts[i].split('=');
-
-		if (arg.length !== 2) {
-			arg[1] = arg[0];
-		}
-
-		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
-		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
-
-		res += ("\
-			__STR__ = \'\';\
-			__J__ = 0;\
-		");
-
-		if (opt_group) {
-			arg[0] = opt_group + opt_separator + arg[0];
-
-		} else {
-			arg[0] = arg[0].charAt(0) === '-' ?
-				("data-" + (arg[0].slice(1))) : arg[0];
-		}
-
-		arg[0] = this.replaceDangerBlocks(
-			(("'" + (this.pasteTplVarBlocks(arg[0]))) + "'")
-		);
-
-		var vals = arg[1].split(' ');
-
-		for (var j = -1; ++j < vals.length;) {
-			var val = vals[j].trim();
-
-			if (val.charAt(0) === '&' && ref) {
-				val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring('&amp;'.length), true))) + ("'" + e) + "");
-				val = this.replaceTplVars(val);
-			}
-
-			val = this.prepareOutput(
-				this.replaceDangerBlocks((("'" + (this.pasteTplVarBlocks(val))) + "'")), true
-			) || '';
-
-			res += (("\
-				if ((" + val) + (") != null && (" + val) + (") !== '') {\
-					__STR__ += __J__ ? ' ' + " + val) + (" : " + val) + ";\
-					__J__++;\
-				}\
+			res += ("\
+				__STR__ = \'\';\
+				__J__ = 0;\
 			");
-		}
 
-		res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + ") != '' && __STR__) {");
-		var tmp = this.wrap((("' ' + " + (arg[0])) + " + '=\"' + __STR__ + '\"'"));
+			if (opt_group) {
+				arg[0] = opt_group + opt_separator + arg[0];
 
-		if (opt_classLink) {
-			res += (("\
-				if (__TMP__[(" + (arg[0])) + (")] != null) {\
-					__TMP__[(" + (arg[0])) + (")] += __STR__;\
+			} else {
+				arg[0] = arg[0].charAt(0) === '-' ?
+					("data-" + (arg[0].slice(1))) : arg[0];
+			}
+
+			arg[0] = this.replaceDangerBlocks(
+				(("'" + (this.pasteTplVarBlocks(arg[0]))) + "'")
+			);
+
+			var vals = arg[1].split(' ');
+
+			for (var j = -1; ++j < vals.length;) {
+				var val = vals[j].trim();
+
+				if (val.charAt(0) === '&' && ref) {
+					val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring('&amp;'.length), true))) + ("'" + e) + "");
+					val = this.replaceTplVars(val);
+				}
+
+				val = this.prepareOutput(
+					this.replaceDangerBlocks((("'" + (this.pasteTplVarBlocks(val))) + "'")), true
+				) || '';
+
+				res += (("\
+					if ((" + val) + (") != null && (" + val) + (") !== '') {\
+						__STR__ += __J__ ? ' ' + " + val) + (" : " + val) + ";\
+						__J__++;\
+					}\
+				");
+			}
+
+			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + ") != '' && __STR__) {");
+			var tmp = (("\
+				if (__NODE__) {\
+					__NODE__.setAttribute(" + (arg[0])) + (", __STR__);\
 \
 				} else {\
-					" + tmp) + "\
+					" + (this.wrap((("' ' + " + (arg[0])) + " + '=\"' + __STR__ + '\"'")))) + "\
 				}\
 			");
 
-		} else {
-			res += tmp;
+			if (opt_classLink) {
+				res += (("\
+					if (__TMP__[(" + (arg[0])) + (")] != null) {\
+						__TMP__[(" + (arg[0])) + (")] += __STR__;\
+\
+					} else {\
+						" + tmp) + "\
+					}\
+				");
+
+			} else {
+				res += tmp;
+			}
+
+			res += '}';
 		}
 
-		res += '}';
-	}
-
-	this.attr = rAttr;
-	return res;
-};
-
-/**
- * Разбить строку декларации атрибута на группы
- *
- * @param {string} str - исходная строка
- * @return {!Array}
- */
-DirObj.prototype.splitAttrsGroup = function (str) {
-	var rAttr = this.attr;
-	this.attr = true;
-
-	str = this.replaceTplVars(str, null, true);
-	var groups = [];
-
-	var group = '',
-		attr = '',
-		sep = '';
-
-	var pOpen = 0;
-	var separator = {
-		'-': true,
-		':': true,
-		'_': true
+		this.attr = rAttr;
+		return res;
 	};
 
-	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i),
-			next = str.charAt(i + 1);
+	/**
+	 * Разбить строку декларации атрибута на группы
+	 *
+	 * @param {string} str - исходная строка
+	 * @return {!Array}
+	 */
+	DirObj.prototype.splitAttrsGroup = function (str) {
+		var rAttr = this.attr;
+		this.attr = true;
 
-		if (!pOpen) {
-			if (separator[el] && next === '(') {
-				pOpen++;
-				i++;
-				sep = el;
-				continue;
-			}
+		str = this.replaceTplVars(str, null, true);
+		var groups = [];
 
-			if (el === '(') {
-				pOpen++;
-				sep = '';
-				continue;
-			}
-		}
+		var group = '',
+			attr = '',
+			sep = '';
 
-		if (pOpen) {
-			if (el === '(') {
-				pOpen++;
+		var pOpen = 0;
+		var separator = {
+			'-': true,
+			':': true,
+			'_': true
+		};
 
-			} else if (el === ')') {
-				pOpen--;
+		for (var i = -1; ++i < str.length;) {
+			var el = str.charAt(i),
+				next = str.charAt(i + 1);
 
-				if (!pOpen) {
-					groups.push({
-						group: Snakeskin.Filters.html(group, true).trim(),
-						separator: sep,
-						attr: attr.trim()
-					});
-
-					group = '';
-					attr = '';
-					sep = '';
-
+			if (!pOpen) {
+				if (separator[el] && next === '(') {
+					pOpen++;
 					i++;
+					sep = el;
+					continue;
+				}
+
+				if (el === '(') {
+					pOpen++;
+					sep = '';
 					continue;
 				}
 			}
+
+			if (pOpen) {
+				if (el === '(') {
+					pOpen++;
+
+				} else if (el === ')') {
+					pOpen--;
+
+					if (!pOpen) {
+						groups.push({
+							group: Snakeskin.Filters.html(group, true).trim(),
+							separator: sep,
+							attr: attr.trim()
+						});
+
+						group = '';
+						attr = '';
+						sep = '';
+
+						i++;
+						continue;
+					}
+				}
+			}
+
+			if (!pOpen) {
+				group += el;
+
+			} else {
+				attr += el;
+			}
 		}
 
-		if (!pOpen) {
-			group += el;
-
-		} else {
-			attr += el;
+		if (group && !attr) {
+			groups.push({
+				group: null,
+				separator: null,
+				attr: group.trim()
+			});
 		}
-	}
 
-	if (group && !attr) {
-		groups.push({
-			group: null,
-			separator: null,
-			attr: group.trim()
-		});
-	}
-
-	this.attr = rAttr;
-	return groups;
-};Snakeskin.addDirective(
+		this.attr = rAttr;
+		return groups;
+	};
+})();
+Snakeskin.addDirective(
 	'end',
 
 	{
@@ -11161,7 +12596,7 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 
 		if (command && command !== name) {
 			var group = this.getGroup('rootTemplate');
-			if (!(this.interface && group[name] && group[command])) {
+			if (!(this.renderAs && group[name] && group[command])) {
 				return this.error((("invalid closing directive, expected: \"" + name) + ("\", declared: \"" + command) + "\""));
 			}
 		}
@@ -11193,10 +12628,19 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 				var parent = struct.parent.name;
 
 				if (async[parent]) {
-					if (parent === 'waterfall') {
+					var basicAsync = this.getGroup('basicAsync');
+
+					if (basicAsync[name] || basicAsync[parent]) {
 						this.save(("\
 							if (__RETURN__) {\
-								return arguments[arguments.length - 1](false);\
+								return false;\
+							}\
+						"));
+
+					} else if (parent === 'waterfall') {
+						this.save(("\
+							if (__RETURN__) {\
+								return arguments[arguments.length - 1](__RETURN_VAL__);\
 							}\
 						"));
 
@@ -11204,7 +12648,7 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 						this.save(("\
 							if (__RETURN__) {\
 								if (typeof arguments[0] === 'function') {\
-									return arguments[0](false);\
+									return arguments[0](__RETURN_VAL__);\
 								}\
 \
 								return false;\
@@ -11212,7 +12656,9 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 						"));
 					}
 
-				} else {
+					this.deferReturn = 0;
+
+				} else if (this.deferReturn > 1) {
 					this.save(("\
 						if (__RETURN__) {\
 							return false;\
@@ -11220,14 +12666,18 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 					"));
 				}
 
+				if (this.deferReturn !== 0) {
+					this.deferReturn++;
+				}
+
 			} else if (!async[name]) {
-				this.save((("\
+				this.save(("\
 					if (__RETURN__) {\
-						" + (this.deferReturn !== true ? this.deferReturn : 'return __RETURN_VAL__;')) + "\
+						return __RETURN_VAL__;\
 					}\
 				"));
 
-				this.deferReturn = null;
+				this.deferReturn = 0;
 			}
 		}
 
@@ -11235,7 +12685,20 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 			this$0.startInlineDir();
 		});
 	}
-);Snakeskin.addDirective(
+);
+
+Snakeskin.addDirective(
+	'__end__',
+
+	{
+		alias: true
+	},
+
+	function () {
+		Snakeskin.Directions['end'].apply(this, arguments);
+	}
+);
+Snakeskin.addDirective(
 	'super',
 
 	{
@@ -11285,417 +12748,421 @@ DirObj.prototype.splitAttrsGroup = function (str) {
 			}
 		}
 	}
-);var $COverloadRgxp = /=>>/g;
+);
+(function()  {
+	var $COverloadRgxp = /=>>/g;
 
-Snakeskin.addDirective(
-	'forEach',
+	Snakeskin.addDirective(
+		'forEach',
 
-	{
-		block: true,
-		notEmpty: true,
-		group: [
-			'cycle',
-			'callback',
-			'inlineIterator'
-		]
-	},
+		{
+			block: true,
+			notEmpty: true,
+			group: [
+				'cycle',
+				'callback',
+				'inlineIterator'
+			]
+		},
 
-	function (command) {var this$0 = this;
-		command = command.replace($COverloadRgxp, '=>=>');
-		var parts = command.split('=>'),
-			obj = parts[0];
+		function (command) {var this$0 = this;
+			command = command.replace($COverloadRgxp, '=>=>');
+			var parts = command.split('=>'),
+				obj = parts[0];
 
-		if (!parts.length || parts.length > (this.inlineIterators ? 2 : 3)) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
-		this.startDir(parts.length === 3 ? '$forEach' : null, {
-			params: parts[2] ? parts[1] : null
-		});
-
-		if (this.isReady()) {
-			if (!this.inlineIterators) {
-				if (parts.length === 3) {
-					this.append((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
-
-				} else {
-					this.append((("\
-						Snakeskin.forEach(\
-							" + (this.prepareOutput(parts[0], true))) + (",\
-							function (" + (this.declCallbackArgs(parts[1]))) + ") {\
-					"));
-				}
-
-				return;
+			if (!parts.length || parts.length > (this.inlineIterators ? 2 : 3)) {
+				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			var tmpObj = this.multiDeclVar(("__TMP__ = " + obj)),
-				cacheObj = this.prepareOutput('__TMP__', true);
+			this.startDir(parts.length === 3 ? '$forEach' : null, {
+				params: parts[2] ? parts[1] : null
+			});
 
-			var objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
-				keys = this.prepareOutput('__KEYS__', true);
+			if (this.isReady()) {
+				if (!this.inlineIterators) {
+					if (parts.length === 3) {
+						this.append((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
 
-			var args = parts[1] ?
-				parts[1].trim().split(',') : [];
+					} else {
+						this.append((("\
+							Snakeskin.forEach(\
+								" + (this.prepareOutput(parts[0], true))) + (",\
+								function (" + (this.declCallbackArgs(parts[1]))) + ") {\
+						"));
+					}
 
-			if (args.length >= 6) {
-				objLength += (("\
-					" + (this.multiDeclVar(("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0")))) + ("\
+					return;
+				}
+
+				var tmpObj = this.multiDeclVar(("__TMP__ = " + obj)),
+					cacheObj = this.prepareOutput('__TMP__', true);
+
+				var objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
+					keys = this.prepareOutput('__KEYS__', true);
+
+				var args = parts[1] ?
+					parts[1].trim().split(',') : [];
+
+				if (args.length >= 6) {
+					objLength += (("\
+						" + (this.multiDeclVar(("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0")))) + ("\
 \
-					if (!" + keys) + (") {\
-						" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
+						if (!" + keys) + (") {\
+							" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
+\
+							for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
+								if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
+									continue;\
+								}\
+\
+								" + (this.prepareOutput('__LENGTH__++;', true))) + "\
+							}\
+						}\
+					");
+				}
+
+				var resStr = (("\
+					" + tmpObj) + ("\
+\
+					if (" + cacheObj) + (") {\
+						if (Array.isArray(" + cacheObj) + (")) {\
+							" + (this.multiDeclVar('__LENGTH__ =  __TMP__.length'))) + ("\
+							for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
+				");
+
+				resStr += (function()  {
+					var str = '';
+
+					for (var i = -1; ++i < args.length;) {
+						var tmp = args[i];
+
+						switch (i) {
+							case 0: {
+								tmp += ' = __TMP__[__I__]';
+							} break;
+
+							case 1: {
+								tmp += ' = __I__';
+							} break;
+
+							case 2: {
+								tmp += ' = __TMP__';
+							} break;
+
+							case 3: {
+								tmp += ' = __I__ === 0';
+							} break;
+
+							case 4: {
+								tmp += ' = __I__ === __LENGTH__ - 1';
+							} break;
+
+							case 5: {
+								tmp += ' = __LENGTH__';
+							} break;
+						}
+
+						str += this$0.multiDeclVar(tmp);
+					}
+
+					return str;
+				})();
+
+				var end = (("\
+					} else {\
+						" + objLength) + ("\
+\
+						if (" + keys) + (") {\
+							" + (this.multiDeclVar(("__LENGTH__ = __KEYS__.length")))) + ("\
+							for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
+				");
+
+				end += (function()  {
+					var str = '';
+
+					for (var i = -1; ++i < args.length;) {
+						var tmp = args[i];
+
+						switch (i) {
+							case 0: {
+								tmp += ' = __TMP__[__KEYS__[__I__]]';
+							} break;
+
+							case 1: {
+								tmp += ' = __KEYS__[__I__]';
+							} break;
+
+							case 2: {
+								tmp += ' = __TMP__';
+							} break;
+
+							case 3: {
+								tmp += ' = __I__';
+							} break;
+
+							case 4: {
+								tmp += ' = __I__ === 0';
+							} break;
+
+							case 5: {
+								tmp += ' = __I__ === __LENGTH__ - 1';
+							} break;
+
+							case 6: {
+								tmp += ' = __LENGTH__';
+							} break;
+						}
+
+						str += this$0.multiDeclVar(tmp);
+					}
+
+					return str;
+				})();
+
+				var oldEnd = (("\
+					} else {\
+						" + (this.multiDeclVar('__I__ = -1'))) + ("\
 \
 						for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
 							if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
 								continue;\
 							}\
 \
-							" + (this.prepareOutput('__LENGTH__++;', true))) + "\
-						}\
-					}\
+							" + (this.prepareOutput('__I__++;', true))) + "\
 				");
+
+				oldEnd += (function()  {
+					var str = '';
+
+					for (var i = -1; ++i < args.length;) {
+						var tmp = args[i];
+
+						switch (i) {
+							case 0: {
+								tmp += ' = __TMP__[__KEY__]';
+							} break;
+
+							case 1: {
+								tmp += ' = __KEY__';
+							} break;
+
+							case 2: {
+								tmp += ' = __TMP__';
+							} break;
+
+							case 3: {
+								tmp += ' = __I__';
+							} break;
+
+							case 4: {
+								tmp += ' = __I__ === 0';
+							} break;
+
+							case 5: {
+								tmp += ' = __I__ === __LENGTH__ - 1';
+							} break;
+
+							case 6: {
+								tmp += ' = __LENGTH__';
+							} break;
+						}
+
+						str += this$0.multiDeclVar(tmp);
+					}
+
+					return str;
+				})();
+
+				this.append(resStr);
+				this.structure.params = {
+					from: this.res.length,
+					end: end,
+					oldEnd: oldEnd
+				};
+			}
+		},
+
+		function () {
+			if (this.isReady()) {
+				var params = this.structure.params;
+
+				if (this.inlineIterators) {
+					var part = this.res
+						.substring(params.from);
+
+					this.append((("} " + (params.end + part)) + (" } " + (params.oldEnd + part)) + " }}}}"));
+
+				} else {
+					if (params.params) {
+						this.append((("}, " + (this.prepareOutput(params.params, true))) + ");"));
+
+					} else {
+						this.append('});');
+					}
+				}
+			}
+		}
+	);
+
+	Snakeskin.addDirective(
+		'$forEach',
+
+		{
+			block: true,
+			notEmpty: true,
+			group: [
+				'cycle',
+				'callback',
+				'selfThis'
+			]
+		},
+
+		function (command) {
+			var parts = command.split('=>');
+
+			if (!parts.length || parts.length > 3) {
+				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			var resStr = (("\
-				" + tmpObj) + ("\
-\
-				if (" + cacheObj) + (") {\
-					if (Array.isArray(" + cacheObj) + (")) {\
-						" + (this.multiDeclVar('__LENGTH__ =  __TMP__.length'))) + ("\
-						for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
-			");
+			this.startDir(null, {
+				params: parts[2] ? parts[1] : null
+			});
 
-			resStr += (function()  {
-				var str = '';
+			if (this.isReady()) {
+				this.append((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
+			}
+		},
 
-				for (var i = -1; ++i < args.length;) {
-					var tmp = args[i];
+		function () {
+			if (this.isReady()) {
+				var params = this.structure.params.params;
 
-					switch (i) {
-						case 0: {
-							tmp += ' = __TMP__[__I__]';
-						} break;
-
-						case 1: {
-							tmp += ' = __I__';
-						} break;
-
-						case 2: {
-							tmp += ' = __TMP__';
-						} break;
-
-						case 3: {
-							tmp += ' = __I__ === 0';
-						} break;
-
-						case 4: {
-							tmp += ' = __I__ === __LENGTH__ - 1';
-						} break;
-
-						case 5: {
-							tmp += ' = __LENGTH__';
-						} break;
-					}
-
-					str += this$0.multiDeclVar(tmp);
-				}
-
-				return str;
-			})();
-
-			var end = (("\
-				} else {\
-					" + objLength) + ("\
-\
-					if (" + keys) + (") {\
-						" + (this.multiDeclVar(("__LENGTH__ = __KEYS__.length")))) + ("\
-						for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
-			");
-
-			end += (function()  {
-				var str = '';
-
-				for (var i = -1; ++i < args.length;) {
-					var tmp = args[i];
-
-					switch (i) {
-						case 0: {
-							tmp += ' = __TMP__[__KEYS__[__I__]]';
-						} break;
-
-						case 1: {
-							tmp += ' = __KEYS__[__I__]';
-						} break;
-
-						case 2: {
-							tmp += ' = __TMP__';
-						} break;
-
-						case 3: {
-							tmp += ' = __I__';
-						} break;
-
-						case 4: {
-							tmp += ' = __I__ === 0';
-						} break;
-
-						case 5: {
-							tmp += ' = __I__ === __LENGTH__ - 1';
-						} break;
-
-						case 6: {
-							tmp += ' = __LENGTH__';
-						} break;
-					}
-
-					str += this$0.multiDeclVar(tmp);
-				}
-
-				return str;
-			})();
-
-			var oldEnd = (("\
-				} else {\
-					" + (this.multiDeclVar('__I__ = -1'))) + ("\
-\
-					for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
-						if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
-							continue;\
-						}\
-\
-						" + (this.prepareOutput('__I__++;', true))) + "\
-			");
-
-			oldEnd += (function()  {
-				var str = '';
-
-				for (var i = -1; ++i < args.length;) {
-					var tmp = args[i];
-
-					switch (i) {
-						case 0: {
-							tmp += ' = __TMP__[__KEY__]';
-						} break;
-
-						case 1: {
-							tmp += ' = __KEY__';
-						} break;
-
-						case 2: {
-							tmp += ' = __TMP__';
-						} break;
-
-						case 3: {
-							tmp += ' = __I__';
-						} break;
-
-						case 4: {
-							tmp += ' = __I__ === 0';
-						} break;
-
-						case 5: {
-							tmp += ' = __I__ === __LENGTH__ - 1';
-						} break;
-
-						case 6: {
-							tmp += ' = __LENGTH__';
-						} break;
-					}
-
-					str += this$0.multiDeclVar(tmp);
-				}
-
-				return str;
-			})();
-
-			this.append(resStr);
-			this.structure.params = {
-				from: this.res.length,
-				end: end,
-				oldEnd: oldEnd
-			};
-		}
-	},
-
-	function () {
-		if (this.isReady()) {
-			var params = this.structure.params;
-
-			if (this.inlineIterators) {
-				var part = this.res
-					.substring(params.from);
-
-				this.append((("} " + (params.end + part)) + (" } " + (params.oldEnd + part)) + " }}}}"));
-
-			} else {
-				if (params.params) {
-					this.append((("}, " + (this.prepareOutput(params.params, true))) + ");"));
+				if (params) {
+					this.append((("}, " + (this.prepareOutput(params, true))) + ");"));
 
 				} else {
 					this.append('});');
 				}
 			}
 		}
-	}
-);
+	);
 
-Snakeskin.addDirective(
-	'$forEach',
+	Snakeskin.addDirective(
+		'forIn',
 
-	{
-		block: true,
-		notEmpty: true,
-		group: [
-			'cycle',
-			'callback',
-			'selfThis'
-		]
-	},
+		{
+			block: true,
+			notEmpty: true,
+			group: [
+				'cycle',
+				'callback',
+				'inlineIterator'
+			]
+		},
 
-	function (command) {
-		var parts = command.split('=>');
+		function (command) {var this$0 = this;
+			var parts = command.split('=>'),
+				obj = parts[0];
 
-		if (!parts.length || parts.length > 3) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
-		this.startDir(null, {
-			params: parts[2] ? parts[1] : null
-		});
-
-		if (this.isReady()) {
-			this.append((("$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + ") {"));
-		}
-	},
-
-	function () {
-		if (this.isReady()) {
-			var params = this.structure.params.params;
-
-			if (params) {
-				this.append((("}, " + (this.prepareOutput(params, true))) + ");"));
-
-			} else {
-				this.append('});');
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'forIn',
-
-	{
-		block: true,
-		notEmpty: true,
-		group: [
-			'cycle',
-			'callback',
-			'inlineIterator'
-		]
-	},
-
-	function (command) {var this$0 = this;
-		var parts = command.split('=>'),
-			obj = parts[0];
-
-		if (!parts.length || parts.length > 2) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
-		this.startDir();
-		if (this.isReady()) {
-			if (!this.inlineIterators) {
-				this.append((("\
-					Snakeskin.forIn(\
-						" + (this.prepareOutput(parts[0], true))) + (",\
-						function (" + (this.declCallbackArgs(parts[1]))) + ") {\
-				"));
-
-				return;
+			if (!parts.length || parts.length > 2) {
+				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 			}
 
-			var objLength = '';
-			var args = parts[1] ?
-				parts[1].trim().split(',') : [];
+			this.startDir();
+			if (this.isReady()) {
+				if (!this.inlineIterators) {
+					this.append((("\
+						Snakeskin.forIn(\
+							" + (this.prepareOutput(parts[0], true))) + (",\
+							function (" + (this.declCallbackArgs(parts[1]))) + ") {\
+					"));
 
-			var tmpObj = this.multiDeclVar(("__TMP__ = " + obj)),
-				cacheObj = this.prepareOutput('__TMP__', true);
-
-			if (args.length >= 6) {
-				objLength += (("\
-					" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
-\
-					for (" + (this.multiDeclVar('key', false))) + (" in " + cacheObj) + (") {\
-						" + (this.prepareOutput('__LENGTH__++;', true))) + "\
-					}\
-				");
-			}
-
-			var resStr = (("\
-				" + tmpObj) + ("\
-\
-				if (" + cacheObj) + (") {\
-\
-					" + objLength) + ("\
-					" + (this.multiDeclVar('__I__ = -1'))) + ("\
-\
-					for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
-						" + (this.prepareOutput('__I__++;', true))) + "\
-			");
-
-			resStr += (function()  {
-				var str = '';
-
-				for (var i = -1; ++i < args.length;) {
-					var tmp = args[i];
-
-					switch (i) {
-						case 0: {
-							tmp += ' = __TMP__[__KEY__]';
-						} break;
-
-						case 1: {
-							tmp += ' = __KEY__';
-						} break;
-
-						case 2: {
-							tmp += ' = __TMP__';
-						} break;
-
-						case 3: {
-							tmp += ' = __I__';
-						} break;
-
-						case 4: {
-							tmp += ' = __I__ === 0';
-						} break;
-
-						case 5: {
-							tmp += ' = __I__ === __LENGTH__ - 1';
-						} break;
-
-						case 6: {
-							tmp += ' = __LENGTH__';
-						} break;
-					}
-
-					str += this$0.multiDeclVar(tmp);
+					return;
 				}
 
-				return str;
-			})();
+				var objLength = '';
+				var args = parts[1] ?
+					parts[1].trim().split(',') : [];
 
-			this.append(resStr);
-		}
-	},
+				var tmpObj = this.multiDeclVar(("__TMP__ = " + obj)),
+					cacheObj = this.prepareOutput('__TMP__', true);
 
-	function () {
-		if (this.isReady()) {
-			this.append(this.inlineIterators ? '}}' : '});');
+				if (args.length >= 6) {
+					objLength += (("\
+						" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
+\
+						for (" + (this.multiDeclVar('key', false))) + (" in " + cacheObj) + (") {\
+							" + (this.prepareOutput('__LENGTH__++;', true))) + "\
+						}\
+					");
+				}
+
+				var resStr = (("\
+					" + tmpObj) + ("\
+\
+					if (" + cacheObj) + (") {\
+\
+						" + objLength) + ("\
+						" + (this.multiDeclVar('__I__ = -1'))) + ("\
+\
+						for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
+							" + (this.prepareOutput('__I__++;', true))) + "\
+				");
+
+				resStr += (function()  {
+					var str = '';
+
+					for (var i = -1; ++i < args.length;) {
+						var tmp = args[i];
+
+						switch (i) {
+							case 0: {
+								tmp += ' = __TMP__[__KEY__]';
+							} break;
+
+							case 1: {
+								tmp += ' = __KEY__';
+							} break;
+
+							case 2: {
+								tmp += ' = __TMP__';
+							} break;
+
+							case 3: {
+								tmp += ' = __I__';
+							} break;
+
+							case 4: {
+								tmp += ' = __I__ === 0';
+							} break;
+
+							case 5: {
+								tmp += ' = __I__ === __LENGTH__ - 1';
+							} break;
+
+							case 6: {
+								tmp += ' = __LENGTH__';
+							} break;
+						}
+
+						str += this$0.multiDeclVar(tmp);
+					}
+
+					return str;
+				})();
+
+				this.append(resStr);
+			}
+		},
+
+		function () {
+			if (this.isReady()) {
+				this.append(this.inlineIterators ? '}}' : '});');
+			}
 		}
-	}
-);Snakeskin.addDirective(
+	);
+})();
+Snakeskin.addDirective(
 	'if',
 
 	{
@@ -11886,65 +13353,7 @@ Snakeskin.addDirective(
 	function () {
 		this.append('}');
 	}
-);Snakeskin.addDirective(
-	'__&__',
-
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		this.space = true;
-	}
 );
-
-Snakeskin.addDirective(
-	'__setFile__',
-
-	{
-
-	},
-
-	function (command) {
-		command = this.pasteDangerBlocks(command);
-
-		var module = {
-			exports: {},
-			require: require,
-
-			id: this.module.id + 1,
-			key: null,
-
-			filename: command,
-			parent: this.module,
-			root: this.module.root || this.module,
-
-			children: [],
-			loaded: true
-		};
-
-		module.root.key.push([command, require('fs')['statSync'](command)['mtime'].valueOf()]);
-		this.module.children.push(module);
-
-		this.module = module;
-		this.info['file'] = command;
-	}
-);
-
-Snakeskin.addDirective(
-	'__endSetFile__',
-
-	{
-
-	},
-
-	function () {
-		this.module = this.module.parent;
-		this.info['file'] = this.module.filename;
-	}
-);
-
 Snakeskin.addDirective(
 	'__setError__',
 
@@ -11954,18 +13363,6 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.error(this.pasteDangerBlocks(command));
-	}
-);
-
-Snakeskin.addDirective(
-	'__end__',
-
-	{
-		alias: true
-	},
-
-	function () {
-		Snakeskin.Directions['end'].apply(this, arguments);
 	}
 );
 
@@ -12077,45 +13474,11 @@ Snakeskin.addDirective(
 		}
 	}
 );
-
-Snakeskin.addDirective(
-	'__protoWhile__',
-
-	{
-
-	},
-
-	function (command) {
-		this.startDir();
-		if (this.isSimpleOutput()) {
-			var i = this.prepareOutput('__I_PROTO__', true);
-			protoCache[this.tplName][this.proto.name].i = i;
-			this.save((("" + i) + (":while (" + (this.prepareOutput(command, true))) + ") {"));
-		}
-	},
-
-	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
-	}
-);/**
+/**
  * Если true, то значит идёт декларация прототипа
  * @type {boolean}
  */
 DirObj.prototype.protoStart = false;
-
-/**
- * Кеш внешних прототипов
- * @type {!Object}
- */
-DirObj.prototype.preProtos = {};
-
-/**
- * Название активного внешнего прототипа
- * @type {?string}
- */
-DirObj.prototype.protoLink = null;
 
 /**
  * Вернуть строку декларации заданных аргументов прототипа
@@ -12176,7 +13539,6 @@ Snakeskin.addDirective(
 		if (parts[1]) {
 			name = parts[1].trim();
 
-			// Декларация внешнего прототипа
 			if (!tplName) {
 				if (this.structure.parent) {
 					this.error(("directive \"outer proto\" can be used only within the global space"));
@@ -12186,16 +13548,19 @@ Snakeskin.addDirective(
 				tplName =
 					this.tplName = this.prepareNameDecl(parts[0]);
 
-				this.preProtos[tplName] = this.preProtos[tplName] || {
+				this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
 
-				this.preProtos[tplName].startLine = this.info['line'];
-				this.protoLink = name;
+				this.preDefs[tplName].startLine = this.info['line'];
+				this.outerLink = name;
 			}
+
+		} else if (!this.outerLink && !this.has('template')) {
+			return this.error((("directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
 		}
 
-		if (!name || !tplName || blockNameRgxp.test(name)) {
+		if (!name || !tplName || callBlockNameRgxp.test(name)) {
 			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
 		}
 
@@ -12256,30 +13621,28 @@ Snakeskin.addDirective(
 		var vars = struct.vars,
 			params = struct.params;
 
-		var proto;
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		// Закрылся "внешний" прототип
-		if (this.protoLink === params.name) {
-			var obj = this.preProtos[tplName];
+		if (this.outerLink === params.name) {
+			var obj = this.preDefs[tplName];
 
 			obj.text += (("\
 				" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
 					" + (this.source.substring(params.from, this.i + 1))) + ("\
-				" + s) + ("end" + e) + "\
+				" + s) + ("__end__" + e) + "\
 			");
 
-			this.protoLink = null;
+			this.outerLink = null;
 			this.tplName = null;
 
 			if (!this.hasParentBlock('proto')) {
 				this.protoStart = false;
 			}
 
-		} else if (!this.protoLink) {
-			proto = protoCache[tplName][params.name];
-			var start = this.i - this.startTemplateI;
+		} else if (!this.outerLink) {
+			var proto = protoCache[tplName][params.name],
+				start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
 				var diff = this.getDiff(commandLength),
@@ -12294,23 +13657,23 @@ Snakeskin.addDirective(
 
 				// Рекурсивно анализируем прототипы блоков
 				proto.body = Snakeskin.compile(
-					(("\
-						" + s) + ("template " + tplName) + ("()" + e) + ("\
-							" + (scope ? (("" + s) + ("with " + scope) + ("" + e) + "") : '')) + ("\
-\
-								" + s) + ("var __I_PROTO__ = 1" + e) + ("\
-								" + s) + ("__protoWhile__ __I_PROTO__--" + e) + ("\
-									" + s) + ("__setLine__ " + (params.line)) + ("" + e) + ("\
-									" + (this.source.substring(params.startTemplateI, this.i - diff))) + ("\
-								" + s) + ("end" + e) + ("\
-\
-							" + (scope ? (("" + s) + ("end" + e) + "") : '')) + ("\
-						" + s) + ("end" + e) + "\
-					").trim(),
+					(
+						(("" + s) + ("template " + tplName) + ("()" + e) + "") +
+							(scope ? (("" + s) + ("with " + scope) + ("" + e) + "") : '') +
+
+								(("" + s) + ("var __I_PROTO__ = 1" + e) + "") +
+								(("" + s) + ("__protoWhile__ __I_PROTO__--" + e) + "") +
+									(("" + s) + ("__setLine__ " + (params.line)) + ("" + e) + "") +
+									this.source.substring(params.startTemplateI, this.i - diff) +
+								(("" + s) + ("__end__" + e) + "") +
+
+							(scope ? (("" + s) + ("end" + e) + "") : '') +
+						(("" + s) + ("end" + e) + "")
+					).trim(),
 
 					{
 						inlineIterators: this.inlineIterators,
-						stringBuffer: this.stringBuffer,
+						renderMode: this.renderMode,
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
 						autoReplace: this.autoReplace,
@@ -12322,10 +13685,7 @@ Snakeskin.addDirective(
 					{
 						parent: this,
 						lines: this.lines.slice(),
-
 						needPrfx: this.needPrfx,
-						prfxI: this.prfxI,
-
 						scope: this.scope.slice(),
 						vars: struct.vars,
 						consts: this.consts,
@@ -12377,7 +13737,7 @@ Snakeskin.addDirective(
 				}
 			}
 
-			if (this.protoStart && !this.protoLink && !this.hasParentBlock('proto')) {
+			if (this.protoStart && !this.outerLink && !this.hasParentBlock('proto')) {
 				this.protoStart = false;
 			}
 
@@ -12406,7 +13766,7 @@ Snakeskin.addDirective(
  * Таблица обратных вызовов прототипа
  */
 DirObj.prototype.backTable = {
-	init: function () {
+	init: function() {
 		return {};
 	}
 };
@@ -12488,7 +13848,37 @@ Snakeskin.addDirective(
 			}
 		}
 	}
-);Snakeskin.addDirective(
+);
+
+Snakeskin.addDirective(
+	'__protoWhile__',
+
+	{
+
+	},
+
+	function (command) {
+		this.startDir();
+		if (this.isSimpleOutput()) {
+			var i = this.prepareOutput('__I_PROTO__', true);
+			protoCache[this.tplName][this.proto.name].i = i;
+			this.save((("" + i) + (":while (" + (this.prepareOutput(command, true))) + ") {"));
+		}
+	},
+
+	function () {
+		if (this.isSimpleOutput()) {
+			this.save('}');
+		}
+	}
+);
+/**
+ * Количество отложенных return
+ * @type {number}
+ */
+DirObj.prototype.deferReturn = 0;
+
+Snakeskin.addDirective(
 	'return',
 
 	{
@@ -12496,66 +13886,69 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var strongParent = this.structure.parent.name;
-
 		this.startInlineDir();
 		this.space = true;
 
 		if (this.isReady()) {
-			var useCallback = this.hasParent(this.getGroup('callback'));
+			var cb = this.hasParent(this.getGroup('callback'));
+			var val = command ?
+				this.prepareOutput(command, true) : this.returnResult();
 
-			var async = this.getGroup('async');
-			var chunk,
-				val;
-
-			if (command) {
-				chunk = this.prepareOutput(command, true);
-				val = (("return " + chunk) + ";");
-
-			} else {
-				val = (("return " + (this.returnResult())) + ";");
-			}
-
-			if (useCallback) {
-				var prfx = (("\
+			if (cb) {
+				var str = '';
+				var def = (("\
 					__RETURN__ = true;\
-					" + (chunk ? (("__RETURN_VAL__ = " + chunk) + ";") : '')) + "\
+					__RETURN_VAL__ = " + val) + ";\
 				");
 
-				if (async[strongParent]) {
-					if (strongParent === 'waterfall') {
-						this.append((("\
-							" + prfx) + "\
-							return arguments[arguments.length - 1](false);\
-						"));
+				var asyncParent;
+				if (cb === 'callback') {
+					asyncParent = this.hasParent(this.getGroup('async'));
+				}
+
+				if (asyncParent) {
+					if (this.getGroup('Async')[asyncParent]) {
+						str += def;
+
+						if (asyncParent === 'waterfall') {
+							str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
+
+						} else {
+							str += ("\
+								if (typeof arguments[0] === 'function') {\
+									return arguments[0](__RETURN_VAL__);\
+								}\
+\
+								return false;\
+							");
+						}
 
 					} else {
-						this.append((("\
-							" + prfx) + "\
-\
-							if (typeof arguments[0] === 'function') {\
-								return arguments[0](false);\
-							}\
-\
-							return false;\
-						"));
+						str += 'return false;'
 					}
 
 				} else {
-					this.append((("\
-						" + prfx) + "\
-						return false;\
-					"));
+					if (!this.getGroup('basicAsync')[cb]) {
+						str += (("\
+							__RETURN__ = true;\
+							__RETURN_VAL__ = " + val) + ";\
+						");
+					}
+
+					str += 'return false;';
+					this.deferReturn = cb !== 'final' ?
+						1 : 0;
 				}
 
-				this.deferReturn = chunk ? true : val;
+				this.append(str);
 
 			} else {
-				this.append(val);
+				this.append((("return " + val) + ";"));
 			}
 		}
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'with',
 
 	{
@@ -12572,11 +13965,15 @@ Snakeskin.addDirective(
 	function () {
 		this.scope.pop();
 	}
-);Snakeskin.addDirective(
-	'&',
+);
+Snakeskin.addDirective(
+	'ignoreWhitespaces',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		replacers: {
+			'&': function(cmd)  {return cmd.replace('&', 'ignoreWhitespaces ')}
+		}
 	},
 
 	function () {
@@ -12586,10 +13983,26 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'&+',
+	'__&__',
 
 	{
-		placement: 'template'
+		group: 'ignore'
+	},
+
+	function () {
+		this.startInlineDir();
+		this.space = true;
+	}
+);
+
+Snakeskin.addDirective(
+	'ignoreAllWhitespaces',
+
+	{
+		placement: 'template',
+		replacers: {
+			'&+': function(cmd)  {return cmd.replace('&+', 'ignoreAllWhitespaces ')}
+		}
 	},
 
 	function () {
@@ -12599,10 +14012,13 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'&-',
+	'unIgnoreAllWhitespaces',
 
 	{
-		placement: 'template'
+		placement: 'template',
+		replacers: {
+			'&-': function(cmd)  {return cmd.replace('&-', 'unIgnoreAllWhitespaces ')}
+		}
 	},
 
 	function () {
@@ -12617,34 +14033,7 @@ Snakeskin.addDirective(
 		}
 	}
 );
-
-Snakeskin.addDirective(
-	'ignore',
-
-	{
-		placement: 'global'
-	},
-
-	function (command) {
-		this.startInlineDir();
-
-		var rgxp = '[';
-		var arr = command.split(' ');
-
-		for (var i = arr.length; i--;) {
-			if (arr[i]) {
-				if (arr[i].length !== 2 || arr[i].charAt(0) !== '%') {
-					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-				}
-
-				rgxp += ("\\" + (arr[i].charAt(1)));
-			}
-		}
-
-		rgxp += ']';
-		this.ignoreRgxp = new RegExp(rgxp);
-	}
-);/**
+/**
  * Номер итерации,
  * где был декларирован активный шаблон
  * @type {number}
@@ -12800,7 +14189,16 @@ for (var i = -1; ++i < template.length;) {
 		},
 
 		function (command, commandLength, type, jsDoc) {
-			this.startDir(type === 'template' && this.interface ? 'interface' : null);
+			var rank = {
+				'template': 2,
+				'interface': 1,
+				'placeholder': 0
+			};
+
+			this.startDir(
+				this.renderAs && rank[this.renderAs] < rank[type] ?
+					this.renderAs : null
+			);
 
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
@@ -12949,8 +14347,7 @@ for (var i = -1; ++i < template.length;) {
 			var parentTplName;
 			if (/\)\s+extends\s+/m.test(command)) {
 				try {
-					parentTplName = /\)\s+extends\s+(.*)/m.exec(command)[1];
-					this.parentTplName = parentTplName;
+					parentTplName = /\)\s+extends\s+(.*?(?:]|$))/m.exec(command)[1];
 
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
 						throw false;
@@ -12962,9 +14359,11 @@ for (var i = -1; ++i < template.length;) {
 					return this.error((("invalid \"" + (this.name)) + "\" name for extend"));
 				}
 
-				parentTplName = this.prepareNameDecl(parentTplName);
+				parentTplName =
+					this.parentTplName = this.prepareNameDecl(parentTplName);
+
 				if (cache[parentTplName] == null) {
-					if (!this.interface) {
+					if (!this.renderAs || this.renderAs === 'template') {
 						return this.error((("the specified template \"" + parentTplName) + "\" for inheritance is not defined"));
 					}
 
@@ -12981,6 +14380,16 @@ for (var i = -1; ++i < template.length;) {
 			outputCache[tplName] = {};
 			extMap[tplName] = parentTplName;
 
+			var flags = command.split('@=');
+
+			if (this.parentTplName && flags.length === 1) {
+				flags.push('@skip true');
+			}
+
+			for (var i$0 = 0; ++i$0 < flags.length;) {
+				Snakeskin.Directions['__setSSFlag__'].call(this, flags[i$0].trim());
+			}
+
 			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
 			this.save((("" + (args.str)) + ") {"), iface);
 
@@ -12988,11 +14397,19 @@ for (var i = -1; ++i < template.length;) {
 				this.scope.push(args.scope);
 			}
 
-			var predefs = ['callee', 'blocks', '$_', 'TPL_NAME', 'PARENT_TPL_NAME'];
+			var predefs = [
+				'callee',
+				'blocks',
+				'getTplResult',
+				'clearTplResult',
+				'$_',
+				'TPL_NAME',
+				'PARENT_TPL_NAME'
+			];
 
-			for (var i$0 = -1; ++i$0 < predefs.length;) {
-				this.structure.vars[predefs[i$0]] = {
-					value: predefs[i$0],
+			for (var i$1 = -1; ++i$1 < predefs.length;) {
+				this.structure.vars[predefs[i$1]] = {
+					value: predefs[i$1],
 					scope: 0
 				};
 			}
@@ -13007,10 +14424,22 @@ for (var i = -1; ++i < template.length;) {
 				}\
 \
 				var __RESULT__ = " + (this.declResult())) + (",\
+					__TMP_RESULT__,\
+					__NODE__,\
 					$_;\
 \
-				function getTplResult() {\
-					return " + (this.returnResult())) + (";\
+				function getTplResult(opt_clear) {\
+					var res = " + (this.returnResult())) + (";\
+\
+					if (opt_clear) {\
+						__RESULT__ = " + (this.declResult())) + (";\
+					}\
+\
+					return res;\
+				}\
+\
+				function clearTplResult() {\
+					__RESULT__ = " + (this.declResult())) + (";\
 				}\
 \
 				var __RETURN__ = false,\
@@ -13022,15 +14451,15 @@ for (var i = -1; ++i < template.length;) {
 				" + (args.defParams)) + "\
 			"));
 
-			var preProtos = this.preProtos[tplName];
+			var preProtos = this.preDefs[tplName];
 
-			// Подкючение "внешних" прототипов
+			// Подкючение внешних блоков и прототипов
 			if ((!extMap[tplName] || parentTplName) && preProtos) {
 				this.source = this.source.substring(0, this.i + 1) +
 					preProtos.text +
 					this.source.substring(this.i + 1);
 
-				delete this.preProtos[tplName];
+				delete this.preDefs[tplName];
 			}
 		},
 
@@ -13103,8 +14532,8 @@ for (var i = -1; ++i < template.length;) {
 						continue;
 					}
 
-					for (var i$1 = -1; ++i$1 < cache$1[key$0].length;) {
-						var el$0 = cache$1[key$0][i$1];
+					for (var i$2 = -1; ++i$2 < cache$1[key$0].length;) {
+						var el$0 = cache$1[key$0][i$2];
 
 						if (!el$0.outer) {
 							continue;
@@ -13143,6 +14572,10 @@ for (var i = -1; ++i < template.length;) {
 
 			this.save('/* Snakeskin template. */', iface);
 
+			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
+				this.popParams();
+			}
+
 			this.canWrite = true;
 			this.tplName = null;
 
@@ -13153,7 +14586,8 @@ for (var i = -1; ++i < template.length;) {
 			}
 		}
 	);
-}Snakeskin.addDirective(
+}
+Snakeskin.addDirective(
 	'throw',
 
 	{
@@ -13232,11 +14666,12 @@ Snakeskin.addDirective(
 		this.structure.params.chain = true;
 		this.append('} finally {');
 	}
-);/**
+);
+/**
  * Таблица созданных переменных
  */
 DirObj.prototype.varCache = {
-	init: function () {
+	init: function() {
 		return {};
 	}
 };
@@ -13257,29 +14692,33 @@ Snakeskin.addDirective(
 			this.append(this.multiDeclVar(command));
 		}
 	}
-);var voidRgxp = /(?:^|\s+)(?:var|const|let) /;
+);
+(function()  {
+	var voidRgxp = /(?:^|\s+)(?:var|const|let) /;
 
-Snakeskin.addDirective(
-	'void',
+	Snakeskin.addDirective(
+		'void',
 
-	{
-		notEmpty: true,
-		replacers: {
-			'?': function(cmd)  {return cmd.replace('?', 'void ')}
+		{
+			notEmpty: true,
+			replacers: {
+				'?': function(cmd)  {return cmd.replace('?', 'void ')}
+			}
+		},
+
+		function (command) {
+			if (voidRgxp.test(command)) {
+				return this.error('can\'t declare variables within "void"');
+			}
+
+			this.startInlineDir();
+			if (this.isReady()) {
+				this.append((("" + (this.prepareOutput(command, true))) + ";"));
+			}
 		}
-	},
-
-	function (command) {
-		if (voidRgxp.test(command)) {
-			return this.error('can\'t declare variables within "void"');
-		}
-
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append((("" + (this.prepareOutput(command, true))) + ";"));
-		}
-	}
-);/**
+	);
+})();
+/**
  * Декларировать аргументы функции callback
  * и вернуть строку декларации
  *
@@ -13340,41 +14779,26 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isReady()) {
-			var async = this.getGroup('async');
-			var parent = this.structure.parent,
-				name = parent.name;
+			var async = this.getGroup('async'),
+				parent = this.structure.parent;
 
-			var prfx = async[name] &&
-				parent.children.length > 1 ? ', ' : '';
+			this.structure.params.insideAsync = async[parent.name];
+			var children = parent.children,
+				length = 0;
 
-			this.structure.params.insideAsync = async[name];
-
-			if (async[name]) {
-				if (name === 'waterfall') {
-					this.append((("\
-						" + prfx) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
-							" + (this.deferReturn ? 'if (__RETURN__) { return arguments[arguments.length - 1](false); }' : '')) + "\
-					"));
-
-				} else {
-					this.append((("\
-						" + prfx) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
-							" + (this.deferReturn ? ("if (__RETURN__) {\
-								if (typeof arguments[0] === 'function') {\
-									return arguments[0](false);\
-								}\
-\
-								return false;\
-							}") : '')) + "\
-					"));
+			for (var i = -1; ++i < children.length;) {
+				if (children[i].name === 'callback') {
+					length++;
 				}
 
-			} else {
-				this.append((("\
-					" + prfx) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
-						" + (this.deferReturn ? 'if (__RETURN__) { return false; }' : '')) + "\
-				"));
+				if (length > 1) {
+					break;
+				}
 			}
+
+			this.append((("\
+				" + (async[parent.name] && length > 1 ? ', ' : '')) + ("(function (" + (this.declCallbackArgs(parts))) + ") {\
+			"));
 		}
 	},
 
@@ -13388,7 +14812,12 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'callback',
+
+		group: [
+			'callback',
+			'basicAsync'
+		],
+
 		chain: [
 			'parallel',
 			'series',
@@ -13421,61 +14850,69 @@ Snakeskin.addDirective(
 	}
 );
 
-var series = ['parallel', 'series', 'waterfall'];
+(function()  {
+	var series = ['parallel', 'series', 'waterfall'];
 
-for (var i = -1; ++i < series.length;) {
-	Snakeskin.addDirective(
-		series[i],
+	for (var i = -1; ++i < series.length;) {
+		Snakeskin.addDirective(
+			series[i],
 
-		{
-			block: true,
+			{
+				block: true,
 
-			group: [
-				'async',
-				'series'
-			],
+				group: [
+					'async',
+					'Async',
+					'series'
+				],
 
-			inside: {
-				'callback': true,
-				'final': true
+				inside: {
+					'callback': true,
+					'final': true
+				}
+			},
+
+			function (command, commandLength, type) {
+				this.startDir();
+				this.append((("async." + type) + "(["));
+			},
+
+			function () {
+				this.append(']);');
 			}
-		},
+		);
+	}
 
-		function (command, commandLength, type) {
-			this.startDir();
-			this.append((("async." + type) + "(["));
-		},
+	var async = ['whilst', 'doWhilst', 'forever'];
 
-		function () {
-			this.append(']);');
-		}
-	);
-}
+	for (var i$0 = -1; ++i$0 < async.length;) {
+		Snakeskin.addDirective(
+			async[i$0],
 
-var async = ['whilst', 'doWhilst', 'forever'];
+			{
+				block: true,
 
-for (var i$0 = -1; ++i$0 < async.length;) {
-	Snakeskin.addDirective(
-		async[i$0],
+				group: [
+					'async',
+					'Async'
+				],
 
-		{
-			block: true,
-			group: 'async',
-			inside: {
-				'callback': true
+				inside: {
+					'callback': true
+				}
+			},
+
+			function (command, commandLength, type) {
+				this.startDir();
+				this.append((("async." + type) + "("));
+			},
+
+			function () {
+				this.append(');');
 			}
-		},
-
-		function (command, commandLength, type) {
-			this.startDir();
-			this.append((("async." + type) + "("));
-		},
-
-		function () {
-			this.append(');');
-		}
-	);
-}
+		);
+	}
+})();
 
 Snakeskin.addDirective(
 	'when',
@@ -13483,7 +14920,12 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		notEmpty: true,
-		group: 'async',
+
+		group: [
+			'async',
+			'basicAsync'
+		],
+
 		inside: {
 			'callback': true
 		}
@@ -13497,7 +14939,8 @@ Snakeskin.addDirective(
 	function () {
 		this.append(');');
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'break',
 
 	{
@@ -13635,7 +15078,8 @@ Snakeskin.addDirective(
 			}
 		}
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'eval',
 
 	{
@@ -13655,7 +15099,8 @@ Snakeskin.addDirective(
 		params._res = this.res;
 		this.res = this.res.substring(0, params.from);
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'head',
 
 	{
@@ -13668,7 +15113,8 @@ Snakeskin.addDirective(
 	function () {
 		this.startDir();
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'include',
 
 	{
@@ -13684,11 +15130,24 @@ Snakeskin.addDirective(
 			from: this.res.length
 		});
 
-		var path = this.prepareOutput(command, true);
+		var parts = command.split(' as ');
 
-		if (path !== void 0) {
-			path = this.pasteDangerBlocks(((path) + ''));
-			this.save((("Snakeskin.include('" + (applyDefEscape(this.info['file'] || ''))) + ("', " + path) + ");"));
+		if (!parts[0]) {
+			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
+		}
+
+		var path = this.prepareOutput(parts[0], true),
+			type = parts[1] ?
+				(("'" + (parts[1].trim())) + "'") : '\'\'';
+
+		if (path !== void 0 && type !== void 0) {
+			this.save((("\
+				Snakeskin.include(\
+					'" + (applyDefEscape(this.info['file'] || ''))) + ("',\
+					" + (this.pasteDangerBlocks(path))) + (",\
+					" + type) + "\
+				);\
+			"));
 		}
 	},
 
@@ -13699,7 +15158,60 @@ Snakeskin.addDirective(
 
 		this.res = this.res.substring(0, this.structure.params.from);
 	}
-);Snakeskin.addDirective(
+);
+
+Snakeskin.addDirective(
+	'__setFile__',
+
+	{
+
+	},
+
+	function (command) {
+		command = this.pasteDangerBlocks(command);
+
+		var module = {
+			exports: {},
+			require: require,
+
+			id: this.module.id + 1,
+			key: null,
+
+			filename: command,
+			parent: this.module,
+			root: this.module.root || this.module,
+
+			children: [],
+			loaded: true
+		};
+
+		module.root.key.push([command, require('fs')['statSync'](command)['mtime'].valueOf()]);
+		this.module.children.push(module);
+
+		this.module = module;
+		this.info['file'] = command;
+	}
+);
+
+Snakeskin.addDirective(
+	'__endSetFile__',
+
+	{
+
+	},
+
+	function () {
+		var file = this.module.filename;
+
+		this.module = this.module.parent;
+		this.info['file'] = this.module.filename;
+
+		if (this.params[this.params.length - 1]['@file'] === file) {
+			this.popParams();
+		}
+	}
+);
+Snakeskin.addDirective(
 	'yield',
 
 	{
@@ -13713,7 +15225,7 @@ Snakeskin.addDirective(
 			return this.error((("directive \"" + (this.name)) + ("\" can't be used within the \"" + cb) + "\""));
 		}
 
-		if (!this.parentTplName && !this.generator && !this.proto && !this.protoLink) {
+		if (!this.parentTplName && !this.generator && !this.proto && !this.outerLink) {
 			return this.error((("directive \"" + (this.name)) + "\" can be used only with a generator"));
 		}
 
@@ -13731,213 +15243,362 @@ Snakeskin.addDirective(
 			}
 		}
 	}
-);Snakeskin.addDirective(
-	'doctype',
+);
+(function()  {
+	var types = {
+		'html': '<!DOCTYPE html>',
+		'xml': '<?xml version="1.0" encoding="utf-8" ?>',
+		'transitional': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+		'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+		'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
+		'1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
+		'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
+		'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
+	};
 
-	{
-		placement: 'template'
-	},
+	Snakeskin.addDirective(
+		'doctype',
 
-	function (command) {
-		var type = command.split(' ')[0] || 'html';
-		var types = {
-			'html': '<!DOCTYPE html>',
-			'xml': '<?xml version="1.0" encoding="utf-8" ?>',
-			'transitional': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-			'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-			'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
-			'1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-			'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
-			'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
-		};
+		{
+			placement: 'template'
+		},
 
-		if (!types[type]) {
-			return this.error('invalid doctype');
+		function (command) {
+			if (this.renderMode === 'dom') {
+				return this.error((("directive \"" + (this.name)) + "\" can't be used with a \"dom\" render mode"));
+			}
+
+			var type = command.split(' ')[0] || 'html';
+
+			if (!types[type]) {
+				return this.error('invalid doctype');
+			}
+
+			this.startInlineDir();
+			this.space = true;
+
+			this.append(this.wrap((("'" + (types[type])) + "'")));
 		}
+	);
+})();
+(function()  {
+	var types = {
+		'js': 'text/javascript',
+		'dart': 'application/dart',
+		'coffee': 'application/coffeescript',
+		'ts': 'application/typescript',
+		'cljs': 'application/clojurescript',
+		'ls': 'application/livescript',
+		'json': 'application/json',
+		'html': 'text/html'
+	};
 
-		this.startInlineDir();
-		this.space = true;
+	Snakeskin.addDirective(
+		'script',
 
-		this.append(this.wrap((("'" + (types[type])) + "'")));
-	}
-);Snakeskin.addDirective(
-	'script',
+		{
+			placement: 'template',
+			block: true,
+			selfInclude: false
+		},
 
-	{
-		placement: 'template',
-		block: true,
-		selfInclude: false
-	},
+		function (command) {
+			this.startDir();
+			this.space = true;
 
-	function (command) {
-		this.startDir();
-		this.space = true;
+			if (this.autoReplace) {
+				this.autoReplace = false;
+				this.structure.params.autoReplace = true;
+			}
 
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.autoReplace = true;
-		}
+			if (this.isReady()) {
+				if (command) {
+					command = command.replace(emptyCommandParamsRgxp, 'js $1');
 
-		if (this.isReady()) {
-			if (command) {
-				command = command.replace(tagRgxp, 'js $1');
+				} else {
+					command = 'js';
+				}
+
+				var parts = command.split(' '),
+					type = parts[0],
+					dom = !this.domComment && this.renderMode === 'dom';
+
+				var str,
+					desc = types[type] || this.replaceTplVars(type);
+
+				if (dom) {
+					str = (("\
+						__NODE__ = document.createElement('script');\
+						__NODE__.type = '" + desc) + "';\
+					");
+
+				} else {
+					str = this.wrap((("'<script type=\"" + desc) + "\"'"));
+				}
+
+				this.append(str);
+
+				if (parts.length > 1) {
+					var args = [].slice.call(arguments);
+
+					args[0] = parts.slice(1).join(' ');
+					args[1] = args[0].length;
+
+					Snakeskin.Directions['attr'].apply(this, args);
+					this.inline = false;
+				}
+
+				if (dom) {
+					str = this.returnPushNodeDecl();
+
+				} else {
+					str = this.wrap('\'>\'');
+				}
+
+				this.append(str);
+			}
+		},
+
+		function () {
+			this.space = true;
+			if (this.structure.params.autoReplace) {
+				this.autoReplace = true;
+			}
+
+			var str;
+
+			if (!this.domComment && this.renderMode === 'dom') {
+				str = '__RESULT__.pop();';
 
 			} else {
-				command = 'js';
+				str = this.wrap('\'</script>\'');
 			}
 
-			var parts = command.split(' '),
-				type = parts[0];
+			this.append(str);
+		}
+	);
+})();
+(function()  {
+	var types = {
+		'css': 'text/css'
+	};
 
-			var types = {
-				'js': 'text/javascript',
-				'dart': 'application/dart',
-				'coffee': 'application/coffeescript',
-				'ts': 'application/typescript',
-				'json': 'application/json',
-				'html': 'text/html'
-			};
+	Snakeskin.addDirective(
+		'style',
 
-			this.append(this.wrap((("'<script type=\"" + (types[type] || this.replaceTplVars(type))) + "\"'")));
+		{
+			placement: 'template',
+			block: true,
+			selfInclude: false
+		},
 
-			if (parts.length > 1) {
-				var args = [].slice.call(arguments);
+		function (command) {
+			this.startDir();
+			this.space = true;
 
-				args[0] = parts.slice(1).join(' ');
-				args[1] = args[0].length;
-
-				Snakeskin.Directions['attr'].apply(this, args);
-				this.inline = false;
+			if (this.autoReplace) {
+				this.autoReplace = false;
+				this.structure.params.autoReplace = true;
 			}
 
-			this.append(this.wrap('\'>\''));
-		}
-	},
+			if (this.isReady()) {
+				if (command) {
+					command = command.replace(emptyCommandParamsRgxp, 'css $1');
 
-	function () {
-		this.space = true;
-		if (this.structure.params.autoReplace) {
-			this.autoReplace = true;
-		}
+				} else {
+					command = 'css';
+				}
 
-		this.append(this.wrap('\'</script>\''));
-	}
-);Snakeskin.addDirective(
-	'style',
+				var parts = command.split(' '),
+					type = parts[0],
+					dom = !this.domComment && this.renderMode === 'dom';
 
-	{
-		placement: 'template',
-		block: true,
-		selfInclude: false
-	},
+				var str,
+					desc = types[type] || this.replaceTplVars(type);
 
-	function (command) {
-		this.startDir();
-		this.space = true;
+				if (dom) {
+					str = (("\
+						__NODE__ = document.createElement('style');\
+						__NODE__.type = '" + desc) + "';\
+					");
 
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.autoReplace = true;
-		}
+				} else {
+					str = this.wrap((("'<style type=\"" + desc) + "\"'"));
+				}
 
-		if (this.isReady()) {
-			if (command) {
-				command = command.replace(tagRgxp, 'css $1');
+				this.append(str);
+
+				if (parts.length > 1) {
+					var args = [].slice.call(arguments);
+
+					args[0] = parts.slice(1).join(' ');
+					args[1] = args[0].length;
+
+					Snakeskin.Directions['attr'].apply(this, args);
+					this.inline = false;
+				}
+
+				if (dom) {
+					str = this.returnPushNodeDecl();
+
+				} else {
+					str = this.wrap('\'>\'');
+				}
+
+				this.append(str);
+			}
+		},
+
+		function () {
+			this.space = true;
+			if (this.structure.params.autoReplace) {
+				this.autoReplace = true;
+			}
+
+			var str;
+
+			if (!this.domComment && this.renderMode === 'dom') {
+				str = '__RESULT__.pop();';
 
 			} else {
-				command = 'css';
+				str = this.wrap('\'</style>\'');
 			}
 
-			var parts = command.split(' '),
-				type = parts[0];
+			this.append(str);
+		}
+	);
+})();
+(function()  {
+	var types = {
+		'css': {
+			'type': 'text/css',
+			'rel': 'stylesheet'
+		},
 
-			var types = {
-				'css': 'text/css'
-			};
+		'acss': {
+			'type': 'text/css',
+			'rel': 'alternate stylesheet'
+		}
+	};
 
-			this.append(this.wrap((("'<style type=\"" + (types[type] || this.replaceTplVars(type))) + "\"'")));
+	var typesStr = {
+		dom: {
 
-			if (parts.length > 1) {
-				var args = [].slice.call(arguments);
+		},
 
-				args[0] = parts.slice(1).join(' ');
-				args[1] = args[0].length;
+		string: {
 
-				Snakeskin.Directions['attr'].apply(this, args);
-				this.inline = false;
+		}
+	};
+
+	for (var key in types) {
+		if (!types.hasOwnProperty(key)) {
+			continue;
+		}
+
+		var el = types[key];
+		for (var attr = void 0 in el) {
+			if (!el.hasOwnProperty(attr)) {
+				continue;
 			}
 
-			this.append(this.wrap('\'>\''));
-		}
-	},
+			typesStr.dom[key] = typesStr.dom[key] || '';
+			typesStr.dom[key] += (("__NODE__." + attr) + (" = '" + (el[attr])) + "';");
 
-	function () {
-		this.space = true;
-		if (this.structure.params.autoReplace) {
-			this.autoReplace = true;
+			typesStr.string[key] = typesStr.string[key] || '';
+			typesStr.string[key] += ((" " + attr) + ("=\"" + (el[attr])) + "\"");
 		}
-
-		this.append(this.wrap('\'</style>\''));
 	}
-);Snakeskin.addDirective(
-	'link',
 
-	{
-		placement: 'template',
-		block: true,
-		selfInclude: false
-	},
+	Snakeskin.addDirective(
+		'link',
 
-	function (command) {
-		this.startDir();
-		this.space = true;
+		{
+			placement: 'template',
+			block: true,
+			selfInclude: false
+		},
 
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.autoReplace = true;
-		}
+		function (command) {
+			this.startDir();
+			this.space = true;
 
-		if (this.isReady()) {
-			if (command) {
-				command = command.replace(tagRgxp, 'css $1');
+			if (this.autoReplace) {
+				this.autoReplace = false;
+				this.structure.params.autoReplace = true;
+			}
+
+			if (this.isReady()) {
+				if (command) {
+					command = command.replace(emptyCommandParamsRgxp, 'css $1');
+
+				} else {
+					command = 'css';
+				}
+
+				var parts = command.split(' '),
+					type = parts[0],
+					dom = !this.domComment && this.renderMode === 'dom';
+
+				var str;
+				if (dom) {
+					str = (("\
+						__NODE__ = document.createElement('link');\
+						" + (typesStr.dom[type] || '')) + ("\
+						" + (this.wrap('__NODE__'))) + "\
+						__RESULT__.push(__NODE__);\
+					");
+
+				} else {
+					str = this.wrap((("'<link " + ((typesStr.string[type] || this.replaceTplVars(type)).trim())) + "'"));
+				}
+
+				this.append(str);
+
+				if (parts.length > 1) {
+					var args = [].slice.call(arguments);
+
+					args[0] = parts.slice(1).join(' ');
+					args[1] = args[0].length;
+
+					Snakeskin.Directions['attr'].apply(this, args);
+					this.inline = false;
+				}
+
+				if (dom) {
+					str = '__NODE__.href =';
+
+				} else {
+					str = this.wrap('\' href="\'');
+				}
+
+				this.append(str);
+			}
+		},
+
+		function () {
+			this.space = true;
+			if (this.structure.params.autoReplace) {
+				this.autoReplace = true;
+			}
+
+			var str;
+
+			if (!this.domComment && this.renderMode === 'dom') {
+				str = ("\
+					__RESULT__.pop();\
+					__NODE__ = null;\
+				");
 
 			} else {
-				command = 'css';
+				str = this.wrap('\'"/>\'');
 			}
 
-			var parts = command.split(' '),
-				type = parts[0];
-
-			var types = {
-				'css': 'type="text/css" rel="stylesheet"',
-				'acss': 'type="text/css" rel="alternate stylesheet"'
-			};
-
-			this.append(this.wrap((("'<link " + (types[type] || this.replaceTplVars(type))) + "'")));
-
-			if (parts.length > 1) {
-				var args = [].slice.call(arguments);
-
-				args[0] = parts.slice(1).join(' ');
-				args[1] = args[0].length;
-
-				Snakeskin.Directions['attr'].apply(this, args);
-				this.inline = false;
-			}
-
-			this.append(this.wrap('\' href="\''));
+			this.append(str);
 		}
-	},
-
-	function () {
-		this.space = true;
-		if (this.structure.params.autoReplace) {
-			this.autoReplace = true;
-		}
-
-		this.append(this.wrap('\'"/>\''));
-	}
-);var importMap = {
+	);
+})();
+var importMap = {
 	'root': true,
 	'head': true
 };
@@ -13981,24 +15642,42 @@ Snakeskin.addDirective(
 			};
 		}
 	}
-);Snakeskin.addDirective(
+);
+/**
+ * Если true, то идёт декларация XML комментария
+ * в режиме рендеренга dom
+ * @type {boolean}
+ */
+DirObj.prototype.domComment = false;
+
+Snakeskin.addDirective(
 	'comment',
 
 	{
-		placement: 'template',
 		text: true,
+		block: true,
+		selfInclude: false,
+		placement: 'template',
 		replacers: {
-			'#!': function(cmd)  {return cmd.replace('#!', 'comment ')},
-			'/#': function(cmd)  {return cmd.replace('\/#', 'end comment')}
+			'@!': function(cmd)  {return cmd.replace('@!', 'comment ')},
+			'/@': function(cmd)  {return cmd.replace('\/@', 'end comment')}
 		}
 	},
 
 	function (command) {
 		this.startDir(null, {
-			command: !!(command)
+			conditional: !!(command)
 		});
 
-		var str = this.wrap('\'<!--\'');
+		var str;
+
+		if (this.renderMode === 'dom') {
+			this.domComment = true;
+			str = '__TMP_RESULT__ = \'\';';
+
+		} else {
+			str = this.wrap('\'<!--\'');
+		}
 
 		if (command) {
 			str += this.wrap((("'[if " + (this.replaceTplVars(command))) + "]>'"));
@@ -14008,22 +15687,27 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.append(this.wrap((("'" + (this.structure.params.command ? ' <![endif]' : '')) + "-->'")));
+		var comment = this.structure.params.conditional ? ' <![endif]' : '',
+			str;
+
+		if (this.renderMode === 'dom') {
+			str = this.wrap((("'" + comment) + "'"));
+			this.domComment = false;
+			str += (("\
+				__NODE__ = document.createComment(__TMP_RESULT__);\
+				" + (this.returnPushNodeDecl())) + "\
+				__TMP_RESULT__ = \'\';\
+				__RESULT__.pop();\
+			");
+
+		} else {
+			str = this.wrap((("'" + comment) + "-->'"));
+		}
+
+		this.append(str);
 	}
-);var tagRgxp = /^([^\s]+?\(|\()/;
-var inlineTagMap = {
-	'img': true,
-	'link': true,
-	'embed': true,
-	'br': true,
-	'hr': true,
-	'wbr': true,
-	'meta': true,
-	'input': true,
-	'source': true,
-	'track': true,
-	'base': true
-};
+);
+var emptyCommandParamsRgxp = /^([^\s]+?\(|\()/;
 
 Snakeskin.addDirective(
 	'tag',
@@ -14046,7 +15730,7 @@ Snakeskin.addDirective(
 
 		if (this.isReady()) {
 			if (command) {
-				command = command.replace(tagRgxp, 'div $1');
+				command = command.replace(emptyCommandParamsRgxp, 'div $1');
 
 			} else {
 				command = 'div';
@@ -14059,15 +15743,23 @@ Snakeskin.addDirective(
 			params.tag = desc.tag;
 			params.block = !inlineTagMap[desc.tag];
 
-			var groups = this.splitAttrsGroup(parts.slice(1).join(' '));
+			var groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
+				dom = !this.domComment && this.renderMode === 'dom';
 
-			var str = (("\
+			var str = ("\
 				__TMP__ = {\
 					'class': ''\
 				};\
-\
-				" + (this.wrap((("'<" + (desc.tag)) + "'")))) + "\
 			");
+
+			if (dom) {
+				str += (("\
+					__NODE__ = document.createElement('" + (desc.tag)) + "');\
+				");
+
+			} else {
+				str += this.wrap((("'<" + (desc.tag)) + "'"));
+			}
 
 			for (var i = -1; ++i < groups.length;) {
 				var el = groups[i];
@@ -14075,7 +15767,12 @@ Snakeskin.addDirective(
 			}
 
 			if (desc.id) {
-				str += this.wrap((("' id=\"" + (desc.id)) + "\"'"));
+				if (dom) {
+					str += (("__NODE__.id = '" + (desc.id)) + "';");
+
+				} else {
+					str += this.wrap((("' id=\"" + (desc.id)) + "\"'"));
+				}
 			}
 
 			if (desc.classes.length) {
@@ -14084,7 +15781,19 @@ Snakeskin.addDirective(
 				");
 			}
 
-			str += this.wrap((("(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block ? '/' : '')) + ">'"));
+			if (dom) {
+				str += (("\
+					if (__TMP__['class']) {\
+						__NODE__ .className = __TMP__['class'];\
+					}\
+\
+					" + (this.returnPushNodeDecl())) + "\
+				");
+
+			} else {
+				str += this.wrap((("(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block ? '/' : '')) + ">'"));
+			}
+
 			this.append(str);
 		}
 	},
@@ -14094,7 +15803,16 @@ Snakeskin.addDirective(
 		this.bemRef = params.bemRef;
 
 		if (params.block) {
-			this.append(this.wrap((("'</" + (params.tag)) + ">'")));
+			var str;
+
+			if (!this.domComment && this.renderMode === 'dom') {
+				str = '__RESULT__.pop();';
+
+			} else {
+				str = this.wrap((("'</" + (params.tag)) + ">'"));
+			}
+
+			this.append(str);
 		}
 	}
 );
@@ -14175,7 +15893,8 @@ DirObj.prototype.returnTagDesc = function (str) {
 		id: this.replaceTplVars(id),
 		classes: classes
 	};
-};Snakeskin.addDirective(
+};
+Snakeskin.addDirective(
 	'set',
 
 	{
@@ -14199,7 +15918,8 @@ DirObj.prototype.returnTagDesc = function (str) {
 			this.bemRef = parts.slice(1).join(' ');
 		}
 	}
-);Snakeskin.addDirective(
+);
+Snakeskin.addDirective(
 	'plain',
 
 	{
@@ -14223,861 +15943,420 @@ DirObj.prototype.returnTagDesc = function (str) {
 			this.autoReplace = true;
 		}
 	}
-);var blackWordMap = {
-	'+': true,
-	'++': true,
-	'-': true,
-	'--': true,
-	'~': true,
-	'~~': true,
-	'!': true,
-	'!!': true,
-	'arguments': true,
-	'break': true,
-	'case': true,
-	'catch': true,
-	'continue': true,
-	'delete': true,
-	'do': true,
-	'else': true,
-	'false': true,
-	'finnaly': true,
-	'for': true,
-	'function': true,
-	'if': true,
-	'in': true,
-	'of': true,
-	'instanceof': true,
-	'new': true,
-	'null': true,
-	'return': true,
-	'switch': true,
-	'this': true,
-	'throw': true,
-	'true': true,
-	'try': true,
-	'typeof': true,
-	'var': true,
-	'const': true,
-	'let': true,
-	'void': true,
-	'while': true,
-	'with': true,
-	'class': true,
-	'debugger': true,
-	'interface': true
-};
+);
+(function()  {
+	/**
+	 * Преобразовать заданное значение в объект
+	 *
+	 * @expose
+	 * @param {?} val - объект, строка для парсинга или URL
+	 * @param {?string=} [opt_base] - базовый URL
+	 * @return {!Object}
+	 */
+	Snakeskin.toObj = function (val, opt_base) {
+		if (typeof val !== 'string') {
+			return val;
+		}
 
-var unaryBlackWordMap = {
-	'new': true,
-	'typeof': true,
-	'instanceof': true,
-	'in': true
-};
+		var res;
 
-var undefUnaryBlackWordMap = {
-	'new': true
-};
+		if (IS_NODE) {
+			var path = require('path');
+			var fs = require('fs'),
+				exists = fs['existsSync'] || path['existsSync'];
 
-var comboBlackWordMap = {
-	'var': true,
-	'const': true,
-	'let': true
-};
-
-var escapeBRgxp = /('|")/g;
-
-/**
- * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
- *
- * @param {string} str - исходная строка
- * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
- * @param {?boolean=} [opt_replace=false] - если true, то директивы экранируются (заменяются на __SNAKESKIN__\d+_)
- * @return {string}
- */
-DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
-	str = this.pasteDangerBlocks(str);
-
-	var start = 0;
-	var begin = 0,
-		dir = '',
-		res = '';
-
-	var escape = false,
-		comment = false;
-
-	var bOpen = false,
-		bEnd = true,
-		bEscape = false;
-
-	var part = '',
-		rPart = '';
-
-	for (var i = -1; ++i < str.length;) {
-		var currentEscape = escape;
-		var el = str.charAt(i),
-			next = str.charAt(i + 1),
-			next2str = el + next;
-
-		if (begin) {
-			if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
-				escape = !escape;
+			var old = val;
+			if (opt_base) {
+				val = path['resolve'](path['dirname'](opt_base), path['normalize'](val));
 			}
 
-			if (escape) {
-				continue;
-			}
+			if (exists(val)) {
+				res = require(val);
 
-			// Обработка комментариев
-			if (!currentEscape) {
-				var next3str = next2str + str.charAt(i + 2);
-				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
-					if (!comment) {
-						if (next3str === SINGLE_COMMENT) {
-							comment = next3str;
-							i+= 2;
-
-						} else if (next2str === MULT_COMMENT_START) {
-							comment = next2str;
-							i++;
-						}
-
-					} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
-						comment = false;
-						continue;
-					}
-
-				} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
-					comment = false;
-				}
-			}
-
-			if (comment) {
-				continue;
-			}
-
-			if (!bOpen) {
-				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
-					bEnd = true;
-
-				} else if (bEndRgxp.test(el)) {
-					bEnd = false;
+				if (res) {
+					return res;
 				}
 
-				if (partRgxp.test(el)) {
-					part += el;
-
-				} else {
-					rPart = part;
-					part = '';
-				}
-			}
-
-			if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
-				bOpen = el;
-
-			} else if (bOpen && (el === '\\' || bEscape)) {
-				bEscape = !bEscape;
-
-			} else if (escapeMap[el] && bOpen === el && !bEscape) {
-				bOpen = false;
-				bEnd = false;
-			}
-
-			if (!bOpen) {
-				if (el === LEFT_BLOCK) {
-					begin++;
-
-				} else if (el === RIGHT_BLOCK) {
-					begin--;
-				}
-			}
-
-			if (begin) {
-				dir += el;
+				val = fs['readFileSync'](val).toString();
 
 			} else {
-				escape = false;
-
-				var tmp = '\' + ' +
-					this.prepareOutput(this.replaceDangerBlocks(dir), opt_sys) +
-				' + \'';
-
-				if (opt_replace) {
-					res += (("__SNAKESKIN__" + (this.dirContent.length)) + "_");
-					this.dirContent.push(tmp);
-
-				} else {
-					res += tmp;
-				}
-			}
-
-		} else {
-			if ((el === '\\' && includeSysEscapeMap[next]) || escape) {
-				escape = !escape;
-			}
-
-			if (escape) {
-				continue;
-			}
-
-			if (!currentEscape && includeDirMap[next2str]) {
-				begin++;
-				dir = '';
-
-				start = i;
-				i++;
-
-				escape = false;
-				continue;
-			}
-
-			res += el.replace(escapeBRgxp, '\\$1');
-		}
-	}
-
-	return res;
-};
-
-var nextWordCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w[\\]().]"));
-
-/**
- * Вернуть целое слово из заданной строки, начиная с указанной позиции
- *
- * @param {string} str - исходная строка
- * @param {number} pos - начальная позиция
- * @return {{word: string, finalWord: string, unary: string}}
- */
-DirObj.prototype.getWord = function (str, pos) {
-	var word = '';
-	var res = '',
-		nres = '';
-
-	var pCount = 0,
-		diff = 0;
-
-	var start = 0,
-		pContent = null;
-
-	var unary,
-		unaryStr = '';
-
-	for (var i = pos, j = 0; i < str.length; i++, j++) {
-		var el = str.charAt(i);
-
-		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[word]))) {
-			if (el === ' ') {
-				word = '';
-
-			} else {
-				word += el;
-			}
-
-			if (unary) {
-				unaryStr = unaryStr ||
-					res;
-
-				unary = false;
-			}
-
-			if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
-				pContent += el;
-			}
-
-			if (pMap[el]) {
-				if (pContent === null) {
-					start = j + 1;
-					pContent = '';
-				}
-
-				pCount++;
-
-			} else if (closePMap[el]) {
-				if (pCount) {
-					pCount--;
-
-					if (!pCount) {
-						if (nres) {
-							nres = nres.substring(0, start + diff) +
-								(pContent && this.prepareOutput(pContent, true, null, null, true)) +
-								nres.substring(j + diff + pContent.length);
-
-						} else {
-							nres = res.substring(0, start) +
-								(pContent && this.prepareOutput(pContent, true, null, null, true)) +
-								res.substring(j);
-						}
-
-						diff = nres.length - res.length;
-						pContent = null;
-					}
-
-				} else {
-					break;
-				}
-			}
-
-			res += el;
-			if (nres) {
-				nres += el;
-			}
-
-		} else {
-			break;
-		}
-	}
-
-	return {
-		word: res,
-		finalWord: nres || res,
-		unary: unaryStr
-	};
-};
-
-var unSRgxp = /\S/;
-
-/**
- * Вернуть true, если указанное cлово является свойством в литерале объекта
- *
- * @param {string} str - исходная строка
- * @param {number} start - начальная позиция слова
- * @param {number} end - конечная позиция слова
- * @return {boolean}
- */
-function isSyOL(str, start, end) {
-	var res;
-
-	for (var i = start; i--;) {
-		var el = str.charAt(i);
-
-		if (unSRgxp.test(el)) {
-			res = el === '?';
-			break;
-		}
-	}
-
-	if (!res) {
-		for (var i$0 = end; i$0 < str.length; i$0++) {
-			var el$0 = str.charAt(i$0);
-
-			if (unSRgxp.test(el$0)) {
-				return el$0 === ':';
-			}
-		}
-	}
-
-	return false;
-}
-
-/**
- * Вернуть true, если следующий непробельный символ
- * в указанной строке равен присвоению (=)
- *
- * @param {string} str - исходная строка
- * @param {number} pos - начальная позиция
- * @return {boolean}
- */
-function isNextAssign(str, pos) {
-	for (var i = pos; i < str.length; i++) {
-		var el = str.charAt(i);
-
-		if (unSRgxp.test(el)) {
-			return el === '=' && str.charAt(i + 1) !== '=';
-		}
-	}
-
-	return false;
-}
-
-var unMap = {
-	'!html': true,
-	'!undef': true
-};
-
-var unUndefLabel = '{undef}',
-	unUndefRgxp = new RegExp(unUndefLabel, 'g');
-
-var ssfRgxp = /__FILTERS__\./;
-var nextCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w]")),
-	newWordRgxp = new RegExp((("[^" + (G_MOD + L_MOD)) + "$\\w[\\].]")),
-	filterRgxp = /[!$a-z_]/i;
-
-var numRgxp = /[0-9]/,
-	modRgxp = new RegExp((("" + L_MOD) + "(?:\\d+|)")),
-	strongModRgxp = new RegExp((("" + L_MOD) + "(\\d+)"));
-
-var multPropRgxp = /\[|\./,
-	firstPropRgxp = /([^.[]+)(.*)/;
-
-var propValRgxp = /[^-+!]+/;
-var exprimaHackFn = function(str)  {return str
-	.trim()
-	.replace(/^\[/, '$[')
-	.replace(/\byield\b/g, '')
-	.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '')};
-
-var wrapRgxp = /^\s*{/;
-
-/**
- * Подготовить указанную комманду к выводу:
- * осуществляется привязка к scope и инициализация фильтров
- *
- * @param {string} command - исходный текст команды
- * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
- * @param {?boolean=} [opt_iSys=false] - если true, то запуск функции считается вложенным системным вызовом
- * @param {?boolean=} [opt_breakFirst=false] - если true, то первое слово в команде пропускается
- * @param {?boolean=} [opt_validate=true] - если false, то полученная конструкция не валидируется
- * @return {string}
- */
-DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {var this$0 = this;
-	var tplName = this.tplName,
-		struct = this.structure;
-
-	// ОПРЕДЕЛЕНИЯ:
-	// Скобка = (
-
-	var res = command;
-
-	// Количество открытых скобок в строке
-	// (скобки открытые внутри фильтра не считаются)
-	var pCount = 0;
-
-	// Количество открытых скобок внутри фильтра:
-	// |foo (1 + 2) / 3
-	var pCountFilter = 0;
-
-	// Массив позиций открытия и закрытия скобок (pCount),
-	// идёт в порядке возрастания от вложенных к внешним блокам, например:
-	// ((a + b)) => [[1, 7], [0, 8]]
-	var pContent = [];
-
-	// true, если идёт декларация фильтра
-	var filterStart = false;
-
-	// true, если идёт фильтр-враппер, т.е.
-	// (2 / 3)|round
-	var filterWrapper = false;
-
-	// Массивы итоговых фильтров и истинных фильтров,
-	// например:
-	// {with foo}
-	//     {bar |ucfisrt bar()|json}
-	// {end}
-	//
-	// rvFilter => ['ucfisrt bar()', 'json']
-	// filter => ['ucfisrt foo.bar()', 'json']
-	var filter = [],
-		rvFilter = [];
-
-	// true, то можно расчитывать слово
-	var nword = !opt_breakFirst;
-
-	// Количество слов для пропуска
-	var posNWord = 0;
-
-	// Область видимости
-	var scope = this.scope,
-		useWith = !!(scope.length);
-
-	// Сдвиги
-	var addition = 0,
-		wordAddEnd = 0,
-		filterAddEnd = 0;
-
-	// true, если применяется фильтр !html
-	var unEscape = !this.escapeOutput;
-
-	// true, если применяется фильтр !undef
-	var unUndef = false;
-
-	var vars = struct.children ?
-		struct.vars :
-		struct.parent.vars;
-
-	var replacePropVal = function(sstr)  {
-		var id = this$0.module.id,
-			def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")] || vars[(("" + sstr) + "_00")];
-
-		if (def && (!def.global || def.global && id == def.id)) {
-			return def.value;
-		}
-
-		return sstr;
-	};
-
-	function addScope(str) {
-		if (multPropRgxp.test(str)) {
-			var fistProp = firstPropRgxp.exec(str);
-			fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
-			str = fistProp.slice(1).join('');
-
-		} else {
-			str = str.replace(propValRgxp, replacePropVal);
-		}
-
-		return str;
-	}
-
-	if (!command) {
-		this.error('invalid syntax');
-		return '';
-	}
-
-	var commandLength = command.length;
-	var isFilter,
-		breakNum;
-
-	for (var i = -1; ++i < commandLength;) {
-		var el = command.charAt(i),
-			next = command.charAt(i + 1),
-			nNext = command.charAt(i + 2);
-
-		if (!breakNum) {
-			if (el === '(') {
-				// Скобка открылась внутри декларации фильтра
-				if (filterStart) {
-					pCountFilter++;
-
-				} else {
-					pContent.unshift([i + wordAddEnd]);
-					pCount++;
-				}
-			}
-
-			// Расчёт scope:
-			// флаг nword показывает, что началось новое слово;
-			// флаг posNWord показывает, сколько новых слов нужно пропустить
-			if (nword && !posNWord && nextCharRgxp.test(el)) {
-				var nextStep = this.getWord(command, i);
-				var word = nextStep.word,
-					finalWord = nextStep.finalWord;
-
-				var uAdd = wordAddEnd + addition,
-					vres = void 0;
-
-				// true,
-				// если полученное слово не является зарезервированным (blackWordMap),
-				// не является фильтром,
-				// не является числом,
-				// не является константой замены Escaper,
-				// не является названием свойства в литерале объекта ({свойство: )
-				var canParse = !blackWordMap[word] &&
-					!pCountFilter &&
-					!ssfRgxp.test(word) &&
-					!isFilter &&
-					isNaN(+(word)) &&
-					!escaperRgxp.test(word) &&
-					!isSyOL(command, i, i + word.length);
-
-				// Экспорт числовых литералов
-				if (numRgxp.test(el)) {
-					vres = finalWord;
-
-				// Экспорт глобальный и супер глобальных переменных
-				} else if ((useWith && !modMap[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
-
-					if (useWith) {
-						vres = next === G_MOD ?
-							finalWord.substring(2) : finalWord;
-
-						// Супер глобальная переменная внутри with
-						if (next === G_MOD) {
-							vres = ("__VARS__" + (concatProp(vres)));
-
-						} else {
-							vres = addScope(vres);
-						}
-
-					// Супер глобальная переменная вне with
-					} else {
-						vres = ("__VARS__" + (concatProp(finalWord.substring(next === G_MOD ? 2 : 1))));
-					}
-
-				} else {
-					var rfWord = finalWord.replace(modRgxp, '');
-
-					if (canParse && useWith && modMap[el]) {
-						if (el === G_MOD) {
-							rfWord = rfWord.substring(1);
-						}
-
-						var num = 0;
-
-						// Уточнение scope
-						if (el === L_MOD) {
-							var val = strongModRgxp.exec(finalWord);
-							num = val ? val[1] : 1;
-						}
-
-						if (num && (scope.length - num) <= 0) {
-							vres = addScope(rfWord);
-
-						} else {
-							vres = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
-						}
-
-					} else {
-						if (canParse) {
-							vres = addScope(rfWord);
-
-						} else if (tplName && rfWord === 'this' && !this.hasParent(this.getGroup('selfThis'))) {
-							vres = '__THIS__';
-
-						} else {
-							vres = rfWord;
-						}
-					}
-				}
-
-				if (canParse &&
-					isNextAssign(command, i + word.length) &&
-					tplName &&
-					constCache[tplName] &&
-					constCache[tplName][vres]
-				) {
-
-					this.error((("constant \"" + vres) + "\" is already defined"));
-					return '';
-				}
-
-				// Данное слово является составным системным,
-				// т.е. пропускаем его и следующее за ним
-				if (comboBlackWordMap[finalWord]) {
-					posNWord = 2;
-
-				} else if (
-					canParse &&
-					(!opt_sys || opt_iSys) &&
-					!filterStart &&
-					(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary])
-				) {
-
-					vres = (("" + unUndefLabel) + ("(" + vres) + ")");
-				}
-
-				wordAddEnd += vres.length - word.length;
-				nword = false;
-
-				if (filterStart) {
-					var last = filter.length - 1;
-					filter[last] += vres;
-					rvFilter[last] += word;
-					filterAddEnd += vres.length - word.length;
-
-				} else {
-					res = res.substring(0, i + uAdd) + vres + res.substring(i + word.length + uAdd);
-				}
-
-				// Дело сделано, теперь с чистой совестью матаем на позицию:
-				// за один символ до конца слова
-				i += word.length - 2;
-				breakNum = 1;
-
-				continue;
-
-			// Возможно, скоро начнётся новое слово,
-			// для которого можно посчитать scope
-			} else if (newWordRgxp.test(el)) {
-				nword = true;
-
-				if (posNWord > 0) {
-					posNWord--;
-				}
-			}
-
-			if (!filterStart) {
-				if (el === ')') {
-					// Закрылась скобка, а последующие 2 символа не являются фильтром
-					if (next !== FILTER || !filterRgxp.test(nNext)) {
-						if (pCount) {
-							pCount--;
-						}
-
-						pContent.shift();
-						continue;
-
-					} else {
-						filterWrapper = true;
-					}
-				}
-
-			// Составление тела фильтра
-			} else if (el !== ')' || pCountFilter) {
-				var last$0 = filter.length - 1;
-				filter[last$0] += el;
-				rvFilter[last$0] += el;
+				val = old;
 			}
 		}
 
-		if (i === commandLength - 1 && pCount && !filterWrapper && el !== ')') {
-			this.error('missing closing or opening parenthesis in the template');
-			return '';
-		}
-
-		// Закрылся локальный или глобальный фильтр
-		if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
-			var pos = pContent[0];
-
-			var fAdd = wordAddEnd - filterAddEnd + addition,
-				fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
-
-			var arr = [];
-			for (var j = -1; ++j < filter.length;) {
-				var f = filter[j];
-
-				if (!unMap[f]) {
-					arr.push(f);
-
-					if (f.split(' ')[0] === 'default') {
-						unUndef = true;
-					}
-
-				} else {
-					if (f === '!html' && (!pCount || filterWrapper)) {
-						unEscape = true;
-
-					} else if (f === '!undef') {
-						unUndef = true;
-					}
-				}
-			}
-
-			filter = arr;
-			var resTmp = fBody.trim();
-
-			if (!resTmp) {
-				resTmp = 'void 0';
-			}
-
-			for (var j$0 = -1; ++j$0 < filter.length;) {
-				var params = filter[j$0].split(' '),
-					input = params.slice(1).join('').trim();
-
-				var current = params.shift().split('.'),
-					f$0 = '';
-
-				for (var k = -1; ++k < current.length;) {
-					f$0 += (("['" + (current[k])) + "']");
-				}
-
-				resTmp = (("(" + (this.tplName ? '$_' : (("$_ = __LOCAL__['$_" + uid) + "']"))) + (" = __FILTERS__" + f$0) + "") +
-					(filterWrapper || !pCount ? '.call(this,' : '') +
-					resTmp +
-					(input ? ',' + input : '') +
-					(filterWrapper || !pCount ? ')' : '') +
-				')';
-			}
-
-			resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
-			unUndef = false;
-
-			var fstr = rvFilter.join().length + 1;
-			res = pCount ?
-				res.substring(0, pos[0] + addition) +
-					resTmp +
-					res.substring(pos[1] + fAdd + fstr) :
-
-				resTmp;
-
-			pContent.shift();
-			filter = [];
-			rvFilter = [];
-			filterStart = false;
-
-			if (pCount) {
-				pCount--;
-				filterWrapper = false;
-			}
-
-			wordAddEnd += resTmp.length - fBody.length - fstr;
-
-			if (!pCount) {
-				addition += wordAddEnd - filterAddEnd;
-				wordAddEnd = 0;
-				filterAddEnd = 0;
-			}
-		}
-
-		// Закрылась скобка внутри фильтра
-		if (el === ')' && pCountFilter && !breakNum) {
-			pCountFilter--;
-
-			if (!pCountFilter) {
-				var last$1 = filter.length - 1,
-					cache = filter[last$1];
-
-				filter[last$1] = this.prepareOutput(cache, true, null, true, false);
-				var length = filter[last$1].length - cache.length;
-
-				wordAddEnd += length;
-				filterAddEnd += length;
-
-				if (i === commandLength - 1) {
-					i--;
-					breakNum = 1;
-				}
-			}
-		}
-
-		isFilter = el === FILTER;
-		if (breakNum) {
-			breakNum--;
-		}
-
-		// Через 2 итерации начнётся фильтр
-		if (next === FILTER && filterRgxp.test(nNext)) {
-			nword = false;
-
-			if (!filterStart) {
-				if (pCount) {
-					pContent[0].push(i + 1);
-
-				} else {
-					pContent.push([0, i + 1]);
-				}
-			}
-
-			filterStart = true;
-			if (!pCountFilter) {
-				filter.push(nNext);
-				rvFilter.push(nNext);
-				i += 2;
-			}
-
-		} else if (i === 0 && el === FILTER && filterRgxp.test(next)) {
-			nword = false;
-
-			if (!filterStart) {
-				pContent.push([0, i]);
-			}
-
-			filterStart = true;
-			if (!pCountFilter) {
-				filter.push(next);
-				rvFilter.push(next);
-				i++;
-			}
-		}
-	}
-
-	res = res.replace(unUndefRgxp, '__FILTERS__.undef');
-
-	if (wrapRgxp.test(res)) {
-		res = (("(" + res) + ")");
-	}
-
-	if (opt_validate !== false) {
 		try {
-			esprima.parse(exprimaHackFn(res));
+			res = JSON.parse(val);
 
-		} catch (err) {
-			this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
-			return '';
+		} catch (ignore) {
+			try {
+				res = eval((("(" + val) + ")"));
+
+			} catch (ignore) {
+				res = {};
+			}
+		}
+
+		return Object(res || {});
+	};
+
+	/**
+	 * Расширить объект a объектом b
+	 * (глубокое расширение)
+	 *
+	 * @param {!Object} a
+	 * @param {!Object} b
+	 * @return {!Object}
+	 */
+	function extend(a, b) {
+		for (var key in b) {
+			if (!b.hasOwnProperty(key)) {
+				continue;
+			}
+
+			if (a[key] instanceof Object && b[key] instanceof Object) {
+				extend(a[key], b[key]);
+
+			} else {
+				a[key] = b[key];
+			}
+		}
+
+		return a;
+	}
+
+	/**
+	 * Вернуть объект, расширенный с помощью заданных объектов
+	 *
+	 * @param {!Object} base - базовый расширяющий объект
+	 * @param {Object=} [opt_adv] - дополнительный расширяющий объект
+	 * @param {Object=} [opt_initial] - объект инициализации
+	 * @return {!Object}
+	 */
+	function mix(base, opt_adv, opt_initial) {
+		var obj = opt_initial || {};
+
+		if (opt_adv) {
+			for (var key in opt_adv) {
+				if (!opt_adv.hasOwnProperty(key)) {
+					continue;
+				}
+
+				obj[key] = opt_adv[key];
+			}
+		}
+
+		return extend(obj, base);
+	}
+
+	function setSSFlag(command) {var this$0 = this;
+		this.startInlineDir();
+
+		var file = this.info['file'],
+			init = false;
+
+		var root = this.params[0],
+			last = this.params[this.params.length - 1],
+			params = last;
+
+		var cache,
+			parentCache,
+			tplName = this.tplName;
+
+		if (tplName) {
+			cache =
+				outputCache[tplName]['flag'] = outputCache[tplName]['flag'] || {};
+
+			if (this.parentTplName) {
+				parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]['flag'];
+			}
+		}
+
+		if (last['@root'] || (file === void 0 || last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
+			init = true;
+			params = {
+				'@file': file,
+				'@tplName': tplName
+			};
+
+			var inherit = function(obj)  {
+				for (var key in obj) {
+					if (!obj.hasOwnProperty(key)) {
+						continue;
+					}
+
+					if (key.charAt(0) !== '@' && key in root) {
+						params[key] =
+							this$0[key] = obj[key];
+					}
+				}
+			};
+
+			inherit(last);
+
+			if (parentCache) {
+				inherit(parentCache);
+			}
+
+			this.params.push(params);
+		}
+
+		var parts = command.split(' ');
+		var flag = parts[0].trim(),
+			value = this.evalStr('return ' + this.pasteDangerBlocks(parts.slice(1).join(' ').trim()));
+
+		var includeMap = {
+			'language': true,
+			'macros': true
+		};
+
+		if (flag in root) {
+			if (includeMap[flag]) {
+				value = mix(
+					Snakeskin.toObj(value, file),
+
+					init ?
+						params[flag] : null,
+
+					init ?
+						null : params
+				);
+
+				if (flag === 'macros') {
+					this.setMacros(value, null, init);
+				}
+			}
+
+			params[flag] = value;
+			this[flag] = value;
+
+			if (cache) {
+				if (flag === 'inlineIterators' && parentCache && value !== parentCache[flag]) {
+					return this.error('flag "inlineIterators" can\'t be overridden in the child template');
+				}
+
+				cache[flag] = value;
+			}
 		}
 	}
 
-	return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') + res + (!unEscape && !opt_sys ? ((", " + (this.attr)) + ")") : '');
-};var fsStack = [];
+	Snakeskin.addDirective(
+		'setSSFlag',
+
+		{
+			placement: 'global',
+			notEmpty: true,
+			replacers: {
+				'@=': function(cmd)  {return cmd.replace('@=', 'setSSFlag ')}
+			}
+		},
+
+		setSSFlag
+	);
+
+	Snakeskin.addDirective(
+		'__setSSFlag__',
+
+		{
+			notEmpty: true,
+			replacers: {
+				'@=': function(cmd)  {return cmd.replace('@=', 'setSSFlag ')}
+			}
+		},
+
+		setSSFlag
+	);
+})();
+(function()  {
+	var lib = {
+		'angularjs': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/angularjs/" + v) + "/angular.min.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/angularjs/" + v) + "/angular.min.js\"></script>\
+			")}
+		},
+
+		'dojo': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/dojo/" + v) + "/dojo/dojo.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/dojo/" + v) + "/dojo/dojo.js\"></script>\
+			")}
+		},
+
+		'extcore': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/ext-core/" + v) + "/ext-core.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/ext-core/" + v) + "/ext-core.min.js\"></script>\
+			")}
+		},
+
+		'jquery': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquery/" + v) + "/jquery.min.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/" + v) + "/jquery.min.js\"></script>\
+			")}
+		},
+
+		'jquerymobile': {
+			'google': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"/>\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v) + ("/jquery.mobile.min.css\"/>\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/mobile/" + v) + "/jquery.mobile.min.js\"></script>\
+			")}
+		},
+
+		'jqueryui': {
+			'google': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"/>\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v) + ("/themes/smoothness/jquery-ui.min.css\"/>\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery-ui/" + v) + "/jquery-ui.min.js\"></script>\
+			")}
+		},
+
+		'mootools': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/mootools/" + v) + "/mootools-yui-compressed.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/mootools/" + v) + "/mootools.min.js\"></script>\
+			")}
+		},
+
+		'prototype': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/prototype/" + v) + "/prototype.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/prototype/" + v) + "/prototype.min.js\"></script>\
+			")}
+		},
+
+		'script.aculo.us': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/scriptaculous/" + v) + "/scriptaculous.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/scriptaculous/" + v) + "/min/scriptaculous.js\"></script>\
+			")}
+		},
+
+		'swfobject': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/swfobject/" + v) + "/swfobject.js\"></script>\
+			")},
+
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/swfobject/" + v) + "/swfobject.min.js\"></script>\
+			")}
+		},
+
+		'three.js': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/threejs/" + v) + "/three.min.js\"></script>\
+			")}
+		},
+
+		'webfontloader': {
+			'google': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/webfont/" + v) + "/webfont.js\"></script>\
+			")}
+		},
+
+		'bootstrap': {
+			'yandex': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v) + ("/css/bootstrap.min.css\"/>\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
+			")},
+
+			'maxcdn': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"/>\
+				<script type=\"text/javascript\" src=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
+			")}
+		},
+
+		'fontawesome': {
+			'maxcdn': function(v)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/" + v) + "/css/font-awesome.min.css\"/>\
+			")}
+		},
+
+		'underscore.js': {
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/underscore/" + v) + "/underscore-min.js\"></script>\
+			")}
+		},
+
+		'lodash': {
+			'yandex': function(v)  {return (("\
+				<script type=\"text/javascript\" src=\"http://yastatic.net/lodash/" + v) + "/lodash.min.js\"></script>\
+			")}
+		}
+	};
+
+	function first(obj) {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				return obj[key];
+			}
+		}
+	}
+
+	Snakeskin.addDirective(
+		'cdn',
+
+		{
+			placement: 'template',
+			notEmpty: true,
+			text: true
+		},
+
+		function (command) {
+			var parts = command.split(' '),
+				cdn = parts.slice(1).join(' '),
+				val = parts[0].split('@');
+
+			if (!val[1]) {
+				return this.error(("missing version"));
+			}
+
+			cdn = cdn && cdn.toLowerCase();
+			val[0] = val[0].toLowerCase();
+
+			if (!lib[val[0]]) {
+				return this.error(("requested library is not found"));
+			}
+
+			this.append(
+				this.wrap(
+					(("'" + ((cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(val[1]))) + "'")
+				)
+			);
+		}
+	);
+})();
+var fsStack = [];
 
 /**
  * Добавить содержимое файла в стек вставок в шаблон по заданному URL
@@ -15085,9 +16364,10 @@ DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_break
  * @expose
  * @param {string} base - базовый путь к файлу
  * @param {string} url - путь к файлу
+ * @param {?string=} [opt_type] - тип рендеринга шаблонов
  * @return {(string|boolean)}
  */
-Snakeskin.include = function (base, url) {
+Snakeskin.include = function (base, url, opt_type) {
 	if (!IS_NODE) {
 		return false;
 	}
@@ -15105,12 +16385,19 @@ Snakeskin.include = function (base, url) {
 
 		if (!include[src]) {
 			include[src] = true;
+			var file = fs['readFileSync'](src).toString();
 
-			fsStack.push((("\
-				" + s) + ("__setFile__ " + (applyDefEscape(src))) + ("" + e) + ("\
-				" + (fs['readFileSync'](src).toString())) + ("\
-				" + s) + ("__endSetFile__" + e) + "\
-			"));
+			fsStack.push(
+				(("" + s) + ("__setFile__ " + (applyDefEscape(src))) + ("" + e) + "") +
+
+				(opt_type ?
+					(("" + s) + ("__setSSFlag__ renderAs '" + opt_type) + ("'" + e) + "") : '') +
+
+				("" + (/^[ \t]*\n/.test(file) ? '' : '\n')) +
+
+				("" + file) +
+				(("" + s) + ("__endSetFile__" + e) + "")
+			);
 		}
 
 		return true;
@@ -15121,6 +16408,7 @@ Snakeskin.include = function (base, url) {
 
 	return false;
 };
+
 
 	if (IS_NODE) {
 		module['exports'] = Snakeskin;

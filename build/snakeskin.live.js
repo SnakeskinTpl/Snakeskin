@@ -1,11 +1,16 @@
 /*!
- * Snakeskin v4.1.3 (live)
+ * Snakeskin v5.0.0 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 29 Aug 2014 13:24:55 GMT
+ * Date: Fri, 26 Sep 2014 06:37:55 GMT
+ */
+
+/*!
+ * Полифилы, необходимые для работы live библиотеки
+ * в старых браузерах
  */
 
 Array.isArray = Array.isArray || function (obj) {
@@ -19,6 +24,7 @@ String.prototype.trim = String.prototype.trim || function () {
 	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
 	return str.substring(0, i + 1);
 };
+
 /** @type {!Object} */
 var Snakeskin = {
 	/**
@@ -27,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [4, 1, 3],
+	VERSION: [5, 0, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -74,6 +80,10 @@ var Snakeskin = {
 		typeof exports !== 'undefined';
 
 	var root = this;
+
+/*!
+ * Набор базовых фильтров и методы для работы с ними
+ */
 
 /**
  * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
@@ -154,236 +164,243 @@ Snakeskin.Filters.undef = function (str) {
 	return str !== void 0 ? str : '';
 };
 
-var uentityMap = {
-	'&amp;': '&',
-	'&lt;': '<',
-	'&gt;': '>',
-	'&quot;': '"',
-	'&#39;': '\'',
-	'&#x2F;': '/'
-};
+(function()  {
+	var uentityMap = {
+		'&amp;': '&',
+		'&lt;': '<',
+		'&gt;': '>',
+		'&quot;': '"',
+		'&#39;': '\'',
+		'&#x2F;': '/'
+	};
 
-var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
-	uescapeHTML = function(s)  {return uentityMap[s]};
+	var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
+		uescapeHTML = function(s)  {return uentityMap[s]};
 
-/**
- * Снятие экранирования HTML сущностей
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['uhtml'] = function (str) {
-	return ((str) + '').replace(uescapeHTMLRgxp, uescapeHTML);
-};
+	/**
+	 * Снятие экранирования HTML сущностей
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['uhtml'] = function (str) {
+		return ((str) + '').replace(uescapeHTMLRgxp, uescapeHTML);
+	};
 
-var stripTagsRgxp = /<\/?[^>]+>/g;
+	var stripTagsRgxp = /<\/?[^>]+>/g;
 
-/**
- * Удаление HTML тегов
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['stripTags'] = function (str) {
-	return ((str) + '').replace(stripTagsRgxp, '');
-};
+	/**
+	 * Удаление HTML тегов
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['stripTags'] = function (str) {
+		return ((str) + '').replace(stripTagsRgxp, '');
+	};
 
-var uriO = /%5B/g,
-	uriC = /%5D/g;
+	var uriO = /%5B/g,
+		uriC = /%5D/g;
 
-/**
- * Кодирование URL
- *
- * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['uri'] = function (str) {
-	return encodeURI(((str) + ''))
-		.replace(uriO, '[')
-		.replace(uriC, ']');
-};
+	/**
+	 * Кодирование URL
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['uri'] = function (str) {
+		return encodeURI(((str) + ''))
+			.replace(uriO, '[')
+			.replace(uriC, ']');
+	};
 
-/**
- * Перевод строки в верхний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['upper'] = function (str) {
-	return ((str) + '').toUpperCase();
-};
+	/**
+	 * Перевод строки в верхний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['upper'] = function (str) {
+		return ((str) + '').toUpperCase();
+	};
 
-/**
- * Перевод первой буквы строки в верхний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['ucfirst'] = function (str) {
-	str = ((str) + '');
-	return str.charAt(0).toUpperCase() + str.substring(1);
-};
+	/**
+	 * Перевод первой буквы строки в верхний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['ucfirst'] = function (str) {
+		str = ((str) + '');
+		return str.charAt(0).toUpperCase() + str.substring(1);
+	};
 
-/**
- * Перевод строки в нижний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['lower'] = function (str) {
-	return ((str) + '').toLowerCase();
-};
+	/**
+	 * Перевод строки в нижний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['lower'] = function (str) {
+		return ((str) + '').toLowerCase();
+	};
 
-/**
- * Перевод первой буквы строки в нижний регистр
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['lcfirst'] = function (str) {
-	str = ((str) + '');
-	return str.charAt(0).toLowerCase() + str.substring(1);
-};
+	/**
+	 * Перевод первой буквы строки в нижний регистр
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['lcfirst'] = function (str) {
+		str = ((str) + '');
+		return str.charAt(0).toLowerCase() + str.substring(1);
+	};
 
-/**
- * Срез крайних пробелов строки
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['trim'] = function (str) {
-	return ((str) + '').trim();
-};
+	/**
+	 * Срез крайних пробелов строки
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['trim'] = function (str) {
+		return ((str) + '').trim();
+	};
 
-var spaceCollapseRgxp = /\s{2,}/g;
+	var spaceCollapseRgxp = /\s{2,}/g;
 
-/**
- * Срез крайних пробелов строки
- * и свёртывание остальных пробелов в один
- *
- * @param {*} str - исходная строка
- * @return {string}
- */
-Snakeskin.Filters['collapse'] = function (str) {
-	return ((str) + '').replace(spaceCollapseRgxp, ' ').trim();
-};
+	/**
+	 * Срез крайних пробелов строки
+	 * и свёртывание остальных пробелов в один
+	 *
+	 * @param {*} str - исходная строка
+	 * @return {string}
+	 */
+	Snakeskin.Filters['collapse'] = function (str) {
+		return ((str) + '').replace(spaceCollapseRgxp, ' ').trim();
+	};
 
-/**
- * Обрезание строки до заданной длины
- * (в конце, если нужно, ставится многоточие)
- *
- * @param {*} str - исходная строка
- * @param {number} length - максимальная длина текста
- * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
- * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
- * @return {string}
- */
-Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
-	str = ((str) + '');
-	if (!str || str.length <= length) {
-		return str;
-	}
-
-	var tmp = str.substring(0, length - 1),
-		lastInd = void 0;
-
-	var i = tmp.length;
-	while (i-- && opt_wordOnly) {
-		if (tmp.charAt(i) === ' ') {
-			lastInd = i;
-
-		} else if (lastInd !== void 0) {
-			break;
+	/**
+	 * Обрезание строки до заданной длины
+	 * (в конце, если нужно, ставится многоточие)
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {number} length - максимальная длина текста
+	 * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
+	 * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
+	 * @return {string}
+	 */
+	Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
+		str = ((str) + '');
+		if (!str || str.length <= length) {
+			return str;
 		}
-	}
 
-	return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
-};
+		var tmp = str.substring(0, length - 1),
+			lastInd = void 0;
 
-/**
- * Генерация строки из повторений исходной подстроки
- *
- * @param {*} str - исходная строка
- * @param {?number=} [opt_num=2] - число повторений
- * @return {string}
+		var i = tmp.length;
+		while (i-- && opt_wordOnly) {
+			if (tmp.charAt(i) === ' ') {
+				lastInd = i;
+
+			} else if (lastInd !== void 0) {
+				break;
+			}
+		}
+
+		return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
+	};
+
+	/**
+	 * Генерация строки из повторений исходной подстроки
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {?number=} [opt_num=2] - число повторений
+	 * @return {string}
+	 */
+	Snakeskin.Filters['repeat'] = function (str, opt_num) {
+		return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
+	};
+
+	/**
+	 * Удаление подстроки из строки
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {(string|RegExp)} search - искомая подстрока
+	 * @return {string}
+	 */
+	Snakeskin.Filters['remove'] = function (str, search) {
+		return ((str) + '').replace(search, '');
+	};
+
+	/**
+	 * Замена подстроки в строке
+	 *
+	 * @param {*} str - исходная строка
+	 * @param {(string|!RegExp)} search - искомая подстрока
+	 * @param {string} replace - строка для замены
+	 * @return {string}
+	 */
+	Snakeskin.Filters['replace'] = function (str, search, replace) {
+		return ((str) + '').replace(search, replace);
+	};
+
+	/**
+	 * Преобразование объекта в JSON
+	 *
+	 * @param {(Object|Array|string|number|boolean)} obj - исходный объект
+	 * @return {string}
+	 */
+	Snakeskin.Filters['json'] = function (obj) {
+		if (typeof obj === 'object') {
+			return JSON.stringify(obj);
+		}
+
+		return ((obj) + '');
+	};
+
+	/**
+	 * Преобразование JSON в объект
+	 *
+	 * @param {*} val - исходное значение
+	 * @return {?}
+	 */
+	Snakeskin.Filters['parse'] = function (val) {
+		if (typeof val !== 'string') {
+			return val;
+		}
+
+		return JSON.parse(val);
+	};
+
+	/**
+	 * Декларация BEM части
+	 *
+	 * @param {*} block - название блока
+	 * @param {*} part - вторая часть декларации
+	 * @return {string}
+	 */
+	Snakeskin.Filters['bem'] = function (block, part) {
+		return ((block) + '') + ((part) + '');
+	};
+
+	/**
+	 * Задача значения по умолчанию для объекта
+	 *
+	 * @param {*} val - исходное значение
+	 * @param {*} def - значение по умолчанию
+	 * @return {*}
+	 */
+	Snakeskin.Filters['default'] = function (val, def) {
+		return val === void 0 ? def : val;
+	};
+})();
+/*!
+ * Методы live библиотеки Snakeskin
  */
-Snakeskin.Filters['repeat'] = function (str, opt_num) {
-	return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
-};
 
-/**
- * Удаление подстроки из строки
- *
- * @param {*} str - исходная строка
- * @param {(string|RegExp)} search - искомая подстрока
- * @return {string}
- */
-Snakeskin.Filters['remove'] = function (str, search) {
-	return ((str) + '').replace(search, '');
-};
-
-/**
- * Замена подстроки в строке
- *
- * @param {*} str - исходная строка
- * @param {(string|!RegExp)} search - искомая подстрока
- * @param {string} replace - строка для замены
- * @return {string}
- */
-Snakeskin.Filters['replace'] = function (str, search, replace) {
-	return ((str) + '').replace(search, replace);
-};
-
-/**
- * Преобразование объекта в JSON
- *
- * @param {(Object|Array|string|number|boolean)} obj - исходный объект
- * @return {string}
- */
-Snakeskin.Filters['json'] = function (obj) {
-	if (typeof obj === 'object') {
-		return JSON.stringify(obj);
-	}
-
-	return ((obj) + '');
-};
-
-/**
- * Преобразование JSON в объект
- *
- * @param {*} val - исходное значение
- * @return {?}
- */
-Snakeskin.Filters['parse'] = function (val) {
-	if (typeof val !== 'string') {
-		return val;
-	}
-
-	return JSON.parse(val);
-};
-
-/**
- * Декларация BEM части
- *
- * @param {*} block - название блока
- * @param {*} part - вторая часть декларации
- * @return {string}
- */
-Snakeskin.Filters['bem'] = function (block, part) {
-	return ((block) + '') + ((part) + '');
-};
-
-/**
- * Задача значения по умолчанию для объекта
- *
- * @param {*} val - исходное значение
- * @param {*} def - значение по умолчанию
- * @return {*}
- */
-Snakeskin.Filters['default'] = function (val, def) {
-	return val === void 0 ? def : val;
-};if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
+if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
 	var keys = Object.keys;
 }
 
@@ -486,6 +503,45 @@ Snakeskin.forIn = function (obj, callback) {
 		i++;
 	}
 };
+
+var inlineTagMap = {
+	'img': true,
+	'link': true,
+	'embed': true,
+	'br': true,
+	'hr': true,
+	'wbr': true,
+	'meta': true,
+	'input': true,
+	'source': true,
+	'track': true,
+	'base': true,
+	'area': true,
+	'col': true,
+	'param': true
+};
+
+/**
+ * Вставить заданный узел или текст в исходный
+ *
+ * @expose
+ * @param {!Node} node - исходный элемент
+ * @param {(!Node|string)} obj - элемент для вставки или текст
+ * @return {(!Node|string)}
+ */
+Snakeskin.appendChild = function (node, obj) {
+	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
+		return ((obj) + '').trim();
+	}
+
+	if (typeof obj === 'string') {
+		obj = document.createTextNode(obj);
+	}
+
+	node.appendChild(obj);
+	return obj;
+};
+
 
 	if (IS_NODE) {
 		module['exports'] = Snakeskin;
