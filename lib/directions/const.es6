@@ -246,8 +246,8 @@
 					el === '=' && next !== '=' && prev !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
 					advEqMap[el] && next === '=' ||
 					bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === '='
-					)
-				) {
+				)
+			) {
 
 				let diff = 1;
 
