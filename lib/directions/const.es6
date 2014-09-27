@@ -84,7 +84,11 @@
 						var insideCallBlock = this.hasParentBlock({
 							'block': true,
 							'proto': true
-						});
+						}, true);
+
+						if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
+							insideCallBlock = false;
+						}
 
 						constCache[tplName][name] = {
 							from: start - commandLength,
