@@ -55,44 +55,46 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	if (this.blockStructure && this.getGroup('blockInherit')[opt_name]) {
 		let bTable = this.blockTable;
 		let parent = this.parentTplName,
-			key = `${opt_name}_${opt_params.name}`;
+			key = `${opt_name}_${opt_params.name}`,
+			sub;
 
 		if (bTable[key] && bTable[key] !== true) {
-			return this;
-		}
+			sub = bTable[key];
 
-		let sub = {
-			name: opt_name,
-			parent: this.blockStructure,
-			params: opt_params,
-			children: []
-		};
+		} else {
+			sub = {
+				name: opt_name,
+				parent: this.blockStructure,
+				params: opt_params,
+				children: []
+			};
 
-		if (bTable[key] === true) {
-			sub.drop = true;
-		}
-
-		bTable[key] = sub;
-		var deep = (obj) => {
-			for (let i = -1; ++i < obj.length;) {
-				let el = obj[i],
-					key = `${el.name}_${el.params.name}`;
-
-				if (bTable[key]) {
-					bTable[key].drop = true;
-
-				} else {
-					bTable[key] = true;
-				}
-
-				if (el.children) {
-					deep(el.children);
-				}
+			if (bTable[key] === true) {
+				sub.drop = true;
 			}
-		};
 
-		if (parent && table[parent][key] && table[parent][key].children) {
-			deep(table[parent][key].children);
+			bTable[key] = sub;
+			var deep = (obj) => {
+				for (let i = -1; ++i < obj.length;) {
+					let el = obj[i],
+						key = `${el.name}_${el.params.name}`;
+
+					if (bTable[key]) {
+						bTable[key].drop = true;
+
+					} else {
+						bTable[key] = true;
+					}
+
+					if (el.children) {
+						deep(el.children);
+					}
+				}
+			};
+
+			if (parent && table[parent][key] && table[parent][key].children) {
+				deep(table[parent][key].children);
+			}
 		}
 
 		this.blockStructure.children.push(sub);
@@ -134,23 +136,25 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 
 	if (this.blockStructure && this.getGroup('inlineInherit')[opt_name]) {
 		let bTable = this.blockTable,
-			key = `${opt_name}_${opt_params.name}`;
+			key = `${opt_name}_${opt_params.name}`,
+			sub;
 
 		if (bTable[key] && bTable[key] !== true) {
-			return this;
+			sub = bTable[key];
+
+		} else {
+			sub = {
+				name: opt_name,
+				parent: this.blockStructure,
+				params: opt_params
+			};
+
+			if (bTable[key] === true) {
+				sub.drop = true;
+			}
 		}
 
-		let sub = {
-			name: opt_name,
-			parent: this.blockStructure,
-			params: opt_params
-		};
-
-		if (bTable[key] === true) {
-			sub.drop = true;
-		}
-
-		this.blockTable[key] = sub;
+		bTable[key] = sub;
 		this.blockStructure.children.push(sub);
 		this.blockStructure = sub;
 	}
