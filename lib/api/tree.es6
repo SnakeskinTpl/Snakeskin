@@ -43,7 +43,7 @@ DirObj.prototype.has = function (name, opt_obj, opt_returnObj) {
  * @param {?boolean=} [opt_returnObj=false] - если true, то в качестве ответа
  *     вернётся ссылка на найденный объект (если таковой есть)
  *
- * @return {(boolean|string)}
+ * @return {(boolean|string|!Object)}
  */
 DirObj.prototype.hasParent = function (name, opt_returnObj) {
 	if (this.structure.parent) {
@@ -61,7 +61,7 @@ DirObj.prototype.hasParent = function (name, opt_returnObj) {
  * @param {?boolean=} [opt_returnObj=false] - если true, то в качестве ответа
  *     вернётся ссылка на найденный объект (если таковой есть)
  *
- * @return {(boolean|string)}
+ * @return {(boolean|string|!Object)}
  */
 DirObj.prototype.hasParentBlock = function (name, opt_returnObj) {
 	if (this.blockStructure && this.blockStructure.parent) {
