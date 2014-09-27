@@ -52,19 +52,22 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	struct.children.push(obj);
 	this.structure = obj;
 
-	if (this.blockStructure && this.getGroup('blockInherit')[opt_name]) {
-		let bTable = this.blockTable;
+	var bStruct = this.blockStructure,
+		bTable = this.blockTable;
+
+	if (bStruct && this.getGroup('blockInherit')[opt_name]) {
 		let parent = this.parentTplName,
 			key = `${opt_name}_${opt_params.name}`,
 			sub;
 
 		if (bTable[key] && bTable[key] !== true) {
 			sub = bTable[key];
+			sub.parent = bStruct;
 
 		} else {
 			sub = {
 				name: opt_name,
-				parent: this.blockStructure,
+				parent: bStruct,
 				params: opt_params,
 				children: []
 			};
@@ -97,7 +100,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 			}
 		}
 
-		this.blockStructure.children.push(sub);
+		bStruct.children.push(sub);
 		this.blockStructure = sub;
 	}
 
@@ -134,18 +137,21 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 	this.structure.children.push(obj);
 	this.structure = obj;
 
+	var bStruct = this.blockStructure,
+		bTable = this.blockTable;
+
 	if (this.blockStructure && this.getGroup('inlineInherit')[opt_name]) {
-		let bTable = this.blockTable,
-			key = `${opt_name}_${opt_params.name}`,
+		let key = `${opt_name}_${opt_params.name}`,
 			sub;
 
 		if (bTable[key] && bTable[key] !== true) {
 			sub = bTable[key];
+			sub.parent = bStruct;
 
 		} else {
 			sub = {
 				name: opt_name,
-				parent: this.blockStructure,
+				parent: bStruct,
 				params: opt_params
 			};
 
@@ -155,7 +161,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 		}
 
 		bTable[key] = sub;
-		this.blockStructure.children.push(sub);
+		bStruct.children.push(sub);
 		this.blockStructure = sub;
 	}
 
