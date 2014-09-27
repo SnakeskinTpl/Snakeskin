@@ -73,11 +73,13 @@ Snakeskin.addDirective(
 				tplName =
 					this.tplName = this.prepareNameDecl(parts[0]);
 
-				this.preDefs[tplName] = this.preDefs[tplName] || {
+				let desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
 
-				this.preDefs[tplName].startLine = this.info['line'];
+				desc.startLine = this.info['line'];
+				desc.i = this.i + 1;
+
 				this.outerLink = name;
 			}
 
@@ -144,7 +146,8 @@ Snakeskin.addDirective(
 			struct = this.structure;
 
 		var vars = struct.vars,
-			params = struct.params;
+			params = struct.params,
+			diff = this.getDiff(commandLength);
 
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
@@ -153,9 +156,15 @@ Snakeskin.addDirective(
 			let obj = this.preDefs[tplName];
 
 			obj.text += `
-				${s}__switchLine__ ${obj.startLine}${e}
-					${this.source.substring(params.from, this.i + 1)}
-				${s}__end__${e}
+				\n${this.source.substring(params.from, obj.i)}
+				${s}__cutLine__${e}
+
+					${s}__switchLine__ ${obj.startLine}${e}
+						${this.source.substring(obj.i, this.i - diff)}
+					${s}__end__${e}
+
+				\n${this.source.substring(this.i - diff, this.i + 1)}
+				${s}__cutLine__${e}
 			`;
 
 			this.outerLink = null;
@@ -170,8 +179,7 @@ Snakeskin.addDirective(
 				start = this.i - this.startTemplateI;
 
 			if (this.isAdvTest()) {
-				let diff = this.getDiff(commandLength),
-					scope = proto.scope;
+				let scope = proto.scope;
 
 				proto.to = start + 1;
 				proto.content = this.source
