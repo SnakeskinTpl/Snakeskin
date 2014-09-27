@@ -5,7 +5,7 @@
 (() => {
 	var commandRgxp = /([^\s]+).*/,
 		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
-		lastHashRgxp = /#$/;
+		lastALBRgxp = new RegExp(`${ADV_LEFT_BLOCK}$`);
 
 	/**
 	 * Вернуть объект-описание преобразованной части шаблона из
@@ -181,9 +181,7 @@
 					let parts,
 						txt;
 
-					if (alb === '#') {
-						decl.command = decl.command.replace(lastHashRgxp, '\\#');
-					}
+					decl.command = decl.command.replace(lastALBRgxp, `\\${alb}`);
 
 					if (dir) {
 						if (decl.sComment) {
