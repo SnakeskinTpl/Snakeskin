@@ -164,8 +164,22 @@ function action(data, file) {
 		{file}
 	);
 
+	var outFile = out,
+		execTpl = tplData || mainTpl || exec;
+
+	if (outFile && file) {
+		let tmp = outFile;
+		outFile = path.resolve(__dirname, outFile);
+
+		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
+			tmp = path.join(tmp, path.basename(file)) + (execTpl ? '.html' : '.js');
+		}
+
+		outFile = tmp;
+	}
+
 	var toConsole = input && !program['output'] ||
-		!out;
+		!outFile;
 
 	if (res !== false) {
 		if (tplData || mainTpl || exec) {
@@ -199,7 +213,7 @@ function action(data, file) {
 					res = beautify['html'](res);
 
 				} else {
-					res = beautify[path.extname(out).replace(/^\./, '')](res);
+					res = beautify[path.extname(outFile).replace(/^\./, '')](res);
 				}
 			}
 		}
@@ -208,12 +222,8 @@ function action(data, file) {
 			console.log(res);
 
 		} else {
-			if (exists(out) && fs.statSync(out).isDirectory()) {
-				out = path.normalize(path.join(out, path.basename(file) + '.js'));
-			}
-
-			fs.writeFileSync(out, res);
-			console.log(`File "${file}" has been successfully compiled "${out}".`);
+			fs.writeFileSync(outFile, res);
+			console.log(`File "${file}" has been successfully compiled "${outFile}".`);
 		}
 
 	} else {
