@@ -21,16 +21,20 @@ Snakeskin.include = function (base, url, opt_type) {
 		e = RIGHT_BLOCK;
 
 	try {
-		let extname = path['extname'](url);
-		let src = path['resolve'](path['dirname'](base), path['normalize'](url) + (extname ? '' : '.ss')),
+		let extname = path['extname'](url),
 			include = Snakeskin.LocalVars.include;
+
+		let src = path['resolve'](
+			path['dirname'](base),
+			path['normalize'](url) + (extname ? '' : '.ss')
+		);
 
 		if (!include[src]) {
 			include[src] = true;
 			let file = fs['readFileSync'](src).toString();
 
 			fsStack.push(
-				`${s}__setFile__ ${applyDefEscape(src)}${e}` +
+				`${s}__setFile__ ${escapeWinPath(src)}${e}` +
 
 				(opt_type ?
 					`${s}__setSSFlag__ renderAs '${opt_type}'${e}` : '') +
