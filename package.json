@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "commander": "~2",
+    "monocle": "~1",
     "js-beautify": "~1"
   },
   "devDependencies": {
