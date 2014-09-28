@@ -183,7 +183,7 @@ function action(data, file) {
 		!outFile;
 
 	if (res !== false) {
-		if (tplData || mainTpl || exec) {
+		if (execTpl) {
 			var tpl;
 
 			if (mainTpl && mainTpl !== true) {
