@@ -86,6 +86,10 @@ var closePMap = {
 	']': true
 };
 
+function escapeWinPath(str) {
+	return String(str).replace(/\\/gm, '\\\\');
+}
+
 function applyDefEscape(str) {
 	return String(str)
 		.replace(/\\/gm, '\\\\')
