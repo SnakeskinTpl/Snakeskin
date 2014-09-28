@@ -2,8 +2,9 @@
 
 global.Snakeskin = require('./snakeskin');
 
-var program = require('commander');
-var beautify = require('js-beautify');
+var program = require('commander'),
+	beautify = require('js-beautify'),
+	monocle = require('monocle')();
 
 var path = require('path');
 var fs = require('fs'),
@@ -92,6 +93,10 @@ params.autoReplace = 'autoReplace' in program ?
 params.macros = 'macros' in program ?
 	program['macros'] : params.macros;
 
+params.debug = {};
+var include = {},
+	watch = program['watch'];
+
 var prettyPrint = params.prettyPrint,
 	language = params.language,
 	macros = params.macros;
@@ -119,6 +124,19 @@ if (!file && args.length) {
 		file = input;
 		input = false;
 	}
+}
+
+function debounce(fn, delay) {
+	var timer;
+
+	return function () {
+		var args = arguments;
+
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			fn.apply(fn, args);
+		}, delay);
+	};
 }
 
 function action(data, file) {
@@ -225,6 +243,19 @@ function action(data, file) {
 		} else {
 			fs.writeFileSync(outFile, res);
 			console.log(`File "${file}" has been successfully compiled "${outFile}".`);
+
+			let tmp = params.debug.files;
+
+			if (tmp) {
+				for (let key in tmp) {
+					if (!tmp.hasOwnProperty(key)) {
+						continue;
+					}
+
+					include[key] = include[key] || {};
+					include[key][file] = true;
+				}
+			}
 		}
 
 	} else {
@@ -273,8 +304,39 @@ if (!file && input == null) {
 				}
 			});
 
+			if (watch) {
+				monocle.watchDirectory({
+					root: file,
+					listener: debounce((f) => {
+						var files = include[path.resolve(__dirname, file, f.path)];
+
+						if (files) {
+							for (let key in files) {
+								if (!files.hasOwnProperty(key)) {
+									continue;
+								}
+
+								action(fs.readFileSync(key), key);
+							}
+						}
+
+						end();
+					}, 60)
+				});
+			}
+
 		} else if (!mask || mask.test(file)) {
 			action(fs.readFileSync(file), file);
+
+			if (watch) {
+				monocle.watchFiles({
+					files: [file],
+					listener: debounce(() => {
+						action(fs.readFileSync(file), file);
+						end();
+					}, 60)
+				});
+			}
 		}
 
 	} else {
