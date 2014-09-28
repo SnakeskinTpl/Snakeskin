@@ -154,6 +154,9 @@ for (let i = -1; ++i < template.length;) {
 		},
 
 		function (command, commandLength, type, jsDoc) {
+			var lastName = null,
+				proto = this.proto;
+
 			var rank = {
 				'template': 2,
 				'interface': 1,
@@ -161,9 +164,12 @@ for (let i = -1; ++i < template.length;) {
 			};
 
 			this.startDir(
-				this.renderAs && rank[this.renderAs] < rank[type] ?
+				!proto && this.renderAs && rank[this.renderAs] < rank[type] ?
 					this.renderAs : null
 			);
+
+			var iface =
+				this.name === 'interface';
 
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
@@ -173,12 +179,6 @@ for (let i = -1; ++i < template.length;) {
 
 			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
-
-			var iface =
-				this.name === 'interface';
-
-			var lastName = null,
-				proto = this.proto;
 
 			if (!proto) {
 				tmpTplName = this.replaceFileName(tmpTplName);
