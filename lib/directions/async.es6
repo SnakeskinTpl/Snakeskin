@@ -23,7 +23,7 @@ DirObj.prototype.declCallbackArgs = function (parts) {
 		}
 
 		if (el) {
-			args[i] = this.declVar(el);
+			args[i] = this.declVar(el, true);
 
 			if (mod) {
 				scope = args[i];
