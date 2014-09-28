@@ -218,21 +218,25 @@ function action(data, file) {
 
 			if (!tpl) {
 				console.error('Template is not defined');
-				process.exit(1);
-			}
 
-			var dataObj;
-			if (tplData && tplData !== true) {
-				dataObj = load(tplData);
-			}
+				if (!watch) {
+					process.exit(1);
+				}
 
-			res = tpl(dataObj);
-			if (prettyPrint) {
-				if (toConsole) {
-					res = beautify['html'](res);
+			} else {
+				var dataObj;
+				if (tplData && tplData !== true) {
+					dataObj = load(tplData);
+				}
 
-				} else {
-					res = beautify[path.extname(outFile).replace(/^\./, '')](res);
+				res = tpl(dataObj);
+				if (prettyPrint) {
+					if (toConsole) {
+						res = beautify['html'](res);
+
+					} else {
+						res = beautify[path.extname(outFile).replace(/^\./, '')](res);
+					}
 				}
 			}
 		}
@@ -259,7 +263,9 @@ function action(data, file) {
 		}
 
 	} else {
-		process.exit(1);
+		if (!watch) {
+			process.exit(1);
+		}
 	}
 }
 
