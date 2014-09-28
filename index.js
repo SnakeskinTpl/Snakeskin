@@ -13,18 +13,18 @@ program
 	.version(Snakeskin.VERSION.join('.'))
 
 	.usage('[options] [dir|file ...]')
-	.option('-p, --params [options]', 'path to the options file or options object')
+	.option('-p, --params [options]', 'path to the options file or JS options object')
 
-	.option('-s, --source [src]', 'path to the template file')
+	.option('-s, --source [src]', 'path to the template file or directory')
 	.option('-f, --file [src]', 'path to the template file (meta-information)')
-	.option('-m, --mask [mask]', 'mask for template file (RegExp)')
+	.option('-m, --mask [mask]', 'mask for a template files (RegExp)')
 	.option('-w, --watch', 'watch files for changes and automatically re-render')
 
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('-n, --common-js', 'common.js export (for node.js)')
 
 	.option('-e, --exec', 'execute compiled template')
-	.option('-d, --data [src]', 'path to the data file or data object')
+	.option('-d, --data [src]', 'path to the data file or JS data object')
 	.option('-t, --tpl [name]', 'name of the main template')
 
 	.option('--disable-localization', 'disable support for localization')
@@ -34,7 +34,7 @@ program
 
 	.option('--ignore', 'regular expression to ignore the empty space')
 	.option('--auto-replace', 'enable macros support')
-	.option('--macros [src]', 'path to the macros file or macros object')
+	.option('--macros [src]', 'path to the macros file or JS macros object')
 
 	.option('--disable-xml', 'disable default xml validation')
 	.option('--inline-iterators', 'inline forEach and forIn')
@@ -126,7 +126,7 @@ function action(data, file) {
 		fileName = '';
 
 	if (file) {
-		fileName = path.basename(file, path.dirname(file));
+		fileName = path.basename(file, path.extname(file));
 	}
 
 	if (tplData || mainTpl || exec) {
@@ -137,6 +137,7 @@ function action(data, file) {
 
 	function load(val) {
 		var tmp = val;
+		val = path.resolve(__dirname, val);
 
 		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
@@ -261,10 +262,8 @@ if (!file && input == null) {
 				}
 			});
 
-		} else {
-			if (!mask || mask.test(file)) {
-				action(fs.readFileSync(file), file);
-			}
+		} else if (!mask || mask.test(file)) {
+			action(fs.readFileSync(file), file);
 		}
 
 	} else {
