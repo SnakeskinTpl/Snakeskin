@@ -1,6 +1,6 @@
 //#!/usr/bin/env node
 
-global.Snakeskin = require('./snakeskin');
+global.Snakeskin = require('../snakeskin');
 
 var program = require('commander'),
 	beautify = require('js-beautify'),

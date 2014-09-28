@@ -3,7 +3,7 @@
   "version": "5.0.0",
   "main": "snakeskin.js",
   "bin": {
-    "snakeskin": "index.js"
+    "snakeskin": "./bin/snakeskin.js"
   },
   "keywords": [
     "templates",
