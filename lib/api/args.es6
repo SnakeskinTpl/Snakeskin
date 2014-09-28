@@ -76,10 +76,6 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	var argsList = this.getFnArgs(str),
 		params = argsList.params;
 
-	if (type === 'proto') {
-		argsList.push('arguments');
-	}
-
 	var parentArgs,
 		argsTable;
 
@@ -256,7 +252,24 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		};
 	}
 
-	var args = [];
+	var args = [],
+		needArgs = type === 'proto';
+
+	if (needArgs) {
+		for (let i = -1; ++i < argsList.length;) {
+			if (argsList[i].key === 'arguments') {
+				needArgs = false;
+				break;
+			}
+		}
+
+		if (needArgs) {
+			argsList.push({
+				i: argsList.length,
+				key: 'arguments'
+			});
+		}
+	}
 
 	for (let i = -1; ++i < argsList.length;) {
 		let el = argsList[i];
@@ -290,7 +303,16 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		}
 	}
 
-	args = args.concat(locals);
+	if (needArgs) {
+		let tmp = args.pop();
+		args = args.concat(locals);
+		args.push(tmp);
+		args['__SNAKESKIN_TMP__needArgs'] = true;
+
+	} else {
+		args = args.concat(locals);
+	}
+
 	struct.params._consts = constsCache;
 
 	var res = {

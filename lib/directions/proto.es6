@@ -28,8 +28,8 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 
 		arg = arg.replace(scopeModRgxp, '');
 
-		if (i === length - 1) {
-			if (length < args.length) {
+		if (protoArgs['__SNAKESKIN_TMP__needArgs'] && i === length - 1) {
+			if (length - 1 < args.length) {
 				tmp = tmp.concat(args.slice(length - 1, args.length));
 			}
 
