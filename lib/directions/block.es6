@@ -46,7 +46,7 @@ Snakeskin.addDirective(
 				this.protoStart = true;
 			}
 
-		} else if (!this.outerLink && !this.has('template')) {
+		} else if (!this.outerLink && !this.tplName) {
 			return this.error(`directive "${this.name}" can be used only within a ${groupsList['template'].join(', ')}`);
 		}
 
