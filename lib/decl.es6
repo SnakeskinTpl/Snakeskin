@@ -76,6 +76,7 @@ const FILTER = '|';
 
 var sysConst = {
 	'__ROOT__': true,
+	'__CALLEE__': true,
 	'__BLOCKS__': true,
 	'__RESULT__': true,
 	'__TMP_RESULT__': true,

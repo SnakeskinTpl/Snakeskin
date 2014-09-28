@@ -381,10 +381,11 @@ for (let i = -1; ++i < template.length;) {
 
 			this.save(`
 				var __THIS__ = this,
-					callee = __ROOT__${concatProp(tplName)};
+					__CALLEE__ = __ROOT__${concatProp(tplName)},
+					callee = __CALLEE__;
 
 				if (!callee.Blocks) {
-					var __BLOCKS__ = callee.Blocks = {},
+					var __BLOCKS__ = __CALLEE__.Blocks = {},
 						blocks = __BLOCKS__;
 				}
 
