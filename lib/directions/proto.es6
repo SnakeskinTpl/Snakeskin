@@ -12,9 +12,11 @@ DirObj.prototype.protoStart = false;
  * @return {string}
  */
 DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
-	var str = '';
+	var tmp = [];
+	var str = '',
+		length = protoArgs.length;
 
-	for (let i = -1; ++i < protoArgs.length;) {
+	for (let i = -1; ++i < length;) {
 		let val = this.prepareOutput(args[i] || 'void 0', true);
 
 		let arg = protoArgs[i][0],
@@ -26,11 +28,24 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 
 		arg = arg.replace(scopeModRgxp, '');
 
-		str += `
-			var ${arg} = ${def !== void 0 ?
-				val ? `${val} != null ? ${val} : ${this.prepareOutput(def, true)}` : def : val || 'void 0'
-			};
-		`;
+		if (i === length - 1) {
+			if (length < args.length) {
+				tmp = tmp.concat(args.slice(length - 1, args.length));
+			}
+
+			str += `
+				var ${arg} = [${tmp.join()}];
+				${arg}.callee = __CALLEE__;
+			`;
+
+		} else {
+			tmp.push(arg);
+			str += `
+				var ${arg} = ${def !== void 0 ?
+					val ? `${val} != null ? ${val} : ${this.prepareOutput(def, true)}` : def : val || 'void 0'
+				};
+			`;
+		}
 	}
 
 	return str;
