@@ -91,12 +91,12 @@ params.autoReplace = 'autoReplace' in program ?
 params.macros = 'macros' in program ?
 	program['macros'] : params.macros;
 
-var prettyPrint = params.prettyPrint;
-var language = params.language,
+var prettyPrint = params.prettyPrint,
+	language = params.language,
 	macros = params.macros;
 
-var exec = program['exec'];
-var tplData = program['data'],
+var exec = program['exec'],
+	tplData = program['data'],
 	mainTpl = program['tpl'];
 
 var words = params.words;
