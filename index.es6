@@ -21,6 +21,7 @@ program
 	.option('-w, --watch', 'watch files for changes and automatically re-render')
 
 	.option('-o, --output [src]', 'path to the file to save')
+	.option('--extname [ext]', 'file extension for saving (if "output" is a directory)')
 	.option('-n, --common-js', 'common.js export (for node.js)')
 
 	.option('-e, --exec', 'execute compiled template')
@@ -172,7 +173,7 @@ function action(data, file) {
 		outFile = path.resolve(__dirname, outFile);
 
 		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
-			tmp = path.join(tmp, path.basename(file)) + (execTpl ? '.html' : '.js');
+			tmp = path.join(tmp, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
 		}
 
 		outFile = tmp;
