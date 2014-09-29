@@ -23,7 +23,7 @@ function clone(obj) {
  * @return {(boolean|!Array)}
  */
 exports.check = function (source, result, opt_key, opt_includes) {
-	if (!exists(result)) {
+	if (!exists(source) || !exists(result)) {
 		return false;
 	}
 
