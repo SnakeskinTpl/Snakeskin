@@ -1,4 +1,4 @@
-module.exports = exports = require('./build/snakeskin');
+module.exports = exports = require('./build/snakeskin.min');
 
 var path = require('path');
 var fs = require('fs'),
