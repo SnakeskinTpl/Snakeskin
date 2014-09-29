@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('../snakeskin');
 
@@ -322,6 +322,14 @@ function action(data, file) {
 
 function end() {
 	if (words) {
+		path.dirname(words).split(path.sep).forEach(function(el, i, data)  {
+			var src = data.slice(0, i + 1).join(path.sep);
+
+			if (!exists(src)) {
+				fs.mkdirSync(src);
+			}
+		});
+
 		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
 }
