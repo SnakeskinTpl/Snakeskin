@@ -122,7 +122,10 @@ Snakeskin.addDirective(
 				this.save(`
 					if (!${fnDecl}) {
 						${fnDecl} = function (${args.str}) {
-							var __RESULT__ = ${this.declResult()};
+							var __RESULT__ = ${this.declResult()},
+								__ARGUMENTS__ = arguments;
+
+							${this.multiDeclVar('arguments = __ARGUMENTS__')}
 
 							function getTplResult(opt_clear) {
 								var res = ${this.returnResult()};
