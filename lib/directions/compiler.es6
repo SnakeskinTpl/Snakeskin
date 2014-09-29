@@ -5,10 +5,12 @@
 	 * @expose
 	 * @param {?} val - объект, строка для парсинга или URL
 	 * @param {?string=} [opt_base] - базовый URL
-	 * @param {Object=} [opt_cache] - кеширующий объект
+	 * @param {?function(string)=} [opt_onFileExists] - функция обратного вызова,
+	 *     если исходный объект - путь к существующему файлу
+	 *
 	 * @return {!Object}
 	 */
-	Snakeskin.toObj = function (val, opt_base, opt_cache) {
+	Snakeskin.toObj = function (val, opt_base, opt_onFileExists) {
 		if (typeof val !== 'string') {
 			return val;
 		}
@@ -26,14 +28,14 @@
 			}
 
 			if (exists(val)) {
+				if (opt_onFileExists) {
+					opt_onFileExists(val);
+				}
+
 				res = require(val);
 
 				if (res) {
 					return res;
-				}
-
-				if (opt_cache) {
-					opt_cache[val] = true;
 				}
 
 				val = fs['readFileSync'](val).toString();
@@ -175,7 +177,11 @@
 		if (flag in root) {
 			if (includeMap[flag]) {
 				value = mix(
-					Snakeskin.toObj(value, file, Snakeskin.LocalVars.include),
+					Snakeskin.toObj(value, file, (src) => {
+						var root = this.module.root || this.module;
+						root.key.push([src, require('fs')['statSync'](src)['mtime'].valueOf()]);
+						this.files[src] = true;
+					}),
 
 					init ?
 						params[flag] : null,
