@@ -189,10 +189,12 @@ function action(data, file) {
 		console.log(`File "${path.relative(__dirname, file)}" has been successfully compiled "${path.relative(__dirname, outFile)}".`);
 	}
 
-	var outFile = pathTpl(out),
+	var outFile = out,
 		execTpl = tplData || mainTpl || exec;
 
 	if (outFile) {
+		outFile = pathTpl(outFile);
+
 		let tmp = outFile;
 		outFile = path.resolve(outFile);
 
@@ -286,6 +288,7 @@ function action(data, file) {
 			success();
 
 			let tmp = params.debug.files;
+
 			include[file] = include[file] || {};
 			include[file][file] = true;
 
@@ -361,48 +364,43 @@ if (!file && input == null) {
 
 			renderDir(file);
 
-			if (watch) {
-				monocle.watchDirectory({
-					root: file,
-					listener: (f) => {
-						var files = include[f.fullPath];
-
-						if (files && !calls[f.fullPath]) {
-							calls[f.fullPath] = setTimeout(() => {
-								for (let key in files) {
-									if (!files.hasOwnProperty(key)) {
-										continue;
-									}
-
-									action(fs.readFileSync(key), key);
-								}
-
-								delete calls[f.fullPath];
-							}, 60);
-						}
-
-						end();
-					}
-				});
-			}
-
 		} else if (!mask || mask.test(file)) {
 			action(fs.readFileSync(file), file);
+		}
 
-			if (watch) {
-				monocle.watchFiles({
-					files: [file],
-					listener: () => {
-						if (!calls[file]) {
-							calls[file] = setTimeout(() => {
-								action(fs.readFileSync(file), file);
-								end();
-								delete calls[file];
-							}, 60);
-						}
-					}
-				});
+		if (watch) {
+			let files = [];
+
+			for (let key in include) {
+				if (!include.hasOwnProperty(key)) {
+					continue;
+				}
+
+				files.push(key);
 			}
+
+			monocle.watchFiles({
+				files: files,
+				listener: (f) => {
+					var files = include[f.fullPath];
+
+					if (files && !calls[f.fullPath]) {
+						calls[f.fullPath] = setTimeout(() => {
+							for (let key in files) {
+								if (!files.hasOwnProperty(key)) {
+									continue;
+								}
+
+								action(fs.readFileSync(key), key);
+							}
+
+							delete calls[f.fullPath];
+						}, 60);
+					}
+
+					end();
+				}
+			});
 		}
 
 	} else {
