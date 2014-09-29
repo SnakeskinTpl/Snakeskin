@@ -94,6 +94,8 @@ params.macros = 'macros' in program ?
 	program['macros'] : params.macros;
 
 params.debug = {};
+params.cache = false;
+
 var include = {},
 	watch = program['watch'];
 
@@ -128,8 +130,8 @@ if (!file && args.length) {
 
 var calls = {};
 
-function action(data, file) {var DP$0 = Object.defineProperty;
-	file = file || program['file'];
+function action(data, file) {
+	file = file || program['file'] || '';
 	var tpls = {},
 		fileName = '';
 
@@ -167,7 +169,12 @@ function action(data, file) {var DP$0 = Object.defineProperty;
 			}
 		}
 
-		return Snakeskin.toObj(tmp);
+		return Snakeskin.toObj(tmp, null, function(src)  {
+			if (file) {
+				include[src] = include[src] || {};
+				include[src][file] = true;
+			}
+		});
 	}
 
 	if (language) {
@@ -178,18 +185,14 @@ function action(data, file) {var DP$0 = Object.defineProperty;
 		params.macros = load(macros);
 	}
 
-	var res = Snakeskin.compile(
-		String(data),
-		params,
-		{file: file}
-	);
+	function success() {
+		console.log((("File \"" + (path.relative(__dirname, file))) + ("\" has been successfully compiled \"" + (path.relative(__dirname, outFile))) + "\"."));
+	}
 
-	var outFile = out,
+	var outFile = pathTpl(out),
 		execTpl = tplData || mainTpl || exec;
 
-	if (outFile && file) {
-		outFile = pathTpl(outFile);
-
+	if (outFile) {
 		var tmp = outFile;
 		outFile = path.resolve(outFile);
 
@@ -205,7 +208,31 @@ function action(data, file) {var DP$0 = Object.defineProperty;
 				fs.mkdirSync(src);
 			}
 		});
+
+		if (file) {
+			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
+
+			if (includes) {
+				success();
+
+				include[file] = include[file] || {};
+				include[file][file] = true;
+
+				includes.forEach(function(key)  {
+					include[key] = include[key] || {};
+					include[key][file] = true;
+				});
+
+				return;
+			}
+		}
 	}
+
+	var res = Snakeskin.compile(
+		String(data),
+		params,
+		{file: file}
+	);
 
 	var toConsole = input && !program['output'] ||
 		!outFile;
@@ -256,11 +283,11 @@ function action(data, file) {var DP$0 = Object.defineProperty;
 
 		} else {
 			fs.writeFileSync(outFile, res);
-			console.log((("File \"" + (path.relative(__dirname, file))) + ("\" has been successfully compiled \"" + (path.relative(__dirname, outFile))) + "\"."));
+			success();
 
 			var tmp$0 = params.debug.files;
-			include[file] = include[file] ||
-				DP$0({},file,{"value": true,"configurable":true,"enumerable":true,"writable":true});
+			include[file] = include[file] || {};
+			include[file][file] = true;
 
 			if (tmp$0) {
 				for (var key in tmp$0) {
