@@ -126,18 +126,7 @@ if (!file && args.length) {
 	}
 }
 
-function debounce(fn, delay) {
-	var timer;
-
-	return function () {
-		var args = arguments;
-
-		clearTimeout(timer);
-		timer = setTimeout(function()  {
-			fn.apply(fn, args);
-		}, delay);
-	};
-}
+var calls = {};
 
 function action(data, file) {var DP$0 = Object.defineProperty;
 	file = file || program['file'];
@@ -267,7 +256,7 @@ function action(data, file) {var DP$0 = Object.defineProperty;
 
 		} else {
 			fs.writeFileSync(outFile, res);
-			console.log((("File \"" + file) + ("\" has been successfully compiled \"" + outFile) + "\"."));
+			console.log((("File \"" + (path.relative(__dirname, file))) + ("\" has been successfully compiled \"" + (path.relative(__dirname, outFile))) + "\"."));
 
 			var tmp$0 = params.debug.files;
 			include[file] = include[file] ||
@@ -322,13 +311,15 @@ if (!file && input == null) {
 
 } else {
 	if (file) {
+		file = path.normalize(path.resolve(file));
+
 		var mask = program['mask'];
 		mask = mask && new RegExp(mask);
 
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = function(dir)  {
 				fs.readdirSync(dir).forEach(function(el)  {
-					var src = path.resolve(path.join(dir, el));
+					var src = path.join(dir, el);
 
 					if (fs.statSync(src).isDirectory()) {
 						renderDir(src);
@@ -346,21 +337,25 @@ if (!file && input == null) {
 			if (watch) {
 				monocle.watchDirectory({
 					root: file,
-					listener: debounce(function(f)  {
-						var files = include[path.resolve(file, f.path)];
+					listener: function(f)  {
+						var files = include[f.fullPath];
 
-						if (files) {
-							for (var key in files) {
-								if (!files.hasOwnProperty(key)) {
-									continue;
+						if (files && !calls[f.fullPath]) {
+							calls[f.fullPath] = setTimeout(function()  {
+								for (var key in files) {
+									if (!files.hasOwnProperty(key)) {
+										continue;
+									}
+
+									action(fs.readFileSync(key), key);
 								}
 
-								action(fs.readFileSync(key), key);
-							}
+								delete calls[f.fullPath];
+							}, 60);
 						}
 
 						end();
-					}, 60)
+					}
 				});
 			}
 
@@ -370,10 +365,15 @@ if (!file && input == null) {
 			if (watch) {
 				monocle.watchFiles({
 					files: [file],
-					listener: debounce(function()  {
-						action(fs.readFileSync(file), file);
-						end();
-					}, 60)
+					listener: function()  {
+						if (!calls[file]) {
+							calls[file] = setTimeout(function()  {
+								action(fs.readFileSync(file), file);
+								end();
+								delete calls[file];
+							}, 60);
+						}
+					}
 				});
 			}
 		}
