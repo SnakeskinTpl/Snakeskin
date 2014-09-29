@@ -408,7 +408,9 @@ if (!file && input == null) {
 									continue;
 								}
 
-								action(fs.readFileSync(key), key);
+								if (!mask || mask.test(key)) {
+									action(fs.readFileSync(key), key);
+								}
 							}
 
 							delete calls[f.fullPath];
