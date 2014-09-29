@@ -17,9 +17,12 @@ function clone(obj) {
  * @param {string} source - путь к исходному файлу
  * @param {string} result - путь к скомпилированному файлу
  * @param {(string|boolean|null)=} [opt_key] - ключ параметров компиляции
- * @return {boolean}
+ * @param {?boolean=} [opt_includes] - если true, то в случае успешного результата
+ *     вернётся массив подключаемых файлов
+ *
+ * @return {(boolean|!Array)}
  */
-exports.check = function (source, result, opt_key) {
+exports.check = function (source, result, opt_key, opt_includes) {
 	if (!exists(result)) {
 		return false;
 	}
@@ -59,6 +62,10 @@ exports.check = function (source, result, opt_key) {
 			} else {
 				return false;
 			}
+		}
+
+		if (opt_includes) {
+			return includes.map(function(el)  {return el[0]});
 		}
 	}
 
