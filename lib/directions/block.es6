@@ -7,7 +7,7 @@ var callBlockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
  */
 DirObj.prototype.declArguments = function () {
 	return `
-		var__ARGUMENTS__ = arguments;
+		var __ARGUMENTS__ = arguments;
 		${this.multiDeclVar('arguments = __ARGUMENTS__')}
 	`;
 };
