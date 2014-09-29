@@ -1,4 +1,4 @@
-module.exports = exports = require('./build/snakeskin.min');
+module.exports = exports = require('./build/snakeskin');
 
 var path = require('path');
 var fs = require('fs'),
@@ -136,6 +136,7 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (res !== false) {
+		delete require.cache[require.resolve(resSrc)];
 		tpls = require(resSrc);
 
 		if (cacheKey && (cacheEnabled || cache[cacheKey])) {
