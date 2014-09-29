@@ -139,7 +139,7 @@ function debounce(fn, delay) {
 	};
 }
 
-function action(data, file) {
+function action(data, file) {var DP$0 = Object.defineProperty;
 	file = file || program['file'];
 	var tpls = {},
 		fileName = '';
@@ -154,9 +154,21 @@ function action(data, file) {
 		params.prettyPrint = false;
 	}
 
+	function pathTpl(src) {
+		return path.normalize(
+			src
+				.replace(/%fileDir%/g, path.dirname(file))
+				.replace(/%fileName%/g, fileName)
+				.replace(/%file%/g, path.basename(file))
+				.replace(/%filePath%/g, file)
+		);
+	}
+
 	function load(val) {
+		val = pathTpl(val);
+
 		var tmp = val;
-		val = path.resolve(__dirname, val);
+		val = path.resolve(val);
 
 		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
@@ -187,16 +199,10 @@ function action(data, file) {
 		execTpl = tplData || mainTpl || exec;
 
 	if (outFile && file) {
-		outFile = path.normalize(
-			outFile
-				.replace(/%fileDir%/g, path.dirname(file))
-				.replace(/%fileName%/g, fileName)
-				.replace(/%file%/g, path.basename(file))
-				.replace(/%filePath%/g, file)
-		);
+		outFile = pathTpl(outFile);
 
 		var tmp = outFile;
-		outFile = path.resolve(__dirname, outFile);
+		outFile = path.resolve(outFile);
 
 		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
 			tmp = path.join(tmp, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
@@ -264,6 +270,8 @@ function action(data, file) {
 			console.log((("File \"" + file) + ("\" has been successfully compiled \"" + outFile) + "\"."));
 
 			var tmp$0 = params.debug.files;
+			include[file] = include[file] ||
+				DP$0({},file,{"value": true,"configurable":true,"enumerable":true,"writable":true});
 
 			if (tmp$0) {
 				for (var key in tmp$0) {
@@ -320,7 +328,7 @@ if (!file && input == null) {
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = function(dir)  {
 				fs.readdirSync(dir).forEach(function(el)  {
-					var src = path.join(dir, el);
+					var src = path.resolve(path.join(dir, el));
 
 					if (fs.statSync(src).isDirectory()) {
 						renderDir(src);
@@ -339,7 +347,7 @@ if (!file && input == null) {
 				monocle.watchDirectory({
 					root: file,
 					listener: debounce(function(f)  {
-						var files = include[path.resolve(__dirname, file, f.path)];
+						var files = include[path.resolve(file, f.path)];
 
 						if (files) {
 							for (var key in files) {

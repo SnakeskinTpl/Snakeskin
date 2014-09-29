@@ -154,9 +154,21 @@ function action(data, file) {
 		params.prettyPrint = false;
 	}
 
+	function pathTpl(src) {
+		return path.normalize(
+			src
+				.replace(/%fileDir%/g, path.dirname(file))
+				.replace(/%fileName%/g, fileName)
+				.replace(/%file%/g, path.basename(file))
+				.replace(/%filePath%/g, file)
+		);
+	}
+
 	function load(val) {
+		val = pathTpl(val);
+
 		let tmp = val;
-		val = path.resolve(__dirname, val);
+		val = path.resolve(val);
 
 		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
@@ -187,16 +199,10 @@ function action(data, file) {
 		execTpl = tplData || mainTpl || exec;
 
 	if (outFile && file) {
-		outFile = path.normalize(
-			outFile
-				.replace(/%fileDir%/g, path.dirname(file))
-				.replace(/%fileName%/g, fileName)
-				.replace(/%file%/g, path.basename(file))
-				.replace(/%filePath%/g, file)
-		);
+		outFile = pathTpl(outFile);
 
 		let tmp = outFile;
-		outFile = path.resolve(__dirname, outFile);
+		outFile = path.resolve(outFile);
 
 		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
 			tmp = path.join(tmp, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
@@ -264,6 +270,8 @@ function action(data, file) {
 			console.log(`File "${file}" has been successfully compiled "${outFile}".`);
 
 			let tmp = params.debug.files;
+			include[file] = include[file] ||
+				{[file]: true};
 
 			if (tmp) {
 				for (let key in tmp) {
@@ -320,7 +328,7 @@ if (!file && input == null) {
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = (dir) => {
 				fs.readdirSync(dir).forEach((el) => {
-					var src = path.join(dir, el);
+					var src = path.resolve(path.join(dir, el));
 
 					if (fs.statSync(src).isDirectory()) {
 						renderDir(src);
@@ -339,7 +347,7 @@ if (!file && input == null) {
 				monocle.watchDirectory({
 					root: file,
 					listener: debounce((f) => {
-						var files = include[path.resolve(__dirname, file, f.path)];
+						var files = include[path.resolve(file, f.path)];
 
 						if (files) {
 							for (let key in files) {
