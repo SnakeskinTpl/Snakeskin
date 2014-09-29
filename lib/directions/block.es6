@@ -1,5 +1,17 @@
 var callBlockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
 
+/**
+ * Декларировать объект arguments
+ * и вернуть строку декларации
+ * @return {string}
+ */
+DirObj.prototype.declArguments = function () {
+	return `
+		var__ARGUMENTS__ = arguments;
+		${this.multiDeclVar('arguments = __ARGUMENTS__')}
+	`;
+};
+
 Snakeskin.addDirective(
 	'block',
 
@@ -122,10 +134,9 @@ Snakeskin.addDirective(
 				this.save(`
 					if (!${fnDecl}) {
 						${fnDecl} = function (${args.str}) {
-							var __RESULT__ = ${this.declResult()},
-								__ARGUMENTS__ = arguments;
+							var __RESULT__ = ${this.declResult()};
 
-							${this.multiDeclVar('arguments = __ARGUMENTS__')}
+							${this.declArguments()}
 
 							function getTplResult(opt_clear) {
 								var res = ${this.returnResult()};

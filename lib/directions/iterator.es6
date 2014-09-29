@@ -30,13 +30,17 @@
 			if (this.isReady()) {
 				if (!this.inlineIterators) {
 					if (parts.length === 3) {
-						this.append(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+						this.append(`
+							\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {
+								${this.declArguments()}
+						`);
 
 					} else {
 						this.append(`
 							Snakeskin.forEach(
 								${this.prepareOutput(parts[0], true)},
 								function (${this.declCallbackArgs(parts[1])}) {
+									${this.declArguments()}
 						`);
 					}
 
@@ -278,7 +282,10 @@
 			});
 
 			if (this.isReady()) {
-				this.append(`\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {`);
+				this.append(`
+					\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {
+						${this.declArguments()}
+				`);
 			}
 		},
 
@@ -324,6 +331,7 @@
 						Snakeskin.forIn(
 							${this.prepareOutput(parts[0], true)},
 							function (${this.declCallbackArgs(parts[1])}) {
+								${this.declArguments()}
 					`);
 
 					return;
