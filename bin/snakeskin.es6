@@ -131,6 +131,8 @@ if (!file && args.length) {
 var calls = {};
 
 function action(data, file) {
+	console.time('Time');
+
 	file = file || program['file'] || '';
 	var tpls = {},
 		fileName = '';
@@ -185,8 +187,15 @@ function action(data, file) {
 		params.macros = load(macros);
 	}
 
+	function line() {
+		console.log(new Array(80).join('~'));
+	}
+
 	function success() {
+		line();
 		console.log(`File "${path.relative(__dirname, file)}" has been successfully compiled "${path.relative(__dirname, outFile)}".`);
+		console.timeEnd('Time');
+		line();
 	}
 
 	var outFile = out,
