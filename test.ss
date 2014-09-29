@@ -38,7 +38,7 @@
 				</script>
 
 				<script type="text/javascript">
-					Snakeskin.compile(document.getElementById('#{el.id}'), {prettyPrint: true});
+					Snakeskin.compile(document.getElementById('#{el.id}'), {prettyPrint: true, autoReplace: true});
 					test('#{el.id}', function () {
 						#{forEach el.js => el}
 							#{el|!html}
