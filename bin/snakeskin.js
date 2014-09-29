@@ -303,12 +303,22 @@ if (!file && input == null) {
 		mask = mask && new RegExp(mask);
 
 		if (fs.statSync(file).isDirectory()) {
-			fs.readdirSync(file).forEach(function(el)  {
-				if (mask ? mask.test(el) : path.extname(el) === '.ss') {
-					var src = path.join(file, el);
-					action(fs.readFileSync(src), src);
-				}
-			});
+			var renderDir = function(dir)  {
+				fs.readdirSync(dir).forEach(function(el)  {
+					var src = path.join(dir, el);
+
+					if (fs.statSync(src).isDirectory()) {
+						renderDir(src);
+
+					} else {
+						if (mask ? mask.test(src) : path.extname(el) === '.ss') {
+							action(fs.readFileSync(src), src);
+						}
+					}
+				});
+			};
+
+			renderDir(file);
 
 			if (watch) {
 				monocle.watchDirectory({
