@@ -17,7 +17,7 @@ function clone(obj) {
  * @param {string} source - путь к исходному файлу
  * @param {string} result - путь к скомпилированному файлу
  * @param {(string|boolean|null)=} [opt_key] - ключ параметров компиляции
- * @param {?boolean=} [opt_includes] - если true, то в случае успешного результата
+ * @param {?boolean=} [opt_includes=false] - если true, то в случае успешного результата
  *     вернётся массив подключаемых файлов
  *
  * @return {(boolean|!Array)}
