@@ -220,7 +220,7 @@ function action(data, file) {
 			}
 		});
 
-		if (file) {
+		if (file && (!words || exists(words))) {
 			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
 
 			if (includes) {
