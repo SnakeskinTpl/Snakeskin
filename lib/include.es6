@@ -24,10 +24,10 @@ Snakeskin.include = function (base, url, opt_type) {
 		let extname = path['extname'](url),
 			include = Snakeskin.LocalVars.include;
 
-		let src = path['resolve'](
+		let src = path['normalize'](path['resolve'](
 			path['dirname'](base),
-			path['normalize'](url) + (extname ? '' : '.ss')
-		);
+			url + (extname ? '' : '.ss')
+		));
 
 		if (!include[src]) {
 			include[src] = true;

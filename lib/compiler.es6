@@ -422,7 +422,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			let path = require('path');
 
 			filename =
-				info['file'] = path['resolve'](info['file']);
+				info['file'] = path['normalize'](path['resolve'](info['file']));
 
 			dirname = path['dirname'](filename);
 			Snakeskin.LocalVars.include[filename] = 'index';
