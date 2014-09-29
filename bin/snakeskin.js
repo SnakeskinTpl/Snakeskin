@@ -187,6 +187,14 @@ function action(data, file) {
 		execTpl = tplData || mainTpl || exec;
 
 	if (outFile && file) {
+		outFile = path.normalize(
+			outFile
+				.replace(/%fileDir%/g, path.dirname(file))
+				.replace(/%fileName%/g, fileName)
+				.replace(/%file%/g, path.basename(file))
+				.replace(/%filePath%/g, file)
+		);
+
 		var tmp = outFile;
 		outFile = path.resolve(__dirname, outFile);
 
@@ -195,6 +203,13 @@ function action(data, file) {
 		}
 
 		outFile = tmp;
+		path.dirname(outFile).split(path.sep).forEach(function(el, i, data)  {
+			var src = data.slice(0, i + 1).join(path.sep);
+
+			if (!exists(src)) {
+				fs.mkdirSync(src);
+			}
+		});
 	}
 
 	var toConsole = input && !program['output'] ||
