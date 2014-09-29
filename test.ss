@@ -34,7 +34,7 @@
 
 			#{forEach asserts => el}
 				<script type="text/x-snakeskin-template" id="#{el.id}">
-					#{'\n' + el.tpl|!html}
+					#{'\n' + el.tpl + '\n'|!html}
 				</script>
 
 				<script type="text/javascript">
