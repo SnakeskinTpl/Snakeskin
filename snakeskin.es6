@@ -69,7 +69,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		}
 	}
 
-	return true;
+	return opt_includes ? [] : true;
 };
 
 /**
