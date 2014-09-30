@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 29 Sep 2014 11:57:58 GMT
+ * Date: Tue, 30 Sep 2014 10:13:26 GMT
  */
 
 /*!
@@ -8492,6 +8492,17 @@ DirObj.prototype.evalStr = function (str) {
 		);
 	}
 };
+
+/**
+ * Выполнить заданную строку как JavaScript
+ * и вернуть результат
+ *
+ * @param {string} str - исходная строка
+ * @return {?}
+ */
+DirObj.prototype.returnEvalVal = function (str) {
+	return this.evalStr('return ' + str);
+};
 /*!
  * API для работы с аргументами функций
  */
@@ -10277,9 +10288,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			}
 		}
+
+		return macros;
 	}
 
-	if (!sp.proto) {
+	if (sp.proto) {
+		macros = p.macros;
+
+	} else {
 		setMacros(p.macros, null, true);
 	}
 
@@ -11563,8 +11579,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
 			try {
-				var str = this.pasteDangerBlocks(res.substring(from, to));
-				this.evalStr(str);
+				this.evalStr(this.pasteDangerBlocks(res.substring(from, to)));
 
 			} catch (err) {
 				return this.error(err.message);
@@ -11694,7 +11709,9 @@ Snakeskin.addDirective(
 		block: true,
 		notEmpty: true,
 		group: [
+			'template',
 			'inherit',
+			'define',
 			'blockInherit'
 		]
 	},
@@ -11718,8 +11735,13 @@ Snakeskin.addDirective(
 					return;
 				}
 
-				tplName =
-					this.tplName = this.prepareNameDecl(parts[0]);
+				try {
+					tplName =
+						this.tplName = this.prepareNameDecl(parts[0]);
+
+				} catch (err) {
+					return this.error(err.message);
+				}
 
 				var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
@@ -13659,8 +13681,13 @@ Snakeskin.addDirective(
 					return;
 				}
 
-				tplName =
-					this.tplName = this.prepareNameDecl(parts[0]);
+				try {
+					tplName =
+						this.tplName = this.prepareNameDecl(parts[0]);
+
+				} catch (err) {
+					return this.error(err.message);
+				}
 
 				var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
@@ -14278,7 +14305,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 			}
 
 			if (custom) {
-				str += (("['" + (this.evalStr(("return " + (this.pasteDangerBlocks(this.prepareOutput(el, true))))))) + "']");
+				str += (("['" + (this.returnEvalVal(this.pasteDangerBlocks(this.prepareOutput(el, true))))) + "']");
 				continue;
 			}
 
@@ -14401,7 +14428,12 @@ for (var i = -1; ++i < template.length;) {
 						first = str.charAt(0);
 
 					if (first === '%') {
-						str = (("['" + (this.evalStr(("return " + (this.pasteDangerBlocks(this.prepareOutput(str.substring(1), true))))))) + "']");
+						try {
+							str = (("['" + (this.returnEvalVal(this.pasteDangerBlocks(this.prepareOutput(str.substring(1), true))))) + "']");
+
+						} catch (err) {
+							return this.error(err.message);
+						}
 					}
 
 					for (var i = 0; ++i < length;) {
@@ -14430,7 +14462,13 @@ for (var i = -1; ++i < template.length;) {
 						}
 
 						if (custom) {
-							str += (("['" + (this.evalStr(("return " + (this.pasteDangerBlocks(this.prepareOutput(el, true))))))) + "']");
+							try {
+								str += (("['" + (this.returnEvalVal(this.pasteDangerBlocks(this.prepareOutput(el, true))))) + "']");
+
+							} catch (err) {
+								return this.error(err.message);
+							}
+
 							continue;
 
 						} else if (i === length - 1) {
@@ -14481,8 +14519,13 @@ for (var i = -1; ++i < template.length;) {
 					return this.error((("invalid \"" + (this.name)) + "\" name for extend"));
 				}
 
-				parentTplName =
-					this.parentTplName = this.prepareNameDecl(parentTplName);
+				try {
+					parentTplName =
+						this.parentTplName = this.prepareNameDecl(parentTplName);
+
+				} catch (err) {
+					return this.error(err.message);
+				}
 
 				if (cache[parentTplName] == null) {
 					if (!this.renderAs || this.renderAs === 'template') {
@@ -16099,24 +16142,30 @@ Snakeskin.addDirective(
 				exists = fs['existsSync'] || path['existsSync'];
 
 			var old = val;
-			if (opt_base) {
-				val = path['normalize'](path['resolve'](path['dirname'](opt_base), val));
-			}
 
-			if (exists(val)) {
-				if (opt_onFileExists) {
-					opt_onFileExists(val);
+			try {
+				if (opt_base) {
+					val = path['normalize'](path['resolve'](path['dirname'](opt_base), val));
 				}
 
-				res = require(val);
+				if (exists(val)) {
+					if (opt_onFileExists) {
+						opt_onFileExists(val);
+					}
 
-				if (res) {
-					return res;
+					res = require(val);
+
+					if (res) {
+						return res;
+					}
+
+					val = fs['readFileSync'](val).toString();
+
+				} else {
+					val = old;
 				}
 
-				val = fs['readFileSync'](val).toString();
-
-			} else {
+			} catch (ignore) {
 				val = old;
 			}
 		}
@@ -16239,7 +16288,14 @@ Snakeskin.addDirective(
 
 		var parts = command.split(' ');
 		var flag = parts[0].trim(),
-			value = this.evalStr('return ' + this.pasteDangerBlocks(parts.slice(1).join(' ').trim()));
+			value;
+
+		try {
+			value = this.returnEvalVal(this.pasteDangerBlocks(parts.slice(1).join(' ').trim()));
+
+		} catch (err) {
+			return this.error(err.message);
+		}
 
 		var includeMap = {
 			'language': true,
@@ -16263,11 +16319,11 @@ Snakeskin.addDirective(
 						params[flag] : null,
 
 					init ?
-						null : params
+						null : params[flag]
 				);
 
 				if (flag === 'macros') {
-					this.setMacros(value, null, init);
+					value = this.setMacros(value, null, init);
 				}
 			}
 
@@ -16292,6 +16348,7 @@ Snakeskin.addDirective(
 
 		{
 			placement: 'global',
+			group: 'define',
 			notEmpty: true,
 			replacers: {
 				'@=': function(cmd)  {return cmd.replace('@=', 'setSSFlag ')}
@@ -16305,6 +16362,7 @@ Snakeskin.addDirective(
 		'__setSSFlag__',
 
 		{
+			group: 'define',
 			notEmpty: true,
 			replacers: {
 				'@=': function(cmd)  {return cmd.replace('@=', 'setSSFlag ')}
