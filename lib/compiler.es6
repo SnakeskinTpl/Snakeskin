@@ -397,7 +397,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	if (!sp.proto) {
+	if (sp.proto) {
+		macros = p.macros;
+
+	} else {
 		setMacros(p.macros, null, true);
 	}
 
