@@ -231,7 +231,8 @@ Snakeskin.addDirective(
 						xml: this.xml,
 						autoReplace: this.autoReplace,
 						macros: this.macros,
-						language: this.language
+						language: this.language,
+						localization: this.localization
 					},
 
 					null,
