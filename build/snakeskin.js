@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 30 Sep 2014 10:13:26 GMT
+ * Date: Tue, 30 Sep 2014 10:58:02 GMT
  */
 
 /*!
@@ -13826,7 +13826,9 @@ Snakeskin.addDirective(
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
 						autoReplace: this.autoReplace,
-						macros: this.macros
+						macros: this.macros,
+						language: this.language,
+						localization: this.localization
 					},
 
 					null,
@@ -16153,13 +16155,21 @@ Snakeskin.addDirective(
 						opt_onFileExists(val);
 					}
 
-					res = require(val);
+					var content = fs['readFileSync'](val).toString();
 
-					if (res) {
-						return res;
+					try {
+						res = JSON.parse(content);
+
+					} catch (ignore) {
+						try {
+							res = eval((("(" + content) + ")"));
+
+						} catch (ignore) {
+							res = require(val);
+						}
 					}
 
-					val = fs['readFileSync'](val).toString();
+					return Object(res || {});
 
 				} else {
 					val = old;
