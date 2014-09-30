@@ -230,7 +230,8 @@ Snakeskin.addDirective(
 						escapeOutput: this.escapeOutput,
 						xml: this.xml,
 						autoReplace: this.autoReplace,
-						macros: this.macros
+						macros: this.macros,
+						language: this.language
 					},
 
 					null,
