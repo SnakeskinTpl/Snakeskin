@@ -20,7 +20,9 @@ Snakeskin.addDirective(
 		block: true,
 		notEmpty: true,
 		group: [
+			'template',
 			'inherit',
+			'define',
 			'blockInherit'
 		]
 	},
@@ -44,8 +46,13 @@ Snakeskin.addDirective(
 					return;
 				}
 
-				tplName =
-					this.tplName = this.prepareNameDecl(parts[0]);
+				try {
+					tplName =
+						this.tplName = this.prepareNameDecl(parts[0]);
+
+				} catch (err) {
+					return this.error(err.message);
+				}
 
 				let desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
