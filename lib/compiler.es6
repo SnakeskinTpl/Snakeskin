@@ -395,6 +395,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 			}
 		}
+
+		return macros;
 	}
 
 	if (sp.proto) {
