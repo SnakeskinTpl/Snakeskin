@@ -100,3 +100,14 @@ DirObj.prototype.evalStr = function (str) {
 		);
 	}
 };
+
+/**
+ * Выполнить заданную строку как JavaScript
+ * и вернуть результат
+ *
+ * @param {string} str - исходная строка
+ * @return {?}
+ */
+DirObj.prototype.returnEvalVal = function (str) {
+	return this.evalStr('return ' + str);
+};
