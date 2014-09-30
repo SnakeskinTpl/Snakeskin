@@ -23,11 +23,12 @@
 				exists = fs['existsSync'] || path['existsSync'];
 
 			let old = val;
-			if (opt_base) {
-				val = path['normalize'](path['resolve'](path['dirname'](opt_base), val));
-			}
 
 			try {
+				if (opt_base) {
+					val = path['normalize'](path['resolve'](path['dirname'](opt_base), val));
+				}
+
 				if (exists(val)) {
 					if (opt_onFileExists) {
 						opt_onFileExists(val);
@@ -46,7 +47,7 @@
 				}
 
 			} catch (ignore) {
-
+				val = old;
 			}
 		}
 
@@ -199,7 +200,7 @@
 						params[flag] : null,
 
 					init ?
-						null : params
+						null : params[flag]
 				);
 
 				if (flag === 'macros') {

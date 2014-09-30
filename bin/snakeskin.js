@@ -14,7 +14,7 @@ program
 	.version(Snakeskin.VERSION.join('.'))
 
 	.usage('[options] [dir|file ...]')
-	.option('-p, --params [options]', 'path to the options file or JS options object')
+	.option('-p, --params [src]', 'path to the options file or JS options object')
 
 	.option('-s, --source [src]', 'path to the template file or directory')
 	.option('-f, --file [src]', 'path to the template file (meta-information)')
@@ -48,8 +48,11 @@ program
 	.option('--pretty-print', 'formatting output')
 	.parse(process.argv);
 
-var params = program['params'] ?
-	Snakeskin.toObj(params) : {};
+var params = Snakeskin.toObj(program['params']) || {};
+
+if (params instanceof Object === false) {
+	params = {};
+}
 
 params.xml = 'disableXml' in program ?
 	!program['disableXml'] : params.xml;
@@ -221,7 +224,7 @@ function action(data, file) {
 			}
 		});
 
-		if (file && (!words || exists(words))) {
+		if (file && (!words || exists(words)) && params.cache !== false) {
 			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
 
 			if (includes) {
@@ -361,46 +364,73 @@ if (!file && input == null) {
 	if (file) {
 		file = path.normalize(path.resolve(file));
 
-		var mask = program['mask'];
-		mask = mask && new RegExp(mask);
+		var isDir = fs.statSync(file).isDirectory(),
+			mask = program['mask'];
+
+		mask = mask &&
+			new RegExp(mask);
+
+		var watchDir = function()  {
+			monocle.watchDirectory({
+				root: file,
+				listener: function(f)  {
+					var src = f.fullPath;
+					if (!fMap[src] && !f.stat.isDirectory() && (mask ? mask.test(src) : path.extname(src) === '.ss')) {
+						monocle.unwatchAll();
+						action(fs.readFileSync(src), src);
+						wacthFiles();
+					}
+				}
+			});
+		};
 
 		var wacthFiles = function()  {
-			if (watch) {
-				var files = [];
-
-				for (var key in include) {
-					if (!include.hasOwnProperty(key)) {
-						continue;
-					}
-
-					fMap[key] = true;
-					files.push(key);
+			var files = [];
+			for (var key in include) {
+				if (!include.hasOwnProperty(key)) {
+					continue;
 				}
 
-				monocle.watchFiles({
-					files: files,
-					listener: function(f)  {
-						var files = include[f.fullPath];
+				fMap[key] = true;
+				files.push(key);
+			}
 
-						if (files && !calls[f.fullPath]) {
-							calls[f.fullPath] = setTimeout(function()  {
-								for (var key in files) {
-									if (!files.hasOwnProperty(key)) {
-										continue;
-									}
+			monocle.watchFiles({
+				files: files,
+				listener: function(f)  {
+					var src = f.fullPath,
+						files = include[src];
 
-									if ((!mask || mask.test(key)) && exists(key)) {
-										action(fs.readFileSync(key), key);
-									}
+					if (files && !calls[src]) {
+						calls[src] = setTimeout(function()  {
+							monocle.unwatchAll();
+
+							for (var key in files) {
+								if (!files.hasOwnProperty(key)) {
+									continue;
 								}
 
-								delete calls[f.fullPath];
-							}, 60);
-						}
+								if ((!mask || mask.test(key))) {
+									if (exists(key)) {
+										action(fs.readFileSync(key), key);
 
-						end();
+									} else {
+										delete fMap[key];
+									}
+								}
+							}
+
+							delete calls[src];
+							wacthFiles();
+						}, 60);
 					}
-				});
+
+					end();
+				}
+			});
+
+			if (isDir) {
+				watchDir();
 			}
 		};
 
@@ -419,30 +449,14 @@ if (!file && input == null) {
 			};
 
 			renderDir(file);
-			var watchDir = function()  {
-				if (watch) {
-					monocle.watchDirectory({
-						root: file,
-						listener: function(f)  {
-							var src = f.fullPath;
-							if (!fMap[src] && !f.stat.isDirectory() && (mask ? mask.test(src) : path.extname(src) === '.ss')) {
-								monocle.unwatchAll();
-								action(fs.readFileSync(src), src);
-								wacthFiles();
-								watchDir();
-							}
-						}
-					});
-				}
-			};
-
-			watchDir();
 
 		} else if (!mask || mask.test(file)) {
 			action(fs.readFileSync(file), file);
 		}
 
-		wacthFiles();
+		if (watch) {
+			wacthFiles();
+		}
 
 	} else {
 		action(input);
