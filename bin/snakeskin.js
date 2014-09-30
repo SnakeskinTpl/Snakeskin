@@ -97,6 +97,7 @@ params.debug = {};
 params.cache = false;
 
 var include = {},
+	fMap = {},
 	watch = program['watch'];
 
 var prettyPrint = params.prettyPrint,
@@ -363,6 +364,46 @@ if (!file && input == null) {
 		var mask = program['mask'];
 		mask = mask && new RegExp(mask);
 
+		var wacthFiles = function()  {
+			if (watch) {
+				var files = [];
+
+				for (var key in include) {
+					if (!include.hasOwnProperty(key)) {
+						continue;
+					}
+
+					fMap[key] = true;
+					files.push(key);
+				}
+
+				monocle.watchFiles({
+					files: files,
+					listener: function(f)  {
+						var files = include[f.fullPath];
+
+						if (files && !calls[f.fullPath]) {
+							calls[f.fullPath] = setTimeout(function()  {
+								for (var key in files) {
+									if (!files.hasOwnProperty(key)) {
+										continue;
+									}
+
+									if ((!mask || mask.test(key)) && exists(key)) {
+										action(fs.readFileSync(key), key);
+									}
+								}
+
+								delete calls[f.fullPath];
+							}, 60);
+						}
+
+						end();
+					}
+				});
+			}
+		};
+
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = function(dir)  {
 				fs.readdirSync(dir).forEach(function(el)  {
@@ -371,54 +412,37 @@ if (!file && input == null) {
 					if (fs.statSync(src).isDirectory()) {
 						renderDir(src);
 
-					} else {
-						if (mask ? mask.test(src) : path.extname(el) === '.ss') {
-							action(fs.readFileSync(src), src);
-						}
+					} else if (mask ? mask.test(src) : path.extname(el) === '.ss') {
+						action(fs.readFileSync(src), src);
 					}
 				});
 			};
 
 			renderDir(file);
+			var watchDir = function()  {
+				if (watch) {
+					monocle.watchDirectory({
+						root: file,
+						listener: function(f)  {
+							var src = f.fullPath;
+							if (!fMap[src] && !f.stat.isDirectory() && (mask ? mask.test(src) : path.extname(src) === '.ss')) {
+								monocle.unwatchAll();
+								action(fs.readFileSync(src), src);
+								wacthFiles();
+								watchDir();
+							}
+						}
+					});
+				}
+			};
+
+			watchDir();
 
 		} else if (!mask || mask.test(file)) {
 			action(fs.readFileSync(file), file);
 		}
 
-		if (watch) {
-			var files = [];
-
-			for (var key in include) {
-				if (!include.hasOwnProperty(key)) {
-					continue;
-				}
-
-				files.push(key);
-			}
-
-			monocle.watchFiles({
-				files: files,
-				listener: function(f)  {
-					var files = include[f.fullPath];
-
-					if (files && !calls[f.fullPath]) {
-						calls[f.fullPath] = setTimeout(function()  {
-							for (var key in files) {
-								if (!files.hasOwnProperty(key)) {
-									continue;
-								}
-
-								action(fs.readFileSync(key), key);
-							}
-
-							delete calls[f.fullPath];
-						}, 60);
-					}
-
-					end();
-				}
-			});
-		}
+		wacthFiles();
 
 	} else {
 		action(input);

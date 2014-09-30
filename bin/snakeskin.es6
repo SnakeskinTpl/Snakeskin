@@ -97,6 +97,7 @@ params.debug = {};
 params.cache = false;
 
 var include = {},
+	fMap = {},
 	watch = program['watch'];
 
 var prettyPrint = params.prettyPrint,
@@ -363,6 +364,46 @@ if (!file && input == null) {
 		let mask = program['mask'];
 		mask = mask && new RegExp(mask);
 
+		let wacthFiles = () => {
+			if (watch) {
+				let files = [];
+
+				for (let key in include) {
+					if (!include.hasOwnProperty(key)) {
+						continue;
+					}
+
+					fMap[key] = true;
+					files.push(key);
+				}
+
+				monocle.watchFiles({
+					files: files,
+					listener: (f) => {
+						var files = include[f.fullPath];
+
+						if (files && !calls[f.fullPath]) {
+							calls[f.fullPath] = setTimeout(() => {
+								for (let key in files) {
+									if (!files.hasOwnProperty(key)) {
+										continue;
+									}
+
+									if ((!mask || mask.test(key)) && exists(key)) {
+										action(fs.readFileSync(key), key);
+									}
+								}
+
+								delete calls[f.fullPath];
+							}, 60);
+						}
+
+						end();
+					}
+				});
+			}
+		};
+
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = (dir) => {
 				fs.readdirSync(dir).forEach((el) => {
@@ -371,56 +412,37 @@ if (!file && input == null) {
 					if (fs.statSync(src).isDirectory()) {
 						renderDir(src);
 
-					} else {
-						if (mask ? mask.test(src) : path.extname(el) === '.ss') {
-							action(fs.readFileSync(src), src);
-						}
+					} else if (mask ? mask.test(src) : path.extname(el) === '.ss') {
+						action(fs.readFileSync(src), src);
 					}
 				});
 			};
 
 			renderDir(file);
+			let watchDir = () => {
+				if (watch) {
+					monocle.watchDirectory({
+						root: file,
+						listener: (f) => {
+							var src = f.fullPath;
+							if (!fMap[src] && !f.stat.isDirectory() && (mask ? mask.test(src) : path.extname(src) === '.ss')) {
+								monocle.unwatchAll();
+								action(fs.readFileSync(src), src);
+								wacthFiles();
+								watchDir();
+							}
+						}
+					});
+				}
+			};
+
+			watchDir();
 
 		} else if (!mask || mask.test(file)) {
 			action(fs.readFileSync(file), file);
 		}
 
-		if (watch) {
-			let files = [];
-
-			for (let key in include) {
-				if (!include.hasOwnProperty(key)) {
-					continue;
-				}
-
-				files.push(key);
-			}
-
-			monocle.watchFiles({
-				files: files,
-				listener: (f) => {
-					var files = include[f.fullPath];
-
-					if (files && !calls[f.fullPath]) {
-						calls[f.fullPath] = setTimeout(() => {
-							for (let key in files) {
-								if (!files.hasOwnProperty(key)) {
-									continue;
-								}
-
-								if (!mask || mask.test(key)) {
-									action(fs.readFileSync(key), key);
-								}
-							}
-
-							delete calls[f.fullPath];
-						}, 60);
-					}
-
-					end();
-				}
-			});
-		}
+		wacthFiles();
 
 	} else {
 		action(input);
