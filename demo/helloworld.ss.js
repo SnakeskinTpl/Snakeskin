@@ -1,4 +1,4 @@
-/* Snakeskin v4.1.3, key <false,true,false,false,true,false,true,false,true,i18n>, label <1409295656628>, includes <>, generated at <1409318585480>.
+/* Snakeskin v5.0.0, key <false,true,false,,stringConcat,true,true,,false,true,i18n>, label <1412074961864>, includes <>, generated at <1412074993298>.
    This code is generated automatically, don't alter it. */
 (function() {
     var __ROOT__ = this,
@@ -7,23 +7,33 @@
         async = this.async != null ? this.async : Snakeskin.Vars.async;
     var __$C__ = $C,
         __async__ = async;
-    var __FILTERS__ = Snakeskin.Filters,
+    var __APPEND__ = Snakeskin.appendChild,
+        __FILTERS__ = Snakeskin.Filters,
         __VARS__ = Snakeskin.Vars,
         __LOCAL__ = Snakeskin.LocalVars,
         __STR__, __TMP__, __J__;
-    var $_ = __LOCAL__['$_9acb0']; /* Snakeskin template: helloWorld; name  */
+    var $_ = __LOCAL__['$_0356c']; /* Snakeskin template: helloWorld; name  */
     this.helloWorld = function helloWorld(name) {
         var __THIS__ = this,
-            callee = __ROOT__.helloWorld;
+            __CALLEE__ = __ROOT__.helloWorld,
+            callee = __CALLEE__;
         if (!callee.Blocks) {
-            var __BLOCKS__ = callee.Blocks = {},
+            var __BLOCKS__ = __CALLEE__.Blocks = {},
                 blocks = __BLOCKS__;
         }
         var __RESULT__ = '',
-            $_;
+            __TMP_RESULT__, __NODE__, $_;
 
-        function getTplResult() {
-            return __RESULT__;
+        function getTplResult(opt_clear) {
+            var res = __RESULT__;
+            if (opt_clear) {
+                __RESULT__ = '';
+            }
+            return res;
+        }
+
+        function clearTplResult() {
+            __RESULT__ = '';
         }
         var __RETURN__ = false,
             __RETURN_VAL__;
