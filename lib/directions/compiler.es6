@@ -166,7 +166,7 @@
 			value;
 
 		try {
-			value = this.evalStr('return ' + this.pasteDangerBlocks(parts.slice(1).join(' ').trim()));
+			value = this.returnEvalVal(this.pasteDangerBlocks(parts.slice(1).join(' ').trim()));
 
 		} catch (err) {
 			return this.error(err.message);
