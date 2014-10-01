@@ -84,6 +84,8 @@ exports.check = function (source, result, opt_key, opt_includes) {
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
+	src = path.normalize(path.resolve(src));
+
 	var p = opt_params || {};
 	p.commonJS = true;
 
@@ -166,6 +168,27 @@ exports.compileFile = function (src, opt_params) {
 };
 
 /**
+ * Вернуть ссылку на главный шаблон
+ *
+ * @param {!Object} tpls - таблица шаблонов
+ * @param {?string=} [opt_src] - путь к файлу шаблонов
+ * @param {?string=} [opt_tplName] - имя главного шаблона
+ * @return {Function}
+ */
+exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
+	var tpl;
+
+	if (opt_tplName) {
+		tpl = tpls[opt_tplName];
+
+	} else {
+		tpl = tpls[path.basename(opt_src, path.extname(opt_src))] || tpls.main || tpls.index || tpls[Object.keys(tpls)[0]];
+	}
+
+	return tpl || null;
+};
+
+/**
  * Скомпилировать заданный файл и вернуть ссылку на главный шаблон (функцию)
  *
  * @param {string} src - путь к файлу шаблонов
@@ -177,21 +200,13 @@ exports.compileFile = function (src, opt_params) {
  * @return {Function}
  */
 exports.execFile = function (src, opt_params, opt_tplName) {
-	var tpls = this.compileFile(src, opt_params),
-		tpl;
+	var tpls = this.compileFile(src, opt_params);
 
 	if (!tpls) {
 		return null;
 	}
 
-	if (opt_tplName) {
-		tpl = tpls[opt_tplName];
-
-	} else {
-		tpl = tpls[path.basename(src, path.extname(src))] || tpls.main || tpls.index || tpls[Object.keys(tpls)[0]];
-	}
-
-	return tpl || null;
+	return this.returnMainTpl(tpls, src, opt_tplName);
 };
 
 /**
@@ -206,24 +221,11 @@ exports.execFile = function (src, opt_params, opt_tplName) {
  * @return {Function}
  */
 exports.exec = function (txt, opt_params, opt_tplName) {
-	var tpls = {},
-		tpl;
+	var tpls = {};
 
 	opt_params = opt_params || {};
 	opt_params.context = tpls;
 
 	this.compile(txt, opt_params);
-
-	if (!tpls) {
-		return null;
-	}
-
-	if (opt_tplName) {
-		tpl = tpls[opt_tplName];
-
-	} else {
-		tpl = tpls.main || tpls.index || tpls[Object.keys(tpls)[0]];
-	}
-
-	return tpl || null;
+	return this.returnMainTpl(tpls, null, opt_tplName);
 };
