@@ -32,6 +32,21 @@
 			lb = LEFT_BLOCK,
 			rb = RIGHT_BLOCK;
 
+		function f(struct, chains, obj) {
+			if (struct.block) {
+				if (chains[struct.name] && chains[struct.name][obj.name]) {
+					obj.block = true;
+					obj.name = struct.name;
+
+				} else {
+					let tmp = rightWSRgxp.exec(res)[0];
+					res = res.replace(rightWSRgxp, '');
+					res += genEndDir(struct, ws, struct.space) +
+						(tmp ? `${struct.adv}${LEFT_BLOCK}__sp__${RIGHT_BLOCK}` : '') + tmp;
+				}
+			}
+		}
+
 		for (let j = i - 1; ++j < str.length;) {
 			length++;
 
@@ -151,34 +166,11 @@
 								obj.block = false;
 							}
 
-							if (struct.block) {
-								if (chains[struct.name] && chains[struct.name][obj.name]) {
-									obj.block = true;
-									obj.name = struct.name;
-
-								} else {
-									let tmp = rightWSRgxp.exec(res)[0];
-									res = res.replace(rightWSRgxp, '');
-									res += genEndDir(struct, ws, struct.space) +
-										(tmp ? `${struct.adv}${lb}__sp__${rb}` : '') + tmp;
-								}
-							}
+							f(struct, chains, obj);
 
 						} else {
 							while (struct.spaces >= spaces) {
-								if (struct.block) {
-									if (chains[struct.name] && chains[struct.name][obj.name]) {
-										obj.block = true;
-										obj.name = struct.name;
-
-									} else {
-										let tmp = rightWSRgxp.exec(res)[0];
-										res = res.replace(rightWSRgxp, '');
-										res += genEndDir(struct, ws, struct.space) +
-											(tmp ? `${struct.adv}${lb}__sp__${rb}` : '') + tmp;
-									}
-								}
-
+								f(struct, chains, obj);
 								struct = struct
 									.parent;
 
