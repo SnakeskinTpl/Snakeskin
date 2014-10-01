@@ -427,8 +427,8 @@ for (let i = -1; ++i < template.length;) {
 				var __RETURN__ = false,
 					__RETURN_VAL__;
 
-				var TPL_NAME = '${applyDefEscape(tplName)}',
-					PARENT_TPL_NAME${parentTplName ? ` = '${applyDefEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
+				var TPL_NAME = '${applySimpleEscape(tplName)}',
+					PARENT_TPL_NAME${parentTplName ? ` = '${applySimpleEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
 
 				${args.defParams}
 			`);
@@ -549,7 +549,7 @@ for (let i = -1; ++i < template.length;) {
 						return ${this.returnResult()};
 					};
 
-					Snakeskin.cache['${applyDefEscape(this.pasteDangerBlocks(tplName))}'] = this${concatProp(tplName)};
+					Snakeskin.cache['${applySimpleEscape(this.pasteDangerBlocks(tplName))}'] = this${concatProp(tplName)};
 				`);
 			}
 
