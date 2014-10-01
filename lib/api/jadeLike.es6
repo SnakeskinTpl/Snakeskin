@@ -4,6 +4,7 @@
 
 (() => {
 	var commandRgxp = /([^\s]+).*/,
+		rightWSRgxp = /\s*$/,
 		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
 		lastALBRgxp = new RegExp(`${ADV_LEFT_BLOCK}$`);
 
@@ -47,8 +48,8 @@
 					continue;
 				}
 
-				if (clrL && ws) {
-					res += `${alb}${lb}__&__${rb}${el}`;
+				if (clrL) {
+					res += el;
 				}
 
 				clrL = true;
@@ -146,7 +147,9 @@
 									obj.name = struct.name;
 
 								} else {
-									res += genEndDir(struct, ws, struct.space);
+									let tmp = rightWSRgxp.exec(res)[0];
+									res = res.replace(rightWSRgxp, '');
+									res += genEndDir(struct, ws, struct.space) + tmp;
 								}
 							}
 
@@ -160,7 +163,9 @@
 										obj.name = struct.name;
 
 									} else {
-										res += genEndDir(struct, ws, struct.space);
+										let tmp = rightWSRgxp.exec(res)[0];
+										res = res.replace(rightWSRgxp, '');
+										res += genEndDir(struct, ws, struct.space) + tmp;
 									}
 								}
 
@@ -198,10 +203,6 @@
 
 					struct = obj;
 					res += space + s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
-
-					if (obj.block && ws) {
-						res += `${s}__&__${e}`;
-					}
 
 					let tmp = decl.length - 1;
 					tSpace = 0;
@@ -257,10 +258,7 @@
 		var s = dir.adv + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		var sp = ws ?
-			`${s}__&__${e}` : '';
-
-		return `${sp}\n${space}${s}__end__${e}${s}__cutLine__${e}${sp}`;
+		return `${ws ? `${s}__&__${e}` : ''}\n${space}${s}__end__${e}${s}__cutLine__${e}${s}__sp__${e}`;
 	}
 
 	/**
