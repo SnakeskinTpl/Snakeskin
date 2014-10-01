@@ -9,7 +9,6 @@ Snakeskin.addDirective(
 	'comment',
 
 	{
-		text: true,
 		block: true,
 		selfInclude: false,
 		placement: 'template',
