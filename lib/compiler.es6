@@ -678,9 +678,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			} else {
 				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
 					el = dir.ignore && dir.ignore.test(el) ?
-						'' : ' ';
+						'' : el;
 
-					if (el) {
+					if (el && !dir.tolerantWhitespace) {
+						el = ' ';
 						dir.space = true;
 					}
 
@@ -1066,7 +1067,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		// Запись строки
 		} else {
 			if (jsDoc) {
-				dir.save(applyDefEscape(el));
+				dir.save(el);
 
 			} else if (!dir.tplName) {
 				if (el === ' ') {
