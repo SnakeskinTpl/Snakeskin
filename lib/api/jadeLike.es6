@@ -146,7 +146,7 @@
 									obj.name = struct.name;
 
 								} else {
-									res += genEndDir(struct, ws);
+									res += genEndDir(struct, ws, struct.space);
 								}
 							}
 
@@ -160,7 +160,7 @@
 										obj.name = struct.name;
 
 									} else {
-										res += genEndDir(struct, ws);
+										res += genEndDir(struct, ws, struct.space);
 									}
 								}
 
@@ -229,7 +229,7 @@
 
 		while (struct) {
 			if (struct.block) {
-				res += genEndDir(struct, ws);
+				res += genEndDir(struct, ws, struct.space);
 			}
 
 			struct = struct
@@ -247,16 +247,20 @@
 	 *
 	 * @param {!Object} dir - объект-описание директивы
 	 * @param {boolean} ws - если true, то лишние пробельные символы вырезаются
+	 * @param {string} space - доступное свободное пространство
 	 * @return {string}
 	 */
-	function genEndDir(dir, ws) {
+	function genEndDir(dir, ws, space) {
+		space = ws ? '' :
+			(space || '').substring(1);
+
 		var s = dir.adv + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		var space = ws ?
+		var sp = ws ?
 			`${s}__&__${e}` : '';
 
-		return `${space}\n${s}__end__${e}${s}__cutLine__${e}${space}`;
+		return `${sp}\n${space}${s}__end__${e}${s}__cutLine__${e}${sp}`;
 	}
 
 	/**
