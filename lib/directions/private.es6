@@ -94,6 +94,19 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'__sp__',
+
+	{
+		group: 'ignore',
+		text: true
+	},
+
+	function () {
+		this.startInlineDir();
+	}
+);
+
+Snakeskin.addDirective(
 	'__switchLine__',
 
 	{
