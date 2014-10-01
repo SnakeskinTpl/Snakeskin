@@ -21,7 +21,10 @@
 
 		function (command) {
 			this.startDir();
-			this.space = true;
+
+			if (!this.tolerantWhitespace) {
+				this.space = true;
+			}
 
 			if (this.autoReplace) {
 				this.autoReplace = false;
@@ -77,7 +80,10 @@
 		},
 
 		function () {
-			this.space = true;
+			if (!this.tolerantWhitespace) {
+				this.space = true;
+			}
+
 			if (this.structure.params.autoReplace) {
 				this.autoReplace = true;
 			}
