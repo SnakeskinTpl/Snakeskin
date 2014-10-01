@@ -121,7 +121,14 @@ DirObj.prototype.prepareNameDecl = function (name) {
 			}
 
 			if (custom) {
-				str += `['${this.returnEvalVal(this.pasteDangerBlocks(this.prepareOutput(el, true)))}']`;
+				str += `['${
+					applyDefEscape(
+						this.returnEvalVal(
+							this.prepareOutput(el, true)
+						)
+					)
+				}']`;
+
 				continue;
 			}
 
@@ -245,7 +252,13 @@ for (let i = -1; ++i < template.length;) {
 
 					if (first === '%') {
 						try {
-							str = `['${this.returnEvalVal(this.pasteDangerBlocks(this.prepareOutput(str.substring(1), true)))}']`;
+							str = `['${
+								applyDefEscape(
+									this.returnEvalVal(
+										this.prepareOutput(str.substring(1), true)
+									)
+								)
+							}']`;
 
 						} catch (err) {
 							return this.error(err.message);
@@ -279,7 +292,13 @@ for (let i = -1; ++i < template.length;) {
 
 						if (custom) {
 							try {
-								str += `['${this.returnEvalVal(this.pasteDangerBlocks(this.prepareOutput(el, true)))}']`;
+								str += `['${
+									applyDefEscape(
+										this.returnEvalVal(
+											this.prepareOutput(el, true)
+										)
+									)
+								}']`;
 
 							} catch (err) {
 								return this.error(err.message);
@@ -427,8 +446,8 @@ for (let i = -1; ++i < template.length;) {
 				var __RETURN__ = false,
 					__RETURN_VAL__;
 
-				var TPL_NAME = '${applySimpleEscape(tplName)}',
-					PARENT_TPL_NAME${parentTplName ? ` = '${applySimpleEscape(this.pasteDangerBlocks(parentTplName))}'` : ''};
+				var TPL_NAME = "${escapeDoubleQuote(tplName)}",
+					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuote(parentTplName)}"` : ''};
 
 				${args.defParams}
 			`);
@@ -549,7 +568,7 @@ for (let i = -1; ++i < template.length;) {
 						return ${this.returnResult()};
 					};
 
-					Snakeskin.cache['${applySimpleEscape(this.pasteDangerBlocks(tplName))}'] = this${concatProp(tplName)};
+					Snakeskin.cache["${escapeDoubleQuote(tplName)}"] = this${concatProp(tplName)};
 				`);
 			}
 
