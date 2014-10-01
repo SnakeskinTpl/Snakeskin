@@ -100,6 +100,12 @@ function DirObj(src, params) {
 	 * @expose
 	 * @type {boolean}
 	 */
+	this.tolerantWhitespace = params.tolerantWhitespace;
+
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
 	this.inlineIterators = params.inlineIterators;
 
 	/**
@@ -181,7 +187,8 @@ function DirObj(src, params) {
 			localization: this.localization,
 			i18nFn: this.i18nFn,
 			language: this.language,
-			ignore: this.ignore
+			ignore: this.ignore,
+			tolerantWhitespace: this.tolerantWhitespace
 		}
 	];
 
