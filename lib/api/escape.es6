@@ -90,10 +90,20 @@ function escapeWinPath(str) {
 	return String(str).replace(/\\/gm, '\\\\');
 }
 
+function applySimpleEscape(str) {
+	return String(str)
+		.replace(/'/gm, '\\\'');
+}
+
 function applyDefEscape(str) {
 	return String(str)
 		.replace(/\\/gm, '\\\\')
 		.replace(/'/gm, '\\\'');
+}
+
+function applySymbolDefEscape(str) {
+	return applyDefEscape(str)
+		.replace(/\\\\(n|r|v|t)/gm, '\\$1');
 }
 
 function escapeNextLine(str) {
