@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 02 Oct 2014 08:39:15 GMT
+ * Date: Thu, 02 Oct 2014 08:58:54 GMT
  */
 
 /*!
@@ -6426,7 +6426,7 @@ Snakeskin.DirObj = DirObj;
  * @param {string} params.i18nFn - название функции для i18n
  * @param {Object=} [params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
  *
- * @param {boolean} params.tolerantWhitespace - если true, то пробельные символы
+ * @param {boolean} params.tolerateWhitespace - если true, то пробельные символы
  *     вставляются "как есть"
  *
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
@@ -6493,7 +6493,7 @@ function DirObj(src, params) {var this$0 = this;
 	 * @expose
 	 * @type {boolean}
 	 */
-	this.tolerantWhitespace = params.tolerantWhitespace;
+	this.tolerateWhitespace = params.tolerateWhitespace;
 
 	/**
 	 * @expose
@@ -6581,7 +6581,7 @@ function DirObj(src, params) {var this$0 = this;
 			i18nFn: this.i18nFn,
 			language: this.language,
 			ignore: this.ignore,
-			tolerantWhitespace: this.tolerantWhitespace
+			tolerateWhitespace: this.tolerateWhitespace
 		}
 	];
 
@@ -6866,7 +6866,7 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 
 	this.superStrongSpace = 0;
 	this.strongSpace = false;
-	this.space = !this.tolerantWhitespace;
+	this.space = !this.tolerateWhitespace;
 
 	return this;
 };
@@ -9089,7 +9089,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	 * @return {{str: string, length: number, error: (boolean|null|undefined)}}
 	 */
 	DirObj.prototype.toBaseSyntax = function (str, i) {
-		var ws = !this.tolerantWhitespace;
+		var ws = !this.tolerateWhitespace;
 		var clrL = true,
 			spaces = 0,
 			space = '';
@@ -10197,7 +10197,7 @@ var tAttrRgxp = /[^'" ]/,
  *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
  *     3) dom - рендеринг шаблона в набор команд из DOM API.
  *
- * @param {?boolean=} [opt_params.opt_tolerantWhitespace=false] - если true, то пробельные символы
+ * @param {?boolean=} [opt_params.tolerateWhitespace=false] - если true, то пробельные символы
  *     вставляются "как есть"
  *
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
@@ -10262,7 +10262,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.renderAs = s(p.renderAs, p['renderAs']);
 
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
-	p.tolerantWhitespace = s(p.tolerantWhitespace, p['tolerantWhitespace']) || false;
+	p.tolerateWhitespace = s(p.tolerateWhitespace, p['tolerateWhitespace']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 
 	p.throws = s(p.throws, p['throws']) || false;
@@ -10321,7 +10321,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var cacheKey = p.language || p.macros ? null : [
 		cjs,
 		p.xml,
-		p.tolerantWhitespace,
+		p.tolerateWhitespace,
 		p.inlineIterators,
 		p.renderAs,
 		p.renderMode,
@@ -10616,7 +10616,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		renderAs: p.renderAs,
 		renderMode: p.renderMode,
 
-		tolerantWhitespace: p.tolerantWhitespace,
+		tolerateWhitespace: p.tolerateWhitespace,
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
@@ -10824,7 +10824,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					el = dir.ignore && dir.ignore.test(el) ?
 						'' : el;
 
-					if (el && !dir.tolerantWhitespace) {
+					if (el && !dir.tolerateWhitespace) {
 						el = ' ';
 						dir.space = true;
 					}
@@ -14099,7 +14099,7 @@ Snakeskin.addDirective(
 						macros: this.macros,
 						language: this.language,
 						localization: this.localization,
-						tolerantWhitespace: this.tolerantWhitespace
+						tolerateWhitespace: this.tolerateWhitespace
 					},
 
 					null,
@@ -15735,7 +15735,7 @@ Snakeskin.addDirective(
 
 			this.startInlineDir();
 
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -15767,7 +15767,7 @@ Snakeskin.addDirective(
 		function (command) {
 			this.startDir();
 
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -15825,7 +15825,7 @@ Snakeskin.addDirective(
 		},
 
 		function () {
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -15863,7 +15863,7 @@ Snakeskin.addDirective(
 		function (command) {
 			this.startDir();
 
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -15921,7 +15921,7 @@ Snakeskin.addDirective(
 		},
 
 		function () {
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -16051,7 +16051,7 @@ Snakeskin.addDirective(
 		},
 
 		function () {
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -16203,7 +16203,7 @@ Snakeskin.addDirective(
 			bemRef: this.bemRef
 		});
 
-		if (!this.tolerantWhitespace) {
+		if (!this.tolerateWhitespace) {
 			this.space = true;
 		}
 
