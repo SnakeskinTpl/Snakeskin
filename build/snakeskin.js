@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 02 Oct 2014 08:58:54 GMT
+ * Date: Thu, 02 Oct 2014 09:46:36 GMT
  */
 
 /*!
@@ -10320,6 +10320,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var cacheKey = p.language || p.macros ? null : [
 		cjs,
+		ctx !== NULL,
 		p.xml,
 		p.tolerateWhitespace,
 		p.inlineIterators,
