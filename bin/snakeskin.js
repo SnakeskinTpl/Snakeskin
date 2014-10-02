@@ -287,7 +287,7 @@ function action(data, file) {
 						res = beautify['html'](res);
 
 					} else {
-						res = beautify[path.extname(outFile).replace(/^\./, '')](res);
+						res = (beautify[path.extname(outFile).replace(/^\./, '')] || beautify['html'])(res);
 					}
 				}
 			}
