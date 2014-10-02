@@ -1,4 +1,4 @@
-/* Snakeskin v5.0.0, key <false,true,false,,stringConcat,true,true,,false,true,i18n>, label <1412074961864>, includes <>, generated at <1412074993298>.
+/* Snakeskin v5.1.0, key <false,true,false,false,,stringConcat,true,true,,false,true,i18n>, label <1412075167844>, includes <>, generated at <1412239404190>.
    This code is generated automatically, don't alter it. */
 (function() {
     var __ROOT__ = this,
@@ -12,7 +12,7 @@
         __VARS__ = Snakeskin.Vars,
         __LOCAL__ = Snakeskin.LocalVars,
         __STR__, __TMP__, __J__;
-    var $_ = __LOCAL__['$_0356c']; /* Snakeskin template: helloWorld; name  */
+    var $_ = __LOCAL__['$_49d6c']; /* Snakeskin template: helloWorld; name  */
     this.helloWorld = function helloWorld(name) {
         var __THIS__ = this,
             __CALLEE__ = __ROOT__.helloWorld,
@@ -33,17 +33,17 @@
         }
 
         function clearTplResult() {
-            __RESULT__ = '';
-        }
+            __RESULT__ = '';				
+        }				
         var __RETURN__ = false,
-            __RETURN_VAL__;
-        var TPL_NAME = 'helloWorld',
-            PARENT_TPL_NAME;
+            					__RETURN_VAL__;				
+        var TPL_NAME = "helloWorld",
+            					PARENT_TPL_NAME;
         name = arguments[0] = name != null ? name : 'world';
         __RESULT__ += '<h1>Hello ';
         __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false);
         __RESULT__ += '!</h1> ';
-        return __RESULT__;
-    };
-    Snakeskin.cache['helloWorld'] = this.helloWorld; /* Snakeskin template. */
+        return __RESULT__;					
+    };					
+    Snakeskin.cache["helloWorld"] = this.helloWorld; /* Snakeskin template. */
 }).call(this);
