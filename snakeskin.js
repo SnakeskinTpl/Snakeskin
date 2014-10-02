@@ -182,7 +182,10 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
 		tpl = tpls[opt_tplName];
 
 	} else {
-		tpl = tpls[path.basename(opt_src, path.extname(opt_src))] || tpls.main || tpls.index || tpls[Object.keys(tpls)[0]];
+		tpl = opt_src && tpls[path.basename(opt_src, path.extname(opt_src))] ||
+			tpls.main ||
+			tpls.index ||
+			tpls[Object.keys(tpls)[0]];
 	}
 
 	return tpl || null;
