@@ -53,7 +53,7 @@ var tAttrRgxp = /[^'" ]/,
  *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
  *     3) dom - рендеринг шаблона в набор команд из DOM API.
  *
- * @param {?boolean=} [opt_params.opt_tolerantWhitespace=false] - если true, то пробельные символы
+ * @param {?boolean=} [opt_params.tolerateWhitespace=false] - если true, то пробельные символы
  *     вставляются "как есть"
  *
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
@@ -118,7 +118,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.renderAs = s(p.renderAs, p['renderAs']);
 
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
-	p.tolerantWhitespace = s(p.tolerantWhitespace, p['tolerantWhitespace']) || false;
+	p.tolerateWhitespace = s(p.tolerateWhitespace, p['tolerateWhitespace']) || false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 
 	p.throws = s(p.throws, p['throws']) || false;
@@ -177,7 +177,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var cacheKey = p.language || p.macros ? null : [
 		cjs,
 		p.xml,
-		p.tolerantWhitespace,
+		p.tolerateWhitespace,
 		p.inlineIterators,
 		p.renderAs,
 		p.renderMode,
@@ -472,7 +472,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		renderAs: p.renderAs,
 		renderMode: p.renderMode,
 
-		tolerantWhitespace: p.tolerantWhitespace,
+		tolerateWhitespace: p.tolerateWhitespace,
 		inlineIterators: p.inlineIterators,
 		escapeOutput: p.escapeOutput,
 
@@ -680,7 +680,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					el = dir.ignore && dir.ignore.test(el) ?
 						'' : el;
 
-					if (el && !dir.tolerantWhitespace) {
+					if (el && !dir.tolerateWhitespace) {
 						el = ' ';
 						dir.space = true;
 					}

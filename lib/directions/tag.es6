@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 			bemRef: this.bemRef
 		});
 
-		if (!this.tolerantWhitespace) {
+		if (!this.tolerateWhitespace) {
 			this.space = true;
 		}
 

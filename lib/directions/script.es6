@@ -22,7 +22,7 @@
 		function (command) {
 			this.startDir();
 
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
@@ -80,7 +80,7 @@
 		},
 
 		function () {
-			if (!this.tolerantWhitespace) {
+			if (!this.tolerateWhitespace) {
 				this.space = true;
 			}
 
