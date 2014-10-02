@@ -34,6 +34,7 @@ program
 	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
 
+	.option('--tolerate-whitespace', 'tolerate whitespace characters in the template')
 	.option('--ignore', 'regular expression to ignore the empty space')
 	.option('--auto-replace', 'enable macros support')
 	.option('--macros [src]', 'path to the macros file or JS macros object')
@@ -86,6 +87,9 @@ params.escapeOutput = 'disableEscapeOutput' in program ?
 
 params.prettyPrint = 'prettyPrint' in program ?
 	program['prettyPrint'] : params.prettyPrint;
+
+params.tolerateWhitespace = 'tolerateWhitespace' in program ?
+	program['tolerateWhitespace'] : params.tolerateWhitespace;
 
 params.ignore = 'ignore' in program ?
 	program['ignore'] : params.ignore;
