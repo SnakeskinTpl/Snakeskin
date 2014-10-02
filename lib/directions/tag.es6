@@ -34,8 +34,10 @@ Snakeskin.addDirective(
 				desc = this.returnTagDesc(parts[0]);
 
 			let params = this.structure.params;
+
 			params.tag = desc.tag;
-			params.block = !inlineTagMap[desc.tag];
+			params.block = inlineTagMap[desc.tag] !== void 0 ?
+				!inlineTagMap[desc.tag] : !desc.inline;
 
 			let groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
 				dom = !this.domComment && this.renderMode === 'dom';
@@ -78,7 +80,7 @@ Snakeskin.addDirective(
 			if (dom) {
 				str += `
 					if (__TMP__['class']) {
-						__NODE__ .className = __TMP__['class'];
+						__NODE__.className = __TMP__['class'];
 					}
 
 					${this.returnPushNodeDecl()}
@@ -116,21 +118,30 @@ Snakeskin.addDirective(
  * и вернуть объект-описание
  *
  * @param {string} str - исходная строка
- * @return {{tag: string, id: string, classes: !Array}}
+ * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
  */
 DirObj.prototype.returnTagDesc = function (str) {
 	var action = '';
 	var tag = '',
 		id = '',
+		inline = false;
+
+	var pseudo = [],
 		classes = [];
 
 	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
+	var sys = {
+		'#': true,
+		'.': true,
+		':': true
+	};
+
 	for (let i = -1; ++i < str.length;) {
 		let el = str.charAt(i);
 
-		if (el === '#' || el === '.') {
+		if (sys[el]) {
 			if (!tag) {
 				tag = 'div';
 			}
@@ -139,6 +150,13 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 			if (el === '.') {
 				classes.push('');
+
+			} else if (el === ':') {
+				if (!inline) {
+					inline = pseudo[pseudo.length - 1] === 'inline';
+				}
+
+				pseudo.push('');
 			}
 
 			continue;
@@ -147,10 +165,17 @@ DirObj.prototype.returnTagDesc = function (str) {
 		switch (action) {
 			case '#': {
 				id += el;
+
 			} break;
 
 			case '.': {
 				classes[classes.length - 1] += el;
+
+			} break;
+
+			case ':': {
+				pseudo[pseudo.length - 1] += el;
+
 			} break;
 
 			default: {
@@ -181,10 +206,16 @@ DirObj.prototype.returnTagDesc = function (str) {
 		this.bemRef = newRef;
 	}
 
+	if (!inline) {
+		inline = pseudo[pseudo.length - 1] === 'inline';
+	}
+
 	return {
 		ref: ref,
 		tag: this.replaceTplVars(tag),
 		id: this.replaceTplVars(id),
-		classes: classes
+		classes: classes,
+		pseudo: pseudo,
+		inline: inline
 	};
 };
