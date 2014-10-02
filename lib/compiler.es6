@@ -176,6 +176,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var cacheKey = p.language || p.macros ? null : [
 		cjs,
+		ctx !== NULL,
 		p.xml,
 		p.tolerateWhitespace,
 		p.inlineIterators,
