@@ -36,7 +36,7 @@ function run(params) {
 				txt[i] = el.trim();
 			});
 
-			let starts = txt[0].split(/[\n\r]+/),
+			let starts = txt[0].split(/[\r\n]+/),
 				results = txt[2].split('***');
 
 			let obj = {
