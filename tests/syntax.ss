@@ -19,12 +19,9 @@ syntax_index8
 	< span.foo class = bar car
 		- tag .&__bar#my
 			1
-
 	#< .&__bar#my
 		1
-
 	- set & foo
-
 	< .&__bar#my
 		1
 
@@ -52,7 +49,6 @@ syntax_index8
         - if usingSnakeskin
             < span.&__msg style = color: blue | -info = some description
                 Hello {name}! You are amazing!
-
         - else
             < span.&__warning :: You wrong!!!
 
@@ -103,7 +99,7 @@ ng-class="foo" ng-bar="foo"
 
 ***
 
-foobar
+foo bar
 
 ***
 

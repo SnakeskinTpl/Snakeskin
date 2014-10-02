@@ -215,7 +215,14 @@
 	{!/foo/.test('foo') % /[\/]/}
 	{= #{!/foo/.test('foo')}}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true, autoReplace: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {«b»: “2”}} /// 1 /* 2 */ \1 \« 2 »'); equal(escape_index3().trim(), '<div onclick=&quot;alert()&quot; foo="2 bar = &quot;1&quot;"></div>  foo = &quot;1&quot; bar="1 hack = &quot;2&quot;"'); equal(escape_index4().trim(), 'object false NaN false'); }); </script> <script type="text/x-snakeskin-template" id="filters"> 
+
+{template escape_base['\n\\n\'"helloWorld']()}
+	121
+{/}
+
+{template escape_sub() extends escape_base['\n\\n\'"helloWorld']}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true, autoReplace: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {«b»: “2”}} /// 1 /* 2 */ \1 \« 2 »'); equal(escape_index3().trim(), '<div onclick=&quot;alert()&quot; foo="2 bar = &quot;1&quot;"></div>  foo = &quot;1&quot; bar="1 hack = &quot;2&quot;"'); equal(escape_index4().trim(), 'object false NaN false'); equal(escape_base['\n\\n\'"helloWorld']().trim(), '121'); equal(escape_sub().trim(), '121'); }); </script> <script type="text/x-snakeskin-template" id="filters"> 
 {a = String}
 {template filters_index()}
 	{a = {a: String}}
@@ -820,12 +827,9 @@
 	< span.foo class = bar car
 		- tag .&__bar#my
 			1
-
 	#< .&__bar#my
 		1
-
 	- set & foo
-
 	< .&__bar#my
 		1
 
@@ -853,7 +857,6 @@
         - if usingSnakeskin
             < span.&__msg style = color: blue | -info = some description
                 Hello {name}! You are amazing!
-
         - else
             < span.&__warning :: You wrong!!!
 
@@ -878,7 +881,7 @@
     < div style = color: red :: bar
     foo :: bar
     < div class = \:: bar
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true, autoReplace: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); equal(syntax_index5().trim(), '<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>'); equal(syntax_index6().trim(), '<h1 class="b-hello">foo bar car my mooo boo</h1>'); equal(syntax_index7().trim(), 'foobar'); equal(syntax_index8().trim(), 'Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>'); }); </script> <script type="text/x-snakeskin-template" id="tag"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true, autoReplace: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); equal(syntax_index5().trim(), '<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>'); equal(syntax_index6().trim(), '<h1 class="b-hello">foo bar car my mooo boo</h1>'); equal(syntax_index7().trim(), 'foo bar'); equal(syntax_index8().trim(), 'Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>'); }); </script> <script type="text/x-snakeskin-template" id="tag"> 
 {template tag_index()}
 	{tag span.foo class = bar car}
 		{tag .&__bar#my}

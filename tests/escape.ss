@@ -2,6 +2,8 @@ escape_index
 escape_index2
 escape_index3
 escape_index4
+escape_base['\n\\n\'"helloWorld']
+escape_sub
 
 ###
 
@@ -32,6 +34,13 @@ escape_index4
 	{= #{!/foo/.test('foo')}}
 {/}
 
+{template escape_base['\n\\n\'"helloWorld']()}
+	121
+{/}
+
+{template escape_sub() extends escape_base['\n\\n\'"helloWorld']}
+{/}
+
 ###
 
 #{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"
@@ -47,3 +56,11 @@ escape_index4
 ***
 
 object false NaN false
+
+***
+
+121
+
+***
+
+121
