@@ -23,6 +23,9 @@ function clone(obj) {
  * @return {(boolean|!Array)}
  */
 exports.check = function (source, result, opt_key, opt_includes) {
+	source = path.normalize(path.resolve(source));
+	result = path.normalize(path.resolve(result));
+
 	if (!exists(source) || !exists(result)) {
 		return false;
 	}
