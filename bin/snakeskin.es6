@@ -274,6 +274,7 @@ function action(data, file) {
 
 			if (!tpl) {
 				console.error('Template is not defined');
+				res = '';
 
 				if (!watch) {
 					process.exit(1);
