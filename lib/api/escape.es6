@@ -10,6 +10,9 @@ sysEscapeMap[LEFT_BLOCK] = true;
 sysEscapeMap[ADV_LEFT_BLOCK] = true;
 sysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
 sysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
+sysEscapeMap[CONCAT_COMMAND] = true;
+sysEscapeMap[CONCAT_END] = true;
+sysEscapeMap[IGNORE_COMMAND] = true;
 
 var strongSysEscapeMap = {};
 
