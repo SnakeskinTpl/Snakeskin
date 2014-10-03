@@ -166,18 +166,20 @@ function action(data, file) {
 	}
 
 	function pathTpl(src) {
-		return path.normalize(path.resolve(
-			src
-				.replace(/%fileDir%/g, path.dirname(file))
-				.replace(/%fileName%/g, fileName)
-				.replace(/%file%/g, path.basename(file))
-				.replace(/%filePath%/g, file)
-		));
+		return src
+			.replace(/%fileDir%/g, path.dirname(file))
+			.replace(/%fileName%/g, fileName)
+			.replace(/%file%/g, path.basename(file))
+			.replace(/%filePath%/g, file);
 	}
 
 	function load(val) {
-		var tmp = val;
 		val = pathTpl(val);
+		var tmp = val;
+
+		val = path.normalize(
+			path.resolve(val)
+		);
 
 		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
@@ -218,7 +220,7 @@ function action(data, file) {
 		execTpl = tplData || mainTpl || exec;
 
 	if (outFile) {
-		outFile = pathTpl(outFile);
+		outFile = path.normalize(path.resolve(pathTpl(outFile)));
 		testDir(outFile);
 
 		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
