@@ -139,6 +139,7 @@ if (!file && args.length) {
 var calls = {};
 
 function testDir(src) {
+	src = path.normalize(path.resolve(src));
 	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach(function(el, i, data)  {
 		var src = data.slice(0, i + 1).join(path.sep);
 
