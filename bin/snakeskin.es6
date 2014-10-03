@@ -372,7 +372,12 @@ if (!file && input == null) {
 				root: file,
 				listener: (f) => {
 					var src = f.fullPath;
-					if (!fMap[src] && !f.stat.isDirectory() && (mask ? mask.test(src) : path.extname(src) === '.ss')) {
+					if (!fMap[src] &&
+						exists(src) &&
+						!f.stat.isDirectory() &&
+						(mask ? mask.test(src) : path.extname(src) === '.ss')
+
+					) {
 						monocle.unwatchAll();
 						action(fs.readFileSync(src), src);
 						wacthFiles();
@@ -412,6 +417,7 @@ if (!file && input == null) {
 										action(fs.readFileSync(key), key);
 
 									} else {
+										delete include[key];
 										delete fMap[key];
 									}
 								}
