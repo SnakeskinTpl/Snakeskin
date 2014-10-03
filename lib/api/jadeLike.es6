@@ -10,7 +10,7 @@
 	var commandRgxp = /([^\s]+).*/,
 		rightWSRgxp = /\s*$/,
 		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
-		lastALBRgxp = new RegExp(`${alb}$`);
+		lastSymbolRgxp = new RegExp(`(${alb}|\\\\)$`);
 
 	/**
 	 * Вернуть объект-описание преобразованной части шаблона из
@@ -189,7 +189,7 @@
 					let parts,
 						txt;
 
-					decl.command = decl.command.replace(lastALBRgxp, `\\${alb}`);
+					decl.command = decl.command.replace(lastSymbolRgxp, '\\$1');
 
 					if (dir) {
 						if (decl.sComment) {
