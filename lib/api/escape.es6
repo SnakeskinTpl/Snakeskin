@@ -89,7 +89,7 @@ var closePMap = {
 	']': true
 };
 
-function escapeWinPath(str) {
+function escapeBackslash(str) {
 	return String(str).replace(/\\/gm, '\\\\');
 }
 

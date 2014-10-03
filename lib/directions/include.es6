@@ -27,7 +27,7 @@ Snakeskin.addDirective(
 		if (path !== void 0 && type !== void 0) {
 			this.save(`
 				Snakeskin.include(
-					'${escapeWinPath(this.info['file'] || '')}',
+					'${escapeBackslash(this.info['file'] || '')}',
 					${this.pasteDangerBlocks(path)},
 					${type}
 				);
