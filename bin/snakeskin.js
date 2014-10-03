@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('../snakeskin');
 
@@ -138,6 +138,16 @@ if (!file && args.length) {
 
 var calls = {};
 
+function testDir(src) {
+	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach(function(el, i, data)  {
+		var src = data.slice(0, i + 1).join(path.sep);
+
+		if (!exists(src)) {
+			fs.mkdirSync(src);
+		}
+	});
+}
+
 function action(data, file) {
 	console.time('Time');
 
@@ -156,20 +166,18 @@ function action(data, file) {
 	}
 
 	function pathTpl(src) {
-		return path.normalize(
+		return path.normalize(path.resolve(
 			src
 				.replace(/%fileDir%/g, path.dirname(file))
 				.replace(/%fileName%/g, fileName)
 				.replace(/%file%/g, path.basename(file))
 				.replace(/%filePath%/g, file)
-		);
+		));
 	}
 
 	function load(val) {
-		val = pathTpl(val);
-
 		var tmp = val;
-		val = path.resolve(val);
+		val = pathTpl(val);
 
 		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
@@ -211,22 +219,11 @@ function action(data, file) {
 
 	if (outFile) {
 		outFile = pathTpl(outFile);
-
-		var tmp = outFile;
-		outFile = path.resolve(outFile);
+		testDir(outFile);
 
 		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
-			tmp = path.join(tmp, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
+			outFile = path.join(outFile, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
 		}
-
-		outFile = tmp;
-		path.dirname(outFile).split(path.sep).forEach(function(el, i, data)  {
-			var src = data.slice(0, i + 1).join(path.sep);
-
-			if (!exists(src)) {
-				fs.mkdirSync(src);
-			}
-		});
 
 		if (file && (!words || exists(words)) && params.cache !== false) {
 			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
@@ -304,14 +301,14 @@ function action(data, file) {
 			fs.writeFileSync(outFile, res);
 			success();
 
-			var tmp$0 = params.debug.files;
+			var tmp = params.debug.files;
 
 			include[file] = include[file] || {};
 			include[file][file] = true;
 
-			if (tmp$0) {
-				for (var key in tmp$0) {
-					if (!tmp$0.hasOwnProperty(key)) {
+			if (tmp) {
+				for (var key in tmp) {
+					if (!tmp.hasOwnProperty(key)) {
 						continue;
 					}
 
@@ -330,14 +327,7 @@ function action(data, file) {
 
 function end() {
 	if (words) {
-		path.dirname(words).split(path.sep).forEach(function(el, i, data)  {
-			var src = data.slice(0, i + 1).join(path.sep);
-
-			if (!exists(src)) {
-				fs.mkdirSync(src);
-			}
-		});
-
+		testDir(words);
 		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
 }
