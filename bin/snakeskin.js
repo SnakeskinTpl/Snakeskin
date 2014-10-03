@@ -212,7 +212,7 @@ function action(data, file) {
 
 	function success() {
 		line();
-		console.log((("File \"" + (path.relative(__dirname, file))) + ("\" has been successfully compiled \"" + (path.relative(__dirname, outFile))) + "\"."));
+		console.log((("File \"" + file) + ("\" has been successfully compiled \"" + outFile) + "\"."));
 		console.timeEnd('Time');
 		line();
 	}
