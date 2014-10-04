@@ -102,8 +102,6 @@ Snakeskin.addDirective(
 			let str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
-				console.log(params.tag);
-
 				str = '__RESULT__.pop();';
 
 			} else {
