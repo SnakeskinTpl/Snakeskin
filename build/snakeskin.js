@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v5.1.6
+ * Snakeskin v5.1.7
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 04 Oct 2014 06:57:29 GMT
+ * Date: Sat, 04 Oct 2014 07:50:56 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [5, 1, 6],
+	VERSION: [5, 1, 7],
 
 	/**
 	 * Пространство имён для директив
@@ -6929,12 +6929,14 @@ DirObj.prototype.wrap = function (opt_str) {
 /**
  * Вернуть текст добавления узла в стек
  * (для renderMode == dom)
+ *
+ * @param {?boolean=} [opt_inline=false] - если true, то узел считается inline
  * @return {string}
  */
-DirObj.prototype.returnPushNodeDecl = function () {
+DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
 	return (("\
-		" + (this.wrap('__NODE__'))) + "\
-		__RESULT__.push(__NODE__);\
+		" + (this.wrap('__NODE__'))) + ("\
+		" + (opt_inline ? '': '__RESULT__.push(__NODE__);')) + "\
 		__NODE__ = null;\
 	");
 };
@@ -11459,9 +11461,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	dir.res = dir.pasteDangerBlocks(dir.res)
 		.replace(
 			/__CDATA__(\d+)_/g,
-			function(sstr, pos)  {return escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;'
-		)}
-	);
+			function(sstr, pos)  {return escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')}
+		);
 
 	if (debug) {
 		debug['code'] = dir.res;
@@ -16182,9 +16183,8 @@ Snakeskin.addDirective(
 			this.domComment = false;
 			str += (("\
 				__NODE__ = document.createComment(__TMP_RESULT__);\
-				" + (this.returnPushNodeDecl())) + "\
+				" + (this.returnPushNodeDecl(true))) + "\
 				__TMP_RESULT__ = \'\';\
-				__RESULT__.pop();\
 			");
 
 		} else {
@@ -16279,7 +16279,7 @@ Snakeskin.addDirective(
 						__NODE__.className = __TMP__['class'];\
 					}\
 \
-					" + (this.returnPushNodeDecl())) + "\
+					" + (this.returnPushNodeDecl(!params.block))) + "\
 				");
 
 			} else {
@@ -16298,6 +16298,8 @@ Snakeskin.addDirective(
 			var str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
+				console.log(params.tag);
+
 				str = '__RESULT__.pop();';
 
 			} else {
