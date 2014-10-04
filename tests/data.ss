@@ -1,4 +1,5 @@
 data_index
+data_index2
 data_decl
 
 ###
@@ -14,6 +15,10 @@ data_decl
 	#{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}#{/cdata}
 {/}
 
+{template data_index2()}
+	{=\#{1}\\\\#{1}}
+{/}
+
 {template data_decl()}
 	{foo = 'bar'}
 
@@ -25,6 +30,10 @@ data_decl
 ###
 
 {a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}
+
+***
+
+#{1}\\1
 
 ***
 
