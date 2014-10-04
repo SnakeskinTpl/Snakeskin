@@ -13,6 +13,7 @@ sysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
 sysEscapeMap[CONCAT_COMMAND] = true;
 sysEscapeMap[CONCAT_END] = true;
 sysEscapeMap[IGNORE_COMMAND] = true;
+sysEscapeMap[INLINE_COMMAND.trim().charAt(0)] = true;
 
 for (let key in baseShortMap) {
 	if (!baseShortMap.hasOwnProperty(key)) {
