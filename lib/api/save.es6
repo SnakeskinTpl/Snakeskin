@@ -57,12 +57,14 @@ DirObj.prototype.wrap = function (opt_str) {
 /**
  * Вернуть текст добавления узла в стек
  * (для renderMode == dom)
+ *
+ * @param {?boolean=} [opt_inline=false] - если true, то узел считается inline
  * @return {string}
  */
-DirObj.prototype.returnPushNodeDecl = function () {
+DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
 	return `
 		${this.wrap('__NODE__')}
-		__RESULT__.push(__NODE__);
+		${opt_inline ? '': '__RESULT__.push(__NODE__);'}
 		__NODE__ = null;
 	`;
 };
