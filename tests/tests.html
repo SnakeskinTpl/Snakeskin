@@ -175,6 +175,10 @@
 	#{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}#{/cdata}
 {/}
 
+{template data_index2()}
+	{=\#{1}\\\\#{1}}
+{/}
+
 {template data_decl()}
 	{foo = 'bar'}
 
@@ -182,7 +186,7 @@
 	{{#{foo/* 1111 */}}}
 	#{{#{foo}}}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true, autoReplace: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_decl().trim(), '{{foo}} {{bar}} {{bar}}'); }); </script> <script type="text/x-snakeskin-template" id="doctype"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true, autoReplace: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_index2().trim(), '#{1}\\1'); equal(data_decl().trim(), '{{foo}} {{bar}} {{bar}}'); }); </script> <script type="text/x-snakeskin-template" id="doctype"> 
 {template doctype_index()}
 	{doctype}
 	{doctype html}

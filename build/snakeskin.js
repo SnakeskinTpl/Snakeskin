@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v5.1.5
+ * Snakeskin v5.1.6
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 03 Oct 2014 13:49:38 GMT
+ * Date: Sat, 04 Oct 2014 06:57:29 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [5, 1, 5],
+	VERSION: [5, 1, 6],
 
 	/**
 	 * Пространство имён для директив
@@ -8300,165 +8300,162 @@ DirObj.prototype.popParams = function () {
  * API для организации микрошаблонов внутри директивы
  */
 
-(function()  {
-	var escapeBRgxp = /('|")/g;
 
-	/**
-	 * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
-	 * @param {?boolean=} [opt_replace=false] - если true, то директивы экранируются (заменяются на __SNAKESKIN__\d+_)
-	 * @return {string}
-	 */
-	DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
-		str = this.pasteDangerBlocks(str);
+/**
+ * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
+ *
+ * @param {string} str - исходная строка
+ * @param {?boolean=} [opt_sys=false] - если true, то запуск функции считается системным вызовом
+ * @param {?boolean=} [opt_replace=false] - если true, то директивы экранируются (заменяются на __SNAKESKIN__\d+_)
+ * @return {string}
+ */
+DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
+	str = this.pasteDangerBlocks(str);
 
-		var start = 0;
-		var begin = 0,
-			dir = '',
-			res = '';
+	var start = 0;
+	var begin = 0,
+		dir = '',
+		res = '';
 
-		var escape = false,
-			comment = false;
+	var escape = false,
+		comment = false;
 
-		var bOpen = false,
-			bEnd = true,
-			bEscape = false;
+	var bOpen = false,
+		bEnd = true,
+		bEscape = false;
 
-		var part = '',
-			rPart = '';
+	var part = '',
+		rPart = '';
 
-		for (var i = -1; ++i < str.length;) {
-			var currentEscape = escape;
-			var el = str.charAt(i),
-				next = str.charAt(i + 1),
-				next2str = el + next;
+	for (var i = -1; ++i < str.length;) {
+		var currentEscape = escape;
+		var el = str.charAt(i),
+			next = str.charAt(i + 1),
+			next2str = el + next;
 
-			if (next2str === '\r\n') {
+		if (next2str === '\r\n') {
+			continue;
+		}
+
+		if (begin) {
+			if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
+				escape = !escape;
+			}
+
+			if (escape) {
 				continue;
 			}
 
-			if (begin) {
-				if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
-					escape = !escape;
-				}
+			// Обработка комментариев
+			if (!currentEscape) {
+				var next3str = next2str + str.charAt(i + 2);
+				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
+					if (!comment) {
+						if (next3str === SINGLE_COMMENT) {
+							comment = next3str;
+							i += 2;
 
-				if (escape) {
-					continue;
-				}
-
-				// Обработка комментариев
-				if (!currentEscape) {
-					var next3str = next2str + str.charAt(i + 2);
-					if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
-						if (!comment) {
-							if (next3str === SINGLE_COMMENT) {
-								comment = next3str;
-								i += 2;
-
-							} else if (next2str === MULT_COMMENT_START) {
-								comment = next2str;
-								i++;
-							}
-
-						} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
-							comment = false;
-							continue;
+						} else if (next2str === MULT_COMMENT_START) {
+							comment = next2str;
+							i++;
 						}
 
-					} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
+					} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
 						comment = false;
-					}
-				}
-
-				if (comment) {
-					continue;
-				}
-
-				if (!bOpen) {
-					if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
-						bEnd = true;
-
-					} else if (bEndRgxp.test(el)) {
-						bEnd = false;
+						continue;
 					}
 
-					if (partRgxp.test(el)) {
-						part += el;
-
-					} else {
-						rPart = part;
-						part = '';
-					}
+				} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
+					comment = false;
 				}
+			}
 
-				if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
-					bOpen = el;
+			if (comment) {
+				continue;
+			}
 
-				} else if (bOpen && (el === '\\' || bEscape)) {
-					bEscape = !bEscape;
+			if (!bOpen) {
+				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+					bEnd = true;
 
-				} else if (escapeMap[el] && bOpen === el && !bEscape) {
-					bOpen = false;
+				} else if (bEndRgxp.test(el)) {
 					bEnd = false;
 				}
 
-				if (!bOpen) {
-					if (el === LEFT_BLOCK) {
-						begin++;
-
-					} else if (el === RIGHT_BLOCK) {
-						begin--;
-					}
-				}
-
-				if (begin) {
-					dir += el;
+				if (partRgxp.test(el)) {
+					part += el;
 
 				} else {
-					escape = false;
-
-					var tmp = '\' + ' +
-						this.prepareOutput(this.replaceDangerBlocks(dir), opt_sys) +
-						' + \'';
-
-					if (opt_replace) {
-						res += (("__SNAKESKIN__" + (this.dirContent.length)) + "_");
-						this.dirContent.push(tmp);
-
-					} else {
-						res += tmp;
-					}
+					rPart = part;
+					part = '';
 				}
+			}
+
+			if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+				bOpen = el;
+
+			} else if (bOpen && (el === '\\' || bEscape)) {
+				bEscape = !bEscape;
+
+			} else if (escapeMap[el] && bOpen === el && !bEscape) {
+				bOpen = false;
+				bEnd = false;
+			}
+
+			if (!bOpen) {
+				if (el === LEFT_BLOCK) {
+					begin++;
+
+				} else if (el === RIGHT_BLOCK) {
+					begin--;
+				}
+			}
+
+			if (begin) {
+				dir += el;
 
 			} else {
-				if ((el === '\\' && includeSysEscapeMap[next]) || escape) {
-					escape = !escape;
+				escape = false;
+
+				var tmp = '\' + ' +
+					this.prepareOutput(this.replaceDangerBlocks(dir), opt_sys) +
+					' + \'';
+
+				if (opt_replace) {
+					res += (("__SNAKESKIN__" + (this.dirContent.length)) + "_");
+					this.dirContent.push(tmp);
+
+				} else {
+					res += tmp;
 				}
-
-				if (escape) {
-					continue;
-				}
-
-				if (!currentEscape && includeDirMap[next2str]) {
-					begin++;
-					dir = '';
-
-					start = i;
-					i++;
-
-					escape = false;
-					continue;
-				}
-
-				res += el.replace(escapeBRgxp, '\\$1');
 			}
-		}
 
-		return res;
-	};
-})();
+		} else {
+			if ((el === '\\' && includeSysEscapeMap[next]) || escape) {
+				escape = !escape;
+			}
+
+			if (escape) {
+				continue;
+			}
+
+			if (!currentEscape && includeDirMap[next2str]) {
+				begin++;
+				dir = '';
+
+				start = i;
+				i++;
+
+				escape = false;
+				continue;
+			}
+
+			res += applyDefEscape(el);
+		}
+	}
+
+	return res;
+};
 /**
  * Вернуть полное тело заданного шаблона
  * при наследовании
@@ -9078,7 +9075,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	var commandRgxp = /([^\s]+).*/,
 		rightWSRgxp = /\s*$/,
 		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
-		lastALBRgxp = new RegExp((("" + alb) + "$"));
+		lastSymbolRgxp = new RegExp((("(" + alb) + "|\\\\)$"));
 
 	/**
 	 * Вернуть объект-описание преобразованной части шаблона из
@@ -9257,7 +9254,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 					var parts = void 0,
 						txt = void 0;
 
-					decl.command = decl.command.replace(lastALBRgxp, ("\\" + alb));
+					decl.command = decl.command.replace(lastSymbolRgxp, '\\$1');
 
 					if (dir) {
 						if (decl.sComment) {
@@ -9588,6 +9585,18 @@ sysEscapeMap[LEFT_BLOCK] = true;
 sysEscapeMap[ADV_LEFT_BLOCK] = true;
 sysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
 sysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
+sysEscapeMap[CONCAT_COMMAND] = true;
+sysEscapeMap[CONCAT_END] = true;
+sysEscapeMap[IGNORE_COMMAND] = true;
+sysEscapeMap[INLINE_COMMAND.trim().charAt(0)] = true;
+
+for (var key in baseShortMap) {
+	if (!baseShortMap.hasOwnProperty(key)) {
+		continue;
+	}
+
+	sysEscapeMap[key.charAt(0)] = true;
+}
 
 var strongSysEscapeMap = {};
 
@@ -9596,13 +9605,14 @@ strongSysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
 strongSysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
 
 var includeSysEscapeMap = {};
+includeSysEscapeMap['\\'] = true;
 
-for (var key in includeDirMap) {
-	if (!includeDirMap.hasOwnProperty(key)) {
+for (var key$0 in includeDirMap) {
+	if (!includeDirMap.hasOwnProperty(key$0)) {
 		continue;
 	}
 
-	includeSysEscapeMap[key.charAt(0)] = true
+	includeSysEscapeMap[key$0.charAt(0)] = true;
 }
 
 var escapeMap = {
@@ -9664,7 +9674,7 @@ var closePMap = {
 	']': true
 };
 
-function escapeWinPath(str) {
+function escapeBackslash(str) {
 	return ((str) + '').replace(/\\/gm, '\\\\');
 }
 
@@ -15601,7 +15611,7 @@ Snakeskin.addDirective(
 		if (path !== void 0 && type !== void 0) {
 			this.save((("\
 				Snakeskin.include(\
-					'" + (escapeWinPath(this.info['file'] || ''))) + ("',\
+					'" + (escapeBackslash(this.info['file'] || ''))) + ("',\
 					" + (this.pasteDangerBlocks(path))) + (",\
 					" + type) + "\
 				);\
@@ -16949,7 +16959,7 @@ Snakeskin.include = function (base, url, opt_type) {
 			var file = fs['readFileSync'](src).toString();
 
 			fsStack.push(
-				(("" + s) + ("__setFile__ " + (escapeWinPath(src))) + ("" + e) + "") +
+				(("" + s) + ("__setFile__ " + (escapeBackslash(src))) + ("" + e) + "") +
 
 				(opt_type ?
 					(("" + s) + ("__setSSFlag__ renderAs '" + opt_type) + ("'" + e) + "") : '') +
