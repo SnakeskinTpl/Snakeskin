@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 04 Oct 2014 07:50:56 GMT
+ * Date: Sat, 04 Oct 2014 07:52:58 GMT
  */
 
 /*!
@@ -16298,8 +16298,6 @@ Snakeskin.addDirective(
 			var str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
-				console.log(params.tag);
-
 				str = '__RESULT__.pop();';
 
 			} else {
