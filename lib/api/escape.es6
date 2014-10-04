@@ -14,6 +14,14 @@ sysEscapeMap[CONCAT_COMMAND] = true;
 sysEscapeMap[CONCAT_END] = true;
 sysEscapeMap[IGNORE_COMMAND] = true;
 
+for (let key in baseShortMap) {
+	if (!baseShortMap.hasOwnProperty(key)) {
+		continue;
+	}
+
+	sysEscapeMap[key.charAt(0)] = true;
+}
+
 var strongSysEscapeMap = {};
 
 strongSysEscapeMap['\\'] = true;
@@ -27,7 +35,7 @@ for (let key in includeDirMap) {
 		continue;
 	}
 
-	includeSysEscapeMap[key.charAt(0)] = true
+	includeSysEscapeMap[key.charAt(0)] = true;
 }
 
 var escapeMap = {
