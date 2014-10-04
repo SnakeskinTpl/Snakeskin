@@ -49,9 +49,8 @@ Snakeskin.addDirective(
 			this.domComment = false;
 			str += `
 				__NODE__ = document.createComment(__TMP_RESULT__);
-				${this.returnPushNodeDecl()}
+				${this.returnPushNodeDecl(true)}
 				__TMP_RESULT__ = \'\';
-				__RESULT__.pop();
 			`;
 
 		} else {

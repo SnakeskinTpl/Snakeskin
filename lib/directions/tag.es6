@@ -83,7 +83,7 @@ Snakeskin.addDirective(
 						__NODE__.className = __TMP__['class'];
 					}
 
-					${this.returnPushNodeDecl()}
+					${this.returnPushNodeDecl(!params.block)}
 				`;
 
 			} else {
@@ -102,6 +102,8 @@ Snakeskin.addDirective(
 			let str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
+				console.log(params.tag);
+
 				str = '__RESULT__.pop();';
 
 			} else {
