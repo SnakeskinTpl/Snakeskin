@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v5.1.7 (live)
+ * Snakeskin v5.1.8 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 04 Oct 2014 07:52:58 GMT
+ * Date: Sun, 05 Oct 2014 12:33:53 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [5, 1, 7],
+	VERSION: [5, 1, 8],
 
 	/**
 	 * Пространство имён для директив

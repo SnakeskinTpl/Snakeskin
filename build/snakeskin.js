@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v5.1.7
+ * Snakeskin v5.1.8
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 04 Oct 2014 07:52:58 GMT
+ * Date: Sun, 05 Oct 2014 12:33:53 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [5, 1, 7],
+	VERSION: [5, 1, 8],
 
 	/**
 	 * Пространство имён для директив
@@ -1239,7 +1239,13 @@ Snakeskin.appendChild = function (node, obj) {
                     (second_token.text === ':' && in_array(next_token.type, ['TK_STRING', 'TK_WORD', 'TK_RESERVED']))
                     || (in_array(next_token.text, ['get', 'set']) && in_array(second_token.type, ['TK_WORD', 'TK_RESERVED']))
                 )) {
-                set_mode(MODE.ObjectLiteral);
+                // We don't support TypeScript,but we didn't break it for a very long time.
+                // We'll try to keep not breaking it.
+                if (!in_array(last_last_text, ['class','interface'])) {
+                    set_mode(MODE.ObjectLiteral);
+                } else {
+                    set_mode(MODE.BlockStatement);
+                }
             } else {
                 set_mode(MODE.BlockStatement);
             }
@@ -1889,8 +1895,8 @@ Snakeskin.appendChild = function (node, obj) {
             //           after wrap points are calculated
             // These issues are minor compared to ugly indentation.
 
-            if (frame.multiline_frame || 
-                frame.mode === MODE.ForInitializer || 
+            if (frame.multiline_frame ||
+                frame.mode === MODE.ForInitializer ||
                 frame.mode === MODE.Conditional) {
                 return;
             }
@@ -9710,7 +9716,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 }
 
 /*!
- * Escaper v1.4.1
+ * Escaper v1.4.2
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
@@ -9718,7 +9724,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
  */
 
 var Escaper = {
-	VERSION: [1, 4, 1],
+	VERSION: [1, 4, 2],
 	isLocal: typeof window === 'undefined' && typeof global !== 'undefined' ?
 		!!(global.EscaperIsLocal || global['EscaperIsLocal']) : false
 };
@@ -9849,6 +9855,12 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 	 */
 	Escaper.quotContent = content;
 
+	var uSRgxp = /[^\s\/]/,
+		wRgxp = /[a-z]/i,
+		sRgxp = /\s/,
+		nRgxp = /\r|\n/,
+		partRgxp = /[a-z]/;
+
 	/**
 	 * Заметить блоки вида ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ на
 	 * __ESCAPER_QUOT__номер_ в указанной строке
@@ -9940,12 +9952,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 		var cut,
 			label;
 
-		var uSRgxp = /[^\s\/]/,
-			wRgxp = /[a-z]/i,
-			sRgxp = /\s/;
-
-		var partRgxp = /[a-z]/,
-			part = '',
+		var part = '',
 			rPart = '';
 
 		for (var i$0 = -1; ++i$0 < str.length;) {
@@ -10078,7 +10085,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 					}
 				}
 
-			} else if ((next === '\n' && sCommentsMap[comment]) ||
+			} else if ((nRgxp.test(next) && sCommentsMap[comment]) ||
 				(el$0 === '/' && prev === '*' && i$0 - selectionStart > 2 && mCommentsMap[comment])
 
 			) {
