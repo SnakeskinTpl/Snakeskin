@@ -47,10 +47,10 @@
 					return;
 				}
 
-				let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
-					cacheObj = this.prepareOutput('__TMP__', true);
+				let tmpObj = this.multiDeclVar(`__I_OBJ__ = ${obj}`),
+					cacheObj = this.prepareOutput('__I_OBJ__', true);
 
-				let objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
+				let objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__I_OBJ__) : null'),
 					keys = this.prepareOutput('__KEYS__', true);
 
 				let args = parts[1] ?
@@ -79,7 +79,7 @@
 
 					if (${cacheObj}) {
 						if (Array.isArray(${cacheObj})) {
-							${this.multiDeclVar('__LENGTH__ =  __TMP__.length')}
+							${this.multiDeclVar('__LENGTH__ =  __I_OBJ__.length')}
 							for (${this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true)}) {
 				`;
 
@@ -91,7 +91,7 @@
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__I__]';
+								tmp += ' = __I_OBJ__[__I__]';
 							} break;
 
 							case 1: {
@@ -99,7 +99,7 @@
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -138,7 +138,7 @@
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__KEYS__[__I__]]';
+								tmp += ' = __I_OBJ__[__KEYS__[__I__]]';
 							} break;
 
 							case 1: {
@@ -146,7 +146,7 @@
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -192,7 +192,7 @@
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__KEY__]';
+								tmp += ' = __I_OBJ__[__KEY__]';
 							} break;
 
 							case 1: {
@@ -200,7 +200,7 @@
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -341,8 +341,8 @@
 				let args = parts[1] ?
 					parts[1].trim().split(',') : [];
 
-				let tmpObj = this.multiDeclVar(`__TMP__ = ${obj}`),
-					cacheObj = this.prepareOutput('__TMP__', true);
+				let tmpObj = this.multiDeclVar(`__I_OBJ__ = ${obj}`),
+					cacheObj = this.prepareOutput('__I_OBJ__', true);
 
 				if (args.length >= 6) {
 					objLength += `
@@ -374,7 +374,7 @@
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__KEY__]';
+								tmp += ' = __I_OBJ__[__KEY__]';
 							} break;
 
 							case 1: {
@@ -382,7 +382,7 @@
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
