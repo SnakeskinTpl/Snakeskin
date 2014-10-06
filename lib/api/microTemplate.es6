@@ -168,6 +168,5 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		}
 	}
 
-	console.log(res);
 	return res;
 };
