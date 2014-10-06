@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v5.1.8
+ * Snakeskin v5.1.9
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 05 Oct 2014 12:33:53 GMT
+ * Date: Mon, 06 Oct 2014 08:53:43 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [5, 1, 8],
+	VERSION: [5, 1, 9],
 
 	/**
 	 * Пространство имён для директив
@@ -14812,7 +14812,9 @@ for (var i = -1; ++i < template.length;) {
 			var parentTplName;
 			if (/\)\s+extends\s+/m.test(command)) {
 				try {
-					parentTplName = /\)\s+extends\s+(.*?(?:]|$))/m.exec(command)[1];
+					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/m
+						.exec(command)[1]
+						.replace(/\s*@$/, '');
 
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
 						throw false;
