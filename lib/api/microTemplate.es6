@@ -152,8 +152,8 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 				continue;
 			}
 
-			res += currentEscape ?
-				applyDefEscape(el) : escapeNextLine(el);
+			res += el !== '\\' || currentEscape ?
+				applyDefEscape(el) : escapeSingleQuote(el);
 		}
 	}
 
