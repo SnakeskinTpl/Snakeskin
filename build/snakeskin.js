@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v5.1.9
+ * Snakeskin v5.1.10
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 06 Oct 2014 08:53:43 GMT
+ * Date: Mon, 06 Oct 2014 13:11:27 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [5, 1, 9],
+	VERSION: [5, 1, 10],
 
 	/**
 	 * Пространство имён для директив
@@ -6310,7 +6310,7 @@ var sysConst = {
 	'__ARGUMENTS__': true,
 	'__BLOCKS__': true,
 	'__RESULT__': true,
-	'__TMP_RESULT__': true,
+	'__COMMENT_RESULT__': true,
 	'__CDATA__': true,
 	'__RETURN__': true,
 	'__RETURN_VAL__': true,
@@ -6886,7 +6886,7 @@ DirObj.prototype.initTemplateCache = function (tplName) {
  */
 DirObj.prototype.$ = function () {
 	if (this.domComment) {
-		return '__TMP_RESULT__ +=';
+		return '__COMMENT_RESULT__ +=';
 	}
 
 	switch (this.renderMode) {
@@ -8458,7 +8458,8 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 				continue;
 			}
 
-			res += applyDefEscape(el);
+			res += el !== '\\' || currentEscape ?
+				applyDefEscape(el) : escapeSingleQuote(el);
 		}
 	}
 
@@ -10661,8 +10662,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Содержимое директивы
 	var command = '';
 
-	var commandTypeRgxp = /[^\s]+/m,
-		commandRgxp = /[^\s]+\s*/m;
+	var commandTypeRgxp = /[^\s]+/,
+		commandRgxp = /[^\s]+\s*/;
 
 	var filterStart = false,
 		filterStartRgxp = /[a-z]/i;
@@ -13187,10 +13188,10 @@ Snakeskin.addDirective(
 					return;
 				}
 
-				var tmpObj = this.multiDeclVar(("__TMP__ = " + obj)),
-					cacheObj = this.prepareOutput('__TMP__', true);
+				var tmpObj = this.multiDeclVar(("__I_OBJ__ = " + obj)),
+					cacheObj = this.prepareOutput('__I_OBJ__', true);
 
-				var objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__TMP__) : null'),
+				var objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__I_OBJ__) : null'),
 					keys = this.prepareOutput('__KEYS__', true);
 
 				var args = parts[1] ?
@@ -13219,7 +13220,7 @@ Snakeskin.addDirective(
 \
 					if (" + cacheObj) + (") {\
 						if (Array.isArray(" + cacheObj) + (")) {\
-							" + (this.multiDeclVar('__LENGTH__ =  __TMP__.length'))) + ("\
+							" + (this.multiDeclVar('__LENGTH__ =  __I_OBJ__.length'))) + ("\
 							for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
 				");
 
@@ -13231,7 +13232,7 @@ Snakeskin.addDirective(
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__I__]';
+								tmp += ' = __I_OBJ__[__I__]';
 							} break;
 
 							case 1: {
@@ -13239,7 +13240,7 @@ Snakeskin.addDirective(
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -13278,7 +13279,7 @@ Snakeskin.addDirective(
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__KEYS__[__I__]]';
+								tmp += ' = __I_OBJ__[__KEYS__[__I__]]';
 							} break;
 
 							case 1: {
@@ -13286,7 +13287,7 @@ Snakeskin.addDirective(
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -13332,7 +13333,7 @@ Snakeskin.addDirective(
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__KEY__]';
+								tmp += ' = __I_OBJ__[__KEY__]';
 							} break;
 
 							case 1: {
@@ -13340,7 +13341,7 @@ Snakeskin.addDirective(
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -13481,8 +13482,8 @@ Snakeskin.addDirective(
 				var args = parts[1] ?
 					parts[1].trim().split(',') : [];
 
-				var tmpObj = this.multiDeclVar(("__TMP__ = " + obj)),
-					cacheObj = this.prepareOutput('__TMP__', true);
+				var tmpObj = this.multiDeclVar(("__I_OBJ__ = " + obj)),
+					cacheObj = this.prepareOutput('__I_OBJ__', true);
 
 				if (args.length >= 6) {
 					objLength += (("\
@@ -13514,7 +13515,7 @@ Snakeskin.addDirective(
 
 						switch (i) {
 							case 0: {
-								tmp += ' = __TMP__[__KEY__]';
+								tmp += ' = __I_OBJ__[__KEY__]';
 							} break;
 
 							case 1: {
@@ -13522,7 +13523,7 @@ Snakeskin.addDirective(
 							} break;
 
 							case 2: {
-								tmp += ' = __TMP__';
+								tmp += ' = __I_OBJ__';
 							} break;
 
 							case 3: {
@@ -14518,8 +14519,8 @@ DirObj.prototype.consts = null;
  */
 DirObj.prototype.bemRef = '';
 
-var template = ['template', 'interface', 'placeholder'];
-var scopeModRgxp = new RegExp((("^" + G_MOD) + "+"));
+var template = ['template', 'interface', 'placeholder'],
+	scopeModRgxp = new RegExp((("^" + G_MOD) + "+"));
 
 /**
  * Заменить %fileName% в заданной строке на имя активного файла
@@ -14564,10 +14565,10 @@ DirObj.prototype.replaceFileName = function (str) {var this$0 = this;
 	return str;
 };
 
-var nmRgxp = /\.|\[/m,
+var nmRgxp = /\.|\[/,
 	nmssRgxp = /^\[/,
-	nmsRgxp = /\[/gm,
-	nmeRgxp = /]/gm;
+	nmsRgxp = /\[/g,
+	nmeRgxp = /]/g;
 
 /**
  * Подготовить заданную строку декларации имени шаблона
@@ -14810,9 +14811,9 @@ for (var i = -1; ++i < template.length;) {
 
 			// Валидация шаблона для наследования
 			var parentTplName;
-			if (/\)\s+extends\s+/m.test(command)) {
+			if (/\)\s+extends\s+/.test(command)) {
 				try {
-					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/m
+					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/
 						.exec(command)[1]
 						.replace(/\s*@$/, '');
 
@@ -14897,7 +14898,7 @@ for (var i = -1; ++i < template.length;) {
 				}\
 \
 				var __RESULT__ = " + (this.declResult())) + (",\
-					__TMP_RESULT__,\
+					__COMMENT_RESULT__,\
 					__NODE__,\
 					$_;\
 \
@@ -16170,7 +16171,7 @@ Snakeskin.addDirective(
 
 		if (this.renderMode === 'dom') {
 			this.domComment = true;
-			str = '__TMP_RESULT__ = \'\';';
+			str = '__COMMENT_RESULT__ = \'\';';
 
 		} else {
 			str = this.wrap('\'<!--\'');
@@ -16191,9 +16192,9 @@ Snakeskin.addDirective(
 			str = this.wrap((("'" + comment) + "'"));
 			this.domComment = false;
 			str += (("\
-				__NODE__ = document.createComment(__TMP_RESULT__);\
+				__NODE__ = document.createComment(__COMMENT_RESULT__);\
 				" + (this.returnPushNodeDecl(true))) + "\
-				__TMP_RESULT__ = \'\';\
+				__COMMENT_RESULT__ = \'\';\
 			");
 
 		} else {
