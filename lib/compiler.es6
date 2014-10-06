@@ -498,8 +498,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Содержимое директивы
 	var command = '';
 
-	var commandTypeRgxp = /[^\s]+/m,
-		commandRgxp = /[^\s]+\s*/m;
+	var commandTypeRgxp = /[^\s]+/,
+		commandRgxp = /[^\s]+\s*/;
 
 	var filterStart = false,
 		filterStartRgxp = /[a-z]/i;
