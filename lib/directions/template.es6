@@ -42,8 +42,8 @@ DirObj.prototype.consts = null;
  */
 DirObj.prototype.bemRef = '';
 
-var template = ['template', 'interface', 'placeholder'];
-var scopeModRgxp = new RegExp(`^${G_MOD}+`);
+var template = ['template', 'interface', 'placeholder'],
+	scopeModRgxp = new RegExp(`^${G_MOD}+`);
 
 /**
  * Заменить %fileName% в заданной строке на имя активного файла
@@ -88,10 +88,10 @@ DirObj.prototype.replaceFileName = function (str) {
 	return str;
 };
 
-var nmRgxp = /\.|\[/m,
+var nmRgxp = /\.|\[/,
 	nmssRgxp = /^\[/,
-	nmsRgxp = /\[/gm,
-	nmeRgxp = /]/gm;
+	nmsRgxp = /\[/g,
+	nmeRgxp = /]/g;
 
 /**
  * Подготовить заданную строку декларации имени шаблона
@@ -340,9 +340,9 @@ for (let i = -1; ++i < template.length;) {
 
 			// Валидация шаблона для наследования
 			var parentTplName;
-			if (/\)\s+extends\s+/m.test(command)) {
+			if (/\)\s+extends\s+/.test(command)) {
 				try {
-					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/m
+					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/
 						.exec(command)[1]
 						.replace(/\s*@$/, '');
 
@@ -427,7 +427,7 @@ for (let i = -1; ++i < template.length;) {
 				}
 
 				var __RESULT__ = ${this.declResult()},
-					__TMP_RESULT__,
+					__COMMENT_RESULT__,
 					__NODE__,
 					\$_;
 

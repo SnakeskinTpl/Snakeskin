@@ -8,7 +8,7 @@
  */
 DirObj.prototype.$ = function () {
 	if (this.domComment) {
-		return '__TMP_RESULT__ +=';
+		return '__COMMENT_RESULT__ +=';
 	}
 
 	switch (this.renderMode) {

@@ -80,7 +80,7 @@ var sysConst = {
 	'__ARGUMENTS__': true,
 	'__BLOCKS__': true,
 	'__RESULT__': true,
-	'__TMP_RESULT__': true,
+	'__COMMENT_RESULT__': true,
 	'__CDATA__': true,
 	'__RETURN__': true,
 	'__RETURN_VAL__': true,
