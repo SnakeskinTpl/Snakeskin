@@ -342,7 +342,9 @@ for (let i = -1; ++i < template.length;) {
 			var parentTplName;
 			if (/\)\s+extends\s+/m.test(command)) {
 				try {
-					parentTplName = /\)\s+extends\s+(.*?(?:]|$))/m.exec(command)[1];
+					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/m
+						.exec(command)[1]
+						.replace(/\s*@$/, '');
 
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
 						throw false;
