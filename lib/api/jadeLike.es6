@@ -22,7 +22,7 @@
 	 */
 	DirObj.prototype.toBaseSyntax = function (str, i) {
 		var ws = !this.tolerateWhitespace;
-		var clrL = true,
+		var clrL = 1,
 			spaces = 0,
 			space = '';
 
@@ -64,10 +64,14 @@
 				}
 
 				if (clrL) {
+					if (clrL === 1) {
+						res += `${alb}${lb}__sp__${rb}`;
+					}
+
 					res += el;
 				}
 
-				clrL = true;
+				clrL++;
 				spaces = 0;
 				space = '\n';
 
@@ -78,7 +82,7 @@
 					tSpace++;
 
 				} else {
-					clrL = false;
+					clrL = 0;
 					let nextSpace = false;
 
 					if (el === alb) {
