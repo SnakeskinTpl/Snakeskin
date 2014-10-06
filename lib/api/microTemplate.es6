@@ -29,6 +29,12 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 	var part = '',
 		rPart = '';
 
+	var nextLineMap = {
+		'n': '\n',
+		'r': '\r',
+		'v': '\v'
+	};
+
 	for (let i = -1; ++i < str.length;) {
 		let currentEscape = escape;
 		let el = str.charAt(i),
@@ -46,6 +52,11 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 
 			if (escape) {
 				continue;
+			}
+
+			if (el === '\\' && nextLineMap[next] && !bOpen) {
+				el = nextLineMap[next];
+				i++;
 			}
 
 			// Обработка комментариев
@@ -157,5 +168,6 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		}
 	}
 
+	console.log(res);
 	return res;
 };
