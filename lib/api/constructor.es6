@@ -228,6 +228,9 @@ function DirObj(src, params) {
 	this.space = false;
 
 	/** @type {boolean} */
+	this.skipSpace = false;
+
+	/** @type {boolean} */
 	this.prevSpace = false;
 
 	/** @type {boolean} */

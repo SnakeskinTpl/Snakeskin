@@ -13,7 +13,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		this.space = true;
+		this.skipSpace = true;
 
 		if (this.isReady()) {
 			let cb = this.hasParent(this.getGroup('callback'));

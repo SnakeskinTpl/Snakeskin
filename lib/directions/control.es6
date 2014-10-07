@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		this.space = true;
+		this.skipSpace = true;
 
 		if (this.isReady()) {
 			if (command === 'proto') {
@@ -91,7 +91,7 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		this.space = true;
+		this.skipSpace = true;
 
 		if (this.isReady()) {
 			if (command === 'proto') {

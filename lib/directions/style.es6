@@ -16,7 +16,7 @@
 			this.startDir();
 
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.autoReplace) {
@@ -74,7 +74,7 @@
 
 		function () {
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.structure.params.autoReplace) {
