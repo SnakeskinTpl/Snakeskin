@@ -256,7 +256,7 @@
 		var s = dir.adv + lb;
 
 		if (ws) {
-			space = `${s}__&__${rb}\n${(space || '').substring(1)}${s}__sp__${rb}`
+			space = `${s}__&+__${rb}\n${(space || '').substring(1)}${s}__&-__${rb}`
 
 		} else {
 			space = '\n';
