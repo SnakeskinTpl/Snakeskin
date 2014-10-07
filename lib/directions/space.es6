@@ -12,6 +12,7 @@
 		function () {
 			this.startInlineDir();
 			this.space = true;
+			this.prevSpace = true;
 		}
 	);
 
@@ -50,8 +51,8 @@
 			this.superStrongSpace--;
 		}
 
-		if (!this.superStrongSpace) {
-			this.text = true;
+		if (!this.superStrongSpace && !this.space) {
+			this.space = false;
 		}
 	}
 
