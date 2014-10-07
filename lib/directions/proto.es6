@@ -254,6 +254,7 @@ Snakeskin.addDirective(
 							pos: this.res.length,
 							ctx: this,
 
+							sysSpace: this.sysSpace,
 							superStrongSpace: this.superStrongSpace,
 							strongSpace: this.strongSpace,
 							space: this.space

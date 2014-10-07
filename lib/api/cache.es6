@@ -43,6 +43,8 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	this.bemRef = '';
 
 	this.superStrongSpace = 0;
+	this.sysSpace = 0;
+
 	this.strongSpace = false;
 	this.space = !this.tolerateWhitespace;
 

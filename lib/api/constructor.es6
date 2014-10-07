@@ -240,6 +240,9 @@ function DirObj(src, params) {
 	this.superStrongSpace = 0;
 
 	/** @type {number} */
+	this.sysSpace = 0;
+
+	/** @type {number} */
 	this.freezeLine = 0;
 
 	/** @type {boolean} */

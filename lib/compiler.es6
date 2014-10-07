@@ -676,7 +676,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Простой ввод внутри декларации шаблона
 			} else {
-				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
+				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace && !dir.sysSpace) {
 					el = dir.ignore && dir.ignore.test(el) ?
 						'' : el;
 
@@ -693,7 +693,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else {
 			clrL = false;
 
-			if (!begin && !dir.strongSpace && !dir.superStrongSpace) {
+			if (!begin && !dir.strongSpace && !dir.superStrongSpace && !dir.sysSpace) {
 				if (!currentEscape && (isPrefStart ? el === alb : el === lb)) {
 					dir.prevSpace = dir.space;
 
@@ -906,7 +906,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 					}
 
-					if (dir.text && !dir.strongSpace && !dir.superStrongSpace) {
+					if (dir.text && !dir.strongSpace && !dir.superStrongSpace && !dir.sysSpace) {
 						dir.space = false;
 					}
 

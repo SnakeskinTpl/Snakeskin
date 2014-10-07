@@ -332,6 +332,7 @@ for (let i = -1; ++i < template.length;) {
 			this.varCache[tplName] = {};
 
 			if (proto) {
+				this.sysSpace = proto.sysSpace;
 				this.superStrongSpace = proto.superStrongSpace;
 				this.strongSpace = proto.strongSpace;
 				this.space = proto.space;
