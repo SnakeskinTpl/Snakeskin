@@ -12,6 +12,8 @@
 		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
 		lastSymbolRgxp = new RegExp(`(${alb}|\\\\)$`);
 
+	var endDirInit;
+
 	/**
 	 * Вернуть объект-описание преобразованной части шаблона из
 	 * Jade-Like синтаксиса в стандартный
@@ -21,7 +23,9 @@
 	 * @return {{str: string, length: number, error: (boolean|null|undefined)}}
 	 */
 	DirObj.prototype.toBaseSyntax = function (str, i) {
+		endDirInit = false;
 		var ws = !this.tolerateWhitespace;
+
 		var clrL = 0,
 			init = true,
 			spaces = 0,
@@ -45,6 +49,9 @@
 					res += genEndDir(struct, ws, struct.space) +
 						(tmp ? `${struct.adv}${lb}__&-__${rb}` : '') + tmp;
 				}
+
+			} else {
+				endDirInit = false;
 			}
 		}
 
@@ -213,8 +220,11 @@
 					}
 
 					struct = obj;
-					res += space + s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+					res += space +
+						(endDirInit ? `${adv}${lb}__&-__${rb}` : '') +
+						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
+					endDirInit = false;
 					let tmp = decl.length - 1;
 					tSpace = 0;
 
@@ -266,12 +276,13 @@
 		var s = dir.adv + lb;
 
 		if (ws) {
-			space = `${s}__&+__${rb}\n${(space || '').substring(1)}`;
+			space = `${endDirInit ? '' : `${s}__&+__${rb}`}\n${(space || '').substring(1)}`;
 
 		} else {
 			space = '\n';
 		}
 
+		endDirInit = true;
 		return `${space}${s}__end__${rb}${s}__cutLine__${rb}`;
 	}
 
