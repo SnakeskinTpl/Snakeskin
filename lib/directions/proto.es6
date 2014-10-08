@@ -176,6 +176,12 @@ Snakeskin.addDirective(
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
+		var space = this.space;
+		this.sysSpace = params.sysSpace;
+		this.superStrongSpace = params.superStrongSpace;
+		this.strongSpace = params.strongSpace;
+		this.space = params.space;
+
 		if (this.outerLink === params.name) {
 			let obj = this.preDefs[tplName];
 
@@ -258,10 +264,10 @@ Snakeskin.addDirective(
 							pos: this.res.length,
 							ctx: this,
 
-							sysSpace: params.sysSpace,
-							superStrongSpace: params.superStrongSpace,
-							strongSpace: params.strongSpace,
-							space: params.space
+							sysSpace: this.sysSpace,
+							superStrongSpace: this.superStrongSpace,
+							strongSpace: this.strongSpace,
+							space: this.space
 						}
 					}
 				);
@@ -318,6 +324,8 @@ Snakeskin.addDirective(
 
 					struct.vars = vars;
 				}
+
+				this.text = !space;
 			}
 		}
 	}

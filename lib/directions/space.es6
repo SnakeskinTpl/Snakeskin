@@ -26,7 +26,7 @@
 			}
 		},
 
-		function ignoreAllWhitespaces() {
+		function () {
 			this.startInlineDir();
 			this.superStrongSpace++;
 		}
@@ -39,7 +39,7 @@
 			group: 'ignore'
 		},
 
-		function ignoreAllWhitespaces() {
+		function () {
 			this.startInlineDir();
 			this.sysSpace++;
 		}
