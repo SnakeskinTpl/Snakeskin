@@ -60,10 +60,10 @@
 
 			if (this.superStrongSpace) {
 				this.superStrongSpace--;
-			}
 
-			if (!this.superStrongSpace) {
-				this.space = false;
+				if (!this.superStrongSpace) {
+					this.space = false;
+				}
 			}
 		}
 	);
@@ -80,10 +80,10 @@
 
 			if (this.sysSpace) {
 				this.sysSpace--;
-			}
 
-			if (!this.sysSpace && !this.space) {
-				this.space = false;
+				if (!this.sysSpace && !this.space) {
+					this.space = false;
+				}
 			}
 		}
 	);
