@@ -333,8 +333,8 @@ for (let i = -1; ++i < template.length;) {
 
 			if (proto) {
 				this.sysSpace = proto.sysSpace;
-				this.superStrongSpace = proto.superStrongSpace;
 				this.strongSpace = proto.strongSpace;
+				this.chainSpace = proto.chainSpace;
 				this.space = proto.space;
 				return;
 			}

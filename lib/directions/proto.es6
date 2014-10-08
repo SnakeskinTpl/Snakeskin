@@ -119,8 +119,8 @@ Snakeskin.addDirective(
 			fromBody: start + 1,
 			line: this.info['line'],
 			sysSpace: this.sysSpace,
-			superStrongSpace: this.superStrongSpace,
 			strongSpace: this.strongSpace,
+			chainSpace: this.chainSpace,
 			space: this.space
 		});
 
@@ -178,8 +178,8 @@ Snakeskin.addDirective(
 
 		var space = this.space;
 		this.sysSpace = params.sysSpace;
-		this.superStrongSpace = params.superStrongSpace;
 		this.strongSpace = params.strongSpace;
+		this.chainSpace = params.chainSpace;
 		this.space = params.space;
 
 		if (this.outerLink === params.name) {
@@ -265,8 +265,8 @@ Snakeskin.addDirective(
 							ctx: this,
 
 							sysSpace: this.sysSpace,
-							superStrongSpace: this.superStrongSpace,
 							strongSpace: this.strongSpace,
+							chainSpace: this.chainSpace,
 							space: this.space
 						}
 					}

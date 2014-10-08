@@ -23,7 +23,7 @@ Snakeskin.addDirective(
 		}
 
 		if (inside[name]) {
-			this.strongSpace = struct.parent.strong;
+			this.chainSpace = struct.parent.strong;
 		}
 
 		var destruct = Snakeskin.Directions[`${name}End`],
