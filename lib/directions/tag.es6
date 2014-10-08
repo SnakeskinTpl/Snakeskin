@@ -96,7 +96,9 @@ Snakeskin.addDirective(
 
 	function () {
 		var params = this.structure.params;
+
 		this.bemRef = params.bemRef;
+		this.prevSpace = false;
 
 		if (params.block) {
 			let str;
