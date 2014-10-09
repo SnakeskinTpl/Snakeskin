@@ -179,6 +179,33 @@
 	{=\#{1}\\\\#{1}}
 {/}
 
+{template data_index3()}
+	{data
+		{
+			foo: ${
+				/// 121
+				1 +
+				/*
+					1 */
+				2
+			}
+		}
+	}
+{/}
+
+- template data_index4()
+	= &
+		{
+			/* 121 */
+			#{
+				/// 121
+				1 + 2
+			}
+		}
+	.
+
+	121
+
 {template data_decl()}
 	{foo = 'bar'}
 
@@ -186,7 +213,7 @@
 	{{#{foo/* 1111 */}}}
 	#{{#{foo}}}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true, autoReplace: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_index2().trim(), '#{1}\\1'); equal(data_decl().trim(), '{{foo}} {{bar}} {{bar}}'); }); </script> <script type="text/x-snakeskin-template" id="doctype"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true, autoReplace: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_index2().trim(), '#{1}\\1'); equal(data_index3().trim(), '{ foo: 3 }'); equal(data_index4().trim(), '{ 3 } 121'); equal(data_decl().trim(), '{{foo}} {{bar}} {{bar}}'); }); </script> <script type="text/x-snakeskin-template" id="doctype"> 
 {template doctype_index()}
 	{doctype}
 	{doctype html}
@@ -772,7 +799,132 @@
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*////3
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1> 1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1> 1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> 1'); }); </script> <script type="text/x-snakeskin-template" id="style"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1> 1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1> 1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> 1'); }); </script> <script type="text/x-snakeskin-template" id="space"> 
+- template space_index()
+	< .foo
+		< .bar
+			? 121
+		< .foo :: 1 2 3
+
+		< .car :: {&}
+
+
+			1
+
+- template space_index2()
+	1
+
+	{&+}
+	< .foo
+	< .foo :: {&}
+
+		1
+	< .bar
+	{&-}
+
+	2
+
+	1
+
+	{&+}
+	< .foo
+	< .foo
+
+		1
+	< .bar
+	{&-}
+
+	2
+
+- template space_index3()
+	1
+
+	- proto foo() =>
+
+
+		2
+
+	- proto bar() =>
+
+		1    2{&}
+
+	- proto foobar() =>
+
+		1{&}    2
+
+- template space_index4()
+	1
+
+	- block foo() =>
+
+
+		2
+
+	- block bar() =>
+
+		1    2{&}
+
+	- block foobar() =>
+
+		1{&}    2
+
+{template space_index5()}
+	1
+
+	{proto foo() =>}
+
+
+		2{&}  1
+	{/}
+
+	{proto bar() =>}
+
+
+		2  1
+	{/}
+{/}
+
+{template space_index6()}
+	1
+
+	{proto foo() => 2}
+
+
+		2
+
+	{/}
+
+	4
+{/}
+
+- template space_index7()
+	< .foo
+	< .foo
+
+	< .bar
+
+- template space_index8()
+	< .foo
+	< .foo
+	{&}
+	< .bar
+
+
+- template space_index9()
+	1{&}
+	- switch 1
+
+
+
+		- case 1 :: 2
+	1{switch 1}
+
+		{case 1}
+
+			1
+		{/}
+	{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('space'), {prettyPrint: true, autoReplace: true}); test('space', function () { equal(space_index().trim(), '<div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>'); equal(space_index2().trim(), '1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2 1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2'); equal(space_index3().trim(), '1 2 1 212'); equal(space_index4().trim(), '1 2 1 212'); equal(space_index5().trim(), '1 21 2 1'); equal(space_index6().trim(), '1 2 4'); equal(space_index7().trim(), '<div class="foo"></div><div class="foo"></div> <div class="bar"></div>'); equal(space_index8().trim(), '<div class="foo"></div><div class="foo"></div><div class="bar"></div>'); equal(space_index9().trim(), '121 1'); }); </script> <script type="text/x-snakeskin-template" id="style"> 
 {template style_index()}
 	#{style}
 		.a {}

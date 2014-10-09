@@ -1,5 +1,7 @@
 data_index
 data_index2
+data_index3
+data_index4
 data_decl
 
 ###
@@ -19,6 +21,33 @@ data_decl
 	{=\#{1}\\\\#{1}}
 {/}
 
+{template data_index3()}
+	{data
+		{
+			foo: ${
+				/// 121
+				1 +
+				/*
+					1 */
+				2
+			}
+		}
+	}
+{/}
+
+- template data_index4()
+	= &
+		{
+			/* 121 */
+			#{
+				/// 121
+				1 + 2
+			}
+		}
+	.
+
+	121
+
 {template data_decl()}
 	{foo = 'bar'}
 
@@ -34,6 +63,14 @@ data_decl
 ***
 
 #{1}\\1
+
+***
+
+{ foo: 3 }
+
+***
+
+{ 3 } 121
 
 ***
 
