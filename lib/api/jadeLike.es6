@@ -329,19 +329,26 @@
 						str.charAt(j - 2)
 					);
 
+					let literal;
 					brk = dirStart &&
 						prevEl === CONCAT_END;
 
 					if (dirStart && (prevEl === CONCAT_COMMAND || brk)) {
+						literal = prevEl;
 						res = res.substring(0, lastElI) +
 							res.substring(lastElI + 1);
 
-					} else if (concatLine || prevEl === CONCAT_COMMAND) {
+					} else if (concatLine) {
 						res += el;
-						concatLine = true;
 					}
 
 					if (concatLine && !brk) {
+						continue;
+					}
+
+					if (literal === CONCAT_COMMAND) {
+						concatLine = true;
+						res += el;
 						continue;
 					}
 				}
