@@ -2,6 +2,7 @@ block_base
 block_sub
 block_sub2
 block_sub3
+block_sub4
 
 ###
 
@@ -70,6 +71,17 @@ block_sub3
 {template block_sub3() extends block_base3}
 {/}
 
+- block block_base4->bar()
+	- a = 1
+
+- template block_base4()
+
+- block block_sub4->bar() =>
+	< div :: 112
+	- super
+
+- template block_sub4() extends block_base4
+
 ###
 
 2202154
@@ -85,3 +97,7 @@ block_sub3
 ***
 
 222
+
+***
+
+<div>112</div>

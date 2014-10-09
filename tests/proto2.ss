@@ -1,6 +1,8 @@
 proto2_base
 proto2_sub
 proto2_sub2
+proto2_sub3
+proto2_args
 
 ###
 
@@ -56,6 +58,22 @@ proto2_sub2
 	{/}
 {/}
 
+- proto proto2_base3->bar()
+	- a = 1
+
+- template proto2_base3()
+
+- proto proto2_sub3->bar() =>
+	< div :: 112
+	- super
+
+- template proto2_sub3() extends proto2_base3
+
+- template proto2_args()
+	- proto foo() => 1, 2
+		- block foo() => arguments[0] * 2, arguments[1] * 2
+			{arguments[0] + arguments[1]}
+
 ###
 
 22021121
@@ -67,3 +85,11 @@ proto2_sub2
 ***
 
 22[object Object]219
+
+***
+
+<div>112</div>
+
+***
+
+6
