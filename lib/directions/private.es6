@@ -127,7 +127,12 @@ Snakeskin.addDirective(
 
 	function () {
 		if (!this.freezeLine) {
-			this.info['line'] = this.structure.params.line;
+			let length =
+				this.info['line'] = this.structure.params.line;
+
+			for (let i = this.lines.length - 1; ++i < length;) {
+				this.lines.push('');
+			}
 		}
 	}
 );
