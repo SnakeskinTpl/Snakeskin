@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 06 Oct 2014 13:11:27 GMT
+ * Date: Thu, 09 Oct 2014 10:49:58 GMT
  */
 
 /*!
@@ -134,7 +134,7 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  *
  * @expose
  * @param {*} str - исходная строка
- * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
+ * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются html атрибуты
  * @return {string}
  */
 Snakeskin.Filters.html = function (str, opt_attr) {
@@ -6367,7 +6367,9 @@ var argsCache = {},
 var extMap = {};
 var replacers = {},
 	sys = {},
+
 	block = {},
+	text = {},
 
 	inside = {},
 	after = {},
@@ -6425,8 +6427,9 @@ Snakeskin.DirObj = DirObj;
  *     2) interface - все шаблоны рендерятся как interface-ы;
  *     3) template - все шаблоны рендерятся как template-ы.
  *
- * @param {boolean} params.xml - если false, то Snakeskin не делает дополнительных
- *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ * @param {string|boolean} [params.doctype] - тип генерируемого документа HTML:
+ *     1) html;
+ *     2) xhtml.
  *
  * @param {boolean} params.localization - если false, то блоки ` ... ` не заменяются на вызов i18n
  * @param {string} params.i18nFn - название функции для i18n
@@ -6434,6 +6437,9 @@ Snakeskin.DirObj = DirObj;
  *
  * @param {boolean} params.tolerateWhitespace - если true, то пробельные символы
  *     вставляются "как есть"
+ *
+ * @param {boolean} params.replaceUndef - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр undef
  *
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
@@ -6509,9 +6515,15 @@ function DirObj(src, params) {var this$0 = this;
 
 	/**
 	 * @expose
+	 * @type {(string|boolean)}
+	 */
+	this.doctype = params.doctype;
+
+	/**
+	 * @expose
 	 * @type {boolean}
 	 */
-	this.xml = params.xml;
+	this.replaceUndef = params.replaceUndef;
 
 	/**
 	 * @expose
@@ -6577,10 +6589,11 @@ function DirObj(src, params) {var this$0 = this;
 			'@root': true,
 			renderMode: this.renderMode,
 			inlineIterators: this.inlineIterators,
-			xml: this.xml,
+			doctype: this.doctype,
 			escapeOutput: this.escapeOutput,
 			renderAs: this.renderAs,
 			commonJS: this.commonJS,
+			replaceUndef: this.replaceUndef,
 			autoReplace: this.autoReplace,
 			macros: this.macros,
 			localization: this.localization,
@@ -6627,13 +6640,19 @@ function DirObj(src, params) {var this$0 = this;
 	this.space = false;
 
 	/** @type {boolean} */
+	this.skipSpace = false;
+
+	/** @type {boolean} */
 	this.prevSpace = false;
 
 	/** @type {boolean} */
-	this.strongSpace = false;
+	this.chainSpace = false;
 
 	/** @type {number} */
-	this.superStrongSpace = 0;
+	this.strongSpace = 0;
+
+	/** @type {number} */
+	this.sysSpace = 0;
 
 	/** @type {number} */
 	this.freezeLine = 0;
@@ -6870,8 +6889,10 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	this.consts = [];
 	this.bemRef = '';
 
-	this.superStrongSpace = 0;
-	this.strongSpace = false;
+	this.strongSpace = 0;
+	this.sysSpace = 0;
+
+	this.chainSpace = false;
 	this.space = !this.tolerateWhitespace;
 
 	return this;
@@ -7917,7 +7938,8 @@ DirObj.prototype.popParams = function () {
 		var unEscape = !this.escapeOutput;
 
 		// true, если применяется фильтр !undef
-		var unUndef = false;
+		var unUndef = !this.replaceUndef,
+			globalUnUndef = unUndef;
 
 		var vars = struct.children ?
 			struct.vars :
@@ -8072,7 +8094,8 @@ DirObj.prototype.popParams = function () {
 					} else if (
 						canParse &&
 						(!opt_sys || opt_iSys) && !filterStart &&
-						(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary])
+						(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary]) &&
+						!globalUnUndef
 					) {
 
 						vres = (("" + unUndefLabel) + ("(" + vres) + ")");
@@ -8192,7 +8215,7 @@ DirObj.prototype.popParams = function () {
 				}
 
 				resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
-				unUndef = false;
+				unUndef = globalUnUndef;
 
 				var fstr = rvFilter.join().length + 1;
 				res = pCount ?
@@ -8335,6 +8358,12 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 	var part = '',
 		rPart = '';
 
+	var nextLineMap = {
+		'n': '\n',
+		'r': '\r',
+		'v': '\v'
+	};
+
 	for (var i = -1; ++i < str.length;) {
 		var currentEscape = escape;
 		var el = str.charAt(i),
@@ -8354,35 +8383,40 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 				continue;
 			}
 
-			// Обработка комментариев
-			if (!currentEscape) {
-				var next3str = next2str + str.charAt(i + 2);
-				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
-					if (!comment) {
-						if (next3str === SINGLE_COMMENT) {
-							comment = next3str;
-							i += 2;
+			if (!bOpen) {
+				if (el === '\\' && nextLineMap[next]) {
+					el = nextLineMap[next];
+					i++;
+				}
 
-						} else if (next2str === MULT_COMMENT_START) {
-							comment = next2str;
-							i++;
+				// Обработка комментариев
+				if (!currentEscape) {
+					var next3str = next2str + str.charAt(i + 2);
+					if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
+						if (!comment) {
+							if (next3str === SINGLE_COMMENT) {
+								comment = next3str;
+								i += 2;
+
+							} else if (next2str === MULT_COMMENT_START) {
+								comment = next2str;
+								i++;
+							}
+
+						} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
+							comment = false;
+							continue;
 						}
 
-					} else if (str.charAt(i - 1) === MULT_COMMENT_END.charAt(0) && comment === MULT_COMMENT_START) {
+					} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
 						comment = false;
-						continue;
 					}
-
-				} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
-					comment = false;
 				}
-			}
 
-			if (comment) {
-				continue;
-			}
+				if (comment) {
+					continue;
+				}
 
-			if (!bOpen) {
 				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
 					bEnd = true;
 
@@ -9082,9 +9116,12 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		rb = RIGHT_BLOCK;
 
 	var commandRgxp = /([^\s]+).*/,
-		rightWSRgxp = /\s*$/,
 		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
+		rightPartRgxp = new RegExp((("(?:" + alb) + ("?" + lb) + ("__&-__" + rb) + "|)\\s*$")),
+		rightWSRgxp = /\s*$/,
 		lastSymbolRgxp = new RegExp((("(" + alb) + "|\\\\)$"));
+
+	var endDirInit;
 
 	/**
 	 * Вернуть объект-описание преобразованной части шаблона из
@@ -9095,8 +9132,11 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	 * @return {{str: string, length: number, error: (boolean|null|undefined)}}
 	 */
 	DirObj.prototype.toBaseSyntax = function (str, i) {
+		endDirInit = false;
 		var ws = !this.tolerateWhitespace;
-		var clrL = true,
+
+		var clrL = 0,
+			init = true,
 			spaces = 0,
 			space = '';
 
@@ -9113,11 +9153,14 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 					obj.name = struct.name;
 
 				} else {
-					var tmp = rightWSRgxp.exec(res)[0];
-					res = res.replace(rightWSRgxp, '');
+					var rightSpace = rightWSRgxp.exec(res)[0];
+					res = res.replace(rightPartRgxp, '');
 					res += genEndDir(struct, ws, struct.space) +
-						(tmp ? (("" + (struct.adv)) + ("" + lb) + ("__sp__" + rb) + "") : '') + tmp;
+						(rightSpace ? (("" + (struct.adv)) + ("" + lb) + ("__&-__" + rb) + "") : '') + rightSpace;
 				}
+
+			} else {
+				endDirInit = false;
 			}
 		}
 
@@ -9138,22 +9181,30 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				}
 
 				if (clrL) {
+					if (clrL === 1) {
+						res += (("" + alb) + ("" + lb) + ("__&-__" + rb) + "");
+					}
+
 					res += el;
 				}
 
-				clrL = true;
+				clrL++;
+				init = true;
+
 				spaces = 0;
 				space = '\n';
 
-			} else if (clrL) {
+			} else if (init) {
 				if (whiteSpaceRgxp.test(el)) {
 					spaces++;
 					space += el;
 					tSpace++;
 
 				} else {
-					clrL = false;
 					var nextSpace = false;
+
+					init = false;
+					clrL = 0;
 
 					if (el === alb) {
 						if (shortMap[diff2str]) {
@@ -9222,6 +9273,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 						space: space,
 						parent: null,
 						block: dir && block[decl.name],
+						text: !dir || text[decl.name],
 						adv: adv
 					};
 
@@ -9278,8 +9330,11 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 					}
 
 					struct = obj;
-					res += space + s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+					res += space +
+						(endDirInit && obj.text ? (("" + adv) + ("" + lb) + ("__&-__" + rb) + "") : '') +
+						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
+					endDirInit = false;
 					var tmp = decl.length - 1;
 					tSpace = 0;
 
@@ -9328,11 +9383,17 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	 * @return {string}
 	 */
 	function genEndDir(dir, ws, space) {
-		space = ws ? '' :
-			(space || '').substring(1);
-
 		var s = dir.adv + lb;
-		return (("" + (ws ? (("" + s) + ("__&__" + rb) + "") : '')) + ("\n" + space) + ("" + s) + ("__end__" + rb) + ("" + s) + ("__cutLine__" + rb) + "");
+
+		if (ws) {
+			space = (("" + (endDirInit ? '' : (("" + s) + ("__&+__" + rb) + ""))) + ("\n" + ((space || '').substring(1))) + "");
+
+		} else {
+			space = '\n';
+		}
+
+		endDirInit = true;
+		return (("" + space) + ("" + s) + ("__end__" + rb) + ("" + s) + ("__cutLine__" + rb) + "");
 	}
 
 	/**
@@ -9363,37 +9424,45 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				next2Str = el + str.charAt(j + 1);
 
 			length++;
-
 			if (nextLineRgxp.test(el)) {
 				var prevEl = lastEl,
 					brk = false;
 
 				lastEl = '';
-
-				if (comment) {
+				if (comment || (sComment && concatLine)) {
 					res += el;
 
-				} else if (!sComment) {
-					if (dir && str.charAt(j - 2) === ' ') {
-						brk = prevEl === CONCAT_END;
+				} else if (!sComment && dir) {
+					var dirStart = lineWhiteSpaceRgxp.test(
+						str.charAt(j - 2)
+					);
 
-						if (prevEl === CONCAT_COMMAND || brk) {
-							res = res.substring(0, lastElI) + el + res.substring(lastElI + 1);
-						}
+					var literal = void 0;
+					brk = dirStart &&
+						prevEl === CONCAT_END;
 
-						if (concatLine && !brk) {
-							continue;
-						}
+					if (dirStart && (prevEl === CONCAT_COMMAND || brk)) {
+						literal = prevEl;
+						res = res.substring(0, lastElI) +
+							res.substring(lastElI + 1);
 
-						if (prevEl === CONCAT_COMMAND) {
-							concatLine = true;
-							continue
-						}
+					} else if (concatLine) {
+						res += el;
+					}
+
+					if (concatLine && !brk) {
+						continue;
+					}
+
+					if (literal === CONCAT_COMMAND) {
+						concatLine = true;
+						res += el;
+						continue;
 					}
 				}
 
+				sComment = false;
 				if (comment || concatLine && !brk) {
-					sComment = false;
 					continue;
 				}
 
@@ -9421,9 +9490,9 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 					inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
 				}
 
-				var whiteSpace = lineWhiteSpaceRgxp.test(el);
+				var ws = lineWhiteSpaceRgxp.test(el);
 
-				if (whiteSpace) {
+				if (ws) {
 					if (nmBrk === false) {
 						nmBrk = true;
 					}
@@ -9433,7 +9502,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 					lastElI = res.length;
 				}
 
-				if (!nmBrk && !whiteSpace) {
+				if (!nmBrk && !ws) {
 					if (nmBrk === null) {
 						nmBrk = false;
 					}
@@ -9447,7 +9516,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 			}
 		}
 
-		if (dir && lastEl === CONCAT_END && res.charAt(lastElI - 1) === ' ') {
+		if (dir && lastEl === CONCAT_END && lineWhiteSpaceRgxp.test(res.charAt(lastElI - 1))) {
 			res = res.substring(0, lastElI) + res.substring(lastElI + 1);
 		}
 
@@ -10182,7 +10251,6 @@ var tAttrRgxp = /[^'" ]/,
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска, или если true,
  *     то шаблон компилируется с экспортом в стиле commonJS
  *
- * @param {?boolean=} [opt_params.commonJS=false] - если true, то шаблон компилируется с экспортом в стиле commonJS
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (устанавливает экспорт commonJS)
  *
@@ -10223,8 +10291,12 @@ var tAttrRgxp = /[^'" ]/,
  * @param {?boolean=} [opt_params.inlineIterators=false] - если true, то итераторы forEach и forIn
  *     будут развёрнуты в циклы
  *
- * @param {?boolean=} [opt_params.xml=true] - если false, то Snakeskin не делает дополнительных
- *     проверок текста как xml (экранируются атрибуты и проверяется закрытость тегов)
+ * @param {(string|boolean|null)=} [opt_params.doctype='html'] - тип генерируемого документа HTML:
+ *     1) html;
+ *     2) xhtml.
+ *
+ * @param {?boolean=} [opt_params.replaceUndef=true] - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр undef
  *
  * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
@@ -10283,6 +10355,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.tolerateWhitespace = s(p.tolerateWhitespace, p['tolerateWhitespace']) || false;
+
+	p.replaceUndef = s(p.replaceUndef, p['replaceUndef']) !== false;
 	p.escapeOutput = s(p.escapeOutput, p['escapeOutput']) !== false;
 
 	p.throws = s(p.throws, p['throws']) || false;
@@ -10295,7 +10369,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var debug =
 		p.debug = s(p.debug, p['debug']);
 
-	p.xml = s(p.xml, p['xml']) !== false && p.renderMode !== 'dom';
+	p.doctype = s(p.doctype, p['doctype']);
+	p.doctype = p.doctype !== false &&
+		(p.doctype || 'xhtml');
+
+	if (p.renderMode === 'dom') {
+		p.doctype = false;
+	}
 
 	var vars =
 		p.vars = s(p.vars, p['vars']) || {};
@@ -10341,11 +10421,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var cacheKey = p.language || p.macros ? null : [
 		cjs,
 		ctx !== NULL,
-		p.xml,
+		p.doctype,
 		p.tolerateWhitespace,
 		p.inlineIterators,
 		p.renderAs,
 		p.renderMode,
+		p.replaceUndef,
 		p.escapeOutput,
 		p.prettyPrint,
 		p.ignore,
@@ -10631,7 +10712,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		needPrfx: sp.needPrfx,
 		lines: sp.lines,
 
-		xml: p.xml,
+		doctype: p.doctype,
 		commonJS: cjs,
 
 		renderAs: p.renderAs,
@@ -10639,6 +10720,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		tolerateWhitespace: p.tolerateWhitespace,
 		inlineIterators: p.inlineIterators,
+
+		replaceUndef: p.replaceUndef,
 		escapeOutput: p.escapeOutput,
 
 		ignore: p.ignore,
@@ -10708,8 +10791,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		exprPos = 0,
 		advExprPos = 0;
 
-	var prevSpace = false,
-		prevCommentSpace = false,
+	var prevCommentSpace = false,
 		freezeI = 0,
 		freezeTmp = 0;
 
@@ -10841,7 +10923,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Простой ввод внутри декларации шаблона
 			} else {
-				if (!dir.space && !dir.strongSpace && !dir.superStrongSpace) {
+				if (!dir.space && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
 					el = dir.ignore && dir.ignore.test(el) ?
 						'' : el;
 
@@ -10858,12 +10940,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else {
 			clrL = false;
 
-			if (!begin && !dir.strongSpace && !dir.superStrongSpace) {
+			if (!begin && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
 				if (!currentEscape && (isPrefStart ? el === alb : el === lb)) {
-					prevSpace = dir.space;
+					dir.prevSpace = dir.space;
 
 				} else {
-					prevSpace = false;
+					dir.prevSpace = false;
 				}
 			}
 
@@ -11035,7 +11117,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					command = dir.replaceDangerBlocks((isConst || commandType !== 'const' ?
 						command.replace(commandRgxp, '') : command));
 
-					dir.prevSpace = !dir.text && prevSpace && !dir.strongSpace && !dir.superStrongSpace;
+					dir.space = dir.prevSpace;
 					var fnRes = Snakeskin.Directions[commandType].call(
 						dir,
 						command,
@@ -11071,9 +11153,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 					}
 
-					if (!dir.text && prevSpace && !dir.strongSpace && !dir.superStrongSpace) {
+					if (dir.text && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
+						dir.space = false;
+					}
+
+					if (dir.skipSpace) {
 						dir.space = true;
-						prevSpace = false;
+						dir.skipSpace = false;
 					}
 
 					jsDocStart = false;
@@ -11170,7 +11256,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (beginStr && dir.isSimpleOutput()) {
 				var prfx = '';
 
-				if (dir.xml && tAttr && !tAttrBegin) {
+				if (dir.doctype && tAttr && !tAttrBegin) {
 					prfx = '"';
 					tAttrBegin = true;
 					tAttrEscape = true;
@@ -11278,7 +11364,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
-					if (dir.xml) {
+					if (dir.doctype) {
 						if (el === '<' && !afterTag[next]) {
 							tOpen++;
 
@@ -11667,6 +11753,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 	sys[name] = !!(params.sys);
 	block[name] = !!(params.block);
+	text[name] = !!(params.text);
 
 	if (params.alias) {
 		aliases[name] = name.replace(aliasRgxp, '$1');
@@ -11748,7 +11835,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		if (struct.strong) {
 			if (inside[struct.name][dirName]) {
-				dir.strongSpace = false;
+				dir.chainSpace = false;
 
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
 				return dir.error((("directive \"" + dirName) + ("\" can't be used within the \"" + (struct.name)) + "\""));
@@ -11775,7 +11862,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 		if (inside[dirName]) {
 			newStruct.strong = true;
-			dir.strongSpace = true;
+			dir.chainSpace = true;
 		}
 
 		if (dirName === sourceName) {
@@ -12801,10 +12888,12 @@ Snakeskin.addDirective(
 				.replace(unEscapeOrRgxp, unEscapeOr)
 				.replace(escapeEqRgxp, escapeEq);
 
-			var arg = parts[i].split('=');
+			var arg = parts[i].split('='),
+				empty = arg.length !== 2;
 
-			if (arg.length !== 2) {
-				arg[1] = arg[0];
+			if (empty) {
+				arg[1] = this.doctype === 'xhtml' ?
+					arg[0] : '';
 			}
 
 			arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
@@ -12849,13 +12938,13 @@ Snakeskin.addDirective(
 				");
 			}
 
-			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + ") != '' && __STR__) {");
+			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + (") != '' && (__STR__ || " + empty) + ")) {");
 			var tmp = (("\
 				if (__NODE__) {\
 					__NODE__.setAttribute(" + (arg[0])) + (", __STR__);\
 \
 				} else {\
-					" + (this.wrap((("' ' + " + (arg[0])) + " + '=\"' + __STR__ + '\"'")))) + "\
+					" + (this.wrap((("' ' + " + (arg[0])) + " + (__STR__ ? '=\"' + __STR__ + '\"' : '')")))) + "\
 				}\
 			");
 
@@ -12992,7 +13081,7 @@ Snakeskin.addDirective(
 		}
 
 		if (inside[name]) {
-			this.strongSpace = struct.parent.strong;
+			this.chainSpace = struct.parent.strong;
 		}
 
 		var destruct = Snakeskin.Directions[(("" + name) + "End")],
@@ -14003,7 +14092,11 @@ Snakeskin.addDirective(
 			startTemplateI: this.i + 1,
 			from: this.i - this.getDiff(commandLength),
 			fromBody: start + 1,
-			line: this.info['line']
+			line: this.info['line'],
+			sysSpace: this.sysSpace,
+			strongSpace: this.strongSpace,
+			chainSpace: this.chainSpace,
+			space: this.space
 		});
 
 		if (this.isAdvTest()) {
@@ -14057,6 +14150,12 @@ Snakeskin.addDirective(
 
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
+
+		var space = this.space;
+		this.sysSpace = params.sysSpace;
+		this.strongSpace = params.strongSpace;
+		this.chainSpace = params.chainSpace;
+		this.space = params.space;
 
 		if (this.outerLink === params.name) {
 			var obj = this.preDefs[tplName];
@@ -14113,8 +14212,9 @@ Snakeskin.addDirective(
 					{
 						inlineIterators: this.inlineIterators,
 						renderMode: this.renderMode,
+						replaceUndef: this.replaceUndef,
 						escapeOutput: this.escapeOutput,
-						xml: this.xml,
+						doctype: this.doctype,
 						autoReplace: this.autoReplace,
 						macros: this.macros,
 						language: this.language,
@@ -14140,9 +14240,10 @@ Snakeskin.addDirective(
 							pos: this.res.length,
 							ctx: this,
 
-							superStrongSpace: this.superStrongSpace,
+							sysSpace: this.sysSpace,
 							strongSpace: this.strongSpace,
-							space: this.prevSpace
+							chainSpace: this.chainSpace,
+							space: this.space
 						}
 					}
 				);
@@ -14199,6 +14300,8 @@ Snakeskin.addDirective(
 
 					struct.vars = vars;
 				}
+
+				this.text = !space;
 			}
 		}
 	}
@@ -14329,7 +14432,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		this.space = true;
+		this.skipSpace = true;
 
 		if (this.isReady()) {
 			var cb = this.hasParent(this.getGroup('callback'));
@@ -14408,73 +14511,108 @@ Snakeskin.addDirective(
 		this.scope.pop();
 	}
 );
-Snakeskin.addDirective(
-	'ignoreWhitespaces',
+(function()  {
+	Snakeskin.addDirective(
+		'ignoreWhitespaces',
 
-	{
-		placement: 'template',
-		replacers: {
-			'&': function(cmd)  {return cmd.replace('&', 'ignoreWhitespaces ')}
+		{
+			placement: 'template',
+			replacers: {
+				'&': function(cmd)  {return cmd.replace('&', 'ignoreWhitespaces ')}
+			}
+		},
+
+		function () {
+			this.startInlineDir();
+			this.space = true;
+			this.prevSpace = true;
 		}
-	},
+	);
 
-	function () {
-		this.startInlineDir();
-		this.space = true;
-	}
-);
+	Snakeskin.addDirective(
+		'ignoreAllWhitespaces',
 
-Snakeskin.addDirective(
-	'__&__',
+		{
+			placement: 'template',
+			replacers: {
+				'&+': function(cmd)  {return cmd.replace('&+', 'ignoreAllWhitespaces ')}
+			}
+		},
 
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		this.space = true;
-	}
-);
-
-Snakeskin.addDirective(
-	'ignoreAllWhitespaces',
-
-	{
-		placement: 'template',
-		replacers: {
-			'&+': function(cmd)  {return cmd.replace('&+', 'ignoreAllWhitespaces ')}
+		function () {
+			this.startInlineDir();
+			this.strongSpace++;
 		}
-	},
+	);
 
-	function () {
-		this.startInlineDir();
-		this.superStrongSpace++;
-	}
-);
+	Snakeskin.addDirective(
+		'__&+__',
 
-Snakeskin.addDirective(
-	'unIgnoreAllWhitespaces',
+		{
+			group: 'ignore'
+		},
 
-	{
-		placement: 'template',
-		replacers: {
-			'&-': function(cmd)  {return cmd.replace('&-', 'unIgnoreAllWhitespaces ')}
+		function () {
+			this.startInlineDir();
+			this.sysSpace++;
 		}
-	},
+	);
 
-	function () {
-		this.startInlineDir();
+	Snakeskin.addDirective(
+		'unIgnoreAllWhitespaces',
 
-		if (this.superStrongSpace) {
-			this.superStrongSpace--;
+		{
+			placement: 'template',
+			replacers: {
+				'&-': function(cmd)  {return cmd.replace('&-', 'unIgnoreAllWhitespaces ')}
+			}
+		},
+
+		function () {
+			this.startInlineDir();
+
+			if (this.strongSpace) {
+				this.strongSpace--;
+
+				if (!this.strongSpace) {
+					this.space = false;
+				}
+			}
 		}
+	);
 
-		if (!this.superStrongSpace) {
-			this.text = true;
+	Snakeskin.addDirective(
+		'__&-__',
+
+		{
+			group: 'ignore'
+		},
+
+		function () {
+			this.startInlineDir();
+
+			if (this.sysSpace) {
+				this.sysSpace--;
+
+				if (!this.sysSpace && !this.space) {
+					this.space = false;
+				}
+			}
 		}
-	}
-);
+	);
+
+	Snakeskin.addDirective(
+		'sp',
+
+		{
+			text: true
+		},
+
+		function () {
+			this.startInlineDir();
+		}
+	);
+})();
 /**
  * Номер итерации,
  * где был декларирован активный шаблон
@@ -14803,8 +14941,9 @@ for (var i = -1; ++i < template.length;) {
 			this.varCache[tplName] = {};
 
 			if (proto) {
-				this.superStrongSpace = proto.superStrongSpace;
+				this.sysSpace = proto.sysSpace;
 				this.strongSpace = proto.strongSpace;
+				this.chainSpace = proto.chainSpace;
 				this.space = proto.space;
 				return;
 			}
@@ -15442,7 +15581,7 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		this.space = true;
+		this.skipSpace = true;
 
 		if (this.isReady()) {
 			if (command === 'proto') {
@@ -15512,7 +15651,7 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		this.space = true;
+		this.skipSpace = true;
 
 		if (this.isReady()) {
 			if (command === 'proto') {
@@ -15734,7 +15873,13 @@ Snakeskin.addDirective(
 		'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
 		'1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
 		'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
-		'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
+		'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">',
+		'mathml 1.0': '<!DOCTYPE math SYSTEM "http://www.w3.org/Math/DTD/mathml1/mathml.dtd">',
+		'mathml 2.0': '<!DOCTYPE math PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">',
+		'svg 1.1 full': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
+		'svg 1.1 basic': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Basic//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd">',
+		'svg 1.1 tiny': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">',
+		'svg 1.0': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">'
 	};
 
 	Snakeskin.addDirective(
@@ -15749,7 +15894,7 @@ Snakeskin.addDirective(
 				return this.error((("directive \"" + (this.name)) + "\" can't be used with a \"dom\" render mode"));
 			}
 
-			var type = command.split(' ')[0] || 'html';
+			var type = (command.split(' ')[0] || 'html').toLowerCase();
 
 			if (!types[type]) {
 				return this.error('invalid doctype');
@@ -15758,7 +15903,7 @@ Snakeskin.addDirective(
 			this.startInlineDir();
 
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			this.append(this.wrap((("'" + (types[type])) + "'")));
@@ -15790,7 +15935,7 @@ Snakeskin.addDirective(
 			this.startDir();
 
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.autoReplace) {
@@ -15811,7 +15956,7 @@ Snakeskin.addDirective(
 					dom = !this.domComment && this.renderMode === 'dom';
 
 				var str,
-					desc = types[type] || this.replaceTplVars(type);
+					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
 					str = (("\
@@ -15848,7 +15993,7 @@ Snakeskin.addDirective(
 
 		function () {
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.structure.params.autoReplace) {
@@ -15886,7 +16031,7 @@ Snakeskin.addDirective(
 			this.startDir();
 
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.autoReplace) {
@@ -15907,7 +16052,7 @@ Snakeskin.addDirective(
 					dom = !this.domComment && this.renderMode === 'dom';
 
 				var str,
-					desc = types[type] || this.replaceTplVars(type);
+					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
 					str = (("\
@@ -15944,7 +16089,7 @@ Snakeskin.addDirective(
 
 		function () {
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.structure.params.autoReplace) {
@@ -16017,7 +16162,7 @@ Snakeskin.addDirective(
 
 		function (command) {
 			this.startDir();
-			this.space = true;
+			this.skipSpace = true;
 
 			if (this.autoReplace) {
 				this.autoReplace = false;
@@ -16040,7 +16185,7 @@ Snakeskin.addDirective(
 				if (dom) {
 					str = (("\
 						__NODE__ = document.createElement('link');\
-						" + (typesStr.dom[type] || '')) + ("\
+						" + (typesStr.dom[type.toLowerCase()] || '')) + ("\
 						" + (this.wrap('__NODE__'))) + "\
 						__RESULT__.push(__NODE__);\
 					");
@@ -16074,7 +16219,7 @@ Snakeskin.addDirective(
 
 		function () {
 			if (!this.tolerateWhitespace) {
-				this.space = true;
+				this.skipSpace = true;
 			}
 
 			if (this.structure.params.autoReplace) {
@@ -16090,7 +16235,7 @@ Snakeskin.addDirective(
 				");
 
 			} else {
-				str = this.wrap('\'"/>\'');
+				str = this.wrap((("'\"" + (this.doctype === 'xhtml' ? '/' : '')) + ">'"));
 			}
 
 			this.append(str);
@@ -16225,7 +16370,7 @@ Snakeskin.addDirective(
 		});
 
 		if (!this.tolerateWhitespace) {
-			this.space = true;
+			this.skipSpace = true;
 		}
 
 		if (this.isReady()) {
@@ -16293,7 +16438,9 @@ Snakeskin.addDirective(
 				");
 
 			} else {
-				str += this.wrap((("(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block ? '/' : '')) + ">'"));
+				str += this.wrap((("\
+					(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === 'xhtml' ? '/' : '')) + ">'\
+				"));
 			}
 
 			this.append(str);
@@ -16302,7 +16449,9 @@ Snakeskin.addDirective(
 
 	function () {
 		var params = this.structure.params;
+
 		this.bemRef = params.bemRef;
+		this.prevSpace = false;
 
 		if (params.block) {
 			var str;
@@ -16786,25 +16935,25 @@ Snakeskin.addDirective(
 		},
 
 		'jquerymobile': {
-			'google': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"/>\
+			'google': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
 				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script>\
 			")},
 
-			'yandex': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v) + ("/jquery.mobile.min.css\"/>\
+			'yandex': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
 				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/mobile/" + v) + "/jquery.mobile.min.js\"></script>\
 			")}
 		},
 
 		'jqueryui': {
-			'google': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"/>\
+			'google': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"" + e) + (">\
 				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script>\
 			")},
 
-			'yandex': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v) + ("/themes/smoothness/jquery-ui.min.css\"/>\
+			'yandex': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v) + ("/themes/smoothness/jquery-ui.min.css\"" + e) + (">\
 				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery-ui/" + v) + "/jquery-ui.min.js\"></script>\
 			")}
 		},
@@ -16862,20 +17011,20 @@ Snakeskin.addDirective(
 		},
 
 		'bootstrap': {
-			'yandex': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v) + ("/css/bootstrap.min.css\"/>\
+			'yandex': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
 				<script type=\"text/javascript\" src=\"http://yastatic.net/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
 			")},
 
-			'maxcdn': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"/>\
+			'maxcdn': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
 				<script type=\"text/javascript\" src=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
 			")}
 		},
 
 		'fontawesome': {
-			'maxcdn': function(v)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/" + v) + "/css/font-awesome.min.css\"/>\
+			'maxcdn': function(v, e)  {return (("\
+				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/" + v) + ("/css/font-awesome.min.css\"" + e) + ">\
 			")}
 		},
 
@@ -16927,7 +17076,11 @@ Snakeskin.addDirective(
 
 			this.append(
 				this.wrap(
-					(("'" + ((cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(val[1]))) + "'")
+					(("'" + ((cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
+						val[1],
+						this.doctype === 'xhtml' ?
+							'/' : ''
+					))) + "'")
 				)
 			);
 		}

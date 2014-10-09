@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 06 Oct 2014 13:11:27 GMT
+ * Date: Thu, 09 Oct 2014 10:49:58 GMT
  */
 
 /*!
@@ -134,7 +134,7 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  *
  * @expose
  * @param {*} str - исходная строка
- * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются xml атрибуты
+ * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются html атрибуты
  * @return {string}
  */
 Snakeskin.Filters.html = function (str, opt_attr) {
