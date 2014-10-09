@@ -314,7 +314,7 @@
 		var unEscape = !this.escapeOutput;
 
 		// true, если применяется фильтр !undef
-		var unUndef = false;
+		var unUndef = !this.replaceUndef;
 
 		var vars = struct.children ?
 			struct.vars :

@@ -237,6 +237,7 @@ Snakeskin.addDirective(
 					{
 						inlineIterators: this.inlineIterators,
 						renderMode: this.renderMode,
+						replaceUndef: this.replaceUndef,
 						escapeOutput: this.escapeOutput,
 						doctype: this.doctype,
 						autoReplace: this.autoReplace,

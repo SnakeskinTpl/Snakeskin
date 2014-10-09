@@ -37,6 +37,9 @@ Snakeskin.DirObj = DirObj;
  * @param {boolean} params.tolerateWhitespace - если true, то пробельные символы
  *     вставляются "как есть"
  *
+ * @param {boolean} params.replaceUndef - если false, то на вывод значений через директиву output
+ *     не будет накладываться фильтр undef
+ *
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
  *
@@ -119,6 +122,12 @@ function DirObj(src, params) {
 	 * @expose
 	 * @type {boolean}
 	 */
+	this.replaceUndef = params.replaceUndef;
+
+	/**
+	 * @expose
+	 * @type {boolean}
+	 */
 	this.escapeOutput = params.escapeOutput;
 
 	/**
@@ -183,6 +192,7 @@ function DirObj(src, params) {
 			escapeOutput: this.escapeOutput,
 			renderAs: this.renderAs,
 			commonJS: this.commonJS,
+			replaceUndef: this.replaceUndef,
 			autoReplace: this.autoReplace,
 			macros: this.macros,
 			localization: this.localization,
