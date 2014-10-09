@@ -93,10 +93,12 @@
 				.replace(unEscapeOrRgxp, unEscapeOr)
 				.replace(escapeEqRgxp, escapeEq);
 
-			let arg = parts[i].split('=');
+			let arg = parts[i].split('='),
+				empty = arg.length !== 2;
 
-			if (arg.length !== 2) {
-				arg[1] = arg[0];
+			if (empty) {
+				arg[1] = this.doctype === 'xhtml' ?
+					arg[0] : '';
 			}
 
 			arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
@@ -141,13 +143,13 @@
 				`;
 			}
 
-			res += `if ((${arg[0]}) != null && (${arg[0]}) != '' && __STR__) {`;
+			res += `if ((${arg[0]}) != null && (${arg[0]}) != '' && (__STR__ || ${empty})) {`;
 			let tmp = `
 				if (__NODE__) {
 					__NODE__.setAttribute(${arg[0]}, __STR__);
 
 				} else {
-					${this.wrap(`' ' + ${arg[0]} + '="' + __STR__ + '"'`)}
+					${this.wrap(`' ' + ${arg[0]} + (__STR__ ? '="' + __STR__ + '"' : '')`)}
 				}
 			`;
 

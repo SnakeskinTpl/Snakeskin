@@ -41,25 +41,25 @@
 		},
 
 		'jquerymobile': {
-			'google': (v) => `
-				<link type="text/css" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.css"/>
+			'google': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.css"${e}>
 				<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.js"></script>
 			`,
 
-			'yandex': (v) => `
-				<link type="text/css" rel="stylesheet" href="http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.css"/>
+			'yandex': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.css"${e}>
 				<script type="text/javascript" src="http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.js"></script>
 			`
 		},
 
 		'jqueryui': {
-			'google': (v) => `
-				<link type="text/css" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/${v}/themes/smoothness/jquery-ui.css"/>
+			'google': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/${v}/themes/smoothness/jquery-ui.css"${e}>
 				<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.min.js"></script>
 			`,
 
-			'yandex': (v) => `
-				<link type="text/css" rel="stylesheet" href="http://yastatic.net/jquery-ui/${v}/themes/smoothness/jquery-ui.min.css"/>
+			'yandex': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="http://yastatic.net/jquery-ui/${v}/themes/smoothness/jquery-ui.min.css"${e}>
 				<script type="text/javascript" src="http://yastatic.net/jquery-ui/${v}/jquery-ui.min.js"></script>
 			`
 		},
@@ -117,20 +117,20 @@
 		},
 
 		'bootstrap': {
-			'yandex': (v) => `
-				<link type="text/css" rel="stylesheet" href="http://yastatic.net/bootstrap/${v}/css/bootstrap.min.css"/>
+			'yandex': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="http://yastatic.net/bootstrap/${v}/css/bootstrap.min.css"${e}>
 				<script type="text/javascript" src="http://yastatic.net/bootstrap/${v}/js/bootstrap.min.js"></script>
 			`,
 
-			'maxcdn': (v) => `
-				<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/${v}/css/bootstrap.min.css"/>
+			'maxcdn': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/${v}/css/bootstrap.min.css"${e}>
 				<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/${v}/js/bootstrap.min.js"></script>
 			`
 		},
 
 		'fontawesome': {
-			'maxcdn': (v) => `
-				<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/${v}/css/font-awesome.min.css"/>
+			'maxcdn': (v, e) => `
+				<link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/${v}/css/font-awesome.min.css"${e}>
 			`
 		},
 
@@ -182,7 +182,11 @@
 
 			this.append(
 				this.wrap(
-					`'${(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(val[1])}'`
+					`'${(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
+						val[1],
+						this.doctype === 'xhtml' ?
+							'/' : ''
+					)}'`
 				)
 			);
 		}

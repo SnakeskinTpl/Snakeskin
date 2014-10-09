@@ -124,7 +124,7 @@
 				`;
 
 			} else {
-				str = this.wrap('\'"/>\'');
+				str = this.wrap(`'"${this.doctype === 'xhtml' ? '/' : ''}>'`);
 			}
 
 			this.append(str);

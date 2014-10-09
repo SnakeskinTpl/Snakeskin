@@ -87,7 +87,11 @@ Snakeskin.addDirective(
 				`;
 
 			} else {
-				str += this.wrap(`(__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '${!params.block ? '/' : ''}>'`);
+				str += this.wrap(`
+					(__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '${
+						!params.block && this.doctype === 'xhtml' ? '/' : ''
+					}>'
+				`);
 			}
 
 			this.append(str);
