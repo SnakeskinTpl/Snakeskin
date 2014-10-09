@@ -253,7 +253,7 @@
 
 {template escape_sub() extends escape_base['\n\\n\'"helloWorld']}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true, autoReplace: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {«b»: “2”}} /// 1 /* 2 */ \1 \« 2 »'); equal(escape_index3().trim(), '<div onclick=&quot;alert()&quot; foo="2 bar = &quot;1&quot;"></div>  foo = &quot;1&quot; bar="1 hack = &quot;2&quot;"'); equal(escape_index4().trim(), 'object false NaN false'); equal(escape_base['\n\\n\'"helloWorld']().trim(), '121'); equal(escape_sub().trim(), '121'); }); </script> <script type="text/x-snakeskin-template" id="filters"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true, autoReplace: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2 '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {«b»: “2”}} /// 1 /* 2 */ \1 \« 2 »'); equal(escape_index3().trim(), '<div onclick=&quot;alert()&quot; foo="2 bar = &quot;1&quot;"></div>  foo = &quot;1&quot; bar="1 hack = &quot;2&quot;"'); equal(escape_index4().trim(), 'object false NaN false'); equal(escape_base['\n\\n\'"helloWorld']().trim(), '121'); equal(escape_sub().trim(), '121'); }); </script> <script type="text/x-snakeskin-template" id="filters"> 
 {a = String}
 {template filters_index()}
 	{a = {a: String}}
@@ -475,7 +475,7 @@
 		foo
 	{/}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true, autoReplace: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo"/><link type="text/css" rel="stylesheet" href="foo"/><link type="text/css" rel="alternate stylesheet" href="foo"/>'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class="foo" ng-id="bar" href="foo "/>'); }); </script> <script type="text/x-snakeskin-template" id="logic"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true, autoReplace: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo"><link type="text/css" rel="stylesheet" href="foo"><link type="text/css" rel="alternate stylesheet" href="foo">'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class="foo" ng-id="bar" href="foo ">'); }); </script> <script type="text/x-snakeskin-template" id="logic"> 
 {template logic_index(i)}
 	{switch i}
 		{> 1}
