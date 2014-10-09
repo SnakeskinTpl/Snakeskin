@@ -37,7 +37,7 @@
 					dom = !this.domComment && this.renderMode === 'dom';
 
 				let str,
-					desc = types[type] || this.replaceTplVars(type);
+					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
 					str = `

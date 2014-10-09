@@ -74,7 +74,7 @@
 				if (dom) {
 					str = `
 						__NODE__ = document.createElement('link');
-						${typesStr.dom[type] || ''}
+						${typesStr.dom[type.toLowerCase()] || ''}
 						${this.wrap('__NODE__')}
 						__RESULT__.push(__NODE__);
 					`;
