@@ -1,4 +1,4 @@
-var nextLineRgxp = /\r|\n/,
+var nextLineRgxp = /\r\n|\r|\n/,
 	whiteSpaceRgxp = /\s/,
 	lineWhiteSpaceRgxp = /[ \t]/;
 
@@ -1329,7 +1329,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	dir.res = dir.pasteDangerBlocks(dir.res)
 		.replace(
 			/__CDATA__(\d+)_/g,
-			(sstr, pos) => escapeNextLine(dir.cDataContent[pos]).replace(/'/gm, '&#39;')
+			(sstr, pos) => escapeNextLine(
+					dir.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, 'g'), nl)
+				).replace(/'/gm, '&#39;')
 		);
 
 	if (debug) {
