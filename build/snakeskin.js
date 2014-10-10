@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.0.0
+ * Snakeskin v6.0.1
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 10 Oct 2014 09:54:16 GMT
+ * Date: Fri, 10 Oct 2014 11:34:00 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 0, 0],
+	VERSION: [6, 0, 1],
 
 	/**
 	 * Пространство имён для директив
@@ -9165,7 +9165,8 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 					var rightSpace = rightWSRgxp.exec(res)[0];
 					res = res.replace(rightPartRgxp, '');
 					res += genEndDir(struct, ws, struct.space, nl) +
-						(rightSpace ? (("" + (struct.adv)) + ("" + lb) + ("__&-__" + rb) + "") : '') + rightSpace;
+						(rightSpace && ws ? (("" + (struct.adv)) + ("" + lb) + ("__&-__" + rb) + "") : '') +
+						rightSpace;
 				}
 
 			} else {
@@ -9190,7 +9191,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				}
 
 				if (clrL) {
-					if (clrL === 1) {
+					if (clrL === 1 && ws) {
 						res += (("" + alb) + ("" + lb) + ("__&-__" + rb) + "");
 					}
 
@@ -9340,7 +9341,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 
 					struct = obj;
 					res += space +
-						(endDirInit && obj.text ? (("" + adv) + ("" + lb) + ("__&-__" + rb) + "") : '') +
+						(ws && endDirInit && obj.text ? (("" + adv) + ("" + lb) + ("__&-__" + rb) + "") : '') +
 						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
 					endDirInit = false;
@@ -9393,17 +9394,18 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	 * @return {string}
 	 */
 	function genEndDir(dir, ws, space, nl) {
-		var s = dir.adv + lb;
+		var s = dir.adv + lb,
+			tmp;
 
 		if (ws) {
-			space = (("" + (endDirInit ? '' : (("" + s) + ("__&+__" + rb) + ""))) + ("" + nl) + ("" + ((space || '').substring(1))) + "");
+			tmp = (("" + (endDirInit ? '' : (("" + s) + ("__&+__" + rb) + ""))) + ("" + nl) + "");
 
 		} else {
-			space = nl;
+			tmp = nl + (space || '').substring(1);
 		}
 
 		endDirInit = true;
-		return (("" + space) + ("" + s) + ("__end__" + rb) + ("" + s) + ("__cutLine__" + rb) + "");
+		return (("" + tmp) + ("" + s) + ("__end__" + rb) + ("" + s) + ("__cutLine__" + rb) + "");
 	}
 
 	/**
