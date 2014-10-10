@@ -176,7 +176,9 @@ Snakeskin.addDirective(
 		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		var space = this.space;
+		var space = this.space,
+			nl = this.lineSeparator;
+
 		this.sysSpace = params.sysSpace;
 		this.strongSpace = params.strongSpace;
 		this.chainSpace = params.chainSpace;
@@ -186,14 +188,14 @@ Snakeskin.addDirective(
 			let obj = this.preDefs[tplName];
 
 			obj.text += `
-				\n${this.source.substring(params.from, obj.i)}
+				${nl}${this.source.substring(params.from, obj.i)}
 				${s}__cutLine__${e}
 
 					${s}__switchLine__ ${obj.startLine}${e}
 						${this.source.substring(obj.i, this.i - diff)}
 					${s}__end__${e}
 
-				\n${this.source.substring(this.i - diff, this.i + 1)}
+				${nl}${this.source.substring(this.i - diff, this.i + 1)}
 				${s}__cutLine__${e}
 			`;
 

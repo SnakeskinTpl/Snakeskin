@@ -78,7 +78,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 				Math.max(max, part.length) || 5
 		).join('-');
 
-		str += `\n${sep}${prfx}\n${part}\n${sep}`;
+		str += nl + sep + prfx + nl + part + nl + sep;
 	}
 
 	return str;

@@ -189,17 +189,18 @@ Snakeskin.addDirective(
 			e = RIGHT_BLOCK;
 
 		if (this.outerLink === params.name) {
-			let obj = this.preDefs[this.tplName];
+			let obj = this.preDefs[this.tplName],
+				nl = this.lineSeparator;
 
 			obj.text += `
-				\n${this.source.substring(params.from, obj.i)}
+				${nl}${this.source.substring(params.from, obj.i)}
 				${s}__cutLine__${e}
 
 					${s}__switchLine__ ${obj.startLine}${e}
 						${this.source.substring(obj.i, this.i - diff)}
 					${s}__end__${e}
 
-				\n${this.source.substring(this.i - diff, this.i + 1)}
+				${nl}${this.source.substring(this.i - diff, this.i + 1)}
 				${s}__cutLine__${e}
 			`;
 
