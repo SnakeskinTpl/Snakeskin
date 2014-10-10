@@ -23,7 +23,7 @@ program
 
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('--extname [ext]', 'file extension for saving (if "output" is a directory)')
-	.option('--exports', 'export type (commonJS for node.js)')
+	.option('--exports [type]', 'export type (commonJS for node.js)')
 
 	.option('-e, --exec', 'execute compiled template')
 	.option('-d, --data [src]', 'path to the data file or JS data object')
@@ -34,13 +34,13 @@ program
 	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
 
-	.option('--line-separator', 'the newline character')
+	.option('--line-separator [char]', 'the newline character')
 	.option('--tolerate-whitespace', 'tolerate whitespace characters in the template')
 	.option('--ignore', 'regular expression to ignore the empty space')
 	.option('--auto-replace', 'enable macros support')
 	.option('--macros [src]', 'path to the macros file or JS macros object')
 
-	.option('--doctype', 'xml doctype (html or xml)')
+	.option('--doctype [type]', 'xml doctype (html or xml)')
 	.option('--inline-iterators', 'inline forEach and forIn')
 	.option('--disable-escape-output', 'disable default "html" filter')
 	.option('--disable-replace-undef', 'disable default "undef" filter')
