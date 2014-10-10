@@ -58,8 +58,8 @@ if (params instanceof Object === false) {
 params.xml = 'disableXml' in program ?
 	!program['disableXml'] : params.xml;
 
-params.commonJS = 'commonJs' in program ?
-	program['commonJs'] : params.commonJS;
+params.exports = 'exports' in program ?
+	program['exports'] : params.exports;
 
 params.localization = 'disableLocalization' in program ?
 	!program['disableLocalization'] : params.localization;
@@ -161,7 +161,7 @@ function action(data, file) {
 	}
 
 	if (tplData || mainTpl || exec) {
-		params.commonJS = true;
+		params.exports = 'commonJS';
 		params.context = tpls;
 		params.prettyPrint = false;
 	}
