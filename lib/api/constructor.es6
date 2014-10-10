@@ -34,6 +34,7 @@ Snakeskin.DirObj = DirObj;
  * @param {string} params.i18nFn - название функции для i18n
  * @param {Object=} [params.language] - таблица фраз для локализации (найденные фразы будут заменены по ключу)
  *
+ * @param {string} params.lineSeparator - символ перевода строки
  * @param {boolean} params.tolerateWhitespace - если true, то пробельные символы
  *     вставляются "как есть"
  *
@@ -93,6 +94,9 @@ function DirObj(src, params) {
 
 	/** @type {!Array} */
 	this.lines = params.lines || [''];
+
+	/** @type {string} */
+	this.lineSeparator = params.lineSeparator;
 
 	/**
 	 * @expose

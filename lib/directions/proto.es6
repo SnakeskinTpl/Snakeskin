@@ -244,6 +244,7 @@ Snakeskin.addDirective(
 						macros: this.macros,
 						language: this.language,
 						localization: this.localization,
+						lineSeparator: this.lineSeparator,
 						tolerateWhitespace: this.tolerateWhitespace
 					},
 

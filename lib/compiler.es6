@@ -52,6 +52,7 @@ var tAttrRgxp = /[^'" ]/,
  *     2) stringBuffer - рендеринг шаблона в строку с конкатенацией через Snakeskin.StringBuffer;
  *     3) dom - рендеринг шаблона в набор команд из DOM API.
  *
+ * @param {?string=} [opt_params.lineSeparator='\n'] - символ перевода строки
  * @param {?boolean=} [opt_params.tolerateWhitespace=false] - если true, то пробельные символы
  *     вставляются "как есть"
  *
@@ -120,6 +121,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.renderMode = s(p.renderMode, p['renderMode']) || 'stringConcat';
 	p.renderAs = s(p.renderAs, p['renderAs']);
 
+	p.lineSeparator = s(p.lineSeparator, p['lineSeparator']) || '\n';
 	p.inlineIterators = s(p.inlineIterators, p['inlineIterators']) || false;
 	p.tolerateWhitespace = s(p.tolerateWhitespace, p['tolerateWhitespace']) || false;
 
