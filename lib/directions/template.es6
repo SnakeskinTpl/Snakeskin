@@ -238,7 +238,7 @@ for (let i = -1; ++i < template.length;) {
 
 				// Декларация функции
 				// с пространством имён или при экспорте в common.js
-				if (nmRgxp.test(tmpTplName) || this.commonJS) {
+				if (nmRgxp.test(tmpTplName) || this.exports === 'commonJS') {
 					lastName = '';
 					let tmpArr = tmpTplName
 						.replace(nmssRgxp, '%')
