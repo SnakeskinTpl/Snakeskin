@@ -23,7 +23,7 @@ program
 
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('--extname [ext]', 'file extension for saving (if "output" is a directory)')
-	.option('-n, --common-js', 'common.js export (for node.js)')
+	.option('--exports', 'export type (commonJS for node.js)')
 
 	.option('-e, --exec', 'execute compiled template')
 	.option('-d, --data [src]', 'path to the data file or JS data object')
@@ -34,14 +34,16 @@ program
 	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
 
+	.option('--line-separator', 'the newline character')
 	.option('--tolerate-whitespace', 'tolerate whitespace characters in the template')
 	.option('--ignore', 'regular expression to ignore the empty space')
 	.option('--auto-replace', 'enable macros support')
 	.option('--macros [src]', 'path to the macros file or JS macros object')
 
-	.option('--disable-xml', 'disable default xml validation')
+	.option('--doctype', 'xml doctype (html or xml)')
 	.option('--inline-iterators', 'inline forEach and forIn')
 	.option('--disable-escape-output', 'disable default "html" filter')
+	.option('--disable-replace-undef', 'disable default "undef" filter')
 
 	.option('--render-as [mode]', 'render all templates as "interface" or "placeholder"')
 	.option('--render-mode [mode]', 'render all templates in "stringConcat", "stringBuffer" or "dom"')
@@ -55,11 +57,11 @@ if (params instanceof Object === false) {
 	params = {};
 }
 
-params.xml = 'disableXml' in program ?
-	!program['disableXml'] : params.xml;
+params.doctype = 'doctype' in program ?
+	program['doctype'] : params.doctype;
 
-params.commonJS = 'commonJs' in program ?
-	program['commonJs'] : params.commonJS;
+params.exports = 'exports' in program ?
+	program['exports'] : params.exports;
 
 params.localization = 'disableLocalization' in program ?
 	!program['disableLocalization'] : params.localization;
@@ -82,11 +84,17 @@ params.renderMode = 'renderMode' in program ?
 params.inlineIterators = 'inlineIterators' in program ?
 	program['inlineIterators'] : params.inlineIterators;
 
+params.replaceUndef = 'disableReplaceUndef' in program ?
+	!program['disableReplaceUndef'] : params.replaceUndef;
+
 params.escapeOutput = 'disableEscapeOutput' in program ?
 	!program['disableEscapeOutput'] : params.escapeOutput;
 
 params.prettyPrint = 'prettyPrint' in program ?
 	program['prettyPrint'] : params.prettyPrint;
+
+params.lineSeparator = 'lineSeparator' in program ?
+	program['lineSeparator'] : params.lineSeparator;
 
 params.tolerateWhitespace = 'tolerateWhitespace' in program ?
 	program['tolerateWhitespace'] : params.tolerateWhitespace;
@@ -161,7 +169,7 @@ function action(data, file) {
 	}
 
 	if (tplData || mainTpl || exec) {
-		params.commonJS = true;
+		params.exports = 'commonJS';
 		params.context = tpls;
 		params.prettyPrint = false;
 	}
