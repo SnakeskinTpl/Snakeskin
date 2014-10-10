@@ -29,6 +29,7 @@ Snakeskin.addDirective(
 				Snakeskin.include(
 					'${escapeBackslash(this.info['file'] || '')}',
 					${this.pasteDangerBlocks(path)},
+					'${escapeNextLine(this.lineSeparator)}',
 					${type}
 				);
 			`);
