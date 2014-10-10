@@ -90,7 +90,7 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
 	src = path.normalize(path.resolve(src));
 
 	var p = opt_params || {};
-	p.commonJS = true;
+	p.exports = 'commonJS';
 
 	var cacheEnabled = p.cache !== false;
 	var cacheKey = this.compile(null, p, null, {cacheKey: true}),

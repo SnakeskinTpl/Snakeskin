@@ -100,21 +100,21 @@ function run(params) {
 }
 
 run({
-	commonJS: true,
+	exports: 'commonJS',
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true
 });
 
 run({
-	commonJS: true,
+	exports: 'commonJS',
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true
 });
 
 run({
-	commonJS: true,
+	exports: 'commonJS',
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
@@ -122,7 +122,7 @@ run({
 });
 
 run({
-	commonJS: true,
+	exports: 'commonJS',
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
@@ -130,7 +130,7 @@ run({
 });
 
 run({
-	commonJS: true,
+	exports: 'commonJS',
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
