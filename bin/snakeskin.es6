@@ -359,10 +359,11 @@ if (!file && input == null) {
 		end();
 	}).resume();
 
+	let nl = params.lineSeparator || '\n';
 	process.on('SIGINT', () => {
-		stdout.write('\n');
+		stdout.write(nl);
 		stdin.emit('end');
-		stdout.write('\n');
+		stdout.write(nl);
 		process.exit();
 	});
 
