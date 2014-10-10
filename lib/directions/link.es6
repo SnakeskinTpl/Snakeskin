@@ -124,7 +124,7 @@
 				`;
 
 			} else {
-				str = this.wrap(`'"${this.doctype === 'xhtml' ? '/' : ''}>'`);
+				str = this.wrap(`'"${this.doctype === 'xml' ? '/' : ''}>'`);
 			}
 
 			this.append(str);

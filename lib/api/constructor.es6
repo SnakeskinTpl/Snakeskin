@@ -31,7 +31,7 @@ Snakeskin.DirObj = DirObj;
  *
  * @param {string|boolean} [params.doctype] - тип генерируемого документа HTML:
  *     1) html;
- *     2) xhtml.
+ *     2) xml.
  *
  * @param {boolean} params.localization - если false, то блоки ` ... ` не заменяются на вызов i18n
  * @param {string} params.i18nFn - название функции для i18n

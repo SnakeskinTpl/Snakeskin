@@ -63,7 +63,7 @@ var tAttrRgxp = /[^'" ]/,
  *
  * @param {(string|boolean|null)=} [opt_params.doctype='html'] - тип генерируемого документа HTML:
  *     1) html;
- *     2) xhtml.
+ *     2) xml.
  *
  * @param {?boolean=} [opt_params.replaceUndef=true] - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр undef
@@ -139,7 +139,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	p.doctype = s(p.doctype, p['doctype']);
 	p.doctype = p.doctype !== false &&
-		(p.doctype || 'xhtml');
+		(p.doctype || 'xml');
 
 	if (p.renderMode === 'dom') {
 		p.doctype = false;

@@ -184,7 +184,7 @@
 				this.wrap(
 					`'${(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
 						val[1],
-						this.doctype === 'xhtml' ?
+						this.doctype === 'xml' ?
 							'/' : ''
 					)}'`
 				)
