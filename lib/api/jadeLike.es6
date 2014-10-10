@@ -25,7 +25,9 @@
 	 */
 	DirObj.prototype.toBaseSyntax = function (str, i) {
 		endDirInit = false;
-		var ws = !this.tolerateWhitespace;
+
+		var ws = !this.tolerateWhitespace,
+			nl = this.lineSeparator;
 
 		var clrL = 0,
 			init = true,
@@ -47,7 +49,7 @@
 				} else {
 					let rightSpace = rightWSRgxp.exec(res)[0];
 					res = res.replace(rightPartRgxp, '');
-					res += genEndDir(struct, ws, struct.space) +
+					res += genEndDir(struct, ws, struct.space, nl) +
 						(rightSpace ? `${struct.adv}${lb}__&-__${rb}` : '') + rightSpace;
 				}
 
@@ -84,7 +86,7 @@
 				init = true;
 
 				spaces = 0;
-				space = '\n';
+				space = nl;
 
 			} else if (init) {
 				if (whiteSpaceRgxp.test(el)) {
@@ -253,7 +255,7 @@
 
 		while (struct) {
 			if (struct.block) {
-				res += genEndDir(struct, ws, struct.space);
+				res += genEndDir(struct, ws, struct.space, nl);
 			}
 
 			struct = struct
@@ -272,16 +274,17 @@
 	 * @param {!Object} dir - объект-описание директивы
 	 * @param {boolean} ws - если true, то лишние пробельные символы вырезаются
 	 * @param {string} space - доступное свободное пространство
+	 * @param {string} nl - символ перевода строки
 	 * @return {string}
 	 */
-	function genEndDir(dir, ws, space) {
+	function genEndDir(dir, ws, space, nl) {
 		var s = dir.adv + lb;
 
 		if (ws) {
-			space = `${endDirInit ? '' : `${s}__&+__${rb}`}\n${(space || '').substring(1)}`;
+			space = `${endDirInit ? '' : `${s}__&+__${rb}`}${nl}${(space || '').substring(1)}`;
 
 		} else {
-			space = '\n';
+			space = nl;
 		}
 
 		endDirInit = true;

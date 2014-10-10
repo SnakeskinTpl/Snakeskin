@@ -7,6 +7,7 @@
  * @return {string}
  */
 DirObj.prototype.genErrorAdvInfo = function () {
+	var nl = this.lineSeparator;
 	var info = this.info,
 		str = '';
 
@@ -54,10 +55,10 @@ DirObj.prototype.genErrorAdvInfo = function () {
 				let part;
 
 				if (prev.trim()) {
-					part = `\n  ${pos + 1} ${space}${prev}`;
+					part = `${nl}  ${pos + 1} ${space}${prev}`;
 
 				} else {
-					part = '\n  ...';
+					part = `${nl}  ...`;
 				}
 
 				prfx += part;
