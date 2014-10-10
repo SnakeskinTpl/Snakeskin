@@ -145,7 +145,7 @@ function DirObj(src, params) {
 
 	/**
 	 * @expose
-	 * @type {Object}
+	 * @type {string}
 	 */
 	this.exports = params.exports;
 
