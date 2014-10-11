@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.0.2
+ * Snakeskin v6.0.3
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 11 Oct 2014 07:30:46 GMT
+ * Date: Sat, 11 Oct 2014 08:03:23 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 0, 2],
+	VERSION: [6, 0, 3],
 
 	/**
 	 * Пространство имён для директив
@@ -10337,7 +10337,7 @@ var tAttrRgxp = /[^'" ]/,
  * @param {Array=} [opt_sysParams.lines] - массив строк шаблона (листинг)
  * @param {?boolean=} [opt_sysParams.needPrfx] - если true, то директивы декларируются как #{ ... }
  *
- * @return {(DocumentFragment|string|boolean)}
+ * @return {(string|boolean|null)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	src = src || '';
@@ -15918,10 +15918,10 @@ Snakeskin.addDirective(
 		'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">',
 		'mathml 1.0': '<!DOCTYPE math SYSTEM "http://www.w3.org/Math/DTD/mathml1/mathml.dtd">',
 		'mathml 2.0': '<!DOCTYPE math PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">',
+		'svg 1.0': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">',
 		'svg 1.1 full': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
 		'svg 1.1 basic': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Basic//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd">',
-		'svg 1.1 tiny': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">',
-		'svg 1.0': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">'
+		'svg 1.1 tiny': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">'
 	};
 
 	Snakeskin.addDirective(
@@ -15936,7 +15936,7 @@ Snakeskin.addDirective(
 				return this.error((("directive \"" + (this.name)) + "\" can't be used with a \"dom\" render mode"));
 			}
 
-			var type = (command.split(' ')[0] || 'html').toLowerCase();
+			var type = (command || 'html').toLowerCase();
 
 			if (!types[type]) {
 				return this.error('invalid doctype');
