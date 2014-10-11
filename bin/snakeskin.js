@@ -108,6 +108,35 @@ params.autoReplace = 'autoReplace' in program ?
 params.macros = 'macros' in program ?
 	program['macros'] : params.macros;
 
+for (var key in params) {
+	if (!params.hasOwnProperty(key)) {
+		continue;
+	}
+
+	var el = params[key];
+	switch (el) {
+		case 'true': {
+			el = true;
+		} break;
+
+		case 'false': {
+			el = false;
+		} break;
+
+		case 'null': {
+			el = null;
+		} break;
+
+		default: {
+			var nm = Number(el);
+			el = isNaN(nm) ?
+				el : nm;
+		}
+	}
+
+	params[key] = el;
+}
+
 params.debug = {};
 params.cache = false;
 
