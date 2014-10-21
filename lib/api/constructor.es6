@@ -402,7 +402,7 @@ function DirObj(src, params) {
 	this.res = '';
 
 	if (!this.proto) {
-		let decl = cbws`
+		let decl = /* cbws */`
 			var __ROOT__ = this,
 				self = this;
 
@@ -424,7 +424,7 @@ function DirObj(src, params) {
 		`;
 
 		if (this.localization) {
-			decl += cbws`
+			decl += /* cbws */`
 				if (typeof ${this.i18nFn} === 'undefined') {
 					try {
 						var ${this.i18nFn} = function (str) {
@@ -436,13 +436,13 @@ function DirObj(src, params) {
 			`;
 		}
 
-		this.res += cbws`
+		this.res += /* cbws */`
 			This code is generated automatically, don\'t alter it. */
 			(function () {
 		`;
 
 		if (this.exports === 'commonJS') {
-			this.res += cbws`
+			this.res += /* cbws */`
 				var Snakeskin = global.Snakeskin;
 
 				exports['init'] = function (obj) {

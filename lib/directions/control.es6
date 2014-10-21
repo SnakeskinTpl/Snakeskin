@@ -52,7 +52,7 @@ Snakeskin.addDirective(
 					this.append(`return arguments[arguments.length - 1](${val});`);
 
 				} else {
-					this.append(cbws`
+					this.append(/* cbws */`
 						if (typeof arguments[0] === 'function') {
 							return arguments[0](${val});
 						}
@@ -122,7 +122,7 @@ Snakeskin.addDirective(
 					this.append(`return arguments[arguments.length - 1](${val});`);
 
 				} else {
-					this.append(cbws`
+					this.append(/* cbws */`
 						if (typeof arguments[0] === 'function') {
 							return arguments[0](${val});
 						}

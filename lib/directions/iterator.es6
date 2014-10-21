@@ -30,13 +30,13 @@
 			if (this.isReady()) {
 				if (!this.inlineIterators) {
 					if (parts.length === 3) {
-						this.append(cbws`
+						this.append(/* cbws */`
 							\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {
 								${this.declArguments()}
 						`);
 
 					} else {
-						this.append(cbws`
+						this.append(/* cbws */`
 							Snakeskin.forEach(
 								${this.prepareOutput(parts[0], true)},
 								function (${this.declCallbackArgs(parts[1])}) {
@@ -57,7 +57,7 @@
 					parts[1].trim().split(',') : [];
 
 				if (args.length >= 6) {
-					objLength += cbws`
+					objLength += /* cbws */`
 						${this.multiDeclVar(`__LENGTH__ = __KEYS__ ? __KEYS__.length : 0`)}
 
 						if (!${keys}) {
@@ -74,7 +74,7 @@
 					`;
 				}
 
-				let resStr = cbws`
+				let resStr = /* cbws */`
 					${tmpObj}
 
 					if (${cacheObj}) {
@@ -121,7 +121,7 @@
 					return str;
 				})();
 
-				let end = cbws`
+				let end = /* cbws */`
 					} else {
 						${objLength}
 
@@ -172,7 +172,7 @@
 					return str;
 				})();
 
-				let oldEnd = cbws`
+				let oldEnd = /* cbws */`
 					} else {
 						${this.multiDeclVar('__I__ = -1')}
 
@@ -282,7 +282,7 @@
 			});
 
 			if (this.isReady()) {
-				this.append(cbws`
+				this.append(/* cbws */`
 					\$C(${this.prepareOutput(parts[0], true)}).forEach(function (${this.declCallbackArgs(parts)}) {
 						${this.declArguments()}
 				`);
@@ -327,7 +327,7 @@
 			this.startDir();
 			if (this.isReady()) {
 				if (!this.inlineIterators) {
-					this.append(cbws`
+					this.append(/* cbws */`
 						Snakeskin.forIn(
 							${this.prepareOutput(parts[0], true)},
 							function (${this.declCallbackArgs(parts[1])}) {
@@ -345,7 +345,7 @@
 					cacheObj = this.prepareOutput('__I_OBJ__', true);
 
 				if (args.length >= 6) {
-					objLength += cbws`
+					objLength += /* cbws */`
 						${this.multiDeclVar('__LENGTH__ = 0')}
 
 						for (${this.multiDeclVar('key', false)} in ${cacheObj}) {
@@ -354,7 +354,7 @@
 					`;
 				}
 
-				let resStr = cbws`
+				let resStr = /* cbws */`
 					${tmpObj}
 
 					if (${cacheObj}) {

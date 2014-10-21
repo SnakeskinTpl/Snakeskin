@@ -47,7 +47,7 @@ Snakeskin.addDirective(
 		if (this.renderMode === 'dom') {
 			str = this.wrap(`'${comment}'`);
 			this.domComment = false;
-			str += cbws`
+			str += /* cbws */`
 				__NODE__ = document.createComment(__COMMENT_RESULT__);
 				${this.returnPushNodeDecl(true)}
 				__COMMENT_RESULT__ = \'\';

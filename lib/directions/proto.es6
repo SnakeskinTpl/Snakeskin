@@ -33,14 +33,14 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 				tmp = tmp.concat(args.slice(length - 1, args.length));
 			}
 
-			str += cbws`
+			str += /* cbws */`
 				var ${arg} = [${tmp.join()}];
 				${arg}.callee = __CALLEE__;
 			`;
 
 		} else {
 			tmp.push(arg);
-			str += cbws`
+			str += /* cbws */`
 				var ${arg} = ${def !== void 0 ?
 					val ? `${val} != null ? ${val} : ${this.prepareOutput(def, true)}` : def : val || 'void 0'
 				};
@@ -187,7 +187,7 @@ Snakeskin.addDirective(
 		if (this.outerLink === params.name) {
 			let obj = this.preDefs[tplName];
 
-			obj.text += cbws`
+			obj.text += /* cbws */`
 				${nl}${this.source.substring(params.from, obj.i)}
 				${s}__cutLine__${e}
 

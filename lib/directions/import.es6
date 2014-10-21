@@ -26,7 +26,7 @@ Snakeskin.addDirective(
 		if (this.module.id === 0) {
 			let key = `${obj}_00_${uid}`;
 
-			this.save(cbws`
+			this.save(/* cbws */`
 				var ${key} = __LOCAL__.${key} = ${this.prepareOutput(parts.slice(1).join('='), true)};
 			`);
 

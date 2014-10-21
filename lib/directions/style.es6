@@ -40,7 +40,7 @@
 					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
-					str = cbws`
+					str = /* cbws */`
 						__NODE__ = document.createElement('style');
 						__NODE__.type = '${desc}';
 					`;

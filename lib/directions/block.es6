@@ -6,7 +6,7 @@ var callBlockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
  * @return {string}
  */
 DirObj.prototype.declArguments = function () {
-	return cbws`
+	return /* cbws */`
 		var __ARGUMENTS__ = arguments;
 		${this.multiDeclVar('arguments = __ARGUMENTS__')}
 	`;
@@ -138,7 +138,7 @@ Snakeskin.addDirective(
 				let fnDecl = `__BLOCKS__.${name}`;
 				struct.params.fn = fnDecl;
 
-				this.save(cbws`
+				this.save(/* cbws */`
 					if (!${fnDecl}) {
 						${fnDecl} = function (${args.str}) {
 							var __RESULT__ = ${this.declResult()};
@@ -192,7 +192,7 @@ Snakeskin.addDirective(
 			let obj = this.preDefs[this.tplName],
 				nl = this.lineSeparator;
 
-			obj.text += cbws`
+			obj.text += /* cbws */`
 				${nl}${this.source.substring(params.from, obj.i)}
 				${s}__cutLine__${e}
 
@@ -214,7 +214,7 @@ Snakeskin.addDirective(
 		var block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
-			this.save(cbws`
+			this.save(/* cbws */`
 						return ${this.returnResult()};
 					};
 				}

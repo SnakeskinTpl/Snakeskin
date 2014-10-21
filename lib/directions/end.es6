@@ -52,21 +52,21 @@ Snakeskin.addDirective(
 					let basicAsync = this.getGroup('basicAsync');
 
 					if (basicAsync[name] || basicAsync[parent]) {
-						this.save(cbws`
+						this.save(/* cbws */`
 							if (__RETURN__) {
 								return false;
 							}
 						`);
 
 					} else if (parent === 'waterfall') {
-						this.save(cbws`
+						this.save(/* cbws */`
 							if (__RETURN__) {
 								return arguments[arguments.length - 1](__RETURN_VAL__);
 							}
 						`);
 
 					} else {
-						this.save(cbws`
+						this.save(/* cbws */`
 							if (__RETURN__) {
 								if (typeof arguments[0] === 'function') {
 									return arguments[0](__RETURN_VAL__);
@@ -80,7 +80,7 @@ Snakeskin.addDirective(
 					this.deferReturn = 0;
 
 				} else if (this.deferReturn > 1) {
-					this.save(cbws`
+					this.save(/* cbws */`
 						if (__RETURN__) {
 							return false;
 						}
@@ -92,7 +92,7 @@ Snakeskin.addDirective(
 				}
 
 			} else if (!async[name]) {
-				this.save(cbws`
+				this.save(/* cbws */`
 					if (__RETURN__) {
 						return __RETURN_VAL__;
 					}

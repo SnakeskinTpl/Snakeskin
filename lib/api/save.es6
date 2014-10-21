@@ -62,7 +62,7 @@ DirObj.prototype.wrap = function (opt_str) {
  * @return {string}
  */
 DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
-	return cbws`
+	return /* cbws */`
 		${this.wrap('__NODE__')}
 		${opt_inline ? '': '__RESULT__.push(__NODE__);'}
 		__NODE__ = null;

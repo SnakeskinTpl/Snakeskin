@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 				`'${parts[1].trim()}'` : '\'\'';
 
 		if (path !== void 0 && type !== void 0) {
-			this.save(cbws`
+			this.save(/* cbws */`
 				Snakeskin.include(
 					'${escapeBackslash(this.info['file'] || '')}',
 					${this.pasteDangerBlocks(path)},

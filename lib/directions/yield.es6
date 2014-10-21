@@ -23,7 +23,7 @@ Snakeskin.addDirective(
 				this.append(`yield ${this.prepareOutput(command, true)};`);
 
 			} else {
-				this.append(cbws`
+				this.append(/* cbws */`
 					yield ${this.returnResult()};
 					__RESULT__ = ${this.declResult()};
 				`);
