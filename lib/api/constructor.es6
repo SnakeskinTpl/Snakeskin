@@ -266,6 +266,9 @@ function DirObj(src, params) {
 	/** @type {boolean} */
 	this.attr = false;
 
+	/** @type {boolean} */
+	this.attrEscape = false;
+
 	// <<<
 
 	/**

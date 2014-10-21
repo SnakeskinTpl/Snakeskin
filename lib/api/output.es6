@@ -700,6 +700,6 @@
 
 		return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') +
 			res +
-			(!unEscape && !opt_sys ? `, ${this.attr})` : '');
+			(!unEscape && !opt_sys ? `, ${this.attr}, ${this.attrEscape})` : '');
 	};
 })();

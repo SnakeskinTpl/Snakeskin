@@ -52,12 +52,13 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  * @expose
  * @param {*} str - исходная строка
  * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются html атрибуты
+ * @param {?boolean=} [opt_escapedAttr=false] - если true, то атрибут считается принудительно экранированным
  * @return {string}
  */
-Snakeskin.Filters.html = function (str, opt_attr) {
+Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
 	var res = String(str);
 
-	if (opt_attr) {
+	if (opt_attr && opt_escapedAttr) {
 		res = res.replace(escapeAttrRgxp, '$1"$2"');
 	}
 
