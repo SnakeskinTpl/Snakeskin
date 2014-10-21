@@ -159,22 +159,3 @@ WeakSet.prototype.delete = function (val) {
 WeakSet.prototype.has = function (val) {
 
 };
-
-var URL = {};
-
-/**
- * @abstract
- * @param {Blob} blob
- * @return {string}
- */
-URL.createObjectURL = function (blob) {
-
-};
-
-/**
- * @abstract
- * @param {string} url
- */
-URL.revokeObjectURL = function (url) {
-
-};
