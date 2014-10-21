@@ -16,7 +16,3 @@ URL.createObjectURL = function (blob) {
 URL.revokeObjectURL = function (url) {
 
 };
-
-function cbws(str) {
-	return str;
-}

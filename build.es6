@@ -19,20 +19,29 @@ function build(file, flags) {
 		}
 
 		res = res
-			.replace(/\bBoolean\((.*?)\)/g, '!!($1)')
-			.replace(/\bString\((.*?)\)/g, "(($1) + '')")
-			.replace(/\bNumber\((.*?)\)/g, '+($1)')
-
-			// Всякие хаки, чтобы GCC не ругался
+			// https://github.com/termi/es6-transpiler/issues/61
 			.replace(/(for\s*\(\s*var\s+[^=]+)= void 0 in/g, '$1 in')
-			.replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/g, '$1 $2')
-			.replace(/{\.\.\.\(?([^}]+)\)?}/g, '{...($1|Array)}')
-			.replace(/\/\*, (\w+) \*\//g, ', $1')
-			.replace(/\/\*= (\w+) \*\//g, '$1')
-			.replace(/\/\/= (.*)/g, '$1')
-			.replace(/^\\n/g, '');
 
-		var desc = file !== 'snakeskin' ? ` (${file.replace(/snakeskin\./, '')})` : '';
+			// Фикс @param {foo} [bar=1] -> @param {foo} [bar]
+			.replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/g, '$1 $2')
+
+			// {...string} -> {...(string|Array)}
+			.replace(/{\.\.\.\(?([^}]+)\)?}/g, '{...($1|Array)}')
+
+			// /*, foo */ -> , foo
+			.replace(/\/\*, (\w+) \*\//g, ', $1')
+
+			// /*= foo */ -> foo
+			.replace(/\/\*= (\w+) \*\//g, '$1')
+
+			// //= foo -> foo
+			.replace(/\/\/= (.*)/g, '$1')
+
+			// Пробельные символы в строках-шаблонах
+			.replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, (sstr) => sstr.replace(/\\n|\t/g, ''));
+
+		var desc = file !== 'snakeskin' ?
+			` (${file.replace(/snakeskin\./, '')})` : '';
 
 		res =
 `/*!
@@ -83,15 +92,9 @@ function build(file, flags) {
 		});
 
 		gcc.on('close', (code) => {
-			var min = path.join(__dirname, `build/${file}.min.js`);
-			var content = escaper.replace(fs.readFileSync(min).toString(), {
-				'\'': true,
-				'/': true
-			});
-
-			// Хакерски вырезаем лишнее :)
-			var res = escaper.paste(content.replace(/\\t/g, ''));
-			res = `/*! Snakeskin v${V}${desc} | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */` + res;
+			var min = path.join(__dirname, `build/${file}.min.js`),
+				res = `/*! Snakeskin v${V}${desc} | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */` +
+					fs.readFileSync(min);
 
 			fs.writeFileSync(min, res);
 			console.log(`${file} compiled, code ${code}`);
