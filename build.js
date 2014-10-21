@@ -19,17 +19,18 @@ function build(file, flags) {
 		}
 
 		res = res
-			.replace(/\bBoolean\((.*?)\)/gm, '!!($1)')
-			.replace(/\bString\((.*?)\)/gm, "(($1) + '')")
-			.replace(/\bNumber\((.*?)\)/gm, '+($1)')
+			.replace(/\bBoolean\((.*?)\)/g, '!!($1)')
+			.replace(/\bString\((.*?)\)/g, "(($1) + '')")
+			.replace(/\bNumber\((.*?)\)/g, '+($1)')
 
 			// Всякие хаки, чтобы GCC не ругался
-			.replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/gm, '$1 $2')
-			.replace(/{\.\.\.\(?([^}]+)\)?}/gm, '{...($1|Array)}')
-			.replace(/\/\*, (\w+) \*\//gm, ', $1')
-			.replace(/\/\*= (\w+) \*\//gm, '$1')
-			.replace(/\/\/= (.*)/gm, '$1')
-			.replace(/^\\n/gm, '');
+			.replace(/(for\s*\(\s*var\s+[^=]+)= void 0 in/g, '$1 in')
+			.replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/g, '$1 $2')
+			.replace(/{\.\.\.\(?([^}]+)\)?}/g, '{...($1|Array)}')
+			.replace(/\/\*, (\w+) \*\//g, ', $1')
+			.replace(/\/\*= (\w+) \*\//g, '$1')
+			.replace(/\/\/= (.*)/g, '$1')
+			.replace(/^\\n/g, '');
 
 		var desc = file !== 'snakeskin' ? ((" (" + (file.replace(/snakeskin\./, ''))) + ")") : '';
 
@@ -89,14 +90,14 @@ function build(file, flags) {
 			});
 
 			// Хакерски вырезаем лишнее :)
-			var res = escaper.paste(content.replace(/\\t/gm, ''));
+			var res = escaper.paste(content.replace(/\\t/g, ''));
 			res = (("/*! Snakeskin v" + V) + ("" + desc) + " | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */") + res;
 
 			fs.writeFileSync(min, res);
 			console.log((("" + file) + (" compiled, code " + code) + ""));
 
 			function updateManifest(url) {
-				fs.writeFileSync(url, fs.readFileSync(url).toString().replace(/"version": ".*?"/gm, (("\"version\": \"" + V) + "\"")));
+				fs.writeFileSync(url, fs.readFileSync(url).toString().replace(/"version": ".*?"/, (("\"version\": \"" + V) + "\"")));
 			}
 
 			updateManifest(path.join(__dirname, 'package.json'));
