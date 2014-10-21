@@ -42,14 +42,14 @@ Snakeskin.addDirective(
 			let groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
 				dom = !this.domComment && this.renderMode === 'dom';
 
-			let str = `
+			let str = cbws`
 				__TMP__ = {
 					'class': ''
 				};
 			`;
 
 			if (dom) {
-				str += `
+				str += cbws`
 					__NODE__ = document.createElement('${desc.tag}');
 				`;
 
@@ -72,13 +72,13 @@ Snakeskin.addDirective(
 			}
 
 			if (desc.classes.length) {
-				str += `
+				str += cbws`
 					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
 				`;
 			}
 
 			if (dom) {
-				str += `
+				str += cbws`
 					if (__TMP__['class']) {
 						__NODE__.className = __TMP__['class'];
 					}
@@ -87,7 +87,7 @@ Snakeskin.addDirective(
 				`;
 
 			} else {
-				str += this.wrap(`
+				str += this.wrap(cbws`
 					(__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '${
 						!params.block && this.doctype === 'xml' ? '/' : ''
 					}>'

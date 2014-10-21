@@ -121,7 +121,7 @@ DirObj.prototype.prepareNameDecl = function (name) {
 			}
 
 			if (custom) {
-				str += `['${
+				str += cbws`['${
 					applyDefEscape(
 						this.returnEvalVal(
 							this.prepareOutput(el, true)
@@ -252,7 +252,7 @@ for (let i = -1; ++i < template.length;) {
 
 					if (first === '%') {
 						try {
-							str = `['${
+							str = cbws`['${
 								applyDefEscape(
 									this.returnEvalVal(
 										this.prepareOutput(str.substring(1), true)
@@ -276,7 +276,7 @@ for (let i = -1; ++i < template.length;) {
 						let def = `this${concatProp(str)}`;
 
 						this.save(
-							(pos = `
+							(pos = cbws`
 								if (${def} == null) {
 									${def} = {};
 								}
@@ -292,7 +292,7 @@ for (let i = -1; ++i < template.length;) {
 
 						if (custom) {
 							try {
-								str += `['${
+								str += cbws`['${
 									applyDefEscape(
 										this.returnEvalVal(
 											this.prepareOutput(el, true)
@@ -417,7 +417,7 @@ for (let i = -1; ++i < template.length;) {
 				};
 			}
 
-			this.save(`
+			this.save(cbws`
 				var __THIS__ = this,
 					__CALLEE__ = __ROOT__${concatProp(tplName)},
 					callee = __CALLEE__;
@@ -566,7 +566,7 @@ for (let i = -1; ++i < template.length;) {
 				this.save('};', true);
 
 			} else {
-				this.save(`
+				this.save(cbws`
 						${this.consts.join('')}
 						return ${this.returnResult()};
 					};

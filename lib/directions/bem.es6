@@ -55,7 +55,7 @@ Snakeskin.addDirective(
 				desc = `{name: \\'${this.replaceTplVars(command.replace(/\s+/g, ' '))}}`;
 
 			if (this.renderMode === 'dom') {
-				str = `
+				str = cbws`
 					__NODE__ = document.createElement('${tag}');
 					__NODE__.className = 'i-block';
 					__NODE__.setAttribute('data-params', '${desc}');
@@ -63,7 +63,7 @@ Snakeskin.addDirective(
 				`;
 
 			} else {
-				str = this.wrap(`
+				str = this.wrap(cbws`
 					'<${tag}
 						class="i-block"
 						data-params="${desc}"

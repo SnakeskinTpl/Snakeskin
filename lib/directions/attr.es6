@@ -104,7 +104,7 @@
 			arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
 			arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
-			res += `
+			res += cbws`
 				__STR__ = \'\';
 				__J__ = 0;
 			`;
@@ -135,7 +135,7 @@
 					this.replaceDangerBlocks(`'${this.pasteTplVarBlocks(val)}'`), true
 				) || '';
 
-				res += `
+				res += cbws`
 					if ((${val}) != null && (${val}) !== '') {
 						__STR__ += __J__ ? ' ' + ${val} : ${val};
 						__J__++;
@@ -144,7 +144,7 @@
 			}
 
 			res += `if ((${arg[0]}) != null && (${arg[0]}) != '' && (__STR__ || ${empty})) {`;
-			let tmp = `
+			let tmp = cbws`
 				if (__NODE__) {
 					__NODE__.setAttribute(${arg[0]}, __STR__);
 
@@ -154,7 +154,7 @@
 			`;
 
 			if (opt_classLink) {
-				res += `
+				res += cbws`
 					if (__TMP__[(${arg[0]})] != null) {
 						__TMP__[(${arg[0]})] += __STR__;
 

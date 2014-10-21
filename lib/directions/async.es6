@@ -76,7 +76,7 @@ Snakeskin.addDirective(
 				}
 			}
 
-			this.append(`
+			this.append(cbws`
 				${async[parent.name] && length > 1 ? ', ' : ''}(function (${this.declCallbackArgs(parts)}) {
 					${this.declArguments()}
 			`);
@@ -121,7 +121,7 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isReady()) {
-			this.append(`
+			this.append(cbws`
 				], function (${this.declCallbackArgs(parts)}) {
 					${this.declArguments()}
 			`);

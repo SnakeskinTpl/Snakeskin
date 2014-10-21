@@ -72,7 +72,7 @@
 
 				let str;
 				if (dom) {
-					str = `
+					str = cbws`
 						__NODE__ = document.createElement('link');
 						${typesStr.dom[type.toLowerCase()] || ''}
 						${this.wrap('__NODE__')}
@@ -118,7 +118,7 @@
 			let str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
-				str = `
+				str = cbws`
 					__RESULT__.pop();
 					__NODE__ = null;
 				`;

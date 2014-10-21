@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 
 			if (cb) {
 				let str = '';
-				let def = `
+				let def = cbws`
 					__RETURN__ = true;
 					__RETURN_VAL__ = ${val};
 				`;
@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 							str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 						} else {
-							str += `
+							str += cbws`
 								if (typeof arguments[0] === 'function') {
 									return arguments[0](__RETURN_VAL__);
 								}
@@ -55,7 +55,7 @@ Snakeskin.addDirective(
 
 				} else {
 					if (!this.getGroup('basicAsync')[cb]) {
-						str += `
+						str += cbws`
 							__RETURN__ = true;
 							__RETURN_VAL__ = ${val};
 						`;

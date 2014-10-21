@@ -47,7 +47,7 @@
 					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
-					str = `
+					str = cbws`
 						__NODE__ = document.createElement('script');
 						__NODE__.type = '${desc}';
 					`;
