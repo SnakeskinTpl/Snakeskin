@@ -383,7 +383,7 @@ function DirObj(src, params) {
 	 * @type {string}
 	 */
 	this.source = String(src)
-		.replace(new RegExp(`${s}cdata${e}([\\s\\S]*?)${s}(?:\\/cdata|end cdata)${e}`, 'gm'), (sstr, data) => {
+		.replace(new RegExp(`${s}cdata${e}([\\s\\S]*?)${s}(?:\\/cdata|end cdata)${e}`, 'g'), (sstr, data) => {
 			this.cDataContent.push(data);
 
 			return '' +
@@ -422,6 +422,19 @@ function DirObj(src, params) {
 
 			var \$_ = __LOCAL__['\$_${uid}'];
 		`;
+
+		if (this.localization) {
+			decl += `
+				if (typeof ${this.i18nFn} === 'undefined') {
+					try {
+						var ${this.i18nFn} = function (str) {
+							return str;
+						};
+
+					} catch (ignore) {}
+				}
+			`;
+		}
 
 		this.res += `
 			This code is generated automatically, don\'t alter it. */

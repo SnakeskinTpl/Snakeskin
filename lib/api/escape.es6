@@ -100,32 +100,32 @@ var closePMap = {
 };
 
 function escapeBackslash(str) {
-	return String(str).replace(/\\/gm, '\\\\');
+	return String(str).replace(/\\/g, '\\\\');
 }
 
 function escapeSingleQuote(str) {
 	return String(str)
-		.replace(/'/gm, '\\\'');
+		.replace(/'/g, '\\\'');
 }
 
 function escapeDoubleQuote(str) {
 	return String(str)
-		.replace(/"/gm, '\\\"');
+		.replace(/"/g, '\\\"');
 }
 
 function applyDefEscape(str) {
 	return escapeNextLine(
 		String(str)
-			.replace(/\\/gm, '\\\\')
-			.replace(/'/gm, '\\\'')
+			.replace(/\\/g, '\\\\')
+			.replace(/'/g, '\\\'')
 	);
 }
 
 function escapeNextLine(str) {
 	return String(str)
-		.replace(/\n/gm, '\\n')
-		.replace(/\v/gm, '\\v')
-		.replace(/\r/gm, '\\r');
+		.replace(/\n/g, '\\n')
+		.replace(/\v/g, '\\v')
+		.replace(/\r/g, '\\r');
 }
 
 if (typeof window === 'undefined' && typeof global !== 'undefined') {
@@ -164,5 +164,5 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  * @return {string}
  */
 DirObj.prototype.pasteTplVarBlocks = function (str) {
-	return str.replace(/__SNAKESKIN__(\d+)_/gm, (sstr, pos) => this.dirContent[pos]);
+	return str.replace(/__SNAKESKIN__(\d+)_/g, (sstr, pos) => this.dirContent[pos]);
 };

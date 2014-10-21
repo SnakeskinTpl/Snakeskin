@@ -1328,7 +1328,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			/__CDATA__(\d+)_/g,
 			(sstr, pos) => escapeNextLine(
 					dir.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, 'g'), nl)
-				).replace(/'/gm, '&#39;')
+				).replace(/'/g, '&#39;')
 		);
 
 	if (debug) {
