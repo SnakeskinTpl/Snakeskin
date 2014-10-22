@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 22 Oct 2014 07:40:12 GMT
+ * Date: Wed, 22 Oct 2014 07:47:58 GMT
  */
 
 /*!
@@ -16613,7 +16613,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 		if (el$0.charAt(0) === '&') {
 			if (ref) {
-				el$0 = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(el$0.substring(1), true))) + ("'" + e) + "");
+				el$0 = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'" + FILTER) + ("bem '" + (this.replaceTplVars(el$0.substring(1), true))) + ("'" + e) + "");
 			}
 
 		} else if (!newRef && el$0) {
