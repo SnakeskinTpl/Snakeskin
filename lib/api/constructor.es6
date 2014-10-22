@@ -426,19 +426,6 @@ function DirObj(src, params) {
 			var \$_ = __LOCAL__['\$_${uid}'];
 		`;
 
-		if (this.localization) {
-			decl += /* cbws */`
-				if (typeof ${this.i18nFn} === 'undefined') {
-					try {
-						var ${this.i18nFn} = function (str) {
-							return str;
-						};
-
-					} catch (ignore) {}
-				}
-			`;
-		}
-
 		this.res += /* cbws */`
 			This code is generated automatically, don\'t alter it. */
 			(function () {
