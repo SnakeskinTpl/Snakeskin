@@ -198,7 +198,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 		if (el.charAt(0) === '&') {
 			if (ref) {
-				el = `${s}'${this.replaceTplVars(ref, true)}'|bem '${this.replaceTplVars(el.substring(1), true)}'${e}`;
+				el = `${s}'${this.replaceTplVars(ref, true)}'${FILTER}bem '${this.replaceTplVars(el.substring(1), true)}'${e}`;
 			}
 
 		} else if (!newRef && el) {
