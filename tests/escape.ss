@@ -4,6 +4,8 @@ escape_index3
 escape_index4
 escape_base['\n\\n\'"helloWorld']
 escape_sub
+escape_index5
+escape_index6
 
 ###
 
@@ -41,6 +43,13 @@ escape_sub
 {template escape_sub() extends escape_base['\n\\n\'"helloWorld']}
 {/}
 
+{template escape_index5()}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+{/}
+
+- template escape_index6()
+	< meta http-equiv = Content-Type | content = text/html; charset\=utf-8
+
 ###
 
 #{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"
@@ -64,3 +73,12 @@ object false NaN false
 ***
 
 121
+
+***
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+***
+
+<meta http-equiv="Content-Type" content="text&#x2F;html; charset=utf-8"/>
+
