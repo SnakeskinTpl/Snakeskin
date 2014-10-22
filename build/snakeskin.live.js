@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.0.3 (live)
+ * Snakeskin v6.0.4 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 11 Oct 2014 08:03:23 GMT
+ * Date: Wed, 22 Oct 2014 07:19:49 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 0, 3],
+	VERSION: [6, 0, 4],
 
 	/**
 	 * Пространство имён для директив
@@ -135,12 +135,13 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  * @expose
  * @param {*} str - исходная строка
  * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются html атрибуты
+ * @param {?boolean=} [opt_escapedAttr=false] - если true, то атрибут считается принудительно экранированным
  * @return {string}
  */
-Snakeskin.Filters.html = function (str, opt_attr) {
-	var res = ((str) + '');
+Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
+	var res = String(str);
 
-	if (opt_attr) {
+	if (opt_attr && opt_escapedAttr) {
 		res = res.replace(escapeAttrRgxp, '$1"$2"');
 	}
 
@@ -184,7 +185,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['uhtml'] = function (str) {
-		return ((str) + '').replace(uescapeHTMLRgxp, uescapeHTML);
+		return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
 	};
 
 	var stripTagsRgxp = /<\/?[^>]+>/g;
@@ -196,7 +197,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['stripTags'] = function (str) {
-		return ((str) + '').replace(stripTagsRgxp, '');
+		return String(str).replace(stripTagsRgxp, '');
 	};
 
 	var uriO = /%5B/g,
@@ -210,7 +211,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['uri'] = function (str) {
-		return encodeURI(((str) + ''))
+		return encodeURI(String(str))
 			.replace(uriO, '[')
 			.replace(uriC, ']');
 	};
@@ -222,7 +223,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['upper'] = function (str) {
-		return ((str) + '').toUpperCase();
+		return String(str).toUpperCase();
 	};
 
 	/**
@@ -232,7 +233,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['ucfirst'] = function (str) {
-		str = ((str) + '');
+		str = String(str);
 		return str.charAt(0).toUpperCase() + str.substring(1);
 	};
 
@@ -243,7 +244,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['lower'] = function (str) {
-		return ((str) + '').toLowerCase();
+		return String(str).toLowerCase();
 	};
 
 	/**
@@ -253,7 +254,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['lcfirst'] = function (str) {
-		str = ((str) + '');
+		str = String(str);
 		return str.charAt(0).toLowerCase() + str.substring(1);
 	};
 
@@ -264,7 +265,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['trim'] = function (str) {
-		return ((str) + '').trim();
+		return String(str).trim();
 	};
 
 	var spaceCollapseRgxp = /\s{2,}/g;
@@ -277,7 +278,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['collapse'] = function (str) {
-		return ((str) + '').replace(spaceCollapseRgxp, ' ').trim();
+		return String(str).replace(spaceCollapseRgxp, ' ').trim();
 	};
 
 	/**
@@ -291,7 +292,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
-		str = ((str) + '');
+		str = String(str);
 		if (!str || str.length <= length) {
 			return str;
 		}
@@ -331,7 +332,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['remove'] = function (str, search) {
-		return ((str) + '').replace(search, '');
+		return String(str).replace(search, '');
 	};
 
 	/**
@@ -343,7 +344,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['replace'] = function (str, search, replace) {
-		return ((str) + '').replace(search, replace);
+		return String(str).replace(search, replace);
 	};
 
 	/**
@@ -357,7 +358,7 @@ Snakeskin.Filters.undef = function (str) {
 			return JSON.stringify(obj);
 		}
 
-		return ((obj) + '');
+		return String(obj);
 	};
 
 	/**
@@ -382,7 +383,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['bem'] = function (block, part) {
-		return ((block) + '') + ((part) + '');
+		return String(block) + String(part);
 	};
 
 	/**
@@ -531,7 +532,7 @@ var inlineTagMap = {
  */
 Snakeskin.appendChild = function (node, obj) {
 	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
-		return ((obj) + '').trim();
+		return String(obj).trim();
 	}
 
 	if (typeof obj === 'string') {

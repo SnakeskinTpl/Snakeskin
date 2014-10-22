@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.0.3
+ * Snakeskin v6.0.4
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 11 Oct 2014 08:03:23 GMT
+ * Date: Wed, 22 Oct 2014 07:19:49 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 0, 3],
+	VERSION: [6, 0, 4],
 
 	/**
 	 * Пространство имён для директив
@@ -135,12 +135,13 @@ var escapeHTMLRgxp = /[&<>"'\/]/g,
  * @expose
  * @param {*} str - исходная строка
  * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются html атрибуты
+ * @param {?boolean=} [opt_escapedAttr=false] - если true, то атрибут считается принудительно экранированным
  * @return {string}
  */
-Snakeskin.Filters.html = function (str, opt_attr) {
-	var res = ((str) + '');
+Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
+	var res = String(str);
 
-	if (opt_attr) {
+	if (opt_attr && opt_escapedAttr) {
 		res = res.replace(escapeAttrRgxp, '$1"$2"');
 	}
 
@@ -184,7 +185,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['uhtml'] = function (str) {
-		return ((str) + '').replace(uescapeHTMLRgxp, uescapeHTML);
+		return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
 	};
 
 	var stripTagsRgxp = /<\/?[^>]+>/g;
@@ -196,7 +197,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['stripTags'] = function (str) {
-		return ((str) + '').replace(stripTagsRgxp, '');
+		return String(str).replace(stripTagsRgxp, '');
 	};
 
 	var uriO = /%5B/g,
@@ -210,7 +211,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['uri'] = function (str) {
-		return encodeURI(((str) + ''))
+		return encodeURI(String(str))
 			.replace(uriO, '[')
 			.replace(uriC, ']');
 	};
@@ -222,7 +223,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['upper'] = function (str) {
-		return ((str) + '').toUpperCase();
+		return String(str).toUpperCase();
 	};
 
 	/**
@@ -232,7 +233,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['ucfirst'] = function (str) {
-		str = ((str) + '');
+		str = String(str);
 		return str.charAt(0).toUpperCase() + str.substring(1);
 	};
 
@@ -243,7 +244,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['lower'] = function (str) {
-		return ((str) + '').toLowerCase();
+		return String(str).toLowerCase();
 	};
 
 	/**
@@ -253,7 +254,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['lcfirst'] = function (str) {
-		str = ((str) + '');
+		str = String(str);
 		return str.charAt(0).toLowerCase() + str.substring(1);
 	};
 
@@ -264,7 +265,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['trim'] = function (str) {
-		return ((str) + '').trim();
+		return String(str).trim();
 	};
 
 	var spaceCollapseRgxp = /\s{2,}/g;
@@ -277,7 +278,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['collapse'] = function (str) {
-		return ((str) + '').replace(spaceCollapseRgxp, ' ').trim();
+		return String(str).replace(spaceCollapseRgxp, ' ').trim();
 	};
 
 	/**
@@ -291,7 +292,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
-		str = ((str) + '');
+		str = String(str);
 		if (!str || str.length <= length) {
 			return str;
 		}
@@ -331,7 +332,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['remove'] = function (str, search) {
-		return ((str) + '').replace(search, '');
+		return String(str).replace(search, '');
 	};
 
 	/**
@@ -343,7 +344,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['replace'] = function (str, search, replace) {
-		return ((str) + '').replace(search, replace);
+		return String(str).replace(search, replace);
 	};
 
 	/**
@@ -357,7 +358,7 @@ Snakeskin.Filters.undef = function (str) {
 			return JSON.stringify(obj);
 		}
 
-		return ((obj) + '');
+		return String(obj);
 	};
 
 	/**
@@ -382,7 +383,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['bem'] = function (block, part) {
-		return ((block) + '') + ((part) + '');
+		return String(block) + String(part);
 	};
 
 	/**
@@ -531,7 +532,7 @@ var inlineTagMap = {
  */
 Snakeskin.appendChild = function (node, obj) {
 	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
-		return ((obj) + '').trim();
+		return String(obj).trim();
 	}
 
 	if (typeof obj === 'string') {
@@ -6667,6 +6668,9 @@ function DirObj(src, params) {var this$0 = this;
 	/** @type {boolean} */
 	this.attr = false;
 
+	/** @type {boolean} */
+	this.attrEscape = false;
+
 	// <<<
 
 	/**
@@ -6783,8 +6787,8 @@ function DirObj(src, params) {var this$0 = this;
 	 * Исходный текст шаблона
 	 * @type {string}
 	 */
-	this.source = ((src) + '')
-		.replace(new RegExp((("" + s) + ("cdata" + e) + ("([\\s\\S]*?)" + s) + ("(?:\\/cdata|end cdata)" + e) + ""), 'gm'), function(sstr, data)  {
+	this.source = String(src)
+		.replace(new RegExp((("" + s) + ("cdata" + e) + ("([\\s\\S]*?)" + s) + ("(?:\\/cdata|end cdata)" + e) + ""), 'g'), function(sstr, data)  {
 			this$0.cDataContent.push(data);
 
 			return '' +
@@ -6803,49 +6807,62 @@ function DirObj(src, params) {var this$0 = this;
 	this.res = '';
 
 	if (!this.proto) {
-		var decl = (("\
-			var __ROOT__ = this,\
-				self = this;\
+		var decl = /* cbws */(("\
+var __ROOT__ = this,\
+self = this;\
 \
-			var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,\
-				async = this.async != null ? this.async: Snakeskin.Vars.async;\
+var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,\
+async = this.async != null ? this.async: Snakeskin.Vars.async;\
 \
-			var __$C__ = $C,\
-				__async__ = async;\
+var __$C__ = $C,\
+__async__ = async;\
 \
-			var __APPEND__ = Snakeskin.appendChild,\
-				__FILTERS__ = Snakeskin.Filters,\
-				__VARS__ = Snakeskin.Vars,\
-				__LOCAL__ = Snakeskin.LocalVars,\
-				__STR__,\
-				__TMP__,\
-				__J__;\
+var __APPEND__ = Snakeskin.appendChild,\
+__FILTERS__ = Snakeskin.Filters,\
+__VARS__ = Snakeskin.Vars,\
+__LOCAL__ = Snakeskin.LocalVars,\
+__STR__,\
+__TMP__,\
+__J__;\
 \
-			var $_ = __LOCAL__['$_" + uid) + "'];\
-		");
+var $_ = __LOCAL__['$_" + uid) + "'];\
+");
 
-		this.res += ("\
-			This code is generated automatically, don\'t alter it. */\
-			(function () {\
-		");
+		if (this.localization) {
+			decl += /* cbws */(("\
+if (typeof " + (this.i18nFn)) + (" === 'undefined') {\
+try {\
+var " + (this.i18nFn)) + " = function (str) {\
+return str;\
+};\
+\
+} catch (ignore) {}\
+}\
+");
+		}
+
+		this.res += /* cbws */("\
+This code is generated automatically, don\'t alter it. */\
+(function () {\
+");
 
 		if (this.exports === 'commonJS') {
-			this.res += (("\
-				var Snakeskin = global.Snakeskin;\
+			this.res += /* cbws */(("\
+var Snakeskin = global.Snakeskin;\
 \
-				exports['init'] = function (obj) {\
-					Snakeskin = Snakeskin || obj instanceof Object ?\
-						obj : require(obj);\
+exports['init'] = function (obj) {\
+Snakeskin = Snakeskin || obj instanceof Object ?\
+obj : require(obj);\
 \
-					delete exports.init;\
-					exec.call(exports);\
+delete exports.init;\
+exec.call(exports);\
 \
-					return exports;\
-				};\
+return exports;\
+};\
 \
-				function exec() {\
-					" + decl) + "\
-			");
+function exec() {\
+" + decl) + "\
+");
 
 		} else {
 			this.res += decl;
@@ -6968,11 +6985,11 @@ DirObj.prototype.wrap = function (opt_str) {
  * @return {string}
  */
 DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
-	return (("\
-		" + (this.wrap('__NODE__'))) + ("\
-		" + (opt_inline ? '': '__RESULT__.push(__NODE__);')) + "\
-		__NODE__ = null;\
-	");
+	return /* cbws */(("\
+" + (this.wrap('__NODE__'))) + ("\
+" + (opt_inline ? '': '__RESULT__.push(__NODE__);')) + "\
+__NODE__ = null;\
+");
 };
 
 /**
@@ -7055,7 +7072,7 @@ DirObj.prototype.isAdvTest = function () {
 		)
 	);
 
-	return !!(res);
+	return Boolean(res);
 };
 
 /**
@@ -7073,7 +7090,7 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
 
 	if (!this.tplName || write[this.tplName] !== false || opt_interface) {
 		if (opt_jsDoc) {
-			var pos = +(opt_jsDoc);
+			var pos = Number(opt_jsDoc);
 			this.res = this.res.substring(0, pos) + str + this.res.substring(pos);
 
 		} else {
@@ -7366,7 +7383,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		vars: vars,
 		children: [],
 
-		sys: !!(sys[opt_name]),
+		sys: Boolean(sys[opt_name]),
 		strong: false
 	};
 
@@ -7450,7 +7467,7 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
 		vars: null,
 		children: null,
 
-		sys: !!(sys[opt_name]),
+		sys: Boolean(sys[opt_name]),
 		strong: false
 	};
 
@@ -7559,7 +7576,7 @@ DirObj.prototype.getFnName = function (str) {
 		this.error((("invalid \"" + (this.name)) + "\" declaration"));
 	}
 
-	return (val);
+	return val;
 };
 
 /**
@@ -7569,7 +7586,7 @@ DirObj.prototype.getFnName = function (str) {
  * @return {number}
  */
 DirObj.prototype.getDiff = function (length) {
-	return length + +(this.needPrfx) + 1;
+	return length + Number(this.needPrfx) + 1;
 };
 
 /**
@@ -7590,7 +7607,7 @@ DirObj.prototype.getGroup = function (names) {var SLICE$0 = Array.prototype.slic
 		if (name === 'callback' && this.inlineIterators) {
 			var inline = groups['inlineIterator'];
 
-			for (var key = void 0 in inline) {
+			for (var key  in inline) {
 				if (!inline.hasOwnProperty(key)) {
 					continue;
 				}
@@ -7599,7 +7616,7 @@ DirObj.prototype.getGroup = function (names) {var SLICE$0 = Array.prototype.slic
 			}
 		}
 
-		for (var key$0 = void 0 in group) {
+		for (var key$0  in group) {
 			if (!group.hasOwnProperty(key$0) || ignore[key$0]) {
 				continue;
 			}
@@ -7934,7 +7951,7 @@ DirObj.prototype.popParams = function () {
 
 		// Область видимости
 		var scope = this.scope,
-			useWith = !!(scope.length);
+			useWith = Boolean(scope.length);
 
 		// Сдвиги
 		var addition = 0,
@@ -8020,7 +8037,7 @@ DirObj.prototype.popParams = function () {
 					// не является константой замены Escaper,
 					// не является названием свойства в литерале объекта ({свойство: )
 					var canParse = !blackWordMap[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
-						isNaN(+(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
+						isNaN(Number(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
 
 					// Экспорт числовых литералов
 					if (numRgxp.test(el)) {
@@ -8331,7 +8348,7 @@ DirObj.prototype.popParams = function () {
 
 		return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') +
 			res +
-			(!unEscape && !opt_sys ? ((", " + (this.attr)) + ")") : '');
+			(!unEscape && !opt_sys ? ((", " + (this.attr)) + (", " + (this.attrEscape)) + ")") : '');
 	};
 })();
 /*!
@@ -8568,7 +8585,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 			}
 		}
 
-		for (var key$0 = void 0 in el) {
+		for (var key$0  in el) {
 			if (!el.hasOwnProperty(key$0)) {
 				continue;
 			}
@@ -9240,7 +9257,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 						decl = getLineDesc(
 							str,
 							nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j,
-							!!(dir),
+							Boolean(dir),
 							next2str === MULT_COMMENT_START
 						);
 
@@ -9586,7 +9603,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			var pos = line - i - 2,
 				prev = this.lines[pos];
 
-			var space = new Array(((line - 1) + '').length - ((pos) + '').length + 1)
+			var space = new Array(String(line - 1).length - String(pos).length + 1)
 				.join(' ');
 
 			if (prev != null) {
@@ -9766,32 +9783,32 @@ var closePMap = {
 };
 
 function escapeBackslash(str) {
-	return ((str) + '').replace(/\\/gm, '\\\\');
+	return String(str).replace(/\\/g, '\\\\');
 }
 
 function escapeSingleQuote(str) {
-	return ((str) + '')
-		.replace(/'/gm, '\\\'');
+	return String(str)
+		.replace(/'/g, '\\\'');
 }
 
 function escapeDoubleQuote(str) {
-	return ((str) + '')
-		.replace(/"/gm, '\\\"');
+	return String(str)
+		.replace(/"/g, '\\\"');
 }
 
 function applyDefEscape(str) {
 	return escapeNextLine(
-		((str) + '')
-			.replace(/\\/gm, '\\\\')
-			.replace(/'/gm, '\\\'')
+		String(str)
+			.replace(/\\/g, '\\\\')
+			.replace(/'/g, '\\\'')
 	);
 }
 
 function escapeNextLine(str) {
-	return ((str) + '')
-		.replace(/\n/gm, '\\n')
-		.replace(/\v/gm, '\\v')
-		.replace(/\r/gm, '\\r');
+	return String(str)
+		.replace(/\n/g, '\\n')
+		.replace(/\v/g, '\\v')
+		.replace(/\r/g, '\\r');
 }
 
 if (typeof window === 'undefined' && typeof global !== 'undefined') {
@@ -9809,7 +9826,7 @@ if (typeof window === 'undefined' && typeof global !== 'undefined') {
 var Escaper = {
 	VERSION: [1, 4, 2],
 	isLocal: typeof window === 'undefined' && typeof global !== 'undefined' ?
-		!!(global.EscaperIsLocal || global['EscaperIsLocal']) : false
+		Boolean(global.EscaperIsLocal || global['EscaperIsLocal']) : false
 };
 
 if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.isLocal) {
@@ -9979,7 +9996,7 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && !Escaper.i
 
 		var withComments = false;
 		if (typeof opt_withCommentsOrParams === 'boolean') {
-			withComments = !!(opt_withCommentsOrParams);
+			withComments = Boolean(opt_withCommentsOrParams);
 		}
 
 		if ('@comments' in p) {
@@ -10242,7 +10259,7 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  * @return {string}
  */
 DirObj.prototype.pasteTplVarBlocks = function (str) {var this$0 = this;
-	return str.replace(/__SNAKESKIN__(\d+)_/gm, function(sstr, pos)  {return this$0.dirContent[pos]});
+	return str.replace(/__SNAKESKIN__(\d+)_/g, function(sstr, pos)  {return this$0.dirContent[pos]});
 };
 var nextLineRgxp = /\r\n|\r|\n/,
 	whiteSpaceRgxp = /\s/,
@@ -10425,7 +10442,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		text = src.innerHTML.replace(/\s*?(?:\r\n|\r|\n)/, '');
 
 	} else {
-		text = ((src) + '');
+		text = String(src);
 	}
 
 	// <<<
@@ -10714,7 +10731,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		lb = LEFT_BLOCK,
 		rb = RIGHT_BLOCK;
 
-	var dir = new DirObj(((text) + ''), {
+	var dir = new DirObj(String(text), {
 		info: info,
 		onError: p.onError,
 
@@ -10796,6 +10813,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		tAttrBegin = false,
 		tAttrEscape = false;
 
+	var tAttrBMap = {
+		'"': true,
+		'\'': true
+	};
+
 	// Флаги для обработки скобок при типографии
 	var qOpen = 0,
 		qType = null;
@@ -10848,9 +10870,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		inlineMacro = obj.inlineMacro;
 		comboMacro = obj.comboMacro;
 		tOpen = obj.tOpen;
-		tAttr = obj.tAttr;
+
+		tAttr =
+			dir.attr = obj.tAttr;
+
 		tAttrBegin = obj.tAttrBegin;
-		tAttrEscape = obj.tAttrEscape;
+		tAttrEscape =
+			dir.attrEscape = obj.tAttrEscape;
+
 		qOpen = obj.qOpen;
 		qType = obj.qType;
 		prfxI = obj.prfxI;
@@ -11235,7 +11262,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									advStr +
 									str.substring(dir.i + 1);
 
-								dir.i = +(pseudoI);
+								dir.i = Number(pseudoI);
 								dir.freezeLine++;
 
 								pseudoI = false;
@@ -11249,7 +11276,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = (("" + (dir.i18nFn)) + "(\"");
 
 							} else {
-								var diff = +(dir.needPrfx) + 1;
+								var diff = Number(dir.needPrfx) + 1;
 
 								dir.source = str.substring(0, dir.i) +
 									(dir.needPrfx ? alb : '') +
@@ -11400,38 +11427,38 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 
 						if (tAttr) {
-							if (el === ' ' || !tOpen) {
-								if (tAttrBegin) {
-									tAttr = false;
+							if (tAttrBegin && (tAttrEscape ? el === ' ' : tAttrBMap[el]) || !tOpen) {
+								tAttr = false;
+
+								if (tOpen) {
 									tAttrBegin = false;
-
-									if (tAttrEscape) {
-										el = ("\"" + el);
-										tAttrEscape = false;
-									}
-
-								} else if (!tOpen) {
-									tAttr = false;
 								}
 
+								if (tAttrEscape) {
+									el = ("\"" + el);
+									tAttrEscape = false;
+								}
+
+							// Установка флага о начале декларации xml атрибута
 							} else if (!tAttrBegin) {
 								tAttrBegin = true;
-
-								if (el !== '"' && el !== '\'') {
+								if (!tAttrBMap[el]) {
 									tAttrEscape = true;
 									el = ("\"" + el);
 								}
 							}
 
+						// Начало декларации xml атрибута
 						} else if (tOpen && el === '=') {
 							tAttr = true;
 						}
 
-						dir.attr = !!(tOpen);
+						dir.attr = Boolean(tOpen);
+						dir.attrEscape = tAttrEscape;
 					}
 
 					if (dir.autoReplace) {
-						if (!tOpen || !tAttrBegin) {
+						if (!tOpen) {
 							if (comboMacro[el]) {
 								var val = dir.macros[el];
 
@@ -11451,7 +11478,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								}
 
 								el = el.call ? el() : el;
-								el = ((el) + '');
+								el = String(el);
 
 							} else {
 								if (whiteSpaceRgxp.test(el)) {
@@ -11477,7 +11504,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								dir.res.substring(exprPos + expr.length + advExprPos);
 
 							var val$0 = dir.macros[expr].call ? dir.macros[expr]() : dir.macros[expr];
-							val$0 = ((val$0) + '');
+							val$0 = String(val$0);
 
 							advExprPos += val$0.length;
 
@@ -11574,7 +11601,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			/__CDATA__(\d+)_/g,
 			function(sstr, pos)  {return escapeNextLine(
 					dir.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, 'g'), nl)
-				).replace(/'/gm, '&#39;')}
+				).replace(/'/g, '&#39;')}
 		);
 
 	if (debug) {
@@ -11770,9 +11797,9 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 	after[name] = params.after;
 	inside[name] = params.inside;
 
-	sys[name] = !!(params.sys);
-	block[name] = !!(params.block);
-	text[name] = !!(params.text);
+	sys[name] = Boolean(params.sys);
+	block[name] = Boolean(params.block);
+	text[name] = Boolean(params.text);
 
 	if (params.alias) {
 		aliases[name] = name.replace(aliasRgxp, '$1');
@@ -12036,20 +12063,20 @@ Snakeskin.addDirective(
 				desc = (("{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}");
 
 			if (this.renderMode === 'dom') {
-				str = (("\
-					__NODE__ = document.createElement('" + tag) + ("');\
-					__NODE__.className = 'i-block';\
-					__NODE__.setAttribute('data-params', '" + desc) + ("');\
-					" + (this.returnPushNodeDecl())) + "\
-				");
+				str = /* cbws */(("\
+__NODE__ = document.createElement('" + tag) + ("');\
+__NODE__.className = 'i-block';\
+__NODE__.setAttribute('data-params', '" + desc) + ("');\
+" + (this.returnPushNodeDecl())) + "\
+");
 
 			} else {
-				str = this.wrap((("\
-					'<" + tag) + ("\
-						class=\"i-block\"\
-						data-params=\"" + desc) + "\"\
-					>'\
-				"));
+				str = this.wrap(/* cbws */(("\
+'<" + tag) + ("\
+class=\"i-block\"\
+data-params=\"" + desc) + "\"\
+>'\
+"));
 			}
 
 			this.append(str);
@@ -12078,10 +12105,10 @@ var callBlockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
  * @return {string}
  */
 DirObj.prototype.declArguments = function () {
-	return (("\
-		var __ARGUMENTS__ = arguments;\
-		" + (this.multiDeclVar('arguments = __ARGUMENTS__'))) + "\
-	");
+	return /* cbws */(("\
+var __ARGUMENTS__ = arguments;\
+" + (this.multiDeclVar('arguments = __ARGUMENTS__'))) + "\
+");
 };
 
 Snakeskin.addDirective(
@@ -12153,7 +12180,7 @@ Snakeskin.addDirective(
 		});
 
 		var struct = this.structure,
-			dir = ((this.name) + '');
+			dir = String(this.name);
 
 		var params,
 			output;
@@ -12210,29 +12237,29 @@ Snakeskin.addDirective(
 				var fnDecl = ("__BLOCKS__." + name);
 				struct.params.fn = fnDecl;
 
-				this.save((("\
-					if (!" + fnDecl) + (") {\
-						" + fnDecl) + (" = function (" + (args$0.str)) + (") {\
-							var __RESULT__ = " + (this.declResult())) + (";\
+				this.save(/* cbws */(("\
+if (!" + fnDecl) + (") {\
+" + fnDecl) + (" = function (" + (args$0.str)) + (") {\
+var __RESULT__ = " + (this.declResult())) + (";\
 \
-							" + (this.declArguments())) + ("\
+" + (this.declArguments())) + ("\
 \
-							function getTplResult(opt_clear) {\
-								var res = " + (this.returnResult())) + (";\
+function getTplResult(opt_clear) {\
+var res = " + (this.returnResult())) + (";\
 \
-								if (opt_clear) {\
-									__RESULT__ = " + (this.declResult())) + (";\
-								}\
+if (opt_clear) {\
+__RESULT__ = " + (this.declResult())) + (";\
+}\
 \
-								return res;\
-							}\
+return res;\
+}\
 \
-							function clearTplResult() {\
-								__RESULT__ = " + (this.declResult())) + (";\
-							}\
+function clearTplResult() {\
+__RESULT__ = " + (this.declResult())) + (";\
+}\
 \
-							" + (args$0.defParams)) + "\
-				"));
+" + (args$0.defParams)) + "\
+"));
 
 				if (params != null) {
 					var str = '',
@@ -12264,17 +12291,17 @@ Snakeskin.addDirective(
 			var obj = this.preDefs[this.tplName],
 				nl = this.lineSeparator;
 
-			obj.text += (("\
-				" + nl) + ("" + (this.source.substring(params.from, obj.i))) + ("\
-				" + s) + ("__cutLine__" + e) + ("\
+			obj.text += /* cbws */(("\
+" + nl) + ("" + (this.source.substring(params.from, obj.i))) + ("\
+" + s) + ("__cutLine__" + e) + ("\
 \
-					" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
-						" + (this.source.substring(obj.i, this.i - diff))) + ("\
-					" + s) + ("__end__" + e) + ("\
+" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
+" + (this.source.substring(obj.i, this.i - diff))) + ("\
+" + s) + ("__end__" + e) + ("\
 \
-				" + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + ("\
-				" + s) + ("__cutLine__" + e) + "\
-			");
+" + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + ("\
+" + s) + ("__cutLine__" + e) + "\
+");
 
 			this.outerLink = null;
 			this.tplName = null;
@@ -12286,13 +12313,13 @@ Snakeskin.addDirective(
 		var block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
-			this.save((("\
-						return " + (this.returnResult())) + (";\
-					};\
-				}\
+			this.save(/* cbws */(("\
+return " + (this.returnResult())) + (";\
+};\
+}\
 \
-				" + (params.params != null ? this.wrap((("" + (params.fn)) + ("(" + (params.params)) + ")")) : '')) + "\
-			"));
+" + (params.params != null ? this.wrap((("" + (params.fn)) + ("(" + (params.params)) + ")")) : '')) + "\
+"));
 		}
 
 		if (this.isAdvTest()) {
@@ -12419,7 +12446,7 @@ Snakeskin.addDirective(
 						constCache[tplName][name] = {
 							from: start - commandLength,
 							to: start,
-							block: !!(insideCallBlock || parentTpl && parent && parent.block),
+							block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
 							needPrfx: this.needPrfx,
 							output: output ?
 								'?' : null
@@ -12867,11 +12894,11 @@ Snakeskin.addDirective(
 	}
 
 	function unEscapeEq(sstr, $1, $2) {
-		return new Array(+($2)).join('\\') + new Array(+($1)).join('=');
+		return new Array(Number($2)).join('\\') + new Array(Number($1)).join('=');
 	}
 
 	function unEscapeOr(sstr, $1, $2) {
-		return new Array(+($2)).join('\\') + new Array(+($1)).join('|');
+		return new Array(Number($2)).join('\\') + new Array(Number($1)).join('|');
 	}
 
 	/**
@@ -12886,8 +12913,11 @@ Snakeskin.addDirective(
 	 * @return {string}
 	 */
 	DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
-		var rAttr = this.attr;
+		var rAttr = this.attr,
+			rEscape = this.attrEscape;
+
 		this.attr = true;
+		this.attrEscape = true;
 
 		opt_group = opt_group || '';
 		opt_separator = opt_separator || '-';
@@ -12919,10 +12949,10 @@ Snakeskin.addDirective(
 			arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
 			arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
-			res += ("\
-				__STR__ = \'\';\
-				__J__ = 0;\
-			");
+			res += /* cbws */("\
+__STR__ = \'\';\
+__J__ = 0;\
+");
 
 			if (opt_group) {
 				arg[0] = opt_group + opt_separator + arg[0];
@@ -12950,33 +12980,33 @@ Snakeskin.addDirective(
 					this.replaceDangerBlocks((("'" + (this.pasteTplVarBlocks(val))) + "'")), true
 				) || '';
 
-				res += (("\
-					if ((" + val) + (") != null && (" + val) + (") !== '') {\
-						__STR__ += __J__ ? ' ' + " + val) + (" : " + val) + ";\
-						__J__++;\
-					}\
-				");
+				res += /* cbws */(("\
+if ((" + val) + (") != null && (" + val) + (") !== '') {\
+__STR__ += __J__ ? ' ' + " + val) + (" : " + val) + ";\
+__J__++;\
+}\
+");
 			}
 
 			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + (") != '' && (__STR__ || " + empty) + ")) {");
-			var tmp = (("\
-				if (__NODE__) {\
-					__NODE__.setAttribute(" + (arg[0])) + (", __STR__);\
+			var tmp = /* cbws */(("\
+if (__NODE__) {\
+__NODE__.setAttribute(" + (arg[0])) + (", __STR__);\
 \
-				} else {\
-					" + (this.wrap((("' ' + " + (arg[0])) + " + (__STR__ ? '=\"' + __STR__ + '\"' : '')")))) + "\
-				}\
-			");
+} else {\
+" + (this.wrap((("' ' + " + (arg[0])) + " + (__STR__ ? '=\"' + __STR__ + '\"' : '')")))) + "\
+}\
+");
 
 			if (opt_classLink) {
-				res += (("\
-					if (__TMP__[(" + (arg[0])) + (")] != null) {\
-						__TMP__[(" + (arg[0])) + (")] += __STR__;\
+				res += /* cbws */(("\
+if (__TMP__[(" + (arg[0])) + (")] != null) {\
+__TMP__[(" + (arg[0])) + (")] += __STR__;\
 \
-					} else {\
-						" + tmp) + "\
-					}\
-				");
+} else {\
+" + tmp) + "\
+}\
+");
 
 			} else {
 				res += tmp;
@@ -12986,6 +13016,8 @@ Snakeskin.addDirective(
 		}
 
 		this.attr = rAttr;
+		this.attrEscape = rEscape;
+
 		return res;
 	};
 
@@ -12996,8 +13028,11 @@ Snakeskin.addDirective(
 	 * @return {!Array}
 	 */
 	DirObj.prototype.splitAttrsGroup = function (str) {
-		var rAttr = this.attr;
+		var rAttr = this.attr,
+			rEscape = this.attrEscape;
+
 		this.attr = true;
+		this.attrEscape = true;
 
 		str = this.replaceTplVars(str, null, true);
 		var groups = [];
@@ -13073,6 +13108,8 @@ Snakeskin.addDirective(
 		}
 
 		this.attr = rAttr;
+		this.attrEscape = rEscape;
+
 		return groups;
 	};
 })();
@@ -13130,39 +13167,39 @@ Snakeskin.addDirective(
 					var basicAsync = this.getGroup('basicAsync');
 
 					if (basicAsync[name] || basicAsync[parent]) {
-						this.save(("\
-							if (__RETURN__) {\
-								return false;\
-							}\
-						"));
+						this.save(/* cbws */("\
+if (__RETURN__) {\
+return false;\
+}\
+"));
 
 					} else if (parent === 'waterfall') {
-						this.save(("\
-							if (__RETURN__) {\
-								return arguments[arguments.length - 1](__RETURN_VAL__);\
-							}\
-						"));
+						this.save(/* cbws */("\
+if (__RETURN__) {\
+return arguments[arguments.length - 1](__RETURN_VAL__);\
+}\
+"));
 
 					} else {
-						this.save(("\
-							if (__RETURN__) {\
-								if (typeof arguments[0] === 'function') {\
-									return arguments[0](__RETURN_VAL__);\
-								}\
+						this.save(/* cbws */("\
+if (__RETURN__) {\
+if (typeof arguments[0] === 'function') {\
+return arguments[0](__RETURN_VAL__);\
+}\
 \
-								return false;\
-							}\
-						"));
+return false;\
+}\
+"));
 					}
 
 					this.deferReturn = 0;
 
 				} else if (this.deferReturn > 1) {
-					this.save(("\
-						if (__RETURN__) {\
-							return false;\
-						}\
-					"));
+					this.save(/* cbws */("\
+if (__RETURN__) {\
+return false;\
+}\
+"));
 				}
 
 				if (this.deferReturn !== 0) {
@@ -13170,11 +13207,11 @@ Snakeskin.addDirective(
 				}
 
 			} else if (!async[name]) {
-				this.save(("\
-					if (__RETURN__) {\
-						return __RETURN_VAL__;\
-					}\
-				"));
+				this.save(/* cbws */("\
+if (__RETURN__) {\
+return __RETURN_VAL__;\
+}\
+"));
 
 				this.deferReturn = 0;
 			}
@@ -13280,18 +13317,18 @@ Snakeskin.addDirective(
 			if (this.isReady()) {
 				if (!this.inlineIterators) {
 					if (parts.length === 3) {
-						this.append((("\
-							$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
-								" + (this.declArguments())) + "\
-						"));
+						this.append(/* cbws */(("\
+$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
+" + (this.declArguments())) + "\
+"));
 
 					} else {
-						this.append((("\
-							Snakeskin.forEach(\
-								" + (this.prepareOutput(parts[0], true))) + (",\
-								function (" + (this.declCallbackArgs(parts[1]))) + (") {\
-									" + (this.declArguments())) + "\
-						"));
+						this.append(/* cbws */(("\
+Snakeskin.forEach(\
+" + (this.prepareOutput(parts[0], true))) + (",\
+function (" + (this.declCallbackArgs(parts[1]))) + (") {\
+" + (this.declArguments())) + "\
+"));
 					}
 
 					return;
@@ -13307,31 +13344,31 @@ Snakeskin.addDirective(
 					parts[1].trim().split(',') : [];
 
 				if (args.length >= 6) {
-					objLength += (("\
-						" + (this.multiDeclVar(("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0")))) + ("\
+					objLength += /* cbws */(("\
+" + (this.multiDeclVar(("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0")))) + ("\
 \
-						if (!" + keys) + (") {\
-							" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
+if (!" + keys) + (") {\
+" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
 \
-							for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
-								if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
-									continue;\
-								}\
+for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
+if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
+continue;\
+}\
 \
-								" + (this.prepareOutput('__LENGTH__++;', true))) + "\
-							}\
-						}\
-					");
+" + (this.prepareOutput('__LENGTH__++;', true))) + "\
+}\
+}\
+");
 				}
 
-				var resStr = (("\
-					" + tmpObj) + ("\
+				var resStr = /* cbws */(("\
+" + tmpObj) + ("\
 \
-					if (" + cacheObj) + (") {\
-						if (Array.isArray(" + cacheObj) + (")) {\
-							" + (this.multiDeclVar('__LENGTH__ =  __I_OBJ__.length'))) + ("\
-							for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
-				");
+if (" + cacheObj) + (") {\
+if (Array.isArray(" + cacheObj) + (")) {\
+" + (this.multiDeclVar('__LENGTH__ =  __I_OBJ__.length'))) + ("\
+for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
+");
 
 				resStr += (function()  {
 					var str = '';
@@ -13371,14 +13408,14 @@ Snakeskin.addDirective(
 					return str;
 				})();
 
-				var end = (("\
-					} else {\
-						" + objLength) + ("\
+				var end = /* cbws */(("\
+} else {\
+" + objLength) + ("\
 \
-						if (" + keys) + (") {\
-							" + (this.multiDeclVar(("__LENGTH__ = __KEYS__.length")))) + ("\
-							for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
-				");
+if (" + keys) + (") {\
+" + (this.multiDeclVar(("__LENGTH__ = __KEYS__.length")))) + ("\
+for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") {\
+");
 
 				end += (function()  {
 					var str = '';
@@ -13422,17 +13459,17 @@ Snakeskin.addDirective(
 					return str;
 				})();
 
-				var oldEnd = (("\
-					} else {\
-						" + (this.multiDeclVar('__I__ = -1'))) + ("\
+				var oldEnd = /* cbws */(("\
+} else {\
+" + (this.multiDeclVar('__I__ = -1'))) + ("\
 \
-						for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
-							if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
-								continue;\
-							}\
+for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
+if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) {\
+continue;\
+}\
 \
-							" + (this.prepareOutput('__I__++;', true))) + "\
-				");
+" + (this.prepareOutput('__I__++;', true))) + "\
+");
 
 				oldEnd += (function()  {
 					var str = '';
@@ -13532,10 +13569,10 @@ Snakeskin.addDirective(
 			});
 
 			if (this.isReady()) {
-				this.append((("\
-					$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
-						" + (this.declArguments())) + "\
-				"));
+				this.append(/* cbws */(("\
+$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
+" + (this.declArguments())) + "\
+"));
 			}
 		},
 
@@ -13577,12 +13614,12 @@ Snakeskin.addDirective(
 			this.startDir();
 			if (this.isReady()) {
 				if (!this.inlineIterators) {
-					this.append((("\
-						Snakeskin.forIn(\
-							" + (this.prepareOutput(parts[0], true))) + (",\
-							function (" + (this.declCallbackArgs(parts[1]))) + (") {\
-								" + (this.declArguments())) + "\
-					"));
+					this.append(/* cbws */(("\
+Snakeskin.forIn(\
+" + (this.prepareOutput(parts[0], true))) + (",\
+function (" + (this.declCallbackArgs(parts[1]))) + (") {\
+" + (this.declArguments())) + "\
+"));
 
 					return;
 				}
@@ -13595,26 +13632,26 @@ Snakeskin.addDirective(
 					cacheObj = this.prepareOutput('__I_OBJ__', true);
 
 				if (args.length >= 6) {
-					objLength += (("\
-						" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
+					objLength += /* cbws */(("\
+" + (this.multiDeclVar('__LENGTH__ = 0'))) + ("\
 \
-						for (" + (this.multiDeclVar('key', false))) + (" in " + cacheObj) + (") {\
-							" + (this.prepareOutput('__LENGTH__++;', true))) + "\
-						}\
-					");
+for (" + (this.multiDeclVar('key', false))) + (" in " + cacheObj) + (") {\
+" + (this.prepareOutput('__LENGTH__++;', true))) + "\
+}\
+");
 				}
 
-				var resStr = (("\
-					" + tmpObj) + ("\
+				var resStr = /* cbws */(("\
+" + tmpObj) + ("\
 \
-					if (" + cacheObj) + (") {\
+if (" + cacheObj) + (") {\
 \
-						" + objLength) + ("\
-						" + (this.multiDeclVar('__I__ = -1'))) + ("\
+" + objLength) + ("\
+" + (this.multiDeclVar('__I__ = -1'))) + ("\
 \
-						for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
-							" + (this.prepareOutput('__I__++;', true))) + "\
-				");
+for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
+" + (this.prepareOutput('__I__++;', true))) + "\
+");
 
 				resStr += (function()  {
 					var str = '';
@@ -14034,17 +14071,17 @@ DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
 				tmp = tmp.concat(args.slice(length - 1, args.length));
 			}
 
-			str += (("\
-				var " + arg) + (" = [" + (tmp.join())) + ("];\
-				" + arg) + ".callee = __CALLEE__;\
-			");
+			str += /* cbws */(("\
+var " + arg) + (" = [" + (tmp.join())) + ("];\
+" + arg) + ".callee = __CALLEE__;\
+");
 
 		} else {
 			tmp.push(arg);
-			str += (("\
-				var " + arg) + (" = " + (def !== void 0 ?
-					val ? (("" + val) + (" != null ? " + val) + (" : " + (this.prepareOutput(def, true))) + "") : def : val || 'void 0')) + ";\
-			");
+			str += /* cbws */(("\
+var " + arg) + (" = " + (def !== void 0 ?
+val ? (("" + val) + (" != null ? " + val) + (" : " + (this.prepareOutput(def, true))) + "") : def : val || 'void 0')) + ";\
+");
 		}
 	}
 
@@ -14125,7 +14162,7 @@ Snakeskin.addDirective(
 		});
 
 		if (this.isAdvTest()) {
-			var dir = ((this.name) + '');
+			var dir = String(this.name);
 
 			if (protoCache[tplName][name]) {
 				return this.error((("proto \"" + name) + "\" is already defined"));
@@ -14187,17 +14224,17 @@ Snakeskin.addDirective(
 		if (this.outerLink === params.name) {
 			var obj = this.preDefs[tplName];
 
-			obj.text += (("\
-				" + nl) + ("" + (this.source.substring(params.from, obj.i))) + ("\
-				" + s) + ("__cutLine__" + e) + ("\
+			obj.text += /* cbws */(("\
+" + nl) + ("" + (this.source.substring(params.from, obj.i))) + ("\
+" + s) + ("__cutLine__" + e) + ("\
 \
-					" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
-						" + (this.source.substring(obj.i, this.i - diff))) + ("\
-					" + s) + ("__end__" + e) + ("\
+" + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
+" + (this.source.substring(obj.i, this.i - diff))) + ("\
+" + s) + ("__end__" + e) + ("\
 \
-				" + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + ("\
-				" + s) + ("__cutLine__" + e) + "\
-			");
+" + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + ("\
+" + s) + ("__cutLine__" + e) + "\
+");
 
 			this.outerLink = null;
 			this.tplName = null;
@@ -14407,7 +14444,7 @@ Snakeskin.addDirective(
 					label: new RegExp((("\\/\\* __APPLY__" + key) + " \\*\\/")),
 
 					args: args,
-					recursive: !!(proto)
+					recursive: Boolean(proto)
 				});
 
 				this.save((("/* __APPLY__" + tplName) + ("_" + name) + ("_" + rand) + " */"));
@@ -14469,10 +14506,10 @@ Snakeskin.addDirective(
 
 			if (cb) {
 				var str = '';
-				var def = (("\
-					__RETURN__ = true;\
-					__RETURN_VAL__ = " + val) + ";\
-				");
+				var def = /* cbws */(("\
+__RETURN__ = true;\
+__RETURN_VAL__ = " + val) + ";\
+");
 
 				var asyncParent;
 				if (cb === 'callback') {
@@ -14487,13 +14524,13 @@ Snakeskin.addDirective(
 							str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 						} else {
-							str += ("\
-								if (typeof arguments[0] === 'function') {\
-									return arguments[0](__RETURN_VAL__);\
-								}\
+							str += /* cbws */("\
+if (typeof arguments[0] === 'function') {\
+return arguments[0](__RETURN_VAL__);\
+}\
 \
-								return false;\
-							");
+return false;\
+");
 						}
 
 					} else {
@@ -14502,10 +14539,10 @@ Snakeskin.addDirective(
 
 				} else {
 					if (!this.getGroup('basicAsync')[cb]) {
-						str += (("\
-							__RETURN__ = true;\
-							__RETURN_VAL__ = " + val) + ";\
-						");
+						str += /* cbws */(("\
+__RETURN__ = true;\
+__RETURN_VAL__ = " + val) + ";\
+");
 					}
 
 					str += 'return false;';
@@ -14764,11 +14801,11 @@ DirObj.prototype.prepareNameDecl = function (name) {
 			}
 
 			if (custom) {
-				str += (("['" + (applyDefEscape(
-						this.returnEvalVal(
-							this.prepareOutput(el, true)
-						)
-					))) + "']");
+				str += /* cbws */(("['" + (applyDefEscape(
+this.returnEvalVal(
+this.prepareOutput(el, true)
+)
+))) + "']");
 
 				continue;
 			}
@@ -14840,7 +14877,7 @@ for (var i = -1; ++i < template.length;) {
 				}
 
 				tplName = this.pasteDangerBlocks(tmpTplName);
-				this.generator = !!(prfx);
+				this.generator = Boolean(prfx);
 
 				try {
 					if (!tplName || nameRgxp.test(tplName)) {
@@ -14893,11 +14930,11 @@ for (var i = -1; ++i < template.length;) {
 
 					if (first === '%') {
 						try {
-							str = (("['" + (applyDefEscape(
-									this.returnEvalVal(
-										this.prepareOutput(str.substring(1), true)
-									)
-								))) + "']");
+							str = /* cbws */(("['" + (applyDefEscape(
+this.returnEvalVal(
+this.prepareOutput(str.substring(1), true)
+)
+))) + "']");
 
 						} catch (err) {
 							return this.error(err.message);
@@ -14915,27 +14952,27 @@ for (var i = -1; ++i < template.length;) {
 						var def = ("this" + (concatProp(str)));
 
 						this.save(
-							(pos = (("\
-								if (" + def) + (" == null) {\
-									" + def) + " = {};\
-								}\
-							")),
+							(pos = /* cbws */(("\
+if (" + def) + (" == null) {\
+" + def) + " = {};\
+}\
+")),
 
-							iface,
-							jsDoc
-						);
+iface,
+jsDoc
+);
 
-						if (jsDoc) {
-							jsDoc += pos.length;
-						}
+if (jsDoc) {
+jsDoc += pos.length;
+}
 
-						if (custom) {
-							try {
-								str += (("['" + (applyDefEscape(
-										this.returnEvalVal(
-											this.prepareOutput(el, true)
-										)
-									))) + "']");
+if (custom) {
+try {
+str += /* cbws */(("['" + (applyDefEscape(
+this.returnEvalVal(
+this.prepareOutput(el, true)
+)
+))) + "']");
 
 							} catch (err) {
 								return this.error(err.message);
@@ -15054,43 +15091,43 @@ for (var i = -1; ++i < template.length;) {
 				};
 			}
 
-			this.save((("\
-				var __THIS__ = this,\
-					__CALLEE__ = __ROOT__" + (concatProp(tplName))) + (",\
-					callee = __CALLEE__;\
+			this.save(/* cbws */(("\
+var __THIS__ = this,\
+__CALLEE__ = __ROOT__" + (concatProp(tplName))) + (",\
+callee = __CALLEE__;\
 \
-				if (!callee.Blocks) {\
-					var __BLOCKS__ = __CALLEE__.Blocks = {},\
-						blocks = __BLOCKS__;\
-				}\
+if (!callee.Blocks) {\
+var __BLOCKS__ = __CALLEE__.Blocks = {},\
+blocks = __BLOCKS__;\
+}\
 \
-				var __RESULT__ = " + (this.declResult())) + (",\
-					__COMMENT_RESULT__,\
-					__NODE__,\
-					$_;\
+var __RESULT__ = " + (this.declResult())) + (",\
+__COMMENT_RESULT__,\
+__NODE__,\
+$_;\
 \
-				function getTplResult(opt_clear) {\
-					var res = " + (this.returnResult())) + (";\
+function getTplResult(opt_clear) {\
+var res = " + (this.returnResult())) + (";\
 \
-					if (opt_clear) {\
-						__RESULT__ = " + (this.declResult())) + (";\
-					}\
+if (opt_clear) {\
+__RESULT__ = " + (this.declResult())) + (";\
+}\
 \
-					return res;\
-				}\
+return res;\
+}\
 \
-				function clearTplResult() {\
-					__RESULT__ = " + (this.declResult())) + (";\
-				}\
+function clearTplResult() {\
+__RESULT__ = " + (this.declResult())) + (";\
+}\
 \
-				var __RETURN__ = false,\
-					__RETURN_VAL__;\
+var __RETURN__ = false,\
+__RETURN_VAL__;\
 \
-				var TPL_NAME = \"" + (escapeDoubleQuote(tplName))) + ("\",\
-					PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName))) + "\"") : '')) + (";\
+var TPL_NAME = \"" + (escapeDoubleQuote(tplName))) + ("\",\
+PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName))) + "\"") : '')) + (";\
 \
-				" + (args.defParams)) + "\
-			"));
+" + (args.defParams)) + "\
+"));
 
 			var preProtos = this.preDefs[tplName];
 
@@ -15105,7 +15142,7 @@ for (var i = -1; ++i < template.length;) {
 		},
 
 		function (command, commandLength) {
-			var tplName = ((this.tplName) + ''),
+			var tplName = String(this.tplName),
 				proto = this.proto;
 
 			if (proto) {
@@ -15203,13 +15240,13 @@ for (var i = -1; ++i < template.length;) {
 				this.save('};', true);
 
 			} else {
-				this.save((("\
-						" + (this.consts.join(''))) + ("\
-						return " + (this.returnResult())) + (";\
-					};\
+				this.save(/* cbws */(("\
+" + (this.consts.join(''))) + ("\
+return " + (this.returnResult())) + (";\
+};\
 \
-					Snakeskin.cache[\"" + (escapeDoubleQuote(tplName))) + ("\"] = this" + (concatProp(tplName))) + ";\
-				"));
+Snakeskin.cache[\"" + (escapeDoubleQuote(tplName))) + ("\"] = this" + (concatProp(tplName))) + ";\
+"));
 			}
 
 			this.save('/* Snakeskin template. */', iface);
@@ -15451,10 +15488,10 @@ Snakeskin.addDirective(
 				}
 			}
 
-			this.append((("\
-				" + (async[parent.name] && length > 1 ? ', ' : '')) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
-					" + (this.declArguments())) + "\
-			"));
+			this.append(/* cbws */(("\
+" + (async[parent.name] && length > 1 ? ', ' : '')) + ("(function (" + (this.declCallbackArgs(parts))) + (") {\
+" + (this.declArguments())) + "\
+"));
 		}
 	},
 
@@ -15496,10 +15533,10 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		if (this.isReady()) {
-			this.append((("\
-				], function (" + (this.declCallbackArgs(parts))) + (") {\
-					" + (this.declArguments())) + "\
-			"));
+			this.append(/* cbws */(("\
+], function (" + (this.declCallbackArgs(parts))) + (") {\
+" + (this.declArguments())) + "\
+"));
 		}
 	},
 
@@ -15653,13 +15690,13 @@ Snakeskin.addDirective(
 					this.append((("return arguments[arguments.length - 1](" + val) + ");"));
 
 				} else {
-					this.append((("\
-						if (typeof arguments[0] === 'function') {\
-							return arguments[0](" + val) + ");\
-						}\
+					this.append(/* cbws */(("\
+if (typeof arguments[0] === 'function') {\
+return arguments[0](" + val) + ");\
+}\
 \
-						return false;\
-					"));
+return false;\
+"));
 				}
 
 			} else {
@@ -15723,13 +15760,13 @@ Snakeskin.addDirective(
 					this.append((("return arguments[arguments.length - 1](" + val) + ");"));
 
 				} else {
-					this.append((("\
-						if (typeof arguments[0] === 'function') {\
-							return arguments[0](" + val) + ");\
-						}\
+					this.append(/* cbws */(("\
+if (typeof arguments[0] === 'function') {\
+return arguments[0](" + val) + ");\
+}\
 \
-						return;\
-					"));
+return;\
+"));
 				}
 
 			} else {
@@ -15800,14 +15837,14 @@ Snakeskin.addDirective(
 				(("'" + (parts[1].trim())) + "'") : '\'\'';
 
 		if (path !== void 0 && type !== void 0) {
-			this.save((("\
-				Snakeskin.include(\
-					'" + (escapeBackslash(this.info['file'] || ''))) + ("',\
-					" + (this.pasteDangerBlocks(path))) + (",\
-					'" + (escapeNextLine(this.lineSeparator))) + ("',\
-					" + type) + "\
-				);\
-			"));
+			this.save(/* cbws */(("\
+Snakeskin.include(\
+'" + (escapeBackslash(this.info['file'] || ''))) + ("',\
+" + (this.pasteDangerBlocks(path))) + (",\
+'" + (escapeNextLine(this.lineSeparator))) + ("',\
+" + type) + "\
+);\
+"));
 		}
 	},
 
@@ -15898,10 +15935,10 @@ Snakeskin.addDirective(
 				this.append((("yield " + (this.prepareOutput(command, true))) + ";"));
 
 			} else {
-				this.append((("\
-					yield " + (this.returnResult())) + (";\
-					__RESULT__ = " + (this.declResult())) + ";\
-				"));
+				this.append(/* cbws */(("\
+yield " + (this.returnResult())) + (";\
+__RESULT__ = " + (this.declResult())) + ";\
+"));
 			}
 		}
 	}
@@ -16001,10 +16038,10 @@ Snakeskin.addDirective(
 					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
-					str = (("\
-						__NODE__ = document.createElement('script');\
-						__NODE__.type = '" + desc) + "';\
-					");
+					str = /* cbws */(("\
+__NODE__ = document.createElement('script');\
+__NODE__.type = '" + desc) + "';\
+");
 
 				} else {
 					str = this.wrap((("'<script type=\"" + desc) + "\"'"));
@@ -16097,10 +16134,10 @@ Snakeskin.addDirective(
 					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
 				if (dom) {
-					str = (("\
-						__NODE__ = document.createElement('style');\
-						__NODE__.type = '" + desc) + "';\
-					");
+					str = /* cbws */(("\
+__NODE__ = document.createElement('style');\
+__NODE__.type = '" + desc) + "';\
+");
 
 				} else {
 					str = this.wrap((("'<style type=\"" + desc) + "\"'"));
@@ -16180,7 +16217,7 @@ Snakeskin.addDirective(
 		}
 
 		var el = types[key];
-		for (var attr = void 0 in el) {
+		for (var attr  in el) {
 			if (!el.hasOwnProperty(attr)) {
 				continue;
 			}
@@ -16225,12 +16262,12 @@ Snakeskin.addDirective(
 
 				var str;
 				if (dom) {
-					str = (("\
-						__NODE__ = document.createElement('link');\
-						" + (typesStr.dom[type.toLowerCase()] || '')) + ("\
-						" + (this.wrap('__NODE__'))) + "\
-						__RESULT__.push(__NODE__);\
-					");
+					str = /* cbws */(("\
+__NODE__ = document.createElement('link');\
+" + (typesStr.dom[type.toLowerCase()] || '')) + ("\
+" + (this.wrap('__NODE__'))) + "\
+__RESULT__.push(__NODE__);\
+");
 
 				} else {
 					str = this.wrap((("'<link " + ((typesStr.string[type] || this.replaceTplVars(type)).trim())) + "'"));
@@ -16271,10 +16308,10 @@ Snakeskin.addDirective(
 			var str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
-				str = ("\
-					__RESULT__.pop();\
-					__NODE__ = null;\
-				");
+				str = /* cbws */("\
+__RESULT__.pop();\
+__NODE__ = null;\
+");
 
 			} else {
 				str = this.wrap((("'\"" + (this.doctype === 'xml' ? '/' : '')) + ">'"));
@@ -16312,9 +16349,9 @@ Snakeskin.addDirective(
 		if (this.module.id === 0) {
 			var key = (("" + obj) + ("_00_" + uid) + "");
 
-			this.save((("\
-				var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";\
-			"));
+			this.save(/* cbws */(("\
+var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";\
+"));
 
 			var root = this.structure;
 
@@ -16351,7 +16388,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startDir(null, {
-			conditional: !!(command)
+			conditional: Boolean(command)
 		});
 
 		var str;
@@ -16378,11 +16415,11 @@ Snakeskin.addDirective(
 		if (this.renderMode === 'dom') {
 			str = this.wrap((("'" + comment) + "'"));
 			this.domComment = false;
-			str += (("\
-				__NODE__ = document.createComment(__COMMENT_RESULT__);\
-				" + (this.returnPushNodeDecl(true))) + "\
-				__COMMENT_RESULT__ = \'\';\
-			");
+			str += /* cbws */(("\
+__NODE__ = document.createComment(__COMMENT_RESULT__);\
+" + (this.returnPushNodeDecl(true))) + "\
+__COMMENT_RESULT__ = \'\';\
+");
 
 		} else {
 			str = this.wrap((("'" + comment) + "-->'"));
@@ -16435,16 +16472,16 @@ Snakeskin.addDirective(
 			var groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
 				dom = !this.domComment && this.renderMode === 'dom';
 
-			var str = ("\
-				__TMP__ = {\
-					'class': ''\
-				};\
-			");
+			var str = /* cbws */("\
+__TMP__ = {\
+'class': ''\
+};\
+");
 
 			if (dom) {
-				str += (("\
-					__NODE__ = document.createElement('" + (desc.tag)) + "');\
-				");
+				str += /* cbws */(("\
+__NODE__ = document.createElement('" + (desc.tag)) + "');\
+");
 
 			} else {
 				str += this.wrap((("'<" + (desc.tag)) + "'"));
@@ -16465,24 +16502,24 @@ Snakeskin.addDirective(
 			}
 
 			if (desc.classes.length) {
-				str += (("\
-					__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + "';\
-				");
+				str += /* cbws */(("\
+__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + "';\
+");
 			}
 
 			if (dom) {
-				str += (("\
-					if (__TMP__['class']) {\
-						__NODE__.className = __TMP__['class'];\
-					}\
+				str += /* cbws */(("\
+if (__TMP__['class']) {\
+__NODE__.className = __TMP__['class'];\
+}\
 \
-					" + (this.returnPushNodeDecl(!params.block))) + "\
-				");
+" + (this.returnPushNodeDecl(!params.block))) + "\
+");
 
 			} else {
-				str += this.wrap((("\
-					(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === 'xml' ? '/' : '')) + ">'\
-				"));
+				str += this.wrap(/* cbws */(("\
+(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === 'xml' ? '/' : '')) + ">'\
+"));
 			}
 
 			this.append(str);
@@ -16947,149 +16984,149 @@ Snakeskin.addDirective(
 (function()  {
 	var lib = {
 		'angularjs': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/angularjs/" + v) + "/angular.min.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/angularjs/" + v) + "/angular.min.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/angularjs/" + v) + "/angular.min.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/angularjs/" + v) + "/angular.min.js\"></script>\
+")}
 		},
 
 		'dojo': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/dojo/" + v) + "/dojo/dojo.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/dojo/" + v) + "/dojo/dojo.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/dojo/" + v) + "/dojo/dojo.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/dojo/" + v) + "/dojo/dojo.js\"></script>\
+")}
 		},
 
 		'extcore': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/ext-core/" + v) + "/ext-core.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/ext-core/" + v) + "/ext-core.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/ext-core/" + v) + "/ext-core.min.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/ext-core/" + v) + "/ext-core.min.js\"></script>\
+")}
 		},
 
 		'jquery': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquery/" + v) + "/jquery.min.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquery/" + v) + "/jquery.min.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/" + v) + "/jquery.min.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/" + v) + "/jquery.min.js\"></script>\
+")}
 		},
 
 		'jquerymobile': {
-			'google': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script>\
-			")},
+			'google': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script>\
+")},
 
-			'yandex': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/mobile/" + v) + "/jquery.mobile.min.js\"></script>\
-			")}
+'yandex': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/mobile/" + v) + "/jquery.mobile.min.js\"></script>\
+")}
 		},
 
 		'jqueryui': {
-			'google': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"" + e) + (">\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script>\
-			")},
+			'google': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script>\
+")},
 
-			'yandex': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v) + ("/themes/smoothness/jquery-ui.min.css\"" + e) + (">\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/jquery-ui/" + v) + "/jquery-ui.min.js\"></script>\
-			")}
+'yandex': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v) + ("/themes/smoothness/jquery-ui.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"http://yastatic.net/jquery-ui/" + v) + "/jquery-ui.min.js\"></script>\
+")}
 		},
 
 		'mootools': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/mootools/" + v) + "/mootools-yui-compressed.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/mootools/" + v) + "/mootools-yui-compressed.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/mootools/" + v) + "/mootools.min.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/mootools/" + v) + "/mootools.min.js\"></script>\
+")}
 		},
 
 		'prototype': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/prototype/" + v) + "/prototype.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/prototype/" + v) + "/prototype.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/prototype/" + v) + "/prototype.min.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/prototype/" + v) + "/prototype.min.js\"></script>\
+")}
 		},
 
 		'script.aculo.us': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/scriptaculous/" + v) + "/scriptaculous.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/scriptaculous/" + v) + "/scriptaculous.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/scriptaculous/" + v) + "/min/scriptaculous.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/scriptaculous/" + v) + "/min/scriptaculous.js\"></script>\
+")}
 		},
 
 		'swfobject': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/swfobject/" + v) + "/swfobject.js\"></script>\
-			")},
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/swfobject/" + v) + "/swfobject.js\"></script>\
+")},
 
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/swfobject/" + v) + "/swfobject.min.js\"></script>\
-			")}
+'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/swfobject/" + v) + "/swfobject.min.js\"></script>\
+")}
 		},
 
 		'three.js': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/threejs/" + v) + "/three.min.js\"></script>\
-			")}
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/threejs/" + v) + "/three.min.js\"></script>\
+")}
 		},
 
 		'webfontloader': {
-			'google': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/webfont/" + v) + "/webfont.js\"></script>\
-			")}
+			'google': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/webfont/" + v) + "/webfont.js\"></script>\
+")}
 		},
 
 		'bootstrap': {
-			'yandex': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
-			")},
+			'yandex': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"http://yastatic.net/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
+")},
 
-			'maxcdn': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
-				<script type=\"text/javascript\" src=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
-			")}
+'maxcdn': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
+")}
 		},
 
 		'fontawesome': {
-			'maxcdn': function(v, e)  {return (("\
-				<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/" + v) + ("/css/font-awesome.min.css\"" + e) + ">\
-			")}
+			'maxcdn': function(v, e)  /* cbws */{return (("\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/" + v) + ("/css/font-awesome.min.css\"" + e) + ">\
+")}
 		},
 
 		'underscore.js': {
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/underscore/" + v) + "/underscore-min.js\"></script>\
-			")}
+			'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/underscore/" + v) + "/underscore-min.js\"></script>\
+")}
 		},
 
 		'lodash': {
-			'yandex': function(v)  {return (("\
-				<script type=\"text/javascript\" src=\"http://yastatic.net/lodash/" + v) + "/lodash.min.js\"></script>\
-			")}
+			'yandex': function(v)  /* cbws */{return (("\
+<script type=\"text/javascript\" src=\"http://yastatic.net/lodash/" + v) + "/lodash.min.js\"></script>\
+")}
 		}
 	};
 
@@ -17128,11 +17165,11 @@ Snakeskin.addDirective(
 
 			this.append(
 				this.wrap(
-					(("'" + ((cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
-						val[1],
-						this.doctype === 'xml' ?
-							'/' : ''
-					))) + "'")
+					/* cbws */(("'" + ((cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
+val[1],
+this.doctype === 'xml' ?
+'/' : ''
+))) + "'")
 				)
 			);
 		}
