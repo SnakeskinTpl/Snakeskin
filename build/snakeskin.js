@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 22 Oct 2014 07:19:49 GMT
+ * Date: Wed, 22 Oct 2014 07:40:12 GMT
  */
 
 /*!
@@ -6827,19 +6827,6 @@ __J__;\
 \
 var $_ = __LOCAL__['$_" + uid) + "'];\
 ");
-
-		if (this.localization) {
-			decl += /* cbws */(("\
-if (typeof " + (this.i18nFn)) + (" === 'undefined') {\
-try {\
-var " + (this.i18nFn)) + " = function (str) {\
-return str;\
-};\
-\
-} catch (ignore) {}\
-}\
-");
-		}
 
 		this.res += /* cbws */("\
 This code is generated automatically, don\'t alter it. */\
