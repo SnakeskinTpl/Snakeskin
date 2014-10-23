@@ -6,19 +6,9 @@ include['foo--']
 {var foo = 1}
 {import bar = 1}
 
-{eval}
-	{: fs = require('fs')}
-	{: path = require('path')}
-	{: url = path.join(__dirname, 'test')}
-
-	{forEach fs.readdirSync(url) => file}
-		{if path.extname(file) === '.ss'}
-			{include path.join(url, file) as interface}
-			{include path.join(url, file) as interface}
-			{include path.join(url, file) as interface}
-		{/}
-	{/}
-{/}
+{include './test123/*.ss' as interface}
+{include './test/*.ss' as interface}
+{include './test/*.ss' as interface}
 
 {template include_index(name) extends include['foo--']}
 {/template}
