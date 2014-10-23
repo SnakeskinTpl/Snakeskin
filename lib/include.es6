@@ -16,7 +16,8 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 	}
 
 	var fs = require('fs'),
-		path = require('path');
+		path = require('path'),
+		glob = require('glob')['sync'];
 
 	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
@@ -25,29 +26,33 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 		let extname = path['extname'](url),
 			include = Snakeskin.LocalVars.include;
 
-		let src = path['normalize'](path['resolve'](
+		let src = path['resolve'](
 			path['dirname'](base),
 			url + (extname ? '' : '.ss')
-		));
+		);
 
-		if (!include[src]) {
-			include[src] = true;
-			let file = fs['readFileSync'](src).toString();
+		(/\*/.test(src) ? glob(src) : [src]).forEach((src) => {
+			src = path['normalize'](src);
 
-			fsStack.push(
-				`${s}__setFile__ ${escapeBackslash(src)}${e}` +
+			if (!include[src]) {
+				include[src] = true;
+				let file = fs['readFileSync'](src).toString();
 
-				(opt_type ?
-					`${s}__setSSFlag__ renderAs '${opt_type}'${e}` : '') +
+				fsStack.push(
+					`${s}__setFile__ ${escapeBackslash(src)}${e}` +
 
-				`${/^[ \t]*(?:\r\n|\r|\n)/.test(file) ? '' : nl}` +
+					(opt_type ?
+						`${s}__setSSFlag__ renderAs '${opt_type}'${e}` : '') +
 
-				file +
+					`${/^[ \t]*(?:\r\n|\r|\n)/.test(file) ? '' : nl}` +
 
-				`${/(?:\r\n|\r|\n)[ \t]*$/.test(file) ? '' : `${nl}${s}__cutLine__${e}`}` +
-				`${s}__endSetFile__${e}`
-			);
-		}
+					file +
+
+					`${/(?:\r\n|\r|\n)[ \t]*$/.test(file) ? '' : `${nl}${s}__cutLine__${e}`}` +
+					`${s}__endSetFile__${e}`
+				);
+			}
+		});
 
 		return true;
 
