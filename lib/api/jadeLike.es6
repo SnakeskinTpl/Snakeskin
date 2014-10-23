@@ -322,6 +322,9 @@
 			bEnd = true,
 			bEscape = false;
 
+		var part = '',
+			rPart = '';
+
 		var concatLine = false,
 			nmBrk = null;
 
@@ -400,8 +403,32 @@
 				}
 
 				if (!comment && !sComment) {
-					if (dir && !inline && !bOpen) {
-						inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+					if (!bOpen) {
+						if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+							bEnd = true;
+
+						} else if (bEndRgxp.test(el)) {
+							bEnd = false;
+						}
+
+						if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+							bEnd = true;
+
+						} else if (bEndRgxp.test(el)) {
+							bEnd = false;
+						}
+
+						if (partRgxp.test(el)) {
+							part += el;
+
+						} else {
+							rPart = part;
+							part = '';
+						}
+
+						if (dir && !inline) {
+							inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+						}
 					}
 
 					if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {

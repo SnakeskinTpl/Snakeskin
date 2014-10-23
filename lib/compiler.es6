@@ -5,8 +5,7 @@ var nextLineRgxp = /\r\n|\r|\n/,
 var bEndRgxp = /[^\s\/]/,
 	partRgxp = /[a-z]/;
 
-var tAttrRgxp = /[^'" ]/,
-	uid;
+var uid;
 
 /**
  * Скомпилировать указанные шаблоны Snakeskin
@@ -544,6 +543,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		bEnd,
 		bEscape = false;
 
+	var part = '',
+		rPart = '';
+
 	// Флаги для обработки XML тегов и атрибутов
 	var tOpen = 0,
 		tAttr = false,
@@ -577,9 +579,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var clrL = true,
 		templateMap = dir.getGroup('rootTemplate');
-
-	var part = '',
-		rPart = '';
 
 	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
 	dir.getCompileVars = function () {

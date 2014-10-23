@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.1.1
+ * Snakeskin v6.1.2
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 15:21:19 GMT
+ * Date: Thu, 23 Oct 2014 15:41:56 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 1, 1],
+	VERSION: [6, 1, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -8442,6 +8442,13 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 					rPart = part;
 					part = '';
 				}
+
+				if (el === LEFT_BLOCK) {
+					begin++;
+
+				} else if (el === RIGHT_BLOCK) {
+					begin--;
+				}
 			}
 
 			if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
@@ -8453,15 +8460,6 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 			} else if (escapeMap[el] && bOpen === el && !bEscape) {
 				bOpen = false;
 				bEnd = false;
-			}
-
-			if (!bOpen) {
-				if (el === LEFT_BLOCK) {
-					begin++;
-
-				} else if (el === RIGHT_BLOCK) {
-					begin--;
-				}
 			}
 
 			if (begin) {
@@ -9441,6 +9439,9 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 			bEnd = true,
 			bEscape = false;
 
+		var part = '',
+			rPart = '';
+
 		var concatLine = false,
 			nmBrk = null;
 
@@ -9519,8 +9520,32 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				}
 
 				if (!comment && !sComment) {
-					if (dir && !inline && !bOpen) {
-						inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+					if (!bOpen) {
+						if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+							bEnd = true;
+
+						} else if (bEndRgxp.test(el)) {
+							bEnd = false;
+						}
+
+						if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+							bEnd = true;
+
+						} else if (bEndRgxp.test(el)) {
+							bEnd = false;
+						}
+
+						if (partRgxp.test(el)) {
+							part += el;
+
+						} else {
+							rPart = part;
+							part = '';
+						}
+
+						if (dir && !inline) {
+							inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+						}
 					}
 
 					if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
@@ -10284,8 +10309,7 @@ var nextLineRgxp = /\r\n|\r|\n/,
 var bEndRgxp = /[^\s\/]/,
 	partRgxp = /[a-z]/;
 
-var tAttrRgxp = /[^'" ]/,
-	uid;
+var uid;
 
 /**
  * Скомпилировать указанные шаблоны Snakeskin
@@ -10823,6 +10847,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		bEnd,
 		bEscape = false;
 
+	var part = '',
+		rPart = '';
+
 	// Флаги для обработки XML тегов и атрибутов
 	var tOpen = 0,
 		tAttr = false,
@@ -10856,9 +10883,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var clrL = true,
 		templateMap = dir.getGroup('rootTemplate');
-
-	var part = '',
-		rPart = '';
 
 	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
 	dir.getCompileVars = function () {
