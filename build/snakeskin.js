@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.0.6
+ * Snakeskin v6.1.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 12:32:59 GMT
+ * Date: Thu, 23 Oct 2014 13:35:08 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 0, 6],
+	VERSION: [6, 1, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -17180,7 +17180,8 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 	}
 
 	var fs = require('fs'),
-		path = require('path');
+		path = require('path'),
+		glob = require('glob')['sync'];
 
 	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
@@ -17189,29 +17190,33 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 		var extname = path['extname'](url),
 			include = Snakeskin.LocalVars.include;
 
-		var src = path['normalize'](path['resolve'](
+		var src = path['resolve'](
 			path['dirname'](base),
 			url + (extname ? '' : '.ss')
-		));
+		);
 
-		if (!include[src]) {
-			include[src] = true;
-			var file = fs['readFileSync'](src).toString();
+		(/\*/.test(src) ? glob(src) : [src]).forEach(function(src)  {
+			src = path['normalize'](src);
 
-			fsStack.push(
-				(("" + s) + ("__setFile__ " + (escapeBackslash(src))) + ("" + e) + "") +
+			if (!include[src]) {
+				include[src] = true;
+				var file = fs['readFileSync'](src).toString();
 
-				(opt_type ?
-					(("" + s) + ("__setSSFlag__ renderAs '" + opt_type) + ("'" + e) + "") : '') +
+				fsStack.push(
+					(("" + s) + ("__setFile__ " + (escapeBackslash(src))) + ("" + e) + "") +
 
-				("" + (/^[ \t]*(?:\r\n|\r|\n)/.test(file) ? '' : nl)) +
+					(opt_type ?
+						(("" + s) + ("__setSSFlag__ renderAs '" + opt_type) + ("'" + e) + "") : '') +
 
-				file +
+					("" + (/^[ \t]*(?:\r\n|\r|\n)/.test(file) ? '' : nl)) +
 
-				("" + (/(?:\r\n|\r|\n)[ \t]*$/.test(file) ? '' : (("" + nl) + ("" + s) + ("__cutLine__" + e) + ""))) +
-				(("" + s) + ("__endSetFile__" + e) + "")
-			);
-		}
+					file +
+
+					("" + (/(?:\r\n|\r|\n)[ \t]*$/.test(file) ? '' : (("" + nl) + ("" + s) + ("__cutLine__" + e) + ""))) +
+					(("" + s) + ("__endSetFile__" + e) + "")
+				);
+			}
+		});
 
 		return true;
 
