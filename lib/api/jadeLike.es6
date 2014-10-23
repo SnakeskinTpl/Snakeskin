@@ -339,6 +339,11 @@
 
 			length++;
 			if (nextLineRgxp.test(el)) {
+				if (!comment && !sComment && !bOpen) {
+					rPart = part;
+					part = '';
+				}
+
 				let prevEl = lastEl,
 					brk = false;
 
