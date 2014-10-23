@@ -1,5 +1,5 @@
-/* Snakeskin v6.0.4, key <commonJS,false,
-,xml,false,false,,stringConcat,true,true,1,,false,true,i18n>, label <1413886609865>, includes <>, generated at <1413963628080>.
+/* Snakeskin v6.0.6, key <commonJS,false,
+,xml,false,false,,stringConcat,true,true,1,,false,true,i18n>, label <1413886609865>, includes <>, generated at <1414067649539>.
    This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
@@ -22,7 +22,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_03759']; /* Snakeskin template: helloWorld; name  */
+        var $_ = __LOCAL__['$_e04d5']; /* Snakeskin template: helloWorld; name  */
         this.helloWorld = function(name) {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.helloWorld,

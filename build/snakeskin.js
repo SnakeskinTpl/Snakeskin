@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.0.5
+ * Snakeskin v6.0.6
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 11:58:36 GMT
+ * Date: Thu, 23 Oct 2014 12:32:59 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 0, 5],
+	VERSION: [6, 0, 6],
 
 	/**
 	 * Пространство имён для директив
@@ -11576,11 +11576,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	dir.res += nl;
-
 	if (p.prettyPrint) {
 		dir.res = beautify(dir.res);
 	}
+
+	dir.res += nl;
 
 	// Обратная замена CDATA
 	dir.res = dir.pasteDangerBlocks(dir.res)
