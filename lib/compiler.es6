@@ -1326,11 +1326,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	dir.res += nl;
-
 	if (p.prettyPrint) {
 		dir.res = beautify(dir.res);
 	}
+
+	dir.res += nl;
 
 	// Обратная замена CDATA
 	dir.res = dir.pasteDangerBlocks(dir.res)
