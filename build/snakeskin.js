@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 15:50:36 GMT
+ * Date: Thu, 23 Oct 2014 15:53:17 GMT
  */
 
 /*!
@@ -14621,108 +14621,106 @@ Snakeskin.addDirective(
 		this.scope.pop();
 	}
 );
-(function()  {
-	Snakeskin.addDirective(
-		'ignoreWhitespaces',
+Snakeskin.addDirective(
+	'ignoreWhitespaces',
 
-		{
-			placement: 'template',
-			replacers: {
-				'&': function(cmd)  {return cmd.replace('&', 'ignoreWhitespaces ')}
-			}
-		},
-
-		function () {
-			this.startInlineDir();
-			this.space = true;
-			this.prevSpace = true;
+	{
+		placement: 'template',
+		replacers: {
+			'&': function(cmd)  {return cmd.replace('&', 'ignoreWhitespaces ')}
 		}
-	);
+	},
 
-	Snakeskin.addDirective(
-		'ignoreAllWhitespaces',
+	function () {
+		this.startInlineDir();
+		this.space = true;
+		this.prevSpace = true;
+	}
+);
 
-		{
-			placement: 'template',
-			replacers: {
-				'&+': function(cmd)  {return cmd.replace('&+', 'ignoreAllWhitespaces ')}
-			}
-		},
+Snakeskin.addDirective(
+	'ignoreAllWhitespaces',
 
-		function () {
-			this.startInlineDir();
-			this.strongSpace++;
+	{
+		placement: 'template',
+		replacers: {
+			'&+': function(cmd)  {return cmd.replace('&+', 'ignoreAllWhitespaces ')}
 		}
-	);
+	},
 
-	Snakeskin.addDirective(
-		'__&+__',
+	function () {
+		this.startInlineDir();
+		this.strongSpace++;
+	}
+);
 
-		{
-			group: 'ignore'
-		},
+Snakeskin.addDirective(
+	'__&+__',
 
-		function () {
-			this.startInlineDir();
-			this.sysSpace++;
+	{
+		group: 'ignore'
+	},
+
+	function () {
+		this.startInlineDir();
+		this.sysSpace++;
+	}
+);
+
+Snakeskin.addDirective(
+	'unIgnoreAllWhitespaces',
+
+	{
+		placement: 'template',
+		replacers: {
+			'&-': function(cmd)  {return cmd.replace('&-', 'unIgnoreAllWhitespaces ')}
 		}
-	);
+	},
 
-	Snakeskin.addDirective(
-		'unIgnoreAllWhitespaces',
+	function () {
+		this.startInlineDir();
 
-		{
-			placement: 'template',
-			replacers: {
-				'&-': function(cmd)  {return cmd.replace('&-', 'unIgnoreAllWhitespaces ')}
-			}
-		},
+		if (this.strongSpace) {
+			this.strongSpace--;
 
-		function () {
-			this.startInlineDir();
-
-			if (this.strongSpace) {
-				this.strongSpace--;
-
-				if (!this.strongSpace) {
-					this.space = false;
-				}
+			if (!this.strongSpace) {
+				this.space = false;
 			}
 		}
-	);
+	}
+);
 
-	Snakeskin.addDirective(
-		'__&-__',
+Snakeskin.addDirective(
+	'__&-__',
 
-		{
-			group: 'ignore'
-		},
+	{
+		group: 'ignore'
+	},
 
-		function () {
-			this.startInlineDir();
+	function () {
+		this.startInlineDir();
 
-			if (this.sysSpace) {
-				this.sysSpace--;
+		if (this.sysSpace) {
+			this.sysSpace--;
 
-				if (!this.sysSpace && !this.space) {
-					this.space = false;
-				}
+			if (!this.sysSpace && !this.space) {
+				this.space = false;
 			}
 		}
-	);
+	}
+);
 
-	Snakeskin.addDirective(
-		'sp',
+Snakeskin.addDirective(
+	'sp',
 
-		{
-			text: true
-		},
+	{
+		text: true
+	},
 
-		function () {
-			this.startInlineDir();
-		}
-	);
-})();
+	function () {
+		this.startInlineDir();
+	}
+);
 /**
  * Номер итерации,
  * где был декларирован активный шаблон
