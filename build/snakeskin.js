@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 15:53:17 GMT
+ * Date: Thu, 23 Oct 2014 16:10:42 GMT
  */
 
 /*!
@@ -9456,8 +9456,10 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 
 			length++;
 			if (nextLineRgxp.test(el)) {
-				if (!comment && !sComment && !bOpen) {
-					rPart = part;
+				if (!comment && !bOpen) {
+					rPart = sComment ?
+						'' : part;
+
 					part = '';
 				}
 
