@@ -218,9 +218,13 @@
 
 						} else {
 							parts = this.replaceDangerBlocks(decl.command).split(INLINE_COMMAND);
+
+							for (let z = -1; ++z < parts.length;) {
+								parts[z] = this.pasteDangerBlocks(parts[z]);
+							}
 						}
 
-						txt = this.pasteDangerBlocks(parts.slice(1).join(INLINE_COMMAND));
+						txt = parts.slice(1).join(INLINE_COMMAND);
 						txt = txt && txt.trim();
 					}
 
