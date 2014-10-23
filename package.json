@@ -14,6 +14,7 @@
     "test": "node ./test.js"
   },
   "dependencies": {
+    "glob": "~4",
     "commander": "~2",
     "monocle": "~1",
     "js-beautify": "~1"
