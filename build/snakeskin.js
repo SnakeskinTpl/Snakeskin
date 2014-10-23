@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 15:10:21 GMT
+ * Date: Thu, 23 Oct 2014 15:13:06 GMT
  */
 
 /*!
@@ -9449,7 +9449,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 			var el = str.charAt(j),
 				next2Str = el + str.charAt(j + 1);
 
-			if (el === '\\' && !bOpen || escape) {
+			if (!bOpen && (el === '\\' || escape)) {
 				escape = !escape;
 			}
 

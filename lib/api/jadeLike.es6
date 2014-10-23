@@ -330,7 +330,7 @@
 			let el = str.charAt(j),
 				next2Str = el + str.charAt(j + 1);
 
-			if (el === '\\' && !bOpen || escape) {
+			if (!bOpen && (el === '\\' || escape)) {
 				escape = !escape;
 			}
 
