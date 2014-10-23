@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.1.0
+ * Snakeskin v6.1.1
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 14:36:34 GMT
+ * Date: Thu, 23 Oct 2014 15:10:21 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 1, 0],
+	VERSION: [6, 1, 1],
 
 	/**
 	 * Пространство имён для директив
@@ -9449,7 +9449,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 			var el = str.charAt(j),
 				next2Str = el + str.charAt(j + 1);
 
-			if (el === '\\' && !bOpen) {
+			if (el === '\\' && !bOpen || escape) {
 				escape = !escape;
 			}
 
@@ -9505,7 +9505,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				};
 
 			} else {
-				if (comment || !bOpen && !currentEscape) {
+				if (!bOpen && !currentEscape) {
 					if (comment) {
 						comment = next2Str !== MULT_COMMENT_END;
 
