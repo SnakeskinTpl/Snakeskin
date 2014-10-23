@@ -309,7 +309,10 @@
 
 {template include_index(name) extends include['foo--']}
 {/template}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('include'), {prettyPrint: true, autoReplace: true}); test('include', function () { equal(include_index().trim(), '<h1>Hello world 1!</h1> 1'); equal(include['foo--']().trim(), ''); }); </script> <script type="text/x-snakeskin-template" id="inherit"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('include'), {prettyPrint: true, autoReplace: true}); test('include', function () { equal(include_index().trim(), '<h1>Hello world 1!</h1> 1'); equal(include['foo--']().trim(), ''); }); </script> <script type="text/x-snakeskin-template" id="include2"> 
+- include './test2/base'
+- template include2_index() extends include2_base
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('include2'), {prettyPrint: true, autoReplace: true}); test('include2', function () { equal(include2_index().trim(), '123'); }); </script> <script type="text/x-snakeskin-template" id="inherit"> 
 {proto inherit_base->bar}{/}
 {template inherit_base(val = 1, val2 = 3)}
 	{val2}
