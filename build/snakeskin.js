@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 15:13:06 GMT
+ * Date: Thu, 23 Oct 2014 15:21:19 GMT
  */
 
 /*!
@@ -8386,15 +8386,15 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		}
 
 		if (begin) {
-			if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
-				escape = !escape;
-			}
-
-			if (escape) {
-				continue;
-			}
-
 			if (!bOpen) {
+				if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
+					escape = !escape;
+				}
+
+				if (escape) {
+					continue;
+				}
+
 				if (el === '\\' && nextLineMap[next]) {
 					el = nextLineMap[next];
 					i++;
