@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 13:35:08 GMT
+ * Date: Thu, 23 Oct 2014 14:36:34 GMT
  */
 
 /*!
@@ -9336,7 +9336,11 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 							parts = [decl.command];
 
 						} else {
-							parts = decl.command.split(INLINE_COMMAND);
+							parts = this.replaceDangerBlocks(decl.command).split(INLINE_COMMAND);
+
+							for (var z = -1; ++z < parts.length;) {
+								parts[z] = this.pasteDangerBlocks(parts[z]);
+							}
 						}
 
 						txt = parts.slice(1).join(INLINE_COMMAND);
@@ -9429,15 +9433,25 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 			lastElI = 0,
 			length = -1;
 
+		var escape = false;
 		var sComment = false,
 			inline = false;
+
+		var bOpen = false,
+			bEnd = true,
+			bEscape = false;
 
 		var concatLine = false,
 			nmBrk = null;
 
 		for (var j = i - 1; ++j < str.length;) {
+			var currentEscape = escape;
 			var el = str.charAt(j),
 				next2Str = el + str.charAt(j + 1);
+
+			if (el === '\\' && !bOpen) {
+				escape = !escape;
+			}
 
 			length++;
 			if (nextLineRgxp.test(el)) {
@@ -9491,19 +9505,34 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 				};
 
 			} else {
-				if (comment) {
-					comment = next2Str !== MULT_COMMENT_END;
+				if (comment || !bOpen && !currentEscape) {
+					if (comment) {
+						comment = next2Str !== MULT_COMMENT_END;
 
-				} else if (!sComment) {
-					comment = next2Str === MULT_COMMENT_START;
+					} else if (!sComment) {
+						comment = next2Str === MULT_COMMENT_START;
 
-					if (!comment) {
-						sComment = next2Str + str.charAt(j + 2) === SINGLE_COMMENT;
+						if (!comment) {
+							sComment = next2Str + str.charAt(j + 2) === SINGLE_COMMENT;
+						}
 					}
 				}
 
-				if (dir && !inline && !comment && !sComment) {
-					inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+				if (!comment && !sComment) {
+					if (dir && !inline && !bOpen) {
+						inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+					}
+
+					if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+						bOpen = el;
+
+					} else if (bOpen && (el === '\\' || bEscape)) {
+						bEscape = !bEscape;
+
+					} else if (escapeMap[el] && bOpen === el && !bEscape) {
+						bOpen = false;
+						bEnd = false;
+					}
 				}
 
 				var ws = lineWhiteSpaceRgxp.test(el);
