@@ -38,7 +38,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 	}
 
 	if (opt_key) {
-		var key = /key <(.*?)>/.exec(code);
+		let key = /key <(.*?)>/.exec(code);
 
 		if (!key || key[1] != opt_key) {
 			return false;
@@ -54,8 +54,8 @@ exports.check = function (source, result, opt_key, opt_includes) {
 	if (includes[1]) {
 		includes = JSON.parse(includes[1]);
 
-		for (var i = 0; i < includes.length; i++) {
-			var el = includes[i];
+		for (let i = 0; i < includes.length; i++) {
+			let el = includes[i];
 
 			if (exists(el[0])) {
 				if (fs.statSync(el[0]).mtime.valueOf() != el[1]) {
@@ -68,7 +68,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		}
 
 		if (opt_includes) {
-			return includes.map(function(el)  {return el[0]});
+			return includes.map((el) => el[0]);
 		}
 	}
 
@@ -86,7 +86,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
  *
  * @return {(!Object|boolean)}
  */
-exports.compileFile = function (src, opt_params) {var this$0 = this;
+exports.compileFile = function (src, opt_params) {
 	src = path.normalize(path.resolve(src));
 
 	var p = opt_params || {};
@@ -99,7 +99,7 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
 			cache[cacheKey][src];
 
 	if (fromCache) {
-		var tmp = fromCache;
+		let tmp = fromCache;
 
 		if (p.words) {
 			if (!tmp.words) {
@@ -125,13 +125,13 @@ exports.compileFile = function (src, opt_params) {var this$0 = this;
 	}
 
 	var source = fs.readFileSync(src).toString(),
-		resSrc = (("" + src) + ".js");
+		resSrc = `${src}.js`;
 
 	var tpls,
 		res = true;
 
-	var compile = function()  {
-		res = this$0.compile(source, p, {file: src});
+	var compile = () => {
+		res = this.compile(source, p, {file: src});
 
 		if (res !== false) {
 			fs.writeFileSync(resSrc, res);

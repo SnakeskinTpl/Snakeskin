@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+//#!/usr/bin/env node
 
 global.Snakeskin = require('../snakeskin');
 
@@ -108,12 +108,12 @@ params.autoReplace = 'autoReplace' in program ?
 params.macros = 'macros' in program ?
 	program['macros'] : params.macros;
 
-for (var key in params) {
+for (let key in params) {
 	if (!params.hasOwnProperty(key)) {
 		continue;
 	}
 
-	var el = params[key];
+	let el = params[key];
 	switch (el) {
 		case 'true': {
 			el = true;
@@ -128,7 +128,7 @@ for (var key in params) {
 		} break;
 
 		default: {
-			var nm = Number(el);
+			let nm = Number(el);
 			el = isNaN(nm) ?
 				el : nm;
 		}
@@ -177,7 +177,7 @@ var calls = {};
 
 function testDir(src) {
 	src = path.normalize(path.resolve(src));
-	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach(function(el, i, data)  {
+	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach((el, i, data) => {
 		var src = data.slice(0, i + 1).join(path.sep);
 
 		if (!exists(src)) {
@@ -227,7 +227,7 @@ function action(data, file) {
 			}
 		}
 
-		return Snakeskin.toObj(tmp, null, function(src)  {
+		return Snakeskin.toObj(tmp, null, (src) => {
 			if (file) {
 				include[src] = include[src] || {};
 				include[src][file] = true;
@@ -249,7 +249,7 @@ function action(data, file) {
 
 	function success() {
 		line();
-		console.log((("File \"" + file) + ("\" has been successfully compiled \"" + outFile) + "\"."));
+		console.log(`File "${file}" has been successfully compiled "${outFile}".`);
 		console.timeEnd('Time');
 		line();
 	}
@@ -266,7 +266,7 @@ function action(data, file) {
 		}
 
 		if (file && (!words || exists(words)) && params.cache !== false) {
-			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
+			let includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
 
 			if (includes) {
 				success();
@@ -274,7 +274,7 @@ function action(data, file) {
 				include[file] = include[file] || {};
 				include[file][file] = true;
 
-				includes.forEach(function(key)  {
+				includes.forEach((key) => {
 					include[key] = include[key] || {};
 					include[key][file] = true;
 				});
@@ -287,7 +287,7 @@ function action(data, file) {
 	var res = Snakeskin.compile(
 		String(data),
 		params,
-		{file: file}
+		{file}
 	);
 
 	var toConsole = input && !program['output'] ||
@@ -295,7 +295,7 @@ function action(data, file) {
 
 	if (res !== false) {
 		if (execTpl) {
-			var tpl;
+			let tpl;
 
 			if (mainTpl && mainTpl !== true) {
 				tpl = tpls[mainTpl];
@@ -318,7 +318,7 @@ function action(data, file) {
 				}
 
 			} else {
-				var dataObj;
+				let dataObj;
 				if (tplData && tplData !== true) {
 					dataObj = load(tplData);
 				}
@@ -342,13 +342,13 @@ function action(data, file) {
 			fs.writeFileSync(outFile, res);
 			success();
 
-			var tmp = params.debug.files;
+			let tmp = params.debug.files;
 
 			include[file] = include[file] || {};
 			include[file][file] = true;
 
 			if (tmp) {
-				for (var key in tmp) {
+				for (let key in tmp) {
 					if (!tmp.hasOwnProperty(key)) {
 						continue;
 					}
@@ -374,22 +374,22 @@ function end() {
 }
 
 if (!file && input == null) {
-	var buf = '';
-	var stdin = process.stdin,
+	let buf = '';
+	let stdin = process.stdin,
 		stdout = process.stdout;
 
 	stdin.setEncoding('utf8');
-	stdin.on('data', function(chunk)  {
+	stdin.on('data', (chunk) => {
 		buf += chunk;
 	});
 
-	stdin.on('end', function()  {
+	stdin.on('end', () => {
 		action(buf);
 		end();
 	}).resume();
 
-	var nl = params.lineSeparator || '\n';
-	process.on('SIGINT', function()  {
+	let nl = params.lineSeparator || '\n';
+	process.on('SIGINT', () => {
 		stdout.write(nl);
 		stdin.emit('end');
 		stdout.write(nl);
@@ -400,16 +400,16 @@ if (!file && input == null) {
 	if (file) {
 		file = path.normalize(path.resolve(file));
 
-		var isDir = fs.statSync(file).isDirectory(),
+		let isDir = fs.statSync(file).isDirectory(),
 			mask = program['mask'];
 
 		mask = mask &&
 			new RegExp(mask);
 
-		var watchDir = function()  {
+		let watchDir = () => {
 			monocle.watchDirectory({
 				root: file,
-				listener: function(f)  {
+				listener: (f) => {
 					var src = f.fullPath;
 					if (!fMap[src] &&
 						exists(src) &&
@@ -425,9 +425,9 @@ if (!file && input == null) {
 			});
 		};
 
-		var wacthFiles = function()  {
-			var files = [];
-			for (var key in include) {
+		let wacthFiles = () => {
+			let files = [];
+			for (let key in include) {
 				if (!include.hasOwnProperty(key)) {
 					continue;
 				}
@@ -438,15 +438,15 @@ if (!file && input == null) {
 
 			monocle.watchFiles({
 				files: files,
-				listener: function(f)  {
+				listener: (f) => {
 					var src = f.fullPath,
 						files = include[src];
 
 					if (files && !calls[src]) {
-						calls[src] = setTimeout(function()  {
+						calls[src] = setTimeout(() => {
 							monocle.unwatchAll();
 
-							for (var key in files) {
+							for (let key in files) {
 								if (!files.hasOwnProperty(key)) {
 									continue;
 								}
@@ -477,8 +477,8 @@ if (!file && input == null) {
 		};
 
 		if (fs.statSync(file).isDirectory()) {
-			var renderDir = function(dir)  {
-				fs.readdirSync(dir).forEach(function(el)  {
+			var renderDir = (dir) => {
+				fs.readdirSync(dir).forEach((el) => {
 					var src = path.join(dir, el);
 
 					if (fs.statSync(src).isDirectory()) {

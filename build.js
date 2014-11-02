@@ -11,7 +11,7 @@ program
 	.parse(process.argv);
 
 function build(file, flags) {
-	jossy.compile(path.join(__dirname, 'lib/core.js'), null, flags, function(err, res)  {
+	jossy.compile(path.join(__dirname, 'lib/core.js'), null, flags, (err, res) => {
 		if (err) {
 			throw err;
 		}
@@ -36,25 +36,25 @@ function build(file, flags) {
 			.replace(/\/\/= (.*)/g, '$1')
 
 			// Пробельные символы в строках-шаблонах
-			.replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function(sstr)  {return sstr.replace(/\\n|\t/g, '')});
+			.replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, (sstr) => sstr.replace(/\\n|\t/g, ''));
 
 		var desc = file !== 'snakeskin' ?
-			((" (" + (file.replace(/snakeskin\./, ''))) + ")") : '';
+			` (${file.replace(/snakeskin\./, '')})` : '';
 
 		res =
-(("/*!\
-\n * Snakeskin v" + V) + ("" + desc) + ("\
-\n * https://github.com/kobezzza/Snakeskin\
-\n *\
-\n * Released under the MIT license\
-\n * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE\
-\n *\
-\n * Date: " + (new Date().toUTCString())) + "\
-\n */\
-\n\
-\n") + res;
+`/*!
+ * Snakeskin v${V}${desc}
+ * https://github.com/kobezzza/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
+ *
+ * Date: ${new Date().toUTCString()}
+ */
 
-		fs.writeFileSync(path.join(__dirname, (("build/" + file) + ".js")), res);
+` + res;
+
+		fs.writeFileSync(path.join(__dirname, `build/${file}.js`), res);
 
 		if (program['dev']) {
 			return;
@@ -65,7 +65,7 @@ function build(file, flags) {
 			'compiler.jar',
 
 			'--js',
-			(("build/" + file) + ".js"),
+			`build/${file}.js`,
 
 			'--compilation_level',
 			'ADVANCED_OPTIMIZATIONS',
@@ -81,24 +81,24 @@ function build(file, flags) {
 			'invalidCasts',
 
 			'--js_output_file',
-			(("build/" + file) + ".min.js")
+			`build/${file}.min.js`
 		]);
 
-		gcc.stderr.on('data', function(data)  {
+		gcc.stderr.on('data', (data) => {
 			fs.writeFileSync(path.join(__dirname, 'build/log.txt'), data);
 			console.log(String(data));
 		});
 
-		gcc.on('close', function(code)  {
-			var min = path.join(__dirname, (("build/" + file) + ".min.js")),
-				res = (("/*! Snakeskin v" + V) + ("" + desc) + " | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */") +
+		gcc.on('close', (code) => {
+			var min = path.join(__dirname, `build/${file}.min.js`),
+				res = `/*! Snakeskin v${V}${desc} | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */` +
 					fs.readFileSync(min);
 
 			fs.writeFileSync(min, res);
-			console.log((("" + file) + (" compiled, code " + code) + ""));
+			console.log(`${file} compiled, code ${code}`);
 
 			function updateManifest(url) {
-				fs.writeFileSync(url, fs.readFileSync(url).toString().replace(/"version": ".*?"/, (("\"version\": \"" + V) + "\"")));
+				fs.writeFileSync(url, fs.readFileSync(url).toString().replace(/"version": ".*?"/, `"version": "${V}"`));
 			}
 
 			updateManifest(path.join(__dirname, 'package.json'));
@@ -112,7 +112,7 @@ function build(file, flags) {
 
 var builds = Object(require('./builds'));
 
-for (var key in builds) {
+for (let key in builds) {
 	if (!builds.hasOwnProperty(key)) {
 		continue;
 	}
