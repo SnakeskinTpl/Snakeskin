@@ -85,11 +85,11 @@ function run(params) {
 					);
 
 				} catch (err) {
-					console.error('File: ' + file + ' - ' + prfx + ' ' + '(' + options + '), Tpl: ' + params[0]);
+					console.error('File: ' + file + ' - ' + prfx + ' (' + options + '), Tpl: ' + params[0]);
 
 					fs.writeFileSync(
 						errorPath,
-						'File: ' + file + ' - ' + prfx + ' ' + '(' + options + '), Tpl: ' + params[0] + '\n\nResult:\n' + res + '\n\nExpected:\n' + results[i].trim() + '\n\nTest:\n' + txt[1] + '\n\nCode:\n' + debug['code']
+						'File: ' + file + ' - ' + prfx + ' (' + options + '), Tpl: ' + params[0] + '\n\nResult:\n' + res + '\n\nExpected:\n' + results[i].trim() + '\n\nTest:\n' + txt[1] + '\n\nCode:\n' + debug['code']
 					);
 
 					throw err;
