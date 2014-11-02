@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 02 Nov 2014 13:51:21 GMT
+ * Date: Sun, 02 Nov 2014 14:03:54 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -111,6 +111,7 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 	}
 
 	for (var key in filters) {
+		/* istanbul ignore if */
 		if (!filters.hasOwnProperty(key)) {
 			continue;
 		}
@@ -457,6 +458,7 @@ Snakeskin.forEach = function (obj, callback) {
 
 		if (callback.length >= 6) {
 			for (var key in obj) {
+				/* istanbul ignore if */
 				if (!obj.hasOwnProperty(key)) {
 					continue;
 				}
@@ -466,6 +468,7 @@ Snakeskin.forEach = function (obj, callback) {
 		}
 
 		for (var key$3 in obj) {
+			/* istanbul ignore if */
 			if (!obj.hasOwnProperty(key$3)) {
 				continue;
 			}
@@ -6286,6 +6289,7 @@ var includeDirMap = {
 var includeDirLength;
 
 for (var key in includeDirMap) {
+	/* istanbul ignore if */
 	if (!includeDirMap.hasOwnProperty(key)) {
 		continue;
 	}
@@ -6302,6 +6306,7 @@ var baseShortMap = {
 var shortMap = {};
 
 for (var key$5 in baseShortMap) {
+	/* istanbul ignore if */
 	if (!baseShortMap.hasOwnProperty(key$5)) {
 		continue;
 	}
@@ -6593,6 +6598,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 
 	if (parentArgs) {
 		for (var key in parentArgs) {
+			/* istanbul ignore if */
 			if (!parentArgs.hasOwnProperty(key)) {
 				continue;
 			}
@@ -6640,6 +6646,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	var localVars = [];
 
 	for (var key$6 in argsTable) {
+		/* istanbul ignore if */
 		if (!argsTable.hasOwnProperty(key$6)) {
 			continue;
 		}
@@ -7302,6 +7309,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	if (struct.vars) {
 		var parentVars = Object(struct.vars);
 		for (var key in parentVars) {
+			/* istanbul ignore if */
 			if (!parentVars.hasOwnProperty(key)) {
 				continue;
 			}
@@ -7474,6 +7482,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 	}
 
 	for (var key in info) {
+		/* istanbul ignore if */
 		if (!info.hasOwnProperty(key) || info[key] == null) {
 			continue;
 		}
@@ -7583,20 +7592,21 @@ DirObj.prototype.error = function (msg) {
  * Методы и функции для экранирования
  */
 
-var sysEscapeMap = {};
-
-sysEscapeMap['\\'] = true;
-sysEscapeMap[I18N] = true;
-sysEscapeMap[LEFT_BLOCK] = true;
-sysEscapeMap[ADV_LEFT_BLOCK] = true;
-sysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
-sysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
-sysEscapeMap[CONCAT_COMMAND] = true;
-sysEscapeMap[CONCAT_END] = true;
-sysEscapeMap[IGNORE_COMMAND] = true;
-sysEscapeMap[INLINE_COMMAND.trim().charAt(0)] = true;
+var sysEscapeMap = DP$0(DP$0(DP$0(DP$0(DP$0(DP$0(DP$0(DP$0(DP$0({
+	'\\': true},
+	I18N,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	LEFT_BLOCK,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	ADV_LEFT_BLOCK,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	SINGLE_COMMENT.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	MULT_COMMENT_START.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	CONCAT_COMMAND,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	CONCAT_END,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	IGNORE_COMMAND,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	INLINE_COMMAND.trim().charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}
+);
 
 for (var key$8 in baseShortMap) {
+	/* istanbul ignore if */
 	if (!baseShortMap.hasOwnProperty(key$8)) {
 		continue;
 	}
@@ -7604,16 +7614,17 @@ for (var key$8 in baseShortMap) {
 	sysEscapeMap[key$8.charAt(0)] = true;
 }
 
-var strongSysEscapeMap = {};
-
-strongSysEscapeMap['\\'] = true;
-strongSysEscapeMap[SINGLE_COMMENT.charAt(0)] = true;
-strongSysEscapeMap[MULT_COMMENT_START.charAt(0)] = true;
+var strongSysEscapeMap = DP$0(DP$0({
+	'\\': true},
+	SINGLE_COMMENT.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+	MULT_COMMENT_START.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}
+);
 
 var includeSysEscapeMap = {};
 includeSysEscapeMap['\\'] = true;
 
 for (var key$9 in includeDirMap) {
+	/* istanbul ignore if */
 	if (!includeDirMap.hasOwnProperty(key$9)) {
 		continue;
 	}
@@ -7708,7 +7719,7 @@ function escapeNextLine(str) {
 		.replace(/\r/g, '\\r');
 }
 
-if (typeof window === 'undefined' && typeof global !== 'undefined') {
+if (IS_NODE) {
 	global.EscaperIsLocal = true;
 }
 
@@ -8303,6 +8314,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 		inherit = this.getGroup('inherit');
 
 	for (var key in inherit) {
+		/* istanbul ignore if */
 		if (!inherit.hasOwnProperty(key)) {
 			continue;
 		}
@@ -8351,6 +8363,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 		}
 
 		for (var key$10  in el) {
+			/* istanbul ignore if */
 			if (!el.hasOwnProperty(key$10)) {
 				continue;
 			}
@@ -9179,6 +9192,7 @@ DirObj.prototype.getGroup = function (names) {var SLICE$0 = Array.prototype.slic
 			var inline = groups['inlineIterator'];
 
 			for (var key  in inline) {
+				/* istanbul ignore if */
 				if (!inline.hasOwnProperty(key)) {
 					continue;
 				}
@@ -9208,6 +9222,7 @@ DirObj.prototype.popParams = function () {
 
 	var p = this.params[this.params.length - 1];
 	for (var key in p) {
+		/* istanbul ignore if */
 		if (!p.hasOwnProperty(key)) {
 			continue;
 		}
@@ -10519,6 +10534,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.vars = s(p.vars, p['vars']) || {};
 
 	for (var key in vars) {
+		/* istanbul ignore if */
 		if (!vars.hasOwnProperty(key)) {
 			continue;
 		}
@@ -10584,6 +10600,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			var cache = globalFnCache[cacheKey][text];
 
 			for (var key$12 in cache) {
+				/* istanbul ignore if */
 				if (!cache.hasOwnProperty(key$12)) {
 					continue;
 				}
@@ -10605,6 +10622,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					var w = Object(tmp.words);
 
 					for (var key$13 in w) {
+						/* istanbul ignore if */
 						if (!w.hasOwnProperty(key$13)) {
 							continue;
 						}
@@ -10622,6 +10640,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					var d = Object(tmp.debug);
 
 					for (var key$14 in d) {
+						/* istanbul ignore if */
 						if (!d.hasOwnProperty(key$14)) {
 							continue;
 						}
@@ -10722,6 +10741,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			if (obj) {
 				for (var key in obj) {
+					/* istanbul ignore if */
 					if (!obj.hasOwnProperty(key)) {
 						continue;
 					}
@@ -10734,6 +10754,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		} else {
 			for (var key$15 in obj) {
+				/* istanbul ignore if */
 				if (!obj.hasOwnProperty(key$15)) {
 					continue;
 				}
@@ -11691,6 +11712,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// которые не были подключены к своему шаблону,
 	// то генерируем ошибку
 	for (var key$16 in dir.preDefs) {
+		/* istanbul ignore if */
 		if (!dir.preDefs.hasOwnProperty(key$16)) {
 			continue;
 		}
@@ -11892,6 +11914,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		var repls = params.replacers;
 
 		for (var key in repls) {
+			/* istanbul ignore if */
 			if (!repls.hasOwnProperty(key)) {
 				continue;
 			}
@@ -12076,6 +12099,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			var consts = Object(params._consts);
 
 			for (var key in consts) {
+				/* istanbul ignore if */
 				if (!consts.hasOwnProperty(key)) {
 					continue;
 				}
@@ -13320,6 +13344,7 @@ __COMMENT_RESULT__ = \'\';\
 	 */
 	function extend(a, b) {
 		for (var key in b) {
+			/* istanbul ignore if */
 			if (!b.hasOwnProperty(key)) {
 				continue;
 			}
@@ -13348,6 +13373,7 @@ __COMMENT_RESULT__ = \'\';\
 
 		if (opt_adv) {
 			for (var key in opt_adv) {
+				/* istanbul ignore if */
 				if (!opt_adv.hasOwnProperty(key)) {
 					continue;
 				}
@@ -13391,6 +13417,7 @@ __COMMENT_RESULT__ = \'\';\
 
 			var inherit = function(obj)  {
 				for (var key in obj) {
+					/* istanbul ignore if */
 					if (!obj.hasOwnProperty(key)) {
 						continue;
 					}
@@ -14953,12 +14980,14 @@ for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
 	};
 
 	for (var key in types) {
+		/* istanbul ignore if */
 		if (!types.hasOwnProperty(key)) {
 			continue;
 		}
 
 		var el = types[key];
 		for (var attr  in el) {
+			/* istanbul ignore if */
 			if (!el.hasOwnProperty(attr)) {
 				continue;
 			}
@@ -17034,6 +17063,7 @@ PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName
 
 					ctx.backTableI += this.backTableI;
 					for (var key in cache$0) {
+						/* istanbul ignore if */
 						if (!cache$0.hasOwnProperty(key)) {
 							continue;
 						}
@@ -17087,6 +17117,7 @@ PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName
 				var cache$1 = Object(this.backTable);
 
 				for (var key$17 in cache$1) {
+					/* istanbul ignore if */
 					if (!cache$1.hasOwnProperty(key$17)) {
 						continue;
 					}

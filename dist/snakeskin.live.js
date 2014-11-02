@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 02 Nov 2014 13:51:21 GMT
+ * Date: Sun, 02 Nov 2014 14:03:54 GMT
  */
 
 /*!
@@ -111,6 +111,7 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 	}
 
 	for (var key in filters) {
+		/* istanbul ignore if */
 		if (!filters.hasOwnProperty(key)) {
 			continue;
 		}
@@ -457,6 +458,7 @@ Snakeskin.forEach = function (obj, callback) {
 
 		if (callback.length >= 6) {
 			for (var key in obj) {
+				/* istanbul ignore if */
 				if (!obj.hasOwnProperty(key)) {
 					continue;
 				}
@@ -466,6 +468,7 @@ Snakeskin.forEach = function (obj, callback) {
 		}
 
 		for (var key$0 in obj) {
+			/* istanbul ignore if */
 			if (!obj.hasOwnProperty(key$0)) {
 				continue;
 			}
