@@ -7,3 +7,4 @@ compiler.jar
 tests/*.js
 build/log.txt
 coverage
+*.ss.js
