@@ -5,7 +5,9 @@
   "homepage": "https://github.com/kobezzza/Snakeskin",
   "keywords": [
     "templates",
-    "javascript"
+    "javascript",
+    "template engine",
+    "templateengine"
   ],
   "authors": [
     "Kobezzza <kobezzza@mail.ru>"
@@ -17,5 +19,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "devDependencies": {
+    "closure-compiler": "http://dl.google.com/closure-compiler/compiler-latest.zip"
+  }
 }
