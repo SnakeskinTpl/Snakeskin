@@ -3,7 +3,6 @@ bower_components
 node_modules
 npm-debug.log
 tmp
-compiler.jar
 test/**/*.js
 build/log.txt
 coverage
