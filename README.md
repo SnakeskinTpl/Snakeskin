@@ -2,9 +2,10 @@
 
 Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
 
-[![NPM version](https://badge.fury.io/js/snakeskin.svg)](http://badge.fury.io/js/snakeskin)
-[![NPM dependencies](https://david-dm.org/kobezzza/snakeskin.svg)](https://david-dm.org/kobezzza/snakeskin)
-[![Build Status](https://travis-ci.org/kobezzza/Snakeskin.svg?branch=master)](https://travis-ci.org/kobezzza/Snakeskin)
+[![NPM version](http://img.shields.io/npm/v/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
+[![NPM dependencies](http://img.shields.io/david/kobezzza/Snakeskin.svg?style=flat)](https://david-dm.org/kobezzza/snakeskin)
+[![Build Status](http://img.shields.io/travis/kobezzza/Snakeskin.svg?style=flat&branch=master)](https://travis-ci.org/kobezzza/Snakeskin)
+[![Coverage Status](http://img.shields.io/coveralls/kobezzza/Snakeskin.svg?style=flat)](https://coveralls.io/r/kobezzza/Snakeskin?branch=master)
 
 [Онлайн-демо](http://jsfiddle.net/kobezzza/NAPWB/10/)
 
@@ -34,18 +35,18 @@ Snakeskin — компилятор блочных шаблонов c подде�
 			< title :: Snakeskin
 			#< script
 				if (foo) bar(1 + 5)
-		
+
 		< body
 			< h1 :: Snakeskin — лучший шаблонный движок
 			< #container.b-info
 				- if youAreUsingSnakeskin
 					< p.&__good :: Поздравляем, вы используете самое лучшее!
-				
+
 				- else
 					< p.&__bad :: Скорее начните использовать!
-				
+
 				< p.&__description
-					Snakeskin — это клиент-серверный шаблонный движок с 
+					Snakeskin — это клиент-серверный шаблонный движок с
 					простым и понятным синтаксисом и богатым набором возможностей.
 ```
 
@@ -68,7 +69,7 @@ page(true);
 		<h1>Snakeskin — лучший шаблонный движок</h1>
 		<div id="container" class="b-info">
 			<p class="b-info__good">Поздравляем, вы используете самое лучшее!</p>
-			<p class="b-info__description">Snakeskin — это клиент-серверный шаблонный движок с 
+			<p class="b-info__description">Snakeskin — это клиент-серверный шаблонный движок с
 					простым и понятным синтаксисом и богатым набором возможностей.</p>
 		</div>
 	</body>
