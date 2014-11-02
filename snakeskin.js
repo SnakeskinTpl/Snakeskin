@@ -1,4 +1,4 @@
-module.exports = exports = require('./dist/snakeskin.min');
+module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
 var path = require('path');
 var fs = require('fs'),

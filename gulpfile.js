@@ -72,7 +72,9 @@ gulp.task('build', function (callback) {
 			.pipe(replace(/\/\/= (.*)/g, '$1'))
 
 			// Пробельные символы в строках-шаблонах
-			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) { return sstr.replace(/\\n|\t/g, ''); }))
+			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) {
+				return sstr.replace(/\\n|\t/g, '');
+			}))
 
 			.pipe(header(fullHead))
 			.pipe(rename(key + '.js'))
@@ -88,7 +90,18 @@ gulp.task('build', function (callback) {
 	}
 });
 
-gulp.task('compile', ['build'], function () {
+gulp.task('test', ['build'], function (callback) {
+	gulp.src('./dist/snakeskin.js')
+		.pipe(istanbul())
+		.on('finish', function () {
+			gulp.src(['test.dev.js'])
+				.pipe(jasmine())
+				.pipe(istanbul.writeReports())
+				.on('end', callback);
+		});
+});
+
+gulp.task('compile', ['test'], function () {
 	var builds = getBuilds();
 
 	for (var key in builds) {
