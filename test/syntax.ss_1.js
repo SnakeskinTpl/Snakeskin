@@ -1,5 +1,5 @@
 /* Snakeskin v6.1.3, key <commonJS,false,
-,xml,false,false,,stringConcat,true,true,true,,true,true,i18n>, label <1413886610373>, includes <>, generated at <1414826997821>.
+,xml,false,false,,stringConcat,true,true,true,,true,true,i18n>, label <1413886610373>, includes <>, generated at <1414919437482>.
    This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
@@ -22,8 +22,8 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_2c232'];
-        __LOCAL__.a_0_2c232 = 1; /* Snakeskin template: syntax_index;  */
+        var $_ = __LOCAL__['$_b3732'];
+        __LOCAL__.a_0_b3732 = 1; /* Snakeskin template: syntax_index;  */
         this.syntax_index = function() {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.syntax_index,
@@ -317,7 +317,7 @@
             return __RESULT__;
         };
         Snakeskin.cache["syntax_index4"] = this.syntax_index4; /* Snakeskin template. */
-        __LOCAL__.usingSnakeskin_0_2c232 = true; /* Snakeskin template: syntax_index5; name  */
+        __LOCAL__.usingSnakeskin_0_b3732 = true; /* Snakeskin template: syntax_index5; name  */
         this.syntax_index5 = function(name) {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.syntax_index5,
@@ -351,7 +351,7 @@
             __RESULT__ += '<h1';
             __TMP__['class'] += (__TMP__['class'] ? ' ' : '') + 'b-hello';
             __RESULT__ += (__TMP__['class'] ? ' class="' + __TMP__['class'] + '"' : '') + '>';
-            if (__LOCAL__.usingSnakeskin_0_2c232) {
+            if (__LOCAL__.usingSnakeskin_0_b3732) {
                 __TMP__ = {
                     'class': ''
                 };

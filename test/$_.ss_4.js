@@ -1,5 +1,5 @@
 /* Snakeskin v6.1.3, key <commonJS,false,
-,xml,false,true,,stringBuffer,true,true,true,,true,true,i18n>, label <1413886610311>, includes <>, generated at <1414827001850>.
+,xml,false,true,,stringBuffer,true,true,true,,true,true,i18n>, label <1413886610311>, includes <>, generated at <1414919439066>.
    This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
@@ -22,9 +22,9 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_7a885'];
-        ($_ = __LOCAL__['$_7a885'] = __FILTERS__['trim'].call(this, ' bar '));
-        __LOCAL__.tmp_0_7a885 = $_; /* Snakeskin template: $__index;  */
+        var $_ = __LOCAL__['$_4c679'];
+        ($_ = __LOCAL__['$_4c679'] = __FILTERS__['trim'].call(this, ' bar '));
+        __LOCAL__.tmp_0_4c679 = $_; /* Snakeskin template: $__index;  */
         this.$__index = function() {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.$__index,
@@ -54,7 +54,7 @@
             ($_ = __FILTERS__['trim'].call(this, ' foo '));
             __RESULT__.push(__FILTERS__.html(__FILTERS__.undef($_), false, false));
             __RESULT__.push(' ');
-            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__LOCAL__.tmp_0_7a885), false, false));
+            __RESULT__.push(__FILTERS__.html(__FILTERS__.undef(__LOCAL__.tmp_0_4c679), false, false));
             __RESULT__.push(' ');
             return __RESULT__.join('');
         };

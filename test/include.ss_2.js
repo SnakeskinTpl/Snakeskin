@@ -1,5 +1,5 @@
 /* Snakeskin v6.1.3, key <commonJS,false,
-,xml,false,true,,stringConcat,true,true,true,,true,true,i18n>, label <1414071186510>, includes <[["c:\\\\Users\\\\kobez_000\\\\Documents\\\\Dev\\\\snakeskin\\\\tests\\\\test\\\\foo.ss",1413886610377],["c:\\\\Users\\\\kobez_000\\\\Documents\\\\Dev\\\\snakeskin\\\\tests\\\\test\\\\foo\\\\bar.ss",1413886610378]]>, generated at <1414826998738>.
+,xml,false,true,,stringConcat,true,true,true,,true,true,i18n>, label <1414071186510>, includes <[["c:\\\\Users\\\\kobez_000\\\\Documents\\\\Dev\\\\Snakeskin\\\\test\\\\test\\\\foo.ss",1413886610377],["c:\\\\Users\\\\kobez_000\\\\Documents\\\\Dev\\\\Snakeskin\\\\test\\\\test\\\\foo\\\\bar.ss",1413886610378]]>, generated at <1414919437908>.
    This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
@@ -22,11 +22,11 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_d0456'];
-        __LOCAL__.foo_0_d0456 = 1;
-        var bar_00_d0456 = __LOCAL__.bar_00_d0456 = 1;
-        __LOCAL__.foo_1_d0456 = 2;
-        __LOCAL__.foo_2_d0456 = 3; /* Snakeskin template: include.bar; name  */
+        var $_ = __LOCAL__['$_49d13'];
+        __LOCAL__.foo_0_49d13 = 1;
+        var bar_00_49d13 = __LOCAL__.bar_00_49d13 = 1;
+        __LOCAL__.foo_1_49d13 = 2;
+        __LOCAL__.foo_2_49d13 = 3; /* Snakeskin template: include.bar; name  */
         if (this.include == null) {
             this.include = {};
         }
@@ -64,9 +64,9 @@
             __RESULT__ += '<h1>Hello ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false, false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_1_d0456), false, false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_1_49d13), false, false);
             __RESULT__ += '!</h1> ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.bar_00_d0456), false, false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.bar_00_49d13), false, false);
             __RESULT__ += ' ';
         }; /* Snakeskin template. */ /* Snakeskin template: include_index; name */
         this.include_index = function(name) {
@@ -99,9 +99,9 @@
             __RESULT__ += '<h1>Hello ';
             __RESULT__ += __FILTERS__.html(__FILTERS__.undef(name), false, false);
             __RESULT__ += ' ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_0_d0456), false, false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.foo_0_49d13), false, false);
             __RESULT__ += '!</h1> ';
-            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.bar_00_d0456), false, false);
+            __RESULT__ += __FILTERS__.html(__FILTERS__.undef(__LOCAL__.bar_00_49d13), false, false);
             __RESULT__ += ' ';
             return __RESULT__;
         };

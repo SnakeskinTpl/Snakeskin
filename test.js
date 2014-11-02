@@ -56,7 +56,7 @@ function run(params) {
 				});
 
 				if (!prfx) {
-					console.log(file + ' ' + Date.now() - start + 'ms');
+					console.log(file + ' ' + (Date.now() - start) + 'ms');
 				}
 
 				fs.writeFileSync(src + '_' + prfx + '.js', res);
@@ -66,7 +66,7 @@ function run(params) {
 				throw err;
 			}
 
-			var tpl = require('./tests/' + file + '_' + prfx + '.js').init(snakeskin);
+			var tpl = require('./test/' + file + '_' + prfx + '.js').init(snakeskin);
 
 			starts.forEach(function (el, i) {
 				var params = el.split(' ; '),
@@ -138,7 +138,7 @@ run({
 	inlineIterators: true
 });
 
-fs.writeFileSync(path.join(__dirname, 'tests', 'tests.html'), tpls.test(asserts));
+fs.writeFileSync(path.join(__dirname, 'test', 'test.html'), tpls.test(asserts));
 
 if (fs.existsSync(errorPath)) {
 	fs.unlinkSync(errorPath);

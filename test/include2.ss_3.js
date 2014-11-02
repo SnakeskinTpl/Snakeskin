@@ -1,5 +1,5 @@
 /* Snakeskin v6.1.3, key <commonJS,false,
-,xml,false,false,,stringBuffer,true,true,true,,true,true,i18n>, label <1414065390140>, includes <[["c:\\\\Users\\\\kobez_000\\\\Documents\\\\Dev\\\\snakeskin\\\\tests\\\\test2\\\\base.ss",1414064863856]]>, generated at <1414827000537>.
+,xml,false,false,,stringBuffer,true,true,true,,true,true,i18n>, label <1414065390140>, includes <[["c:\\\\Users\\\\kobez_000\\\\Documents\\\\Dev\\\\Snakeskin\\\\test\\\\test2\\\\base.ss",1414064863856]]>, generated at <1414919438581>.
    This code is generated automatically, don't alter it. */
 (function() {
     var Snakeskin = global.Snakeskin;
@@ -22,7 +22,7 @@
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars,
             __STR__, __TMP__, __J__;
-        var $_ = __LOCAL__['$_55da9']; /* Snakeskin template: include2_base;  */
+        var $_ = __LOCAL__['$_cf211']; /* Snakeskin template: include2_base;  */
         this.include2_base = function() {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.include2_base,

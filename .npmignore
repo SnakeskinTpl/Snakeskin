@@ -4,7 +4,7 @@ node_modules
 npm-debug.log
 tmp
 compiler.jar
-tests/*.js
+test/*.js
 build/log.txt
 coverage
 *.ss.js
