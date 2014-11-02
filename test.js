@@ -4,7 +4,12 @@ var path = require('path'),
 var assert = require('assert'),
 	snakeskin = require('./snakeskin');
 
-var testFolder = path.resolve(__dirname, 'test');
+var testFolder = path.resolve(__dirname, 'test'),
+	buildFolder = path.join(testFolder, 'build');
+
+if (!fs.existsSync(buildFolder)) {
+	fs.mkdirSync(buildFolder);
+}
 
 global.i18n = function (str) {
 	return str;
@@ -59,14 +64,14 @@ function run(params) {
 					console.log(file + ' ' + (Date.now() - start) + 'ms');
 				}
 
-				fs.writeFileSync(src + '_' + prfx + '.js', res);
+				fs.writeFileSync(path.join(path.dirname(src), 'build', path.basename(src) + '_' + prfx + '.js'), res);
 
 			} catch (err) {
 				fs.writeFileSync(errorPath, 'File: ' + file + '\n\n' + err.message + (debug['code'] ? '\n\nCode:\n\n' + debug['code'] : ''));
 				throw err;
 			}
 
-			var tpl = require('./test/' + file + '_' + prfx + '.js').init(snakeskin);
+			var tpl = require('./test/build/' + file + '_' + prfx + '.js').init(snakeskin);
 
 			starts.forEach(function (el, i) {
 				var params = el.split(' ; '),
