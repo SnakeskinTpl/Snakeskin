@@ -287,7 +287,7 @@ function action(data, file) {
 	var res = Snakeskin.compile(
 		String(data),
 		params,
-		{file}
+		{file: file}
 	);
 
 	var toConsole = input && !program['output'] ||
