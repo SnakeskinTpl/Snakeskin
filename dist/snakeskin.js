@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.1.3
+ * Snakeskin v6.1.4
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 02 Nov 2014 13:45:13 GMT
+ * Date: Sun, 02 Nov 2014 13:51:21 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 1, 3],
+	VERSION: [6, 1, 4],
 
 	/**
 	 * Пространство имён для директив
@@ -547,6 +547,8 @@ Snakeskin.appendChild = function (node, obj) {
 	return obj;
 };
 
+
+	/* istanbul ignore next */
 
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
@@ -2474,6 +2476,8 @@ Snakeskin.appendChild = function (node, obj) {
 
 }());
 	var beautify = root.js_beautify;
+
+	/* istanbul ignore next */
 
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
