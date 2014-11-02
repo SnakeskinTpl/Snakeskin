@@ -1,0 +1,1151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html> <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <title>Snakeskin.compile</title> <link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css" /> <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script> <script type="text/javascript" src="../dist/snakeskin.min.js"></script> <script type="text/javascript"> Object.create = Object.create || function (obj) { function F() { }; F.prototype = obj; return new F(); }; function i18n(str) { return str; } </script> </head> <body> <h1 id="qunit-header">Test: Snakeskin.compile</h1> <h2 id="qunit-banner"></h2> <div id="qunit-testrunner-toolbar"></div> <h2 id="qunit-userAgent"></h2> <ol id="qunit-tests"></ol> <script type="text/x-snakeskin-template" id="$_">
+{?' bar '|trim}
+{var tmp = $_}
+
+{template $__index()}
+	{?' foo '|trim}
+	{$_} {tmp}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('$_'), {prettyPrint: true, autoReplace: true}); test('$_', function () { equal($__index().trim(), 'foo bar'); }); </script> <script type="text/x-snakeskin-template" id="attr">
+{template attr_index()}
+	{foo = 'foo'}
+	{bar = ''}
+
+	{attr #{foo} = bar}
+	{attr foo = ${bar} ${foo} | bar = foo}
+{/}
+
+{template attr_index2()}
+	{foo = 'foo'}
+	{bar = 'bar'}
+
+	{attr ng-(foo = #{bar} #{foo} | bar = foo) ${foo} = bar}
+	{attr ng-(foo = ${(1 ? bar : null)} ${((foo))} | bar = foo), foo:(#{foo} = bar) b-foo:(#{foo} = bar) b:foo-(${foo} = bar)}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('attr'), {prettyPrint: true, autoReplace: true}); test('attr', function () { equal(attr_index().trim(), 'foo="bar"  foo="foo" bar="foo"'); equal(attr_index2().trim(), 'ng-foo="bar foo" ng-bar="foo" foo="bar"  ng-foo="bar foo" ng-bar="foo" foo:foo="bar" b-foo:foo="bar" b:foo-foo="bar"'); }); </script> <script type="text/x-snakeskin-template" id="bem">
+- template bem_index()
+	< h1.b-hello
+		< span.&__msg style = color: blue | class = &__bar
+			You are amazing!
+
+- template bem_index2()
+	< h1.b-hello
+		< h2.b-desc
+			< span.&__msg class = &__bar
+				You are amazing!
+
+- template bem_index3()
+	< h1.b-hello
+		< h2.&__desc
+			< span.&__msg class = &__bar
+				You are amazing!
+
+
+- template bem_index4()
+	- set & b-hello
+	< h1.&
+		< h2.&__desc
+			< span.&__msg class = &__bar
+				You are amazing!
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('bem'), {prettyPrint: true, autoReplace: true}); test('bem', function () { equal(bem_index().trim(), '<h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>'); equal(bem_index2().trim(), '<h1 class="b-hello"><h2 class="b-desc"><span class="b-desc__bar b-desc__msg">You are amazing!</span></h2></h1>'); equal(bem_index3().trim(), '<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>'); equal(bem_index4().trim(), '<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>'); }); </script> <script type="text/x-snakeskin-template" id="block">
+{template block_base()}
+	{&+}
+	{var a = 2, b, c}
+
+	{block base(a = 1, b = 2, c)}
+		{a} {b} {c}
+	{/}
+
+	{call blocks.base(a, b, c)}
+
+	{block base2(a = 1, b = 2, c) => 0, a, 1}
+		{a} {b} {c}
+	{/}
+
+	{call blocks.base2(5, 4, b)}
+{/}
+
+{template block_sub() extends block_base}
+	{block base(a)}
+		{super}
+	{/}
+
+	{block base2(@a = {aa: 9}) => null}
+		{super}
+		{@aa}
+	{/}
+{/}
+
+{template block_base2()}
+	{&+}
+	{var a = 2, b, c}
+
+	{block base(a = 1, b = 2, c)}
+		{a} {b} {c}
+
+		{block base2(a = 1, b = 2, c) => 0, a, 1}
+			{a} {b} {c}
+		{/}
+	{/}
+
+	{call blocks.base(a, b, c)}
+{/}
+
+{template block_sub2() extends block_base2}
+	{block base2(@a = {aa: 9}) => null}
+		{super}
+		{@aa}
+	{/}
+{/}
+
+{block block_base3->foo()}
+	121
+{/}
+
+{template block_base3()}
+	{call blocks.foo()}
+{/}
+
+{block block_sub3->foo()}
+	222
+{/}
+
+{template block_sub3() extends block_base3}
+{/}
+
+- block block_base4->bar()
+	- a = 1
+
+- template block_base4()
+
+- block block_sub4->bar() =>
+	< div :: 112
+	- super
+
+- template block_sub4() extends block_base4
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('block'), {prettyPrint: true, autoReplace: true}); test('block', function () { equal(block_base().trim(), '2202154'); equal(block_sub().trim(), '22[object Object]2952'); equal(block_sub2().trim(), '22[object Object]29'); equal(block_sub3().trim(), '222'); equal(block_sub4().trim(), '<div>112</div>'); }); </script> <script type="text/x-snakeskin-template" id="cycles">
+{template cycles_index(i = 0)}
+	{&+}
+		{for var j = 0; j < 3; j++}
+			{j}
+		{end}
+	{&-}
+
+	{&+}
+		{while i++ < 3}
+			{i}
+		{end}
+	{&-}
+
+	{&+}
+		{repeat}
+			{i}
+		{until i--}
+	{&-}
+
+	{&+}
+		{do}
+			{i}
+		{while ++i < 3}
+	{&-}
+{end template}
+
+{template cycles_index2(i = 0)}
+	{&+}
+		{for var j = 0; j < 3; j++}
+			{j}
+			{break}
+		{end}
+	{&-}
+
+	{&+}
+		{while i++ < 3}
+			{if i === 1}
+				{continue}
+			{/}
+			{i}
+		{end}
+	{&-}
+
+	{&+}
+		{repeat}
+			{i}
+			{break}
+		{until i--}
+	{&-}
+{end template}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('cycles'), {prettyPrint: true, autoReplace: true}); test('cycles', function () { equal(cycles_index().trim(), '012 123 43210 -1012'); equal(cycles_index2().trim(), '0 23 4'); }); </script> <script type="text/x-snakeskin-template" id="data">
+{template data_index()}
+	{a = ' foo '}
+
+	{= {a: "${a|trim|ucfirst}"}
+		/// 1212/*4545*/
+	}
+	{{${a|trim|ucfirst}}}
+
+	#{cdata}{= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}#{/cdata}
+{/}
+
+{template data_index2()}
+	{=\#{1}\\\\#{1}}
+{/}
+
+{template data_index3()}
+	{data
+		{
+			foo: ${
+				/// 121
+				1 +
+				/*
+					1 */
+				2
+			}
+		}
+	}
+{/}
+
+- template data_index4()
+	= &
+		{
+			/* 121 */
+			#{
+				/// 121
+				1 + 2
+			}
+		}
+	.
+
+	121
+
+{template data_decl()}
+	{foo = 'bar'}
+
+	{{/* 1212///121212 */foo}}
+	{{#{foo/* 1111 */}}}
+	#{{#{foo}}}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('data'), {prettyPrint: true, autoReplace: true}); test('data', function () { equal(data_index().trim(), '{a: "Foo"} {{Foo}} {= {a: "${a|trim|ucfirst}"}}{{${a|trim|ucfirst}}}'); equal(data_index2().trim(), '#{1}\\1'); equal(data_index3().trim(), '{ foo: 3 }'); equal(data_index4().trim(), '{ 3 } 121'); equal(data_decl().trim(), '{{foo}} {{bar}} {{bar}}'); }); </script> <script type="text/x-snakeskin-template" id="doctype">
+{template doctype_index()}
+	{doctype}
+	{doctype html}
+	{doctype strict}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('doctype'), {prettyPrint: true, autoReplace: true}); test('doctype', function () { equal(doctype_index().trim(), '<!DOCTYPE html><!DOCTYPE html><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'); }); </script> <script type="text/x-snakeskin-template" id="escape">
+{template escape_index()}
+	{attr \#{foo} = 1 \\\| 2}
+	{data '#{/* 1 + */2}'}
+	{data '\#{/* 1 + */2}'}
+	{attr a = {"b": '2'}}
+{/}
+
+{template escape_index2()}
+	\{attr a = \{"b": '2'}}
+	\/// 1
+	\/* 2 */
+	\1
+	\" 2 "
+{/}
+
+{template escape_index3()}
+	<div {'onclick="alert()" foo'}=2{' bar = 1'}></div>
+	{attr ${'foo = 1 bar'} = ${'1 hack = 2'}}
+{/}
+
+{template escape_index4()}
+	{typeof /foo["]bar\/\//}
+	{!/foo/.test('foo')}
+	{!/foo/.test('foo') % /[\/]/}
+	{= #{!/foo/.test('foo')}}
+{/}
+
+{template escape_base['\n\\n\'"helloWorld']()}
+	121
+{/}
+
+{template escape_sub() extends escape_base['\n\\n\'"helloWorld']}
+{/}
+
+{template escape_index5()}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+{/}
+
+- template escape_index6()
+	< meta http-equiv = Content-Type | content = text/html; charset\=utf-8
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('escape'), {prettyPrint: true, autoReplace: true}); test('escape', function () { equal(escape_index().trim(), '#{foo}="1 \" 2="2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"'); equal(escape_index2().trim(), '{attr a = {«b»: “2”}} /// 1 /* 2 */ \1 \« 2 »'); equal(escape_index3().trim(), '<div onclick=&quot;alert()&quot; foo="2 bar = &quot;1&quot;"></div>  foo = &quot;1&quot; bar="1 hack = &quot;2&quot;"'); equal(escape_index4().trim(), 'object false NaN false'); equal(escape_base['\n\\n\'"helloWorld']().trim(), '121'); equal(escape_sub().trim(), '121'); equal(escape_index5().trim(), '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'); equal(escape_index6().trim(), '<meta http-equiv="Content-Type" content="text&#x2F;html; charset=utf-8"/>'); }); </script> <script type="text/x-snakeskin-template" id="filters">
+{a = String}
+{template filters_index()}
+	{a = {a: String}}
+	{with a}
+		{'   foo   bar '|collapse|ucfirst|repeat 3|remove ('   Foo bar'|trim|repeat)}
+		{('   foo   bar '|collapse|ucfirst|repeat 3|remove (@a('   Foo bar')|trim|repeat)) + '<b>1</b>'|!html}
+		{('   foo   bar '|collapse|ucfirst|repeat 3|remove (@@a('   Foo bar')|trim|repeat)) + '<b>1</b>'}
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), 'Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;'); }); </script> <script type="text/x-snakeskin-template" id="i18n">
+{template i18n_index()}
+	`hel\`lo` {`world`} \`bar
+{/}
+
+#{template i18n_index2()}
+	`hel\`lo` #{`world`} \`bar
+#{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('i18n'), {prettyPrint: true, autoReplace: true}); test('i18n', function () { equal(i18n_index().trim(), 'hel`lo world `bar'); equal(i18n_index2().trim(), 'hel`lo world `bar'); }); </script> <script type="text/x-snakeskin-template" id="include">
+{var foo = 1}
+{import bar = 1}
+
+{include './test123/*.ss' as interface}
+{include './test/*.ss' as interface}
+{include './test/*.ss' as interface}
+
+{template include_index(name) extends include['foo--']}
+{/template}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('include'), {prettyPrint: true, autoReplace: true}); test('include', function () { equal(include_index().trim(), '<h1>Hello world 1!</h1> 1'); equal(include['foo--']().trim(), ''); }); </script> <script type="text/x-snakeskin-template" id="include2">
+- include './test2/base'
+- template include2_index() extends include2_base
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('include2'), {prettyPrint: true, autoReplace: true}); test('include2', function () { equal(include2_index().trim(), '123'); }); </script> <script type="text/x-snakeskin-template" id="inherit">
+{proto inherit_base->bar}{/}
+{template inherit_base(val = 1, val2 = 3)}
+	{val2}
+	{block foo}
+		{val}
+
+		{apply bar}
+	{/}
+{/}
+
+{proto inherit_sub->bar(i = 11)}
+	{i}
+{/}
+
+{template inherit_sub(val = 2) extends inherit_base}
+	{block e}my{/}
+{/}
+
+{template inherit_superTestConst()}
+	{proto a}
+		{foo = 1}
+	{/}
+	{apply a}
+{/}
+
+{template inherit_childTestConst() extends inherit_superTestConst}
+	{proto a}
+		{foo = 2}
+		{foo}
+	{/}
+{/}
+
+{template inherit_superTestConst2()}
+	{proto a}
+		{a = 1}
+	{/}
+	{apply a}
+{/}
+
+{template inherit_childTestConst2() extends inherit_superTestConst2}
+	{proto a}
+		{a = 2}
+		{proto e}
+			{j = 1}
+			{j}
+		{/}
+		{apply e}
+	{/}
+	{apply a}
+{/}
+
+{template inherit_superTestConst3()}
+	{a = {}}
+
+	{a.a = 1}
+	{a['b'] = 2}
+
+	{a.a}
+	{a.b}
+{/}
+
+{template inherit_childTestConst3() extends inherit_superTestConst3}
+	{a.a = 2}
+	{a.b = 3}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit'), {prettyPrint: true, autoReplace: true}); test('inherit', function () { equal(inherit_sub().trim(), '3 2 11  my'); equal(inherit_childTestConst().trim(), '2'); equal(inherit_childTestConst2().trim(), '1'); equal(inherit_childTestConst3().trim(), '2 3'); }); </script> <script type="text/x-snakeskin-template" id="inherit2">
+{template inherit2_base()}
+	#{a1 = 1}
+
+	{proto foo}
+		{const a = 1}
+		{b = 3}
+	{/}
+{/template}
+
+#{template inherit2_sub() extends inherit2_base}
+	#{const a1 = 22}
+	#{const b = 2}
+	#{b33 = 34}
+	#{const b13 = 2}
+
+	#{block e}
+		#{a1} #{b33} #{b13}
+
+		#{try}
+			#{a}
+		#{catch err}
+			%
+		#{/}
+
+		#{try}
+			#{b}
+		#{catch err}
+			%
+		#{/}
+	#{/}
+#{/template}
+
+#{template inherit2_base2(val = 1)}
+	#{a1 = 1}
+
+	#{proto foo}
+		#{const a = 1}
+		#{b = 3}
+	#{/}
+#{/template}
+
+{template inherit2_sub2() extends inherit2_base2}
+	{const a1 = 22}
+	{const b = 2}
+	{b33 = 34}
+	{const b13 = 2}
+
+	{block e}
+		{a1} #{b33} #{b13} {val}
+
+		{try}
+			{a}
+		{catch err}
+			%
+		{/}
+
+		{try}
+			#{b}
+		{catch err}
+			%
+		{/}
+	{/}
+{/template}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('inherit2'), {prettyPrint: true, autoReplace: true}); test('inherit2', function () { equal(inherit2_sub().trim(), '22 34 2'); equal(inherit2_sub2().trim(), '22 34 2 1'); }); </script> <script type="text/x-snakeskin-template" id="iterators">
+{template iterators_index1()}
+	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
+		{el} {i} {obj[i]} {isFirst} {isLast} {length} --
+	{/}
+{/}
+
+{template iterators_index2()}
+	{forEach {a: 1, b: 2} => el, key, obj, i, isFirst, isLast, length}
+		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} --
+	{/}
+{/}
+
+{template iterators_index3()}
+	{a = Object.create({a: 1})}
+	{forIn a => el, key, obj, i, isFirst, isLast, length}
+		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} --
+	{/}
+{/}
+
+{template iterators_index4()}
+	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
+		{el}
+		{continue}
+		{i} {obj[i]} {isFirst} {isLast} {length} --
+	{/}
+{/}
+
+{template iterators_index5()}
+	{forEach {a: 1, b: 2} => el, key, obj, i, isFirst, isLast, length}
+		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} --
+		{break}
+	{/}
+{/}
+
+{template iterators_index6()}
+	{a = Object.create({a: 1})}
+	{forIn a => el, key, obj, i, isFirst, isLast, length}
+		{break}
+		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} --
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('iterators'), {prettyPrint: true, autoReplace: true}); test('iterators', function () { equal(iterators_index1().trim(), '1 0 1 true false 3 — 2 1 2 false false 3 — 3 2 3 false true 3 —'); equal(iterators_index2().trim(), '1 a 1 0 true false 2 — 2 b 2 1 false true 2 —'); equal(iterators_index3().trim(), '1 a 1 0 true true 1 —'); equal(iterators_index4().trim(), '1 2 3'); equal(iterators_index5().trim(), '1 a 1 0 true false 2 —'); equal(iterators_index6().trim(), ''); }); </script> <script type="text/x-snakeskin-template" id="link">
+{template link_index()}
+	{link}foo{/}
+	{link css}foo{/}
+	{link acss}foo{/}
+{/}
+
+{template link_index2()}
+	{link css ng-(class = foo | id = bar)}
+		foo
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('link'), {prettyPrint: true, autoReplace: true}); test('link', function () { equal(link_index().trim(), '<link type="text/css" rel="stylesheet" href="foo"/><link type="text/css" rel="stylesheet" href="foo"/><link type="text/css" rel="alternate stylesheet" href="foo"/>'); equal(link_index2().trim(), '<link type="text/css" rel="stylesheet" ng-class="foo" ng-id="bar" href="foo "/>'); }); </script> <script type="text/x-snakeskin-template" id="logic">
+{template logic_index(i)}
+	{switch i}
+		{> 1}
+			1
+		{/}
+
+		{> 2}
+			2
+		{/}
+
+		{default}
+			3
+		{/}
+	{/}
+
+	{if i == 1}
+		1
+	{elseIf i == 2}
+		2
+	{else}
+		3
+	{/}
+
+	#{unless i == 1}
+		1
+	#{elseIf i == 2}
+		2
+	#{else}
+		3
+	#{/}
+{/}
+
+{template logic_base()}
+	<span class=""></span>
+{/}
+
+{template logic_sub() extends logic_base}
+	{block root}
+		{switch 1}
+			{> 1}
+				1
+			{/}
+		{/}
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('logic'), {prettyPrint: true, autoReplace: true}); test('logic', function () { equal(logic_index(1).trim(), '1 1 3'); equal(logic_index(2).trim(), '2 2 1'); equal(logic_index(3).trim(), '3 3 1'); equal(logic_sub().trim(), '<span class=""></span> 1'); }); </script> <script type="text/x-snakeskin-template" id="macros">
+{template macros_index()}
+	"Hello 'friend'" -- <- <-> -> bar...
+
+	{plain}
+		"Hello 'friend'" -- <- <-> -> bar...
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), '«Hello „friend“» — ← ↔ → bar… "Hello 'friend'" -- <- <-> -> bar...'); }); </script> <script type="text/x-snakeskin-template" id="mod">
+{['mod_global'] = 1}
+{MG = 2}
+
+{template mod_index()}
+	{&+}
+	{b = {c: {e: 1, 22: 3}, 1: 2}}
+
+	{@['mod_global'] = 10}
+	{@['mod_global']}
+
+	{@@['M' + 'G'] = 4}
+	{@@['M' + 'G']}
+
+	{with b}
+		{with @c}
+			{#[@e]}
+			{var tmp}
+			{@[2 == 2 && (tmp = (1 + 1|repeat))] = 5}
+			{tmp}
+			{@[(1 + 1|repeat)]}
+		{/}
+	{/}
+{/template}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('mod'), {prettyPrint: true, autoReplace: true}); test('mod', function () { equal(mod_index().trim(), '1042225'); }); </script> <script type="text/x-snakeskin-template" id="params">
+{template param_base(a, b = 1 ? Math.round(1) : 0)}
+	{b}
+{/}
+
+{template param_child() extends param_base}
+	{b = 2}
+{/}
+
+{template param_child2() extends param_child}
+	{b = 3}
+{/}
+
+{template param_base2(@a = {a: 1})}
+	{@a}
+{/}
+
+{template param_child22(@a) extends param_base2}
+{/}
+
+{template param_base3(@a = {a: {c: 1}})}
+	{b = 2}
+	{proto foo(@a = 1 ? @a : Math.round(0))}
+		{@c} {b}
+	{/}
+	{apply foo}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('params'), {prettyPrint: true, autoReplace: true}); test('params', function () { equal(param_base().trim(), '1'); equal(param_child().trim(), '2'); equal(param_child2().trim(), '3'); equal(param_base2().trim(), '1'); equal(param_child22().trim(), '1'); equal(param_base3().trim(), '1 2'); }); </script> <script type="text/x-snakeskin-template" id="pref">
+#{pref_global = 1}
+{pref_global2 = 2}
+
+{template pref_index()}
+	#{if 1}
+		{if 2}
+			#{@pref_global}
+			{pref_global2}
+		{/}
+	#{/}
+
+	{if 1}
+		{@pref_global}
+		#{@pref_global2}
+	\#{/}
+{/template}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('pref'), {prettyPrint: true, autoReplace: true}); test('pref', function () { equal(pref_index().trim(), '{if 2} 1 {pref_global2} {/} 1 2 #'); }); </script> <script type="text/x-snakeskin-template" id="proto">
+{proto proto_index->begin}
+	{apply f1(1)}
+{/}
+
+{proto proto_index->f1(i)}
+	{apply f2(i)}
+	{apply f2(i + 1)}
+
+	{proto f3(i)}
+		{i * 2}
+	{/}{&}
+{/}
+
+{template proto_index(i)}
+	{apply begin}
+	{apply f3(2)}
+
+	{proto f2(i)}
+		{i}
+	{/}{&}
+
+	{a = {a: 1}}
+	{with a}{&}
+		{proto f4(i)}
+			{@a} {i}
+		{/}
+	{/}
+
+	{apply f4(2)}
+{/}
+
+{proto proto_index2.a['foo']->begin(i)}
+	{apply f1(1)}
+{/}
+
+{proto proto_index2.a['foo']->f1(i)}
+	{i}
+{/}
+
+{template proto_index2.a['foo']()}
+	{apply begin(1)}
+{/}
+
+{template proto_recursive()}
+	{proto begin(i)}
+		{i}
+
+		{if i}
+			{apply begin(--i)}
+		{/}
+	{/}
+
+	{apply begin(5)}
+{/}
+
+{template proto_recursive2()}
+	{proto begin(i)}
+		{proto foo(i)}
+			{if i === 2}
+				{return}
+			{/}
+
+			{apply begin(i)}
+		{/}
+
+		{i}
+
+		{if i}
+			{apply foo(--i)}
+		{/}
+	{/}
+
+	{apply begin(5)}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto'), {prettyPrint: true, autoReplace: true}); test('proto', function () { equal(proto_index().trim(), '1  2    4  1 2'); equal(proto_index2.a['foo']().trim(), '1'); equal(proto_recursive().trim(), '5  4  3  2  1  0'); equal(proto_recursive2().trim(), '5   4   3'); }); </script> <script type="text/x-snakeskin-template" id="proto2">
+{template proto2_base()}
+	{&+}
+	{var a = 2, b, c}
+
+	{proto base(a = 1, b = 2, c)}
+		{a} {b} {c}
+	{/}
+
+	{apply base(a, b, c)}
+
+	{proto base2(a = 1, b = 2, c) => 0, a, 1}
+		{a} {b} {c}
+	{/}
+
+	{apply base2(null, a, 1)}
+{/}
+
+{template proto2_sub() extends proto2_base}
+	{proto base(a)}
+		{super}
+	{/}
+
+	{proto base2(@a = {aa: 9})}
+		{super}
+		{@aa}
+	{/}
+{/}
+
+{template proto2_base2()}
+	{&+}
+	{var a = 2, b, c}
+
+	{proto base(a = 1, b = 2, c)}
+		{a} {b} {c}
+
+		{proto base2(a = 1, b = 2, c)}
+			{a} {b} {c}
+		{/}
+
+		{apply base2(null, a, 1)}
+	{/}
+
+	{apply base(a, b, c)}
+{/}
+
+{template proto2_sub2() extends proto2_base2}
+	{proto base2(@a = {aa: 9})}
+		{super}
+		{@aa}
+	{/}
+{/}
+
+- proto proto2_base3->bar()
+	- a = 1
+
+- template proto2_base3()
+
+- proto proto2_sub3->bar() =>
+	< div :: 112
+	- super
+
+- template proto2_sub3() extends proto2_base3
+
+- template proto2_args()
+	- proto foo() => 1, 2
+		- block foo() => arguments[0] * 2, arguments[1] * 2
+			{arguments[0] + arguments[1]}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto2'), {prettyPrint: true, autoReplace: true}); test('proto2', function () { equal(proto2_base().trim(), '22021121'); equal(proto2_sub().trim(), '22021[object Object]219'); equal(proto2_sub2().trim(), '22[object Object]219'); equal(proto2_sub3().trim(), '<div>112</div>'); equal(proto2_args().trim(), '6'); }); </script> <script type="text/x-snakeskin-template" id="scope">
+{name = 'foo'}
+{template scope_index(obj)}
+	{name = 'bar'}
+	{with obj.child}
+		{@name}{&}
+		{var e = 'test'}
+		{with @child}
+			{
+				name + ' ' +
+				#99name + ' ' +
+				#name + ' ' +
+				#1name + ' ' +
+				#2name + ' ' +
+				@@name + ' ' +
+				@name + ' ' +
+				e
+			}
+		{end}
+	{end}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('scope'), {prettyPrint: true, autoReplace: true}); test('scope', function () { equal(scope_index({child: {name: 'Koba', child: {name: 'none'}}}).trim(), 'Kobabar bar Koba Koba bar foo none test'); }); </script> <script type="text/x-snakeskin-template" id="script">
+{template script_index()}
+	{script}
+		var a = [];
+	{/}
+
+	{script coffee}
+		var a = [];
+	{/}
+
+	{script coffee2}
+		var a = [];
+	{/}
+{/}
+
+{template script_index2()}
+	{script ts ng-(class = foo | id = bar)}
+		var a = [];
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true, autoReplace: true}); test('script', function () { equal(script_index().trim(), '<script type="text/javascript">var a = []; </script><script type="application/coffeescript">var a = []; </script><script type="coffee2">var a = []; </script>'); equal(script_index2().trim(), '<script type="application/typescript" ng-class="foo" ng-id="bar">var a = []; </script>'); }); </script> <script type="text/x-snakeskin-template" id="simple">
+{template simple_output()}
+	{e = {foo: {my: function () { return 1; }}}}
+	{a = {foo: 'my', n: 'foo'}}
+	{call e[a['n']][a['foo']](1, 2, 3)}
+	{new String([1, 2, 3]).indexOf()}
+	{'{foo}'|replace /^{/gim, ''}
+	{2 / 2}
+{/template}
+
+/*/ Foo */
+/// bar
+
+/**
+ * @return string
+ * {template bar}
+ */
+{template simple_index(name = 'world', lname)}/* Foo */
+	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	///<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	Foo{&}            bar\///1
+{/}
+
+{template simple_tpl.index(name = 'world', lname)}/* Foo */
+	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	/*{arguments.callee.name}*/
+{/}
+
+{template simple_tpl.foo['index'](name = 'world', lname)}/* Foo */
+	<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>
+	{a = 1}
+	{a === 1 ? 1 : 2}
+	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*////3
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), '1 -1 foo} 1'); equal(simple_index().trim(), '<h1>Hello world!</h1> Foobar///1'); equal(simple_index('Bob').trim(), '<h1>Hello Bob!</h1> Foobar///1'); equal(simple_index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> Foobar///1'); equal(simple_tpl.index().trim(), '<h1>Hello world!</h1>'); equal(simple_tpl.index('Bob').trim(), '<h1>Hello Bob!</h1>'); equal(simple_tpl.index('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1>'); equal(simple_tpl.foo['index']().trim(), '<h1>Hello world!</h1> 1'); equal(simple_tpl.foo['index']('Bob').trim(), '<h1>Hello Bob!</h1> 1'); equal(simple_tpl.foo['index']('Bob','Cache').trim(), '<h1>Hello Bob Cache!</h1> 1'); }); </script> <script type="text/x-snakeskin-template" id="space">
+- template space_index()
+	< .foo
+		< .bar
+			? 121
+		< .foo :: 1 2 3
+
+		< .car :: {&}
+
+
+			1
+
+- template space_index2()
+	1
+
+	{&+}
+	< .foo
+	< .foo :: {&}
+
+		1
+	< .bar
+	{&-}
+
+	2
+
+	1
+
+	{&+}
+	< .foo
+	< .foo
+
+		1
+	< .bar
+	{&-}
+
+	2
+
+- template space_index3()
+	1
+
+	- proto foo() =>
+
+
+		2
+
+	- proto bar() =>
+
+		1    2{&}
+
+	- proto foobar() =>
+
+		1{&}    2
+
+- template space_index4()
+	1
+
+	- block foo() =>
+
+
+		2
+
+	- block bar() =>
+
+		1    2{&}
+
+	- block foobar() =>
+
+		1{&}    2
+
+{template space_index5()}
+	1
+
+	{proto foo() =>}
+
+
+		2{&}  1
+	{/}
+
+	{proto bar() =>}
+
+
+		2  1
+	{/}
+{/}
+
+{template space_index6()}
+	1
+
+	{proto foo() => 2}
+
+
+		2
+
+	{/}
+
+	4
+{/}
+
+- template space_index7()
+	< .foo
+	< .foo
+
+	< .bar
+
+- template space_index8()
+	< .foo
+	< .foo
+	{&}
+	< .bar
+
+
+- template space_index9()
+	1{&}
+	- switch 1
+
+
+
+		- case 1 :: 2
+	1{switch 1}
+
+		{case 1}
+
+			1
+		{/}
+	{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('space'), {prettyPrint: true, autoReplace: true}); test('space', function () { equal(space_index().trim(), '<div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>'); equal(space_index2().trim(), '1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2 1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2'); equal(space_index3().trim(), '1 2 1 212'); equal(space_index4().trim(), '1 2 1 212'); equal(space_index5().trim(), '1 21 2 1'); equal(space_index6().trim(), '1 2 4'); equal(space_index7().trim(), '<div class="foo"></div><div class="foo"></div> <div class="bar"></div>'); equal(space_index8().trim(), '<div class="foo"></div><div class="foo"></div><div class="bar"></div>'); equal(space_index9().trim(), '121 1'); }); </script> <script type="text/x-snakeskin-template" id="style">
+{template style_index()}
+	#{style}
+		.a {}
+	#{/}
+
+	#{style css}
+		.a {}
+	#{/}
+
+	#{style css2}
+		.a {}
+	#{/}
+{/}
+
+{template style_index2()}
+	#{style css ng-(class = foo | id = bar)}
+		.a {}
+	#{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('style'), {prettyPrint: true, autoReplace: true}); test('style', function () { equal(style_index().trim(), '<style type="text/css">.a {} </style><style type="text/css">.a {} </style><style type="css2">.a {} </style>'); equal(style_index2().trim(), '<style type="text/css" ng-class="foo" ng-id="bar">.a {} </style>'); }); </script> <script type="text/x-snakeskin-template" id="super">
+{template super_base()}
+	{&+}
+
+	{block bar}
+		{a = 1}
+		{a}
+	{end}
+
+	#{proto bar}
+		2
+	#{end}
+
+	{apply bar}
+{/}
+
+{template super_child() extends super_base}
+	{a = 2}
+
+	{block bar}
+		{a}
+	{end}
+
+	{proto bar}
+		{super}
+		1
+	{end}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('super'), {prettyPrint: true, autoReplace: true}); test('super', function () { equal(super_child().trim(), '221'); }); </script> <script type="text/x-snakeskin-template" id="syntax">
+: a = 1 /// 1
+
+- template syntax_index()
+	/* < div. fooo
+		- a = 1 2 3
+	*/
+
+	< span.foo class = bar car
+		- tag .&__bar#my
+			1
+	#< .&__bar#my
+		1
+	- set & foo
+	< .&__bar#my
+		1
+
+
+
+- template syntax_index2() extends syntax_index
+
+- template syntax_index3()
+	- attr ng-( &
+		class = foo |
+		bar = foo
+	) .
+
+- template syntax_index4()
+	< div ng-( &
+		class = foo |
+		bar = foo
+	) .
+		foo
+
+- var usingSnakeskin = true
+
+- template syntax_index5(name = 'friend')
+    < h1.b-hello
+        - if usingSnakeskin
+            < span.&__msg style = color: blue | -info = some description
+                Hello {name}! You are amazing!
+        - else
+            < span.&__warning :: You wrong!!!
+
+
+- template syntax_index6()
+    < h1.b-hello
+        foo bar
+        car my
+            mooo
+                boo
+
+- template syntax_index7()
+	- switch 1
+		> 1
+			foo
+
+	bar
+
+- template syntax_index8()
+	Hello man &
+		foo bar
+    < div style = color: red :: bar
+    foo :: bar
+    < div class = \:: bar
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true, autoReplace: true}); test('syntax', function () { equal(syntax_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index2().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>'); equal(syntax_index3().trim(), 'ng-class="foo" ng-bar="foo"'); equal(syntax_index4().trim(), '<div ng-class="foo" ng-bar="foo">foo</div>'); equal(syntax_index5().trim(), '<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>'); equal(syntax_index6().trim(), '<h1 class="b-hello">foo bar car my mooo boo</h1>'); equal(syntax_index7().trim(), 'foo bar'); equal(syntax_index8().trim(), 'Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>'); }); </script> <script type="text/x-snakeskin-template" id="tag">
+{template tag_index()}
+	{tag span.foo class = bar car}
+		{tag .&__bar#my}
+			1
+		{/}
+	{/}
+
+	{tag .&__bar#my}
+		1
+	{/}
+
+	{set & foo}
+
+	{tag .&__bar#my}
+		1
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('tag'), {prettyPrint: true, autoReplace: true}); test('tag', function () { equal(tag_index().trim(), '<span class="bar car foo"><div id="my" class="foo__bar">1 </div></span><div id="my" class="&__bar">1 </div><div id="my" class="foo__bar">1 </div>'); }); </script> <script type="text/x-snakeskin-template" id="template">
+{template %fileName%()}
+	{'foo'|repeat}
+{/template}
+
+{template template.%fileName%.bar ()}
+	{'foo'|repeat}
+{/template}
+
+{template ['template_' + %fileName%]()}
+	{'foo'|repeat}
+{/template}
+
+{template template[%fileName% + 1] ()}
+	{'foo'|repeat}
+{/template}
+
+{template_foo = 'fooBar'}
+
+{proto [@template_foo]->bar}
+	fooBar
+{/proto}
+
+{template [@template_foo]()}
+	{apply bar}
+{/template}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('template'), {prettyPrint: true, autoReplace: true}); test('template', function () { equal(template().trim(), 'foofoo'); equal(template.template.bar().trim(), 'foofoo'); equal(template_template().trim(), 'foofoo'); equal(template['template1']().trim(), 'foofoo'); equal(fooBar().trim(), 'fooBar'); }); </script> <script type="text/x-snakeskin-template" id="try">
+{template try_index()}
+	{&+}
+	{try}
+		{void foo()}
+	{/}
+
+	{try}
+		{void foo()}
+
+	{catch err}
+		bar
+
+	{finally}
+		2
+	{/}
+
+	{try}
+		{void foo()}
+
+	{catch err}
+		bar
+	{/}
+
+	{try}
+		{void 2}
+
+	{finally}
+		1
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true, autoReplace: true}); test('try', function () { equal(try_index().trim(), 'bar2bar1'); }); </script> <script type="text/x-snakeskin-template" id="unary">
+{template unary_index()}
+	{typeof foo}
+	{1 instanceof Number}
+	{new Object}
+	{'valueOf' in Object.prototype}
+	{typeof typeof foo}
+	{1 instanceof Number instanceof Boolean}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('unary'), {prettyPrint: true, autoReplace: true}); test('unary', function () { equal(unary_index().trim(), 'undefined false [object Object] true string false'); }); </script> </body> </html>
