@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 23 Oct 2014 16:10:42 GMT
+ * Date: Sun, 02 Nov 2014 13:45:14 GMT
  */
 
 /*!
@@ -75,11 +75,15 @@ var Snakeskin = {
 	cache: {}
 };
 
-(function () {
-	var IS_NODE = typeof window === 'undefined' &&
-		typeof exports !== 'undefined';
+(function (root) {
+	var IS_NODE = false;
 
-	var root = this;
+	try {
+		IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+
+	} catch (ignore) {
+
+	}
 
 /*!
  * Набор базовых фильтров и методы для работы с ними
@@ -548,7 +552,7 @@ Snakeskin.appendChild = function (node, obj) {
 		module['exports'] = Snakeskin;
 
 	} else {
-		this['Snakeskin'] = Snakeskin;
+		root['Snakeskin'] = Snakeskin;
 	}
 
-}).call(this);
+})(this);
