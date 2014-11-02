@@ -42,12 +42,16 @@ gulp.task('build', function (callback) {
 			' * Date: ' + new Date().toUTCString() + '\n' +
 			' */\n\n';
 
-		gulp.src('./lib/core/core.js')
+		gulp.src('./lib/core.js')
 			.pipe(monic({flags: builds[key]}))
+
 			.pipe(es6({
 				disallowUnknownReferences: false,
 				disallowDuplicated: false
 			}))
+
+			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
+			.pipe(monic())
 
 			// https://github.com/termi/es6-transpiler/issues/61
 			.pipe(replace(/(for\s*\(\s*var\s+[^=]+)= void 0 in/g, '$1 in'))
@@ -63,6 +67,9 @@ gulp.task('build', function (callback) {
 
 			// *//*= foo *//* -> foo
 			.pipe(replace(/\/\*= (\w+) \*\//g, '$1'))
+
+			// //= foo -> foo
+			.pipe(replace(/\/\/= (.*)/g, '$1'))
 
 			// Пробельные символы в строках-шаблонах
 			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) { return sstr.replace(/\\n|\t/g, ''); }))
