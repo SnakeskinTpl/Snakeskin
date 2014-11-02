@@ -8,7 +8,7 @@
 
 			<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js"></script>
-			<script type="text/javascript" src="../build/snakeskin.min.js"></script>
+			<script type="text/javascript" src="../dist/snakeskin.min.js"></script>
 			<script type="text/javascript">
 				Object.create = Object.create || function (obj) {
 					function F() {
