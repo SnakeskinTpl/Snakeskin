@@ -3,6 +3,7 @@ proto2_sub
 proto2_sub2
 proto2_sub3
 proto2_args
+proto2_escape
 
 ###
 
@@ -74,6 +75,12 @@ proto2_args
 		- block foo() => arguments[0] * 2, arguments[1] * 2
 			{arguments[0] + arguments[1]}
 
+- proto proto2_escape->foo()
+	< svg version = 1.1
+
+- template proto2_escape()
+	- apply foo()
+
 ###
 
 22021121
@@ -93,3 +100,7 @@ proto2_args
 ***
 
 6
+
+***
+
+<svg version="1.1"></svg>

@@ -751,7 +751,13 @@
 	- proto foo() => 1, 2
 		- block foo() => arguments[0] * 2, arguments[1] * 2
 			{arguments[0] + arguments[1]}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto2'), {prettyPrint: true, autoReplace: true}); test('proto2', function () { equal(proto2_base().trim(), "22021121"); equal(proto2_sub().trim(), "22021[object Object]219"); equal(proto2_sub2().trim(), "22[object Object]219"); equal(proto2_sub3().trim(), "<div>112</div>"); equal(proto2_args().trim(), "6"); }); </script> <script type="text/x-snakeskin-template" id="scope"> 
+
+- proto proto2_escape->foo()
+	< svg version = 1.1
+
+- template proto2_escape()
+	- apply foo()
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('proto2'), {prettyPrint: true, autoReplace: true}); test('proto2', function () { equal(proto2_base().trim(), "22021121"); equal(proto2_sub().trim(), "22021[object Object]219"); equal(proto2_sub2().trim(), "22[object Object]219"); equal(proto2_sub3().trim(), "<div>112</div>"); equal(proto2_args().trim(), "6"); equal(proto2_escape().trim(), "<svg version="1.1"></svg>"); }); </script> <script type="text/x-snakeskin-template" id="scope"> 
 {name = 'foo'}
 {template scope_index(obj)}
 	{name = 'bar'}
