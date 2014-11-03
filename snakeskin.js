@@ -1,10 +1,8 @@
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
-var path = require('path');
-var fs = require('fs'),
-	exists = fs.existsSync || path.existsSync;
-
-var cache = {};
+var path = require('path'),
+	fs = require('fs'),
+	cache = {};
 
 function clone(obj) {
 	return JSON.parse(JSON.stringify(obj));
@@ -26,7 +24,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 	source = path.normalize(path.resolve(source));
 	result = path.normalize(path.resolve(result));
 
-	if (!exists(source) || !exists(result)) {
+	if (!fs.existsSync(source) || !fs.existsSync(result)) {
 		return false;
 	}
 
@@ -57,7 +55,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		for (var i = 0; i < includes.length; i++) {
 			var el = includes[i];
 
-			if (exists(el[0])) {
+			if (fs.existsSync(el[0])) {
 				if (fs.statSync(el[0]).mtime.valueOf() != el[1]) {
 					return false;
 				}
