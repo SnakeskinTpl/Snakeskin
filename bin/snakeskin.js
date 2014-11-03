@@ -6,9 +6,8 @@ var program = require('commander'),
 	beautify = require('js-beautify'),
 	monocle = require('monocle')();
 
-var path = require('path');
-var fs = require('fs'),
-	exists = fs.existsSync || path.existsSync;
+var path = require('path'),
+	fs = require('fs');
 
 program
 	.version(Snakeskin.VERSION.join('.'))
@@ -115,23 +114,22 @@ for (var key in params) {
 
 	var el = params[key];
 	switch (el) {
-		case 'true': {
+		case 'true':
 			el = true;
-		} break;
+			break;
 
-		case 'false': {
+		case 'false':
 			el = false;
-		} break;
+			break;
 
-		case 'null': {
+		case 'null':
 			el = null;
-		} break;
+			break;
 
-		default: {
+		default:
 			var nm = Number(el);
 			el = isNaN(nm) ?
 				el : nm;
-		}
 	}
 
 	params[key] = el;
@@ -167,7 +165,7 @@ var file = program['source'],
 if (!file && args.length) {
 	input = args.join(' ');
 
-	if (exists(input)) {
+	if (fs.existsSync(input)) {
 		file = input;
 		input = false;
 	}
@@ -180,7 +178,7 @@ function testDir(src) {
 	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach(function (el, i, data) {
 		var src = data.slice(0, i + 1).join(path.sep);
 
-		if (!exists(src)) {
+		if (!fs.existsSync(src)) {
 			fs.mkdirSync(src);
 		}
 	});
@@ -219,10 +217,10 @@ function action(data, file) {
 			path.resolve(val)
 		);
 
-		if (exists(val) && fileName && fs.statSync(val).isDirectory()) {
+		if (fs.existsSync(val) && fileName && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
 
-			if (!exists(tmp)) {
+			if (!fs.existsSync(tmp)) {
 				tmp += 'on';
 			}
 		}
@@ -261,11 +259,11 @@ function action(data, file) {
 		outFile = path.normalize(path.resolve(pathTpl(outFile)));
 		testDir(outFile);
 
-		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
+		if (fs.existsSync(outFile) && fs.statSync(outFile).isDirectory()) {
 			outFile = path.join(outFile, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
 		}
 
-		if (file && (!words || exists(words)) && params.cache !== false) {
+		if (file && (!words || fs.existsSync(words)) && params.cache !== false) {
 			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
 
 			if (includes) {
@@ -412,7 +410,7 @@ if (!file && input == null) {
 				listener: function (f) {
 					var src = f.fullPath;
 					if (!fMap[src] &&
-						exists(src) &&
+						fs.existsSync(src) &&
 						!f.stat.isDirectory() &&
 						(mask ? mask.test(src) : path.extname(src) === '.ss')
 
@@ -452,7 +450,7 @@ if (!file && input == null) {
 								}
 
 								if ((!mask || mask.test(key))) {
-									if (exists(key)) {
+									if (fs.existsSync(key)) {
 										action(fs.readFileSync(key), key);
 
 									} else {
