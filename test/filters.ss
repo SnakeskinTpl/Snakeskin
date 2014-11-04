@@ -9,6 +9,10 @@ filters_collapse
 filters_truncate
 filters_remove
 filters_replace
+filters_json
+filters_string
+filters_parse
+filters_default
 
 ###
 
@@ -16,7 +20,7 @@ filters_replace
 {template filters_index()}
 	{a = {a: String}}
 	{with a}
-		{'   foo   bar '|collapse|ucfirst|repeat 3|remove ('   Foo bar'|trim|repeat)}
+		{'   foo   bar ' |collapse |ucfirst |repeat 3 |remove ('   Foo bar' |trim |repeat)}
 		{('   foo   bar '|collapse|ucfirst|repeat 3|remove (@a('   Foo bar')|trim|repeat)) + '<b>1</b>'|!html}
 		{('   foo   bar '|collapse|ucfirst|repeat 3|remove (@@a('   Foo bar')|trim|repeat)) + '<b>1</b>'}
 	{/}
@@ -52,12 +56,36 @@ filters_replace
 	- 'foo bar'|remove ('foo bar'|remove 'bar')
 	- 'foo bar'|remove 'foo'
 	- 'foo bar'|remove /foo\s*/
+	- 'foo bar'|remove new RegExp('foo\\s*')
+	- 'foo bar'|remove ((new RegExp('foo\\s*')))
 
 - template filters_replace()
 	- 'foo bar'|replace 'foo', 'bar'
 	- 'foo bar'|replace /foo\s*/, 'bar'
 	- 'foo bar'|replace new RegExp('foo\\s*'), 'bar'
+	- new String('foo bar')|replace new RegExp('foo\\s*'), 'bar'
+	- new String('foo bar')|replace ((new RegExp('foo\\s*'))), 'bar'
 
+- template filters_json()
+	- 'foo'|json|!html
+	- new String('foo')|json|!html
+	- ({'foo': true})|json|!html
+
+- template filters_string()
+	- 'foo'|string|!html
+	- new String('foo')|string|!html
+	- ({'foo': true})|string|!html
+
+- template filters_parse()
+	- '"foo"'|parse
+	- ('{"foo": true}') &
+		|parse
+		|string
+		|!html
+	.
+
+- template filters_default(foo)
+	- foo|default 1
 ###
 
 Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;
@@ -96,8 +124,24 @@ foo bar f… foo bar… foo bar&#8230;
 
 ***
 
-bar  bar bar
+bar  bar bar bar bar
 
 ***
 
-bar bar barbar barbar
+bar bar barbar barbar barbar barbar
+
+***
+
+"foo" "foo" {"foo":true}
+
+***
+
+foo foo {"foo":true}
+
+***
+
+foo {"foo":true}
+
+***
+
+1

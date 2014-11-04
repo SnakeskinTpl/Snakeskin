@@ -276,12 +276,73 @@
 {template filters_index()}
 	{a = {a: String}}
 	{with a}
-		{'   foo   bar '|collapse|ucfirst|repeat 3|remove ('   Foo bar'|trim|repeat)}
+		{'   foo   bar ' |collapse |ucfirst |repeat 3 |remove ('   Foo bar' |trim |repeat)}
 		{('   foo   bar '|collapse|ucfirst|repeat 3|remove (@a('   Foo bar')|trim|repeat)) + '<b>1</b>'|!html}
 		{('   foo   bar '|collapse|ucfirst|repeat 3|remove (@@a('   Foo bar')|trim|repeat)) + '<b>1</b>'}
 	{/}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
+
+- template filters_uhtml()
+	{'<div>121</div>'|html|uhtml|!html}
+
+- template filters_stripTags()
+	{'<div class="foo bar">121</div>'|stripTags}
+
+- template filters_upper()
+	{'foo'|upper}
+
+- template filters_ucfirst()
+	{'foo'|ucfirst}
+
+- template filters_lower()
+	{'FOO'|lower}
+
+- template filters_lcfirst()
+	{'FOO'|lcfirst}
+
+- template filters_collapse()
+	{'f      oo'|collapse}
+
+- template filters_truncate()
+	- 'foo bar ffffffffuuuu'|truncate 10
+	- 'foo bar ffffffffuuuu'|truncate 10, true
+	- 'foo bar ffffffffuuuu'|truncate 10, true, true
+
+- template filters_remove()
+	- 'foo bar'|remove ('foo bar'|remove 'bar')
+	- 'foo bar'|remove 'foo'
+	- 'foo bar'|remove /foo\s*/
+	- 'foo bar'|remove new RegExp('foo\\s*')
+	- 'foo bar'|remove ((new RegExp('foo\\s*')))
+
+- template filters_replace()
+	- 'foo bar'|replace 'foo', 'bar'
+	- 'foo bar'|replace /foo\s*/, 'bar'
+	- 'foo bar'|replace new RegExp('foo\\s*'), 'bar'
+	- new String('foo bar')|replace new RegExp('foo\\s*'), 'bar'
+	- new String('foo bar')|replace ((new RegExp('foo\\s*'))), 'bar'
+
+- template filters_json()
+	- 'foo'|json|!html
+	- new String('foo')|json|!html
+	- ({'foo': true})|json|!html
+
+- template filters_string()
+	- 'foo'|string|!html
+	- new String('foo')|string|!html
+	- ({'foo': true})|string|!html
+
+- template filters_parse()
+	- '"foo"'|parse
+	- ('{"foo": true}') &
+		|parse
+		|string
+		|!html
+	.
+
+- template filters_default(foo)
+	- foo|default 1
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
 {template i18n_index()}
 	`hel\`lo` {`world`} \`bar
 {/}
