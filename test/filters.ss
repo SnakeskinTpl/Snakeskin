@@ -13,6 +13,7 @@ filters_json
 filters_string
 filters_parse
 filters_default
+filters_test
 
 ###
 
@@ -86,6 +87,13 @@ filters_default
 
 - template filters_default(foo)
 	- foo|default 1
+
+- template filters_test()
+	: a = 1
+	- 1|1
+	- 1 | 1
+	- 1| a
+	- 1 | a
 ###
 
 Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;
@@ -145,3 +153,7 @@ foo {"foo":true}
 ***
 
 1
+
+***
+
+1 1 1 1
