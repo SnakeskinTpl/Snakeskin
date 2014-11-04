@@ -1,4 +1,14 @@
 filters_index
+filters_uhtml
+filters_stripTags
+filters_upper
+filters_ucfirst
+filters_lower
+filters_lcfirst
+filters_collapse
+filters_truncate
+filters_remove
+filters_replace
 
 ###
 
@@ -12,6 +22,82 @@ filters_index
 	{/}
 {/}
 
+- template filters_uhtml()
+	{'<div>121</div>'|html|uhtml|!html}
+
+- template filters_stripTags()
+	{'<div class="foo bar">121</div>'|stripTags}
+
+- template filters_upper()
+	{'foo'|upper}
+
+- template filters_ucfirst()
+	{'foo'|ucfirst}
+
+- template filters_lower()
+	{'FOO'|lower}
+
+- template filters_lcfirst()
+	{'FOO'|lcfirst}
+
+- template filters_collapse()
+	{'f      oo'|collapse}
+
+- template filters_truncate()
+	- 'foo bar ffffffffuuuu'|truncate 10
+	- 'foo bar ffffffffuuuu'|truncate 10, true
+	- 'foo bar ffffffffuuuu'|truncate 10, true, true
+
+- template filters_remove()
+	- 'foo bar'|remove ('foo bar'|remove 'bar')
+	- 'foo bar'|remove 'foo'
+	- 'foo bar'|remove /foo\s*/
+
+- template filters_replace()
+	- 'foo bar'|replace 'foo', 'bar'
+	- 'foo bar'|replace /foo\s*/, 'bar'
+	- 'foo bar'|replace new RegExp('foo\\s*'), 'bar'
+
 ###
 
 Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;
+
+***
+
+<div>121</div>
+
+***
+
+121
+
+***
+
+FOO
+
+***
+
+Foo
+
+***
+
+foo
+
+***
+
+fOO
+
+***
+
+f oo
+
+***
+
+foo bar f… foo bar… foo bar&#8230;
+
+***
+
+bar  bar bar
+
+***
+
+bar bar barbar barbar
