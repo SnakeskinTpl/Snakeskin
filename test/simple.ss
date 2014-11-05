@@ -10,6 +10,7 @@ simple_tpl.foo['index'] ; 'Bob'
 simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 simple_output2
 simple_output3
+simple_output4
 simple_vars
 
 ###
@@ -72,6 +73,9 @@ simple_vars
 	*/
 	- apply foo
 
+- template simple_output4()
+	}}} 121 \{\{}
+
 - var simple_round = Math.round
 
 - template simple_vars()
@@ -124,6 +128,10 @@ simple_vars
 ***
 
 12 12
+
+***
+
+}}} 121 {{}
 
 ***
 
