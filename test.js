@@ -1,5 +1,6 @@
 var path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	eol = require('os').EOL;
 
 var assert = require('assert'),
 	snakeskin = require('./snakeskin');
@@ -108,14 +109,8 @@ run({
 	exports: 'commonJS',
 	prettyPrint: true,
 	throws: true,
-	autoReplace: true
-});
-
-run({
-	exports: 'commonJS',
-	prettyPrint: true,
-	throws: true,
-	autoReplace: true
+	autoReplace: true,
+	lineSeparator: eol
 });
 
 run({
@@ -123,7 +118,7 @@ run({
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
-	inlineIterators: true
+	lineSeparator: eol
 });
 
 run({
@@ -131,7 +126,8 @@ run({
 	prettyPrint: true,
 	throws: true,
 	autoReplace: true,
-	renderMode: 'stringBuffer'
+	inlineIterators: true,
+	lineSeparator: eol
 });
 
 run({
@@ -140,7 +136,17 @@ run({
 	throws: true,
 	autoReplace: true,
 	renderMode: 'stringBuffer',
-	inlineIterators: true
+	lineSeparator: eol
+});
+
+run({
+	exports: 'commonJS',
+	prettyPrint: true,
+	throws: true,
+	autoReplace: true,
+	renderMode: 'stringBuffer',
+	inlineIterators: true,
+	lineSeparator: eol
 });
 
 fs.writeFileSync(path.join(__dirname, 'test', 'test.html'), tpls.test(asserts));
