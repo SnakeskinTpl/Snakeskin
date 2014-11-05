@@ -367,7 +367,14 @@ ${ /*121***/ }
 #{template i18n_index2()}
 	`hel\`lo` #{`world`} \`bar
 #{/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('i18n'), {prettyPrint: true, autoReplace: true}); test('i18n', function () { equal(i18n_index().trim(), "hel`lo world `bar"); equal(i18n_index2().trim(), "hel`lo world `bar"); }); </script> <script type="text/x-snakeskin-template" id="include"> 
+
+- proto i18n_index3->foo :: `hello`
+
+{template i18n_index3() @= localization true @= language {hello: 'привет'}}
+	`hello` #{`hello`} `#{'hello'}` `--` {apply foo}
+	`{proto bar}hello{/}`
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('i18n'), {prettyPrint: true, autoReplace: true}); test('i18n', function () { equal(i18n_index().trim(), "hel`lo world `bar"); equal(i18n_index2().trim(), "hel`lo world `bar"); equal(i18n_index3().trim(), "привет привет   привет"); }); </script> <script type="text/x-snakeskin-template" id="include"> 
 {var foo = 1}
 {import bar = 1}
 
