@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.1.4
+ * Snakeskin v6.2.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 05 Nov 2014 10:47:07 GMT
+ * Date: Wed, 05 Nov 2014 16:55:57 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 1, 4],
+	VERSION: [6, 2, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -9520,7 +9520,7 @@ DirObj.prototype.popParams = function () {
 	var multPropRgxp = /\[|\./,
 		firstPropRgxp = /([^.[]+)(.*)/;
 
-	var propValRgxp = /[^-+!]+/;
+	var propValRgxp = /[^-+!(]+/;
 	var exprimaHackFn = function(str)  {return str
 		.trim()
 		.replace(/^\[/, '$[')
@@ -12431,7 +12431,7 @@ Snakeskin.addDirective(
 
 			function (command, commandLength, type) {
 				this.startDir();
-				this.append((("async." + type) + "(["));
+				this.append((("" + (this.prepareOutput('async', true))) + ("." + type) + "(["));
 			},
 
 			function () {
@@ -12461,7 +12461,7 @@ Snakeskin.addDirective(
 
 			function (command, commandLength, type) {
 				this.startDir();
-				this.append((("async." + type) + "("));
+				this.append((("" + (this.prepareOutput('async', true))) + ("." + type) + "("));
 			},
 
 			function () {
@@ -13965,7 +13965,7 @@ Snakeskin.addDirective(
 			insideProto = inside === 'proto' || this.proto;
 
 		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a cycles, \"proto\" or a async series"));
+			return this.error((("directive \"" + (this.name)) + "\" can be used only with a cycles, \"proto\" or an async series"));
 		}
 
 		this.startInlineDir();
@@ -14035,7 +14035,7 @@ Snakeskin.addDirective(
 			insideProto = inside === 'proto' || this.proto;
 
 		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a cycles, \"proto\" or a async series"));
+			return this.error((("directive \"" + (this.name)) + "\" can be used only with a cycles, \"proto\" or an async series"));
 		}
 
 		this.startInlineDir();
@@ -14700,7 +14700,7 @@ Snakeskin.addDirective(
 				if (!this.inlineIterators) {
 					if (parts.length === 3) {
 						this.append(/* cbws */(("\
-$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
+" + (this.prepareOutput((("$C(" + (parts[0])) + ")"), true))) + (".forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
 " + (this.declArguments())) + "\
 "));
 
@@ -14952,7 +14952,7 @@ continue;\
 
 			if (this.isReady()) {
 				this.append(/* cbws */(("\
-$C(" + (this.prepareOutput(parts[0], true))) + (").forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
+" + (this.prepareOutput((("$C(" + (parts[0])) + ")"), true))) + (".forEach(function (" + (this.declCallbackArgs(parts))) + (") {\
 " + (this.declArguments())) + "\
 "));
 			}
