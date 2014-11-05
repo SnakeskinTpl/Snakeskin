@@ -2,6 +2,8 @@ data_index
 data_index2
 data_index3
 data_index4
+data_index5
+data_index6
 data_decl
 
 ###
@@ -48,6 +50,14 @@ data_decl
 
 	121
 
+- template data_index5()
+	= '/**/${ /*  */ }'
+
+- template data_index6()
+	= ' 121 &
+${ /*121***/ }
+' .
+
 {template data_decl()}
 	{foo = 'bar'}
 
@@ -71,6 +81,16 @@ data_decl
 ***
 
 { 3 } 121
+
+***
+
+'/**/'
+
+***
+
+' 121
+
+'
 
 ***
 
