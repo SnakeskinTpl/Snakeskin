@@ -342,7 +342,14 @@
 
 - template filters_default(foo)
 	- foo|default 1
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
+
+- template filters_test()
+	: a = 1
+	- 1|1
+	- 1 | 1
+	- 1| a
+	- 1 | a
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); equal(filters_test().trim(), "1 1 1 1"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
 {template i18n_index()}
 	`hel\`lo` {`world`} \`bar
 {/}
@@ -595,13 +602,17 @@
 {/}
  </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('logic'), {prettyPrint: true, autoReplace: true}); test('logic', function () { equal(logic_index(1).trim(), "1 1 3"); equal(logic_index(2).trim(), "2 2 1"); equal(logic_index(3).trim(), "3 3 1"); equal(logic_sub().trim(), "<span class=""></span> 1"); }); </script> <script type="text/x-snakeskin-template" id="macros"> 
 {template macros_index()}
-	"Hello 'friend'" -- <- <-> -> bar...
+	"Hello 'friend'" -- bar...
 
 	{plain}
-		"Hello 'friend'" -- <- <-> -> bar...
+		"Hello 'friend'" -- bar...
 	{/}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), "«Hello „friend“» — ← ↔ → bar… "Hello 'friend'" -- <- <-> -> bar..."); }); </script> <script type="text/x-snakeskin-template" id="mod"> 
+
+- template macros_index2()
+	<!-- 121 -->
+	<a>--</a>
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), "«Hello „friend“» — bar… "Hello 'friend'" -- bar..."); equal(macros_index2().trim(), "<!-- 121 --> <a>—</a>"); }); </script> <script type="text/x-snakeskin-template" id="mod"> 
 {['mod_global'] = 1}
 {MG = 2}
 
