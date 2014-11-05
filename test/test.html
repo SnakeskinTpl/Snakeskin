@@ -412,7 +412,10 @@ ${ /*121***/ }
 
 - template filters_test2()
 	- 'foo'|test.bar.upper
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); equal(filters_test().trim(), "1 1 1 1"); equal(filters_test2().trim(), "FOO"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
+
+- template filters_test3()
+	- (('f'|upper) + ('L'|lower))|replace 'l', 121
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); equal(filters_test().trim(), "1 1 1 1"); equal(filters_test2().trim(), "FOO"); equal(filters_test3().trim(), "F121"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
 {template i18n_index()}
 	`hel\`lo` {`world`} \`bar
 {/}
@@ -1333,7 +1336,13 @@ ${ /*121***/ }
 		1
 	{/}
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true, autoReplace: true}); test('try', function () { equal(try_index().trim(), "bar2bar1"); }); </script> <script type="text/x-snakeskin-template" id="unary"> 
+
+- template try_index2()
+	- try
+		- throw new Error('ffffuuu'|upper)
+	- catch err
+		- err.message
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('try'), {prettyPrint: true, autoReplace: true}); test('try', function () { equal(try_index().trim(), "bar2bar1"); equal(try_index2().trim(), "FFFFUUU"); }); </script> <script type="text/x-snakeskin-template" id="unary"> 
 {template unary_index()}
 	{typeof foo}
 	{1 instanceof Number}

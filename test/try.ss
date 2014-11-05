@@ -1,4 +1,5 @@
 try_index
+try_index2
 
 ###
 
@@ -33,6 +34,15 @@ try_index
 	{/}
 {/}
 
+- template try_index2()
+	- try
+		- throw new Error('ffffuuu'|upper)
+	- catch err
+		- err.message
 ###
 
 bar2bar1
+
+***
+
+FFFFUUU

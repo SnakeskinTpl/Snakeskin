@@ -15,6 +15,7 @@ filters_parse
 filters_default
 filters_test
 filters_test2
+filters_test3
 
 ###
 
@@ -98,6 +99,9 @@ filters_test2
 
 - template filters_test2()
 	- 'foo'|test.bar.upper
+
+- template filters_test3()
+	- (('f'|upper) + ('L'|lower))|replace 'l', 121
 ###
 
 Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;
@@ -165,3 +169,7 @@ foo {"foo":true}
 ***
 
 FOO
+
+***
+
+F121
