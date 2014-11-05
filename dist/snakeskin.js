@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 05 Nov 2014 09:32:00 GMT
+ * Date: Wed, 05 Nov 2014 10:47:07 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -13412,12 +13412,10 @@ __COMMENT_RESULT__ = \'\';\
 
 			try {
 				if (opt_base) {
-					val = path['join'](path['dirname'](opt_base), val);
+					val = path['resolve'](path['dirname'](opt_base), val);
 				}
 
-				val = path['normalize'](
-					path['resolve'](path['dirname'](opt_base), val)
-				);
+				val = path['normalize'](path['resolve'](val));
 
 				if (fs['existsSync'](val)) {
 					if (opt_onFileExists) {
@@ -17563,7 +17561,7 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 				var file = fs['readFileSync'](src).toString();
 
 				fsStack.push(
-					(("" + s) + ("__setFile__ " + (escapeBackslash(src))) + ("" + e) + "") +
+					(("" + s) + ("__setFile__ " + src) + ("" + e) + "") +
 
 					(opt_type ?
 						(("" + s) + ("__setSSFlag__ renderAs '" + opt_type) + ("'" + e) + "") : '') +
