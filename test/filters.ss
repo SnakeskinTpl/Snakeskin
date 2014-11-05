@@ -14,6 +14,7 @@ filters_string
 filters_parse
 filters_default
 filters_test
+filters_test2
 
 ###
 
@@ -94,6 +95,9 @@ filters_test
 	- 1 | 1
 	- 1| a
 	- 1 | a
+
+- template filters_test2()
+	- 'foo'|test.bar.upper
 ###
 
 Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;
@@ -157,3 +161,7 @@ foo {"foo":true}
 ***
 
 1 1 1 1
+
+***
+
+FOO

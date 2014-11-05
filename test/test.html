@@ -123,7 +123,31 @@
 	- super
 
 - template block_sub4() extends block_base4
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('block'), {prettyPrint: true, autoReplace: true}); test('block', function () { equal(block_base().trim(), "2202154"); equal(block_sub().trim(), "22[object Object]2952"); equal(block_sub2().trim(), "22[object Object]29"); equal(block_sub3().trim(), "222"); equal(block_sub4().trim(), "<div>112</div>"); }); </script> <script type="text/x-snakeskin-template" id="cycles"> 
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('block'), {prettyPrint: true, autoReplace: true}); test('block', function () { equal(block_base().trim(), "2202154"); equal(block_sub().trim(), "22[object Object]2952"); equal(block_sub2().trim(), "22[object Object]29"); equal(block_sub3().trim(), "222"); equal(block_sub4().trim(), "<div>112</div>"); }); </script> <script type="text/x-snakeskin-template" id="collection"> 
+- import $C = require('collection.js').$C
+
+{template collection_index()}
+	{$forEach [1, 2, 3] => {filter: ':el > 1'} => el}
+		{el}
+	{/}
+{/}
+
+{template collection_index2()}
+	{$forEach [1, 2, 3] => {filter: ':el > 1'} => el}
+		{el}
+		{break}
+	{/}
+{/}
+
+{template collection_index3()}
+	{$forEach [1, 2, 3] => {filter: ':el > 1'} => el}
+		{if el === 3}
+			{continue}
+		{/}
+		{el}
+	{/}
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('collection'), {prettyPrint: true, autoReplace: true}); test('collection', function () { equal(collection_index().trim(), "2 3"); equal(collection_index2().trim(), "2"); equal(collection_index3().trim(), "2"); }); </script> <script type="text/x-snakeskin-template" id="cycles"> 
 {template cycles_index(i = 0)}
 	{&+}
 		{for var j = 0; j < 3; j++}
@@ -359,7 +383,10 @@ ${ /*121***/ }
 	- 1 | 1
 	- 1| a
 	- 1 | a
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); equal(filters_test().trim(), "1 1 1 1"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
+
+- template filters_test2()
+	- 'foo'|test.bar.upper
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('filters'), {prettyPrint: true, autoReplace: true}); test('filters', function () { equal(filters_index().trim(), "Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;"); equal(filters_uhtml().trim(), "<div>121</div>"); equal(filters_stripTags().trim(), "121"); equal(filters_upper().trim(), "FOO"); equal(filters_ucfirst().trim(), "Foo"); equal(filters_lower().trim(), "foo"); equal(filters_lcfirst().trim(), "fOO"); equal(filters_collapse().trim(), "f oo"); equal(filters_truncate().trim(), "foo bar f… foo bar… foo bar&#8230;"); equal(filters_remove().trim(), "bar  bar bar bar bar"); equal(filters_replace().trim(), "bar bar barbar barbar barbar barbar"); equal(filters_json().trim(), ""foo" "foo" {"foo":true}"); equal(filters_string().trim(), "foo foo {"foo":true}"); equal(filters_parse().trim(), "foo {"foo":true}"); equal(filters_default().trim(), "1"); equal(filters_test().trim(), "1 1 1 1"); equal(filters_test2().trim(), "FOO"); }); </script> <script type="text/x-snakeskin-template" id="i18n"> 
 {template i18n_index()}
 	`hel\`lo` {`world`} \`bar
 {/}
@@ -962,7 +989,12 @@ ${ /*121***/ }
 	/* < foo
 	*/
 	- apply foo
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), "1 -1 foo} 1"); equal(simple_index().trim(), "<h1>Hello world!</h1> Foobar///1"); equal(simple_index('Bob').trim(), "<h1>Hello Bob!</h1> Foobar///1"); equal(simple_index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> Foobar///1"); equal(simple_tpl.index().trim(), "<h1>Hello world!</h1>"); equal(simple_tpl.index('Bob').trim(), "<h1>Hello Bob!</h1>"); equal(simple_tpl.index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1>"); equal(simple_tpl.foo['index']().trim(), "<h1>Hello world!</h1> 1"); equal(simple_tpl.foo['index']('Bob').trim(), "<h1>Hello Bob!</h1> 1"); equal(simple_tpl.foo['index']('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> 1"); equal(simple_output2().trim(), "12"); equal(simple_output3().trim(), "12 12"); }); </script> <script type="text/x-snakeskin-template" id="space"> 
+
+- var simple_round = Math.round
+
+- template simple_vars()
+	- simple_round(1.7)
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), "1 -1 foo} 1"); equal(simple_index().trim(), "<h1>Hello world!</h1> Foobar///1"); equal(simple_index('Bob').trim(), "<h1>Hello Bob!</h1> Foobar///1"); equal(simple_index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> Foobar///1"); equal(simple_tpl.index().trim(), "<h1>Hello world!</h1>"); equal(simple_tpl.index('Bob').trim(), "<h1>Hello Bob!</h1>"); equal(simple_tpl.index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1>"); equal(simple_tpl.foo['index']().trim(), "<h1>Hello world!</h1> 1"); equal(simple_tpl.foo['index']('Bob').trim(), "<h1>Hello Bob!</h1> 1"); equal(simple_tpl.foo['index']('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> 1"); equal(simple_output2().trim(), "12"); equal(simple_output3().trim(), "12 12"); equal(simple_vars().trim(), "2"); }); </script> <script type="text/x-snakeskin-template" id="space"> 
 - template space_index()
 	< .foo
 		< .bar
