@@ -375,7 +375,7 @@ ${ /*121***/ }
 	`{proto bar}hello{/}`
 {/}
 
-{template i18n_index4() @= localization true @= language '\\lang.js'}
+{template i18n_index4() @= localization true @= language 'lang.js'}
 	`foo`
 {/}
  </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('i18n'), {prettyPrint: true, autoReplace: true}); test('i18n', function () { equal(i18n_index().trim(), "hel`lo world `bar"); equal(i18n_index2().trim(), "hel`lo world `bar"); equal(i18n_index3().trim(), "привет привет   привет"); equal(i18n_index4().trim(), "ffffuuuuuu"); }); </script> <script type="text/x-snakeskin-template" id="include"> 
@@ -643,7 +643,10 @@ ${ /*121***/ }
 
 - template macros_index5() @= macros './macros.json'
 	121 $$
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), "«Hello „friend“» — bar… "Hello 'friend'" -- bar..."); equal(macros_index2().trim(), "<!-- 121 --> <a>—</a>"); equal(macros_index3().trim(), "foo <a>--</a>"); equal(macros_index4().trim(), "121 %%"); equal(macros_index5().trim(), "121 ^^"); }); </script> <script type="text/x-snakeskin-template" id="mod"> 
+
+- template macros_index6()
+	<a>----</a><a>-- --</a>
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), "«Hello „friend“» — bar… "Hello 'friend'" -- bar..."); equal(macros_index2().trim(), "<!-- 121 --> <a>—</a>"); equal(macros_index3().trim(), "foo <a>--</a>"); equal(macros_index4().trim(), "121 %%"); equal(macros_index5().trim(), "121 ^^"); equal(macros_index6().trim(), "<a>—--</a><a>— —</a>"); }); </script> <script type="text/x-snakeskin-template" id="mod"> 
 {['mod_global'] = 1}
 {MG = 2}
 
