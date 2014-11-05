@@ -5,6 +5,8 @@ var path = require('path'),
 var assert = require('assert'),
 	snakeskin = require('./snakeskin');
 
+snakeskin.importFilters(snakeskin.Filters, 'test.bar');
+
 var testFolder = path.resolve(__dirname, 'test'),
 	buildFolder = path.join(testFolder, 'build');
 
