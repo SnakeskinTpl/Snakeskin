@@ -374,12 +374,16 @@ ${ /*121***/ }
 	`hello` #{`hello`} `#{'hello'}` `--` {apply foo}
 	`{proto bar}hello{/}`
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('i18n'), {prettyPrint: true, autoReplace: true}); test('i18n', function () { equal(i18n_index().trim(), "hel`lo world `bar"); equal(i18n_index2().trim(), "hel`lo world `bar"); equal(i18n_index3().trim(), "привет привет   привет"); }); </script> <script type="text/x-snakeskin-template" id="include"> 
+
+{template i18n_index4() @= localization true @= language '\\lang.js'}
+	`foo`
+{/}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('i18n'), {prettyPrint: true, autoReplace: true}); test('i18n', function () { equal(i18n_index().trim(), "hel`lo world `bar"); equal(i18n_index2().trim(), "hel`lo world `bar"); equal(i18n_index3().trim(), "привет привет   привет"); equal(i18n_index4().trim(), "ffffuuuuuu"); }); </script> <script type="text/x-snakeskin-template" id="include"> 
 {var foo = 1}
 {import bar = 1}
 
 {include './test123/*.ss' as interface}
-{include './test/*.ss' as interface}
+{include 'test\\*.ss' as interface}
 {include './test/*.ss' as interface}
 
 {template include_index(name) extends include['foo--']}
@@ -629,7 +633,17 @@ ${ /*121***/ }
 - template macros_index2()
 	<!-- 121 -->
 	<a>--</a>
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), "«Hello „friend“» — bar… "Hello 'friend'" -- bar..."); equal(macros_index2().trim(), "<!-- 121 --> <a>—</a>"); }); </script> <script type="text/x-snakeskin-template" id="mod"> 
+
+- template macros_index3() @= macros {'@shorts': null, '@bar': {'121': 'foo'}}
+	121
+	<a>--</a>
+
+- template macros_index4() @= macros './macros.js'
+	121 $$
+
+- template macros_index5() @= macros './macros.json'
+	121 $$
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('macros'), {prettyPrint: true, autoReplace: true}); test('macros', function () { equal(macros_index().trim(), "«Hello „friend“» — bar… "Hello 'friend'" -- bar..."); equal(macros_index2().trim(), "<!-- 121 --> <a>—</a>"); equal(macros_index3().trim(), "foo <a>--</a>"); equal(macros_index4().trim(), "121 %%"); equal(macros_index5().trim(), "121 ^^"); }); </script> <script type="text/x-snakeskin-template" id="mod"> 
 {['mod_global'] = 1}
 {MG = 2}
 

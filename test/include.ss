@@ -7,7 +7,7 @@ include['foo--']
 {import bar = 1}
 
 {include './test123/*.ss' as interface}
-{include './test/*.ss' as interface}
+{include 'test\\*.ss' as interface}
 {include './test/*.ss' as interface}
 
 {template include_index(name) extends include['foo--']}

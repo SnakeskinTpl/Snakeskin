@@ -1,6 +1,7 @@
 i18n_index
 i18n_index2
 i18n_index3
+i18n_index4
 
 ###
 
@@ -19,6 +20,10 @@ i18n_index3
 	`{proto bar}hello{/}`
 {/}
 
+{template i18n_index4() @= localization true @= language '\\lang.js'}
+	`foo`
+{/}
+
 ###
 
 hel`lo world `bar
@@ -30,3 +35,7 @@ hel`lo world `bar
 ***
 
 привет привет   привет
+
+***
+
+ffffuuuuuu
