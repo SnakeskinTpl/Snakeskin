@@ -20,7 +20,7 @@ i18n_index4
 	`{proto bar}hello{/}`
 {/}
 
-{template i18n_index4() @= localization true @= language '\\lang.js'}
+{template i18n_index4() @= localization true @= language 'lang.js'}
 	`foo`
 {/}
 
