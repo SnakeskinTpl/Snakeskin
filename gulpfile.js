@@ -101,35 +101,42 @@ gulp.task('test', ['build'], function (callback) {
 		});
 });
 
-gulp.task('compile', ['test'], function () {
-	var builds = getBuilds();
+function compile(dev) {
+	return function () {
+		var builds = getBuilds();
 
-	for (var key in builds) {
-		if (!builds.hasOwnProperty(key)) {
-			continue;
-		}
+		for (var key in builds) {
+			if (!builds.hasOwnProperty(key)) {
+				continue;
+			}
 
-		gulp.src(path.join('./dist/', key + '.js'))
-			.pipe(gcc({
+			var params = {
 				compilerPath: 'bower_components/closure-compiler/compiler.jar',
 				fileName: key + '.min.js',
 				compilerFlags: {
 					compilation_level: 'ADVANCED_OPTIMIZATIONS',
 					use_types_for_optimization: null,
-
 					language_in: 'ECMASCRIPT5',
 					externs: [
 						'predefs.js'
-					],
-
-					jscomp_warning: 'invalidCasts'
+					]
 				}
-			}))
+			};
 
-			.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
-			.pipe(gulp.dest('./dist/'));
+			if (dev) {
+				params.jscomp_warning = 'invalidCasts';
+			}
+
+			gulp.src(path.join('./dist/', key + '.js'))
+				.pipe(gcc(params))
+				.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
+				.pipe(gulp.dest('./dist/'));
+		}
 	}
-});
+}
+
+gulp.task('compile', ['test'], compile());
+gulp.task('compile-dev', ['test'], compile(true));
 
 gulp.task('bump', function () {
 	gulp.src('./*.json')
