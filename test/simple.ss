@@ -8,6 +8,8 @@ simple_tpl.index ; 'Bob' ; 'Cache'
 simple_tpl.foo['index']
 simple_tpl.foo['index'] ; 'Bob'
 simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
+simple_output2
+simple_output3
 
 ###
 
@@ -44,6 +46,31 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*////3
 {/}
+
+{template simple_output2()}
+	/**1*/
+	/**/
+	/// /*
+	1/**/2
+{/template}
+
+- proto simple_output3->foo()
+	/**1*/
+	/**/
+	/// /*
+	1/**/2
+	/* < foo
+	*/
+
+- template simple_output3()
+	/**1*/
+	/**/
+	/// /*
+	1/**/2
+	/* < foo
+	*/
+	- apply foo
+
 
 ###
 
@@ -84,3 +111,11 @@ simple_tpl.foo['index'] ; 'Bob' ; 'Cache'
 ***
 
 <h1>Hello Bob Cache!</h1> 1
+
+***
+
+12
+
+***
+
+12 12

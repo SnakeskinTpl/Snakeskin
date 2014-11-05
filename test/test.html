@@ -938,7 +938,31 @@ ${ /*121***/ }
 	{a === 1 ? 1 : 2}
 	/**<h1>Hello {name}{lname ? ' ' + lname : ''}!</h1>*////3
 {/}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), "1 -1 foo} 1"); equal(simple_index().trim(), "<h1>Hello world!</h1> Foobar///1"); equal(simple_index('Bob').trim(), "<h1>Hello Bob!</h1> Foobar///1"); equal(simple_index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> Foobar///1"); equal(simple_tpl.index().trim(), "<h1>Hello world!</h1>"); equal(simple_tpl.index('Bob').trim(), "<h1>Hello Bob!</h1>"); equal(simple_tpl.index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1>"); equal(simple_tpl.foo['index']().trim(), "<h1>Hello world!</h1> 1"); equal(simple_tpl.foo['index']('Bob').trim(), "<h1>Hello Bob!</h1> 1"); equal(simple_tpl.foo['index']('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> 1"); }); </script> <script type="text/x-snakeskin-template" id="space"> 
+
+{template simple_output2()}
+	/**1*/
+	/**/
+	/// /*
+	1/**/2
+{/template}
+
+- proto simple_output3->foo()
+	/**1*/
+	/**/
+	/// /*
+	1/**/2
+	/* < foo
+	*/
+
+- template simple_output3()
+	/**1*/
+	/**/
+	/// /*
+	1/**/2
+	/* < foo
+	*/
+	- apply foo
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), "1 -1 foo} 1"); equal(simple_index().trim(), "<h1>Hello world!</h1> Foobar///1"); equal(simple_index('Bob').trim(), "<h1>Hello Bob!</h1> Foobar///1"); equal(simple_index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> Foobar///1"); equal(simple_tpl.index().trim(), "<h1>Hello world!</h1>"); equal(simple_tpl.index('Bob').trim(), "<h1>Hello Bob!</h1>"); equal(simple_tpl.index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1>"); equal(simple_tpl.foo['index']().trim(), "<h1>Hello world!</h1> 1"); equal(simple_tpl.foo['index']('Bob').trim(), "<h1>Hello Bob!</h1> 1"); equal(simple_tpl.foo['index']('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> 1"); equal(simple_output2().trim(), "12"); equal(simple_output3().trim(), "12 12"); }); </script> <script type="text/x-snakeskin-template" id="space"> 
 - template space_index()
 	< .foo
 		< .bar
