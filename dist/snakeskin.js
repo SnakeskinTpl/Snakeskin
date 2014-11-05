@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 02 Nov 2014 14:03:54 GMT
+ * Date: Wed, 05 Nov 2014 09:32:00 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -13,11 +13,11 @@ var DP$0 = Object.defineProperty;/*!
  * в старых браузерах
  */
 
-Array.isArray = Array.isArray || function (obj) {
+Array.isArray = Array.isArray || /* istanbul ignore next */ function (obj) {
 	return ({}).toString.call(obj) === '[object Array]';
 };
 
-String.prototype.trim = String.prototype.trim || function () {
+String.prototype.trim = String.prototype.trim || /* istanbul ignore next */ function () {
 	var str = this.replace(/^\s\s*/, ''),
 		i = str.length;
 
@@ -120,6 +120,47 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 	}
 };
 
+var symbols = '' +
+	'\\u0041-\\u005A\\u0061-\\u007A\\u00AA\\u00B5\\u00BA\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02C1' +
+	'\\u02C6-\\u02D1\\u02E0-\\u02E4\\u02EC\\u02EE\\u0370-\\u0374\\u0376\\u0377\\u037A-\\u037D\\u0386\\u0388-\\u038A' +
+	'\\u038C\\u038E-\\u03A1\\u03A3-\\u03F5\\u03F7-\\u0481\\u048A-\\u0525\\u0531-\\u0556\\u0559\\u0561-\\u0587' +
+	'\\u05D0-\\u05EA\\u05F0-\\u05F2\\u0621-\\u064A\\u066E\\u066F\\u0671-\\u06D3\\u06D5\\u06E5\\u06E6\\u06EE\\u06EF\\u06FA-\\u06FC' +
+	'\\u06FF\\u0710\\u0712-\\u072F\\u074D-\\u07A5\\u07B1\\u07CA-\\u07EA\\u07F4\\u07F5\\u07FA\\u0800-\\u0815\\u081A\\u0824' +
+	'\\u0828\\u0904-\\u0939\\u093D\\u0950\\u0958-\\u0961\\u0971\\u0972\\u0979-\\u097F\\u0985-\\u098C\\u098F\\u0990' +
+	'\\u0993-\\u09A8\\u09AA-\\u09B0\\u09B2\\u09B6-\\u09B9\\u09BD\\u09CE\\u09DC\\u09DD\\u09DF-\\u09E1\\u09F0\\u09F1\\u0A05-\\u0A0A' +
+	'\\u0A0F\\u0A10\\u0A13-\\u0A28\\u0A2A-\\u0A30\\u0A32\\u0A33\\u0A35\\u0A36\\u0A38\\u0A39\\u0A59-\\u0A5C\\u0A5E\\u0A72-\\u0A74\\u0A85-\\u0A8D' +
+	'\\u0A8F-\\u0A91\\u0A93-\\u0AA8\\u0AAA-\\u0AB0\\u0AB2\\u0AB3\\u0AB5-\\u0AB9\\u0ABD\\u0AD0\\u0AE0\\u0AE1\\u0B05-\\u0B0C\\u0B0F\\u0B10' +
+	'\\u0B13-\\u0B28\\u0B2A-\\u0B30\\u0B32\\u0B33\\u0B35-\\u0B39\\u0B3D\\u0B5C\\u0B5D\\u0B5F-\\u0B61\\u0B71\\u0B83\\u0B85-\\u0B8A\\u0B8E-\\u0B90' +
+	'\\u0B92-\\u0B95\\u0B99\\u0B9A\\u0B9C\\u0B9E\\u0B9F\\u0BA3\\u0BA4\\u0BA8-\\u0BAA\\u0BAE-\\u0BB9\\u0BD0\\u0C05-\\u0C0C' +
+	'\\u0C0E-\\u0C10\\u0C12-\\u0C28\\u0C2A-\\u0C33\\u0C35-\\u0C39\\u0C3D\\u0C58\\u0C59\\u0C60\\u0C61\\u0C85-\\u0C8C\\u0C8E-\\u0C90\\u0C92-\\u0CA8' +
+	'\\u0CAA-\\u0CB3\\u0CB5-\\u0CB9\\u0CBD\\u0CDE\\u0CE0\\u0CE1\\u0D05-\\u0D0C\\u0D0E-\\u0D10\\u0D12-\\u0D28\\u0D2A-\\u0D39\\u0D3D' +
+	'\\u0D60\\u0D61\\u0D7A-\\u0D7F\\u0D85-\\u0D96\\u0D9A-\\u0DB1\\u0DB3-\\u0DBB\\u0DBD\\u0DC0-\\u0DC6\\u0E01-\\u0E30\\u0E32\\u0E33' +
+	'\\u0E40-\\u0E46\\u0E81\\u0E82\\u0E84\\u0E87\\u0E88\\u0E8A\\u0E8D\\u0E94-\\u0E97\\u0E99-\\u0E9F\\u0EA1-\\u0EA3\\u0EA5' +
+	'\\u0EA7\\u0EAA\\u0EAB\\u0EAD-\\u0EB0\\u0EB2\\u0EB3\\u0EBD\\u0EC0-\\u0EC4\\u0EC6\\u0EDC\\u0EDD\\u0F00\\u0F40-\\u0F47' +
+	'\\u0F49-\\u0F6C\\u0F88-\\u0F8B\\u1000-\\u102A\\u103F\\u1050-\\u1055\\u105A-\\u105D\\u1061\\u1065\\u1066' +
+	'\\u106E-\\u1070\\u1075-\\u1081\\u108E\\u10A0-\\u10C5\\u10D0-\\u10FA\\u10FC\\u1100-\\u1248\\u124A-\\u124D\\u1250-\\u1256' +
+	'\\u1258\\u125A-\\u125D\\u1260-\\u1288\\u128A-\\u128D\\u1290-\\u12B0\\u12B2-\\u12B5\\u12B8-\\u12BE\\u12C0\\u12C2-\\u12C5' +
+	'\\u12C8-\\u12D6\\u12D8-\\u1310\\u1312-\\u1315\\u1318-\\u135A\\u1380-\\u138F\\u13A0-\\u13F4\\u1401-\\u166C\\u166F-\\u167F' +
+	'\\u1681-\\u169A\\u16A0-\\u16EA\\u1700-\\u170C\\u170E-\\u1711\\u1720-\\u1731\\u1740-\\u1751\\u1760-\\u176C\\u176E-\\u1770' +
+	'\\u1780-\\u17B3\\u17D7\\u17DC\\u1820-\\u1877\\u1880-\\u18A8\\u18AA\\u18B0-\\u18F5\\u1900-\\u191C\\u1950-\\u196D' +
+	'\\u1970-\\u1974\\u1980-\\u19AB\\u19C1-\\u19C7\\u1A00-\\u1A16\\u1A20-\\u1A54\\u1AA7\\u1B05-\\u1B33\\u1B45-\\u1B4B\\u1B83-\\u1BA0' +
+	'\\u1BAE\\u1BAF\\u1C00-\\u1C23\\u1C4D-\\u1C4F\\u1C5A-\\u1C7D\\u1CE9-\\u1CEC\\u1CEE-\\u1CF1\\u1D00-\\u1DBF\\u1E00-\\u1F15' +
+	'\\u1F18-\\u1F1D\\u1F20-\\u1F45\\u1F48-\\u1F4D\\u1F50-\\u1F57\\u1F59\\u1F5B\\u1F5D\\u1F5F-\\u1F7D\\u1F80-\\u1FB4\\u1FB6-\\u1FBC' +
+	'\\u1FBE\\u1FC2-\\u1FC4\\u1FC6-\\u1FCC\\u1FD0-\\u1FD3\\u1FD6-\\u1FDB\\u1FE0-\\u1FEC\\u1FF2-\\u1FF4\\u1FF6-\\u1FFC\\u2071\\u207F' +
+	'\\u2090-\\u2094\\u2102\\u2107\\u210A-\\u2113\\u2115\\u2119-\\u211D\\u2124\\u2126\\u2128\\u212A-\\u212D\\u212F-\\u2139\\u213C-\\u213F' +
+	'\\u2145-\\u2149\\u214E\\u2183\\u2184\\u2C00-\\u2C2E\\u2C30-\\u2C5E\\u2C60-\\u2CE4\\u2CEB-\\u2CEE\\u2D00-\\u2D25\\u2D30-\\u2D65\\u2D6F' +
+	'\\u2D80-\\u2D96\\u2DA0-\\u2DA6\\u2DA8-\\u2DAE\\u2DB0-\\u2DB6\\u2DB8-\\u2DBE\\u2DC0-\\u2DC6\\u2DC8-\\u2DCE\\u2DD0-\\u2DD6\\u2DD8-\\u2DDE' +
+	'\\u2E2F\\u3005\\u3006\\u3031-\\u3035\\u303B\\u303C\\u3041-\\u3096\\u309D-\\u309F\\u30A1-\\u30FA\\u30FC-\\u30FF\\u3105-\\u312D\\u3131-\\u318E\\u31A0-\\u31B7' +
+	'\\u31F0-\\u31FF\\u3400-\\u4DB5\\u4E00-\\u9FCB\\uA000-\\uA48C\\uA4D0-\\uA4FD\\uA500-\\uA60C\\uA610-\\uA61F\\uA62A\\uA62B\\uA640-\\uA65F\\uA662-\\uA66E\\uA67F-\\uA697' +
+	'\\uA6A0-\\uA6E5\\uA717-\\uA71F\\uA722-\\uA788\\uA78B\\uA78C\\uA7FB-\\uA801\\uA803-\\uA805\\uA807-\\uA80A\\uA80C-\\uA822\\uA840-\\uA873\\uA882-\\uA8B3\\uA8F2-\\uA8F7' +
+	'\\uA8FB\\uA90A-\\uA925\\uA930-\\uA946\\uA960-\\uA97C\\uA984-\\uA9B2\\uA9CF\\uAA00-\\uAA28\\uAA40-\\uAA42\\uAA44-\\uAA4B\\uAA60-\\uAA76\\uAA7A\\uAA80-\\uAAAF\\uAAB1' +
+	'\\uAAB5\\uAAB6\\uAAB9-\\uAABD\\uAAC0\\uAAC2\\uAADB-\\uAADD\\uABC0-\\uABE2\\uAC00-\\uD7A3\\uD7B0-\\uD7C6\\uD7CB-\\uD7FB\\uF900-\\uFA2D\\uFA30-\\uFA6D\\uFA70-\\uFAD9' +
+	'\\uFB00-\\uFB06\\uFB13-\\uFB17\\uFB1D\\uFB1F-\\uFB28\\uFB2A-\\uFB36\\uFB38-\\uFB3C\\uFB3E\\uFB40\\uFB41\\uFB43\\uFB44\\uFB46-\\uFBB1\\uFBD3-\\uFD3D\\uFD50-\\uFD8F' +
+	'\\uFD92-\\uFDC7\\uFDF0-\\uFDFB\\uFE70-\\uFE74\\uFE76-\\uFEFC\\uFF21-\\uFF3A\\uFF41-\\uFF5A\\uFF66-\\uFFBE\\uFFC2-\\uFFC7\\uFFCA-\\uFFCF' +
+	'\\uFFD2-\\uFFD7\\uFFDA-\\uFFDC'
+;
+
+var w = (("" + symbols) + "0-9_");
 var entityMap = {
 	'&': '&amp;',
 	'<': '&lt;',
@@ -129,8 +170,8 @@ var entityMap = {
 	'/': '&#x2F;'
 };
 
-var escapeHTMLRgxp = /[&<>"'\/]/g,
-	escapeAttrRgxp = /([$\w]\s*=\s*)([^"'\s>=]+)/g,
+var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
+	escapeAttrRgxp = new RegExp((("([$" + w) + "]\\s*=\\s*)([^\"'\\s>=]+)"), 'g'),
 	escapeJavaScript = /(javascript)(:|;)/,
 	escapeHTML = function(s)  {return entityMap[s]};
 
@@ -207,6 +248,8 @@ Snakeskin.Filters.undef = function (str) {
 
 	var uriO = /%5B/g,
 		uriC = /%5D/g;
+
+	/* istanbul ignore next */
 
 	/**
 	 * Кодирование URL
@@ -359,7 +402,17 @@ Snakeskin.Filters.undef = function (str) {
 	 * @return {string}
 	 */
 	Snakeskin.Filters['json'] = function (obj) {
-		if (typeof obj === 'object') {
+		return JSON.stringify(obj);
+	};
+
+	/**
+	 * Преобразование объекта в строку
+	 *
+	 * @param {(Object|Array|string|number|boolean)} obj - исходный объект
+	 * @return {string}
+	 */
+	Snakeskin.Filters['string'] = function (obj) {
+		if (typeof obj === 'object' && obj instanceof String === false) {
 			return JSON.stringify(obj);
 		}
 
@@ -406,7 +459,7 @@ Snakeskin.Filters.undef = function (str) {
  * Методы live библиотеки Snakeskin
  */
 
-if (/\[\w+ \w+]/.test(Object.keys && Object.keys.toString())) {
+if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
 	var keys = Object.keys;
 }
 
@@ -425,7 +478,7 @@ Snakeskin.StringBuffer = function () {
  * Итератор массива или объекта (с проверкой hasOwnProperty)
  *
  * @expose
- * @param {(Array|Object)} obj - исходный объект
+ * @param {(Array|Object|undefined)} obj - исходный объект
  * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
  */
 Snakeskin.forEach = function (obj, callback) {
@@ -486,7 +539,7 @@ Snakeskin.forEach = function (obj, callback) {
  * Итератор объекта без проверки hasOwnProperty
  *
  * @expose
- * @param {Object} obj - исходный объект
+ * @param {(Object|undefined)} obj - исходный объект
  * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
  */
 Snakeskin.forIn = function (obj, callback) {
@@ -7482,7 +7535,6 @@ DirObj.prototype.genErrorAdvInfo = function () {
 	}
 
 	for (var key in info) {
-		/* istanbul ignore if */
 		if (!info.hasOwnProperty(key) || info[key] == null) {
 			continue;
 		}
@@ -7732,7 +7784,7 @@ if (IS_NODE) {
  */
 
 var Escaper = {
-	VERSION: [1, 4, 11],
+	VERSION: [1, 4, 14],
 	isLocal: false
 };
 
@@ -7882,9 +7934,12 @@ var Escaper = {
 	Escaper.quotContent = content;
 
 	var uSRgxp = /[^\s\/]/,
-		wRgxp = /[a-z]/i,
+		wRgxp = /[a-z]/,
 		sRgxp = /\s/,
 		nRgxp = /\r|\n/;
+
+	var symbols,
+		snakeskinRgxp;
 
 	/**
 	 * Заметить блоки вида ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ на
@@ -7915,6 +7970,16 @@ var Escaper = {
 	 * @return {string}
 	 */
 	Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_snakeskin) {
+		symbols = symbols ||
+			Escaper.symbols ||
+			Escaper['symbols'] ||
+			'a-z';
+
+		snakeskinRgxp = snakeskinRgxp ||
+			Escaper.snakeskinRgxp ||
+			Escaper['snakeskinRgxp'] ||
+			new RegExp((("[!$" + symbols) + "_]"), 'i');
+
 		var isObj = opt_withCommentsOrParams instanceof Object;
 		var p = isObj ?
 			Object(opt_withCommentsOrParams) : {};
@@ -8023,7 +8088,7 @@ var Escaper = {
 
 					var skip = false;
 					if (opt_snakeskin) {
-						if (el$0 === '|' && wRgxp.test(next)) {
+						if (el$0 === '|' && snakeskinRgxp.test(next)) {
 							filterStart = true;
 							end = false;
 							skip = true;
@@ -8074,14 +8139,14 @@ var Escaper = {
 					templateVar++;
 				}
 
-				if (finalMap[el$0] && (el$0 === '/' ? end : true) && !begin) {
+				if (finalMap[el$0] && (el$0 !== '/' || end) && !begin) {
 					begin = el$0;
 					selectionStart = i$0;
 
 				} else if (begin && (el$0 === '\\' || escape)) {
 					escape = !escape;
 
-				} else if (finalMap[el$0] && begin === el$0 && !escape && (begin === '/' ? !block : true)) {
+				} else if (finalMap[el$0] && begin === el$0 && !escape && (begin !== '/' || !block)) {
 					if (el$0 === '/') {
 						for (var j = -1; ++j < rgxpFlags.length;) {
 							if (rgxpFlagsMap[str.charAt(i$0 + 1)]) {
@@ -8153,6 +8218,7 @@ var Escaper = {
 	};
 })();
 
+Escaper.snakeskinRgxp = filterStartRgxp;
 var escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
 
 /**
@@ -8530,8 +8596,8 @@ DirObj.prototype.getFullBody = function (tplName) {
 			var el = str.charAt(j),
 				next = str.charAt(j + 1);
 
-			var next2str = el + next,
-				diff2str = str.substring(j + 1, j + 3);
+			var next2str = str.substr(j, 2),
+				diff2str = str.substr(j + 1, 2);
 
 			if (nextLineRgxp.test(el)) {
 				tSpace++;
@@ -8794,9 +8860,8 @@ DirObj.prototype.getFullBody = function (tplName) {
 			nmBrk = null;
 
 		for (var j = i - 1; ++j < str.length;) {
-			var currentEscape = escape;
-			var el = str.charAt(j),
-				next2Str = el + str.charAt(j + 1);
+			var currentEscape = escape,
+				el = str.charAt(j);
 
 			if (!bOpen && (el === '\\' || escape)) {
 				escape = !escape;
@@ -8829,7 +8894,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 					if (dirStart && (prevEl === CONCAT_COMMAND || brk)) {
 						literal = prevEl;
-						res = res.substring(0, lastElI) +
+						res = res.substring(0, lastElI - 1) +
 							res.substring(lastElI + 1);
 
 					} else if (concatLine) {
@@ -8862,14 +8927,16 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			} else {
 				if (!bOpen && !currentEscape) {
+					var commentType = returnComment(str, j);
+
 					if (comment) {
-						comment = next2Str !== MULT_COMMENT_END;
+						comment = commentType !== MULT_COMMENT_END;
 
 					} else if (!sComment) {
-						comment = next2Str === MULT_COMMENT_START;
+						comment = commentType === MULT_COMMENT_START;
 
 						if (!comment) {
-							sComment = next2Str + str.charAt(j + 2) === SINGLE_COMMENT;
+							sComment = commentType === SINGLE_COMMENT;
 						}
 					}
 				}
@@ -8899,11 +8966,11 @@ DirObj.prototype.getFullBody = function (tplName) {
 						}
 
 						if (dir && !inline) {
-							inline = str.substring(j, j + INLINE_COMMAND.length) === INLINE_COMMAND;
+							inline = str.substr(j, INLINE_COMMAND.length) === INLINE_COMMAND;
 						}
 					}
 
-					if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+					if (escapeMap[el] && (el !== '/' || bEnd) && !bOpen) {
 						bOpen = el;
 
 					} else if (bOpen && (el === '\\' || bEscape)) {
@@ -8989,10 +9056,6 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 		'r': '\r'
 	};
 
-	var sc = SINGLE_COMMENT,
-		mcs = MULT_COMMENT_START,
-		mce = MULT_COMMENT_END;
-
 	for (var i = -1; ++i < str.length;) {
 		var currentEscape = escape,
 			pos = i;
@@ -9025,25 +9088,16 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 
 					if (commentType) {
 						if (!comment) {
-							switch (commentType) {
-								case sc:
-									comment = sc;
-									i += sc.length - 1;
-									break;
+							comment = commentType;
+							i += commentType.length - 1;
 
-								case mcs:
-									comment = mcs;
-									i += mcs.length - 1;
-									break;
-							}
-
-						} else if (commentType === mce && comment === mcs) {
+						} else if (commentType === MULT_COMMENT_END && comment === MULT_COMMENT_START) {
 							comment = false;
-							i += mce.length - 1;
+							i += commentType.length - 1;
 							continue;
 						}
 
-					} else if (nextLineRgxp.test(el) && comment === sc) {
+					} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
 						comment = false;
 					}
 				}
@@ -9075,7 +9129,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 				}
 			}
 
-			if (escapeMap[el] && (el === '/' ? bEnd : true) && !bOpen) {
+			if (escapeMap[el] && (el !== '/' || bEnd) && !bOpen) {
 				bOpen = el;
 
 			} else if (bOpen && (el === '\\' || bEscape)) {
@@ -9093,7 +9147,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 				escape = false;
 
 				var tmp = '\' + ' +
-					this.prepareOutput(this.replaceDangerBlocks(dir), opt_sys) +
+					this.prepareOutput(this.replaceDangerBlocks(dir).trim() || '\'\'', opt_sys) +
 					' + \'';
 
 				if (opt_replace) {
@@ -9299,7 +9353,7 @@ DirObj.prototype.popParams = function () {
 		'let': true
 	};
 
-	var nextWordCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w[\\]().]"));
+	var nextWordCharRgxp = new RegExp((("[" + G_MOD) + ("" + L_MOD) + ("$+\\-~!" + w) + "[\\]().]"));
 
 	/**
 	 * Вернуть целое слово из заданной строки, начиная с указанной позиции
@@ -9309,8 +9363,8 @@ DirObj.prototype.popParams = function () {
 	 * @return {{word: string, finalWord: string, unary: string}}
 	 */
 	DirObj.prototype.getWord = function (str, pos) {
-		var word = '';
-		var res = '',
+		var word = '',
+			res = '',
 			nres = '';
 
 		var pCount = 0,
@@ -9394,8 +9448,6 @@ DirObj.prototype.popParams = function () {
 		};
 	};
 
-	var unSRgxp = /\S/;
-
 	/**
 	 * Вернуть true, если указанное cлово является свойством в литерале объекта
 	 *
@@ -9410,7 +9462,7 @@ DirObj.prototype.popParams = function () {
 		for (var i = start; i--;) {
 			var el = str.charAt(i);
 
-			if (unSRgxp.test(el)) {
+			if (!whiteSpaceRgxp.test(el)) {
 				res = el === '?';
 				break;
 			}
@@ -9420,7 +9472,7 @@ DirObj.prototype.popParams = function () {
 			for (var i$8 = end; i$8 < str.length; i$8++) {
 				var el$4 = str.charAt(i$8);
 
-				if (unSRgxp.test(el$4)) {
+				if (!whiteSpaceRgxp.test(el$4)) {
 					return el$4 === ':';
 				}
 			}
@@ -9441,7 +9493,7 @@ DirObj.prototype.popParams = function () {
 		for (var i = pos; i < str.length; i++) {
 			var el = str.charAt(i);
 
-			if (unSRgxp.test(el)) {
+			if (!whiteSpaceRgxp.test(el)) {
 				return el === '=' && str.charAt(i + 1) !== '=';
 			}
 		}
@@ -9458,9 +9510,8 @@ DirObj.prototype.popParams = function () {
 		unUndefRgxp = new RegExp(unUndefLabel, 'g');
 
 	var ssfRgxp = /__FILTERS__\./;
-	var nextCharRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "$+\\-~!\\w]")),
-		newWordRgxp = new RegExp((("[^" + (G_MOD + L_MOD)) + "$\\w[\\].]")),
-		filterRgxp = /[!$a-z_]/i;
+	var nextCharRgxp = new RegExp((("[" + G_MOD) + ("" + L_MOD) + ("$+\\-~!" + w) + "]")),
+		newWordRgxp = new RegExp((("[^" + G_MOD) + ("" + L_MOD) + ("$" + w) + "[\\].]"));
 
 	var numRgxp = /[0-9]/,
 		modRgxp = new RegExp((("" + L_MOD) + "(?:\\d+|)")),
@@ -9474,9 +9525,9 @@ DirObj.prototype.popParams = function () {
 		.trim()
 		.replace(/^\[/, '$[')
 		.replace(/\byield\b/g, '')
-		.replace(/(?:break|continue) [_]{2,}I_PROTO__\w+;/, '')};
+		.replace(/(?:break|continue) [_]{2,}I_PROTO__[${w}]+;/, '')};
 
-	var wrapRgxp = /^\s*{/;
+	var wrapRgxp = /^\s*\{/;
 
 	/**
 	 * Подготовить указанную комманду к выводу:
@@ -9584,7 +9635,9 @@ DirObj.prototype.popParams = function () {
 			return '';
 		}
 
-		var commandLength = command.length;
+		var commandLength = command.length,
+			end = commandLength - 1;
+
 		var isFilter,
 			breakNum;
 
@@ -9631,7 +9684,6 @@ DirObj.prototype.popParams = function () {
 
 					// Экспорт глобальный и супер глобальных переменных
 					} else if ((useWith && !modMap[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
-
 						if (useWith) {
 							vres = next === G_MOD ?
 								finalWord.substring(2) : finalWord;
@@ -9736,7 +9788,7 @@ DirObj.prototype.popParams = function () {
 				} else if (newWordRgxp.test(el)) {
 					nword = true;
 
-					if (posNWord > 0) {
+					if (posNWord) {
 						posNWord--;
 					}
 				}
@@ -9744,7 +9796,7 @@ DirObj.prototype.popParams = function () {
 				if (!filterStart) {
 					if (el === ')') {
 						// Закрылась скобка, а последующие 2 символа не являются фильтром
-						if (next !== FILTER || !filterRgxp.test(nNext)) {
+						if (next !== FILTER || !filterStartRgxp.test(nNext)) {
 							if (pCount) {
 								pCount--;
 							}
@@ -9765,15 +9817,14 @@ DirObj.prototype.popParams = function () {
 				}
 			}
 
-			if (i === commandLength - 1 && pCount && !filterWrapper && el !== ')') {
+			if (i === end && pCount && !filterWrapper && el !== ')') {
 				this.error('missing closing or opening parenthesis in the template');
 				return '';
 			}
 
 			// Закрылся локальный или глобальный фильтр
-			if (filterStart && !pCountFilter && (el === ')' || i === commandLength - 1)) {
+			if (filterStart && !pCountFilter && (el === ')' && !breakNum || i === end)) {
 				var pos = pContent[0];
-
 				var fAdd = wordAddEnd - filterAddEnd + addition,
 					fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
 
@@ -9807,7 +9858,7 @@ DirObj.prototype.popParams = function () {
 
 				for (var j$1 = -1; ++j$1 < filter.length;) {
 					var params = filter[j$1].split(' '),
-						input = params.slice(1).join('').trim();
+						input = params.slice(1).join(' ').trim();
 
 					var current = params.shift().split('.'),
 						f$0 = '';
@@ -9816,12 +9867,14 @@ DirObj.prototype.popParams = function () {
 						f$0 += (("['" + (current[k])) + "']");
 					}
 
-					resTmp = (("(" + (this.tplName ? '$_' : (("$_ = __LOCAL__['$_" + uid) + "']"))) + (" = __FILTERS__" + f$0) + "") +
-						(filterWrapper || !pCount ? '.call(this,' : '') +
-						resTmp +
-						(input ? ',' + input : '') +
-						(filterWrapper || !pCount ? ')' : '') +
-					')';
+					resTmp =
+						(("(" + (this.tplName ? '$_' : (("$_ = __LOCAL__['$_" + uid) + "']"))) + (" = __FILTERS__" + f$0) + "") +
+							(filterWrapper || !pCount ? '.call(this,' : '') +
+							resTmp +
+							(input ? ',' + input : '') +
+							(filterWrapper || !pCount ? ')' : '') +
+						')'
+					;
 				}
 
 				resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
@@ -9868,7 +9921,7 @@ DirObj.prototype.popParams = function () {
 					wordAddEnd += length;
 					filterAddEnd += length;
 
-					if (i === commandLength - 1) {
+					if (i === end) {
 						i--;
 						breakNum = 1;
 					}
@@ -9881,7 +9934,7 @@ DirObj.prototype.popParams = function () {
 			}
 
 			// Через 2 итерации начнётся фильтр
-			if (next === FILTER && filterRgxp.test(nNext)) {
+			if (next === FILTER && filterStartRgxp.test(nNext)) {
 				nword = false;
 
 				if (!filterStart) {
@@ -9900,7 +9953,7 @@ DirObj.prototype.popParams = function () {
 					i += 2;
 				}
 
-			} else if (i === 0 && el === FILTER && filterRgxp.test(next)) {
+			} else if (i === 0 && el === FILTER && filterStartRgxp.test(next)) {
 				nword = false;
 
 				if (!filterStart) {
@@ -10073,6 +10126,49 @@ DirObj.prototype.declResult = function () {
 };
 
 /**
+ * Декларировать конец файла шаблонов
+ *
+ * @param {string} exports - тип экспорта шаблонов
+ * @param {?string} cacheKey - кеш-ключ
+ * @param {string} label - заголовок файла шаблонов
+ * @retur {!DirObj}
+ */
+DirObj.prototype.end = function (exports, cacheKey, label) {var this$0 = this;
+	switch (this.renderMode) {
+		case 'stringBuffer':
+			this.res = this.res.replace(/__RESULT__\.push\(''\);/g, '');
+			break;
+
+		case 'dom':
+			this.res = this.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
+			break;
+
+		default:
+			this.res = this.res.replace(/__RESULT__ \+= '';/g, '');
+			break;
+	}
+
+	var includes = '';
+
+	if (this.module.key.length) {
+		includes = JSON.stringify(this.module.key);
+	}
+
+	this.res = this.pasteDangerBlocks(this.res)
+		.replace(
+			/__CDATA__(\d+)_/g,
+			function(sstr, pos)  {return escapeNextLine(
+					this$0.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, 'g'), this$0.lineSeparator)
+				).replace(/'/g, '&#39;')}
+		);
+
+	this.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">." + (this.lineSeparator)) + ("   " + (this.res)) + "");
+	this.res += (("" + (exports === 'commonJS' ? '}' : '')) + "}).call(this);");
+
+	return this;
+};
+
+/**
  * Вернуть true,
  * если возможна запись в результирующую строку JavaScript
  * @return {boolean}
@@ -10240,6 +10336,23 @@ DirObj.prototype.hasParent = function (name, opt_returnObj) {
 
 /**
  * Проверить начилие указанной директивы в цепочке блочной структуры
+ *
+ * @param {(string|!Object)} name - название директивы или таблица названий
+ * @param {?boolean=} [opt_returnObj=false] - если true, то в качестве ответа
+ *     вернётся ссылка на найденный объект (если таковой есть)
+ *
+ * @return {(boolean|string|!Object)}
+ */
+DirObj.prototype.hasBlock = function (name, opt_returnObj) {
+	if (this.blockStructure) {
+		return this.has(name, this.blockStructure, opt_returnObj);
+	}
+
+	return false;
+};
+
+/**
+ * Проверить начилие указанной директивы в цепочке блочной структуры
  * (начальная активная директива исключается)
  *
  * @param {(string|!Object)} name - название директивы или таблица названий
@@ -10270,13 +10383,13 @@ DirObj.prototype.hasParentBlock = function (name, opt_returnObj) {
  */
 DirObj.prototype.declVar = function (varName, opt_callParams) {
 	opt_callParams = opt_callParams || false;
-	var tplName = this.tplName;
+	var tplName = this.tplName,
+		struct = this.structure;
 
 	if (!opt_callParams && tplName && constCache[tplName][varName]) {
 		this.error((("variable \"" + varName) + "\" is already defined as constant"));
 	}
 
-	var struct = this.structure;
 	while (!struct.vars) {
 		struct = struct.parent;
 	}
@@ -10334,9 +10447,9 @@ DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
 		cache = '';
 
 	var fin = 'var ',
-		length = str.length;
+		length = str.length,
+		struct = this.structure;
 
-	var struct = this.structure;
 	while (!struct.vars) {
 		struct = struct.parent;
 	}
@@ -10383,13 +10496,162 @@ DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
 	return fin.slice(0, -1) + (opt_end ? ';' : '');
 };
 
+/**
+ * Вернуть данные из кеша шаблонов
+ *
+ * @param {?string} cacheKey - кеш-ключ
+ * @param {string} text - исходный текст шаблона
+ * @param {!Object} params - параметры запуска
+ * @param {!Object} ctx - объект контекста
+ * @param {!Object} NULL - null-объект
+ * @return {string}
+ */
+function returnCache(cacheKey, text, params, ctx, NULL) {
+	// Кеширование шаблонов в node.js
+	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
+		var cache = globalFnCache[cacheKey][text];
+
+		for (var key in cache) {
+			/* istanbul ignore if */
+			if (!cache.hasOwnProperty(key)) {
+				continue;
+			}
+
+			ctx[key] = cache[key];
+		}
+	}
+
+	// Базовое кешироние шаблонов
+	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
+		var tmp = globalCache[cacheKey][text],
+			skip = false;
+
+		if (params.words) {
+			if (!tmp.words) {
+				skip = true;
+
+			} else {
+				var w = Object(tmp.words);
+
+				for (var key$12 in w) {
+					/* istanbul ignore if */
+					if (!w.hasOwnProperty(key$12)) {
+						continue;
+					}
+
+					params.words[key$12] = w[key$12];
+				}
+			}
+		}
+
+		if (params.debug) {
+			if (!tmp.debug) {
+				skip = true;
+
+			} else {
+				var d = Object(tmp.debug);
+
+				for (var key$13 in d) {
+					/* istanbul ignore if */
+					if (!d.hasOwnProperty(key$13)) {
+						continue;
+					}
+
+					params.debug[key$13] = d[key$13];
+				}
+			}
+		}
+
+		if (!skip) {
+			return tmp.text;
+		}
+	}
+}
+
+/**
+ * Вернуть кеш-ключ
+ *
+ * @param {!Object} params - параметры запуска
+ * @param {!Object} ctx - объект контекста
+ * @param {!Object} NULL - null-объект
+ * @return {?string}
+ */
+function returnCacheKey(params, ctx, NULL) {
+	return params.language || params.macros ? null : [
+		params.exports,
+		ctx !== NULL,
+		params.lineSeparator,
+		params.doctype,
+		params.tolerateWhitespace,
+		params.inlineIterators,
+		params.renderAs,
+		params.renderMode,
+		params.replaceUndef,
+		params.escapeOutput,
+		params.prettyPrint,
+		params.ignore,
+		params.autoReplace,
+		params.localization,
+		params.i18nFn
+	].join();
+}
+
+/**
+ * Сохранить скомпилированные функции в кеше
+ *
+ * @param {?string} cacheKey - кеш-ключ
+ * @param {string} text - исходный текст шаблона
+ * @param {!Object} params - параметры запуска
+ * @param {!Object} ctx - объект контекста
+ * @param {!Object} NULL - null-объект
+ * @return {string}
+ */
+function saveFnCache(cacheKey, text, params, ctx, NULL) {
+	if (ctx !== NULL) {
+		ctx['init'](Snakeskin);
+
+		if (cacheKey && (params.cache || globalFnCache[cacheKey])) {
+			if (!globalFnCache[cacheKey]) {
+				globalFnCache[cacheKey] = {};
+			}
+
+			globalFnCache[cacheKey][text] = ctx;
+		}
+	}
+}
+
+/**
+ * Сохранить полученный кеш
+ *
+ * @param {?string} cacheKey - кеш-ключ
+ * @param {string} text - исходный текст шаблона
+ * @param {!Object} params - параметры запуска
+ * @param {!DirObj} dir - объект директивы
+ * @return {string}
+ */
+function saveCache(cacheKey, text, params, dir) {
+	if (cacheKey && (params.cache || globalCache[cacheKey])) {
+		if (!globalCache[cacheKey]) {
+			globalCache[cacheKey] = {};
+		}
+
+		globalCache[cacheKey][text] = {
+			text: dir.res,
+			words: params.words,
+			debug: params.debug
+		};
+	}
+}
 var nextLineRgxp = /\r\n|\r|\n/,
 	whiteSpaceRgxp = /\s/,
-	lineWhiteSpaceRgxp = / |\t/,
-	startWhiteSpaceRgxp = /^[ \t]*(?:\r\n|\r|\n)/;
+	lineWhiteSpaceRgxp = / |\t/;
+
+var startWhiteSpaceRgxp = new RegExp((("^[ \\t]*(?:" + (nextLineRgxp.source)) + ")")),
+	endWhiteSpaceRgxp = new RegExp((("^(?:" + (nextLineRgxp.source)) + ")[ \\t]*$"));
 
 var bEndRgxp = /[^\s\/]/,
-	partRgxp = /[a-z]/;
+	partRgxp = /[a-z]/,
+	filterStartRgxp = new RegExp((("[!$" + symbols) + "_]"));
 
 var uid;
 
@@ -10480,28 +10742,36 @@ var uid;
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	src = src || '';
+
+	var NULL = {};
 	var sp = opt_sysParams || {},
 		p = opt_params ?
 			Object(opt_params) : {};
 
-	var NULL = {},
-		ctx = s(p.context, p['context']) || NULL;
-
 	// GCC экспорт
 	// >>>
 
-	p.exports = s(p.exports, p['exports']) || 'global';
+	var ctx = s(p.context, p['context'])
+		|| NULL;
+
+	p.exports = s(p.exports, p['exports'])
+		|| 'global';
 
 	if (ctx !== NULL) {
 		p.exports = 'commonJS';
 	}
 
-	var cjs = p.exports === 'commonJS';
+	var cjs = p.exports === 'commonJS',
+		exports = p.exports;
 
 	p.onError = s(p.onError, p['onError']);
-	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) || false;
-	p.renderMode = s(p.renderMode, p['renderMode']) || 'stringConcat';
 	p.renderAs = s(p.renderAs, p['renderAs']);
+
+	p.prettyPrint = s(p.prettyPrint, p['prettyPrint']) ||
+		false;
+
+	p.renderMode = s(p.renderMode, p['renderMode']) ||
+		'stringConcat';
 
 	var nl =
 		p.lineSeparator = s(p.lineSeparator, p['lineSeparator']) || '\n';
@@ -10519,9 +10789,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.autoReplace = s(p.autoReplace, p['autoReplace']) || false;
 	p.macros = s(p.macros, p['macros']);
 
-	var debug =
-		p.debug = s(p.debug, p['debug']);
-
+	p.debug = s(p.debug, p['debug']);
 	p.doctype = s(p.doctype, p['doctype']);
 	p.doctype = p.doctype !== false &&
 		(p.doctype || 'xml');
@@ -10572,89 +10840,27 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Работа с кешем
 	// >>>
 
-	var cacheKey = p.language || p.macros ? null : [
-		p.exports,
-		ctx !== NULL,
-		nl,
-		p.doctype,
-		p.tolerateWhitespace,
-		p.inlineIterators,
-		p.renderAs,
-		p.renderMode,
-		p.replaceUndef,
-		p.escapeOutput,
-		p.prettyPrint,
-		p.ignore,
-		p.autoReplace,
-		p.localization,
-		p.i18nFn
-	].join();
+	var cacheKey = returnCacheKey(p, ctx, NULL);
 
 	if (sp.cacheKey || sp['cacheKey']) {
 		return cacheKey;
 	}
 
 	if (p.cache) {
-		// Кеширование шаблонов в node.js
-		if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
-			var cache = globalFnCache[cacheKey][text];
+		var tmp = returnCache(cacheKey, text, p, ctx,  NULL);
 
-			for (var key$12 in cache) {
-				/* istanbul ignore if */
-				if (!cache.hasOwnProperty(key$12)) {
-					continue;
-				}
-
-				ctx[key$12] = cache[key$12];
-			}
-		}
-
-		// Базовое кешироние шаблонов
-		if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-			var tmp = globalCache[cacheKey][text],
-				skip = false;
-
-			if (words) {
-				if (!tmp.words) {
-					skip = true;
-
-				} else {
-					var w = Object(tmp.words);
-
-					for (var key$13 in w) {
-						/* istanbul ignore if */
-						if (!w.hasOwnProperty(key$13)) {
-							continue;
-						}
-
-						words[key$13] = w[key$13];
-					}
-				}
-			}
-
-			if (debug) {
-				if (!tmp.debug) {
-					skip = true;
-
-				} else {
-					var d = Object(tmp.debug);
-
-					for (var key$14 in d) {
-						/* istanbul ignore if */
-						if (!d.hasOwnProperty(key$14)) {
-							continue;
-						}
-
-						debug[key$14] = d[key$14];
-					}
-				}
-			}
-
-			if (!skip) {
-				return tmp.text;
-			}
+		if (tmp) {
+			return tmp;
 		}
 	}
+
+	// <<<
+	// Работа с макросами
+	// >>>
+
+	var alb = ADV_LEFT_BLOCK,
+		lb = LEFT_BLOCK,
+		rb = RIGHT_BLOCK;
 
 	var macros = {},
 		mGroups = {};
@@ -10662,8 +10868,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var inlineMacro = {},
 		comboMacro = {};
 
-	var beforeTag = {},
-		afterTag = {};
+	var blackMSymbolsRgxp = new RegExp((("[<\\/>" + lb) + ("" + alb) + ("" + rb) + "]"));
+
+	function clearMacroExpr() {
+		expr = '';
+		advExprPos = 0;
+	}
 
 	/**
 	 * @param {Object} obj
@@ -10677,9 +10887,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			inlineMacro = {'\\': true};
 			comboMacro = {};
-
-			beforeTag = {};
-			afterTag = {};
 
 			setMacros({
 				'@quotes': {
@@ -10696,12 +10903,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					'[v]': '☑',
 					'[x]': '☒',
 					'[_]': '☐',
-
-					'<-': '←',
-					'<-|': '↤',
-					'->': '→',
-					'|->': '↦',
-					'<->': '↔',
 
 					'...': {
 						inline: true,
@@ -10753,55 +10954,51 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 		} else {
-			for (var key$15 in obj) {
+			for (var key$14 in obj) {
 				/* istanbul ignore if */
-				if (!obj.hasOwnProperty(key$15)) {
+				if (!obj.hasOwnProperty(key$14)) {
 					continue;
 				}
 
-				var el = obj[key$15];
+				var el = obj[key$14];
 
-				if (key$15.charAt(0) === '@' && !opt_include) {
-					setMacros(el, key$15);
+				if (key$14.charAt(0) === '@' && !opt_include) {
+					setMacros(el, key$14);
 
 				} else {
 					if (opt_include) {
-						mGroups[opt_include] = mGroups[opt_include] || {};
+						mGroups[opt_include] =
+							mGroups[opt_include] || {};
 					}
 
 					if (el) {
-						macros[key$15] = el.value || el;
+						if (blackMSymbolsRgxp.test(key$14)) {
+							throw new Error((("Invalid macro \"" + key$14) + "\""));
+						}
 
-						if (Array.isArray(macros[key$15])) {
-							comboMacro[key$15] = true;
+						macros[key$14] = el.value || el;
 
-						} else if (key$15.length > 1) {
-							if (key$15.charAt(0) === '<') {
-								afterTag[key$15.charAt(1)] = true;
-							}
-
-							if (key$15.length > 1 && key$15.slice(-1) === '>') {
-								beforeTag[key$15.charAt(key$15.length - 2)] = true;
-							}
+						if (Array.isArray(macros[key$14])) {
+							comboMacro[key$14] = true;
 						}
 
 						var inline = el['inline'] ||
 							el.inline;
 
 						if (inline) {
-							inlineMacro[key$15.charAt(0)] = true;
+							inlineMacro[key$14.charAt(0)] = true;
 						}
 
 						if (opt_include) {
-							mGroups[opt_include][key$15] = macros[key$15];
+							mGroups[opt_include][key$14] = macros[key$14];
 						}
 
 					} else {
-						delete macros[key$15];
-						delete comboMacro[key$15];
+						delete macros[key$14];
+						delete comboMacro[key$14];
 
 						if (opt_include) {
-							delete mGroups[opt_include][key$15];
+							delete mGroups[opt_include][key$14];
 						}
 					}
 				}
@@ -10836,7 +11033,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		Snakeskin.LocalVars.include = {};
 
 		if (IS_NODE && info['file']) {
-			var path = require('path');
+			var path = require('path'),
+				fs = require('fs');
 
 			filename =
 				info['file'] = path['normalize'](path['resolve'](info['file']));
@@ -10844,10 +11042,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			dirname = path['dirname'](filename);
 			Snakeskin.LocalVars.include[filename] = 'index';
 
-			var fs = require('fs'),
-				exists = fs['existsSync'] || path['existsSync'];
-
-			if (exists(filename)) {
+			if (fs['existsSync'](filename)) {
 				var stat = fs['statSync'](filename);
 				label = stat['mtime'];
 			}
@@ -10857,10 +11052,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// <<<
 	// Основная логика
 	// >>>
-
-	var alb = ADV_LEFT_BLOCK,
-		lb = LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
 
 	var dir = new DirObj(String(text), {
 		info: info,
@@ -10912,8 +11103,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var commandTypeRgxp = /[^\s]+/,
 		commandRgxp = /[^\s]+\s*/;
 
-	var filterStart = false,
-		filterStartRgxp = /[a-z]/i;
+	var filterStart = false;
 
 	// Количество открытых { внутри директивы
 	var fakeBegin = 0;
@@ -10975,11 +11165,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var clrL = true,
 		templateMap = dir.getGroup('rootTemplate');
 
-	/** @return {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
+	/** @return {{macros, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
 	dir.getCompileVars = function () {
 		return {
-			afterTag: afterTag,
-			beforeTag: beforeTag,
 			mGroups: mGroups,
 			inlineMacro: inlineMacro,
 			comboMacro: comboMacro,
@@ -10993,10 +11181,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		};
 	};
 
-	/** @param {{macros, afterTag, beforeTag, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
+	/** @param {{macros, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
 	dir.setCompileVars = function (obj) {
-		afterTag = obj.afterTag;
-		beforeTag = obj.beforeTag;
 		mGroups = obj.mGroups;
 		inlineMacro = obj.inlineMacro;
 		comboMacro = obj.comboMacro;
@@ -11141,23 +11327,29 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return;
 			}
 
-			var next3str = next2str + str.charAt(dir.i + 2);
-
 			// Обработка комментариев
 			if (!currentEscape) {
-				if (el === SINGLE_COMMENT.charAt(0) || el === MULT_COMMENT_START.charAt(0)) {
+				var commentType = returnComment(str, dir.i),
+					endComment = returnComment(str, dir.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
+
+				var map = DP$0(DP$0({},
+					SINGLE_COMMENT,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
+					MULT_COMMENT_START,{"value": true,"configurable":true,"enumerable":true,"writable":true}
+				);
+
+				if (map[commentType] || endComment) {
 					if (!comment && !jsDoc) {
-						if (next3str === SINGLE_COMMENT) {
-							comment = next3str;
+						if (commentType === SINGLE_COMMENT) {
+							comment = commentType;
 
 							if (modLine) {
-								dir.lines[lastLine] += next3str.substring(1, 3);
+								dir.lines[lastLine] += commentType.substring(1);
 							}
 
-							dir.i += 2;
+							dir.i += commentType.length - 1;
 
-						} else if (next2str === MULT_COMMENT_START) {
-							if (next3str === JS_DOC && !begin) {
+						} else if (commentType === MULT_COMMENT_START) {
+							if (str.substr(dir.i, JS_DOC.length) === JS_DOC && !begin) {
 								if (beginStr && dir.isSimpleOutput()) {
 									dir.save((("'" + (dir.$$())) + ";"));
 								}
@@ -11167,18 +11359,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								jsDocStart = dir.res.length;
 
 							} else {
-								comment = next2str;
+								comment = commentType;
 								commentStart = dir.i;
 
 								if (modLine) {
-									dir.lines[lastLine] += next2str.charAt(1);
+									dir.lines[lastLine] += commentType.substring(1);
 								}
 
-								dir.i++;
+								dir.i += commentType.length - 1;
 							}
 						}
 
-					} else if (prev === MULT_COMMENT_END.charAt(0) && dir.i - commentStart > 2) {
+					} else if (endComment && dir.i - commentStart > MULT_COMMENT_START.length) {
 						if (comment === MULT_COMMENT_START) {
 							comment = false;
 							dir.space = prevCommentSpace;
@@ -11257,7 +11449,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					var short1 = command.charAt(0),
 						short2 = command.substr(0, 2);
 
-					var replacer = replacers[short2] || replacers[short1];
+					var replacer = replacers[short2] ||
+						replacers[short1];
 
 					if (replacer) {
 						command = replacer(command);
@@ -11269,8 +11462,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					commandType = Snakeskin.Directions[commandType] ?
 						commandType : 'const';
 
-					expr = '';
-					advExprPos = 0;
+					clearMacroExpr();
 
 					if (templateMap[commandType] && !sp.proto) {
 						qOpen = 0;
@@ -11476,7 +11668,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 			if (!i18nStart) {
-				if (escapeMap[el] && (el === '/' ? bEnd && command : true) && !bOpen) {
+				if (escapeMap[el] && (el !== '/' || bEnd && command) && !bOpen) {
 					bOpen = el;
 
 				} else if (bOpen && (el === '\\' || bEscape)) {
@@ -11540,21 +11732,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (dir.doctype) {
-						if (el === '<' && !afterTag[next]) {
+						if (el === '<') {
 							tOpen++;
+							clearMacroExpr();
 
-						} else if (el === '>' && !beforeTag[prev]) {
-							if (tOpen) {
-								tOpen--;
-
-							} else {
-								el = '&gt;'
-							}
-						}
-
-						if (tOpen > 1) {
-							dir.error(("invalid XML declaration"));
-							{$retPrim$0 = true;return false;}
+						} else if (el === '>') {
+							tOpen--;
+							clearMacroExpr();
 						}
 
 						if (tAttr) {
@@ -11608,13 +11792,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									qOpen++;
 								}
 
-								el = el.call ? el() : el;
-								el = String(el);
+								el = String(el.call ? el() : el);
 
 							} else {
 								if (whiteSpaceRgxp.test(el)) {
-									expr = '';
-									advExprPos = 0;
+									clearMacroExpr();
 
 								} else if (inlineMacro[el] && !inlineMacro[prev] && !dir.macros[expr + el]) {
 									exprPos = dir.res.length;
@@ -11667,7 +11849,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Если есть не закрытый XML тег,
 	// то генерируем ошибку
-	if (tOpen) {
+	if (tOpen !== 0) {
 		dir.error(("invalid XML declaration"));
 		return false;
 	}
@@ -11681,64 +11863,34 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (dir.proto) {
 		sp.parent.setCompileVars(dir.getCompileVars());
-		return dir.res;
+		return dir.pasteDangerBlocks(dir.res);
 	}
-
-	// Удаление пустых операций
-	switch (dir.renderMode) {
-		case 'stringBuffer': {
-			dir.res = dir.res.replace(/__RESULT__\.push\(''\);/g, '');
-		} break;
-
-		case 'dom': {
-			dir.res = dir.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
-		} break;
-
-		default: {
-			dir.res = dir.res.replace(/__RESULT__ \+= '';/g, '');
-		} break;
-	}
-
-	var includes = '';
-
-	if (dir.module.key.length) {
-		includes = JSON.stringify(dir.module.key);
-	}
-
-	dir.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">." + nl) + ("   " + (dir.res)) + "");
-	dir.res += (("" + (cjs ? '}' : '')) + "}).call(this);");
 
 	// Если остались внешние прототипы,
 	// которые не были подключены к своему шаблону,
 	// то генерируем ошибку
-	for (var key$16 in dir.preDefs) {
+	for (var key$15 in dir.preDefs) {
 		/* istanbul ignore if */
-		if (!dir.preDefs.hasOwnProperty(key$16)) {
+		if (!dir.preDefs.hasOwnProperty(key$15)) {
 			continue;
 		}
 
-		dir.error((("template \"" + key$16) + "\" is not defined"));
+		dir.error((("template \"" + key$15) + "\" is not defined"));
 		return false;
 	}
 
+	dir.end(exports, cacheKey, label);
+
 	if (p.prettyPrint) {
 		dir.res = beautify(dir.res);
+		dir.res = dir.res.replace(new RegExp(nextLineRgxp.source, 'g'), nl);
 	}
 
 	dir.res += nl;
 
-	// Обратная замена CDATA
-	dir.res = dir.pasteDangerBlocks(dir.res)
-		.replace(
-			/__CDATA__(\d+)_/g,
-			function(sstr, pos)  {return escapeNextLine(
-					dir.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, 'g'), nl)
-				).replace(/'/g, '&#39;')}
-		);
-
-	if (debug) {
-		debug['code'] = dir.res;
-		debug['files'] = dir.files;
+	if (p.debug) {
+		p.debug['code'] = dir.res;
+		p.debug['files'] = dir.files;
 	}
 
 	try {
@@ -11800,18 +11952,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			dir.evalStr(dir.res);
 		}
 
-		// Кеширование полученной функции
-		if (ctx !== NULL) {
-			ctx['init'](Snakeskin);
-
-			if (cacheKey && (p.cache || globalFnCache[cacheKey])) {
-				if (!globalFnCache[cacheKey]) {
-					globalFnCache[cacheKey] = {};
-				}
-
-				globalFnCache[cacheKey][text] = ctx;
-			}
-		}
+		saveFnCache(cacheKey, text, p, ctx, NULL);
 
 	} catch (err) {
 		delete info['line'];
@@ -11820,18 +11961,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	// Кеширование текста
-	if (cacheKey && (p.cache || globalCache[cacheKey])) {
-		if (!globalCache[cacheKey]) {
-			globalCache[cacheKey] = {};
-		}
-
-		globalCache[cacheKey][text] = {
-			text: dir.res,
-			words: words,
-			debug: debug
-		};
-	}
+	saveCache(cacheKey, text, p, dir);
 
 	// Если брайзер поддерживает FileAPI,
 	// то подключаем скомпилированный шаблон как внешний скрипт
@@ -11919,6 +12049,10 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 				continue;
 			}
 
+			if (key.length > 2) {
+				throw new Error((("Invalid shorthand key \"" + key) + "\" (key.length > 2)"));
+			}
+
 			replacers[key] = repls[key];
 
 			if (key.charAt(0) !== '/') {
@@ -11929,7 +12063,6 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 	after[name] = params.after;
 	inside[name] = params.inside;
-
 	sys[name] = Boolean(params.sys);
 	block[name] = Boolean(params.block);
 	text[name] = Boolean(params.text);
@@ -12088,8 +12221,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 
 	Snakeskin.Directions[(("" + name) + "End")] = opt_destr;
 	var baseEnd = Snakeskin.Directions[(("" + name) + "BaseEnd")] = function () {
-		var struct = this.structure,
-			params = struct.params;
+		var params = this.structure.params;
 
 		if (params._scope) {
 			this.scope.pop();
@@ -12118,7 +12250,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			return;
 		}
 
-		var parent = struct.parent;
+		var parent = this.structure.parent;
 
 		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
 			try {
@@ -12147,7 +12279,7 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
  * @return {string}
  */
 DirObj.prototype.declCallbackArgs = function (parts) {
-	var args = ((Array.isArray(parts) ? (parts[2] || parts[1]) : parts) || '').split(','),
+	var args = ((Array.isArray(parts) ? parts[2] || parts[1] : parts) || '').split(','),
 		scope;
 
 	for (var i = -1; ++i < args.length;) {
@@ -12735,7 +12867,7 @@ data-params=\"" + desc) + "\"\
 );
 
 
-var callBlockNameRgxp = /^[^a-z_$][^\w$]*|[^\w$]+/i;
+var callBlockNameRgxp = new RegExp((("^[^" + symbols) + ("_$][^" + w) + ("$]*|[^" + w) + "$]+"), 'i');
 
 /**
  * Декларировать объект arguments
@@ -12927,14 +13059,15 @@ __RESULT__ = " + (this.declResult())) + (";\
 
 		if (this.outerLink === params.name) {
 			var obj = this.preDefs[this.tplName],
-				nl = this.lineSeparator;
+				nl = this.lineSeparator,
+				i = Number(obj.i);
 
 			obj.text += /* cbws */(("\
-" + nl) + ("" + (this.source.substring(params.from, obj.i))) + ("\
+" + nl) + ("" + (this.source.substring(params.from, i))) + ("\
 " + s) + ("__cutLine__" + e) + ("\
 \
 " + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
-" + (this.source.substring(obj.i, this.i - diff))) + ("\
+" + (this.source.substring(i, this.i - diff))) + ("\
 " + s) + ("__end__" + e) + ("\
 \
 " + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + ("\
@@ -13273,11 +13406,9 @@ __COMMENT_RESULT__ = \'\';\
 		var res;
 
 		if (IS_NODE) {
-			var path = require('path');
-			var fs = require('fs'),
-				exists = fs['existsSync'] || path['existsSync'];
-
-			var old = val;
+			var path = require('path'),
+				fs = require('fs'),
+				old = val;
 
 			try {
 				if (opt_base) {
@@ -13288,7 +13419,7 @@ __COMMENT_RESULT__ = \'\';\
 					path['resolve'](path['dirname'](opt_base), val)
 				);
 
-				if (exists(val)) {
+				if (fs['existsSync'](val)) {
 					if (opt_onFileExists) {
 						opt_onFileExists(val);
 					}
@@ -13475,12 +13606,17 @@ __COMMENT_RESULT__ = \'\';\
 				);
 
 				if (flag === 'macros') {
-					value = this.setMacros(value, null, init);
+					try {
+						value = this.setMacros(value, null, init);
+
+					} catch (err) {
+						return this.error(err.message);
+					}
 				}
 			}
 
-			params[flag] = value;
-			this[flag] = value;
+			params[flag] =
+				this[flag] = value;
 
 			if (cache) {
 				switch (flag) {
@@ -13561,7 +13697,7 @@ __COMMENT_RESULT__ = \'\';\
 			}
 
 			var tplName = this.tplName,
-				source = (("^[$a-z_" + (!this.scope.length ? L_MOD : '')) + "][$\\w\\[\\].\\s]*=[^=]");
+				source = (("^[$" + symbols) + ("_" + (!this.scope.length ? L_MOD : '')) + ("][$" + w) + "[\\].\\s]*=[^=]");
 
 			var rgxp = rgxpCache[source] || new RegExp(source, 'i');
 			rgxpCache[source] = rgxp;
@@ -13735,7 +13871,7 @@ __COMMENT_RESULT__ = \'\';\
 	 * @return {({key: string, value: string}|boolean)}
 	 */
 	function isAssign(str, opt_global) {
-		var source = (("^[" + (G_MOD + L_MOD)) + ("$a-z_" + (opt_global ? '[' : '')) + "]"),
+		var source = (("^[" + G_MOD) + ("" + L_MOD) + ("$" + symbols) + ("_" + (opt_global ? '[' : '')) + "]"),
 			key = (("" + source) + "[i");
 
 		var rgxp = rgxpCache[key] || new RegExp(source, 'i');
@@ -14672,33 +14808,33 @@ for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENG
 						var tmp = args[i];
 
 						switch (i) {
-							case 0: {
+							case 0:
 								tmp += ' = __I_OBJ__[__KEYS__[__I__]]';
-							} break;
+								break;
 
-							case 1: {
+							case 1:
 								tmp += ' = __KEYS__[__I__]';
-							} break;
+								break;
 
-							case 2: {
+							case 2:
 								tmp += ' = __I_OBJ__';
-							} break;
+								break;
 
-							case 3: {
+							case 3:
 								tmp += ' = __I__';
-							} break;
+								break;
 
-							case 4: {
+							case 4:
 								tmp += ' = __I__ === 0';
-							} break;
+								break;
 
-							case 5: {
+							case 5:
 								tmp += ' = __I__ === __LENGTH__ - 1';
-							} break;
+								break;
 
-							case 6: {
+							case 6:
 								tmp += ' = __LENGTH__';
-							} break;
+								break;
 						}
 
 						str += this$0.multiDeclVar(tmp);
@@ -14726,33 +14862,33 @@ continue;\
 						var tmp = args[i];
 
 						switch (i) {
-							case 0: {
+							case 0:
 								tmp += ' = __I_OBJ__[__KEY__]';
-							} break;
+								break;
 
-							case 1: {
+							case 1:
 								tmp += ' = __KEY__';
-							} break;
+								break;
 
-							case 2: {
+							case 2:
 								tmp += ' = __I_OBJ__';
-							} break;
+								break;
 
-							case 3: {
+							case 3:
 								tmp += ' = __I__';
-							} break;
+								break;
 
-							case 4: {
+							case 4:
 								tmp += ' = __I__ === 0';
-							} break;
+								break;
 
-							case 5: {
+							case 5:
 								tmp += ' = __I__ === __LENGTH__ - 1';
-							} break;
+								break;
 
-							case 6: {
+							case 6:
 								tmp += ' = __LENGTH__';
-							} break;
+								break;
 						}
 
 						str += this$0.multiDeclVar(tmp);
@@ -15640,14 +15776,15 @@ Snakeskin.addDirective(
 		this.space = params.space;
 
 		if (this.outerLink === params.name) {
-			var obj = this.preDefs[tplName];
+			var obj = this.preDefs[tplName],
+				i = Number(obj.i);
 
 			obj.text += /* cbws */(("\
-" + nl) + ("" + (this.source.substring(params.from, obj.i))) + ("\
+" + nl) + ("" + (this.source.substring(params.from, i))) + ("\
 " + s) + ("__cutLine__" + e) + ("\
 \
 " + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + ("\
-" + (this.source.substring(obj.i, this.i - diff))) + ("\
+" + (this.source.substring(i, this.i - diff))) + ("\
 " + s) + ("__end__" + e) + ("\
 \
 " + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + ("\
@@ -15738,8 +15875,8 @@ Snakeskin.addDirective(
 				var args = proto.args,
 					fin = true;
 
-				for (var i = -1; ++i < back.length;) {
-					var el = back[i];
+				for (var i$11 = -1; ++i$11 < back.length;) {
+					var el = back[i$11];
 
 					if (this.canWrite) {
 						if (!el.outer) {
@@ -16554,8 +16691,8 @@ DirObj.prototype.returnTagDesc = function (str) {
 	var ref = this.bemRef,
 		newRef = '';
 
-	for (var i$11 = classes.length; i$11--;) {
-		var el$5 = classes[i$11];
+	for (var i$12 = classes.length; i$12--;) {
+		var el$5 = classes[i$12];
 
 		if (el$5.charAt(0) === '&') {
 			if (ref) {
@@ -16566,7 +16703,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 			newRef = el$5;
 		}
 
-		classes[i$11] = this.replaceTplVars(el$5);
+		classes[i$12] = this.replaceTplVars(el$5);
 	}
 
 	if (newRef) {
@@ -16769,8 +16906,8 @@ for (var i = -1; ++i < template.length;) {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info['line'];
 
-			var nameRgxp = /^[^a-z_$[]/i,
-				esprimaNameHackRgxp = new RegExp((("[" + (G_MOD + L_MOD)) + "]"), 'g');
+			var nameRgxp = new RegExp((("^[^" + symbols) + "_$[]"), 'i'),
+				esprimaNameHackRgxp = new RegExp((("[" + G_MOD) + ("" + L_MOD) + "]"), 'g');
 
 			var tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
@@ -16781,6 +16918,7 @@ for (var i = -1; ++i < template.length;) {
 				var prfx = '',
 					pos;
 
+				// Шаблон-генератор
 				if (/\*/.test(tmpTplName)) {
 					prfx = '*';
 					tmpTplName = tmpTplName.replace(prfx, '');
@@ -16963,7 +17101,6 @@ this.prepareOutput(el, true)
 
 			argsCache[tplName] = {};
 			argsResCache[tplName] = {};
-
 			outputCache[tplName] = {};
 			extMap[tplName] = parentTplName;
 
@@ -16973,8 +17110,8 @@ this.prepareOutput(el, true)
 				flags.push('@skip true');
 			}
 
-			for (var i$12 = 0; ++i$12 < flags.length;) {
-				Snakeskin.Directions['__setSSFlag__'].call(this, flags[i$12].trim());
+			for (var i$13 = 0; ++i$13 < flags.length;) {
+				Snakeskin.Directions['__setSSFlag__'].call(this, flags[i$13].trim());
 			}
 
 			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
@@ -16994,9 +17131,9 @@ this.prepareOutput(el, true)
 				'PARENT_TPL_NAME'
 			];
 
-			for (var i$13 = -1; ++i$13 < predefs.length;) {
-				this.structure.vars[predefs[i$13]] = {
-					value: predefs[i$13],
+			for (var i$14 = -1; ++i$14 < predefs.length;) {
+				this.structure.vars[predefs[i$14]] = {
+					value: predefs[i$14],
 					scope: 0
 				};
 			}
@@ -17116,22 +17253,22 @@ PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName
 			if (this.backTableI) {
 				var cache$1 = Object(this.backTable);
 
-				for (var key$17 in cache$1) {
+				for (var key$16 in cache$1) {
 					/* istanbul ignore if */
-					if (!cache$1.hasOwnProperty(key$17)) {
+					if (!cache$1.hasOwnProperty(key$16)) {
 						continue;
 					}
 
-					for (var i$14 = -1; ++i$14 < cache$1[key$17].length;) {
-						var el$6 = cache$1[key$17][i$14];
+					for (var i$15 = -1; ++i$15 < cache$1[key$16].length;) {
+						var el$6 = cache$1[key$16][i$15];
 
 						if (!el$6.outer) {
 							continue;
 						}
 
-						var tmp = protoCache[tplName][key$17];
+						var tmp = protoCache[tplName][key$16];
 						if (!tmp) {
-							return this.error((("proto \"" + key$17) + "\" is not defined"));
+							return this.error((("proto \"" + key$16) + "\" is not defined"));
 						}
 
 						this.res = this.res.substring(0, el$6.pos) +
@@ -17397,6 +17534,7 @@ var fsStack = [];
  * @return {(string|boolean)}
  */
 Snakeskin.include = function (base, url, nl, opt_type) {
+	/* istanbul ignore if */
 	if (!IS_NODE) {
 		return false;
 	}
@@ -17434,7 +17572,7 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 
 					file +
 
-					("" + (/(?:\r\n|\r|\n)[ \t]*$/.test(file) ? '' : (("" + nl) + ("" + s) + ("__cutLine__" + e) + ""))) +
+					("" + (endWhiteSpaceRgxp.test(file) ? '' : (("" + nl) + ("" + s) + ("__cutLine__" + e) + ""))) +
 					(("" + s) + ("__endSetFile__" + e) + "")
 				);
 			}
