@@ -2,6 +2,7 @@ i18n_index
 i18n_index2
 i18n_index3
 i18n_index4
+i18n_index5
 
 ###
 
@@ -24,6 +25,13 @@ i18n_index4
 	`foo`
 {/}
 
+- proto i18n_index5->foo :: `hello`
+
+{template i18n_index5() @= localization true}
+	`hello` #{`hello`} `#{'hello'}` `--` {apply foo}
+	`{proto bar}hello{/}`
+{/}
+
 ###
 
 hel`lo world `bar
@@ -39,3 +47,7 @@ hel`lo world `bar
 ***
 
 ffffuuuuuu
+
+***
+
+hello hello #{'hello'} -- hello {proto bar}hello{/}
