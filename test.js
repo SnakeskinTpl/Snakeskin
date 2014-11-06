@@ -7,6 +7,10 @@ var assert = require('assert'),
 
 snakeskin.importFilters(snakeskin.Filters, 'test.bar');
 
+global.i18n = function (str) {
+	return str;
+};
+
 var testFolder = path.resolve(__dirname, 'test'),
 	buildFolder = path.join(testFolder, 'build');
 
