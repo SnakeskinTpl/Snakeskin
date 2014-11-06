@@ -1,4 +1,4 @@
-iterators_index1
+iterators_index
 iterators_index2
 iterators_index3
 iterators_index4
@@ -7,7 +7,7 @@ iterators_index6
 
 ###
 
-{template iterators_index1()}
+{template iterators_index()}
 	{forEach [1, 2, 3] => el, i, obj, isFirst, isLast, length}
 		{el} {i} {obj[i]} {isFirst} {isLast} {length} --
 	{/}
