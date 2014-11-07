@@ -124,7 +124,10 @@
 	< .b-foo
 		< [.&__child].&__child
 			< .&__foo
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('bem'), {prettyPrint: true, autoReplace: true}); test('bem', function () { equal(bem_index().trim(), "<h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>"); equal(bem_index2().trim(), "<h1 class="b-hello"><h2 class="b-desc"><span class="b-desc__bar b-desc__msg">You are amazing!</span></h2></h1>"); equal(bem_index3().trim(), "<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>"); equal(bem_index4().trim(), "<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>"); equal(bem_index5().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child_active_true b-foo__child_focus_false"></div></div>"); equal(bem_index6().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child_active b-foo__child_active_true b-foo__child_focus b-foo__child_focus_true"></div></div>"); equal(bem_index7().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child_active_true1"></div></div>"); equal(bem_index8().trim(), "<div class="b-foo"><div class="bar bar_active_true bar__child"><div class="bar__foo"></div></div></div>"); equal(bem_index9().trim(), "<div class="b-foo"><div class="bar foo foo__child bar__child"><div class="bar__foo"></div></div></div>"); equal(bem_index10().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child"><div class="b-foo__foo"></div></div></div>"); }); </script> <script type="text/x-snakeskin-template" id="block"> 
+
+- template bem_index11()
+	< .b-foo[.&${true ? '_active_true': ''}]
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('bem'), {prettyPrint: true, autoReplace: true}); test('bem', function () { equal(bem_index().trim(), "<h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>"); equal(bem_index2().trim(), "<h1 class="b-hello"><h2 class="b-desc"><span class="b-desc__bar b-desc__msg">You are amazing!</span></h2></h1>"); equal(bem_index3().trim(), "<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>"); equal(bem_index4().trim(), "<h1 class="b-hello"><h2 class="b-hello__desc"><span class="b-hello__bar b-hello__msg">You are amazing!</span></h2></h1>"); equal(bem_index5().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child_active_true b-foo__child_focus_false"></div></div>"); equal(bem_index6().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child_active b-foo__child_active_true b-foo__child_focus b-foo__child_focus_true"></div></div>"); equal(bem_index7().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child_active_true1"></div></div>"); equal(bem_index8().trim(), "<div class="b-foo"><div class="bar bar_active_true bar__child"><div class="bar__foo"></div></div></div>"); equal(bem_index9().trim(), "<div class="b-foo"><div class="bar foo foo__child bar__child"><div class="bar__foo"></div></div></div>"); equal(bem_index10().trim(), "<div class="b-foo"><div class="b-foo__child b-foo__child"><div class="b-foo__foo"></div></div></div>"); equal(bem_index11().trim(), "<div class="b-foo b-foo_active_true"></div>"); }); </script> <script type="text/x-snakeskin-template" id="block"> 
 {template block_base()}
 	{&+}
 	{var a = 2, b, c}
@@ -1368,12 +1371,19 @@ ${ /*121***/ }
 		< .&__foo
 
 - template tag_index4()
-	< #bar\#{1 + 2}.b-foo.&__\#{'var'}.b-bar
+	< #bar\#{1+2}.b-foo.&__\#{'var'}.b-bar
 		< .&__foo
 
 - template tag_index5()
-	< #\{1 + 2}
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('tag'), {prettyPrint: true, autoReplace: true}); test('tag', function () { equal(tag_index().trim(), "<span class="bar car foo"><div id="my" class="foo__bar">1 </div></span><div id="my" class="&__bar">1 </div><div id="my" class="foo__bar">1 </div>"); equal(tag_index2().trim(), "<div class="b-foo b-foo__var b-bar"><div class="b-bar__foo"></div></div>"); equal(tag_index3().trim(), "<div id="bar3" class="b-foo b-foo__var b-bar"><div class="b-bar__foo"></div></div>"); equal(tag_index4().trim(), "<div id="bar#{1 + 2}" class="b-foo b-foo__#{&#39;var&#39;} b-bar"><div class="b-bar__foo"></div></div>"); equal(tag_index5().trim(), "<div + 2}="+ 2}" id="{1"></div>"); }); </script> <script type="text/x-snakeskin-template" id="template"> 
+	< \#{1 + 2}
+
+- template tag_index6()
+	< #foo#{ &
+		/* }}}}}}} */
+		/// 1 +
+		1 + 2
+	} .
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('tag'), {prettyPrint: true, autoReplace: true}); test('tag', function () { equal(tag_index().trim(), "<span class="bar car foo"><div id="my" class="foo__bar">1 </div></span><div id="my" class="&__bar">1 </div><div id="my" class="foo__bar">1 </div>"); equal(tag_index2().trim(), "<div class="b-foo b-foo__var b-bar"><div class="b-bar__foo"></div></div>"); equal(tag_index3().trim(), "<div id="bar3" class="b-foo b-foo__var b-bar"><div class="b-bar__foo"></div></div>"); equal(tag_index4().trim(), "<div id="bar#{1+2}" class="b-foo b-foo__#{&#39;var&#39;} b-bar"><div class="b-bar__foo"></div></div>"); equal(tag_index5().trim(), "<#{1 + 2}="+ 2}"></#{1>"); equal(tag_index6().trim(), "<div id="foo3"></div>"); }); </script> <script type="text/x-snakeskin-template" id="template"> 
 {template %fileName%()}
 	{'foo'|repeat}
 {/template}
