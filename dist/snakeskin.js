@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 07 Nov 2014 07:38:29 GMT
+ * Date: Fri, 07 Nov 2014 09:06:38 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -8757,7 +8757,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 					struct = obj;
 					res += space +
-						(ws && endDirInit && obj.text ? (("" + adv) + ("" + lb) + ("__&-__" + rb) + "") : '') +
+						(ws && endDirInit && obj.text ? (("" + adv) + ("" + lb) + ("__&--__" + rb) + "") : '') +
 						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
 					endDirInit = false;
@@ -16360,6 +16360,23 @@ Snakeskin.addDirective(
 			if (!this.sysSpace && !this.space) {
 				this.space = false;
 			}
+		}
+	}
+);
+
+Snakeskin.addDirective(
+	'__&--__',
+
+	{
+		group: 'ignore'
+	},
+
+	function () {
+		this.startInlineDir();
+		this.sysSpace = 0;
+
+		if (!this.space) {
+			this.space = false;
 		}
 	}
 );

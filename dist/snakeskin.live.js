@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 07 Nov 2014 07:38:29 GMT
+ * Date: Fri, 07 Nov 2014 09:06:38 GMT
  */
 
 /*!
