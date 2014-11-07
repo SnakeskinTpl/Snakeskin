@@ -37,7 +37,7 @@ tag_index5
 		< .&__foo
 
 - template tag_index5()
-	< #\{1 + 2}
+	< \#{1 + 2}
 
 ###
 
