@@ -30,11 +30,11 @@ tag_index6
 		< .&__foo
 
 - template tag_index3()
-	< #bar#{1 + 2}.b-foo.&__#{'var'}.b-bar
+	< #bar#{1 + 2}.b-foo.&__#{true ? 'var' : ''}.b-bar
 		< .&__foo
 
 - template tag_index4()
-	< #bar\#{1+2}.b-foo.&__\#{'var'}.b-bar
+	< #bar.b-foo[.&__\#{'var'}].b-bar
 		< .&__foo
 
 - template tag_index5()
@@ -61,11 +61,11 @@ tag_index6
 
 ***
 
-<div id="bar#{1+2}" class="b-foo b-foo__#{&#39;var&#39;} b-bar"><div class="b-bar__foo"></div></div>
+<div id="bar" class="b-foo b-foo__#{'var'} b-bar"><div class="b-bar__foo"></div></div>
 
 ***
 
-<#{1 + 2}="+ 2}"></#{1>
+<div + 2}="+ 2}" id="{1"></div>
 
 ***
 
