@@ -9,6 +9,7 @@ bem_index8
 bem_index9
 bem_index10
 bem_index11
+bem_index12
 
 ###
 
@@ -67,6 +68,11 @@ bem_index11
 - template bem_index11()
 	< .b-foo[.&${true ? '_active_true': ''}]
 
+- template bem_index12()
+	- set & ${true ? 'foo' : ''}
+	< .&__child[.${1 ? 'bar' : 0}[.&__foo.&__bar]].${1 ? 'ffuuu' : 0}
+		< .&__child
+
 ###
 
 <h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>
@@ -110,3 +116,7 @@ bem_index11
 ***
 
 <div class="b-foo b-foo_active_true"></div>
+
+***
+
+<div class="foo__child bar bar__foo bar__bar ffuuu"><div class="ffuuu__child"></div></div>

@@ -6,6 +6,7 @@ escape_base['\n\\n\'"helloWorld']
 escape_sub
 escape_index5
 escape_index6
+escape_index7
 
 ###
 
@@ -50,6 +51,9 @@ escape_index6
 - template escape_index6()
 	< meta http-equiv = Content-Type | content = text/html; charset\=utf-8
 
+- template escape_index7()
+	< div ${'" onclick = alert(2)'} = ${'onclick = alert(1)'}
+
 ###
 
 #{foo}="1 \| 2" '2' '#{/* 1 + */2}'  a="{&quot;b&quot;: &#39;2&#39;}"
@@ -82,3 +86,6 @@ object false NaN false
 
 <meta http-equiv="Content-Type" content="text&#x2F;html; charset=utf-8"/>
 
+***
+
+<div &quot; onclick = &quot;alert(2)&quot;="onclick = &quot;alert(1)&quot;"></div>
