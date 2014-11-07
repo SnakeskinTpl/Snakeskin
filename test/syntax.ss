@@ -6,6 +6,7 @@ syntax_index5
 syntax_index6
 syntax_index7
 syntax_index8
+syntax_index9
 
 ###
 
@@ -73,6 +74,13 @@ syntax_index8
     < div style = color: red :: bar
     foo :: bar
     < div class = \:: bar
+
+- template syntax_index9()
+	< .foo
+		< .&__bar
+			<div class="foo bar"><img href="#" foo=1 />
+			</div><a href="#">hello
+				</a>
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -104,3 +112,7 @@ foo bar
 ***
 
 Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>
+
+***
+
+<div class="foo"><div class="foo__bar"><div class="foo bar"><img href="#" foo="1" /> </div><a href="#">hello </a></div></div>

@@ -7,6 +7,12 @@ var assert = require('assert'),
 
 snakeskin.importFilters(snakeskin.Filters, 'test.bar');
 
+snakeskin.importFilters({
+	'квадрат': function (val) {
+		return val * val;
+	}
+});
+
 global.i18n = function (str) {
 	return str;
 };

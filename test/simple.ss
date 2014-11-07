@@ -12,6 +12,7 @@ simple_output2
 simple_output3
 simple_output4
 simple_vars
+simple_юникод
 
 ###
 
@@ -85,6 +86,10 @@ simple_vars
 		(1.7)
 	.
 
+- template simple_юникод()
+	- block проверка() =>
+		{2|квадрат}
+
 ###
 
 1 -1 foo} 1
@@ -140,3 +145,7 @@ simple_vars
 ***
 
 2 2 2
+
+***
+
+4

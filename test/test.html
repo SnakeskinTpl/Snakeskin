@@ -1088,7 +1088,11 @@ ${ /*121***/ }
 	- simple_round &
 		(1.7)
 	.
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), "1 -1 foo} 1"); equal(simple_index().trim(), "<h1>Hello world!</h1> Foobar///1"); equal(simple_index('Bob').trim(), "<h1>Hello Bob!</h1> Foobar///1"); equal(simple_index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> Foobar///1"); equal(simple_tpl.index().trim(), "<h1>Hello world!</h1>"); equal(simple_tpl.index('Bob').trim(), "<h1>Hello Bob!</h1>"); equal(simple_tpl.index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1>"); equal(simple_tpl.foo['index']().trim(), "<h1>Hello world!</h1> 1"); equal(simple_tpl.foo['index']('Bob').trim(), "<h1>Hello Bob!</h1> 1"); equal(simple_tpl.foo['index']('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> 1"); equal(simple_output2().trim(), "12"); equal(simple_output3().trim(), "12 12"); equal(simple_output4().trim(), "}}} 121 {{}"); equal(simple_vars().trim(), "2 2 2"); }); </script> <script type="text/x-snakeskin-template" id="space"> 
+
+- template simple_юникод()
+	- block проверка() =>
+		{2|квадрат}
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('simple'), {prettyPrint: true, autoReplace: true}); test('simple', function () { equal(simple_output().trim(), "1 -1 foo} 1"); equal(simple_index().trim(), "<h1>Hello world!</h1> Foobar///1"); equal(simple_index('Bob').trim(), "<h1>Hello Bob!</h1> Foobar///1"); equal(simple_index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> Foobar///1"); equal(simple_tpl.index().trim(), "<h1>Hello world!</h1>"); equal(simple_tpl.index('Bob').trim(), "<h1>Hello Bob!</h1>"); equal(simple_tpl.index('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1>"); equal(simple_tpl.foo['index']().trim(), "<h1>Hello world!</h1> 1"); equal(simple_tpl.foo['index']('Bob').trim(), "<h1>Hello Bob!</h1> 1"); equal(simple_tpl.foo['index']('Bob','Cache').trim(), "<h1>Hello Bob Cache!</h1> 1"); equal(simple_output2().trim(), "12"); equal(simple_output3().trim(), "12 12"); equal(simple_output4().trim(), "}}} 121 {{}"); equal(simple_vars().trim(), "2 2 2"); equal(simple_юникод().trim(), "4"); }); </script> <script type="text/x-snakeskin-template" id="space"> 
 - template space_index()
 	< .foo
 		< .bar
@@ -1326,7 +1330,14 @@ ${ /*121***/ }
     < div style = color: red :: bar
     foo :: bar
     < div class = \:: bar
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true, autoReplace: true}); test('syntax', function () { equal(syntax_index().trim(), "<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>"); equal(syntax_index2().trim(), "<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>"); equal(syntax_index3().trim(), "ng-class="foo" ng-bar="foo""); equal(syntax_index4().trim(), "<div ng-class="foo" ng-bar="foo">foo</div>"); equal(syntax_index5().trim(), "<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>"); equal(syntax_index6().trim(), "<h1 class="b-hello">foo bar car my mooo boo</h1>"); equal(syntax_index7().trim(), "foo bar"); equal(syntax_index8().trim(), "Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>"); }); </script> <script type="text/x-snakeskin-template" id="tag"> 
+
+- template syntax_index9()
+	< .foo
+		< .&__bar
+			<div class="foo bar"><img href="#" foo=1 />
+			</div><a href="#">hello
+				</a>
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('syntax'), {prettyPrint: true, autoReplace: true}); test('syntax', function () { equal(syntax_index().trim(), "<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>"); equal(syntax_index2().trim(), "<span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>"); equal(syntax_index3().trim(), "ng-class="foo" ng-bar="foo""); equal(syntax_index4().trim(), "<div ng-class="foo" ng-bar="foo">foo</div>"); equal(syntax_index5().trim(), "<h1 class="b-hello"><span style="color: blue" data-info="some description" class="b-hello__msg">Hello friend! You are amazing!</span></h1>"); equal(syntax_index6().trim(), "<h1 class="b-hello">foo bar car my mooo boo</h1>"); equal(syntax_index7().trim(), "foo bar"); equal(syntax_index8().trim(), "Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: bar"></div>"); equal(syntax_index9().trim(), "<div class="foo"><div class="foo__bar"><div class="foo bar"><img href="#" foo="1" /> </div><a href="#">hello </a></div></div>"); }); </script> <script type="text/x-snakeskin-template" id="tag"> 
 {template tag_index()}
 	{tag span.foo class = bar car}
 		{tag .&__bar#my}
