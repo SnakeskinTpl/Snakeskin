@@ -7,6 +7,7 @@ bem_index6
 bem_index7
 bem_index8
 bem_index9
+bem_index10
 
 ###
 
@@ -57,6 +58,11 @@ bem_index9
 		< .bar[.foo[.&__child]].&__child
 			< .&__foo
 
+- template bem_index10()
+	< .b-foo
+		< [.&__child].&__child
+			< .&__foo
+
 ###
 
 <h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>
@@ -92,3 +98,7 @@ bem_index9
 ***
 
 <div class="b-foo"><div class="bar foo foo__child bar__child"><div class="bar__foo"></div></div></div>
+
+***
+
+<div class="b-foo"><div class="b-foo__child b-foo__child"><div class="b-foo__foo"></div></div></div>
