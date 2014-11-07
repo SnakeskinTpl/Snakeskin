@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.2.0
+ * Snakeskin v6.3.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 05 Nov 2014 16:55:57 GMT
+ * Date: Fri, 07 Nov 2014 07:38:29 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 2, 0],
+	VERSION: [6, 3, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -6892,10 +6892,7 @@ Snakeskin.DirObj = DirObj;
  * @param {boolean} params.throws - если true, то в случае ошибки и отсутствия обработчика ошибок -
  *     будет сгенерирована ошибка
  *
- * @param {string} params.exports - тип экспорта шаблонов:
- *     1) global;
- *     2) commonJS.
- *
+ * @param {string} params.exports - тип экспорта шаблонов
  * @param {boolean} params.inlineIterators - если true, то итераторы forEach и forIn
  *     будут развёрнуты в циклы
  *
@@ -7078,7 +7075,6 @@ function DirObj(src, params) {var this$0 = this;
 			doctype: this.doctype,
 			escapeOutput: this.escapeOutput,
 			renderAs: this.renderAs,
-			exports: this.exports,
 			replaceUndef: this.replaceUndef,
 			autoReplace: this.autoReplace,
 			macros: this.macros,
@@ -7285,53 +7281,53 @@ function DirObj(src, params) {var this$0 = this;
 	this.res = '';
 
 	if (!this.proto) {
-		var decl = /* cbws */(("\
+		this.res += /* cbws */(("\
+This code is generated automatically, don\'t alter it. */\
+(function () {\
+var IS_NODE = false,\
+hasExports = typeof exports !== 'undefined',\
+ctx = hasExports ? exports : this;\
+\
+try {\
+IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';\
+\
+} catch (ignore) {\
+\
+}\
+\
+var Snakeskin = (IS_NODE ? global : this).Snakeskin;\
+\
+function init(obj) {\
+Snakeskin = Snakeskin ||\
+(obj instanceof Object ? obj : void 0);\
+\
+if (hasExports) {\
+delete exports.init;\
+}\
+\
+if (IS_NODE) {\
+Snakeskin = Snakeskin || require(obj);\
+}\
+\
+exec.call(ctx);\
+return ctx;\
+};\
+\
+if (hasExports) {\
+ctx.init = init;\
+}\
+\
+function exec() {\
 var __ROOT__ = this,\
 self = this;\
-\
-var $C = this.$C != null ? this.$C : Snakeskin.Vars.$C,\
-async = this.async != null ? this.async: Snakeskin.Vars.async;\
-\
-var __$C__ = $C,\
-__async__ = async;\
 \
 var __APPEND__ = Snakeskin.appendChild,\
 __FILTERS__ = Snakeskin.Filters,\
 __VARS__ = Snakeskin.Vars,\
-__LOCAL__ = Snakeskin.LocalVars,\
-__STR__,\
-__TMP__,\
-__J__;\
+__LOCAL__ = Snakeskin.LocalVars;\
 \
 var $_ = __LOCAL__['$_" + uid) + "'];\
 ");
-
-		this.res += /* cbws */("\
-This code is generated automatically, don\'t alter it. */\
-(function () {\
-");
-
-		if (this.exports === 'commonJS') {
-			this.res += /* cbws */(("\
-var Snakeskin = global.Snakeskin;\
-\
-exports['init'] = function (obj) {\
-Snakeskin = Snakeskin || obj instanceof Object ?\
-obj : require(obj);\
-\
-delete exports.init;\
-exec.call(exports);\
-\
-return exports;\
-};\
-\
-function exec() {\
-" + decl) + "\
-");
-
-		} else {
-			this.res += decl;
-		}
 	}
 }
 /*!
@@ -8897,7 +8893,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 						res = res.substring(0, lastElI - 1) +
 							res.substring(lastElI + 1);
 
-					} else if (concatLine) {
+					} else if (concatLine && !bOpen) {
 						res += el;
 					}
 
@@ -8907,7 +8903,11 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 					if (literal === CONCAT_COMMAND) {
 						concatLine = true;
-						res += el;
+
+						if (!bOpen) {
+							res += el;
+						}
+
 						continue;
 					}
 				}
@@ -9198,6 +9198,49 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
  */
 function getName(name) {
 	return aliases[name] || name;
+}
+
+/**
+ * Разбить строку по пробелам и вернуть массив
+ * (учитываются директивы)
+ *
+ * @param {string} str - исходная строка
+ * @return {Array}
+ */
+function splitBySpace(str) {
+	var currentEscape,
+		escape = false;
+
+	var res = [''],
+		bOpen = 0;
+
+	for (var i = -1; ++i < str.length;) {
+		currentEscape = escape;
+		var el = str.charAt(i);
+
+		if (el === '\\' || escape) {
+			escape = !escape;
+		}
+
+		if (!currentEscape) {
+			if (el === LEFT_BLOCK) {
+				bOpen++;
+
+			} else if (el === RIGHT_BLOCK) {
+				bOpen--;
+			}
+		}
+
+		if (el === ' ' && !bOpen) {
+			res.push('');
+		}
+
+		if (el !== ' ' || bOpen) {
+			res[res.length - 1] += el;
+		}
+	}
+
+	return res;
 }
 
 /**
@@ -10128,12 +10171,11 @@ DirObj.prototype.declResult = function () {
 /**
  * Декларировать конец файла шаблонов
  *
- * @param {string} exports - тип экспорта шаблонов
  * @param {?string} cacheKey - кеш-ключ
  * @param {string} label - заголовок файла шаблонов
  * @retur {!DirObj}
  */
-DirObj.prototype.end = function (exports, cacheKey, label) {var this$0 = this;
+DirObj.prototype.end = function (cacheKey, label) {var this$0 = this;
 	switch (this.renderMode) {
 		case 'stringBuffer':
 			this.res = this.res.replace(/__RESULT__\.push\(''\);/g, '');
@@ -10163,7 +10205,15 @@ DirObj.prototype.end = function (exports, cacheKey, label) {var this$0 = this;
 		);
 
 	this.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">." + (this.lineSeparator)) + ("   " + (this.res)) + "");
-	this.res += (("" + (exports === 'commonJS' ? '}' : '')) + "}).call(this);");
+	this.res += ("\
+\n			}\
+\n\
+\n			if (!IS_NODE && !hasExports) {\
+\n				init();\
+\n			}\
+\n\
+\n		}).call(this);\
+\n	");
 
 	return this;
 };
@@ -10642,7 +10692,7 @@ function saveCache(cacheKey, text, params, dir) {
 		};
 	}
 }
-var nextLineRgxp = /\r\n|\r|\n/,
+var nextLineRgxp = /\r?\n|\r/,
 	whiteSpaceRgxp = /\s/,
 	lineWhiteSpaceRgxp = / |\t/;
 
@@ -10663,9 +10713,7 @@ var uid;
  *     или исходный текст шаблонов
  *
  * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска
- * @param {?string=} [opt_params.exports='global'] - тип экспорта шаблонов:
- *     1) global;
- *     2) commonJS.
+ * @param {?string=} [opt_params.exports='default'] - тип экспорта шаблонов
  *
  * @param {Object=} [opt_params.context=false] - контекст для сохранение скомпилированного шаблона
  *     (устанавливает экспорт commonJS)
@@ -10755,14 +10803,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		|| NULL;
 
 	p.exports = s(p.exports, p['exports'])
-		|| 'global';
-
-	if (ctx !== NULL) {
-		p.exports = 'commonJS';
-	}
-
-	var cjs = p.exports === 'commonJS',
-		exports = p.exports;
+		|| 'default';
 
 	p.onError = s(p.onError, p['onError']);
 	p.renderAs = s(p.renderAs, p['renderAs']);
@@ -11212,7 +11253,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		var el = str.charAt(dir.i),
 			prev = str.charAt(dir.i - 1),
 			next = str.charAt(dir.i + 1),
-			next2str = el + next;
+			next2str = str.substr(dir.i, 2);
 
 		var rEl = el;
 		var line = info['line'],
@@ -11319,7 +11360,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		if (!bOpen) {
 			// Обработка экранирования
-			if ((el === '\\' && (sysEscapeMap[next] && (begin ? !includeSysEscapeMap[next] : true))) || escape) {
+			if (el === '\\' && sysEscapeMap[next] && (!begin || next === I18N) || escape) {
 				escape = !escape;
 			}
 
@@ -11879,7 +11920,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
-	dir.end(exports, cacheKey, label);
+	dir.end(cacheKey, label);
 
 	if (p.prettyPrint) {
 		dir.res = beautify(dir.res);
@@ -11933,7 +11974,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else if (ctx !== NULL) {
 			new Function(
 				'module',
-
 				'exports',
 				'global',
 
@@ -11948,7 +11988,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			);
 
 		// Живая компиляция в браузере
-		} else if (!cjs) {
+		} else {
 			dir.evalStr(dir.res);
 		}
 
@@ -11965,7 +12005,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	// Если брайзер поддерживает FileAPI,
 	// то подключаем скомпилированный шаблон как внешний скрипт
-	if (!IS_NODE && !cjs) {
+	if (!IS_NODE) {
 		setTimeout(function()  {
 			try {
 				var blob = new Blob([dir.res], {
@@ -12609,8 +12649,8 @@ Snakeskin.addDirective(
 			arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
 			res += /* cbws */("\
-__STR__ = \'\';\
-__J__ = 0;\
+var __ATTR_STR__ = \'\',\
+__ATTR_J__ = 0;\
 ");
 
 			if (opt_group) {
@@ -12625,14 +12665,14 @@ __J__ = 0;\
 				(("'" + (this.pasteTplVarBlocks(arg[0]))) + "'")
 			);
 
-			var vals = arg[1].split(' ');
+			var vals = splitBySpace(arg[1]);
 
 			for (var j = -1; ++j < vals.length;) {
 				var val = vals[j].trim();
 
 				if (val.charAt(0) === '&' && ref) {
 					val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring('&amp;'.length), true))) + ("'" + e) + "");
-					val = this.replaceTplVars(val);
+					val = this.pasteDangerBlocks(this.replaceTplVars(val));
 				}
 
 				val = this.prepareOutput(
@@ -12641,26 +12681,26 @@ __J__ = 0;\
 
 				res += /* cbws */(("\
 if ((" + val) + (") != null && (" + val) + (") !== '') {\
-__STR__ += __J__ ? ' ' + " + val) + (" : " + val) + ";\
-__J__++;\
+__ATTR_STR__ += __ATTR_J__ ? ' ' + " + val) + (" : " + val) + ";\
+__ATTR_J__++;\
 }\
 ");
 			}
 
-			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + (") != '' && (__STR__ || " + empty) + ")) {");
+			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + (") != '' && (__ATTR_STR__ || " + empty) + ")) {");
 			var tmp = /* cbws */(("\
 if (__NODE__) {\
-__NODE__.setAttribute(" + (arg[0])) + (", __STR__);\
+__NODE__.setAttribute(" + (arg[0])) + (", __ATTR_STR__);\
 \
 } else {\
-" + (this.wrap((("' ' + " + (arg[0])) + " + (__STR__ ? '=\"' + __STR__ + '\"' : '')")))) + "\
+" + (this.wrap((("' ' + " + (arg[0])) + " + (__ATTR_STR__ ? '=\"' + __ATTR_STR__ + '\"' : '')")))) + "\
 }\
 ");
 
 			if (opt_classLink) {
 				res += /* cbws */(("\
-if (__TMP__[(" + (arg[0])) + (")] != null) {\
-__TMP__[(" + (arg[0])) + (")] += __STR__;\
+if (__ATTR_TMP__[(" + (arg[0])) + (")] != null) {\
+__ATTR_TMP__[(" + (arg[0])) + (")] += __ATTR_STR__;\
 \
 } else {\
 " + tmp) + "\
@@ -13293,7 +13333,7 @@ Snakeskin.addDirective(
 		},
 
 		function (command) {
-			var parts = command.split(' '),
+			var parts = splitBySpace(command),
 				cdn = parts.slice(1).join(' '),
 				val = parts[0].split('@');
 
@@ -13617,20 +13657,8 @@ __COMMENT_RESULT__ = \'\';\
 				this[flag] = value;
 
 			if (cache) {
-				switch (flag) {
-					case 'inlineIterators':
-						if (parentCache && value !== parentCache[flag]) {
-							return this.error('flag "inlineIterators" can\'t be overridden in the child template');
-						}
-
-						break;
-
-					case 'exports':
-						if (value !== 'global') {
-							return this.error((("flag \"exports\" = \"" + value) + "\" can't be set"));
-						}
-
-						break;
+				if (flag === 'inlineIterators' && parentCache && value !== parentCache[flag]) {
+					return this.error('flag "inlineIterators" can\'t be overridden in the child template');
 				}
 
 				cache[flag] = value;
@@ -15160,7 +15188,7 @@ for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
 					command = 'css';
 				}
 
-				var parts = command.split(' '),
+				var parts = splitBySpace(command),
 					type = parts[0],
 					dom = !this.domComment && this.renderMode === 'dom';
 
@@ -16156,7 +16184,7 @@ __RETURN_VAL__ = " + val) + ";\
 					command = 'js';
 				}
 
-				var parts = command.split(' '),
+				var parts = splitBySpace(command),
 					type = parts[0],
 					dom = !this.domComment && this.renderMode === 'dom';
 
@@ -16383,7 +16411,7 @@ Snakeskin.addDirective(
 					command = 'css';
 				}
 
-				var parts = command.split(' '),
+				var parts = splitBySpace(command),
 					type = parts[0],
 					dom = !this.domComment && this.renderMode === 'dom';
 
@@ -16532,7 +16560,7 @@ Snakeskin.addDirective(
 				command = 'div';
 			}
 
-			var parts = command.split(' '),
+			var parts = splitBySpace(command),
 				desc = this.returnTagDesc(parts[0]);
 
 			var params = this.structure.params;
@@ -16545,7 +16573,7 @@ Snakeskin.addDirective(
 				dom = !this.domComment && this.renderMode === 'dom';
 
 			var str = /* cbws */("\
-__TMP__ = {\
+var __ATTR_TMP__ = {\
 'class': ''\
 };\
 ");
@@ -16575,14 +16603,14 @@ __NODE__ = document.createElement('" + (desc.tag)) + "');\
 
 			if (desc.classes.length) {
 				str += /* cbws */(("\
-__TMP__['class'] += (__TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + "';\
+__ATTR_TMP__['class'] += (__ATTR_TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + "';\
 ");
 			}
 
 			if (dom) {
 				str += /* cbws */(("\
-if (__TMP__['class']) {\
-__NODE__.className = __TMP__['class'];\
+if (__ATTR_TMP__['class']) {\
+__NODE__.className = __ATTR_TMP__['class'];\
 }\
 \
 " + (this.returnPushNodeDecl(!params.block))) + "\
@@ -16590,7 +16618,7 @@ __NODE__.className = __TMP__['class'];\
 
 			} else {
 				str += this.wrap(/* cbws */(("\
-(__TMP__['class'] ? ' class=\"' + __TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === 'xml' ? '/' : '')) + ">'\
+(__ATTR_TMP__['class'] ? ' class=\"' + __ATTR_TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === 'xml' ? '/' : '')) + ">'\
 "));
 			}
 
@@ -16619,6 +16647,8 @@ __NODE__.className = __TMP__['class'];\
 	}
 );
 
+var parentLinkRgxp = /^&/;
+
 /**
  * Анализировать заданную строку декларации тега
  * и вернуть объект-описание
@@ -16627,7 +16657,9 @@ __NODE__.className = __TMP__['class'];\
  * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
  */
 DirObj.prototype.returnTagDesc = function (str) {
-	var action = '';
+	var points = [],
+		action = '';
+
 	var tag = '',
 		id = '',
 		inline = false;
@@ -16638,16 +16670,53 @@ DirObj.prototype.returnTagDesc = function (str) {
 	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
+	var bOpen = 0,
+		bStart = false;
+
+	var bMap = {
+		'[': true,
+		']': true
+	};
+
 	var sys = {
 		'#': true,
 		'.': true,
 		':': true
 	};
 
-	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i);
+	var error = {
+		tag: '',
+		id: '',
+		classes: [],
+		pseudo: [],
+		inline: false
+	};
 
-		if (sys[el]) {
+	for (var i = -1; ++i < str.length;) {
+		var el = str.charAt(i),
+			next = str.charAt(i + 1);
+
+		if (bMap[el]) {
+			if (el === '[') {
+				bOpen++;
+				bStart = true;
+
+			} else {
+				bOpen--;
+			}
+
+			continue;
+		}
+
+		if (bStart && el !== '.') {
+			this.error('invalid syntax');
+			return error;
+
+		} else {
+			bStart = false;
+		}
+
+		if (sys[el] && (el !== ADV_LEFT_BLOCK || next !== LEFT_BLOCK) && (el !== '#' || !bOpen)) {
 			if (!tag) {
 				tag = 'div';
 			}
@@ -16655,6 +16724,46 @@ DirObj.prototype.returnTagDesc = function (str) {
 			action = el;
 
 			if (el === '.') {
+				// Обработка липуих ссылок
+				if (bOpen) {
+					for (var j = points.length; j--;) {
+						var point = points[j];
+
+						if (point) {
+							if (point.stage < bOpen) {
+								var tmp = classes[j].replace(parentLinkRgxp, point.val),
+									pos = point.from;
+
+								while (points[pos] != null) {
+									var parent = points[pos];
+									tmp = tmp.replace(parentLinkRgxp, parent.val);
+									pos = parent.from;
+								}
+
+								points.push({
+									stage: bOpen,
+									val: tmp,
+									from: j
+								});
+
+								break;
+							}
+
+						} else {
+							points.push({
+								stage: bOpen,
+								val: classes[j],
+								from: j
+							});
+
+							break;
+						}
+					}
+
+				} else {
+					points.push(null);
+				}
+
 				classes.push('');
 
 			} else if (el === ':') {
@@ -16686,34 +16795,40 @@ DirObj.prototype.returnTagDesc = function (str) {
 		}
 	}
 
-	var ref = this.bemRef,
-		newRef = '';
+	if (bOpen) {
+		this.error('invalid syntax');
+		return error;
+	}
 
-	for (var i$12 = classes.length; i$12--;) {
-		var el$5 = classes[i$12];
+	var ref = this.bemRef;
 
-		if (el$5.charAt(0) === '&') {
+	for (var i$12 = -1; ++i$12 < classes.length;) {
+		var el$5 = classes[i$12],
+			point$0 = points[i$12];
+
+		if (point$0) {
+			el$5 = el$5.replace(parentLinkRgxp, point$0.val);
+		}
+
+		if (parentLinkRgxp.test(el$5)) {
 			if (ref) {
 				el$5 = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'" + FILTER) + ("bem '" + (this.replaceTplVars(el$5.substring(1), true))) + ("'" + e) + "");
 			}
 
-		} else if (!newRef && el$5) {
-			newRef = el$5;
+		} else if (el$5 && point$0 == null) {
+			ref = el$5;
 		}
 
 		classes[i$12] = this.replaceTplVars(el$5);
 	}
 
-	if (newRef) {
-		this.bemRef = newRef;
-	}
+	this.bemRef = ref;
 
 	if (!inline) {
 		inline = pseudo[pseudo.length - 1] === 'inline';
 	}
 
 	return {
-		ref: ref,
 		tag: this.replaceTplVars(tag),
 		id: this.replaceTplVars(id),
 		classes: classes,
@@ -16960,45 +17075,42 @@ for (var i = -1; ++i < template.length;) {
 					jsDoc += pos.length;
 				}
 
-				// Декларация функции
-				// с пространством имён или при экспорте в common.js
-				if (nmRgxp.test(tmpTplName) || this.exports === 'commonJS') {
-					lastName = '';
-					var tmpArr = tmpTplName
-						.replace(nmssRgxp, '%')
-						.replace(nmsRgxp, '.%')
-						.replace(nmeRgxp, '')
-						.split('.');
+				lastName = '';
+				var tmpArr = tmpTplName
+					.replace(nmssRgxp, '%')
+					.replace(nmsRgxp, '.%')
+					.replace(nmeRgxp, '')
+					.split('.');
 
-					var str = tmpArr[0],
-						length = tmpArr.length,
-						first = str.charAt(0);
+				var str = tmpArr[0],
+					length = tmpArr.length,
+					first = str.charAt(0);
 
-					if (first === '%') {
-						try {
-							str = /* cbws */(("['" + (applyDefEscape(
+				if (first === '%') {
+					try {
+						str = /* cbws */(("['" + (applyDefEscape(
 this.returnEvalVal(
 this.prepareOutput(str.substring(1), true)
 )
 ))) + "']");
 
-						} catch (err) {
-							return this.error(err.message);
-						}
+					} catch (err) {
+						return this.error(err.message);
+					}
+				}
+
+				for (var i = 0; ++i < length;) {
+					var el = tmpArr[i],
+						custom = el.charAt(0) === '%';
+
+					if (custom) {
+						el = el.substring(1);
 					}
 
-					for (var i = 0; ++i < length;) {
-						var el = tmpArr[i],
-							custom = el.charAt(0) === '%';
+					var def = ("this" + (concatProp(str)));
 
-						if (custom) {
-							el = el.substring(1);
-						}
-
-						var def = ("this" + (concatProp(str)));
-
-						this.save(
-							(pos = /* cbws */(("\
+					this.save(
+						(pos = /* cbws */(("\
 if (" + def) + (" == null) {\
 " + def) + " = {};\
 }\
@@ -17020,22 +17132,20 @@ this.prepareOutput(el, true)
 )
 ))) + "']");
 
-							} catch (err) {
-								return this.error(err.message);
-							}
-
-							continue;
-
-						} else if (i === length - 1) {
-							lastName = el;
+						} catch (err) {
+							return this.error(err.message);
 						}
 
-						str += ("." + el);
+						continue;
+
+					} else if (i === length - 1) {
+						lastName = el;
 					}
 
-					tplName = str;
+					str += ("." + el);
 				}
 
+				tplName = str;
 				this.save((("this" + (concatProp(tplName))) + (" = function " + prfx) + ("" + (lastName !== null ? lastName : tplName)) + "("), iface);
 			}
 
