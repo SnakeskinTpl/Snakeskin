@@ -80,6 +80,10 @@ simple_vars
 
 - template simple_vars()
 	- simple_round(1.7)
+	- simple_round (1.7)
+	- simple_round &
+		(1.7)
+	.
 
 ###
 
@@ -135,4 +139,4 @@ simple_vars
 
 ***
 
-2
+2 2 2
