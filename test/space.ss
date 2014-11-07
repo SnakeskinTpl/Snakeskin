@@ -7,6 +7,7 @@ space_index6
 space_index7
 space_index8
 space_index9
+space_index10
 
 ###
 
@@ -134,6 +135,12 @@ space_index9
 			1
 		{/}
 	{/}
+
+- template space_index10()
+	- script js
+	- script js
+	<div class="foo">foo bar</div>
+
 ###
 
 <div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>
@@ -169,3 +176,7 @@ space_index9
 ***
 
 121 1
+
+***
+
+<script type="text/javascript"></script><script type="text/javascript"></script><div class="foo">foo bar</div>
