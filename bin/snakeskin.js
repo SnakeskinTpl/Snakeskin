@@ -22,7 +22,7 @@ program
 
 	.option('-o, --output [src]', 'path to the file to save')
 	.option('--extname [ext]', 'file extension for saving (if "output" is a directory)')
-	.option('--exports [type]', 'export type (commonJS for node.js)')
+	.option('--exports [type]', 'export type')
 
 	.option('-e, --exec', 'execute compiled template')
 	.option('-d, --data [src]', 'path to the data file or JS data object')
@@ -196,7 +196,6 @@ function action(data, file) {
 	}
 
 	if (tplData || mainTpl || exec) {
-		params.exports = 'commonJS';
 		params.context = tpls;
 		params.prettyPrint = false;
 	}
