@@ -39,6 +39,13 @@ tag_index5
 - template tag_index5()
 	< \#{1 + 2}
 
+- template tag_index6()
+	< #foo#{ &
+		/* }}}}}}} */
+		/// 1 +
+		1 + 2
+	} .
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1 </div></span><div id="my" class="&__bar">1 </div><div id="my" class="foo__bar">1 </div>
@@ -58,3 +65,7 @@ tag_index5
 ***
 
 <#{1 + 2}="+ 2}"></#{1>
+
+***
+
+<div id="foo3"></div>
