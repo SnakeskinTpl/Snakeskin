@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 07 Nov 2014 09:06:38 GMT
+ * Date: Fri, 07 Nov 2014 19:15:35 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -9026,6 +9026,61 @@ DirObj.prototype.getFullBody = function (tplName) {
  */
 
 /**
+ * Разбить строку по пробелам и вернуть массив
+ * (учитываются директивы)
+ *
+ * @param {string} str - исходная строка
+ * @return {Array}
+ */
+function splitBySpace(str) {
+	var currentEscape,
+		escape = false;
+
+	var res = [''],
+		bOpen = 0,
+		bStart = false;
+
+	for (var i = -1; ++i < str.length;) {
+		currentEscape = escape;
+		var el = str.charAt(i),
+			part = str.substr(i, includeDirLength);
+
+		if (el === '\\' || escape) {
+			escape = !escape;
+		}
+
+		if (!currentEscape && includeDirMap[part]) {
+			i += includeDirLength - 1;
+			res[res.length - 1] += part;
+
+			bStart = true;
+			bOpen++;
+
+			continue;
+		}
+
+		if (bStart) {
+			if (el === LEFT_BLOCK) {
+				bOpen++;
+
+			} else if (el === RIGHT_BLOCK) {
+				bOpen--;
+			}
+		}
+
+		if (el === ' ' && !bOpen) {
+			res.push('');
+		}
+
+		if (el !== ' ' || bOpen) {
+			res[res.length - 1] += el;
+		}
+	}
+
+	return res;
+}
+
+/**
  * Заменить ${ ... } или #{ ... } в указанной строке на значение вывода
  *
  * @param {string} str - исходная строка
@@ -9198,49 +9253,6 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
  */
 function getName(name) {
 	return aliases[name] || name;
-}
-
-/**
- * Разбить строку по пробелам и вернуть массив
- * (учитываются директивы)
- *
- * @param {string} str - исходная строка
- * @return {Array}
- */
-function splitBySpace(str) {
-	var currentEscape,
-		escape = false;
-
-	var res = [''],
-		bOpen = 0;
-
-	for (var i = -1; ++i < str.length;) {
-		currentEscape = escape;
-		var el = str.charAt(i);
-
-		if (el === '\\' || escape) {
-			escape = !escape;
-		}
-
-		if (!currentEscape) {
-			if (el === LEFT_BLOCK) {
-				bOpen++;
-
-			} else if (el === RIGHT_BLOCK) {
-				bOpen--;
-			}
-		}
-
-		if (el === ' ' && !bOpen) {
-			res.push('');
-		}
-
-		if (el !== ' ' || bOpen) {
-			res[res.length - 1] += el;
-		}
-	}
-
-	return res;
 }
 
 /**
@@ -12661,23 +12673,18 @@ __ATTR_J__ = 0;\
 					("data-" + (arg[0].slice(1))) : arg[0];
 			}
 
-			arg[0] = this.replaceDangerBlocks(
-				(("'" + (this.pasteTplVarBlocks(arg[0]))) + "'")
-			);
-
+			arg[0] = (("'" + (this.pasteTplVarBlocks(arg[0]))) + "'");
 			var vals = splitBySpace(arg[1]);
 
 			for (var j = -1; ++j < vals.length;) {
 				var val = vals[j].trim();
 
-				if (val.charAt(0) === '&' && ref) {
-					val = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'|bem '" + (this.replaceTplVars(val.substring('&amp;'.length), true))) + ("'" + e) + "");
+				if (parentLinkRgxp.test(val) && ref) {
+					val = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (val.substring('&amp;'.length))) + ("'" + e) + "");
 					val = this.pasteDangerBlocks(this.replaceTplVars(val));
 				}
 
-				val = this.prepareOutput(
-					this.replaceDangerBlocks((("'" + (this.pasteTplVarBlocks(val))) + "'")), true
-				) || '';
+				val = (("'" + (this.pasteTplVarBlocks(val))) + "'");
 
 				res += /* cbws */(("\
 if ((" + val) + (") != null && (" + val) + (") !== '') {\
@@ -12733,7 +12740,7 @@ __ATTR_TMP__[(" + (arg[0])) + (")] += __ATTR_STR__;\
 		this.attr = true;
 		this.attrEscape = true;
 
-		str = this.replaceTplVars(str, null, true);
+		str = this.replaceTplVars(str, false, true);
 		var groups = [];
 
 		var group = '',
@@ -16269,7 +16276,7 @@ Snakeskin.addDirective(
 		}
 
 		if (parts[0] === '&') {
-			this.bemRef = parts.slice(1).join(' ');
+			this.bemRef = this.replaceTplVars(parts.slice(1).join(' '));
 		}
 	}
 );
@@ -16674,6 +16681,8 @@ var parentLinkRgxp = /^&/;
  * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
  */
 DirObj.prototype.returnTagDesc = function (str) {
+	str = this.replaceTplVars(str, false, true);
+
 	var points = [],
 		action = '';
 
@@ -16681,6 +16690,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 		id = '',
 		inline = false;
 
+	var hasId = false;
 	var pseudo = [],
 		classes = [];
 
@@ -16710,8 +16720,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 	};
 
 	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i),
-			next = str.charAt(i + 1);
+		var el = str.charAt(i);
 
 		if (bMap[el]) {
 			if (el === '[') {
@@ -16733,11 +16742,17 @@ DirObj.prototype.returnTagDesc = function (str) {
 			bStart = false;
 		}
 
-		if (sys[el] && (el !== ADV_LEFT_BLOCK || next !== LEFT_BLOCK) && (el !== '#' || !bOpen)) {
-			if (!tag) {
-				tag = 'div';
+		if (sys[el] && (el !== '#' || !bOpen)) {
+			if (el === '#') {
+				if (hasId) {
+					this.error('invalid syntax');
+					return error;
+				}
+
+				hasId = true;
 			}
 
+			tag = tag || 'div';
 			action = el;
 
 			if (el === '.') {
@@ -16827,16 +16842,15 @@ DirObj.prototype.returnTagDesc = function (str) {
 			el$5 = el$5.replace(parentLinkRgxp, point$0.val);
 		}
 
-		if (parentLinkRgxp.test(el$5)) {
-			if (ref) {
-				el$5 = (("" + s) + ("'" + (this.replaceTplVars(ref, true))) + ("'" + FILTER) + ("bem '" + (this.replaceTplVars(el$5.substring(1), true))) + ("'" + e) + "");
-			}
+		if (parentLinkRgxp.test(el$5) && ref) {
+			el$5 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (el$5.substring(1))) + ("'" + e) + "");
+			el$5 = this.pasteDangerBlocks(this.replaceTplVars(el$5));
 
 		} else if (el$5 && point$0 == null) {
-			ref = el$5;
+			ref = this.pasteTplVarBlocks(el$5);
 		}
 
-		classes[i$12] = this.replaceTplVars(el$5);
+		classes[i$12] = this.pasteTplVarBlocks(el$5);
 	}
 
 	this.bemRef = ref;
@@ -16846,8 +16860,8 @@ DirObj.prototype.returnTagDesc = function (str) {
 	}
 
 	return {
-		tag: this.replaceTplVars(tag),
-		id: this.replaceTplVars(id),
+		tag: this.pasteTplVarBlocks(tag),
+		id: this.pasteTplVarBlocks(id),
 		classes: classes,
 		pseudo: pseudo,
 		inline: inline
