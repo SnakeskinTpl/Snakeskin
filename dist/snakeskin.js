@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 06:59:43 GMT
+ * Date: Sat, 08 Nov 2014 08:00:40 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -12694,13 +12694,13 @@ __ATTR_J__++;\
 ");
 			}
 
-			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + (") != '' && (__ATTR_STR__ || " + empty) + ")) {");
+			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + ") != '') {");
 			var tmp = /* cbws */(("\
 if (__NODE__) {\
-__NODE__.setAttribute(" + (arg[0])) + (", __ATTR_STR__);\
+__NODE__.setAttribute(" + (arg[0])) + (", " + empty) + (" ? " + (arg[0])) + (" : __ATTR_STR__ );\
 \
 } else {\
-" + (this.wrap((("' ' + " + (arg[0])) + " + (__ATTR_STR__ ? '=\"' + __ATTR_STR__ + '\"' : '')")))) + "\
+" + (this.wrap((("' ' + " + (arg[0])) + (" + (" + empty) + " && !__ATTR_STR__ ? '' : '=\"' + __ATTR_STR__ + '\"')")))) + "\
 }\
 ");
 
