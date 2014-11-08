@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 15:23:59 GMT
+ * Date: Sat, 08 Nov 2014 16:43:54 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -8870,7 +8870,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					brk = dirStart &&
 						prevEl === CONCAT_END;
 
-					if (dirStart && (prevEl === CONCAT_COMMAND || brk)) {
+					if (dirStart && (prevEl === CONCAT_COMMAND && res !== CONCAT_COMMAND || brk)) {
 						literal = prevEl;
 						res = res.substring(0, lastElI - 1) +
 							res.substring(lastElI + 1);
