@@ -1,3 +1,32 @@
+## v6.3.0
+
+- [x] Интерполяция тега:
+
+```
+< .b-foo.&_${isActive ? 'active_true': ''}
+```
+
+```html
+<div class="b-foo b-foo_active_true"></div>
+```
+
+- [x] Липкие ссылки:
+
+```
+< .b-button
+    < .&__content[.&_focus_true]
+```
+
+```html
+<div class="b-button">
+	<div class="b-button__content b-button__content_focus_true"></div>
+</div>
+```
+
+- [x] Единый формат экспорта;
+- [x] Сортировка имён шаблонов при слепом запуске;
+- [x] Исправление ошибок и рефакторинг.
+
 ## v6.2.0
 
 - [x] Исправление ошибок и рефакторинг;
