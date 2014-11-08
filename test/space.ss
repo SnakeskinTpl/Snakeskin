@@ -11,6 +11,7 @@ space_index10
 space_index11
 space_index12
 space_index13
+space_index14
 
 ###
 
@@ -176,6 +177,21 @@ space_index13
 	- if 1
 		2
 
+- template space_index14()
+	- script js
+	- script js
+	- if 1
+
+		- if 2
+
+			1
+
+			- if 3
+				1
+
+	- if 1
+		2
+
 ###
 
 <div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>
@@ -227,3 +243,7 @@ space_index13
 ***
 
 1 1 2
+
+***
+
+<script type="text/javascript"></script><script type="text/javascript"></script>1 1 2

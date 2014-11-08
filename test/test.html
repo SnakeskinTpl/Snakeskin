@@ -1263,7 +1263,22 @@ ${ /*121***/ }
 
 	- if 1
 		2
- </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('space'), {prettyPrint: true, autoReplace: true}); test('space', function () { equal(space_index().trim(), "<div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>"); equal(space_index2().trim(), "1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2 1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2"); equal(space_index3().trim(), "1 2 1 212"); equal(space_index4().trim(), "1 2 1 212"); equal(space_index5().trim(), "1 21 2 1"); equal(space_index6().trim(), "1 2 4"); equal(space_index7().trim(), "<div class="foo"></div><div class="foo"></div> <div class="bar"></div>"); equal(space_index8().trim(), "<div class="foo"></div><div class="foo"></div><div class="bar"></div>"); equal(space_index9().trim(), "121 1"); equal(space_index10().trim(), "<script type="text/javascript"></script><script type="text/javascript"></script><div class="foo">foo bar</div>"); equal(space_index11().trim(), "1 2"); equal(space_index12().trim(), "<script type="text/javascript"></script><script type="text/javascript"></script>1 2"); equal(space_index13().trim(), "1 1 2"); }); </script> <script type="text/x-snakeskin-template" id="style"> 
+
+- template space_index14()
+	- script js
+	- script js
+	- if 1
+
+		- if 2
+
+			1
+
+			- if 3
+				1
+
+	- if 1
+		2
+ </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('space'), {prettyPrint: true, autoReplace: true}); test('space', function () { equal(space_index().trim(), "<div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>"); equal(space_index2().trim(), "1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2 1 <div class="foo"></div><div class="foo">1</div><div class="bar"></div> 2"); equal(space_index3().trim(), "1 2 1 212"); equal(space_index4().trim(), "1 2 1 212"); equal(space_index5().trim(), "1 21 2 1"); equal(space_index6().trim(), "1 2 4"); equal(space_index7().trim(), "<div class="foo"></div><div class="foo"></div> <div class="bar"></div>"); equal(space_index8().trim(), "<div class="foo"></div><div class="foo"></div><div class="bar"></div>"); equal(space_index9().trim(), "121 1"); equal(space_index10().trim(), "<script type="text/javascript"></script><script type="text/javascript"></script><div class="foo">foo bar</div>"); equal(space_index11().trim(), "1 2"); equal(space_index12().trim(), "<script type="text/javascript"></script><script type="text/javascript"></script>1 2"); equal(space_index13().trim(), "1 1 2"); equal(space_index14().trim(), "<script type="text/javascript"></script><script type="text/javascript"></script>1 1 2"); }); </script> <script type="text/x-snakeskin-template" id="style"> 
 {template style_index()}
 	#{style}
 		.a {}
