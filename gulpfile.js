@@ -124,7 +124,7 @@ function compile(dev) {
 			};
 
 			if (dev) {
-				params.jscomp_warning = 'invalidCasts';
+				params.compilerFlags.jscomp_warning = 'invalidCasts';
 			}
 
 			gulp.src(path.join('./dist/', key + '.js'))
