@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.3.0
+ * Snakeskin v6.3.1
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 16:43:54 GMT
+ * Date: Sat, 08 Nov 2014 19:22:48 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 3, 0],
+	VERSION: [6, 3, 1],
 
 	/**
 	 * Пространство имён для директив
@@ -7284,40 +7284,40 @@ function DirObj(src, params) {var this$0 = this;
 		this.res += /* cbws */(("\
 This code is generated automatically, don\'t alter it. */\
 (function () {\
-var IS_NODE = false,\
-hasExports = typeof exports !== 'undefined',\
-ctx = hasExports ? exports : this;\
+var __IS_NODE__ = false,\
+__HAS_EXPORTS__ = typeof exports !== 'undefined',\
+__EXPORTS__ = __HAS_EXPORTS__ ? exports : this;\
 \
 try {\
-IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';\
+__IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';\
 \
 } catch (ignore) {\
 \
 }\
 \
-var Snakeskin = (IS_NODE ? global : this).Snakeskin;\
+var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;\
 \
-function init(obj) {\
+function __INIT__(obj) {\
 Snakeskin = Snakeskin ||\
 (obj instanceof Object ? obj : void 0);\
 \
-if (hasExports) {\
-delete exports.init;\
+if (__HAS_EXPORTS__) {\
+delete __EXPORTS__.init;\
 }\
 \
-if (IS_NODE) {\
+if (__IS_NODE__) {\
 Snakeskin = Snakeskin || require(obj);\
 }\
 \
-exec.call(ctx);\
-return ctx;\
-};\
-\
-if (hasExports) {\
-ctx.init = init;\
+__EXEC__.call(__EXPORTS__);\
+return __EXPORTS__;\
 }\
 \
-function exec() {\
+if (__HAS_EXPORTS__) {\
+__EXPORTS__.init = __INIT__;\
+}\
+\
+function __EXEC__() {\
 var __ROOT__ = this,\
 self = this;\
 \
@@ -10214,8 +10214,8 @@ DirObj.prototype.end = function (cacheKey, label) {var this$0 = this;
 	this.res += ("\
 \n			}\
 \n\
-\n			if (!IS_NODE && !hasExports) {\
-\n				init();\
+\n			if (!__IS_NODE__ && !__HAS_EXPORTS__) {\
+\n				__INIT__();\
 \n			}\
 \n\
 \n		}).call(this);\
@@ -10805,11 +10805,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// GCC экспорт
 	// >>>
 
-	var ctx = s(p.context, p['context'])
-		|| NULL;
+	var ctx = s(p.context, p['context']) ||
+		NULL;
 
-	p.exports = s(p.exports, p['exports'])
-		|| 'default';
+	p.exports = s(p.exports, p['exports']) ||
+		'default';
 
 	p.onError = s(p.onError, p['onError']);
 	p.renderAs = s(p.renderAs, p['renderAs']);

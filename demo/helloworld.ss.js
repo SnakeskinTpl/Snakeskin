@@ -1,38 +1,38 @@
-/* Snakeskin v6.3.0, key <default,false,
-,xml,false,false,,stringConcat,true,true,1,,false,true,i18n>, label <1415185010517>, includes <>, generated at <1415430072189>.
+/* Snakeskin v6.3.1, key <default,false,
+,xml,false,false,,stringConcat,true,true,1,,false,true,i18n>, label <1415185010517>, includes <>, generated at <1415474664875>.
    This code is generated automatically, don't alter it. */
 (function() {
-    var IS_NODE = false,
-        hasExports = typeof exports !== 'undefined',
-        ctx = hasExports ? exports : this;
+    var __IS_NODE__ = false,
+        __HAS_EXPORTS__ = typeof exports !== 'undefined',
+        __EXPORTS__ = __HAS_EXPORTS__ ? exports : this;
     try {
-        IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+        __IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
     } catch (ignore) {}
-    var Snakeskin = (IS_NODE ? global : this).Snakeskin;
+    var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
 
-    function init(obj) {
+    function __INIT__(obj) {
         Snakeskin = Snakeskin || (obj instanceof Object ? obj : void 0);
-        if (hasExports) {
-            delete exports.init;
+        if (__HAS_EXPORTS__) {
+            delete __EXPORTS__.init;
         }
-        if (IS_NODE) {
+        if (__IS_NODE__) {
             Snakeskin = Snakeskin || require(obj);
         }
-        exec.call(ctx);
-        return ctx;
-    };
-    if (hasExports) {
-        ctx.init = init;
+        __EXEC__.call(__EXPORTS__);
+        return __EXPORTS__;
+    }
+    if (__HAS_EXPORTS__) {
+        __EXPORTS__.init = __INIT__;
     }
 
-    function exec() {
+    function __EXEC__() {
         var __ROOT__ = this,
             self = this;
         var __APPEND__ = Snakeskin.appendChild,
             __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars;
-        var $_ = __LOCAL__['$_7e353']; /* Snakeskin template: helloWorld; name  */
+        var $_ = __LOCAL__['$_bfe99']; /* Snakeskin template: helloWorld; name  */
         this.helloWorld = function(name) {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.helloWorld,
@@ -68,8 +68,8 @@
         Snakeskin.cache["helloWorld"] = this.helloWorld; /* Snakeskin template. */
     }
 
-    if (!IS_NODE && !hasExports) {
-        init();
+    if (!__IS_NODE__ && !__HAS_EXPORTS__) {
+        __INIT__();
     }
 
 }).call(this);
