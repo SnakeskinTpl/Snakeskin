@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 07 Nov 2014 19:15:35 GMT
+ * Date: Sat, 08 Nov 2014 06:59:43 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -6871,7 +6871,7 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 	this.bemRef = '';
 
 	this.strongSpace = 0;
-	this.sysSpace = 0;
+	this.sysSpace = false;
 
 	this.chainSpace = false;
 	this.space = !this.tolerateWhitespace;
@@ -7133,8 +7133,8 @@ function DirObj(src, params) {var this$0 = this;
 	/** @type {number} */
 	this.strongSpace = 0;
 
-	/** @type {number} */
-	this.sysSpace = 0;
+	/** @type {boolean} */
+	this.sysSpace = false;
 
 	/** @type {number} */
 	this.freezeLine = 0;
@@ -8757,7 +8757,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 					struct = obj;
 					res += space +
-						(ws && endDirInit && obj.text ? (("" + adv) + ("" + lb) + ("__&--__" + rb) + "") : '') +
+						(ws && endDirInit && (obj.text || !Snakeskin.Directions[obj.name]) ? (("" + adv) + ("" + lb) + ("__&-__" + rb) + "") : '') +
 						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
 					endDirInit = false;
@@ -13874,7 +13874,8 @@ __COMMENT_RESULT__ = \'\';\
 
 		{
 			placement: 'template',
-			notEmpty: true
+			notEmpty: true,
+			text: true
 		},
 
 		function () {
@@ -14004,7 +14005,9 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		this.skipSpace = true;
+		if (!this.tolerateWhitespace) {
+			this.skipSpace = true;
+		}
 
 		if (this.isReady()) {
 			if (command === 'proto') {
@@ -14074,7 +14077,9 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		this.skipSpace = true;
+		if (!this.tolerateWhitespace) {
+			this.skipSpace = true;
+		}
 
 		if (this.isReady()) {
 			if (command === 'proto') {
@@ -16087,7 +16092,9 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.startInlineDir();
-		this.skipSpace = true;
+		if (!this.tolerateWhitespace) {
+			this.skipSpace = true;
+		}
 
 		if (this.isReady()) {
 			var cb = this.hasParent(this.getGroup('callback'));
@@ -16316,19 +16323,6 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'__&+__',
-
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		this.sysSpace++;
-	}
-);
-
-Snakeskin.addDirective(
 	'unIgnoreAllWhitespaces',
 
 	{
@@ -16352,6 +16346,19 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'__&+__',
+
+	{
+		group: 'ignore'
+	},
+
+	function () {
+		this.startInlineDir();
+		this.sysSpace = true;
+	}
+);
+
+Snakeskin.addDirective(
 	'__&-__',
 
 	{
@@ -16360,31 +16367,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
-
-		if (this.sysSpace) {
-			this.sysSpace--;
-
-			if (!this.sysSpace && !this.space) {
-				this.space = false;
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__&--__',
-
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		this.sysSpace = 0;
-
-		if (!this.space) {
-			this.space = false;
-		}
+		this.sysSpace = false;
 	}
 );
 
