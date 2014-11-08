@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 09:56:50 GMT
+ * Date: Sat, 08 Nov 2014 13:40:26 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -9582,7 +9582,9 @@ DirObj.prototype.popParams = function () {
 		.replace(/\byield\b/g, '')
 		.replace(/(?:break|continue) [_]{2,}I_PROTO__[${w}]+;/, '')};
 
-	var wrapRgxp = /^\s*\{/;
+	var wrapRgxp = /^\s*\{/,
+		dangerRgxp = /\)\s*(?:{|=>)/,
+		functionRgxp = /\bfunction\b/;
 
 	/**
 	 * Подготовить указанную комманду к выводу:
@@ -9598,6 +9600,11 @@ DirObj.prototype.popParams = function () {
 	DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {var this$0 = this;
 		var tplName = this.tplName,
 			struct = this.structure;
+
+		if (dangerRgxp.test(command)) {
+			this.error('invalid syntax');
+			return '';
+		}
 
 		// ОПРЕДЕЛЕНИЯ:
 		// Скобка = (
@@ -9732,6 +9739,11 @@ DirObj.prototype.popParams = function () {
 					// не является названием свойства в литерале объекта ({свойство: )
 					var canParse = !blackWordMap[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
 						isNaN(Number(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
+
+					if (canParse && functionRgxp.test(word)) {
+						this.error('invalid syntax');
+						return '';
+					}
 
 					// Экспорт числовых литералов
 					if (numRgxp.test(el)) {
@@ -11917,6 +11929,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	if (dir.proto) {
 		sp.parent.setCompileVars(dir.getCompileVars());
 		return dir.pasteDangerBlocks(dir.res);
+	}
+
+	// Если остались внешние прототипы,
+	// которые не были подключены к своему шаблону,
+	// то генерируем ошибку
+	for (var key$15 in dir.preDefs) {
+		/* istanbul ignore if */
+		if (!dir.preDefs.hasOwnProperty(key$15)) {
+			continue;
+		}
+
+		dir.error((("template \"" + key$15) + "\" is not defined"));
+		return false;
 	}
 
 	dir.end(cacheKey, label);
@@ -17367,22 +17392,22 @@ PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName
 			if (this.backTableI) {
 				var cache$1 = Object(this.backTable);
 
-				for (var key$15 in cache$1) {
+				for (var key$16 in cache$1) {
 					/* istanbul ignore if */
-					if (!cache$1.hasOwnProperty(key$15)) {
+					if (!cache$1.hasOwnProperty(key$16)) {
 						continue;
 					}
 
-					for (var i$15 = -1; ++i$15 < cache$1[key$15].length;) {
-						var el$6 = cache$1[key$15][i$15];
+					for (var i$15 = -1; ++i$15 < cache$1[key$16].length;) {
+						var el$6 = cache$1[key$16][i$15];
 
 						if (!el$6.outer) {
 							continue;
 						}
 
-						var tmp = protoCache[tplName][key$15];
+						var tmp = protoCache[tplName][key$16];
 						if (!tmp) {
-							return this.error((("proto \"" + key$15) + "\" is not defined"));
+							return this.error((("proto \"" + key$16) + "\" is not defined"));
 						}
 
 						this.res = this.res.substring(0, el$6.pos) +
@@ -17542,21 +17567,6 @@ Snakeskin.addDirective(
 
 
 (function()  {
-	var startIdTest =
-		'((?:' +
-			'^|' +
-			'[^.\\st]' +
-		')\\s*)'
-	;
-
-	var endIdTest =
-		'(\\s*(?:' +
-			'$|(?!:)' +
-		'))'
-	;
-
-	var voidRgxp = new RegExp((("" + startIdTest) + ("\\b(?:var|const|let)\\b" + endIdTest) + ""), 'g');
-
 	Snakeskin.addDirective(
 		'void',
 
@@ -17568,10 +17578,6 @@ Snakeskin.addDirective(
 		},
 
 		function (command) {
-			if (voidRgxp.test(command)) {
-				return this.error('can\'t declare variables within "void"');
-			}
-
 			this.startInlineDir();
 			if (this.isReady()) {
 				this.append((("" + (this.prepareOutput(command, true))) + ";"));
