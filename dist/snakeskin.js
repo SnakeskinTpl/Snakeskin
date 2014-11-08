@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 13:40:26 GMT
+ * Date: Sat, 08 Nov 2014 13:45:04 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -8274,9 +8274,6 @@ DirObj.prototype.evalStr = function (str) {
 			'__J__',
 			'$_',
 
-			'$C',
-			'async',
-
 			'module',
 			'exports',
 			'require',
@@ -8297,12 +8294,6 @@ DirObj.prototype.evalStr = function (str) {
 			void 0,
 			void 0,
 			Snakeskin.LocalVars[("$_" + uid)],
-
-				root['$C'] != null ?
-				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
-
-				root['async'] != null ?
-				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async'],
 
 			module,
 			module.exports,
@@ -8325,9 +8316,6 @@ DirObj.prototype.evalStr = function (str) {
 			'__J__',
 			'$_',
 
-			'$C',
-			'async',
-
 			str
 
 		).call(
@@ -8340,13 +8328,7 @@ DirObj.prototype.evalStr = function (str) {
 
 			void 0,
 			void 0,
-			Snakeskin.LocalVars[("$_" + uid)],
-
-				root['$C'] != null ?
-				root['$C'] : Snakeskin.LocalVars['$C'] || Snakeskin.Vars['$C'],
-
-				root['async'] != null ?
-				root['async'] : Snakeskin.LocalVars['async'] || Snakeskin.Vars['async']
+			Snakeskin.LocalVars[("$_" + uid)]
 		);
 	}
 };
