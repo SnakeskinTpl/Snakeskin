@@ -307,7 +307,7 @@ function action(data, file) {
 			}
 
 			if (!tpl) {
-				console.error('Template is not defined');
+				console.error('Template to run is not defined');
 				res = '';
 
 				if (!watch) {
