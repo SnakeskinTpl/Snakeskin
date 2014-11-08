@@ -1,4 +1,4 @@
-module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
+var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
 var path = require('path'),
 	fs = require('fs'),
@@ -7,6 +7,23 @@ var path = require('path'),
 function clone(obj) {
 	return JSON.parse(JSON.stringify(obj));
 }
+
+// Явный экспорт, чтобы работал автокомплит в IDE
+
+/** @see {Snakeskin.VERSION} */
+exports.VERSION = ss.VERSION;
+
+/** @see {Snakeskin.Filters} */
+exports.Filters = ss.Filters;
+
+/** @see {Snakeskin.Vars} */
+exports.Vars = ss.Vars;
+
+/** @see {Snakeskin.importFilters} */
+exports.importFilters = ss.importFilters;
+
+/** @see {Snakeskin.compile} */
+exports.compile = ss.compile;
 
 /**
  * Вернуть true, если заданный файл шаблонов соответствует скомпилированному
