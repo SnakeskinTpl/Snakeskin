@@ -1,4 +1,4 @@
-- template test(asserts)
+- template test(asserts) :: {&}
 	- doctype transitional
 	< html
 		< head
