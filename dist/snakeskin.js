@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 08:07:12 GMT
+ * Date: Sat, 08 Nov 2014 09:56:50 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -11919,19 +11919,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return dir.pasteDangerBlocks(dir.res);
 	}
 
-	// Если остались внешние прототипы,
-	// которые не были подключены к своему шаблону,
-	// то генерируем ошибку
-	for (var key$15 in dir.preDefs) {
-		/* istanbul ignore if */
-		if (!dir.preDefs.hasOwnProperty(key$15)) {
-			continue;
-		}
-
-		dir.error((("template \"" + key$15) + "\" is not defined"));
-		return false;
-	}
-
 	dir.end(cacheKey, label);
 
 	if (p.prettyPrint) {
@@ -17303,12 +17290,12 @@ PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName
 " + (args.defParams)) + "\
 "));
 
-			var preProtos = this.preDefs[tplName];
+			var preDefs = this.preDefs[tplName];
 
 			// Подкючение внешних блоков и прототипов
-			if ((!extMap[tplName] || parentTplName) && preProtos) {
+			if ((!extMap[tplName] || parentTplName) && preDefs) {
 				this.source = this.source.substring(0, this.i + 1) +
-					preProtos.text +
+					preDefs.text +
 					this.source.substring(this.i + 1);
 
 				delete this.preDefs[tplName];
@@ -17380,22 +17367,22 @@ PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName
 			if (this.backTableI) {
 				var cache$1 = Object(this.backTable);
 
-				for (var key$16 in cache$1) {
+				for (var key$15 in cache$1) {
 					/* istanbul ignore if */
-					if (!cache$1.hasOwnProperty(key$16)) {
+					if (!cache$1.hasOwnProperty(key$15)) {
 						continue;
 					}
 
-					for (var i$15 = -1; ++i$15 < cache$1[key$16].length;) {
-						var el$6 = cache$1[key$16][i$15];
+					for (var i$15 = -1; ++i$15 < cache$1[key$15].length;) {
+						var el$6 = cache$1[key$15][i$15];
 
 						if (!el$6.outer) {
 							continue;
 						}
 
-						var tmp = protoCache[tplName][key$16];
+						var tmp = protoCache[tplName][key$15];
 						if (!tmp) {
-							return this.error((("proto \"" + key$16) + "\" is not defined"));
+							return this.error((("proto \"" + key$15) + "\" is not defined"));
 						}
 
 						this.res = this.res.substring(0, el$6.pos) +
