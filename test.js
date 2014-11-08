@@ -6,7 +6,6 @@ var assert = require('assert'),
 	snakeskin = require('./snakeskin');
 
 snakeskin.importFilters(snakeskin.Filters, 'test.bar');
-
 snakeskin.importFilters({
 	'квадрат': function (val) {
 		return val * val;
@@ -36,7 +35,7 @@ var tpls = snakeskin.compileFile(
 	path.join(__dirname, 'test.ss'),
 	{
 		context: tpls,
-		prettyPrint: true
+		tolerateWhitespace: true
 	}
 );
 
@@ -67,7 +66,7 @@ function run(params) {
 				js: []
 			};
 
-			if (!prfx) {
+			if (!prfx && !/^(?:script|template|include)|_node/.test(file)) {
 				asserts.push(obj);
 			}
 
@@ -95,7 +94,8 @@ function run(params) {
 					res = '';
 
 				try {
-					obj.js.push('equal(' + params[0] + '(' + params.slice(1) + ').trim(), "' + results[i].trim() + '");');
+					results[i] = (results[i] || '').trim();
+					obj.js.push('equal(' + params[0] + '(' + params.slice(1) + ').trim(), \'' + results[i].replace(/(\\|')/g, '\\$1') + '\');');
 
 					// eval нужен чтобы сохранить информацию о типах
 					res = eval('tpl.' + params[0] + '(' + params.slice(1) + ')');
@@ -103,7 +103,7 @@ function run(params) {
 
 					assert.equal(
 						res,
-						results[i].trim()
+						results[i]
 					);
 
 				} catch (err) {
@@ -111,7 +111,7 @@ function run(params) {
 
 					fs.writeFileSync(
 						errorPath,
-						'File: ' + file + ' - ' + prfx + ' (' + options + '), Tpl: ' + params[0] + '\n\nResult:\n' + res + '\n\nExpected:\n' + results[i].trim() + '\n\nTest:\n' + txt[1] + '\n\nCode:\n' + debug['code']
+						'File: ' + file + ' - ' + prfx + ' (' + options + '), Tpl: ' + params[0] + '\n\nResult:\n' + res + '\n\nExpected:\n' + results[i] + '\n\nTest:\n' + txt[1] + '\n\nCode:\n' + debug['code']
 					);
 
 					throw err;

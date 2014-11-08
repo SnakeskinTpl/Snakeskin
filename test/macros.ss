@@ -2,8 +2,6 @@ macros_index
 macros_index2
 macros_index3
 macros_index4
-macros_index5
-macros_index6
 
 ###
 
@@ -23,13 +21,7 @@ macros_index6
 	121
 	<a>--</a>
 
-- template macros_index4() @= macros './macros.js'
-	121 $$
-
-- template macros_index5() @= macros './macros.json'
-	121 $$
-
-- template macros_index6()
+- template macros_index4()
 	<a>----</a><a>-- --</a>
 
 ###
@@ -43,14 +35,6 @@ macros_index6
 ***
 
 foo <a>--</a>
-
-***
-
-121 %%
-
-***
-
-121 ^^
 
 ***
 

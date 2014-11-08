@@ -4,7 +4,7 @@ collection_index3
 
 ###
 
-- import $C = require('collection.js').$C
+- import $C = typeof require !== 'undefined' ? require('collection.js').$C : self.$C
 
 {template collection_index()}
 	{$forEach [1, 2, 3] => {filter: ':el > 1'} => el}

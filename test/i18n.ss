@@ -2,7 +2,6 @@ i18n_index
 i18n_index2
 i18n_index3
 i18n_index4
-i18n_index5
 
 ###
 
@@ -21,13 +20,9 @@ i18n_index5
 	`{proto bar}hello{/}`
 {/}
 
-{template i18n_index4() @= localization true @= language 'lang.js'}
-	`foo`
-{/}
+- proto i18n_index4->foo :: `hello`
 
-- proto i18n_index5->foo :: `hello`
-
-{template i18n_index5() @= localization true}
+{template i18n_index4() @= localization true}
 	`hello` #{`hello`} `#{'hello'}` `--` {apply foo}
 	`{proto bar}hello{/}`
 {/}
@@ -43,10 +38,6 @@ hel`lo world `bar
 ***
 
 привет привет   привет
-
-***
-
-ffffuuuuuu
 
 ***
 

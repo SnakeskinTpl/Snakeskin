@@ -3,7 +3,7 @@ async_index2
 
 ###
 
-- import async = require('async')
+- import async = typeof require !== 'undefined' ? require('async') : self.async;
 
 - template async_index()
 	- series

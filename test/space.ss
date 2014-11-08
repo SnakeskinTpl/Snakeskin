@@ -141,8 +141,8 @@ space_index14
 	{/}
 
 - template space_index10()
-	- script js
-	- script js
+	- style
+	- style
 	<div class="foo">foo bar</div>
 
 - template space_index11()
@@ -155,8 +155,8 @@ space_index14
         2
 
 - template space_index12()
-	- script js
-	- script js
+	- style
+	- style
 	- 1
 
 	- a = 1
@@ -178,8 +178,8 @@ space_index14
 		2
 
 - template space_index14()
-	- script js
-	- script js
+	- style
+	- style
 	- if 1
 
 		- if 2
@@ -230,7 +230,7 @@ space_index14
 
 ***
 
-<script type="text/javascript"></script><script type="text/javascript"></script><div class="foo">foo bar</div>
+<style type="text/css"></style><style type="text/css"></style><div class="foo">foo bar</div>
 
 ***
 
@@ -238,7 +238,7 @@ space_index14
 
 ***
 
-<script type="text/javascript"></script><script type="text/javascript"></script>1 2
+<style type="text/css"></style><style type="text/css"></style>1 2
 
 ***
 
@@ -246,4 +246,4 @@ space_index14
 
 ***
 
-<script type="text/javascript"></script><script type="text/javascript"></script>1 1 2
+<style type="text/css"></style><style type="text/css"></style>1 1 2
