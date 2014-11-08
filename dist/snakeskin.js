@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 13:45:04 GMT
+ * Date: Sat, 08 Nov 2014 15:23:59 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -17548,25 +17548,23 @@ Snakeskin.addDirective(
 );
 
 
-(function()  {
-	Snakeskin.addDirective(
-		'void',
+Snakeskin.addDirective(
+	'void',
 
-		{
-			notEmpty: true,
-			replacers: {
-				'?': function(cmd)  {return cmd.replace('?', 'void ')}
-			}
-		},
-
-		function (command) {
-			this.startInlineDir();
-			if (this.isReady()) {
-				this.append((("" + (this.prepareOutput(command, true))) + ";"));
-			}
+	{
+		notEmpty: true,
+		replacers: {
+			'?': function(cmd)  {return cmd.replace('?', 'void ')}
 		}
-	);
-})();
+	},
+
+	function (command) {
+		this.startInlineDir();
+		if (this.isReady()) {
+			this.append((("" + (this.prepareOutput(command, true))) + ";"));
+		}
+	}
+);
 
 
 Snakeskin.addDirective(
