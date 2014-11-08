@@ -50,7 +50,7 @@
 
 			- forEach asserts => el
 				# script text/x-snakeskin-template (id = #{el.id})
-					#{'\n' + el.tpl + '\n'|!html}
+					#{'\n' + el.tpl|!html}
 
 				# script
 					var log = {};

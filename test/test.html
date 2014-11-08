@@ -73,7 +73,6 @@
 	{?' foo '|trim}
 	{$_} {tmp}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -119,7 +118,6 @@
 
 	- final => err, res
 		3
-
 				</script>
 
 				<script type="text/javascript">
@@ -181,7 +179,6 @@
 
 - template attr_index6()
 	{attr foo = 1 \= 2 \| 3 | bar =\=}
-
 				</script>
 
 				<script type="text/javascript">
@@ -271,7 +268,6 @@
 	- set & ${true ? 'foo' : ''}
 	< .&__child[.${1 ? 'bar' : 0}[.&__foo.&__bar]].${1 ? 'ffuuu' : 0}
 		< .&__child
-
 				</script>
 
 				<script type="text/javascript">
@@ -389,7 +385,6 @@
 	- super
 
 - template block_sub4() extends block_base4
-
 				</script>
 
 				<script type="text/javascript">
@@ -441,7 +436,6 @@
 		{el}
 	{/}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -516,7 +510,6 @@
 		{until i--}
 	{&-}
 {end template}
-
 				</script>
 
 				<script type="text/javascript">
@@ -596,7 +589,6 @@ ${ /*121***/ }
 	{{#{foo/* 1111 */}}}
 	#{{#{foo}}}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -634,7 +626,6 @@ ${ /*121***/ }
 	{doctype html}
 	{doctype strict}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -698,7 +689,6 @@ ${ /*121***/ }
 
 - template escape_index7()
 	< div ${'" onclick = alert(2)'} = ${'onclick = alert(1)'}
-
 				</script>
 
 				<script type="text/javascript">
@@ -818,7 +808,6 @@ ${ /*121***/ }
 
 - template filters_test3()
 	- (('f'|upper) + ('L'|lower))|replace 'l', 121
-
 				</script>
 
 				<script type="text/javascript">
@@ -894,7 +883,6 @@ ${ /*121***/ }
 	`hello` #{`hello`} `#{'hello'}` `--` {apply foo}
 	`{proto bar}hello{/}`
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -986,7 +974,6 @@ ${ /*121***/ }
 	{a.a = 2}
 	{a.b = 3}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1076,7 +1063,6 @@ ${ /*121***/ }
 		{/}
 	{/}
 {/template}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1140,7 +1126,6 @@ ${ /*121***/ }
 		{el} {key} {obj[key]} {i} {isFirst} {isLast} {length} --
 	{/}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1182,7 +1167,6 @@ ${ /*121***/ }
 		foo
 	{/}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1250,7 +1234,6 @@ ${ /*121***/ }
 		{/}
 	{/}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1295,7 +1278,6 @@ ${ /*121***/ }
 
 - template macros_index4()
 	<a>----</a><a>-- --</a>
-
 				</script>
 
 				<script type="text/javascript">
@@ -1345,7 +1327,6 @@ ${ /*121***/ }
 		{/}
 	{/}
 {/template}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1392,7 +1373,6 @@ ${ /*121***/ }
 	{/}
 	{apply foo}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1439,7 +1419,6 @@ ${ /*121***/ }
 		#{@pref_global2}
 	\#{/}
 {/template}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1534,7 +1513,6 @@ ${ /*121***/ }
 
 	{apply begin(5)}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1634,7 +1612,6 @@ ${ /*121***/ }
 
 - template proto2_escape()
 	- apply foo()
-
 				</script>
 
 				<script type="text/javascript">
@@ -1685,7 +1662,6 @@ ${ /*121***/ }
 		{end}
 	{end}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -1779,7 +1755,6 @@ ${ /*121***/ }
 - template simple_юникод()
 	- block проверка() =>
 		{2|квадрат}
-
 				</script>
 
 				<script type="text/javascript">
@@ -2004,7 +1979,6 @@ ${ /*121***/ }
 
 	- if 1
 		2
-
 				</script>
 
 				<script type="text/javascript">
@@ -2070,7 +2044,6 @@ ${ /*121***/ }
 		.a {}
 	#{/}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -2120,7 +2093,6 @@ ${ /*121***/ }
 		1
 	{end}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
@@ -2212,7 +2184,6 @@ ${ /*121***/ }
 			<div class="foo bar"><img href="#" foo=1 />
 			</div><a href="#">hello
 				</a>
-
 				</script>
 
 				<script type="text/javascript">
@@ -2288,7 +2259,6 @@ ${ /*121***/ }
 		/// 1 +
 		1 + 2
 	} .
-
 				</script>
 
 				<script type="text/javascript">
@@ -2355,7 +2325,6 @@ ${ /*121***/ }
 		- throw new Error('ffffuuu'|upper)
 	- catch err
 		- err.message
-
 				</script>
 
 				<script type="text/javascript">
@@ -2386,7 +2355,6 @@ ${ /*121***/ }
 	{typeof typeof foo}
 	{1 instanceof Number instanceof Boolean}
 {/}
-
 				</script>
 
 				<script type="text/javascript">
