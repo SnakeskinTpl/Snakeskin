@@ -1029,7 +1029,7 @@ ${ /*121***/ }
 {/}
  </script> <script type="text/javascript"> Snakeskin.compile(document.getElementById('script'), {prettyPrint: true, autoReplace: true}); test('script', function () { equal(script_index().trim(), "<script type="text/javascript">var a = []; </script><script type="application/coffeescript">var a = []; </script><script type="coffee2">var a = []; </script>"); equal(script_index2().trim(), "<script type="application/typescript" ng-class="foo" ng-id="bar">var a = []; </script>"); }); </script> <script type="text/x-snakeskin-template" id="simple"> 
 {template simple_output()}
-	{e = {foo: {my: function () { return 1; }}}}
+	{e = {foo: {my: returnOne}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
 	{new String([1, 2, 3]).indexOf()}

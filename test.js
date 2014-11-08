@@ -17,6 +17,10 @@ global.i18n = function (str) {
 	return str;
 };
 
+global.returnOne = function () {
+	return 1;
+};
+
 var testFolder = path.resolve(__dirname, 'test'),
 	buildFolder = path.join(testFolder, 'build');
 

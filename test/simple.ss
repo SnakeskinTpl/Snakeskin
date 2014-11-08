@@ -17,7 +17,7 @@ simple_юникод
 ###
 
 {template simple_output()}
-	{e = {foo: {my: function () { return 1; }}}}
+	{e = {foo: {my: returnOne}}}
 	{a = {foo: 'my', n: 'foo'}}
 	{call e[a['n']][a['foo']](1, 2, 3)}
 	{new String([1, 2, 3]).indexOf()}
