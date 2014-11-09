@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.3.1
+ * Snakeskin v6.3.2
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 08 Nov 2014 19:22:48 GMT
+ * Date: Sun, 09 Nov 2014 04:53:15 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 3, 1],
+	VERSION: [6, 3, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -6399,6 +6399,10 @@ var FILTER = '|';
 // >>>
 
 var sysConst = {
+	'__IS_NODE__': true,
+	'__EXPORTS__': true,
+	'__HAS_EXPORTS__': true,
+	'__INIT__': true,
 	'__ROOT__': true,
 	'__CALLEE__': true,
 	'__ARGUMENTS__': true,
@@ -6411,12 +6415,12 @@ var sysConst = {
 	'__NODE__': true,
 	'__I_PROTO__': true,
 	'__I__': true,
-	'__J__': true,
-	'__TMP__': true,
+	'__ATTR_J__': true,
+	'__ATTR_STR__': true,
+	'__ATTR_TMP__': true,
 	'__LENGTH__': true,
 	'__KEYS__': true,
 	'__KEY__': true,
-	'__STR__': true,
 	'__APPEND__': true,
 	'__FILTERS__': true,
 	'__VARS__': true,
@@ -8269,9 +8273,6 @@ DirObj.prototype.evalStr = function (str) {
 			'__FILTERS__',
 			'__VARS__',
 			'__LOCAL__',
-
-			'__STR__',
-			'__J__',
 			'$_',
 
 			'module',
@@ -8286,13 +8287,9 @@ DirObj.prototype.evalStr = function (str) {
 		).call(
 			root,
 			Snakeskin,
-
 			Snakeskin.Filters,
 			Snakeskin.Vars,
 			Snakeskin.LocalVars,
-
-			void 0,
-			void 0,
 			Snakeskin.LocalVars[("$_" + uid)],
 
 			module,
@@ -8311,9 +8308,6 @@ DirObj.prototype.evalStr = function (str) {
 			'__FILTERS__',
 			'__VARS__',
 			'__LOCAL__',
-
-			'__STR__',
-			'__J__',
 			'$_',
 
 			str
@@ -8321,13 +8315,9 @@ DirObj.prototype.evalStr = function (str) {
 		).call(
 			root,
 			Snakeskin,
-
 			Snakeskin.Filters,
 			Snakeskin.Vars,
 			Snakeskin.LocalVars,
-
-			void 0,
-			void 0,
 			Snakeskin.LocalVars[("$_" + uid)]
 		);
 	}
