@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 09 Nov 2014 04:53:15 GMT
+ * Date: Sun, 09 Nov 2014 12:40:07 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -13166,7 +13166,7 @@ Snakeskin.addDirective(
 	var lib = {
 		'angularjs': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/angularjs/" + v) + "/angular.min.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/angularjs/" + v) + "/angular.min.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13176,7 +13176,7 @@ Snakeskin.addDirective(
 
 		'dojo': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/dojo/" + v) + "/dojo/dojo.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/dojo/" + v) + "/dojo/dojo.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13186,7 +13186,7 @@ Snakeskin.addDirective(
 
 		'extcore': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/ext-core/" + v) + "/ext-core.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/ext-core/" + v) + "/ext-core.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13196,7 +13196,7 @@ Snakeskin.addDirective(
 
 		'jquery': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquery/" + v) + "/jquery.min.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/" + v) + "/jquery.min.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13206,8 +13206,8 @@ Snakeskin.addDirective(
 
 		'jquerymobile': {
 			'google': function(v, e)  /* cbws */{return (("\
-<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script>\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script>\
 ")},
 
 'yandex': function(v, e)  /* cbws */{return (("\
@@ -13218,8 +13218,8 @@ Snakeskin.addDirective(
 
 		'jqueryui': {
 			'google': function(v, e)  /* cbws */{return (("\
-<link type=\"text/css\" rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"" + e) + (">\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script>\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script>\
 ")},
 
 'yandex': function(v, e)  /* cbws */{return (("\
@@ -13230,7 +13230,7 @@ Snakeskin.addDirective(
 
 		'mootools': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/mootools/" + v) + "/mootools-yui-compressed.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/mootools/" + v) + "/mootools-yui-compressed.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13240,7 +13240,7 @@ Snakeskin.addDirective(
 
 		'prototype': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/prototype/" + v) + "/prototype.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/prototype/" + v) + "/prototype.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13250,7 +13250,7 @@ Snakeskin.addDirective(
 
 		'script.aculo.us': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/scriptaculous/" + v) + "/scriptaculous.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/scriptaculous/" + v) + "/scriptaculous.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13260,7 +13260,7 @@ Snakeskin.addDirective(
 
 		'swfobject': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/swfobject/" + v) + "/swfobject.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/swfobject/" + v) + "/swfobject.js\"></script>\
 ")},
 
 'yandex': function(v)  /* cbws */{return (("\
@@ -13270,13 +13270,13 @@ Snakeskin.addDirective(
 
 		'three.js': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/threejs/" + v) + "/three.min.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/threejs/" + v) + "/three.min.js\"></script>\
 ")}
 		},
 
 		'webfontloader': {
 			'google': function(v)  /* cbws */{return (("\
-<script type=\"text/javascript\" src=\"//ajax.googleapis.com/ajax/libs/webfont/" + v) + "/webfont.js\"></script>\
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/webfont/" + v) + "/webfont.js\"></script>\
 ")}
 		},
 
@@ -13287,14 +13287,14 @@ Snakeskin.addDirective(
 ")},
 
 'maxcdn': function(v, e)  /* cbws */{return (("\
-<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
-<script type=\"text/javascript\" src=\"//maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + (">\
+<script type=\"text/javascript\" src=\"http://maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script>\
 ")}
 		},
 
 		'fontawesome': {
 			'maxcdn': function(v, e)  /* cbws */{return (("\
-<link type=\"text/css\" rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/" + v) + ("/css/font-awesome.min.css\"" + e) + ">\
+<link type=\"text/css\" rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/font-awesome/" + v) + ("/css/font-awesome.min.css\"" + e) + ">\
 ")}
 		},
 
