@@ -266,6 +266,14 @@
 	- set & ${true ? 'foo' : ''}
 	< .&__child[.${1 ? 'bar' : 0}[.&__foo.&__bar]].${1 ? 'ffuuu' : 0}
 		< .&__child
+
+- template bem_index13()
+	< [.b-foo[.&__bar]][.&__bar]
+		< .&__car
+
+- template bem_index14()
+	< [[.b-foo[[[.&__bar]]]]][.&__bar]
+		< .&__car
 				</script>
 
 				<script type="text/javascript">
@@ -302,6 +310,10 @@
 							equal(bem_index11().trim(), '<div class="b-foo b-foo_active_true"></div>');
 						
 							equal(bem_index12().trim(), '<div class="foo__child bar bar__foo bar__bar ffuuu"><div class="ffuuu__child"></div></div>');
+						
+							equal(bem_index13().trim(), '<div class="b-foo b-foo__bar &__bar"><div class="&__car"></div></div>');
+						
+							equal(bem_index14().trim(), '<div class="b-foo b-foo__bar &__bar"><div class="&__car"></div></div>');
 						
 					});
 				</script>

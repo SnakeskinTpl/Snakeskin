@@ -10,6 +10,8 @@ bem_index9
 bem_index10
 bem_index11
 bem_index12
+bem_index13
+bem_index14
 
 ###
 
@@ -73,6 +75,14 @@ bem_index12
 	< .&__child[.${1 ? 'bar' : 0}[.&__foo.&__bar]].${1 ? 'ffuuu' : 0}
 		< .&__child
 
+- template bem_index13()
+	< [.b-foo[.&__bar]][.&__bar]
+		< .&__car
+
+- template bem_index14()
+	< [[.b-foo[[[.&__bar]]]]][.&__bar]
+		< .&__car
+
 ###
 
 <h1 class="b-hello"><span style="color: blue" class="b-hello__bar b-hello__msg">You are amazing!</span></h1>
@@ -120,3 +130,11 @@ bem_index12
 ***
 
 <div class="foo__child bar bar__foo bar__bar ffuuu"><div class="ffuuu__child"></div></div>
+
+***
+
+<div class="b-foo b-foo__bar &__bar"><div class="&__car"></div></div>
+
+***
+
+<div class="b-foo b-foo__bar &__bar"><div class="&__car"></div></div>
