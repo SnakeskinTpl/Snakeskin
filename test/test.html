@@ -1989,6 +1989,16 @@ ${ /*121***/ }
 
 	- if 1
 		2
+
+- placeholder space_base15()
+
+- template space_index15() extends space_base15
+	- block content
+		- 1 + 2
+
+		- 4
+
+		foo bar
 				</script>
 
 				<script type="text/javascript">
@@ -2029,6 +2039,8 @@ ${ /*121***/ }
 							equal(space_index13().trim(), '1 1 2');
 						
 							equal(space_index14().trim(), '<style type="text/css"></style><style type="text/css"></style>1 1 2');
+						
+							equal(space_index15().trim(), '3 4 foo bar');
 						
 					});
 				</script>

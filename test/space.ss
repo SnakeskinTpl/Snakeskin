@@ -12,6 +12,7 @@ space_index11
 space_index12
 space_index13
 space_index14
+space_index15
 
 ###
 
@@ -192,6 +193,16 @@ space_index14
 	- if 1
 		2
 
+- placeholder space_base15()
+
+- template space_index15() extends space_base15
+	- block content
+		- 1 + 2
+
+		- 4
+
+		foo bar
+
 ###
 
 <div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>
@@ -247,3 +258,7 @@ space_index14
 ***
 
 <style type="text/css"></style><style type="text/css"></style>1 1 2
+
+***
+
+3 4 foo bar
