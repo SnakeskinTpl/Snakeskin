@@ -84,7 +84,7 @@ object false NaN false
 
 ***
 
-<meta http-equiv="Content-Type" content="text&#x2F;html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 ***
 

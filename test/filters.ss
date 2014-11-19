@@ -104,7 +104,7 @@ filters_test3
 	- (('f'|upper) + ('L'|lower))|replace 'l', 121
 ###
 
-Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;
+Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;/b&gt;
 
 ***
 

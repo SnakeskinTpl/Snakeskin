@@ -1,21 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html>
 		<head>
-			<meta http-equiv="Content-Type" content="text&#x2F;html; charset=utf-8"/>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 			
 			<title>Snakeskin.compile
 			</title>
 			<link type="text/css" rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css
 			"/>
 
-			<script type="text/javascript" src="http:&#x2F;&#x2F;code.jquery.com&#x2F;jquery-1.10.2.min.js">
+			<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js">
 			</script>
-			<script type="text/javascript" src="http:&#x2F;&#x2F;code.jquery.com&#x2F;qunit&#x2F;qunit-1.11.0.js">
+			<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.11.0.js">
 			</script>
-			<script type="text/javascript" src="..&#x2F;dist&#x2F;snakeskin.min.js">
+			<script type="text/javascript" src="../dist/snakeskin.min.js">
 			</script>
-			<script type="text/javascript" src="..&#x2F;node_modules&#x2F;async&#x2F;lib&#x2F;async.js">
+			<script type="text/javascript" src="../node_modules/async/lib/async.js">
 			</script>
-			<script type="text/javascript" src="..&#x2F;node_modules&#x2F;collection.js&#x2F;dist&#x2F;collection.min.js">
+			<script type="text/javascript" src="../node_modules/collection.js/dist/collection.min.js">
 			</script>
 
 			<script type="text/javascript">
@@ -726,7 +726,7 @@ ${ /*121***/ }
 						
 							equal(escape_index5().trim(), '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>');
 						
-							equal(escape_index6().trim(), '<meta http-equiv="Content-Type" content="text&#x2F;html; charset=utf-8"/>');
+							equal(escape_index6().trim(), '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>');
 						
 							equal(escape_index7().trim(), '<div &quot; onclick = &quot;alert(2)&quot;="onclick = &quot;alert(1)&quot;"></div>');
 						
@@ -831,7 +831,7 @@ ${ /*121***/ }
 
 					test('filters', function () {
 						
-							equal(filters_index().trim(), 'Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;&#x2F;b&gt;');
+							equal(filters_index().trim(), 'Foo bar Foo bar<b>1</b> Foo bar&lt;b&gt;1&lt;/b&gt;');
 						
 							equal(filters_uhtml().trim(), '<div>121</div>');
 						
