@@ -1,3 +1,8 @@
+// https://github.com/termi/es6-transpiler/issues/66
+String.prototype.contains = String.prototype.contains || function (str, opt_pos) {
+	return String.prototype.indexOf.apply(this, arguments) !== -1;
+};
+
 var gulp = require('gulp'),
 	path = require('path');
 
