@@ -1622,6 +1622,35 @@ ${ /*121***/ }
 
 - template proto2_escape()
 	- apply foo()
+
+- template proto2_anon()
+	- proto (val) => 1
+		- proto (val2) => val
+			{val + val2}
+
+	- proto (val) => 2
+		- proto (val2) => val
+			{val + val2}
+
+- template proto2_anon2()
+	- proto foo() =>
+		- proto (val) => 1
+			- proto (val2) => val
+				{val + val2}
+
+		- proto (val) => 2
+			- proto (val2) => val
+				{val + val2}
+
+- template proto2_anon3()
+	- block foo() =>
+		- proto (val) => 1
+			- proto (val2) => val
+				{val + val2}
+
+		- proto (val) => 2
+			- proto (val2) => val
+				{val + val2}
 				</script>
 
 				<script type="text/javascript">
@@ -1646,6 +1675,12 @@ ${ /*121***/ }
 							equal(proto2_args().trim(), '6');
 						
 							equal(proto2_escape().trim(), '<svg version="1.1"></svg>');
+						
+							equal(proto2_anon().trim(), '2 4');
+						
+							equal(proto2_anon2().trim(), '2 4');
+						
+							equal(proto2_anon3().trim(), '2 4');
 						
 					});
 				</script>

@@ -4,6 +4,9 @@ proto2_sub2
 proto2_sub3
 proto2_args
 proto2_escape
+proto2_anon
+proto2_anon2
+proto2_anon3
 
 ###
 
@@ -81,6 +84,35 @@ proto2_escape
 - template proto2_escape()
 	- apply foo()
 
+- template proto2_anon()
+	- proto (val) => 1
+		- proto (val2) => val
+			{val + val2}
+
+	- proto (val) => 2
+		- proto (val2) => val
+			{val + val2}
+
+- template proto2_anon2()
+	- proto foo() =>
+		- proto (val) => 1
+			- proto (val2) => val
+				{val + val2}
+
+		- proto (val) => 2
+			- proto (val2) => val
+				{val + val2}
+
+- template proto2_anon3()
+	- block foo() =>
+		- proto (val) => 1
+			- proto (val2) => val
+				{val + val2}
+
+		- proto (val) => 2
+			- proto (val2) => val
+				{val + val2}
+
 ###
 
 22021121
@@ -104,3 +136,15 @@ proto2_escape
 ***
 
 <svg version="1.1"></svg>
+
+***
+
+2 4
+
+***
+
+2 4
+
+***
+
+2 4
