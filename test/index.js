@@ -39,7 +39,7 @@ var tpls = snakeskin.compileFile(
 	}
 );
 
-var errorPath = path.join(testFolder, 'error.txt');
+var errorPath = path.resolve(testFolder, '../', 'error.txt');
 var asserts = [],
 	prfx = -1;
 
