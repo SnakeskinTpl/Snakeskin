@@ -3,7 +3,7 @@ var path = require('path'),
 	eol = require('os').EOL;
 
 var assert = require('assert'),
-	snakeskin = require('./snakeskin');
+	snakeskin = require('../snakeskin');
 
 snakeskin.importFilters(snakeskin.Filters, 'test.bar');
 snakeskin.importFilters({
@@ -20,7 +20,7 @@ global.returnOne = function () {
 	return 1;
 };
 
-var testFolder = path.resolve(__dirname, 'test'),
+var testFolder = __dirname,
 	buildFolder = path.join(testFolder, 'build');
 
 if (!fs.existsSync(buildFolder)) {
@@ -32,14 +32,14 @@ global.i18n = function (str) {
 };
 
 var tpls = snakeskin.compileFile(
-	path.join(__dirname, 'test.ss'),
+	path.join(testFolder, 'test.ss'),
 	{
 		context: tpls,
 		tolerateWhitespace: true
 	}
 );
 
-var errorPath = path.join(__dirname, 'error.txt');
+var errorPath = path.join(testFolder, 'error.txt');
 var asserts = [],
 	prfx = -1;
 
@@ -50,6 +50,10 @@ function run(params) {
 	prfx++;
 	fs.readdirSync(testFolder).forEach(function (file) {
 		if (path.extname(file) === '.ss') {
+			if (file === 'test.ss') {
+				return;
+			}
+
 			var src = path.join(testFolder, file),
 				txt = String(fs.readFileSync(src)).split('###');
 
@@ -87,7 +91,7 @@ function run(params) {
 				throw err;
 			}
 
-			var tpl = require('./test/build/' + file + '_' + prfx + '.js').init(snakeskin);
+			var tpl = require('./build/' + file + '_' + prfx + '.js').init(snakeskin);
 
 			starts.forEach(function (el, i) {
 				var params = el.split(' ; '),
@@ -160,7 +164,7 @@ run({
 	lineSeparator: eol
 });
 
-fs.writeFileSync(path.join(__dirname, 'test', 'test.html'), tpls.test(asserts));
+fs.writeFileSync(path.join(testFolder, 'test.html'), tpls.test(asserts));
 
 if (fs.existsSync(errorPath)) {
 	fs.unlinkSync(errorPath);

@@ -99,7 +99,7 @@ gulp.task('test', ['build'], function (callback) {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
 		.on('finish', function () {
-			gulp.src(['test.dev.js'])
+			gulp.src(['./test/test.dev.js'])
 				.pipe(jasmine())
 				.pipe(istanbul.writeReports())
 				.on('end', callback);

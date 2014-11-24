@@ -32,7 +32,7 @@
     "templateengine"
   ],
   "scripts": {
-    "test": "node test.js",
+    "test": "node test",
     "test-travis": "gulp test"
   },
   "dependencies": {
