@@ -7,6 +7,8 @@ proto2_escape
 proto2_anon
 proto2_anon2
 proto2_anon3
+proto2_anon4
+proto2_child_anon
 
 ###
 
@@ -113,6 +115,19 @@ proto2_anon3
 			- proto (val2) => val
 				{val + val2}
 
+- template proto2_anon4()
+	- proto (val) => 5
+		- if val
+			{val}
+			+= &(--val)
+
+- template proto2_base_anon()
+	- proto (val) => 5
+		{val}
+
+- template proto2_child_anon() extends proto2_base_anon
+	- proto (val) => 7
+		{val}
 ###
 
 22021121
@@ -148,3 +163,11 @@ proto2_anon3
 ***
 
 2 4
+
+***
+
+5 4 3 2 1
+
+***
+
+5 7

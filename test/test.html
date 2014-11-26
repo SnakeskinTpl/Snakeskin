@@ -1651,6 +1651,20 @@ ${ /*121***/ }
 		- proto (val) => 2
 			- proto (val2) => val
 				{val + val2}
+
+- template proto2_anon4()
+	- proto (val) => 5
+		- if val
+			{val}
+			+= &(--val)
+
+- template proto2_base_anon()
+	- proto (val) => 5
+		{val}
+
+- template proto2_child_anon() extends proto2_base_anon
+	- proto (val) => 7
+		{val}
 				</script>
 
 				<script type="text/javascript">
@@ -1681,6 +1695,10 @@ ${ /*121***/ }
 							equal(proto2_anon2().trim(), '2 4');
 						
 							equal(proto2_anon3().trim(), '2 4');
+						
+							equal(proto2_anon4().trim(), '5 4 3 2 1');
+						
+							equal(proto2_child_anon().trim(), '5 7');
 						
 					});
 				</script>
