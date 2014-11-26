@@ -3,6 +3,7 @@ block_sub
 block_sub2
 block_sub3
 block_sub4
+block_index
 
 ###
 
@@ -82,6 +83,18 @@ block_sub4
 
 - template block_sub4() extends block_base4
 
+- template block_index()
+	- block foo(val) => 5
+		- if val
+			{val}
+			~= &(--val)
+
+	- block foo2(val) => 5
+		: foo2 = 'fffffuuuu'
+		- if val
+			{val}
+			~= &(--val)
+
 ###
 
 2202154
@@ -101,3 +114,7 @@ block_sub4
 ***
 
 <div>112</div>
+
+***
+
+5 4 3 2 1  5 4 3 2 1
