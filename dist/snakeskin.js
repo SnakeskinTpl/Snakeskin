@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 27 Nov 2014 07:58:28 GMT
+ * Date: Thu, 27 Nov 2014 08:35:36 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -8835,7 +8835,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					res += el;
 
 				} else if (!sComment && dir) {
-					var dirStart = lineWhiteSpaceRgxp.test(
+					var dirStart = whiteSpaceRgxp.test(
 						str.charAt(j - 2)
 					);
 
@@ -8963,7 +8963,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 			}
 		}
 
-		if (dir && lastEl === CONCAT_END && lineWhiteSpaceRgxp.test(res.charAt(lastElI - 1))) {
+		if (dir && lastEl === CONCAT_END && whiteSpaceRgxp.test(res.charAt(lastElI - 1))) {
 			res = res.substring(0, lastElI) + res.substring(lastElI + 1);
 		}
 
