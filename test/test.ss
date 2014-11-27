@@ -37,10 +37,6 @@
 					return new F();
 				};
 
-				function i18n(str) {
-					return str;
-				}
-
 		< body
 			< h1#qunit-header :: Test: Snakeskin.compile
 			< h2#qunit-banner
