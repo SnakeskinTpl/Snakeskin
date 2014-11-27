@@ -2295,6 +2295,16 @@ fffuuuu' .
 		uuuu
 		fffuuuu
 	' .
+
+# proto syntax_index13->foo()
+	1
+
+- template syntax_index13()
+	#+= foo()
+	# += foo()
+
+- template syntax_index14()
+	< .foo /// :: 121
 				</script>
 
 				<script type="text/javascript">
@@ -2331,6 +2341,10 @@ fffuuuu' .
 							equal(syntax_index11().trim(), 'fffuuuufffuuuu');
 						
 							equal(syntax_index12().trim(), 'fff		uuuu		fffuuuu');
+						
+							equal(syntax_index13().trim(), '1 1');
+						
+							equal(syntax_index14().trim(), '<div class="foo"></div>');
 						
 					});
 				</script>

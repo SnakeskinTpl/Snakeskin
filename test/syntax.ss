@@ -10,6 +10,8 @@ syntax_index9
 syntax_index10
 syntax_index11
 syntax_index12
+syntax_index13
+syntax_index14
 
 ###
 
@@ -107,6 +109,16 @@ fffuuuu' .
 		fffuuuu
 	' .
 
+# proto syntax_index13->foo()
+	1
+
+- template syntax_index13()
+	#+= foo()
+	# += foo()
+
+- template syntax_index14()
+	< .foo /// :: 121
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -154,3 +166,11 @@ fffuuuufffuuuu
 ***
 
 fff		uuuu		fffuuuu
+
+***
+
+1 1
+
+***
+
+<div class="foo"></div>
