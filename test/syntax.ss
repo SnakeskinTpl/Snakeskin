@@ -9,6 +9,7 @@ syntax_index8
 syntax_index9
 syntax_index10
 syntax_index11
+syntax_index12
 
 ###
 
@@ -100,6 +101,12 @@ style = color: red;
 uuuu
 fffuuuu' .
 
+- template syntax_index12()
+	- 'fff &
+		uuuu
+		fffuuuu
+	' .
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -143,3 +150,7 @@ Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: b
 ***
 
 fffuuuufffuuuu
+
+***
+
+fff		uuuu		fffuuuu
