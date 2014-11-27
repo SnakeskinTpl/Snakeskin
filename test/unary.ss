@@ -1,4 +1,5 @@
 unary_index
+unary_index2
 
 ###
 
@@ -11,6 +12,16 @@ unary_index
 	{1 instanceof Number instanceof Boolean}
 {/}
 
+- template unary_index2()
+	: i = 0
+	{++i}
+	{i++}
+	{!!i}
+
 ###
 
 undefined false [object Object] true string false
+
+***
+
+1 1 true

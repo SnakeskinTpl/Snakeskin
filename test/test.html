@@ -2486,6 +2486,12 @@ fffuuuu' .
 	{typeof typeof foo}
 	{1 instanceof Number instanceof Boolean}
 {/}
+
+- template unary_index2()
+	: i = 0
+	{++i}
+	{i++}
+	{!!i}
 				</script>
 
 				<script type="text/javascript">
@@ -2500,6 +2506,8 @@ fffuuuu' .
 					test('unary', function () {
 						
 							equal(unary_index().trim(), 'undefined false [object Object] true string false');
+						
+							equal(unary_index2().trim(), '1 1 true');
 						
 					});
 				</script>
