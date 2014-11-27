@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.3.2 (live)
+ * Snakeskin v6.4.0 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 09 Nov 2014 12:40:07 GMT
+ * Date: Thu, 27 Nov 2014 07:58:28 GMT
  */
 
 /*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 3, 2],
+	VERSION: [6, 4, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -86,6 +86,188 @@ var Snakeskin = {
 	}
 
 /*!
+ * Методы live библиотеки Snakeskin
+ */
+
+if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
+	var keys = Object.keys;
+}
+
+/**
+ * Конструктор объекта StringBuffer
+ *
+ * @expose
+ * @constructor
+ * @return {!Array}
+ */
+Snakeskin.StringBuffer = function () {
+	return [];
+};
+
+/**
+ * Итератор массива или объекта (с проверкой hasOwnProperty)
+ *
+ * @expose
+ * @param {(Array|Object|undefined)} obj - исходный объект
+ * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
+ */
+Snakeskin.forEach = function (obj, callback) {
+	if (!obj) {
+		return;
+	}
+
+	var length = 0;
+
+	if (Array.isArray(obj)) {
+		length = obj.length;
+		for (var i = -1; ++i < length;) {
+			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
+				break;
+			}
+		}
+
+	} else if (keys) {
+		var arr = keys(obj);
+		length = arr.length;
+
+		for (var i$0 = -1; ++i$0 < length;) {
+			if (callback(obj[arr[i$0]], arr[i$0], obj, i$0, i$0 === 0, i$0 === length - 1, length) === false) {
+				break;
+			}
+		}
+
+	} else {
+		var i$1 = 0;
+
+		if (callback.length >= 6) {
+			for (var key in obj) {
+				/* istanbul ignore if */
+				if (!obj.hasOwnProperty(key)) {
+					continue;
+				}
+
+				length++;
+			}
+		}
+
+		for (var key$0 in obj) {
+			/* istanbul ignore if */
+			if (!obj.hasOwnProperty(key$0)) {
+				continue;
+			}
+
+			if (callback(obj[key$0], key$0, obj, i$1, i$1 === 0, i$1 === length - 1, length) === false) {
+				break;
+			}
+
+			i$1++;
+		}
+	}
+};
+
+/**
+ * Итератор объекта без проверки hasOwnProperty
+ *
+ * @expose
+ * @param {(Object|undefined)} obj - исходный объект
+ * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
+ */
+Snakeskin.forIn = function (obj, callback) {
+	if (!obj) {
+		return;
+	}
+
+	var length = 0,
+		i = 0;
+
+	if (callback.length >= 6) {
+		for (var key in obj) {
+			length++;
+		}
+	}
+
+	for (var key$1 in obj) {
+		if (callback(obj[key$1], key$1, obj, i, i === 0, i === length - 1, length) === false) {
+			break;
+		}
+
+		i++;
+	}
+};
+
+/**
+ * Итератор объекта
+ *
+ * @param {Object} obj - исходный объект
+ * @param {function(?, string, !Object)} callback - функция обратного вызова
+ */
+function forIn(obj, callback) {
+	if (!obj) {
+		return;
+	}
+
+	if (keys) {
+		var arr = keys(obj),
+			length = arr.length;
+
+		for (var i = -1; ++i < length;) {
+			if (callback(obj[arr[i]], arr[i], obj) === false) {
+				break;
+			}
+		}
+
+	} else {
+		for (var key in obj) {
+			/* istanbul ignore if */
+			if (!obj.hasOwnProperty(key)) {
+				continue;
+			}
+
+			if (callback(obj[key], key, obj) === false) {
+				break;
+			}
+		}
+	}
+}
+
+var inlineTagMap = {
+	'img': true,
+	'link': true,
+	'embed': true,
+	'br': true,
+	'hr': true,
+	'wbr': true,
+	'meta': true,
+	'input': true,
+	'source': true,
+	'track': true,
+	'base': true,
+	'area': true,
+	'col': true,
+	'param': true
+};
+
+/**
+ * Вставить заданный узел или текст в исходный
+ *
+ * @expose
+ * @param {!Node} node - исходный элемент
+ * @param {(!Node|string)} obj - элемент для вставки или текст
+ * @return {(!Node|string)}
+ */
+Snakeskin.appendChild = function (node, obj) {
+	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
+		return String(obj).trim();
+	}
+
+	if (typeof obj === 'string') {
+		obj = document.createTextNode(obj);
+	}
+
+	node.appendChild(obj);
+	return obj;
+};
+/*!
  * Набор базовых фильтров и методы для работы с ними
  */
 
@@ -110,17 +292,12 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 		}
 	}
 
-	for (var key in filters) {
-		/* istanbul ignore if */
-		if (!filters.hasOwnProperty(key)) {
-			continue;
-		}
-
-		obj[key] = filters[key];
-	}
+	forIn(filters, function(filter, key)  {
+		obj[key] = filter;
+	});
 };
 
-var symbols = '' +
+var symbols =
 	'\\u0041-\\u005A\\u0061-\\u007A\\u00AA\\u00B5\\u00BA\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02C1' +
 	'\\u02C6-\\u02D1\\u02E0-\\u02E4\\u02EC\\u02EE\\u0370-\\u0374\\u0376\\u0377\\u037A-\\u037D\\u0386\\u0388-\\u038A' +
 	'\\u038C\\u038E-\\u03A1\\u03A3-\\u03F5\\u03F7-\\u0481\\u048A-\\u0525\\u0531-\\u0556\\u0559\\u0561-\\u0587' +
@@ -166,14 +343,14 @@ var entityMap = {
 	'<': '&lt;',
 	'>': '&gt;',
 	'"': '&quot;',
-	'\'': '&#39;',
-	'/': '&#x2F;'
+	'\'': '&#39;'
+	//,'/': '&#x2F;'
 };
 
 var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
 	escapeAttrRgxp = new RegExp((("([$" + w) + "]\\s*=\\s*)([^\"'\\s>=]+)"), 'g'),
 	escapeJavaScript = /(javascript)(:|;)/,
-	escapeHTML = function(s)  {return entityMap[s]};
+	escapeHTML = function(s)  {return entityMap[s] || s};
 
 /**
  * Экранирование HTML сущностей
@@ -455,153 +632,6 @@ Snakeskin.Filters.undef = function (str) {
 		return val === void 0 ? def : val;
 	};
 })();
-/*!
- * Методы live библиотеки Snakeskin
- */
-
-if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
-	var keys = Object.keys;
-}
-
-/**
- * Конструктор объекта StringBuffer
- *
- * @expose
- * @constructor
- * @return {!Array}
- */
-Snakeskin.StringBuffer = function () {
-	return [];
-};
-
-/**
- * Итератор массива или объекта (с проверкой hasOwnProperty)
- *
- * @expose
- * @param {(Array|Object|undefined)} obj - исходный объект
- * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
- */
-Snakeskin.forEach = function (obj, callback) {
-	if (!obj) {
-		return;
-	}
-
-	var length = 0;
-
-	if (Array.isArray(obj)) {
-		length = obj.length;
-		for (var i = -1; ++i < length;) {
-			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
-				break;
-			}
-		}
-
-	} else if (keys) {
-		var arr = keys(obj);
-		length = arr.length;
-
-		for (var i$0 = -1; ++i$0 < length;) {
-			if (callback(obj[arr[i$0]], arr[i$0], obj, i$0, i$0 === 0, i$0 === length - 1, length) === false) {
-				break;
-			}
-		}
-
-	} else {
-		var i$1 = 0;
-
-		if (callback.length >= 6) {
-			for (var key in obj) {
-				/* istanbul ignore if */
-				if (!obj.hasOwnProperty(key)) {
-					continue;
-				}
-
-				length++;
-			}
-		}
-
-		for (var key$0 in obj) {
-			/* istanbul ignore if */
-			if (!obj.hasOwnProperty(key$0)) {
-				continue;
-			}
-
-			if (callback(obj[key$0], key$0, obj, i$1, i$1 === 0, i$1 === length - 1, length) === false) {
-				break;
-			}
-
-			i$1++;
-		}
-	}
-};
-
-/**
- * Итератор объекта без проверки hasOwnProperty
- *
- * @expose
- * @param {(Object|undefined)} obj - исходный объект
- * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
- */
-Snakeskin.forIn = function (obj, callback) {
-	if (!obj) {
-		return;
-	}
-
-	var length = 0,
-		i = 0;
-
-	if (callback.length >= 6) {
-		for (var key in obj) {
-			length++;
-		}
-	}
-
-	for (var key$1 in obj) {
-		if (callback(obj[key$1], key$1, obj, i, i === 0, i === length - 1, length) === false) {
-			break;
-		}
-
-		i++;
-	}
-};
-
-var inlineTagMap = {
-	'img': true,
-	'link': true,
-	'embed': true,
-	'br': true,
-	'hr': true,
-	'wbr': true,
-	'meta': true,
-	'input': true,
-	'source': true,
-	'track': true,
-	'base': true,
-	'area': true,
-	'col': true,
-	'param': true
-};
-
-/**
- * Вставить заданный узел или текст в исходный
- *
- * @expose
- * @param {!Node} node - исходный элемент
- * @param {(!Node|string)} obj - элемент для вставки или текст
- * @return {(!Node|string)}
- */
-Snakeskin.appendChild = function (node, obj) {
-	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
-		return String(obj).trim();
-	}
-
-	if (typeof obj === 'string') {
-		obj = document.createTextNode(obj);
-	}
-
-	node.appendChild(obj);
-	return obj;
-};
 
 
 	if (IS_NODE) {
