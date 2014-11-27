@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 27 Nov 2014 08:35:36 GMT
+ * Date: Thu, 27 Nov 2014 10:50:02 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -8867,8 +8867,8 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 				}
 
-				sComment = false;
 				if (comment || concatLine && !brk) {
+					sComment = false;
 					continue;
 				}
 
@@ -13639,19 +13639,14 @@ __COMMENT_RESULT__ = \'\';\
 	 * @return {!Object}
 	 */
 	function extend(a, b) {
-		for (var key in b) {
-			/* istanbul ignore if */
-			if (!b.hasOwnProperty(key)) {
-				continue;
-			}
-
-			if (a[key] instanceof Object && b[key] instanceof Object) {
-				extend(a[key], b[key]);
+		forIn(b, function(el, key)  {
+			if (a[key] instanceof Object && el instanceof Object) {
+				extend(a[key], el);
 
 			} else {
-				a[key] = b[key];
+				a[key] = el;
 			}
-		}
+		});
 
 		return a;
 	}
@@ -13667,16 +13662,9 @@ __COMMENT_RESULT__ = \'\';\
 	function mix(base, opt_adv, opt_initial) {
 		var obj = opt_initial || {};
 
-		if (opt_adv) {
-			for (var key in opt_adv) {
-				/* istanbul ignore if */
-				if (!opt_adv.hasOwnProperty(key)) {
-					continue;
-				}
-
-				obj[key] = opt_adv[key];
-			}
-		}
+		forIn(opt_adv, function(el, key)  {
+			obj[key] = el;
+		});
 
 		return extend(obj, base);
 	}
@@ -13704,7 +13692,7 @@ __COMMENT_RESULT__ = \'\';\
 			}
 		}
 
-		if (last['@root'] || (file === void 0 || last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
+		if (last['@root'] || (file && last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
 			init = true;
 			params = {
 				'@file': file,
