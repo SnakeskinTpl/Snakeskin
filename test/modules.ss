@@ -13,7 +13,9 @@ modules_index
 		| :
 		- block bar
 			{bar}
+	- block foo
+		`fffuuuu`
 
 ###
 
-6:3:5
+6:3:5`fffuuuu`

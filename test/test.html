@@ -1369,37 +1369,6 @@ ${ /*121***/ }
 					});
 				</script>
 			
-				<script type="text/x-snakeskin-template" id="modules">
-					
-: bar = 5
-- include './test3/base.ss'
-
-- template modules_index() extends modules_base
-	- block root
-		- super
-		| :
-		+= bar
-		| :
-		- block bar
-			{bar}
-				</script>
-
-				<script type="text/javascript">
-					var log = {};
-
-					Snakeskin.compile(document.getElementById('modules'), {
-						prettyPrint: true,
-						autoReplace: true,
-						debug: log
-					});
-
-					test('modules', function () {
-						
-							equal(modules_index().trim(), '6:3:5');
-						
-					});
-				</script>
-			
 				<script type="text/x-snakeskin-template" id="params">
 					
 {template param_base(a, b = 1 ? Math.round(1) : 0)}

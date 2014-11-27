@@ -1,3 +1,4 @@
+@= localization false
 - include './super.ss'
 
 : foo = 1

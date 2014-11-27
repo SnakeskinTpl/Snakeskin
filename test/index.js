@@ -70,7 +70,7 @@ function run(params) {
 				js: []
 			};
 
-			if (!prfx && !/^(?:script|template|include)|_node/.test(file)) {
+			if (!prfx && !/^(?:script|template|include|modules)|_node/.test(file)) {
 				asserts.push(obj);
 			}
 
