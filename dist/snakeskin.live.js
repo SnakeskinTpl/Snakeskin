@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 27 Nov 2014 10:50:02 GMT
+ * Date: Thu, 27 Nov 2014 13:40:39 GMT
  */
 
 /*!
@@ -198,7 +198,7 @@ Snakeskin.forIn = function (obj, callback) {
 /**
  * Итератор объекта
  *
- * @param {Object} obj - исходный объект
+ * @param {(Object|undefined)} obj - исходный объект
  * @param {function(?, string, !Object)} callback - функция обратного вызова
  */
 function forIn(obj, callback) {

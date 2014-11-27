@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 27 Nov 2014 10:50:02 GMT
+ * Date: Thu, 27 Nov 2014 13:40:39 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -198,7 +198,7 @@ Snakeskin.forIn = function (obj, callback) {
 /**
  * Итератор объекта
  *
- * @param {Object} obj - исходный объект
+ * @param {(Object|undefined)} obj - исходный объект
  * @param {function(?, string, !Object)} callback - функция обратного вызова
  */
 function forIn(obj, callback) {
@@ -6371,15 +6371,10 @@ var includeDirMap = {
 
 var includeDirLength;
 
-for (var key in includeDirMap) {
-	/* istanbul ignore if */
-	if (!includeDirMap.hasOwnProperty(key)) {
-		continue;
-	}
-
+forIn(includeDirMap, function(el, key)  {
 	includeDirLength = key.length;
-	break;
-}
+	return false;
+});
 
 var baseShortMap = {
 	'-': true,
@@ -6388,14 +6383,9 @@ var baseShortMap = {
 
 var shortMap = {};
 
-for (var key$5 in baseShortMap) {
-	/* istanbul ignore if */
-	if (!baseShortMap.hasOwnProperty(key$5)) {
-		continue;
-	}
-
-	shortMap[key$5] = true;
-}
+forIn(baseShortMap, function(el, key)  {
+	shortMap[key] = true;
+});
 
 // <<<
 // Модификаторы контекста
@@ -7772,7 +7762,7 @@ if (IS_NODE) {
  */
 
 var Escaper = {
-	VERSION: [1, 4, 16],
+	VERSION: [1, 4, 17],
 	isLocal: false
 };
 
@@ -9746,12 +9736,12 @@ this.prepareOutput(el, true)
 				}
 
 			} else {
-				if (tplName) {
-					def = search(scopeCache['template'][tplName].parent, sstr);
+				if (ref) {
+					def = search(scopeCache[type][tplName][ref], sstr);
 				}
 
-				if (!def && ref) {
-					def = search(scopeCache[type][tplName][ref], sstr);
+				if (!def && tplName) {
+					def = search(scopeCache['template'][tplName].parent, sstr);
 				}
 
 				if (def) {
@@ -13700,17 +13690,12 @@ __COMMENT_RESULT__ = \'\';\
 			};
 
 			var inherit = function(obj)  {
-				for (var key in obj) {
-					/* istanbul ignore if */
-					if (!obj.hasOwnProperty(key)) {
-						continue;
-					}
-
+				forIn(obj, function(el, key)  {
 					if (key.charAt(0) !== '@' && key in root) {
 						params[key] =
-							this$0[key] = obj[key];
+							this$0[key] = el;
 					}
-				}
+				});
 			};
 
 			inherit(last);
@@ -15265,26 +15250,14 @@ for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") {\
 		}
 	};
 
-	for (var key in types) {
-		/* istanbul ignore if */
-		if (!types.hasOwnProperty(key)) {
-			continue;
-		}
-
-		var el = types[key];
-		for (var attr  in el) {
-			/* istanbul ignore if */
-			if (!el.hasOwnProperty(attr)) {
-				continue;
-			}
-
+	forIn(types, function(el, key)  {
+		forIn(el, function(el, attr)  {
 			typesStr.dom[key] = typesStr.dom[key] || '';
-			typesStr.dom[key] += (("__NODE__." + attr) + (" = '" + (el[attr])) + "';");
-
+			typesStr.dom[key] += (("__NODE__." + attr) + (" = '" + el) + "';");
 			typesStr.string[key] = typesStr.string[key] || '';
-			typesStr.string[key] += ((" " + attr) + ("=\"" + (el[attr])) + "\"");
-		}
-	}
+			typesStr.string[key] += ((" " + attr) + ("=\"" + el) + "\"");
+		});
+	});
 
 	Snakeskin.addDirective(
 		'link',
