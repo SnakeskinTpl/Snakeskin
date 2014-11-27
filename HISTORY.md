@@ -1,3 +1,41 @@
+## v6.4.0
+
+- [x] [Упрощение вызова шаблонов в шаблоне](https://github.com/kobezzza/Snakeskin/issues/14);
+- [x] [Добавлена поддержка анонимных самовызываемых прототипов](https://github.com/kobezzza/Snakeskin/issues/13);
+
+```
+- template foo(myData)
+	- proto (data) => myData
+		...
+		- if data.children
+			- apply &(data.children)
+```
+
+- [x] [Добавлена поддержка анонимных липких ссылок](https://github.com/kobezzza/Snakeskin/issues/12);
+- [x] [Реализован механизм замыканий для экспорта глобальных переменных из вложенных файлов при наследовании](https://github.com/kobezzza/Snakeskin/issues/10);
+- [x] Доработан механизм наследования параметров трансляции: общие параметры теперь наследуются тоже.
+
+**base.ss**
+
+```
+@= localization false
+- template base()
+	`foo`
+```
+
+**index.ss**
+
+```
+- include './base.ss'
+- template index() extends base
+```
+
+```
+`foo`
+```
+
+- [x] Исправление ошибок и рефакторинг.
+
 ## v6.3.2
 
 - [x] Исправление ошибки и рефакторинг.

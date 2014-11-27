@@ -1,7 +1,7 @@
 {
   "name": "Snakeskin",
   "main": "dist/snakeskin.min.js",
-  "version": "6.3.2",
+  "version": "6.4.0",
   "homepage": "https://github.com/kobezzza/Snakeskin",
   "keywords": [
     "templates",
