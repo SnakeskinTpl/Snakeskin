@@ -315,18 +315,26 @@ function action(data, file) {
 				}
 
 			} else {
-				var dataObj;
+				var dataObj,
+					cache;
+
 				if (tplData && tplData !== true) {
 					dataObj = load(tplData);
 				}
 
-				res = tpl(dataObj);
+				cache =
+					res = tpl(dataObj);
+
 				if (prettyPrint) {
 					if (toConsole) {
 						res = beautify['html'](res);
 
 					} else {
 						res = (beautify[path.extname(outFile).replace(/^\./, '')] || beautify['html'])(res);
+					}
+
+					if (!res || !res.trim()) {
+						res = cache;
 					}
 				}
 			}
