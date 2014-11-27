@@ -7,6 +7,8 @@ syntax_index6
 syntax_index7
 syntax_index8
 syntax_index9
+syntax_index10
+syntax_index11
 
 ###
 
@@ -81,6 +83,23 @@ syntax_index9
 			<div class="foo bar"><img href="#" foo=1 />
 			</div><a href="#">hello
 				</a>
+
+: &
+	a = 1,
+	b = 2
+.
+
+- template syntax_index10()
+	< h1 &
+style = color: red;
+.
+		{a + b}
+
+- template syntax_index11()
+	- 'fff &
+uuuu
+fffuuuu' .
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -116,3 +135,11 @@ Hello man & foo bar <div style="color: red">bar</div>foo :: bar <div class=":: b
 ***
 
 <div class="foo"><div class="foo__bar"><div class="foo bar"><img href="#" foo="1" /> </div><a href="#">hello </a></div></div>
+
+***
+
+<h1 style="color: red;">3</h1>
+
+***
+
+fffuuuufffuuuu
