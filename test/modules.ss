@@ -1,4 +1,5 @@
 modules_index
+modules_index2
 
 ###
 
@@ -16,6 +17,17 @@ modules_index
 	- block foo
 		`fffuuuu`
 
+- template modules_index2() extends modules_base
+	- block root
+		- super
+		| :
+		{bar}
+
+
 ###
 
 3:123:5`fffuuuu`
+
+***
+
+3:5

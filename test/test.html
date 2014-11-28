@@ -431,6 +431,35 @@
 					});
 				</script>
 			
+				<script type="text/x-snakeskin-template" id="call">
+					
+- template call_base()
+	1
+
+- template call_base.base()
+	2
+
+- template call_index()
+	^= call_base()
+	- call call_base.base()
+				</script>
+
+				<script type="text/javascript">
+					var log = {};
+
+					Snakeskin.compile(document.getElementById('call'), {
+						prettyPrint: true,
+						autoReplace: true,
+						debug: log
+					});
+
+					test('call', function () {
+						
+							equal(call_index().trim(), '1 2');
+						
+					});
+				</script>
+			
 				<script type="text/x-snakeskin-template" id="collection">
 					
 - import $C = typeof require !== 'undefined' ? require('collection.js').$C : self.$C
