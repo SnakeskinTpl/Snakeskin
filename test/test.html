@@ -1394,6 +1394,39 @@ ${ /*121***/ }
 					});
 				</script>
 			
+				<script type="text/x-snakeskin-template" id="override">
+					
+- include './test3/override.ss'
+
+- template override_index()
+	~= bar()
+
+: foo = 1
+: foo2 = 2
+
+- block override_index->bar()
+	{foo + foo2}
+
+- template override_index()
+	~= bar()
+				</script>
+
+				<script type="text/javascript">
+					var log = {};
+
+					Snakeskin.compile(document.getElementById('override'), {
+						prettyPrint: true,
+						autoReplace: true,
+						debug: log
+					});
+
+					test('override', function () {
+						
+							equal(override_index().trim(), '3');
+						
+					});
+				</script>
+			
 				<script type="text/x-snakeskin-template" id="params">
 					
 {template param_base(a, b = 1 ? Math.round(1) : 0)}
