@@ -4,7 +4,7 @@ modules_index2
 ###
 
 : bar = 5
-- include './test3/base.ss'
+- include './test3/base2.ss'
 
 - template modules_index() extends modules_base
 	- block root
