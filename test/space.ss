@@ -13,6 +13,8 @@ space_index12
 space_index13
 space_index14
 space_index15
+space_index16
+space_index17
 
 ###
 
@@ -203,6 +205,26 @@ space_index15
 
 		foo bar
 
+- template space_base16()
+	1
+	2
+
+- template space_index16() extends space_base16
+	- block e
+		3
+		4
+
+- template space_base17()
+	- block e
+		1
+		2
+
+- template space_index17() extends space_base17
+	- block e
+		- super
+		3
+		4
+
 ###
 
 <div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>
@@ -262,3 +284,11 @@ space_index15
 ***
 
 3 4 foo bar
+
+***
+
+1 2 3 4
+
+***
+
+1 2 3 4

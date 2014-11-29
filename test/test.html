@@ -2124,6 +2124,26 @@ ${ /*121***/ }
 		- 4
 
 		foo bar
+
+- template space_base16()
+	1
+	2
+
+- template space_index16() extends space_base16
+	- block e
+		3
+		4
+
+- template space_base17()
+	- block e
+		1
+		2
+
+- template space_index17() extends space_base17
+	- block e
+		- super
+		3
+		4
 				</script>
 
 				<script type="text/javascript">
@@ -2166,6 +2186,10 @@ ${ /*121***/ }
 							equal(space_index14().trim(), '<style type="text/css"></style><style type="text/css"></style>1 1 2');
 						
 							equal(space_index15().trim(), '3 4 foo bar');
+						
+							equal(space_index16().trim(), '1 2 3 4');
+						
+							equal(space_index17().trim(), '1 2 3 4');
 						
 					});
 				</script>
