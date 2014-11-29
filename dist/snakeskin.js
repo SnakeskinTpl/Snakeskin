@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 14:02:02 GMT
+ * Date: Sat, 29 Nov 2014 15:53:46 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -7338,7 +7338,7 @@ __FILTERS__ = Snakeskin.Filters,\
 __VARS__ = Snakeskin.Vars,\
 __LOCAL__ = Snakeskin.LocalVars;\
 \
-var $_ = __LOCAL__['$_" + uid) + "'];\
+" + (this.multiDeclVar('$_'))) + "\
 ");
 	}
 }
@@ -8265,7 +8265,6 @@ DirObj.prototype.evalStr = function (str) {
 			'__FILTERS__',
 			'__VARS__',
 			'__LOCAL__',
-			'$_',
 
 			'module',
 			'exports',
@@ -8282,7 +8281,6 @@ DirObj.prototype.evalStr = function (str) {
 			Snakeskin.Filters,
 			Snakeskin.Vars,
 			Snakeskin.LocalVars,
-			Snakeskin.LocalVars[("$_" + uid)],
 
 			module,
 			module.exports,
@@ -8299,7 +8297,6 @@ DirObj.prototype.evalStr = function (str) {
 			'__FILTERS__',
 			'__VARS__',
 			'__LOCAL__',
-			'$_',
 
 			str
 
@@ -8308,8 +8305,7 @@ DirObj.prototype.evalStr = function (str) {
 			Snakeskin,
 			Snakeskin.Filters,
 			Snakeskin.Vars,
-			Snakeskin.LocalVars,
-			Snakeskin.LocalVars[("$_" + uid)]
+			Snakeskin.LocalVars
 		);
 	}
 };
@@ -8351,6 +8347,14 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 	var parentTpl = extMap[tplName],
 		res = cache[parentTpl];
+
+	var alb = ADV_LEFT_BLOCK,
+		lb = LEFT_BLOCK,
+		rb = RIGHT_BLOCK;
+
+	if (!this.tolerateWhitespace) {
+		res += (("" + alb) + ("" + lb) + ("__&-__" + rb) + "");
+	}
 
 	var from = 0,
 		advDiff = [];
@@ -8462,7 +8466,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 
 					block = type === 'const_add' ?
-						(("" + ((current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK)) + ("" + block) + ("" + RIGHT_BLOCK) + "") : block;
+						(("" + (current.needPrfx ? alb : '')) + ("" + lb) + ("" + block) + ("" + rb) + "") : block;
 
 					res = res.substring(0, from) +
 						block +
@@ -10080,7 +10084,7 @@ this.prepareOutput(el, true)
 					}
 
 					resTmp =
-						(("(" + (this.tplName ? '$_' : (("$_ = __LOCAL__['$_" + uid) + "']"))) + (" = __FILTERS__" + f$0) + "") +
+						(("(" + (this.tplName ? '$_' : this.prepareOutput('$_', true))) + (" = __FILTERS__" + f$0) + "") +
 							(filterWrapper || !pCount ? '.call(this,' : '') +
 							resTmp +
 							(input ? ',' + input : '') +
@@ -14881,6 +14885,8 @@ Snakeskin.addDirective(
 
 		this.info['file'] = command;
 		this.files[command] = true;
+
+		this.save(this.multiDeclVar('$_'));
 	}
 );
 
@@ -16751,7 +16757,7 @@ Snakeskin.addDirective(
 				var diff = this.getDiff(commandLength);
 
 				this.source = this.source.substring(0, this.i - diff) +
-					(("/*!!= " + s) + ("super" + e) + (" =*/" + s) + ("__super__ " + (this.info['line'])) + ("" + e) + ("" + (cache.content)) + ("" + s) + ("__end__" + e) + "") +
+					(("/*!!= " + s) + ("super" + e) + (" =*/" + s) + ("__super__ " + (this.info['line'])) + ("" + e) + ("" + (cache.content)) + ("" + (!this.tolerateWhitespace ? (("" + s) + ("__&-__" + e) + "") : '')) + ("" + s) + ("__end__" + e) + "") +
 					this.source.substring(this.i + 1);
 
 				this.i -= diff + 1;
@@ -17473,6 +17479,7 @@ this.prepareOutput(el, true)
 				'getTplResult',
 				'clearTplResult',
 				'$_',
+				'$0',
 				'TPL_NAME',
 				'PARENT_TPL_NAME'
 			];
