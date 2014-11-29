@@ -41,6 +41,18 @@
 * `call`      — `^=`;
 * `callBlock` — `~=`.
 
+- [x] Добавлена ссылка `$0`, которая указывает на активный DOM элемент (только для `renderMode = 'dom'`);
+
+```
+< .b-foo
+	< .&__cell
+		? console.log($0) /// <div class="b-foo__cell"> (HTMLDivElement)
+
+	? console.log($0) /// <div class="b-foo"> (HTMLDivElement)
+
+? console.log($0) /// undefined
+```
+
 - [x] Исправление ошибок и рефакторинг.
 
 ## v6.3.2
