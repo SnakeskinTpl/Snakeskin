@@ -9,6 +9,8 @@
 
 - template modules_super()
 	- block root
-		{foo + bar}{tmp}
+		{foo + bar}
+		| :
+		{tmp}
 
 - template modules_base() extends modules_super

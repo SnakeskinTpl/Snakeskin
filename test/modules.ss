@@ -30,8 +30,8 @@ modules_index2
 
 ###
 
-3fff2:123:5fff`fffuuuu`
+3 : fff2 : 123 : 5 fff `fffuuuu`
 
 ***
 
-3fff2:5:fff
+3 : fff2 : 5 : fff
