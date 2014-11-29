@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 09:40:51 GMT
+ * Date: Sat, 29 Nov 2014 12:46:43 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -6941,6 +6941,7 @@ Snakeskin.DirObj = DirObj;
  * @param {boolean} params.escapeOutput - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
  *
+ * @param {string} params.bemFilter - название используемого фильтра для БЭМ
  * @param {string} params.renderMode - режим рендеринга шаблонов, доступные варианты:
  *
  *     1) stringConcat - рендеринг шаблона в строку с простой конкатенацией через оператор сложения;
@@ -7057,6 +7058,12 @@ function DirObj(src, params) {
 
 	/**
 	 * @expose
+	 * @type {string}
+	 */
+	this.bemFilter = params.bemFilter;
+
+	/**
+	 * @expose
 	 * @type {boolean}
 	 */
 	this.localization = params.localization;
@@ -7097,6 +7104,7 @@ function DirObj(src, params) {
 			macros: this.macros,
 			localization: this.localization,
 			i18nFn: this.i18nFn,
+			bemFilter: this.bemFilter,
 			language: this.language,
 			ignore: this.ignore,
 			tolerateWhitespace: this.tolerateWhitespace
@@ -10814,7 +10822,8 @@ function returnCacheKey(params, ctx, NULL) {
 		params.ignore,
 		params.autoReplace,
 		params.localization,
-		params.i18nFn
+		params.i18nFn,
+		params.bemFilter
 	].join();
 }
 
@@ -10940,6 +10949,7 @@ var uid;
  * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
  *
+ * @param {?string=} [opt_params.bemFilter='bem'] - название используемого фильтра для БЭМ
  * @param {?boolean=} [opt_params.prettyPrint] - если true, то полученный JS код шаблона
  *     отображается в удобном для чтения виде
  *
@@ -11012,6 +11022,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.doctype = false;
 	}
 
+	p.bemFilter = s(p.bemFilter, p['bemFilter']) || 'bem';
 	p.vars = s(p.vars, p['vars']) || {};
 
 	forIn(p.vars, function(val, key)  {
@@ -11270,6 +11281,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		tolerateWhitespace: p.tolerateWhitespace,
 		inlineIterators: p.inlineIterators,
 
+		bemFilter: p.bemFilter,
 		replaceUndef: p.replaceUndef,
 		escapeOutput: p.escapeOutput,
 
@@ -12807,7 +12819,7 @@ __ATTR_J__ = 0;\
 				var val = vals[j].trim();
 
 				if (parentLinkRgxp.test(val) && ref) {
-					val = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (val.substring('&amp;'.length))) + ("',$0" + e) + "");
+					val = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (val.substring('&amp;'.length))) + ("',$0" + e) + "");
 					val = this.pasteDangerBlocks(this.replaceTplVars(val));
 				}
 
@@ -17083,7 +17095,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 		}
 
 		if (parentLinkRgxp.test(el$3) && ref) {
-			el$3 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (el$3.substring(1))) + ("',$0" + e) + "");
+			el$3 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (el$3.substring(1))) + ("',$0" + e) + "");
 			el$3 = this.pasteDangerBlocks(this.replaceTplVars(el$3));
 
 		} else if (el$3 && types[i$12]) {
