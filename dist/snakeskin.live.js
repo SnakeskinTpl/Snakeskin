@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 08:53:52 GMT
+ * Date: Sat, 29 Nov 2014 09:40:51 GMT
  */
 
 /*!
@@ -615,9 +615,10 @@ Snakeskin.Filters.undef = function (str) {
 	 *
 	 * @param {*} block - название блока
 	 * @param {*} part - вторая часть декларации
+	 * @param {(Element|undefined)} node - ссылка на активный узел
 	 * @return {string}
 	 */
-	Snakeskin.Filters['bem'] = function (block, part) {
+	Snakeskin.Filters['bem'] = function (block, part, node) {
 		return String(block) + String(part);
 	};
 

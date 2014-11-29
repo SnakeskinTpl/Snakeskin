@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 08:53:52 GMT
+ * Date: Sat, 29 Nov 2014 09:40:51 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -615,9 +615,10 @@ Snakeskin.Filters.undef = function (str) {
 	 *
 	 * @param {*} block - название блока
 	 * @param {*} part - вторая часть декларации
+	 * @param {(Element|undefined)} node - ссылка на активный узел
 	 * @return {string}
 	 */
-	Snakeskin.Filters['bem'] = function (block, part) {
+	Snakeskin.Filters['bem'] = function (block, part, node) {
 		return String(block) + String(part);
 	};
 
@@ -12806,7 +12807,7 @@ __ATTR_J__ = 0;\
 				var val = vals[j].trim();
 
 				if (parentLinkRgxp.test(val) && ref) {
-					val = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (val.substring('&amp;'.length))) + ("'" + e) + "");
+					val = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (val.substring('&amp;'.length))) + ("',$0" + e) + "");
 					val = this.pasteDangerBlocks(this.replaceTplVars(val));
 				}
 
@@ -17082,7 +17083,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 		}
 
 		if (parentLinkRgxp.test(el$3) && ref) {
-			el$3 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (el$3.substring(1))) + ("'" + e) + "");
+			el$3 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("bem '" + (el$3.substring(1))) + ("',$0" + e) + "");
 			el$3 = this.pasteDangerBlocks(this.replaceTplVars(el$3));
 
 		} else if (el$3 && types[i$12]) {
