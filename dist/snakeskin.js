@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 06:48:49 GMT
+ * Date: Sat, 29 Nov 2014 08:53:52 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -16824,7 +16824,7 @@ var __ATTR_TMP__ = {\
 
 			if (dom) {
 				str += /* cbws */(("\
-__NODE__ = document.createElement('" + (desc.tag)) + "');\
+$0 = __NODE__ = document.createElement('" + (desc.tag)) + "');\
 ");
 
 			} else {
@@ -16880,7 +16880,11 @@ __NODE__.className = __ATTR_TMP__['class'];\
 			var str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
-				str = '__RESULT__.pop();';
+				str = ("\
+\n					__RESULT__.pop();\
+\n					$0 = __RESULT__.length > 1 ?\
+\n						__RESULT__[__RESULT__.length - 1] : void 0;\
+\n				");
 
 			} else {
 				str = this.wrap((("'</" + (params.tag)) + ">'"));
@@ -17479,7 +17483,7 @@ blocks = __BLOCKS__;\
 var __RESULT__ = " + (this.declResult())) + (",\
 __COMMENT_RESULT__,\
 __NODE__,\
-$_;\
+$_, $0;\
 \
 function getTplResult(opt_clear) {\
 var res = " + (this.returnResult())) + (";\
