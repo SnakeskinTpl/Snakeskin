@@ -127,9 +127,11 @@ for (var key in params) {
 			break;
 
 		default:
-			var nm = Number(el);
-			el = isNaN(nm) ?
-				el : nm;
+			if (typeof el === 'string') {
+				var nm = Number(el);
+				el = isNaN(nm) ?
+					el : nm;
+			}
 	}
 
 	params[key] = el;
