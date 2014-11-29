@@ -4,7 +4,9 @@ modules_index2
 ###
 
 : bar = 5
+? ' fff '|trim
 - include './test3/base2.ss'
+: tmp = $_
 
 - template modules_index() extends modules_base
 	- block root
@@ -14,6 +16,7 @@ modules_index2
 		| :
 		- block bar
 			{bar}
+			{tmp}
 	- block foo
 		`fffuuuu`
 
@@ -22,12 +25,13 @@ modules_index2
 		- super
 		| :
 		{bar}
-
+		| :
+		{tmp}
 
 ###
 
-3:123:5`fffuuuu`
+3fff2:123:5fff`fffuuuu`
 
 ***
 
-3:5
+3fff2:5:fff
