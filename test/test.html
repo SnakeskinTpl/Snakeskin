@@ -64,6 +64,7 @@
 {var tmp = $_}
 
 {template $__index()}
+	{$_}
 	{?' foo '|trim}
 	{$_} {tmp}
 {/}
@@ -80,7 +81,7 @@
 
 					test('$_', function () {
 						
-							equal($__index().trim(), 'foo bar');
+							equal($__index().trim(), 'bar foo bar');
 						
 					});
 				</script>

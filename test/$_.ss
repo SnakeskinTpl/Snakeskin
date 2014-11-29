@@ -6,10 +6,11 @@ $__index
 {var tmp = $_}
 
 {template $__index()}
+	{$_}
 	{?' foo '|trim}
 	{$_} {tmp}
 {/}
 
 ###
 
-foo bar
+bar foo bar
