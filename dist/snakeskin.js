@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 15:53:46 GMT
+ * Date: Sat, 29 Nov 2014 17:46:14 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -10072,6 +10072,7 @@ this.prepareOutput(el, true)
 					resTmp = 'void 0';
 				}
 
+				var cacheLink = void 0;
 				for (var j$1 = -1; ++j$1 < filter.length;) {
 					var params = filter[j$1].split(' '),
 						input = params.slice(1).join(' ').trim();
@@ -10083,8 +10084,12 @@ this.prepareOutput(el, true)
 						f$0 += (("['" + (current[k])) + "']");
 					}
 
+					if (!cacheLink) {
+						cacheLink = replacePropVal('$_');
+					}
+
 					resTmp =
-						(("(" + (this.tplName ? '$_' : this.prepareOutput('$_', true))) + (" = __FILTERS__" + f$0) + "") +
+						(("(" + cacheLink) + (" = __FILTERS__" + f$0) + "") +
 							(filterWrapper || !pCount ? '.call(this,' : '') +
 							resTmp +
 							(input ? ',' + input : '') +
@@ -17478,7 +17483,6 @@ this.prepareOutput(el, true)
 				'blocks',
 				'getTplResult',
 				'clearTplResult',
-				'$_',
 				'$0',
 				'TPL_NAME',
 				'PARENT_TPL_NAME'
@@ -17504,7 +17508,7 @@ blocks = __BLOCKS__;\
 var __RESULT__ = " + (this.declResult())) + (",\
 __COMMENT_RESULT__,\
 __NODE__,\
-$_, $0;\
+$0;\
 \
 function getTplResult(opt_clear) {\
 var res = " + (this.returnResult())) + (";\
