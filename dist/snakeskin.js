@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 06:09:26 GMT
+ * Date: Sat, 29 Nov 2014 06:48:49 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -10801,7 +10801,7 @@ function returnCacheKey(params, ctx, NULL) {
 	return params.language || params.macros ? null : [
 		params.exports,
 		ctx !== NULL,
-		params.lineSeparator,
+		escapeNextLine(params.lineSeparator),
 		params.doctype,
 		params.tolerateWhitespace,
 		params.inlineIterators,
