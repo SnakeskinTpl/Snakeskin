@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 27 Nov 2014 13:40:39 GMT
+ * Date: Sat, 29 Nov 2014 06:09:26 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -6488,7 +6488,9 @@ var outputCache = {};
 var argsCache = {},
 	argsResCache = {};
 
-var extMap = {};
+var extMap = {},
+	extListCache = {};
+
 var replacers = {},
 	sys = {},
 
@@ -8662,6 +8664,12 @@ DirObj.prototype.getFullBody = function (tplName) {
 							}
 
 							f(struct, chains, obj);
+							if (!struct.parent) {
+								return {
+									str: res,
+									length: length - tSpace - 1
+								};
+							}
 
 						} else {
 							while (struct.spaces >= spaces) {
@@ -9199,6 +9207,50 @@ function getName(name) {
 }
 
 /**
+ * Вернуть список названий шаблонов,
+ * которые участвуют в цепи наследования указанного
+ *
+ * @param {string} name - имя шаблона
+ * @return {!Array}
+ */
+function getExtList(name) {
+	if (extListCache[name]) {
+		return extListCache[name].slice();
+	}
+
+	var res = [];
+	while (name = extMap[name]) {
+		res.unshift(name);
+	}
+
+	extListCache[name] = res;
+	return res.slice();
+}
+
+/**
+ * Очистить кеш областей видимости заданного шаблона
+ * @param {string} name - имя шаблона
+ */
+function clearScopeCache(name) {
+	forIn(scopeCache, function(cluster, key)  {
+		if (key === 'template') {
+			if (cluster[name] && cluster[name].parent) {
+				delete cluster[name].parent.children[name];
+			}
+
+		} else {
+			forIn(cluster[name], function(el)  {
+				if (el.parent) {
+					delete el.parent.children[name];
+				}
+			});
+		}
+
+		delete cluster[name];
+	});
+}
+
+/**
  * Вернуть имя функции из заданной строки
  *
  * @param {string} str - исходная строка
@@ -9709,7 +9761,7 @@ this.prepareOutput(el, true)
 			ref = false;
 		}
 
-		function search(obj, val) {
+		function search(obj, val, extList) {
 			if (!obj) {
 				return false;
 			}
@@ -9719,34 +9771,44 @@ this.prepareOutput(el, true)
 			if (def) {
 				return def;
 
-			} else if (obj.parent) {
-				return search(obj.parent, val);
+			} else if (extList.length && obj.children[extList[0]]) {
+				return search(obj.children[extList.shift()], val, extList);
 			}
 
 			return false;
 		}
 
 		var replacePropVal = function(sstr)  {
-			var id = this$0.module.id,
-				def = vars[sstr] || vars[(("" + sstr) + ("_" + id) + "")] || vars[(("" + sstr) + "_00")];
+			var def = vars[sstr];
+
+			if (!def) {
+				var refCache = ref &&
+					scopeCache[type][tplName][ref];
+
+				if (!refCache || refCache.parent && (!refCache.overridden || this$0.hasParent('__super__'))) {
+					if (refCache) {
+						def = search(refCache.root, sstr, getExtList(String(tplName)));
+					}
+
+					var tplCache = tplName &&
+						scopeCache['template'][tplName];
+
+					if (!def && tplCache && tplCache.parent) {
+						def = search(tplCache.root, sstr, getExtList(String(tplName)));
+					}
+				}
+
+				if (!def && refCache) {
+					def = vars[(("" + sstr) + ("_" + (refCache.id)) + "")];
+				}
+
+				if (!def) {
+					def = vars[(("" + sstr) + ("_" + (this$0.module.id)) + "")] || vars[(("" + sstr) + "_00")];
+				}
+			}
 
 			if (def) {
-				if (!def.global || def.global && id == def.id) {
-					return def.value;
-				}
-
-			} else {
-				if (ref) {
-					def = search(scopeCache[type][tplName][ref], sstr);
-				}
-
-				if (!def && tplName) {
-					def = search(scopeCache['template'][tplName].parent, sstr);
-				}
-
-				if (def) {
-					return def.value;
-				}
+				return def.value;
 			}
 
 			return sstr;
@@ -13022,6 +13084,11 @@ Snakeskin.addDirective(
 					return this.error(err.message);
 				}
 
+				if (tplName in extMap) {
+					delete extMap[tplName];
+					clearScopeCache(tplName);
+				}
+
 				var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
@@ -13052,11 +13119,27 @@ Snakeskin.addDirective(
 				scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
 		}
 
+		var current = scope[name];
 		if (!scope[name]) {
-			scope[name] = {
-				id: this.module.id,
-				parent: parentScope && parentScope[name]
-			};
+			current =
+				scope[name] = {
+					id: this.module.id,
+					children: {}
+				};
+		}
+
+		if (!this.outerLink && !current.root) {
+			var parent = parentScope &&
+				parentScope[name];
+
+			current.parent = parent;
+			current.overridden = Boolean(parentTplName && this.parentTplName);
+			current.root = parent ?
+				parent.root : scope[name];
+
+			if (parent) {
+				parent.children[tplName] = scope[name];
+			}
 		}
 
 		var start = this.i - this.startTemplateI;
@@ -13694,12 +13777,15 @@ __COMMENT_RESULT__ = \'\';\
 					if (key.charAt(0) !== '@' && key in root) {
 						params[key] =
 							this$0[key] = el;
+
+						if (cache) {
+							cache[key] = el;
+						}
 					}
 				});
 			};
 
 			inherit(last);
-
 			if (parentCache) {
 				inherit(parentCache);
 			}
@@ -15628,31 +15714,6 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'__freezeLine__',
-
-	{
-		group: 'ignore'
-	},
-
-	function (command) {
-		this.startDir();
-
-		if (!command && !this.freezeLine) {
-			this.lines.pop();
-			this.info['line']--;
-		}
-
-		if (!command || this.lines.length >= parseInt(command, 10)) {
-			this.freezeLine++;
-		}
-	},
-
-	function () {
-		this.freezeLine--;
-	}
-);
-
-Snakeskin.addDirective(
 	'__cutLine__',
 
 	{
@@ -15832,6 +15893,11 @@ Snakeskin.addDirective(
 					return this.error(err.message);
 				}
 
+				if (tplName in extMap) {
+					delete extMap[tplName];
+					clearScopeCache(tplName);
+				}
+
 				var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
@@ -15861,11 +15927,27 @@ Snakeskin.addDirective(
 				scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
 		}
 
+		var current = scope[name];
 		if (!scope[name]) {
-			scope[name] = {
-				id: this.module.id,
-				parent: parentScope && parentScope[name]
-			};
+			current =
+				scope[name] = {
+					id: this.module.id,
+					children: {}
+				};
+		}
+
+		if (!this.outerLink && !current.root) {
+			var parent = parentScope &&
+				parentScope[name];
+
+			current.parent = parent;
+			current.overridden = Boolean(parentTplName && this.parentTplName);
+			current.root = parent ?
+				parent.root : scope[name];
+
+			if (parent) {
+				parent.children[tplName] = scope[name];
+			}
 		}
 
 		var start = this.i - this.startTemplateI;
@@ -16655,12 +16737,37 @@ Snakeskin.addDirective(
 				var diff = this.getDiff(commandLength);
 
 				this.source = this.source.substring(0, this.i - diff) +
-					(("/*!!= " + s) + ("super" + e) + (" =*/" + s) + ("__freezeLine__ " + (this.info['line'])) + ("" + e) + ("" + (cache.content)) + ("" + s) + ("__end__" + e) + "") +
+					(("/*!!= " + s) + ("super" + e) + (" =*/" + s) + ("__super__ " + (this.info['line'])) + ("" + e) + ("" + (cache.content)) + ("" + s) + ("__end__" + e) + "") +
 					this.source.substring(this.i + 1);
 
 				this.i -= diff + 1;
 			}
 		}
+	}
+);
+
+Snakeskin.addDirective(
+	'__super__',
+
+	{
+		group: 'ignore'
+	},
+
+	function (command) {
+		this.startDir();
+
+		if (!command && !this.freezeLine) {
+			this.lines.pop();
+			this.info['line']--;
+		}
+
+		if (!command || this.lines.length >= parseInt(command, 10)) {
+			this.freezeLine++;
+		}
+	},
+
+	function () {
+		this.freezeLine--;
 	}
 );
 
@@ -17275,22 +17382,38 @@ this.prepareOutput(el, true)
 				}
 			}
 
-			var scope = scopeCache['template'];
+			this.initTemplateCache(tplName);
+
+			if (tplName in extMap) {
+				clearScopeCache(tplName);
+			}
+
+			var scope = scopeCache['template'],
+				parent = scope[parentTplName];
+
 			scope[tplName] = {
 				id: this.module.id,
-				parent: scope[parentTplName]
+				parent: parent,
+				children: {}
 			};
 
-			this.initTemplateCache(tplName);
+			scope[tplName].root = parent ?
+				parent.root : scope[tplName];
+
+			if (parent) {
+				parent.children[tplName] = scope[tplName];
+			}
 
 			argsCache[tplName] = {};
 			argsResCache[tplName] = {};
 			outputCache[tplName] = {};
+
 			extMap[tplName] = parentTplName;
+			delete extListCache[tplName];
 
 			var baseParams = {};
 
-			if (!this.parentTplName) {
+			if (!parentTplName) {
 				forIn(this.params[this.params.length - 1], function(el, key)  {
 					if (key !== 'renderAs' && key.charAt(0) !== '@' && el !== void 0) {
 						baseParams[key] = el;
@@ -17300,7 +17423,7 @@ this.prepareOutput(el, true)
 
 			var flags = command.split('@=');
 
-			if (this.parentTplName && flags.length === 1) {
+			if (parentTplName && flags.length === 1) {
 				flags.push('@skip true');
 			}
 
