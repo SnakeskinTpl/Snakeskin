@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 29 Nov 2014 17:46:14 GMT
+ * Date: Sun, 30 Nov 2014 06:10:18 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -9849,6 +9849,7 @@ this.prepareOutput(el, true)
 		var commandLength = command.length,
 			end = commandLength - 1;
 
+		var cacheLink = replacePropVal('$_');
 		var isFilter,
 			breakNum;
 
@@ -10072,7 +10073,6 @@ this.prepareOutput(el, true)
 					resTmp = 'void 0';
 				}
 
-				var cacheLink = void 0;
 				for (var j$1 = -1; ++j$1 < filter.length;) {
 					var params = filter[j$1].split(' '),
 						input = params.slice(1).join(' ').trim();
@@ -10082,10 +10082,6 @@ this.prepareOutput(el, true)
 
 					for (var k = -1; ++k < current.length;) {
 						f$0 += (("['" + (current[k])) + "']");
-					}
-
-					if (!cacheLink) {
-						cacheLink = replacePropVal('$_');
 					}
 
 					resTmp =
