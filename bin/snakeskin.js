@@ -29,11 +29,12 @@ program
 	.option('-t, --tpl [name]', 'name of the main template')
 
 	.option('--disable-localization', 'disable support for localization')
-	.option('--i18n-fn', 'i18n function name')
+	.option('--i18n-fn [name]', 'i18n function name')
 	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
 
-	.option('--line-separator [char]', 'the newline character')
+	.option('--bem-filter [name]', 'bem filter name')
+	.option('--line-separator [char]', 'newline character (eol)')
 	.option('--tolerate-whitespace', 'tolerate whitespace characters in the template')
 	.option('--ignore', 'regular expression to ignore the empty space')
 	.option('--auto-replace', 'enable macros support')
@@ -91,6 +92,9 @@ params.escapeOutput = 'disableEscapeOutput' in program ?
 
 params.prettyPrint = 'prettyPrint' in program ?
 	program['prettyPrint'] : params.prettyPrint;
+
+params.bemFilter = 'bemFilter' in program ?
+	program['bemFilter'] : params.bemFilter;
 
 params.lineSeparator = 'lineSeparator' in program ?
 	program['lineSeparator'] : params.lineSeparator;
