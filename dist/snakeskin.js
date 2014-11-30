@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 30 Nov 2014 06:10:18 GMT
+ * Date: Sun, 30 Nov 2014 08:22:13 GMT
  */
 
 var DP$0 = Object.defineProperty;/*!
@@ -16587,7 +16587,9 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
-		this.sysSpace = true;
+		if (!this.tolerateWhitespace) {
+			this.sysSpace = true;
+		}
 	}
 );
 
@@ -16600,7 +16602,9 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startInlineDir();
-		this.sysSpace = false;
+		if (!this.tolerateWhitespace) {
+			this.sysSpace = false;
+		}
 	}
 );
 
