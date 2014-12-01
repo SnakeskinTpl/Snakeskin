@@ -1,14 +1,14 @@
 /*!
- * Snakeskin v6.4.1 (live)
+ * Snakeskin v6.4.2 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 01 Dec 2014 07:40:05 GMT
+ * Date: Mon, 01 Dec 2014 12:55:26 GMT
  */
 
-/*!
+(function (root) {/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 4, 1],
+	VERSION: [6, 4, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -75,15 +75,14 @@ var Snakeskin = {
 	cache: {}
 };
 
-(function (root) {
-	var IS_NODE = false;
+var IS_NODE = false;
 
-	try {
-		IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+try {
+	IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
 
-	} catch (ignore) {
+} catch (ignore) {
 
-	}
+}
 
 /*!
  * Методы live библиотеки Snakeskin
@@ -635,11 +634,10 @@ Snakeskin.Filters.undef = function (str) {
 })();
 
 
-	if (IS_NODE) {
-		module['exports'] = Snakeskin;
+if (IS_NODE) {
+	module['exports'] = Snakeskin;
 
-	} else {
-		root['Snakeskin'] = Snakeskin;
-	}
-
+} else {
+	root['Snakeskin'] = Snakeskin;
+}
 })(this);

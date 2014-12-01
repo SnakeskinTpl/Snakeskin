@@ -1,14 +1,14 @@
 /*!
- * Snakeskin v6.4.1
+ * Snakeskin v6.4.2
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 01 Dec 2014 07:40:05 GMT
+ * Date: Mon, 01 Dec 2014 12:55:26 GMT
  */
 
-var DP$0 = Object.defineProperty;/*!
+(function (root) {var DP$0 = Object.defineProperty;/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 4, 1],
+	VERSION: [6, 4, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -75,15 +75,14 @@ var Snakeskin = {
 	cache: {}
 };
 
-(function (root) {
-	var IS_NODE = false;
+var IS_NODE = false;
 
-	try {
-		IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+try {
+	IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
 
-	} catch (ignore) {
+} catch (ignore) {
 
-	}
+}
 
 /*!
  * Методы live библиотеки Snakeskin
@@ -635,7 +634,7 @@ Snakeskin.Filters.undef = function (str) {
 })();
 
 
-	/* istanbul ignore next */
+/* istanbul ignore next */
 
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
@@ -2562,9 +2561,9 @@ Snakeskin.Filters.undef = function (str) {
     }
 
 }());
-	var beautify = root.js_beautify;
+var beautify = root.js_beautify;
 
-	/* istanbul ignore next */
+/* istanbul ignore next */
 
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
@@ -6322,7 +6321,7 @@ parseStatement: true, parseSourceElement: true */
 
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
-	var esprima = root.esprima || root;
+var esprima = root.esprima || root;
 
 /*!
  * Различные таблицы и константы SS
@@ -17457,10 +17456,7 @@ this.prepareOutput(el, true)
 				var el$4 = flags[i$13].trim(),
 					name = el$4.split(' ')[0];
 
-				if (baseParams[name]) {
-					delete baseParams[name];
-				}
-
+				delete baseParams[name];
 				Snakeskin.Directions['__setSSFlag__'].call(this, el$4);
 			}
 
@@ -17908,11 +17904,10 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 };
 
 
-	if (IS_NODE) {
-		module['exports'] = Snakeskin;
+if (IS_NODE) {
+	module['exports'] = Snakeskin;
 
-	} else {
-		root['Snakeskin'] = Snakeskin;
-	}
-
+} else {
+	root['Snakeskin'] = Snakeskin;
+}
 })(this);
