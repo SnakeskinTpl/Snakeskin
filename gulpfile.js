@@ -12,6 +12,7 @@ var es6 = require('gulp-es6-transpiler'),
 	rename = require('gulp-rename'),
 	header = require('gulp-header'),
 	replace = require('gulp-replace'),
+	wrap = require('gulp-wrap'),
 	bump = require('gulp-bump'),
 	istanbul = require('gulp-istanbul'),
 	jasmine = require('gulp-jasmine');
@@ -55,6 +56,12 @@ gulp.task('build', function (callback) {
 				disallowDuplicated: false
 			}))
 
+			.pipe(wrap(
+				'(function (root) {' +
+					'<%= contents %>' +
+				'})(this);'
+			))
+
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
 			.pipe(monic())
 
@@ -72,9 +79,6 @@ gulp.task('build', function (callback) {
 
 			// *//*= foo *//* -> foo
 			.pipe(replace(/\/\*= (\w+) \*\//g, '$1'))
-
-			// //= foo -> foo
-			.pipe(replace(/\/\/= (.*)/g, '$1'))
 
 			// Пробельные символы в строках-шаблонах
 			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) {
