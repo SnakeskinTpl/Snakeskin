@@ -1,8 +1,3 @@
-// https://github.com/termi/es6-transpiler/issues/66
-String.prototype.contains = String.prototype.contains || function (str, opt_pos) {
-	return String.prototype.indexOf.apply(this, arguments) !== -1;
-};
-
 var gulp = require('gulp'),
 	path = require('path');
 
@@ -74,10 +69,10 @@ gulp.task('build', function (callback) {
 			// {...string} -> {...(string|Array)}
 			.pipe(replace(/{\.\.\.\(?([^}]+)\)?}/g, '{...($1|Array)}'))
 
-			// *//*, foo *//* -> , foo
+			// /*, foo */ -> , foo
 			.pipe(replace(/\/\*, (\w+) \*\//g, ', $1'))
 
-			// *//*= foo *//* -> foo
+			// /*= foo */ -> foo
 			.pipe(replace(/\/\*= (\w+) \*\//g, '$1'))
 
 			// Пробельные символы в строках-шаблонах
@@ -120,14 +115,14 @@ function compile(dev) {
 			}
 
 			var params = {
-				compilerPath: 'bower_components/closure-compiler/compiler.jar',
+				compilerPath: './bower_components/closure-compiler/compiler.jar',
 				fileName: key + '.min.js',
 				compilerFlags: {
 					compilation_level: 'ADVANCED_OPTIMIZATIONS',
 					use_types_for_optimization: null,
 					language_in: 'ECMASCRIPT5',
 					externs: [
-						'predefs.js'
+						'./predefs.js'
 					]
 				}
 			};
@@ -154,7 +149,8 @@ gulp.task('bump', function () {
 });
 
 gulp.task('watch', function () {
-	gulp.watch('./lib/*.js', ['build', 'bump']);
+	gulp.watch('./lib/**/*.js', ['build']);
+	gulp.watch('./lib/core.js', ['bump']);
 });
 
 gulp.task('default', ['compile', 'bump']);

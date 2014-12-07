@@ -5,14 +5,10 @@ var URL = {};
  * @param {!Blob} blob
  * @return {string}
  */
-URL.createObjectURL = function (blob) {
-
-};
+URL.createObjectURL = function (blob) {};
 
 /**
  * @abstract
  * @param {string} url
  */
-URL.revokeObjectURL = function (url) {
-
-};
+URL.revokeObjectURL = function (url) {};
