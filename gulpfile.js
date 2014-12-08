@@ -44,7 +44,9 @@ gulp.task('build', function (callback) {
 			' */\n\n';
 
 		gulp.src('./lib/core.js')
-			.pipe(monic({flags: builds[key]}))
+			.pipe(monic({
+				flags: builds[key]
+			}))
 
 			.pipe(es6({
 				disallowUnknownReferences: false,
@@ -52,9 +54,9 @@ gulp.task('build', function (callback) {
 			}))
 
 			.pipe(wrap(
-				'(function (root) {' +
+				'(function (root, global) {' +
 					'<%= contents %>' +
-				'})(this);'
+				'})(this, new Function(\'return this\')());'
 			))
 
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
