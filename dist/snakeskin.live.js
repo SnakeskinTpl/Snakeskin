@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.1 (live)
+ * Snakeskin v6.5.2 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 08 Dec 2014 07:17:11 GMT
+ * Date: Mon, 08 Dec 2014 18:51:52 GMT
  */
 
 (function (root, global) {/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 1],
+	VERSION: [6, 5, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -638,6 +638,7 @@ if (IS_NODE) {
 	module['exports'] = Snakeskin;
 
 } else {
-	root['Snakeskin'] = Snakeskin;
+	/** @expose */
+	root.Snakeskin = Snakeskin;
 }
 })(this, new Function('return this')());

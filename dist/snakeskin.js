@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.1
+ * Snakeskin v6.5.2
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 08 Dec 2014 07:17:11 GMT
+ * Date: Mon, 08 Dec 2014 18:51:52 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 1],
+	VERSION: [6, 5, 2],
 
 	/**
 	 * Пространство имён для директив
@@ -6336,7 +6336,7 @@ parseStatement: true, parseSourceElement: true */
 
 if (IS_NODE) {
 	esprima = exports;
-	module.exports =
+	module['exports'] =
 		exports = root;
 
 } else {
@@ -7800,7 +7800,7 @@ var Escaper,
  */
 
 var Escaper = {
-	VERSION: [2, 0, 3]
+	VERSION: [2, 0, 4]
 };
 
 var isNode = false;
@@ -7814,7 +7814,7 @@ try {
 
 /* istanbul ignore next */
 if (isNode) {
-	module.exports =
+	module['exports'] =
 		exports = Escaper;
 
 } else {
@@ -8238,7 +8238,7 @@ Escaper.paste = function (str, opt_quotContent) {
 })(new Function('return this')());
 if (IS_NODE) {
 	Escaper = exports;
-	module.exports =
+	module['exports'] =
 		exports = root;
 
 } else {
@@ -17951,6 +17951,7 @@ if (IS_NODE) {
 	module['exports'] = Snakeskin;
 
 } else {
-	root['Snakeskin'] = Snakeskin;
+	/** @expose */
+	root.Snakeskin = Snakeskin;
 }
 })(this, new Function('return this')());
