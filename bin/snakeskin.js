@@ -32,6 +32,7 @@ program
 	.option('--language [src]', 'path to the localization file or localization object')
 	.option('--words [src]', 'path to the localization file to save')
 
+	.option('--disable-use-strict', 'disable \'use strict\'; mode')
 	.option('--bem-filter [name]', 'bem filter name')
 	.option('--line-separator [char]', 'newline character (eol)')
 	.option('--tolerate-whitespace', 'tolerate whitespace characters in the template')
@@ -91,6 +92,9 @@ params.escapeOutput = 'disableEscapeOutput' in program ?
 
 params.prettyPrint = 'prettyPrint' in program ?
 	program['prettyPrint'] : params.prettyPrint;
+
+params.useStrict = 'disableUseStrict' in program ?
+	!program['disableUseStrict'] : params.useStrict;
 
 params.bemFilter = 'bemFilter' in program ?
 	program['bemFilter'] : params.bemFilter;
