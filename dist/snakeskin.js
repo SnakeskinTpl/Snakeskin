@@ -1,14 +1,14 @@
 /*!
- * Snakeskin v6.4.2
+ * Snakeskin v6.5.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 01 Dec 2014 12:55:26 GMT
+ * Date: Mon, 08 Dec 2014 06:56:01 GMT
  */
 
-(function (root) {var DP$0 = Object.defineProperty;/*!
+(function (root, global) {var DP$0 = Object.defineProperty;/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -33,7 +33,7 @@ var Snakeskin = {
 	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 4, 2],
+	VERSION: [6, 5, 0],
 
 	/**
 	 * Пространство имён для директив
@@ -129,14 +129,14 @@ Snakeskin.forEach = function (obj, callback) {
 		var arr = keys(obj);
 		length = arr.length;
 
-		for (var i$1 = -1; ++i$1 < length;) {
-			if (callback(obj[arr[i$1]], arr[i$1], obj, i$1, i$1 === 0, i$1 === length - 1, length) === false) {
+		for (var i$0 = -1; ++i$0 < length;) {
+			if (callback(obj[arr[i$0]], arr[i$0], obj, i$0, i$0 === 0, i$0 === length - 1, length) === false) {
 				break;
 			}
 		}
 
 	} else {
-		var i$2 = 0;
+		var i$1 = 0;
 
 		if (callback.length >= 6) {
 			for (var key in obj) {
@@ -149,17 +149,17 @@ Snakeskin.forEach = function (obj, callback) {
 			}
 		}
 
-		for (var key$3 in obj) {
+		for (var key$0 in obj) {
 			/* istanbul ignore if */
-			if (!obj.hasOwnProperty(key$3)) {
+			if (!obj.hasOwnProperty(key$0)) {
 				continue;
 			}
 
-			if (callback(obj[key$3], key$3, obj, i$2, i$2 === 0, i$2 === length - 1, length) === false) {
+			if (callback(obj[key$0], key$0, obj, i$1, i$1 === 0, i$1 === length - 1, length) === false) {
 				break;
 			}
 
-			i$2++;
+			i$1++;
 		}
 	}
 };
@@ -185,8 +185,8 @@ Snakeskin.forIn = function (obj, callback) {
 		}
 	}
 
-	for (var key$4 in obj) {
-		if (callback(obj[key$4], key$4, obj, i, i === 0, i === length - 1, length) === false) {
+	for (var key$1 in obj) {
+		if (callback(obj[key$1], key$1, obj, i, i === 0, i === length - 1, length) === false) {
 			break;
 		}
 
@@ -634,8 +634,10 @@ Snakeskin.Filters.undef = function (str) {
 })();
 
 
-/* istanbul ignore next */
+var beautify,
+	globalBeautify = global.js_beautify;
 
+/* istanbul ignore next */
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
 
@@ -2561,10 +2563,20 @@ Snakeskin.Filters.undef = function (str) {
     }
 
 }());
-var beautify = root.js_beautify;
+
+if (IS_NODE) {
+	beautify = exports.js_beautify;
+	delete exports.js_beautify;
+
+} else {
+	beautify = global.js_beautify;
+	global.js_beautify = globalBeautify;
+}
+
+var esprima,
+	globalEsprima = global.esprima;
 
 /* istanbul ignore next */
-
 /*
   Copyright (C) 2013 Ariya Hidayat <ariya.hidayat@gmail.com>
   Copyright (C) 2013 Thaddee Tyl <thaddee.tyl@gmail.com>
@@ -6321,7 +6333,16 @@ parseStatement: true, parseSourceElement: true */
 
 }));
 /* vim: set sw=4 ts=4 et tw=80 : */
-var esprima = root.esprima || root;
+
+if (IS_NODE) {
+	esprima = exports;
+	module.exports =
+		exports = root;
+
+} else {
+	esprima = global.esprima;
+	global.esprima = globalEsprima;
+}
 
 /*!
  * Различные таблицы и константы SS
@@ -6648,8 +6669,8 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	}
 
 	var scope;
-	for (var i$3 = -1; ++i$3 < argsList.length;) {
-		var arg = argsList[i$3].split('=');
+	for (var i$2 = -1; ++i$2 < argsList.length;) {
+		var arg = argsList[i$2].split('=');
 		arg[0] = arg[0].trim();
 
 		if (arg.length > 1) {
@@ -6675,7 +6696,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		}
 
 		argsTable[arg[0]] = {
-			i: i$3,
+			i: i$2,
 			key: arg[0],
 			value: arg[1] && this.pasteDangerBlocks(arg[1].trim()),
 			scope: scope
@@ -6739,8 +6760,8 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 
 	var locals = [];
 
-	for (var i$4 = -1; ++i$4 < localVars.length;) {
-		var el = localVars[i$4];
+	for (var i$3 = -1; ++i$3 < localVars.length;) {
+		var el = localVars[i$3];
 
 		if (!el) {
 			continue;
@@ -6770,8 +6791,8 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		needArgs = type === 'proto';
 
 	if (needArgs) {
-		for (var i$5 = -1; ++i$5 < argsList.length;) {
-			if (argsList[i$5].key === 'arguments') {
+		for (var i$4 = -1; ++i$4 < argsList.length;) {
+			if (argsList[i$4].key === 'arguments') {
 				needArgs = false;
 				break;
 			}
@@ -6785,11 +6806,11 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		}
 	}
 
-	for (var i$6 = -1; ++i$6 < argsList.length;) {
-		var el$1 = argsList[i$6];
+	for (var i$5 = -1; ++i$5 < argsList.length;) {
+		var el$0 = argsList[i$5];
 
-		el$1.key = el$1.key.replace(scopeModRgxp, '');
-		var old$0 = el$1.key;
+		el$0.key = el$0.key.replace(scopeModRgxp, '');
+		var old$0 = el$0.key;
 
 		if (consts[old$0] && opt_name) {
 			constsCache[old$0] = consts[old$0];
@@ -6797,22 +6818,22 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 		}
 
 		if (opt_name) {
-			el$1.key = this.declVar(el$1.key, true);
+			el$0.key = this.declVar(el$0.key, true);
 		}
 
 		args.push([
-			el$1.key,
-			el$1.value,
+			el$0.key,
+			el$0.value,
 			old$0
 		]);
 
-		decl += el$1.key;
+		decl += el$0.key;
 
-		if (el$1.value !== void 0) {
-			defParams += (("" + (el$1.key)) + (" = arguments[" + i$6) + ("] = " + (el$1.key)) + (" != null ? " + (el$1.key)) + (" : " + (this.prepareOutput(this.replaceDangerBlocks(el$1.value), true))) + ";");
+		if (el$0.value !== void 0) {
+			defParams += (("" + (el$0.key)) + (" = arguments[" + i$5) + ("] = " + (el$0.key)) + (" != null ? " + (el$0.key)) + (" : " + (this.prepareOutput(this.replaceDangerBlocks(el$0.value), true))) + ";");
 		}
 
-		if (i$6 !== argsList.length - 1) {
+		if (i$5 !== argsList.length - 1) {
 			decl += ',';
 		}
 	}
@@ -6906,6 +6927,7 @@ Snakeskin.DirObj = DirObj;
  * @param {!Object} params - дополнительные параметры
  * @param {?function(!Error)=} [params.onError] - функция обратного вызова для обработки ошибок при трансляции
  *
+ * @param {boolean} params.useStrict - если false, то шаблоны компилируются без 'use strict';
  * @param {boolean} params.throws - если true, то в случае ошибки и отсутствия обработчика ошибок -
  *     будет сгенерирована ошибка
  *
@@ -6974,6 +6996,9 @@ function DirObj(src, params) {
 
 	/** @type {boolean} */
 	this.throws = params.throws;
+
+	/** @type {boolean} */
+	this.useStrict = params.useStrict;
 
 	/** @type {?function(!Error)} */
 	this.onError = params.onError || null;
@@ -7295,6 +7320,8 @@ function DirObj(src, params) {
 		this.res += /* cbws */(("\
 This code is generated automatically, don\'t alter it. */\
 (function () {\
+" + (this.useStrict ? '\'use strict\';' : '')) + ("\
+\
 var __IS_NODE__ = false,\
 __HAS_EXPORTS__ = typeof exports !== 'undefined',\
 __EXPORTS__ = __HAS_EXPORTS__ ? exports : this;\
@@ -7760,11 +7787,11 @@ function escapeNextLine(str) {
 		.replace(/\r/g, '\\r');
 }
 
-if (IS_NODE) {
-	global.EscaperIsLocal = true;
-}
+var Escaper,
+	globalEscaper = global.Escaper;
 
-/*!
+/* istanbul ignore next */
+(function (global) {/*!
  * Escaper
  * https://github.com/kobezzza/Escaper
  *
@@ -7773,404 +7800,385 @@ if (IS_NODE) {
  */
 
 var Escaper = {
-	VERSION: [1, 4, 17],
-	isLocal: false
+	VERSION: [2, 0, 3]
 };
 
-(function()  {
-	var isNode = false;
+var isNode = false;
 
-	try {
-		isNode = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+try {
+	isNode = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
 
-	} catch (ignore) {
+} catch (ignore) {
 
+}
+
+/* istanbul ignore next */
+if (isNode) {
+	module.exports =
+		exports = Escaper;
+
+} else {
+	global.Escaper = Escaper;
+}
+
+var escapeMap = {
+	'"': true,
+	"'" : true,
+	'/': true,
+	'`': true
+};
+
+var sCommentsMap = {
+	'//': true
+};
+
+var mCommentsMap = {
+	'/*': true,
+	'/**': true,
+	'/*!': true
+};
+
+var keyArr = [],
+	finalMap = {};
+
+for (var key in escapeMap) {
+	/* istanbul ignore if */
+	if (!escapeMap.hasOwnProperty(key)) {
+		continue;
 	}
 
-	/* istanbul ignore next */
-	if (isNode) {
-		Escaper.isLocal = Boolean(global.EscaperIsLocal || global['EscaperIsLocal']);
+	keyArr.push(key);
+	finalMap[key] = true;
+}
 
-		if (!Escaper.isLocal) {
-			module.exports = exports = Escaper;
-		}
+for (var key$0 in sCommentsMap) {
+	/* istanbul ignore if */
+	if (!sCommentsMap.hasOwnProperty(key$0)) {
+		continue;
 	}
 
-	var escapeMap = {
-		'"': true,
-		"'" : true,
-		'/': true,
-		'`': true
-	};
+	keyArr.push(key$0);
+	finalMap[key$0] = true;
+}
 
-	var sCommentsMap = {
-		'//': true
-	};
+for (var key$1 in mCommentsMap) {
+	/* istanbul ignore if */
+	if (!mCommentsMap.hasOwnProperty(key$1)) {
+		continue;
+	}
 
-	var mCommentsMap = {
-		'/*': true,
-		'/**': true,
-		'/*!': true
-	};
+	keyArr.push(key$1);
+	finalMap[key$1] = true;
+}
 
-	var keyArr = [],
-		finalMap = {};
+var rgxpFlagsMap = {
+	'g': true,
+	'm': true,
+	'i': true,
+	'y': true,
+	'u': true
+};
 
-	for (var key in escapeMap) {
+var rgxpFlags = [];
+for (var key$2 in rgxpFlagsMap) {
+	/* istanbul ignore if */
+	if (!rgxpFlagsMap.hasOwnProperty(key$2)) {
+		continue;
+	}
+
+	rgxpFlags.push(key$2);
+}
+
+var escapeEndMap = {
+	'-': true,
+	'+': true,
+	'*': true,
+	'%': true,
+	'~': true,
+	'>': true,
+	'<': true,
+	'^': true,
+	',': true,
+	';': true,
+	'=': true,
+	'|': true,
+	'&': true,
+	'!': true,
+	'?': true,
+	':': true,
+	'(': true,
+	'{': true,
+	'[': true
+};
+
+var escapeEndWordMap = {
+	'typeof': true,
+	'void': true,
+	'instanceof': true,
+	'delete': true,
+	'in': true,
+	'new': true
+};
+
+var cache = {},
+	content = [];
+
+/**
+ * @param {!Object} obj
+ * @param {!Object} p
+ * @param {(boolean|number)} val
+ */
+function mix(obj, p, val) {
+	for (var key in obj) {
 		/* istanbul ignore if */
-		if (!escapeMap.hasOwnProperty(key)) {
+		if (!obj.hasOwnProperty(key)) {
 			continue;
 		}
 
-		keyArr.push(key);
-		finalMap[key] = true;
-	}
-
-	for (var key$0 in sCommentsMap) {
-		/* istanbul ignore if */
-		if (!sCommentsMap.hasOwnProperty(key$0)) {
-			continue;
-		}
-
-		keyArr.push(key$0);
-		finalMap[key$0] = true;
-	}
-
-	for (var key$1 in mCommentsMap) {
-		/* istanbul ignore if */
-		if (!mCommentsMap.hasOwnProperty(key$1)) {
-			continue;
-		}
-
-		keyArr.push(key$1);
-		finalMap[key$1] = true;
-	}
-
-	var rgxpFlagsMap = {
-		'g': true,
-		'm': true,
-		'i': true,
-		'y': true,
-		'u': true
-	};
-
-	var rgxpFlags = [];
-	for (var key$2 in rgxpFlagsMap) {
-		/* istanbul ignore if */
-		if (!rgxpFlagsMap.hasOwnProperty(key$2)) {
-			continue;
-		}
-
-		rgxpFlags.push(key$2);
-	}
-
-	var escapeEndMap = {
-		'-': true,
-		'+': true,
-		'*': true,
-		'%': true,
-		'~': true,
-		'>': true,
-		'<': true,
-		'^': true,
-		',': true,
-		';': true,
-		'=': true,
-		'|': true,
-		'&': true,
-		'!': true,
-		'?': true,
-		':': true,
-		'(': true,
-		'{': true,
-		'[': true
-	};
-
-	var escapeEndWordMap = {
-		'typeof': true,
-		'void': true,
-		'instaceof': true,
-		'delete': true,
-		'in': true,
-		'new': true
-	};
-
-	var cache = {},
-		content = [];
-
-	/**
-	 * @param {!Object} obj
-	 * @param {!Object} p
-	 * @param {(boolean|number)} val
-	 */
-	function mix(obj, p, val) {
-		for (var key in obj) {
-			/* istanbul ignore if */
-			if (!obj.hasOwnProperty(key)) {
-				continue;
-			}
-
-			if (key in p === false) {
-				p[key] = val;
-			}
+		if (key in p === false) {
+			p[key] = val;
 		}
 	}
+}
 
-	/**
-	 * Стек содержимого
-	 * @type {!Array}
-	 */
-	Escaper.quotContent = content;
+/**
+ * Стек содержимого
+ * @type {!Array}
+ */
+Escaper.quotContent = content;
 
-	var uSRgxp = /[^\s\/]/,
-		wRgxp = /[a-z]/,
-		sRgxp = /\s/,
-		nRgxp = /\r|\n/;
+var uSRgxp = /[^\s\/]/,
+	wRgxp = /[a-z]/,
+	sRgxp = /\s/,
+	nRgxp = /\r|\n/;
 
-	var symbols,
-		snakeskinRgxp;
+var symbols,
+	snakeskinRgxp;
 
-	/**
-	 * Заметить блоки вида ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ на
-	 * __ESCAPER_QUOT__номер_ в указанной строке
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {(Object|boolean)=} [opt_withCommentsOrParams=false] - таблица вырезаемых последовательностей:
-	 *
-	 *     (если установить значение параметру -1, то он будет полностью вырезаться,
-	 *     т.е. без возможности обратной замены, иначе true/false - включить/исключить последовательность)
-	 *
-	 *     *) @all - специальная команда для выделения всех последовательностей
-	 *     *) @comments - специальная команда для выделения всех видов комментариев
-	 *     *) @literals - специальная команда для выделения литералов строк и регулярных выражений
-	 *     *) `
-	 *     *) '
-	 *     *) "
-	 *     *) /
-	 *     *) //
-	 *     *) /*
-	 *     *) /**
-	 *     *) /*!
-	 *
-	 *     ИЛИ если логическое значение, то вырезаются литералы с комментариями (true) / литералы (false)
-	 *
-	 * @param {Array=} [opt_quotContent=Escaper.quotContent] - стек содержимого
-	 * @param {?boolean=} [opt_snakeskin] - если true, то при экранировании учитываются конструкции Snakeskin
-	 * @return {string}
-	 */
-	Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_snakeskin) {
-		symbols = symbols ||
-			Escaper.symbols ||
-			Escaper['symbols'] ||
-			'a-z';
+Escaper.snakeskinRgxp = Escaper.snakeskinRgxp || null;
+Escaper.symbols = Escaper.symbols || null;
 
-		snakeskinRgxp = snakeskinRgxp ||
-			Escaper.snakeskinRgxp ||
-			Escaper['snakeskinRgxp'] ||
-			new RegExp((("[!$" + symbols) + "_]"), 'i');
+/**
+ * Заметить блоки вида ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ на
+ * __ESCAPER_QUOT__номер_ в указанной строке
+ *
+ * @param {string} str - исходная строка
+ * @param {(Object|boolean)=} [opt_withCommentsOrParams=false] - таблица вырезаемых последовательностей:
+ *
+ *     (если установить значение параметру -1, то он будет полностью вырезаться,
+ *     т.е. без возможности обратной замены, иначе true/false - включить/исключить последовательность)
+ *
+ *     *) @all - специальная команда для выделения всех последовательностей
+ *     *) @comments - специальная команда для выделения всех видов комментариев
+ *     *) @literals - специальная команда для выделения литералов строк и регулярных выражений
+ *     *) `
+ *     *) '
+ *     *) "
+ *     *) /
+ *     *) //
+ *     *) /*
+ *     *) /**
+ *     *) /*!
+ *
+ *     ИЛИ если логическое значение, то вырезаются литералы с комментариями (true) / литералы (false)
+ *
+ * @param {Array=} [opt_quotContent=Escaper.quotContent] - стек содержимого
+ * @param {?boolean=} [opt_snakeskin] - если true, то при экранировании учитываются конструкции Snakeskin
+ * @return {string}
+ */
+Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_snakeskin) {
+	symbols = symbols ||
+		Escaper.symbols ||
+		Escaper['symbols'] ||
+		'a-z';
 
-		var isObj = opt_withCommentsOrParams instanceof Object;
-		var p = isObj ?
-			Object(opt_withCommentsOrParams) : {};
+	snakeskinRgxp = snakeskinRgxp ||
+		Escaper.snakeskinRgxp ||
+		Escaper['snakeskinRgxp'] ||
+		new RegExp((("[!$" + symbols) + "_]"), 'i');
 
-		var withComments = false;
-		if (typeof opt_withCommentsOrParams === 'boolean') {
-			withComments = Boolean(opt_withCommentsOrParams);
+	var isObj = opt_withCommentsOrParams instanceof Object;
+	var p = isObj ?
+		Object(opt_withCommentsOrParams) : {};
+
+	var withComments = false;
+	if (typeof opt_withCommentsOrParams === 'boolean') {
+		withComments = Boolean(opt_withCommentsOrParams);
+	}
+
+	if ('@comments' in p) {
+		mix(mCommentsMap, p, p['@comments']);
+		mix(sCommentsMap, p, p['@comments']);
+		delete p['@comments'];
+	}
+
+	if ('@literals' in p) {
+		mix(escapeMap, p, p['@literals']);
+		delete p['@literals'];
+	}
+
+	if ('@all' in p) {
+		mix(finalMap, p, p['@all']);
+		delete p['@all'];
+	}
+
+	var cacheKey = '';
+	for (var i = -1; ++i < keyArr.length;) {
+		var el = keyArr[i];
+
+		if (mCommentsMap[el] || sCommentsMap[el]) {
+			p[el] = withComments || p[el];
+
+		} else {
+			p[el] = p[el] || !isObj;
 		}
 
-		if ('@comments' in p) {
-			mix(mCommentsMap, p, p['@comments']);
-			mix(sCommentsMap, p, p['@comments']);
-			delete p['@comments'];
-		}
+		cacheKey += (("" + (p[el])) + ",");
+	}
 
-		if ('@literals' in p) {
-			mix(escapeMap, p, p['@literals']);
-			delete p['@literals'];
-		}
+	var initStr = str;
+	var stack = opt_quotContent ||
+		content;
 
-		if ('@all' in p) {
-			mix(finalMap, p, p['@all']);
-			delete p['@all'];
-		}
+	if (stack === content && cache[cacheKey] && cache[cacheKey][initStr]) {
+		return cache[cacheKey][initStr];
+	}
 
-		var cacheKey = '';
-		for (var i = -1; ++i < keyArr.length;) {
-			var el = keyArr[i];
+	var begin = false,
+		end = true;
 
-			if (mCommentsMap[el] || sCommentsMap[el]) {
-				p[el] = withComments || p[el];
+	var escape = false,
+		comment = false;
 
-			} else {
-				p[el] = p[el] || !isObj;
-			}
+	var selectionStart = 0,
+		block = false;
 
-			cacheKey += (("" + (p[el])) + ",");
-		}
+	var templateVar = 0,
+		filterStart = false;
 
-		var initStr = str;
-		var stack = opt_quotContent ||
-			content;
+	var cut,
+		label;
 
-		if (stack === content && cache[cacheKey] && cache[cacheKey][initStr]) {
-			return cache[cacheKey][initStr];
-		}
+	var part = '',
+		rPart = '';
 
-		var begin = false,
-			end = true;
+	for (var i$0 = -1; ++i$0 < str.length;) {
+		var el$0 = str.charAt(i$0),
+			next = str.charAt(i$0 + 1);
 
-		var escape = false,
-			comment = false;
+		var word = str.substr(i$0, 2),
+			extWord = str.substr(i$0, 3);
 
-		var selectionStart = 0,
-			block = false;
+		if (!comment) {
+			if (!begin) {
+				if (el$0 === '/') {
+					if (sCommentsMap[word] || mCommentsMap[word]) {
+						if (sCommentsMap[extWord] || mCommentsMap[extWord]) {
+							comment = extWord;
 
-		var templateVar = 0,
-			filterStart = false;
-
-		var cut,
-			label;
-
-		var part = '',
-			rPart = '';
-
-		for (var i$0 = -1; ++i$0 < str.length;) {
-			var el$0 = str.charAt(i$0),
-				next = str.charAt(i$0 + 1);
-
-			var word = str.substr(i$0, 2),
-				extWord = str.substr(i$0, 3);
-
-			if (!comment) {
-				if (!begin) {
-					if (el$0 === '/') {
-						if (sCommentsMap[word] || mCommentsMap[word]) {
-							if (sCommentsMap[extWord] || mCommentsMap[extWord]) {
-								comment = extWord;
-
-							} else {
-								comment = word;
-							}
-						}
-
-						if (comment) {
-							selectionStart = i$0;
-							continue;
+						} else {
+							comment = word;
 						}
 					}
 
-					if (escapeEndMap[el$0] || escapeEndWordMap[rPart]) {
+					if (comment) {
+						selectionStart = i$0;
+						continue;
+					}
+				}
+
+				if (escapeEndMap[el$0] || escapeEndWordMap[rPart]) {
+					end = true;
+					rPart = '';
+
+				} else if (uSRgxp.test(el$0)) {
+					end = false;
+				}
+
+				if (wRgxp.test(el$0)) {
+					part += el$0;
+
+				} else {
+					rPart = part;
+					part = '';
+				}
+
+				var skip = false;
+				if (opt_snakeskin) {
+					if (el$0 === '|' && snakeskinRgxp.test(next)) {
+						filterStart = true;
+						end = false;
+						skip = true;
+
+					} else if (filterStart && sRgxp.test(el$0)) {
+						filterStart = false;
 						end = true;
-						rPart = '';
+						skip = true;
+					}
+				}
+
+				if (!skip) {
+					if (escapeEndMap[el$0]) {
+						end = true;
 
 					} else if (uSRgxp.test(el$0)) {
 						end = false;
 					}
-
-					if (wRgxp.test(el$0)) {
-						part += el$0;
-
-					} else {
-						rPart = part;
-						part = '';
-					}
-
-					var skip = false;
-					if (opt_snakeskin) {
-						if (el$0 === '|' && snakeskinRgxp.test(next)) {
-							filterStart = true;
-							end = false;
-							skip = true;
-
-						} else if (filterStart && sRgxp.test(el$0)) {
-							filterStart = false;
-							end = true;
-							skip = true;
-						}
-					}
-
-					if (!skip) {
-						if (escapeEndMap[el$0]) {
-							end = true;
-
-						} else if (uSRgxp.test(el$0)) {
-							end = false;
-						}
-					}
 				}
+			}
 
-				// Блоки [] внутри регулярного выражения
-				if (begin === '/' && !escape) {
-					if (el$0 === '[') {
-						block = true;
+			// Блоки [] внутри регулярного выражения
+			if (begin === '/' && !escape) {
+				if (el$0 === '[') {
+					block = true;
 
-					} else if (el$0 === ']') {
-						block = false;
-					}
+				} else if (el$0 === ']') {
+					block = false;
 				}
+			}
 
-				if (!begin && templateVar) {
-					if (el$0 === '}') {
-						templateVar--;
+			if (!begin && templateVar) {
+				if (el$0 === '}') {
+					templateVar--;
 
-					} else if (el$0 === '{') {
-						templateVar++;
-					}
-
-					if (!templateVar) {
-						el$0 = '`';
-					}
-				}
-
-				if (begin === '`' && !escape && word === '${') {
-					el$0 = '`';
-					i$0++;
+				} else if (el$0 === '{') {
 					templateVar++;
 				}
 
-				if (finalMap[el$0] && (el$0 !== '/' || end) && !begin) {
-					begin = el$0;
-					selectionStart = i$0;
+				if (!templateVar) {
+					el$0 = '`';
+				}
+			}
 
-				} else if (begin && (el$0 === '\\' || escape)) {
-					escape = !escape;
+			if (begin === '`' && !escape && word === '${') {
+				el$0 = '`';
+				i$0++;
+				templateVar++;
+			}
 
-				} else if (finalMap[el$0] && begin === el$0 && !escape && (begin !== '/' || !block)) {
-					if (el$0 === '/') {
-						for (var j = -1; ++j < rgxpFlags.length;) {
-							if (rgxpFlagsMap[str.charAt(i$0 + 1)]) {
-								i$0++;
-							}
+			if (finalMap[el$0] && (el$0 !== '/' || end) && !begin) {
+				begin = el$0;
+				selectionStart = i$0;
+
+			} else if (begin && (el$0 === '\\' || escape)) {
+				escape = !escape;
+
+			} else if (finalMap[el$0] && begin === el$0 && !escape && (begin !== '/' || !block)) {
+				if (el$0 === '/') {
+					for (var j = -1; ++j < rgxpFlags.length;) {
+						if (rgxpFlagsMap[str.charAt(i$0 + 1)]) {
+							i$0++;
 						}
-					}
-
-					begin = false;
-					end = false;
-
-					if (p[el$0]) {
-						cut = str.substring(selectionStart, i$0 + 1);
-
-						if (p[el$0] === -1) {
-							label = '';
-
-						} else {
-							label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
-							stack.push(cut);
-						}
-
-						str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
-						i$0 += label.length - cut.length;
 					}
 				}
 
-			} else if ((nRgxp.test(next) && sCommentsMap[comment]) ||
-				(mCommentsMap[el$0 + str.charAt(i$0 - 1)] && i$0 - selectionStart > 2 && mCommentsMap[comment])
+				begin = false;
+				end = false;
 
-			) {
-				if (p[comment]) {
+				if (p[el$0]) {
 					cut = str.substring(selectionStart, i$0 + 1);
 
-					if (p[comment] === -1) {
+					if (p[el$0] === -1) {
 						label = '';
 
 					} else {
@@ -8181,33 +8189,62 @@ var Escaper = {
 					str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
 					i$0 += label.length - cut.length;
 				}
-
-				comment = false;
 			}
+
+		} else if ((nRgxp.test(next) && sCommentsMap[comment]) ||
+			(mCommentsMap[el$0 + str.charAt(i$0 - 1)] && i$0 - selectionStart > 2 && mCommentsMap[comment])
+
+		) {
+			if (p[comment]) {
+				cut = str.substring(selectionStart, i$0 + 1);
+
+				if (p[comment] === -1) {
+					label = '';
+
+				} else {
+					label = (("__ESCAPER_QUOT__" + (stack.length)) + "_");
+					stack.push(cut);
+				}
+
+				str = str.substring(0, selectionStart) + label + str.substring(i$0 + 1);
+				i$0 += label.length - cut.length;
+			}
+
+			comment = false;
 		}
+	}
 
-		if (stack === content) {
-			cache[cacheKey] = cache[cacheKey] || {};
-			cache[cacheKey][initStr] = str;
-		}
+	if (stack === content) {
+		cache[cacheKey] = cache[cacheKey] || {};
+		cache[cacheKey][initStr] = str;
+	}
 
-		return str;
-	};
+	return str;
+};
 
-	var pasteRgxp = /__ESCAPER_QUOT__(\d+)_/g;
+var pasteRgxp = /__ESCAPER_QUOT__(\d+)_/g;
 
-	/**
-	 * Заметить __ESCAPER_QUOT__номер_ в указанной строке на реальное содержимое
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {Array=} [opt_quotContent=Escaper.quotContent] - стек содержимого
-	 * @return {string}
-	 */
-	Escaper.paste = function (str, opt_quotContent) {
-		var stack = opt_quotContent || content;
-		return str.replace(pasteRgxp, function(sstr, pos)  {return stack[pos]});
-	};
-})();
+/**
+ * Заметить __ESCAPER_QUOT__номер_ в указанной строке на реальное содержимое
+ *
+ * @param {string} str - исходная строка
+ * @param {Array=} [opt_quotContent=Escaper.quotContent] - стек содержимого
+ * @return {string}
+ */
+Escaper.paste = function (str, opt_quotContent) {
+	var stack = opt_quotContent || content;
+	return str.replace(pasteRgxp, function(sstr, pos)  {return stack[pos]});
+};
+})(new Function('return this')());
+if (IS_NODE) {
+	Escaper = exports;
+	module.exports =
+		exports = root;
+
+} else {
+	Escaper = global.Escaper;
+	global.Escaper = globalEscaper;
+}
 
 Escaper.snakeskinRgxp = filterStartRgxp;
 var escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
@@ -8368,8 +8405,8 @@ DirObj.prototype.getFullBody = function (tplName) {
 	var newFrom,
 		blockDiff;
 
-	for (var i$7 = -1; ++i$7 < length;) {
-		var type = is[i$7];
+	for (var i$6 = -1; ++i$6 < length;) {
+		var type = is[i$6];
 
 		if (routerCache[type]) {
 			k = (("" + type) + "_");
@@ -8383,7 +8420,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 			}
 		}
 
-		for (var key  in el) {
+		for (var key in el) {
 			/* istanbul ignore if */
 			if (!el.hasOwnProperty(key)) {
 				continue;
@@ -8401,7 +8438,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 			// Разница между дочерним и родительским блоком
 			if (parent) {
-				if (parent.output != null && current.output == null && (i$7 % 2 === 0)) {
+				if (parent.output != null && current.output == null && (i$6 % 2 === 0)) {
 					current.output = parent.output;
 
 					if (type === 'const') {
@@ -8431,7 +8468,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 			}
 
 			// Переопределение
-			if (parent && (i$7 % 2 === 0)) {
+			if (parent && (i$6 % 2 === 0)) {
 				if (type !== 'block' && (type !== 'const' || !current.block)) {
 					newFrom = parent.from + adv + block.length;
 					from += blockDiff;
@@ -9614,11 +9651,11 @@ this.prepareOutput(el, true)
 		}
 
 		if (!res) {
-			for (var i$8 = end; i$8 < str.length; i$8++) {
-				var el$2 = str.charAt(i$8);
+			for (var i$7 = end; i$7 < str.length; i$7++) {
+				var el$1 = str.charAt(i$7);
 
-				if (!whiteSpaceRgxp.test(el$2)) {
-					return el$2 === ':';
+				if (!whiteSpaceRgxp.test(el$1)) {
+					return el$1 === ':';
 				}
 			}
 		}
@@ -10686,8 +10723,9 @@ DirObj.prototype.declVar = function (varName, opt_callParams) {
  * @return {string}
  */
 DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
-	opt_init = opt_init || 'void 0';
 	opt_end = opt_end !== false;
+	opt_init = opt_init == null ?
+		'void 0' : opt_init;
 
 	var isSys = 0,
 		cache = '';
@@ -10828,7 +10866,8 @@ function returnCacheKey(params, ctx, NULL) {
 		params.autoReplace,
 		params.localization,
 		params.i18nFn,
-		params.bemFilter
+		params.bemFilter,
+		params.useStrict
 	].join();
 }
 
@@ -10954,6 +10993,7 @@ var uid;
  * @param {?boolean=} [opt_params.escapeOutput=true] - если false, то на вывод значений через директиву output
  *     не будет накладываться фильтр html
  *
+ * @param {?boolean=} [opt_params.useStrict=true] - если false, то шаблоны компилируются без 'use strict';
  * @param {?string=} [opt_params.bemFilter='bem'] - название используемого фильтра для БЭМ
  * @param {?boolean=} [opt_params.prettyPrint] - если true, то полученный JS код шаблона
  *     отображается в удобном для чтения виде
@@ -11027,6 +11067,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		p.doctype = false;
 	}
 
+	p.useStrict = s(p.useStrict, p['useStrict']) !== false;
 	p.bemFilter = s(p.bemFilter, p['bemFilter']) || 'bem';
 	p.vars = s(p.vars, p['vars']) || {};
 
@@ -11298,6 +11339,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nFn: p.i18nFn,
 		language: p.language,
 
+		useStrict: p.useStrict,
 		throws: p.throws
 	});
 
@@ -12287,12 +12329,12 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		var chain = Array.isArray(params.chain) ?
 			params.chain : [params.chain];
 
-		for (var i$9 = -1; ++i$9 < chain.length;) {
-			if (!chains[chain[i$9]]) {
-				chains[chain[i$9]] = {};
+		for (var i$8 = -1; ++i$8 < chain.length;) {
+			if (!chains[chain[i$8]]) {
+				chains[chain[i$8]] = {};
 			}
 
-			chains[chain[i$9]][name] = true;
+			chains[chain[i$8]][name] = true;
 		}
 	}
 
@@ -12630,9 +12672,9 @@ Snakeskin.addDirective(
 
 	var async = ['whilst', 'doWhilst', 'forever'];
 
-	for (var i$10 = -1; ++i$10 < async.length;) {
+	for (var i$9 = -1; ++i$9 < async.length;) {
 		Snakeskin.addDirective(
-			async[i$10],
+			async[i$9],
 
 			{
 				block: true,
@@ -16102,7 +16144,8 @@ Snakeskin.addDirective(
 						language: this.language,
 						localization: this.localization,
 						lineSeparator: this.lineSeparator,
-						tolerateWhitespace: this.tolerateWhitespace
+						tolerateWhitespace: this.tolerateWhitespace,
+						throws: this.throws
 					},
 
 					null,
@@ -16135,8 +16178,8 @@ Snakeskin.addDirective(
 				var args = proto.args,
 					fin = true;
 
-				for (var i$11 = -1; ++i$11 < back.length;) {
-					var el = back[i$11];
+				for (var i$10 = -1; ++i$10 < back.length;) {
+					var el = back[i$10];
 
 					if (this.canWrite) {
 						if (!el.outer) {
@@ -17094,23 +17137,23 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 	var ref = this.bemRef;
 
-	for (var i$12 = -1; ++i$12 < classes.length;) {
-		var el$3 = classes[i$12],
-			point$0 = points[i$12];
+	for (var i$11 = -1; ++i$11 < classes.length;) {
+		var el$2 = classes[i$11],
+			point$0 = points[i$11];
 
 		if (point$0 && point$0.val != null) {
-			el$3 = el$3.replace(parentLinkRgxp, point$0.val);
+			el$2 = el$2.replace(parentLinkRgxp, point$0.val);
 		}
 
-		if (parentLinkRgxp.test(el$3) && ref) {
-			el$3 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (el$3.substring(1))) + ("',$0" + e) + "");
-			el$3 = this.pasteDangerBlocks(this.replaceTplVars(el$3));
+		if (parentLinkRgxp.test(el$2) && ref) {
+			el$2 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (el$2.substring(1))) + ("',$0" + e) + "");
+			el$2 = this.pasteDangerBlocks(this.replaceTplVars(el$2));
 
-		} else if (el$3 && types[i$12]) {
-			ref = this.pasteTplVarBlocks(el$3);
+		} else if (el$2 && types[i$11]) {
+			ref = this.pasteTplVarBlocks(el$2);
 		}
 
-		classes[i$12] = this.pasteTplVarBlocks(el$3);
+		classes[i$11] = this.pasteTplVarBlocks(el$2);
 	}
 
 	this.bemRef = ref;
@@ -17452,12 +17495,12 @@ this.prepareOutput(el, true)
 				flags.push('@skip true');
 			}
 
-			for (var i$13 = 0; ++i$13 < flags.length;) {
-				var el$4 = flags[i$13].trim(),
-					name = el$4.split(' ')[0];
+			for (var i$12 = 0; ++i$12 < flags.length;) {
+				var el$3 = flags[i$12].trim(),
+					name = el$3.split(' ')[0];
 
 				delete baseParams[name];
-				Snakeskin.Directions['__setSSFlag__'].call(this, el$4);
+				Snakeskin.Directions['__setSSFlag__'].call(this, el$3);
 			}
 
 			forIn(baseParams, function(el, key)  {
@@ -17481,9 +17524,9 @@ this.prepareOutput(el, true)
 				'PARENT_TPL_NAME'
 			];
 
-			for (var i$14 = -1; ++i$14 < predefs.length;) {
-				this.structure.vars[predefs[i$14]] = {
-					value: predefs[i$14],
+			for (var i$13 = -1; ++i$13 < predefs.length;) {
+				this.structure.vars[predefs[i$13]] = {
+					value: predefs[i$13],
 					scope: 0
 				};
 			}
@@ -17910,4 +17953,4 @@ if (IS_NODE) {
 } else {
 	root['Snakeskin'] = Snakeskin;
 }
-})(this);
+})(this, new Function('return this')());
