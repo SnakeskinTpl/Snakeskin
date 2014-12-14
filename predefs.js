@@ -29,9 +29,7 @@ WeakMap.prototype.delete = function (key) {};
  * @interface
  * @param {Array=} [opt_iterable]
  */
-function Map(opt_iterable) {
-
-}
+function Map(opt_iterable) {}
 
 /**
  * @param {?} key
@@ -66,9 +64,7 @@ Map.prototype.clear = function (key) {};
  * @interface
  * @param {Array=} [opt_iterable]
  */
-function Set(opt_iterable) {
-
-}
+function Set(opt_iterable) {}
 
 /**
  * @param {?} val
@@ -99,9 +95,7 @@ Set.prototype.clear = function () {};
  * @interface
  * @param {Array=} [opt_iterable]
  */
-function WeakSet(opt_iterable) {
-
-}
+function WeakSet(opt_iterable) {}
 
 /**
  * @param {?} val
