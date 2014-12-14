@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.3 (live)
+ * Snakeskin v6.5.4 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 09 Dec 2014 05:08:08 GMT
+ * Date: Sun, 14 Dec 2014 08:41:49 GMT
  */
 
 (function (root, global) {/*!
@@ -29,11 +29,9 @@ String.prototype.trim = String.prototype.trim || /* istanbul ignore next */ func
 var Snakeskin = {
 	/**
 	 * Версия Snakeskin
-	 *
-	 * @expose
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 3],
+	VERSION: [6, 5, 4],
 
 	/**
 	 * Пространство имён для директив
@@ -43,16 +41,12 @@ var Snakeskin = {
 
 	/**
 	 * Пространство имён для фильтров
-	 *
-	 * @expose
 	 * @type {!Object}
 	 */
 	Filters: {},
 
 	/**
 	 * Пространство имён для суперглобальных переменных
-	 *
-	 * @expose
 	 * @type {!Object}
 	 */
 	Vars: {},
@@ -60,16 +54,12 @@ var Snakeskin = {
 	/**
 	 * Пространство имён для локальных переменных
 	 * области декларации шаблонов
-	 *
-	 * @expose
 	 * @type {!Object}
 	 */
 	LocalVars: {},
 
 	/**
 	 * Кеш шаблонов
-	 *
-	 * @expose
 	 * @type {!Object}
 	 */
 	cache: {}
@@ -84,6 +74,37 @@ try {
 
 }
 
+/**
+ * Экспортировать свойство объекта для GCC
+ *
+ * @param {?} a - вариант 1
+ * @param {?} b - вариант 2
+ * @param {?=} [opt_c] - вариант 3
+ * @return {?}
+ */
+function _(a, b, opt_c) {
+	if (a !== void 0) {
+		return a;
+	}
+
+	if (opt_c !== void 0) {
+		return b === void 0 ?
+			opt_c : b;
+	}
+
+	return b;
+}
+
+/**
+ * Вернуть заданный объект с указанием произвольного типа
+ * (для приведения типа в GCC)
+ *
+ * @param {?} val - исходное значение
+ * @return {?}
+ */
+function Any(val) {
+	return val;
+}
 /*!
  * Методы live библиотеки Snakeskin
  */
@@ -95,7 +116,6 @@ if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
 /**
  * Конструктор объекта StringBuffer
  *
- * @expose
  * @constructor
  * @return {!Array}
  */
@@ -106,7 +126,6 @@ Snakeskin.StringBuffer = function () {
 /**
  * Итератор массива или объекта (с проверкой hasOwnProperty)
  *
- * @expose
  * @param {(Array|Object|undefined)} obj - исходный объект
  * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
  */
@@ -167,7 +186,6 @@ Snakeskin.forEach = function (obj, callback) {
 /**
  * Итератор объекта без проверки hasOwnProperty
  *
- * @expose
  * @param {(Object|undefined)} obj - исходный объект
  * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
  */
@@ -249,7 +267,6 @@ var inlineTagMap = {
 /**
  * Вставить заданный узел или текст в исходный
  *
- * @expose
  * @param {!Node} node - исходный элемент
  * @param {(!Node|string)} obj - элемент для вставки или текст
  * @return {(!Node|string)}
@@ -273,7 +290,6 @@ Snakeskin.appendChild = function (node, obj) {
 /**
  * Импортировать свойства заданного объекта в пространство имён Snakeskin.Filters
  *
- * @expose
  * @param {!Object} filters - импортируемый объект
  * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
  */
@@ -354,10 +370,9 @@ var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
 /**
  * Экранирование HTML сущностей
  *
- * @expose
- * @param {*} str - исходная строка
- * @param {?boolean=} [opt_attr=false] - если true, то дополнительное экранируются html атрибуты
- * @param {?boolean=} [opt_escapedAttr=false] - если true, то атрибут считается принудительно экранированным
+ * @param {?} str - исходная строка
+ * @param {?boolean=} opt_attr - если true, то дополнительное экранируются html атрибуты
+ * @param {?boolean=} opt_escapedAttr - если true, то атрибут считается принудительно экранированным
  * @return {string}
  */
 Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
@@ -379,9 +394,8 @@ Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
 /**
  * Замена undefined на ''
  *
- * @expose
- * @param {*} str - исходная строка
- * @return {*}
+ * @param {?} str - исходная строка
+ * @return {?}
  */
 Snakeskin.Filters.undef = function (str) {
 	return str !== void 0 ? str : '';
@@ -403,7 +417,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Снятие экранирования HTML сущностей
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['uhtml'] = function (str) {
@@ -415,7 +429,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Удаление HTML тегов
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['stripTags'] = function (str) {
@@ -431,7 +445,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * Кодирование URL
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['uri'] = function (str) {
@@ -443,7 +457,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Перевод строки в верхний регистр
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['upper'] = function (str) {
@@ -453,7 +467,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Перевод первой буквы строки в верхний регистр
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['ucfirst'] = function (str) {
@@ -464,7 +478,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Перевод строки в нижний регистр
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['lower'] = function (str) {
@@ -474,7 +488,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Перевод первой буквы строки в нижний регистр
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['lcfirst'] = function (str) {
@@ -485,7 +499,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Срез крайних пробелов строки
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['trim'] = function (str) {
@@ -498,7 +512,7 @@ Snakeskin.Filters.undef = function (str) {
 	 * Срез крайних пробелов строки
 	 * и свёртывание остальных пробелов в один
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @return {string}
 	 */
 	Snakeskin.Filters['collapse'] = function (str) {
@@ -509,10 +523,10 @@ Snakeskin.Filters.undef = function (str) {
 	 * Обрезание строки до заданной длины
 	 * (в конце, если нужно, ставится многоточие)
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @param {number} length - максимальная длина текста
-	 * @param {?boolean=} [opt_wordOnly=false] - если false, то текст обрезается без учёта целостности слов
-	 * @param {?boolean=} [opt_html=false] - если true, то символ многоточия вставляется как HTML-мнемоник
+	 * @param {?boolean=} opt_wordOnly - если false, то текст обрезается без учёта целостности слов
+	 * @param {?boolean=} opt_html - если true, то символ многоточия вставляется как HTML-мнемоник
 	 * @return {string}
 	 */
 	Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
@@ -540,8 +554,8 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Генерация строки из повторений исходной подстроки
 	 *
-	 * @param {*} str - исходная строка
-	 * @param {?number=} [opt_num=2] - число повторений
+	 * @param {?} str - исходная строка
+	 * @param {?number=} opt_num - число повторений
 	 * @return {string}
 	 */
 	Snakeskin.Filters['repeat'] = function (str, opt_num) {
@@ -551,7 +565,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Удаление подстроки из строки
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @param {(string|RegExp)} search - искомая подстрока
 	 * @return {string}
 	 */
@@ -562,7 +576,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Замена подстроки в строке
 	 *
-	 * @param {*} str - исходная строка
+	 * @param {?} str - исходная строка
 	 * @param {(string|!RegExp)} search - искомая подстрока
 	 * @param {string} replace - строка для замены
 	 * @return {string}
@@ -598,7 +612,7 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Преобразование JSON в объект
 	 *
-	 * @param {*} val - исходное значение
+	 * @param {?} val - исходное значение
 	 * @return {?}
 	 */
 	Snakeskin.Filters['parse'] = function (val) {
@@ -612,8 +626,8 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Декларация BEM части
 	 *
-	 * @param {*} block - название блока
-	 * @param {*} part - вторая часть декларации
+	 * @param {?} block - название блока
+	 * @param {?} part - вторая часть декларации
 	 * @param {(Element|undefined)} node - ссылка на активный узел
 	 * @return {string}
 	 */
@@ -624,9 +638,9 @@ Snakeskin.Filters.undef = function (str) {
 	/**
 	 * Задача значения по умолчанию для объекта
 	 *
-	 * @param {*} val - исходное значение
-	 * @param {*} def - значение по умолчанию
-	 * @return {*}
+	 * @param {?} val - исходное значение
+	 * @param {?} def - значение по умолчанию
+	 * @return {?}
 	 */
 	Snakeskin.Filters['default'] = function (val, def) {
 		return val === void 0 ? def : val;
@@ -639,7 +653,6 @@ if (IS_NODE) {
 		exports = Snakeskin;
 
 } else {
-	/** @expose */
 	root.Snakeskin = Snakeskin;
 }
 })(this, new Function('return this')());
