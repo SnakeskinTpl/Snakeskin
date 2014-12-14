@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 14 Dec 2014 08:41:49 GMT
+ * Date: Sun, 14 Dec 2014 08:54:53 GMT
  */
 
 (function (root, global) {/*!
@@ -649,7 +649,7 @@ Snakeskin.Filters.undef = function (str) {
 
 
 if (IS_NODE) {
-	module['exports'] =
+	module.exports =
 		exports = Snakeskin;
 
 } else {

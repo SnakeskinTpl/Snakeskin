@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 14 Dec 2014 08:41:49 GMT
+ * Date: Sun, 14 Dec 2014 08:54:53 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -6350,7 +6350,7 @@ parseStatement: true, parseSourceElement: true */
 
 if (IS_NODE) {
 	esprima = exports;
-	module['exports'] =
+	module.exports =
 		exports = root;
 
 } else {
@@ -8193,7 +8193,7 @@ Escaper.paste = function (str, opt_quotContent) {
 })(new Function('return this')());
 if (IS_NODE) {
 	Escaper = exports;
-	module['exports'] =
+	module.exports =
 		exports = root;
 
 } else {
@@ -17512,7 +17512,7 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 
 
 if (IS_NODE) {
-	module['exports'] =
+	module.exports =
 		exports = Snakeskin;
 
 } else {
