@@ -1,3 +1,4 @@
+/** @type {Snakeskin} */
 var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
 var path = require('path'),
