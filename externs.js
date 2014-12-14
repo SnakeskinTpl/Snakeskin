@@ -157,9 +157,7 @@ var Snakeskin = {
  * @param {Object=} [params.proto]
  * @param {Object=} [params.info]
  */
-function $$SnakeskinDirObj(src, params) {
-
-}
+function $$SnakeskinDirObj(src, params) {}
 
 /** @type {string} */
 $$SnakeskinDirObj.prototype.renderMode;
