@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.4
+ * Snakeskin v6.5.5
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 14 Dec 2014 09:03:31 GMT
+ * Date: Sun, 14 Dec 2014 14:22:19 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 4],
+	VERSION: [6, 5, 5],
 
 	/**
 	 * Пространство имён для директив
@@ -8988,7 +8988,7 @@ DirObj.prototype.getFullBody = function (tplName) {
  * (учитываются директивы)
  *
  * @param {string} str - исходная строка
- * @return {Array}
+ * @return {!Array}
  */
 function splitBySpace(str) {
 	var escape = false;
@@ -15118,7 +15118,8 @@ Snakeskin.addDirective(
 				this.append(str);
 
 				if (parts.length > 1) {
-					var args = [].slice.call(arguments);
+					/** @type {!Array} */
+					var args = Any([].slice.call(arguments));
 
 					args[0] = parts.slice(1).join(' ');
 					args[1] = args[0].length;
@@ -16125,7 +16126,8 @@ Snakeskin.addDirective(
 				this.append(str);
 
 				if (parts.length > 1) {
-					var args = [].slice.call(arguments);
+					/** @type {!Array} */
+					var args = Any([].slice.call(arguments));
 
 					args[0] = parts.slice(1).join(' ');
 					args[1] = args[0].length;
@@ -16346,7 +16348,8 @@ Snakeskin.addDirective(
 				this.append(str);
 
 				if (parts.length > 1) {
-					var args = [].slice.call(arguments);
+					/** @type {!Array} */
+					var args = Any([].slice.call(arguments));
 
 					args[0] = parts.slice(1).join(' ');
 					args[1] = args[0].length;
