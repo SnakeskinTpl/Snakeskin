@@ -83,7 +83,7 @@ var Snakeskin = {
 	/**
 	 * @abstract
 	 * @param {(Element|string)} src
-	 * @param {(Object|boolean)=} [opt_params]
+	 * @param {Object=} [opt_params]
 	 * @param {?string=} [opt_params.exports]
 	 * @param {Object=} [opt_params.context]
 	 * @param {Object=} [opt_params.vars]
