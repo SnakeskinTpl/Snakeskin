@@ -48,6 +48,10 @@ gulp.task('build', function (callback) {
 				flags: builds[key]
 			}))
 
+			.pipe(replace(/(,|)\s*(\.\.\.(.*?)\s*\))\s*(\{)/g, function (sstr, $1, $2, $3, $4) {
+				return $1 + $2 + '/*' + ($1 ? ',' : '=') + ' ' + $3 + ' */' + $4;
+			}))
+
 			.pipe(es6({
 				disallowUnknownReferences: false,
 				disallowDuplicated: false
@@ -66,20 +70,22 @@ gulp.task('build', function (callback) {
 			.pipe(replace(/(for\s*\(\s*var\s+[^=]+)= void 0 in/g, '$1 in'))
 
 			// Фикс @param {foo} [bar=1] -> @param {foo} [bar]
-			.pipe(replace(/(@param {.*?[^=]}) \[(\w+)=.*?[^\]]]/g, '$1 $2'))
+			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
 
-			// {...string} -> {...(string|Array)}
-			.pipe(replace(/{\.\.\.\(?([^}]+)\)?}/g, '{...($1|Array)}'))
+			// Фикс @param {...foo} -> @param {...foo|!Array}
+			.pipe(replace(/@param {(\.\.\..*?)}/g, '@param {$1|!Array}'))
 
 			// /*, foo */ -> , foo
-			.pipe(replace(/\/\*, (\w+) \*\//g, ', $1'))
+			.pipe(replace(/\)\s*\/\*, ([$\w]+) \*\//g, ', $1)'))
 
 			// /*= foo */ -> foo
-			.pipe(replace(/\/\*= (\w+) \*\//g, '$1'))
+			.pipe(replace(/\)\s*\/\*= ([$\w$]+) \*\//g, '$1)'))
 
 			// Пробельные символы в строках-шаблонах
 			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) {
-				return sstr.replace(/\\n|\t/g, '');
+				return sstr
+					.replace(/\\n|\t/g, '')
+					.replace(/\\[\r\n]/g, ' ');
 			}))
 
 			.pipe(header(fullHead))
@@ -124,13 +130,33 @@ function compile(dev) {
 					use_types_for_optimization: null,
 					language_in: 'ECMASCRIPT5',
 					externs: [
-						'./predefs.js'
+						'./node_modules/closurecompiler-externs/buffer.js',
+						'./node_modules/closurecompiler-externs/events.js',
+						'./node_modules/closurecompiler-externs/stream.js',
+						'./node_modules/closurecompiler-externs/process.js',
+						'./node_modules/closurecompiler-externs/path.js',
+						'./node_modules/closurecompiler-externs/fs.js',
+						'./node_modules/closurecompiler-externs/core.js',
+						'./predefs.js',
+						'./externs.js'
 					]
 				}
 			};
 
 			if (dev) {
-				params.compilerFlags.jscomp_warning = 'invalidCasts';
+				params.compilerFlags.jscomp_warning = [
+					'invalidCasts',
+					'accessControls',
+					'checkDebuggerStatement',
+					'checkRegExp',
+					'checkTypes',
+					'const',
+					'constantProperty',
+					'deprecated',
+					'externsValidation',
+					'missingProperties',
+					'visibility'
+				];
 			}
 
 			gulp.src(path.join('./dist/', key + '.js'))
