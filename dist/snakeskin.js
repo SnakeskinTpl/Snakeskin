@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 14 Dec 2014 08:54:53 GMT
+ * Date: Sun, 14 Dec 2014 09:03:31 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -10885,7 +10885,7 @@ var uid;
  * @param {(Element|string)} src - ссылка на DOM узел, где декларированы шаблоны,
  *     или исходный текст шаблонов
  *
- * @param {(Object|boolean)=} [opt_params] - дополнительные параметры запуска
+ * @param {Object=} [opt_params] - дополнительные параметры запуска
  * @param {?string=} opt_params.exports - тип экспорта шаблонов
  *
  * @param {Object=} opt_params.context - контекст для сохранение скомпилированного шаблона
