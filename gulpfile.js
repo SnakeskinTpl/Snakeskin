@@ -128,7 +128,7 @@ function compile(dev) {
 				compilerFlags: {
 					compilation_level: 'ADVANCED_OPTIMIZATIONS',
 					use_types_for_optimization: null,
-					language_in: 'ECMASCRIPT5',
+					language_in: 'ES5',
 					externs: [
 						'./node_modules/closurecompiler-externs/buffer.js',
 						'./node_modules/closurecompiler-externs/events.js',
