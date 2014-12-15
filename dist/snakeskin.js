@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.5
+ * Snakeskin v6.5.6
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 14 Dec 2014 14:22:19 GMT
+ * Date: Mon, 15 Dec 2014 10:06:27 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 5],
+	VERSION: [6, 5, 6],
 
 	/**
 	 * Пространство имён для директив
@@ -7746,30 +7746,32 @@ var Escaper,
 	globalEscaper = global.Escaper;
 
 /* istanbul ignore next */
-(function (global) {/*!
- * Escaper
+/*!
+ * Escaper v2.0.5
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
+ *
+ * Date: Mon, 15 Dec 2014 08:57:09 GMT
  */
 
-var Escaper = {
-	VERSION: [2, 0, 4]
+(function (global) {var Escaper = {
+	VERSION: [2, 0, 6]
 };
 
-var isNode = false;
+var IS_NODE = false;
 
 try {
-	isNode = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+	IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
 
 } catch (ignore) {
 
 }
 
 /* istanbul ignore next */
-if (isNode) {
-	module['exports'] =
+if (IS_NODE) {
+	module.exports =
 		exports = Escaper;
 
 } else {
@@ -15583,7 +15585,6 @@ Snakeskin.addDirective(
 			this.anonI++;
 
 			var tmpLength = command.length;
-
 			command = name + this.source.substring(this.i - tmpLength, this.i);
 			commandLength += name.length;
 
