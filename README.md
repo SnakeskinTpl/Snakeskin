@@ -1,8 +1,8 @@
 # Snakeskin
 
-*Это Фрэнк — змей-ковбой, который очень любит шаблоны.*
-
 <img src="http://kobezzza.com/files/snakeskin/logo.svg" alt="Snakeskin" width="190px" />
+
+*Это Фрэнк — змей-ковбой, который очень любит шаблоны.*
 
 Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
 
