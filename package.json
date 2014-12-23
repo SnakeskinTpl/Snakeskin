@@ -2,7 +2,7 @@
   "name": "snakeskin",
   "description": "Компилятор блочных шаблонов c поддержкой наследования.",
   "homepage": "https://github.com/kobezzza/Snakeskin",
-  "version": "6.5.6",
+  "version": "6.5.7",
   "author": {
     "name": "Kobezzza",
     "email": "kobezzza@mail.ru",
