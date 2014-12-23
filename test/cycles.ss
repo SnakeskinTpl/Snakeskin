@@ -1,5 +1,6 @@
 cycles_index
 cycles_index2
+cycles_index3
 
 ###
 
@@ -54,6 +55,19 @@ cycles_index2
 	{&-}
 {end template}
 
+- template cycles_index3(i = 3)
+	&+
+		- repeat
+			{i}
+		- until i--
+	&-
+
+	&+
+		- do
+			{i}
+		- while ++i < 3
+	&-
+
 ###
 
 012 123 43210 -1012
@@ -61,3 +75,7 @@ cycles_index2
 ***
 
 0 23 4
+
+***
+
+3210 -1012
