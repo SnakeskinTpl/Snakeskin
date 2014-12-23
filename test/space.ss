@@ -15,6 +15,8 @@ space_index14
 space_index15
 space_index16
 space_index17
+space_index18
+space_index19
 
 ###
 
@@ -225,6 +227,39 @@ space_index17
 		3
 		4
 
+- template space_index18(name = 'friend')
+	: i = 1
+	- while i--
+		< h1
+			- if true
+				< span
+					Hello {name}! You are amazing!
+			- else
+				< span :: You wrong!!!
+	? i = 1
+	- while i--
+		< h1
+			- if true
+				< span
+					Hello {name}! You are amazing!
+			- else
+				< span :: You wrong!!!
+
+- template space_index19()
+	: i = 1
+	- while i--
+		- if false
+			< span
+				Hello! You are amazing!
+		- else
+			You wrong!!!
+	? i = 1
+	- while i--
+		- if true
+			Hello! You are amazing!
+		- else
+			You wrong!!!
+
 ###
 
 <div class="foo"><div class="bar"></div><div class="foo">1 2 3</div> <div class="car">1</div></div>
@@ -292,3 +327,11 @@ space_index17
 ***
 
 1 2 3 4
+
+***
+
+<h1><span>Hello friend! You are amazing!</span></h1><h1><span>Hello friend! You are amazing!</span></h1>
+
+***
+
+You wrong!!!Hello! You are amazing!
