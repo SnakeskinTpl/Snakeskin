@@ -1,6 +1,6 @@
 # Snakeskin
 
-<img src="http://kobezzza.com/files/snakeskin/logo.svg" alt="Snakeskin" width="220px" />
+<img src="http://kobezzza.com/files/snakeskin/logo.svg" alt="Snakeskin" width="180px" />
 
 Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
 
