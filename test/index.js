@@ -48,7 +48,9 @@ function run(params) {
 		debug = params.debug = {};
 
 	prfx++;
-	fs.readdirSync(testFolder).forEach(function (file) {
+	fs.readdirSync(testFolder).forEach(forEach);
+
+	function forEach(file) {
 		if (path.extname(file) === '.ss') {
 			if (file === 'test.ss') {
 				return;
@@ -58,7 +60,7 @@ function run(params) {
 				txt = String(fs.readFileSync(src)).split('###');
 
 			txt.forEach(function (el, i) {
-				txt[i] = el.trim();
+				txt[i] = String(el).trim();
 			});
 
 			var starts = txt[0].split(/[\r\n]+/),
@@ -94,7 +96,7 @@ function run(params) {
 			var tpl = require('./build/' + file + '_' + prfx + '.js').init(snakeskin);
 
 			starts.forEach(function (el, i) {
-				var params = el.split(' ; '),
+				var params = String(el).split(' ; '),
 					res = '';
 
 				try {
@@ -122,7 +124,7 @@ function run(params) {
 				}
 			});
 		}
-	});
+	}
 }
 
 run({
