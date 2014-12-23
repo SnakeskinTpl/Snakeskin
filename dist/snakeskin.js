@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.9
+ * Snakeskin v6.5.10
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 23 Dec 2014 18:51:28 GMT
+ * Date: Tue, 23 Dec 2014 19:23:55 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 9],
+	VERSION: [6, 5, 10],
 
 	/**
 	 * Пространство имён для директив
@@ -7688,7 +7688,7 @@ var escapeEndMap = {
 var escapeEndWordMap = {
 	'typeof': true,
 	'void': true,
-	'instaceof': true,
+	'instanceof': true,
 	'delete': true,
 	'in': true,
 	'new': true
@@ -10758,10 +10758,9 @@ DirObj.prototype.declArguments = function () {
  * @param {string} text - исходный текст шаблона
  * @param {!Object} params - параметры запуска
  * @param {!Object} ctx - объект контекста
- * @param {!Object} NULL - null-объект
  * @return {string}
  */
-function returnCache(cacheKey, text, params, ctx, NULL) {
+function returnCache(cacheKey, text, params, ctx) {
 	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
 		forIn(globalFnCache[cacheKey][text], function(el, key)  {
 			ctx[key] = el;
@@ -10805,10 +10804,9 @@ function returnCache(cacheKey, text, params, ctx, NULL) {
  *
  * @param {!Object} params - параметры запуска
  * @param {!Object} ctx - объект контекста
- * @param {!Object} NULL - null-объект
  * @return {?string}
  */
-function returnCacheKey(params, ctx, NULL) {
+function returnCacheKey(params, ctx) {
 	return params.language || params.macros ? null : [
 		params.exports,
 		ctx !== NULL,
@@ -10837,10 +10835,9 @@ function returnCacheKey(params, ctx, NULL) {
  * @param {string} text - исходный текст шаблона
  * @param {!Object} params - параметры запуска
  * @param {!Object} ctx - объект контекста
- * @param {!Object} NULL - null-объект
  * @return {string}
  */
-function saveFnCache(cacheKey, text, params, ctx, NULL) {
+function saveFnCache(cacheKey, text, params, ctx) {
 	if (ctx !== NULL) {
 		ctx['init'](Snakeskin);
 
@@ -10887,7 +10884,8 @@ var bEndRgxp = /[^\s\/]/,
 	partRgxp = /[a-z]/,
 	filterStartRgxp = new RegExp((("[!$" + symbols) + "_]"));
 
-var uid;
+var uid,
+	NULL = {};
 
 /**
  * Скомпилировать указанные шаблоны Snakeskin
@@ -10976,7 +10974,6 @@ var uid;
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	src = src || '';
-	var NULL = {};
 
 	/** @type {{parent, proto, cacheKey, scope, vars, consts, needPrfx, lines}} */
 	var sp = _.any(opt_sysParams || {});
@@ -11091,14 +11088,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Работа с кешем
 	// >>>
 
-	var cacheKey = returnCacheKey(p, ctx, NULL);
+	var cacheKey = returnCacheKey(p, ctx);
 
 	if (sp.cacheKey || sp['cacheKey']) {
 		return cacheKey;
 	}
 
 	if (p.cache) {
-		var tmp = returnCache(cacheKey, text, p, ctx,  NULL);
+		var tmp = returnCache(cacheKey, text, p, ctx);
 
 		if (tmp) {
 			return tmp;
@@ -12008,9 +12005,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							var modStr = dir.res.substring(0, exprPos) +
 								dir.res.substring(exprPos + expr.length + advExprPos);
 
-							var val$0 = dir.macros[expr].call ? dir.macros[expr]() : dir.macros[expr];
-							val$0 = String(val$0);
+							var val$0 = dir.macros[expr].call ?
+								dir.macros[expr]() : dir.macros[expr];
 
+							val$0 = String(val$0);
 							advExprPos += val$0.length;
 
 							dir.mod(function()  {
@@ -12140,7 +12138,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			dir.evalStr(dir.res);
 		}
 
-		saveFnCache(cacheKey, text, p, ctx, NULL);
+		saveFnCache(cacheKey, text, p, ctx);
 
 	} catch (err) {
 		delete info['line'];
