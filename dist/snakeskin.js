@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.8
+ * Snakeskin v6.5.9
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 23 Dec 2014 12:56:28 GMT
+ * Date: Tue, 23 Dec 2014 18:51:28 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 8],
+	VERSION: [6, 5, 9],
 
 	/**
 	 * Пространство имён для директив
@@ -8496,7 +8496,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 		lastSymbolRgxp = new RegExp((("(" + alb) + "|\\\\)$"));
 
 	var endDirInit,
-		ws,
+		needSpace,
 		nl;
 
 	/**
@@ -8508,7 +8508,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 	 * @return {{str: string, length: number, error: (boolean|null|undefined)}}
 	 */
 	DirObj.prototype.toBaseSyntax = function (str, i) {
-		ws = !this.tolerateWhitespace;
+		needSpace = !this.tolerateWhitespace;
 		nl = this.lineSeparator;
 		endDirInit = false;
 
@@ -8534,10 +8534,14 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 				} else {
 					var rightSpace = rightWSRgxp.exec(res)[0];
-					res = res.replace(rightPartRgxp, '');
-					res += genEndDir(struct, struct.space) +
-						(rightSpace && ws ? (("" + (struct.adv)) + ("" + lb) + ("__&-__" + rb) + "") : '') +
-						rightSpace;
+					res = res.replace(rightPartRgxp, '') +
+						genEndDir(struct, struct.space);
+
+					if (rightSpace && needSpace) {
+						res += (("" + (struct.adv)) + ("" + lb) + ("__&-__" + rb) + "");
+					}
+
+					res += rightSpace;
 				}
 
 			} else {
@@ -8562,7 +8566,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 				}
 
 				if (clrL) {
-					if (clrL === 1 && ws) {
+					if (clrL === 1 && needSpace) {
 						res += (("" + alb) + ("" + lb) + ("__&-__" + rb) + "");
 					}
 
@@ -8726,11 +8730,15 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 
 					struct = obj;
-					res += space +
-						(ws && endDirInit && (obj.text || !Snakeskin.Directions[obj.name]) ? (("" + adv) + ("" + lb) + ("__&-__" + rb) + "") : '') +
-						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+					res += space;
 
+					if (needSpace && (obj.text || !Snakeskin.Directions[obj.name])) {
+						res += (("" + adv) + ("" + lb) + ("__&-__" + rb) + "");
+					}
+
+					res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 					endDirInit = false;
+
 					var tmp$3 = decl.length - 1;
 					tSpace = 0;
 
@@ -8781,7 +8789,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 		var s = dir.adv + lb,
 			tmp;
 
-		if (ws) {
+		if (needSpace) {
 			tmp = (("" + (endDirInit ? '' : (("" + s) + ("__&+__" + rb) + ""))) + ("" + nl) + "");
 
 		} else {
@@ -8950,9 +8958,9 @@ DirObj.prototype.getFullBody = function (tplName) {
 					}
 				}
 
-				var ws = lineWhiteSpaceRgxp.test(el);
+				var needSpace = lineWhiteSpaceRgxp.test(el);
 
-				if (ws) {
+				if (needSpace) {
 					if (nmBrk === false) {
 						nmBrk = true;
 					}
@@ -8962,7 +8970,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					lastElI = res.length;
 				}
 
-				if (!nmBrk && !ws) {
+				if (!nmBrk && !needSpace) {
 					if (nmBrk === null) {
 						nmBrk = false;
 					}
@@ -11702,6 +11710,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (dir.text && !dir.chainSpace && !dir.strongSpace) {
+						dir.sysSpace = false;
 						dir.space =
 							dir.prevSpace = false;
 					}
