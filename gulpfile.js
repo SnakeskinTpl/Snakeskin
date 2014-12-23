@@ -9,6 +9,7 @@ var es6 = require('gulp-es6-transpiler'),
 	replace = require('gulp-replace'),
 	wrap = require('gulp-wrap'),
 	bump = require('gulp-bump'),
+	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
 	jasmine = require('gulp-jasmine');
 
@@ -102,7 +103,41 @@ gulp.task('build', function (callback) {
 	}
 });
 
-gulp.task('test', ['build'], function (callback) {
+gulp.task('predefs', ['build'], function (callback) {
+	var i = 0;
+
+	function finish() {
+		i--;
+
+		if (!i) {
+			gulp.src('./predefs/src/index.js')
+				.pipe(monic())
+				.pipe(gulp.dest('./predefs/build'))
+				.on('end', callback);
+		}
+	}
+
+	i++;
+	download([
+		'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
+		'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
+	])
+		.pipe(gulp.dest('./predefs/src/ws'))
+		.on('end', finish);
+
+	i++;
+	download([
+		'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/es6.js'
+	])
+
+		.pipe(replace(/\.<\[.*?]>/g, '.<?>'))
+		.pipe(replace(/\.\.\.([^[\]]+?)\)/g, '...[$1])'))
+
+		.pipe(gulp.dest('./predefs/src/standart'))
+		.on('end', finish);
+});
+
+gulp.task('test', ['predefs'], function (callback) {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
 		.on('finish', function () {
@@ -130,15 +165,7 @@ function compile(dev) {
 					use_types_for_optimization: null,
 					language_in: 'ES5',
 					externs: [
-						'./node_modules/closurecompiler-externs/buffer.js',
-						'./node_modules/closurecompiler-externs/events.js',
-						'./node_modules/closurecompiler-externs/stream.js',
-						'./node_modules/closurecompiler-externs/process.js',
-						'./node_modules/closurecompiler-externs/path.js',
-						'./node_modules/closurecompiler-externs/fs.js',
-						'./node_modules/closurecompiler-externs/core.js',
-						'./predefs.js',
-						'./externs.js'
+						'./predefs/build/index.js'
 					]
 				}
 			};
