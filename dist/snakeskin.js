@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.6
+ * Snakeskin v6.5.7
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 15 Dec 2014 10:06:27 GMT
+ * Date: Tue, 23 Dec 2014 11:35:23 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 6],
+	VERSION: [6, 5, 7],
 
 	/**
 	 * Пространство имён для директив
@@ -102,9 +102,9 @@ function _(a, b, opt_c) {
  * @param {?} val - исходное значение
  * @return {?}
  */
-function Any(val) {
+_.any = function (val) {
 	return val;
-}
+};
 /*!
  * Методы live библиотеки Snakeskin
  */
@@ -6539,6 +6539,8 @@ var replacers = {},
 	aliases = {},
 	groups = {},
 	groupsList = [],
+
+	ends = {},
 	chains = {},
 
 	bem = {},
@@ -8521,11 +8523,14 @@ DirObj.prototype.getFullBody = function (tplName) {
 		var length = 0,
 			tSpace = 0;
 
-		function f(struct, chains, obj) {
+		function f(struct, obj) {
 			if (struct.block) {
 				if (chains[struct.name] && chains[struct.name][obj.name]) {
 					obj.block = true;
 					obj.name = struct.name;
+
+				} else if (ends[struct.name] && ends[struct.name][obj.name]) {
+					obj.block = false;
 
 				} else {
 					var rightSpace = rightWSRgxp.exec(res)[0];
@@ -8584,21 +8589,24 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 					if (el === alb) {
 						if (shortMap[diff2str]) {
-							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 3));
+							var tmp = str.charAt(j + 3);
+							nextSpace = !tmp || whiteSpaceRgxp.test(tmp);
 
 						} else if (shortMap[next]) {
-							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 2));
+							var tmp$1 = str.charAt(j + 2);
+							nextSpace = !tmp$1 || whiteSpaceRgxp.test(tmp$1);
 
 						} else {
-							nextSpace = whiteSpaceRgxp.test(next);
+							nextSpace = !next || whiteSpaceRgxp.test(next);
 						}
 
 					} else {
 						if (shortMap[next2str]) {
-							nextSpace = whiteSpaceRgxp.test(str.charAt(j + 2));
+							var tmp$2 = str.charAt(j + 2);
+							nextSpace = !tmp$2 || whiteSpaceRgxp.test(tmp$2);
 
 						} else {
-							nextSpace = whiteSpaceRgxp.test(next);
+							nextSpace = !next || whiteSpaceRgxp.test(next);
 						}
 					}
 
@@ -8670,7 +8678,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 								adv = alb;
 							}
 
-							f(struct, chains, obj);
+							f(struct, obj);
 							if (!struct.parent) {
 								return {
 									str: res,
@@ -8680,7 +8688,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 						} else {
 							while (struct.spaces >= spaces) {
-								f(struct, chains, obj);
+								f(struct, obj);
 								struct = struct
 									.parent;
 
@@ -8723,11 +8731,11 @@ DirObj.prototype.getFullBody = function (tplName) {
 						s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 
 					endDirInit = false;
-					var tmp = decl.length - 1;
+					var tmp$3 = decl.length - 1;
 					tSpace = 0;
 
-					length += tmp;
-					j += tmp;
+					length += tmp$3;
+					j += tmp$3;
 
 					if (dir && txt) {
 						var inline = {
@@ -10392,15 +10400,7 @@ DirObj.prototype.end = function (cacheKey, label) {var this$0 = this;
 		);
 
 	this.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">." + (this.lineSeparator)) + ("   " + (this.res)) + "");
-	this.res += ("\
-\n			}\
-\n\
-\n			if (!__IS_NODE__ && !__HAS_EXPORTS__) {\
-\n				__INIT__();\
-\n			}\
-\n\
-\n		}).call(this);\
-\n	");
+	this.res += /* cbws */(" }  if (!__IS_NODE__ && !__HAS_EXPORTS__) { __INIT__(); }  }).call(this); ");
 
 	return this;
 };
@@ -10971,7 +10971,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var NULL = {};
 
 	/** @type {{parent, proto, cacheKey, scope, vars, consts, needPrfx, lines}} */
-	var sp = Any(opt_sysParams || {});
+	var sp = _.any(opt_sysParams || {});
 
 	/** @type {{
 		exports,
@@ -11000,7 +11000,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		words,
 		context
 	}} */
-	var p = Any(opt_params || {});
+	var p = _.any(opt_params || {});
 
 	// GCC экспорт
 	// >>>
@@ -12183,6 +12183,9 @@ var aliasRgxp = /__(.*?)__/;
  * @param {(Array|string)=} [params.chain] - название главной директивы (цепи), к которой принадлежит директива,
  *     или массив названий
  *
+ * @param {(Array|string)=} [params.end] - название главной директивы (цепи), которую заканчивает директива,
+ *     или массив названий
+ *
  * @param {(Array|string)=} [params.group] - название группы, к которой принадлежит директива,
  *     или массив названий
  *
@@ -12266,6 +12269,19 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 			}
 
 			chains[chain[i$8]][name] = true;
+		}
+	}
+
+	if (params.end) {
+		var chain$0 = Array.isArray(params.end) ?
+			params.end : [params.end];
+
+		for (var i$9 = -1; ++i$9 < chain$0.length;) {
+			if (!ends[chain$0[i$9]]) {
+				ends[chain$0[i$9]] = {};
+			}
+
+			ends[chain$0[i$9]][name] = true;
 		}
 	}
 
@@ -12524,7 +12540,6 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-
 		group: [
 			'callback',
 			'basicAsync'
@@ -12571,7 +12586,6 @@ Snakeskin.addDirective(
 
 			{
 				block: true,
-
 				group: [
 					'async',
 					'Async',
@@ -12597,13 +12611,12 @@ Snakeskin.addDirective(
 
 	var async = ['whilst', 'doWhilst', 'forever'];
 
-	for (var i$9 = -1; ++i$9 < async.length;) {
+	for (var i$10 = -1; ++i$10 < async.length;) {
 		Snakeskin.addDirective(
-			async[i$9],
+			async[i$10],
 
 			{
 				block: true,
-
 				group: [
 					'async',
 					'Async'
@@ -14206,7 +14219,8 @@ Snakeskin.addDirective(
 		{
 			block: true,
 			notEmpty: true,
-			group: 'cycle'
+			group: 'cycle',
+			end: 'do'
 		},
 
 		function (command) {
@@ -14285,7 +14299,8 @@ Snakeskin.addDirective(
 
 		{
 			placement: 'template',
-			notEmpty: true
+			notEmpty: true,
+			end: 'repeat'
 		},
 
 		function (command) {
@@ -15121,7 +15136,7 @@ Snakeskin.addDirective(
 
 				if (parts.length > 1) {
 					/** @type {!Array} */
-					var args = Any([].slice.call(arguments));
+					var args = _.any([].slice.call(arguments));
 
 					args[0] = parts.slice(1).join(' ');
 					args[1] = args[0].length;
@@ -15830,8 +15845,8 @@ Snakeskin.addDirective(
 				var args = proto.args,
 					fin = true;
 
-				for (var i$10 = -1; ++i$10 < back.length;) {
-					var el = back[i$10];
+				for (var i$11 = -1; ++i$11 < back.length;) {
+					var el = back[i$11];
 
 					if (this.canWrite) {
 						if (!el.outer) {
@@ -16128,7 +16143,7 @@ Snakeskin.addDirective(
 
 				if (parts.length > 1) {
 					/** @type {!Array} */
-					var args = Any([].slice.call(arguments));
+					var args = _.any([].slice.call(arguments));
 
 					args[0] = parts.slice(1).join(' ');
 					args[1] = args[0].length;
@@ -16350,7 +16365,7 @@ Snakeskin.addDirective(
 
 				if (parts.length > 1) {
 					/** @type {!Array} */
-					var args = Any([].slice.call(arguments));
+					var args = _.any([].slice.call(arguments));
 
 					args[0] = parts.slice(1).join(' ');
 					args[1] = args[0].length;
@@ -16564,11 +16579,7 @@ Snakeskin.addDirective(
 			var str;
 
 			if (!this.domComment && this.renderMode === 'dom') {
-				str = ("\
-\n					__RESULT__.pop();\
-\n					$0 = __RESULT__.length > 1 ?\
-\n						__RESULT__[__RESULT__.length - 1] : void 0;\
-\n				");
+				str = /* cbws */(" __RESULT__.pop(); $0 = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : void 0; ");
 
 			} else {
 				str = this.wrap((("'</" + (params.tag)) + ">'"));
@@ -16757,9 +16768,9 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 	var ref = this.bemRef;
 
-	for (var i$11 = -1; ++i$11 < classes.length;) {
-		var el$2 = classes[i$11],
-			point$0 = points[i$11];
+	for (var i$12 = -1; ++i$12 < classes.length;) {
+		var el$2 = classes[i$12],
+			point$0 = points[i$12];
 
 		if (point$0 && point$0.val != null) {
 			el$2 = el$2.replace(parentLinkRgxp, point$0.val);
@@ -16769,11 +16780,11 @@ DirObj.prototype.returnTagDesc = function (str) {
 			el$2 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (el$2.substring(1))) + ("',$0" + e) + "");
 			el$2 = this.pasteDangerBlocks(this.replaceTplVars(el$2));
 
-		} else if (el$2 && types[i$11]) {
+		} else if (el$2 && types[i$12]) {
 			ref = this.pasteTplVarBlocks(el$2);
 		}
 
-		classes[i$11] = this.pasteTplVarBlocks(el$2);
+		classes[i$12] = this.pasteTplVarBlocks(el$2);
 	}
 
 	this.bemRef = ref;
@@ -17109,8 +17120,8 @@ this.prepareOutput(el, true)
 				flags.push('@skip true');
 			}
 
-			for (var i$12 = 0; ++i$12 < flags.length;) {
-				var el$3 = flags[i$12].trim(),
+			for (var i$13 = 0; ++i$13 < flags.length;) {
+				var el$3 = flags[i$13].trim(),
 					name = el$3.split(' ')[0];
 
 				delete baseParams[name];
@@ -17138,9 +17149,9 @@ this.prepareOutput(el, true)
 				'PARENT_TPL_NAME'
 			];
 
-			for (var i$13 = -1; ++i$13 < predefs.length;) {
-				this.structure.vars[predefs[i$13]] = {
-					value: predefs[i$13],
+			for (var i$14 = -1; ++i$14 < predefs.length;) {
+				this.structure.vars[predefs[i$14]] = {
+					value: predefs[i$14],
 					scope: 0
 				};
 			}
