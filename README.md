@@ -4,6 +4,8 @@
 
 *Это Фрэнк — змей-ковбой, который очень любит шаблоны.*
 
+---
+
 Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
 
 [![NPM version](http://img.shields.io/npm/v/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
