@@ -1,6 +1,6 @@
 # Snakeskin
 
-<img src="http://kobezzza.com/files/snakeskin/logo.svg" alt="Snakeskin" width="190px" />
+<img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190px" />
 
 *Это Фрэнк — змей-ковбой, который очень любит шаблоны.*
 
