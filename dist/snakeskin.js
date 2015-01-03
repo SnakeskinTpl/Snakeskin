@@ -1,14 +1,14 @@
 /*!
- * Snakeskin v6.5.10
+ * Snakeskin v6.5.11
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 23 Dec 2014 19:23:55 GMT
+ * Date: Sat, 03 Jan 2015 10:36:32 GMT
  */
 
-(function (root, global) {var DP$0 = Object.defineProperty;/*!
+(function (root) {var DP$0 = Object.defineProperty;/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 10],
+	VERSION: [6, 5, 11],
 
 	/**
 	 * Пространство имён для директив
@@ -648,8 +648,14 @@ Snakeskin.Filters.undef = function (str) {
 })();
 
 
+var globalDefine = root.define;
+
+if (!IS_NODE) {
+	root.define = void 0;
+}
+
 var beautify,
-	globalBeautify = global.js_beautify;
+	globalBeautify = root.js_beautify;
 
 /* istanbul ignore next */
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -2583,12 +2589,12 @@ if (IS_NODE) {
 	delete exports.js_beautify;
 
 } else {
-	beautify = global.js_beautify;
-	global.js_beautify = globalBeautify;
+	beautify = root.js_beautify;
+	root.js_beautify = globalBeautify;
 }
 
 var esprima,
-	globalEsprima = global.esprima;
+	globalEsprima = root.esprima;
 
 /* istanbul ignore next */
 /*
@@ -6354,8 +6360,8 @@ if (IS_NODE) {
 		exports = root;
 
 } else {
-	esprima = global.esprima;
-	global.esprima = globalEsprima;
+	esprima = root.esprima;
+	root.esprima = globalEsprima;
 }
 
 /*!
@@ -7745,34 +7751,27 @@ function escapeNextLine(str) {
 }
 
 var Escaper,
-	globalEscaper = global.Escaper;
+	globalEscaper = root.Escaper;
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.0.5
+ * Escaper v2.1.0
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Mon, 15 Dec 2014 08:57:09 GMT
+ * Date: Sat, 03 Jan 2015 07:53:45 GMT
  */
 
 (function (global) {var Escaper = {
-	VERSION: [2, 0, 6]
+	VERSION: [2, 1, 0]
 };
 
-var IS_NODE = false;
+if (typeof define === 'function' && define['amd']) {
+	define([], function()  {return Escaper});
 
-try {
-	IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
-
-} catch (ignore) {
-
-}
-
-/* istanbul ignore next */
-if (IS_NODE) {
+} else if (typeof exports === 'object') {
 	module.exports =
 		exports = Escaper;
 
@@ -7780,18 +7779,29 @@ if (IS_NODE) {
 	global.Escaper = Escaper;
 }
 
-var escapeMap = {
+var stringLiterals = {
 	'"': true,
 	"'" : true,
-	'/': true,
 	'`': true
 };
 
-var sCommentsMap = {
+var literals = {
+	'/': true
+};
+
+for (var key in stringLiterals) {
+	if (!stringLiterals.hasOwnProperty(key)) {
+		continue;
+	}
+
+	literals[key] = true;
+}
+
+var singleComments = {
 	'//': true
 };
 
-var mCommentsMap = {
+var multComments = {
 	'/*': true,
 	'/**': true,
 	'/*!': true
@@ -7800,19 +7810,8 @@ var mCommentsMap = {
 var keyArr = [],
 	finalMap = {};
 
-for (var key in escapeMap) {
-	/* istanbul ignore if */
-	if (!escapeMap.hasOwnProperty(key)) {
-		continue;
-	}
-
-	keyArr.push(key);
-	finalMap[key] = true;
-}
-
-for (var key$0 in sCommentsMap) {
-	/* istanbul ignore if */
-	if (!sCommentsMap.hasOwnProperty(key$0)) {
+for (var key$0 in literals) {
+	if (!literals.hasOwnProperty(key$0)) {
 		continue;
 	}
 
@@ -7820,14 +7819,22 @@ for (var key$0 in sCommentsMap) {
 	finalMap[key$0] = true;
 }
 
-for (var key$1 in mCommentsMap) {
-	/* istanbul ignore if */
-	if (!mCommentsMap.hasOwnProperty(key$1)) {
+for (var key$1 in singleComments) {
+	if (!singleComments.hasOwnProperty(key$1)) {
 		continue;
 	}
 
 	keyArr.push(key$1);
 	finalMap[key$1] = true;
+}
+
+for (var key$2 in multComments) {
+	if (!multComments.hasOwnProperty(key$2)) {
+		continue;
+	}
+
+	keyArr.push(key$2);
+	finalMap[key$2] = true;
 }
 
 var rgxpFlagsMap = {
@@ -7839,13 +7846,12 @@ var rgxpFlagsMap = {
 };
 
 var rgxpFlags = [];
-for (var key$2 in rgxpFlagsMap) {
-	/* istanbul ignore if */
-	if (!rgxpFlagsMap.hasOwnProperty(key$2)) {
+for (var key$3 in rgxpFlagsMap) {
+	if (!rgxpFlagsMap.hasOwnProperty(key$3)) {
 		continue;
 	}
 
-	rgxpFlags.push(key$2);
+	rgxpFlags.push(key$3);
 }
 
 var escapeEndMap = {
@@ -7889,7 +7895,6 @@ var cache = {},
  */
 function mix(obj, p, val) {
 	for (var key in obj) {
-		/* istanbul ignore if */
 		if (!obj.hasOwnProperty(key)) {
 			continue;
 		}
@@ -7927,9 +7932,10 @@ Escaper.symbols = Escaper.symbols || null;
  *     (если установить значение параметру -1, то он будет полностью вырезаться,
  *     т.е. без возможности обратной замены, иначе true/false - включить/исключить последовательность)
  *
- *     *) @all - специальная команда для выделения всех последовательностей
- *     *) @comments - специальная команда для выделения всех видов комментариев
- *     *) @literals - специальная команда для выделения литералов строк и регулярных выражений
+ *     *) @all - вырезаются все последовательности
+ *     *) @comments - вырезаются все виды комментариев
+ *     *) @strings - вырезаются все виды литералов строк
+ *     *) @literals - вырезаются все виды литералов строк и регулярных выражений
  *     *) `
  *     *) '
  *     *) "
@@ -7966,13 +7972,18 @@ Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_
 	}
 
 	if ('@comments' in p) {
-		mix(mCommentsMap, p, p['@comments']);
-		mix(sCommentsMap, p, p['@comments']);
+		mix(multComments, p, p['@comments']);
+		mix(singleComments, p, p['@comments']);
 		delete p['@comments'];
 	}
 
+	if ('@strings' in p) {
+		mix(stringLiterals, p, p['@strings']);
+		delete p['@strings'];
+	}
+
 	if ('@literals' in p) {
-		mix(escapeMap, p, p['@literals']);
+		mix(literals, p, p['@literals']);
 		delete p['@literals'];
 	}
 
@@ -7985,7 +7996,7 @@ Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_
 	for (var i = -1; ++i < keyArr.length;) {
 		var el = keyArr[i];
 
-		if (mCommentsMap[el] || sCommentsMap[el]) {
+		if (multComments[el] || singleComments[el]) {
 			p[el] = withComments || p[el];
 
 		} else {
@@ -8031,8 +8042,8 @@ Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_
 		if (!comment) {
 			if (!begin) {
 				if (el$0 === '/') {
-					if (sCommentsMap[word] || mCommentsMap[word]) {
-						if (sCommentsMap[extWord] || mCommentsMap[extWord]) {
+					if (singleComments[word] || multComments[word]) {
+						if (singleComments[extWord] || multComments[extWord]) {
 							comment = extWord;
 
 						} else {
@@ -8150,8 +8161,8 @@ Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_
 				}
 			}
 
-		} else if ((nRgxp.test(next) && sCommentsMap[comment]) ||
-			(mCommentsMap[el$0 + str.charAt(i$0 - 1)] && i$0 - selectionStart > 2 && mCommentsMap[comment])
+		} else if ((nRgxp.test(next) && singleComments[comment]) ||
+			(multComments[el$0 + str.charAt(i$0 - 1)] && i$0 - selectionStart > 2 && multComments[comment])
 
 		) {
 			if (p[comment]) {
@@ -8195,14 +8206,15 @@ Escaper.paste = function (str, opt_quotContent) {
 	return str.replace(pasteRgxp, function(sstr, pos)  {return stack[pos]});
 };
 })(new Function('return this')());
+
 if (IS_NODE) {
 	Escaper = exports;
 	module.exports =
 		exports = root;
 
 } else {
-	Escaper = global.Escaper;
-	global.Escaper = globalEscaper;
+	Escaper = root.Escaper;
+	root.Escaper = globalEscaper;
 }
 
 Escaper.snakeskinRgxp = filterStartRgxp;
@@ -17538,6 +17550,15 @@ if (IS_NODE) {
 		exports = Snakeskin;
 
 } else {
-	root.Snakeskin = Snakeskin;
+	root['define'] = globalDefine;
+
+	if (typeof define === 'function' && define['amd']) {
+		define([], function () {
+			return Snakeskin;
+		});
+
+	} else {
+		root.Snakeskin = Snakeskin;
+	}
 }
-})(this, new Function('return this')());
+})(new Function('return this')());
