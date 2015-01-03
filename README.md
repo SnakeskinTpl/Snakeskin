@@ -2,7 +2,7 @@
 
 <img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190px" />
 
-*This is Frank - snake-cowboy who loves templates.*
+*This is Frank — snake-cowboy who loves templates.*
 
 ---
 
