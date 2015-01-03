@@ -166,7 +166,7 @@ run({
 	lineSeparator: eol
 });
 
-fs.writeFileSync(path.join(testFolder, 'test.html'), tpls.test(asserts));
+fs.writeFileSync(path.join(testFolder, 'test.html'), tpls.test(asserts).replace(/\r?\n|\r/g, eol));
 
 if (fs.existsSync(errorPath)) {
 	fs.unlinkSync(errorPath);
