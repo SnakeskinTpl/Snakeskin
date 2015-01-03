@@ -38,9 +38,8 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 
 ## Plugins
 
-[Gulp](https://github.com/kobezzza/gulp-snakeskin)
-
-[Grunt](https://github.com/kobezzza/grunt-snakeskin)
+* [Gulp](https://github.com/kobezzza/gulp-snakeskin)
+* [Grunt](https://github.com/kobezzza/grunt-snakeskin)
 
 ### Example
 
