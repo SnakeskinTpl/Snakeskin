@@ -60,9 +60,9 @@ gulp.task('build', function (callback) {
 			}))
 
 			.pipe(wrap(
-				'(function (root) {' +
+				'(function (root, global) {' +
 					'<%= contents %>' +
-				'})(new Function(\'return this\')());'
+				'})(this, new Function(\'return this\')());'
 			))
 
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
