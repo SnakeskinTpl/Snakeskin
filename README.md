@@ -36,6 +36,12 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 * Good code coverage;
 * Detailed [documentation] (https://github.com/kobezzza/Snakeskin/wiki) with examples.
 
+## Plugins
+
+[Gulp](https://github.com/kobezzza/gulp-snakeskin)
+
+[Grunt](https://github.com/kobezzza/grunt-snakeskin)
+
 ### Example
 
 ```

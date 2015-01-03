@@ -1,3 +1,7 @@
+## v6.5.12
+
+- [x] Updated description.
+
 ## v6.5.11
 
 - [x] Added English readme;
@@ -159,7 +163,7 @@
 
 - [x] Bugfix and refactoring.
 - [x] Improved macros;
-- [x] Folder `build` renamed to `dist`.
+- [x] The folder `build` renamed to `dist`.
 
 ## v6.1.3
 
@@ -214,7 +218,7 @@
 
 ## v5.1.9
 
-- [x] Fixed a bug when overriding parameters broadcast in the child template.
+- [x] Fixed the bug when overriding parameters broadcast in the child template.
 
 ## v5.1.8
 
@@ -222,7 +226,7 @@
 
 ## v5.1.7
 
-- [x] Fixed a bug with the generation of `:inline` node in `renderMode = 'dom'`.
+- [x] Fixed the bug with the generation of `:inline` node in `renderMode = 'dom'`.
 
 ## v5.1.6
 
@@ -230,7 +234,7 @@
 
 ## v5.1.5
 
-- [x] Fixed a bug with node.js cache.
+- [x] Fixed the bug with node.js cache.
 
 ## v5.1.4
 
