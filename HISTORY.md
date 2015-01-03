@@ -1,62 +1,67 @@
+## v6.5.11
+
+- [x] Added English readme;
+- [x] Small fixes.
+
 ## v6.5.10
 
-- [x] Исправление ошибок.
+- [x] Bugfix.
 
 ## v6.5.9
 
-- [x] Исправление ошибок.
+- [x] Bugfix.
 
 ## v6.5.8
 
-- [x] Добавлен логотип проекта;
-- [x] Рефакторинг.
+- [x] Added project logo;
+- [x] Refactoring.
 
 ## v6.5.7
 
-- [x] Исправление ошибок;
-- [x] Рефакторинг.
+- [x] Bugfix.
+- [x] Refactoring.
 
 ## v6.5.6
 
-- [x] Обновление зависимостей.
+- [x] Updated version of `Escaper` in the build.
 
 ## v6.5.5
 
-- [x] Улучшена интеграция с GCC.
+- [x] Improved integration with GCC.
 
 ## v6.5.4
 
-- [x] Улучшена интеграция с GCC.
+- [x] Improved integration with GCC.
 
 ## v6.5.3
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.5.2
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.5.1
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.5.0
 
-- [x] Добавлен параметр `useStrict`;
-- [x] Исправление ошибок.
+- [x] Added parameter `.useStrict`;
+- [x] Bugfix.
 
 ## v6.4.2
 
-- [x] Исправление ошибок.
+- [x] Bugfix.
 
 ## v6.4.1
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.4.0
 
-- [x] [Упрощение вызова шаблонов в шаблоне](https://github.com/kobezzza/Snakeskin/issues/14);
-- [x] [Добавлена поддержка анонимных самовызываемых прототипов](https://github.com/kobezzza/Snakeskin/issues/13);
+- [x] [Simplify calling templates in the template](https://github.com/kobezzza/Snakeskin/issues/14);
+- [x] [Added support for anonymous prototypes](https://github.com/kobezzza/Snakeskin/issues/13);
 
 ```
 - template foo(myData)
@@ -66,9 +71,9 @@
 			- apply &(data.children)
 ```
 
-- [x] [Добавлена поддержка анонимных липких ссылок](https://github.com/kobezzza/Snakeskin/issues/12);
-- [x] [Реализован механизм замыканий для экспорта глобальных переменных из вложенных файлов при наследовании](https://github.com/kobezzza/Snakeskin/issues/10);
-- [x] Доработан механизм наследования параметров трансляции: общие параметры теперь наследуются тоже;
+- [x] [Added support for anonymous sticky links](https://github.com/kobezzza/Snakeskin/issues/12);
+- [x] [Added support for closures of global variables of the attached files in inheritance](https://github.com/kobezzza/Snakeskin/issues/10);
+- [x] Improved inheriting translation: general settings now also inherited;
 
 **base.ss**
 
@@ -89,14 +94,14 @@
 `foo`
 ```
 
-- [x] Добавлена новая директива `callBlock`, которая является сахаром для `call blocks.`;
-- [x] Новые короткие формы записи:
+- [x] Added new directive `callBlock`, which is sugar for `call blocks.`;
+- [x] New short forms:
 
 * `apply`     — `+=`;
 * `call`      — `^=`;
 * `callBlock` — `~=`.
 
-- [x] Добавлена ссылка `$0`, которая указывает на активный DOM элемент (только для `renderMode = 'dom'`);
+- [x] Added link `$0`, which indicates the active DOM element (only for `renderMode = 'dom'`);
 
 ```
 < .b-foo
@@ -109,21 +114,21 @@
 ? console.log($0) /// undefined
 ```
 
-- [x] Фильтр `bem` теперь принимает 3-й параметр `node`, который ссылается на активный DOM узел (если таковой есть);
-- [x] Добавлен параметр `bemFilter`;
-- [x] Исправление ошибок и рефакторинг.
+- [x] Filter `bem` now accepts third parameter `node`, which refers to the active DOM node (if any);
+- [x] Added parameter `.bemFilter`;
+- [x] Bugfix and refactoring.
 
 ## v6.3.2
 
-- [x] Исправление ошибки и рефакторинг.
+- [x] Bugfix and refactoring.
 
 ## v6.3.1
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.3.0
 
-- [x] Интерполяция тега:
+- [x] Tag interpolation:
 
 ```
 < .b-foo.&_${isActive ? 'active_true': ''}
@@ -133,7 +138,7 @@
 <div class="b-foo b-foo_active_true"></div>
 ```
 
-- [x] Липкие ссылки:
+- [x] Sticky links:
 
 ```
 < .b-button
@@ -146,122 +151,122 @@
 </div>
 ```
 
-- [x] Единый формат экспорта;
-- [x] Сортировка имён шаблонов при слепом запуске;
-- [x] Исправление ошибок и рефакторинг.
+- [x] Universal export format;
+- [x] Sort the names of templates;
+- [x] Bugfix and refactoring.
 
 ## v6.2.0
 
-- [x] Исправление ошибок и рефакторинг;
-- [x] Доработка механизма макросов;
-- [x] Папка `build` переименована в `dist`.
+- [x] Bugfix and refactoring.
+- [x] Improved macros;
+- [x] Folder `build` renamed to `dist`.
 
 ## v6.1.3
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.1.2
 
-- [x] Различные исправления ошибок.
+- [x] Small fixes.
 
 ## v6.1.1
 
-- [x] Исправление ошибки.
+- [x] Bugfix.
 
 ## v6.1.0
 
-- [x] Добавлена поддержка маски для директивы `include`.
+- [x] Added support for a pattern matching in `include`
 
 ## v6.0.6
 
-- [x] В конце сгенерированного текста всегда ставится символ переноса строки.
+- [x] At the end of the generated text always put a line break.
 
 ## v6.0.5
 
-- [x] Различные исправления ошибок.
+- [x] Small fixes.
 
 ## v6.0.4
 
-- [x] Различные исправления ошибок.
+- [x] Small fixes.
 
 ## v6.0.3
 
-- [x] Различные исправления ошибок.
+- [x] Small fixes.
 
 ## v6.0.2
 
-- [x] Исправление ошибок в CLI API.
+- [x] Bugfix.
 
 ## v6.0.1
 
-- [x] Различные исправления ошибок.
+- [x] Small fixes.
 
 ## v6.0.0
 
-- [x] Параметр `.commonJS` заменён на `.exports = 'commonJS'`;
-- [x] Параметр `.xml` заменён на `.doctype`;
-- [x] Добавлен параметр `.lineSeparator`;
-- [x] Добавлен параметр `.replaceUndef`.
+- [x] The parameter `.commonJS` replaced by `.exports = 'commonJS'`;
+- [x] The parameter `.xml` replaced by `.doctype`;
+- [x] Added parameter `.lineSeparator`;
+- [x] Added parameter `.replaceUndef`.
 
 ## v5.1.10
 
-- [x] Различные исправления ошибок.
+- [x] Small fixes.
 
 ## v5.1.9
 
-- [x] Исправлена ошибка при переопределении параметров трансляции в дочернем шаблоне.
+- [x] Fixed a bug when overriding parameters broadcast in the child template.
 
 ## v5.1.8
 
-- [x] Обновлена версия `Escaper` в сборке.
+- [x] Updated version of `Escaper` in the build.
 
 ## v5.1.7
 
-- [x] Исправлена ошибка с генерацией `:inline` узла в `renderMode = 'dom'`.
+- [x] Fixed a bug with the generation of `:inline` node in `renderMode = 'dom'`.
 
 ## v5.1.6
 
-- [x] Исправление ошибок в механизме экранирования спецсимволов.
+- [x] Bugfix.
 
 ## v5.1.5
 
-- [x] Исправлена ошибка node.js кеша при подключении файлов.
+- [x] Fixed a bug with node.js cache.
 
 ## v5.1.4
 
-- [x] Изменено сообщение об успешной операции в CLI API.
+- [x] Changed the success message in the CLI API.
 
 ## v5.1.3
 
-- [x] Исправлена ошибка при удалении файла в режиме `--watch`.
+- [x] Fixed bug when deleting a file in the `--watch`.
 
 ## v5.1.2
 
-- [x] Исправления мелких ошибок.
+- [x] Small fixes.
 
 ## v5.1.1
 
-- [x] Исправлена ошибка в методе `returnMainTpl`.
+- [x] Bugfix.
 
 ## v5.1.0
 
-- [x] Добавлен новый флаг трансляции `tolerateWhitespace`;
-- [x] Добавлен псевдокласс `:inline` для директивы `tag`;
-- [x] Переработан механизм обработки пробельных символов.
+- [x] Added parameter `.tolerateWhitespace`;
+- [x] Added class `:inline` for the directive `tag`;
+- [x] Bugfix.
 
 ## v5.0.0
 
-- [x] Удалена директива `ignore`, а функциональность вынесена в настройки трансляции;
-- [x] Добавлена директива `setSSFlag` для управления настройками трансляции из шаблона;
-- [x] Доработка системы модулей;
-- [x] Добавлена поддержка внешних блоков;
-- [x] Добавлен режим трансляции в императивный DOM;
-- [x] Удалён флаг `stringBuffer`, добавлен флаг `renderMode` с параметрами: `stringConcat`, `stringBuffer`, `dom`;
-- [x] Удалён флаг `interface`, добавлен флаг `renderAs` с параметрами: `placeholder`, `interface`, `template`;
-- [x] Доработка директивы include: добавлена поддержка модификаторов `as interface` и `as placeholder`;
-- [x] Добавлена поддержка функций в качестве замены строк-локализации;
-- [x] Добавлена директива `cdn`;
-- [x] Добавлена поддержка `arguments` для прототипов;
-- [X] Доработано CLI API:
-* добавлена поддержка работы с папками;
-* добавлен флаг `--watch` для автоматической перекомпиляции шаблонов.
+- [x] Removed directive `ignore`, and the functionality is moved to the transpiler settings;
+- [x] Added directive `setSSFlag`;
+- [x] Improved support for modules;
+- [x] Added support for external blocks;
+- [x] Added translation mode to DOM;
+- [x] Removed parameter `.stringBuffer`, added parameter `renderMode` with values: `stringConcat`,` stringBuffer`, `dom`;
+- [x] Removed parameter `.interface`, added parameter` renderAs` with values: `placeholder`,` interface`, `template`;
+- [x] Improved directive include: added support modifier `as interface` and `as placeholder`;
+- [x] Added support functions as a replacement strings-localization;
+- [x] Added directive `cdn`;
+- [x] Added support for `arguments` for prototypes;
+- [X] Improved CLI API:
+* added support for working with folders;
+* added flag `--watch` to automatically recompile templates.
