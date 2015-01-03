@@ -2,71 +2,73 @@
 
 <img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190px" />
 
-*Это Фрэнк — змей-ковбой, который очень любит шаблоны.*
+*This is Frank - snake-cowboy who loves templates.*
 
 ---
 
-Snakeskin — компилятор блочных шаблонов c поддержкой наследования.
+Snakeskin — awesome JavaScript template engine with the best support for inheritance.
 
 [![NPM version](http://img.shields.io/npm/v/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
 [![NPM dependencies](http://img.shields.io/david/kobezzza/Snakeskin.svg?style=flat)](https://david-dm.org/kobezzza/snakeskin)
 [![Build Status](http://img.shields.io/travis/kobezzza/Snakeskin.svg?style=flat&branch=master)](https://travis-ci.org/kobezzza/Snakeskin)
 [![Coverage Status](http://img.shields.io/coveralls/kobezzza/Snakeskin.svg?style=flat)](https://coveralls.io/r/kobezzza/Snakeskin?branch=master)
 
-[Онлайн-демо](http://jsfiddle.net/kobezzza/NAPWB/10/)
+[Demo](http://jsfiddle.net/kobezzza/NAPWB/10/)
+
+[Documentation] (https://github.com/kobezzza/Snakeskin/wiki)
 
 [FAQ](https://github.com/kobezzza/Snakeskin/wiki/faq)
 
-## Основные особенности
+## Features
 
-* 2 варианта синтаксиса: классический и Jade-Like;
-* ОО-подход с очень богатым выбором для code-reuse (наследование, композиция, примеси и т.д.);
-* Близкий к JS набор директив;
-* Поддержка БЭМ на уровне синтаксиса;
-* Поддержка локализации на уровне синтаксиса;
-* Поддержка макросов и фильтров;
-* Поддержка модулей и разбиения на файлы;
-* Высокая скорость трансляции;
-* Работа в браузерах, а также на сервере ([node.js](http://nodejs.org/));
-* Движок написан на чистом JavaScript и не имеет дополнительных зависимостей;
-* Исходный код спроектирован для совместной работы с Google Closure Compiler в продвинутом режиме;
-* Хорошее покрытие кода тестами;
-* Подробная [документация](https://github.com/kobezzza/Snakeskin/wiki) с примерами.
+* 2 types of syntax: classic and Jade-Like;
+* Object-oriented approach with a very rich features for code-reuse (inheritance, composition, mixing, etc.);
+* Close to JS set of directives;
+* Support [BEM](http://en.bem.info) (as in the [Stylus](https://github.com/LearnBoost/stylus)) at the level of syntax;
+* Support for localization at the level of syntax;
+* Support for macros and filters;
+* Support modules;
+* High-speed compilation;
+* Work in browsers, as well as on the server ([node.js](http://nodejs.org));
+* The engine is written in pure JavaScript and does not have any dependencies;
+* The source code is designed to work with Google Closure Compiler in advanced mode;
+* Good code coverage;
+* Detailed [documentation] (https://github.com/kobezzza/Snakeskin/wiki) with examples.
 
-### Примеры использования
+### Example
 
 ```
 - template page(youAreUsingSnakeskin)
 	- doctype
-	< html lang = ru
+	< html lang = en
 		< head
 			< title :: Snakeskin
 			#< script
 				if (foo) bar(1 + 5)
 
 		< body
-			< h1 :: Snakeskin — лучший шаблонный движок
+			< h1 :: Snakeskin — the best template engine
 			< #container.b-info
 				- if youAreUsingSnakeskin
-					< p.&__good :: Поздравляем, вы используете самое лучшее!
+					< p.&__good :: Congratulations, you are using the best!
 
 				- else
-					< p.&__bad :: Скорее начните использовать!
+					< p.&__bad :: Get on it!
 
 				< p.&__description
-					Snakeskin — это клиент-серверный шаблонный движок с
-					простым и понятным синтаксисом и богатым набором возможностей.
+					Snakeskin — a client-server template engine with
+					simple and straightforward syntax and a rich set of features.
 ```
 
 ```js
 page(true);
 ```
 
-Превратится в
+Is converted to
 
 ```html
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 	<head>
 		<title>Snakeskin</title>
 		<script type="text/javascript">
@@ -74,35 +76,16 @@ page(true);
 		</script>
 	</head>
 	<body>
-		<h1>Snakeskin — лучший шаблонный движок</h1>
+		<h1>Snakeskin — the best template engine</h1>
 		<div id="container" class="b-info">
-			<p class="b-info__good">Поздравляем, вы используете самое лучшее!</p>
-			<p class="b-info__description">Snakeskin — это клиент-серверный шаблонный движок с
-					простым и понятным синтаксисом и богатым набором возможностей.</p>
+			<p class="b-info__good">Congratulations, you are using the best!</p>
+			<p class="b-info__description">Snakeskin — a client-server template engine with
+				simple and straightforward syntax and a rich set of features.</p>
 		</div>
 	</body>
 </html>
 ```
 
-## Лицензия
+## [License](https://github.com/kobezzza/Snakeskin/blob/master/LICENSE)
 
-The MIT License (MIT)
-
-Copyright (c) 2014 Андрей Кобец (Kobezzza) <kobezzza@mail.ru>
-
-Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и
-сопутствующей документации (в дальнейшем именуемыми «Программное Обеспечение»),
-безвозмездно использовать Программное Обеспечение без ограничений, включая неограниченное право на использование,
-копирование, изменение, добавление, публикацию, распространение, сублицензирование и/или
-продажу копий Программного Обеспечения, также как и лицам, которым предоставляется данное
-Программное Обеспечение, при соблюдении следующих условий:
-
-Указанное выше уведомление об авторском праве и данные условия должны быть включены во все копии или
-значимые части данного Программного Обеспечения.
-
-ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, ЯВНО ВЫРАЖЕННЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ,
-ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ ГАРАНТИЯМИ ТОВАРНОЙ ПРИГОДНОСТИ, СООТВЕТСТВИЯ ПО ЕГО КОНКРЕТНОМУ НАЗНАЧЕНИЮ И
-ОТСУТСТВИЯ НАРУШЕНИЙ ПРАВ. НИ В КАКОМ СЛУЧАЕ АВТОРЫ ИЛИ ПРАВООБЛАДАТЕЛИ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ПО ИСКАМ О
-ВОЗМЕЩЕНИИ УЩЕРБА, УБЫТКОВ ИЛИ ДРУГИХ ТРЕБОВАНИЙ ПО ДЕЙСТВУЮЩИМ КОНТРАКТАМ, ДЕЛИКТАМ ИЛИ ИНОМУ, ВОЗНИКШИМ ИЗ,
-ИМЕЮЩИМ ПРИЧИНОЙ ИЛИ СВЯЗАННЫМ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ ИЛИ ИСПОЛЬЗОВАНИЕМ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ
-ИНЫМИ ДЕЙСТВИЯМИ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ.
+The MIT License.
