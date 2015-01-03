@@ -11,7 +11,8 @@ var es6 = require('gulp-es6-transpiler'),
 	bump = require('gulp-bump'),
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
-	jasmine = require('gulp-jasmine');
+	jasmine = require('gulp-jasmine'),
+	eol = require('gulp-eol');
 
 function getVersion() {
 	delete require.cache[require.resolve('./lib/core')];
@@ -91,6 +92,7 @@ gulp.task('build', function (callback) {
 
 			.pipe(header(fullHead))
 			.pipe(rename(key + '.js'))
+			.pipe(eol())
 			.pipe(gulp.dest('./dist/'))
 
 			.on('end', function () {
@@ -132,7 +134,7 @@ gulp.task('predefs', ['build'], function (callback) {
 
 		.pipe(replace(/\.<\[.*?]>/g, '.<?>'))
 		.pipe(replace(/\.\.\.([^[\]]+?)\)/g, '...[$1])'))
-
+		.pipe(eol())
 		.pipe(gulp.dest('./predefs/src/standart'))
 		.on('end', finish);
 });
@@ -140,6 +142,7 @@ gulp.task('predefs', ['build'], function (callback) {
 gulp.task('test', ['predefs'], function (callback) {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
+		.pipe(istanbul.hookRequire())
 		.on('finish', function () {
 			gulp.src(['./test/test.dev.js'])
 				.pipe(jasmine())
@@ -149,7 +152,7 @@ gulp.task('test', ['predefs'], function (callback) {
 });
 
 function compile(dev) {
-	return function () {
+	return function (callback) {
 		var builds = getBuilds();
 
 		for (var key in builds) {
@@ -189,7 +192,9 @@ function compile(dev) {
 			gulp.src(path.join('./dist/', key + '.js'))
 				.pipe(gcc(params))
 				.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
-				.pipe(gulp.dest('./dist/'));
+				.pipe(eol())
+				.pipe(gulp.dest('./dist/'))
+				.on('end', callback);
 		}
 	}
 }
@@ -200,6 +205,7 @@ gulp.task('compile-dev', ['test'], compile(true));
 gulp.task('bump', function () {
 	gulp.src('./*.json')
 		.pipe(bump({version: getVersion()}))
+		.pipe(eol())
 		.pipe(gulp.dest('./'));
 });
 
