@@ -153,13 +153,15 @@ gulp.task('test', ['predefs'], function (callback) {
 
 function compile(dev) {
 	return function (callback) {
-		var builds = getBuilds();
+		var builds = getBuilds(),
+			i = 0;
 
 		for (var key in builds) {
 			if (!builds.hasOwnProperty(key)) {
 				continue;
 			}
 
+			i++;
 			var params = {
 				compilerPath: './bower_components/closure-compiler/compiler.jar',
 				fileName: key + '.min.js',
@@ -194,7 +196,13 @@ function compile(dev) {
 				.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
 				.pipe(eol())
 				.pipe(gulp.dest('./dist/'))
-				.on('end', callback);
+				.on('end', function () {
+					i--;
+
+					if (!i) {
+						callback.apply(this, arguments);
+					}
+				});
 		}
 	}
 }
