@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 21:54:52 GMT
+ * Date: Sat, 03 Jan 2015 22:01:26 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -7683,7 +7683,7 @@ var escapeEndMap = {
 	'[': true
 };
 
-var escapeEndWordMap = {
+var escapeEndWords = {
 	'typeof': true,
 	'void': true,
 	'instanceof': true,
@@ -7714,32 +7714,40 @@ var closePMap = {
 	']': true
 };
 
+var backSlashRgxp = /\\/g,
+	singleQRgxp = /'/g,
+	qRgxp = /"/g;
+
 function escapeBackslash(str) {
-	return String(str).replace(/\\/g, '\\\\');
+	return String(str)
+		.replace(backSlashRgxp, '\\\\');
 }
 
 function escapeSingleQuote(str) {
 	return String(str)
-		.replace(/'/g, '\\\'');
+		.replace(singleQRgxp, '\\\'');
 }
 
 function escapeDoubleQuote(str) {
 	return String(str)
-		.replace(/"/g, '\\\"');
+		.replace(qRgxp, '\\\"');
 }
 
 function applyDefEscape(str) {
 	return escapeNextLine(
 		String(str)
-			.replace(/\\/g, '\\\\')
-			.replace(/'/g, '\\\'')
+			.replace(backSlashRgxp, '\\\\')
+			.replace(singleQRgxp, '\\\'')
 	);
 }
 
+var nRgxp = /\n/g,
+	rRgxp = /\r/g;
+
 function escapeNextLine(str) {
 	return String(str)
-		.replace(/\n/g, '\\n')
-		.replace(/\r/g, '\\r');
+		.replace(nRgxp, '\\n')
+		.replace(rRgxp, '\\r');
 }
 
 var Escaper,
@@ -8233,6 +8241,8 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
 	return Escaper.paste(str, this.quotContent);
 };
 
+var tplsVarsRgxp = /__SNAKESKIN__(\d+)_/g;
+
 /**
  * Заметить __SNAKESKIN__номер_ в указанной строке на реальное содержимое
  *
@@ -8240,7 +8250,7 @@ DirObj.prototype.pasteDangerBlocks = function (str) {
  * @return {string}
  */
 DirObj.prototype.pasteTplVarBlocks = function (str) {var this$0 = this;
-	return str.replace(/__SNAKESKIN__(\d+)_/g, function(sstr, pos)  {return this$0.dirContent[pos]});
+	return str.replace(tplsVarsRgxp, function(sstr, pos)  {return this$0.dirContent[pos]});
 };
 var uid;
 
@@ -8922,14 +8932,14 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 				if (!comment && !sComment) {
 					if (!bOpen) {
-						if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+						if (escapeEndMap[el] || escapeEndWords[rPart]) {
 							bEnd = true;
 
 						} else if (bEndRgxp.test(el)) {
 							bEnd = false;
 						}
 
-						if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+						if (escapeEndMap[el] || escapeEndWords[rPart]) {
 							bEnd = true;
 
 						} else if (bEndRgxp.test(el)) {
@@ -9138,7 +9148,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 					continue;
 				}
 
-				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+				if (escapeEndMap[el] || escapeEndWords[rPart]) {
 					bEnd = true;
 
 				} else if (bEndRgxp.test(el)) {
@@ -11876,7 +11886,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				if (!skip) {
-					if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
+					if (escapeEndMap[el] || escapeEndWords[rPart]) {
 						bEnd = true;
 						rPart = '';
 
