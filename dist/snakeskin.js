@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.12
+ * Snakeskin v6.5.13
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 17:38:51 GMT
+ * Date: Sat, 03 Jan 2015 20:37:40 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -13,11 +13,11 @@
  * в старых браузерах
  */
 
-Array.isArray = Array.isArray || /* istanbul ignore next */ function (obj) {
+Array.isArray = Array.isArray || function (obj) {
 	return ({}).toString.call(obj) === '[object Array]';
 };
 
-String.prototype.trim = String.prototype.trim || /* istanbul ignore next */ function () {
+String.prototype.trim = String.prototype.trim || function () {
 	var str = this.replace(/^\s\s*/, ''),
 		i = str.length;
 
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 12],
+	VERSION: [6, 5, 13],
 
 	/**
 	 * Пространство имён для директив
@@ -159,7 +159,6 @@ Snakeskin.forEach = function (obj, callback) {
 
 		if (callback.length >= 6) {
 			for (var key in obj) {
-				/* istanbul ignore if */
 				if (!obj.hasOwnProperty(key)) {
 					continue;
 				}
@@ -169,7 +168,6 @@ Snakeskin.forEach = function (obj, callback) {
 		}
 
 		for (var key$0 in obj) {
-			/* istanbul ignore if */
 			if (!obj.hasOwnProperty(key$0)) {
 				continue;
 			}
@@ -235,7 +233,6 @@ function forIn(obj, callback) {
 
 	} else {
 		for (var key in obj) {
-			/* istanbul ignore if */
 			if (!obj.hasOwnProperty(key)) {
 				continue;
 			}
@@ -438,8 +435,6 @@ Snakeskin.Filters.undef = function (str) {
 
 	var uriO = /%5B/g,
 		uriC = /%5D/g;
-
-	/* istanbul ignore next */
 
 	/**
 	 * Кодирование URL
@@ -6950,11 +6945,10 @@ DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
  */
 DirObj.prototype.initTemplateCache = function (tplName) {
 	protoCache[tplName] = {};
-
 	blockCache[tplName] = {};
-	fromProtoCache[tplName] = 0;
-
 	constCache[tplName] = {};
+
+	fromProtoCache[tplName] = 0;
 	fromConstCache[tplName] = 0;
 
 	this.consts = [];
@@ -6962,7 +6956,6 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 
 	this.strongSpace = 0;
 	this.sysSpace = false;
-
 	this.chainSpace = false;
 	this.space = !this.tolerateWhitespace;
 
@@ -8389,7 +8382,6 @@ DirObj.prototype.getFullBody = function (tplName) {
 		}
 
 		for (var key in el) {
-			/* istanbul ignore if */
 			if (!el.hasOwnProperty(key)) {
 				continue;
 			}
@@ -9456,7 +9448,7 @@ this.prepareOutput(el, true)
  */
 
 (function()  {
-	var blackWordMap = {
+	var blackWords = {
 		'+': true,
 		'++': true,
 		'-': true,
@@ -9500,18 +9492,18 @@ this.prepareOutput(el, true)
 		'interface': true
 	};
 
-	var unaryBlackWordMap = {
+	var unaryBlackWords = {
 		'new': true,
 		'typeof': true,
 		'instanceof': true,
 		'in': true
 	};
 
-	var undefUnaryBlackWordMap = {
+	var undefUnaryBlackWords = {
 		'new': true
 	};
 
-	var comboBlackWordMap = {
+	var comboBlackWords = {
 		'var': true,
 		'const': true,
 		'let': true
@@ -9543,7 +9535,7 @@ this.prepareOutput(el, true)
 		for (var i = pos, j = 0; i < str.length; i++, j++) {
 			var el = str.charAt(i);
 
-			if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWordMap[word]))) {
+			if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWords[word]))) {
 				if (el === ' ') {
 					word = '';
 
@@ -9711,7 +9703,7 @@ this.prepareOutput(el, true)
 			struct = this.structure;
 
 		if (dangerRgxp.test(command)) {
-			this.error('invalid syntax');
+			this.error('unsupported syntax');
 			return '';
 		}
 
@@ -9905,11 +9897,11 @@ this.prepareOutput(el, true)
 					// не является числом,
 					// не является константой замены Escaper,
 					// не является названием свойства в литерале объекта ({свойство: )
-					var canParse = !blackWordMap[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
+					var canParse = !blackWords[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
 						isNaN(Number(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
 
 					if (canParse && functionRgxp.test(word)) {
-						this.error('invalid syntax');
+						this.error('unsupported syntax');
 						return '';
 					}
 
@@ -9985,13 +9977,13 @@ this.prepareOutput(el, true)
 
 					// Данное слово является составным системным,
 					// т.е. пропускаем его и следующее за ним
-					if (comboBlackWordMap[finalWord]) {
+					if (comboBlackWords[finalWord]) {
 						posNWord = 2;
 
 					} else if (
 						canParse &&
 						(!opt_sys || opt_iSys) && !filterStart &&
-						(!nextStep.unary || undefUnaryBlackWordMap[nextStep.unary]) &&
+						(!nextStep.unary || undefUnaryBlackWords[nextStep.unary]) &&
 						!globalUnUndef
 					) {
 
@@ -10220,9 +10212,11 @@ this.prepareOutput(el, true)
 			}
 		}
 
-		return (!unEscape && !opt_sys ? '__FILTERS__.html(' : '') +
-			res +
-			(!unEscape && !opt_sys ? ((", " + (this.attr)) + (", " + (this.attrEscape)) + ")") : '');
+		if (!unEscape && !opt_sys) {
+			res = (("__FILTERS__.html(" + res) + (", " + (this.attr)) + (", " + (this.attrEscape)) + ")");
+		}
+
+		return res;
 	};
 })();
 /*!
@@ -12069,7 +12063,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// которые не были подключены к своему шаблону,
 	// то генерируем ошибку
 	for (var key in dir.preDefs) {
-		/* istanbul ignore if */
 		if (!dir.preDefs.hasOwnProperty(key)) {
 			continue;
 		}
@@ -15971,7 +15964,7 @@ Snakeskin.addDirective(
 
 			// Попытка применить не объявленный прототип
 			// (запоминаем место вызова, чтобы вернуться к нему,
-			// когда прототип будет объявлен)
+			//     когда прототип будет объявлен)
 			} else if (!proto || !proto.body) {
 				var back = this.backTable;
 
@@ -17488,7 +17481,6 @@ var fsStack = [];
  * @return {(string|boolean)}
  */
 Snakeskin.include = function (base, url, nl, opt_type) {
-	/* istanbul ignore if */
 	if (!IS_NODE) {
 		return false;
 	}

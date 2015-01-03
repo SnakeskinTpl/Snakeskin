@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.12 (live)
+ * Snakeskin v6.5.13 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 17:38:51 GMT
+ * Date: Sat, 03 Jan 2015 20:37:40 GMT
  */
 
 (function (root, global) {/*!
@@ -13,11 +13,11 @@
  * в старых браузерах
  */
 
-Array.isArray = Array.isArray || /* istanbul ignore next */ function (obj) {
+Array.isArray = Array.isArray || function (obj) {
 	return ({}).toString.call(obj) === '[object Array]';
 };
 
-String.prototype.trim = String.prototype.trim || /* istanbul ignore next */ function () {
+String.prototype.trim = String.prototype.trim || function () {
 	var str = this.replace(/^\s\s*/, ''),
 		i = str.length;
 
@@ -31,7 +31,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 12],
+	VERSION: [6, 5, 13],
 
 	/**
 	 * Пространство имён для директив
@@ -159,7 +159,6 @@ Snakeskin.forEach = function (obj, callback) {
 
 		if (callback.length >= 6) {
 			for (var key in obj) {
-				/* istanbul ignore if */
 				if (!obj.hasOwnProperty(key)) {
 					continue;
 				}
@@ -169,7 +168,6 @@ Snakeskin.forEach = function (obj, callback) {
 		}
 
 		for (var key$0 in obj) {
-			/* istanbul ignore if */
 			if (!obj.hasOwnProperty(key$0)) {
 				continue;
 			}
@@ -235,7 +233,6 @@ function forIn(obj, callback) {
 
 	} else {
 		for (var key in obj) {
-			/* istanbul ignore if */
 			if (!obj.hasOwnProperty(key)) {
 				continue;
 			}
@@ -438,8 +435,6 @@ Snakeskin.Filters.undef = function (str) {
 
 	var uriO = /%5B/g,
 		uriC = /%5D/g;
-
-	/* istanbul ignore next */
 
 	/**
 	 * Кодирование URL
