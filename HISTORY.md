@@ -1,7 +1,7 @@
 ## v6.5.13
 
 - [x] Small fixes;
-- [x] Refactoring.
+- [x] Refactoring and optimisation.
 
 ## v6.5.12
 
