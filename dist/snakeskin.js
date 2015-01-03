@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 20:37:40 GMT
+ * Date: Sat, 03 Jan 2015 21:19:23 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -9309,12 +9309,12 @@ DirObj.prototype.getDiff = function (length) {
  * @param {...string|!Array} names - название группы
  * @return {!Object}
  */
-DirObj.prototype.getGroup = function (names){var SLICE$0 = Array.prototype.slice;var names = SLICE$0.call(arguments, 0);
+DirObj.prototype.getGroup = function (names) {
 	var map = {},
 		ignore = {};
 
-	for (var i = -1; ++i < names.length;) {
-		var name = names[i],
+	for (var i = -1; ++i < arguments.length;) {
+		var name = arguments[i],
 			group = groups[name];
 
 		if (name === 'callback' && this.inlineIterators) {
@@ -13538,7 +13538,7 @@ Snakeskin.addDirective(
 
 					} catch (ignore) {
 						try {
-							res = eval((("(" + content) + ")"));
+							res = new Function(("return " + content))();
 
 						} catch (ignore) {
 							delete require['cache'][require['resolve'](val)];
@@ -13562,7 +13562,7 @@ Snakeskin.addDirective(
 
 		} catch (ignore) {
 			try {
-				res = eval((("(" + val) + ")"));
+				res = new Function(("return " + val))();
 
 			} catch (ignore) {
 				res = {};
