@@ -1,9 +1,0 @@
-.idea
-bower_components
-node_modules
-npm-debug.log
-tmp
-build
-coverage
-*.ss.js
-error.txt
