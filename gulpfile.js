@@ -114,6 +114,7 @@ gulp.task('predefs', ['build'], function (callback) {
 		if (!i) {
 			gulp.src('./predefs/src/index.js')
 				.pipe(monic())
+				.pipe(eol())
 				.pipe(gulp.dest('./predefs/build'))
 				.on('end', callback);
 		}
@@ -124,6 +125,7 @@ gulp.task('predefs', ['build'], function (callback) {
 		'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
 		'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
 	])
+		.pipe(eol())
 		.pipe(gulp.dest('./predefs/src/ws'))
 		.on('end', finish);
 
