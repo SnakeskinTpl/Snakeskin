@@ -50,10 +50,6 @@ gulp.task('build', function (callback) {
 				flags: builds[key]
 			}))
 
-			.pipe(replace(/(,|)\s*(\.\.\.(.*?)\s*\))\s*(\{)/g, function (sstr, $1, $2, $3, $4) {
-				return $1 + $2 + '/*' + ($1 ? ',' : '=') + ' ' + $3 + ' */' + $4;
-			}))
-
 			.pipe(es6({
 				disallowUnknownReferences: false,
 				disallowDuplicated: false
@@ -73,15 +69,6 @@ gulp.task('build', function (callback) {
 
 			// Фикс @param {foo} [bar=1] -> @param {foo} [bar]
 			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
-
-			// Фикс @param {...foo} -> @param {...foo|!Array}
-			.pipe(replace(/@param {(\.\.\..*?)}/g, '@param {$1|!Array}'))
-
-			// /*, foo */ -> , foo
-			.pipe(replace(/\)\s*\/\*, ([$\w]+) \*\//g, ', $1)'))
-
-			// /*= foo */ -> foo
-			.pipe(replace(/\)\s*\/\*= ([$\w$]+) \*\//g, '$1)'))
 
 			// Пробельные символы в строках-шаблонах
 			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) {
