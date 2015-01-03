@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 10:42:04 GMT
+ * Date: Sat, 03 Jan 2015 10:45:58 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -17544,14 +17544,14 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 
 global['define'] = globalDefine;
 
-if (IS_NODE) {
-	module.exports =
-		exports = Snakeskin;
-
-} else if (typeof define === 'function' && define['amd']) {
+if (typeof define === 'function' && define['amd']) {
 	define([], function () {
 		return Snakeskin;
 	});
+
+} else if (IS_NODE) {
+	module.exports =
+		exports = Snakeskin;
 
 } else {
 	global.Snakeskin = Snakeskin;
