@@ -1,3 +1,8 @@
+## v6.5.13
+
+- [x] Small fixes;
+- [x] Refactoring.
+
 ## v6.5.12
 
 - [x] Updated description.
