@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 21:19:23 GMT
+ * Date: Sat, 03 Jan 2015 21:54:52 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -73,6 +73,8 @@ try {
 } catch (ignore) {
 
 }
+
+var JSON_SUPPORT = Boolean(typeof JSON !== 'undefined' && JSON.parse && JSON.stringify);
 
 /**
  * Экспортировать свойство объекта для GCC
@@ -9302,22 +9304,50 @@ DirObj.prototype.getDiff = function (length) {
 	return length + Number(this.needPrfx) + 1;
 };
 
+var dirGroupCache = {};
+
+/**
+ * Клонировать заданный объект
+ *
+ * @param {?} obj - исходный объект
+ * @return {?}
+ */
+function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}
+
 /**
  * Вернуть таблицу названий директивы,
  * которые принадлежат к заданным группам
  *
- * @param {...string|!Array} names - название группы
+ * @param {...string} names - название группы
  * @return {!Object}
  */
 DirObj.prototype.getGroup = function (names) {
+	var cacheKey = null,
+		inline = Boolean(this.inlineIterators);
+
+	if (JSON_SUPPORT) {
+		var args = [];
+
+		for (var i = -1; ++i < arguments.length;) {
+			args.push(arguments[i]);
+		}
+
+		cacheKey = args.join();
+		if (dirGroupCache[inline] && dirGroupCache[inline][cacheKey]) {
+			return clone(dirGroupCache[inline][cacheKey]);
+		}
+	}
+
 	var map = {},
 		ignore = {};
 
-	for (var i = -1; ++i < arguments.length;) {
-		var name = arguments[i],
+	for (var i$7 = -1; ++i$7 < arguments.length;) {
+		var name = arguments[i$7],
 			group = groups[name];
 
-		if (name === 'callback' && this.inlineIterators) {
+		if (name === 'callback' && inline) {
 			forIn(groups['inlineIterator'], function(el, key)  {
 				ignore[key] = true;
 			});
@@ -9330,6 +9360,11 @@ DirObj.prototype.getGroup = function (names) {
 
 			map[key] = true;
 		});
+	}
+
+	if (JSON_SUPPORT) {
+		dirGroupCache[inline] = dirGroupCache[inline] || {};
+		dirGroupCache[inline][cacheKey] = clone(map);
 	}
 
 	return map;
@@ -9625,8 +9660,8 @@ this.prepareOutput(el, true)
 		}
 
 		if (!res) {
-			for (var i$7 = end; i$7 < str.length; i$7++) {
-				var el$1 = str.charAt(i$7);
+			for (var i$8 = end; i$8 < str.length; i$8++) {
+				var el$1 = str.charAt(i$8);
 
 				if (!whiteSpaceRgxp.test(el$1)) {
 					return el$1 === ':';
@@ -12272,12 +12307,12 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		var chain = Array.isArray(params.chain) ?
 			params.chain : [params.chain];
 
-		for (var i$8 = -1; ++i$8 < chain.length;) {
-			if (!chains[chain[i$8]]) {
-				chains[chain[i$8]] = {};
+		for (var i$9 = -1; ++i$9 < chain.length;) {
+			if (!chains[chain[i$9]]) {
+				chains[chain[i$9]] = {};
 			}
 
-			chains[chain[i$8]][name] = true;
+			chains[chain[i$9]][name] = true;
 		}
 	}
 
@@ -12285,12 +12320,12 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
 		var chain$0 = Array.isArray(params.end) ?
 			params.end : [params.end];
 
-		for (var i$9 = -1; ++i$9 < chain$0.length;) {
-			if (!ends[chain$0[i$9]]) {
-				ends[chain$0[i$9]] = {};
+		for (var i$10 = -1; ++i$10 < chain$0.length;) {
+			if (!ends[chain$0[i$10]]) {
+				ends[chain$0[i$10]] = {};
 			}
 
-			ends[chain$0[i$9]][name] = true;
+			ends[chain$0[i$10]][name] = true;
 		}
 	}
 
@@ -12620,9 +12655,9 @@ Snakeskin.addDirective(
 
 	var async = ['whilst', 'doWhilst', 'forever'];
 
-	for (var i$10 = -1; ++i$10 < async.length;) {
+	for (var i$11 = -1; ++i$11 < async.length;) {
 		Snakeskin.addDirective(
-			async[i$10],
+			async[i$11],
 
 			{
 				block: true,
@@ -15854,8 +15889,8 @@ Snakeskin.addDirective(
 				var args = proto.args,
 					fin = true;
 
-				for (var i$11 = -1; ++i$11 < back.length;) {
-					var el = back[i$11];
+				for (var i$12 = -1; ++i$12 < back.length;) {
+					var el = back[i$12];
 
 					if (this.canWrite) {
 						if (!el.outer) {
@@ -16777,9 +16812,9 @@ DirObj.prototype.returnTagDesc = function (str) {
 
 	var ref = this.bemRef;
 
-	for (var i$12 = -1; ++i$12 < classes.length;) {
-		var el$2 = classes[i$12],
-			point$0 = points[i$12];
+	for (var i$13 = -1; ++i$13 < classes.length;) {
+		var el$2 = classes[i$13],
+			point$0 = points[i$13];
 
 		if (point$0 && point$0.val != null) {
 			el$2 = el$2.replace(parentLinkRgxp, point$0.val);
@@ -16789,11 +16824,11 @@ DirObj.prototype.returnTagDesc = function (str) {
 			el$2 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (el$2.substring(1))) + ("',$0" + e) + "");
 			el$2 = this.pasteDangerBlocks(this.replaceTplVars(el$2));
 
-		} else if (el$2 && types[i$12]) {
+		} else if (el$2 && types[i$13]) {
 			ref = this.pasteTplVarBlocks(el$2);
 		}
 
-		classes[i$12] = this.pasteTplVarBlocks(el$2);
+		classes[i$13] = this.pasteTplVarBlocks(el$2);
 	}
 
 	this.bemRef = ref;
@@ -17129,8 +17164,8 @@ this.prepareOutput(el, true)
 				flags.push('@skip true');
 			}
 
-			for (var i$13 = 0; ++i$13 < flags.length;) {
-				var el$3 = flags[i$13].trim(),
+			for (var i$14 = 0; ++i$14 < flags.length;) {
+				var el$3 = flags[i$14].trim(),
 					name = el$3.split(' ')[0];
 
 				delete baseParams[name];
@@ -17158,9 +17193,9 @@ this.prepareOutput(el, true)
 				'PARENT_TPL_NAME'
 			];
 
-			for (var i$14 = -1; ++i$14 < predefs.length;) {
-				this.structure.vars[predefs[i$14]] = {
-					value: predefs[i$14],
+			for (var i$15 = -1; ++i$15 < predefs.length;) {
+				this.structure.vars[predefs[i$15]] = {
+					value: predefs[i$15],
 					scope: 0
 				};
 			}

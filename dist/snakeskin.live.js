@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 21:19:23 GMT
+ * Date: Sat, 03 Jan 2015 21:54:52 GMT
  */
 
 (function (root, global) {/*!
@@ -73,6 +73,8 @@ try {
 } catch (ignore) {
 
 }
+
+var JSON_SUPPORT = Boolean(typeof JSON !== 'undefined' && JSON.parse && JSON.stringify);
 
 /**
  * Экспортировать свойство объекта для GCC
