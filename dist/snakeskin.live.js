@@ -5,10 +5,10 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 10:36:32 GMT
+ * Date: Sat, 03 Jan 2015 10:42:04 GMT
  */
 
-(function (root) {/*!
+(function (root, global) {/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -648,20 +648,18 @@ Snakeskin.Filters.undef = function (str) {
 })();
 
 
+global['define'] = globalDefine;
+
 if (IS_NODE) {
 	module.exports =
 		exports = Snakeskin;
 
+} else if (typeof define === 'function' && define['amd']) {
+	define([], function () {
+		return Snakeskin;
+	});
+
 } else {
-	root['define'] = globalDefine;
-
-	if (typeof define === 'function' && define['amd']) {
-		define([], function () {
-			return Snakeskin;
-		});
-
-	} else {
-		root.Snakeskin = Snakeskin;
-	}
+	global.Snakeskin = Snakeskin;
 }
-})(new Function('return this')());
+})(this, new Function('return this')());

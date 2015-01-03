@@ -5,10 +5,10 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 10:36:32 GMT
+ * Date: Sat, 03 Jan 2015 10:42:04 GMT
  */
 
-(function (root) {var DP$0 = Object.defineProperty;/*!
+(function (root, global) {var DP$0 = Object.defineProperty;/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -648,14 +648,11 @@ Snakeskin.Filters.undef = function (str) {
 })();
 
 
-var globalDefine = root.define;
-
-if (!IS_NODE) {
-	root.define = void 0;
-}
+var globalDefine = global['define'];
+global['define'] = void 0;
 
 var beautify,
-	globalBeautify = root.js_beautify;
+	globalBeautify = global.js_beautify;
 
 /* istanbul ignore next */
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -2589,12 +2586,12 @@ if (IS_NODE) {
 	delete exports.js_beautify;
 
 } else {
-	beautify = root.js_beautify;
-	root.js_beautify = globalBeautify;
+	beautify = global.js_beautify;
+	global.js_beautify = globalBeautify;
 }
 
 var esprima,
-	globalEsprima = root.esprima;
+	globalEsprima = global.esprima;
 
 /* istanbul ignore next */
 /*
@@ -6360,8 +6357,8 @@ if (IS_NODE) {
 		exports = root;
 
 } else {
-	esprima = root.esprima;
-	root.esprima = globalEsprima;
+	esprima = global.esprima;
+	global.esprima = globalEsprima;
 }
 
 /*!
@@ -7751,7 +7748,7 @@ function escapeNextLine(str) {
 }
 
 var Escaper,
-	globalEscaper = root.Escaper;
+	globalEscaper = global.Escaper;
 
 /* istanbul ignore next */
 /*!
@@ -8213,8 +8210,8 @@ if (IS_NODE) {
 		exports = root;
 
 } else {
-	Escaper = root.Escaper;
-	root.Escaper = globalEscaper;
+	Escaper = global.Escaper;
+	global.Escaper = globalEscaper;
 }
 
 Escaper.snakeskinRgxp = filterStartRgxp;
@@ -17545,20 +17542,18 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 };
 
 
+global['define'] = globalDefine;
+
 if (IS_NODE) {
 	module.exports =
 		exports = Snakeskin;
 
+} else if (typeof define === 'function' && define['amd']) {
+	define([], function () {
+		return Snakeskin;
+	});
+
 } else {
-	root['define'] = globalDefine;
-
-	if (typeof define === 'function' && define['amd']) {
-		define([], function () {
-			return Snakeskin;
-		});
-
-	} else {
-		root.Snakeskin = Snakeskin;
-	}
+	global.Snakeskin = Snakeskin;
 }
-})(new Function('return this')());
+})(this, new Function('return this')());
