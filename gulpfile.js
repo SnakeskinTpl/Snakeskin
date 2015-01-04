@@ -28,12 +28,8 @@ function getBuilds() {
 gulp.task('yaspeller', function () {
 	var cmd = 'node node_modules/yaspeller/bin/cli.js ';
 
-	run(cmd + './lib').exec()
-		.pipe(gulp.dest('output'));
-
-	run(cmd + './bin').exec()
-		.pipe(gulp.dest('output'));
-
+	run(cmd + './lib').exec();
+	run(cmd + './bin').exec();
 	run(cmd + './snakeskin.js').exec();
 });
 
