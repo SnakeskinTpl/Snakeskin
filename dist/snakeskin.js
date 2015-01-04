@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 03 Jan 2015 22:01:26 GMT
+ * Date: Sun, 04 Jan 2015 08:54:59 GMT
  */
 
 (function (root, global) {var DP$0 = Object.defineProperty;/*!
@@ -8327,7 +8327,7 @@ DirObj.prototype.evalStr = function (str) {
  * @return {?}
  */
 DirObj.prototype.returnEvalVal = function (str) {
-	return this.evalStr('return ' + str);
+	return this.evalStr(("return " + str));
 };
 /**
  * Вернуть полное тело заданного шаблона
@@ -8599,33 +8599,22 @@ DirObj.prototype.getFullBody = function (tplName) {
 					tSpace++;
 
 				} else {
-					var nextSpace = false;
+					var nextSpace = false,
+						diff = void 0;
 
 					init = false;
 					clrL = 0;
 
 					if (el === alb) {
-						if (shortMap[diff2str]) {
-							var tmp = str.charAt(j + 3);
-							nextSpace = !tmp || whiteSpaceRgxp.test(tmp);
-
-						} else if (shortMap[next]) {
-							var tmp$1 = str.charAt(j + 2);
-							nextSpace = !tmp$1 || whiteSpaceRgxp.test(tmp$1);
-
-						} else {
-							nextSpace = !next || whiteSpaceRgxp.test(next);
-						}
+						diff = shortMap[diff2str] ?
+							3 : shortMap[next] ? 2 : 1;
 
 					} else {
-						if (shortMap[next2str]) {
-							var tmp$2 = str.charAt(j + 2);
-							nextSpace = !tmp$2 || whiteSpaceRgxp.test(tmp$2);
-
-						} else {
-							nextSpace = !next || whiteSpaceRgxp.test(next);
-						}
+						diff = shortMap[next2str] ? 2 : 1;
 					}
+
+					var char = str.charAt(j + diff);
+					nextSpace = !char || whiteSpaceRgxp.test(char);
 
 					var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
 						decl = getLineDesc(
@@ -8752,11 +8741,11 @@ DirObj.prototype.getFullBody = function (tplName) {
 					res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 					endDirInit = false;
 
-					var tmp$3 = decl.length - 1;
+					var tmp = decl.length - 1;
 					tSpace = 0;
 
-					length += tmp$3;
-					j += tmp$3;
+					length += tmp;
+					j += tmp;
 
 					if (dir && txt) {
 						var inline = {
@@ -13483,7 +13472,7 @@ this.doctype === 'xml' ?
 
 /**
  * Если true, то идёт декларация XML комментария
- * в режиме рендеренга dom
+ * в режиме рендеринга dom
  * @type {boolean}
  */
 DirObj.prototype.domComment = false;
@@ -17214,7 +17203,7 @@ this.prepareOutput(el, true)
 
 			var preDefs = this.preDefs[tplName];
 
-			// Подкючение внешних блоков и прототипов
+			// Подключение внешних блоков и прототипов
 			if ((!extMap[tplName] || parentTplName) && preDefs) {
 				this.source = this.source.substring(0, this.i + 1) +
 					preDefs.text +
