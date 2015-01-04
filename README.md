@@ -26,9 +26,9 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 * Object-oriented approach with a very rich features for code-reuse (inheritance, composition, mixing, etc.);
 * Close to JS set of directives;
 * Support [BEM](http://en.bem.info) (as in the [Stylus](https://github.com/LearnBoost/stylus)) at the level of syntax;
-* Support for localization at the level of syntax;
-* Support for macros and filters;
-* Support for modules;
+* Support localization at the level of syntax;
+* Support macros and filters;
+* Support modules;
 * High-speed compilation;
 * Work in browsers, as well as on the server ([node.js](http://nodejs.org));
 * The engine is written in pure JavaScript and does not have any dependencies;
