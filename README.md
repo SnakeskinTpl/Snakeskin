@@ -16,7 +16,7 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 
 [Demo](http://jsfiddle.net/kobezzza/NAPWB/10/)
 
-[Documentation] (https://github.com/kobezzza/Snakeskin/wiki)
+[Documentation](https://github.com/kobezzza/Snakeskin/wiki)
 
 [FAQ](https://github.com/kobezzza/Snakeskin/wiki/faq)
 
