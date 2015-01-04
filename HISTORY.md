@@ -1,7 +1,12 @@
+## v6.5.14
+
+- [x] Small fixes;
+- [x] Updated description.
+
 ## v6.5.13
 
 - [x] Small fixes;
-- [x] Refactoring and optimisation.
+- [x] Refactoring and optimization.
 
 ## v6.5.12
 
@@ -247,7 +252,7 @@
 
 ## v5.1.3
 
-- [x] Fixed bug when deleting a file in the `--watch`.
+- [x] Fixed the bug when deleting a file in the `--watch`.
 
 ## v5.1.2
 
