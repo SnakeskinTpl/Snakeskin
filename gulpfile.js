@@ -12,7 +12,8 @@ var es6 = require('gulp-es6-transpiler'),
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
 	jasmine = require('gulp-jasmine'),
-	eol = require('gulp-eol');
+	eol = require('gulp-eol'),
+	run = require('gulp-run');
 
 function getVersion() {
 	delete require.cache[require.resolve('./lib/core')];
@@ -23,6 +24,18 @@ function getBuilds() {
 	delete require.cache[require.resolve('./builds')];
 	return Object(require('./builds'));
 }
+
+gulp.task('yaspeller', function () {
+	var cmd = 'node node_modules/yaspeller/bin/cli.js ';
+
+	run(cmd + './lib').exec()
+		.pipe(gulp.dest('output'));
+
+	run(cmd + './bin').exec()
+		.pipe(gulp.dest('output'));
+
+	run(cmd + './snakeskin.js').exec();
+});
 
 gulp.task('build', function (callback) {
 	var builds = getBuilds(),
