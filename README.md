@@ -34,7 +34,7 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 * The engine is written in pure JavaScript and does not have any dependencies;
 * The source code is designed to work with Google Closure Compiler in advanced mode;
 * Good code coverage;
-* Detailed [documentation] (https://github.com/kobezzza/Snakeskin/wiki) with examples.
+* Detailed [documentation](https://github.com/kobezzza/Snakeskin/wiki) with examples.
 
 ## Plugins
 
