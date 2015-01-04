@@ -1,3 +1,7 @@
+## v6.5.15
+
+- [x] Updated description.
+
 ## v6.5.14
 
 - [x] Small fixes;
