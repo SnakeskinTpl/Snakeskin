@@ -26,11 +26,7 @@ function getBuilds() {
 }
 
 gulp.task('yaspeller', function () {
-	var cmd = 'node node_modules/yaspeller/bin/cli.js ';
-
-	run(cmd + './lib').exec();
-	run(cmd + './bin').exec();
-	run(cmd + './snakeskin.js').exec();
+	run('node node_modules/yaspeller/bin/cli.js ./').exec();
 });
 
 gulp.task('build', function (callback) {
