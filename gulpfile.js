@@ -62,7 +62,11 @@ gulp.task('build', function (callback) {
 
 			.pipe(wrap(
 				'(function (root, global) {' +
+					'\n' +
+					'\'use strict\';' +
+					'\n' +
 					'<%= contents %>' +
+					'\n' +
 				'})(this, new Function(\'return this\')());'
 			))
 
@@ -188,6 +192,7 @@ function compile(dev) {
 			gulp.src(path.join('./dist/', key + '.js'))
 				.pipe(gcc(params))
 				.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
+				.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
 				.pipe(eol())
 				.pipe(gulp.dest('./dist/'))
 				.on('end', function () {
