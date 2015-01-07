@@ -78,7 +78,7 @@ gulp.task('build', function (callback) {
 			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
 
 			// Пробельные символы в строках-шаблонах
-			.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$)/gm, function (sstr) {
+			.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
 				return sstr
 					.replace(/\\n|\\t/g, '')
 					.replace(/\\[\r\n]/g, ' ');
