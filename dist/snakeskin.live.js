@@ -1,14 +1,17 @@
 /*!
- * Snakeskin v6.5.15 (live)
+ * Snakeskin v6.5.16 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 04 Jan 2015 16:04:48 GMT
+ * Date: Wed, 07 Jan 2015 09:12:08 GMT
  */
 
-(function (root, global) {/*!
+(function (root, global) {
+'use strict';
+var global = this;
+/*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
@@ -31,7 +34,7 @@ var Snakeskin = {
 	 * Версия Snakeskin
 	 * @type {!Array}
 	 */
-	VERSION: [6, 5, 15],
+	VERSION: [6, 5, 16],
 
 	/**
 	 * Пространство имён для директив
@@ -659,4 +662,5 @@ if (typeof define === 'function' && define['amd']) {
 } else {
 	global.Snakeskin = Snakeskin;
 }
-})(this, new Function('return this')());
+
+}).call(new Function('return this')(), this);
