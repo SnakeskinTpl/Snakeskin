@@ -67,7 +67,7 @@ gulp.task('build', function (callback) {
 					'\n' +
 					'<%= contents %>' +
 					'\n' +
-				'})(this, new Function(\'return this\')());'
+				'}).call(new Function(\'return this\')(), this);'
 			))
 
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
