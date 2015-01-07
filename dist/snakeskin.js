@@ -1,83 +1,89 @@
 /*!
- * Snakeskin v6.5.16
+ * Snakeskin v6.5.17
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 07 Jan 2015 09:12:08 GMT
+ * Date: Wed, 07 Jan 2015 10:07:27 GMT
  */
 
-(function (root, global) {
-'use strict';
-var DP$0 = Object.defineProperty;var global = this;
+(function (root) {
+"use strict";
+
+var _defineProperty = function (obj, key, value) {
+  return Object.defineProperty(obj, key, {
+    value: value,
+    enumerable: true,
+    configurable: true,
+    writable: true
+  });
+};
+
+var global = this;
 /*!
  * Полифилы, необходимые для работы live библиотеки
  * в старых браузерах
  */
 
 Array.isArray = Array.isArray || function (obj) {
-	return ({}).toString.call(obj) === '[object Array]';
+  return ({}).toString.call(obj) === "[object Array]";
 };
 
 String.prototype.trim = String.prototype.trim || function () {
-	var str = this.replace(/^\s\s*/, ''),
-		i = str.length;
+  var str = this.replace(/^\s\s*/, ""), i = str.length;
 
-	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
-	return str.substring(0, i + 1);
+  for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
+  return str.substring(0, i + 1);
 };
 
 /** @type {!Object} */
 var Snakeskin = {
-	/**
-	 * Версия Snakeskin
-	 * @type {!Array}
-	 */
-	VERSION: [6, 5, 16],
+  /**
+   * Версия Snakeskin
+   * @type {!Array}
+   */
+  VERSION: [6, 5, 17],
 
-	/**
-	 * Пространство имён для директив
-	 * @type {!Object}
-	 */
-	Directions: {},
+  /**
+   * Пространство имён для директив
+   * @type {!Object}
+   */
+  Directions: {},
 
-	/**
-	 * Пространство имён для фильтров
-	 * @type {!Object}
-	 */
-	Filters: {},
+  /**
+   * Пространство имён для фильтров
+   * @type {!Object}
+   */
+  Filters: {},
 
-	/**
-	 * Пространство имён для суперглобальных переменных
-	 * @type {!Object}
-	 */
-	Vars: {},
+  /**
+   * Пространство имён для суперглобальных переменных
+   * @type {!Object}
+   */
+  Vars: {},
 
-	/**
-	 * Пространство имён для локальных переменных
-	 * области декларации шаблонов
-	 * @type {!Object}
-	 */
-	LocalVars: {},
+  /**
+   * Пространство имён для локальных переменных
+   * области декларации шаблонов
+   * @type {!Object}
+   */
+  LocalVars: {},
 
-	/**
-	 * Кеш шаблонов
-	 * @type {!Object}
-	 */
-	cache: {}
+  /**
+   * Кеш шаблонов
+   * @type {!Object}
+   */
+  cache: {}
 };
 
 var IS_NODE = false;
 
 try {
-	IS_NODE = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+  IS_NODE = "object" === typeof process && Object.prototype.toString.call(process) === "[object process]";
+} catch (ignore) {}
 
-} catch (ignore) {
-
-}
-
-var JSON_SUPPORT = Boolean(typeof JSON !== 'undefined' && JSON.parse && JSON.stringify);
+var JSON_SUPPORT = Boolean(typeof JSON !== "undefined" && JSON.parse && JSON.stringify);
 
 /**
  * Экспортировать свойство объекта для GCC
@@ -88,16 +94,15 @@ var JSON_SUPPORT = Boolean(typeof JSON !== 'undefined' && JSON.parse && JSON.str
  * @return {?}
  */
 function _(a, b, opt_c) {
-	if (a !== void 0) {
-		return a;
-	}
+  if (a !== void 0) {
+    return a;
+  }
 
-	if (opt_c !== void 0) {
-		return b === void 0 ?
-			opt_c : b;
-	}
+  if (opt_c !== void 0) {
+    return b === void 0 ? opt_c : b;
+  }
 
-	return b;
+  return b;
 }
 
 /**
@@ -108,14 +113,14 @@ function _(a, b, opt_c) {
  * @return {?}
  */
 _.any = function (val) {
-	return val;
+  return val;
 };
 /*!
  * Методы live библиотеки Snakeskin
  */
 
 if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
-	var keys = Object.keys;
+  var keys = Object.keys;
 }
 
 /**
@@ -125,7 +130,7 @@ if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
  * @return {!Array}
  */
 Snakeskin.StringBuffer = function () {
-	return [];
+  return [];
 };
 
 /**
@@ -135,55 +140,53 @@ Snakeskin.StringBuffer = function () {
  * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
  */
 Snakeskin.forEach = function (obj, callback) {
-	if (!obj) {
-		return;
-	}
+  if (!obj) {
+    return;
+  }
 
-	var length = 0;
+  var length = 0;
 
-	if (Array.isArray(obj)) {
-		length = obj.length;
-		for (var i = -1; ++i < length;) {
-			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
-				break;
-			}
-		}
+  if (Array.isArray(obj)) {
+    length = obj.length;
+    for (var i = -1; ++i < length;) {
+      if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
+        break;
+      }
+    }
+  } else if (keys) {
+    var arr = keys(obj);
+    length = arr.length;
 
-	} else if (keys) {
-		var arr = keys(obj);
-		length = arr.length;
+    for (var i = -1; ++i < length;) {
+      if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
+        break;
+      }
+    }
+  } else {
+    var i = 0;
 
-		for (var i$0 = -1; ++i$0 < length;) {
-			if (callback(obj[arr[i$0]], arr[i$0], obj, i$0, i$0 === 0, i$0 === length - 1, length) === false) {
-				break;
-			}
-		}
+    if (callback.length >= 6) {
+      for (var key in obj) {
+        if (!obj.hasOwnProperty(key)) {
+          continue;
+        }
 
-	} else {
-		var i$1 = 0;
+        length++;
+      }
+    }
 
-		if (callback.length >= 6) {
-			for (var key in obj) {
-				if (!obj.hasOwnProperty(key)) {
-					continue;
-				}
+    for (var key in obj) {
+      if (!obj.hasOwnProperty(key)) {
+        continue;
+      }
 
-				length++;
-			}
-		}
+      if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+        break;
+      }
 
-		for (var key$0 in obj) {
-			if (!obj.hasOwnProperty(key$0)) {
-				continue;
-			}
-
-			if (callback(obj[key$0], key$0, obj, i$1, i$1 === 0, i$1 === length - 1, length) === false) {
-				break;
-			}
-
-			i$1++;
-		}
-	}
+      i++;
+    }
+  }
 };
 
 /**
@@ -193,26 +196,25 @@ Snakeskin.forEach = function (obj, callback) {
  * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
  */
 Snakeskin.forIn = function (obj, callback) {
-	if (!obj) {
-		return;
-	}
+  if (!obj) {
+    return;
+  }
 
-	var length = 0,
-		i = 0;
+  var length = 0, i = 0;
 
-	if (callback.length >= 6) {
-		for (var key in obj) {
-			length++;
-		}
-	}
+  if (callback.length >= 6) {
+    for (var key in obj) {
+      length++;
+    }
+  }
 
-	for (var key$1 in obj) {
-		if (callback(obj[key$1], key$1, obj, i, i === 0, i === length - 1, length) === false) {
-			break;
-		}
+  for (var key in obj) {
+    if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+      break;
+    }
 
-		i++;
-	}
+    i++;
+  }
 };
 
 /**
@@ -222,48 +224,46 @@ Snakeskin.forIn = function (obj, callback) {
  * @param {function(?, string, !Object)} callback - функция обратного вызова
  */
 function forIn(obj, callback) {
-	if (!obj) {
-		return;
-	}
+  if (!obj) {
+    return;
+  }
 
-	if (keys) {
-		var arr = keys(obj),
-			length = arr.length;
+  if (keys) {
+    var arr = keys(obj), length = arr.length;
 
-		for (var i = -1; ++i < length;) {
-			if (callback(obj[arr[i]], arr[i], obj) === false) {
-				break;
-			}
-		}
+    for (var i = -1; ++i < length;) {
+      if (callback(obj[arr[i]], arr[i], obj) === false) {
+        break;
+      }
+    }
+  } else {
+    for (var key in obj) {
+      if (!obj.hasOwnProperty(key)) {
+        continue;
+      }
 
-	} else {
-		for (var key in obj) {
-			if (!obj.hasOwnProperty(key)) {
-				continue;
-			}
-
-			if (callback(obj[key], key, obj) === false) {
-				break;
-			}
-		}
-	}
+      if (callback(obj[key], key, obj) === false) {
+        break;
+      }
+    }
+  }
 }
 
 var inlineTagMap = {
-	'img': true,
-	'link': true,
-	'embed': true,
-	'br': true,
-	'hr': true,
-	'wbr': true,
-	'meta': true,
-	'input': true,
-	'source': true,
-	'track': true,
-	'base': true,
-	'area': true,
-	'col': true,
-	'param': true
+  "img": true,
+  "link": true,
+  "embed": true,
+  "br": true,
+  "hr": true,
+  "wbr": true,
+  "meta": true,
+  "input": true,
+  "source": true,
+  "track": true,
+  "base": true,
+  "area": true,
+  "col": true,
+  "param": true
 };
 
 /**
@@ -274,16 +274,16 @@ var inlineTagMap = {
  * @return {(!Node|string)}
  */
 Snakeskin.appendChild = function (node, obj) {
-	if (node['tagName'] && inlineTagMap[node['tagName'].toLowerCase()]) {
-		return String(obj).trim();
-	}
+  if (node["tagName"] && inlineTagMap[node["tagName"].toLowerCase()]) {
+    return String(obj).trim();
+  }
 
-	if (typeof obj === 'string') {
-		obj = document.createTextNode(obj);
-	}
+  if (typeof obj === "string") {
+    obj = document.createTextNode(obj);
+  }
 
-	node.appendChild(obj);
-	return obj;
+  node.appendChild(obj);
+  return obj;
 };
 /*!
  * Набор базовых фильтров и методы для работы с ними
@@ -296,78 +296,39 @@ Snakeskin.appendChild = function (node, obj) {
  * @param {?string=} [opt_namespace] - пространство имён для сохранения, например, foo.bar
  */
 Snakeskin.importFilters = function (filters, opt_namespace) {
-	var obj = Snakeskin.Filters;
+  var obj = Snakeskin.Filters;
 
-	if (opt_namespace) {
-		var parts = opt_namespace.split('.');
-		for (var i = -1; ++i < parts.length;) {
-			if (!obj[parts[i]]) {
-				obj[parts[i]] = {};
-			}
+  if (opt_namespace) {
+    var parts = opt_namespace.split(".");
+    for (var i = -1; ++i < parts.length;) {
+      if (!obj[parts[i]]) {
+        obj[parts[i]] = {};
+      }
 
-			obj = obj[parts[i]];
-		}
-	}
+      obj = obj[parts[i]];
+    }
+  }
 
-	forIn(filters, function(filter, key)  {
-		obj[key] = filter;
-	});
+  forIn(filters, function (filter, key) {
+    obj[key] = filter;
+  });
 };
 
-var symbols =
-	'\\u0041-\\u005A\\u0061-\\u007A\\u00AA\\u00B5\\u00BA\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02C1' +
-	'\\u02C6-\\u02D1\\u02E0-\\u02E4\\u02EC\\u02EE\\u0370-\\u0374\\u0376\\u0377\\u037A-\\u037D\\u0386\\u0388-\\u038A' +
-	'\\u038C\\u038E-\\u03A1\\u03A3-\\u03F5\\u03F7-\\u0481\\u048A-\\u0525\\u0531-\\u0556\\u0559\\u0561-\\u0587' +
-	'\\u05D0-\\u05EA\\u05F0-\\u05F2\\u0621-\\u064A\\u066E\\u066F\\u0671-\\u06D3\\u06D5\\u06E5\\u06E6\\u06EE\\u06EF\\u06FA-\\u06FC' +
-	'\\u06FF\\u0710\\u0712-\\u072F\\u074D-\\u07A5\\u07B1\\u07CA-\\u07EA\\u07F4\\u07F5\\u07FA\\u0800-\\u0815\\u081A\\u0824' +
-	'\\u0828\\u0904-\\u0939\\u093D\\u0950\\u0958-\\u0961\\u0971\\u0972\\u0979-\\u097F\\u0985-\\u098C\\u098F\\u0990' +
-	'\\u0993-\\u09A8\\u09AA-\\u09B0\\u09B2\\u09B6-\\u09B9\\u09BD\\u09CE\\u09DC\\u09DD\\u09DF-\\u09E1\\u09F0\\u09F1\\u0A05-\\u0A0A' +
-	'\\u0A0F\\u0A10\\u0A13-\\u0A28\\u0A2A-\\u0A30\\u0A32\\u0A33\\u0A35\\u0A36\\u0A38\\u0A39\\u0A59-\\u0A5C\\u0A5E\\u0A72-\\u0A74\\u0A85-\\u0A8D' +
-	'\\u0A8F-\\u0A91\\u0A93-\\u0AA8\\u0AAA-\\u0AB0\\u0AB2\\u0AB3\\u0AB5-\\u0AB9\\u0ABD\\u0AD0\\u0AE0\\u0AE1\\u0B05-\\u0B0C\\u0B0F\\u0B10' +
-	'\\u0B13-\\u0B28\\u0B2A-\\u0B30\\u0B32\\u0B33\\u0B35-\\u0B39\\u0B3D\\u0B5C\\u0B5D\\u0B5F-\\u0B61\\u0B71\\u0B83\\u0B85-\\u0B8A\\u0B8E-\\u0B90' +
-	'\\u0B92-\\u0B95\\u0B99\\u0B9A\\u0B9C\\u0B9E\\u0B9F\\u0BA3\\u0BA4\\u0BA8-\\u0BAA\\u0BAE-\\u0BB9\\u0BD0\\u0C05-\\u0C0C' +
-	'\\u0C0E-\\u0C10\\u0C12-\\u0C28\\u0C2A-\\u0C33\\u0C35-\\u0C39\\u0C3D\\u0C58\\u0C59\\u0C60\\u0C61\\u0C85-\\u0C8C\\u0C8E-\\u0C90\\u0C92-\\u0CA8' +
-	'\\u0CAA-\\u0CB3\\u0CB5-\\u0CB9\\u0CBD\\u0CDE\\u0CE0\\u0CE1\\u0D05-\\u0D0C\\u0D0E-\\u0D10\\u0D12-\\u0D28\\u0D2A-\\u0D39\\u0D3D' +
-	'\\u0D60\\u0D61\\u0D7A-\\u0D7F\\u0D85-\\u0D96\\u0D9A-\\u0DB1\\u0DB3-\\u0DBB\\u0DBD\\u0DC0-\\u0DC6\\u0E01-\\u0E30\\u0E32\\u0E33' +
-	'\\u0E40-\\u0E46\\u0E81\\u0E82\\u0E84\\u0E87\\u0E88\\u0E8A\\u0E8D\\u0E94-\\u0E97\\u0E99-\\u0E9F\\u0EA1-\\u0EA3\\u0EA5' +
-	'\\u0EA7\\u0EAA\\u0EAB\\u0EAD-\\u0EB0\\u0EB2\\u0EB3\\u0EBD\\u0EC0-\\u0EC4\\u0EC6\\u0EDC\\u0EDD\\u0F00\\u0F40-\\u0F47' +
-	'\\u0F49-\\u0F6C\\u0F88-\\u0F8B\\u1000-\\u102A\\u103F\\u1050-\\u1055\\u105A-\\u105D\\u1061\\u1065\\u1066' +
-	'\\u106E-\\u1070\\u1075-\\u1081\\u108E\\u10A0-\\u10C5\\u10D0-\\u10FA\\u10FC\\u1100-\\u1248\\u124A-\\u124D\\u1250-\\u1256' +
-	'\\u1258\\u125A-\\u125D\\u1260-\\u1288\\u128A-\\u128D\\u1290-\\u12B0\\u12B2-\\u12B5\\u12B8-\\u12BE\\u12C0\\u12C2-\\u12C5' +
-	'\\u12C8-\\u12D6\\u12D8-\\u1310\\u1312-\\u1315\\u1318-\\u135A\\u1380-\\u138F\\u13A0-\\u13F4\\u1401-\\u166C\\u166F-\\u167F' +
-	'\\u1681-\\u169A\\u16A0-\\u16EA\\u1700-\\u170C\\u170E-\\u1711\\u1720-\\u1731\\u1740-\\u1751\\u1760-\\u176C\\u176E-\\u1770' +
-	'\\u1780-\\u17B3\\u17D7\\u17DC\\u1820-\\u1877\\u1880-\\u18A8\\u18AA\\u18B0-\\u18F5\\u1900-\\u191C\\u1950-\\u196D' +
-	'\\u1970-\\u1974\\u1980-\\u19AB\\u19C1-\\u19C7\\u1A00-\\u1A16\\u1A20-\\u1A54\\u1AA7\\u1B05-\\u1B33\\u1B45-\\u1B4B\\u1B83-\\u1BA0' +
-	'\\u1BAE\\u1BAF\\u1C00-\\u1C23\\u1C4D-\\u1C4F\\u1C5A-\\u1C7D\\u1CE9-\\u1CEC\\u1CEE-\\u1CF1\\u1D00-\\u1DBF\\u1E00-\\u1F15' +
-	'\\u1F18-\\u1F1D\\u1F20-\\u1F45\\u1F48-\\u1F4D\\u1F50-\\u1F57\\u1F59\\u1F5B\\u1F5D\\u1F5F-\\u1F7D\\u1F80-\\u1FB4\\u1FB6-\\u1FBC' +
-	'\\u1FBE\\u1FC2-\\u1FC4\\u1FC6-\\u1FCC\\u1FD0-\\u1FD3\\u1FD6-\\u1FDB\\u1FE0-\\u1FEC\\u1FF2-\\u1FF4\\u1FF6-\\u1FFC\\u2071\\u207F' +
-	'\\u2090-\\u2094\\u2102\\u2107\\u210A-\\u2113\\u2115\\u2119-\\u211D\\u2124\\u2126\\u2128\\u212A-\\u212D\\u212F-\\u2139\\u213C-\\u213F' +
-	'\\u2145-\\u2149\\u214E\\u2183\\u2184\\u2C00-\\u2C2E\\u2C30-\\u2C5E\\u2C60-\\u2CE4\\u2CEB-\\u2CEE\\u2D00-\\u2D25\\u2D30-\\u2D65\\u2D6F' +
-	'\\u2D80-\\u2D96\\u2DA0-\\u2DA6\\u2DA8-\\u2DAE\\u2DB0-\\u2DB6\\u2DB8-\\u2DBE\\u2DC0-\\u2DC6\\u2DC8-\\u2DCE\\u2DD0-\\u2DD6\\u2DD8-\\u2DDE' +
-	'\\u2E2F\\u3005\\u3006\\u3031-\\u3035\\u303B\\u303C\\u3041-\\u3096\\u309D-\\u309F\\u30A1-\\u30FA\\u30FC-\\u30FF\\u3105-\\u312D\\u3131-\\u318E\\u31A0-\\u31B7' +
-	'\\u31F0-\\u31FF\\u3400-\\u4DB5\\u4E00-\\u9FCB\\uA000-\\uA48C\\uA4D0-\\uA4FD\\uA500-\\uA60C\\uA610-\\uA61F\\uA62A\\uA62B\\uA640-\\uA65F\\uA662-\\uA66E\\uA67F-\\uA697' +
-	'\\uA6A0-\\uA6E5\\uA717-\\uA71F\\uA722-\\uA788\\uA78B\\uA78C\\uA7FB-\\uA801\\uA803-\\uA805\\uA807-\\uA80A\\uA80C-\\uA822\\uA840-\\uA873\\uA882-\\uA8B3\\uA8F2-\\uA8F7' +
-	'\\uA8FB\\uA90A-\\uA925\\uA930-\\uA946\\uA960-\\uA97C\\uA984-\\uA9B2\\uA9CF\\uAA00-\\uAA28\\uAA40-\\uAA42\\uAA44-\\uAA4B\\uAA60-\\uAA76\\uAA7A\\uAA80-\\uAAAF\\uAAB1' +
-	'\\uAAB5\\uAAB6\\uAAB9-\\uAABD\\uAAC0\\uAAC2\\uAADB-\\uAADD\\uABC0-\\uABE2\\uAC00-\\uD7A3\\uD7B0-\\uD7C6\\uD7CB-\\uD7FB\\uF900-\\uFA2D\\uFA30-\\uFA6D\\uFA70-\\uFAD9' +
-	'\\uFB00-\\uFB06\\uFB13-\\uFB17\\uFB1D\\uFB1F-\\uFB28\\uFB2A-\\uFB36\\uFB38-\\uFB3C\\uFB3E\\uFB40\\uFB41\\uFB43\\uFB44\\uFB46-\\uFBB1\\uFBD3-\\uFD3D\\uFD50-\\uFD8F' +
-	'\\uFD92-\\uFDC7\\uFDF0-\\uFDFB\\uFE70-\\uFE74\\uFE76-\\uFEFC\\uFF21-\\uFF3A\\uFF41-\\uFF5A\\uFF66-\\uFFBE\\uFFC2-\\uFFC7\\uFFCA-\\uFFCF' +
-	'\\uFFD2-\\uFFD7\\uFFDA-\\uFFDC'
-;
+var symbols = "\\u0041-\\u005A\\u0061-\\u007A\\u00AA\\u00B5\\u00BA\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02C1" + "\\u02C6-\\u02D1\\u02E0-\\u02E4\\u02EC\\u02EE\\u0370-\\u0374\\u0376\\u0377\\u037A-\\u037D\\u0386\\u0388-\\u038A" + "\\u038C\\u038E-\\u03A1\\u03A3-\\u03F5\\u03F7-\\u0481\\u048A-\\u0525\\u0531-\\u0556\\u0559\\u0561-\\u0587" + "\\u05D0-\\u05EA\\u05F0-\\u05F2\\u0621-\\u064A\\u066E\\u066F\\u0671-\\u06D3\\u06D5\\u06E5\\u06E6\\u06EE\\u06EF\\u06FA-\\u06FC" + "\\u06FF\\u0710\\u0712-\\u072F\\u074D-\\u07A5\\u07B1\\u07CA-\\u07EA\\u07F4\\u07F5\\u07FA\\u0800-\\u0815\\u081A\\u0824" + "\\u0828\\u0904-\\u0939\\u093D\\u0950\\u0958-\\u0961\\u0971\\u0972\\u0979-\\u097F\\u0985-\\u098C\\u098F\\u0990" + "\\u0993-\\u09A8\\u09AA-\\u09B0\\u09B2\\u09B6-\\u09B9\\u09BD\\u09CE\\u09DC\\u09DD\\u09DF-\\u09E1\\u09F0\\u09F1\\u0A05-\\u0A0A" + "\\u0A0F\\u0A10\\u0A13-\\u0A28\\u0A2A-\\u0A30\\u0A32\\u0A33\\u0A35\\u0A36\\u0A38\\u0A39\\u0A59-\\u0A5C\\u0A5E\\u0A72-\\u0A74\\u0A85-\\u0A8D" + "\\u0A8F-\\u0A91\\u0A93-\\u0AA8\\u0AAA-\\u0AB0\\u0AB2\\u0AB3\\u0AB5-\\u0AB9\\u0ABD\\u0AD0\\u0AE0\\u0AE1\\u0B05-\\u0B0C\\u0B0F\\u0B10" + "\\u0B13-\\u0B28\\u0B2A-\\u0B30\\u0B32\\u0B33\\u0B35-\\u0B39\\u0B3D\\u0B5C\\u0B5D\\u0B5F-\\u0B61\\u0B71\\u0B83\\u0B85-\\u0B8A\\u0B8E-\\u0B90" + "\\u0B92-\\u0B95\\u0B99\\u0B9A\\u0B9C\\u0B9E\\u0B9F\\u0BA3\\u0BA4\\u0BA8-\\u0BAA\\u0BAE-\\u0BB9\\u0BD0\\u0C05-\\u0C0C" + "\\u0C0E-\\u0C10\\u0C12-\\u0C28\\u0C2A-\\u0C33\\u0C35-\\u0C39\\u0C3D\\u0C58\\u0C59\\u0C60\\u0C61\\u0C85-\\u0C8C\\u0C8E-\\u0C90\\u0C92-\\u0CA8" + "\\u0CAA-\\u0CB3\\u0CB5-\\u0CB9\\u0CBD\\u0CDE\\u0CE0\\u0CE1\\u0D05-\\u0D0C\\u0D0E-\\u0D10\\u0D12-\\u0D28\\u0D2A-\\u0D39\\u0D3D" + "\\u0D60\\u0D61\\u0D7A-\\u0D7F\\u0D85-\\u0D96\\u0D9A-\\u0DB1\\u0DB3-\\u0DBB\\u0DBD\\u0DC0-\\u0DC6\\u0E01-\\u0E30\\u0E32\\u0E33" + "\\u0E40-\\u0E46\\u0E81\\u0E82\\u0E84\\u0E87\\u0E88\\u0E8A\\u0E8D\\u0E94-\\u0E97\\u0E99-\\u0E9F\\u0EA1-\\u0EA3\\u0EA5" + "\\u0EA7\\u0EAA\\u0EAB\\u0EAD-\\u0EB0\\u0EB2\\u0EB3\\u0EBD\\u0EC0-\\u0EC4\\u0EC6\\u0EDC\\u0EDD\\u0F00\\u0F40-\\u0F47" + "\\u0F49-\\u0F6C\\u0F88-\\u0F8B\\u1000-\\u102A\\u103F\\u1050-\\u1055\\u105A-\\u105D\\u1061\\u1065\\u1066" + "\\u106E-\\u1070\\u1075-\\u1081\\u108E\\u10A0-\\u10C5\\u10D0-\\u10FA\\u10FC\\u1100-\\u1248\\u124A-\\u124D\\u1250-\\u1256" + "\\u1258\\u125A-\\u125D\\u1260-\\u1288\\u128A-\\u128D\\u1290-\\u12B0\\u12B2-\\u12B5\\u12B8-\\u12BE\\u12C0\\u12C2-\\u12C5" + "\\u12C8-\\u12D6\\u12D8-\\u1310\\u1312-\\u1315\\u1318-\\u135A\\u1380-\\u138F\\u13A0-\\u13F4\\u1401-\\u166C\\u166F-\\u167F" + "\\u1681-\\u169A\\u16A0-\\u16EA\\u1700-\\u170C\\u170E-\\u1711\\u1720-\\u1731\\u1740-\\u1751\\u1760-\\u176C\\u176E-\\u1770" + "\\u1780-\\u17B3\\u17D7\\u17DC\\u1820-\\u1877\\u1880-\\u18A8\\u18AA\\u18B0-\\u18F5\\u1900-\\u191C\\u1950-\\u196D" + "\\u1970-\\u1974\\u1980-\\u19AB\\u19C1-\\u19C7\\u1A00-\\u1A16\\u1A20-\\u1A54\\u1AA7\\u1B05-\\u1B33\\u1B45-\\u1B4B\\u1B83-\\u1BA0" + "\\u1BAE\\u1BAF\\u1C00-\\u1C23\\u1C4D-\\u1C4F\\u1C5A-\\u1C7D\\u1CE9-\\u1CEC\\u1CEE-\\u1CF1\\u1D00-\\u1DBF\\u1E00-\\u1F15" + "\\u1F18-\\u1F1D\\u1F20-\\u1F45\\u1F48-\\u1F4D\\u1F50-\\u1F57\\u1F59\\u1F5B\\u1F5D\\u1F5F-\\u1F7D\\u1F80-\\u1FB4\\u1FB6-\\u1FBC" + "\\u1FBE\\u1FC2-\\u1FC4\\u1FC6-\\u1FCC\\u1FD0-\\u1FD3\\u1FD6-\\u1FDB\\u1FE0-\\u1FEC\\u1FF2-\\u1FF4\\u1FF6-\\u1FFC\\u2071\\u207F" + "\\u2090-\\u2094\\u2102\\u2107\\u210A-\\u2113\\u2115\\u2119-\\u211D\\u2124\\u2126\\u2128\\u212A-\\u212D\\u212F-\\u2139\\u213C-\\u213F" + "\\u2145-\\u2149\\u214E\\u2183\\u2184\\u2C00-\\u2C2E\\u2C30-\\u2C5E\\u2C60-\\u2CE4\\u2CEB-\\u2CEE\\u2D00-\\u2D25\\u2D30-\\u2D65\\u2D6F" + "\\u2D80-\\u2D96\\u2DA0-\\u2DA6\\u2DA8-\\u2DAE\\u2DB0-\\u2DB6\\u2DB8-\\u2DBE\\u2DC0-\\u2DC6\\u2DC8-\\u2DCE\\u2DD0-\\u2DD6\\u2DD8-\\u2DDE" + "\\u2E2F\\u3005\\u3006\\u3031-\\u3035\\u303B\\u303C\\u3041-\\u3096\\u309D-\\u309F\\u30A1-\\u30FA\\u30FC-\\u30FF\\u3105-\\u312D\\u3131-\\u318E\\u31A0-\\u31B7" + "\\u31F0-\\u31FF\\u3400-\\u4DB5\\u4E00-\\u9FCB\\uA000-\\uA48C\\uA4D0-\\uA4FD\\uA500-\\uA60C\\uA610-\\uA61F\\uA62A\\uA62B\\uA640-\\uA65F\\uA662-\\uA66E\\uA67F-\\uA697" + "\\uA6A0-\\uA6E5\\uA717-\\uA71F\\uA722-\\uA788\\uA78B\\uA78C\\uA7FB-\\uA801\\uA803-\\uA805\\uA807-\\uA80A\\uA80C-\\uA822\\uA840-\\uA873\\uA882-\\uA8B3\\uA8F2-\\uA8F7" + "\\uA8FB\\uA90A-\\uA925\\uA930-\\uA946\\uA960-\\uA97C\\uA984-\\uA9B2\\uA9CF\\uAA00-\\uAA28\\uAA40-\\uAA42\\uAA44-\\uAA4B\\uAA60-\\uAA76\\uAA7A\\uAA80-\\uAAAF\\uAAB1" + "\\uAAB5\\uAAB6\\uAAB9-\\uAABD\\uAAC0\\uAAC2\\uAADB-\\uAADD\\uABC0-\\uABE2\\uAC00-\\uD7A3\\uD7B0-\\uD7C6\\uD7CB-\\uD7FB\\uF900-\\uFA2D\\uFA30-\\uFA6D\\uFA70-\\uFAD9" + "\\uFB00-\\uFB06\\uFB13-\\uFB17\\uFB1D\\uFB1F-\\uFB28\\uFB2A-\\uFB36\\uFB38-\\uFB3C\\uFB3E\\uFB40\\uFB41\\uFB43\\uFB44\\uFB46-\\uFBB1\\uFBD3-\\uFD3D\\uFD50-\\uFD8F" + "\\uFD92-\\uFDC7\\uFDF0-\\uFDFB\\uFE70-\\uFE74\\uFE76-\\uFEFC\\uFF21-\\uFF3A\\uFF41-\\uFF5A\\uFF66-\\uFFBE\\uFFC2-\\uFFC7\\uFFCA-\\uFFCF" + "\\uFFD2-\\uFFD7\\uFFDA-\\uFFDC";
 
-var w = (("" + symbols) + "0-9_");
+var w = "" + symbols + "0-9_";
 var entityMap = {
-	'&': '&amp;',
-	'<': '&lt;',
-	'>': '&gt;',
-	'"': '&quot;',
-	'\'': '&#39;'
-	//,'/': '&#x2F;'
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  "\"": "&quot;",
+  "'": "&#39;"
+  //,'/': '&#x2F;'
 };
 
-var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
-	escapeAttrRgxp = new RegExp((("([$" + w) + "]\\s*=\\s*)([^\"'\\s>=]+)"), 'g'),
-	escapeJavaScript = /(javascript)(:|;)/,
-	escapeHTML = function(s)  {return entityMap[s] || s};
+var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g, escapeAttrRgxp = new RegExp("([$" + w + "]\\s*=\\s*)([^\"'\\s>=]+)", "g"), escapeJavaScript = /(javascript)(:|;)/, escapeHTML = function (s) {
+  return entityMap[s] || s;
+};
 
 /**
  * Экранирование HTML сущностей
@@ -378,19 +339,19 @@ var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
  * @return {string}
  */
 Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
-	var res = String(str);
+  var res = String(str);
 
-	if (opt_attr && opt_escapedAttr) {
-		res = res.replace(escapeAttrRgxp, '$1"$2"');
-	}
+  if (opt_attr && opt_escapedAttr) {
+    res = res.replace(escapeAttrRgxp, "$1\"$2\"");
+  }
 
-	res = res.replace(escapeHTMLRgxp, escapeHTML);
+  res = res.replace(escapeHTMLRgxp, escapeHTML);
 
-	if (opt_attr) {
-		res = res.replace(escapeJavaScript, '$1&#31;$2');
-	}
+  if (opt_attr) {
+    res = res.replace(escapeJavaScript, "$1&#31;$2");
+  }
 
-	return res;
+  return res;
 };
 
 /**
@@ -400,259 +361,254 @@ Snakeskin.Filters.html = function (str, opt_attr, opt_escapedAttr) {
  * @return {?}
  */
 Snakeskin.Filters.undef = function (str) {
-	return str !== void 0 ? str : '';
+  return str !== void 0 ? str : "";
 };
 
-(function()  {
-	var uentityMap = {
-		'&amp;': '&',
-		'&lt;': '<',
-		'&gt;': '>',
-		'&quot;': '"',
-		'&#39;': '\'',
-		'&#x2F;': '/'
-	};
+(function () {
+  var uentityMap = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": "\"",
+    "&#39;": "'",
+    "&#x2F;": "/"
+  };
 
-	var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
-		uescapeHTML = function(s)  {return uentityMap[s]};
+  var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g, uescapeHTML = function (s) {
+    return uentityMap[s];
+  };
 
-	/**
-	 * Снятие экранирования HTML сущностей
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['uhtml'] = function (str) {
-		return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
-	};
+  /**
+   * Снятие экранирования HTML сущностей
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["uhtml"] = function (str) {
+    return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
+  };
 
-	var stripTagsRgxp = /<\/?[^>]+>/g;
+  var stripTagsRgxp = /<\/?[^>]+>/g;
 
-	/**
-	 * Удаление HTML тегов
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['stripTags'] = function (str) {
-		return String(str).replace(stripTagsRgxp, '');
-	};
+  /**
+   * Удаление HTML тегов
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["stripTags"] = function (str) {
+    return String(str).replace(stripTagsRgxp, "");
+  };
 
-	var uriO = /%5B/g,
-		uriC = /%5D/g;
+  var uriO = /%5B/g, uriC = /%5D/g;
 
-	/**
-	 * Кодирование URL
-	 *
-	 * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['uri'] = function (str) {
-		return encodeURI(String(str))
-			.replace(uriO, '[')
-			.replace(uriC, ']');
-	};
+  /**
+   * Кодирование URL
+   *
+   * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["uri"] = function (str) {
+    return encodeURI(String(str)).replace(uriO, "[").replace(uriC, "]");
+  };
 
-	/**
-	 * Перевод строки в верхний регистр
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['upper'] = function (str) {
-		return String(str).toUpperCase();
-	};
+  /**
+   * Перевод строки в верхний регистр
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["upper"] = function (str) {
+    return String(str).toUpperCase();
+  };
 
-	/**
-	 * Перевод первой буквы строки в верхний регистр
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['ucfirst'] = function (str) {
-		str = String(str);
-		return str.charAt(0).toUpperCase() + str.substring(1);
-	};
+  /**
+   * Перевод первой буквы строки в верхний регистр
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["ucfirst"] = function (str) {
+    str = String(str);
+    return str.charAt(0).toUpperCase() + str.substring(1);
+  };
 
-	/**
-	 * Перевод строки в нижний регистр
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['lower'] = function (str) {
-		return String(str).toLowerCase();
-	};
+  /**
+   * Перевод строки в нижний регистр
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["lower"] = function (str) {
+    return String(str).toLowerCase();
+  };
 
-	/**
-	 * Перевод первой буквы строки в нижний регистр
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['lcfirst'] = function (str) {
-		str = String(str);
-		return str.charAt(0).toLowerCase() + str.substring(1);
-	};
+  /**
+   * Перевод первой буквы строки в нижний регистр
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["lcfirst"] = function (str) {
+    str = String(str);
+    return str.charAt(0).toLowerCase() + str.substring(1);
+  };
 
-	/**
-	 * Срез крайних пробелов строки
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['trim'] = function (str) {
-		return String(str).trim();
-	};
+  /**
+   * Срез крайних пробелов строки
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["trim"] = function (str) {
+    return String(str).trim();
+  };
 
-	var spaceCollapseRgxp = /\s{2,}/g;
+  var spaceCollapseRgxp = /\s{2,}/g;
 
-	/**
-	 * Срез крайних пробелов строки
-	 * и свёртывание остальных пробелов в один
-	 *
-	 * @param {?} str - исходная строка
-	 * @return {string}
-	 */
-	Snakeskin.Filters['collapse'] = function (str) {
-		return String(str).replace(spaceCollapseRgxp, ' ').trim();
-	};
+  /**
+   * Срез крайних пробелов строки
+   * и свёртывание остальных пробелов в один
+   *
+   * @param {?} str - исходная строка
+   * @return {string}
+   */
+  Snakeskin.Filters["collapse"] = function (str) {
+    return String(str).replace(spaceCollapseRgxp, " ").trim();
+  };
 
-	/**
-	 * Обрезание строки до заданной длины
-	 * (в конце, если нужно, ставится многоточие)
-	 *
-	 * @param {?} str - исходная строка
-	 * @param {number} length - максимальная длина текста
-	 * @param {?boolean=} opt_wordOnly - если false, то текст обрезается без учёта целостности слов
-	 * @param {?boolean=} opt_html - если true, то символ многоточия вставляется как HTML-мнемоник
-	 * @return {string}
-	 */
-	Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
-		str = String(str);
-		if (!str || str.length <= length) {
-			return str;
-		}
+  /**
+   * Обрезание строки до заданной длины
+   * (в конце, если нужно, ставится многоточие)
+   *
+   * @param {?} str - исходная строка
+   * @param {number} length - максимальная длина текста
+   * @param {?boolean=} opt_wordOnly - если false, то текст обрезается без учёта целостности слов
+   * @param {?boolean=} opt_html - если true, то символ многоточия вставляется как HTML-мнемоник
+   * @return {string}
+   */
+  Snakeskin.Filters["truncate"] = function (str, length, opt_wordOnly, opt_html) {
+    str = String(str);
+    if (!str || str.length <= length) {
+      return str;
+    }
 
-		var tmp = str.substring(0, length - 1),
-			lastInd = void 0;
+    var tmp = str.substring(0, length - 1), lastInd = void 0;
 
-		var i = tmp.length;
-		while (i-- && opt_wordOnly) {
-			if (tmp.charAt(i) === ' ') {
-				lastInd = i;
+    var i = tmp.length;
+    while (i-- && opt_wordOnly) {
+      if (tmp.charAt(i) === " ") {
+        lastInd = i;
+      } else if (lastInd !== void 0) {
+        break;
+      }
+    }
 
-			} else if (lastInd !== void 0) {
-				break;
-			}
-		}
+    return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? "&#8230;" : "…");
+  };
 
-		return (lastInd !== void 0 ? tmp.substring(0, lastInd) : tmp) + (opt_html ? '&#8230;' : '…');
-	};
+  /**
+   * Генерация строки из повторений исходной подстроки
+   *
+   * @param {?} str - исходная строка
+   * @param {?number=} opt_num - число повторений
+   * @return {string}
+   */
+  Snakeskin.Filters["repeat"] = function (str, opt_num) {
+    return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
+  };
 
-	/**
-	 * Генерация строки из повторений исходной подстроки
-	 *
-	 * @param {?} str - исходная строка
-	 * @param {?number=} opt_num - число повторений
-	 * @return {string}
-	 */
-	Snakeskin.Filters['repeat'] = function (str, opt_num) {
-		return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
-	};
+  /**
+   * Удаление подстроки из строки
+   *
+   * @param {?} str - исходная строка
+   * @param {(string|RegExp)} search - искомая подстрока
+   * @return {string}
+   */
+  Snakeskin.Filters["remove"] = function (str, search) {
+    return String(str).replace(search, "");
+  };
 
-	/**
-	 * Удаление подстроки из строки
-	 *
-	 * @param {?} str - исходная строка
-	 * @param {(string|RegExp)} search - искомая подстрока
-	 * @return {string}
-	 */
-	Snakeskin.Filters['remove'] = function (str, search) {
-		return String(str).replace(search, '');
-	};
+  /**
+   * Замена подстроки в строке
+   *
+   * @param {?} str - исходная строка
+   * @param {(string|!RegExp)} search - искомая подстрока
+   * @param {string} replace - строка для замены
+   * @return {string}
+   */
+  Snakeskin.Filters["replace"] = function (str, search, replace) {
+    return String(str).replace(search, replace);
+  };
 
-	/**
-	 * Замена подстроки в строке
-	 *
-	 * @param {?} str - исходная строка
-	 * @param {(string|!RegExp)} search - искомая подстрока
-	 * @param {string} replace - строка для замены
-	 * @return {string}
-	 */
-	Snakeskin.Filters['replace'] = function (str, search, replace) {
-		return String(str).replace(search, replace);
-	};
+  /**
+   * Преобразование объекта в JSON
+   *
+   * @param {(Object|Array|string|number|boolean)} obj - исходный объект
+   * @return {string}
+   */
+  Snakeskin.Filters["json"] = function (obj) {
+    return JSON.stringify(obj);
+  };
 
-	/**
-	 * Преобразование объекта в JSON
-	 *
-	 * @param {(Object|Array|string|number|boolean)} obj - исходный объект
-	 * @return {string}
-	 */
-	Snakeskin.Filters['json'] = function (obj) {
-		return JSON.stringify(obj);
-	};
+  /**
+   * Преобразование объекта в строку
+   *
+   * @param {(Object|Array|string|number|boolean)} obj - исходный объект
+   * @return {string}
+   */
+  Snakeskin.Filters["string"] = function (obj) {
+    if (typeof obj === "object" && obj instanceof String === false) {
+      return JSON.stringify(obj);
+    }
 
-	/**
-	 * Преобразование объекта в строку
-	 *
-	 * @param {(Object|Array|string|number|boolean)} obj - исходный объект
-	 * @return {string}
-	 */
-	Snakeskin.Filters['string'] = function (obj) {
-		if (typeof obj === 'object' && obj instanceof String === false) {
-			return JSON.stringify(obj);
-		}
+    return String(obj);
+  };
 
-		return String(obj);
-	};
+  /**
+   * Преобразование JSON в объект
+   *
+   * @param {?} val - исходное значение
+   * @return {?}
+   */
+  Snakeskin.Filters["parse"] = function (val) {
+    if (typeof val !== "string") {
+      return val;
+    }
 
-	/**
-	 * Преобразование JSON в объект
-	 *
-	 * @param {?} val - исходное значение
-	 * @return {?}
-	 */
-	Snakeskin.Filters['parse'] = function (val) {
-		if (typeof val !== 'string') {
-			return val;
-		}
+    return JSON.parse(val);
+  };
 
-		return JSON.parse(val);
-	};
+  /**
+   * Декларация BEM части
+   *
+   * @param {?} block - название блока
+   * @param {?} part - вторая часть декларации
+   * @param {(Element|undefined)} node - ссылка на активный узел
+   * @return {string}
+   */
+  Snakeskin.Filters["bem"] = function (block, part, node) {
+    return String(block) + String(part);
+  };
 
-	/**
-	 * Декларация BEM части
-	 *
-	 * @param {?} block - название блока
-	 * @param {?} part - вторая часть декларации
-	 * @param {(Element|undefined)} node - ссылка на активный узел
-	 * @return {string}
-	 */
-	Snakeskin.Filters['bem'] = function (block, part, node) {
-		return String(block) + String(part);
-	};
-
-	/**
-	 * Задача значения по умолчанию для объекта
-	 *
-	 * @param {?} val - исходное значение
-	 * @param {?} def - значение по умолчанию
-	 * @return {?}
-	 */
-	Snakeskin.Filters['default'] = function (val, def) {
-		return val === void 0 ? def : val;
-	};
+  /**
+   * Задача значения по умолчанию для объекта
+   *
+   * @param {?} val - исходное значение
+   * @param {?} def - значение по умолчанию
+   * @return {?}
+   */
+  Snakeskin.Filters["default"] = function (val, def) {
+    return val === void 0 ? def : val;
+  };
 })();
 
 
-var globalDefine = global['define'];
-global['define'] = void 0;
+var globalDefine = global["define"];
+global["define"] = void 0;
 
-var beautify,
-	globalBeautify = global.js_beautify;
+var beautify, globalBeautify = global.js_beautify;
 
 /* istanbul ignore next */
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -2582,16 +2538,14 @@ var beautify,
 }());
 
 if (IS_NODE) {
-	beautify = exports.js_beautify;
-	delete exports.js_beautify;
-
+  beautify = exports.js_beautify;
+  delete exports.js_beautify;
 } else {
-	beautify = global.js_beautify;
-	global.js_beautify = globalBeautify;
+  beautify = global.js_beautify;
+  global.js_beautify = globalBeautify;
 }
 
-var esprima,
-	globalEsprima = global.esprima;
+var esprima, globalEsprima = global.esprima;
 
 /* istanbul ignore next */
 /*
@@ -6352,13 +6306,11 @@ parseStatement: true, parseSourceElement: true */
 /* vim: set sw=4 ts=4 et tw=80 : */
 
 if (IS_NODE) {
-	esprima = exports;
-	module.exports =
-		exports = root;
-
+  esprima = exports;
+  module.exports = exports = root;
 } else {
-	esprima = global.esprima;
-	global.esprima = globalEsprima;
+  esprima = global.esprima;
+  global.esprima = globalEsprima;
 }
 
 /*!
@@ -6368,27 +6320,33 @@ if (IS_NODE) {
 // Общие разделители директивы
 // >>>
 
-var LEFT_BLOCK = '{';
-var RIGHT_BLOCK = '}';
+var LEFT_BLOCK = "{";
+var RIGHT_BLOCK = "}";
 
 // <<<
 // Дополнительные разделители директивы
 // >>>
 
-var ADV_LEFT_BLOCK = '#';
-var I18N = '`';
+var ADV_LEFT_BLOCK = "#";
+var I18N = "`";
 
-var SINGLE_COMMENT = '///';
-var JS_DOC = '/**';
+var SINGLE_COMMENT = "///";
+var JS_DOC = "/**";
 
-var MULT_COMMENT_START = '/*';
-var MULT_COMMENT_END = '*/';
+var MULT_COMMENT_START = "/*";
+var MULT_COMMENT_END = "*/";
 
-var commentMap = DP$0(DP$0(DP$0({},
-	SINGLE_COMMENT,{"value": SINGLE_COMMENT,"configurable":true,"enumerable":true,"writable":true}),
-	MULT_COMMENT_START,{"value": MULT_COMMENT_START,"configurable":true,"enumerable":true,"writable":true}),
-	MULT_COMMENT_END,{"value": MULT_COMMENT_END,"configurable":true,"enumerable":true,"writable":true}
-);
+var commentMap = (function () {
+  var _commentMap = {};
+
+  _defineProperty(_commentMap, SINGLE_COMMENT, SINGLE_COMMENT);
+
+  _defineProperty(_commentMap, MULT_COMMENT_START, MULT_COMMENT_START);
+
+  _defineProperty(_commentMap, MULT_COMMENT_END, MULT_COMMENT_END);
+
+  return _commentMap;
+})();
 
 /**
  * @param {string} str
@@ -6396,208 +6354,183 @@ var commentMap = DP$0(DP$0(DP$0({},
  * @return {(string|boolean)}
  */
 function returnComment(str, i) {
-	return commentMap[str.substr(i, SINGLE_COMMENT.length)] ||
-		commentMap[str.substr(i, MULT_COMMENT_START.length)] ||
-		commentMap[str.substr(i, MULT_COMMENT_END.length)] ||
-		false;
+  return commentMap[str.substr(i, SINGLE_COMMENT.length)] || commentMap[str.substr(i, MULT_COMMENT_START.length)] || commentMap[str.substr(i, MULT_COMMENT_END.length)] || false;
 }
 
 var includeDirMap = {
-	'${': true,
-	'#{': true
+  "${": true,
+  "#{": true
 };
 
 var includeDirLength;
 
-forIn(includeDirMap, function(el, key)  {
-	includeDirLength = key.length;
-	return false;
+forIn(includeDirMap, function (el, key) {
+  includeDirLength = key.length;
+  return false;
 });
 
 var baseShortMap = {
-	'-': true,
-	'#': true
+  "-": true,
+  "#": true
 };
 
 var shortMap = {};
 
-forIn(baseShortMap, function(el, key)  {
-	shortMap[key] = true;
+forIn(baseShortMap, function (el, key) {
+  shortMap[key] = true;
 });
 
 // <<<
 // Модификаторы контекста
 // >>>
 
-var L_MOD = '#';
-var G_MOD = '@';
+var L_MOD = "#";
+var G_MOD = "@";
 
-var modMap = DP$0(DP$0({},
-	L_MOD,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	G_MOD,{"value": true,"configurable":true,"enumerable":true,"writable":true}
-);
+var modMap = (function () {
+  var _modMap = {};
+
+  _defineProperty(_modMap, L_MOD, true);
+
+  _defineProperty(_modMap, G_MOD, true);
+
+  return _modMap;
+})();
 
 // <<<
 // Константы Jade-Like синтаксиса
 // >>>
 
-var CONCAT_COMMAND = '&';
-var CONCAT_END = '.';
-var IGNORE_COMMAND = '|';
-var INLINE_COMMAND = ' :: ';
+var CONCAT_COMMAND = "&";
+var CONCAT_END = ".";
+var IGNORE_COMMAND = "|";
+var INLINE_COMMAND = " :: ";
 
 // <<<
 // Механизм фильтров
 // >>>
 
-var FILTER = '|';
+var FILTER = "|";
 
 // <<<
 // Различные таблицы констант
 // >>>
 
 var sysConst = {
-	'__IS_NODE__': true,
-	'__EXPORTS__': true,
-	'__HAS_EXPORTS__': true,
-	'__INIT__': true,
-	'__ROOT__': true,
-	'__CALLEE__': true,
-	'__ARGUMENTS__': true,
-	'__BLOCKS__': true,
-	'__RESULT__': true,
-	'__COMMENT_RESULT__': true,
-	'__CDATA__': true,
-	'__RETURN__': true,
-	'__RETURN_VAL__': true,
-	'__NODE__': true,
-	'__I_PROTO__': true,
-	'__I__': true,
-	'__ATTR_J__': true,
-	'__ATTR_STR__': true,
-	'__ATTR_TMP__': true,
-	'__LENGTH__': true,
-	'__KEYS__': true,
-	'__KEY__': true,
-	'__APPEND__': true,
-	'__FILTERS__': true,
-	'__VARS__': true,
-	'__LOCAL__': true,
-	'__THIS__': true,
-	'__INCLUDE__': true,
-	'$_': true,
-	'$0': true
+  "__IS_NODE__": true,
+  "__EXPORTS__": true,
+  "__HAS_EXPORTS__": true,
+  "__INIT__": true,
+  "__ROOT__": true,
+  "__CALLEE__": true,
+  "__ARGUMENTS__": true,
+  "__BLOCKS__": true,
+  "__RESULT__": true,
+  "__COMMENT_RESULT__": true,
+  "__CDATA__": true,
+  "__RETURN__": true,
+  "__RETURN_VAL__": true,
+  "__NODE__": true,
+  "__I_PROTO__": true,
+  "__I__": true,
+  "__ATTR_J__": true,
+  "__ATTR_STR__": true,
+  "__ATTR_TMP__": true,
+  "__LENGTH__": true,
+  "__KEYS__": true,
+  "__KEY__": true,
+  "__APPEND__": true,
+  "__FILTERS__": true,
+  "__VARS__": true,
+  "__LOCAL__": true,
+  "__THIS__": true,
+  "__INCLUDE__": true,
+  "$_": true,
+  "$0": true
 };
 /*!
  * Основные глобальные переменные библиотеки
  */
 
 var rgxpCache = {};
-var globalCache = {},
-	globalFnCache = {};
+var globalCache = {}, globalFnCache = {};
 
-var cache = {},
-	table = {};
+var cache = {}, table = {};
 
 var blockCache = {};
-var protoCache = {},
-	fromProtoCache = {};
+var protoCache = {}, fromProtoCache = {};
 
-var constCache = {},
-	fromConstCache = {};
+var constCache = {}, fromConstCache = {};
 
 var routerCache = {
-	'block': blockCache,
-	'const': constCache,
-	'proto': protoCache
+  "block": blockCache,
+  "const": constCache,
+  "proto": protoCache
 };
 
 var routerFromCache = {
-	'const': fromConstCache,
-	'proto': fromProtoCache
+  "const": fromConstCache,
+  "proto": fromProtoCache
 };
 
 var scopeCache = {
-	'template': {},
-	'proto': {},
-	'block': {}
+  "template": {},
+  "proto": {},
+  "block": {}
 };
 
 var outputCache = {};
-var argsCache = {},
-	argsResCache = {};
+var argsCache = {}, argsResCache = {};
 
-var extMap = {},
-	extListCache = {};
+var extMap = {}, extListCache = {};
 
-var replacers = {},
-	sys = {},
-
-	block = {},
-	text = {},
-
-	inside = {},
-	after = {},
-
-	aliases = {},
-	groups = {},
-	groupsList = [],
-
-	ends = {},
-	chains = {},
-
-	bem = {},
-	write = {};
+var replacers = {}, sys = {}, block = {}, text = {}, inside = {}, after = {}, aliases = {}, groups = {}, groupsList = [], ends = {}, chains = {}, bem = {}, write = {};
 /*!
  * Набор базовых макросов
  */
 
 var defMacros = {
-	'@quotes': {
-		'"': [['«', '»'], ['‘', '’']],
-		'\'': [['“', '”'], ['„', '“']]
-	},
+  "@quotes": {
+    "\"": [["«", "»"], ["‘", "’"]],
+    "'": [["“", "”"], ["„", "“"]]
+  },
 
-	'@shorts': {
-		'(c)': '©',
-		'(tm)': '™',
+  "@shorts": {
+    "(c)": "©",
+    "(tm)": "™",
 
-		'+-': '±',
+    "+-": "±",
 
-		'[v]': '☑',
-		'[x]': '☒',
-		'[_]': '☐',
+    "[v]": "☑",
+    "[x]": "☒",
+    "[_]": "☐",
 
-		'...': {
-			inline: true,
-			value: '…'
-		},
+    "...": {
+      inline: true,
+      value: "…"
+    },
 
-		'-': {
-			inline: true,
-			value: '−'
-		},
+    "-": {
+      inline: true,
+      value: "−"
+    },
 
-		'--': {
-			inline: true,
-			value: '—'
-		}
-	},
+    "--": {
+      inline: true,
+      value: "—"
+    }
+  },
 
-	'@adv': {
-		'%lorem%':
-			'Lorem ipsum dolor sit amet, consectetur adipisicing elit. ' +
-			'Dolor dolores error facilis iusto magnam nisi praesentium voluptas. ' +
-			'Delectus laudantium minus quia sapiente sunt temporibus voluptates! ' +
-			'Explicabo iusto molestias quis voluptatibus.'
-	},
+  "@adv": {
+    "%lorem%": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. " + "Dolor dolores error facilis iusto magnam nisi praesentium voluptas. " + "Delectus laudantium minus quia sapiente sunt temporibus voluptates! " + "Explicabo iusto molestias quis voluptatibus."
+  },
 
-	'@symbols': {
-		'\\n': '\\n',
-		'\\r': '\\r',
-		'\\t': '\\t',
-		'\\s': '&nbsp;'
-	}
+  "@symbols": {
+    "\\n": "\\n",
+    "\\r": "\\r",
+    "\\t": "\\t",
+    "\\s": "&nbsp;"
+  }
 };
 /*!
  * API для работы с аргументами функций
@@ -6611,53 +6544,50 @@ var defMacros = {
  * @return {!Array}
  */
 DirObj.prototype.getFnArgs = function (str) {
-	var res = [],
-		params = false;
+  var res = [], params = false;
 
-	var pOpen = 0,
-		arg = '';
+  var pOpen = 0, arg = "";
 
-	for (var i = -1; ++i < str.length;) {
-		var el = str[i];
+  for (var i = -1; ++i < str.length;) {
+    var el = str[i];
 
-		if (pOpen ? bMap[el] : el === '(') {
-			pOpen++;
-			params = true;
+    if (pOpen ? bMap[el] : el === "(") {
+      pOpen++;
+      params = true;
 
-			if (pOpen === 1) {
-				continue;
-			}
+      if (pOpen === 1) {
+        continue;
+      }
+    } else if (pOpen ? closeBMap[el] : el === ")") {
+      pOpen--;
 
-		} else if (pOpen ? closeBMap[el] : el === ')') {
-			pOpen--;
+      if (!pOpen) {
+        break;
+      }
+    }
 
-			if (!pOpen) {
-				break;
-			}
-		}
+    if (el === "," && pOpen === 1) {
+      res.push(arg.trim());
+      arg = "";
+      continue;
+    }
 
-		if (el === ',' && pOpen === 1) {
-			res.push(arg.trim());
-			arg = '';
-			continue;
-		}
+    if (pOpen) {
+      arg += el;
+    }
+  }
 
-		if (pOpen) {
-			arg += el;
-		}
-	}
+  if (pOpen) {
+    this.error("invalid \"" + this.name + "\" declaration");
+    return [];
+  }
 
-	if (pOpen) {
-		this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		return [];
-	}
+  if (arg) {
+    res.push(arg.trim());
+  }
 
-	if (arg) {
-		res.push(arg.trim());
-	}
-
-	res.params = params;
-	return res;
+  res.params = params;
+  return res;
 };
 
 /**
@@ -6672,249 +6602,224 @@ DirObj.prototype.getFnArgs = function (str) {
  * @return {{str: string, list: !Array, defParams: string, scope: (string|undefined)}}
  */
 DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplName, opt_name) {
-	opt_tplName = this.tplName;
-	var struct = this.structure;
-	var argsList = this.getFnArgs(str),
-		params = argsList.params;
+  opt_tplName = this.tplName;
+  var struct = this.structure;
+  var argsList = this.getFnArgs(str), params = argsList.params;
 
-	var parentArgs,
-		argsTable;
+  var parentArgs, argsTable;
 
-	if (!argsCache[opt_tplName]) {
-		argsCache[opt_tplName] = {};
-		argsResCache[opt_tplName] = {};
-	}
+  if (!argsCache[opt_tplName]) {
+    argsCache[opt_tplName] = {};
+    argsResCache[opt_tplName] = {};
+  }
 
-	if (!argsCache[opt_tplName][type]) {
-		argsCache[opt_tplName][type] = {};
-		argsResCache[opt_tplName][type] = {};
-	}
+  if (!argsCache[opt_tplName][type]) {
+    argsCache[opt_tplName][type] = {};
+    argsResCache[opt_tplName][type] = {};
+  }
 
-	if (opt_name) {
-		if (opt_parentTplName && argsCache[opt_parentTplName][type]) {
-			parentArgs = argsCache[opt_parentTplName][type][opt_name];
-		}
+  if (opt_name) {
+    if (opt_parentTplName && argsCache[opt_parentTplName][type]) {
+      parentArgs = argsCache[opt_parentTplName][type][opt_name];
+    }
 
-		if (argsCache[opt_tplName][type][opt_name]) {
-			var tmp = argsResCache[opt_tplName][type][opt_name],
-				list = tmp.list;
+    if (argsCache[opt_tplName][type][opt_name]) {
+      var tmp = argsResCache[opt_tplName][type][opt_name], list = tmp.list;
 
-			for (var i = -1; ++i < list.length;) {
-				struct.vars[list[i][2]] = {
-					value: list[i][0],
-					scope: this.scope.length
-				};
-			}
+      for (var i = -1; ++i < list.length;) {
+        struct.vars[list[i][2]] = {
+          value: list[i][0],
+          scope: this.scope.length
+        };
+      }
 
-			return tmp;
+      return tmp;
+    } else {
+      argsTable = argsCache[opt_tplName][type][opt_name] = {};
+    }
+  } else {
+    if (opt_parentTplName) {
+      parentArgs = argsCache[opt_parentTplName][type];
+    }
 
-		} else {
-			argsTable = argsCache[opt_tplName][type][opt_name] = {};
-		}
+    argsTable = argsCache[opt_tplName][type];
+  }
 
-	} else {
-		if (opt_parentTplName) {
-			parentArgs = argsCache[opt_parentTplName][type];
-		}
+  var scope;
+  for (var i = -1; ++i < argsList.length;) {
+    var arg = argsList[i].split("=");
+    arg[0] = arg[0].trim();
 
-		argsTable = argsCache[opt_tplName][type];
-	}
+    if (arg.length > 1) {
+      arg[1] = arg.slice(1).join("=").trim();
+      arg.splice(2, arg.length);
+    }
 
-	var scope;
-	for (var i$2 = -1; ++i$2 < argsList.length;) {
-		var arg = argsList[i$2].split('=');
-		arg[0] = arg[0].trim();
+    if (scopeModRgxp.test(arg[0])) {
+      if (scope) {
+        this.error("invalid \"" + this.name + "\" declaration");
 
-		if (arg.length > 1) {
-			arg[1] = arg.slice(1).join('=').trim();
-			arg.splice(2, arg.length);
-		}
+        return {
+          params: false,
+          str: "",
+          list: [],
+          defParams: "",
+          scope: void 0
+        };
+      } else {
+        scope = arg[0].replace(scopeModRgxp, "");
+      }
+    }
 
-		if (scopeModRgxp.test(arg[0])) {
-			if (scope) {
-				this.error((("invalid \"" + (this.name)) + "\" declaration"));
+    argsTable[arg[0]] = {
+      i: i,
+      key: arg[0],
+      value: arg[1] && this.pasteDangerBlocks(arg[1].trim()),
+      scope: scope
+    };
+  }
 
-				return {
-					params: false,
-					str: '',
-					list: [],
-					defParams: '',
-					scope: void 0
-				};
+  forIn(parentArgs, function (el, key) {
+    var aKey = undefined;
+    if (scopeModRgxp.test(key)) {
+      aKey = key.replace(scopeModRgxp, "");
+    } else {
+      aKey = "@" + key;
+    }
 
-			} else {
-				scope = arg[0].replace(scopeModRgxp, '');
-			}
-		}
+    var rKey = argsTable[key] ? key : aKey;
 
-		argsTable[arg[0]] = {
-			i: i$2,
-			key: arg[0],
-			value: arg[1] && this.pasteDangerBlocks(arg[1].trim()),
-			scope: scope
-		};
-	}
+    var current = argsTable[rKey], cVal = current && current.value === void 0;
 
-	forIn(parentArgs, function(el, key)  {
-		var aKey;
-		if (scopeModRgxp.test(key)) {
-			aKey = key.replace(scopeModRgxp, '');
+    if (argsTable[rKey]) {
+      if (!scope && el.scope) {
+        scope = el.scope;
+        argsTable[rKey].scope = scope;
+      }
 
-		} else {
-			aKey = ("@" + key);
-		}
+      if (cVal) {
+        argsTable[rKey].value = el.value;
+      }
+    } else {
+      argsTable[key] = {
+        local: true,
+        i: el.i,
+        key: key,
+        value: el.value !== void 0 ? el.value : "void 0"
+      };
+    }
+  });
 
-		var rKey = argsTable[key] ?
-			key : aKey;
+  argsList = [];
+  var localVars = [];
 
-		var current = argsTable[rKey],
-			cVal = current &&
-				current.value === void 0;
+  forIn(argsTable, function (el) {
+    if (el.local) {
+      localVars[el.i] = el;
+    } else {
+      argsList[el.i] = el;
+    }
+  });
 
-		if (argsTable[rKey]) {
-			if (!scope && el.scope) {
-				scope = el.scope;
-				argsTable[rKey].scope = scope;
-			}
+  var consts = constCache[this.tplName], constsCache = {};
 
-			if (cVal) {
-				argsTable[rKey].value = el.value;
-			}
+  var decl = "", defParams = "";
 
-		} else {
-			argsTable[key] = {
-				local: true,
-				i: el.i,
-				key: key,
-				value: el.value !== void 0 ?
-					el.value : 'void 0'
-			};
-		}
-	});
+  var locals = [];
 
-	argsList = [];
-	var localVars = [];
+  for (var i = -1; ++i < localVars.length;) {
+    var el = localVars[i];
 
-	forIn(argsTable, function(el)  {
-		if (el.local) {
-			localVars[el.i] = el;
+    if (!el) {
+      continue;
+    }
 
-		} else {
-			argsList[el.i] = el;
-		}
-	});
+    el.key = el.key.replace(scopeModRgxp, "");
+    var old = el.key;
 
-	var consts = constCache[this.tplName],
-		constsCache = {};
+    if (opt_name) {
+      el.key = this.declVar(el.key, true);
+    }
 
-	var decl = '',
-		defParams = '';
+    locals.push([el.key, el.value, old]);
 
-	var locals = [];
+    defParams += "var " + el.key + " = " + this.prepareOutput(this.replaceDangerBlocks(el.value), true) + ";";
+    struct.vars[el.key] = {
+      value: el.key,
+      scope: this.scope.length
+    };
+  }
 
-	for (var i$3 = -1; ++i$3 < localVars.length;) {
-		var el = localVars[i$3];
+  var args = [], needArgs = type === "proto";
 
-		if (!el) {
-			continue;
-		}
+  if (needArgs) {
+    for (var i = -1; ++i < argsList.length;) {
+      if (argsList[i].key === "arguments") {
+        needArgs = false;
+        break;
+      }
+    }
 
-		el.key = el.key.replace(scopeModRgxp, '');
-		var old = el.key;
+    if (needArgs) {
+      argsList.push({
+        i: argsList.length,
+        key: "arguments"
+      });
+    }
+  }
 
-		if (opt_name) {
-			el.key = this.declVar(el.key, true);
-		}
+  for (var i = -1; ++i < argsList.length;) {
+    var el = argsList[i];
 
-		locals.push([
-			el.key,
-			el.value,
-			old
-		]);
+    el.key = el.key.replace(scopeModRgxp, "");
+    var old = el.key;
 
-		defParams += (("var " + (el.key)) + (" = " + (this.prepareOutput(this.replaceDangerBlocks(el.value), true))) + ";");
-		struct.vars[el.key] = {
-			value: el.key,
-			scope: this.scope.length
-		};
-	}
+    if (consts[old] && opt_name) {
+      constsCache[old] = consts[old];
+      delete consts[old];
+    }
 
-	var args = [],
-		needArgs = type === 'proto';
+    if (opt_name) {
+      el.key = this.declVar(el.key, true);
+    }
 
-	if (needArgs) {
-		for (var i$4 = -1; ++i$4 < argsList.length;) {
-			if (argsList[i$4].key === 'arguments') {
-				needArgs = false;
-				break;
-			}
-		}
+    args.push([el.key, el.value, old]);
 
-		if (needArgs) {
-			argsList.push({
-				i: argsList.length,
-				key: 'arguments'
-			});
-		}
-	}
+    decl += el.key;
 
-	for (var i$5 = -1; ++i$5 < argsList.length;) {
-		var el$0 = argsList[i$5];
+    if (el.value !== void 0) {
+      defParams += "" + el.key + " = arguments[" + i + "] = " + el.key + " != null ? " + el.key + " : " + this.prepareOutput(this.replaceDangerBlocks(el.value), true) + ";";
+    }
 
-		el$0.key = el$0.key.replace(scopeModRgxp, '');
-		var old$0 = el$0.key;
+    if (i !== argsList.length - 1) {
+      decl += ",";
+    }
+  }
 
-		if (consts[old$0] && opt_name) {
-			constsCache[old$0] = consts[old$0];
-			delete consts[old$0];
-		}
+  if (needArgs) {
+    var tmp = args.pop();
+    args = args.concat(locals);
+    args.push(tmp);
+    args["__SNAKESKIN_TMP__needArgs"] = true;
+  } else {
+    args = args.concat(locals);
+  }
 
-		if (opt_name) {
-			el$0.key = this.declVar(el$0.key, true);
-		}
+  struct.params._consts = constsCache;
 
-		args.push([
-			el$0.key,
-			el$0.value,
-			old$0
-		]);
+  var res = {
+    params: params,
+    str: decl,
+    list: args,
+    scope: scope,
+    defParams: defParams
+  };
 
-		decl += el$0.key;
+  if (opt_name) {
+    argsResCache[opt_tplName][type][opt_name] = res;
+  }
 
-		if (el$0.value !== void 0) {
-			defParams += (("" + (el$0.key)) + (" = arguments[" + i$5) + ("] = " + (el$0.key)) + (" != null ? " + (el$0.key)) + (" : " + (this.prepareOutput(this.replaceDangerBlocks(el$0.value), true))) + ";");
-		}
-
-		if (i$5 !== argsList.length - 1) {
-			decl += ',';
-		}
-	}
-
-	if (needArgs) {
-		var tmp$0 = args.pop();
-		args = args.concat(locals);
-		args.push(tmp$0);
-		args['__SNAKESKIN_TMP__needArgs'] = true;
-
-	} else {
-		args = args.concat(locals);
-	}
-
-	struct.params._consts = constsCache;
-
-	var res = {
-		params: params,
-		str: decl,
-		list: args,
-		scope: scope,
-		defParams: defParams
-	};
-
-	if (opt_name) {
-		argsResCache[opt_tplName][type][opt_name] = res;
-	}
-
-	return res;
+  return res;
 };
 /*!
  * API для работы с кешем шаблонов
@@ -6928,18 +6833,18 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
  * @return {Object}
  */
 DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
-	opt_tplName = opt_tplName || this.tplName;
-	var output = outputCache[opt_tplName];
+  opt_tplName = opt_tplName || this.tplName;
+  var output = outputCache[opt_tplName];
 
-	if (!output) {
-		return null;
-	}
+  if (!output) {
+    return null;
+  }
 
-	if (!output[type]) {
-		output[type] = {};
-	}
+  if (!output[type]) {
+    output[type] = {};
+  }
 
-	return output[type];
+  return output[type];
 };
 
 /**
@@ -6949,22 +6854,22 @@ DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
  * @return {!DirObj}
  */
 DirObj.prototype.initTemplateCache = function (tplName) {
-	protoCache[tplName] = {};
-	blockCache[tplName] = {};
-	constCache[tplName] = {};
+  protoCache[tplName] = {};
+  blockCache[tplName] = {};
+  constCache[tplName] = {};
 
-	fromProtoCache[tplName] = 0;
-	fromConstCache[tplName] = 0;
+  fromProtoCache[tplName] = 0;
+  fromConstCache[tplName] = 0;
 
-	this.consts = [];
-	this.bemRef = '';
+  this.consts = [];
+  this.bemRef = "";
 
-	this.strongSpace = 0;
-	this.sysSpace = false;
-	this.chainSpace = false;
-	this.space = !this.tolerateWhitespace;
+  this.strongSpace = 0;
+  this.sysSpace = false;
+  this.chainSpace = false;
+  this.space = !this.tolerateWhitespace;
 
-	return this;
+  return this;
 };
 Snakeskin.DirObj = DirObj;
 
@@ -7036,295 +6941,291 @@ Snakeskin.DirObj = DirObj;
  *     (используется для сообщений об ошибках)
  */
 function DirObj(src, params) {
-	for (var key in this) {
-		if (this[key] && this[key].init) {
-			this[key] = this[key].init();
-		}
-	}
-
-	/** @type {DirObj} */
-	this.parent = params.parent;
+  for (var key in this) {
+    if (this[key] && this[key].init) {
+      this[key] = this[key].init();
+    }
+  }
 
-	/** @type {boolean} */
-	this.throws = params.throws;
+  /** @type {DirObj} */
+  this.parent = params.parent;
 
-	/** @type {boolean} */
-	this.useStrict = params.useStrict;
-
-	/** @type {?function(!Error)} */
-	this.onError = params.onError || null;
-
-	/** @type {!Array} */
-	this.scope = params.scope || [];
-
-	/** @type {Object} */
-	this.proto = params.proto;
-
-	/** @type {Object} */
-	this.info = params.info;
-
-	/** @type {boolean} */
-	this.needPrfx = params.needPrfx || false;
-
-	/** @type {!Array} */
-	this.lines = params.lines || [''];
-
-	/** @type {string} */
-	this.lineSeparator = params.lineSeparator;
-
-	/** @type {string} */
-	this.renderMode = params.renderMode;
-
-	/** @type {boolean} */
-	this.tolerateWhitespace = params.tolerateWhitespace;
-
-	/** @type {boolean} */
-	this.inlineIterators = params.inlineIterators;
-
-	/** @type {(string|boolean)} */
-	this.doctype = params.doctype;
-
-	/** @type {boolean} */
-	this.replaceUndef = params.replaceUndef;
-
-	/** @type {boolean} */
-	this.escapeOutput = params.escapeOutput;
-
-	/** @type {(?string|undefined)} */
-	this.renderAs = params.renderAs;
+  /** @type {boolean} */
+  this.throws = params.throws;
 
-	/** @type {string} */
-	this.exports = params.exports;
+  /** @type {boolean} */
+  this.useStrict = params.useStrict;
+
+  /** @type {?function(!Error)} */
+  this.onError = params.onError || null;
+
+  /** @type {!Array} */
+  this.scope = params.scope || [];
+
+  /** @type {Object} */
+  this.proto = params.proto;
+
+  /** @type {Object} */
+  this.info = params.info;
+
+  /** @type {boolean} */
+  this.needPrfx = params.needPrfx || false;
+
+  /** @type {!Array} */
+  this.lines = params.lines || [""];
+
+  /** @type {string} */
+  this.lineSeparator = params.lineSeparator;
+
+  /** @type {string} */
+  this.renderMode = params.renderMode;
+
+  /** @type {boolean} */
+  this.tolerateWhitespace = params.tolerateWhitespace;
+
+  /** @type {boolean} */
+  this.inlineIterators = params.inlineIterators;
+
+  /** @type {(string|boolean)} */
+  this.doctype = params.doctype;
+
+  /** @type {boolean} */
+  this.replaceUndef = params.replaceUndef;
+
+  /** @type {boolean} */
+  this.escapeOutput = params.escapeOutput;
+
+  /** @type {(?string|undefined)} */
+  this.renderAs = params.renderAs;
 
-	/** @type {boolean} */
-	this.autoReplace = params.autoReplace !== false;
+  /** @type {string} */
+  this.exports = params.exports;
 
-	/** @type {(Object|undefined)} */
-	this.macros = params.macros;
+  /** @type {boolean} */
+  this.autoReplace = params.autoReplace !== false;
 
-	/** @type {string} */
-	this.bemFilter = params.bemFilter;
+  /** @type {(Object|undefined)} */
+  this.macros = params.macros;
 
-	/** @type {boolean} */
-	this.localization = params.localization;
+  /** @type {string} */
+  this.bemFilter = params.bemFilter;
 
-	/** @type {string} */
-	this.i18nFn = params.i18nFn;
+  /** @type {boolean} */
+  this.localization = params.localization;
 
-	/** @type {(Object|undefined)} */
-	this.language = params.language;
-
-	/** @type {(RegExp|undefined)} */
-	this.ignore = params.ignore;
+  /** @type {string} */
+  this.i18nFn = params.i18nFn;
 
-	/**
-	 * Стек изменяемых параметров
-	 * (те параметры, которые можно изменить директивой)
-	 * @type {!Array}
-	 */
-	this.params = [
-		{
-			'@root': true,
-			'renderMode': this.renderMode,
-			'inlineIterators': this.inlineIterators,
-			'doctype': this.doctype,
-			'escapeOutput': this.escapeOutput,
-			'renderAs': this.renderAs,
-			'replaceUndef': this.replaceUndef,
-			'autoReplace': this.autoReplace,
-			'macros': this.macros,
-			'localization': this.localization,
-			'i18nFn': this.i18nFn,
-			'bemFilter': this.bemFilter,
-			'language': this.language,
-			'ignore': this.ignore,
-			'tolerateWhitespace': this.tolerateWhitespace
-		}
-	];
-
-	if (params.consts) {
-		/** @type {(Array|undefined)} */
-		this.consts = params.consts;
-	}
-
-	/**
-	 * Если true, то трансляция сбрасывается
-	 * @type {boolean}
-	 */
-	this.brk = false;
-
-	/**
-	 * Название активной директивы
-	 * @type {?string}
-	 */
-	this.name = null;
-
-	/**
-	 * Таблица директив, которые могут идти после исходной
-	 * @type {Object}
-	 */
-	this.after = null;
-
-	/**
-	 * Если false, то шаблон не вставляется в результирующую JS строку
-	 * @type {boolean}
-	 */
-	this.canWrite = true;
-
-	// Флаги работы с пробельными символами
-	// >>>
-
-	/** @type {boolean} */
-	this.space = false;
-
-	/** @type {boolean} */
-	this.skipSpace = false;
-
-	/** @type {boolean} */
-	this.prevSpace = false;
-
-	/** @type {boolean} */
-	this.chainSpace = false;
-
-	/** @type {number} */
-	this.strongSpace = 0;
-
-	/** @type {boolean} */
-	this.sysSpace = false;
-
-	/** @type {number} */
-	this.freezeLine = 0;
-
-	/** @type {boolean} */
-	this.attr = false;
-
-	/** @type {boolean} */
-	this.attrEscape = false;
-
-	// <<<
-
-	/**
-	 * Номер активной итерации
-	 * @type {number}
-	 */
-	this.i = -1;
-
-	/**
-	 * Дерево блоков (прототипы, блоки, константы)
-	 * @type {Object}
-	 */
-	this.blockStructure = null;
-
-	/**
-	 * Таблица блоков (прототипы, блоки, константы)
-	 * @type {Object}
-	 */
-	this.blockTable = null;
-
-	/**
-	 * Кеш внешних блоков и прототипов
-	 * @type {!Object}
-	 */
-	this.preDefs = {};
-
-	/**
-	 * Название активного внешнего прототипа или блока
-	 * @type {?string}
-	 */
-	this.outerLink = null;
-
-	/**
-	 * Структура шаблонов
-	 * @type {!Object}
-	 */
-	this.structure = {
-		name: 'root',
-
-		/** @type {?{name: string, parent: Object, params: !Object, stack: !Array, vars: Object, children: Array, sys: boolean, strong: boolean}} */
-		parent: null,
-
-		params: {},
-		stack: [],
-
-		vars: params.vars || {},
-		children: [],
-
-		sys: false,
-		strong: false
-	};
-
-	/**
-	 * Если true, то директива не имеет закрывающей части
-	 * @type {?boolean}
-	 */
-	this.inline = null;
-
-	/**
-	 * Если true, то директива считается текстовой
-	 * @type {boolean}
-	 */
-	this.text = false;
-
-	/**
-	 * Содержимое скобок (Escaper)
-	 * @type {!Array}
-	 */
-	this.quotContent = [];
-
-	/**
-	 * Содержимое директив (для replaceTplVars)
-	 * @type {!Array}
-	 */
-	this.dirContent = [];
-
-	/**
-	 * Содержимое блоков cdata
-	 * @type {!Array}
-	 */
-	this.cDataContent = [];
-
-	/**
-	 * Таблица подключённых файлов
-	 * @type {!Object}
-	 */
-	this.files = {};
-
-	/**
-	 * Объект модуля
-	 * @type {{exports, require, id, key, root, filename, parent, children, loaded}}
-	 */
-	this.module = {
-		exports: {},
-		require: IS_NODE ?
-			require : null,
-
-		id: 0,
-		key: [],
-
-		root: null,
-		filename: this.info['file'],
-		parent: IS_NODE ?
-			module : null,
-
-		children: [],
-		loaded: true
-	};
-
-	/**
-	 * Исходный текст шаблона
-	 * @type {string}
-	 */
-	this.source = this.replaceCData(String(src));
-
-	/**
-	 * Результирующий JS код
-	 * @type {string}
-	 */
-	this.res = '';
-
-	if (!this.proto) {
-		this.res += /* cbws */((" This code is generated automatically, don\'t alter it. */ (function () { " + (this.useStrict ? '\'use strict\';' : '')) + ("  var __IS_NODE__ = false, __HAS_EXPORTS__ = typeof exports !== 'undefined', __EXPORTS__ = __HAS_EXPORTS__ ? exports : this;  try { __IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';  } catch (ignore) {  }  var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;  function __INIT__(obj) { Snakeskin = Snakeskin || (obj instanceof Object ? obj : void 0);  if (__HAS_EXPORTS__) { delete __EXPORTS__.init; }  if (__IS_NODE__) { Snakeskin = Snakeskin || require(obj); }  __EXEC__.call(__EXPORTS__); return __EXPORTS__; }  if (__HAS_EXPORTS__) { __EXPORTS__.init = __INIT__; }  function __EXEC__() { var __ROOT__ = this, self = this;  var __APPEND__ = Snakeskin.appendChild, __FILTERS__ = Snakeskin.Filters, __VARS__ = Snakeskin.Vars, __LOCAL__ = Snakeskin.LocalVars;  " + (this.multiDeclVar('$_'))) + " ");
-	}
+  /** @type {(Object|undefined)} */
+  this.language = params.language;
+
+  /** @type {(RegExp|undefined)} */
+  this.ignore = params.ignore;
+
+  /**
+   * Стек изменяемых параметров
+   * (те параметры, которые можно изменить директивой)
+   * @type {!Array}
+   */
+  this.params = [{
+    "@root": true,
+    "renderMode": this.renderMode,
+    "inlineIterators": this.inlineIterators,
+    "doctype": this.doctype,
+    "escapeOutput": this.escapeOutput,
+    "renderAs": this.renderAs,
+    "replaceUndef": this.replaceUndef,
+    "autoReplace": this.autoReplace,
+    "macros": this.macros,
+    "localization": this.localization,
+    "i18nFn": this.i18nFn,
+    "bemFilter": this.bemFilter,
+    "language": this.language,
+    "ignore": this.ignore,
+    "tolerateWhitespace": this.tolerateWhitespace
+  }];
+
+  if (params.consts) {
+    /** @type {(Array|undefined)} */
+    this.consts = params.consts;
+  }
+
+  /**
+   * Если true, то трансляция сбрасывается
+   * @type {boolean}
+   */
+  this.brk = false;
+
+  /**
+   * Название активной директивы
+   * @type {?string}
+   */
+  this.name = null;
+
+  /**
+   * Таблица директив, которые могут идти после исходной
+   * @type {Object}
+   */
+  this.after = null;
+
+  /**
+   * Если false, то шаблон не вставляется в результирующую JS строку
+   * @type {boolean}
+   */
+  this.canWrite = true;
+
+  // Флаги работы с пробельными символами
+  // >>>
+
+  /** @type {boolean} */
+  this.space = false;
+
+  /** @type {boolean} */
+  this.skipSpace = false;
+
+  /** @type {boolean} */
+  this.prevSpace = false;
+
+  /** @type {boolean} */
+  this.chainSpace = false;
+
+  /** @type {number} */
+  this.strongSpace = 0;
+
+  /** @type {boolean} */
+  this.sysSpace = false;
+
+  /** @type {number} */
+  this.freezeLine = 0;
+
+  /** @type {boolean} */
+  this.attr = false;
+
+  /** @type {boolean} */
+  this.attrEscape = false;
+
+  // <<<
+
+  /**
+   * Номер активной итерации
+   * @type {number}
+   */
+  this.i = -1;
+
+  /**
+   * Дерево блоков (прототипы, блоки, константы)
+   * @type {Object}
+   */
+  this.blockStructure = null;
+
+  /**
+   * Таблица блоков (прототипы, блоки, константы)
+   * @type {Object}
+   */
+  this.blockTable = null;
+
+  /**
+   * Кеш внешних блоков и прототипов
+   * @type {!Object}
+   */
+  this.preDefs = {};
+
+  /**
+   * Название активного внешнего прототипа или блока
+   * @type {?string}
+   */
+  this.outerLink = null;
+
+  /**
+   * Структура шаблонов
+   * @type {!Object}
+   */
+  this.structure = {
+    name: "root",
+
+    /** @type {?{name: string, parent: Object, params: !Object, stack: !Array, vars: Object, children: Array, sys: boolean, strong: boolean}} */
+    parent: null,
+
+    params: {},
+    stack: [],
+
+    vars: params.vars || {},
+    children: [],
+
+    sys: false,
+    strong: false
+  };
+
+  /**
+   * Если true, то директива не имеет закрывающей части
+   * @type {?boolean}
+   */
+  this.inline = null;
+
+  /**
+   * Если true, то директива считается текстовой
+   * @type {boolean}
+   */
+  this.text = false;
+
+  /**
+   * Содержимое скобок (Escaper)
+   * @type {!Array}
+   */
+  this.quotContent = [];
+
+  /**
+   * Содержимое директив (для replaceTplVars)
+   * @type {!Array}
+   */
+  this.dirContent = [];
+
+  /**
+   * Содержимое блоков cdata
+   * @type {!Array}
+   */
+  this.cDataContent = [];
+
+  /**
+   * Таблица подключённых файлов
+   * @type {!Object}
+   */
+  this.files = {};
+
+  /**
+   * Объект модуля
+   * @type {{exports, require, id, key, root, filename, parent, children, loaded}}
+   */
+  this.module = {
+    exports: {},
+    require: IS_NODE ? require : null,
+
+    id: 0,
+    key: [],
+
+    root: null,
+    filename: this.info["file"],
+    parent: IS_NODE ? module : null,
+
+    children: [],
+    loaded: true
+  };
+
+  /**
+   * Исходный текст шаблона
+   * @type {string}
+   */
+  this.source = this.replaceCData(String(src));
+
+  /**
+   * Результирующий JS код
+   * @type {string}
+   */
+  this.res = "";
+
+  if (!this.proto) {
+    this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : this;try {__IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);if (__HAS_EXPORTS__) {delete __EXPORTS__.init;}if (__IS_NODE__) {Snakeskin = Snakeskin || require(obj);}__EXEC__.call(__EXPORTS__);return __EXPORTS__;}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
+  }
 }
 /*!
  * API для работы с директивами
@@ -7339,93 +7240,89 @@ function DirObj(src, params) {
  * @return {!DirObj}
  */
 DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
-	opt_vars = opt_vars || {};
+  var _this = this;
+  opt_vars = opt_vars || {};
 
-	opt_name = this.name =
-		opt_name || this.name;
+  opt_name = this.name = opt_name || this.name;
 
-	opt_params = opt_params || {};
-	this.inline = false;
+  opt_params = opt_params || {};
+  this.inline = false;
 
-	var vars = opt_vars || {},
-		struct = this.structure;
+  var vars = opt_vars || {}, struct = this.structure;
 
-	// Установка ссылок на локальные переменные родительской директивы
-	forIn(struct.vars, function(el, key)  {
-		vars[key] = el;
-		vars[key].inherited = true;
-	});
+  // Установка ссылок на локальные переменные родительской директивы
+  forIn(struct.vars, function (el, key) {
+    vars[key] = el;
+    vars[key].inherited = true;
+  });
 
-	var obj = {
-		name: opt_name,
-		parent: struct,
+  var obj = {
+    name: opt_name,
+    parent: struct,
 
-		params: opt_params,
-		stack: [],
+    params: opt_params,
+    stack: [],
 
-		vars: vars,
-		children: [],
+    vars: vars,
+    children: [],
 
-		sys: Boolean(sys[opt_name]),
-		strong: false
-	};
+    sys: Boolean(sys[opt_name]),
+    strong: false
+  };
 
-	struct.children.push(obj);
-	this.structure = obj;
+  struct.children.push(obj);
+  this.structure = obj;
 
-	var bStruct = this.blockStructure,
-		bTable = this.blockTable;
+  var bStruct = this.blockStructure, bTable = this.blockTable;
 
-	if (bStruct && this.getGroup('blockInherit')[opt_name]) {
-		var parent = this.parentTplName,
-			key = (("" + opt_name) + ("_" + (opt_params.name)) + ""),
-			sub;
+  if (bStruct && this.getGroup("blockInherit")[opt_name]) {
+    var deep;
+    (function () {
+      var parent = _this.parentTplName, key = "" + opt_name + "_" + opt_params.name, sub = undefined;
 
-		if (bTable[key] && bTable[key] !== true) {
-			sub = bTable[key];
-			sub.parent = bStruct;
+      if (bTable[key] && bTable[key] !== true) {
+        sub = bTable[key];
+        sub.parent = bStruct;
+      } else {
+        sub = {
+          name: opt_name,
+          parent: bStruct,
+          params: opt_params,
+          children: []
+        };
 
-		} else {
-			sub = {
-				name: opt_name,
-				parent: bStruct,
-				params: opt_params,
-				children: []
-			};
+        if (bTable[key] === true) {
+          sub.drop = true;
+        }
 
-			if (bTable[key] === true) {
-				sub.drop = true;
-			}
+        bTable[key] = sub;
+        deep = function (obj) {
+          for (var i = -1; ++i < obj.length;) {
+            var el = obj[i], _key = "" + el.name + "_" + el.params.name;
 
-			bTable[key] = sub;
-			var deep = function(obj)  {
-				for (var i = -1; ++i < obj.length;) {
-					var el = obj[i],
-						key = (("" + (el.name)) + ("_" + (el.params.name)) + "");
+            if (bTable[_key]) {
+              bTable[_key].drop = true;
+            } else {
+              bTable[_key] = true;
+            }
 
-					if (bTable[key]) {
-						bTable[key].drop = true;
+            if (el.children) {
+              deep(el.children);
+            }
+          }
+        };
 
-					} else {
-						bTable[key] = true;
-					}
+        if (parent && table[parent][key] && table[parent][key].children) {
+          deep(table[parent][key].children);
+        }
+      }
 
-					if (el.children) {
-						deep(el.children);
-					}
-				}
-			};
+      bStruct.children.push(sub);
+      _this.blockStructure = sub;
+    })();
+  }
 
-			if (parent && table[parent][key] && table[parent][key].children) {
-				deep(table[parent][key].children);
-			}
-		}
-
-		bStruct.children.push(sub);
-		this.blockStructure = sub;
-	}
-
-	return this;
+  return this;
 };
 
 /**
@@ -7436,57 +7333,53 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
  * @return {!DirObj}
  */
 DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
-	opt_params = opt_params || {};
-	opt_name =
-		this.name = opt_name || this.name;
+  opt_params = opt_params || {};
+  opt_name = this.name = opt_name || this.name;
 
-	var obj = {
-		name: opt_name,
-		parent: this.structure,
+  var obj = {
+    name: opt_name,
+    parent: this.structure,
 
-		params: opt_params,
-		stack: [],
+    params: opt_params,
+    stack: [],
 
-		vars: null,
-		children: null,
+    vars: null,
+    children: null,
 
-		sys: Boolean(sys[opt_name]),
-		strong: false
-	};
+    sys: Boolean(sys[opt_name]),
+    strong: false
+  };
 
-	this.inline = true;
-	this.structure.children.push(obj);
-	this.structure = obj;
+  this.inline = true;
+  this.structure.children.push(obj);
+  this.structure = obj;
 
-	var bStruct = this.blockStructure,
-		bTable = this.blockTable;
+  var bStruct = this.blockStructure, bTable = this.blockTable;
 
-	if (this.blockStructure && this.getGroup('inlineInherit')[opt_name]) {
-		var key = (("" + opt_name) + ("_" + (opt_params.name)) + ""),
-			sub;
+  if (this.blockStructure && this.getGroup("inlineInherit")[opt_name]) {
+    var key = "" + opt_name + "_" + opt_params.name, sub = undefined;
 
-		if (bTable[key] && bTable[key] !== true) {
-			sub = bTable[key];
-			sub.parent = bStruct;
+    if (bTable[key] && bTable[key] !== true) {
+      sub = bTable[key];
+      sub.parent = bStruct;
+    } else {
+      sub = {
+        name: opt_name,
+        parent: bStruct,
+        params: opt_params
+      };
 
-		} else {
-			sub = {
-				name: opt_name,
-				parent: bStruct,
-				params: opt_params
-			};
+      if (bTable[key] === true) {
+        sub.drop = true;
+      }
+    }
 
-			if (bTable[key] === true) {
-				sub.drop = true;
-			}
-		}
+    bTable[key] = sub;
+    bStruct.children.push(sub);
+    this.blockStructure = sub;
+  }
 
-		bTable[key] = sub;
-		bStruct.children.push(sub);
-		this.blockStructure = sub;
-	}
-
-	return this;
+  return this;
 };
 
 /**
@@ -7494,12 +7387,12 @@ DirObj.prototype.startInlineDir = function (opt_name, opt_params) {
  * @return {!DirObj}
  */
 DirObj.prototype.endDir = function () {
-	if (this.blockStructure && this.getGroup('blockInherit')[this.structure.name]) {
-		this.blockStructure = this.blockStructure.parent;
-	}
+  if (this.blockStructure && this.getGroup("blockInherit")[this.structure.name]) {
+    this.blockStructure = this.blockStructure.parent;
+  }
 
-	this.structure = this.structure.parent;
-	return this;
+  this.structure = this.structure.parent;
+  return this;
 };
 /*!
  * API для обработки ошибок трансляции
@@ -7510,81 +7403,65 @@ DirObj.prototype.endDir = function () {
  * @return {string}
  */
 DirObj.prototype.genErrorAdvInfo = function () {
-	var nl = this.lineSeparator;
-	var info = this.info,
-		str = '';
+  var nl = this.lineSeparator;
+  var info = this.info, str = "";
 
-	if (!info) {
-		return str;
-	}
+  if (!info) {
+    return str;
+  }
 
-	forIn(info, function(el, key)  {
-		if (el == null) {
-			return;
-		}
+  forIn(info, function (el, key) {
+    if (el == null) {
+      return;
+    }
 
-		if (el.innerHTML) {
-			str += (("" + key) + (": (class: " + (el.className || 'undefined')) + (", id: " + (el.id || 'undefined')) + "), ");
+    if (el.innerHTML) {
+      str += "" + key + ": (class: " + (el.className || "undefined") + ", id: " + (el.id || "undefined") + "), ";
+    } else {
+      str += "" + key + ": " + el + ", ";
+    }
+  });
 
-		} else {
-			str += (("" + key) + (": " + el) + ", ");
-		}
-	});
+  str = str.replace(/, $/, "");
+  var line = info["line"];
 
-	str = str.replace(/, $/, '');
-	var line = info['line'];
+  var cutRgxp = /\/\*!!= (.*?) =\*\//g, privateRgxp = new RegExp("" + ADV_LEFT_BLOCK + "?" + LEFT_BLOCK + "__.*?__.*?" + RIGHT_BLOCK, "g"), styleRgxp = /\t|[ ]{4}/g;
 
-	var cutRgxp = /\/\*!!= (.*?) =\*\//g,
-		privateRgxp = new RegExp((("" + ADV_LEFT_BLOCK) + ("?" + LEFT_BLOCK) + ("__.*?__.*?" + RIGHT_BLOCK) + ""), 'g'),
-		styleRgxp = /\t|[ ]{4}/g;
+  if (line) {
+    var prfx = "", max = 0;
 
-	if (line) {
-		var prfx = '',
-			max = 0;
+    for (var i = 8; i--;) {
+      var pos = line - i - 2, prev = this.lines[pos];
 
-		for (var i = 8; i--;) {
-			var pos = line - i - 2,
-				prev = this.lines[pos];
+      var space = new Array(String(line - 1).length - String(pos).length + 1).join(" ");
 
-			var space = new Array(String(line - 1).length - String(pos).length + 1)
-				.join(' ');
+      if (prev != null) {
+        prev = prev.replace(styleRgxp, "  ").replace(privateRgxp, "").replace(cutRgxp, "$1");
 
-			if (prev != null) {
-				prev = prev
-					.replace(styleRgxp, '  ')
-					.replace(privateRgxp, '')
-					.replace(cutRgxp, '$1');
+        var _part = undefined;
 
-				var part = void 0;
+        if (prev.trim()) {
+          _part = "" + nl + "  " + (pos + 1) + " " + space + "" + prev;
+        } else {
+          _part = "" + nl + "  ...";
+        }
 
-				if (prev.trim()) {
-					part = (("" + nl) + ("  " + (pos + 1)) + (" " + space) + ("" + prev) + "");
+        prfx += _part;
+        if (max < _part.length) {
+          max = _part.length;
+        }
+      }
+    }
 
-				} else {
-					part = (("" + nl) + "  ...");
-				}
+    var current = this.lines[line - 1].replace(styleRgxp, "  ").replace(privateRgxp, "").replace(cutRgxp, "$1");
 
-				prfx += part;
-				if (max < part.length) {
-					max = part.length;
-				}
-			}
-		}
+    var part = "> " + line + " " + current;
+    var sep = new Array(Math.max(max, part.length) || 5).join("-");
 
-		var current = this.lines[line - 1]
-			.replace(styleRgxp, '  ')
-			.replace(privateRgxp, '')
-			.replace(cutRgxp, '$1');
+    str += nl + sep + prfx + nl + part + nl + sep;
+  }
 
-		var part$0 = (("> " + line) + (" " + current) + "");
-		var sep = new Array(
-				Math.max(max, part$0.length) || 5
-		).join('-');
-
-		str += nl + sep + prfx + nl + part$0 + nl + sep;
-	}
-
-	return str;
+  return str;
 };
 
 /**
@@ -7598,163 +7475,165 @@ DirObj.prototype._error = null;
  * @param {string} msg - сообщение ошибки
  */
 DirObj.prototype.error = function (msg) {
-	if (this._error) {
-		return;
-	}
+  if (this._error) {
+    return;
+  }
 
-	this._error = true;
-	var report = (("" + msg) + (", " + (this.genErrorAdvInfo())) + ""),
-		error = new Error(report);
+  this._error = true;
+  var report = "" + msg + ", " + this.genErrorAdvInfo(), error = new Error(report);
 
-	error.name = 'SnakeskinError';
-	this.brk = true;
+  error.name = "SnakeskinError";
+  this.brk = true;
 
-	if (this.proto) {
-		this.parent.brk = true;
-	}
+  if (this.proto) {
+    this.parent.brk = true;
+  }
 
-	if (this.onError) {
-		this.onError(error);
+  if (this.onError) {
+    this.onError(error);
+  } else {
+    if (typeof console === "undefined" || typeof console.error !== "function" || this.throws) {
+      throw error;
+    }
 
-	} else {
-		if (typeof console === 'undefined' || typeof console.error !== 'function' || this.throws) {
-			throw error;
-		}
-
-		console.error(("SnakeskinError: " + report));
-	}
+    console.error("SnakeskinError: " + report);
+  }
 };
 /*!
  * Методы и функции для экранирования
  */
 
-var sysEscapeMap = DP$0(DP$0(DP$0(DP$0(DP$0(DP$0(DP$0(DP$0(DP$0({
-	'\\': true},
-	I18N,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	LEFT_BLOCK,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	ADV_LEFT_BLOCK,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	SINGLE_COMMENT.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	MULT_COMMENT_START.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	CONCAT_COMMAND,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	CONCAT_END,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	IGNORE_COMMAND,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	INLINE_COMMAND.trim().charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}
-);
+var sysEscapeMap = (function () {
+  var _sysEscapeMap = {
+    "\\": true };
 
-forIn(baseShortMap, function(el, key)  {
-	sysEscapeMap[key.charAt(0)] = true;
+  _defineProperty(_sysEscapeMap, I18N, true);
+
+  _defineProperty(_sysEscapeMap, LEFT_BLOCK, true);
+
+  _defineProperty(_sysEscapeMap, ADV_LEFT_BLOCK, true);
+
+  _defineProperty(_sysEscapeMap, SINGLE_COMMENT.charAt(0), true);
+
+  _defineProperty(_sysEscapeMap, MULT_COMMENT_START.charAt(0), true);
+
+  _defineProperty(_sysEscapeMap, CONCAT_COMMAND, true);
+
+  _defineProperty(_sysEscapeMap, CONCAT_END, true);
+
+  _defineProperty(_sysEscapeMap, IGNORE_COMMAND, true);
+
+  _defineProperty(_sysEscapeMap, INLINE_COMMAND.trim().charAt(0), true);
+
+  return _sysEscapeMap;
+})();
+
+forIn(baseShortMap, function (el, key) {
+  sysEscapeMap[key.charAt(0)] = true;
 });
 
-var strongSysEscapeMap = DP$0(DP$0({
-	'\\': true},
-	SINGLE_COMMENT.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-	MULT_COMMENT_START.charAt(0),{"value": true,"configurable":true,"enumerable":true,"writable":true}
-);
+var strongSysEscapeMap = (function () {
+  var _strongSysEscapeMap = {
+    "\\": true };
+
+  _defineProperty(_strongSysEscapeMap, SINGLE_COMMENT.charAt(0), true);
+
+  _defineProperty(_strongSysEscapeMap, MULT_COMMENT_START.charAt(0), true);
+
+  return _strongSysEscapeMap;
+})();
 
 var includeSysEscapeMap = {};
-includeSysEscapeMap['\\'] = true;
+includeSysEscapeMap["\\"] = true;
 
-forIn(includeDirMap, function(el, key)  {
-	includeSysEscapeMap[key.charAt(0)] = true;
+forIn(includeDirMap, function (el, key) {
+  includeSysEscapeMap[key.charAt(0)] = true;
 });
 
 var escapeMap = {
-	'"': true,
-	'\'': true,
-	'/': true
+  "\"": true,
+  "'": true,
+  "/": true
 };
 
 var escapeEndMap = {
-	'-': true,
-	'+': true,
-	'*': true,
-	'%': true,
-	'~': true,
-	'>': true,
-	'<': true,
-	'^': true,
-	',': true,
-	';': true,
-	'=': true,
-	'|': true,
-	'&': true,
-	'!': true,
-	'?': true,
-	':': true,
-	'(': true,
-	'{': true,
-	'[': true
+  "-": true,
+  "+": true,
+  "*": true,
+  "%": true,
+  "~": true,
+  ">": true,
+  "<": true,
+  "^": true,
+  ",": true,
+  ";": true,
+  "=": true,
+  "|": true,
+  "&": true,
+  "!": true,
+  "?": true,
+  ":": true,
+  "(": true,
+  "{": true,
+  "[": true
 };
 
 var escapeEndWords = {
-	'typeof': true,
-	'void': true,
-	'instanceof': true,
-	'delete': true,
-	'in': true,
-	'new': true
+  "typeof": true,
+  "void": true,
+  "instanceof": true,
+  "delete": true,
+  "in": true,
+  "new": true
 };
 
 var bMap = {
-	'(': true,
-	'[': true,
-	'{': true
+  "(": true,
+  "[": true,
+  "{": true
 };
 
 var closeBMap = {
-	')': true,
-	']': true,
-	'}': true
+  ")": true,
+  "]": true,
+  "}": true
 };
 
 var pMap = {
-	'(': true,
-	'[': true
+  "(": true,
+  "[": true
 };
 
 var closePMap = {
-	')': true,
-	']': true
+  ")": true,
+  "]": true
 };
 
-var backSlashRgxp = /\\/g,
-	singleQRgxp = /'/g,
-	qRgxp = /"/g;
+var backSlashRgxp = /\\/g, singleQRgxp = /'/g, qRgxp = /"/g;
 
 function escapeBackslash(str) {
-	return String(str)
-		.replace(backSlashRgxp, '\\\\');
+  return String(str).replace(backSlashRgxp, "\\\\");
 }
 
 function escapeSingleQuote(str) {
-	return String(str)
-		.replace(singleQRgxp, '\\\'');
+  return String(str).replace(singleQRgxp, "\\'");
 }
 
 function escapeDoubleQuote(str) {
-	return String(str)
-		.replace(qRgxp, '\\\"');
+  return String(str).replace(qRgxp, "\\\"");
 }
 
 function applyDefEscape(str) {
-	return escapeNextLine(
-		String(str)
-			.replace(backSlashRgxp, '\\\\')
-			.replace(singleQRgxp, '\\\'')
-	);
+  return escapeNextLine(String(str).replace(backSlashRgxp, "\\\\").replace(singleQRgxp, "\\'"));
 }
 
-var nRgxp = /\n/g,
-	rRgxp = /\r/g;
+var nRgxp = /\n/g, rRgxp = /\r/g;
 
 function escapeNextLine(str) {
-	return String(str)
-		.replace(nRgxp, '\\n')
-		.replace(rRgxp, '\\r');
+  return String(str).replace(nRgxp, "\\n").replace(rRgxp, "\\r");
 }
 
-var Escaper,
-	globalEscaper = global.Escaper;
+var Escaper, globalEscaper = global.Escaper;
 
 /* istanbul ignore next */
 /*!
@@ -8177,13 +8056,11 @@ Escaper.paste = function (str, opt_quotContent) {
 }).call(new Function('return this')());
 
 if (IS_NODE) {
-	Escaper = exports;
-	module.exports =
-		exports = root;
-
+  Escaper = exports;
+  module.exports = exports = root;
 } else {
-	Escaper = global.Escaper;
-	global.Escaper = globalEscaper;
+  Escaper = global.Escaper;
+  global.Escaper = globalEscaper;
 }
 
 Escaper.snakeskinRgxp = filterStartRgxp;
@@ -8197,7 +8074,7 @@ var escaperRgxp = /^__ESCAPER_QUOT__\d+_/;
  * @return {string}
  */
 DirObj.prototype.replaceDangerBlocks = function (str) {
-	return Escaper.replace(str, true, this.quotContent, true);
+  return Escaper.replace(str, true, this.quotContent, true);
 };
 
 /**
@@ -8207,7 +8084,7 @@ DirObj.prototype.replaceDangerBlocks = function (str) {
  * @return {string}
  */
 DirObj.prototype.pasteDangerBlocks = function (str) {
-	return Escaper.paste(str, this.quotContent);
+  return Escaper.paste(str, this.quotContent);
 };
 
 var tplsVarsRgxp = /__SNAKESKIN__(\d+)_/g;
@@ -8218,8 +8095,11 @@ var tplsVarsRgxp = /__SNAKESKIN__(\d+)_/g;
  * @param {string} str - исходная строка
  * @return {string}
  */
-DirObj.prototype.pasteTplVarBlocks = function (str) {var this$0 = this;
-	return str.replace(tplsVarsRgxp, function(sstr, pos)  {return this$0.dirContent[pos]});
+DirObj.prototype.pasteTplVarBlocks = function (str) {
+  var _this2 = this;
+  return str.replace(tplsVarsRgxp, function (sstr, pos) {
+    return _this2.dirContent[pos];
+  });
 };
 var uid;
 
@@ -8230,62 +8110,16 @@ var uid;
  * @return {?}
  */
 DirObj.prototype.evalStr = function (str) {
-	str = this.pasteDangerBlocks(str);
-	var module = this.module;
-	var filename = module.filename,
-		dirname;
+  str = this.pasteDangerBlocks(str);
+  var module = this.module;
+  var filename = module.filename, dirname;
 
-	if (IS_NODE) {
-		dirname = require('path').dirname(filename);
-		return new Function(
-			'Snakeskin',
-
-			'__FILTERS__',
-			'__VARS__',
-			'__LOCAL__',
-
-			'module',
-			'exports',
-			'require',
-
-			'__dirname',
-			'__filename',
-
-			str
-
-		).call(
-			root,
-			Snakeskin,
-			Snakeskin.Filters,
-			Snakeskin.Vars,
-			Snakeskin.LocalVars,
-
-			module,
-			module.exports,
-			require,
-
-			dirname,
-			filename
-		);
-
-	} else {
-		return new Function(
-			'Snakeskin',
-
-			'__FILTERS__',
-			'__VARS__',
-			'__LOCAL__',
-
-			str
-
-		).call(
-			root,
-			Snakeskin,
-			Snakeskin.Filters,
-			Snakeskin.Vars,
-			Snakeskin.LocalVars
-		);
-	}
+  if (IS_NODE) {
+    dirname = require("path").dirname(filename);
+    return new Function("Snakeskin", "__FILTERS__", "__VARS__", "__LOCAL__", "module", "exports", "require", "__dirname", "__filename", str).call(root, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, module, module.exports, require, dirname, filename);
+  } else {
+    return new Function("Snakeskin", "__FILTERS__", "__VARS__", "__LOCAL__", str).call(root, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars);
+  }
 };
 
 /**
@@ -8296,7 +8130,7 @@ DirObj.prototype.evalStr = function (str) {
  * @return {?}
  */
 DirObj.prototype.returnEvalVal = function (str) {
-	return this.evalStr(("return " + str));
+  return this.evalStr("return " + str);
 };
 /**
  * Вернуть полное тело заданного шаблона
@@ -8306,667 +8140,577 @@ DirObj.prototype.returnEvalVal = function (str) {
  * @return {string}
  */
 DirObj.prototype.getFullBody = function (tplName) {
-	var protoLength = 'proto'.length,
-		constLength = 1;
+  var protoLength = "proto".length, constLength = 1;
 
-	var isDecl = [];
-	forIn(this.getGroup('inherit'), function(el, key)  {
-		isDecl.push(key);
-	});
+  var isDecl = [];
+  forIn(this.getGroup("inherit"), function (el, key) {
+    isDecl.push(key);
+  });
 
-	var length = isDecl.length * 2,
-		is = {};
+  var length = isDecl.length * 2, is = {};
 
-	for (var i = -1, j = 0; ++i < isDecl.length;) {
-		is[i + j] = isDecl[i];
-		j++;
-		is[i + j] = (("" + (isDecl[i])) + "_add");
-	}
+  for (var i = -1, j = 0; ++i < isDecl.length;) {
+    is[i + j] = isDecl[i];
+    j++;
+    is[i + j] = "" + isDecl[i] + "_add";
+  }
 
-	var parentTpl = extMap[tplName],
-		res = cache[parentTpl];
+  var parentTpl = extMap[tplName], res = cache[parentTpl];
 
-	var alb = ADV_LEFT_BLOCK,
-		lb = LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
+  var alb = ADV_LEFT_BLOCK, lb = LEFT_BLOCK, rb = RIGHT_BLOCK;
 
-	if (!this.tolerateWhitespace) {
-		res += (("" + alb) + ("" + lb) + ("__&-__" + rb) + "");
-	}
+  if (!this.tolerateWhitespace) {
+    res += "" + alb + "" + lb + "__&-__" + rb;
+  }
 
-	var from = 0,
-		advDiff = [];
+  var from = 0, advDiff = [];
 
-	var sornFn = function(a, b)  {return a.val - b.val};
-	var tb = table[tplName],
-		k;
+  var sornFn = function (a, b) {
+    return a.val - b.val;
+  };
+  var tb = table[tplName], k;
 
-	var el,
-		prev;
+  var el, prev;
 
-	var newFrom,
-		blockDiff;
+  var newFrom, blockDiff;
 
-	for (var i$6 = -1; ++i$6 < length;) {
-		var type = is[i$6];
+  for (var i = -1; ++i < length;) {
+    var type = is[i];
 
-		if (routerCache[type]) {
-			k = (("" + type) + "_");
+    if (routerCache[type]) {
+      k = "" + type + "_";
 
-			el = routerCache[type][tplName];
-			prev = routerCache[type][parentTpl];
+      el = routerCache[type][tplName];
+      prev = routerCache[type][parentTpl];
 
-			if (routerFromCache[type]) {
-				from = routerFromCache[type][parentTpl];
-				newFrom = null;
-			}
-		}
+      if (routerFromCache[type]) {
+        from = routerFromCache[type][parentTpl];
+        newFrom = null;
+      }
+    }
 
-		for (var key in el) {
-			if (!el.hasOwnProperty(key)) {
-				continue;
-			}
+    for (var key in el) {
+      if (!el.hasOwnProperty(key)) {
+        continue;
+      }
 
-			// Сдвиг относительно
-			// родительской позиции элемента
-			var adv = 0;
+      // Сдвиг относительно
+      // родительской позиции элемента
+      var adv = 0;
 
-			var current = el[key],
-				parent = !tb[k + key].drop && prev[key];
+      var current = el[key], parent = !tb[k + key].drop && prev[key];
 
-			var block = cache[tplName]
-				.substring(current.from, current.to);
+      var _block = cache[tplName].substring(current.from, current.to);
 
-			// Разница между дочерним и родительским блоком
-			if (parent) {
-				if (parent.output != null && current.output == null && (i$6 % 2 === 0)) {
-					current.output = parent.output;
+      // Разница между дочерним и родительским блоком
+      if (parent) {
+        if (parent.output != null && current.output == null && i % 2 === 0) {
+          current.output = parent.output;
 
-					if (type === 'const') {
-						block += current.output;
+          if (type === "const") {
+            _block += current.output;
+          } else {
+            this.getBlockOutput(type, tplName)[key] = current.output;
+          }
+        }
 
-					} else {
-						this.getBlockOutput(type, tplName)[key] = current.output;
-					}
-				}
+        blockDiff = _block.length - cache[parentTpl].substring(parent.from, parent.to).length;
+      }
 
-				blockDiff = block.length -
-					cache[parentTpl].substring(parent.from, parent.to).length;
-			}
+      var diff = parent ? parent.from : from;
 
-			var diff = parent ?
-				parent.from : from;
+      advDiff.sort(sornFn);
 
-			advDiff.sort(sornFn);
+      for (var j = -1; ++j < advDiff.length;) {
+        if (advDiff[j].val <= diff) {
+          adv += advDiff[j].adv;
+        } else {
+          break;
+        }
+      }
 
-			for (var j$0 = -1; ++j$0 < advDiff.length;) {
-				if (advDiff[j$0].val <= diff) {
-					adv += advDiff[j$0].adv;
+      // Переопределение
+      if (parent && i % 2 === 0) {
+        if (type !== "block" && (type !== "const" || !current.block)) {
+          newFrom = parent.from + adv + _block.length;
+          from += blockDiff;
 
-				} else {
-					break;
-				}
-			}
+          if (newFrom > from) {
+            from = newFrom + (type === "proto" ? protoLength : constLength);
+          }
+        }
 
-			// Переопределение
-			if (parent && (i$6 % 2 === 0)) {
-				if (type !== 'block' && (type !== 'const' || !current.block)) {
-					newFrom = parent.from + adv + block.length;
-					from += blockDiff;
+        res = res.substring(0, parent.from + adv) + _block + res.substring(parent.to + adv);
 
-					if (newFrom > from) {
-						from = newFrom + (type === 'proto' ? protoLength : constLength);
-					}
-				}
+        advDiff.push({
+          val: parent.from,
+          adv: blockDiff
+        });
 
-				res = res.substring(0, parent.from + adv) +
-					block +
-					res.substring(parent.to + adv);
+        // Добавление
+      } else if (!parent) {
+        if (type === "block_add") {
+          res += _block;
+        } else if (type === "const_add" || type === "proto_add") {
+          // Случай, если в дочернем шаблоне нет перекрытий,
+          // но есть добавления нового
+          if (newFrom === null) {
+            newFrom = from;
+            from += adv;
+          }
 
-				advDiff.push({
-					val: parent.from,
-					adv: blockDiff
-				});
+          _block = type === "const_add" ? "" + (current.needPrfx ? alb : "") + "" + lb + "" + _block + "" + rb : _block;
 
-			// Добавление
-			} else if (!parent) {
-				if (type === 'block_add') {
-					res += block;
+          res = res.substring(0, from) + _block + res.substring(from);
 
-				} else if (type === 'const_add' || type === 'proto_add') {
+          advDiff.push({
+            val: newFrom,
+            adv: _block.length
+          });
 
-					// Случай, если в дочернем шаблоне нет перекрытий,
-					// но есть добавления нового
-					if (newFrom === null) {
-						newFrom = from;
-						from += adv;
-					}
+          from = from + _block.length;
+        }
+      }
+    }
+  }
 
-					block = type === 'const_add' ?
-						(("" + (current.needPrfx ? alb : '')) + ("" + lb) + ("" + block) + ("" + rb) + "") : block;
-
-					res = res.substring(0, from) +
-						block +
-						res.substring(from);
-
-					advDiff.push({
-						val: newFrom,
-						adv: block.length
-					});
-
-					from = from + block.length;
-				}
-			}
-		}
-	}
-
-	return res;
+  return res;
 };
 /*!
  * API для работы с Jade-Like синтаксисом
  */
 
-(function()  {
-	var alb = ADV_LEFT_BLOCK,
-		lb = LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
-
-	var commandRgxp = /([^\s]+).*/,
-		nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
-		rightPartRgxp = new RegExp((("(?:" + alb) + ("?" + lb) + ("__&-__" + rb) + "|)\\s*$")),
-		rightWSRgxp = /\s*$/,
-		lastSymbolRgxp = new RegExp((("(" + alb) + "|\\\\)$"));
-
-	var endDirInit,
-		needSpace,
-		nl;
-
-	/**
-	 * Вернуть объект-описание преобразованной части шаблона из
-	 * Jade-Like синтаксиса в стандартный
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {number} i - номер начальной итерации
-	 * @return {{str: string, length: number, error: (boolean|null|undefined)}}
-	 */
-	DirObj.prototype.toBaseSyntax = function (str, i) {
-		needSpace = !this.tolerateWhitespace;
-		nl = this.lineSeparator;
-		endDirInit = false;
-
-		var clrL = 0,
-			init = true,
-			spaces = 0,
-			space = '';
-
-		var struct,
-			res = '';
-
-		var length = 0,
-			tSpace = 0;
-
-		function f(struct, obj) {
-			if (struct.block) {
-				if (chains[struct.name] && chains[struct.name][obj.name]) {
-					obj.block = true;
-					obj.name = struct.name;
-
-				} else if (ends[struct.name] && ends[struct.name][obj.name]) {
-					obj.block = false;
-
-				} else {
-					var rightSpace = rightWSRgxp.exec(res)[0];
-					res = res.replace(rightPartRgxp, '') +
-						genEndDir(struct, struct.space);
-
-					if (rightSpace && needSpace) {
-						res += (("" + (struct.adv)) + ("" + lb) + ("__&-__" + rb) + "");
-					}
-
-					res += rightSpace;
-				}
-
-			} else {
-				endDirInit = false;
-			}
-		}
-
-		for (var j = i - 1; ++j < str.length;) {
-			length++;
-
-			var el = str.charAt(j),
-				next = str.charAt(j + 1);
-
-			var next2str = str.substr(j, 2),
-				diff2str = str.substr(j + 1, 2);
-
-			if (nextLineRgxp.test(el)) {
-				tSpace++;
-
-				if (next2str === '\r\n') {
-					continue;
-				}
-
-				if (clrL) {
-					if (clrL === 1 && needSpace) {
-						res += (("" + alb) + ("" + lb) + ("__&-__" + rb) + "");
-					}
-
-					res += el;
-				}
-
-				clrL++;
-				init = true;
-
-				spaces = 0;
-				space = nl;
-
-			} else if (init) {
-				if (whiteSpaceRgxp.test(el)) {
-					spaces++;
-					space += el;
-					tSpace++;
-
-				} else {
-					var nextSpace = false,
-						diff = void 0;
-
-					init = false;
-					clrL = 0;
-
-					if (el === alb) {
-						diff = shortMap[diff2str] ?
-							3 : shortMap[next] ? 2 : 1;
-
-					} else {
-						diff = shortMap[next2str] ? 2 : 1;
-					}
-
-					var char = str.charAt(j + diff);
-					nextSpace = !char || whiteSpaceRgxp.test(char);
-
-					var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
-						decl = getLineDesc(
-							str,
-							nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j,
-							Boolean(dir),
-							next2str === MULT_COMMENT_START
-						);
-
-					if (!decl) {
-						this.error('invalid syntax');
-						return {
-							str: '',
-							length: 0,
-							error: true
-						};
-					}
-
-					var replacer = void 0;
-
-					if (el === alb) {
-						replacer = replacers[diff2str] ||
-							replacers[next] ||
-							replacers[next2str] ||
-							replacers[el];
-
-					} else {
-						replacer = replacers[next2str] ||
-							replacers[el];
-					}
-
-					if (replacer) {
-						decl.name = replacer(decl.name).replace(commandRgxp, '$1');
-					}
-
-					var adv = el === alb ?
-						alb : '';
-
-					var s = dir ? adv + lb : '',
-						e = dir ? rb : '';
-
-					var obj = {
-						dir: dir,
-						name: decl.name,
-						spaces: spaces,
-						space: space,
-						parent: null,
-						block: dir && block[decl.name],
-						text: !dir || text[decl.name],
-						adv: adv
-					};
-
-					if (struct) {
-						if (struct.spaces < spaces && struct.block) {
-							obj.parent = struct;
-
-							if (!obj.adv && struct.adv) {
-								obj.block = false;
-								adv = alb;
-							}
-
-						} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
-							obj.parent = struct.parent;
-
-							if (!obj.adv && struct.parent && struct.parent.adv) {
-								obj.block = false;
-								adv = alb;
-							}
-
-							f(struct, obj);
-							if (!struct.parent) {
-								return {
-									str: res,
-									length: length - tSpace - 1
-								};
-							}
-
-						} else {
-							while (struct.spaces >= spaces) {
-								f(struct, obj);
-								struct = struct
-									.parent;
-
-								if (!struct) {
-									return {
-										str: res,
-										length: length - tSpace - 1
-									};
-								}
-							}
-
-							obj.parent = struct;
-						}
-					}
-
-					var parts = void 0,
-						txt = void 0;
-
-					decl.command = decl.command.replace(lastSymbolRgxp, '\\$1');
-
-					if (dir) {
-						if (decl.sComment) {
-							parts = [decl.command];
-
-						} else {
-							parts = this.replaceDangerBlocks(decl.command).split(INLINE_COMMAND);
-
-							for (var z = -1; ++z < parts.length;) {
-								parts[z] = this.pasteDangerBlocks(parts[z]);
-							}
-						}
-
-						txt = parts.slice(1).join(INLINE_COMMAND);
-						txt = txt && txt.trim();
-					}
-
-					struct = obj;
-					res += space;
-
-					if (needSpace && (obj.text || !Snakeskin.Directions[obj.name])) {
-						res += (("" + adv) + ("" + lb) + ("__&-__" + rb) + "");
-					}
-
-					res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
-					endDirInit = false;
-
-					var tmp = decl.length - 1;
-					tSpace = 0;
-
-					length += tmp;
-					j += tmp;
-
-					if (dir && txt) {
-						var inline = {
-							dir: false,
-							spaces: spaces + 1,
-							space: '',
-							parent: obj,
-							block: false,
-							adv: ''
-						};
-
-						inline.parent = obj;
-						struct = inline;
-						res += txt;
-					}
-				}
-			}
-		}
-
-		while (struct) {
-			if (struct.block) {
-				res += genEndDir(struct, struct.space);
-			}
-
-			struct = struct
-				.parent;
-		}
-
-		return {
-			str: res,
-			length: length
-		};
-	};
-
-	/**
-	 * Вернуть строку окончания блоковой директивы
-	 *
-	 * @param {!Object} dir - объект-описание директивы
-	 * @param {string} space - доступное свободное пространство
-	 * @return {string}
-	 */
-	function genEndDir(dir, space) {
-		var s = dir.adv + lb,
-			tmp;
-
-		if (needSpace) {
-			tmp = (("" + (endDirInit ? '' : (("" + s) + ("__&+__" + rb) + ""))) + ("" + nl) + "");
-
-		} else {
-			tmp = nl + (space || '').substring(1);
-		}
-
-		endDirInit = true;
-		return (("" + tmp) + ("" + s) + ("__end__" + rb) + ("" + s) + ("__cutLine__" + rb) + "");
-	}
-
-	/**
-	 * Вернуть объект описание строки в Jade-Like синтаксисе
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {number} i - номер начальной итерации
-	 * @param {boolean} dir - если true, то идёт декларация директивы
-	 * @param {boolean} comment - если true, то идёт декларация мультистрочного комментария
-	 * @return {{command: string, length: number, name: string, lastEl: string, sComment: boolean}}
-	 */
-	function getLineDesc(str, i, dir, comment) {
-		var res = '',
-			name = '';
-
-		var lastEl = '',
-			lastElI = 0,
-			length = -1;
-
-		var escape = false;
-		var sComment = false,
-			inline = false;
-
-		var bOpen = false,
-			bEnd = true,
-			bEscape = false;
-
-		var part = '',
-			rPart = '';
-
-		var concatLine = false,
-			nmBrk = null;
-
-		for (var j = i - 1; ++j < str.length;) {
-			var currentEscape = escape,
-				el = str.charAt(j);
-
-			if (!bOpen && (el === '\\' || escape)) {
-				escape = !escape;
-			}
-
-			length++;
-			if (nextLineRgxp.test(el)) {
-				if (!comment && !bOpen) {
-					rPart = sComment ?
-						'' : part;
-
-					part = '';
-				}
-
-				var prevEl = lastEl,
-					brk = false;
-
-				lastEl = '';
-				if (comment || (sComment && concatLine)) {
-					res += el;
-
-				} else if (!sComment && dir) {
-					var dirStart = whiteSpaceRgxp.test(
-						str.charAt(j - 2)
-					);
-
-					var literal = void 0;
-					brk = dirStart &&
-						prevEl === CONCAT_END;
-
-					if (dirStart && (prevEl === CONCAT_COMMAND && res !== CONCAT_COMMAND || brk)) {
-						literal = prevEl;
-						res = res.substring(0, lastElI - 1) +
-							res.substring(lastElI + 1);
-
-					} else if (concatLine && !bOpen) {
-						res += el;
-					}
-
-					if (concatLine && !brk) {
-						continue;
-					}
-
-					if (literal === CONCAT_COMMAND) {
-						concatLine = true;
-
-						if (!bOpen) {
-							res += el;
-						}
-
-						continue;
-					}
-				}
-
-				if (comment || concatLine && !brk) {
-					sComment = false;
-					continue;
-				}
-
-				return {
-					command: res,
-					length: length,
-					name: name,
-					lastEl: lastEl,
-					sComment: !inline && sComment
-				};
-
-			} else {
-				if (!bOpen && !currentEscape) {
-					var commentType = returnComment(str, j);
-
-					if (comment) {
-						comment = commentType !== MULT_COMMENT_END;
-
-					} else if (!sComment) {
-						comment = commentType === MULT_COMMENT_START;
-
-						if (!comment) {
-							sComment = commentType === SINGLE_COMMENT;
-						}
-					}
-				}
-
-				if (!comment && !sComment) {
-					if (!bOpen) {
-						if (escapeEndMap[el] || escapeEndWords[rPart]) {
-							bEnd = true;
-
-						} else if (bEndRgxp.test(el)) {
-							bEnd = false;
-						}
-
-						if (escapeEndMap[el] || escapeEndWords[rPart]) {
-							bEnd = true;
-
-						} else if (bEndRgxp.test(el)) {
-							bEnd = false;
-						}
-
-						if (partRgxp.test(el)) {
-							part += el;
-
-						} else {
-							rPart = part;
-							part = '';
-						}
-
-						if (dir && !inline) {
-							inline = str.substr(j, INLINE_COMMAND.length) === INLINE_COMMAND;
-						}
-					}
-
-					if (escapeMap[el] && (el !== '/' || bEnd) && !bOpen) {
-						bOpen = el;
-
-					} else if (bOpen && (el === '\\' || bEscape)) {
-						bEscape = !bEscape;
-
-					} else if (escapeMap[el] && bOpen === el && !bEscape) {
-						bOpen = false;
-						bEnd = false;
-					}
-				}
-
-				var needSpace = lineWhiteSpaceRgxp.test(el);
-
-				if (needSpace) {
-					if (nmBrk === false) {
-						nmBrk = true;
-					}
-
-				} else {
-					lastEl = el;
-					lastElI = res.length;
-				}
-
-				if (!nmBrk && !needSpace) {
-					if (nmBrk === null) {
-						nmBrk = false;
-					}
-
-					name += el;
-				}
-
-				if (nmBrk !== null) {
-					res += el;
-				}
-			}
-		}
-
-		if (dir && lastEl === CONCAT_END && whiteSpaceRgxp.test(res.charAt(lastElI - 1))) {
-			res = res.substring(0, lastElI) + res.substring(lastElI + 1);
-		}
-
-		return {
-			command: res,
-			length: length,
-			name: name,
-			lastEl: lastEl,
-			sComment: !inline && sComment
-		};
-	}
+(function () {
+  var alb = ADV_LEFT_BLOCK, lb = LEFT_BLOCK, rb = RIGHT_BLOCK;
+
+  var commandRgxp = /([^\s]+).*/, nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/, rightPartRgxp = new RegExp("(?:" + alb + "?" + lb + "__&-__" + rb + "|)\\s*$"), rightWSRgxp = /\s*$/, lastSymbolRgxp = new RegExp("(" + alb + "|\\\\)$");
+
+  var endDirInit, needSpace, nl;
+
+  /**
+   * Вернуть объект-описание преобразованной части шаблона из
+   * Jade-Like синтаксиса в стандартный
+   *
+   * @param {string} str - исходная строка
+   * @param {number} i - номер начальной итерации
+   * @return {{str: string, length: number, error: (boolean|null|undefined)}}
+   */
+  DirObj.prototype.toBaseSyntax = function (str, i) {
+    needSpace = !this.tolerateWhitespace;
+    nl = this.lineSeparator;
+    endDirInit = false;
+
+    var clrL = 0, init = true, spaces = 0, space = "";
+
+    var struct, res = "";
+
+    var length = 0, tSpace = 0;
+
+    function f(struct, obj) {
+      if (struct.block) {
+        if (chains[struct.name] && chains[struct.name][obj.name]) {
+          obj.block = true;
+          obj.name = struct.name;
+        } else if (ends[struct.name] && ends[struct.name][obj.name]) {
+          obj.block = false;
+        } else {
+          var rightSpace = rightWSRgxp.exec(res)[0];
+          res = res.replace(rightPartRgxp, "") + genEndDir(struct, struct.space);
+
+          if (rightSpace && needSpace) {
+            res += "" + struct.adv + "" + lb + "__&-__" + rb;
+          }
+
+          res += rightSpace;
+        }
+      } else {
+        endDirInit = false;
+      }
+    }
+
+    for (var j = i - 1; ++j < str.length;) {
+      length++;
+
+      var el = str.charAt(j), next = str.charAt(j + 1);
+
+      var next2str = str.substr(j, 2), diff2str = str.substr(j + 1, 2);
+
+      if (nextLineRgxp.test(el)) {
+        tSpace++;
+
+        if (next2str === "\r\n") {
+          continue;
+        }
+
+        if (clrL) {
+          if (clrL === 1 && needSpace) {
+            res += "" + alb + "" + lb + "__&-__" + rb;
+          }
+
+          res += el;
+        }
+
+        clrL++;
+        init = true;
+
+        spaces = 0;
+        space = nl;
+      } else if (init) {
+        if (whiteSpaceRgxp.test(el)) {
+          spaces++;
+          space += el;
+          tSpace++;
+        } else {
+          var nextSpace = false, diff = undefined;
+
+          init = false;
+          clrL = 0;
+
+          if (el === alb) {
+            diff = shortMap[diff2str] ? 3 : shortMap[next] ? 2 : 1;
+          } else {
+            diff = shortMap[next2str] ? 2 : 1;
+          }
+
+          var char = str.charAt(j + diff);
+          nextSpace = !char || whiteSpaceRgxp.test(char);
+
+          var dir = (shortMap[el] || shortMap[next2str]) && nextSpace, decl = getLineDesc(str, nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j, Boolean(dir), next2str === MULT_COMMENT_START);
+
+          if (!decl) {
+            this.error("invalid syntax");
+            return {
+              str: "",
+              length: 0,
+              error: true
+            };
+          }
+
+          var replacer = undefined;
+
+          if (el === alb) {
+            replacer = replacers[diff2str] || replacers[next] || replacers[next2str] || replacers[el];
+          } else {
+            replacer = replacers[next2str] || replacers[el];
+          }
+
+          if (replacer) {
+            decl.name = replacer(decl.name).replace(commandRgxp, "$1");
+          }
+
+          var adv = el === alb ? alb : "";
+
+          var s = dir ? adv + lb : "", e = dir ? rb : "";
+
+          var obj = {
+            dir: dir,
+            name: decl.name,
+            spaces: spaces,
+            space: space,
+            parent: null,
+            block: dir && block[decl.name],
+            text: !dir || text[decl.name],
+            adv: adv
+          };
+
+          if (struct) {
+            if (struct.spaces < spaces && struct.block) {
+              obj.parent = struct;
+
+              if (!obj.adv && struct.adv) {
+                obj.block = false;
+                adv = alb;
+              }
+            } else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
+              obj.parent = struct.parent;
+
+              if (!obj.adv && struct.parent && struct.parent.adv) {
+                obj.block = false;
+                adv = alb;
+              }
+
+              f(struct, obj);
+              if (!struct.parent) {
+                return {
+                  str: res,
+                  length: length - tSpace - 1
+                };
+              }
+            } else {
+              while (struct.spaces >= spaces) {
+                f(struct, obj);
+                struct = struct.parent;
+
+                if (!struct) {
+                  return {
+                    str: res,
+                    length: length - tSpace - 1
+                  };
+                }
+              }
+
+              obj.parent = struct;
+            }
+          }
+
+          var parts = undefined, txt = undefined;
+
+          decl.command = decl.command.replace(lastSymbolRgxp, "\\$1");
+
+          if (dir) {
+            if (decl.sComment) {
+              parts = [decl.command];
+            } else {
+              parts = this.replaceDangerBlocks(decl.command).split(INLINE_COMMAND);
+
+              for (var z = -1; ++z < parts.length;) {
+                parts[z] = this.pasteDangerBlocks(parts[z]);
+              }
+            }
+
+            txt = parts.slice(1).join(INLINE_COMMAND);
+            txt = txt && txt.trim();
+          }
+
+          struct = obj;
+          res += space;
+
+          if (needSpace && (obj.text || !Snakeskin.Directions[obj.name])) {
+            res += "" + adv + "" + lb + "__&-__" + rb;
+          }
+
+          res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, "$1/*$2$3$2*/") + e;
+          endDirInit = false;
+
+          var tmp = decl.length - 1;
+          tSpace = 0;
+
+          length += tmp;
+          j += tmp;
+
+          if (dir && txt) {
+            var inline = {
+              dir: false,
+              spaces: spaces + 1,
+              space: "",
+              parent: obj,
+              block: false,
+              adv: ""
+            };
+
+            inline.parent = obj;
+            struct = inline;
+            res += txt;
+          }
+        }
+      }
+    }
+
+    while (struct) {
+      if (struct.block) {
+        res += genEndDir(struct, struct.space);
+      }
+
+      struct = struct.parent;
+    }
+
+    return {
+      str: res,
+      length: length
+    };
+  };
+
+  /**
+   * Вернуть строку окончания блоковой директивы
+   *
+   * @param {!Object} dir - объект-описание директивы
+   * @param {string} space - доступное свободное пространство
+   * @return {string}
+   */
+  function genEndDir(dir, space) {
+    var s = dir.adv + lb, tmp;
+
+    if (needSpace) {
+      tmp = "" + (endDirInit ? "" : "" + s + "__&+__" + rb) + "" + nl;
+    } else {
+      tmp = nl + (space || "").substring(1);
+    }
+
+    endDirInit = true;
+    return "" + tmp + "" + s + "__end__" + rb + "" + s + "__cutLine__" + rb;
+  }
+
+  /**
+   * Вернуть объект описание строки в Jade-Like синтаксисе
+   *
+   * @param {string} str - исходная строка
+   * @param {number} i - номер начальной итерации
+   * @param {boolean} dir - если true, то идёт декларация директивы
+   * @param {boolean} comment - если true, то идёт декларация мультистрочного комментария
+   * @return {{command: string, length: number, name: string, lastEl: string, sComment: boolean}}
+   */
+  function getLineDesc(str, i, dir, comment) {
+    var res = "", name = "";
+
+    var lastEl = "", lastElI = 0, length = -1;
+
+    var escape = false;
+    var sComment = false, inline = false;
+
+    var bOpen = false, bEnd = true, bEscape = false;
+
+    var part = "", rPart = "";
+
+    var concatLine = false, nmBrk = null;
+
+    for (var j = i - 1; ++j < str.length;) {
+      var currentEscape = escape, el = str.charAt(j);
+
+      if (!bOpen && (el === "\\" || escape)) {
+        escape = !escape;
+      }
+
+      length++;
+      if (nextLineRgxp.test(el)) {
+        if (!comment && !bOpen) {
+          rPart = sComment ? "" : part;
+
+          part = "";
+        }
+
+        var prevEl = lastEl, brk = false;
+
+        lastEl = "";
+        if (comment || sComment && concatLine) {
+          res += el;
+        } else if (!sComment && dir) {
+          var dirStart = whiteSpaceRgxp.test(str.charAt(j - 2));
+
+          var literal = undefined;
+          brk = dirStart && prevEl === CONCAT_END;
+
+          if (dirStart && (prevEl === CONCAT_COMMAND && res !== CONCAT_COMMAND || brk)) {
+            literal = prevEl;
+            res = res.substring(0, lastElI - 1) + res.substring(lastElI + 1);
+          } else if (concatLine && !bOpen) {
+            res += el;
+          }
+
+          if (concatLine && !brk) {
+            continue;
+          }
+
+          if (literal === CONCAT_COMMAND) {
+            concatLine = true;
+
+            if (!bOpen) {
+              res += el;
+            }
+
+            continue;
+          }
+        }
+
+        if (comment || concatLine && !brk) {
+          sComment = false;
+          continue;
+        }
+
+        return {
+          command: res,
+          length: length,
+          name: name,
+          lastEl: lastEl,
+          sComment: !inline && sComment
+        };
+      } else {
+        if (!bOpen && !currentEscape) {
+          var commentType = returnComment(str, j);
+
+          if (comment) {
+            comment = commentType !== MULT_COMMENT_END;
+          } else if (!sComment) {
+            comment = commentType === MULT_COMMENT_START;
+
+            if (!comment) {
+              sComment = commentType === SINGLE_COMMENT;
+            }
+          }
+        }
+
+        if (!comment && !sComment) {
+          if (!bOpen) {
+            if (escapeEndMap[el] || escapeEndWords[rPart]) {
+              bEnd = true;
+            } else if (bEndRgxp.test(el)) {
+              bEnd = false;
+            }
+
+            if (escapeEndMap[el] || escapeEndWords[rPart]) {
+              bEnd = true;
+            } else if (bEndRgxp.test(el)) {
+              bEnd = false;
+            }
+
+            if (partRgxp.test(el)) {
+              part += el;
+            } else {
+              rPart = part;
+              part = "";
+            }
+
+            if (dir && !inline) {
+              inline = str.substr(j, INLINE_COMMAND.length) === INLINE_COMMAND;
+            }
+          }
+
+          if (escapeMap[el] && (el !== "/" || bEnd) && !bOpen) {
+            bOpen = el;
+          } else if (bOpen && (el === "\\" || bEscape)) {
+            bEscape = !bEscape;
+          } else if (escapeMap[el] && bOpen === el && !bEscape) {
+            bOpen = false;
+            bEnd = false;
+          }
+        }
+
+        var _needSpace = lineWhiteSpaceRgxp.test(el);
+
+        if (_needSpace) {
+          if (nmBrk === false) {
+            nmBrk = true;
+          }
+        } else {
+          lastEl = el;
+          lastElI = res.length;
+        }
+
+        if (!nmBrk && !_needSpace) {
+          if (nmBrk === null) {
+            nmBrk = false;
+          }
+
+          name += el;
+        }
+
+        if (nmBrk !== null) {
+          res += el;
+        }
+      }
+    }
+
+    if (dir && lastEl === CONCAT_END && whiteSpaceRgxp.test(res.charAt(lastElI - 1))) {
+      res = res.substring(0, lastElI) + res.substring(lastElI + 1);
+    }
+
+    return {
+      command: res,
+      length: length,
+      name: name,
+      lastEl: lastEl,
+      sComment: !inline && sComment
+    };
+  }
 })();
 /*!
  * API для организации микрошаблонов внутри директивы
@@ -8980,49 +8724,45 @@ DirObj.prototype.getFullBody = function (tplName) {
  * @return {!Array}
  */
 function splitBySpace(str) {
-	var escape = false;
-	var res = [''],
-		bOpen = 0,
-		bStart = false;
+  var escape = false;
+  var res = [""], bOpen = 0, bStart = false;
 
-	for (var i = -1; ++i < str.length;) {
-		var currentEscape = escape;
-		var el = str.charAt(i),
-			part = str.substr(i, includeDirLength);
+  for (var i = -1; ++i < str.length;) {
+    var currentEscape = escape;
+    var el = str.charAt(i), part = str.substr(i, includeDirLength);
 
-		if (el === '\\' || escape) {
-			escape = !escape;
-		}
+    if (el === "\\" || escape) {
+      escape = !escape;
+    }
 
-		if (!currentEscape && includeDirMap[part]) {
-			i += includeDirLength - 1;
-			res[res.length - 1] += part;
+    if (!currentEscape && includeDirMap[part]) {
+      i += includeDirLength - 1;
+      res[res.length - 1] += part;
 
-			bStart = true;
-			bOpen++;
+      bStart = true;
+      bOpen++;
 
-			continue;
-		}
+      continue;
+    }
 
-		if (bStart) {
-			if (el === LEFT_BLOCK) {
-				bOpen++;
+    if (bStart) {
+      if (el === LEFT_BLOCK) {
+        bOpen++;
+      } else if (el === RIGHT_BLOCK) {
+        bOpen--;
+      }
+    }
 
-			} else if (el === RIGHT_BLOCK) {
-				bOpen--;
-			}
-		}
+    if (el === " " && !bOpen) {
+      res.push("");
+    }
 
-		if (el === ' ' && !bOpen) {
-			res.push('');
-		}
+    if (el !== " " || bOpen) {
+      res[res.length - 1] += el;
+    }
+  }
 
-		if (el !== ' ' || bOpen) {
-			res[res.length - 1] += el;
-		}
-	}
-
-	return res;
+  return res;
 }
 
 /**
@@ -9034,157 +8774,136 @@ function splitBySpace(str) {
  * @return {string}
  */
 DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
-	str = this.pasteDangerBlocks(str);
+  str = this.pasteDangerBlocks(str);
 
-	var start = 0;
-	var begin = 0,
-		dir = '',
-		res = '';
+  var start = 0;
+  var begin = 0, dir = "", res = "";
 
-	var escape = false,
-		comment = false;
+  var escape = false, comment = false;
 
-	var bOpen = false,
-		bEnd = true,
-		bEscape = false;
+  var bOpen = false, bEnd = true, bEscape = false;
 
-	var part = '',
-		rPart = '';
+  var part = "", rPart = "";
 
-	var nextLineMap = {
-		'n': '\n',
-		'r': '\r'
-	};
+  var nextLineMap = {
+    "n": "\n",
+    "r": "\r"
+  };
 
-	for (var i = -1; ++i < str.length;) {
-		var currentEscape = escape,
-			pos = i;
+  for (var i = -1; ++i < str.length;) {
+    var currentEscape = escape, pos = i;
 
-		var el = str.charAt(i),
-			next = str.charAt(i + 1);
+    var el = str.charAt(i), next = str.charAt(i + 1);
 
-		if (str.substr(i, 2) === '\r\n') {
-			continue;
-		}
+    if (str.substr(i, 2) === "\r\n") {
+      continue;
+    }
 
-		if (begin) {
-			if (!bOpen) {
-				if ((el === '\\' && strongSysEscapeMap[next]) || escape) {
-					escape = !escape;
-				}
+    if (begin) {
+      if (!bOpen) {
+        if (el === "\\" && strongSysEscapeMap[next] || escape) {
+          escape = !escape;
+        }
 
-				if (escape) {
-					continue;
-				}
+        if (escape) {
+          continue;
+        }
 
-				if (el === '\\' && nextLineMap[next]) {
-					el = nextLineMap[next];
-					i++;
-				}
+        if (el === "\\" && nextLineMap[next]) {
+          el = nextLineMap[next];
+          i++;
+        }
 
-				// Обработка комментариев
-				if (!currentEscape) {
-					var commentType = returnComment(str, pos);
+        // Обработка комментариев
+        if (!currentEscape) {
+          var commentType = returnComment(str, pos);
 
-					if (commentType) {
-						if (!comment) {
-							comment = commentType;
-							i += commentType.length - 1;
+          if (commentType) {
+            if (!comment) {
+              comment = commentType;
+              i += commentType.length - 1;
+            } else if (commentType === MULT_COMMENT_END && comment === MULT_COMMENT_START) {
+              comment = false;
+              i += commentType.length - 1;
+              continue;
+            }
+          } else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
+            comment = false;
+          }
+        }
 
-						} else if (commentType === MULT_COMMENT_END && comment === MULT_COMMENT_START) {
-							comment = false;
-							i += commentType.length - 1;
-							continue;
-						}
+        if (comment) {
+          continue;
+        }
 
-					} else if (nextLineRgxp.test(el) && comment === SINGLE_COMMENT) {
-						comment = false;
-					}
-				}
+        if (escapeEndMap[el] || escapeEndWords[rPart]) {
+          bEnd = true;
+        } else if (bEndRgxp.test(el)) {
+          bEnd = false;
+        }
 
-				if (comment) {
-					continue;
-				}
+        if (partRgxp.test(el)) {
+          part += el;
+        } else {
+          rPart = part;
+          part = "";
+        }
 
-				if (escapeEndMap[el] || escapeEndWords[rPart]) {
-					bEnd = true;
+        if (el === LEFT_BLOCK) {
+          begin++;
+        } else if (el === RIGHT_BLOCK) {
+          begin--;
+        }
+      }
 
-				} else if (bEndRgxp.test(el)) {
-					bEnd = false;
-				}
+      if (escapeMap[el] && (el !== "/" || bEnd) && !bOpen) {
+        bOpen = el;
+      } else if (bOpen && (el === "\\" || bEscape)) {
+        bEscape = !bEscape;
+      } else if (escapeMap[el] && bOpen === el && !bEscape) {
+        bOpen = false;
+        bEnd = false;
+      }
 
-				if (partRgxp.test(el)) {
-					part += el;
+      if (begin) {
+        dir += el;
+      } else {
+        escape = false;
 
-				} else {
-					rPart = part;
-					part = '';
-				}
+        var tmp = "' + " + this.prepareOutput(this.replaceDangerBlocks(dir).trim() || "''", opt_sys) + " + '";
 
-				if (el === LEFT_BLOCK) {
-					begin++;
+        if (opt_replace) {
+          res += "__SNAKESKIN__" + this.dirContent.length + "_";
+          this.dirContent.push(tmp);
+        } else {
+          res += tmp;
+        }
+      }
+    } else {
+      if (el === "\\" && includeSysEscapeMap[next] || escape) {
+        escape = !escape;
+      }
 
-				} else if (el === RIGHT_BLOCK) {
-					begin--;
-				}
-			}
+      if (escape) {
+        continue;
+      }
 
-			if (escapeMap[el] && (el !== '/' || bEnd) && !bOpen) {
-				bOpen = el;
+      if (!currentEscape && includeDirMap[str.substr(pos, includeDirLength)]) {
+        begin++;
+        dir = "";
 
-			} else if (bOpen && (el === '\\' || bEscape)) {
-				bEscape = !bEscape;
+        start = i;
+        i += includeDirLength - 1;
 
-			} else if (escapeMap[el] && bOpen === el && !bEscape) {
-				bOpen = false;
-				bEnd = false;
-			}
+        escape = false;
+        continue;
+      }
 
-			if (begin) {
-				dir += el;
+      res += el !== "\\" || currentEscape ? applyDefEscape(el) : escapeSingleQuote(el);
+    }
+  }
 
-			} else {
-				escape = false;
-
-				var tmp = '\' + ' +
-					this.prepareOutput(this.replaceDangerBlocks(dir).trim() || '\'\'', opt_sys) +
-					' + \'';
-
-				if (opt_replace) {
-					res += (("__SNAKESKIN__" + (this.dirContent.length)) + "_");
-					this.dirContent.push(tmp);
-
-				} else {
-					res += tmp;
-				}
-			}
-
-		} else {
-			if (el === '\\' && includeSysEscapeMap[next] || escape) {
-				escape = !escape;
-			}
-
-			if (escape) {
-				continue;
-			}
-
-			if (!currentEscape && includeDirMap[str.substr(pos, includeDirLength)]) {
-				begin++;
-				dir = '';
-
-				start = i;
-				i += includeDirLength - 1;
-
-				escape = false;
-				continue;
-			}
-
-			res += el !== '\\' || currentEscape ?
-				applyDefEscape(el) : escapeSingleQuote(el);
-		}
-	}
-
-	return res;
+  return res;
 };
 /*!
  * Различные вспомогательные методы и функции
@@ -9197,7 +8916,7 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
  * @return {?string}
  */
 function getName(name) {
-	return aliases[name] || name;
+  return aliases[name] || name;
 }
 
 /**
@@ -9208,17 +8927,17 @@ function getName(name) {
  * @return {!Array}
  */
 function getExtList(name) {
-	if (extListCache[name]) {
-		return extListCache[name].slice();
-	}
+  if (extListCache[name]) {
+    return extListCache[name].slice();
+  }
 
-	var res = [];
-	while (name = extMap[name]) {
-		res.unshift(name);
-	}
+  var res = [];
+  while (name = extMap[name]) {
+    res.unshift(name);
+  }
 
-	extListCache[name] = res;
-	return res.slice();
+  extListCache[name] = res;
+  return res.slice();
 }
 
 /**
@@ -9226,22 +8945,21 @@ function getExtList(name) {
  * @param {string} name - имя шаблона
  */
 function clearScopeCache(name) {
-	forIn(scopeCache, function(cluster, key)  {
-		if (key === 'template') {
-			if (cluster[name] && cluster[name].parent) {
-				delete cluster[name].parent.children[name];
-			}
+  forIn(scopeCache, function (cluster, key) {
+    if (key === "template") {
+      if (cluster[name] && cluster[name].parent) {
+        delete cluster[name].parent.children[name];
+      }
+    } else {
+      forIn(cluster[name], function (el) {
+        if (el.parent) {
+          delete el.parent.children[name];
+        }
+      });
+    }
 
-		} else {
-			forIn(cluster[name], function(el)  {
-				if (el.parent) {
-					delete el.parent.children[name];
-				}
-			});
-		}
-
-		delete cluster[name];
-	});
+    delete cluster[name];
+  });
 }
 
 /**
@@ -9252,14 +8970,13 @@ function clearScopeCache(name) {
  * @return {string}
  */
 DirObj.prototype.getFnName = function (str, opt_empty) {
-	var tmp = /^[^(]+/.exec(str),
-		val = tmp ? tmp[0].trim() : '';
+  var tmp = /^[^(]+/.exec(str), val = tmp ? tmp[0].trim() : "";
 
-	if (!opt_empty && !val) {
-		this.error((("invalid \"" + (this.name)) + "\" declaration"));
-	}
+  if (!opt_empty && !val) {
+    this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-	return val;
+  return val;
 };
 
 /**
@@ -9269,7 +8986,7 @@ DirObj.prototype.getFnName = function (str, opt_empty) {
  * @return {number}
  */
 DirObj.prototype.getDiff = function (length) {
-	return length + Number(this.needPrfx) + 1;
+  return length + Number(this.needPrfx) + 1;
 };
 
 var dirGroupCache = {};
@@ -9281,7 +8998,7 @@ var dirGroupCache = {};
  * @return {?}
  */
 function clone(obj) {
-	return JSON.parse(JSON.stringify(obj));
+  return JSON.parse(JSON.stringify(obj));
 }
 
 /**
@@ -9292,64 +9009,65 @@ function clone(obj) {
  * @return {!Object}
  */
 DirObj.prototype.getGroup = function (names) {
-	var cacheKey = null,
-		inline = Boolean(this.inlineIterators);
+  var _arguments = arguments;
+  var cacheKey = null, inline = Boolean(this.inlineIterators);
 
-	if (JSON_SUPPORT) {
-		var args = [];
+  if (JSON_SUPPORT) {
+    var args = [];
 
-		for (var i = -1; ++i < arguments.length;) {
-			args.push(arguments[i]);
-		}
+    for (var i = -1; ++i < arguments.length;) {
+      args.push(arguments[i]);
+    }
 
-		cacheKey = args.join();
-		if (dirGroupCache[inline] && dirGroupCache[inline][cacheKey]) {
-			return clone(dirGroupCache[inline][cacheKey]);
-		}
-	}
+    cacheKey = args.join();
+    if (dirGroupCache[inline] && dirGroupCache[inline][cacheKey]) {
+      return clone(dirGroupCache[inline][cacheKey]);
+    }
+  }
 
-	var map = {},
-		ignore = {};
+  var map = {}, ignore = {};
 
-	for (var i$7 = -1; ++i$7 < arguments.length;) {
-		var name = arguments[i$7],
-			group = groups[name];
+  for (var i = -1; ++i < arguments.length;) {
+    (function () {
+      var name = _arguments[i], group = groups[name];
 
-		if (name === 'callback' && inline) {
-			forIn(groups['inlineIterator'], function(el, key)  {
-				ignore[key] = true;
-			});
-		}
+      if (name === "callback" && inline) {
+        forIn(groups["inlineIterator"], function (el, key) {
+          ignore[key] = true;
+        });
+      }
 
-		forIn(group, function(el, key)  {
-			if (ignore[key]) {
-				return;
-			}
+      forIn(group, function (el, key) {
+        if (ignore[key]) {
+          return;
+        }
 
-			map[key] = true;
-		});
-	}
+        map[key] = true;
+      });
+    })();
+  }
 
-	if (JSON_SUPPORT) {
-		dirGroupCache[inline] = dirGroupCache[inline] || {};
-		dirGroupCache[inline][cacheKey] = clone(map);
-	}
+  if (JSON_SUPPORT) {
+    dirGroupCache[inline] = dirGroupCache[inline] || {};
+    dirGroupCache[inline][cacheKey] = clone(map);
+  }
 
-	return map;
+  return map;
 };
 
 /**
  * Сбросить слой параметров компиляции
  * @return {!DirObj}
  */
-DirObj.prototype.popParams = function () {var this$0 = this;
-	this.params.pop();
+DirObj.prototype.popParams = function () {
+  var _this3 = this;
+  this.params.pop();
 
-	forIn(this.params[this.params.length - 1], function(el, key)  {
-		this$0[key] = el;
-	});
+  forIn(this.params[this.params.length - 1], function (el, key) {
+    _this3[key] = el;
+  });
 
-	return this;
+  return this;
 };
 
 /**
@@ -9358,47 +9076,43 @@ DirObj.prototype.popParams = function () {var this$0 = this;
  * @param {string} str - исходная строка
  * @return {string}
  */
-DirObj.prototype.replaceFileName = function (str) {var this$0 = this;
-	var file = this.info['file'],
-		basename;
+DirObj.prototype.replaceFileName = function (str) {
+  var _this4 = this;
+  var file = this.info["file"], basename;
 
-	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, function(sstr, $1)  {
-		if (!file) {
-			this$0.error('placeholder %fileName% can\'t be used without "file" option');
-			return '';
-		}
+  str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, function (sstr, $1) {
+    if (!file) {
+      _this4.error("placeholder %fileName% can't be used without \"file\" option");
+      return "";
+    }
 
-		if (!IS_NODE) {
-			this$0.error('placeholder %fileName% can\'t be used with live compilation in browser');
-			return '';
-		}
+    if (!IS_NODE) {
+      _this4.error("placeholder %fileName% can't be used with live compilation in browser");
+      return "";
+    }
 
-		if (!basename) {
-			var path = require('path');
-			basename = path.basename(file, path.extname(file));
-		}
+    if (!basename) {
+      var path = require("path");
+      basename = path.basename(file, path.extname(file));
+    }
 
-		var str = basename;
+    var str = basename;
 
-		if ($1) {
-			if ($1 !== '.') {
-				str = (("" + $1) + ("'" + str) + "'");
+    if ($1) {
+      if ($1 !== ".") {
+        str = "" + $1 + "'" + str + "'";
+      } else {
+        str = $1 + str;
+      }
+    }
 
-			} else {
-				str = $1 + str;
-			}
-		}
+    return str;
+  }));
 
-		return str;
-	}));
-
-	return str;
+  return str;
 };
 
-var nmRgxp = /\.|\[/,
-	nmssRgxp = /^\[/,
-	nmsRgxp = /\[/g,
-	nmeRgxp = /]/g;
+var nmRgxp = /\.|\[/, nmssRgxp = /^\[/, nmsRgxp = /\[/g, nmeRgxp = /]/g;
 
 /**
  * Подготовить заданную строку декларации имени шаблона
@@ -9408,819 +9122,723 @@ var nmRgxp = /\.|\[/,
  * @return {string}
  */
 DirObj.prototype.prepareNameDecl = function (name) {
-	name = this.replaceFileName(name);
-	if (nmRgxp.test(name)) {
-		var tmpArr = name
-			.replace(nmssRgxp, '%')
-			.replace(nmsRgxp, '.%')
-			.replace(nmeRgxp, '')
-			.split('.');
+  name = this.replaceFileName(name);
+  if (nmRgxp.test(name)) {
+    var tmpArr = name.replace(nmssRgxp, "%").replace(nmsRgxp, ".%").replace(nmeRgxp, "").split(".");
 
-		var str = '',
-			length = tmpArr.length;
+    var str = "", length = tmpArr.length;
 
-		for (var i = -1; ++i < length;) {
-			var el = tmpArr[i],
-				custom = el.charAt(0) === '%';
+    for (var i = -1; ++i < length;) {
+      var el = tmpArr[i], custom = el.charAt(0) === "%";
 
-			if (custom) {
-				el = el.substring(1);
-			}
+      if (custom) {
+        el = el.substring(1);
+      }
 
-			if (custom) {
-				str += /* cbws */(("['" + (applyDefEscape(
-this.returnEvalVal(
-this.prepareOutput(el, true)
-)
-))) + "']");
+      if (custom) {
+        str += /* cbws */"['" + applyDefEscape(this.returnEvalVal(this.prepareOutput(el, true))) + "']";
 
-				continue;
-			}
+        continue;
+      }
 
-			str += str ? ("." + el) : el;
-		}
+      str += str ? "." + el : el;
+    }
 
-		name = str;
-	}
+    name = str;
+  }
 
-	return name.trim();
+  return name.trim();
 };
 /*!
  * API для обработки JS-like конструкций в шаблоне
  * (фильтры, scope и т.д.)
  */
 
-(function()  {
-	var blackWords = {
-		'+': true,
-		'++': true,
-		'-': true,
-		'--': true,
-		'~': true,
-		'~~': true,
-		'!': true,
-		'!!': true,
-		'break': true,
-		'case': true,
-		'catch': true,
-		'continue': true,
-		'delete': true,
-		'do': true,
-		'else': true,
-		'false': true,
-		'finnaly': true,
-		'for': true,
-		'function': true,
-		'if': true,
-		'in': true,
-		'of': true,
-		'instanceof': true,
-		'new': true,
-		'null': true,
-		'return': true,
-		'switch': true,
-		'this': true,
-		'throw': true,
-		'true': true,
-		'try': true,
-		'typeof': true,
-		'var': true,
-		'const': true,
-		'let': true,
-		'void': true,
-		'while': true,
-		'with': true,
-		'class': true,
-		'debugger': true,
-		'interface': true
-	};
-
-	var unaryBlackWords = {
-		'new': true,
-		'typeof': true,
-		'instanceof': true,
-		'in': true
-	};
-
-	var undefUnaryBlackWords = {
-		'new': true
-	};
-
-	var comboBlackWords = {
-		'var': true,
-		'const': true,
-		'let': true
-	};
-
-	var nextWordCharRgxp = new RegExp((("[" + G_MOD) + ("" + L_MOD) + ("$+\\-~!" + w) + "[\\]().]"));
-
-	/**
-	 * Вернуть целое слово из заданной строки, начиная с указанной позиции
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {number} pos - начальная позиция
-	 * @return {{word: string, finalWord: string, unary: string}}
-	 */
-	DirObj.prototype.getWord = function (str, pos) {
-		var word = '',
-			res = '',
-			nres = '';
-
-		var pCount = 0,
-			diff = 0;
-
-		var start = 0,
-			pContent = null;
-
-		var unary,
-			unaryStr = '';
-
-		for (var i = pos, j = 0; i < str.length; i++, j++) {
-			var el = str.charAt(i);
-
-			if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWords[word]))) {
-				if (el === ' ') {
-					word = '';
-
-				} else {
-					word += el;
-				}
-
-				if (unary) {
-					unaryStr = unaryStr ||
-						res;
-
-					unary = false;
-				}
-
-				if (pContent !== null && (pCount > 1 || (pCount === 1 && !closePMap[el]))) {
-					pContent += el;
-				}
-
-				if (pMap[el]) {
-					if (pContent === null) {
-						start = j + 1;
-						pContent = '';
-					}
-
-					pCount++;
-
-				} else if (closePMap[el]) {
-					if (pCount) {
-						pCount--;
-
-						if (!pCount) {
-							if (nres) {
-								nres = nres.substring(0, start + diff) +
-									(pContent && this.prepareOutput(pContent, true, null, null, true)) +
-									nres.substring(j + diff + pContent.length);
-
-							} else {
-								nres = res.substring(0, start) +
-									(pContent && this.prepareOutput(pContent, true, null, null, true)) +
-									res.substring(j);
-							}
-
-							diff = nres.length - res.length;
-							pContent = null;
-						}
-
-					} else {
-						break;
-					}
-				}
-
-				res += el;
-				if (nres) {
-					nres += el;
-				}
-
-			} else {
-				break;
-			}
-		}
-
-		return {
-			word: res,
-			finalWord: nres || res,
-			unary: unaryStr
-		};
-	};
-
-	/**
-	 * Вернуть true, если указанное слово является свойством в литерале объекта
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {number} start - начальная позиция слова
-	 * @param {number} end - конечная позиция слова
-	 * @return {boolean}
-	 */
-	function isSyOL(str, start, end) {
-		var res;
-
-		for (var i = start; i--;) {
-			var el = str.charAt(i);
-
-			if (!whiteSpaceRgxp.test(el)) {
-				res = el === '?';
-				break;
-			}
-		}
-
-		if (!res) {
-			for (var i$8 = end; i$8 < str.length; i$8++) {
-				var el$1 = str.charAt(i$8);
-
-				if (!whiteSpaceRgxp.test(el$1)) {
-					return el$1 === ':';
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Вернуть true, если следующий непробельный символ
-	 * в указанной строке равен присвоению (=)
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {number} pos - начальная позиция
-	 * @return {boolean}
-	 */
-	function isNextAssign(str, pos) {
-		for (var i = pos; i < str.length; i++) {
-			var el = str.charAt(i);
-
-			if (!whiteSpaceRgxp.test(el)) {
-				return el === '=' && str.charAt(i + 1) !== '=';
-			}
-		}
-
-		return false;
-	}
-
-	var unMap = {
-		'!html': true,
-		'!undef': true
-	};
-
-	var unUndefLabel = '{undef}',
-		unUndefRgxp = new RegExp(unUndefLabel, 'g');
-
-	var ssfRgxp = /__FILTERS__\./;
-	var nextCharRgxp = new RegExp((("[" + G_MOD) + ("" + L_MOD) + ("$+\\-~!" + w) + "]")),
-		newWordRgxp = new RegExp((("[^" + G_MOD) + ("" + L_MOD) + ("$" + w) + "[\\].]"));
-
-	var numRgxp = /[0-9]/,
-		modRgxp = new RegExp((("" + L_MOD) + "(?:\\d+|)")),
-		strongModRgxp = new RegExp((("" + L_MOD) + "(\\d+)"));
-
-	var multPropRgxp = /\[|\./,
-		firstPropRgxp = /([^.[]+)(.*)/;
-
-	var propValRgxp = /[^-+!(]+/;
-	var exprimaHackFn = function(str)  {return str
-		.trim()
-		.replace(/^\[(?!\s*])/, '$[')
-		.replace(/\byield\b/g, '')
-		.replace(/(?:break|continue) [_]{2,}I_PROTO__[${w}]+;/, '')};
-
-	var wrapRgxp = /^\s*\{/,
-		dangerRgxp = /\)\s*(?:{|=>)/,
-		functionRgxp = /\bfunction\b/;
-
-	/**
-	 * Подготовить указанную команду к выводу:
-	 * осуществляется привязка к scope и инициализация фильтров
-	 *
-	 * @param {string} command - исходный текст команды
-	 * @param {?boolean=} opt_sys - если true, то запуск функции считается системным вызовом
-	 * @param {?boolean=} opt_iSys - если true, то запуск функции считается вложенным системным вызовом
-	 * @param {?boolean=} opt_breakFirst - если true, то первое слово в команде пропускается
-	 * @param {?boolean=} opt_validate - если false, то полученная конструкция не валидируется
-	 * @return {string}
-	 */
-	DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {var this$0 = this;
-		var tplName = this.tplName,
-			struct = this.structure;
-
-		if (dangerRgxp.test(command)) {
-			this.error('unsupported syntax');
-			return '';
-		}
-
-		// ОПРЕДЕЛЕНИЯ:
-		// Скобка = (
-
-		var res = command;
-
-		// Количество открытых скобок в строке
-		// (скобки открытые внутри фильтра не считаются)
-		var pCount = 0;
-
-		// Количество открытых скобок внутри фильтра:
-		// |foo (1 + 2) / 3
-		var pCountFilter = 0;
-
-		// Массив позиций открытия и закрытия скобок (pCount),
-		// идёт в порядке возрастания от вложенных к внешним блокам, например:
-		// ((a + b)) => [[1, 7], [0, 8]]
-		var pContent = [];
-
-		// true, если идёт декларация фильтра
-		var filterStart = false;
-
-		// true, если идёт фильтр-враппер, т.е.
-		// (2 / 3)|round
-		var filterWrapper = false;
-
-		// Массивы итоговых фильтров и истинных фильтров,
-		// например:
-		// {with foo}
-		//     {bar |ucfisrt bar()|json}
-		// {end}
-		//
-		// rvFilter => ['ucfisrt bar()', 'json']
-		// filter => ['ucfisrt foo.bar()', 'json']
-		var filter = [],
-			rvFilter = [];
-
-		// true, то можно рассчитывать слово
-		var nword = !opt_breakFirst;
-
-		// Количество слов для пропуска
-		var posNWord = 0;
-
-		// Область видимости
-		var scope = this.scope,
-			useWith = Boolean(scope.length);
-
-		// Сдвиги
-		var addition = 0,
-			wordAddEnd = 0,
-			filterAddEnd = 0;
-
-		// true, если применяется фильтр !html
-		var unEscape = !this.escapeOutput;
-
-		// true, если применяется фильтр !undef
-		var unUndef = !this.replaceUndef,
-			globalUnUndef = unUndef;
-
-		var vars = struct.children ?
-			struct.vars :
-			struct.parent.vars;
-
-		var ref = this.hasBlock('block', true),
-			type;
-
-		if (ref) {
-			ref = ref.params.name;
-			type = 'block';
-
-		} else if (this.proto) {
-			ref = this.proto.name;
-			type = 'proto';
-		}
-
-		if (ref && !scopeCache[type][tplName]) {
-			ref = false;
-		}
-
-		function search(obj, val, extList) {
-			if (!obj) {
-				return false;
-			}
-
-			var def = vars[(("" + val) + ("_" + (obj.id)) + "")];
-
-			if (def) {
-				return def;
-
-			} else if (extList.length && obj.children[extList[0]]) {
-				return search(obj.children[extList.shift()], val, extList);
-			}
-
-			return false;
-		}
-
-		var replacePropVal = function(sstr)  {
-			var def = vars[sstr];
-
-			if (!def) {
-				var refCache = ref &&
-					scopeCache[type][tplName][ref];
-
-				if (!refCache || refCache.parent && (!refCache.overridden || this$0.hasParent('__super__'))) {
-					if (refCache) {
-						def = search(refCache.root, sstr, getExtList(String(tplName)));
-					}
-
-					var tplCache = tplName &&
-						scopeCache['template'][tplName];
-
-					if (!def && tplCache && tplCache.parent) {
-						def = search(tplCache.root, sstr, getExtList(String(tplName)));
-					}
-				}
-
-				if (!def && refCache) {
-					def = vars[(("" + sstr) + ("_" + (refCache.id)) + "")];
-				}
-
-				if (!def) {
-					def = vars[(("" + sstr) + ("_" + (this$0.module.id)) + "")] || vars[(("" + sstr) + "_00")];
-				}
-			}
-
-			if (def) {
-				return def.value;
-			}
-
-			return sstr;
-		};
-
-		function addScope(str) {
-			if (multPropRgxp.test(str)) {
-				var fistProp = firstPropRgxp.exec(str);
-				fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
-				str = fistProp.slice(1).join('');
-
-			} else {
-				str = str.replace(propValRgxp, replacePropVal);
-			}
-
-			return str;
-		}
-
-		if (!command) {
-			this.error('invalid syntax');
-			return '';
-		}
-
-		var commandLength = command.length,
-			end = commandLength - 1;
-
-		var cacheLink = replacePropVal('$_');
-		var isFilter,
-			breakNum;
-
-		for (var i = -1; ++i < commandLength;) {
-			var el = command.charAt(i),
-				next = command.charAt(i + 1),
-				nNext = command.charAt(i + 2);
-
-			if (!breakNum) {
-				if (el === '(') {
-					// Скобка открылась внутри декларации фильтра
-					if (filterStart) {
-						pCountFilter++;
-
-					} else {
-						pContent.unshift([i + wordAddEnd]);
-						pCount++;
-					}
-				}
-
-				// Расчёт scope:
-				// флаг nword показывает, что началось новое слово;
-				// флаг posNWord показывает, сколько новых слов нужно пропустить
-				if (nword && !posNWord && nextCharRgxp.test(el)) {
-					var nextStep = this.getWord(command, i);
-					var word = nextStep.word,
-						finalWord = nextStep.finalWord;
-
-					var uAdd = wordAddEnd + addition,
-						vres = void 0;
-
-					// true,
-					// если полученное слово не является зарезервированным (blackWordMap),
-					// не является фильтром,
-					// не является числом,
-					// не является константой замены Escaper,
-					// не является названием свойства в литерале объекта ({свойство: )
-					var canParse = !blackWords[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
-						isNaN(Number(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
-
-					if (canParse && functionRgxp.test(word)) {
-						this.error('unsupported syntax');
-						return '';
-					}
-
-					// Экспорт числовых литералов
-					if (numRgxp.test(el)) {
-						vres = finalWord;
-
-					// Экспорт глобальный и супер глобальных переменных
-					} else if ((useWith && !modMap[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
-						if (useWith) {
-							vres = next === G_MOD ?
-								finalWord.substring(2) : finalWord;
-
-							// Супер глобальная переменная внутри with
-							if (next === G_MOD) {
-								vres = ("__VARS__" + (concatProp(vres)));
-
-							} else {
-								vres = addScope(vres);
-							}
-
-						// Супер глобальная переменная вне with
-						} else {
-							vres = ("__VARS__" + (concatProp(finalWord.substring(next === G_MOD ? 2 : 1))));
-						}
-
-					} else {
-						var rfWord = finalWord.replace(modRgxp, '');
-
-						if (canParse && useWith && modMap[el]) {
-							if (el === G_MOD) {
-								rfWord = rfWord.substring(1);
-							}
-
-							var num = 0;
-
-							// Уточнение scope
-							if (el === L_MOD) {
-								var val = strongModRgxp.exec(finalWord);
-								num = val ? val[1] : 1;
-							}
-
-							if (num && (scope.length - num) <= 0) {
-								vres = addScope(rfWord);
-
-							} else {
-								vres = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
-							}
-
-						} else {
-							if (canParse) {
-								vres = addScope(rfWord);
-
-							} else if (tplName && rfWord === 'this' && !this.hasParent(this.getGroup('selfThis'))) {
-								vres = '__THIS__';
-
-							} else {
-								vres = rfWord;
-							}
-						}
-					}
-
-					if (canParse &&
-						isNextAssign(command, i + word.length) &&
-						tplName &&
-						constCache[tplName] &&
-						constCache[tplName][vres]
-					) {
-
-						this.error((("constant \"" + vres) + "\" is already defined"));
-						return '';
-					}
-
-					// Данное слово является составным системным,
-					// т.е. пропускаем его и следующее за ним
-					if (comboBlackWords[finalWord]) {
-						posNWord = 2;
-
-					} else if (
-						canParse &&
-						(!opt_sys || opt_iSys) && !filterStart &&
-						(!nextStep.unary || undefUnaryBlackWords[nextStep.unary]) &&
-						!globalUnUndef
-					) {
-
-						vres = (("" + unUndefLabel) + ("(" + vres) + ")");
-					}
-
-					wordAddEnd += vres.length - word.length;
-					nword = false;
-
-					if (filterStart) {
-						var last = filter.length - 1;
-						filter[last] += vres;
-						rvFilter[last] += word;
-						filterAddEnd += vres.length - word.length;
-
-					} else {
-						res = res.substring(0, i + uAdd) + vres + res.substring(i + word.length + uAdd);
-					}
-
-					// Дело сделано, теперь с чистой совестью матаем на позицию:
-					// за один символ до конца слова
-					i += word.length - 2;
-					breakNum = 1;
-
-					continue;
-
-				// Возможно, скоро начнётся новое слово,
-				// для которого можно посчитать scope
-				} else if (newWordRgxp.test(el)) {
-					nword = true;
-
-					if (posNWord) {
-						posNWord--;
-					}
-				}
-
-				if (!filterStart) {
-					if (el === ')') {
-						// Закрылась скобка, а последующие 2 символа не являются фильтром
-						if (next !== FILTER || !filterStartRgxp.test(nNext)) {
-							if (pCount) {
-								pCount--;
-							}
-
-							pContent.shift();
-							continue;
-
-						} else {
-							filterWrapper = true;
-						}
-					}
-
-				// Составление тела фильтра
-				} else if (el !== ')' || pCountFilter) {
-					var last$0 = filter.length - 1;
-					filter[last$0] += el;
-					rvFilter[last$0] += el;
-				}
-			}
-
-			if (i === end && pCount && !filterWrapper && el !== ')') {
-				this.error('missing closing or opening parenthesis in the template');
-				return '';
-			}
-
-			// Закрылся локальный или глобальный фильтр
-			if (filterStart && !pCountFilter && (el === ')' && !breakNum || i === end)) {
-				var pos = pContent[0];
-				var fAdd = wordAddEnd - filterAddEnd + addition,
-					fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
-
-				var arr = [];
-				for (var j = -1; ++j < filter.length;) {
-					var f = filter[j];
-
-					if (!unMap[f]) {
-						arr.push(f);
-
-						if (f.split(' ')[0] === 'default') {
-							unUndef = true;
-						}
-
-					} else {
-						if (f === '!html' && (!pCount || filterWrapper)) {
-							unEscape = true;
-
-						} else if (f === '!undef') {
-							unUndef = true;
-						}
-					}
-				}
-
-				filter = arr;
-				var resTmp = fBody.trim();
-
-				if (!resTmp) {
-					resTmp = 'void 0';
-				}
-
-				for (var j$1 = -1; ++j$1 < filter.length;) {
-					var params = filter[j$1].split(' '),
-						input = params.slice(1).join(' ').trim();
-
-					var current = params.shift().split('.'),
-						f$0 = '';
-
-					for (var k = -1; ++k < current.length;) {
-						f$0 += (("['" + (current[k])) + "']");
-					}
-
-					resTmp =
-						(("(" + cacheLink) + (" = __FILTERS__" + f$0) + "") +
-							(filterWrapper || !pCount ? '.call(this,' : '') +
-							resTmp +
-							(input ? ',' + input : '') +
-							(filterWrapper || !pCount ? ')' : '') +
-						')'
-					;
-				}
-
-				resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
-				unUndef = globalUnUndef;
-
-				var fstr = rvFilter.join().length + 1;
-				res = pCount ?
-					res.substring(0, pos[0] + addition) +
-						resTmp +
-						res.substring(pos[1] + fAdd + fstr) :
-
-					resTmp;
-
-				pContent.shift();
-				filter = [];
-				rvFilter = [];
-				filterStart = false;
-
-				if (pCount) {
-					pCount--;
-					filterWrapper = false;
-				}
-
-				wordAddEnd += resTmp.length - fBody.length - fstr;
-
-				if (!pCount) {
-					addition += wordAddEnd - filterAddEnd;
-					wordAddEnd = 0;
-					filterAddEnd = 0;
-				}
-			}
-
-			// Закрылась скобка внутри фильтра
-			if (el === ')' && pCountFilter && !breakNum) {
-				pCountFilter--;
-
-				if (!pCountFilter) {
-					var last$1 = filter.length - 1,
-						cache = filter[last$1];
-
-					filter[last$1] = this.prepareOutput(cache, true, null, true, false);
-					var length = filter[last$1].length - cache.length;
-
-					wordAddEnd += length;
-					filterAddEnd += length;
-
-					if (i === end) {
-						i--;
-						breakNum = 1;
-					}
-				}
-			}
-
-			isFilter = el === FILTER;
-			if (breakNum) {
-				breakNum--;
-			}
-
-			// Через 2 итерации начнётся фильтр
-			if (next === FILTER && filterStartRgxp.test(nNext)) {
-				nword = false;
-
-				if (!filterStart) {
-					if (pCount) {
-						pContent[0].push(i + 1);
-
-					} else {
-						pContent.push([0, i + 1]);
-					}
-				}
-
-				filterStart = true;
-				if (!pCountFilter) {
-					filter.push(nNext);
-					rvFilter.push(nNext);
-					i += 2;
-				}
-
-			} else if (i === 0 && el === FILTER && filterStartRgxp.test(next)) {
-				nword = false;
-
-				if (!filterStart) {
-					pContent.push([0, i]);
-				}
-
-				filterStart = true;
-				if (!pCountFilter) {
-					filter.push(next);
-					rvFilter.push(next);
-					i++;
-				}
-			}
-		}
-
-		res = res.replace(unUndefRgxp, '__FILTERS__.undef');
-
-		if (wrapRgxp.test(res)) {
-			res = (("(" + res) + ")");
-		}
-
-		if (opt_validate !== false) {
-			try {
-				esprima.parse(exprimaHackFn(res));
-
-			} catch (err) {
-				this.error(err.message.replace(/.*?: (\w)/, function(sstr, $1)  {return $1.toLowerCase()}));
-				return '';
-			}
-		}
-
-		if (!unEscape && !opt_sys) {
-			res = (("__FILTERS__.html(" + res) + (", " + (this.attr)) + (", " + (this.attrEscape)) + ")");
-		}
-
-		return res;
-	};
+(function () {
+  var blackWords = {
+    "+": true,
+    "++": true,
+    "-": true,
+    "--": true,
+    "~": true,
+    "~~": true,
+    "!": true,
+    "!!": true,
+    "break": true,
+    "case": true,
+    "catch": true,
+    "continue": true,
+    "delete": true,
+    "do": true,
+    "else": true,
+    "false": true,
+    "finnaly": true,
+    "for": true,
+    "function": true,
+    "if": true,
+    "in": true,
+    "of": true,
+    "instanceof": true,
+    "new": true,
+    "null": true,
+    "return": true,
+    "switch": true,
+    "this": true,
+    "throw": true,
+    "true": true,
+    "try": true,
+    "typeof": true,
+    "var": true,
+    "const": true,
+    "let": true,
+    "void": true,
+    "while": true,
+    "with": true,
+    "class": true,
+    "debugger": true,
+    "interface": true
+  };
+
+  var unaryBlackWords = {
+    "new": true,
+    "typeof": true,
+    "instanceof": true,
+    "in": true
+  };
+
+  var undefUnaryBlackWords = {
+    "new": true
+  };
+
+  var comboBlackWords = {
+    "var": true,
+    "const": true,
+    "let": true
+  };
+
+  var nextWordCharRgxp = new RegExp("[" + G_MOD + "" + L_MOD + "$+\\-~!" + w + "[\\]().]");
+
+  /**
+   * Вернуть целое слово из заданной строки, начиная с указанной позиции
+   *
+   * @param {string} str - исходная строка
+   * @param {number} pos - начальная позиция
+   * @return {{word: string, finalWord: string, unary: string}}
+   */
+  DirObj.prototype.getWord = function (str, pos) {
+    var word = "", res = "", nres = "";
+
+    var pCount = 0, diff = 0;
+
+    var start = 0, pContent = null;
+
+    var unary, unaryStr = "";
+
+    for (var i = pos, j = 0; i < str.length; i++, j++) {
+      var el = str.charAt(i);
+
+      if (pCount || nextWordCharRgxp.test(el) || el === " " && (unary = unaryBlackWords[word])) {
+        if (el === " ") {
+          word = "";
+        } else {
+          word += el;
+        }
+
+        if (unary) {
+          unaryStr = unaryStr || res;
+
+          unary = false;
+        }
+
+        if (pContent !== null && (pCount > 1 || pCount === 1 && !closePMap[el])) {
+          pContent += el;
+        }
+
+        if (pMap[el]) {
+          if (pContent === null) {
+            start = j + 1;
+            pContent = "";
+          }
+
+          pCount++;
+        } else if (closePMap[el]) {
+          if (pCount) {
+            pCount--;
+
+            if (!pCount) {
+              if (nres) {
+                nres = nres.substring(0, start + diff) + (pContent && this.prepareOutput(pContent, true, null, null, true)) + nres.substring(j + diff + pContent.length);
+              } else {
+                nres = res.substring(0, start) + (pContent && this.prepareOutput(pContent, true, null, null, true)) + res.substring(j);
+              }
+
+              diff = nres.length - res.length;
+              pContent = null;
+            }
+          } else {
+            break;
+          }
+        }
+
+        res += el;
+        if (nres) {
+          nres += el;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return {
+      word: res,
+      finalWord: nres || res,
+      unary: unaryStr
+    };
+  };
+
+  /**
+   * Вернуть true, если указанное слово является свойством в литерале объекта
+   *
+   * @param {string} str - исходная строка
+   * @param {number} start - начальная позиция слова
+   * @param {number} end - конечная позиция слова
+   * @return {boolean}
+   */
+  function isSyOL(str, start, end) {
+    var res;
+
+    for (var i = start; i--;) {
+      var el = str.charAt(i);
+
+      if (!whiteSpaceRgxp.test(el)) {
+        res = el === "?";
+        break;
+      }
+    }
+
+    if (!res) {
+      for (var i = end; i < str.length; i++) {
+        var el = str.charAt(i);
+
+        if (!whiteSpaceRgxp.test(el)) {
+          return el === ":";
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Вернуть true, если следующий непробельный символ
+   * в указанной строке равен присвоению (=)
+   *
+   * @param {string} str - исходная строка
+   * @param {number} pos - начальная позиция
+   * @return {boolean}
+   */
+  function isNextAssign(str, pos) {
+    for (var i = pos; i < str.length; i++) {
+      var el = str.charAt(i);
+
+      if (!whiteSpaceRgxp.test(el)) {
+        return el === "=" && str.charAt(i + 1) !== "=";
+      }
+    }
+
+    return false;
+  }
+
+  var unMap = {
+    "!html": true,
+    "!undef": true
+  };
+
+  var unUndefLabel = "{undef}", unUndefRgxp = new RegExp(unUndefLabel, "g");
+
+  var ssfRgxp = /__FILTERS__\./;
+  var nextCharRgxp = new RegExp("[" + G_MOD + "" + L_MOD + "$+\\-~!" + w + "]"), newWordRgxp = new RegExp("[^" + G_MOD + "" + L_MOD + "$" + w + "[\\].]");
+
+  var numRgxp = /[0-9]/, modRgxp = new RegExp("" + L_MOD + "(?:\\d+|)"), strongModRgxp = new RegExp("" + L_MOD + "(\\d+)");
+
+  var multPropRgxp = /\[|\./, firstPropRgxp = /([^.[]+)(.*)/;
+
+  var propValRgxp = /[^-+!(]+/;
+  var exprimaHackFn = function (str) {
+    return str.trim().replace(/^\[(?!\s*])/, "$[").replace(/\byield\b/g, "").replace(/(?:break|continue) [_]{2,}I_PROTO__[${w}]+;/, "");
+  };
+
+  var wrapRgxp = /^\s*\{/, dangerRgxp = /\)\s*(?:{|=>)/, functionRgxp = /\bfunction\b/;
+
+  /**
+   * Подготовить указанную команду к выводу:
+   * осуществляется привязка к scope и инициализация фильтров
+   *
+   * @param {string} command - исходный текст команды
+   * @param {?boolean=} opt_sys - если true, то запуск функции считается системным вызовом
+   * @param {?boolean=} opt_iSys - если true, то запуск функции считается вложенным системным вызовом
+   * @param {?boolean=} opt_breakFirst - если true, то первое слово в команде пропускается
+   * @param {?boolean=} opt_validate - если false, то полученная конструкция не валидируется
+   * @return {string}
+   */
+  DirObj.prototype.prepareOutput = function (command, opt_sys, opt_iSys, opt_breakFirst, opt_validate) {
+    var _this5 = this;
+    var tplName = this.tplName, struct = this.structure;
+
+    if (dangerRgxp.test(command)) {
+      this.error("unsupported syntax");
+      return "";
+    }
+
+    // ОПРЕДЕЛЕНИЯ:
+    // Скобка = (
+
+    var res = command;
+
+    // Количество открытых скобок в строке
+    // (скобки открытые внутри фильтра не считаются)
+    var pCount = 0;
+
+    // Количество открытых скобок внутри фильтра:
+    // |foo (1 + 2) / 3
+    var pCountFilter = 0;
+
+    // Массив позиций открытия и закрытия скобок (pCount),
+    // идёт в порядке возрастания от вложенных к внешним блокам, например:
+    // ((a + b)) => [[1, 7], [0, 8]]
+    var pContent = [];
+
+    // true, если идёт декларация фильтра
+    var filterStart = false;
+
+    // true, если идёт фильтр-враппер, т.е.
+    // (2 / 3)|round
+    var filterWrapper = false;
+
+    // Массивы итоговых фильтров и истинных фильтров,
+    // например:
+    // {with foo}
+    //     {bar |ucfisrt bar()|json}
+    // {end}
+    //
+    // rvFilter => ['ucfisrt bar()', 'json']
+    // filter => ['ucfisrt foo.bar()', 'json']
+    var filter = [], rvFilter = [];
+
+    // true, то можно рассчитывать слово
+    var nword = !opt_breakFirst;
+
+    // Количество слов для пропуска
+    var posNWord = 0;
+
+    // Область видимости
+    var scope = this.scope, useWith = Boolean(scope.length);
+
+    // Сдвиги
+    var addition = 0, wordAddEnd = 0, filterAddEnd = 0;
+
+    // true, если применяется фильтр !html
+    var unEscape = !this.escapeOutput;
+
+    // true, если применяется фильтр !undef
+    var unUndef = !this.replaceUndef, globalUnUndef = unUndef;
+
+    var vars = struct.children ? struct.vars : struct.parent.vars;
+
+    var ref = this.hasBlock("block", true), type;
+
+    if (ref) {
+      ref = ref.params.name;
+      type = "block";
+    } else if (this.proto) {
+      ref = this.proto.name;
+      type = "proto";
+    }
+
+    if (ref && !scopeCache[type][tplName]) {
+      ref = false;
+    }
+
+    function search(obj, val, extList) {
+      if (!obj) {
+        return false;
+      }
+
+      var def = vars["" + val + "_" + obj.id];
+
+      if (def) {
+        return def;
+      } else if (extList.length && obj.children[extList[0]]) {
+        return search(obj.children[extList.shift()], val, extList);
+      }
+
+      return false;
+    }
+
+    var replacePropVal = function (sstr) {
+      var def = vars[sstr];
+
+      if (!def) {
+        var refCache = ref && scopeCache[type][tplName][ref];
+
+        if (!refCache || refCache.parent && (!refCache.overridden || _this5.hasParent("__super__"))) {
+          if (refCache) {
+            def = search(refCache.root, sstr, getExtList(String(tplName)));
+          }
+
+          var tplCache = tplName && scopeCache["template"][tplName];
+
+          if (!def && tplCache && tplCache.parent) {
+            def = search(tplCache.root, sstr, getExtList(String(tplName)));
+          }
+        }
+
+        if (!def && refCache) {
+          def = vars["" + sstr + "_" + refCache.id];
+        }
+
+        if (!def) {
+          def = vars["" + sstr + "_" + _this5.module.id] || vars["" + sstr + "_00"];
+        }
+      }
+
+      if (def) {
+        return def.value;
+      }
+
+      return sstr;
+    };
+
+    function addScope(str) {
+      if (multPropRgxp.test(str)) {
+        var fistProp = firstPropRgxp.exec(str);
+        fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
+        str = fistProp.slice(1).join("");
+      } else {
+        str = str.replace(propValRgxp, replacePropVal);
+      }
+
+      return str;
+    }
+
+    if (!command) {
+      this.error("invalid syntax");
+      return "";
+    }
+
+    var commandLength = command.length, end = commandLength - 1;
+
+    var cacheLink = replacePropVal("$_");
+    var isFilter, breakNum;
+
+    for (var i = -1; ++i < commandLength;) {
+      var el = command.charAt(i), next = command.charAt(i + 1), nNext = command.charAt(i + 2);
+
+      if (!breakNum) {
+        if (el === "(") {
+          // Скобка открылась внутри декларации фильтра
+          if (filterStart) {
+            pCountFilter++;
+          } else {
+            pContent.unshift([i + wordAddEnd]);
+            pCount++;
+          }
+        }
+
+        // Расчёт scope:
+        // флаг nword показывает, что началось новое слово;
+        // флаг posNWord показывает, сколько новых слов нужно пропустить
+        if (nword && !posNWord && nextCharRgxp.test(el)) {
+          var nextStep = this.getWord(command, i);
+          var word = nextStep.word, finalWord = nextStep.finalWord;
+
+          var uAdd = wordAddEnd + addition, vres = undefined;
+
+          // true,
+          // если полученное слово не является зарезервированным (blackWordMap),
+          // не является фильтром,
+          // не является числом,
+          // не является константой замены Escaper,
+          // не является названием свойства в литерале объекта ({свойство: )
+          var canParse = !blackWords[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter && isNaN(Number(word)) && !escaperRgxp.test(word) && !isSyOL(command, i, i + word.length);
+
+          if (canParse && functionRgxp.test(word)) {
+            this.error("unsupported syntax");
+            return "";
+          }
+
+          // Экспорт числовых литералов
+          if (numRgxp.test(el)) {
+            vres = finalWord;
+
+            // Экспорт глобальный и супер глобальных переменных
+          } else if ((useWith && !modMap[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
+            if (useWith) {
+              vres = next === G_MOD ? finalWord.substring(2) : finalWord;
+
+              // Супер глобальная переменная внутри with
+              if (next === G_MOD) {
+                vres = "__VARS__" + concatProp(vres);
+              } else {
+                vres = addScope(vres);
+              }
+
+              // Супер глобальная переменная вне with
+            } else {
+              vres = "__VARS__" + concatProp(finalWord.substring(next === G_MOD ? 2 : 1));
+            }
+          } else {
+            var rfWord = finalWord.replace(modRgxp, "");
+
+            if (canParse && useWith && modMap[el]) {
+              if (el === G_MOD) {
+                rfWord = rfWord.substring(1);
+              }
+
+              var num = 0;
+
+              // Уточнение scope
+              if (el === L_MOD) {
+                var val = strongModRgxp.exec(finalWord);
+                num = val ? val[1] : 1;
+              }
+
+              if (num && scope.length - num <= 0) {
+                vres = addScope(rfWord);
+              } else {
+                vres = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
+              }
+            } else {
+              if (canParse) {
+                vres = addScope(rfWord);
+              } else if (tplName && rfWord === "this" && !this.hasParent(this.getGroup("selfThis"))) {
+                vres = "__THIS__";
+              } else {
+                vres = rfWord;
+              }
+            }
+          }
+
+          if (canParse && isNextAssign(command, i + word.length) && tplName && constCache[tplName] && constCache[tplName][vres]) {
+            this.error("constant \"" + vres + "\" is already defined");
+            return "";
+          }
+
+          // Данное слово является составным системным,
+          // т.е. пропускаем его и следующее за ним
+          if (comboBlackWords[finalWord]) {
+            posNWord = 2;
+          } else if (canParse && (!opt_sys || opt_iSys) && !filterStart && (!nextStep.unary || undefUnaryBlackWords[nextStep.unary]) && !globalUnUndef) {
+            vres = "" + unUndefLabel + "(" + vres + ")";
+          }
+
+          wordAddEnd += vres.length - word.length;
+          nword = false;
+
+          if (filterStart) {
+            var last = filter.length - 1;
+            filter[last] += vres;
+            rvFilter[last] += word;
+            filterAddEnd += vres.length - word.length;
+          } else {
+            res = res.substring(0, i + uAdd) + vres + res.substring(i + word.length + uAdd);
+          }
+
+          // Дело сделано, теперь с чистой совестью матаем на позицию:
+          // за один символ до конца слова
+          i += word.length - 2;
+          breakNum = 1;
+
+          continue;
+
+          // Возможно, скоро начнётся новое слово,
+          // для которого можно посчитать scope
+        } else if (newWordRgxp.test(el)) {
+          nword = true;
+
+          if (posNWord) {
+            posNWord--;
+          }
+        }
+
+        if (!filterStart) {
+          if (el === ")") {
+            // Закрылась скобка, а последующие 2 символа не являются фильтром
+            if (next !== FILTER || !filterStartRgxp.test(nNext)) {
+              if (pCount) {
+                pCount--;
+              }
+
+              pContent.shift();
+              continue;
+            } else {
+              filterWrapper = true;
+            }
+          }
+
+          // Составление тела фильтра
+        } else if (el !== ")" || pCountFilter) {
+          var last = filter.length - 1;
+          filter[last] += el;
+          rvFilter[last] += el;
+        }
+      }
+
+      if (i === end && pCount && !filterWrapper && el !== ")") {
+        this.error("missing closing or opening parenthesis in the template");
+        return "";
+      }
+
+      // Закрылся локальный или глобальный фильтр
+      if (filterStart && !pCountFilter && (el === ")" && !breakNum || i === end)) {
+        var pos = pContent[0];
+        var fAdd = wordAddEnd - filterAddEnd + addition, fBody = res.substring(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
+
+        var arr = [];
+        for (var j = -1; ++j < filter.length;) {
+          var f = filter[j];
+
+          if (!unMap[f]) {
+            arr.push(f);
+
+            if (f.split(" ")[0] === "default") {
+              unUndef = true;
+            }
+          } else {
+            if (f === "!html" && (!pCount || filterWrapper)) {
+              unEscape = true;
+            } else if (f === "!undef") {
+              unUndef = true;
+            }
+          }
+        }
+
+        filter = arr;
+        var resTmp = fBody.trim();
+
+        if (!resTmp) {
+          resTmp = "void 0";
+        }
+
+        for (var j = -1; ++j < filter.length;) {
+          var params = filter[j].split(" "), input = params.slice(1).join(" ").trim();
+
+          var current = params.shift().split("."), f = "";
+
+          for (var k = -1; ++k < current.length;) {
+            f += "['" + current[k] + "']";
+          }
+
+          resTmp = "(" + cacheLink + " = __FILTERS__" + f + (filterWrapper || !pCount ? ".call(this," : "") + resTmp + (input ? "," + input : "") + (filterWrapper || !pCount ? ")" : "") + ")";
+        }
+
+        resTmp = resTmp.replace(unUndefRgxp, unUndef ? "" : "__FILTERS__.undef");
+        unUndef = globalUnUndef;
+
+        var fstr = rvFilter.join().length + 1;
+        res = pCount ? res.substring(0, pos[0] + addition) + resTmp + res.substring(pos[1] + fAdd + fstr) : resTmp;
+
+        pContent.shift();
+        filter = [];
+        rvFilter = [];
+        filterStart = false;
+
+        if (pCount) {
+          pCount--;
+          filterWrapper = false;
+        }
+
+        wordAddEnd += resTmp.length - fBody.length - fstr;
+
+        if (!pCount) {
+          addition += wordAddEnd - filterAddEnd;
+          wordAddEnd = 0;
+          filterAddEnd = 0;
+        }
+      }
+
+      // Закрылась скобка внутри фильтра
+      if (el === ")" && pCountFilter && !breakNum) {
+        pCountFilter--;
+
+        if (!pCountFilter) {
+          var last = filter.length - 1, _cache = filter[last];
+
+          filter[last] = this.prepareOutput(_cache, true, null, true, false);
+          var length = filter[last].length - _cache.length;
+
+          wordAddEnd += length;
+          filterAddEnd += length;
+
+          if (i === end) {
+            i--;
+            breakNum = 1;
+          }
+        }
+      }
+
+      isFilter = el === FILTER;
+      if (breakNum) {
+        breakNum--;
+      }
+
+      // Через 2 итерации начнётся фильтр
+      if (next === FILTER && filterStartRgxp.test(nNext)) {
+        nword = false;
+
+        if (!filterStart) {
+          if (pCount) {
+            pContent[0].push(i + 1);
+          } else {
+            pContent.push([0, i + 1]);
+          }
+        }
+
+        filterStart = true;
+        if (!pCountFilter) {
+          filter.push(nNext);
+          rvFilter.push(nNext);
+          i += 2;
+        }
+      } else if (i === 0 && el === FILTER && filterStartRgxp.test(next)) {
+        nword = false;
+
+        if (!filterStart) {
+          pContent.push([0, i]);
+        }
+
+        filterStart = true;
+        if (!pCountFilter) {
+          filter.push(next);
+          rvFilter.push(next);
+          i++;
+        }
+      }
+    }
+
+    res = res.replace(unUndefRgxp, "__FILTERS__.undef");
+
+    if (wrapRgxp.test(res)) {
+      res = "(" + res + ")";
+    }
+
+    if (opt_validate !== false) {
+      try {
+        esprima.parse(exprimaHackFn(res));
+      } catch (err) {
+        this.error(err.message.replace(/.*?: (\w)/, function (sstr, $1) {
+          return $1.toLowerCase();
+        }));
+        return "";
+      }
+    }
+
+    if (!unEscape && !opt_sys) {
+      res = "__FILTERS__.html(" + res + ", " + this.attr + ", " + this.attrEscape + ")";
+    }
+
+    return res;
+  };
 })();
 /*!
  * API для организации очереди выполнения
@@ -10233,8 +9851,8 @@ this.prepareOutput(el, true)
  * @return {!DirObj}
  */
 DirObj.prototype.toQueue = function (fn) {
-	this.structure.stack.push(fn);
-	return this;
+  this.structure.stack.push(fn);
+  return this;
 };
 
 /**
@@ -10242,15 +9860,15 @@ DirObj.prototype.toQueue = function (fn) {
  * @return {!DirObj}
  */
 DirObj.prototype.applyQueue = function () {
-	var stack = this.structure.stack;
+  var stack = this.structure.stack;
 
-	for (var i = -1; ++i < stack.length;) {
-		stack[i].call(this);
-		stack.shift();
-		i--;
-	}
+  for (var i = -1; ++i < stack.length;) {
+    stack[i].call(this);
+    stack.shift();
+    i--;
+  }
 
-	return this;
+  return this;
 };
 /*!
  * Методы и функции для записи в результирующий JS
@@ -10261,20 +9879,20 @@ DirObj.prototype.applyQueue = function () {
  * @return {string}
  */
 DirObj.prototype.$ = function () {
-	if (this.domComment) {
-		return '__COMMENT_RESULT__ +=';
-	}
+  if (this.domComment) {
+    return "__COMMENT_RESULT__ +=";
+  }
 
-	switch (this.renderMode) {
-		case 'stringBuffer':
-			return '__RESULT__.push(';
+  switch (this.renderMode) {
+    case "stringBuffer":
+      return "__RESULT__.push(";
 
-		case 'dom':
-			return '__APPEND__(__RESULT__[__RESULT__.length - 1],';
+    case "dom":
+      return "__APPEND__(__RESULT__[__RESULT__.length - 1],";
 
-		default:
-			return '__RESULT__ +=';
-	}
+    default:
+      return "__RESULT__ +=";
+  }
 };
 
 /**
@@ -10282,20 +9900,20 @@ DirObj.prototype.$ = function () {
  * @return {string}
  */
 DirObj.prototype.$$ = function () {
-	if (this.domComment) {
-		return '';
-	}
+  if (this.domComment) {
+    return "";
+  }
 
-	switch (this.renderMode) {
-		case 'stringBuffer':
-			return ')';
+  switch (this.renderMode) {
+    case "stringBuffer":
+      return ")";
 
-		case 'dom':
-			return ')';
+    case "dom":
+      return ")";
 
-		default:
-			return '';
-	}
+    default:
+      return "";
+  }
 };
 
 /**
@@ -10305,7 +9923,7 @@ DirObj.prototype.$$ = function () {
  * @return {string}
  */
 DirObj.prototype.wrap = function (opt_str) {
-	return this.$() + (opt_str || '') + this.$$() + ';';
+  return this.$() + (opt_str || "") + this.$$() + ";";
 };
 
 /**
@@ -10316,7 +9934,8 @@ DirObj.prototype.wrap = function (opt_str) {
  * @return {string}
  */
 DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
-	return /* cbws */((" " + (this.wrap('__NODE__'))) + (" " + (opt_inline ? '': '__RESULT__.push(__NODE__);')) + " __NODE__ = null; ");
+  return ( /* cbws */"" + this.wrap("__NODE__") + "" + (opt_inline ? "" : "__RESULT__.push(__NODE__);") + "__NODE__ = null;"
+  );
 };
 
 /**
@@ -10324,16 +9943,16 @@ DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
  * @return {string}
  */
 DirObj.prototype.returnResult = function () {
-	switch (this.renderMode) {
-		case 'stringBuffer':
-			return '__RESULT__.join(\'\')';
+  switch (this.renderMode) {
+    case "stringBuffer":
+      return "__RESULT__.join('')";
 
-		case 'dom':
-			return '__RESULT__[0]';
+    case "dom":
+      return "__RESULT__[0]";
 
-		default:
-			return '__RESULT__';
-	}
+    default:
+      return "__RESULT__";
+  }
 };
 
 /**
@@ -10341,16 +9960,16 @@ DirObj.prototype.returnResult = function () {
  * @return {string}
  */
 DirObj.prototype.declResult = function () {
-	switch (this.renderMode) {
-		case 'stringBuffer':
-			return 'new Snakeskin.StringBuffer()';
+  switch (this.renderMode) {
+    case "stringBuffer":
+      return "new Snakeskin.StringBuffer()";
 
-		case 'dom':
-			return '[document.createDocumentFragment()]';
+    case "dom":
+      return "[document.createDocumentFragment()]";
 
-		default:
-			return '\'\'';
-	}
+    default:
+      return "''";
+  }
 };
 
 /**
@@ -10359,21 +9978,19 @@ DirObj.prototype.declResult = function () {
  * @param {string} str
  * @return {string}
  */
-DirObj.prototype.replaceCData = function (str) {var this$0 = this;
-	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
+DirObj.prototype.replaceCData = function (str) {
+  var _this6 = this;
+  var s = ADV_LEFT_BLOCK + LEFT_BLOCK, e = RIGHT_BLOCK;
 
-	return str
-		.replace(new RegExp((("" + s) + ("cdata" + e) + ("([\\s\\S]*?)" + s) + ("(?:\\/cdata|end cdata)" + e) + ""), 'g'), function(sstr, data)  {
-			this$0.cDataContent.push(data);
-			return '' +
-				// Количество добавляемых строк
-				(("" + s) + ("__appendLine__ " + ((data.match(new RegExp(nextLineRgxp.source, 'g')) || '').length)) + ("" + e) + "") +
+  return str.replace(new RegExp("" + s + "cdata" + e + "([\\s\\S]*?)" + s + "(?:\\/cdata|end cdata)" + e, "g"), function (sstr, data) {
+    _this6.cDataContent.push(data);
+    return "" + (
+    // Количество добавляемых строк
+    "" + s + "__appendLine__ " + (data.match(new RegExp(nextLineRgxp.source, "g")) || "").length + "" + e) + (
 
-				// Метка для замены CDATA
-				(("__CDATA__" + (this$0.cDataContent.length - 1)) + "_")
-			;
-		});
+    // Метка для замены CDATA
+    "__CDATA__" + (_this6.cDataContent.length - 1) + "_");
+  });
 };
 
 /**
@@ -10383,40 +10000,37 @@ DirObj.prototype.replaceCData = function (str) {var this$0 = this;
  * @param {(Date|string)} label - заголовок файла шаблонов
  * @retur {!DirObj}
  */
-DirObj.prototype.end = function (cacheKey, label) {var this$0 = this;
-	label = label || '';
-	switch (this.renderMode) {
-		case 'stringBuffer':
-			this.res = this.res.replace(/__RESULT__\.push\(''\);/g, '');
-			break;
+DirObj.prototype.end = function (cacheKey, label) {
+  var _this7 = this;
+  label = label || "";
+  switch (this.renderMode) {
+    case "stringBuffer":
+      this.res = this.res.replace(/__RESULT__\.push\(''\);/g, "");
+      break;
 
-		case 'dom':
-			this.res = this.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
-			break;
+    case "dom":
+      this.res = this.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, "");
+      break;
 
-		default:
-			this.res = this.res.replace(/__RESULT__ \+= '';/g, '');
-			break;
-	}
+    default:
+      this.res = this.res.replace(/__RESULT__ \+= '';/g, "");
+      break;
+  }
 
-	var includes = '';
+  var includes = "";
 
-	if (this.module.key.length) {
-		includes = JSON.stringify(this.module.key);
-	}
+  if (this.module.key.length) {
+    includes = JSON.stringify(this.module.key);
+  }
 
-	this.res = this.pasteDangerBlocks(this.res)
-		.replace(
-			/__CDATA__(\d+)_/g,
-			function(sstr, pos)  {return escapeNextLine(
-					this$0.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, 'g'), this$0.lineSeparator)
-				).replace(/'/g, '&#39;')}
-		);
+  this.res = this.pasteDangerBlocks(this.res).replace(/__CDATA__(\d+)_/g, function (sstr, pos) {
+    return escapeNextLine(_this7.cDataContent[pos].replace(new RegExp(nextLineRgxp.source, "g"), _this7.lineSeparator)).replace(/'/g, "&#39;");
+  });
 
-	this.res = (("/* Snakeskin v" + (Snakeskin.VERSION.join('.'))) + (", key <" + cacheKey) + (">, label <" + (label.valueOf())) + (">, includes <" + includes) + (">, generated at <" + (new Date().valueOf())) + (">." + (this.lineSeparator)) + ("   " + (this.res)) + "");
-	this.res += /* cbws */(" }  if (!__IS_NODE__ && !__HAS_EXPORTS__) { __INIT__(); }  }).call(this); ");
+  this.res = "/* Snakeskin v" + Snakeskin.VERSION.join(".") + ", key <" + cacheKey + ">, label <" + label.valueOf() + ">, includes <" + includes + ">, generated at <" + new Date().valueOf() + ">." + this.lineSeparator + "   " + this.res;
+  this.res += /* cbws */"}if (!__IS_NODE__ && !__HAS_EXPORTS__) {__INIT__();}}).call(this);";
 
-	return this;
+  return this;
 };
 
 /**
@@ -10425,12 +10039,12 @@ DirObj.prototype.end = function (cacheKey, label) {var this$0 = this;
  * @return {boolean}
  */
 DirObj.prototype.isSimpleOutput = function () {
-	if (getName(this.name) !== 'end' && this.strong) {
-		this.error((("directive \"" + (this.structure.name)) + ("\" can not be used with a \"" + (this.strong)) + "\""));
-		return false;
-	}
+  if (getName(this.name) !== "end" && this.strong) {
+    this.error("directive \"" + this.structure.name + "\" can not be used with a \"" + this.strong + "\"");
+    return false;
+  }
 
-	return !this.parentTplName && !this.protoStart && !this.outerLink && (!this.proto || !this.proto.parentTplName);
+  return !this.parentTplName && !this.protoStart && !this.outerLink && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
@@ -10439,7 +10053,7 @@ DirObj.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 DirObj.prototype.isReady = function () {
-	return !this.protoStart && (!this.proto || !this.proto.parentTplName);
+  return !this.protoStart && (!this.proto || !this.proto.parentTplName);
 };
 
 /**
@@ -10454,18 +10068,12 @@ DirObj.prototype.isReady = function () {
  * @return {boolean}
  */
 DirObj.prototype.isAdvTest = function () {
-	var res = (
-		!this.proto && !this.outerLink &&
-		(
-			(this.parentTplName && !this.hasParentBlock({
-				'block': true,
-				'proto': true
-			})) ||
-			!this.parentTplName
-		)
-	);
+  var res = !this.proto && !this.outerLink && (this.parentTplName && !this.hasParentBlock({
+    "block": true,
+    "proto": true
+  }) || !this.parentTplName);
 
-	return Boolean(res);
+  return Boolean(res);
 };
 
 /**
@@ -10477,23 +10085,22 @@ DirObj.prototype.isAdvTest = function () {
  * @return {boolean}
  */
 DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
-	if (str === void 0) {
-		return false;
-	}
+  if (str === void 0) {
+    return false;
+  }
 
-	if (!this.tplName || write[this.tplName] !== false || opt_interface) {
-		if (opt_jsDoc) {
-			var pos = Number(opt_jsDoc);
-			this.res = this.res.substring(0, pos) + str + this.res.substring(pos);
+  if (!this.tplName || write[this.tplName] !== false || opt_interface) {
+    if (opt_jsDoc) {
+      var pos = Number(opt_jsDoc);
+      this.res = this.res.substring(0, pos) + str + this.res.substring(pos);
+    } else {
+      this.res += str;
+    }
 
-		} else {
-			this.res += str;
-		}
+    return true;
+  }
 
-		return true;
-	}
-
-	return false;
+  return false;
 };
 
 /**
@@ -10504,11 +10111,11 @@ DirObj.prototype.save = function (str, opt_interface, opt_jsDoc) {
  * @return {boolean}
  */
 DirObj.prototype.append = function (str) {
-	if (!this.isSimpleOutput()) {
-		return false;
-	}
+  if (!this.isSimpleOutput()) {
+    return false;
+  }
 
-	return this.save(str);
+  return this.save(str);
 };
 
 /**
@@ -10519,16 +10126,16 @@ DirObj.prototype.append = function (str) {
  * @return {boolean}
  */
 DirObj.prototype.mod = function (callback) {
-	if (!this.isSimpleOutput()) {
-		return false;
-	}
+  if (!this.isSimpleOutput()) {
+    return false;
+  }
 
-	if (!this.tplName || write[this.tplName] !== false) {
-		callback.call(this);
-		return true;
-	}
+  if (!this.tplName || write[this.tplName] !== false) {
+    callback.call(this);
+    return true;
+  }
 
-	return false;
+  return false;
 };
 /*!
  * API для работы с деревом шаблона
@@ -10546,25 +10153,23 @@ DirObj.prototype.mod = function (callback) {
  * @return {(boolean|string|!Object)}
  */
 DirObj.prototype.has = function (name, opt_obj, opt_returnObj) {
-	var obj = opt_obj || this.structure;
+  var obj = opt_obj || this.structure;
 
-	while (true) {
-		var nm = obj.name;
+  while (true) {
+    var nm = obj.name;
 
-		if (name[nm] || nm === name) {
-			if (name[nm]) {
-				return opt_returnObj ? obj : nm;
-			}
+    if (name[nm] || nm === name) {
+      if (name[nm]) {
+        return opt_returnObj ? obj : nm;
+      }
 
-			return opt_returnObj ? obj: true;
-
-		} else if (obj.parent && obj.parent.name !== 'root') {
-			obj = obj.parent;
-
-		} else {
-			return false;
-		}
-	}
+      return opt_returnObj ? obj : true;
+    } else if (obj.parent && obj.parent.name !== "root") {
+      obj = obj.parent;
+    } else {
+      return false;
+    }
+  }
 };
 
 /**
@@ -10578,11 +10183,11 @@ DirObj.prototype.has = function (name, opt_obj, opt_returnObj) {
  * @return {(boolean|string|!Object)}
  */
 DirObj.prototype.hasParent = function (name, opt_returnObj) {
-	if (this.structure.parent) {
-		return this.has(name, this.structure.parent, opt_returnObj);
-	}
+  if (this.structure.parent) {
+    return this.has(name, this.structure.parent, opt_returnObj);
+  }
 
-	return false;
+  return false;
 };
 
 /**
@@ -10595,11 +10200,11 @@ DirObj.prototype.hasParent = function (name, opt_returnObj) {
  * @return {(boolean|string|!Object)}
  */
 DirObj.prototype.hasBlock = function (name, opt_returnObj) {
-	if (this.blockStructure) {
-		return this.has(name, this.blockStructure, opt_returnObj);
-	}
+  if (this.blockStructure) {
+    return this.has(name, this.blockStructure, opt_returnObj);
+  }
 
-	return false;
+  return false;
 };
 
 /**
@@ -10613,11 +10218,11 @@ DirObj.prototype.hasBlock = function (name, opt_returnObj) {
  * @return {(boolean|string|!Object)}
  */
 DirObj.prototype.hasParentBlock = function (name, opt_returnObj) {
-	if (this.blockStructure && this.blockStructure.parent) {
-		return this.has(name, this.blockStructure.parent, opt_returnObj);
-	}
+  if (this.blockStructure && this.blockStructure.parent) {
+    return this.has(name, this.blockStructure.parent, opt_returnObj);
+  }
 
-	return false;
+  return false;
 };
 /*!
  * API для работы с переменными
@@ -10633,52 +10238,48 @@ DirObj.prototype.hasParentBlock = function (name, opt_returnObj) {
  * @return {string}
  */
 DirObj.prototype.declVar = function (varName, opt_callParams) {
-	opt_callParams = opt_callParams || false;
-	var tplName = this.tplName,
-		struct = this.structure;
+  opt_callParams = opt_callParams || false;
+  var tplName = this.tplName, struct = this.structure;
 
-	if (!opt_callParams && tplName && constCache[tplName][varName]) {
-		this.error((("variable \"" + varName) + "\" is already defined as constant"));
-	}
+  if (!opt_callParams && tplName && constCache[tplName][varName]) {
+    this.error("variable \"" + varName + "\" is already defined as constant");
+  }
 
-	while (!struct.vars) {
-		struct = struct.parent;
-	}
+  while (!struct.vars) {
+    struct = struct.parent;
+  }
 
-	var tmp = struct.vars[varName];
-	if (tmp && !tmp.inherited && struct.parent) {
-		return tmp.value;
-	}
+  var tmp = struct.vars[varName];
+  if (tmp && !tmp.inherited && struct.parent) {
+    return tmp.value;
+  }
 
-	var realVar,
-		id = this.module.id,
-		global = false;
+  var realVar, id = this.module.id, global = false;
 
-	if (importMap[struct.name]) {
-		if (struct.name !== 'root') {
-			struct = struct.parent;
-		}
+  if (importMap[struct.name]) {
+    if (struct.name !== "root") {
+      struct = struct.parent;
+    }
 
-		realVar = (("__LOCAL__." + varName) + ("_" + id) + ("_" + uid) + "");
-		varName += ("_" + id);
-		global = true;
+    realVar = "__LOCAL__." + varName + "_" + id + "_" + uid;
+    varName += "_" + id;
+    global = true;
+  } else {
+    realVar = "__" + varName + "_" + (this.proto ? this.proto.name : "") + "_" + struct.name + "_" + this.i;
+  }
 
-	} else {
-		realVar = (("__" + varName) + ("_" + (this.proto ? this.proto.name : '')) + ("_" + (struct.name)) + ("_" + (this.i)) + "");
-	}
+  struct.vars[varName] = {
+    value: realVar,
+    id: id,
+    global: global,
+    scope: this.scope.length
+  };
 
-	struct.vars[varName] = {
-		value: realVar,
-		id: id,
-		global: global,
-		scope: this.scope.length
-	};
+  if (tplName) {
+    this.varCache[tplName][varName] = true;
+  }
 
-	if (tplName) {
-		this.varCache[tplName][varName] = true;
-	}
-
-	return realVar;
+  return realVar;
 };
 
 /**
@@ -10691,61 +10292,55 @@ DirObj.prototype.declVar = function (varName, opt_callParams) {
  * @return {string}
  */
 DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
-	opt_end = opt_end !== false;
-	opt_init = opt_init == null ?
-		'void 0' : opt_init;
+  opt_end = opt_end !== false;
+  opt_init = opt_init == null ? "void 0" : opt_init;
 
-	var isSys = 0,
-		cache = '';
+  var isSys = 0, cache = "";
 
-	var fin = 'var ',
-		length = str.length,
-		struct = this.structure;
+  var fin = "var ", length = str.length, struct = this.structure;
 
-	while (!struct.vars) {
-		struct = struct.parent;
-	}
+  while (!struct.vars) {
+    struct = struct.parent;
+  }
 
-	if (importMap[struct.name]) {
-		fin = '';
-	}
+  if (importMap[struct.name]) {
+    fin = "";
+  }
 
-	for (var i = -1; ++i < length;) {
-		var el = str.charAt(i);
+  for (var i = -1; ++i < length;) {
+    var el = str.charAt(i);
 
-		if (bMap[el]) {
-			isSys++;
+    if (bMap[el]) {
+      isSys++;
+    } else if (closeBMap[el]) {
+      isSys--;
+    }
 
-		} else if (closeBMap[el]) {
-			isSys--;
-		}
+    if ((el === "," || i === length - 1) && !isSys) {
+      if (i === length - 1) {
+        cache += el;
+      }
 
-		if ((el === ',' || i === length - 1) && !isSys) {
-			if (i === length - 1) {
-				cache += el;
-			}
+      var parts = cache.split("="), realVar = this.declVar(parts[0].trim());
 
-			var parts = cache.split('='),
-				realVar = this.declVar(parts[0].trim());
+      parts[0] = realVar + (opt_init || parts[1] ? "=" : "");
+      parts[1] = parts[1] || opt_init;
 
-			parts[0] = realVar + (opt_init || parts[1] ? '=' : '');
-			parts[1] = parts[1] || opt_init;
+      var val = parts.slice(1).join("=");
+      fin += parts[0] + (val ? this.prepareOutput(val, true) : "") + ",";
 
-			var val = parts.slice(1).join('=');
-			fin += parts[0] + (val ? this.prepareOutput(val, true) : '') + ',';
+      cache = "";
+      continue;
+    }
 
-			cache = '';
-			continue;
-		}
+    cache += el;
+  }
 
-		cache += el;
-	}
+  if (isSys) {
+    this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-	if (isSys) {
-		this.error((("invalid \"" + (this.name)) + "\" declaration"));
-	}
-
-	return fin.slice(0, -1) + (opt_end ? ';' : '');
+  return fin.slice(0, -1) + (opt_end ? ";" : "");
 };
 
 /**
@@ -10754,7 +10349,8 @@ DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
  * @return {string}
  */
 DirObj.prototype.declArguments = function () {
-	return /* cbws */((" var __ARGUMENTS__ = arguments; " + (this.multiDeclVar('arguments = __ARGUMENTS__'))) + " ");
+  return ( /* cbws */"var __ARGUMENTS__ = arguments;" + this.multiDeclVar("arguments = __ARGUMENTS__") + ""
+  );
 };
 
 /**
@@ -10767,42 +10363,45 @@ DirObj.prototype.declArguments = function () {
  * @return {string}
  */
 function returnCache(cacheKey, text, params, ctx) {
-	if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
-		forIn(globalFnCache[cacheKey][text], function(el, key)  {
-			ctx[key] = el;
-		});
-	}
+  if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
+    forIn(globalFnCache[cacheKey][text], function (el, key) {
+      ctx[key] = el;
+    });
+  }
 
-	if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
-		var tmp = globalCache[cacheKey][text],
-			skip = false;
+  if (globalCache[cacheKey] && globalCache[cacheKey][text]) {
+    var _ret3 = (function () {
+      var tmp = globalCache[cacheKey][text], skip = false;
 
-		if (params.words) {
-			if (!tmp.words) {
-				skip = true;
+      if (params.words) {
+        if (!tmp.words) {
+          skip = true;
+        } else {
+          forIn(tmp.words, function (el, key) {
+            params.words[key] = el;
+          });
+        }
+      }
 
-			} else {
-				forIn(tmp.words, function(el, key)  {
-					params.words[key] = el;
-				});
-			}
-		}
+      if (params.debug) {
+        if (!tmp.debug) {
+          skip = true;
+        } else {
+          forIn(tmp.debug, function (el, key) {
+            params.debug[key] = el;
+          });
+        }
+      }
 
-		if (params.debug) {
-			if (!tmp.debug) {
-				skip = true;
+      if (!skip) {
+        return {
+          v: tmp.text
+        };
+      }
+    })();
 
-			} else {
-				forIn(tmp.debug, function(el, key)  {
-					params.debug[key] = el;
-				});
-			}
-		}
-
-		if (!skip) {
-			return tmp.text;
-		}
-	}
+    if (typeof _ret3 === "object") return _ret3.v;
+  }
 }
 
 /**
@@ -10813,25 +10412,7 @@ function returnCache(cacheKey, text, params, ctx) {
  * @return {?string}
  */
 function returnCacheKey(params, ctx) {
-	return params.language || params.macros ? null : [
-		params.exports,
-		ctx !== NULL,
-		escapeNextLine(params.lineSeparator),
-		params.doctype,
-		params.tolerateWhitespace,
-		params.inlineIterators,
-		params.renderAs,
-		params.renderMode,
-		params.replaceUndef,
-		params.escapeOutput,
-		params.prettyPrint,
-		params.ignore,
-		params.autoReplace,
-		params.localization,
-		params.i18nFn,
-		params.bemFilter,
-		params.useStrict
-	].join();
+  return params.language || params.macros ? null : [params.exports, ctx !== NULL, escapeNextLine(params.lineSeparator), params.doctype, params.tolerateWhitespace, params.inlineIterators, params.renderAs, params.renderMode, params.replaceUndef, params.escapeOutput, params.prettyPrint, params.ignore, params.autoReplace, params.localization, params.i18nFn, params.bemFilter, params.useStrict].join();
 }
 
 /**
@@ -10844,17 +10425,17 @@ function returnCacheKey(params, ctx) {
  * @return {string}
  */
 function saveFnCache(cacheKey, text, params, ctx) {
-	if (ctx !== NULL) {
-		ctx['init'](Snakeskin);
+  if (ctx !== NULL) {
+    ctx["init"](Snakeskin);
 
-		if (cacheKey && (params.cache || globalFnCache[cacheKey])) {
-			if (!globalFnCache[cacheKey]) {
-				globalFnCache[cacheKey] = {};
-			}
+    if (cacheKey && (params.cache || globalFnCache[cacheKey])) {
+      if (!globalFnCache[cacheKey]) {
+        globalFnCache[cacheKey] = {};
+      }
 
-			globalFnCache[cacheKey][text] = ctx;
-		}
-	}
+      globalFnCache[cacheKey][text] = ctx;
+    }
+  }
 }
 
 /**
@@ -10867,31 +10448,25 @@ function saveFnCache(cacheKey, text, params, ctx) {
  * @return {string}
  */
 function saveCache(cacheKey, text, params, dir) {
-	if (cacheKey && (params.cache || globalCache[cacheKey])) {
-		if (!globalCache[cacheKey]) {
-			globalCache[cacheKey] = {};
-		}
+  if (cacheKey && (params.cache || globalCache[cacheKey])) {
+    if (!globalCache[cacheKey]) {
+      globalCache[cacheKey] = {};
+    }
 
-		globalCache[cacheKey][text] = {
-			text: dir.res,
-			words: params.words,
-			debug: params.debug
-		};
-	}
+    globalCache[cacheKey][text] = {
+      text: dir.res,
+      words: params.words,
+      debug: params.debug
+    };
+  }
 }
-var nextLineRgxp = /\r?\n|\r/,
-	whiteSpaceRgxp = /\s/,
-	lineWhiteSpaceRgxp = / |\t/;
+var nextLineRgxp = /\r?\n|\r/, whiteSpaceRgxp = /\s/, lineWhiteSpaceRgxp = / |\t/;
 
-var startWhiteSpaceRgxp = new RegExp((("^[ \\t]*(?:" + (nextLineRgxp.source)) + ")")),
-	endWhiteSpaceRgxp = new RegExp((("^(?:" + (nextLineRgxp.source)) + ")[ \\t]*$"));
+var startWhiteSpaceRgxp = new RegExp("^[ \\t]*(?:" + nextLineRgxp.source + ")"), endWhiteSpaceRgxp = new RegExp("^(?:" + nextLineRgxp.source + ")[ \\t]*$");
 
-var bEndRgxp = /[^\s\/]/,
-	partRgxp = /[a-z]/,
-	filterStartRgxp = new RegExp((("[!$" + symbols) + "_]"));
+var bEndRgxp = /[^\s\/]/, partRgxp = /[a-z]/, filterStartRgxp = new RegExp("[!$" + symbols + "_]");
 
-var uid,
-	NULL = {};
+var uid, NULL = {};
 
 /**
  * Скомпилировать указанные шаблоны Snakeskin
@@ -10979,1200 +10554,1083 @@ var uid,
  * @return {(string|boolean|null)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
-	src = src || '';
-
-	/** @type {{parent, proto, cacheKey, scope, vars, consts, needPrfx, lines}} */
-	var sp = _.any(opt_sysParams || {});
-
-	/** @type {{
-		exports,
-		onError,
-		renderAs,
-		prettyPrint,
-		renderMode,
-		lineSeparator,
-		inlineIterators,
-		tolerateWhitespace,
-		replaceUndef,
-		escapeOutput,
-		throws,
-		cache,
-		ignore,
-		autoReplace,
-		macros,
-		debug,
-		doctype,
-		useStrict,
-		bemFilter,
-		vars,
-		i18nFn,
-		localization,
-		language,
-		words,
-		context
-	}} */
-	var p = _.any(opt_params || {});
-
-	// GCC экспорт
-	// >>>
-
-	var ctx = _(p.context, p['context']) ||
-		NULL;
-
-	p.exports = _(p.exports, p['exports']) ||
-		'default';
-
-	p.onError = _(p.onError, p['onError']);
-	p.renderAs = _(p.renderAs, p['renderAs']);
-
-	p.prettyPrint = _(p.prettyPrint, p['prettyPrint']) ||
-		false;
-
-	p.renderMode = _(p.renderMode, p['renderMode']) ||
-		'stringConcat';
-
-	var nl =
-		p.lineSeparator = _(p.lineSeparator, p['lineSeparator']) || '\n';
-
-	p.inlineIterators = _(p.inlineIterators, p['inlineIterators']) || false;
-	p.tolerateWhitespace = _(p.tolerateWhitespace, p['tolerateWhitespace']) || false;
-
-	p.replaceUndef = _(p.replaceUndef, p['replaceUndef']) !== false;
-	p.escapeOutput = _(p.escapeOutput, p['escapeOutput']) !== false;
-
-	p.throws = _(p.throws, p['throws']) || false;
-	p.cache = _(p.cache, p['cache']) !== false;
-
-	p.ignore = _(p.ignore, p['ignore']);
-	p.autoReplace = _(p.autoReplace, p['autoReplace']) || false;
-	p.macros = _(p.macros, p['macros']);
-
-	p.debug = _(p.debug, p['debug']);
-	p.doctype = _(p.doctype, p['doctype']);
-	p.doctype = p.doctype !== false &&
-		(p.doctype || 'xml');
-
-	if (p.renderMode === 'dom') {
-		p.doctype = false;
-	}
-
-	p.useStrict = _(p.useStrict, p['useStrict']) !== false;
-	p.bemFilter = _(p.bemFilter, p['bemFilter']) || 'bem';
-	p.vars = _(p.vars, p['vars']) || {};
-
-	forIn(p.vars, function(val, key)  {
-		Snakeskin.Vars[key] = val;
-	});
-
-	p.i18nFn = _(p.i18nFn, p['i18nFn']) || 'i18n';
-	p.localization = _(p.localization, p['localization']) !== false;
-	p.language = _(p.language, p['language']);
-
-	var words =
-		p.words = _(p.words, p['words']);
-
-	// <<<
-	// Отладочная информация
-	// >>>
-
-	var info = opt_info || {};
-
-	info['line'] = info['line'] || 1;
-	info['file'] = _(info.file, info['file']);
-
-	var text;
-
-	if (typeof src === 'object' && 'innerHTML' in src) {
-		info['node'] = src;
-		text = src.innerHTML.replace(startWhiteSpaceRgxp, '');
-
-	} else {
-		text = String(src);
-	}
-
-	// <<<
-	// Работа с кешем
-	// >>>
-
-	var cacheKey = returnCacheKey(p, ctx);
-
-	if (sp.cacheKey || sp['cacheKey']) {
-		return cacheKey;
-	}
-
-	if (p.cache) {
-		var tmp = returnCache(cacheKey, text, p, ctx);
-
-		if (tmp) {
-			return tmp;
-		}
-	}
-
-	// <<<
-	// Работа с макросами
-	// >>>
-
-	var alb = ADV_LEFT_BLOCK,
-		lb = LEFT_BLOCK,
-		rb = RIGHT_BLOCK;
-
-	var macros = {},
-		mGroups = {};
-
-	var inlineMacro = {},
-		comboMacro = {};
-
-	var blackMSymbolsRgxp = new RegExp((("[<\\/>" + lb) + ("" + alb) + ("" + rb) + "]"));
-
-	function clearMacroExpr() {
-		expr = '';
-		advExprPos = 0;
-	}
-
-	/**
-	 * @param {Object} obj
-	 * @param {?string=} [opt_include]
-	 * @param {?boolean=} [opt_init]
-	 */
-	function setMacros(obj, opt_include, opt_init) {
-		if (opt_init) {
-			macros = {};
-			mGroups = {};
-
-			comboMacro = {};
-			inlineMacro = {
-				'\\': true
-			};
-
-			setMacros(defMacros);
-		}
-
-		if (obj == null) {
-			obj = mGroups[opt_include];
-			forIn(obj, function(el, key)  {
-				delete obj[key];
-				delete macros[key];
-				delete comboMacro[key];
-			});
-
-		} else {
-			forIn(obj, function(el, key)  {
-				if (key.charAt(0) === '@' && !opt_include) {
-					setMacros(el, key);
-
-				} else {
-					if (opt_include) {
-						mGroups[opt_include] =
-							mGroups[opt_include] || {};
-					}
-
-					if (el) {
-						if (blackMSymbolsRgxp.test(key)) {
-							throw new Error((("Invalid macro \"" + key) + "\""));
-						}
-
-						macros[key] = el.value || el;
-
-						if (Array.isArray(macros[key])) {
-							comboMacro[key] = true;
-						}
-
-						var inline = el['inline'] ||
-							el.inline;
-
-						if (inline) {
-							inlineMacro[key.charAt(0)] = true;
-						}
-
-						if (opt_include) {
-							mGroups[opt_include][key] = macros[key];
-						}
+  src = src || "";
+
+  /** @type {{parent, proto, cacheKey, scope, vars, consts, needPrfx, lines}} */
+  var sp = _.any(opt_sysParams || {});
+
+  /** @type {{
+  	exports,
+  	onError,
+  	renderAs,
+  	prettyPrint,
+  	renderMode,
+  	lineSeparator,
+  	inlineIterators,
+  	tolerateWhitespace,
+  	replaceUndef,
+  	escapeOutput,
+  	throws,
+  	cache,
+  	ignore,
+  	autoReplace,
+  	macros,
+  	debug,
+  	doctype,
+  	useStrict,
+  	bemFilter,
+  	vars,
+  	i18nFn,
+  	localization,
+  	language,
+  	words,
+  	context
+  }} */
+  var p = _.any(opt_params || {});
 
-					} else {
-						delete macros[key];
-						delete comboMacro[key];
-
-						if (opt_include) {
-							delete mGroups[opt_include][key];
-						}
-					}
-				}
-			});
-		}
+  // GCC экспорт
+  // >>>
 
-		return macros;
-	}
+  var ctx = _(p.context, p["context"]) || NULL;
 
-	if (sp.proto) {
-		macros = p.macros;
+  p.exports = _(p.exports, p["exports"]) || "default";
 
-	} else {
-		setMacros(p.macros, null, true);
-	}
+  p.onError = _(p.onError, p["onError"]);
+  p.renderAs = _(p.renderAs, p["renderAs"]);
 
-	// <<<
-	// Обработка подключений файлов
-	// >>>
+  p.prettyPrint = _(p.prettyPrint, p["prettyPrint"]) || false;
+
+  p.renderMode = _(p.renderMode, p["renderMode"]) || "stringConcat";
+
+  var nl = p.lineSeparator = _(p.lineSeparator, p["lineSeparator"]) || "\n";
+
+  p.inlineIterators = _(p.inlineIterators, p["inlineIterators"]) || false;
+  p.tolerateWhitespace = _(p.tolerateWhitespace, p["tolerateWhitespace"]) || false;
+
+  p.replaceUndef = _(p.replaceUndef, p["replaceUndef"]) !== false;
+  p.escapeOutput = _(p.escapeOutput, p["escapeOutput"]) !== false;
+
+  p.throws = _(p.throws, p["throws"]) || false;
+  p.cache = _(p.cache, p["cache"]) !== false;
+
+  p.ignore = _(p.ignore, p["ignore"]);
+  p.autoReplace = _(p.autoReplace, p["autoReplace"]) || false;
+  p.macros = _(p.macros, p["macros"]);
+
+  p.debug = _(p.debug, p["debug"]);
+  p.doctype = _(p.doctype, p["doctype"]);
+  p.doctype = p.doctype !== false && (p.doctype || "xml");
+
+  if (p.renderMode === "dom") {
+    p.doctype = false;
+  }
+
+  p.useStrict = _(p.useStrict, p["useStrict"]) !== false;
+  p.bemFilter = _(p.bemFilter, p["bemFilter"]) || "bem";
+  p.vars = _(p.vars, p["vars"]) || {};
+
+  forIn(p.vars, function (val, key) {
+    Snakeskin.Vars[key] = val;
+  });
+
+  p.i18nFn = _(p.i18nFn, p["i18nFn"]) || "i18n";
+  p.localization = _(p.localization, p["localization"]) !== false;
+  p.language = _(p.language, p["language"]);
+
+  var words = p.words = _(p.words, p["words"]);
+
+  // <<<
+  // Отладочная информация
+  // >>>
+
+  var info = opt_info || {};
+
+  info["line"] = info["line"] || 1;
+  info["file"] = _(info.file, info["file"]);
+
+  var text;
+
+  if (typeof src === "object" && "innerHTML" in src) {
+    info["node"] = src;
+    text = src.innerHTML.replace(startWhiteSpaceRgxp, "");
+  } else {
+    text = String(src);
+  }
+
+  // <<<
+  // Работа с кешем
+  // >>>
+
+  var cacheKey = returnCacheKey(p, ctx);
+
+  if (sp.cacheKey || sp["cacheKey"]) {
+    return cacheKey;
+  }
+
+  if (p.cache) {
+    var tmp = returnCache(cacheKey, text, p, ctx);
+
+    if (tmp) {
+      return tmp;
+    }
+  }
+
+  // <<<
+  // Работа с макросами
+  // >>>
+
+  var alb = ADV_LEFT_BLOCK, lb = LEFT_BLOCK, rb = RIGHT_BLOCK;
+
+  var macros = {}, mGroups = {};
+
+  var inlineMacro = {}, comboMacro = {};
+
+  var blackMSymbolsRgxp = new RegExp("[<\\/>" + lb + "" + alb + "" + rb + "]");
+
+  function clearMacroExpr() {
+    expr = "";
+    advExprPos = 0;
+  }
+
+  /**
+   * @param {Object} obj
+   * @param {?string=} [opt_include]
+   * @param {?boolean=} [opt_init]
+   */
+  function setMacros(obj, opt_include, opt_init) {
+    if (opt_init) {
+      macros = {};
+      mGroups = {};
+
+      comboMacro = {};
+      inlineMacro = {
+        "\\": true
+      };
+
+      setMacros(defMacros);
+    }
+
+    if (obj == null) {
+      obj = mGroups[opt_include];
+      forIn(obj, function (el, key) {
+        delete obj[key];
+        delete macros[key];
+        delete comboMacro[key];
+      });
+    } else {
+      forIn(obj, function (el, key) {
+        if (key.charAt(0) === "@" && !opt_include) {
+          setMacros(el, key);
+        } else {
+          if (opt_include) {
+            mGroups[opt_include] = mGroups[opt_include] || {};
+          }
+
+          if (el) {
+            if (blackMSymbolsRgxp.test(key)) {
+              throw new Error("Invalid macro \"" + key + "\"");
+            }
+
+            macros[key] = el.value || el;
+
+            if (Array.isArray(macros[key])) {
+              comboMacro[key] = true;
+            }
+
+            var inline = el["inline"] || el.inline;
+
+            if (inline) {
+              inlineMacro[key.charAt(0)] = true;
+            }
+
+            if (opt_include) {
+              mGroups[opt_include][key] = macros[key];
+            }
+          } else {
+            delete macros[key];
+            delete comboMacro[key];
+
+            if (opt_include) {
+              delete mGroups[opt_include][key];
+            }
+          }
+        }
+      });
+    }
 
-	var label = '';
-	var dirname,
-		filename;
+    return macros;
+  }
 
-	if (!sp.proto) {
-		uid = Math.random()
-			.toString(16)
-			.replace('0.', '')
-			.substring(0, 5);
+  if (sp.proto) {
+    macros = p.macros;
+  } else {
+    setMacros(p.macros, null, true);
+  }
 
-		Snakeskin.LocalVars.include = {};
+  // <<<
+  // Обработка подключений файлов
+  // >>>
 
-		if (IS_NODE && info['file']) {
-			var path = require('path'),
-				fs = require('fs');
-
-			filename =
-				info['file'] = path.normalize(path.resolve(info['file']));
-
-			dirname = path.dirname(filename);
-			Snakeskin.LocalVars.include[filename] = 'index';
+  var label = "";
+  var dirname, filename;
 
-			if (fs.existsSync(filename)) {
-				label = fs.statSync(filename).mtime;
-			}
-		}
-	}
+  if (!sp.proto) {
+    uid = Math.random().toString(16).replace("0.", "").substring(0, 5);
 
-	// <<<
-	// Основная логика
-	// >>>
-
-	var dir = new DirObj(String(text), {
-		info: info,
-		onError: p.onError,
-
-		parent: sp.parent,
-		proto: sp.proto,
-		scope: sp.scope,
-		vars: sp.vars,
-		consts: sp.consts,
+    Snakeskin.LocalVars.include = {};
 
-		needPrfx: sp.needPrfx,
-		lines: sp.lines,
+    if (IS_NODE && info["file"]) {
+      var path = require("path"), fs = require("fs");
 
-		doctype: p.doctype,
-		exports: p.exports,
-
-		renderAs: p.renderAs,
-		renderMode: p.renderMode,
-
-		lineSeparator: nl,
-		tolerateWhitespace: p.tolerateWhitespace,
-		inlineIterators: p.inlineIterators,
-
-		bemFilter: p.bemFilter,
-		replaceUndef: p.replaceUndef,
-		escapeOutput: p.escapeOutput,
-
-		ignore: p.ignore,
-		autoReplace: p.autoReplace,
-		macros: macros,
-
-		localization: p.localization,
-		i18nFn: p.i18nFn,
-		language: p.language,
-
-		useStrict: p.useStrict,
-		throws: p.throws
-	});
-
-	dir.setMacros = setMacros;
-
-	// Если true, то идёт содержимое директивы,
-	// т.е. { ... }
-	var begin = false,
-		pseudoI = false;
-
-	var command = '';
-	var commandTypeRgxp = /[^\s]+/,
-		commandRgxp = /[^\s]+\s*/;
-
-	var filterStart = false;
-
-	// Количество открытых { внутри директивы
-	var fakeBegin = 0;
-
-	// Если true, то идёт запись простой строки
-	var beginStr = false;
-
-	// Если true, то предыдущий символ был не экранированный \
-	var escape = false;
-
-	// Если содержит значение отличное от false,
-	// то значит идёт блок комметариев comment (///, /*, /**)
-	var comment = false,
-		commentStart = 0;
-
-	// Если true, то значит идёт JSDoc
-	var jsDoc = false,
-		jsDocStart = false;
-
-	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
-	var bOpen = false,
-		bEnd,
-		bEscape = false;
-
-	var part = '',
-		rPart = '';
-
-	// Флаги для обработки XML тегов и атрибутов
-	var tOpen = 0,
-		tAttr = false,
-		tAttrBegin = false,
-		tAttrEscape = false;
-
-	var tAttrBMap = {
-		'"': true,
-		'\'': true
-	};
-
-	// Флаги для обработки скобок при типографии
-	var qOpen = 0,
-		qType = null;
-
-	var prfxI = 0;
-
-	// Флаги для обработки символьных последовательностей
-	var expr = '',
-		exprPos = 0,
-		advExprPos = 0;
-
-	var prevCommentSpace = false,
-		freezeI = 0,
-		freezeTmp = 0;
-
-	// Флаги для обработки строк-локализации
-	var i18nStr = '',
-		i18nStart = false,
-		i18nDirStart = false;
-
-	var clrL = true,
-		templateMap = dir.getGroup('rootTemplate');
-
-	/** @return {{macros, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
-	dir.getCompileVars = function () {
-		return {
-			mGroups: mGroups,
-			inlineMacro: inlineMacro,
-			comboMacro: comboMacro,
-			tOpen: tOpen,
-			tAttr: tAttr,
-			tAttrBegin: tAttrBegin,
-			tAttrEscape: tAttrEscape,
-			qOpen: qOpen,
-			qType: qType,
-			prfxI: prfxI
-		};
-	};
-
-	/** @param {{macros, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
-	dir.setCompileVars = function (obj) {
-		mGroups = obj.mGroups;
-		inlineMacro = obj.inlineMacro;
-		comboMacro = obj.comboMacro;
-		tOpen = obj.tOpen;
-
-		tAttr =
-			dir.attr = obj.tAttr;
-
-		tAttrBegin = obj.tAttrBegin;
-		tAttrEscape =
-			dir.attrEscape = obj.tAttrEscape;
-
-		qOpen = obj.qOpen;
-		qType = obj.qType;
-		prfxI = obj.prfxI;
-	};
-
-	if (sp.proto) {
-		dir.setCompileVars(sp.parent.getCompileVars());
-	}
-
-	while (++dir.i < dir.source.length) {;var $retPrim$0;var $value$0 = (function(){
-		var str = dir.source,
-			struct = dir.structure;
-
-		var el = str.charAt(dir.i),
-			prev = str.charAt(dir.i - 1),
-			next = str.charAt(dir.i + 1),
-			next2str = str.substr(dir.i, 2);
-
-		var rEl = el;
-		var line = info['line'],
-			lastLine = line - 1;
-
-		var modLine = !dir.freezeLine &&
-			!dir.proto &&
-			dir.lines.length === line;
-
-		if (freezeI) {
-			freezeI--;
-			modLine = false;
-		}
-
-		var nextLine = nextLineRgxp.test(el),
-			currentClrL = clrL;
-
-		if (nextLine) {
-			if (next2str === '\r\n') {
-				return;
-			}
-
-			el = nl;
-			clrL = true;
-		}
-
-		if (!dir.freezeLine) {
-			if (nextLine) {
-				if (modLine) {
-					dir.lines[line] = '';
-				}
-
-				info['line']++;
-
-			} else if (modLine) {
-				dir.lines[lastLine] += el;
-			}
-		}
-
-		var currentEscape = escape;
-		var isPrefStart = !currentEscape &&
-			!begin &&
-			el === alb &&
-			next === lb;
-
-		if (whiteSpaceRgxp.test(el)) {
-			// Внутри директивы
-			if (begin) {
-				if (bOpen) {
-					el = escapeNextLine(el);
-
-				} else {
-					if (!dir.space) {
-						el = ' ';
-						dir.space = true;
-
-					} else if (!comment) {
-						return;
-					}
-				}
-
-			// Простой ввод вне деклараций шаблона
-			} else if (!dir.tplName) {
-				// Для JSDoc все символы остаются неизменны,
-				// а в остальных случаях они игнорируются
-				if (!comment && !jsDoc) {
-					return;
-				}
-
-			// Простой ввод внутри декларации шаблона
-			} else {
-				if (!dir.space && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
-					el = dir.ignore && dir.ignore.test(el) ?
-						'' : el;
-
-					if (el && !dir.tolerateWhitespace) {
-						el = ' ';
-						dir.space = true;
-					}
-
-				} else if (!comment && !jsDoc) {
-					return;
-				}
-			}
-
-		} else {
-			clrL = false;
-
-			if (!begin && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
-				if (!currentEscape && (isPrefStart ? el === alb : el === lb)) {
-					dir.prevSpace = dir.space;
-
-				} else {
-					dir.prevSpace = false;
-				}
-			}
-
-			if (!comment) {
-				prevCommentSpace = dir.space;
-			}
-
-			dir.space = false;
-		}
-
-		if (!bOpen) {
-			// Обработка экранирования
-			if (el === '\\' && sysEscapeMap[next] && (!begin || next === I18N) || escape) {
-				escape = !escape;
-			}
-
-			if (escape) {
-				return;
-			}
-
-			// Обработка комментариев
-			if (!currentEscape) {
-				var commentType = returnComment(str, dir.i),
-					endComment = returnComment(str, dir.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
-
-				var map = DP$0(DP$0({},
-					SINGLE_COMMENT,{"value": true,"configurable":true,"enumerable":true,"writable":true}),
-					MULT_COMMENT_START,{"value": true,"configurable":true,"enumerable":true,"writable":true}
-				);
-
-				if (map[commentType] || endComment) {
-					if (!comment && !jsDoc) {
-						if (commentType === SINGLE_COMMENT) {
-							comment = commentType;
-
-							if (modLine) {
-								dir.lines[lastLine] += commentType.substring(1);
-							}
-
-							dir.i += commentType.length - 1;
-
-						} else if (commentType === MULT_COMMENT_START) {
-							if (str.substr(dir.i, JS_DOC.length) === JS_DOC && !begin) {
-								if (beginStr && dir.isSimpleOutput()) {
-									dir.save((("'" + (dir.$$())) + ";"));
-								}
-
-								beginStr = true;
-								jsDoc = true;
-								jsDocStart = dir.res.length;
-
-							} else {
-								comment = commentType;
-								commentStart = dir.i;
-
-								if (modLine) {
-									dir.lines[lastLine] += commentType.substring(1);
-								}
-
-								dir.i += commentType.length - 1;
-							}
-						}
-
-					} else if (endComment && dir.i - commentStart > MULT_COMMENT_START.length) {
-						if (comment === MULT_COMMENT_START) {
-							comment = false;
-							dir.space = prevCommentSpace;
-							prevCommentSpace = false;
-							return;
-
-						} else if (beginStr) {
-							beginStr = false;
-						}
-					}
-
-				} else if (nextLineRgxp.test(rEl) && comment === SINGLE_COMMENT) {
-					comment = false;
-					dir.space = prevCommentSpace;
-					prevCommentSpace = false;
-					return;
-				}
-			}
-
-			if (comment) {
-				return;
-			}
-
-			if (!jsDoc) {
-				if (i18nStart) {
-					if (!currentEscape && el === '"' && !dir.language) {
-						el = '\\"';
-					}
-
-					if (currentEscape || el !== I18N) {
-						if (pseudoI !== false) {
-							return;
-						}
-
-						i18nStr += el;
-
-						if (dir.language) {
-							return;
-						}
-					}
-				}
-
-				// Начало управляющей конструкции
-				// (не забываем следить за уровнем вложенностей {)
-				if (isPrefStart || (el === lb && (begin || !currentEscape))) {
-					if (begin) {
-						fakeBegin++;
-
-					} else if (!dir.needPrfx || isPrefStart) {
-						if (isPrefStart) {
-							dir.i++;
-							dir.needPrfx = true;
-
-							if (modLine) {
-								dir.lines[lastLine] += lb;
-							}
-						}
-
-						bEnd = true;
-						begin = true;
-
-						return;
-					}
-
-				// Упраляющая конструкция завершилась
-				} else if (el === rb && begin && (!fakeBegin || !(fakeBegin--))) {
-					begin = false;
-
-					var commandLength = command.length;
-					command = command.trim();
-
-					if (!command) {
-						return;
-					}
-
-					var short1 = command.charAt(0),
-						short2 = command.substr(0, 2);
-
-					var replacer = replacers[short2] ||
-						replacers[short1];
-
-					if (replacer) {
-						command = replacer(command);
-					}
-
-					var commandType = commandTypeRgxp.exec(command)[0],
-						isConst = commandType === 'const';
-
-					commandType = Snakeskin.Directions[commandType] ?
-						commandType : 'const';
-
-					clearMacroExpr();
-
-					if (templateMap[commandType] && !sp.proto) {
-						qOpen = 0;
-						qType = null;
-					}
-
-					// Директивы начинающиеся с _ считаются приватными
-					// и вырезаются из листинга
-					if (!dir.proto && commandType.charAt(0) === '_') {
-						var source = (("" + alb) + ("?" + lb) + ("__.*?__.*?" + rb) + ""),
-							rgxp = rgxpCache[source] || new RegExp(source);
-
-						dir.lines[lastLine] = dir.lines[lastLine]
-							.replace(rgxp, '');
-
-						rgxpCache[source] = rgxp;
-					}
-
-					command = dir.replaceDangerBlocks((isConst || commandType !== 'const' ?
-						command.replace(commandRgxp, '') : command));
-
-					dir.space = dir.prevSpace;
-					var fnRes = Snakeskin.Directions[commandType].call(
-						dir,
-						command,
-						commandLength,
-						commandType,
-						jsDocStart
-					);
-
-					if (dir.brk) {
-						{$retPrim$0 = true;return false;}
-					}
-
-					if (dir.needPrfx) {
-						if (dir.inline !== false) {
-							if (getName(commandType) === 'end') {
-								if (prfxI) {
-									prfxI--;
-
-									if (!prfxI) {
-										dir.needPrfx = false;
-									}
-
-								} else {
-									dir.needPrfx = false;
-								}
-
-							} else if (!prfxI) {
-								dir.needPrfx = false;
-							}
-
-						} else {
-							prfxI++;
-						}
-					}
-
-					if (dir.text && !dir.chainSpace && !dir.strongSpace) {
-						dir.sysSpace = false;
-						dir.space =
-							dir.prevSpace = false;
-					}
-
-					if (dir.skipSpace) {
-						dir.space =
-							dir.prevSpace = true;
-					}
-
-					jsDocStart = false;
-					dir.skipSpace = false;
-					dir.text = false;
-
-					if (fnRes === false) {
-						begin = false;
-						beginStr = false;
-					}
-
-					command = '';
-					return;
-
-				} else if (dir.localization && !currentEscape && el === I18N) {
-					if (i18nStart && i18nStr && words && !words[i18nStr]) {
-						words[i18nStr] = i18nStr;
-					}
-
-					if (dir.language) {
-						if (i18nStart) {
-							var word = dir.language[i18nStr] || '';
-							word = word.call ? word() : word;
-
-							el = begin ?
-								(("'" + (applyDefEscape(word))) + "'") : word;
-
-							i18nStart = false;
-							i18nStr = '';
-
-						} else {
-							el = '';
-							i18nStart = true;
-						}
-
-					} else {
-						if (i18nStart) {
-							i18nStart = false;
-							i18nStr = '';
-
-							if (begin) {
-								el = '")';
-
-								if (i18nDirStart) {
-									freezeI += freezeTmp;
-									freezeTmp = 0;
-
-									dir.freezeLine--;
-									i18nDirStart = false;
-								}
-
-							} else {
-								var advStr = (("" + FILTER) + ("!html" + rb) + "");
-								freezeTmp = advStr.length;
-
-								dir.source = str.substring(0, dir.i + 1) +
-									advStr +
-									str.substring(dir.i + 1);
-
-								dir.i = Number(pseudoI);
-								dir.freezeLine++;
-
-								pseudoI = false;
-								return;
-							}
-
-						} else {
-							i18nStart = true;
-
-							if (begin) {
-								el = (("" + (dir.i18nFn)) + "(\"");
-
-							} else {
-								var diff = Number(dir.needPrfx) + 1;
-
-								dir.source = str.substring(0, dir.i) +
-									(dir.needPrfx ? alb : '') +
-									lb +
-									str.substring(dir.i);
-
-								pseudoI = dir.i - diff;
-								dir.i += diff;
-
-								i18nDirStart = true;
-								return;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// Запись команды
-		if (begin) {
-			if (beginStr && dir.isSimpleOutput()) {
-				var prfx = '';
-
-				if (dir.doctype && tAttr && !tAttrBegin) {
-					prfx = '"';
-					tAttrBegin = true;
-					tAttrEscape = true;
-				}
-
-				dir.save((("" + prfx) + ("'" + (dir.$$())) + ";"));
-				beginStr = false;
-			}
-
-			// Обработка литералов строки и регулярных выражений внутри директивы
-			if (!bOpen) {
-				var skip = false;
-
-				if (el === FILTER && filterStartRgxp.test(next)) {
-					filterStart = true;
-					bEnd = false;
-					skip = true;
-
-				} else if (filterStart && whiteSpaceRgxp.test(el)) {
-					filterStart = false;
-					bEnd = true;
-					skip = true;
-				}
-
-				if (!skip) {
-					if (escapeEndMap[el] || escapeEndWords[rPart]) {
-						bEnd = true;
-						rPart = '';
-
-					} else if (bEndRgxp.test(el)) {
-						bEnd = false;
-					}
-
-					if (partRgxp.test(el)) {
-						part += el;
-
-					} else {
-						rPart = part;
-						part = '';
-					}
-				}
-			}
-
-			if (!i18nStart) {
-				if (escapeMap[el] && (el !== '/' || bEnd && command) && !bOpen) {
-					bOpen = el;
-
-				} else if (bOpen && (el === '\\' || bEscape)) {
-					bEscape = !bEscape;
-
-				} else if (escapeMap[el] && bOpen === el && !bEscape) {
-					bOpen = false;
-					bEnd = false;
-				}
-			}
-
-			command += el;
-
-		// Запись строки
-		} else {
-			if (jsDoc) {
-				dir.save(el);
-
-			} else if (!dir.tplName) {
-				if (el === ' ') {
-					return;
-				}
-
-				if (currentClrL && !dir.tplName && (shortMap[el] || shortMap[next2str])) {
-					var adv = dir.lines[lastLine].length - 1,
-						source$0 = dir.toBaseSyntax(dir.source, dir.i - adv);
-
-					if (source$0.error) {
-						{$retPrim$0 = true;return false;}
-					}
-
-					dir.source = dir.source.substring(0, dir.i - adv) +
-						source$0.str +
-						dir.source.substring(dir.i + source$0.length - adv);
-
-					dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
-					dir.i--;
-
-					return;
-				}
-
-				dir.error('text can\'t be used in the global space');
-				{$retPrim$0 = true;return false;}
-
-			} else {
-				if (struct.strong && !inside[struct.name]['text']) {
-					if (el === ' ') {
-						dir.space = false;
-						return;
-					}
-
-					dir.error((("directive \"text\" can't be used within the \"" + (struct.name)) + "\""));
-					{$retPrim$0 = true;return false;}
-				}
-
-				dir.startInlineDir('text');
-				if (dir.isSimpleOutput()) {
-					if (!beginStr) {
-						dir.save((("" + (dir.$())) + "'"));
-						beginStr = true;
-					}
-
-					if (dir.doctype) {
-						if (el === '<') {
-							tOpen++;
-							clearMacroExpr();
-
-						} else if (el === '>') {
-							tOpen--;
-							clearMacroExpr();
-						}
-
-						if (tAttr) {
-							if (tAttrBegin && (tAttrEscape ? el === ' ' : tAttrBMap[el]) || !tOpen) {
-								tAttr = false;
-
-								if (tOpen) {
-									tAttrBegin = false;
-								}
-
-								if (tAttrEscape) {
-									el = ("\"" + el);
-									tAttrEscape = false;
-								}
-
-							// Установка флага о начале декларации xml атрибута
-							} else if (!tAttrBegin) {
-								tAttrBegin = true;
-								if (!tAttrBMap[el]) {
-									tAttrEscape = true;
-									el = ("\"" + el);
-								}
-							}
-
-						// Начало декларации xml атрибута
-						} else if (tOpen && el === '=') {
-							tAttr = true;
-						}
-
-						dir.attr = Boolean(tOpen);
-						dir.attrEscape = tAttrEscape;
-					}
-
-					if (dir.autoReplace) {
-						if (!tOpen) {
-							if (comboMacro[el]) {
-								var val = dir.macros[el];
-
-								if (!qType) {
-									qType = el;
-									el = val[0][0];
-									qOpen++;
-
-								} else if (el === qType) {
-									qType = null;
-									el = val[0][1];
-									qOpen = 0;
-
-								} else {
-									el = (val[1] || val[0])[qOpen % 2 ? 0 : 1];
-									qOpen++;
-								}
-
-								el = String(el.call ? el() : el);
-
-							} else {
-								if (whiteSpaceRgxp.test(el)) {
-									clearMacroExpr();
-
-								} else if (inlineMacro[el] && !inlineMacro[prev] && !dir.macros[expr + el]) {
-									exprPos = dir.res.length;
-									expr = el;
-
-								} else {
-									if (!expr) {
-										exprPos = dir.res.length;
-									}
-
-									expr += el;
-								}
-							}
-						}
-
-						if (dir.macros[expr]) {
-							var modStr = dir.res.substring(0, exprPos) +
-								dir.res.substring(exprPos + expr.length + advExprPos);
-
-							var val$0 = dir.macros[expr].call ?
-								dir.macros[expr]() : dir.macros[expr];
-
-							val$0 = String(val$0);
-							advExprPos += val$0.length;
-
-							dir.mod(function()  {
-								dir.res = modStr;
-							});
-
-							dir.save(val$0);
-
-						} else {
-							dir.save(applyDefEscape(el));
-						}
-
-					} else {
-						dir.save(applyDefEscape(el));
-					}
-				}
-
-				dir.inline = null;
-				dir.structure = dir.structure.parent;
-			}
-
-			if (jsDoc && !beginStr) {
-				jsDoc = false;
-				dir.space = true;
-			}
-		}
-	})();if($retPrim$0===true){$retPrim$0=void 0;return $value$0}}
-
-	// Если есть не закрытый XML тег,
-	// то генерируем ошибку
-	if (tOpen !== 0) {
-		dir.error(("invalid XML declaration"));
-		return false;
-	}
-
-	// Если количество открытых блоков не совпадает с количеством закрытых,
-	// то генерируем ошибку
-	if (begin || dir.structure.parent) {
-		dir.error('missing closing or opening tag in the template');
-		return false;
-	}
-
-	if (dir.proto) {
-		sp.parent.setCompileVars(dir.getCompileVars());
-		return dir.pasteDangerBlocks(dir.res);
-	}
-
-	// Если остались внешние декларации,
-	// которые не были подключены к своему шаблону,
-	// то генерируем ошибку
-	for (var key in dir.preDefs) {
-		if (!dir.preDefs.hasOwnProperty(key)) {
-			continue;
-		}
-
-		dir.error((("template \"" + key) + "\" is not defined"));
-		return false;
-	}
-
-	dir.end(cacheKey, label);
-
-	if (p.prettyPrint) {
-		dir.res = beautify(dir.res);
-		dir.res = dir.res.replace(new RegExp(nextLineRgxp.source, 'g'), nl);
-	}
-
-	dir.res += nl;
-
-	if (p.debug) {
-		p.debug['code'] = dir.res;
-		p.debug['files'] = dir.files;
-	}
-
-	try {
-		// Компиляция на сервере
-		if (IS_NODE) {
-			if (ctx !== NULL) {
-				new Function(
-					'module',
-
-					'exports',
-					'require',
-
-					'__dirname',
-					'__filename',
-
-					dir.res
-				)(
-					{
-						exports: ctx,
-						require: require,
-						id: filename,
-						filename: filename,
-						parent: module,
-						children: [],
-						loaded: true
-					},
-
-					ctx,
-					require,
-
-					dirname,
-					filename
-				);
-			}
-
-		// commonJS компиляция в браузере
-		} else if (ctx !== NULL) {
-			new Function(
-				'module',
-				'exports',
-				'global',
-
-				dir.res
-			)(
-				{
-					exports: ctx
-				},
-
-				ctx,
-				root
-			);
-
-		// Живая компиляция в браузере
-		} else {
-			dir.evalStr(dir.res);
-		}
-
-		saveFnCache(cacheKey, text, p, ctx);
-
-	} catch (err) {
-		delete info['line'];
-		delete info['template'];
-		dir.error(err.message);
-		return false;
-	}
-
-	saveCache(cacheKey, text, p, dir);
-
-	// Если брайзер поддерживает FileAPI,
-	// то подключаем скомпилированный шаблон как внешний скрипт
-	if (!IS_NODE) {
-		setTimeout(function()  {
-			try {
-				var blob = new Blob([dir.res], {
-					type: 'application/javascript'
-				});
-
-				var script = document.createElement('script');
-				script.src = URL.createObjectURL(blob);
-
-				document.head.appendChild(script);
-
-			} catch (ignore) {}
-		}, 50);
-	}
-
-	return dir.res;
+      filename = info["file"] = path.normalize(path.resolve(info["file"]));
+
+      dirname = path.dirname(filename);
+      Snakeskin.LocalVars.include[filename] = "index";
+
+      if (fs.existsSync(filename)) {
+        label = fs.statSync(filename).mtime;
+      }
+    }
+  }
+
+  // <<<
+  // Основная логика
+  // >>>
+
+  var dir = new DirObj(String(text), {
+    info: info,
+    onError: p.onError,
+
+    parent: sp.parent,
+    proto: sp.proto,
+    scope: sp.scope,
+    vars: sp.vars,
+    consts: sp.consts,
+
+    needPrfx: sp.needPrfx,
+    lines: sp.lines,
+
+    doctype: p.doctype,
+    exports: p.exports,
+
+    renderAs: p.renderAs,
+    renderMode: p.renderMode,
+
+    lineSeparator: nl,
+    tolerateWhitespace: p.tolerateWhitespace,
+    inlineIterators: p.inlineIterators,
+
+    bemFilter: p.bemFilter,
+    replaceUndef: p.replaceUndef,
+    escapeOutput: p.escapeOutput,
+
+    ignore: p.ignore,
+    autoReplace: p.autoReplace,
+    macros: macros,
+
+    localization: p.localization,
+    i18nFn: p.i18nFn,
+    language: p.language,
+
+    useStrict: p.useStrict,
+    throws: p.throws
+  });
+
+  dir.setMacros = setMacros;
+
+  // Если true, то идёт содержимое директивы,
+  // т.е. { ... }
+  var begin = false, pseudoI = false;
+
+  var command = "";
+  var commandTypeRgxp = /[^\s]+/, commandRgxp = /[^\s]+\s*/;
+
+  var filterStart = false;
+
+  // Количество открытых { внутри директивы
+  var fakeBegin = 0;
+
+  // Если true, то идёт запись простой строки
+  var beginStr = false;
+
+  // Если true, то предыдущий символ был не экранированный \
+  var escape = false;
+
+  // Если содержит значение отличное от false,
+  // то значит идёт блок комметариев comment (///, /*, /**)
+  var comment = false, commentStart = 0;
+
+  // Если true, то значит идёт JSDoc
+  var jsDoc = false, jsDocStart = false;
+
+  // Флаги для обработки литералов строк и регулярных выражений внутри директивы
+  var bOpen = false, bEnd, bEscape = false;
+
+  var part = "", rPart = "";
+
+  // Флаги для обработки XML тегов и атрибутов
+  var tOpen = 0, tAttr = false, tAttrBegin = false, tAttrEscape = false;
+
+  var tAttrBMap = {
+    "\"": true,
+    "'": true
+  };
+
+  // Флаги для обработки скобок при типографии
+  var qOpen = 0, qType = null;
+
+  var prfxI = 0;
+
+  // Флаги для обработки символьных последовательностей
+  var expr = "", exprPos = 0, advExprPos = 0;
+
+  var prevCommentSpace = false, freezeI = 0, freezeTmp = 0;
+
+  // Флаги для обработки строк-локализации
+  var i18nStr = "", i18nStart = false, i18nDirStart = false;
+
+  var clrL = true, templateMap = dir.getGroup("rootTemplate");
+
+  /** @return {{macros, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
+  dir.getCompileVars = function () {
+    return {
+      mGroups: mGroups,
+      inlineMacro: inlineMacro,
+      comboMacro: comboMacro,
+      tOpen: tOpen,
+      tAttr: tAttr,
+      tAttrBegin: tAttrBegin,
+      tAttrEscape: tAttrEscape,
+      qOpen: qOpen,
+      qType: qType,
+      prfxI: prfxI
+    };
+  };
+
+  /** @param {{macros, mGroups, inlineMacro, comboMacro, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
+  dir.setCompileVars = function (obj) {
+    mGroups = obj.mGroups;
+    inlineMacro = obj.inlineMacro;
+    comboMacro = obj.comboMacro;
+    tOpen = obj.tOpen;
+
+    tAttr = dir.attr = obj.tAttr;
+
+    tAttrBegin = obj.tAttrBegin;
+    tAttrEscape = dir.attrEscape = obj.tAttrEscape;
+
+    qOpen = obj.qOpen;
+    qType = obj.qType;
+    prfxI = obj.prfxI;
+  };
+
+  if (sp.proto) {
+    dir.setCompileVars(sp.parent.getCompileVars());
+  }
+
+  _loop: while (++dir.i < dir.source.length) {
+    var _ret4 = (function () {
+      var str = dir.source, struct = dir.structure;
+
+      var el = str.charAt(dir.i), prev = str.charAt(dir.i - 1), next = str.charAt(dir.i + 1), next2str = str.substr(dir.i, 2);
+
+      var rEl = el;
+      var line = info["line"], lastLine = line - 1;
+
+      var modLine = !dir.freezeLine && !dir.proto && dir.lines.length === line;
+
+      if (freezeI) {
+        freezeI--;
+        modLine = false;
+      }
+
+      var nextLine = nextLineRgxp.test(el), currentClrL = clrL;
+
+      if (nextLine) {
+        if (next2str === "\r\n") {
+          return "continue";
+        }
+
+        el = nl;
+        clrL = true;
+      }
+
+      if (!dir.freezeLine) {
+        if (nextLine) {
+          if (modLine) {
+            dir.lines[line] = "";
+          }
+
+          info["line"]++;
+        } else if (modLine) {
+          dir.lines[lastLine] += el;
+        }
+      }
+
+      var currentEscape = escape;
+      var isPrefStart = !currentEscape && !begin && el === alb && next === lb;
+
+      if (whiteSpaceRgxp.test(el)) {
+        // Внутри директивы
+        if (begin) {
+          if (bOpen) {
+            el = escapeNextLine(el);
+          } else {
+            if (!dir.space) {
+              el = " ";
+              dir.space = true;
+            } else if (!comment) {
+              return "continue";
+            }
+          }
+
+          // Простой ввод вне деклараций шаблона
+        } else if (!dir.tplName) {
+          // Для JSDoc все символы остаются неизменны,
+          // а в остальных случаях они игнорируются
+          if (!comment && !jsDoc) {
+            return "continue";
+          }
+
+          // Простой ввод внутри декларации шаблона
+        } else {
+          if (!dir.space && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
+            el = dir.ignore && dir.ignore.test(el) ? "" : el;
+
+            if (el && !dir.tolerateWhitespace) {
+              el = " ";
+              dir.space = true;
+            }
+          } else if (!comment && !jsDoc) {
+            return "continue";
+          }
+        }
+      } else {
+        clrL = false;
+
+        if (!begin && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
+          if (!currentEscape && (isPrefStart ? el === alb : el === lb)) {
+            dir.prevSpace = dir.space;
+          } else {
+            dir.prevSpace = false;
+          }
+        }
+
+        if (!comment) {
+          prevCommentSpace = dir.space;
+        }
+
+        dir.space = false;
+      }
+
+      if (!bOpen) {
+        // Обработка экранирования
+        if (el === "\\" && sysEscapeMap[next] && (!begin || next === I18N) || escape) {
+          escape = !escape;
+        }
+
+        if (escape) {
+          return "continue";
+        }
+
+        // Обработка комментариев
+        if (!currentEscape) {
+          var _ret5 = (function () {
+            var commentType = returnComment(str, dir.i), endComment = returnComment(str, dir.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
+
+            var map = (function () {
+              var _map = {};
+
+              _defineProperty(_map, SINGLE_COMMENT, true);
+
+              _defineProperty(_map, MULT_COMMENT_START, true);
+
+              return _map;
+            })();
+
+            if (map[commentType] || endComment) {
+              if (!comment && !jsDoc) {
+                if (commentType === SINGLE_COMMENT) {
+                  comment = commentType;
+
+                  if (modLine) {
+                    dir.lines[lastLine] += commentType.substring(1);
+                  }
+
+                  dir.i += commentType.length - 1;
+                } else if (commentType === MULT_COMMENT_START) {
+                  if (str.substr(dir.i, JS_DOC.length) === JS_DOC && !begin) {
+                    if (beginStr && dir.isSimpleOutput()) {
+                      dir.save("'" + dir.$$() + ";");
+                    }
+
+                    beginStr = true;
+                    jsDoc = true;
+                    jsDocStart = dir.res.length;
+                  } else {
+                    comment = commentType;
+                    commentStart = dir.i;
+
+                    if (modLine) {
+                      dir.lines[lastLine] += commentType.substring(1);
+                    }
+
+                    dir.i += commentType.length - 1;
+                  }
+                }
+              } else if (endComment && dir.i - commentStart > MULT_COMMENT_START.length) {
+                if (comment === MULT_COMMENT_START) {
+                  comment = false;
+                  dir.space = prevCommentSpace;
+                  prevCommentSpace = false;
+                  return {
+                    v: "continue"
+                  };
+                } else if (beginStr) {
+                  beginStr = false;
+                }
+              }
+            } else if (nextLineRgxp.test(rEl) && comment === SINGLE_COMMENT) {
+              comment = false;
+              dir.space = prevCommentSpace;
+              prevCommentSpace = false;
+              return {
+                v: "continue"
+              };
+            }
+          })();
+
+          if (typeof _ret5 === "object") return _ret5.v;
+        }
+
+        if (comment) {
+          return "continue";
+        }
+
+        if (!jsDoc) {
+          if (i18nStart) {
+            if (!currentEscape && el === "\"" && !dir.language) {
+              el = "\\\"";
+            }
+
+            if (currentEscape || el !== I18N) {
+              if (pseudoI !== false) {
+                return "continue";
+              }
+
+              i18nStr += el;
+
+              if (dir.language) {
+                return "continue";
+              }
+            }
+          }
+
+          // Начало управляющей конструкции
+          // (не забываем следить за уровнем вложенностей {)
+          if (isPrefStart || el === lb && (begin || !currentEscape)) {
+            if (begin) {
+              fakeBegin++;
+            } else if (!dir.needPrfx || isPrefStart) {
+              if (isPrefStart) {
+                dir.i++;
+                dir.needPrfx = true;
+
+                if (modLine) {
+                  dir.lines[lastLine] += lb;
+                }
+              }
+
+              bEnd = true;
+              begin = true;
+
+              return "continue";
+            }
+
+            // Упраляющая конструкция завершилась
+          } else if (el === rb && begin && (!fakeBegin || ! fakeBegin--)) {
+            begin = false;
+
+            var commandLength = command.length;
+            command = command.trim();
+
+            if (!command) {
+              return "continue";
+            }
+
+            var short1 = command.charAt(0), short2 = command.substr(0, 2);
+
+            var replacer = replacers[short2] || replacers[short1];
+
+            if (replacer) {
+              command = replacer(command);
+            }
+
+            var commandType = commandTypeRgxp.exec(command)[0], isConst = commandType === "const";
+
+            commandType = Snakeskin.Directions[commandType] ? commandType : "const";
+
+            clearMacroExpr();
+
+            if (templateMap[commandType] && !sp.proto) {
+              qOpen = 0;
+              qType = null;
+            }
+
+            // Директивы начинающиеся с _ считаются приватными
+            // и вырезаются из листинга
+            if (!dir.proto && commandType.charAt(0) === "_") {
+              var source = "" + alb + "?" + lb + "__.*?__.*?" + rb, rgxp = rgxpCache[source] || new RegExp(source);
+
+              dir.lines[lastLine] = dir.lines[lastLine].replace(rgxp, "");
+
+              rgxpCache[source] = rgxp;
+            }
+
+            command = dir.replaceDangerBlocks(isConst || commandType !== "const" ? command.replace(commandRgxp, "") : command);
+
+            dir.space = dir.prevSpace;
+            var fnRes = Snakeskin.Directions[commandType].call(dir, command, commandLength, commandType, jsDocStart);
+
+            if (dir.brk) {
+              return {
+                v: false
+              };
+            }
+
+            if (dir.needPrfx) {
+              if (dir.inline !== false) {
+                if (getName(commandType) === "end") {
+                  if (prfxI) {
+                    prfxI--;
+
+                    if (!prfxI) {
+                      dir.needPrfx = false;
+                    }
+                  } else {
+                    dir.needPrfx = false;
+                  }
+                } else if (!prfxI) {
+                  dir.needPrfx = false;
+                }
+              } else {
+                prfxI++;
+              }
+            }
+
+            if (dir.text && !dir.chainSpace && !dir.strongSpace) {
+              dir.sysSpace = false;
+              dir.space = dir.prevSpace = false;
+            }
+
+            if (dir.skipSpace) {
+              dir.space = dir.prevSpace = true;
+            }
+
+            jsDocStart = false;
+            dir.skipSpace = false;
+            dir.text = false;
+
+            if (fnRes === false) {
+              begin = false;
+              beginStr = false;
+            }
+
+            command = "";
+            return "continue";
+          } else if (dir.localization && !currentEscape && el === I18N) {
+            if (i18nStart && i18nStr && words && !words[i18nStr]) {
+              words[i18nStr] = i18nStr;
+            }
+
+            if (dir.language) {
+              if (i18nStart) {
+                var word = dir.language[i18nStr] || "";
+                word = word.call ? word() : word;
+
+                el = begin ? "'" + applyDefEscape(word) + "'" : word;
+
+                i18nStart = false;
+                i18nStr = "";
+              } else {
+                el = "";
+                i18nStart = true;
+              }
+            } else {
+              if (i18nStart) {
+                i18nStart = false;
+                i18nStr = "";
+
+                if (begin) {
+                  el = "\")";
+
+                  if (i18nDirStart) {
+                    freezeI += freezeTmp;
+                    freezeTmp = 0;
+
+                    dir.freezeLine--;
+                    i18nDirStart = false;
+                  }
+                } else {
+                  var advStr = "" + FILTER + "!html" + rb;
+                  freezeTmp = advStr.length;
+
+                  dir.source = str.substring(0, dir.i + 1) + advStr + str.substring(dir.i + 1);
+
+                  dir.i = Number(pseudoI);
+                  dir.freezeLine++;
+
+                  pseudoI = false;
+                  return "continue";
+                }
+              } else {
+                i18nStart = true;
+
+                if (begin) {
+                  el = "" + dir.i18nFn + "(\"";
+                } else {
+                  var diff = Number(dir.needPrfx) + 1;
+
+                  dir.source = str.substring(0, dir.i) + (dir.needPrfx ? alb : "") + lb + str.substring(dir.i);
+
+                  pseudoI = dir.i - diff;
+                  dir.i += diff;
+
+                  i18nDirStart = true;
+                  return "continue";
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Запись команды
+      if (begin) {
+        if (beginStr && dir.isSimpleOutput()) {
+          var prfx = "";
+
+          if (dir.doctype && tAttr && !tAttrBegin) {
+            prfx = "\"";
+            tAttrBegin = true;
+            tAttrEscape = true;
+          }
+
+          dir.save("" + prfx + "'" + dir.$$() + ";");
+          beginStr = false;
+        }
+
+        // Обработка литералов строки и регулярных выражений внутри директивы
+        if (!bOpen) {
+          var skip = false;
+
+          if (el === FILTER && filterStartRgxp.test(next)) {
+            filterStart = true;
+            bEnd = false;
+            skip = true;
+          } else if (filterStart && whiteSpaceRgxp.test(el)) {
+            filterStart = false;
+            bEnd = true;
+            skip = true;
+          }
+
+          if (!skip) {
+            if (escapeEndMap[el] || escapeEndWords[rPart]) {
+              bEnd = true;
+              rPart = "";
+            } else if (bEndRgxp.test(el)) {
+              bEnd = false;
+            }
+
+            if (partRgxp.test(el)) {
+              part += el;
+            } else {
+              rPart = part;
+              part = "";
+            }
+          }
+        }
+
+        if (!i18nStart) {
+          if (escapeMap[el] && (el !== "/" || bEnd && command) && !bOpen) {
+            bOpen = el;
+          } else if (bOpen && (el === "\\" || bEscape)) {
+            bEscape = !bEscape;
+          } else if (escapeMap[el] && bOpen === el && !bEscape) {
+            bOpen = false;
+            bEnd = false;
+          }
+        }
+
+        command += el;
+
+        // Запись строки
+      } else {
+        if (jsDoc) {
+          dir.save(el);
+        } else if (!dir.tplName) {
+          if (el === " ") {
+            return "continue";
+          }
+
+          if (currentClrL && !dir.tplName && (shortMap[el] || shortMap[next2str])) {
+            var adv = dir.lines[lastLine].length - 1, source = dir.toBaseSyntax(dir.source, dir.i - adv);
+
+            if (source.error) {
+              return {
+                v: false
+              };
+            }
+
+            dir.source = dir.source.substring(0, dir.i - adv) + source.str + dir.source.substring(dir.i + source.length - adv);
+
+            dir.lines[lastLine] = dir.lines[lastLine].slice(0, -1);
+            dir.i--;
+
+            return "continue";
+          }
+
+          dir.error("text can't be used in the global space");
+          return {
+            v: false
+          };
+        } else {
+          if (struct.strong && !inside[struct.name]["text"]) {
+            if (el === " ") {
+              dir.space = false;
+              return "continue";
+            }
+
+            dir.error("directive \"text\" can't be used within the \"" + struct.name + "\"");
+            return {
+              v: false
+            };
+          }
+
+          dir.startInlineDir("text");
+          if (dir.isSimpleOutput()) {
+            if (!beginStr) {
+              dir.save("" + dir.$() + "'");
+              beginStr = true;
+            }
+
+            if (dir.doctype) {
+              if (el === "<") {
+                tOpen++;
+                clearMacroExpr();
+              } else if (el === ">") {
+                tOpen--;
+                clearMacroExpr();
+              }
+
+              if (tAttr) {
+                if (tAttrBegin && (tAttrEscape ? el === " " : tAttrBMap[el]) || !tOpen) {
+                  tAttr = false;
+
+                  if (tOpen) {
+                    tAttrBegin = false;
+                  }
+
+                  if (tAttrEscape) {
+                    el = "\"" + el;
+                    tAttrEscape = false;
+                  }
+
+                  // Установка флага о начале декларации xml атрибута
+                } else if (!tAttrBegin) {
+                  tAttrBegin = true;
+                  if (!tAttrBMap[el]) {
+                    tAttrEscape = true;
+                    el = "\"" + el;
+                  }
+                }
+
+                // Начало декларации xml атрибута
+              } else if (tOpen && el === "=") {
+                tAttr = true;
+              }
+
+              dir.attr = Boolean(tOpen);
+              dir.attrEscape = tAttrEscape;
+            }
+
+            if (dir.autoReplace) {
+              if (!tOpen) {
+                if (comboMacro[el]) {
+                  var val = dir.macros[el];
+
+                  if (!qType) {
+                    qType = el;
+                    el = val[0][0];
+                    qOpen++;
+                  } else if (el === qType) {
+                    qType = null;
+                    el = val[0][1];
+                    qOpen = 0;
+                  } else {
+                    el = (val[1] || val[0])[qOpen % 2 ? 0 : 1];
+                    qOpen++;
+                  }
+
+                  el = String(el.call ? el() : el);
+                } else {
+                  if (whiteSpaceRgxp.test(el)) {
+                    clearMacroExpr();
+                  } else if (inlineMacro[el] && !inlineMacro[prev] && !dir.macros[expr + el]) {
+                    exprPos = dir.res.length;
+                    expr = el;
+                  } else {
+                    if (!expr) {
+                      exprPos = dir.res.length;
+                    }
+
+                    expr += el;
+                  }
+                }
+              }
+
+              if (dir.macros[expr]) {
+                (function () {
+                  var modStr = dir.res.substring(0, exprPos) + dir.res.substring(exprPos + expr.length + advExprPos);
+
+                  var val = dir.macros[expr].call ? dir.macros[expr]() : dir.macros[expr];
+
+                  val = String(val);
+                  advExprPos += val.length;
+
+                  dir.mod(function () {
+                    dir.res = modStr;
+                  });
+
+                  dir.save(val);
+                })();
+              } else {
+                dir.save(applyDefEscape(el));
+              }
+            } else {
+              dir.save(applyDefEscape(el));
+            }
+          }
+
+          dir.inline = null;
+          dir.structure = dir.structure.parent;
+        }
+
+        if (jsDoc && !beginStr) {
+          jsDoc = false;
+          dir.space = true;
+        }
+      }
+    })();
+
+    switch (_ret4) {
+      case "continue":
+        continue _loop;
+      default:
+        if (typeof _ret4 === "object") return _ret4.v;
+    }
+  }
+
+
+  // Если есть не закрытый XML тег,
+  // то генерируем ошибку
+  if (tOpen !== 0) {
+    dir.error("invalid XML declaration");
+    return false;
+  }
+
+  // Если количество открытых блоков не совпадает с количеством закрытых,
+  // то генерируем ошибку
+  if (begin || dir.structure.parent) {
+    dir.error("missing closing or opening tag in the template");
+    return false;
+  }
+
+  if (dir.proto) {
+    sp.parent.setCompileVars(dir.getCompileVars());
+    return dir.pasteDangerBlocks(dir.res);
+  }
+
+  // Если остались внешние декларации,
+  // которые не были подключены к своему шаблону,
+  // то генерируем ошибку
+  for (var key in dir.preDefs) {
+    if (!dir.preDefs.hasOwnProperty(key)) {
+      continue;
+    }
+
+    dir.error("template \"" + key + "\" is not defined");
+    return false;
+  }
+
+  dir.end(cacheKey, label);
+
+  if (p.prettyPrint) {
+    dir.res = beautify(dir.res);
+    dir.res = dir.res.replace(new RegExp(nextLineRgxp.source, "g"), nl);
+  }
+
+  dir.res += nl;
+
+  if (p.debug) {
+    p.debug["code"] = dir.res;
+    p.debug["files"] = dir.files;
+  }
+
+  try {
+    // Компиляция на сервере
+    if (IS_NODE) {
+      if (ctx !== NULL) {
+        new Function("module", "exports", "require", "__dirname", "__filename", dir.res)({
+          exports: ctx,
+          require: require,
+          id: filename,
+          filename: filename,
+          parent: module,
+          children: [],
+          loaded: true
+        }, ctx, require, dirname, filename);
+      }
+
+      // commonJS компиляция в браузере
+    } else if (ctx !== NULL) {
+      new Function("module", "exports", "global", dir.res)({
+        exports: ctx
+      }, ctx, root);
+
+      // Живая компиляция в браузере
+    } else {
+      dir.evalStr(dir.res);
+    }
+
+    saveFnCache(cacheKey, text, p, ctx);
+  } catch (err) {
+    delete info["line"];
+    delete info["template"];
+    dir.error(err.message);
+    return false;
+  }
+
+  saveCache(cacheKey, text, p, dir);
+
+  // Если брайзер поддерживает FileAPI,
+  // то подключаем скомпилированный шаблон как внешний скрипт
+  if (!IS_NODE) {
+    setTimeout(function () {
+      try {
+        var blob = new Blob([dir.res], {
+          type: "application/javascript"
+        });
+
+        var script = document.createElement("script");
+        script.src = URL.createObjectURL(blob);
+
+        document.head.appendChild(script);
+      } catch (ignore) {}
+    }, 50);
+  }
+
+  return dir.res;
 };
 var aliasRgxp = /__(.*?)__/;
 
@@ -12232,232 +11690,219 @@ var aliasRgxp = /__(.*?)__/;
  * @param {?function(this:DirObj, string, number, string, (boolean|number))=} opt_destr - деструктор директивы
  */
 Snakeskin.addDirective = function (name, params, constr, opt_destr) {
-	params = params || {};
+  params = params || {};
 
-	forIn(params.replacers, function(el, key)  {
-		if (key.length > 2) {
-			throw new Error((("Invalid shorthand key \"" + key) + "\" (key.length > 2)"));
-		}
+  forIn(params.replacers, function (el, key) {
+    if (key.length > 2) {
+      throw new Error("Invalid shorthand key \"" + key + "\" (key.length > 2)");
+    }
 
-		replacers[key] = el;
+    replacers[key] = el;
 
-		if (key.charAt(0) !== '/') {
-			shortMap[key] = true;
-		}
-	});
+    if (key.charAt(0) !== "/") {
+      shortMap[key] = true;
+    }
+  });
 
-	after[name] = params.after;
-	inside[name] = params.inside;
-	sys[name] = Boolean(params.sys);
-	block[name] = Boolean(params.block);
-	text[name] = Boolean(params.text);
+  after[name] = params.after;
+  inside[name] = params.inside;
+  sys[name] = Boolean(params.sys);
+  block[name] = Boolean(params.block);
+  text[name] = Boolean(params.text);
 
-	if (params.alias) {
-		aliases[name] = name.replace(aliasRgxp, '$1');
-	}
+  if (params.alias) {
+    aliases[name] = name.replace(aliasRgxp, "$1");
+  }
 
-	if (params.group) {
-		var group = Array.isArray(params.group) ?
-			params.group : [params.group];
+  if (params.group) {
+    var group = Array.isArray(params.group) ? params.group : [params.group];
 
-		for (var i = -1; ++i < group.length;) {
-			if (!groups[group[i]]) {
-				groups[group[i]] = {};
-				groupsList[group[i]] = [];
-			}
+    for (var i = -1; ++i < group.length;) {
+      if (!groups[group[i]]) {
+        groups[group[i]] = {};
+        groupsList[group[i]] = [];
+      }
 
-			groups[group[i]][name] = true;
-			groupsList[group[i]].push((("\"" + name) + "\""));
-		}
-	}
+      groups[group[i]][name] = true;
+      groupsList[group[i]].push("\"" + name + "\"");
+    }
+  }
 
-	if (params.chain) {
-		var chain = Array.isArray(params.chain) ?
-			params.chain : [params.chain];
+  if (params.chain) {
+    var chain = Array.isArray(params.chain) ? params.chain : [params.chain];
 
-		for (var i$9 = -1; ++i$9 < chain.length;) {
-			if (!chains[chain[i$9]]) {
-				chains[chain[i$9]] = {};
-			}
+    for (var i = -1; ++i < chain.length;) {
+      if (!chains[chain[i]]) {
+        chains[chain[i]] = {};
+      }
 
-			chains[chain[i$9]][name] = true;
-		}
-	}
+      chains[chain[i]][name] = true;
+    }
+  }
 
-	if (params.end) {
-		var chain$0 = Array.isArray(params.end) ?
-			params.end : [params.end];
+  if (params.end) {
+    var chain = Array.isArray(params.end) ? params.end : [params.end];
 
-		for (var i$10 = -1; ++i$10 < chain$0.length;) {
-			if (!ends[chain$0[i$10]]) {
-				ends[chain$0[i$10]] = {};
-			}
+    for (var i = -1; ++i < chain.length;) {
+      if (!ends[chain[i]]) {
+        ends[chain[i]] = {};
+      }
 
-			ends[chain$0[i$10]][name] = true;
-		}
-	}
+      ends[chain[i]][name] = true;
+    }
+  }
 
-	params.selfInclude = params.selfInclude !== false;
+  params.selfInclude = params.selfInclude !== false;
 
-	if (!params.selfInclude) {
-		params.block = true;
-	}
+  if (!params.selfInclude) {
+    params.block = true;
+  }
 
-	Snakeskin.Directions[name] = function (command, commandLength, type, jsDoc) {
-		var dir = this;
-		var sourceName = getName(name),
-			dirName = getName(name);
+  Snakeskin.Directions[name] = function (command, commandLength, type, jsDoc) {
+    var dir = this;
+    var sourceName = getName(name), dirName = getName(name);
 
-		if (dir.ctx) {
-			dirName = dir.name || dirName;
-			dir = dir.ctx;
-		}
+    if (dir.ctx) {
+      dirName = dir.name || dirName;
+      dir = dir.ctx;
+    }
 
-		var ignore = groups['ignore'][dirName],
-			struct = dir.structure;
+    var ignore = groups["ignore"][dirName], struct = dir.structure;
 
-		dir.name = dirName;
-		switch (params.placement) {
-			case 'template':
-				if (!struct.parent) {
-					dir.error((("directive \"" + dirName) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
-				}
+    dir.name = dirName;
+    switch (params.placement) {
+      case "template":
+        if (!struct.parent) {
+          dir.error("directive \"" + dirName + "\" can be used only within a " + groupsList["template"].join(", "));
+        }
 
-				break;
+        break;
 
-			case 'global':
-				if (struct.parent) {
-					dir.error((("directive \"" + dirName) + "\" can be used only within the global space"));
-				}
+      case "global":
+        if (struct.parent) {
+          dir.error("directive \"" + dirName + "\" can be used only within the global space");
+        }
 
-				break;
+        break;
 
-			default:
-				if (params.placement && dir.hasParent(params.placement)) {
-					dir.error((("directive \"" + dirName) + ("\" can be used only within a \"" + (params.placement)) + "\""));
-				}
-		}
+      default:
+        if (params.placement && dir.hasParent(params.placement)) {
+          dir.error("directive \"" + dirName + "\" can be used only within a \"" + params.placement + "\"");
+        }
+    }
 
-		if (params.notEmpty && !command) {
-			return dir.error((("directive \"" + dirName) + "\" should have a body"));
-		}
+    if (params.notEmpty && !command) {
+      return dir.error("directive \"" + dirName + "\" should have a body");
+    }
 
-		if (struct.strong) {
-			if (inside[struct.name][dirName]) {
-				dir.chainSpace = false;
+    if (struct.strong) {
+      if (inside[struct.name][dirName]) {
+        dir.chainSpace = false;
+      } else if (!ignore && sourceName === dirName && dirName !== "end") {
+        return dir.error("directive \"" + dirName + "\" can't be used within the \"" + struct.name + "\"");
+      }
+    }
 
-			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
-				return dir.error((("directive \"" + dirName) + ("\" can't be used within the \"" + (struct.name)) + "\""));
-			}
-		}
+    if (!params.selfInclude && dir.has(dirName)) {
+      return dir.error("directive \"" + dirName + "\" can't be used within the \"" + dirName + "\"");
+    }
 
-		if (!params.selfInclude && dir.has(dirName)) {
-			return dir.error((("directive \"" + dirName) + ("\" can't be used within the \"" + dirName) + "\""));
-		}
+    if (params.text) {
+      dir.text = true;
+    }
 
-		if (params.text) {
-			dir.text = true;
-		}
+    var from = dir.res.length;
 
-		var from = dir.res.length;
+    constr.call(dir, command, commandLength, type, jsDoc);
 
-		constr.call(dir, command, commandLength, type, jsDoc);
+    if (dir.structure.params._from === void 0) {
+      dir.structure.params._from = from;
+    }
 
-		if (dir.structure.params._from === void 0) {
-			dir.structure.params._from = from;
-		}
+    var newStruct = dir.structure;
 
-		var newStruct = dir.structure;
+    if (inside[dirName]) {
+      newStruct.strong = true;
+      dir.chainSpace = true;
+    }
 
-		if (inside[dirName]) {
-			newStruct.strong = true;
-			dir.chainSpace = true;
-		}
+    if (dirName === sourceName) {
+      if (struct === newStruct) {
+        if (!ignore && after[struct.name] && !after[struct.name][dirName]) {
+          return dir.error("directive \"" + dirName + "\" can't be used after the \"" + struct.name + "\"");
+        }
+      } else {
+        var siblings = sourceName === "end" ? newStruct.children : newStruct.parent && newStruct.parent.children;
 
-		if (dirName === sourceName) {
-			if (struct === newStruct) {
-				if (!ignore && after[struct.name] && !after[struct.name][dirName]) {
-					return dir.error((("directive \"" + dirName) + ("\" can't be used after the \"" + (struct.name)) + "\""));
-				}
+        if (siblings) {
+          var j = 1, prev = undefined;
 
-			} else {
-				var siblings = sourceName === 'end' ?
-					newStruct.children : newStruct.parent && newStruct.parent.children;
+          while ((prev = siblings[siblings.length - j]) && (prev.name === "text" || prev === newStruct)) {
+            j++;
+          }
 
-				if (siblings) {
-					var j = 1,
-						prev;
+          if (!ignore && prev && after[prev.name] && !after[prev.name][dirName]) {
+            return dir.error("directive \"" + dirName + "\" can't be used after the \"" + prev.name + "\"");
+          }
+        }
+      }
+    }
 
-					while ((prev = siblings[siblings.length - j]) && (prev.name === 'text' || prev === newStruct)) {
-						j++;
-					}
+    dir.applyQueue();
 
-					if (!ignore && prev && after[prev.name] && !after[prev.name][dirName]) {
-						return dir.error((("directive \"" + dirName) + ("\" can't be used after the \"" + (prev.name)) + "\""));
-					}
-				}
-			}
-		}
+    if (dir.inline === true) {
+      baseEnd.call(dir);
 
-		dir.applyQueue();
+      if (opt_destr) {
+        opt_destr.call(dir, command, commandLength, type, jsDoc);
+      }
 
-		if (dir.inline === true) {
-			baseEnd.call(dir);
+      dir.inline = null;
+      dir.structure = dir.structure.parent;
 
-			if (opt_destr) {
-				opt_destr.call(dir, command, commandLength, type, jsDoc);
-			}
+      if (dir.blockStructure && dir.blockStructure.name === "const") {
+        dir.blockStructure = dir.blockStructure.parent;
+      }
+    }
+  };
 
-			dir.inline = null;
-			dir.structure = dir.structure.parent;
+  Snakeskin.Directions["" + name + "End"] = opt_destr;
+  var baseEnd = Snakeskin.Directions["" + name + "BaseEnd"] = function () {
+    var _this8 = this;
+    var params = this.structure.params;
 
-			if (dir.blockStructure && dir.blockStructure.name === 'const') {
-				dir.blockStructure = dir.blockStructure.parent;
-			}
-		}
-	};
+    if (params._scope) {
+      this.scope.pop();
+    }
 
-	Snakeskin.Directions[(("" + name) + "End")] = opt_destr;
-	var baseEnd = Snakeskin.Directions[(("" + name) + "BaseEnd")] = function () {var this$0 = this;
-		var params = this.structure.params;
+    forIn(params._consts, function (el, key) {
+      constCache[_this8.tplName][key] = el;
+    });
 
-		if (params._scope) {
-			this.scope.pop();
-		}
+    var res = params._res ? params._res : this.res;
 
-		forIn(params._consts, function(el, key)  {
-			constCache[this$0.tplName][key] = el;
-		});
+    var from = params._from, to = res.length;
 
-		var res = params._res ?
-			params._res : this.res;
+    if (from == null) {
+      return;
+    }
 
-		var from = params._from,
-			to = res.length;
+    var parent = this.structure.parent;
 
-		if (from == null) {
-			return;
-		}
+    if ((!parent || parent.name === "root") && !this.getGroup("define")[name] && from !== to) {
+      try {
+        this.evalStr(res.substring(from, to));
+      } catch (err) {
+        return this.error(err.message);
+      }
 
-		var parent = this.structure.parent;
+      if (fsStack.length) {
+        this.source = this.source.substring(0, this.i + 1) + this.replaceCData(fsStack.join("")) + this.source.substring(this.i + 1);
 
-		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
-			try {
-				this.evalStr(res.substring(from, to));
-
-			} catch (err) {
-				return this.error(err.message);
-			}
-
-			if (fsStack.length) {
-				this.source = this.source.substring(0, this.i + 1) +
-					this.replaceCData(fsStack.join('')) +
-					this.source.substring(this.i + 1);
-
-				fsStack.splice(0, fsStack.length);
-			}
-		}
-	};
+        fsStack.splice(0, fsStack.length);
+      }
+    }
+  };
 };
 
 /**
@@ -12468,974 +11913,873 @@ Snakeskin.addDirective = function (name, params, constr, opt_destr) {
  * @return {string}
  */
 DirObj.prototype.declCallbackArgs = function (parts) {
-	var args = ((Array.isArray(parts) ? parts[2] || parts[1] : parts) || '').split(','),
-		scope;
+  var args = ((Array.isArray(parts) ? parts[2] || parts[1] : parts) || "").split(","), scope;
 
-	for (var i = -1; ++i < args.length;) {
-		var el = args[i].trim(),
-			mod = scopeModRgxp.test(el);
+  for (var i = -1; ++i < args.length;) {
+    var el = args[i].trim(), mod = scopeModRgxp.test(el);
 
-		if (mod) {
-			if (scope) {
-				this.error((("invalid \"" + (this.name)) + "\" declaration"));
+    if (mod) {
+      if (scope) {
+        this.error("invalid \"" + this.name + "\" declaration");
+      } else {
+        el = el.replace(scopeModRgxp, "");
+      }
+    }
 
-			} else {
-				el = el.replace(scopeModRgxp, '');
-			}
-		}
+    if (el) {
+      args[i] = this.declVar(el, true);
 
-		if (el) {
-			args[i] = this.declVar(el, true);
+      if (mod) {
+        scope = args[i];
+      }
+    }
+  }
 
-			if (mod) {
-				scope = args[i];
-			}
-		}
-	}
+  if (scope) {
+    this.scope.push(scope);
+    this.structure.params._scope = true;
+  }
 
-	if (scope) {
-		this.scope.push(scope);
-		this.structure.params._scope = true;
-	}
-
-	return args.join(',');
+  return args.join(",");
 };
 
-Snakeskin.addDirective(
-	'callback',
+Snakeskin.addDirective("callback", {
+  block: true,
+  group: "callback",
+  replacers: {
+    "()": function (cmd) {
+      return cmd.replace("()", "callback ");
+    }
+  }
+}, function (command) {
+  var parts = command.split("=>");
 
-	{
-		block: true,
-		group: 'callback',
-		replacers: {
-			'()': function(cmd)  {return cmd.replace('()', 'callback ')}
-		}
-	},
+  if (!parts.length || parts.length > 2) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-	function (command) {
-		var parts = command.split('=>');
+  this.startDir();
+  if (this.isReady()) {
+    var async = this.getGroup("async"), parent = this.structure.parent;
 
-		if (!parts.length || parts.length > 2) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
+    this.structure.params.insideAsync = async[parent.name];
+    var children = parent.children, length = 0;
 
-		this.startDir();
-		if (this.isReady()) {
-			var async = this.getGroup('async'),
-				parent = this.structure.parent;
+    for (var i = -1; ++i < children.length;) {
+      if (children[i].name === "callback") {
+        length++;
+      }
 
-			this.structure.params.insideAsync = async[parent.name];
-			var children = parent.children,
-				length = 0;
+      if (length > 1) {
+        break;
+      }
+    }
 
-			for (var i = -1; ++i < children.length;) {
-				if (children[i].name === 'callback') {
-					length++;
-				}
+    this.append( /* cbws */"" + (async[parent.name] && length > 1 ? ", " : "") + "(function (" + this.declCallbackArgs(parts) + ") {" + this.declArguments() + "");
+  }
+}, function () {
+  this.append("})" + (this.structure.params.insideAsync ? "" : ";"));
+});
 
-				if (length > 1) {
-					break;
-				}
-			}
+Snakeskin.addDirective("final", {
+  block: true,
+  group: ["callback", "basicAsync"],
 
-			this.append(/* cbws */((" " + (async[parent.name] && length > 1 ? ', ' : '')) + ("(function (" + (this.declCallbackArgs(parts))) + (") { " + (this.declArguments())) + " "));
-		}
-	},
+  chain: ["parallel", "series", "waterfall"]
+}, function (command) {
+  var async = this.getGroup("series");
 
-	function () {
-		this.append('})' + (this.structure.params.insideAsync ? '' : ';'));
-	}
-);
+  if (!async[this.structure.name]) {
+    return this.error("directive \"" + this.name + "\" can be used only with a \"" + groupsList["series"].join(", ") + "\"");
+  }
 
-Snakeskin.addDirective(
-	'final',
+  var parts = command.split("=>");
 
-	{
-		block: true,
-		group: [
-			'callback',
-			'basicAsync'
-		],
+  if (!parts.length || parts.length > 2) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-		chain: [
-			'parallel',
-			'series',
-			'waterfall'
-		]
-	},
+  this.startDir();
+  if (this.isReady()) {
+    this.append( /* cbws */"], function (" + this.declCallbackArgs(parts) + ") {" + this.declArguments() + "");
+  }
+}, function () {
+  this.append("});");
+  this.endDir();
+});
 
-	function (command) {
-		var async = this.getGroup('series');
+(function () {
+  var series = ["parallel", "series", "waterfall"];
 
-		if (!async[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a \"" + (groupsList['series'].join(', '))) + "\""));
-		}
+  for (var i = -1; ++i < series.length;) {
+    Snakeskin.addDirective(series[i], {
+      block: true,
+      group: ["async", "Async", "series"],
 
-		var parts = command.split('=>');
+      inside: {
+        "callback": true,
+        "final": true
+      }
+    }, function (command, commandLength, type) {
+      this.startDir();
+      this.append("" + this.prepareOutput("async", true) + "." + type + "([");
+    }, function () {
+      this.append("]);");
+    });
+  }
 
-		if (!parts.length || parts.length > 2) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
+  var async = ["whilst", "doWhilst", "forever"];
 
-		this.startDir();
-		if (this.isReady()) {
-			this.append(/* cbws */((" ], function (" + (this.declCallbackArgs(parts))) + (") { " + (this.declArguments())) + " "));
-		}
-	},
+  for (var i = -1; ++i < async.length;) {
+    Snakeskin.addDirective(async[i], {
+      block: true,
+      group: ["async", "Async"],
 
-	function () {
-		this.append('});');
-		this.endDir();
-	}
-);
-
-(function()  {
-	var series = ['parallel', 'series', 'waterfall'];
-
-	for (var i = -1; ++i < series.length;) {
-		Snakeskin.addDirective(
-			series[i],
-
-			{
-				block: true,
-				group: [
-					'async',
-					'Async',
-					'series'
-				],
-
-				inside: {
-					'callback': true,
-					'final': true
-				}
-			},
-
-			function (command, commandLength, type) {
-				this.startDir();
-				this.append((("" + (this.prepareOutput('async', true))) + ("." + type) + "(["));
-			},
-
-			function () {
-				this.append(']);');
-			}
-		);
-	}
-
-	var async = ['whilst', 'doWhilst', 'forever'];
-
-	for (var i$11 = -1; ++i$11 < async.length;) {
-		Snakeskin.addDirective(
-			async[i$11],
-
-			{
-				block: true,
-				group: [
-					'async',
-					'Async'
-				],
-
-				inside: {
-					'callback': true
-				}
-			},
-
-			function (command, commandLength, type) {
-				this.startDir();
-				this.append((("" + (this.prepareOutput('async', true))) + ("." + type) + "("));
-			},
-
-			function () {
-				this.append(');');
-			}
-		);
-	}
+      inside: {
+        "callback": true
+      }
+    }, function (command, commandLength, type) {
+      this.startDir();
+      this.append("" + this.prepareOutput("async", true) + "." + type + "(");
+    }, function () {
+      this.append(");");
+    });
+  }
 })();
 
-Snakeskin.addDirective(
-	'when',
+Snakeskin.addDirective("when", {
+  block: true,
+  notEmpty: true,
 
-	{
-		block: true,
-		notEmpty: true,
+  group: ["async", "basicAsync"],
 
-		group: [
-			'async',
-			'basicAsync'
-		],
-
-		inside: {
-			'callback': true
-		}
-	},
-
-	function (command) {
-		this.startDir();
-		this.append((("" + (this.prepareOutput(command, true))) + ".then("));
-	},
-
-	function () {
-		this.append(');');
-	}
-);
+  inside: {
+    "callback": true
+  }
+}, function (command) {
+  this.startDir();
+  this.append("" + this.prepareOutput(command, true) + ".then(");
+}, function () {
+  this.append(");");
+});
 
 
-(function()  {
-	Snakeskin.addDirective(
-		'attr',
+(function () {
+  Snakeskin.addDirective("attr", {
+    placement: "template",
+    notEmpty: true,
+    text: true
+  }, function (command) {
+    this.startInlineDir();
+    if (this.isReady()) {
+      var str = "", _groups = this.splitAttrsGroup(command);
 
-		{
-			placement: 'template',
-			notEmpty: true,
-			text: true
-		},
+      for (var i = -1; ++i < _groups.length;) {
+        var el = _groups[i];
 
-		function (command) {
-			this.startInlineDir();
-			if (this.isReady()) {
-				var str = '',
-					groups = this.splitAttrsGroup(command);
+        str += this.returnAttrDecl(el.attr, el.group, el.separator);
+      }
 
-				for (var i = -1; ++i < groups.length;) {
-					var el = groups[i];
+      this.append(str);
+    }
+  });
 
-					str += this.returnAttrDecl(
-						el.attr,
-						el.group,
-						el.separator
-					);
-				}
+  var escapeEqRgxp = /===|==|([\\]+)=/g, escapeOrRgxp = /\|\||([\\]+)\|/g;
 
-				this.append(str);
-			}
-		}
-	);
+  var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g, unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
 
-	var escapeEqRgxp = /===|==|([\\]+)=/g,
-		escapeOrRgxp = /\|\||([\\]+)\|/g;
+  function escapeEq(sstr, $1) {
+    if ($1 && $1.length % 2 === 0) {
+      return sstr;
+    }
 
-	var unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g,
-		unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
+    return "__SNAKESKIN_EQ__" + sstr.split("=").length + "_" + $1.length + "_";
+  }
 
-	function escapeEq(sstr, $1) {
-		if ($1 && $1.length % 2 === 0) {
-			return sstr;
-		}
+  function escapeOr(sstr, $1) {
+    if ($1 && $1.length % 2 === 0) {
+      return sstr;
+    }
 
-		return (("__SNAKESKIN_EQ__" + (sstr.split('=').length)) + ("_" + ($1.length)) + "_");
-	}
+    return "__SNAKESKIN_OR__" + sstr.split("|").length + "_" + $1.length + "_";
+  }
 
-	function escapeOr(sstr, $1) {
-		if ($1 && $1.length % 2 === 0) {
-			return sstr;
-		}
+  function unEscapeEq(ignore, $1, $2) {
+    return new Array(Number($2)).join("\\") + new Array(Number($1)).join("=");
+  }
 
-		return (("__SNAKESKIN_OR__" + (sstr.split('|').length)) + ("_" + ($1.length)) + "_");
-	}
+  function unEscapeOr(ignore, $1, $2) {
+    return new Array(Number($2)).join("\\") + new Array(Number($1)).join("|");
+  }
 
-	function unEscapeEq(ignore, $1, $2) {
-		return new Array(Number($2)).join('\\') + new Array(Number($1)).join('=');
-	}
+  /**
+   * Вернуть строку декларации XML атрибутов
+   *
+   * @param {string} str - исходная строка
+   * @param {?string=} [opt_group] - название группы
+   * @param {?string=} opt_separator - разделитель группы
+   * @param {?boolean=} opt_classLink - если true, то значения для атрибута class
+   *     будут сохраняться во временную переменную
+   *
+   * @return {string}
+   */
+  DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
+    var rAttr = this.attr, rEscape = this.attrEscape;
 
-	function unEscapeOr(ignore, $1, $2) {
-		return new Array(Number($2)).join('\\') + new Array(Number($1)).join('|');
-	}
+    this.attr = true;
+    this.attrEscape = true;
 
-	/**
-	 * Вернуть строку декларации XML атрибутов
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {?string=} [opt_group] - название группы
-	 * @param {?string=} opt_separator - разделитель группы
-	 * @param {?boolean=} opt_classLink - если true, то значения для атрибута class
-	 *     будут сохраняться во временную переменную
-	 *
-	 * @return {string}
-	 */
-	DirObj.prototype.returnAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
-		var rAttr = this.attr,
-			rEscape = this.attrEscape;
+    opt_group = opt_group || "";
+    opt_separator = opt_separator || "-";
 
-		this.attr = true;
-		this.attrEscape = true;
+    str = str.replace(escapeHTMLRgxp, escapeHTML).replace(escapeOrRgxp, escapeOr);
 
-		opt_group = opt_group || '';
-		opt_separator = opt_separator || '-';
+    var parts = str.split("|"), res = "", ref = this.bemRef;
 
-		str = str
-			.replace(escapeHTMLRgxp, escapeHTML)
-			.replace(escapeOrRgxp, escapeOr);
+    var s = ADV_LEFT_BLOCK + LEFT_BLOCK, e = RIGHT_BLOCK;
 
-		var parts = str.split('|'),
-			res = '',
-			ref = this.bemRef;
+    for (var i = -1; ++i < parts.length;) {
+      parts[i] = parts[i].replace(unEscapeOrRgxp, unEscapeOr).replace(escapeEqRgxp, escapeEq);
 
-		var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-			e = RIGHT_BLOCK;
+      var arg = parts[i].split("="), empty = arg.length !== 2;
 
-		for (var i = -1; ++i < parts.length;) {
-			parts[i] = parts[i]
-				.replace(unEscapeOrRgxp, unEscapeOr)
-				.replace(escapeEqRgxp, escapeEq);
+      if (empty) {
+        if (this.doctype === "xml") {
+          arg[1] = arg[0];
+          empty = false;
+        } else {
+          arg[1] = "";
+        }
+      }
 
-			var arg = parts[i].split('='),
-				empty = arg.length !== 2;
+      arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
+      arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 
-			if (empty) {
-				if (this.doctype === 'xml') {
-					arg[1] = arg[0];
-					empty = false;
+      res += /* cbws */"var __ATTR_STR__ = '',__ATTR_J__ = 0;";
 
-				} else {
-					arg[1] = '';
-				}
-			}
+      if (opt_group) {
+        arg[0] = opt_group + opt_separator + arg[0];
+      } else {
+        arg[0] = arg[0].charAt(0) === "-" ? "data-" + arg[0].slice(1) : arg[0];
+      }
 
-			arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
-			arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
+      arg[0] = "'" + this.pasteTplVarBlocks(arg[0]) + "'";
+      var vals = splitBySpace(arg[1]);
 
-			res += /* cbws */(" var __ATTR_STR__ = \'\', __ATTR_J__ = 0; ");
+      for (var j = -1; ++j < vals.length;) {
+        var val = vals[j].trim();
 
-			if (opt_group) {
-				arg[0] = opt_group + opt_separator + arg[0];
+        if (parentLinkRgxp.test(val) && ref) {
+          val = "" + s + "'" + ref + "'" + FILTER + "" + this.bemFilter + " '" + val.substring("&amp;".length) + "',$0" + e;
+          val = this.pasteDangerBlocks(this.replaceTplVars(val));
+        }
 
-			} else {
-				arg[0] = arg[0].charAt(0) === '-' ?
-					("data-" + (arg[0].slice(1))) : arg[0];
-			}
+        val = "'" + this.pasteTplVarBlocks(val) + "'";
 
-			arg[0] = (("'" + (this.pasteTplVarBlocks(arg[0]))) + "'");
-			var vals = splitBySpace(arg[1]);
+        res += /* cbws */"if ((" + val + ") != null && (" + val + ") !== '') {__ATTR_STR__ += __ATTR_J__ ? ' ' + " + val + " : " + val + ";__ATTR_J__++;}";
+      }
 
-			for (var j = -1; ++j < vals.length;) {
-				var val = vals[j].trim();
+      res += "if ((" + arg[0] + ") != null && (" + arg[0] + ") != '') {";
+      var tmp = /* cbws */"if (__NODE__) {__NODE__.setAttribute(" + arg[0] + ", " + empty + " ? " + arg[0] + " : __ATTR_STR__ );} else {" + this.wrap("' ' + " + arg[0] + " + (" + empty + " ? '' : '=\"' + __ATTR_STR__ + '\"')") + "}";
 
-				if (parentLinkRgxp.test(val) && ref) {
-					val = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (val.substring('&amp;'.length))) + ("',$0" + e) + "");
-					val = this.pasteDangerBlocks(this.replaceTplVars(val));
-				}
+      if (opt_classLink) {
+        res += /* cbws */"if (__ATTR_TMP__[(" + arg[0] + ")] != null) {__ATTR_TMP__[(" + arg[0] + ")] += __ATTR_STR__;} else {" + tmp + "}";
+      } else {
+        res += tmp;
+      }
 
-				val = (("'" + (this.pasteTplVarBlocks(val))) + "'");
+      res += "}";
+    }
 
-				res += /* cbws */((" if ((" + val) + (") != null && (" + val) + (") !== '') { __ATTR_STR__ += __ATTR_J__ ? ' ' + " + val) + (" : " + val) + "; __ATTR_J__++; } ");
-			}
+    this.attr = rAttr;
+    this.attrEscape = rEscape;
 
-			res += (("if ((" + (arg[0])) + (") != null && (" + (arg[0])) + ") != '') {");
-			var tmp = /* cbws */((" if (__NODE__) { __NODE__.setAttribute(" + (arg[0])) + (", " + empty) + (" ? " + (arg[0])) + (" : __ATTR_STR__ );  } else { " + (this.wrap((("' ' + " + (arg[0])) + (" + (" + empty) + " ? '' : '=\"' + __ATTR_STR__ + '\"')")))) + " } ");
+    return res;
+  };
 
-			if (opt_classLink) {
-				res += /* cbws */((" if (__ATTR_TMP__[(" + (arg[0])) + (")] != null) { __ATTR_TMP__[(" + (arg[0])) + (")] += __ATTR_STR__;  } else { " + tmp) + " } ");
+  /**
+   * Разбить строку декларации атрибута на группы
+   *
+   * @param {string} str - исходная строка
+   * @return {!Array}
+   */
+  DirObj.prototype.splitAttrsGroup = function (str) {
+    var rAttr = this.attr, rEscape = this.attrEscape;
 
-			} else {
-				res += tmp;
-			}
+    this.attr = true;
+    this.attrEscape = true;
 
-			res += '}';
-		}
+    str = this.replaceTplVars(str, false, true);
+    var groups = [];
 
-		this.attr = rAttr;
-		this.attrEscape = rEscape;
+    var group = "", attr = "", sep = "";
 
-		return res;
-	};
+    var pOpen = 0;
+    var separator = {
+      "-": true,
+      ":": true,
+      "_": true
+    };
 
-	/**
-	 * Разбить строку декларации атрибута на группы
-	 *
-	 * @param {string} str - исходная строка
-	 * @return {!Array}
-	 */
-	DirObj.prototype.splitAttrsGroup = function (str) {
-		var rAttr = this.attr,
-			rEscape = this.attrEscape;
+    for (var i = -1; ++i < str.length;) {
+      var el = str.charAt(i), next = str.charAt(i + 1);
 
-		this.attr = true;
-		this.attrEscape = true;
+      if (!pOpen) {
+        if (separator[el] && next === "(") {
+          pOpen++;
+          i++;
+          sep = el;
+          continue;
+        }
 
-		str = this.replaceTplVars(str, false, true);
-		var groups = [];
+        if (el === "(") {
+          pOpen++;
+          sep = "";
+          continue;
+        }
+      }
 
-		var group = '',
-			attr = '',
-			sep = '';
+      if (pOpen) {
+        if (el === "(") {
+          pOpen++;
+        } else if (el === ")") {
+          pOpen--;
 
-		var pOpen = 0;
-		var separator = {
-			'-': true,
-			':': true,
-			'_': true
-		};
+          if (!pOpen) {
+            groups.push({
+              group: Snakeskin.Filters.html(group, true).trim(),
+              separator: sep,
+              attr: attr.trim()
+            });
 
-		for (var i = -1; ++i < str.length;) {
-			var el = str.charAt(i),
-				next = str.charAt(i + 1);
+            group = "";
+            attr = "";
+            sep = "";
 
-			if (!pOpen) {
-				if (separator[el] && next === '(') {
-					pOpen++;
-					i++;
-					sep = el;
-					continue;
-				}
+            i++;
+            continue;
+          }
+        }
+      }
 
-				if (el === '(') {
-					pOpen++;
-					sep = '';
-					continue;
-				}
-			}
+      if (!pOpen) {
+        group += el;
+      } else {
+        attr += el;
+      }
+    }
 
-			if (pOpen) {
-				if (el === '(') {
-					pOpen++;
+    if (group && !attr) {
+      groups.push({
+        group: null,
+        separator: null,
+        attr: group.trim()
+      });
+    }
 
-				} else if (el === ')') {
-					pOpen--;
+    this.attr = rAttr;
+    this.attrEscape = rEscape;
 
-					if (!pOpen) {
-						groups.push({
-							group: Snakeskin.Filters.html(group, true).trim(),
-							separator: sep,
-							attr: attr.trim()
-						});
-
-						group = '';
-						attr = '';
-						sep = '';
-
-						i++;
-						continue;
-					}
-				}
-			}
-
-			if (!pOpen) {
-				group += el;
-
-			} else {
-				attr += el;
-			}
-		}
-
-		if (group && !attr) {
-			groups.push({
-				group: null,
-				separator: null,
-				attr: group.trim()
-			});
-		}
-
-		this.attr = rAttr;
-		this.attrEscape = rEscape;
-
-		return groups;
-	};
+    return groups;
+  };
 })();
 
 
-Snakeskin.addDirective(
-	'setBEM',
-
-	{
-		placement: 'global',
-		notEmpty: true
-	},
-
-	function (command) {
-		this.startInlineDir();
-		var parts = command.match(/([^,]+),\s+(.*)/);
+Snakeskin.addDirective("setBEM", {
+  placement: "global",
+  notEmpty: true
+}, function (command) {
+  this.startInlineDir();
+  var parts = command.match(/([^,]+),\s+(.*)/);
+
+  try {
+    bem[parts[1]] = this.evalStr("{" + this.prepareOutput(parts[2], true, null, null, false) + "}");
+  } catch (ignore) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
+});
+
+Snakeskin.addDirective("bem", {
+  block: true,
+  placement: "template",
+  notEmpty: true,
+  text: true
+}, function (command) {
+  this.startDir(null, {
+    tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
+  });
+
+  var params = this.structure.params;
+
+  command = params.tag ? command.replace(/^[^)]+\)(.*)/, "$1") : command;
+
+  var parts = command.trim().split(","), bemName = parts[0];
+
+  parts[0] += "'";
+  command = parts.join(",");
+
+  params.original = bem[bemName] && bem[bemName].tag;
+
+  if (this.isReady()) {
+    var str = undefined, tag = params.tag || params.original || "div", desc = "{name: \\'" + this.replaceTplVars(command.replace(/\s+/g, " ")) + "}";
+
+    if (this.renderMode === "dom") {
+      str = /* cbws */"__NODE__ = document.createElement('" + tag + "');__NODE__.className = 'i-block';__NODE__.setAttribute('data-params', '" + desc + "');" + this.returnPushNodeDecl() + "";
+    } else {
+      str = this.wrap( /* cbws */"'<" + tag + "class=\"i-block\"data-params=\"" + desc + "\">'");
+    }
+
+    this.append(str);
+  }
+}, function () {
+  var params = this.structure.params, str;
+
+  if (this.renderMode == "dom") {
+    str = "__RESULT__.pop();";
+  } else {
+    str = this.wrap("'</" + (params.tag || params.original || "div") + ">'");
+  }
+
+  this.append(str);
+});
+
+
+var callBlockNameRgxp = new RegExp("^[^" + symbols + "_$][^" + w + "$]*|[^" + w + "$]+", "i");
+
+Snakeskin.addDirective("block", {
+  sys: true,
+  block: true,
+  notEmpty: true,
+  group: ["template", "inherit", "define", "blockInherit"]
+}, function (command, commandLength) {
+  var name = this.getFnName(command), tplName = this.tplName;
+
+  if (!name) {
+    return this.error("invalid \"" + this.name + "\" name");
+  }
+
+  var parts = name.split("->");
+
+  if (parts[1]) {
+    name = parts[1].trim();
+
+    if (!tplName) {
+      if (this.structure.parent) {
+        this.error("directive \"outer block\" can be used only within the global space");
+        return;
+      }
+
+      try {
+        tplName = this.tplName = this.prepareNameDecl(parts[0]);
+      } catch (err) {
+        return this.error(err.message);
+      }
+
+      if (tplName in extMap) {
+        delete extMap[tplName];
+        clearScopeCache(tplName);
+      }
+
+      var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
+        text: ""
+      };
+
+      desc.startLine = this.info["line"];
+      desc.i = this.i + 1;
+
+      this.outerLink = name;
+      this.protoStart = true;
+    }
+  } else if (!this.outerLink && !this.tplName) {
+    return this.error("directive \"" + this.name + "\" can be used only within a " + groupsList["template"].join(", "));
+  }
 
-		try {
-			bem[parts[1]] = this.evalStr((("{" + (this.prepareOutput(parts[2], true, null, null, false))) + "}"));
+  if (!name || !tplName || callBlockNameRgxp.test(name)) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
+
+  var scope = scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {};
+
+  var parentScope, parentTplName = extMap[tplName];
+
+  if (parentTplName) {
+    parentScope = scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
+  }
+
+  var current = scope[name];
+  if (!scope[name]) {
+    current = scope[name] = {
+      id: this.module.id,
+      children: {}
+    };
+  }
 
-		} catch (ignore) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-	}
-);
+  if (!this.outerLink && !current.root) {
+    var parent = parentScope && parentScope[name];
 
-Snakeskin.addDirective(
-	'bem',
+    current.parent = parent;
+    current.overridden = Boolean(parentTplName && this.parentTplName);
+    current.root = parent ? parent.root : scope[name];
 
-	{
-		block: true,
-		placement: 'template',
-		notEmpty: true,
-		text: true
-	},
-
-	function (command) {
-		this.startDir(null, {
-			tag: /^\(/.test(command) ?
-				/\((.*?)\)/.exec(command)[1] : null
-		});
+    if (parent) {
+      parent.children[tplName] = scope[name];
+    }
+  }
 
-		var params = this.structure.params;
-
-		command = params.tag ?
-			command.replace(/^[^)]+\)(.*)/, '$1') : command;
-
-		var parts = command.trim().split(','),
-			bemName = parts[0];
+  var start = this.i - this.startTemplateI;
+  this.startDir(null, {
+    name: name,
+    from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1
+  });
+
+  var struct = this.structure, dir = String(this.name);
 
-		parts[0] += '\'';
-		command = parts.join(',');
+  var params, output;
 
-		params.original = bem[bemName] &&
-			bem[bemName].tag;
-
-		if (this.isReady()) {
-			var str,
-				tag = params.tag || params.original || 'div',
-				desc = (("{name: \\'" + (this.replaceTplVars(command.replace(/\s+/g, ' ')))) + "}");
-
-			if (this.renderMode === 'dom') {
-				str = /* cbws */((" __NODE__ = document.createElement('" + tag) + ("'); __NODE__.className = 'i-block'; __NODE__.setAttribute('data-params', '" + desc) + ("'); " + (this.returnPushNodeDecl())) + " ");
-
-			} else {
-				str = this.wrap(/* cbws */((" '<" + tag) + (" class=\"i-block\" data-params=\"" + desc) + "\" >' "));
-			}
-
-			this.append(str);
-		}
-	},
-
-	function () {
-		var params = this.structure.params,
-			str;
-
-		if (this.renderMode == 'dom') {
-			str = '__RESULT__.pop();';
-
-		} else {
-			str = this.wrap((("'</" + (params.tag || params.original || 'div')) + ">'"));
-		}
-
-		this.append(str);
-	}
-);
-
-
-var callBlockNameRgxp = new RegExp((("^[^" + symbols) + ("_$][^" + w) + ("$]*|[^" + w) + "$]+"), 'i');
-
-Snakeskin.addDirective(
-	'block',
-
-	{
-		sys: true,
-		block: true,
-		notEmpty: true,
-		group: [
-			'template',
-			'inherit',
-			'define',
-			'blockInherit'
-		]
-	},
-
-	function (command, commandLength) {
-		var name = this.getFnName(command),
-			tplName = this.tplName;
-
-		if (!name) {
-			return this.error((("invalid \"" + (this.name)) + "\" name"));
-		}
-
-		var parts = name.split('->');
-
-		if (parts[1]) {
-			name = parts[1].trim();
-
-			if (!tplName) {
-				if (this.structure.parent) {
-					this.error(("directive \"outer block\" can be used only within the global space"));
-					return;
-				}
-
-				try {
-					tplName =
-						this.tplName = this.prepareNameDecl(parts[0]);
-
-				} catch (err) {
-					return this.error(err.message);
-				}
-
-				if (tplName in extMap) {
-					delete extMap[tplName];
-					clearScopeCache(tplName);
-				}
-
-				var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
-					text: ''
-				};
-
-				desc.startLine = this.info['line'];
-				desc.i = this.i + 1;
-
-				this.outerLink = name;
-				this.protoStart = true;
-			}
-
-		} else if (!this.outerLink && !this.tplName) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
-		}
-
-		if (!name || !tplName || callBlockNameRgxp.test(name)) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
-		var scope =
-			scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {};
-
-		var parentScope,
-			parentTplName = extMap[tplName];
-
-		if (parentTplName) {
-			parentScope =
-				scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
-		}
-
-		var current = scope[name];
-		if (!scope[name]) {
-			current =
-				scope[name] = {
-					id: this.module.id,
-					children: {}
-				};
-		}
-
-		if (!this.outerLink && !current.root) {
-			var parent = parentScope &&
-				parentScope[name];
-
-			current.parent = parent;
-			current.overridden = Boolean(parentTplName && this.parentTplName);
-			current.root = parent ?
-				parent.root : scope[name];
-
-			if (parent) {
-				parent.children[tplName] = scope[name];
-			}
-		}
-
-		var start = this.i - this.startTemplateI;
-		this.startDir(null, {
-			name: name,
-			from: this.outerLink ?
-				this.i - this.getDiff(commandLength) : start + 1
-		});
-
-		var struct = this.structure,
-			dir = String(this.name);
-
-		var params,
-			output;
-
-		if (name !== command) {
-			var ouptupCache = this.getBlockOutput(dir);
-
-			if (ouptupCache) {
-				output = command.split('=>')[1];
-				params = ouptupCache[name];
-
-				if (output != null) {
-					params =
-						ouptupCache[name] = output;
-				}
-			}
-		}
-
-		if (this.isAdvTest()) {
-			if (blockCache[tplName][name]) {
-				return this.error((("block \"" + name) + "\" is already defined"));
-			}
-
-			var args = this.prepareArgs(
-				command,
-				dir,
-				null,
-				this.parentTplName,
-				name
-			);
-
-			if (args.params && callBlockNameRgxp.test(name)) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-			}
-
-			this.structure.params.args = args.params;
-			blockCache[tplName][name] = {
-				from: start - this.getDiff(commandLength),
-				needPrfx: this.needPrfx,
-				args: args,
-				output: output
-			};
-
-			if (args.scope) {
-				this.scope.push(args.scope);
-				struct.params._scope = true;
-			}
-		}
-
-		if (this.isSimpleOutput()) {
-			var args$0 = blockCache[tplName][name].args;
-
-			if (args$0.params) {
-				var fnDecl = ("__BLOCKS__." + name);
-				struct.params.fn = fnDecl;
-
-				this.save(/* cbws */((" if (!" + fnDecl) + (") { " + fnDecl) + (" = function (" + (args$0.str)) + (") { var __RESULT__ = " + (this.declResult())) + (";  " + (this.declArguments())) + ("  function getTplResult(opt_clear) { var res = " + (this.returnResult())) + (";  if (opt_clear) { __RESULT__ = " + (this.declResult())) + ("; }  return res; }  function clearTplResult() { __RESULT__ = " + (this.declResult())) + ("; }  " + (args$0.defParams)) + " "));
-
-				if (params != null) {
-					var str = '',
-						vars = struct.vars;
-
-					struct.vars = struct.parent.vars;
-					params = this.getFnArgs((("(" + params) + ")"));
-
-					for (var i = -1; ++i < params.length;) {
-						str += (("" + (this.prepareOutput(params[i], true))) + ",")
-					}
-
-					struct.vars = vars;
-					str = str.slice(0, -1);
-					struct.params.params = str;
-				}
-			}
-		}
-	},
-
-	function (command, commandLength) {
-		var params = this.structure.params,
-			diff = this.getDiff(commandLength);
-
-		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-			e = RIGHT_BLOCK;
-
-		if (this.outerLink === params.name) {
-			var obj = this.preDefs[this.tplName],
-				nl = this.lineSeparator,
-				i = Number(obj.i);
-
-			obj.text += /* cbws */((" " + nl) + ("" + (this.source.substring(params.from, i))) + (" " + s) + ("__cutLine__" + e) + ("  " + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + (" " + (this.source.substring(i, this.i - diff))) + (" " + s) + ("__end__" + e) + ("  " + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + (" " + s) + ("__cutLine__" + e) + " ");
-
-			this.outerLink = null;
-			this.tplName = null;
-			this.protoStart = false;
-
-			return;
-		}
-
-		var block = blockCache[this.tplName][params.name];
-
-		if (this.isSimpleOutput() && params.fn) {
-			this.save(/* cbws */((" return " + (this.returnResult())) + ("; }; }  " + (params.params != null ? this.wrap((("" + (params.fn)) + ("(" + (params.params)) + ")")) : '')) + " "));
-		}
-
-		if (this.isAdvTest()) {
-			if (!block) {
-				return this.error('invalid "block" declaration');
-			}
-
-			var start = this.i - this.startTemplateI;
-			block.to = start + 1;
-			block.content = this.source
-				.substring(this.startTemplateI)
-				.substring(params.from, start - diff);
-		}
-	}
-);
-
-
-Snakeskin.addDirective(
-	'call',
-
-	{
-		placement: 'template',
-		notEmpty: true,
-		text: true,
-		replacers: {
-			'^=': function(cmd)  {return cmd.replace('^=', 'call ')}
-		}
-	},
-
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append(this.wrap(this.prepareOutput(command, true)));
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'callBlock',
-
-	{
-		placement: 'template',
-		notEmpty: true,
-		text: true,
-		replacers: {
-			'~=': function(cmd)  {return cmd.replace('~=', 'callBlock ')}
-		}
-	},
-
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			var name = this.getFnName(command),
-				str;
-
-			if (name === '&') {
-				var tmp = this.hasBlock('block', true);
-
-				if (tmp) {
-					str = tmp.params.fn + this.prepareOutput(command.replace(name, ''), true);
-
-				} else {
-					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-				}
-
-			} else {
-				str = this.prepareOutput(("__BLOCKS__." + command), true);
-			}
-
-			this.append(this.wrap(str));
-		}
-	}
-);
-
-
-(function()  {
-	var lib = {
-		'angularjs': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/angularjs/" + v) + "/angular.min.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/angularjs/" + v) + "/angular.min.js\"></script> ")}
-		},
-
-		'dojo': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/dojo/" + v) + "/dojo/dojo.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/dojo/" + v) + "/dojo/dojo.js\"></script> ")}
-		},
-
-		'extcore': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/ext-core/" + v) + "/ext-core.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/ext-core/" + v) + "/ext-core.min.js\"></script> ")}
-		},
-
-		'jquery': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/" + v) + "/jquery.min.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/jquery/" + v) + "/jquery.min.js\"></script> ")}
-		},
-
-		'jquerymobile': {
-			'google': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + ("/jquery.mobile.min.css\"" + e) + ("> <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquerymobile/" + v) + "/jquery.mobile.min.js\"></script> ")},
-
-'yandex': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v) + ("/jquery.mobile.min.css\"" + e) + ("> <script type=\"text/javascript\" src=\"http://yastatic.net/jquery/mobile/" + v) + "/jquery.mobile.min.js\"></script> ")}
-		},
-
-		'jqueryui': {
-			'google': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/" + v) + ("/themes/smoothness/jquery-ui.css\"" + e) + ("> <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/" + v) + "/jquery-ui.min.js\"></script> ")},
-
-'yandex': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v) + ("/themes/smoothness/jquery-ui.min.css\"" + e) + ("> <script type=\"text/javascript\" src=\"http://yastatic.net/jquery-ui/" + v) + "/jquery-ui.min.js\"></script> ")}
-		},
-
-		'mootools': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/mootools/" + v) + "/mootools-yui-compressed.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/mootools/" + v) + "/mootools.min.js\"></script> ")}
-		},
-
-		'prototype': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/prototype/" + v) + "/prototype.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/prototype/" + v) + "/prototype.min.js\"></script> ")}
-		},
-
-		'script.aculo.us': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/scriptaculous/" + v) + "/scriptaculous.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/scriptaculous/" + v) + "/min/scriptaculous.js\"></script> ")}
-		},
-
-		'swfobject': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/swfobject/" + v) + "/swfobject.js\"></script> ")},
-
-'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/swfobject/" + v) + "/swfobject.min.js\"></script> ")}
-		},
-
-		'three.js': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/threejs/" + v) + "/three.min.js\"></script> ")}
-		},
-
-		'webfontloader': {
-			'google': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/webfont/" + v) + "/webfont.js\"></script> ")}
-		},
-
-		'bootstrap': {
-			'yandex': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + ("> <script type=\"text/javascript\" src=\"http://yastatic.net/bootstrap/" + v) + "/js/bootstrap.min.js\"></script> ")},
-
-'maxcdn': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/bootstrap/" + v) + ("/css/bootstrap.min.css\"" + e) + ("> <script type=\"text/javascript\" src=\"http://maxcdn.bootstrapcdn.com/bootstrap/" + v) + "/js/bootstrap.min.js\"></script> ")}
-		},
-
-		'fontawesome': {
-			'maxcdn': function(v, e)  /* cbws */{return ((" <link type=\"text/css\" rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/font-awesome/" + v) + ("/css/font-awesome.min.css\"" + e) + "> ")}
-		},
-
-		'underscore.js': {
-			'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/underscore/" + v) + "/underscore-min.js\"></script> ")}
-		},
-
-		'lodash': {
-			'yandex': function(v)  /* cbws */{return ((" <script type=\"text/javascript\" src=\"http://yastatic.net/lodash/" + v) + "/lodash.min.js\"></script> ")}
-		}
-	};
-
-	function first(obj) {
-		for (var key in obj) {
-			if (obj.hasOwnProperty(key)) {
-				return obj[key];
-			}
-		}
-	}
-
-	Snakeskin.addDirective(
-		'cdn',
-
-		{
-			placement: 'template',
-			notEmpty: true,
-			text: true
-		},
-
-		function (command) {
-			var parts = splitBySpace(command),
-				cdn = parts.slice(1).join(' '),
-				val = parts[0].split('@');
-
-			if (!val[1]) {
-				return this.error(("missing version"));
-			}
-
-			cdn = cdn && cdn.toLowerCase();
-			val[0] = val[0].toLowerCase();
-
-			if (!lib[val[0]]) {
-				return this.error(("requested library is not found"));
-			}
-
-			this.append(
-				this.wrap(
-					/* cbws */(("'" + ((cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
-val[1],
-this.doctype === 'xml' ?
-'/' : ''
-))) + "'")
-				)
-			);
-		}
-	);
+  if (name !== command) {
+    var ouptupCache = this.getBlockOutput(dir);
+
+    if (ouptupCache) {
+      output = command.split("=>")[1];
+      params = ouptupCache[name];
+
+      if (output != null) {
+        params = ouptupCache[name] = output;
+      }
+    }
+  }
+
+  if (this.isAdvTest()) {
+    if (blockCache[tplName][name]) {
+      return this.error("block \"" + name + "\" is already defined");
+    }
+
+    var args = this.prepareArgs(command, dir, null, this.parentTplName, name);
+
+    if (args.params && callBlockNameRgxp.test(name)) {
+      return this.error("invalid \"" + this.name + "\" declaration");
+    }
+
+    this.structure.params.args = args.params;
+    blockCache[tplName][name] = {
+      from: start - this.getDiff(commandLength),
+      needPrfx: this.needPrfx,
+      args: args,
+      output: output
+    };
+
+    if (args.scope) {
+      this.scope.push(args.scope);
+      struct.params._scope = true;
+    }
+  }
+
+  if (this.isSimpleOutput()) {
+    var args = blockCache[tplName][name].args;
+
+    if (args.params) {
+      var fnDecl = "__BLOCKS__." + name;
+      struct.params.fn = fnDecl;
+
+      this.save( /* cbws */"if (!" + fnDecl + ") {" + fnDecl + " = function (" + args.str + ") {var __RESULT__ = " + this.declResult() + ";" + this.declArguments() + "function getTplResult(opt_clear) {var res = " + this.returnResult() + ";if (opt_clear) {__RESULT__ = " + this.declResult() + ";}return res;}function clearTplResult() {__RESULT__ = " + this.declResult() + ";}" + args.defParams + "");
+
+      if (params != null) {
+        var str = "", vars = struct.vars;
+
+        struct.vars = struct.parent.vars;
+        params = this.getFnArgs("(" + params + ")");
+
+        for (var i = -1; ++i < params.length;) {
+          str += "" + this.prepareOutput(params[i], true) + ",";
+        }
+
+        struct.vars = vars;
+        str = str.slice(0, -1);
+        struct.params.params = str;
+      }
+    }
+  }
+}, function (command, commandLength) {
+  var params = this.structure.params, diff = this.getDiff(commandLength);
+
+  var s = (this.needPrfx ? ADV_LEFT_BLOCK : "") + LEFT_BLOCK, e = RIGHT_BLOCK;
+
+  if (this.outerLink === params.name) {
+    var obj = this.preDefs[this.tplName], nl = this.lineSeparator, i = Number(obj.i);
+
+    obj.text += /* cbws */"" + nl + "" + this.source.substring(params.from, i) + "" + s + "__cutLine__" + e + "" + s + "__switchLine__ " + obj.startLine + "" + e + "" + this.source.substring(i, this.i - diff) + "" + s + "__end__" + e + "" + nl + "" + this.source.substring(this.i - diff, this.i + 1) + "" + s + "__cutLine__" + e + "";
+
+    this.outerLink = null;
+    this.tplName = null;
+    this.protoStart = false;
+
+    return;
+  }
+
+  var block = blockCache[this.tplName][params.name];
+
+  if (this.isSimpleOutput() && params.fn) {
+    this.save( /* cbws */"return " + this.returnResult() + ";};}" + (params.params != null ? this.wrap("" + params.fn + "(" + params.params + ")") : "") + "");
+  }
+
+  if (this.isAdvTest()) {
+    if (!block) {
+      return this.error("invalid \"block\" declaration");
+    }
+
+    var start = this.i - this.startTemplateI;
+    block.to = start + 1;
+    block.content = this.source.substring(this.startTemplateI).substring(params.from, start - diff);
+  }
+});
+
+
+Snakeskin.addDirective("call", {
+  placement: "template",
+  notEmpty: true,
+  text: true,
+  replacers: {
+    "^=": function (cmd) {
+      return cmd.replace("^=", "call ");
+    }
+  }
+}, function (command) {
+  this.startInlineDir();
+  if (this.isReady()) {
+    this.append(this.wrap(this.prepareOutput(command, true)));
+  }
+});
+
+Snakeskin.addDirective("callBlock", {
+  placement: "template",
+  notEmpty: true,
+  text: true,
+  replacers: {
+    "~=": function (cmd) {
+      return cmd.replace("~=", "callBlock ");
+    }
+  }
+}, function (command) {
+  this.startInlineDir();
+  if (this.isReady()) {
+    var name = this.getFnName(command), str = undefined;
+
+    if (name === "&") {
+      var tmp = this.hasBlock("block", true);
+
+      if (tmp) {
+        str = tmp.params.fn + this.prepareOutput(command.replace(name, ""), true);
+      } else {
+        return this.error("invalid \"" + this.name + "\" declaration");
+      }
+    } else {
+      str = this.prepareOutput("__BLOCKS__." + command, true);
+    }
+
+    this.append(this.wrap(str));
+  }
+});
+
+
+(function () {
+  var lib = {
+    "angularjs": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/angularjs/" + v + "/angular.min.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/angularjs/" + v + "/angular.min.js\"></script>"
+        );
+      }
+    },
+
+    "dojo": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/dojo/" + v + "/dojo/dojo.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/dojo/" + v + "/dojo/dojo.js\"></script>"
+        );
+      }
+    },
+
+    "extcore": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/ext-core/" + v + "/ext-core.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/ext-core/" + v + "/ext-core.min.js\"></script>"
+        );
+      }
+    },
+
+    "jquery": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/" + v + "/jquery.min.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/jquery/" + v + "/jquery.min.js\"></script>"
+        );
+      }
+    },
+
+    "jquerymobile": {
+      "google": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jquerymobile/" + v + "/jquery.mobile.min.css\"" + e + "><script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquerymobile/" + v + "/jquery.mobile.min.js\"></script>"
+        );
+      },
+
+      "yandex": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery/mobile/" + v + "/jquery.mobile.min.css\"" + e + "><script type=\"text/javascript\" src=\"http://yastatic.net/jquery/mobile/" + v + "/jquery.mobile.min.js\"></script>"
+        );
+      }
+    },
+
+    "jqueryui": {
+      "google": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/" + v + "/themes/smoothness/jquery-ui.css\"" + e + "><script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/" + v + "/jquery-ui.min.js\"></script>"
+        );
+      },
+
+      "yandex": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/jquery-ui/" + v + "/themes/smoothness/jquery-ui.min.css\"" + e + "><script type=\"text/javascript\" src=\"http://yastatic.net/jquery-ui/" + v + "/jquery-ui.min.js\"></script>"
+        );
+      }
+    },
+
+    "mootools": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/mootools/" + v + "/mootools-yui-compressed.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/mootools/" + v + "/mootools.min.js\"></script>"
+        );
+      }
+    },
+
+    "prototype": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/prototype/" + v + "/prototype.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/prototype/" + v + "/prototype.min.js\"></script>"
+        );
+      }
+    },
+
+    "script.aculo.us": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/scriptaculous/" + v + "/scriptaculous.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/scriptaculous/" + v + "/min/scriptaculous.js\"></script>"
+        );
+      }
+    },
+
+    "swfobject": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/swfobject/" + v + "/swfobject.js\"></script>"
+        );
+      },
+
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/swfobject/" + v + "/swfobject.min.js\"></script>"
+        );
+      }
+    },
+
+    "three.js": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/threejs/" + v + "/three.min.js\"></script>"
+        );
+      }
+    },
+
+    "webfontloader": {
+      "google": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/webfont/" + v + "/webfont.js\"></script>"
+        );
+      }
+    },
+
+    "bootstrap": {
+      "yandex": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://yastatic.net/bootstrap/" + v + "/css/bootstrap.min.css\"" + e + "><script type=\"text/javascript\" src=\"http://yastatic.net/bootstrap/" + v + "/js/bootstrap.min.js\"></script>"
+        );
+      },
+
+      "maxcdn": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/bootstrap/" + v + "/css/bootstrap.min.css\"" + e + "><script type=\"text/javascript\" src=\"http://maxcdn.bootstrapcdn.com/bootstrap/" + v + "/js/bootstrap.min.js\"></script>"
+        );
+      }
+    },
+
+    "fontawesome": {
+      "maxcdn": function (v, e) {
+        return ( /* cbws */"<link type=\"text/css\" rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/font-awesome/" + v + "/css/font-awesome.min.css\"" + e + ">"
+        );
+      }
+    },
+
+    "underscore.js": {
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/underscore/" + v + "/underscore-min.js\"></script>"
+        );
+      }
+    },
+
+    "lodash": {
+      "yandex": function (v) {
+        return ( /* cbws */"<script type=\"text/javascript\" src=\"http://yastatic.net/lodash/" + v + "/lodash.min.js\"></script>"
+        );
+      }
+    }
+  };
+
+  function first(obj) {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        return obj[key];
+      }
+    }
+  }
+
+  Snakeskin.addDirective("cdn", {
+    placement: "template",
+    notEmpty: true,
+    text: true
+  }, function (command) {
+    var parts = splitBySpace(command), cdn = parts.slice(1).join(" "), val = parts[0].split("@");
+
+    if (!val[1]) {
+      return this.error("missing version");
+    }
+
+    cdn = cdn && cdn.toLowerCase();
+    val[0] = val[0].toLowerCase();
+
+    if (!lib[val[0]]) {
+      return this.error("requested library is not found");
+    }
+
+    this.append(this.wrap(
+    /* cbws */"'" + (cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(val[1], this.doctype === "xml" ? "/" : "") + "'"));
+  });
 })();
 
 
@@ -13446,2086 +12790,1676 @@ this.doctype === 'xml' ?
  */
 DirObj.prototype.domComment = false;
 
-Snakeskin.addDirective(
-	'comment',
-
-	{
-		block: true,
-		selfInclude: false,
-		placement: 'template',
-		replacers: {
-			'@!': function(cmd)  {return cmd.replace('@!', 'comment ')},
-			'/@': function(cmd)  {return cmd.replace('\/@', 'end comment')}
-		}
-	},
-
-	function (command) {
-		this.startDir(null, {
-			conditional: Boolean(command)
-		});
-
-		var str;
-
-		if (this.renderMode === 'dom') {
-			this.domComment = true;
-			str = '__COMMENT_RESULT__ = \'\';';
-
-		} else {
-			str = this.wrap('\'<!--\'');
-		}
-
-		if (command) {
-			str += this.wrap((("'[if " + (this.replaceTplVars(command))) + "]>'"));
-		}
-
-		this.append(str);
-	},
-
-	function () {
-		var comment = this.structure.params.conditional ? ' <![endif]' : '',
-			str;
-
-		if (this.renderMode === 'dom') {
-			str = this.wrap((("'" + comment) + "'"));
-			this.domComment = false;
-			str += /* cbws */((" __NODE__ = document.createComment(__COMMENT_RESULT__); " + (this.returnPushNodeDecl(true))) + " __COMMENT_RESULT__ = \'\'; ");
-
-		} else {
-			str = this.wrap((("'" + comment) + "-->'"));
-		}
-
-		this.append(str);
-	}
-);
-
-
-(function()  {
-	/**
-	 * Преобразовать заданное значение в объект
-	 *
-	 * @param {?} val - объект, строка для парсинга или URL
-	 * @param {?string=} [opt_base] - базовый URL
-	 * @param {?function(string)=} [opt_onFileExists] - функция обратного вызова,
-	 *     если исходный объект - путь к существующему файлу
-	 *
-	 * @return {!Object}
-	 */
-	Snakeskin.toObj = function (val, opt_base, opt_onFileExists) {
-		if (typeof val !== 'string') {
-			return val;
-		}
-
-		var res;
-
-		if (IS_NODE) {
-			var path = require('path'),
-				fs = require('fs'),
-				old = val;
-
-			try {
-				if (opt_base) {
-					val = path.resolve(path.dirname(opt_base), val);
-				}
-
-				val = path.normalize(path.resolve(val));
-
-				if (fs.existsSync(val)) {
-					if (opt_onFileExists) {
-						opt_onFileExists(val);
-					}
-
-					var content = fs.readFileSync(val).toString();
-
-					try {
-						res = JSON.parse(content);
-
-					} catch (ignore) {
-						try {
-							res = new Function(("return " + content))();
-
-						} catch (ignore) {
-							delete require['cache'][require['resolve'](val)];
-							res = require(val);
-						}
-					}
-
-					return Object(res || {});
-
-				} else {
-					val = old;
-				}
-
-			} catch (ignore) {
-				val = old;
-			}
-		}
-
-		try {
-			res = JSON.parse(val);
-
-		} catch (ignore) {
-			try {
-				res = new Function(("return " + val))();
-
-			} catch (ignore) {
-				res = {};
-			}
-		}
-
-		return Object(res || {});
-	};
-
-	/**
-	 * Расширить объект a объектом b
-	 * (глубокое расширение)
-	 *
-	 * @param {!Object} a
-	 * @param {!Object} b
-	 * @return {!Object}
-	 */
-	function extend(a, b) {
-		forIn(b, function(el, key)  {
-			if (a[key] instanceof Object && el instanceof Object) {
-				extend(a[key], el);
-
-			} else {
-				a[key] = el;
-			}
-		});
-
-		return a;
-	}
-
-	/**
-	 * Вернуть объект, расширенный с помощью заданных объектов
-	 *
-	 * @param {!Object} base - базовый расширяющий объект
-	 * @param {Object=} [opt_adv] - дополнительный расширяющий объект
-	 * @param {Object=} [opt_initial] - объект инициализации
-	 * @return {!Object}
-	 */
-	function mix(base, opt_adv, opt_initial) {
-		var obj = opt_initial || {};
-
-		forIn(opt_adv, function(el, key)  {
-			obj[key] = el;
-		});
-
-		return extend(obj, base);
-	}
-
-	function setSSFlag(command) {var this$0 = this;
-		this.startInlineDir();
-
-		var file = this.info['file'],
-			init = false;
-
-		var root = this.params[0],
-			last = this.params[this.params.length - 1],
-			params = last;
-
-		var cache,
-			parentCache,
-			tplName = this.tplName;
-
-		if (tplName) {
-			cache =
-				outputCache[tplName]['flag'] = outputCache[tplName]['flag'] || {};
-
-			if (this.parentTplName) {
-				parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]['flag'];
-			}
-		}
-
-		if (last['@root'] || (file && last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
-			init = true;
-			params = {
-				'@file': file,
-				'@tplName': tplName
-			};
-
-			var inherit = function(obj)  {
-				forIn(obj, function(el, key)  {
-					if (key.charAt(0) !== '@' && key in root) {
-						params[key] =
-							this$0[key] = el;
-
-						if (cache) {
-							cache[key] = el;
-						}
-					}
-				});
-			};
-
-			inherit(last);
-			if (parentCache) {
-				inherit(parentCache);
-			}
-
-			this.params.push(params);
-		}
-
-		var flag,
-			value;
-
-		if (Array.isArray(command)) {
-			flag = command[0];
-			value = command[1];
-
-		} else {
-			var parts = command.split(' ');
-			flag = parts[0];
-
-			try {
-				value = this.returnEvalVal(parts.slice(1).join(' '));
-
-			} catch (err) {
-				return this.error(err.message);
-			}
-		}
-
-		var includeMap = {
-			'language': true,
-			'macros': true
-		};
-
-		if (flag === 'renderAs' && tplName) {
-			return this.error('flag "renderAs" can\'t be used in the template declaration');
-		}
-
-		if (flag in root) {
-			if (includeMap[flag]) {
-				value = mix(
-					Snakeskin.toObj(value, file, function(src)  {
-						var root = this$0.module.root || this$0.module;
-						root.key.push([src, require('fs').statSync(src).mtime.valueOf()]);
-						this$0.files[src] = true;
-					}),
-
-					init ?
-						params[flag] : null,
-
-					init ?
-						null : params[flag]
-				);
-
-				if (flag === 'macros') {
-					try {
-						value = this.setMacros(value, null, init);
-
-					} catch (err) {
-						return this.error(err.message);
-					}
-				}
-			}
-
-			params[flag] =
-				this[flag] = value;
-
-			if (cache) {
-				cache[flag] = value;
-			}
-
-		} else if (flag.charAt(0) !== '@') {
-			return this.error((("unknown compiler flag \"" + flag) + "\""));
-		}
-	}
-
-	Snakeskin.addDirective(
-		'setSSFlag',
-
-		{
-			placement: 'global',
-			group: 'define',
-			notEmpty: true,
-			replacers: {
-				'@=': function(cmd)  {return cmd.replace('@=', 'setSSFlag ')}
-			}
-		},
-
-		setSSFlag
-	);
-
-	Snakeskin.addDirective(
-		'__setSSFlag__',
-
-		{
-			group: 'define',
-			notEmpty: true,
-			replacers: {
-				'@=': function(cmd)  {return cmd.replace('@=', 'setSSFlag ')}
-			}
-		},
-
-		setSSFlag
-	);
+Snakeskin.addDirective("comment", {
+  block: true,
+  selfInclude: false,
+  placement: "template",
+  replacers: {
+    "@!": function (cmd) {
+      return cmd.replace("@!", "comment ");
+    },
+    "/@": function (cmd) {
+      return cmd.replace("/@", "end comment");
+    }
+  }
+}, function (command) {
+  this.startDir(null, {
+    conditional: Boolean(command)
+  });
+
+  var str;
+
+  if (this.renderMode === "dom") {
+    this.domComment = true;
+    str = "__COMMENT_RESULT__ = '';";
+  } else {
+    str = this.wrap("'<!--'");
+  }
+
+  if (command) {
+    str += this.wrap("'[if " + this.replaceTplVars(command) + "]>'");
+  }
+
+  this.append(str);
+}, function () {
+  var comment = this.structure.params.conditional ? " <![endif]" : "", str;
+
+  if (this.renderMode === "dom") {
+    str = this.wrap("'" + comment + "'");
+    this.domComment = false;
+    str += /* cbws */"__NODE__ = document.createComment(__COMMENT_RESULT__);" + this.returnPushNodeDecl(true) + "__COMMENT_RESULT__ = '';";
+  } else {
+    str = this.wrap("'" + comment + "-->'");
+  }
+
+  this.append(str);
+});
+
+
+(function () {
+  /**
+   * Преобразовать заданное значение в объект
+   *
+   * @param {?} val - объект, строка для парсинга или URL
+   * @param {?string=} [opt_base] - базовый URL
+   * @param {?function(string)=} [opt_onFileExists] - функция обратного вызова,
+   *     если исходный объект - путь к существующему файлу
+   *
+   * @return {!Object}
+   */
+  Snakeskin.toObj = function (val, opt_base, opt_onFileExists) {
+    if (typeof val !== "string") {
+      return val;
+    }
+
+    var res;
+
+    if (IS_NODE) {
+      var path = require("path"), fs = require("fs"), old = val;
+
+      try {
+        if (opt_base) {
+          val = path.resolve(path.dirname(opt_base), val);
+        }
+
+        val = path.normalize(path.resolve(val));
+
+        if (fs.existsSync(val)) {
+          if (opt_onFileExists) {
+            opt_onFileExists(val);
+          }
+
+          var content = fs.readFileSync(val).toString();
+
+          try {
+            res = JSON.parse(content);
+          } catch (ignore) {
+            try {
+              res = new Function("return " + content)();
+            } catch (ignore) {
+              delete require["cache"][require["resolve"](val)];
+              res = require(val);
+            }
+          }
+
+          return Object(res || {});
+        } else {
+          val = old;
+        }
+      } catch (ignore) {
+        val = old;
+      }
+    }
+
+    try {
+      res = JSON.parse(val);
+    } catch (ignore) {
+      try {
+        res = new Function("return " + val)();
+      } catch (ignore) {
+        res = {};
+      }
+    }
+
+    return Object(res || {});
+  };
+
+  /**
+   * Расширить объект a объектом b
+   * (глубокое расширение)
+   *
+   * @param {!Object} a
+   * @param {!Object} b
+   * @return {!Object}
+   */
+  function extend(a, b) {
+    forIn(b, function (el, key) {
+      if (a[key] instanceof Object && el instanceof Object) {
+        extend(a[key], el);
+      } else {
+        a[key] = el;
+      }
+    });
+
+    return a;
+  }
+
+  /**
+   * Вернуть объект, расширенный с помощью заданных объектов
+   *
+   * @param {!Object} base - базовый расширяющий объект
+   * @param {Object=} [opt_adv] - дополнительный расширяющий объект
+   * @param {Object=} [opt_initial] - объект инициализации
+   * @return {!Object}
+   */
+  function mix(base, opt_adv, opt_initial) {
+    var obj = opt_initial || {};
+
+    forIn(opt_adv, function (el, key) {
+      obj[key] = el;
+    });
+
+    return extend(obj, base);
+  }
+
+  function setSSFlag(command) {
+    var _this9 = this;
+    this.startInlineDir();
+
+    var file = this.info["file"], init = false;
+
+    var root = this.params[0], last = this.params[this.params.length - 1], params = last;
+
+    var cache, parentCache, tplName = this.tplName;
+
+    if (tplName) {
+      cache = outputCache[tplName]["flag"] = outputCache[tplName]["flag"] || {};
+
+      if (this.parentTplName) {
+        parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]["flag"];
+      }
+    }
+
+    if (last["@root"] || file && last["@file"] !== file || tplName && last["@tplName"] !== tplName) {
+      (function () {
+        init = true;
+        params = {
+          "@file": file,
+          "@tplName": tplName
+        };
+
+        var inherit = function (obj) {
+          forIn(obj, function (el, key) {
+            if (key.charAt(0) !== "@" && key in root) {
+              params[key] = _this9[key] = el;
+
+              if (cache) {
+                cache[key] = el;
+              }
+            }
+          });
+        };
+
+        inherit(last);
+        if (parentCache) {
+          inherit(parentCache);
+        }
+
+        _this9.params.push(params);
+      })();
+    }
+
+    var flag, value;
+
+    if (Array.isArray(command)) {
+      flag = command[0];
+      value = command[1];
+    } else {
+      var parts = command.split(" ");
+      flag = parts[0];
+
+      try {
+        value = this.returnEvalVal(parts.slice(1).join(" "));
+      } catch (err) {
+        return this.error(err.message);
+      }
+    }
+
+    var includeMap = {
+      "language": true,
+      "macros": true
+    };
+
+    if (flag === "renderAs" && tplName) {
+      return this.error("flag \"renderAs\" can't be used in the template declaration");
+    }
+
+    if (flag in root) {
+      if (includeMap[flag]) {
+        value = mix(Snakeskin.toObj(value, file, function (src) {
+          var root = _this9.module.root || _this9.module;
+          root.key.push([src, require("fs").statSync(src).mtime.valueOf()]);
+          _this9.files[src] = true;
+        }), init ? params[flag] : null, init ? null : params[flag]);
+
+        if (flag === "macros") {
+          try {
+            value = this.setMacros(value, null, init);
+          } catch (err) {
+            return this.error(err.message);
+          }
+        }
+      }
+
+      params[flag] = this[flag] = value;
+
+      if (cache) {
+        cache[flag] = value;
+      }
+    } else if (flag.charAt(0) !== "@") {
+      return this.error("unknown compiler flag \"" + flag + "\"");
+    }
+  }
+
+  Snakeskin.addDirective("setSSFlag", {
+    placement: "global",
+    group: "define",
+    notEmpty: true,
+    replacers: {
+      "@=": function (cmd) {
+        return cmd.replace("@=", "setSSFlag ");
+      }
+    }
+  }, setSSFlag);
+
+  Snakeskin.addDirective("__setSSFlag__", {
+    group: "define",
+    notEmpty: true,
+    replacers: {
+      "@=": function (cmd) {
+        return cmd.replace("@=", "setSSFlag ");
+      }
+    }
+  }, setSSFlag);
 })();
 
 
-(function()  {
-	var constNameRgxp = /\[(['"`])(.*?)\1]/g,
-		propAssignRgxp = /[.\[]/;
+(function () {
+  var constNameRgxp = /\[(['"`])(.*?)\1]/g, propAssignRgxp = /[.\[]/;
 
-	Snakeskin.addDirective(
-		'const',
+  Snakeskin.addDirective("const", {
+    group: ["inherit", "inlineInherit"]
+  }, function (command, commandLength, type) {
+    var output = false;
 
-		{
-			group: [
-				'inherit',
-				'inlineInherit'
-			]
-		},
+    if (command.slice(-1) === "?") {
+      output = true;
+      command = command.slice(0, -1);
+    }
 
-		function (command, commandLength, type) {
-			var output = false;
+    var tplName = this.tplName, source = "^[$" + symbols + "_" + (!this.scope.length ? L_MOD : "") + "][$" + w + "[\\].\\s]*=[^=]";
 
-			if (command.slice(-1) === '?') {
-				output = true;
-				command = command.slice(0, -1);
-			}
+    var rgxp = rgxpCache[source] || new RegExp(source, "i");
+    rgxpCache[source] = rgxp;
 
-			var tplName = this.tplName,
-				source = (("^[$" + symbols) + ("_" + (!this.scope.length ? L_MOD : '')) + ("][$" + w) + "[\\].\\s]*=[^=]");
+    if (type === "global" || (!tplName || rgxp.test(command)) && type !== "output") {
+      if (tplName && type !== "global") {
+        var parts = command.split("="), prop = parts[0] && parts[0].trim();
 
-			var rgxp = rgxpCache[source] || new RegExp(source, 'i');
-			rgxpCache[source] = rgxp;
+        if (!parts[1] || !parts[1].trim()) {
+          return this.error("invalid \"constant\" declaration");
+        }
 
-			if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
-				if (tplName && type !== 'global') {
-					var parts = command.split('='),
-						prop = parts[0] && parts[0].trim();
+        var name = this.pasteDangerBlocks(prop);
 
-					if (!parts[1] || !parts[1].trim()) {
-						return this.error(("invalid \"constant\" declaration"));
-					}
+        if (name.charAt(0) === L_MOD) {
+          return this.error("can't declare constant \"" + name.substring(1) + "\" with the context modifier (" + L_MOD + ")");
+        }
 
-					var name = this.pasteDangerBlocks(prop);
+        name = name.replace(constNameRgxp, ".$2");
+        this.startInlineDir("const", {
+          name: name
+        });
 
-					if (name.charAt(0) === L_MOD) {
-						return this.error((("can\'t declare constant \"" + (name.substring(1))) + ("\" with the context modifier (" + L_MOD) + ")"));
-					}
+        if (this.isReady()) {
+          if (!propAssignRgxp.test(prop)) {
+            this.consts.push("var " + prop + ";");
+          }
 
-					name = name.replace(constNameRgxp, '.$2');
-					this.startInlineDir('const', {
-						name: name
-					});
+          if (output) {
+            this.text = true;
+            this.append(this.wrap("" + prop + " = " + this.prepareOutput(parts.slice(1).join("=")) + ";"));
+          } else {
+            this.append("" + prop + " = " + this.prepareOutput(parts.slice(1).join("="), true) + ";");
+          }
+        }
 
-					if (this.isReady()) {
-						if (!propAssignRgxp.test(prop)) {
-							this.consts.push((("var " + prop) + ";"));
-						}
+        if (this.isAdvTest()) {
+          if (constCache[tplName][name]) {
+            return this.error("constant \"" + name + "\" is already defined");
+          }
 
-						if (output) {
-							this.text = true;
-							this.append(this.wrap((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('=')))) + ";")));
+          if (this.varCache[tplName][name]) {
+            return this.error("constant \"" + name + "\" is already defined as variable");
+          }
 
-						} else {
-							this.append((("" + prop) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + ";"));
-						}
-					}
+          if (sysConst[name]) {
+            return this.error("can't declare constant \"" + name + "\", try another name");
+          }
 
-					if (this.isAdvTest()) {
-						if (constCache[tplName][name]) {
-							return this.error((("constant \"" + name) + "\" is already defined"));
-						}
+          var start = this.i - this.startTemplateI;
+          var parent = undefined, parentTpl = this.parentTplName;
 
-						if (this.varCache[tplName][name]) {
-							return this.error((("constant \"" + name) + "\" is already defined as variable"));
-						}
+          if (parentTpl) {
+            parent = constCache[parentTpl][name];
+          }
 
-						if (sysConst[name]) {
-							return this.error((("can't declare constant \"" + name) + "\", try another name"));
-						}
+          var insideCallBlock = this.hasParentBlock({
+            "block": true,
+            "proto": true
+          }, true);
 
-						var start = this.i - this.startTemplateI;
-						var parent,
-							parentTpl = this.parentTplName;
+          if (insideCallBlock && insideCallBlock.name === "block" && !insideCallBlock.params.args) {
+            insideCallBlock = false;
+          }
 
-						if (parentTpl) {
-							parent = constCache[parentTpl][name];
-						}
+          constCache[tplName][name] = {
+            from: start - commandLength,
+            to: start,
+            block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
+            needPrfx: this.needPrfx,
+            output: output ? "?" : null
+          };
 
-						var insideCallBlock = this.hasParentBlock({
-							'block': true,
-							'proto': true
-						}, true);
+          if (!insideCallBlock) {
+            fromConstCache[tplName] = start + 1;
+          }
+        }
+      } else {
+        this.startInlineDir("global");
+        var desc = isAssign(command, true);
 
-						if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
-							insideCallBlock = false;
-						}
+        if (!desc) {
+          return this.error("invalid \"" + this.name + "\" declaration");
+        }
 
-						constCache[tplName][name] = {
-							from: start - commandLength,
-							to: start,
-							block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
-							needPrfx: this.needPrfx,
-							output: output ?
-								'?' : null
-						};
+        var mod = G_MOD + G_MOD;
 
-						if (!insideCallBlock) {
-							fromConstCache[tplName] = start + 1;
-						}
-					}
+        if (command.charAt(0) !== G_MOD) {
+          command = mod + command;
+        } else {
+          command = command.replace(scopeModRgxp, mod);
+        }
 
-				} else {
-					this.startInlineDir('global');
-					var desc = isAssign(command, true);
+        if (output && tplName) {
+          this.text = true;
+          this.append(this.wrap("" + this.prepareOutput(desc.key, true) + " = " + this.prepareOutput(desc.value) + ";"));
+        } else {
+          this.save("" + this.prepareOutput(command, true) + ";");
+        }
+      }
+    } else {
+      this.startInlineDir("output");
+      this.text = true;
 
-					if (!desc) {
-						return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-					}
+      if (!tplName) {
+        return this.error("Directive \"" + this.name + "\" can be used only within a " + groupsList["template"].join(", "));
+      }
 
-					var mod = G_MOD + G_MOD;
+      if (this.isReady()) {
+        var desc = isAssign(command);
 
-					if (command.charAt(0) !== G_MOD) {
-						command = mod + command;
+        if (desc) {
+          if (output) {
+            this.append(this.wrap("" + this.prepareOutput(desc.key, true) + " = " + this.prepareOutput(desc.value) + ";"));
+          } else {
+            this.text = false;
+            this.append("" + this.prepareOutput(command, true) + ";");
+          }
 
-					} else {
-						command = command
-							.replace(scopeModRgxp, mod);
-					}
+          return;
+        }
 
-					if (output && tplName) {
-						this.text = true;
-						this.append(this.wrap((("" + (this.prepareOutput(desc.key, true))) + (" = " + (this.prepareOutput(desc.value))) + ";")));
+        this.append(this.wrap(this.prepareOutput(command)));
+      }
+    }
+  });
 
-					} else {
-						this.save((("" + (this.prepareOutput(command, true))) + ";"));
-					}
-				}
+  Snakeskin.addDirective("output", {
+    placement: "template",
+    notEmpty: true,
+    text: true
+  }, function () {
+    Snakeskin.Directions["const"].apply(this, arguments);
+  });
 
-			} else {
-				this.startInlineDir('output');
-				this.text = true;
+  Snakeskin.addDirective("global", {
+    notEmpty: true
+  }, function () {
+    Snakeskin.Directions["const"].apply(this, arguments);
+  });
 
-				if (!tplName) {
-					return this.error((("Directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
-				}
+  /**
+   * Вернуть объект-описание выражения,
+   * если в строке идёт присвоение значения переменной или свойству,
+   * или false
+   *
+   * @param {string} str - исходная строка
+   * @param {?boolean=} opt_global - если true, то идёт проверка суперглобальной переменной
+   * @return {({key: string, value: string}|boolean)}
+   */
+  function isAssign(str, opt_global) {
+    var source = "^[" + G_MOD + "" + L_MOD + "$" + symbols + "_" + (opt_global ? "[" : "") + "]", key = "" + source + "[i";
 
-				if (this.isReady()) {
-					var desc$0 = isAssign(command);
+    var rgxp = rgxpCache[key] || new RegExp(source, "i");
+    rgxpCache[key] = rgxp;
 
-					if (desc$0) {
-						if (output) {
-							this.append(this.wrap((("" + (this.prepareOutput(desc$0.key, true))) + (" = " + (this.prepareOutput(desc$0.value))) + ";")));
+    if (!rgxp.test(str)) {
+      return false;
+    }
 
-						} else {
-							this.text = false;
-							this.append((("" + (this.prepareOutput(command, true))) + ";"));
-						}
+    var prop = "";
+    var count = 0, eq = false;
 
-						return;
-					}
+    var advEqMap = {
+      "+": true,
+      "-": true,
+      "*": true,
+      "/": true,
+      "^": true,
+      "~": true,
+      "|": true,
+      "&": true
+    };
 
-					this.append(this.wrap(this.prepareOutput(command)));
-				}
-			}
-		}
-	);
+    var bAdvMap = {
+      "<": true,
+      ">": true
+    };
 
-	Snakeskin.addDirective(
-		'output',
+    for (var i = -1; ++i < str.length;) {
+      var el = str.charAt(i);
+      prop += el;
 
-		{
-			placement: 'template',
-			notEmpty: true,
-			text: true
-		},
+      if (bMap[el]) {
+        count++;
+        continue;
+      } else if (closeBMap[el]) {
+        count--;
+        continue;
+      }
 
-		function () {
-			Snakeskin.Directions['const'].apply(this, arguments);
-		}
-	);
+      var prev = str.charAt(i - 1), next = str.charAt(i + 1);
 
-	Snakeskin.addDirective(
-		'global',
+      if (!eq && !count && (el === "=" && next !== "=" && prev !== "=" && !advEqMap[prev] && !bAdvMap[prev] || advEqMap[el] && next === "=" || bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === "=")) {
+        var diff = 1;
 
-		{
-			notEmpty: true
-		},
+        if (advEqMap[el]) {
+          diff = 2;
+        } else if (bAdvMap[el]) {
+          diff = 3;
+        }
 
-		function () {
-			Snakeskin.Directions['const'].apply(this, arguments);
-		}
-	);
+        return {
+          key: prop.slice(0, -1),
+          value: str.substring(i + diff)
+        };
+      }
 
-	/**
-	 * Вернуть объект-описание выражения,
-	 * если в строке идёт присвоение значения переменной или свойству,
-	 * или false
-	 *
-	 * @param {string} str - исходная строка
-	 * @param {?boolean=} opt_global - если true, то идёт проверка суперглобальной переменной
-	 * @return {({key: string, value: string}|boolean)}
-	 */
-	function isAssign(str, opt_global) {
-		var source = (("^[" + G_MOD) + ("" + L_MOD) + ("$" + symbols) + ("_" + (opt_global ? '[' : '')) + "]"),
-			key = (("" + source) + "[i");
+      eq = el === "=";
+    }
 
-		var rgxp = rgxpCache[key] || new RegExp(source, 'i');
-		rgxpCache[key] = rgxp;
-
-		if (!rgxp.test(str)) {
-			return false;
-		}
-
-		var prop = '';
-		var count = 0,
-			eq = false;
-
-		var advEqMap = {
-			'+': true,
-			'-': true,
-			'*': true,
-			'/': true,
-			'^': true,
-			'~': true,
-			'|': true,
-			'&': true
-		};
-
-		var bAdvMap = {
-			'<': true,
-			'>': true
-		};
-
-		for (var i = -1; ++i < str.length;) {
-			var el = str.charAt(i);
-			prop += el;
-
-			if (bMap[el]) {
-				count++;
-				continue;
-
-			} else if (closeBMap[el]) {
-				count--;
-				continue;
-			}
-
-			var prev = str.charAt(i - 1),
-				next = str.charAt(i + 1);
-
-			if (!eq && !count &&
-				(
-					el === '=' && next !== '=' && prev !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
-					advEqMap[el] && next === '=' ||
-					bAdvMap[el] && bAdvMap[next] && str.charAt(i + 2) === '='
-				)
-			) {
-
-				var diff = 1;
-
-				if (advEqMap[el]) {
-					diff = 2;
-
-				} else if (bAdvMap[el]) {
-					diff = 3;
-				}
-
-				return {
-					key: prop.slice(0, -1),
-					value: str.substring(i + diff)
-				};
-			}
-
-			eq = el === '=';
-		}
-
-		return false;
-	}
+    return false;
+  }
 })();
 
 
-Snakeskin.addDirective(
-	'break',
-
-	{
-
-	},
-
-	function (command) {
-		var combo = this.getGroup('cycle', 'async');
-		combo['proto'] = true;
-
-		var cycles = this.getGroup('cycle'),
-			async = this.getGroup('async');
-
-		var inside = this.has(combo),
-			insideCallback = this.has(this.getGroup('callback')),
-			insideProto = inside === 'proto' || this.proto;
-
-		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a cycles, \"proto\" or an async series"));
-		}
-
-		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
-		if (this.isReady()) {
-			if (command === 'proto') {
-				if (!insideProto) {
-					return this.error('proto is not defined');
-				}
-
-				if (insideCallback) {
-					return this.error('can\'t break proto inside a callback');
-				}
-
-				this.append(this.prepareOutput('break __I_PROTO__;', true));
-				return;
-			}
-
-			if (cycles[inside]) {
-				if (inside === insideCallback) {
-					this.append('return false;');
-
-				} else {
-					this.append('break;');
-				}
-
-			} else if (async[inside]) {
-				var val = command ? this.prepareOutput(command, true) : 'false';
-
-				if (inside === 'waterfall') {
-					this.append((("return arguments[arguments.length - 1](" + val) + ");"));
-
-				} else {
-					this.append(/* cbws */((" if (typeof arguments[0] === 'function') { return arguments[0](" + val) + "); }  return false; "));
-				}
-
-			} else {
-				this.append(this.prepareOutput('break __I_PROTO__;', true));
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'continue',
-
-	{
-
-	},
-
-	function (command) {
-		var combo = this.getGroup('cycle', 'async');
-		combo['proto'] = true;
-
-		var cycles = this.getGroup('cycle'),
-			async = this.getGroup('async');
-
-		var inside = this.has(combo),
-			insideCallback = this.has(this.getGroup('callback')),
-			insideProto = inside === 'proto' || this.proto;
-
-		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a cycles, \"proto\" or an async series"));
-		}
-
-		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
-		if (this.isReady()) {
-			if (command === 'proto') {
-				if (!insideProto) {
-					return this.error(("proto is not defined"));
-				}
-
-				if (insideCallback) {
-					return this.error('can\'t continue proto inside a callback');
-				}
-
-				this.append(this.prepareOutput('continue __I_PROTO__;', true));
-				return;
-			}
-
-			if (cycles[inside]) {
-				if (inside === insideCallback) {
-					this.append('return;');
-
-				} else {
-					this.append('continue;');
-				}
-
-			} else if (async[inside]) {
-				var val = command ? ("null," + (this.prepareOutput(command, true))) : '';
-
-				if (inside === 'waterfall') {
-					this.append((("return arguments[arguments.length - 1](" + val) + ");"));
-
-				} else {
-					this.append(/* cbws */((" if (typeof arguments[0] === 'function') { return arguments[0](" + val) + "); }  return; "));
-				}
-
-			} else {
-				this.append(this.prepareOutput('continue __I_PROTO__;', true));
-			}
-		}
-	}
-);
-
-
-(function()  {
-	var varDeclRgxp = /\bvar\b/,
-		splitDeclRgxp = /;/,
-		forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
-
-	Snakeskin.addDirective(
-		'for',
-
-		{
-			block: true,
-			notEmpty: true,
-			group: 'cycle'
-		},
-
-		function (command) {
-			this.startDir();
-
-			if (splitDeclRgxp.test(command)) {
-				var parts = command.split(';');
-
-				if (parts.length !== 3) {
-					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-				}
-
-				if (this.isReady()) {
-					var decl = varDeclRgxp.test(parts[0]) ?
-						this.multiDeclVar(parts[0].replace(varDeclRgxp, '')) : this.prepareOutput(parts[0], true);
-
-					parts[1] = parts[1] && (("(" + (parts[1])) + ")");
-					parts[2] = parts[2] && (("(" + (parts[2])) + ")");
-
-					this.append((("for (" + (decl + this.prepareOutput(parts.slice(1).join(';'), true))) + ") {"));
-				}
-
-			} else {
-				var parts$0 = forRgxp.exec(command);
-
-				if (!parts$0) {
-					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-				}
-
-				if (this.isReady()) {
-					var decl$0 = parts$0[1] ?
-						this.multiDeclVar(parts$0[2], false, '') : this.prepareOutput(parts$0[2], true);
-
-					this.append((("for (" + decl$0) + (" " + (parts$0[3])) + (" " + (this.prepareOutput(parts$0[4], true))) + ") {"));
-				}
-			}
-		},
-
-		function () {
-			this.append('}');
-		}
-	);
-
-	Snakeskin.addDirective(
-		'while',
-
-		{
-			block: true,
-			notEmpty: true,
-			group: 'cycle',
-			end: 'do'
-		},
-
-		function (command) {
-			if (this.structure.name == 'do') {
-				this.structure.params.chain = true;
-
-				if (this.isReady()) {
-					this.append((("} while (" + (this.prepareOutput(command, true))) + ");"));
-				}
-
-				Snakeskin.Directions['end'].call(this);
-
-			} else {
-				this.startDir();
-				if (this.isReady()) {
-					this.append((("while (" + (this.prepareOutput(command, true))) + ") {"));
-				}
-			}
-		},
-
-		function () {
-			this.append('}');
-		}
-	);
-
-	Snakeskin.addDirective(
-		'do',
-
-		{
-			block: true,
-			group: 'cycle',
-			after: {
-				'while': true,
-				'end': true
-			}
-		},
-
-		function () {
-			this.startDir();
-			this.append('do {');
-		},
-
-		function () {
-			if (!this.structure.params.chain) {
-				this.append('} while (true);');
-			}
-		}
-	);
-
-	Snakeskin.addDirective(
-		'repeat',
-
-		{
-			block: true,
-			group: 'cycle',
-			after: {
-				'until': true,
-				'end': true
-			}
-		},
-
-		function () {
-			this.startDir();
-			this.append('do {');
-		},
-
-		function () {
-			if (!this.structure.params.chain) {
-				this.append('} while (true);');
-			}
-		}
-	);
-
-	Snakeskin.addDirective(
-		'until',
-
-		{
-			placement: 'template',
-			notEmpty: true,
-			end: 'repeat'
-		},
-
-		function (command) {
-			if (this.structure.name !== 'repeat') {
-				return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"repeat\""));
-			}
-
-			this.structure.params.chain = true;
-
-			if (this.isReady()) {
-				this.append((("} while (" + (this.prepareOutput(command, true))) + ");"));
-			}
-
-			Snakeskin.Directions['end'].call(this);
-		}
-	);
+Snakeskin.addDirective("break", {}, function (command) {
+  var combo = this.getGroup("cycle", "async");
+  combo["proto"] = true;
+
+  var cycles = this.getGroup("cycle"), async = this.getGroup("async");
+
+  var inside = this.has(combo), insideCallback = this.has(this.getGroup("callback")), insideProto = inside === "proto" || this.proto;
+
+  if (!cycles[inside] && !async[inside] && !insideProto) {
+    return this.error("directive \"" + this.name + "\" can be used only with a cycles, \"proto\" or an async series");
+  }
+
+  this.startInlineDir();
+  if (!this.tolerateWhitespace) {
+    this.skipSpace = true;
+  }
+
+  if (this.isReady()) {
+    if (command === "proto") {
+      if (!insideProto) {
+        return this.error("proto is not defined");
+      }
+
+      if (insideCallback) {
+        return this.error("can't break proto inside a callback");
+      }
+
+      this.append(this.prepareOutput("break __I_PROTO__;", true));
+      return;
+    }
+
+    if (cycles[inside]) {
+      if (inside === insideCallback) {
+        this.append("return false;");
+      } else {
+        this.append("break;");
+      }
+    } else if (async[inside]) {
+      var val = command ? this.prepareOutput(command, true) : "false";
+
+      if (inside === "waterfall") {
+        this.append("return arguments[arguments.length - 1](" + val + ");");
+      } else {
+        this.append( /* cbws */"if (typeof arguments[0] === 'function') {return arguments[0](" + val + ");}return false;");
+      }
+    } else {
+      this.append(this.prepareOutput("break __I_PROTO__;", true));
+    }
+  }
+});
+
+Snakeskin.addDirective("continue", {}, function (command) {
+  var combo = this.getGroup("cycle", "async");
+  combo["proto"] = true;
+
+  var cycles = this.getGroup("cycle"), async = this.getGroup("async");
+
+  var inside = this.has(combo), insideCallback = this.has(this.getGroup("callback")), insideProto = inside === "proto" || this.proto;
+
+  if (!cycles[inside] && !async[inside] && !insideProto) {
+    return this.error("directive \"" + this.name + "\" can be used only with a cycles, \"proto\" or an async series");
+  }
+
+  this.startInlineDir();
+  if (!this.tolerateWhitespace) {
+    this.skipSpace = true;
+  }
+
+  if (this.isReady()) {
+    if (command === "proto") {
+      if (!insideProto) {
+        return this.error("proto is not defined");
+      }
+
+      if (insideCallback) {
+        return this.error("can't continue proto inside a callback");
+      }
+
+      this.append(this.prepareOutput("continue __I_PROTO__;", true));
+      return;
+    }
+
+    if (cycles[inside]) {
+      if (inside === insideCallback) {
+        this.append("return;");
+      } else {
+        this.append("continue;");
+      }
+    } else if (async[inside]) {
+      var val = command ? "null," + this.prepareOutput(command, true) : "";
+
+      if (inside === "waterfall") {
+        this.append("return arguments[arguments.length - 1](" + val + ");");
+      } else {
+        this.append( /* cbws */"if (typeof arguments[0] === 'function') {return arguments[0](" + val + ");}return;");
+      }
+    } else {
+      this.append(this.prepareOutput("continue __I_PROTO__;", true));
+    }
+  }
+});
+
+
+(function () {
+  var varDeclRgxp = /\bvar\b/, splitDeclRgxp = /;/, forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
+
+  Snakeskin.addDirective("for", {
+    block: true,
+    notEmpty: true,
+    group: "cycle"
+  }, function (command) {
+    this.startDir();
+
+    if (splitDeclRgxp.test(command)) {
+      var parts = command.split(";");
+
+      if (parts.length !== 3) {
+        return this.error("invalid \"" + this.name + "\" declaration");
+      }
+
+      if (this.isReady()) {
+        var decl = varDeclRgxp.test(parts[0]) ? this.multiDeclVar(parts[0].replace(varDeclRgxp, "")) : this.prepareOutput(parts[0], true);
+
+        parts[1] = parts[1] && "(" + parts[1] + ")";
+        parts[2] = parts[2] && "(" + parts[2] + ")";
+
+        this.append("for (" + (decl + this.prepareOutput(parts.slice(1).join(";"), true)) + ") {");
+      }
+    } else {
+      var parts = forRgxp.exec(command);
+
+      if (!parts) {
+        return this.error("invalid \"" + this.name + "\" declaration");
+      }
+
+      if (this.isReady()) {
+        var decl = parts[1] ? this.multiDeclVar(parts[2], false, "") : this.prepareOutput(parts[2], true);
+
+        this.append("for (" + decl + " " + parts[3] + " " + this.prepareOutput(parts[4], true) + ") {");
+      }
+    }
+  }, function () {
+    this.append("}");
+  });
+
+  Snakeskin.addDirective("while", {
+    block: true,
+    notEmpty: true,
+    group: "cycle",
+    end: "do"
+  }, function (command) {
+    if (this.structure.name == "do") {
+      this.structure.params.chain = true;
+
+      if (this.isReady()) {
+        this.append("} while (" + this.prepareOutput(command, true) + ");");
+      }
+
+      Snakeskin.Directions["end"].call(this);
+    } else {
+      this.startDir();
+      if (this.isReady()) {
+        this.append("while (" + this.prepareOutput(command, true) + ") {");
+      }
+    }
+  }, function () {
+    this.append("}");
+  });
+
+  Snakeskin.addDirective("do", {
+    block: true,
+    group: "cycle",
+    after: {
+      "while": true,
+      "end": true
+    }
+  }, function () {
+    this.startDir();
+    this.append("do {");
+  }, function () {
+    if (!this.structure.params.chain) {
+      this.append("} while (true);");
+    }
+  });
+
+  Snakeskin.addDirective("repeat", {
+    block: true,
+    group: "cycle",
+    after: {
+      "until": true,
+      "end": true
+    }
+  }, function () {
+    this.startDir();
+    this.append("do {");
+  }, function () {
+    if (!this.structure.params.chain) {
+      this.append("} while (true);");
+    }
+  });
+
+  Snakeskin.addDirective("until", {
+    placement: "template",
+    notEmpty: true,
+    end: "repeat"
+  }, function (command) {
+    if (this.structure.name !== "repeat") {
+      return this.error("directive \"" + this.name + "\" can be used only with a \"repeat\"");
+    }
+
+    this.structure.params.chain = true;
+
+    if (this.isReady()) {
+      this.append("} while (" + this.prepareOutput(command, true) + ");");
+    }
+
+    Snakeskin.Directions["end"].call(this);
+  });
 })();
 
 
-Snakeskin.addDirective(
-	'data',
+Snakeskin.addDirective("data", {
+  placement: "template",
+  notEmpty: true,
+  text: true,
+  replacers: {
+    "=": function (cmd) {
+      return cmd.replace("=", "data ");
+    }
+  }
+}, function (command) {
+  this.startInlineDir();
+  if (this.isReady()) {
+    this.append(this.wrap("'" + this.replaceTplVars(command) + "'"));
+  }
+});
 
-	{
-		placement: 'template',
-		notEmpty: true,
-		text: true,
-		replacers: {
-			'=': function(cmd)  {return cmd.replace('=', 'data ')}
-		}
-	},
+(function () {
+  var declStartRgxp = /^\{+/, declEndRgxp = /\}+$/;
 
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append(this.wrap((("'" + (this.replaceTplVars(command))) + "'")));
-		}
-	}
-);
+  Snakeskin.addDirective("decl", {
+    placement: "template",
+    notEmpty: true,
+    text: true,
+    replacers: {
+      "{": function (cmd) {
+        return cmd.replace("{", "decl ");
+      }
+    }
+  }, function (command) {
+    this.startInlineDir();
+    if (this.isReady()) {
+      var code = this.replaceTplVars(command);
+      var start = declStartRgxp.exec(code) || [""];
 
-(function()  {
-	var declStartRgxp = /^\{+/,
-		declEndRgxp = /\}+$/;
+      var end = declEndRgxp.exec(code) || [""];
 
-	Snakeskin.addDirective(
-		'decl',
+      var add = undefined;
+      try {
+        add = new Array(end[0].length - start[0].length + 1).join("{");
+      } catch (ignore) {
+        return this.error("invalid \"" + this.name + "\" declaration");
+      }
 
-		{
-			placement: 'template',
-			notEmpty: true,
-			text: true,
-			replacers: {
-				'{': function(cmd)  {return cmd.replace('{', 'decl ')}
-			}
-		},
-
-		function (command) {
-			this.startInlineDir();
-			if (this.isReady()) {
-				var code = this.replaceTplVars(command);
-				var start = declStartRgxp.exec(code) ||
-					[''];
-
-				var end = declEndRgxp.exec(code) ||
-					[''];
-
-				var add;
-				try {
-					add = new Array(end[0].length - start[0].length + 1).join('{');
-
-				} catch (ignore) {
-					return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-				}
-
-				this.append(this.wrap((("'{" + (add + code)) + "}'")));
-			}
-		}
-	);
+      this.append(this.wrap("'{" + (add + code) + "}'"));
+    }
+  });
 })();
 
 
-(function()  {
-	var types = {
-		'html': '<!DOCTYPE html>',
-		'xml': '<?xml version="1.0" encoding="utf-8" ?>',
-		'transitional': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-		'strict': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-		'frameset': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
-		'1.1': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-		'basic': '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
-		'mobile': '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">',
-		'mathml 1.0': '<!DOCTYPE math SYSTEM "http://www.w3.org/Math/DTD/mathml1/mathml.dtd">',
-		'mathml 2.0': '<!DOCTYPE math PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">',
-		'svg 1.0': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">',
-		'svg 1.1 full': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
-		'svg 1.1 basic': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Basic//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd">',
-		'svg 1.1 tiny': '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">'
-	};
+(function () {
+  var types = {
+    "html": "<!DOCTYPE html>",
+    "xml": "<?xml version=\"1.0\" encoding=\"utf-8\" ?>",
+    "transitional": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+    "strict": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">",
+    "frameset": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
+    "1.1": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">",
+    "basic": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">",
+    "mobile": "<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">",
+    "mathml 1.0": "<!DOCTYPE math SYSTEM \"http://www.w3.org/Math/DTD/mathml1/mathml.dtd\">",
+    "mathml 2.0": "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">",
+    "svg 1.0": "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">",
+    "svg 1.1 full": "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">",
+    "svg 1.1 basic": "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1 Basic//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd\">",
+    "svg 1.1 tiny": "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1 Tiny//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd\">"
+  };
 
-	Snakeskin.addDirective(
-		'doctype',
+  Snakeskin.addDirective("doctype", {
+    placement: "template"
+  }, function (command) {
+    if (this.renderMode === "dom") {
+      return this.error("directive \"" + this.name + "\" can't be used with a \"dom\" render mode");
+    }
 
-		{
-			placement: 'template'
-		},
+    var type = (command || "html").toLowerCase();
 
-		function (command) {
-			if (this.renderMode === 'dom') {
-				return this.error((("directive \"" + (this.name)) + "\" can't be used with a \"dom\" render mode"));
-			}
+    if (!types[type]) {
+      return this.error("invalid doctype");
+    }
 
-			var type = (command || 'html').toLowerCase();
+    this.startInlineDir();
 
-			if (!types[type]) {
-				return this.error('invalid doctype');
-			}
+    if (!this.tolerateWhitespace) {
+      this.skipSpace = true;
+    }
 
-			this.startInlineDir();
-
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
-
-			this.append(this.wrap((("'" + (types[type])) + "'")));
-		}
-	);
+    this.append(this.wrap("'" + types[type] + "'"));
+  });
 })();
 
 
-Snakeskin.addDirective(
-	'end',
+Snakeskin.addDirective("end", {
+  replacers: {
+    "/": function (cmd) {
+      return cmd.replace(/^\//, "end ");
+    }
+  }
+}, function (command) {
+  var _this10 = this;
+  var struct = this.structure, name = struct.name;
 
-	{
-		replacers: {
-			'/': function(cmd)  {return cmd.replace(/^\//, 'end ')}
-		}
-	},
+  if (!struct.parent) {
+    return this.error("invalid call \"end\"");
+  }
 
-	function (command) {var this$0 = this;
-		var struct = this.structure,
-			name = struct.name;
+  if (command && command !== name) {
+    var group = this.getGroup("rootTemplate");
+    if (!(this.renderAs && group[name] && group[command])) {
+      return this.error("invalid closing directive, expected: \"" + name + "\", declared: \"" + command + "\"");
+    }
+  }
 
-		if (!struct.parent) {
-			return this.error(("invalid call \"end\""));
-		}
+  if (inside[name]) {
+    this.chainSpace = struct.parent.strong;
+  }
 
-		if (command && command !== name) {
-			var group = this.getGroup('rootTemplate');
-			if (!(this.renderAs && group[name] && group[command])) {
-				return this.error((("invalid closing directive, expected: \"" + name) + ("\", declared: \"" + command) + "\""));
-			}
-		}
+  var destruct = Snakeskin.Directions["" + name + "End"], isSimpleOutput = this.isSimpleOutput();
 
-		if (inside[name]) {
-			this.chainSpace = struct.parent.strong;
-		}
+  if (destruct) {
+    destruct.apply(this, arguments);
+  } else if (!struct.sys && isSimpleOutput) {
+    this.save("};");
+  }
 
-		var destruct = Snakeskin.Directions[(("" + name) + "End")],
-			isSimpleOutput = this.isSimpleOutput();
+  Snakeskin.Directions["" + name + "BaseEnd"].apply(this, arguments);
+  this.endDir();
 
-		if (destruct) {
-			destruct.apply(this, arguments);
+  struct = this.structure;
+  name = struct.name;
 
-		} else if (!struct.sys && isSimpleOutput) {
-			this.save('};');
-		}
+  if (this.deferReturn && isSimpleOutput) {
+    var async = this.getGroup("async");
 
-		Snakeskin.Directions[(("" + name) + "BaseEnd")].apply(this, arguments);
-		this.endDir();
+    if (this.getGroup("callback")[name]) {
+      var parent = struct.parent.name;
 
-		struct = this.structure;
-		name = struct.name;
+      if (async[parent]) {
+        var basicAsync = this.getGroup("basicAsync");
 
-		if (this.deferReturn && isSimpleOutput) {
-			var async = this.getGroup('async');
+        if (basicAsync[name] || basicAsync[parent]) {
+          this.save( /* cbws */"if (__RETURN__) {return false;}");
+        } else if (parent === "waterfall") {
+          this.save( /* cbws */"if (__RETURN__) {return arguments[arguments.length - 1](__RETURN_VAL__);}");
+        } else {
+          this.save( /* cbws */"if (__RETURN__) {if (typeof arguments[0] === 'function') {return arguments[0](__RETURN_VAL__);}return false;}");
+        }
 
-			if (this.getGroup('callback')[name]) {
-				var parent = struct.parent.name;
+        this.deferReturn = 0;
+      } else if (this.deferReturn > 1) {
+        this.save( /* cbws */"if (__RETURN__) {return false;}");
+      }
 
-				if (async[parent]) {
-					var basicAsync = this.getGroup('basicAsync');
+      if (this.deferReturn !== 0) {
+        this.deferReturn++;
+      }
+    } else if (!async[name]) {
+      this.save( /* cbws */"if (__RETURN__) {return __RETURN_VAL__;}");
 
-					if (basicAsync[name] || basicAsync[parent]) {
-						this.save(/* cbws */(" if (__RETURN__) { return false; } "));
+      this.deferReturn = 0;
+    }
+  }
 
-					} else if (parent === 'waterfall') {
-						this.save(/* cbws */(" if (__RETURN__) { return arguments[arguments.length - 1](__RETURN_VAL__); } "));
+  this.toQueue(function () {
+    _this10.startInlineDir();
+  });
+});
 
-					} else {
-						this.save(/* cbws */(" if (__RETURN__) { if (typeof arguments[0] === 'function') { return arguments[0](__RETURN_VAL__); }  return false; } "));
-					}
-
-					this.deferReturn = 0;
-
-				} else if (this.deferReturn > 1) {
-					this.save(/* cbws */(" if (__RETURN__) { return false; } "));
-				}
-
-				if (this.deferReturn !== 0) {
-					this.deferReturn++;
-				}
-
-			} else if (!async[name]) {
-				this.save(/* cbws */(" if (__RETURN__) { return __RETURN_VAL__; } "));
-
-				this.deferReturn = 0;
-			}
-		}
-
-		this.toQueue(function()  {
-			this$0.startInlineDir();
-		});
-	}
-);
-
-Snakeskin.addDirective(
-	'__end__',
-
-	{
-		alias: true
-	},
-
-	function () {
-		Snakeskin.Directions['end'].apply(this, arguments);
-	}
-);
+Snakeskin.addDirective("__end__", {
+  alias: true
+}, function () {
+  Snakeskin.Directions["end"].apply(this, arguments);
+});
 
 
-Snakeskin.addDirective(
-	'eval',
-
-	{
-		sys: true,
-		block: true,
-		placement: 'global'
-	},
-
-	function () {
-		this.startDir(null, {
-			from: this.res.length
-		});
-	},
-
-	function () {
-		var params = this.structure.params;
-		params._res = this.res;
-		this.res = this.res.substring(0, params.from);
-	}
-);
+Snakeskin.addDirective("eval", {
+  sys: true,
+  block: true,
+  placement: "global"
+}, function () {
+  this.startDir(null, {
+    from: this.res.length
+  });
+}, function () {
+  var params = this.structure.params;
+  params._res = this.res;
+  this.res = this.res.substring(0, params.from);
+});
 
 
-Snakeskin.addDirective(
-	'head',
-
-	{
-		sys: true,
-		block: true,
-		placement: 'global',
-		group: 'define'
-	},
-
-	function () {
-		this.startDir();
-	}
-);
+Snakeskin.addDirective("head", {
+  sys: true,
+  block: true,
+  placement: "global",
+  group: "define"
+}, function () {
+  this.startDir();
+});
 
 
 var importMap = {
-	'root': true,
-	'head': true
+  "root": true,
+  "head": true
 };
 
-Snakeskin.addDirective(
-	'import',
+Snakeskin.addDirective("import", {
+  notEmpty: true
+}, function (command) {
+  if (!importMap[this.structure.name]) {
+    return this.error("directive \"" + this.name + "\" can be used only within the global space or a \"head\"");
+  }
 
-	{
-		notEmpty: true
-	},
+  var parts = command.split("="), obj = parts[0].trim();
 
-	function (command) {
-		if (!importMap[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only within the global space or a \"head\""));
-		}
+  if (parts.length < 2) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-		var parts = command.split('='),
-			obj = parts[0].trim();
+  this.startInlineDir();
+  if (this.module.id === 0) {
+    var key = "" + obj + "_00_" + uid;
 
-		if (parts.length < 2) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
+    this.save( /* cbws */"var " + key + " = __LOCAL__." + key + " = " + this.prepareOutput(parts.slice(1).join("="), true) + ";");
 
-		this.startInlineDir();
-		if (this.module.id === 0) {
-			var key = (("" + obj) + ("_00_" + uid) + "");
+    var _root = this.structure;
 
-			this.save(/* cbws */((" var " + key) + (" = __LOCAL__." + key) + (" = " + (this.prepareOutput(parts.slice(1).join('='), true))) + "; "));
+    while (_root.name !== "root") {
+      _root = _root.parent;
+    }
 
-			var root = this.structure;
+    _root.vars["" + obj + "_00"] = {
+      value: "__LOCAL__." + key,
+      scope: 0
+    };
+  }
+});
 
-			while (root.name !== 'root') {
-				root = root.parent;
-			}
 
-			root.vars[(("" + obj) + "_00")] = {
-				value: ("__LOCAL__." + key),
-				scope: 0
-			};
-		}
-	}
-);
+Snakeskin.addDirective("include", {
+  notEmpty: true
+}, function (command) {
+  if (this.tplName || this.hasParent("head")) {
+    return this.error("directive \"" + this.name + "\" can't be used within a " + groupsList["template"].join(", ") + " or a \"head\"");
+  }
 
+  this.startInlineDir(null, {
+    from: this.res.length
+  });
 
-Snakeskin.addDirective(
-	'include',
+  var parts = command.split(" as ");
 
-	{
-		notEmpty: true
-	},
+  if (!parts[0]) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-	function (command) {
-		if (this.tplName || this.hasParent('head')) {
-			return this.error((("directive \"" + (this.name)) + ("\" can't be used within a " + (groupsList['template'].join(', '))) + " or a \"head\""));
-		}
+  var path = this.prepareOutput(parts[0], true), type = parts[1] ? "'" + parts[1].trim() + "'" : "''";
 
-		this.startInlineDir(null, {
-			from: this.res.length
-		});
+  if (path !== void 0 && type !== void 0) {
+    this.save( /* cbws */"Snakeskin.include('" + escapeBackslash(this.info["file"] || "") + "'," + this.pasteDangerBlocks(path) + ",'" + escapeNextLine(this.lineSeparator) + "'," + type + ");");
+  }
+}, function () {
+  if (this.hasParent("eval")) {
+    return;
+  }
 
-		var parts = command.split(' as ');
+  this.res = this.res.substring(0, this.structure.params.from);
+});
 
-		if (!parts[0]) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
+Snakeskin.addDirective("__setFile__", {}, function (command) {
+  command = this.pasteDangerBlocks(command);
 
-		var path = this.prepareOutput(parts[0], true),
-			type = parts[1] ?
-				(("'" + (parts[1].trim())) + "'") : '\'\'';
+  var module = {
+    exports: {},
+    require: require,
 
-		if (path !== void 0 && type !== void 0) {
-			this.save(/* cbws */((" Snakeskin.include( '" + (escapeBackslash(this.info['file'] || ''))) + ("', " + (this.pasteDangerBlocks(path))) + (", '" + (escapeNextLine(this.lineSeparator))) + ("', " + type) + " ); "));
-		}
-	},
+    id: this.module.id + 1,
+    key: null,
 
-	function () {
-		if (this.hasParent('eval')) {
-			return;
-		}
+    filename: command,
+    parent: this.module,
+    root: this.module.root || this.module,
 
-		this.res = this.res.substring(0, this.structure.params.from);
-	}
-);
+    children: [],
+    loaded: true
+  };
 
-Snakeskin.addDirective(
-	'__setFile__',
+  module.root.key.push([command, require("fs").statSync(command).mtime.valueOf()]);
 
-	{
+  this.module.children.push(module);
+  this.module = module;
 
-	},
+  this.info["file"] = command;
+  this.files[command] = true;
 
-	function (command) {
-		command = this.pasteDangerBlocks(command);
+  this.save(this.multiDeclVar("$_"));
+});
 
-		var module = {
-			exports: {},
-			require: require,
+Snakeskin.addDirective("__endSetFile__", {}, function () {
+  var file = this.module.filename;
 
-			id: this.module.id + 1,
-			key: null,
+  this.module = this.module.parent;
+  this.info["file"] = this.module.filename;
 
-			filename: command,
-			parent: this.module,
-			root: this.module.root || this.module,
+  if (this.params[this.params.length - 1]["@file"] === file) {
+    this.popParams();
+  }
+});
 
-			children: [],
-			loaded: true
-		};
 
-		module.root.key.push([command, require('fs').statSync(command).mtime.valueOf()]);
+(function () {
+  var $COverloadRgxp = /=>>/g;
 
-		this.module.children.push(module);
-		this.module = module;
+  Snakeskin.addDirective("forEach", {
+    block: true,
+    notEmpty: true,
+    group: ["cycle", "callback", "inlineIterator"]
+  }, function (command) {
+    var _this11 = this;
+    command = command.replace($COverloadRgxp, "=>=>");
+    var parts = command.split("=>"), obj = parts[0];
 
-		this.info['file'] = command;
-		this.files[command] = true;
+    if (!parts.length || parts.length > (this.inlineIterators ? 2 : 3)) {
+      return this.error("invalid \"" + this.name + "\" declaration");
+    }
 
-		this.save(this.multiDeclVar('$_'));
-	}
-);
+    this.startDir(parts.length === 3 ? "$forEach" : null, {
+      params: parts[2] ? parts[1] : null
+    });
 
-Snakeskin.addDirective(
-	'__endSetFile__',
+    if (this.isReady()) {
+      var _ret8 = (function () {
+        if (!_this11.inlineIterators) {
+          if (parts.length === 3) {
+            _this11.append( /* cbws */"" + _this11.prepareOutput("$C(" + parts[0] + ")", true) + ".forEach(function (" + _this11.declCallbackArgs(parts) + ") {" + _this11.declArguments() + "");
+          } else {
+            _this11.append( /* cbws */"Snakeskin.forEach(" + _this11.prepareOutput(parts[0], true) + ",function (" + _this11.declCallbackArgs(parts[1]) + ") {" + _this11.declArguments() + "");
+          }
 
-	{
+          return {
+            v: undefined
+          };
+        }
 
-	},
+        var tmpObj = _this11.multiDeclVar("__I_OBJ__ = " + obj), cacheObj = _this11.prepareOutput("__I_OBJ__", true);
 
-	function () {
-		var file = this.module.filename;
+        var objLength = _this11.multiDeclVar("__KEYS__ = Object.keys ? Object.keys(__I_OBJ__) : null"), _keys = _this11.prepareOutput("__KEYS__", true);
 
-		this.module = this.module.parent;
-		this.info['file'] = this.module.filename;
+        var args = parts[1] ? parts[1].trim().split(",") : [];
 
-		if (this.params[this.params.length - 1]['@file'] === file) {
-			this.popParams();
-		}
-	}
-);
+        if (args.length >= 6) {
+          objLength += /* cbws */"" + _this11.multiDeclVar("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0") + "if (!" + _keys + ") {" + _this11.multiDeclVar("__LENGTH__ = 0") + "for (" + _this11.multiDeclVar("__KEY__", false) + " in " + cacheObj + ") {if (!" + cacheObj + ".hasOwnProperty(" + _this11.prepareOutput("__KEY__", true) + ")) {continue;}" + _this11.prepareOutput("__LENGTH__++;", true) + "}}";
+        }
 
+        var resStr = /* cbws */"" + tmpObj + "if (" + cacheObj + ") {if (Array.isArray(" + cacheObj + ")) {" + _this11.multiDeclVar("__LENGTH__ =  __I_OBJ__.length") + "for (" + (_this11.multiDeclVar("__I__ = -1") + _this11.prepareOutput("++__I__ < __LENGTH__;", true)) + ") {";
 
-(function()  {
-	var $COverloadRgxp = /=>>/g;
+        resStr += (function () {
+          var str = "";
 
-	Snakeskin.addDirective(
-		'forEach',
+          for (var i = -1; ++i < args.length;) {
+            var tmp = args[i];
 
-		{
-			block: true,
-			notEmpty: true,
-			group: [
-				'cycle',
-				'callback',
-				'inlineIterator'
-			]
-		},
+            switch (i) {
+              case 0:
+                tmp += " = __I_OBJ__[__I__]";
+                break;
 
-		function (command) {var this$0 = this;
-			command = command.replace($COverloadRgxp, '=>=>');
-			var parts = command.split('=>'),
-				obj = parts[0];
+              case 1:
+                tmp += " = __I__";
+                break;
 
-			if (!parts.length || parts.length > (this.inlineIterators ? 2 : 3)) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-			}
+              case 2:
+                tmp += " = __I_OBJ__";
+                break;
 
-			this.startDir(parts.length === 3 ? '$forEach' : null, {
-				params: parts[2] ? parts[1] : null
-			});
+              case 3:
+                tmp += " = __I__ === 0";
+                break;
 
-			if (this.isReady()) {
-				if (!this.inlineIterators) {
-					if (parts.length === 3) {
-						this.append(/* cbws */((" " + (this.prepareOutput((("$C(" + (parts[0])) + ")"), true))) + (".forEach(function (" + (this.declCallbackArgs(parts))) + (") { " + (this.declArguments())) + " "));
+              case 4:
+                tmp += " = __I__ === __LENGTH__ - 1";
+                break;
 
-					} else {
-						this.append(/* cbws */((" Snakeskin.forEach( " + (this.prepareOutput(parts[0], true))) + (", function (" + (this.declCallbackArgs(parts[1]))) + (") { " + (this.declArguments())) + " "));
-					}
+              case 5:
+                tmp += " = __LENGTH__";
+                break;
+            }
 
-					return;
-				}
+            str += _this11.multiDeclVar(tmp);
+          }
 
-				var tmpObj = this.multiDeclVar(("__I_OBJ__ = " + obj)),
-					cacheObj = this.prepareOutput('__I_OBJ__', true);
+          return str;
+        })();
 
-				var objLength = this.multiDeclVar('__KEYS__ = Object.keys ? Object.keys(__I_OBJ__) : null'),
-					keys = this.prepareOutput('__KEYS__', true);
+        var end = /* cbws */"} else {" + objLength + "if (" + _keys + ") {" + _this11.multiDeclVar("__LENGTH__ = __KEYS__.length") + "for (" + (_this11.multiDeclVar("__I__ = -1") + _this11.prepareOutput("++__I__ < __LENGTH__;", true)) + ") {";
 
-				var args = parts[1] ?
-					parts[1].trim().split(',') : [];
+        end += (function () {
+          var str = "";
 
-				if (args.length >= 6) {
-					objLength += /* cbws */((" " + (this.multiDeclVar(("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0")))) + ("  if (!" + keys) + (") { " + (this.multiDeclVar('__LENGTH__ = 0'))) + ("  for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") { if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) { continue; }  " + (this.prepareOutput('__LENGTH__++;', true))) + " } } ");
-				}
+          for (var i = -1; ++i < args.length;) {
+            var tmp = args[i];
 
-				var resStr = /* cbws */((" " + tmpObj) + ("  if (" + cacheObj) + (") { if (Array.isArray(" + cacheObj) + (")) { " + (this.multiDeclVar('__LENGTH__ =  __I_OBJ__.length'))) + (" for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") { ");
+            switch (i) {
+              case 0:
+                tmp += " = __I_OBJ__[__KEYS__[__I__]]";
+                break;
 
-				resStr += (function()  {
-					var str = '';
+              case 1:
+                tmp += " = __KEYS__[__I__]";
+                break;
 
-					for (var i = -1; ++i < args.length;) {
-						var tmp = args[i];
-
-						switch (i) {
-							case 0:
-								tmp += ' = __I_OBJ__[__I__]';
-								break;
-
-							case 1:
-								tmp += ' = __I__';
-								break;
-
-							case 2:
-								tmp += ' = __I_OBJ__';
-								break;
-
-							case 3:
-								tmp += ' = __I__ === 0';
-								break;
-
-							case 4:
-								tmp += ' = __I__ === __LENGTH__ - 1';
-								break;
-
-							case 5:
-								tmp += ' = __LENGTH__';
-								break;
-						}
-
-						str += this$0.multiDeclVar(tmp);
-					}
-
-					return str;
-				})();
-
-				var end = /* cbws */((" } else { " + objLength) + ("  if (" + keys) + (") { " + (this.multiDeclVar(("__LENGTH__ = __KEYS__.length")))) + (" for (" + (this.multiDeclVar('__I__ = -1') + this.prepareOutput('++__I__ < __LENGTH__;', true))) + ") { ");
-
-				end += (function()  {
-					var str = '';
-
-					for (var i = -1; ++i < args.length;) {
-						var tmp = args[i];
-
-						switch (i) {
-							case 0:
-								tmp += ' = __I_OBJ__[__KEYS__[__I__]]';
-								break;
-
-							case 1:
-								tmp += ' = __KEYS__[__I__]';
-								break;
-
-							case 2:
-								tmp += ' = __I_OBJ__';
-								break;
-
-							case 3:
-								tmp += ' = __I__';
-								break;
-
-							case 4:
-								tmp += ' = __I__ === 0';
-								break;
-
-							case 5:
-								tmp += ' = __I__ === __LENGTH__ - 1';
-								break;
-
-							case 6:
-								tmp += ' = __LENGTH__';
-								break;
-						}
-
-						str += this$0.multiDeclVar(tmp);
-					}
-
-					return str;
-				})();
-
-				var oldEnd = /* cbws */((" } else { " + (this.multiDeclVar('__I__ = -1'))) + ("  for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") { if (!" + cacheObj) + (".hasOwnProperty(" + (this.prepareOutput('__KEY__', true))) + (")) { continue; }  " + (this.prepareOutput('__I__++;', true))) + " ");
-
-				oldEnd += (function()  {
-					var str = '';
-
-					for (var i = -1; ++i < args.length;) {
-						var tmp = args[i];
-
-						switch (i) {
-							case 0:
-								tmp += ' = __I_OBJ__[__KEY__]';
-								break;
-
-							case 1:
-								tmp += ' = __KEY__';
-								break;
-
-							case 2:
-								tmp += ' = __I_OBJ__';
-								break;
-
-							case 3:
-								tmp += ' = __I__';
-								break;
-
-							case 4:
-								tmp += ' = __I__ === 0';
-								break;
-
-							case 5:
-								tmp += ' = __I__ === __LENGTH__ - 1';
-								break;
-
-							case 6:
-								tmp += ' = __LENGTH__';
-								break;
-						}
-
-						str += this$0.multiDeclVar(tmp);
-					}
-
-					return str;
-				})();
-
-				this.append(resStr);
-				this.structure.params = {
-					from: this.res.length,
-					end: end,
-					oldEnd: oldEnd
-				};
-			}
-		},
-
-		function () {
-			if (this.isReady()) {
-				var params = this.structure.params;
-
-				if (this.inlineIterators) {
-					var part = this.res
-						.substring(params.from);
-
-					this.append((("} " + (params.end + part)) + (" } " + (params.oldEnd + part)) + " }}}}"));
-
-				} else {
-					if (params.params) {
-						this.append((("}, " + (this.prepareOutput(params.params, true))) + ");"));
-
-					} else {
-						this.append('});');
-					}
-				}
-			}
-		}
-	);
-
-	Snakeskin.addDirective(
-		'$forEach',
-
-		{
-			block: true,
-			notEmpty: true,
-			group: [
-				'cycle',
-				'callback',
-				'selfThis'
-			]
-		},
-
-		function (command) {
-			var parts = command.split('=>');
-
-			if (!parts.length || parts.length > 3) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-			}
-
-			this.startDir(null, {
-				params: parts[2] ? parts[1] : null
-			});
-
-			if (this.isReady()) {
-				this.append(/* cbws */((" " + (this.prepareOutput((("$C(" + (parts[0])) + ")"), true))) + (".forEach(function (" + (this.declCallbackArgs(parts))) + (") { " + (this.declArguments())) + " "));
-			}
-		},
-
-		function () {
-			if (this.isReady()) {
-				var params = this.structure.params.params;
-
-				if (params) {
-					this.append((("}, " + (this.prepareOutput(params, true))) + ");"));
-
-				} else {
-					this.append('});');
-				}
-			}
-		}
-	);
-
-	Snakeskin.addDirective(
-		'forIn',
-
-		{
-			block: true,
-			notEmpty: true,
-			group: [
-				'cycle',
-				'callback',
-				'inlineIterator'
-			]
-		},
-
-		function (command) {var this$0 = this;
-			var parts = command.split('=>'),
-				obj = parts[0];
-
-			if (!parts.length || parts.length > 2) {
-				return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-			}
-
-			this.startDir();
-			if (this.isReady()) {
-				if (!this.inlineIterators) {
-					this.append(/* cbws */((" Snakeskin.forIn( " + (this.prepareOutput(parts[0], true))) + (", function (" + (this.declCallbackArgs(parts[1]))) + (") { " + (this.declArguments())) + " "));
-
-					return;
-				}
-
-				var objLength = '';
-				var args = parts[1] ?
-					parts[1].trim().split(',') : [];
-
-				var tmpObj = this.multiDeclVar(("__I_OBJ__ = " + obj)),
-					cacheObj = this.prepareOutput('__I_OBJ__', true);
-
-				if (args.length >= 6) {
-					objLength += /* cbws */((" " + (this.multiDeclVar('__LENGTH__ = 0'))) + ("  for (" + (this.multiDeclVar('key', false))) + (" in " + cacheObj) + (") { " + (this.prepareOutput('__LENGTH__++;', true))) + " } ");
-				}
-
-				var resStr = /* cbws */((" " + tmpObj) + ("  if (" + cacheObj) + (") {  " + objLength) + (" " + (this.multiDeclVar('__I__ = -1'))) + ("  for (" + (this.multiDeclVar('__KEY__', false))) + (" in " + cacheObj) + (") { " + (this.prepareOutput('__I__++;', true))) + " ");
-
-				resStr += (function()  {
-					var str = '';
-
-					for (var i = -1; ++i < args.length;) {
-						var tmp = args[i];
-
-						switch (i) {
-							case 0:
-								tmp += ' = __I_OBJ__[__KEY__]';
-								break;
-
-							case 1:
-								tmp += ' = __KEY__';
-								break;
-
-							case 2:
-								tmp += ' = __I_OBJ__';
-								break;
-
-							case 3:
-								tmp += ' = __I__';
-								break;
-
-							case 4:
-								tmp += ' = __I__ === 0';
-								break;
-
-							case 5:
-								tmp += ' = __I__ === __LENGTH__ - 1';
-								break;
-
-							case 6:
-								tmp += ' = __LENGTH__';
-								break;
-						}
-
-						str += this$0.multiDeclVar(tmp);
-					}
-
-					return str;
-				})();
-
-				this.append(resStr);
-			}
-		},
-
-		function () {
-			if (this.isReady()) {
-				this.append(this.inlineIterators ? '}}' : '});');
-			}
-		}
-	);
+              case 2:
+                tmp += " = __I_OBJ__";
+                break;
+
+              case 3:
+                tmp += " = __I__";
+                break;
+
+              case 4:
+                tmp += " = __I__ === 0";
+                break;
+
+              case 5:
+                tmp += " = __I__ === __LENGTH__ - 1";
+                break;
+
+              case 6:
+                tmp += " = __LENGTH__";
+                break;
+            }
+
+            str += _this11.multiDeclVar(tmp);
+          }
+
+          return str;
+        })();
+
+        var oldEnd = /* cbws */"} else {" + _this11.multiDeclVar("__I__ = -1") + "for (" + _this11.multiDeclVar("__KEY__", false) + " in " + cacheObj + ") {if (!" + cacheObj + ".hasOwnProperty(" + _this11.prepareOutput("__KEY__", true) + ")) {continue;}" + _this11.prepareOutput("__I__++;", true) + "";
+
+        oldEnd += (function () {
+          var str = "";
+
+          for (var i = -1; ++i < args.length;) {
+            var tmp = args[i];
+
+            switch (i) {
+              case 0:
+                tmp += " = __I_OBJ__[__KEY__]";
+                break;
+
+              case 1:
+                tmp += " = __KEY__";
+                break;
+
+              case 2:
+                tmp += " = __I_OBJ__";
+                break;
+
+              case 3:
+                tmp += " = __I__";
+                break;
+
+              case 4:
+                tmp += " = __I__ === 0";
+                break;
+
+              case 5:
+                tmp += " = __I__ === __LENGTH__ - 1";
+                break;
+
+              case 6:
+                tmp += " = __LENGTH__";
+                break;
+            }
+
+            str += _this11.multiDeclVar(tmp);
+          }
+
+          return str;
+        })();
+
+        _this11.append(resStr);
+        _this11.structure.params = {
+          from: _this11.res.length,
+          end: end,
+          oldEnd: oldEnd
+        };
+      })();
+
+      if (typeof _ret8 === "object") return _ret8.v;
+    }
+  }, function () {
+    if (this.isReady()) {
+      var params = this.structure.params;
+
+      if (this.inlineIterators) {
+        var part = this.res.substring(params.from);
+
+        this.append("} " + (params.end + part) + " } " + (params.oldEnd + part) + " }}}}");
+      } else {
+        if (params.params) {
+          this.append("}, " + this.prepareOutput(params.params, true) + ");");
+        } else {
+          this.append("});");
+        }
+      }
+    }
+  });
+
+  Snakeskin.addDirective("$forEach", {
+    block: true,
+    notEmpty: true,
+    group: ["cycle", "callback", "selfThis"]
+  }, function (command) {
+    var parts = command.split("=>");
+
+    if (!parts.length || parts.length > 3) {
+      return this.error("invalid \"" + this.name + "\" declaration");
+    }
+
+    this.startDir(null, {
+      params: parts[2] ? parts[1] : null
+    });
+
+    if (this.isReady()) {
+      this.append( /* cbws */"" + this.prepareOutput("$C(" + parts[0] + ")", true) + ".forEach(function (" + this.declCallbackArgs(parts) + ") {" + this.declArguments() + "");
+    }
+  }, function () {
+    if (this.isReady()) {
+      var params = this.structure.params.params;
+
+      if (params) {
+        this.append("}, " + this.prepareOutput(params, true) + ");");
+      } else {
+        this.append("});");
+      }
+    }
+  });
+
+  Snakeskin.addDirective("forIn", {
+    block: true,
+    notEmpty: true,
+    group: ["cycle", "callback", "inlineIterator"]
+  }, function (command) {
+    var _this12 = this;
+    var parts = command.split("=>"), obj = parts[0];
+
+    if (!parts.length || parts.length > 2) {
+      return this.error("invalid \"" + this.name + "\" declaration");
+    }
+
+    this.startDir();
+    if (this.isReady()) {
+      var _ret9 = (function () {
+        if (!_this12.inlineIterators) {
+          _this12.append( /* cbws */"Snakeskin.forIn(" + _this12.prepareOutput(parts[0], true) + ",function (" + _this12.declCallbackArgs(parts[1]) + ") {" + _this12.declArguments() + "");
+
+          return {
+            v: undefined
+          };
+        }
+
+        var objLength = "";
+        var args = parts[1] ? parts[1].trim().split(",") : [];
+
+        var tmpObj = _this12.multiDeclVar("__I_OBJ__ = " + obj), cacheObj = _this12.prepareOutput("__I_OBJ__", true);
+
+        if (args.length >= 6) {
+          objLength += /* cbws */"" + _this12.multiDeclVar("__LENGTH__ = 0") + "for (" + _this12.multiDeclVar("key", false) + " in " + cacheObj + ") {" + _this12.prepareOutput("__LENGTH__++;", true) + "}";
+        }
+
+        var resStr = /* cbws */"" + tmpObj + "if (" + cacheObj + ") {" + objLength + "" + _this12.multiDeclVar("__I__ = -1") + "for (" + _this12.multiDeclVar("__KEY__", false) + " in " + cacheObj + ") {" + _this12.prepareOutput("__I__++;", true) + "";
+
+        resStr += (function () {
+          var str = "";
+
+          for (var i = -1; ++i < args.length;) {
+            var tmp = args[i];
+
+            switch (i) {
+              case 0:
+                tmp += " = __I_OBJ__[__KEY__]";
+                break;
+
+              case 1:
+                tmp += " = __KEY__";
+                break;
+
+              case 2:
+                tmp += " = __I_OBJ__";
+                break;
+
+              case 3:
+                tmp += " = __I__";
+                break;
+
+              case 4:
+                tmp += " = __I__ === 0";
+                break;
+
+              case 5:
+                tmp += " = __I__ === __LENGTH__ - 1";
+                break;
+
+              case 6:
+                tmp += " = __LENGTH__";
+                break;
+            }
+
+            str += _this12.multiDeclVar(tmp);
+          }
+
+          return str;
+        })();
+
+        _this12.append(resStr);
+      })();
+
+      if (typeof _ret9 === "object") return _ret9.v;
+    }
+  }, function () {
+    if (this.isReady()) {
+      this.append(this.inlineIterators ? "}}" : "});");
+    }
+  });
 })();
 
 
-(function()  {
-	var types = {
-		'css': {
-			'type': 'text/css',
-			'rel': 'stylesheet'
-		},
+(function () {
+  var types = {
+    "css": {
+      "type": "text/css",
+      "rel": "stylesheet"
+    },
 
-		'acss': {
-			'type': 'text/css',
-			'rel': 'alternate stylesheet'
-		}
-	};
+    "acss": {
+      "type": "text/css",
+      "rel": "alternate stylesheet"
+    }
+  };
 
-	var typesStr = {
-		dom: {
+  var typesStr = {
+    dom: {},
 
-		},
+    string: {}
+  };
 
-		string: {
+  forIn(types, function (el, key) {
+    forIn(el, function (el, attr) {
+      typesStr.dom[key] = typesStr.dom[key] || "";
+      typesStr.dom[key] += "__NODE__." + attr + " = '" + el + "';";
+      typesStr.string[key] = typesStr.string[key] || "";
+      typesStr.string[key] += " " + attr + "=\"" + el + "\"";
+    });
+  });
 
-		}
-	};
+  Snakeskin.addDirective("link", {
+    placement: "template",
+    block: true,
+    selfInclude: false
+  }, function (command) {
+    this.startDir();
+    this.skipSpace = true;
 
-	forIn(types, function(el, key)  {
-		forIn(el, function(el, attr)  {
-			typesStr.dom[key] = typesStr.dom[key] || '';
-			typesStr.dom[key] += (("__NODE__." + attr) + (" = '" + el) + "';");
-			typesStr.string[key] = typesStr.string[key] || '';
-			typesStr.string[key] += ((" " + attr) + ("=\"" + el) + "\"");
-		});
-	});
+    if (this.autoReplace) {
+      this.autoReplace = false;
+      this.structure.params.autoReplace = true;
+    }
 
-	Snakeskin.addDirective(
-		'link',
+    if (this.isReady()) {
+      if (command) {
+        command = command.replace(emptyCommandParamsRgxp, "css $1");
+      } else {
+        command = "css";
+      }
 
-		{
-			placement: 'template',
-			block: true,
-			selfInclude: false
-		},
+      var parts = splitBySpace(command), type = parts[0], dom = !this.domComment && this.renderMode === "dom";
 
-		function (command) {
-			this.startDir();
-			this.skipSpace = true;
+      var str = undefined;
+      if (dom) {
+        str = /* cbws */"__NODE__ = document.createElement('link');" + (typesStr.dom[type.toLowerCase()] || "") + "" + this.wrap("__NODE__") + "__RESULT__.push(__NODE__);";
+      } else {
+        str = this.wrap("'<link " + (typesStr.string[type] || this.replaceTplVars(type)).trim() + "'");
+      }
 
-			if (this.autoReplace) {
-				this.autoReplace = false;
-				this.structure.params.autoReplace = true;
-			}
+      this.append(str);
 
-			if (this.isReady()) {
-				if (command) {
-					command = command.replace(emptyCommandParamsRgxp, 'css $1');
+      if (parts.length > 1) {
+        /** @type {!Array} */
+        var args = _.any([].slice.call(arguments));
 
-				} else {
-					command = 'css';
-				}
+        args[0] = parts.slice(1).join(" ");
+        args[1] = args[0].length;
 
-				var parts = splitBySpace(command),
-					type = parts[0],
-					dom = !this.domComment && this.renderMode === 'dom';
+        Snakeskin.Directions["attr"].apply(this, args);
+        this.inline = false;
+      }
 
-				var str;
-				if (dom) {
-					str = /* cbws */((" __NODE__ = document.createElement('link'); " + (typesStr.dom[type.toLowerCase()] || '')) + (" " + (this.wrap('__NODE__'))) + " __RESULT__.push(__NODE__); ");
+      if (dom) {
+        str = "__NODE__.href =";
+      } else {
+        str = this.wrap("' href=\"'");
+      }
 
-				} else {
-					str = this.wrap((("'<link " + ((typesStr.string[type] || this.replaceTplVars(type)).trim())) + "'"));
-				}
+      this.append(str);
+    }
+  }, function () {
+    if (!this.tolerateWhitespace) {
+      this.skipSpace = true;
+    }
 
-				this.append(str);
+    if (this.structure.params.autoReplace) {
+      this.autoReplace = true;
+    }
 
-				if (parts.length > 1) {
-					/** @type {!Array} */
-					var args = _.any([].slice.call(arguments));
+    var str = undefined;
 
-					args[0] = parts.slice(1).join(' ');
-					args[1] = args[0].length;
+    if (!this.domComment && this.renderMode === "dom") {
+      str = /* cbws */"__RESULT__.pop();__NODE__ = null;";
+    } else {
+      str = this.wrap("'\"" + (this.doctype === "xml" ? "/" : "") + ">'");
+    }
 
-					Snakeskin.Directions['attr'].apply(this, args);
-					this.inline = false;
-				}
-
-				if (dom) {
-					str = '__NODE__.href =';
-
-				} else {
-					str = this.wrap('\' href="\'');
-				}
-
-				this.append(str);
-			}
-		},
-
-		function () {
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
-
-			if (this.structure.params.autoReplace) {
-				this.autoReplace = true;
-			}
-
-			var str;
-
-			if (!this.domComment && this.renderMode === 'dom') {
-				str = /* cbws */(" __RESULT__.pop(); __NODE__ = null; ");
-
-			} else {
-				str = this.wrap((("'\"" + (this.doctype === 'xml' ? '/' : '')) + ">'"));
-			}
-
-			this.append(str);
-		}
-	);
+    this.append(str);
+  });
 })();
 
 
-Snakeskin.addDirective(
-	'if',
-
-	{
-		block: true,
-		notEmpty: true,
-		group: 'if'
-	},
-
-	function (command) {
-		this.startDir();
-		if (this.isReady()) {
-			this.append((("if (" + (this.prepareOutput(command, true))) + ") {"));
-		}
-	},
-
-	function () {
-		this.append('}');
-	}
-);
-
-Snakeskin.addDirective(
-	'unless',
-
-	{
-		block: true,
-		notEmpty: true,
-		group: 'if'
-	},
-
-	function (command) {
-		this.startDir();
-		if (this.isReady()) {
-			this.append((("if (!(" + (this.prepareOutput(command, true))) + ")) {"));
-		}
-	},
-
-	function () {
-		this.append('}');
-	}
-);
-
-Snakeskin.addDirective(
-	'elseIf',
-
-	{
-		notEmpty: true,
-		chain: [
-			'if',
-			'unless'
-		]
-	},
-
-	function (command) {
-		if (!this.getGroup('if')[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a " + (groupsList['if'].join(', '))) + ""));
-		}
-
-		if (this.isReady()) {
-			this.append((("} else if (" + (this.prepareOutput(command, true))) + ") {"));
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'elseUnless',
-
-	{
-		notEmpty: true,
-		chain: [
-			'if',
-			'unless'
-		]
-	},
-
-	function (command) {
-		if (!this.getGroup('if')[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a " + (groupsList['if'].join(', '))) + ""));
-		}
-
-		if (this.isReady()) {
-			this.append((("} else if (!(" + (this.prepareOutput(command, true))) + ")) {"));
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'else',
-
-	{
-		chain: [
-			'if',
-			'unless'
-		]
-	},
-
-	function (command) {
-		if (!this.getGroup('if')[this.structure.name]) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only with a " + (groupsList['if'].join(', '))) + ""));
-		}
-
-		if (command) {
-			var parts = command.split(' '),
-				unless = parts[0] === 'unless' ?
-					'!' : '';
-
-			if (unless || parts[0] === 'if') {
-				parts = parts.slice(1);
-			}
-
-			this.append((("} else if (" + unless) + ("(" + (this.prepareOutput(parts.join(' '), true))) + ")) {"));
-
-		} else {
-			this.append('} else {');
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'switch',
-
-	{
-		block: true,
-		notEmpty: true,
-		inside: {
-			'case': true,
-			'default': true
-		}
-	},
-
-	function (command) {
-		this.startDir();
-		if (this.isReady()) {
-			this.append((("switch (" + (this.prepareOutput(command, true))) + ") {"));
-		}
-	},
-
-	function () {
-		this.append('}');
-	}
-);
-
-Snakeskin.addDirective(
-	'case',
-
-	{
-		block: true,
-		notEmpty: true,
-		replacers: {
-			'>': function(cmd)  {return cmd.replace('>', 'case ')},
-			'/>': function(cmd)  {return cmd.replace('\/>', 'end case')}
-		}
-	},
-
-	function (command) {
-		this.startDir();
-
-		if (this.structure.parent.name !== 'switch') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only within a \"switch\""));
-		}
-
-		if (this.isReady()) {
-			this.append((("case " + (this.prepareOutput(command, true))) + ": {"));
-		}
-	},
-
-	function () {
-		this.append('} break;');
-	}
-);
-
-Snakeskin.addDirective(
-	'default',
-
-	{
-		block: true
-	},
-
-	function () {
-		this.startDir();
-
-		if (this.structure.parent.name !== 'switch') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only within a \"switch\""));
-		}
-
-		this.append('default: {');
-	},
-
-	function () {
-		this.append('}');
-	}
-);
-
-
-Snakeskin.addDirective(
-	'plain',
-
-	{
-		sys: true,
-		placement: 'template',
-		block: true,
-		selfInclude: false
-	},
-
-	function () {
-		this.startDir();
-
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.enabled = true;
-		}
-	},
-
-	function () {
-		if (this.structure.params.enabled) {
-			this.autoReplace = true;
-		}
-	}
-);
-
-
-Snakeskin.addDirective(
-	'__setError__',
-
-	{
-
-	},
-
-	function (command) {
-		this.error(this.pasteDangerBlocks(command));
-	}
-);
-
-Snakeskin.addDirective(
-	'__appendLine__',
-
-	{
-		group: 'ignore'
-	},
-
-	function (command) {
-		if (!this.structure.parent) {
-			return this.error(("directive \"cdata\" only be used only within a " + (groupsList['template'].join(', '))));
-		}
-
-		this.startInlineDir('cdata');
-		this.isSimpleOutput();
-
-		var val = parseInt(command, 10),
-			line = this.info['line'];
-
-		this.info['line'] += val;
-		if (!this.proto) {
-			for (var i = -1; ++i < val;) {
-				this.lines[line + i] = '';
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__setLine__',
-
-	{
-		group: 'ignore'
-	},
-
-	function (command) {
-		this.startInlineDir();
-		if (!this.freezeLine) {
-			this.info['line'] = parseInt(command, 10);
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__cutLine__',
-
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		if (!this.freezeLine) {
-			this.lines.pop();
-			this.info['line']--;
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__sp__',
-
-	{
-		group: 'ignore',
-		text: true
-	},
-
-	function () {
-		this.startInlineDir();
-	}
-);
-
-Snakeskin.addDirective(
-	'__switchLine__',
-
-	{
-		group: 'ignore'
-	},
-
-	function (command) {
-		var val = parseInt(command, 10);
-
-		this.startDir(null, {
-			line: this.info['line']
-		});
-
-		if (!this.freezeLine) {
-			this.info['line'] = val;
-		}
-	},
-
-	function () {
-		if (!this.freezeLine) {
-			var length =
-				this.info['line'] = this.structure.params.line;
-
-			for (var i = this.lines.length - 1; ++i < length;) {
-				this.lines.push('');
-			}
-		}
-	}
-);
+Snakeskin.addDirective("if", {
+  block: true,
+  notEmpty: true,
+  group: "if"
+}, function (command) {
+  this.startDir();
+  if (this.isReady()) {
+    this.append("if (" + this.prepareOutput(command, true) + ") {");
+  }
+}, function () {
+  this.append("}");
+});
+
+Snakeskin.addDirective("unless", {
+  block: true,
+  notEmpty: true,
+  group: "if"
+}, function (command) {
+  this.startDir();
+  if (this.isReady()) {
+    this.append("if (!(" + this.prepareOutput(command, true) + ")) {");
+  }
+}, function () {
+  this.append("}");
+});
+
+Snakeskin.addDirective("elseIf", {
+  notEmpty: true,
+  chain: ["if", "unless"]
+}, function (command) {
+  if (!this.getGroup("if")[this.structure.name]) {
+    return this.error("directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
+  }
+
+  if (this.isReady()) {
+    this.append("} else if (" + this.prepareOutput(command, true) + ") {");
+  }
+});
+
+Snakeskin.addDirective("elseUnless", {
+  notEmpty: true,
+  chain: ["if", "unless"]
+}, function (command) {
+  if (!this.getGroup("if")[this.structure.name]) {
+    return this.error("directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
+  }
+
+  if (this.isReady()) {
+    this.append("} else if (!(" + this.prepareOutput(command, true) + ")) {");
+  }
+});
+
+Snakeskin.addDirective("else", {
+  chain: ["if", "unless"]
+}, function (command) {
+  if (!this.getGroup("if")[this.structure.name]) {
+    return this.error("directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
+  }
+
+  if (command) {
+    var parts = command.split(" "), unless = parts[0] === "unless" ? "!" : "";
+
+    if (unless || parts[0] === "if") {
+      parts = parts.slice(1);
+    }
+
+    this.append("} else if (" + unless + "(" + this.prepareOutput(parts.join(" "), true) + ")) {");
+  } else {
+    this.append("} else {");
+  }
+});
+
+Snakeskin.addDirective("switch", {
+  block: true,
+  notEmpty: true,
+  inside: {
+    "case": true,
+    "default": true
+  }
+}, function (command) {
+  this.startDir();
+  if (this.isReady()) {
+    this.append("switch (" + this.prepareOutput(command, true) + ") {");
+  }
+}, function () {
+  this.append("}");
+});
+
+Snakeskin.addDirective("case", {
+  block: true,
+  notEmpty: true,
+  replacers: {
+    ">": function (cmd) {
+      return cmd.replace(">", "case ");
+    },
+    "/>": function (cmd) {
+      return cmd.replace("/>", "end case");
+    }
+  }
+}, function (command) {
+  this.startDir();
+
+  if (this.structure.parent.name !== "switch") {
+    return this.error("directive \"" + this.name + "\" can be used only within a \"switch\"");
+  }
+
+  if (this.isReady()) {
+    this.append("case " + this.prepareOutput(command, true) + ": {");
+  }
+}, function () {
+  this.append("} break;");
+});
+
+Snakeskin.addDirective("default", {
+  block: true
+}, function () {
+  this.startDir();
+
+  if (this.structure.parent.name !== "switch") {
+    return this.error("directive \"" + this.name + "\" can be used only within a \"switch\"");
+  }
+
+  this.append("default: {");
+}, function () {
+  this.append("}");
+});
+
+
+Snakeskin.addDirective("plain", {
+  sys: true,
+  placement: "template",
+  block: true,
+  selfInclude: false
+}, function () {
+  this.startDir();
+
+  if (this.autoReplace) {
+    this.autoReplace = false;
+    this.structure.params.enabled = true;
+  }
+}, function () {
+  if (this.structure.params.enabled) {
+    this.autoReplace = true;
+  }
+});
+
+
+Snakeskin.addDirective("__setError__", {}, function (command) {
+  this.error(this.pasteDangerBlocks(command));
+});
+
+Snakeskin.addDirective("__appendLine__", {
+  group: "ignore"
+}, function (command) {
+  if (!this.structure.parent) {
+    return this.error("directive \"cdata\" only be used only within a " + groupsList["template"].join(", "));
+  }
+
+  this.startInlineDir("cdata");
+  this.isSimpleOutput();
+
+  var val = parseInt(command, 10), line = this.info["line"];
+
+  this.info["line"] += val;
+  if (!this.proto) {
+    for (var i = -1; ++i < val;) {
+      this.lines[line + i] = "";
+    }
+  }
+});
+
+Snakeskin.addDirective("__setLine__", {
+  group: "ignore"
+}, function (command) {
+  this.startInlineDir();
+  if (!this.freezeLine) {
+    this.info["line"] = parseInt(command, 10);
+  }
+});
+
+Snakeskin.addDirective("__cutLine__", {
+  group: "ignore"
+}, function () {
+  this.startInlineDir();
+  if (!this.freezeLine) {
+    this.lines.pop();
+    this.info["line"]--;
+  }
+});
+
+Snakeskin.addDirective("__sp__", {
+  group: "ignore",
+  text: true
+}, function () {
+  this.startInlineDir();
+});
+
+Snakeskin.addDirective("__switchLine__", {
+  group: "ignore"
+}, function (command) {
+  var val = parseInt(command, 10);
+
+  this.startDir(null, {
+    line: this.info["line"]
+  });
+
+  if (!this.freezeLine) {
+    this.info["line"] = val;
+  }
+}, function () {
+  if (!this.freezeLine) {
+    var length = this.info["line"] = this.structure.params.line;
+
+    for (var i = this.lines.length - 1; ++i < length;) {
+      this.lines.push("");
+    }
+  }
+});
 
 
 /**
@@ -15548,374 +14482,294 @@ DirObj.prototype.anonI = 0;
  * @return {string}
  */
 DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
-	var tmp = [];
-	var str = '',
-		length = protoArgs.length;
+  var tmp = [];
+  var str = "", length = protoArgs.length;
 
-	for (var i = -1; ++i < length;) {
-		var val = this.prepareOutput(args[i] || 'void 0', true);
+  for (var i = -1; ++i < length;) {
+    var val = this.prepareOutput(args[i] || "void 0", true);
 
-		var arg = protoArgs[i][0],
-			def = protoArgs[i][1];
+    var arg = protoArgs[i][0], def = protoArgs[i][1];
 
-		if (def !== void 0) {
-			def = this.prepareOutput(def, true);
-		}
+    if (def !== void 0) {
+      def = this.prepareOutput(def, true);
+    }
 
-		arg = arg.replace(scopeModRgxp, '');
+    arg = arg.replace(scopeModRgxp, "");
 
-		if (protoArgs['__SNAKESKIN_TMP__needArgs'] && i === length - 1) {
-			if (length - 1 < args.length) {
-				tmp = tmp.concat(args.slice(length - 1, args.length));
-			}
+    if (protoArgs["__SNAKESKIN_TMP__needArgs"] && i === length - 1) {
+      if (length - 1 < args.length) {
+        tmp = tmp.concat(args.slice(length - 1, args.length));
+      }
 
-			str += /* cbws */((" var " + arg) + (" = [" + (tmp.join())) + ("]; " + arg) + ".callee = __CALLEE__; ");
+      str += /* cbws */"var " + arg + " = [" + tmp.join() + "];" + arg + ".callee = __CALLEE__;";
+    } else {
+      tmp.push(arg);
+      str += /* cbws */"var " + arg + " = " + (def !== void 0 ? val ? "" + val + " != null ? " + val + " : " + this.prepareOutput(def, true) : def : val || "void 0") + ";";
+    }
+  }
 
-		} else {
-			tmp.push(arg);
-			str += /* cbws */((" var " + arg) + (" = " + (def !== void 0 ?
-val ? (("" + val) + (" != null ? " + val) + (" : " + (this.prepareOutput(def, true))) + "") : def : val || 'void 0')) + "; ");
-		}
-	}
-
-	return str;
+  return str;
 };
 
-var anonRgxp = /^__ANONYMOUS__/,
-	callProtoRgxp = /=>/;
-
-Snakeskin.addDirective(
-	'proto',
-
-	{
-		sys: true,
-		block: true,
-		notEmpty: true,
-		group: [
-			'template',
-			'define',
-			'inherit',
-			'blockInherit'
-		]
-	},
-
-	function (command, commandLength) {
-		var name = this.getFnName(command, true),
-			tplName = this.tplName;
-
-		if (!name) {
-			if (!tplName || !callProtoRgxp.test(command)) {
-				return this.error((("invalid \"" + (this.name)) + "\" name"));
-			}
-
-			name = ("__ANONYMOUS__" + (this.anonI));
-			this.anonI++;
-
-			var tmpLength = command.length;
-			command = name + this.source.substring(this.i - tmpLength, this.i);
-			commandLength += name.length;
-
-			this.source = this.source.substring(0, this.i - tmpLength) +
-				name +
-				this.source.substring(this.i - tmpLength);
-
-			this.i += name.length;
-		}
-
-		var parts = name.split('->');
-
-		if (parts[1]) {
-			name = parts[1].trim();
-
-			if (!tplName) {
-				if (this.structure.parent) {
-					this.error(("directive \"outer proto\" can be used only within the global space"));
-					return;
-				}
-
-				try {
-					tplName =
-						this.tplName = this.prepareNameDecl(parts[0]);
-
-				} catch (err) {
-					return this.error(err.message);
-				}
-
-				if (tplName in extMap) {
-					delete extMap[tplName];
-					clearScopeCache(tplName);
-				}
-
-				var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
-					text: ''
-				};
-
-				desc.startLine = this.info['line'];
-				desc.i = this.i + 1;
-
-				this.outerLink = name;
-			}
-
-		} else if (!this.outerLink && !this.tplName) {
-			return this.error((("directive \"" + (this.name)) + ("\" can be used only within a " + (groupsList['template'].join(', '))) + ""));
-		}
-
-		if (!name || !tplName || callBlockNameRgxp.test(name)) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
-		var scope =
-			scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {};
-
-		var parentScope,
-			parentTplName = extMap[tplName];
-
-		if (parentTplName) {
-			parentScope =
-				scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
-		}
-
-		var current = scope[name];
-		if (!scope[name]) {
-			current =
-				scope[name] = {
-					id: this.module.id,
-					children: {}
-				};
-		}
-
-		if (!this.outerLink && !current.root) {
-			var parent = parentScope &&
-				parentScope[name];
-
-			current.parent = parent;
-			current.overridden = Boolean(parentTplName && this.parentTplName);
-			current.root = parent ?
-				parent.root : scope[name];
-
-			if (parent) {
-				parent.children[tplName] = scope[name];
-			}
-		}
-
-		var start = this.i - this.startTemplateI;
-		this.startDir(null, {
-			name: name,
-			startTemplateI: this.i + 1,
-			from: this.i - this.getDiff(commandLength),
-			fromBody: start + 1,
-			line: this.info['line'],
-			sysSpace: this.sysSpace,
-			strongSpace: this.strongSpace,
-			chainSpace: this.chainSpace,
-			space: this.space
-		});
-
-		if (this.isAdvTest()) {
-			var dir = String(this.name);
-
-			if (protoCache[tplName][name] && !anonRgxp.test(name)) {
-				return this.error((("proto \"" + name) + "\" is already defined"));
-			}
-
-			var output = command.split('=>')[1],
-				ouptupCache = this.getBlockOutput(dir);
-
-			if (output != null) {
-				ouptupCache[name] = output;
-			}
-
-			var args = this.prepareArgs(
-				command,
-				dir,
-				null,
-				this.parentTplName,
-				name
-			);
-
-			protoCache[tplName][name] = {
-				length: commandLength,
-				from: start - this.getDiff(commandLength),
-				args: args.list,
-				scope: args.scope,
-				calls: {},
-				needPrfx: this.needPrfx,
-				output: output
-			};
-		}
-
-		if (!this.parentTplName) {
-			this.protoStart = true;
-		}
-	},
-
-	function (command, commandLength) {
-		var tplName = this.tplName,
-			struct = this.structure;
-
-		var vars = struct.vars,
-			params = struct.params,
-			name = params.name,
-			diff = this.getDiff(commandLength);
-
-		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-			e = RIGHT_BLOCK;
-
-		var space = this.space,
-			nl = this.lineSeparator;
-
-		this.sysSpace = params.sysSpace;
-		this.strongSpace = params.strongSpace;
-		this.chainSpace = params.chainSpace;
-		this.space = params.space;
-
-		if (this.outerLink === name) {
-			var obj = this.preDefs[tplName],
-				i = Number(obj.i);
-
-			obj.text += /* cbws */((" " + nl) + ("" + (this.source.substring(params.from, i))) + (" " + s) + ("__cutLine__" + e) + ("  " + s) + ("__switchLine__ " + (obj.startLine)) + ("" + e) + (" " + (this.source.substring(i, this.i - diff))) + (" " + s) + ("__end__" + e) + ("  " + nl) + ("" + (this.source.substring(this.i - diff, this.i + 1))) + (" " + s) + ("__cutLine__" + e) + " ");
-
-			this.outerLink = null;
-			this.tplName = null;
-
-			if (!this.hasParentBlock('proto')) {
-				this.protoStart = false;
-			}
-
-		} else if (!this.outerLink) {
-			var proto = protoCache[tplName][name],
-				start = this.i - this.startTemplateI;
-
-			if (this.isAdvTest()) {
-				var scope = proto.scope;
-
-				proto.to = start + 1;
-				proto.content = this.source
-					.substring(this.startTemplateI)
-					.substring(params.fromBody, start - diff);
-
-				fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
-
-				// Рекурсивно анализируем прототипы блоков
-				proto.body = Snakeskin.compile(
-					(
-						(("" + s) + ("template " + tplName) + ("()" + e) + "") +
-							(scope ? (("" + s) + ("with " + scope) + ("" + e) + "") : '') +
-
-								(("" + s) + ("var __I_PROTO__ = 1" + e) + "") +
-								(("" + s) + ("__protoWhile__ __I_PROTO__--" + e) + "") +
-									(("" + s) + ("__setLine__ " + (params.line)) + ("" + e) + "") +
-									this.source.substring(params.startTemplateI, this.i - diff) +
-								(("" + s) + ("__end__" + e) + "") +
-
-							(scope ? (("" + s) + ("end" + e) + "") : '') +
-						(("" + s) + ("end" + e) + "")
-					).trim(),
-
-					{
-						inlineIterators: this.inlineIterators,
-						renderMode: this.renderMode,
-						replaceUndef: this.replaceUndef,
-						escapeOutput: this.escapeOutput,
-						doctype: this.doctype,
-						autoReplace: this.autoReplace,
-						macros: this.macros,
-						language: this.language,
-						localization: this.localization,
-						lineSeparator: this.lineSeparator,
-						tolerateWhitespace: this.tolerateWhitespace,
-						throws: this.throws
-					},
-
-					null,
-
-					{
-						parent: this,
-						lines: this.lines.slice(),
-						needPrfx: this.needPrfx,
-						scope: this.scope.slice(),
-						vars: struct.vars,
-						consts: this.consts,
-						proto: {
-							name: name,
-							recursive: params.recursive,
-							parentTplName: this.parentTplName,
-							pos: this.res.length,
-							ctx: this,
-							sysSpace: this.sysSpace,
-							strongSpace: this.strongSpace,
-							chainSpace: this.chainSpace,
-							space: this.space
-						}
-					}
-				);
-			}
-
-			// Применение обратных прототипов
-			var back = this.backTable[name];
-			if (back && !back.protoStart) {
-				var args = proto.args,
-					fin = true;
-
-				for (var i$12 = -1; ++i$12 < back.length;) {
-					var el = back[i$12];
-
-					if (this.canWrite) {
-						if (!el.outer) {
-							this.res = this.res.substring(0, el.pos) +
-								this.returnProtoArgs(args, el.args) +
-								protoCache[tplName][name].body +
-								this.res.substring(el.pos);
-
-						} else {
-							struct.vars = el.vars;
-							el.argsStr = this.returnProtoArgs(args, el.args);
-							struct.vars = vars;
-							fin = false;
-						}
-					}
-				}
-
-				if (fin) {
-					delete this.backTable[name];
-					this.backTableI--;
-				}
-			}
-
-			if (this.protoStart && !this.outerLink && !this.hasParentBlock('proto')) {
-				this.protoStart = false;
-			}
-
-			if (proto) {
-				var ouptupCache = this.getBlockOutput('proto');
-				if (ouptupCache[name] != null && this.isSimpleOutput()) {
-					struct.vars = struct.parent.vars;
-
-					this.save(
-						this.returnProtoArgs(
-							proto.args,
-							this.getFnArgs((("(" + (ouptupCache[name])) + ")"))
-						) +
-
-						proto.body
-					);
-
-					struct.vars = vars;
-				}
-
-				this.text = !space;
-			}
-		}
-	}
-);
+var anonRgxp = /^__ANONYMOUS__/, callProtoRgxp = /=>/;
+
+Snakeskin.addDirective("proto", {
+  sys: true,
+  block: true,
+  notEmpty: true,
+  group: ["template", "define", "inherit", "blockInherit"]
+}, function (command, commandLength) {
+  var name = this.getFnName(command, true), tplName = this.tplName;
+
+  if (!name) {
+    if (!tplName || !callProtoRgxp.test(command)) {
+      return this.error("invalid \"" + this.name + "\" name");
+    }
+
+    name = "__ANONYMOUS__" + this.anonI;
+    this.anonI++;
+
+    var tmpLength = command.length;
+    command = name + this.source.substring(this.i - tmpLength, this.i);
+    commandLength += name.length;
+
+    this.source = this.source.substring(0, this.i - tmpLength) + name + this.source.substring(this.i - tmpLength);
+
+    this.i += name.length;
+  }
+
+  var parts = name.split("->");
+
+  if (parts[1]) {
+    name = parts[1].trim();
+
+    if (!tplName) {
+      if (this.structure.parent) {
+        this.error("directive \"outer proto\" can be used only within the global space");
+        return;
+      }
+
+      try {
+        tplName = this.tplName = this.prepareNameDecl(parts[0]);
+      } catch (err) {
+        return this.error(err.message);
+      }
+
+      if (tplName in extMap) {
+        delete extMap[tplName];
+        clearScopeCache(tplName);
+      }
+
+      var desc = this.preDefs[tplName] = this.preDefs[tplName] || {
+        text: ""
+      };
+
+      desc.startLine = this.info["line"];
+      desc.i = this.i + 1;
+
+      this.outerLink = name;
+    }
+  } else if (!this.outerLink && !this.tplName) {
+    return this.error("directive \"" + this.name + "\" can be used only within a " + groupsList["template"].join(", "));
+  }
+
+  if (!name || !tplName || callBlockNameRgxp.test(name)) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
+
+  var scope = scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {};
+
+  var parentScope, parentTplName = extMap[tplName];
+
+  if (parentTplName) {
+    parentScope = scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
+  }
+
+  var current = scope[name];
+  if (!scope[name]) {
+    current = scope[name] = {
+      id: this.module.id,
+      children: {}
+    };
+  }
+
+  if (!this.outerLink && !current.root) {
+    var parent = parentScope && parentScope[name];
+
+    current.parent = parent;
+    current.overridden = Boolean(parentTplName && this.parentTplName);
+    current.root = parent ? parent.root : scope[name];
+
+    if (parent) {
+      parent.children[tplName] = scope[name];
+    }
+  }
+
+  var start = this.i - this.startTemplateI;
+  this.startDir(null, {
+    name: name,
+    startTemplateI: this.i + 1,
+    from: this.i - this.getDiff(commandLength),
+    fromBody: start + 1,
+    line: this.info["line"],
+    sysSpace: this.sysSpace,
+    strongSpace: this.strongSpace,
+    chainSpace: this.chainSpace,
+    space: this.space
+  });
+
+  if (this.isAdvTest()) {
+    var dir = String(this.name);
+
+    if (protoCache[tplName][name] && !anonRgxp.test(name)) {
+      return this.error("proto \"" + name + "\" is already defined");
+    }
+
+    var output = command.split("=>")[1], ouptupCache = this.getBlockOutput(dir);
+
+    if (output != null) {
+      ouptupCache[name] = output;
+    }
+
+    var args = this.prepareArgs(command, dir, null, this.parentTplName, name);
+
+    protoCache[tplName][name] = {
+      length: commandLength,
+      from: start - this.getDiff(commandLength),
+      args: args.list,
+      scope: args.scope,
+      calls: {},
+      needPrfx: this.needPrfx,
+      output: output
+    };
+  }
+
+  if (!this.parentTplName) {
+    this.protoStart = true;
+  }
+}, function (command, commandLength) {
+  var tplName = this.tplName, struct = this.structure;
+
+  var vars = struct.vars, params = struct.params, name = params.name, diff = this.getDiff(commandLength);
+
+  var s = (this.needPrfx ? ADV_LEFT_BLOCK : "") + LEFT_BLOCK, e = RIGHT_BLOCK;
+
+  var space = this.space, nl = this.lineSeparator;
+
+  this.sysSpace = params.sysSpace;
+  this.strongSpace = params.strongSpace;
+  this.chainSpace = params.chainSpace;
+  this.space = params.space;
+
+  if (this.outerLink === name) {
+    var obj = this.preDefs[tplName], i = Number(obj.i);
+
+    obj.text += /* cbws */"" + nl + "" + this.source.substring(params.from, i) + "" + s + "__cutLine__" + e + "" + s + "__switchLine__ " + obj.startLine + "" + e + "" + this.source.substring(i, this.i - diff) + "" + s + "__end__" + e + "" + nl + "" + this.source.substring(this.i - diff, this.i + 1) + "" + s + "__cutLine__" + e + "";
+
+    this.outerLink = null;
+    this.tplName = null;
+
+    if (!this.hasParentBlock("proto")) {
+      this.protoStart = false;
+    }
+  } else if (!this.outerLink) {
+    var proto = protoCache[tplName][name], start = this.i - this.startTemplateI;
+
+    if (this.isAdvTest()) {
+      var scope = proto.scope;
+
+      proto.to = start + 1;
+      proto.content = this.source.substring(this.startTemplateI).substring(params.fromBody, start - diff);
+
+      fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
+
+      // Рекурсивно анализируем прототипы блоков
+      proto.body = Snakeskin.compile(("" + s + "template " + tplName + "()" + e + (scope ? "" + s + "with " + scope + "" + e : "") + ("" + s + "var __I_PROTO__ = 1" + e) + ("" + s + "__protoWhile__ __I_PROTO__--" + e) + ("" + s + "__setLine__ " + params.line + "" + e) + this.source.substring(params.startTemplateI, this.i - diff) + ("" + s + "__end__" + e) + (scope ? "" + s + "end" + e : "") + ("" + s + "end" + e)).trim(), {
+        inlineIterators: this.inlineIterators,
+        renderMode: this.renderMode,
+        replaceUndef: this.replaceUndef,
+        escapeOutput: this.escapeOutput,
+        doctype: this.doctype,
+        autoReplace: this.autoReplace,
+        macros: this.macros,
+        language: this.language,
+        localization: this.localization,
+        lineSeparator: this.lineSeparator,
+        tolerateWhitespace: this.tolerateWhitespace,
+        throws: this.throws
+      }, null, {
+        parent: this,
+        lines: this.lines.slice(),
+        needPrfx: this.needPrfx,
+        scope: this.scope.slice(),
+        vars: struct.vars,
+        consts: this.consts,
+        proto: {
+          name: name,
+          recursive: params.recursive,
+          parentTplName: this.parentTplName,
+          pos: this.res.length,
+          ctx: this,
+          sysSpace: this.sysSpace,
+          strongSpace: this.strongSpace,
+          chainSpace: this.chainSpace,
+          space: this.space
+        }
+      });
+    }
+
+    // Применение обратных прототипов
+    var back = this.backTable[name];
+    if (back && !back.protoStart) {
+      var args = proto.args, fin = true;
+
+      for (var i = -1; ++i < back.length;) {
+        var el = back[i];
+
+        if (this.canWrite) {
+          if (!el.outer) {
+            this.res = this.res.substring(0, el.pos) + this.returnProtoArgs(args, el.args) + protoCache[tplName][name].body + this.res.substring(el.pos);
+          } else {
+            struct.vars = el.vars;
+            el.argsStr = this.returnProtoArgs(args, el.args);
+            struct.vars = vars;
+            fin = false;
+          }
+        }
+      }
+
+      if (fin) {
+        delete this.backTable[name];
+        this.backTableI--;
+      }
+    }
+
+    if (this.protoStart && !this.outerLink && !this.hasParentBlock("proto")) {
+      this.protoStart = false;
+    }
+
+    if (proto) {
+      var ouptupCache = this.getBlockOutput("proto");
+      if (ouptupCache[name] != null && this.isSimpleOutput()) {
+        struct.vars = struct.parent.vars;
+
+        this.save(this.returnProtoArgs(proto.args, this.getFnArgs("(" + ouptupCache[name] + ")")) + proto.body);
+
+        struct.vars = vars;
+      }
+
+      this.text = !space;
+    }
+  }
+});
 
 /**
  * Таблица обратных вызовов прототипа
  */
 DirObj.prototype.backTable = {
-	init: function() {
-		return {};
-	}
+  init: function init() {
+    return {};
+  }
 };
 
 /**
@@ -15925,107 +14779,88 @@ DirObj.prototype.backTable = {
  */
 DirObj.prototype.backTableI = 0;
 
-Snakeskin.addDirective(
-	'apply',
+Snakeskin.addDirective("apply", {
+  placement: "template",
+  notEmpty: true,
+  text: true,
+  replacers: {
+    "+=": function (cmd) {
+      return cmd.replace("+=", "apply ");
+    }
+  }
+}, function (command) {
+  this.startInlineDir();
+  if (this.isSimpleOutput()) {
+    var tplName = this.tplName;
+    var name = this.getFnName(command), args = this.getFnArgs(command);
 
-	{
-		placement: 'template',
-		notEmpty: true,
-		text: true,
-		replacers: {
-			'+=': function(cmd)  {return cmd.replace('+=', 'apply ')}
-		}
-	},
+    if (name === "&" && this.proto) {
+      name = this.proto.name;
+    }
 
-	function (command) {
-		this.startInlineDir();
-		if (this.isSimpleOutput()) {
-			var tplName = this.tplName;
-			var name = this.getFnName(command),
-				args = this.getFnArgs(command);
+    var _cache2 = protoCache[tplName];
+    var proto = _cache2[name], argsStr = "";
 
-			if (name === '&' && this.proto) {
-				name = this.proto.name;
-			}
+    if (proto) {
+      argsStr = this.returnProtoArgs(proto.args, args);
+    }
 
-			var cache = protoCache[tplName];
-			var proto = cache[name],
-				argsStr = '';
+    var selfProto = this.proto;
+    if (selfProto && proto && proto.calls[selfProto.name]) {
+      return this.error("invalid form of recursion for the proto (apply \"" + name + "\" inside \"" + selfProto.name + "\")");
+    }
 
-			if (proto) {
-				argsStr = this.returnProtoArgs(proto.args, args);
-			}
+    // Рекурсивный вызов прототипа
+    if (selfProto && selfProto.name === name) {
+      this.save(argsStr + this.prepareOutput("__I_PROTO__++", true) + ";");
 
-			var selfProto = this.proto;
-			if (selfProto && proto && proto.calls[selfProto.name]) {
-				return this.error((("invalid form of recursion for the proto (apply \"" + name) + ("\" inside \"" + (selfProto.name)) + "\")"));
-			}
+      // Попытка применить не объявленный прототип
+      // (запоминаем место вызова, чтобы вернуться к нему,
+      //     когда прототип будет объявлен)
+    } else if (!proto || !proto.body) {
+      var back = this.backTable;
 
-			// Рекурсивный вызов прототипа
-			if (selfProto && selfProto.name === name) {
-				this.save(argsStr + this.prepareOutput('__I_PROTO__++', true) + ';');
+      if (!back[name]) {
+        back[name] = [];
+        back[name].protoStart = this.protoStart;
+        this.backTableI++;
+      }
 
-			// Попытка применить не объявленный прототип
-			// (запоминаем место вызова, чтобы вернуться к нему,
-			//     когда прототип будет объявлен)
-			} else if (!proto || !proto.body) {
-				var back = this.backTable;
+      var rand = Math.random().toString(), key = "" + tplName.replace(/([.\[])/g, "\\$1") + "_" + name + "_" + rand.replace(".", "\\.");
 
-				if (!back[name]) {
-					back[name] = [];
-					back[name].protoStart = this.protoStart;
-					this.backTableI++;
-				}
+      back[name].push({
+        proto: selfProto ? _cache2[selfProto.name] : null,
 
-				var rand = Math.random().toString(),
-					key = (("" + (tplName.replace(/([.\[])/g, '\\$1'))) + ("_" + name) + ("_" + (rand.replace('.', '\\.'))) + "");
+        pos: this.res.length,
+        label: new RegExp("\\/\\* __APPLY__" + key + " \\*\\/"),
 
-				back[name].push({
-					proto: selfProto ?
-						cache[selfProto.name] : null,
+        args: args,
+        recursive: Boolean(proto)
+      });
 
-					pos: this.res.length,
-					label: new RegExp((("\\/\\* __APPLY__" + key) + " \\*\\/")),
+      this.save("/* __APPLY__" + tplName + "_" + name + "_" + rand + " */");
 
-					args: args,
-					recursive: Boolean(proto)
-				});
+      if (selfProto && !proto) {
+        _cache2[selfProto.name].calls[name] = true;
+      }
+    } else {
+      this.save(argsStr + proto.body);
+    }
+  }
+});
 
-				this.save((("/* __APPLY__" + tplName) + ("_" + name) + ("_" + rand) + " */"));
-
-				if (selfProto && !proto) {
-					cache[selfProto.name].calls[name] = true;
-				}
-
-			} else {
-				this.save(argsStr + proto.body);
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__protoWhile__',
-
-	{
-
-	},
-
-	function (command) {
-		this.startDir();
-		if (this.isSimpleOutput()) {
-			var i = this.prepareOutput('__I_PROTO__', true);
-			protoCache[this.tplName][this.proto.name].i = i;
-			this.save((("" + i) + (":while (" + (this.prepareOutput(command, true))) + ") {"));
-		}
-	},
-
-	function () {
-		if (this.isSimpleOutput()) {
-			this.save('}');
-		}
-	}
-);
+Snakeskin.addDirective("__protoWhile__", {}, function (command) {
+  this.startDir();
+  if (this.isSimpleOutput()) {
+    var i = this.prepareOutput("__I_PROTO__", true);
+    protoCache[this.tplName][this.proto.name].i = i;
+    this.save("" + i + ":while (" + this.prepareOutput(command, true) + ") {");
+  }
+}, function () {
+  if (this.isSimpleOutput()) {
+    this.save("}");
+  }
+});
 
 
 /**
@@ -16034,573 +14869,463 @@ Snakeskin.addDirective(
  */
 DirObj.prototype.deferReturn = 0;
 
-Snakeskin.addDirective(
-	'return',
+Snakeskin.addDirective("return", {
+  placement: "template"
+}, function (command) {
+  this.startInlineDir();
+  if (!this.tolerateWhitespace) {
+    this.skipSpace = true;
+  }
 
-	{
-		placement: 'template'
-	},
+  if (this.isReady()) {
+    var cb = this.hasParent(this.getGroup("callback"));
+    var val = command ? this.prepareOutput(command, true) : this.returnResult();
 
-	function (command) {
-		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
+    if (cb) {
+      var str = "";
+      var def = /* cbws */"__RETURN__ = true;__RETURN_VAL__ = " + val + ";";
 
-		if (this.isReady()) {
-			var cb = this.hasParent(this.getGroup('callback'));
-			var val = command ?
-				this.prepareOutput(command, true) : this.returnResult();
+      var asyncParent = undefined;
+      if (cb === "callback") {
+        asyncParent = this.hasParent(this.getGroup("async"));
+      }
 
-			if (cb) {
-				var str = '';
-				var def = /* cbws */((" __RETURN__ = true; __RETURN_VAL__ = " + val) + "; ");
+      if (asyncParent) {
+        if (this.getGroup("Async")[asyncParent]) {
+          str += def;
 
-				var asyncParent;
-				if (cb === 'callback') {
-					asyncParent = this.hasParent(this.getGroup('async'));
-				}
+          if (asyncParent === "waterfall") {
+            str += "return arguments[arguments.length - 1](__RETURN_VAL__);";
+          } else {
+            str += /* cbws */"if (typeof arguments[0] === 'function') {return arguments[0](__RETURN_VAL__);}return false;";
+          }
+        } else {
+          str += "return false;";
+        }
+      } else {
+        if (!this.getGroup("basicAsync")[cb]) {
+          str += /* cbws */"__RETURN__ = true;__RETURN_VAL__ = " + val + ";";
+        }
 
-				if (asyncParent) {
-					if (this.getGroup('Async')[asyncParent]) {
-						str += def;
+        str += "return false;";
+        this.deferReturn = cb !== "final" ? 1 : 0;
+      }
 
-						if (asyncParent === 'waterfall') {
-							str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
-
-						} else {
-							str += /* cbws */(" if (typeof arguments[0] === 'function') { return arguments[0](__RETURN_VAL__); }  return false; ");
-						}
-
-					} else {
-						str += 'return false;'
-					}
-
-				} else {
-					if (!this.getGroup('basicAsync')[cb]) {
-						str += /* cbws */((" __RETURN__ = true; __RETURN_VAL__ = " + val) + "; ");
-					}
-
-					str += 'return false;';
-					this.deferReturn = cb !== 'final' ?
-						1 : 0;
-				}
-
-				this.append(str);
-
-			} else {
-				this.append((("return " + val) + ";"));
-			}
-		}
-	}
-);
+      this.append(str);
+    } else {
+      this.append("return " + val + ";");
+    }
+  }
+});
 
 
-(function()  {
-	var types = {
-		'js': 'text/javascript',
-		'dart': 'application/dart',
-		'coffee': 'application/coffeescript',
-		'ts': 'application/typescript',
-		'cljs': 'application/clojurescript',
-		'ls': 'application/livescript',
-		'json': 'application/json',
-		'html': 'text/html'
-	};
+(function () {
+  var types = {
+    "js": "text/javascript",
+    "dart": "application/dart",
+    "coffee": "application/coffeescript",
+    "ts": "application/typescript",
+    "cljs": "application/clojurescript",
+    "ls": "application/livescript",
+    "json": "application/json",
+    "html": "text/html"
+  };
 
-	Snakeskin.addDirective(
-		'script',
+  Snakeskin.addDirective("script", {
+    placement: "template",
+    block: true,
+    selfInclude: false
+  }, function (command) {
+    this.startDir();
 
-		{
-			placement: 'template',
-			block: true,
-			selfInclude: false
-		},
+    if (!this.tolerateWhitespace) {
+      this.skipSpace = true;
+    }
 
-		function (command) {
-			this.startDir();
+    if (this.autoReplace) {
+      this.autoReplace = false;
+      this.structure.params.autoReplace = true;
+    }
 
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
+    if (this.isReady()) {
+      if (command) {
+        command = command.replace(emptyCommandParamsRgxp, "js $1");
+      } else {
+        command = "js";
+      }
 
-			if (this.autoReplace) {
-				this.autoReplace = false;
-				this.structure.params.autoReplace = true;
-			}
+      var parts = splitBySpace(command), type = parts[0], dom = !this.domComment && this.renderMode === "dom";
 
-			if (this.isReady()) {
-				if (command) {
-					command = command.replace(emptyCommandParamsRgxp, 'js $1');
+      var str = undefined, desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
-				} else {
-					command = 'js';
-				}
+      if (dom) {
+        str = /* cbws */"__NODE__ = document.createElement('script');__NODE__.type = '" + desc + "';";
+      } else {
+        str = this.wrap("'<script type=\"" + desc + "\"'");
+      }
 
-				var parts = splitBySpace(command),
-					type = parts[0],
-					dom = !this.domComment && this.renderMode === 'dom';
+      this.append(str);
 
-				var str,
-					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
+      if (parts.length > 1) {
+        /** @type {!Array} */
+        var args = _.any([].slice.call(arguments));
 
-				if (dom) {
-					str = /* cbws */((" __NODE__ = document.createElement('script'); __NODE__.type = '" + desc) + "'; ");
+        args[0] = parts.slice(1).join(" ");
+        args[1] = args[0].length;
 
-				} else {
-					str = this.wrap((("'<script type=\"" + desc) + "\"'"));
-				}
+        Snakeskin.Directions["attr"].apply(this, args);
+        this.inline = false;
+      }
 
-				this.append(str);
+      if (dom) {
+        str = this.returnPushNodeDecl();
+      } else {
+        str = this.wrap("'>'");
+      }
 
-				if (parts.length > 1) {
-					/** @type {!Array} */
-					var args = _.any([].slice.call(arguments));
+      this.append(str);
+    }
+  }, function () {
+    if (!this.tolerateWhitespace) {
+      this.skipSpace = true;
+    }
 
-					args[0] = parts.slice(1).join(' ');
-					args[1] = args[0].length;
+    if (this.structure.params.autoReplace) {
+      this.autoReplace = true;
+    }
 
-					Snakeskin.Directions['attr'].apply(this, args);
-					this.inline = false;
-				}
+    var str = undefined;
 
-				if (dom) {
-					str = this.returnPushNodeDecl();
+    if (!this.domComment && this.renderMode === "dom") {
+      str = "__RESULT__.pop();";
+    } else {
+      str = this.wrap("'</script>'");
+    }
 
-				} else {
-					str = this.wrap('\'>\'');
-				}
-
-				this.append(str);
-			}
-		},
-
-		function () {
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
-
-			if (this.structure.params.autoReplace) {
-				this.autoReplace = true;
-			}
-
-			var str;
-
-			if (!this.domComment && this.renderMode === 'dom') {
-				str = '__RESULT__.pop();';
-
-			} else {
-				str = this.wrap('\'</script>\'');
-			}
-
-			this.append(str);
-		}
-	);
+    this.append(str);
+  });
 })();
 
 
-Snakeskin.addDirective(
-	'set',
+Snakeskin.addDirective("set", {
+  notEmpty: true
+}, function (command) {
+  this.startInlineDir();
 
-	{
-		notEmpty: true
-	},
+  if (!this.getGroup("rootTemplate")[this.structure.parent.name]) {
+    return this.error("directive \"" + this.name + "\" can be used only within the top level of template");
+  }
 
-	function (command) {
-		this.startInlineDir();
+  var parts = command.split(" ");
 
-		if (!this.getGroup('rootTemplate')[this.structure.parent.name]) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only within the top level of template"));
-		}
+  if (parts.length < 2) {
+    return this.error("invalid \"" + this.name + "\" declaration");
+  }
 
-		var parts = command.split(' ');
-
-		if (parts.length < 2) {
-			return this.error((("invalid \"" + (this.name)) + "\" declaration"));
-		}
-
-		if (parts[0] === '&') {
-			this.bemRef = this.replaceTplVars(parts.slice(1).join(' '));
-		}
-	}
-);
+  if (parts[0] === "&") {
+    this.bemRef = this.replaceTplVars(parts.slice(1).join(" "));
+  }
+});
 
 
-Snakeskin.addDirective(
-	'ignoreWhitespaces',
+Snakeskin.addDirective("ignoreWhitespaces", {
+  placement: "template",
+  replacers: {
+    "&": function (cmd) {
+      return cmd.replace("&", "ignoreWhitespaces ");
+    }
+  }
+}, function () {
+  this.startInlineDir();
+  this.space = true;
+  this.prevSpace = true;
+});
 
-	{
-		placement: 'template',
-		replacers: {
-			'&': function(cmd)  {return cmd.replace('&', 'ignoreWhitespaces ')}
-		}
-	},
+Snakeskin.addDirective("ignoreAllWhitespaces", {
+  placement: "template",
+  replacers: {
+    "&+": function (cmd) {
+      return cmd.replace("&+", "ignoreAllWhitespaces ");
+    }
+  }
+}, function () {
+  this.startInlineDir();
+  this.strongSpace++;
+});
 
-	function () {
-		this.startInlineDir();
-		this.space = true;
-		this.prevSpace = true;
-	}
-);
+Snakeskin.addDirective("unIgnoreAllWhitespaces", {
+  placement: "template",
+  replacers: {
+    "&-": function (cmd) {
+      return cmd.replace("&-", "unIgnoreAllWhitespaces ");
+    }
+  }
+}, function () {
+  this.startInlineDir();
 
-Snakeskin.addDirective(
-	'ignoreAllWhitespaces',
+  if (this.strongSpace) {
+    this.strongSpace--;
 
-	{
-		placement: 'template',
-		replacers: {
-			'&+': function(cmd)  {return cmd.replace('&+', 'ignoreAllWhitespaces ')}
-		}
-	},
+    if (!this.strongSpace) {
+      this.space = false;
+    }
+  }
+});
 
-	function () {
-		this.startInlineDir();
-		this.strongSpace++;
-	}
-);
+Snakeskin.addDirective("__&+__", {
+  group: "ignore"
+}, function () {
+  this.startInlineDir();
+  if (!this.tolerateWhitespace) {
+    this.sysSpace = true;
+  }
+});
 
-Snakeskin.addDirective(
-	'unIgnoreAllWhitespaces',
+Snakeskin.addDirective("__&-__", {
+  group: "ignore"
+}, function () {
+  this.startInlineDir();
+  if (!this.tolerateWhitespace) {
+    this.sysSpace = false;
+  }
+});
 
-	{
-		placement: 'template',
-		replacers: {
-			'&-': function(cmd)  {return cmd.replace('&-', 'unIgnoreAllWhitespaces ')}
-		}
-	},
-
-	function () {
-		this.startInlineDir();
-
-		if (this.strongSpace) {
-			this.strongSpace--;
-
-			if (!this.strongSpace) {
-				this.space = false;
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__&+__',
-
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.sysSpace = true;
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__&-__',
-
-	{
-		group: 'ignore'
-	},
-
-	function () {
-		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.sysSpace = false;
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'sp',
-
-	{
-		text: true
-	},
-
-	function () {
-		this.startInlineDir();
-	}
-);
+Snakeskin.addDirective("sp", {
+  text: true
+}, function () {
+  this.startInlineDir();
+});
 
 
-(function()  {
-	var types = {
-		'css': 'text/css'
-	};
+(function () {
+  var types = {
+    "css": "text/css"
+  };
 
-	Snakeskin.addDirective(
-		'style',
+  Snakeskin.addDirective("style", {
+    placement: "template",
+    block: true,
+    selfInclude: false
+  }, function (command) {
+    this.startDir();
 
-		{
-			placement: 'template',
-			block: true,
-			selfInclude: false
-		},
+    if (!this.tolerateWhitespace) {
+      this.skipSpace = true;
+    }
 
-		function (command) {
-			this.startDir();
+    if (this.autoReplace) {
+      this.autoReplace = false;
+      this.structure.params.autoReplace = true;
+    }
 
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
+    if (this.isReady()) {
+      if (command) {
+        command = command.replace(emptyCommandParamsRgxp, "css $1");
+      } else {
+        command = "css";
+      }
 
-			if (this.autoReplace) {
-				this.autoReplace = false;
-				this.structure.params.autoReplace = true;
-			}
+      var parts = splitBySpace(command), type = parts[0], dom = !this.domComment && this.renderMode === "dom";
 
-			if (this.isReady()) {
-				if (command) {
-					command = command.replace(emptyCommandParamsRgxp, 'css $1');
+      var str = undefined, desc = types[type.toLowerCase()] || this.replaceTplVars(type);
 
-				} else {
-					command = 'css';
-				}
+      if (dom) {
+        str = /* cbws */"__NODE__ = document.createElement('style');__NODE__.type = '" + desc + "';";
+      } else {
+        str = this.wrap("'<style type=\"" + desc + "\"'");
+      }
 
-				var parts = splitBySpace(command),
-					type = parts[0],
-					dom = !this.domComment && this.renderMode === 'dom';
+      this.append(str);
 
-				var str,
-					desc = types[type.toLowerCase()] || this.replaceTplVars(type);
+      if (parts.length > 1) {
+        /** @type {!Array} */
+        var args = _.any([].slice.call(arguments));
 
-				if (dom) {
-					str = /* cbws */((" __NODE__ = document.createElement('style'); __NODE__.type = '" + desc) + "'; ");
+        args[0] = parts.slice(1).join(" ");
+        args[1] = args[0].length;
 
-				} else {
-					str = this.wrap((("'<style type=\"" + desc) + "\"'"));
-				}
+        Snakeskin.Directions["attr"].apply(this, args);
+        this.inline = false;
+      }
 
-				this.append(str);
+      if (dom) {
+        str = this.returnPushNodeDecl();
+      } else {
+        str = this.wrap("'>'");
+      }
 
-				if (parts.length > 1) {
-					/** @type {!Array} */
-					var args = _.any([].slice.call(arguments));
+      this.append(str);
+    }
+  }, function () {
+    if (!this.tolerateWhitespace) {
+      this.skipSpace = true;
+    }
 
-					args[0] = parts.slice(1).join(' ');
-					args[1] = args[0].length;
+    if (this.structure.params.autoReplace) {
+      this.autoReplace = true;
+    }
 
-					Snakeskin.Directions['attr'].apply(this, args);
-					this.inline = false;
-				}
+    var str = undefined;
 
-				if (dom) {
-					str = this.returnPushNodeDecl();
+    if (!this.domComment && this.renderMode === "dom") {
+      str = "__RESULT__.pop();";
+    } else {
+      str = this.wrap("'</style>'");
+    }
 
-				} else {
-					str = this.wrap('\'>\'');
-				}
-
-				this.append(str);
-			}
-		},
-
-		function () {
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
-
-			if (this.structure.params.autoReplace) {
-				this.autoReplace = true;
-			}
-
-			var str;
-
-			if (!this.domComment && this.renderMode === 'dom') {
-				str = '__RESULT__.pop();';
-
-			} else {
-				str = this.wrap('\'</style>\'');
-			}
-
-			this.append(str);
-		}
-	);
+    this.append(str);
+  });
 })();
 
 
-Snakeskin.addDirective(
-	'super',
+Snakeskin.addDirective("super", {
+  placement: "template"
+}, function (command, commandLength) {
+  this.startInlineDir();
+  if (this.parentTplName && !this.outerLink) {
+    var map = this.getGroup("inherit"), obj = this.blockStructure;
 
-	{
-		placement: 'template'
-	},
+    var _cache3 = undefined, drop = undefined;
 
-	function (command, commandLength) {
-		this.startInlineDir();
-		if (this.parentTplName && !this.outerLink) {
-			var map = this.getGroup('inherit'),
-				obj = this.blockStructure;
+    while (true) {
+      if (map[obj.name]) {
+        var name = obj.params.name;
 
-			var cache,
-				drop;
+        _cache3 = routerCache[obj.name][this.parentTplName][name];
+        drop = this.blockTable["" + obj.name + "_" + name].drop;
 
-			while (true) {
-				if (map[obj.name]) {
-					var name = obj.params.name;
+        if (_cache3) {
+          break;
+        }
+      }
 
-					cache = routerCache[obj.name][this.parentTplName][name];
-					drop = this.blockTable[(("" + (obj.name)) + ("_" + name) + "")].drop;
+      if (obj.parent && obj.parent.name !== "root") {
+        obj = obj.parent;
+      } else {
+        break;
+      }
+    }
 
-					if (cache) {
-						break;
-					}
-				}
+    var s = (this.needPrfx ? ADV_LEFT_BLOCK : "") + LEFT_BLOCK, e = RIGHT_BLOCK;
 
-				if (obj.parent && obj.parent.name !== 'root') {
-					obj = obj.parent;
+    if (_cache3 && !drop) {
+      var diff = this.getDiff(commandLength);
 
-				} else {
-					break;
-				}
-			}
+      this.source = this.source.substring(0, this.i - diff) + ("/*!!= " + s + "super" + e + " =*/" + s + "__super__ " + this.info["line"] + "" + e + "" + _cache3.content + "" + (!this.tolerateWhitespace ? "" + s + "__&-__" + e : "") + "" + s + "__end__" + e) + this.source.substring(this.i + 1);
 
-			var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-				e = RIGHT_BLOCK;
+      this.i -= diff + 1;
+    }
+  }
+});
 
-			if (cache && !drop) {
-				var diff = this.getDiff(commandLength);
+Snakeskin.addDirective("__super__", {
+  group: "ignore"
+}, function (command) {
+  this.startDir();
 
-				this.source = this.source.substring(0, this.i - diff) +
-					(("/*!!= " + s) + ("super" + e) + (" =*/" + s) + ("__super__ " + (this.info['line'])) + ("" + e) + ("" + (cache.content)) + ("" + (!this.tolerateWhitespace ? (("" + s) + ("__&-__" + e) + "") : '')) + ("" + s) + ("__end__" + e) + "") +
-					this.source.substring(this.i + 1);
+  if (!command && !this.freezeLine) {
+    this.lines.pop();
+    this.info["line"]--;
+  }
 
-				this.i -= diff + 1;
-			}
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'__super__',
-
-	{
-		group: 'ignore'
-	},
-
-	function (command) {
-		this.startDir();
-
-		if (!command && !this.freezeLine) {
-			this.lines.pop();
-			this.info['line']--;
-		}
-
-		if (!command || this.lines.length >= parseInt(command, 10)) {
-			this.freezeLine++;
-		}
-	},
-
-	function () {
-		this.freezeLine--;
-	}
-);
+  if (!command || this.lines.length >= parseInt(command, 10)) {
+    this.freezeLine++;
+  }
+}, function () {
+  this.freezeLine--;
+});
 
 
 var emptyCommandParamsRgxp = /^([^\s]+?\(|\()/;
 
-Snakeskin.addDirective(
-	'tag',
+Snakeskin.addDirective("tag", {
+  block: true,
+  placement: "template",
+  text: true,
+  replacers: {
+    "<": function (cmd) {
+      return cmd.replace("<", "tag ");
+    },
+    "/<": function (cmd) {
+      return cmd.replace("/<", "end tag");
+    }
+  }
+}, function (command) {
+  this.startDir(null, {
+    bemRef: this.bemRef
+  });
 
-	{
-		block: true,
-		placement: 'template',
-		text: true,
-		replacers: {
-			'<': function(cmd)  {return cmd.replace('<', 'tag ')},
-			'/<': function(cmd)  {return cmd.replace('\/<', 'end tag')}
-		}
-	},
+  if (!this.tolerateWhitespace) {
+    this.skipSpace = true;
+  }
 
-	function (command) {
-		this.startDir(null, {
-			bemRef: this.bemRef
-		});
+  if (this.isReady()) {
+    if (command) {
+      command = command.replace(emptyCommandParamsRgxp, "div $1");
+    } else {
+      command = "div";
+    }
 
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
+    var parts = splitBySpace(command), desc = this.returnTagDesc(parts[0]);
 
-		if (this.isReady()) {
-			if (command) {
-				command = command.replace(emptyCommandParamsRgxp, 'div $1');
+    var params = this.structure.params;
 
-			} else {
-				command = 'div';
-			}
+    params.tag = desc.tag;
+    params.block = inlineTagMap[desc.tag] !== void 0 ? !inlineTagMap[desc.tag] : !desc.inline;
 
-			var parts = splitBySpace(command),
-				desc = this.returnTagDesc(parts[0]);
+    var _groups2 = this.splitAttrsGroup(parts.slice(1).join(" ")), dom = !this.domComment && this.renderMode === "dom";
 
-			var params = this.structure.params;
+    var str = /* cbws */"var __ATTR_TMP__ = {'class': ''};";
 
-			params.tag = desc.tag;
-			params.block = inlineTagMap[desc.tag] !== void 0 ?
-				!inlineTagMap[desc.tag] : !desc.inline;
+    if (dom) {
+      str += /* cbws */"$0 = __NODE__ = document.createElement('" + desc.tag + "');";
+    } else {
+      str += this.wrap("'<" + desc.tag + "'");
+    }
 
-			var groups = this.splitAttrsGroup(parts.slice(1).join(' ')),
-				dom = !this.domComment && this.renderMode === 'dom';
+    for (var i = -1; ++i < _groups2.length;) {
+      var el = _groups2[i];
+      str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
+    }
 
-			var str = /* cbws */(" var __ATTR_TMP__ = { 'class': '' }; ");
+    if (desc.id) {
+      if (dom) {
+        str += "__NODE__.id = '" + desc.id + "';";
+      } else {
+        str += this.wrap("' id=\"" + desc.id + "\"'");
+      }
+    }
 
-			if (dom) {
-				str += /* cbws */((" $0 = __NODE__ = document.createElement('" + (desc.tag)) + "'); ");
+    if (desc.classes.length) {
+      str += /* cbws */"__ATTR_TMP__['class'] += (__ATTR_TMP__['class'] ? ' ' : '') + '" + desc.classes.join(" ") + "';";
+    }
 
-			} else {
-				str += this.wrap((("'<" + (desc.tag)) + "'"));
-			}
+    if (dom) {
+      str += /* cbws */"if (__ATTR_TMP__['class']) {__NODE__.className = __ATTR_TMP__['class'];}" + this.returnPushNodeDecl(!params.block) + "";
+    } else {
+      str += this.wrap( /* cbws */"(__ATTR_TMP__['class'] ? ' class=\"' + __ATTR_TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === "xml" ? "/" : "") + ">'");
+    }
 
-			for (var i = -1; ++i < groups.length;) {
-				var el = groups[i];
-				str += this.returnAttrDecl(el.attr, el.group, el.separator, true);
-			}
+    this.append(str);
+  }
+}, function () {
+  var params = this.structure.params;
 
-			if (desc.id) {
-				if (dom) {
-					str += (("__NODE__.id = '" + (desc.id)) + "';");
+  this.bemRef = params.bemRef;
+  this.prevSpace = false;
 
-				} else {
-					str += this.wrap((("' id=\"" + (desc.id)) + "\"'"));
-				}
-			}
+  if (params.block) {
+    var str = undefined;
 
-			if (desc.classes.length) {
-				str += /* cbws */((" __ATTR_TMP__['class'] += (__ATTR_TMP__['class'] ? ' ' : '') + '" + (desc.classes.join(' '))) + "'; ");
-			}
+    if (!this.domComment && this.renderMode === "dom") {
+      str = /* cbws */"__RESULT__.pop();$0 = __RESULT__.length > 1 ?__RESULT__[__RESULT__.length - 1] : void 0;";
+    } else {
+      str = this.wrap("'</" + params.tag + ">'");
+    }
 
-			if (dom) {
-				str += /* cbws */((" if (__ATTR_TMP__['class']) { __NODE__.className = __ATTR_TMP__['class']; }  " + (this.returnPushNodeDecl(!params.block))) + " ");
-
-			} else {
-				str += this.wrap(/* cbws */((" (__ATTR_TMP__['class'] ? ' class=\"' + __ATTR_TMP__['class'] + '\"' : '') + '" + (!params.block && this.doctype === 'xml' ? '/' : '')) + ">' "));
-			}
-
-			this.append(str);
-		}
-	},
-
-	function () {
-		var params = this.structure.params;
-
-		this.bemRef = params.bemRef;
-		this.prevSpace = false;
-
-		if (params.block) {
-			var str;
-
-			if (!this.domComment && this.renderMode === 'dom') {
-				str = /* cbws */(" __RESULT__.pop(); $0 = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : void 0; ");
-
-			} else {
-				str = this.wrap((("'</" + (params.tag)) + ">'"));
-			}
-
-			this.append(str);
-		}
-	}
-);
+    this.append(str);
+  }
+});
 
 var parentLinkRgxp = /^&/;
 
@@ -16612,206 +15337,190 @@ var parentLinkRgxp = /^&/;
  * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
  */
 DirObj.prototype.returnTagDesc = function (str) {
-	str = this.replaceTplVars(str, false, true);
+  str = this.replaceTplVars(str, false, true);
 
-	var points = [],
-		types = [],
-		action = '';
+  var points = [], types = [], action = "";
 
-	var tag = '',
-		id = '',
-		inline = false;
+  var tag = "", id = "", inline = false;
 
-	var hasId = false;
-	var pseudo = [],
-		classes = [];
+  var hasId = false;
+  var pseudo = [], classes = [];
 
-	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
+  var s = ADV_LEFT_BLOCK + LEFT_BLOCK, e = RIGHT_BLOCK;
 
-	var bOpen = 0,
-		bStart = false;
+  var bOpen = 0, bStart = false;
 
-	var bMap = {
-		'[': true,
-		']': true
-	};
+  var bMap = {
+    "[": true,
+    "]": true
+  };
 
-	var sys = {
-		'#': true,
-		'.': true,
-		':': true
-	};
+  var sys = {
+    "#": true,
+    ".": true,
+    ":": true
+  };
 
-	var error = {
-		tag: '',
-		id: '',
-		classes: [],
-		pseudo: [],
-		inline: false
-	};
+  var error = {
+    tag: "",
+    id: "",
+    classes: [],
+    pseudo: [],
+    inline: false
+  };
 
-	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i);
+  for (var i = -1; ++i < str.length;) {
+    var el = str.charAt(i);
 
-		if (bMap[el]) {
-			if (el === '[') {
-				bOpen++;
-				bStart = true;
+    if (bMap[el]) {
+      if (el === "[") {
+        bOpen++;
+        bStart = true;
+      } else {
+        bOpen--;
+      }
 
-			} else {
-				bOpen--;
-			}
+      continue;
+    }
 
-			continue;
-		}
+    if (bStart && el !== ".") {
+      this.error("invalid syntax");
+      return error;
+    } else {
+      bStart = false;
+    }
 
-		if (bStart && el !== '.') {
-			this.error('invalid syntax');
-			return error;
+    if (sys[el] && (el !== "#" || !bOpen)) {
+      if (el === "#") {
+        if (hasId) {
+          this.error("invalid syntax");
+          return error;
+        }
 
-		} else {
-			bStart = false;
-		}
+        hasId = true;
+      }
 
-		if (sys[el] && (el !== '#' || !bOpen)) {
-			if (el === '#') {
-				if (hasId) {
-					this.error('invalid syntax');
-					return error;
-				}
+      tag = tag || "div";
+      action = el;
 
-				hasId = true;
-			}
+      if (el === ".") {
+        // Обработка липких ссылок
+        if (bOpen) {
+          if (points.length) {
+            for (var j = points.length; j--;) {
+              var point = points[j];
 
-			tag = tag || 'div';
-			action = el;
+              if (point) {
+                if (point.stage < bOpen) {
+                  var tmp = classes[j], pos = point.from;
 
-			if (el === '.') {
-				// Обработка липких ссылок
-				if (bOpen) {
-					if (points.length) {
-						for (var j = points.length; j--;) {
-							var point = points[j];
+                  if (point.val != null) {
+                    tmp = tmp.replace(parentLinkRgxp, point.val);
+                  }
 
-							if (point) {
-								if (point.stage < bOpen) {
-									var tmp = classes[j],
-										pos = point.from;
+                  while (points[pos] != null) {
+                    var parent = points[pos];
+                    tmp = tmp.replace(parentLinkRgxp, parent.val);
+                    pos = parent.from;
+                  }
 
-									if (point.val != null) {
-										tmp = tmp.replace(parentLinkRgxp, point.val)
-									}
+                  points.push({
+                    stage: bOpen,
+                    val: tmp,
+                    from: j
+                  });
 
-									while (points[pos] != null) {
-										var parent = points[pos];
-										tmp = tmp.replace(parentLinkRgxp, parent.val);
-										pos = parent.from;
-									}
+                  break;
+                }
+              } else {
+                points.push({
+                  stage: bOpen,
+                  val: classes[j],
+                  from: j
+                });
 
-									points.push({
-										stage: bOpen,
-										val: tmp,
-										from: j
-									});
+                break;
+              }
+            }
+          } else {
+            points.push({
+              stage: bOpen,
+              val: null,
+              from: null
+            });
+          }
+        } else {
+          points.push(null);
+        }
 
-									break;
-								}
+        types.push(!bOpen);
+        classes.push("");
+      } else if (el === ":") {
+        if (!inline) {
+          inline = pseudo[pseudo.length - 1] === "inline";
+        }
 
-							} else {
-								points.push({
-									stage: bOpen,
-									val: classes[j],
-									from: j
-								});
+        pseudo.push("");
+      }
 
-								break;
-							}
-						}
+      continue;
+    }
 
-					} else {
-						points.push({
-							stage: bOpen,
-							val: null,
-							from: null
-						});
-					}
+    switch (action) {
+      case "#":
+        id += el;
+        break;
 
-				} else {
-					points.push(null);
-				}
+      case ".":
+        classes[classes.length - 1] += el;
+        break;
 
-				types.push(!bOpen);
-				classes.push('');
+      case ":":
+        pseudo[pseudo.length - 1] += el;
+        break;
 
-			} else if (el === ':') {
-				if (!inline) {
-					inline = pseudo[pseudo.length - 1] === 'inline';
-				}
+      default:
+        tag += el;
+    }
+  }
 
-				pseudo.push('');
-			}
+  if (bOpen) {
+    this.error("invalid syntax");
+    return error;
+  }
 
-			continue;
-		}
+  var ref = this.bemRef;
 
-		switch (action) {
-			case '#':
-				id += el;
-				break;
+  for (var i = -1; ++i < classes.length;) {
+    var el = classes[i], point = points[i];
 
-			case '.':
-				classes[classes.length - 1] += el;
-				break;
+    if (point && point.val != null) {
+      el = el.replace(parentLinkRgxp, point.val);
+    }
 
-			case ':':
-				pseudo[pseudo.length - 1] += el;
-				break;
+    if (parentLinkRgxp.test(el) && ref) {
+      el = "" + s + "'" + ref + "'" + FILTER + "" + this.bemFilter + " '" + el.substring(1) + "',$0" + e;
+      el = this.pasteDangerBlocks(this.replaceTplVars(el));
+    } else if (el && types[i]) {
+      ref = this.pasteTplVarBlocks(el);
+    }
 
-			default:
-				tag += el;
-		}
-	}
+    classes[i] = this.pasteTplVarBlocks(el);
+  }
 
-	if (bOpen) {
-		this.error('invalid syntax');
-		return error;
-	}
+  this.bemRef = ref;
 
-	var ref = this.bemRef;
+  if (!inline) {
+    inline = pseudo[pseudo.length - 1] === "inline";
+  }
 
-	for (var i$13 = -1; ++i$13 < classes.length;) {
-		var el$2 = classes[i$13],
-			point$0 = points[i$13];
-
-		if (point$0 && point$0.val != null) {
-			el$2 = el$2.replace(parentLinkRgxp, point$0.val);
-		}
-
-		if (parentLinkRgxp.test(el$2) && ref) {
-			el$2 = (("" + s) + ("'" + ref) + ("'" + FILTER) + ("" + (this.bemFilter)) + (" '" + (el$2.substring(1))) + ("',$0" + e) + "");
-			el$2 = this.pasteDangerBlocks(this.replaceTplVars(el$2));
-
-		} else if (el$2 && types[i$13]) {
-			ref = this.pasteTplVarBlocks(el$2);
-		}
-
-		classes[i$13] = this.pasteTplVarBlocks(el$2);
-	}
-
-	this.bemRef = ref;
-
-	if (!inline) {
-		inline = pseudo[pseudo.length - 1] === 'inline';
-	}
-
-	return {
-		tag: this.pasteTplVarBlocks(tag),
-		id: this.pasteTplVarBlocks(id),
-		classes: classes,
-		pseudo: pseudo,
-		inline: inline
-	};
+  return {
+    tag: this.pasteTplVarBlocks(tag),
+    id: this.pasteTplVarBlocks(id),
+    classes: classes,
+    pseudo: pseudo,
+    inline: inline
+  };
 };
 
 
@@ -16857,620 +15566,495 @@ DirObj.prototype.consts = null;
  * Название родительского BEM класса
  * @type {string}
  */
-DirObj.prototype.bemRef = '';
+DirObj.prototype.bemRef = "";
 
-var template = ['template', 'interface', 'placeholder'],
-	scopeModRgxp = new RegExp((("^" + G_MOD) + "+"));
+var template = ["template", "interface", "placeholder"], scopeModRgxp = new RegExp("^" + G_MOD + "+");
 
 function concatProp(str) {
-	return str.charAt(0) === '[' ? str : ("." + str);
+  return str.charAt(0) === "[" ? str : "." + str;
 }
 
 for (var i = -1; ++i < template.length;) {
-	Snakeskin.addDirective(
-		template[i],
-
-		{
-			block: true,
-			placement: 'global',
-			notEmpty: true,
-			group: [
-				'template',
-				'rootTemplate',
-				'define'
-			]
-		},
-
-		function (command, commandLength, type, jsDoc) {var this$0 = this;
-			var lastName = '',
-				proto = this.proto;
-
-			var rank = {
-				'template': 2,
-				'interface': 1,
-				'placeholder': 0
-			};
-
-			this.startDir(
-				!proto && this.renderAs && rank[this.renderAs] < rank[type] ?
-					this.renderAs : null
-			);
-
-			var iface =
-				this.name === 'interface';
-
-			this.startTemplateI = this.i + 1;
-			this.startTemplateLine = this.info['line'];
-
-			var nameRgxp = new RegExp((("^[^" + symbols) + "_$[]"), 'i'),
-				esprimaNameHackRgxp = new RegExp((("[" + G_MOD) + ("" + L_MOD) + "]"), 'g');
-
-			var tmpTplName = this.getFnName(command),
-				tplName = this.pasteDangerBlocks(tmpTplName);
-
-			if (!proto) {
-				tmpTplName = this.replaceFileName(tmpTplName);
-
-				var prfx = '',
-					pos;
-
-				// Шаблон-генератор
-				if (/\*/.test(tmpTplName)) {
-					prfx = '*';
-					tmpTplName = tmpTplName.replace(prfx, '');
-				}
-
-				tplName = this.pasteDangerBlocks(tmpTplName);
-				this.generator = Boolean(prfx);
-
-				try {
-					if (!tplName || nameRgxp.test(tplName)) {
-						throw false;
-					}
-
-					esprima.parse(tplName.replace(esprimaNameHackRgxp, ''));
-
-				} catch (ignore) {
-					return this.error((("invalid \"" + (this.name)) + "\" name"));
-				}
-
-				if (tplName === 'init') {
-					return this.error((("can't declare template \"" + tplName) + "\", try another name"));
-				}
-
-				this.info['template'] =
-					this.tplName = tplName;
-
-				if (this.name !== 'template' && !write[tplName]) {
-					write[tplName] = false;
-				}
-
-				// Для возможности удобного пост-парсинга,
-				// каждая функция снабжается комментарием вида:
-				// /* Snakeskin template: название шаблона; параметры через запятую */
-				this.save(
-					(pos = (("/* Snakeskin template: " + tplName) + ("; " + (this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, ''))) + " */")),
-					iface,
-					jsDoc
-				);
-
-				if (jsDoc) {
-					jsDoc += pos.length;
-				}
-
-				var tmpArr = tmpTplName
-					.replace(nmssRgxp, '%')
-					.replace(nmsRgxp, '.%')
-					.replace(nmeRgxp, '')
-					.split('.');
-
-				var str = tmpArr[0],
-					length = tmpArr.length,
-					first = str.charAt(0),
-					short = '';
-
-				if (first === '%') {
-					try {
-						str = /* cbws */(("['" + (applyDefEscape(
-this.returnEvalVal(
-this.prepareOutput(str.substring(1), true)
-)
-))) + "']");
-
-					} catch (err) {
-						return this.error(err.message);
-					}
-
-				} else {
-					short = str;
-				}
-
-				for (var i = 0; ++i < length;) {
-					var el = tmpArr[i],
-						custom = el.charAt(0) === '%';
-
-					if (custom) {
-						el = el.substring(1);
-					}
-
-					var def = ("this" + (concatProp(str)));
-
-					this.save(
-						(pos = /* cbws */((" if (" + def) + (" == null) { " + def) + (" = {}; }  " + (i === 1 && short ? (("var " + short) + (" = " + def) + ";") : '')) + " ")),
-
-iface,
-jsDoc
-);
-
-if (jsDoc) {
-jsDoc += pos.length;
-}
-
-if (custom) {
-try {
-str += /* cbws */(("['" + (applyDefEscape(
-this.returnEvalVal(
-this.prepareOutput(el, true)
-)
-))) + "']");
-
-						} catch (err) {
-							return this.error(err.message);
-						}
-
-						continue;
-
-					} else if (i === length - 1) {
-						lastName = el;
-					}
-
-					str += ("." + el);
-				}
-
-				tplName = str;
-				this.save((("" + (length === 1 && short ? (("var " + short) + " = ") : '')) + ("this" + (concatProp(tplName))) + (" = function " + prfx) + ("" + (length > 1 ? lastName : short)) + "("), iface);
-			}
-
-			this.info['template'] =
-				this.tplName = tplName;
-
-			this.blockStructure = {
-				name: 'root',
-				parent: null,
-				children: []
-			};
-
-			this.blockTable = {};
-			this.varCache[tplName] = {};
-
-			if (proto) {
-				this.sysSpace = proto.sysSpace;
-				this.strongSpace = proto.strongSpace;
-				this.chainSpace = proto.chainSpace;
-				this.space = proto.space;
-				return;
-			}
-
-			// Валидация шаблона для наследования
-			var parentTplName;
-			if (/\)\s+extends\s+/.test(command)) {
-				try {
-					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/
-						.exec(command)[1]
-						.replace(/\s*@$/, '');
-
-					if (!parentTplName || nameRgxp.test(parentTplName)) {
-						throw false;
-					}
-
-					esprima.parse(parentTplName.replace(esprimaNameHackRgxp, ''));
-
-				} catch (ignore) {
-					return this.error((("invalid \"" + (this.name)) + "\" name for extend"));
-				}
-
-				try {
-					parentTplName =
-						this.parentTplName = this.prepareNameDecl(parentTplName);
-
-				} catch (err) {
-					return this.error(err.message);
-				}
-
-				if (cache[parentTplName] == null) {
-					if (!this.renderAs || this.renderAs === 'template') {
-						return this.error((("the specified template \"" + parentTplName) + "\" for inheritance is not defined"));
-					}
-
-					parentTplName =
-						this.parentTplName = null;
-				}
-			}
-
-			this.initTemplateCache(tplName);
-
-			if (tplName in extMap) {
-				clearScopeCache(tplName);
-			}
-
-			var scope = scopeCache['template'],
-				parent = scope[parentTplName];
-
-			scope[tplName] = {
-				id: this.module.id,
-				parent: parent,
-				children: {}
-			};
-
-			scope[tplName].root = parent ?
-				parent.root : scope[tplName];
-
-			if (parent) {
-				parent.children[tplName] = scope[tplName];
-			}
-
-			argsCache[tplName] = {};
-			argsResCache[tplName] = {};
-			outputCache[tplName] = {};
-
-			extMap[tplName] = parentTplName;
-			delete extListCache[tplName];
-
-			var baseParams = {};
-
-			if (!parentTplName) {
-				forIn(this.params[this.params.length - 1], function(el, key)  {
-					if (key !== 'renderAs' && key.charAt(0) !== '@' && el !== void 0) {
-						baseParams[key] = el;
-					}
-				});
-			}
-
-			var flags = command.split('@=');
-
-			if (parentTplName && flags.length === 1) {
-				flags.push('@skip true');
-			}
-
-			for (var i$14 = 0; ++i$14 < flags.length;) {
-				var el$3 = flags[i$14].trim(),
-					name = el$3.split(' ')[0];
-
-				delete baseParams[name];
-				Snakeskin.Directions['__setSSFlag__'].call(this, el$3);
-			}
-
-			forIn(baseParams, function(el, key)  {
-				Snakeskin.Directions['__setSSFlag__'].call(this$0, [key, el]);
-			});
-
-			var args = this.prepareArgs(command, 'template', tplName, parentTplName);
-			this.save((("" + (args.str)) + ") {"), iface);
-
-			if (args.scope) {
-				this.scope.push(args.scope);
-			}
-
-			var predefs = [
-				'callee',
-				'blocks',
-				'getTplResult',
-				'clearTplResult',
-				'$0',
-				'TPL_NAME',
-				'PARENT_TPL_NAME'
-			];
-
-			for (var i$15 = -1; ++i$15 < predefs.length;) {
-				this.structure.vars[predefs[i$15]] = {
-					value: predefs[i$15],
-					scope: 0
-				};
-			}
-
-			this.save(/* cbws */((" var __THIS__ = this, __CALLEE__ = __ROOT__" + (concatProp(tplName))) + (", callee = __CALLEE__;  if (!callee.Blocks) { var __BLOCKS__ = __CALLEE__.Blocks = {}, blocks = __BLOCKS__; }  var __RESULT__ = " + (this.declResult())) + (", __COMMENT_RESULT__, __NODE__, $0;  function getTplResult(opt_clear) { var res = " + (this.returnResult())) + (";  if (opt_clear) { __RESULT__ = " + (this.declResult())) + ("; }  return res; }  function clearTplResult() { __RESULT__ = " + (this.declResult())) + ("; }  var __RETURN__ = false, __RETURN_VAL__;  var TPL_NAME = \"" + (escapeDoubleQuote(tplName))) + ("\", PARENT_TPL_NAME" + (parentTplName ? ((" = \"" + (escapeDoubleQuote(parentTplName))) + "\"") : '')) + (";  " + (args.defParams)) + " "));
-
-			var preDefs = this.preDefs[tplName];
-
-			// Подключение внешних блоков и прототипов
-			if ((!extMap[tplName] || parentTplName) && preDefs) {
-				this.source = this.source.substring(0, this.i + 1) +
-					preDefs.text +
-					this.source.substring(this.i + 1);
-
-				delete this.preDefs[tplName];
-			}
-		},
-
-		function (command, commandLength) {var this$0 = this;
-			var tplName = String(this.tplName),
-				proto = this.proto;
-
-			if (proto) {
-				// Вызовы не объявленных прототипов внутри прототипа
-				if (this.backTableI) {
-					var ctx = proto.ctx;
-					ctx.backTableI += this.backTableI;
-
-					forIn(this.backTable, function(arr, key)  {
-						for (var i = -1; ++i < arr.length;) {
-							var el = arr[i];
-							el.pos += proto.pos;
-							el.outer = true;
-							el.vars = this$0.structure.vars;
-						}
-
-						ctx.backTable[key] = ctx.backTable[key] ?
-							ctx.backTable[key].concat(arr) : arr;
-					});
-				}
-
-				return;
-			}
-
-			var diff = this.getDiff(commandLength);
-
-			cache[tplName] = this.source.substring(this.startTemplateI, this.i - diff);
-			table[tplName] = this.blockTable;
-
-			// Обработка наследования:
-			// тело шаблона объединяется с телом родителя
-			// и обработка шаблона начинается заново,
-			// но уже как атомарного (без наследования)
-			if (this.parentTplName) {
-				this.info['line'] = this.startTemplateLine;
-				this.lines.splice(this.startTemplateLine, this.lines.length);
-
-				this.source = this.source.substring(0, this.startTemplateI) +
-					this.getFullBody(tplName) +
-					this.source.substring(this.i - diff);
-
-				this.initTemplateCache(tplName);
-				this.startDir(this.structure.name);
-
-				this.i = this.startTemplateI - 1;
-				this.parentTplName = null;
-
-				this.blockTable = {};
-				this.varCache[tplName] = {};
-
-				return;
-			}
-
-			// Вызовы не объявленных прототипов
-			if (this.backTableI) {
-				forIn(this.backTable, function(arr, key)  {
-					for (var i = -1; ++i < arr.length;) {
-						var el = arr[i];
-
-						if (!el.outer) {
-							continue;
-						}
-
-						var tmp = protoCache[tplName][key];
-						if (!tmp) {
-							return this$0.error((("proto \"" + key) + "\" is not defined"));
-						}
-
-						this$0.res = this$0.res.substring(0, el.pos) +
-						this$0.res.substring(el.pos).replace(
-							el.label,
-							(el.argsStr || '') + (el.recursive ? tmp.i + '++;' : tmp.body)
-						);
-					}
-				});
-
-				this.backTable = {};
-				this.backTableI = 0;
-			}
-
-			var iface = this.structure.name === 'interface';
-
-			if (iface) {
-				this.save('};', true);
-
-			} else {
-				this.save(/* cbws */((" " + (this.consts.join(''))) + (" return " + (this.returnResult())) + ("; };  Snakeskin.cache[\"" + (escapeDoubleQuote(tplName))) + ("\"] = this" + (concatProp(tplName))) + "; "));
-			}
-
-			this.save('/* Snakeskin template. */', iface);
-
-			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
-				this.popParams();
-			}
-
-			this.canWrite = true;
-			this.tplName = null;
-
-			delete this.info['template'];
-
-			if (this.scope.length) {
-				this.scope.pop();
-			}
-		}
-	);
+  (function (_i5) {
+    Snakeskin.addDirective(template[i], {
+      block: true,
+      placement: "global",
+      notEmpty: true,
+      group: ["template", "rootTemplate", "define"]
+    }, function (command, commandLength, type, jsDoc) {
+      var _this13 = this;
+      var lastName = "", proto = this.proto;
+
+      var rank = {
+        "template": 2,
+        "interface": 1,
+        "placeholder": 0
+      };
+
+      this.startDir(!proto && this.renderAs && rank[this.renderAs] < rank[type] ? this.renderAs : null);
+
+      var iface = this.name === "interface";
+
+      this.startTemplateI = this.i + 1;
+      this.startTemplateLine = this.info["line"];
+
+      var nameRgxp = new RegExp("^[^" + symbols + "_$[]", "i"), esprimaNameHackRgxp = new RegExp("[" + G_MOD + "" + L_MOD + "]", "g");
+
+      var tmpTplName = this.getFnName(command), tplName = this.pasteDangerBlocks(tmpTplName);
+
+      if (!proto) {
+        tmpTplName = this.replaceFileName(tmpTplName);
+
+        var prfx = "", pos = undefined;
+
+        // Шаблон-генератор
+        if (/\*/.test(tmpTplName)) {
+          prfx = "*";
+          tmpTplName = tmpTplName.replace(prfx, "");
+        }
+
+        tplName = this.pasteDangerBlocks(tmpTplName);
+        this.generator = Boolean(prfx);
+
+        try {
+          if (!tplName || nameRgxp.test(tplName)) {
+            throw false;
+          }
+
+          esprima.parse(tplName.replace(esprimaNameHackRgxp, ""));
+        } catch (ignore) {
+          return this.error("invalid \"" + this.name + "\" name");
+        }
+
+        if (tplName === "init") {
+          return this.error("can't declare template \"" + tplName + "\", try another name");
+        }
+
+        this.info["template"] = this.tplName = tplName;
+
+        if (this.name !== "template" && !write[tplName]) {
+          write[tplName] = false;
+        }
+
+        // Для возможности удобного пост-парсинга,
+        // каждая функция снабжается комментарием вида:
+        // /* Snakeskin template: название шаблона; параметры через запятую */
+        this.save(pos = "/* Snakeskin template: " + tplName + "; " + this.getFnArgs(command).join(",").replace(/=(.*?)(?:,|$)/g, "") + " */", iface, jsDoc);
+
+        if (jsDoc) {
+          jsDoc += pos.length;
+        }
+
+        var tmpArr = tmpTplName.replace(nmssRgxp, "%").replace(nmsRgxp, ".%").replace(nmeRgxp, "").split(".");
+
+        var str = tmpArr[0], length = tmpArr.length, first = str.charAt(0), short = "";
+
+        if (first === "%") {
+          try {
+            str = /* cbws */"['" + applyDefEscape(this.returnEvalVal(this.prepareOutput(str.substring(1), true))) + "']";
+          } catch (err) {
+            return this.error(err.message);
+          }
+        } else {
+          short = str;
+        }
+
+        for (var _i = 0; ++_i < length;) {
+          var el = tmpArr[_i], custom = el.charAt(0) === "%";
+
+          if (custom) {
+            el = el.substring(1);
+          }
+
+          var def = "this" + concatProp(str);
+
+          this.save(pos = /* cbws */"if (" + def + " == null) {" + def + " = {};}" + (_i === 1 && short ? "var " + short + " = " + def + ";" : "") + "", iface, jsDoc);
+
+          if (jsDoc) {
+            jsDoc += pos.length;
+          }
+
+          if (custom) {
+            try {
+              str += /* cbws */"['" + applyDefEscape(this.returnEvalVal(this.prepareOutput(el, true))) + "']";
+            } catch (err) {
+              return this.error(err.message);
+            }
+
+            continue;
+          } else if (_i === length - 1) {
+            lastName = el;
+          }
+
+          str += "." + el;
+        }
+
+        tplName = str;
+        this.save("" + (length === 1 && short ? "var " + short + " = " : "") + "this" + concatProp(tplName) + " = function " + prfx + "" + (length > 1 ? lastName : short) + "(", iface);
+      }
+
+      this.info["template"] = this.tplName = tplName;
+
+      this.blockStructure = {
+        name: "root",
+        parent: null,
+        children: []
+      };
+
+      this.blockTable = {};
+      this.varCache[tplName] = {};
+
+      if (proto) {
+        this.sysSpace = proto.sysSpace;
+        this.strongSpace = proto.strongSpace;
+        this.chainSpace = proto.chainSpace;
+        this.space = proto.space;
+        return;
+      }
+
+      // Валидация шаблона для наследования
+      var parentTplName;
+      if (/\)\s+extends\s+/.test(command)) {
+        try {
+          parentTplName = /\)\s+extends\s+(.*?(?:@|$))/.exec(command)[1].replace(/\s*@$/, "");
+
+          if (!parentTplName || nameRgxp.test(parentTplName)) {
+            throw false;
+          }
+
+          esprima.parse(parentTplName.replace(esprimaNameHackRgxp, ""));
+        } catch (ignore) {
+          return this.error("invalid \"" + this.name + "\" name for extend");
+        }
+
+        try {
+          parentTplName = this.parentTplName = this.prepareNameDecl(parentTplName);
+        } catch (err) {
+          return this.error(err.message);
+        }
+
+        if (cache[parentTplName] == null) {
+          if (!this.renderAs || this.renderAs === "template") {
+            return this.error("the specified template \"" + parentTplName + "\" for inheritance is not defined");
+          }
+
+          parentTplName = this.parentTplName = null;
+        }
+      }
+
+      this.initTemplateCache(tplName);
+
+      if (tplName in extMap) {
+        clearScopeCache(tplName);
+      }
+
+      var scope = scopeCache["template"], parent = scope[parentTplName];
+
+      scope[tplName] = {
+        id: this.module.id,
+        parent: parent,
+        children: {}
+      };
+
+      scope[tplName].root = parent ? parent.root : scope[tplName];
+
+      if (parent) {
+        parent.children[tplName] = scope[tplName];
+      }
+
+      argsCache[tplName] = {};
+      argsResCache[tplName] = {};
+      outputCache[tplName] = {};
+
+      extMap[tplName] = parentTplName;
+      delete extListCache[tplName];
+
+      var baseParams = {};
+
+      if (!parentTplName) {
+        forIn(this.params[this.params.length - 1], function (el, key) {
+          if (key !== "renderAs" && key.charAt(0) !== "@" && el !== void 0) {
+            baseParams[key] = el;
+          }
+        });
+      }
+
+      var flags = command.split("@=");
+
+      if (parentTplName && flags.length === 1) {
+        flags.push("@skip true");
+      }
+
+      for (var _i2 = 0; ++_i2 < flags.length;) {
+        var el = flags[_i2].trim(), name = el.split(" ")[0];
+
+        delete baseParams[name];
+        Snakeskin.Directions["__setSSFlag__"].call(this, el);
+      }
+
+      forIn(baseParams, function (el, key) {
+        Snakeskin.Directions["__setSSFlag__"].call(_this13, [key, el]);
+      });
+
+      var args = this.prepareArgs(command, "template", tplName, parentTplName);
+      this.save("" + args.str + ") {", iface);
+
+      if (args.scope) {
+        this.scope.push(args.scope);
+      }
+
+      var predefs = ["callee", "blocks", "getTplResult", "clearTplResult", "$0", "TPL_NAME", "PARENT_TPL_NAME"];
+
+      for (var _i3 = -1; ++_i3 < predefs.length;) {
+        this.structure.vars[predefs[_i3]] = {
+          value: predefs[_i3],
+          scope: 0
+        };
+      }
+
+      this.save( /* cbws */"var __THIS__ = this,__CALLEE__ = __ROOT__" + concatProp(tplName) + ",callee = __CALLEE__;if (!callee.Blocks) {var __BLOCKS__ = __CALLEE__.Blocks = {},blocks = __BLOCKS__;}var __RESULT__ = " + this.declResult() + ",__COMMENT_RESULT__,__NODE__,$0;function getTplResult(opt_clear) {var res = " + this.returnResult() + ";if (opt_clear) {__RESULT__ = " + this.declResult() + ";}return res;}function clearTplResult() {__RESULT__ = " + this.declResult() + ";}var __RETURN__ = false,__RETURN_VAL__;var TPL_NAME = \"" + escapeDoubleQuote(tplName) + "\",PARENT_TPL_NAME" + (parentTplName ? " = \"" + escapeDoubleQuote(parentTplName) + "\"" : "") + ";" + args.defParams + "");
+
+      var preDefs = this.preDefs[tplName];
+
+      // Подключение внешних блоков и прототипов
+      if ((!extMap[tplName] || parentTplName) && preDefs) {
+        this.source = this.source.substring(0, this.i + 1) + preDefs.text + this.source.substring(this.i + 1);
+
+        delete this.preDefs[tplName];
+      }
+    }, function (command, commandLength) {
+      var _this14 = this;
+      var tplName = String(this.tplName), proto = this.proto;
+
+      if (proto) {
+        // Вызовы не объявленных прототипов внутри прототипа
+        if (this.backTableI) {
+          (function () {
+            var ctx = proto.ctx;
+            ctx.backTableI += _this14.backTableI;
+
+            forIn(_this14.backTable, function (arr, key) {
+              for (var _i4 = -1; ++_i4 < arr.length;) {
+                var el = arr[_i4];
+                el.pos += proto.pos;
+                el.outer = true;
+                el.vars = _this14.structure.vars;
+              }
+
+              ctx.backTable[key] = ctx.backTable[key] ? ctx.backTable[key].concat(arr) : arr;
+            });
+          })();
+        }
+
+        return;
+      }
+
+      var diff = this.getDiff(commandLength);
+
+      cache[tplName] = this.source.substring(this.startTemplateI, this.i - diff);
+      table[tplName] = this.blockTable;
+
+      // Обработка наследования:
+      // тело шаблона объединяется с телом родителя
+      // и обработка шаблона начинается заново,
+      // но уже как атомарного (без наследования)
+      if (this.parentTplName) {
+        this.info["line"] = this.startTemplateLine;
+        this.lines.splice(this.startTemplateLine, this.lines.length);
+
+        this.source = this.source.substring(0, this.startTemplateI) + this.getFullBody(tplName) + this.source.substring(this.i - diff);
+
+        this.initTemplateCache(tplName);
+        this.startDir(this.structure.name);
+
+        this.i = this.startTemplateI - 1;
+        this.parentTplName = null;
+
+        this.blockTable = {};
+        this.varCache[tplName] = {};
+
+        return;
+      }
+
+      // Вызовы не объявленных прототипов
+      if (this.backTableI) {
+        forIn(this.backTable, function (arr, key) {
+          for (var _i5 = -1; ++_i5 < arr.length;) {
+            var el = arr[_i5];
+
+            if (!el.outer) {
+              continue;
+            }
+
+            var tmp = protoCache[tplName][key];
+            if (!tmp) {
+              return _this14.error("proto \"" + key + "\" is not defined");
+            }
+
+            _this14.res = _this14.res.substring(0, el.pos) + _this14.res.substring(el.pos).replace(el.label, (el.argsStr || "") + (el.recursive ? tmp.i + "++;" : tmp.body));
+          }
+        });
+
+        this.backTable = {};
+        this.backTableI = 0;
+      }
+
+      var iface = this.structure.name === "interface";
+
+      if (iface) {
+        this.save("};", true);
+      } else {
+        this.save( /* cbws */"" + this.consts.join("") + "return " + this.returnResult() + ";};Snakeskin.cache[\"" + escapeDoubleQuote(tplName) + "\"] = this" + concatProp(tplName) + ";");
+      }
+
+      this.save("/* Snakeskin template. */", iface);
+
+      if (this.params[this.params.length - 1]["@tplName"] === this.tplName) {
+        this.popParams();
+      }
+
+      this.canWrite = true;
+      this.tplName = null;
+
+      delete this.info["template"];
+
+      if (this.scope.length) {
+        this.scope.pop();
+      }
+    });
+  })(i);
 }
 
 
-Snakeskin.addDirective(
-	'throw',
+Snakeskin.addDirective("throw", {
+  notEmpty: true
+}, function (command) {
+  this.startInlineDir();
+  if (this.isReady()) {
+    this.append("throw " + this.prepareOutput(command, true) + ";");
+  }
+});
 
-	{
-		notEmpty: true
-	},
+Snakeskin.addDirective("try", {
+  block: true,
+  after: {
+    "catch": true,
+    "finally": true,
+    "end": true
+  }
+}, function () {
+  this.startDir();
+  this.append("try {");
+}, function () {
+  if (this.structure.params.chain) {
+    this.append("}");
+  } else {
+    this.append("} catch (ignore) {}");
+  }
+});
 
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append((("throw " + (this.prepareOutput(command, true))) + ";"));
-		}
-	}
-);
+Snakeskin.addDirective("catch", {
+  notEmpty: true,
+  chain: "try"
+}, function (command) {
+  if (this.structure.name !== "try") {
+    return this.error("directive \"" + this.name + "\" can be used only with a \"try\"");
+  }
 
-Snakeskin.addDirective(
-	'try',
+  this.structure.params.chain = true;
 
-	{
-		block: true,
-		after: {
-			'catch': true,
-			'finally': true,
-			'end': true
-		}
-	},
+  if (this.isReady()) {
+    this.append("} catch (" + this.declVar(command) + ") {");
+  }
+});
 
-	function () {
-		this.startDir();
-		this.append('try {');
-	},
+Snakeskin.addDirective("finally", {
+  placement: "template",
+  chain: "try"
+}, function () {
+  if (this.structure.name !== "try") {
+    return this.error("directive \"" + this.name + "\" can be used only with a \"try\"");
+  }
 
-	function () {
-		if (this.structure.params.chain) {
-			this.append('}');
-
-		} else {
-			this.append('} catch (ignore) {}');
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'catch',
-
-	{
-		notEmpty: true,
-		chain: 'try'
-	},
-
-	function (command) {
-		if (this.structure.name !== 'try') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"try\""));
-		}
-
-		this.structure.params.chain = true;
-
-		if (this.isReady()) {
-			this.append((("} catch (" + (this.declVar(command))) + ") {"));
-		}
-	}
-);
-
-Snakeskin.addDirective(
-	'finally',
-
-	{
-		placement: 'template',
-		chain: 'try'
-	},
-
-	function () {
-		if (this.structure.name !== 'try') {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a \"try\""));
-		}
-
-		this.structure.params.chain = true;
-		this.append('} finally {');
-	}
-);
+  this.structure.params.chain = true;
+  this.append("} finally {");
+});
 
 
 /**
  * Таблица созданных переменных
  */
 DirObj.prototype.varCache = {
-	init: function() {
-		return {};
-	}
+  init: function init() {
+    return {};
+  }
 };
 
-Snakeskin.addDirective(
-	'var',
-
-	{
-		notEmpty: true,
-		replacers: {
-			':': function(cmd)  {return cmd.replace(':', 'var ')}
-		}
-	},
-
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append(this.multiDeclVar(command));
-		}
-	}
-);
+Snakeskin.addDirective("var", {
+  notEmpty: true,
+  replacers: {
+    ":": function (cmd) {
+      return cmd.replace(":", "var ");
+    }
+  }
+}, function (command) {
+  this.startInlineDir();
+  if (this.isReady()) {
+    this.append(this.multiDeclVar(command));
+  }
+});
 
 
-Snakeskin.addDirective(
-	'void',
-
-	{
-		notEmpty: true,
-		replacers: {
-			'?': function(cmd)  {return cmd.replace('?', 'void ')}
-		}
-	},
-
-	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append((("" + (this.prepareOutput(command, true))) + ";"));
-		}
-	}
-);
+Snakeskin.addDirective("void", {
+  notEmpty: true,
+  replacers: {
+    "?": function (cmd) {
+      return cmd.replace("?", "void ");
+    }
+  }
+}, function (command) {
+  this.startInlineDir();
+  if (this.isReady()) {
+    this.append("" + this.prepareOutput(command, true) + ";");
+  }
+});
 
 
-Snakeskin.addDirective(
-	'with',
-
-	{
-		sys: true,
-		block: true,
-		notEmpty: true
-	},
-
-	function (command) {
-		this.startDir();
-		this.scope.push(this.prepareOutput(command, true));
-	},
-
-	function () {
-		this.scope.pop();
-	}
-);
+Snakeskin.addDirective("with", {
+  sys: true,
+  block: true,
+  notEmpty: true
+}, function (command) {
+  this.startDir();
+  this.scope.push(this.prepareOutput(command, true));
+}, function () {
+  this.scope.pop();
+});
 
 
-Snakeskin.addDirective(
-	'yield',
+Snakeskin.addDirective("yield", {
+  placement: "template"
+}, function (command) {
+  var cb = this.has(this.getGroup("callback"));
 
-	{
-		placement: 'template'
-	},
+  if (cb) {
+    return this.error("directive \"" + this.name + "\" can't be used within the \"" + cb + "\"");
+  }
 
-	function (command) {
-		var cb = this.has(this.getGroup('callback'));
+  if (!this.parentTplName && !this.generator && !this.proto && !this.outerLink) {
+    return this.error("directive \"" + this.name + "\" can be used only with a generator");
+  }
 
-		if (cb) {
-			return this.error((("directive \"" + (this.name)) + ("\" can't be used within the \"" + cb) + "\""));
-		}
+  this.startInlineDir();
 
-		if (!this.parentTplName && !this.generator && !this.proto && !this.outerLink) {
-			return this.error((("directive \"" + (this.name)) + "\" can be used only with a generator"));
-		}
-
-		this.startInlineDir();
-
-		if (this.isReady()) {
-			if (command) {
-				this.append((("yield " + (this.prepareOutput(command, true))) + ";"));
-
-			} else {
-				this.append(/* cbws */((" yield " + (this.returnResult())) + ("; __RESULT__ = " + (this.declResult())) + "; "));
-			}
-		}
-	}
-);
+  if (this.isReady()) {
+    if (command) {
+      this.append("yield " + this.prepareOutput(command, true) + ";");
+    } else {
+      this.append( /* cbws */"\n\t\t\t\t\tyield " + this.returnResult() + ";\n\t\t\t\t\t__RESULT__ = " + this.declResult() + ";\n\t\t\t\t");
+    }
+  }
+});
 
 var fsStack = [];
 
@@ -17484,72 +16068,54 @@ var fsStack = [];
  * @return {(string|boolean)}
  */
 Snakeskin.include = function (base, url, nl, opt_type) {
-	if (!IS_NODE) {
-		return false;
-	}
+  if (!IS_NODE) {
+    return false;
+  }
 
-	var fs = require('fs'),
-		path = require('path'),
-		glob = require('glob')['sync'];
+  var fs = require("fs"), path = require("path"), glob = require("glob")["sync"];
 
-	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
+  var s = ADV_LEFT_BLOCK + LEFT_BLOCK, e = RIGHT_BLOCK;
 
-	try {
-		var extname = path.extname(url),
-			include = Snakeskin.LocalVars.include;
+  try {
+    var _ret12 = (function () {
+      var extname = path.extname(url), include = Snakeskin.LocalVars.include;
 
-		var src = path.resolve(
-			path.dirname(base),
-			url + (extname ? '' : '.ss')
-		);
+      var src = path.resolve(path.dirname(base), url + (extname ? "" : ".ss"));
 
-		(/\*/.test(src) ? glob(src) : [src]).forEach(function(src)  {
-			src = path.normalize(src);
+      (/\*/.test(src) ? glob(src) : [src]).forEach(function (src) {
+        src = path.normalize(src);
 
-			if (!include[src]) {
-				include[src] = true;
-				var file = fs.readFileSync(src).toString();
+        if (!include[src]) {
+          include[src] = true;
+          var file = fs.readFileSync(src).toString();
 
-				fsStack.push(
-					(("" + s) + ("__setFile__ " + src) + ("" + e) + "") +
+          fsStack.push("" + s + "__setFile__ " + src + "" + e + (opt_type ? "" + s + "__setSSFlag__ renderAs '" + opt_type + "'" + e : "") + ("" + (startWhiteSpaceRgxp.test(file) ? "" : nl)) + file + ("" + (endWhiteSpaceRgxp.test(file) ? "" : "" + nl + "" + s + "__cutLine__" + e)) + ("" + s + "__endSetFile__" + e));
+        }
+      });
 
-					(opt_type ?
-						(("" + s) + ("__setSSFlag__ renderAs '" + opt_type) + ("'" + e) + "") : '') +
+      return {
+        v: true
+      };
+    })();
 
-					("" + (startWhiteSpaceRgxp.test(file) ? '' : nl)) +
+    if (typeof _ret12 === "object") return _ret12.v;
+  } catch (err) {
+    fsStack.push("" + s + "__setError__ " + err.message + "" + e);
+  }
 
-					file +
-
-					("" + (endWhiteSpaceRgxp.test(file) ? '' : (("" + nl) + ("" + s) + ("__cutLine__" + e) + ""))) +
-					(("" + s) + ("__endSetFile__" + e) + "")
-				);
-			}
-		});
-
-		return true;
-
-	} catch (err) {
-		fsStack.push((("" + s) + ("__setError__ " + (err.message)) + ("" + e) + ""));
-	}
-
-	return false;
+  return false;
 };
 
 
-global['define'] = globalDefine;
+global["define"] = globalDefine;
 
-if (typeof define === 'function' && define['amd']) {
-	define([], function () {
-		return Snakeskin;
-	});
-
+if (typeof define === "function" && define["amd"]) {
+  define([], function () {
+    return Snakeskin;
+  });
 } else if (IS_NODE) {
-	module.exports =
-		exports = Snakeskin;
-
+  module.exports = exports = Snakeskin;
 } else {
-	global.Snakeskin = Snakeskin;
+  global.Snakeskin = Snakeskin;
 }
-
 }).call(new Function('return this')(), this);

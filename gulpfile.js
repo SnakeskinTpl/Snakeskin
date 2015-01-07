@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
 	path = require('path');
 
-var es6 = require('gulp-es6-transpiler'),
+var to5 = require('gulp-6to5'),
 	monic = require('gulp-monic'),
 	gcc = require('gulp-closure-compiler'),
 	rename = require('gulp-rename'),
@@ -55,15 +55,16 @@ gulp.task('build', function (callback) {
 				flags: builds[key]
 			}))
 
-			.pipe(es6({
-				disallowUnknownReferences: false,
-				disallowDuplicated: false
+			.pipe(to5({
+				blacklist: [
+					'specPropertyLiterals',
+					'specMemberExpressionLiterals',
+					'undefinedToVoid'
+				]
 			}))
 
 			.pipe(wrap(
-				'(function (root, global) {' +
-					'\n' +
-					'\'use strict\';' +
+				'(function (root) {' +
 					'\n' +
 					'<%= contents %>' +
 					'\n' +
@@ -73,16 +74,13 @@ gulp.task('build', function (callback) {
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
 			.pipe(monic())
 
-			// https://github.com/termi/es6-transpiler/issues/61
-			.pipe(replace(/(for\s*\(\s*var\s+[^=]+)= void 0 in/g, '$1 in'))
-
 			// Фикс @param {foo} [bar=1] -> @param {foo} [bar]
 			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
 
 			// Пробельные символы в строках-шаблонах
-			.pipe(replace(/\/\* cbws \*\/.*?[(]+"[\s\S]*?[^\\"]"[)]+;?(?:$|[}]+$)/gm, function (sstr) {
+			.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$)/gm, function (sstr) {
 				return sstr
-					.replace(/\\n|\t/g, '')
+					.replace(/\\n|\\t/g, '')
 					.replace(/\\[\r\n]/g, ' ');
 			}))
 
