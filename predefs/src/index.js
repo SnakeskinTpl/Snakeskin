@@ -9,6 +9,10 @@
 //#include ./standart/*.js
 //#include ../../externs.js
 
+/** @abstract */
+function define(dependencies, fn) {}
+define.amd = null;
+
 /**
  * @interface
  * @param {string} src
