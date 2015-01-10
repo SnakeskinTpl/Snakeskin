@@ -62,6 +62,6 @@
     "gulp-replace": "^0.5.0",
     "gulp-run": "^1.6.5",
     "gulp-wrap": "^0.5.0",
-    "yaspeller": "^0.5.1"
+    "yaspeller": "^0.7.2"
   }
 }
