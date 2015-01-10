@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 10 Jan 2015 10:06:37 GMT
+ * Date: Sat, 10 Jan 2015 12:44:39 GMT
  */
 
 (function (root) {
@@ -83,7 +83,7 @@ var IS_NODE = false,
 
 try {
   IS_NODE = "object" === typeof process && Object.prototype.toString.call(process) === "[object process]";
-  JSON_SUPPORT = JSON.stringify(JSON.parse("{\"foo\":\"bar\"}")) === "{\"foo\":\"bar\"}";
+  JSON_SUPPORT = JSON.parse(JSON.stringify({ foo: "bar" })).foo === "bar";
 } catch (ignore) {}
 
 /**
@@ -6332,23 +6332,23 @@ var Escaper, globalEscaper = global.Escaper;
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.1.5
+ * Escaper v2.1.6
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Tue, 06 Jan 2015 18:16:12 GMT
+ * Date: Sat, 10 Jan 2015 12:24:49 GMT
  */
 
 (function () {
 "use strict";
 
 var Escaper = {
-  VERSION: [2, 1, 5]
+  VERSION: [2, 1, 6]
 };
 
-if (typeof define === "function" && define["amd"]) {
+if (typeof define === "function" && (define.amd || define["amd"])) {
   define([], function () {
     return Escaper;
   });
@@ -6460,7 +6460,8 @@ var escapeEndWordMap = {
   "instanceof": true,
   "delete": true,
   "in": true,
-  "new": true
+  "new": true,
+  "of": true
 };
 
 var cache = {}, content = [];
@@ -6863,6 +6864,7 @@ var FILTER = "|";
 
 var sysConst = {
   "__IS_NODE__": true,
+  "__AMD__": true,
   "__EXPORTS__": true,
   "__HAS_EXPORTS__": true,
   "__INIT__": true,
@@ -7819,7 +7821,7 @@ function DirObj(src, params) {
   this.res = "";
 
   if (!this.proto) {
-    this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : this;try {__IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);if (__HAS_EXPORTS__) {delete __EXPORTS__.init;}if (__IS_NODE__) {Snakeskin = Snakeskin || require(obj);}__EXEC__.call(__EXPORTS__);return __EXPORTS__;}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
+    this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__AMD__ = typeof define === 'function' && (define.amd || define['amd']),__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : __AMD__ ? {} : this;try {__IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);if (__HAS_EXPORTS__) {delete __EXPORTS__.init;}if (__AMD__) {define(['Snakeskin'], function (ss) {Snakeskin = Snakeskin || ss;__EXEC__.call(__EXPORTS__);return __EXPORTS__;});} else {if (__IS_NODE__) {Snakeskin = Snakeskin || require(obj);}__EXEC__.call(__EXPORTS__);return __EXPORTS__;}}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
   }
 }
 
@@ -8368,12 +8370,12 @@ DirObj.prototype.pasteTplVarBlocks = function (str) {
  */
 DirObj.prototype.evalStr = function (str) {
   str = this.pasteDangerBlocks(str);
-  var root = this.module;
-  var filename = root.filename, dirname;
+  var ctx = this.module;
+  var filename = ctx.filename, dirname;
 
   if (IS_NODE) {
     dirname = require("path").dirname(filename);
-    return new Function("Snakeskin", "__FILTERS__", "__VARS__", "__LOCAL__", "module", "exports", "require", "__dirname", "__filename", str).call(root, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, root, root.exports, require, dirname, filename);
+    return new Function("Snakeskin", "__FILTERS__", "__VARS__", "__LOCAL__", "module", "exports", "require", "__dirname", "__filename", str).call(root, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, dirname, filename);
   } else {
     return new Function("Snakeskin", "__FILTERS__", "__VARS__", "__LOCAL__", str).call(root, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars);
   }
@@ -16454,7 +16456,7 @@ local(function () {
 
 
 global["define"] = globalDefine;
-if (typeof define === "function" && define["amd"]) {
+if (typeof define === "function" && (define.amd || define["amd"])) {
   define([], function () {
     return Snakeskin;
   });

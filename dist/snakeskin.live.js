@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 10 Jan 2015 10:06:37 GMT
+ * Date: Sat, 10 Jan 2015 12:44:39 GMT
  */
 
 (function (root) {
@@ -74,7 +74,7 @@ var IS_NODE = false,
 
 try {
   IS_NODE = "object" === typeof process && Object.prototype.toString.call(process) === "[object process]";
-  JSON_SUPPORT = JSON.stringify(JSON.parse("{\"foo\":\"bar\"}")) === "{\"foo\":\"bar\"}";
+  JSON_SUPPORT = JSON.parse(JSON.stringify({ foo: "bar" })).foo === "bar";
 } catch (ignore) {}
 
 /**
@@ -612,7 +612,7 @@ Snakeskin.appendChild = function (node, obj) {
 
 
 global["define"] = globalDefine;
-if (typeof define === "function" && define["amd"]) {
+if (typeof define === "function" && (define.amd || define["amd"])) {
   define([], function () {
     return Snakeskin;
   });
