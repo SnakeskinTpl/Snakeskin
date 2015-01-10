@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.18 (live)
+ * Snakeskin v6.5.19 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Wed, 07 Jan 2015 10:26:46 GMT
+ * Date: Sat, 10 Jan 2015 10:06:37 GMT
  */
 
 (function (root) {
@@ -22,7 +22,8 @@ Array.isArray = Array.isArray || function (obj) {
 };
 
 String.prototype.trim = String.prototype.trim || function () {
-  var str = this.replace(/^\s\s*/, ""), i = str.length;
+  var str = this.replace(/^\s\s*/, ""),
+      i = str.length;
 
   for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
   return str.substring(0, i + 1);
@@ -34,7 +35,7 @@ var Snakeskin = {
    * Версия Snakeskin
    * @type {!Array}
    */
-  VERSION: [6, 5, 18],
+  VERSION: [6, 5, 19],
 
   /**
    * Пространство имён для директив
@@ -68,13 +69,13 @@ var Snakeskin = {
   cache: {}
 };
 
-var IS_NODE = false;
+var IS_NODE = false,
+    JSON_SUPPORT = false;
 
 try {
   IS_NODE = "object" === typeof process && Object.prototype.toString.call(process) === "[object process]";
+  JSON_SUPPORT = JSON.stringify(JSON.parse("{\"foo\":\"bar\"}")) === "{\"foo\":\"bar\"}";
 } catch (ignore) {}
-
-var JSON_SUPPORT = Boolean(typeof JSON !== "undefined" && JSON.parse && JSON.stringify);
 
 /**
  * Экспортировать свойство объекта для GCC
@@ -107,176 +108,6 @@ _.any = function (val) {
   return val;
 };
 /*!
- * Методы live библиотеки Snakeskin
- */
-
-if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
-  var keys = Object.keys;
-}
-
-/**
- * Конструктор объекта StringBuffer
- *
- * @constructor
- * @return {!Array}
- */
-Snakeskin.StringBuffer = function () {
-  return [];
-};
-
-/**
- * Итератор массива или объекта (с проверкой hasOwnProperty)
- *
- * @param {(Array|Object|undefined)} obj - исходный объект
- * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
- */
-Snakeskin.forEach = function (obj, callback) {
-  if (!obj) {
-    return;
-  }
-
-  var length = 0;
-
-  if (Array.isArray(obj)) {
-    length = obj.length;
-    for (var i = -1; ++i < length;) {
-      if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
-        break;
-      }
-    }
-  } else if (keys) {
-    var arr = keys(obj);
-    length = arr.length;
-
-    for (var i = -1; ++i < length;) {
-      if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
-        break;
-      }
-    }
-  } else {
-    var i = 0;
-
-    if (callback.length >= 6) {
-      for (var key in obj) {
-        if (!obj.hasOwnProperty(key)) {
-          continue;
-        }
-
-        length++;
-      }
-    }
-
-    for (var key in obj) {
-      if (!obj.hasOwnProperty(key)) {
-        continue;
-      }
-
-      if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
-        break;
-      }
-
-      i++;
-    }
-  }
-};
-
-/**
- * Итератор объекта без проверки hasOwnProperty
- *
- * @param {(Object|undefined)} obj - исходный объект
- * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
- */
-Snakeskin.forIn = function (obj, callback) {
-  if (!obj) {
-    return;
-  }
-
-  var length = 0, i = 0;
-
-  if (callback.length >= 6) {
-    for (var key in obj) {
-      length++;
-    }
-  }
-
-  for (var key in obj) {
-    if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
-      break;
-    }
-
-    i++;
-  }
-};
-
-/**
- * Итератор объекта
- *
- * @param {(Object|undefined)} obj - исходный объект
- * @param {function(?, string, !Object)} callback - функция обратного вызова
- */
-function forIn(obj, callback) {
-  if (!obj) {
-    return;
-  }
-
-  if (keys) {
-    var arr = keys(obj), length = arr.length;
-
-    for (var i = -1; ++i < length;) {
-      if (callback(obj[arr[i]], arr[i], obj) === false) {
-        break;
-      }
-    }
-  } else {
-    for (var key in obj) {
-      if (!obj.hasOwnProperty(key)) {
-        continue;
-      }
-
-      if (callback(obj[key], key, obj) === false) {
-        break;
-      }
-    }
-  }
-}
-
-var inlineTagMap = {
-  "img": true,
-  "link": true,
-  "embed": true,
-  "br": true,
-  "hr": true,
-  "wbr": true,
-  "meta": true,
-  "input": true,
-  "source": true,
-  "track": true,
-  "base": true,
-  "area": true,
-  "col": true,
-  "param": true
-};
-
-/**
- * Вставить заданный узел или текст в исходный
- *
- * @param {!Node} node - исходный элемент
- * @param {(!Node|string)} obj - элемент для вставки или текст
- * @return {(!Node|string)}
- */
-Snakeskin.appendChild = function (node, obj) {
-  if (node["tagName"] && inlineTagMap[node["tagName"].toLowerCase()]) {
-    return String(obj).trim();
-  }
-
-  if (typeof obj === "string") {
-    obj = document.createTextNode(obj);
-  }
-
-  node.appendChild(obj);
-  return obj;
-};
-/*!
  * Набор базовых фильтров и методы для работы с ними
  */
 
@@ -292,10 +123,7 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
   if (opt_namespace) {
     var parts = opt_namespace.split(".");
     for (var i = -1; ++i < parts.length;) {
-      if (!obj[parts[i]]) {
-        obj[parts[i]] = {};
-      }
-
+      obj[parts[i]] = obj[parts[i]] || {};
       obj = obj[parts[i]];
     }
   }
@@ -314,10 +142,12 @@ var entityMap = {
   ">": "&gt;",
   "\"": "&quot;",
   "'": "&#39;"
-  //,'/': '&#x2F;'
 };
 
-var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g, escapeAttrRgxp = new RegExp("([$" + w + "]\\s*=\\s*)([^\"'\\s>=]+)", "g"), escapeJavaScript = /(javascript)(:|;)/, escapeHTML = function (s) {
+var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
+    escapeAttrRgxp = new RegExp("([$" + w + "]\\s*=\\s*)([^\"'\\s>=]+)", "g"),
+    escapeJavaScript = /(javascript)(:|;)/,
+    escapeHTML = function (s) {
   return entityMap[s] || s;
 };
 
@@ -355,7 +185,7 @@ Snakeskin.Filters.undef = function (str) {
   return str !== void 0 ? str : "";
 };
 
-(function () {
+local(function () {
   var uentityMap = {
     "&amp;": "&",
     "&lt;": "<",
@@ -365,7 +195,8 @@ Snakeskin.Filters.undef = function (str) {
     "&#x2F;": "/"
   };
 
-  var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g, uescapeHTML = function (s) {
+  var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g,
+      uescapeHTML = function (s) {
     return uentityMap[s];
   };
 
@@ -391,7 +222,8 @@ Snakeskin.Filters.undef = function (str) {
     return String(str).replace(stripTagsRgxp, "");
   };
 
-  var uriO = /%5B/g, uriC = /%5D/g;
+  var uriO = /%5B/g,
+      uriC = /%5D/g;
 
   /**
    * Кодирование URL
@@ -485,7 +317,8 @@ Snakeskin.Filters.undef = function (str) {
       return str;
     }
 
-    var tmp = str.substring(0, length - 1), lastInd = void 0;
+    var tmp = str.substring(0, length - 1),
+        lastInd = void 0;
 
     var i = tmp.length;
     while (i-- && opt_wordOnly) {
@@ -593,11 +426,192 @@ Snakeskin.Filters.undef = function (str) {
   Snakeskin.Filters["default"] = function (val, def) {
     return val === void 0 ? def : val;
   };
-})();
+});
+
+/*!
+ * Методы live библиотеки Snakeskin
+ */
+
+if (/\[native code]/.test(Object.keys && Object.keys.toString())) {
+  var keys = Object.keys;
+}
+
+/**
+ * Декларировать локальный модуль
+ * @param {function()} fn
+ */
+function local(fn) {
+  fn();
+}
+
+/**
+ * Итератор объекта
+ *
+ * @param {(Object|undefined)} obj - исходный объект
+ * @param {function(?, string, !Object)} callback - функция обратного вызова
+ */
+function forIn(obj, callback) {
+  if (!obj) {
+    return;
+  }
+
+  if (keys) {
+    var arr = keys(obj),
+        length = arr.length;
+
+    for (var i = -1; ++i < length;) {
+      if (callback(obj[arr[i]], arr[i], obj) === false) {
+        break;
+      }
+    }
+  } else {
+    for (var key in obj) {
+      if (!obj.hasOwnProperty(key)) {
+        continue;
+      }
+
+      if (callback(obj[key], key, obj) === false) {
+        break;
+      }
+    }
+  }
+}
+
+/**
+ * Конструктор объекта StringBuffer
+ *
+ * @constructor
+ * @return {!Array}
+ */
+Snakeskin.StringBuffer = function () {
+  return [];
+};
+
+/**
+ * Итератор массива или объекта (с проверкой hasOwnProperty)
+ *
+ * @param {(Array|Object|undefined)} obj - исходный объект
+ * @param {(function(?, number, !Array, boolean, boolean, number)|function(?, string, !Object, number, boolean, boolean, number))} callback - функция обратного вызова
+ */
+Snakeskin.forEach = function (obj, callback) {
+  if (!obj) {
+    return;
+  }
+
+  var length = 0;
+
+  if (Array.isArray(obj)) {
+    length = obj.length;
+    for (var i = -1; ++i < length;) {
+      if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
+        break;
+      }
+    }
+  } else if (keys) {
+    var arr = keys(obj);
+    length = arr.length;
+
+    for (var i = -1; ++i < length;) {
+      if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
+        break;
+      }
+    }
+  } else {
+    var i = 0;
+
+    if (callback.length >= 6) {
+      for (var key in obj) {
+        if (!obj.hasOwnProperty(key)) {
+          continue;
+        }
+
+        length++;
+      }
+    }
+
+    for (var key in obj) {
+      if (!obj.hasOwnProperty(key)) {
+        continue;
+      }
+
+      if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+        break;
+      }
+
+      i++;
+    }
+  }
+};
+
+/**
+ * Итератор объекта без проверки hasOwnProperty
+ *
+ * @param {(Object|undefined)} obj - исходный объект
+ * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - функция обратного вызова
+ */
+Snakeskin.forIn = function (obj, callback) {
+  if (!obj) {
+    return;
+  }
+
+  var length = 0,
+      i = 0;
+
+  if (callback.length >= 6) {
+    for (var key in obj) {
+      length++;
+    }
+  }
+
+  for (var key in obj) {
+    if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+      break;
+    }
+
+    i++;
+  }
+};
+
+var inlineTagMap = {
+  "img": true,
+  "link": true,
+  "embed": true,
+  "br": true,
+  "hr": true,
+  "wbr": true,
+  "meta": true,
+  "input": true,
+  "source": true,
+  "track": true,
+  "base": true,
+  "area": true,
+  "col": true,
+  "param": true
+};
+
+/**
+ * Вставить заданный узел или текст в исходный
+ *
+ * @param {!Node} node - исходный элемент
+ * @param {(!Node|string)} obj - элемент для вставки или текст
+ * @return {(!Node|string)}
+ */
+Snakeskin.appendChild = function (node, obj) {
+  if (node["tagName"] && inlineTagMap[node["tagName"].toLowerCase()]) {
+    return String(obj).trim();
+  }
+
+  if (typeof obj === "string") {
+    obj = document.createTextNode(obj);
+  }
+
+  node.appendChild(obj);
+  return obj;
+};
+
 
 
 global["define"] = globalDefine;
-
 if (typeof define === "function" && define["amd"]) {
   define([], function () {
     return Snakeskin;
