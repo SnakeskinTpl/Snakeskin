@@ -1,6 +1,5 @@
 /** @type {!Object} */
 var Snakeskin = {
-
 	/** @type {!Array} */
 	VERSION: [],
 
