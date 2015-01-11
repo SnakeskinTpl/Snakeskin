@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.19 (live)
+ * Snakeskin v6.5.20 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 10 Jan 2015 12:44:39 GMT
+ * Date: Sun, 11 Jan 2015 11:48:05 GMT
  */
 
 (function (root) {
@@ -29,36 +29,35 @@ String.prototype.trim = String.prototype.trim || function () {
   return str.substring(0, i + 1);
 };
 
-/** @type {!Object} */
 var Snakeskin = {
   /**
    * Версия Snakeskin
    * @type {!Array}
    */
-  VERSION: [6, 5, 19],
+  VERSION: [6, 5, 20],
 
   /**
    * Пространство имён для директив
-   * @type {!Object}
+   * @const
    */
   Directions: {},
 
   /**
    * Пространство имён для фильтров
-   * @type {!Object}
+   * @const
    */
   Filters: {},
 
   /**
    * Пространство имён для суперглобальных переменных
-   * @type {!Object}
+   * @const
    */
   Vars: {},
 
   /**
    * Пространство имён для локальных переменных
    * области декларации шаблонов
-   * @type {!Object}
+   * @const
    */
   LocalVars: {},
 
@@ -612,7 +611,7 @@ Snakeskin.appendChild = function (node, obj) {
 
 
 global["define"] = globalDefine;
-if (typeof define === "function" && (define.amd || define["amd"])) {
+if (typeof define === "function" && define.amd) {
   define([], function () {
     return Snakeskin;
   });

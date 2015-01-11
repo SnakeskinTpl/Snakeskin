@@ -1,9 +1,9 @@
-/** @type {!Object} */
+/** @const */
 var Snakeskin = {
 	/** @type {!Array} */
 	VERSION: [],
 
-	/** @type {!Object} */
+	/** @const */
 	Filters: {
 		/**
 		 * @abstract
@@ -66,10 +66,10 @@ var Snakeskin = {
 	 */
 	toObj: function (val, opt_base, opt_onFileExists) {},
 
-	/** @type {!Object} */
+	/** @const */
 	Vars: {},
 
-	/** @type {!Object} */
+	/** @const */
 	LocalVars: {
 
 		/** @type {!Object} */

@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.19
+ * Snakeskin v6.5.20
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 10 Jan 2015 12:44:39 GMT
+ * Date: Sun, 11 Jan 2015 11:48:05 GMT
  */
 
 (function (root) {
@@ -38,36 +38,35 @@ String.prototype.trim = String.prototype.trim || function () {
   return str.substring(0, i + 1);
 };
 
-/** @type {!Object} */
 var Snakeskin = {
   /**
    * Версия Snakeskin
    * @type {!Array}
    */
-  VERSION: [6, 5, 19],
+  VERSION: [6, 5, 20],
 
   /**
    * Пространство имён для директив
-   * @type {!Object}
+   * @const
    */
   Directions: {},
 
   /**
    * Пространство имён для фильтров
-   * @type {!Object}
+   * @const
    */
   Filters: {},
 
   /**
    * Пространство имён для суперглобальных переменных
-   * @type {!Object}
+   * @const
    */
   Vars: {},
 
   /**
    * Пространство имён для локальных переменных
    * области декларации шаблонов
-   * @type {!Object}
+   * @const
    */
   LocalVars: {},
 
@@ -6332,23 +6331,23 @@ var Escaper, globalEscaper = global.Escaper;
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.1.6
+ * Escaper v2.1.8
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Sat, 10 Jan 2015 12:24:49 GMT
+ * Date: Sun, 11 Jan 2015 09:39:30 GMT
  */
 
 (function () {
 "use strict";
 
 var Escaper = {
-  VERSION: [2, 1, 6]
+  VERSION: [2, 1, 8]
 };
 
-if (typeof define === "function" && (define.amd || define["amd"])) {
+if (typeof define === "function" && define.amd) {
   define([], function () {
     return Escaper;
   });
@@ -6386,7 +6385,8 @@ var multComments = {
   "/*!": true
 };
 
-var keyArr = [], finalMap = {};
+var keyArr = [],
+    finalMap = {};
 
 for (var key in literals) {
   if (!literals.hasOwnProperty(key)) {
@@ -6464,7 +6464,8 @@ var escapeEndWordMap = {
   "of": true
 };
 
-var cache = {}, content = [];
+var cache = {},
+    content = [];
 
 /**
  * @param {!Object} obj
@@ -6489,19 +6490,22 @@ function mix(obj, p, val) {
  */
 Escaper.quotContent = content;
 
-var uSRgxp = /[^\s\/]/, wRgxp = /[a-z]/, sRgxp = /\s/, nRgxp = /\r|\n/;
+var uSRgxp = /[^\s\/]/,
+    wRgxp = /[a-z]/,
+    sRgxp = /\s/,
+    nRgxp = /\r|\n/;
 
 var symbols, snakeskinRgxp;
 
-Escaper.snakeskinRgxp = Escaper.snakeskinRgxp || null;
-Escaper.symbols = Escaper.symbols || null;
+Escaper.symbols = null;
+Escaper.snakeskinRgxp = null;
 
 /**
  * Заметить блоки вида ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ на
  * __ESCAPER_QUOT__номер_ в указанной строке
  *
  * @param {string} str - исходная строка
- * @param {(Object|boolean)=} opt_withCommentsOrParams - таблица вырезаемых последовательностей:
+ * @param {(Object.<string, boolean>|boolean)=} opt_withCommentsOrParams - таблица вырезаемых последовательностей:
  *
  *     (если установить значение параметру -1, то он будет полностью вырезаться,
  *     т.е. без возможности обратной замены, иначе true/false - включить/исключить последовательность)
@@ -6526,9 +6530,9 @@ Escaper.symbols = Escaper.symbols || null;
  * @return {string}
  */
 Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_snakeskin) {
-  symbols = symbols || Escaper.symbols || Escaper["symbols"] || "a-z";
+  symbols = symbols || Escaper.symbols || "a-z";
 
-  snakeskinRgxp = snakeskinRgxp || Escaper.snakeskinRgxp || Escaper["snakeskinRgxp"] || new RegExp("[!$" + symbols + "_]", "i");
+  snakeskinRgxp = snakeskinRgxp || Escaper.snakeskinRgxp || new RegExp("[!$" + symbols + "_]", "i");
 
   var isObj = opt_withCommentsOrParams instanceof Object;
   var p = isObj ? Object(opt_withCommentsOrParams) : {};
@@ -6579,22 +6583,29 @@ Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_
     return cache[cacheKey][initStr];
   }
 
-  var begin = false, end = true;
+  var begin = false,
+      end = true;
 
-  var escape = false, comment = false;
+  var escape = false,
+      comment = false;
 
-  var selectionStart = 0, block = false;
+  var selectionStart = 0,
+      block = false;
 
-  var templateVar = 0, filterStart = false;
+  var templateVar = 0,
+      filterStart = false;
 
   var cut, label;
 
-  var part = "", rPart = "";
+  var part = "",
+      rPart = "";
 
   for (var i = -1; ++i < str.length;) {
-    var el = str.charAt(i), next = str.charAt(i + 1);
+    var el = str.charAt(i),
+        next = str.charAt(i + 1);
 
-    var word = str.substr(i, 2), extWord = str.substr(i, 3);
+    var word = str.substr(i, 2),
+        extWord = str.substr(i, 3);
 
     if (!comment) {
       if (!begin) {
@@ -7821,7 +7832,7 @@ function DirObj(src, params) {
   this.res = "";
 
   if (!this.proto) {
-    this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__AMD__ = typeof define === 'function' && (define.amd || define['amd']),__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : __AMD__ ? {} : this;try {__IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);if (__HAS_EXPORTS__) {delete __EXPORTS__.init;}if (__AMD__) {define(['Snakeskin'], function (ss) {Snakeskin = Snakeskin || ss;__EXEC__.call(__EXPORTS__);return __EXPORTS__;});} else {if (__IS_NODE__) {Snakeskin = Snakeskin || require(obj);}__EXEC__.call(__EXPORTS__);return __EXPORTS__;}}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
+    this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__AMD__ = typeof define === 'function' && define.amd,__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : __AMD__ ? {} : this;try {__IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);if (__HAS_EXPORTS__) {delete __EXPORTS__.init;}if (__AMD__) {define(['Snakeskin'], function (ss) {Snakeskin = Snakeskin || ss;__EXEC__.call(__EXPORTS__);return __EXPORTS__;});} else {if (__IS_NODE__) {Snakeskin = Snakeskin || require(obj);}__EXEC__.call(__EXPORTS__);return __EXPORTS__;}}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
   }
 }
 
@@ -16456,7 +16467,7 @@ local(function () {
 
 
 global["define"] = globalDefine;
-if (typeof define === "function" && (define.amd || define["amd"])) {
+if (typeof define === "function" && define.amd) {
   define([], function () {
     return Snakeskin;
   });
