@@ -14,36 +14,42 @@ function define(dependencies, fn) {}
 define.amd = null;
 
 /**
+ * @typedef {{
+ *     onError: (?function(!Error)|undefined),
+ *     useStrict: boolean,
+ *     throws: boolean,
+ *     exports: string,
+ *     inlineIterators: boolean,
+ *     autoReplace: boolean,
+ *     macros: (Object|undefined),
+ *     renderAs: (?string|undefined),
+ *     doctype: (string|boolean),
+ *     localization: boolean,
+ *     i18nFn: string,
+ *     language: (Object|undefined),
+ *     lineSeparator: string,
+ *     tolerateWhitespace: boolean,
+ *     replaceUndef: boolean,
+ *     escapeOutput: boolean,
+ *     bemFilter: string,
+ *     renderMode: string,
+ *     lines: (Array|undefined),
+ *     needPrfx: (?boolean|undefined),
+ *     ignore: (RegExp|undefined),
+ *     scope: (Array|undefined),
+ *     vars: (Object|undefined),
+ *     consts: (Array|undefined),
+ *     proto: (Object|undefined),
+ *     info: Object,
+ *     parent
+ * }}
+ */
+var $$SnakeskinDirObjParams;
+
+/**
  * @interface
  * @param {string} src
- * @param {!Object} params
- * @param {?function(!Error)=} [params.onError]
- * @param {boolean} params.useStrict
- * @param {boolean} params.throws
- * @param {string} params.exports
- * @param {boolean} params.inlineIterators
- * @param {boolean} params.autoReplace
- * @param {Object=} [params.macros]
- * @param {?string=} [params.renderAs]
- * @param {string|boolean} [params.doctype]
- * @param {boolean} params.localization
- * @param {string} params.i18nFn
- * @param {Object=} [params.language]
- * @param {string} params.lineSeparator
- * @param {boolean} params.tolerateWhitespace
- * @param {boolean} params.replaceUndef
- * @param {boolean} params.escapeOutput
- * @param {string} params.bemFilter
- * @param {string} params.renderMode
- * @param {Array=} [params.lines]
- * @param {DirObj=} [params.parent]
- * @param {?boolean=} [params.needPrfx]
- * @param {RegExp=} [params.ignore]
- * @param {Array=} [params.scope]
- * @param {Object=} [params.vars]
- * @param {Array=} [params.consts]
- * @param {Object=} [params.proto]
- * @param {Object=} [params.info]
+ * @param {$$SnakeskinDirObjParams} params
  */
 function $$SnakeskinDirObj(src, params) {}
 
