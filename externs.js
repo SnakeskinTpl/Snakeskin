@@ -1,3 +1,51 @@
+/**
+ * @typedef {{
+ *     exports: (?string|undefined),
+ *     context: (Object|undefined),
+ *     vars: (Object|undefined),
+ *     cache: (?boolean|undefined),
+ *     debug: (Object|undefined),
+ *     onError: (?function(!Error)|undefined),
+ *     throws: (?boolean|undefined),
+ *     localization: (?boolean|undefined),
+ *     i18nFn: (?string|undefined),
+ *     language: (Object|undefined),
+ *     words: (Object|undefined),
+ *     ignore: (RegExp|undefined),
+ *     autoReplace: (?boolean|undefined),
+ *     macros: (Object|undefined),
+ *     renderAs: (?string|undefined),
+ *     renderMode: (?string|undefined),
+ *     lineSeparator: (?string|undefined),
+ *     tolerateWhitespace: (?boolean|undefined),
+ *     inlineIterators: (?boolean|undefined),
+ *     doctype: (string|boolean|null|undefined),
+ *     replaceUndef: (?boolean|undefined),
+ *     escapeOutput: (?boolean|undefined),
+ *     useStrict: (?boolean|undefined),
+ *     bemFilter: (?string|undefined),
+ *     prettyPrint: (?boolean|undefined)
+ * }}
+ */
+var $$SnakeskinParams;
+
+/** @typedef {{file: (?string|undefined)}} */
+var $$SnakeskinInfoParams;
+
+/**
+ * @typedef {{
+ *     cacheKey: (?boolean|undefined),
+ *     scope: (Array|undefined),
+ *     vars: (Object|undefined),
+ *     consts: (Array|undefined),
+ *     proto: (Object|undefined),
+ *     lines: (Array|undefined),
+ *     needPrfx: (?boolean|undefined),
+ *     parent
+ * }}
+ */
+var $$SnakeskinSysParams;
+
 /** @const */
 var Snakeskin = {
 	/** @type {!Array} */
@@ -82,43 +130,9 @@ var Snakeskin = {
 	/**
 	 * @abstract
 	 * @param {(Element|string)} src
-	 * @param {Object=} [opt_params]
-	 * @param {?string=} [opt_params.exports]
-	 * @param {Object=} [opt_params.context]
-	 * @param {Object=} [opt_params.vars]
-	 * @param {?boolean=} [opt_params.cache]
-	 * @param {Object=} [opt_params.debug]
-	 * @param {?function(!Error)=} [opt_params.onError]
-	 * @param {?boolean=} [opt_params.throws]
-	 * @param {?boolean=} [opt_params.localization]
-	 * @param {?string=} [opt_params.i18nFn]
-	 * @param {Object=} [opt_params.language]
-	 * @param {Object=} [opt_params.words]
-	 * @param {RegExp=} [opt_params.ignore]
-	 * @param {?boolean=} [opt_params.autoReplace]
-	 * @param {Object=} [opt_params.macros]
-	 * @param {?string=} [opt_params.renderAs]
-	 * @param {?string=} [opt_params.renderMode]
-	 * @param {?string=} [opt_params.lineSeparator]
-	 * @param {?boolean=} [opt_params.tolerateWhitespace]
-	 * @param {?boolean=} [opt_params.inlineIterators]
-	 * @param {(string|boolean|null)=} [opt_params.doctype]
-	 * @param {?boolean=} [opt_params.replaceUndef]
-	 * @param {?boolean=} [opt_params.escapeOutput]
-	 * @param {?boolean=} [opt_params.useStrict]
-	 * @param {?string=} [opt_params.bemFilter]
-	 * @param {?boolean=} [opt_params.prettyPrint]
-	 * @param {Object=} [opt_info]
-	 * @param {?string=} [opt_info.file]
-	 * @param {Object=} [opt_sysParams]
-	 * @param {?boolean=} [opt_sysParams.cacheKey]
-	 * @param {Array=} [opt_sysParams.scope]
-	 * @param {Object=} [opt_sysParams.vars]
-	 * @param {Array=} [opt_sysParams.consts]
-	 * @param {Object=} [opt_sysParams.proto]
-	 * @param {DirObj=} [opt_sysParams.parent]
-	 * @param {Array=} [opt_sysParams.lines]
-	 * @param {?boolean=} [opt_sysParams.needPrfx]
+	 * @param {?$$SnakeskinParams=} [opt_params]
+	 * @param {?$$SnakeskinInfoParams=} [opt_info]
+	 * @param {?$$SnakeskinSysParams=} [opt_sysParams]
 	 * @return {(string|boolean|null)}
 	 */
 	compile: function (src, opt_params, opt_info, opt_sysParams) {}
