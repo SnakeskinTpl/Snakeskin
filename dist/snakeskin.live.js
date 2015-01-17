@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 17 Jan 2015 07:37:14 GMT
+ * Date: Sat, 17 Jan 2015 07:44:34 GMT
  */
 
 (function (root) {
@@ -545,7 +545,7 @@ Snakeskin.forIn = function (obj, callback) {
       i = 0;
 
   if (callback.length >= 6) {
-    for (var key in obj) {
+    for (var ignore in obj) {
       length++;
     }
   }
