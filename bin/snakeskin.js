@@ -12,7 +12,7 @@ program
 	.version(Snakeskin.VERSION.join('.'))
 
 	.usage('[options] [dir|file ...]')
-	.option('-p, --params [src]', 'path to the options file or JS options object')
+	.option('-p, --params [src]', 'path to the options file or options object')
 
 	.option('-s, --source [src]', 'path to the template file or directory')
 	.option('-f, --file [src]', 'path to the template file (meta-information)')
@@ -24,7 +24,7 @@ program
 	.option('--exports [type]', 'export type')
 
 	.option('-e, --exec', 'execute compiled template')
-	.option('-d, --data [src]', 'path to the data file or JS data object')
+	.option('-d, --data [src]', 'path to the data file or data object')
 	.option('-t, --tpl [name]', 'name of the main template')
 
 	.option('--disable-localization', 'disable support for localization')
@@ -40,7 +40,7 @@ program
 	.option('--auto-replace', 'enable macros support')
 	.option('--macros [src]', 'path to the macros file or JS macros object')
 
-	.option('--doctype [type]', 'xml doctype (html or xml)')
+	.option('--doctype [type]', 'xml doctype ("html" or "xml")')
 	.option('--inline-iterators', 'inline forEach and forIn')
 	.option('--disable-escape-output', 'disable default "html" filter')
 	.option('--disable-replace-undef', 'disable default "undef" filter')
