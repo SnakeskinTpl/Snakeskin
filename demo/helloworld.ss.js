@@ -1,13 +1,13 @@
-/* Snakeskin v6.5.19, key <default,false,\n,xml,false,false,,stringConcat,true,true,true,,false,true,i18n,bem,true>, label <1419929833682>, includes <>, generated at <1420893976509>.
+/* Snakeskin v6.5.21, key <default,false,\n,xml,false,false,,stringConcat,true,true,true,,false,true,i18n,bem,true>, label <1420975710654>, includes <>, generated at <1421479907753>.
    This code is generated automatically, don't alter it. */
 (function() {
     'use strict';
     var __IS_NODE__ = false,
-        __AMD__ = typeof define === 'function' && (define.amd || define['amd']),
+        __AMD__ = typeof define === 'function' && define.amd,
         __HAS_EXPORTS__ = typeof exports !== 'undefined',
         __EXPORTS__ = __HAS_EXPORTS__ ? exports : __AMD__ ? {} : this;
     try {
-        __IS_NODE__ = 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+        __IS_NODE__ = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]';
     } catch (ignore) {}
     var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
 
@@ -41,7 +41,7 @@
             __FILTERS__ = Snakeskin.Filters,
             __VARS__ = Snakeskin.Vars,
             __LOCAL__ = Snakeskin.LocalVars;
-        __LOCAL__.$__0_08204 = void 0; /* Snakeskin template: helloWorld; name  */
+        __LOCAL__.$__0_4806f = void 0; /* Snakeskin template: helloWorld; name  */
         var helloWorld = this.helloWorld = function helloWorld(name) {
             var __THIS__ = this,
                 __CALLEE__ = __ROOT__.helloWorld,
@@ -80,3 +80,4 @@
         __INIT__();
     }
 }).call(this);
+
