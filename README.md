@@ -10,7 +10,9 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 
 [![NPM version](http://img.shields.io/npm/v/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
 [![NPM download](https://img.shields.io/npm/dm/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
-[![NPM dependencies](http://img.shields.io/david/kobezzza/Snakeskin.svg?style=flat)](https://david-dm.org/kobezzza/snakeskin)
+[![NPM dependencies](http://img.shields.io/david/kobezzza/Snakeskin.svg?style=flat)](https://david-dm.org/kobezzza/Snakeskin#info=dependencies&view=table)
+[![NPM devDependencies](http://img.shields.io/david/dev/kobezzza/Snakeskin.svg?style=flat)](https://david-dm.org/kobezzza/Snakeskin#info=devDependencies&view=table)
+
 [![Build Status](http://img.shields.io/travis/kobezzza/Snakeskin.svg?style=flat&branch=master)](https://travis-ci.org/kobezzza/Snakeskin)
 [![Coverage Status](http://img.shields.io/coveralls/kobezzza/Snakeskin.svg?style=flat)](https://coveralls.io/r/kobezzza/Snakeskin?branch=master)
 
