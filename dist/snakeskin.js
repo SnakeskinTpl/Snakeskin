@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 17 Jan 2015 07:44:34 GMT
+ * Date: Sat, 17 Jan 2015 08:55:09 GMT
  */
 
 (function (root) {
@@ -6319,20 +6319,20 @@ var Escaper, globalEscaper = global.Escaper;
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.1.9
+ * Escaper v2.1.10
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Sat, 17 Jan 2015 07:30:37 GMT
+ * Date: Sat, 17 Jan 2015 08:43:18 GMT
  */
 
 (function () {
 "use strict";
 
 var Escaper = {
-  VERSION: [2, 1, 10]
+  VERSION: [2, 1, 11]
 };
 
 if (typeof define === "function" && define.amd) {
@@ -7317,7 +7317,7 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
  * @param {string} text - исходный текст шаблона
  * @param {!Object} params - параметры запуска
  * @param {!Object} ctx - объект контекста
- * @return {string}
+ * @return {(string|undefined)}
  */
 function returnCache(cacheKey, text, params, ctx) {
   if (IS_NODE && ctx !== NULL && globalFnCache[cacheKey] && globalFnCache[cacheKey][text]) {
@@ -7380,7 +7380,6 @@ function returnCacheKey(params, ctx) {
  * @param {string} text - исходный текст шаблона
  * @param {!Object} params - параметры запуска
  * @param {!Object} ctx - объект контекста
- * @return {string}
  */
 function saveFnCache(cacheKey, text, params, ctx) {
   if (ctx !== NULL) {
@@ -7403,7 +7402,6 @@ function saveFnCache(cacheKey, text, params, ctx) {
  * @param {string} text - исходный текст шаблона
  * @param {!Object} params - параметры запуска
  * @param {!DirObj} dir - объект директивы
- * @return {string}
  */
 function saveCache(cacheKey, text, params, dir) {
   if (cacheKey && (params.cache || globalCache[cacheKey])) {
@@ -8716,8 +8714,8 @@ DirObj.prototype.getFullBody = function (tplName) {
             diff = shortMap[next2str] ? 2 : 1;
           }
 
-          var char = str.charAt(j + diff);
-          nextSpace = !char || whiteSpaceRgxp.test(char);
+          var chr = str.charAt(j + diff);
+          nextSpace = !chr || whiteSpaceRgxp.test(chr);
 
           var dir = (shortMap[el] || shortMap[next2str]) && nextSpace,
               decl = getLineDesc(str, nextSpace && baseShortMap[el] || el === IGNORE_COMMAND ? j + 1 : j, Boolean(dir), next2str === MULT_COMMENT_START);
@@ -10355,7 +10353,7 @@ DirObj.prototype.replaceCData = function (str) {
  *
  * @param {?string} cacheKey - кеш-ключ
  * @param {(Date|string)} label - заголовок файла шаблонов
- * @retur {!DirObj}
+ * @return {!DirObj}
  */
 DirObj.prototype.end = function (cacheKey, label) {
   var _this7 = this;
@@ -11892,52 +11890,65 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
    * Добавить новую директиву в пространство имён Snakeskin
    *
    * @param {string} name - название добавляемой директивы
-   * @param {Object} params - дополнительные параметры
+   * @param {{
+   *     alias: (?boolean|undefined),
+   *     text: (?boolean|undefined),
+   *     placement: (?string|undefined),
+   *     notEmpty: (?boolean|undefined),
+   *     chain: (Array|string|undefined),
+   *     end: (Array|string|undefined),
+   *     group: (Array|string|undefined),
+   *     sys: (?boolean|undefined),
+   *     block: (?boolean|undefined),
+   *     selfInclude: (?boolean|undefined),
+   *     replacers: (Object|undefined),
+   *     inside: (Object|undefined),
+   *     after: (Object|undefined)
+   * }} params - дополнительные параметры:
+   *     *) [params.alias = false] - если true, то директива считается псевдонимом
+   *            (только для приватных директив)
    *
-   * @param {?boolean=} params.alias - если true, то директива считается псевдонимом
-   *     (только для приватных директив)
+   *     *) [params.text = false] - если true, то декларируется,
+   *            что директива выводится как текст
    *
-   * @param {?boolean=} params.text - если true, то декларируется,
-   *     что директива выводится как текст
+   *     *) [params.placement] - область размещения директивы ('global', 'template', ...)
+   *     *) [params.notEmpty = false] - если true, то директива не может быть "пустой"
    *
-   * @param {?string=} [params.placement] - область размещения директивы ('global', 'template', ...)
-   * @param {?boolean=} params.notEmpty - если true, то директива не может быть "пустой"
+   *     *) [params.chain] - название главной директивы (цепи), к которой принадлежит директива,
+   *            или массив названий
    *
-   * @param {(Array|string)=} [params.chain] - название главной директивы (цепи), к которой принадлежит директива,
-   *     или массив названий
+   *     *) [params.end] - название главной директивы (цепи), которую заканчивает директива,
+   *            или массив названий
    *
-   * @param {(Array|string)=} [params.end] - название главной директивы (цепи), которую заканчивает директива,
-   *     или массив названий
+   *     *) [params.group] - название группы, к которой принадлежит директива,
+   *            или массив названий
    *
-   * @param {(Array|string)=} [params.group] - название группы, к которой принадлежит директива,
-   *     или массив названий
+   *     *) [params.sys = false] - если true, то директива считается системной
+   *            (например, block или proto, т.е. которые участвуют только на этапе трансляции)
    *
-   * @param {?boolean=} params.sys - если true, то директива считается системной
-   *     (например, block или proto, т.е. которые участвуют только на этапе трансляции)
+   *     *) [params.block = false] - если true, то директива считается блочной
+   *            (т.е. требует закрывающей директивы)
    *
-   * @param {?boolean=} params.block - если true, то директива считается блочной
-   *     (т.е. требует закрывающей директивы)
+   *     *) [params.selfInclude = true] - если false, то директива не может быть вложена
+   *            в директиву схожего типа
    *
-   * @param {?boolean=} params.selfInclude - если false, то директива не может быть вложена
-   *     в директиву схожего типа
+   *     *) [params.replacers] - таблица коротких сокращений директивы
+   *            replacers: {
+   *                // В ключе должно быть не более 2-х символов
+   *                '?': (cmd) => cmd.replace(/^\?/, 'void ')
+   *            }
    *
-   * @param {Object=} [params.replacers] - таблица коротких сокращений директивы
-   *     replacers: {
-   *         // В ключе должно быть не более 2-х символов
-   *         '?': (cmd) => cmd.replace(/^\?/, 'void ')
-   *     }
+   *     *) [params.inside] - таблица директив, которые могут быть вложены в исходную
+   *            inside: {
+   *                'case': true,
+   *                'default': true
+   *            }
    *
-   * @param {Object=} [params.inside] - таблица директив, которые могут быть вложены в исходную
-   *     inside: {
-   *         'case': true,
-   *         'default': true
-   *     }
-   *
-   * @param {Object=} [params.after] - таблица директив, которые могут идти после исходной
-   *     after: {
-   *         'catch': true,
-   *         'finally': true
-   *     }
+   *     *) [params.after] - таблица директив, которые могут идти после исходной
+   *            after: {
+   *                'catch': true,
+   *                'finally': true
+   *            }
    *
    * @param {function(this:DirObj, string, number, string, (boolean|number))} constr - конструктор директивы
    * @param {?function(this:DirObj, string, number, string, (boolean|number))=} opt_destr - деструктор директивы
@@ -15953,7 +15964,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
           var str = tmpArr[0],
               length = tmpArr.length,
               first = str.charAt(0),
-              short = "";
+              shortcut = "";
 
           if (first === "%") {
             try {
@@ -15962,7 +15973,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
               return this.error(err.message);
             }
           } else {
-            short = str;
+            shortcut = str;
           }
 
           for (var _i = 0; ++_i < length;) {
@@ -15975,7 +15986,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
             var def = "this" + concatProp(str);
 
-            this.save(pos = /* cbws */"if (" + def + " == null) {" + def + " = {};}" + (_i === 1 && short ? "var " + short + " = " + def + ";" : "") + "", iface, jsDoc);
+            this.save(pos = /* cbws */"if (" + def + " == null) {" + def + " = {};}" + (_i === 1 && shortcut ? "var " + shortcut + " = " + def + ";" : "") + "", iface, jsDoc);
 
             if (jsDoc) {
               jsDoc += pos.length;
@@ -15997,7 +16008,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
           }
 
           tplName = str;
-          this.save("" + (length === 1 && short ? "var " + short + " = " : "") + "this" + concatProp(tplName) + " = function " + prfx + "" + (length > 1 ? lastName : short) + "(", iface);
+          this.save("" + (length === 1 && shortcut ? "var " + shortcut + " = " : "") + "this" + concatProp(tplName) + " = function " + prfx + "" + (length > 1 ? lastName : shortcut) + "(", iface);
         }
 
         this.info.template = this.tplName = tplName;
