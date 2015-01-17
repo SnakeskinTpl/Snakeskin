@@ -149,6 +149,10 @@ function compile(dev) {
 					language_in: 'ES5',
 					externs: [
 						'./predefs/build/index.js'
+					],
+
+					jscomp_off: [
+						'nonStandardJsDocs'
 					]
 				}
 			};
@@ -165,7 +169,14 @@ function compile(dev) {
 					'deprecated',
 					'externsValidation',
 					'missingProperties',
-					'visibility'
+					'visibility',
+					'missingReturn',
+					'duplicate',
+					'internetExplorerChecks',
+					'suspiciousCode',
+					'uselessCode',
+					'misplacedTypeAnnotation',
+					'typeInvalidation'
 				];
 			}
 
