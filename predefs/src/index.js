@@ -39,7 +39,7 @@ define.amd = null;
  *     scope: (Array|undefined),
  *     vars: (Object|undefined),
  *     consts: (Array|undefined),
- *     proto: Object,
+ *     proto: (Object|undefined),
  *     info: {file, line, node, template},
  *     parent
  * }}
