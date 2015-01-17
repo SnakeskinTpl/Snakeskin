@@ -99,8 +99,8 @@ exports.check = function (source, result, opt_key, opt_includes) {
  *
  * @param {string} src - путь к файлу шаблонов
  *
- * @param {Object=} [opt_params] - дополнительные параметры компиляции
  * @see Snakeskin.compile
+ * @param {?$$SnakeskinParams=} [opt_params] - дополнительные параметры компиляции
  *
  * @return {(!Object|boolean)}
  */
@@ -216,8 +216,8 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
  *
  * @param {string} src - путь к файлу шаблонов
  *
- * @param {Object=} [opt_params] - дополнительные параметры компиляции
  * @see Snakeskin.compile
+ * @param {?$$SnakeskinParams=} [opt_params] - дополнительные параметры компиляции
  *
  * @param {?string=} [opt_tplName] - имя главного шаблона
  * @return {Function}
@@ -237,8 +237,8 @@ exports.execFile = function (src, opt_params, opt_tplName) {
  *
  * @param {string} txt - исходный текст
  *
- * @param {Object=} [opt_params] - дополнительные параметры компиляции
  * @see Snakeskin.compile
+ * @param {?$$SnakeskinParams=} [opt_params] - дополнительные параметры компиляции
  *
  * @param {?string=} [opt_tplName] - имя главного шаблона
  * @return {Function}
