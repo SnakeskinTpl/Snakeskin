@@ -119,7 +119,6 @@ var Snakeskin = {
 
 	/** @const */
 	LocalVars: {
-
 		/** @type {!Object} */
 		include: {}
 	},
