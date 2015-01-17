@@ -58,7 +58,10 @@ gulp.task('build', function (callback) {
 			.pipe(to5({
 				blacklist: [
 					'specPropertyLiterals',
-					'specMemberExpressionLiterals',
+					'specMemberExpressionLiterals'
+				],
+
+				optional: [
 					'undefinedToVoid'
 				]
 			}))
