@@ -6,7 +6,7 @@
 
 ---
 
-Snakeskin — awesome JavaScript template engine with the best support for inheritance.
+Snakeskin is a awesome JavaScript template engine with the best support for inheritance.
 
 [![NPM version](http://img.shields.io/npm/v/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
 [![NPM download](https://img.shields.io/npm/dm/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
@@ -27,13 +27,13 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 * 2 types of syntax: classic and Jade-Like;
 * Object-oriented approach with a very rich features for code-reuse (inheritance, composition, mixing, etc.);
 * Close to JS set of directives;
-* Support [BEM](http://en.bem.info) (as in the [Stylus](https://github.com/LearnBoost/stylus)) at the level of syntax;
-* Support localization at the level of syntax;
-* Support macros and filters;
-* Support modules;
+* [BEM](http://en.bem.info) (as in the [Stylus](https://github.com/LearnBoost/stylus)) at the level of syntax;
+* Localization at the level of syntax;
+* Macros and filters;
+* Modules;
 * High-speed compilation;
-* Work in browsers, as well as on the server ([node.js](http://nodejs.org));
-* The engine is written in pure JavaScript and does not have any dependencies;
+* Work in browsers, as well as on a server ([node.js](http://nodejs.org));
+* The engine is written in pure JavaScript and doesn't have any dependencies;
 * The source code is designed to work with Google Closure Compiler in advanced mode;
 * Good code coverage;
 * Detailed [documentation](https://github.com/kobezzza/Snakeskin/wiki) with examples.
@@ -72,7 +72,7 @@ Snakeskin — awesome JavaScript template engine with the best support for inher
 page(true);
 ```
 
-Is converted to
+It will transpile to
 
 ```html
 <!DOCTYPE html>
