@@ -57,21 +57,26 @@ gulp.task('build', function (callback) {
 
 			.pipe(to5({
 				blacklist: [
-					'specPropertyLiterals',
-					'specMemberExpressionLiterals'
+					'minification.propertyLiterals',
+					'minification.memberExpressionLiterals',
+					'useStrict'
 				],
 
 				optional: [
-					'undefinedToVoid'
+					'spec.undefinedToVoid'
 				]
 			}))
 
 			.pipe(wrap(
-				'(function (root) {' +
+				'(function () {' +
+					'\n' +
+					'\'use strict\';' +
+					'\n' +
+					'var self = this;' +
 					'\n' +
 					'<%= contents %>' +
 					'\n' +
-				'}).call(new Function(\'return this\')(), this);'
+				'}).call(new Function(\'return this\')());'
 			))
 
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
