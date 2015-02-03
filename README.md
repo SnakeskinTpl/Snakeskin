@@ -1,8 +1,8 @@
 # Snakeskin
 
-<img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190px" />
+<img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190" />
 
-*This is Frank — snake-cowboy who loves templates.*
+*This is Frank, a snake-cowboy who loves templates.*
 
 ---
 
@@ -25,8 +25,8 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 ## Features
 
 * 2 types of syntax: classic and Jade-Like;
-* Object-oriented approach with a very rich features for code-reuse (inheritance, composition, mixing, etc.);
-* Close to JS set of directives;
+* Object-oriented approach with very rich features for code-reuse (inheritance, composition, mixing, etc.);
+* JS-like set of directives;
 * [BEM](http://en.bem.info) (as in [Stylus](https://github.com/LearnBoost/stylus));
 * Localization;
 * Macros and filters;
