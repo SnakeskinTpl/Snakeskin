@@ -39,8 +39,10 @@ exports.compile = ss.compile;
  * @return {(boolean|!Array)}
  */
 exports.check = function (source, result, opt_key, opt_includes) {
-	source = path.normalize(path.resolve(source));
-	result = path.normalize(path.resolve(result));
+	var ctx = module.parent ? module.parent.filename : '';
+
+	source = path.normalize(path.resolve(ctx, source));
+	result = path.normalize(path.resolve(ctx, result));
 
 	if (!fs.existsSync(source) || !fs.existsSync(result)) {
 		return false;
@@ -105,7 +107,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
-	src = path.normalize(path.resolve(src));
+	src = path.normalize(path.resolve(module.parent ? module.parent.filename : '', src));
 
 	var p = opt_params || {};
 	var cacheEnabled = p.cache !== false;
