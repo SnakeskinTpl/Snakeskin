@@ -187,7 +187,7 @@ function testDir(src) {
 	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach(function (el, i, data) {
 		var src = data.slice(0, i + 1).join(path.sep);
 
-		if (!fs.existsSync(src)) {
+		if (src && !fs.existsSync(src)) {
 			fs.mkdirSync(src);
 		}
 	});
