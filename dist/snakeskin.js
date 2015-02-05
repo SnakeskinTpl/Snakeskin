@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.25
+ * Snakeskin v6.5.26
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 05 Feb 2015 10:44:35 GMT
+ * Date: Thu, 05 Feb 2015 12:41:26 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 5, 25],
+	VERSION: [6, 5, 26],
 
 	/**
   * The namespace for directives

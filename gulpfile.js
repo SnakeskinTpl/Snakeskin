@@ -29,6 +29,19 @@ gulp.task('yaspeller', function () {
 	run('node node_modules/yaspeller/bin/cli.js ./').exec();
 });
 
+gulp.task('pub', function () {
+	gulp.src('./bin/*.js')
+		.pipe(eol('\n'))
+		.pipe(gulp.dest('./bin'))
+		.on('end', function () {
+			run('npm pub').exec(undefined, function () {
+				gulp.src('./bin/*.js')
+					.pipe(eol())
+					.pipe(gulp.dest('./bin'));
+			});
+		});
+});
+
 gulp.task('build', function (callback) {
 	var builds = getBuilds(),
 		i = 0;
