@@ -23,7 +23,7 @@
   ],
   "main": "snakeskin.js",
   "bin": {
-    "snakeskin": "bin/snakeskin.js"
+    "snakeskin": "./bin/snakeskin.js"
   },
   "keywords": [
     "templates",
