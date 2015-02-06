@@ -41,7 +41,7 @@ program
 	.option('--macros [src]', 'Set a macros object or a path to a macros file')
 
 	.option('--doctype [type]', 'Set using doctype: xml (by default) or html')
-	.option('--inline-iterators', 'Set that all forEach and forIn iterators must be replaced to a loop')
+	.option('--inline-iterators', 'Set that all forEach and forIn iterators will be rendered as loops')
 	.option('--disable-escape-output', 'Disable the html filter by default')
 	.option('--disable-replace-undef', 'Disable the undef filter by default')
 
