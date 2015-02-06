@@ -28,8 +28,9 @@
   "keywords": [
     "templates",
     "javascript",
-    "template engine",
-    "templateengine"
+    "node.js",
+    "templateengine",
+    "jadelike"
   ],
   "scripts": {
     "test": "node test",
