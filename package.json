@@ -22,9 +22,8 @@
     }
   ],
   "main": "snakeskin.js",
-  "preferGlobal": true,
   "bin": {
-    "snakeskin": "./bin/snakeskin.js"
+    "snakeskin": "bin/snakeskin.js"
   },
   "keywords": [
     "templates",
