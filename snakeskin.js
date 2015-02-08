@@ -9,7 +9,7 @@ function clone(obj) {
 	return JSON.parse(JSON.stringify(obj));
 }
 
-// Явный экспорт, чтобы работал автокомплит в IDE
+// Declarative export for working autocomplete in editors
 
 /** @see {Snakeskin.VERSION} */
 exports.VERSION = ss.VERSION;
@@ -27,15 +27,13 @@ exports.importFilters = ss.importFilters;
 exports.compile = ss.compile;
 
 /**
- * Вернуть true, если заданный файл шаблонов соответствует скомпилированному
- * по временной метке
+ * Returns true, when a template file corresponds to a compiled file
+ * by timestamp
  *
- * @param {string} source - путь к исходному файлу
- * @param {string} result - путь к скомпилированному файлу
- * @param {(string|boolean|null)=} [opt_key] - ключ параметров компиляции
- * @param {?boolean=} [opt_includes=false] - если true, то в случае успешного результата
- *     вернётся массив подключаемых файлов
- *
+ * @param {string} source - a path to the template file
+ * @param {string} result - a path to the compiled file
+ * @param {(string|boolean|null)=} [opt_key] - a key of compile parameters
+ * @param {?boolean=} [opt_includes=false] - if is true, then returns an array of included files
  * @return {(boolean|!Array)}
  */
 exports.check = function (source, result, opt_key, opt_includes) {
@@ -96,13 +94,13 @@ exports.check = function (source, result, opt_key, opt_includes) {
 };
 
 /**
- * Скомпилировать заданный файл и вернуть ссылку на полученный объект
- * или false, если произошла ошибка при компиляции
+ * Compiles a template file and returns a reference to a resulting object
+ * or false, if an error occurs during compilation
  *
- * @param {string} src - путь к файлу шаблонов
+ * @param {string} src - a path to the template file
  *
  * @see Snakeskin.compile
- * @param {?$$SnakeskinParams=} [opt_params] - дополнительные параметры компиляции
+ * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  *
  * @return {(!Object|boolean)}
  */
@@ -190,11 +188,11 @@ exports.compileFile = function (src, opt_params) {
 };
 
 /**
- * Вернуть ссылку на главный шаблон
+ * Returns a reference to a main template
  *
- * @param {!Object} tpls - таблица шаблонов
- * @param {?string=} [opt_src] - путь к файлу шаблонов
- * @param {?string=} [opt_tplName] - имя главного шаблона
+ * @param {!Object} tpls - a template object
+ * @param {?string=} [opt_src] - a path to the template file
+ * @param {?string=} [opt_tplName] - a name of the main template
  * @return {Function}
  */
 exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
@@ -214,14 +212,14 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
 };
 
 /**
- * Скомпилировать заданный файл и вернуть ссылку на главный шаблон (функцию)
+ * Compiles a template file and returns a reference to a main template
  *
- * @param {string} src - путь к файлу шаблонов
+ * @param {string} src - a path to the template file
  *
  * @see Snakeskin.compile
- * @param {?$$SnakeskinParams=} [opt_params] - дополнительные параметры компиляции
+ * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  *
- * @param {?string=} [opt_tplName] - имя главного шаблона
+ * @param {?string=} [opt_tplName] - a name of the main template
  * @return {Function}
  */
 exports.execFile = function (src, opt_params, opt_tplName) {
@@ -235,14 +233,14 @@ exports.execFile = function (src, opt_params, opt_tplName) {
 };
 
 /**
- * Скомпилировать заданный текст и вернуть ссылку на главный шаблон (функцию)
+ * Compiles a template text and returns a reference to a main template
  *
- * @param {string} txt - исходный текст
+ * @param {string} txt - the source text
  *
  * @see Snakeskin.compile
- * @param {?$$SnakeskinParams=} [opt_params] - дополнительные параметры компиляции
+ * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  *
- * @param {?string=} [opt_tplName] - имя главного шаблона
+ * @param {?string=} [opt_tplName] - a name of the main template
  * @return {Function}
  */
 exports.exec = function (txt, opt_params, opt_tplName) {

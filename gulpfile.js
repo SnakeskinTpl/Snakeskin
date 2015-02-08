@@ -95,10 +95,10 @@ gulp.task('build', function (callback) {
 			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
 			.pipe(monic())
 
-			// Фикс @param {foo} [bar=1] -> @param {foo} [bar]
+			// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
 			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
 
-			// Пробельные символы в строках-шаблонах
+			// Whitespaces in strings of templates
 			.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
 				return sstr
 					.replace(/\\n|\\t/g, '')
