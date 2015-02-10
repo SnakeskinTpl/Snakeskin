@@ -27,17 +27,17 @@ program
 	.option('-d, --data [src]', 'Set a path to a data file or a data object')
 	.option('-t, --tpl [name]', 'Set a name of the main template')
 
-	.option('--disable-localization', 'Disable support for the localization')
+	.option('--disable-localization', 'Disable support for localization')
 	.option('--i18n-fn [name]', 'Set a name of the i18n function')
 	.option('--language [src]', 'Set a localization object or a path to a localization file')
-	.option('--words [src]', 'Set a path to the localization file to save')
+	.option('--words [src]', 'Set a path to a localization file to save')
 
 	.option('--disable-use-strict', 'Disable the \'use strict\'; mode')
 	.option('--bem-filter [name]', 'Set a name of the bem filter')
 	.option('--line-separator [char]', 'Set a newline character (eol)')
-	.option('--tolerate-whitespace', 'Tolerate whitespaces in the template')
+	.option('--tolerate-whitespace', 'Tolerate whitespaces in the templates')
 	.option('--ignore', 'Set a RegExp for ignoring whitespaces')
-	.option('--auto-replace', 'Enable support of the macros')
+	.option('--auto-replace', 'Enable support for macros')
 	.option('--macros [src]', 'Set a macros object or a path to a macros file')
 
 	.option('--doctype [type]', 'Set using doctype: xml (by default) or html')
