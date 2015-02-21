@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
 	path = require('path');
 
-var to5 = require('gulp-6to5'),
+var to5 = require('gulp-babel'),
 	monic = require('gulp-monic'),
 	gcc = require('gulp-closure-compiler'),
 	rename = require('gulp-rename'),
@@ -34,7 +34,7 @@ gulp.task('pub', function () {
 		.pipe(eol('\n'))
 		.pipe(gulp.dest('./bin'))
 		.on('end', function () {
-			run('npm pub').exec(undefined, function () {
+			run('npm pub && bower register snakeskin https://github.com/kobezzza/Snakeskin').exec(undefined, function () {
 				gulp.src('./bin/*.js')
 					.pipe(eol())
 					.pipe(gulp.dest('./bin'));
@@ -70,8 +70,8 @@ gulp.task('build', function (callback) {
 
 			.pipe(to5({
 				blacklist: [
-					'minification.propertyLiterals',
-					'minification.memberExpressionLiterals',
+					'es3.propertyLiterals',
+					'es3.memberExpressionLiterals',
 					'useStrict'
 				],
 
