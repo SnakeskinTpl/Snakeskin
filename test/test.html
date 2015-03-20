@@ -2437,6 +2437,20 @@ fffuuuu' .
 
 - template syntax_index14()
 	< .foo /// :: 121
+
+- template syntax_index15() @= tolerateWhitespace true @= autoReplace false
+	# block foo
+		jQuery(document).ready(function () {
+			$.backstretch([
+				'/static/assets/admin/pages/media/bg/1.jpg',
+				'/static/assets/admin/pages/media/bg/2.jpg',
+				'/static/assets/admin/pages/media/bg/3.jpg',
+				'/static/assets/admin/pages/media/bg/4.jpg'
+			], {
+				fade: 1000,
+				duration: 8000
+			});
+		});
 				</script>
 
 				<script type="text/javascript">
@@ -2477,6 +2491,18 @@ fffuuuu' .
 							equal(syntax_index13().trim(), '1 1');
 						
 							equal(syntax_index14().trim(), '<div class="foo"></div>');
+						
+							equal(syntax_index15().trim(), 'jQuery(document).ready(function () {
+			$.backstretch([
+				\'/static/assets/admin/pages/media/bg/1.jpg\',
+				\'/static/assets/admin/pages/media/bg/2.jpg\',
+				\'/static/assets/admin/pages/media/bg/3.jpg\',
+				\'/static/assets/admin/pages/media/bg/4.jpg\'
+			], {
+				fade: 1000,
+				duration: 8000
+			});
+		});');
 						
 					});
 				</script>

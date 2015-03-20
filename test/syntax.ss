@@ -12,6 +12,7 @@ syntax_index11
 syntax_index12
 syntax_index13
 syntax_index14
+syntax_index15
 
 ###
 
@@ -119,6 +120,20 @@ fffuuuu' .
 - template syntax_index14()
 	< .foo /// :: 121
 
+- template syntax_index15() @= tolerateWhitespace true @= autoReplace false
+	# block foo
+		jQuery(document).ready(function () {
+			$.backstretch([
+				'/static/assets/admin/pages/media/bg/1.jpg',
+				'/static/assets/admin/pages/media/bg/2.jpg',
+				'/static/assets/admin/pages/media/bg/3.jpg',
+				'/static/assets/admin/pages/media/bg/4.jpg'
+			], {
+				fade: 1000,
+				duration: 8000
+			});
+		});
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -174,3 +189,17 @@ fff		uuuu		fffuuuu
 ***
 
 <div class="foo"></div>
+
+***
+
+		jQuery(document).ready(function () {
+			$.backstretch([
+				'/static/assets/admin/pages/media/bg/1.jpg',
+				'/static/assets/admin/pages/media/bg/2.jpg',
+				'/static/assets/admin/pages/media/bg/3.jpg',
+				'/static/assets/admin/pages/media/bg/4.jpg'
+			], {
+				fade: 1000,
+				duration: 8000
+			});
+		});

@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.28
+ * Snakeskin v6.5.29
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 20 Mar 2015 14:30:23 GMT
+ * Date: Fri, 20 Mar 2015 17:32:58 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 5, 28],
+	VERSION: [6, 5, 29],
 
 	/**
   * The namespace for directives
@@ -8729,7 +8729,14 @@ DirObj.prototype.getFullBody = function (tplName) {
 						decl.name = replacer(decl.name).replace(commandRgxp, "$1");
 					}
 
-					var adv = el === alb ? alb : "";
+
+					var adv = void 0;
+
+					if (dir) {
+						adv = el === alb ? alb : "";
+					} else {
+						adv = struct.adv;
+					}
 
 					var s = dir ? adv + lb : "",
 					    e = dir ? rb : "";
