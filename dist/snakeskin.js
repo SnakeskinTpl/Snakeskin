@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.29
+ * Snakeskin v6.5.30
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Fri, 20 Mar 2015 17:32:58 GMT
+ * Date: Sat, 21 Mar 2015 10:02:16 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 5, 29],
+	VERSION: [6, 5, 30],
 
 	/**
   * The namespace for directives
@@ -8065,7 +8065,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			}
 		}
 
-		var current = this.lines[line - 1].replace(styleRgxp, "  ").replace(privateRgxp, "").replace(cutRgxp, "$1");
+		var current = (this.lines[line - 1] || "").replace(styleRgxp, "  ").replace(privateRgxp, "").replace(cutRgxp, "$1");
 
 		var part = "> " + line + " " + current;
 		var sep = new Array(Math.max(max, part.length) || 5).join("-");
@@ -8729,17 +8729,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 						decl.name = replacer(decl.name).replace(commandRgxp, "$1");
 					}
 
-
-					var adv = void 0;
-
-					if (dir) {
-						adv = el === alb ? alb : "";
-					} else {
-						adv = struct.adv;
-					}
-
-					var s = dir ? adv + lb : "",
-					    e = dir ? rb : "";
+					var adv = el === alb ? alb : "";
 
 					var obj = {
 						dir: dir,
@@ -8757,15 +8747,25 @@ DirObj.prototype.getFullBody = function (tplName) {
 							obj.parent = struct;
 
 							if (!obj.adv && struct.adv) {
-								obj.block = false;
-								adv = alb;
+								if (dir) {
+									decl.command = el + next + decl.command;
+								}
+
+								dir = obj.dir = obj.block = false;
+
+								obj.adv = adv = alb;
 							}
 						} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
 							obj.parent = struct.parent;
 
 							if (!obj.adv && struct.parent && struct.parent.adv) {
-								obj.block = false;
-								adv = alb;
+								if (dir) {
+									decl.command = el + next + decl.command;
+								}
+
+								dir = obj.dir = obj.block = false;
+
+								obj.adv = adv = alb;
 							}
 
 							f(struct, obj);
@@ -8792,6 +8792,9 @@ DirObj.prototype.getFullBody = function (tplName) {
 						}
 					}
 
+					var s = dir ? adv + lb : "",
+					    e = dir ? rb : "";
+
 					var parts = void 0,
 					    txt = void 0;
 
@@ -8816,7 +8819,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					res += space;
 
 					if (needSpace && (obj.text || !Snakeskin.Directions[obj.name])) {
-						res += "" + adv + "" + lb + "__&-__" + rb;
+						res += "" + alb + "" + lb + "__&-__" + rb;
 					}
 
 					res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, "$1/*$2$3$2*/") + e;

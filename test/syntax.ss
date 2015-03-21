@@ -13,6 +13,7 @@ syntax_index12
 syntax_index13
 syntax_index14
 syntax_index15
+syntax_index16
 
 ###
 
@@ -134,6 +135,27 @@ fffuuuu' .
 			});
 		});
 
+- template syntax_index16() @= tolerateWhitespace true @= autoReplace false
+	# block foo
+		{if 1}
+			- if 2
+				#{&}
+				# if 3
+					jQuery(document).ready(function () {
+						$.backstretch([
+							'/static/assets/admin/pages/media/bg/1.jpg',
+							'/static/assets/admin/pages/media/bg/2.jpg',
+							'/static/assets/admin/pages/media/bg/3.jpg',
+							'/static/assets/admin/pages/media/bg/4.jpg'
+						], {
+							fade: 1000,
+							duration: 8000
+						});
+					});
+	{&}
+	- if 1
+		1
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -203,3 +225,22 @@ fff		uuuu		fffuuuu
 				duration: 8000
 			});
 		});
+
+***
+
+	{if 1}
+			- if 2
+				jQuery(document).ready(function () {
+						$.backstretch([
+							'/static/assets/admin/pages/media/bg/1.jpg',
+							'/static/assets/admin/pages/media/bg/2.jpg',
+							'/static/assets/admin/pages/media/bg/3.jpg',
+							'/static/assets/admin/pages/media/bg/4.jpg'
+						], {
+							fade: 1000,
+							duration: 8000
+						});
+					});
+
+
+	1
