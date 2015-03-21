@@ -12,8 +12,6 @@ syntax_index11
 syntax_index12
 syntax_index13
 syntax_index14
-syntax_index15
-syntax_index16
 
 ###
 
@@ -211,36 +209,3 @@ fff		uuuu		fffuuuu
 ***
 
 <div class="foo"></div>
-
-***
-
-		jQuery(document).ready(function () {
-			$.backstretch([
-				'/static/assets/admin/pages/media/bg/1.jpg',
-				'/static/assets/admin/pages/media/bg/2.jpg',
-				'/static/assets/admin/pages/media/bg/3.jpg',
-				'/static/assets/admin/pages/media/bg/4.jpg'
-			], {
-				fade: 1000,
-				duration: 8000
-			});
-		});
-
-***
-
-	{if 1}
-			- if 2
-				jQuery(document).ready(function () {
-						$.backstretch([
-							'/static/assets/admin/pages/media/bg/1.jpg',
-							'/static/assets/admin/pages/media/bg/2.jpg',
-							'/static/assets/admin/pages/media/bg/3.jpg',
-							'/static/assets/admin/pages/media/bg/4.jpg'
-						], {
-							fade: 1000,
-							duration: 8000
-						});
-					});
-
-
-	1
