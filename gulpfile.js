@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
 	path = require('path');
 
-var to5 = require('gulp-babel'),
+var to5 = require('gulp-6to5'),
 	monic = require('gulp-monic'),
 	gcc = require('gulp-closure-compiler'),
 	rename = require('gulp-rename'),

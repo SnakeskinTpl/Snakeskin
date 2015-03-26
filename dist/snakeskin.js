@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.27
+ * Snakeskin v6.5.32
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Thu, 05 Feb 2015 19:08:32 GMT
+ * Date: Sat, 21 Mar 2015 10:22:06 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 5, 27],
+	VERSION: [6, 5, 32],
 
 	/**
   * The namespace for directives
@@ -4493,7 +4493,8 @@ parseStatement: true, parseSourceElement: true */
     }
 
     function consumeSemicolon() {
-        var line;
+        var line, oldIndex = index, oldLineNumber = lineNumber,
+            oldLineStart = lineStart, oldLookahead = lookahead;
 
         // Catch the very common case first: immediately a semicolon (U+003B).
         if (source.charCodeAt(index) === 0x3B || match(';')) {
@@ -4504,6 +4505,10 @@ parseStatement: true, parseSourceElement: true */
         line = lineNumber;
         skipComment();
         if (lineNumber !== line) {
+            index = oldIndex;
+            lineNumber = oldLineNumber;
+            lineStart = oldLineStart;
+            lookahead = oldLookahead;
             return;
         }
 
@@ -4814,14 +4819,11 @@ parseStatement: true, parseSourceElement: true */
     }
 
     function parseLeftHandSideExpressionAllowCall() {
-        var previousAllowIn, expr, args, property, startToken;
+        var expr, args, property, startToken, previousAllowIn = state.allowIn;
 
         startToken = lookahead;
-
-        previousAllowIn = state.allowIn;
         state.allowIn = true;
         expr = matchKeyword('new') ? parseNewExpression() : parsePrimaryExpression();
-        state.allowIn = previousAllowIn;
 
         for (;;) {
             if (match('.')) {
@@ -4838,18 +4840,18 @@ parseStatement: true, parseSourceElement: true */
             }
             delegate.markEnd(expr, startToken);
         }
+        state.allowIn = previousAllowIn;
 
         return expr;
     }
 
     function parseLeftHandSideExpression() {
-        var previousAllowIn, expr, property, startToken;
+        var expr, property, startToken;
+        assert(state.allowIn, 'callee of new expression always allow in keyword.');
 
         startToken = lookahead;
 
-        previousAllowIn = state.allowIn;
         expr = matchKeyword('new') ? parseNewExpression() : parsePrimaryExpression();
-        state.allowIn = previousAllowIn;
 
         while (match('.') || match('[')) {
             if (match('[')) {
@@ -4861,7 +4863,6 @@ parseStatement: true, parseSourceElement: true */
             }
             delegate.markEnd(expr, startToken);
         }
-
         return expr;
     }
 
@@ -5364,7 +5365,7 @@ parseStatement: true, parseSourceElement: true */
     }
 
     function parseForStatement() {
-        var init, test, update, left, right, body, oldInIteration;
+        var init, test, update, left, right, body, oldInIteration, previousAllowIn = state.allowIn;
 
         init = test = update = null;
 
@@ -5378,7 +5379,7 @@ parseStatement: true, parseSourceElement: true */
             if (matchKeyword('var') || matchKeyword('let')) {
                 state.allowIn = false;
                 init = parseForVariableDeclaration();
-                state.allowIn = true;
+                state.allowIn = previousAllowIn;
 
                 if (init.declarations.length === 1 && matchKeyword('in')) {
                     lex();
@@ -5389,7 +5390,7 @@ parseStatement: true, parseSourceElement: true */
             } else {
                 state.allowIn = false;
                 init = parseExpression();
-                state.allowIn = true;
+                state.allowIn = previousAllowIn;
 
                 if (matchKeyword('in')) {
                     // LeftHandSideExpression
@@ -6272,7 +6273,7 @@ parseStatement: true, parseSourceElement: true */
     }
 
     // Sync with *.json manifests.
-    exports.version = '1.2.3';
+    exports.version = '1.2.4';
 
     exports.tokenize = tokenize;
 
@@ -6316,20 +6317,20 @@ var Escaper,
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.1.16
+ * Escaper v2.1.18
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Wed, 04 Feb 2015 08:05:57 GMT
+ * Date: Sat, 21 Feb 2015 09:19:39 GMT
  */
 
 (function () {
 'use strict';
 var self = this;
 var Escaper = {
-	VERSION: [2, 1, 16]
+	VERSION: [2, 1, 18]
 };
 
 if (typeof define === "function" && define.amd) {
@@ -7002,13 +7003,13 @@ function clone(obj) {
 }
 
 /*!
- * API для работы с аргументами функций
+ * API for working with an arguments of function
  */
 
 /**
- * Вернуть массив аргументов функции из заданной строки
+ * Returns an array of function arguments from a string
  *
- * @param {string} str - исходная строка
+ * @param {string} str - the source string
  * @return {!Array}
  */
 DirObj.prototype.getFnArgs = function (str) {
@@ -7063,14 +7064,14 @@ DirObj.prototype.getFnArgs = function (str) {
 var scopeModRgxp = new RegExp("^" + G_MOD + "+");
 
 /**
- * Произвести анализ заданной строки
- * на наличие аргументов функции и вернуть результат
+ * Searches function arguments from a string
+ * and returns a report object
  *
- * @param {string} str - исходная строка
- * @param {string} type - тип функции (template, proto и т.д.)
- * @param {?string=} [opt_tplName] - название шаблона
- * @param {?string=} [opt_parentTplName] - название родительского шаблона
- * @param {?string= }[opt_name] - пользовательское название функции (для proto, block и т.д.)
+ * @param {string} str - the source string
+ * @param {string} type - a function type (template, proto etc.)
+ * @param {?string=} [opt_tplName] - a template name
+ * @param {?string=} [opt_parentTplName] - a name of a parent template
+ * @param {?string= }[opt_name] - a custom function name (for proto, block etc.)
  * @return {{str: string, list: !Array, defParams: string, scope: (string|undefined)}}
  */
 DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplName, opt_name) {
@@ -7302,16 +7303,16 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 
 
 /*!
- * API для работы с кешем шаблонов
+ * API for working with the cache
  */
 
 /**
- * Вернуть данные из кеша шаблонов
+ * Returns data from the cache
  *
- * @param {?string} cacheKey - кеш-ключ
- * @param {string} text - исходный текст шаблона
- * @param {!Object} params - параметры запуска
- * @param {!Object} ctx - объект контекста
+ * @param {?string} cacheKey - the cache key
+ * @param {string} text - a template text
+ * @param {!Object} params - runtime parameters
+ * @param {!Object} ctx - a context object
  * @return {(string|undefined)}
  */
 function returnCache(cacheKey, text, params, ctx) {
@@ -7352,10 +7353,10 @@ function returnCache(cacheKey, text, params, ctx) {
 }
 
 /**
- * Вернуть кеш-ключ
+ * Returns a cache key
  *
- * @param {!Object} params - параметры запуска
- * @param {!Object} ctx - объект контекста
+ * @param {!Object} params - runtime parameters
+ * @param {!Object} ctx - a context object
  * @return {?string}
  */
 function returnCacheKey(params, ctx) {
@@ -7363,12 +7364,12 @@ function returnCacheKey(params, ctx) {
 }
 
 /**
- * Сохранить скомпилированные функции в кеше
+ * Saves a compiling template in the cache
  *
- * @param {?string} cacheKey - кеш-ключ
- * @param {string} text - исходный текст шаблона
- * @param {!Object} params - параметры запуска
- * @param {!Object} ctx - объект контекста
+ * @param {?string} cacheKey - the cache key
+ * @param {string} text - the template text
+ * @param {!Object} params - runtime parameters
+ * @param {!Object} ctx - a context object
  */
 function saveFnCache(cacheKey, text, params, ctx) {
 	if (ctx !== NULL) {
@@ -7385,12 +7386,12 @@ function saveFnCache(cacheKey, text, params, ctx) {
 }
 
 /**
- * Сохранить полученный кеш
+ * Saves a cache
  *
- * @param {?string} cacheKey - кеш-ключ
- * @param {string} text - исходный текст шаблона
- * @param {!Object} params - параметры запуска
- * @param {!DirObj} dir - объект директивы
+ * @param {?string} cacheKey - the cache key
+ * @param {string} text - a template text
+ * @param {!Object} params - runtime parameters
+ * @param {!DirObj} dir - a directive object
  */
 function saveCache(cacheKey, text, params, dir) {
 	if (cacheKey && (params.cache || globalCache[cacheKey])) {
@@ -7407,10 +7408,10 @@ function saveCache(cacheKey, text, params, dir) {
 }
 
 /**
- * Вернуть объект кеша вывода заданного блока
+ * Returns a cache object of a block
  *
- * @param {string} type - тип блока (block, proto и т.д.)
- * @param {?string=} [opt_tplName] - название шаблона
+ * @param {string} type - the block type (block, proto etc.)
+ * @param {?string=} [opt_tplName] - a template name
  * @return {Object}
  */
 DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
@@ -7429,9 +7430,9 @@ DirObj.prototype.getBlockOutput = function (type, opt_tplName) {
 };
 
 /**
- * (Пере)инициализировать кеш для шаблона
+ * (Re)initializes cache for a template
  *
- * @param {string} tplName - название шаблона
+ * @param {string} tplName - the template name
  * @return {!DirObj}
  */
 DirObj.prototype.initTemplateCache = function (tplName) {
@@ -8001,11 +8002,11 @@ DirObj.prototype.endDir = function () {
 
 
 /*!
- * API для обработки ошибок трансляции
+ * API for errors handling
  */
 
 /**
- * Вывести дополнительную информацию об ошибке
+ * Returns additional information about an error
  * @return {string}
  */
 DirObj.prototype.genErrorAdvInfo = function () {
@@ -8064,7 +8065,7 @@ DirObj.prototype.genErrorAdvInfo = function () {
 			}
 		}
 
-		var current = this.lines[line - 1].replace(styleRgxp, "  ").replace(privateRgxp, "").replace(cutRgxp, "$1");
+		var current = (this.lines[line - 1] || "").replace(styleRgxp, "  ").replace(privateRgxp, "").replace(cutRgxp, "$1");
 
 		var part = "> " + line + " " + current;
 		var sep = new Array(Math.max(max, part.length) || 5).join("-");
@@ -8082,8 +8083,8 @@ DirObj.prototype.genErrorAdvInfo = function () {
 DirObj.prototype._error = null;
 
 /**
- * Генерировать заданную ошибку
- * @param {string} msg - сообщение ошибки
+ * Returns an error object
+ * @param {string} msg - the error message
  */
 DirObj.prototype.error = function (msg) {
 	if (this._error) {
@@ -8291,9 +8292,9 @@ DirObj.prototype.pasteTplVarBlocks = function (str) {
 
 
 /**
- * Выполнить заданную строку как JavaScript
+ * Executes a string
  *
- * @param {string} str - исходная строка
+ * @param {string} str - the source string
  * @return {?}
  */
 DirObj.prototype.evalStr = function (str) {
@@ -8311,10 +8312,9 @@ DirObj.prototype.evalStr = function (str) {
 };
 
 /**
- * Выполнить заданную строку как JavaScript
- * и вернуть результат
+ * ВExecutes a string and returns result
  *
- * @param {string} str - исходная строка
+ * @param {string} str - the source string
  * @return {?}
  */
 DirObj.prototype.returnEvalVal = function (str) {
@@ -8327,10 +8327,10 @@ DirObj.prototype.returnEvalVal = function (str) {
 		var cache = {};
 
 		/**
-   * Вернуть таблицу названий директив,
-   * которые принадлежат к заданным группам
+   * Returns a map of directive names,
+   * which belong to specified groups
    *
-   * @param {...string} names - название группы
+   * @param {...string} names - the group name
    * @return {!Object}
    */
 		DirObj.prototype.getGroup = function (names) {
@@ -8731,9 +8731,6 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 					var adv = el === alb ? alb : "";
 
-					var s = dir ? adv + lb : "",
-					    e = dir ? rb : "";
-
 					var obj = {
 						dir: dir,
 						name: decl.name,
@@ -8750,15 +8747,25 @@ DirObj.prototype.getFullBody = function (tplName) {
 							obj.parent = struct;
 
 							if (!obj.adv && struct.adv) {
-								obj.block = false;
-								adv = alb;
+								if (dir) {
+									decl.command = el + next + decl.command;
+								}
+
+								dir = obj.dir = obj.block = false;
+
+								obj.adv = adv = alb;
 							}
 						} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
 							obj.parent = struct.parent;
 
 							if (!obj.adv && struct.parent && struct.parent.adv) {
-								obj.block = false;
-								adv = alb;
+								if (dir) {
+									decl.command = el + next + decl.command;
+								}
+
+								dir = obj.dir = obj.block = false;
+
+								obj.adv = adv = alb;
 							}
 
 							f(struct, obj);
@@ -8785,6 +8792,9 @@ DirObj.prototype.getFullBody = function (tplName) {
 						}
 					}
 
+					var s = dir ? adv + lb : "",
+					    e = dir ? rb : "";
+
 					var parts = void 0,
 					    txt = void 0;
 
@@ -8809,7 +8819,7 @@ DirObj.prototype.getFullBody = function (tplName) {
 					res += space;
 
 					if (needSpace && (obj.text || !Snakeskin.Directions[obj.name])) {
-						res += "" + adv + "" + lb + "__&-__" + rb;
+						res += "" + alb + "" + lb + "__&-__" + rb;
 					}
 
 					res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, "$1/*$2$3$2*/") + e;
@@ -9385,14 +9395,14 @@ DirObj.prototype.prepareNameDecl = function (name) {
 
 
 /*!
- * Различные вспомогательные методы и функции
+ * Some helpers
  */
 
 /**
- * Вернуть список названий шаблонов,
- * которые участвуют в цепи наследования указанного
+ * Return a list of template names
+ * that are involved in an inheritance chain
  *
- * @param {string} name - имя шаблона
+ * @param {string} name - the template name
  * @return {!Array}
  */
 function getExtList(name) {
@@ -9410,8 +9420,8 @@ function getExtList(name) {
 }
 
 /**
- * Очистить кеш областей видимости заданного шаблона
- * @param {string} name - имя шаблона
+ * Clears cache scope of a template
+ * @param {string} name - the template name
  */
 function clearScopeCache(name) {
 	forIn(scopeCache, function (cluster, key) {
@@ -9432,9 +9442,9 @@ function clearScopeCache(name) {
 }
 
 /**
- * Вернуть значение разницы длины команды с учётом типа декларации директивы
+ * Returns diff of a directive command and directive declaration
  *
- * @param {number} length - исходная длина
+ * @param {number} length - the command length
  * @return {number}
  */
 DirObj.prototype.getDiff = function (length) {
@@ -9442,7 +9452,7 @@ DirObj.prototype.getDiff = function (length) {
 };
 
 /**
- * Сбросить слой параметров компиляции
+ * Resets a layer of compilation parameters
  * @return {!DirObj}
  */
 DirObj.prototype.popParams = function () {
@@ -9791,20 +9801,29 @@ function concatProp(str) {
 			ref = false;
 		}
 
-		function search(obj, val, extList) {
-			if (!obj) {
+		function search(_x, _x2, _x3) {
+			_function: while (true) {
+				var obj = _x,
+				    val = _x2,
+				    extList = _x3;
+				def = void 0;
+				if (!obj) {
+					return false;
+				}
+
+				var def = vars["" + val + "_" + obj.id];
+
+				if (def) {
+					return def;
+				} else if (extList.length && obj.children[extList[0]]) {
+					_x = obj.children[extList.shift()];
+					_x2 = val;
+					_x3 = extList;
+					continue _function;
+				}
+
 				return false;
 			}
-
-			var def = vars["" + val + "_" + obj.id];
-
-			if (def) {
-				return def;
-			} else if (extList.length && obj.children[extList[0]]) {
-				return search(obj.children[extList.shift()], val, extList);
-			}
-
-			return false;
 		}
 
 		var replacePropVal = function (sstr) {
@@ -10184,13 +10203,13 @@ function concatProp(str) {
 
 
 /*!
- * API для организации очереди выполнения
+ * API for working with a queue
  */
 
 /**
- * Добавить функцию в очередь выполнения
+ * Appends a function to the queue
  *
- * @param {function(this:DirObj)} fn - исходная функция
+ * @param {function(this:DirObj)} fn - the source function
  * @return {!DirObj}
  */
 DirObj.prototype.toQueue = function (fn) {
@@ -10199,7 +10218,7 @@ DirObj.prototype.toQueue = function (fn) {
 };
 
 /**
- * Выполнить все функции, которые стоят в очереди
+ * Executes all functions in the queue
  * @return {!DirObj}
  */
 DirObj.prototype.applyQueue = function () {
@@ -10216,11 +10235,11 @@ DirObj.prototype.applyQueue = function () {
 
 
 /*!
- * API для записи в результирующий JS
+ * API for writing final JS
  */
 
 /**
- * Вернуть строку начала конкатенации c __RESULT__
+ * Returns a string for the beginning of concatenation with __RESULT__
  * @return {string}
  */
 DirObj.prototype.$ = function () {
@@ -10241,7 +10260,7 @@ DirObj.prototype.$ = function () {
 };
 
 /**
- * Вернуть строку окончания конкатенации c __RESULT__
+ * Returns a string for the ending of concatenation with __RESULT__
  * @return {string}
  */
 DirObj.prototype.$$ = function () {
@@ -10262,9 +10281,9 @@ DirObj.prototype.$$ = function () {
 };
 
 /**
- * Вернуть строку конкатенации c __RESULT__
+ * Appends a string to __RESULT__
  *
- * @param {?string=} [opt_str] - исходная строка
+ * @param {?string=} [opt_str] - the source string
  * @return {string}
  */
 DirObj.prototype.wrap = function (opt_str) {
@@ -10272,10 +10291,10 @@ DirObj.prototype.wrap = function (opt_str) {
 };
 
 /**
- * Вернуть текст добавления узла в стек
- * (для renderMode == dom)
+ * Returns a string of node declaration
+ * (for renderMode == dom)
  *
- * @param {?boolean=} opt_inline - если true, то узел считается inline
+ * @param {?boolean=} opt_inline - if is true, then the node considered as inline
  * @return {string}
  */
 DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
@@ -10284,7 +10303,7 @@ DirObj.prototype.returnPushNodeDecl = function (opt_inline) {
 };
 
 /**
- * Вернуть строку возврата содержимого шаблона
+ * Returns a string of a template content
  * @return {string}
  */
 DirObj.prototype.returnResult = function () {
@@ -10301,7 +10320,7 @@ DirObj.prototype.returnResult = function () {
 };
 
 /**
- * Вернуть строку декларации содержимого шаблона
+ * Returns a string of a template declaration
  * @return {string}
  */
 DirObj.prototype.declResult = function () {
@@ -10318,9 +10337,10 @@ DirObj.prototype.declResult = function () {
 };
 
 /**
- * Заменить блоки CDATA в заданной строке
+ * Replaces CDATA blocks in a string
+ * and returns a new string
  *
- * @param {string} str
+ * @param {string} str - the source string
  * @return {string}
  */
 DirObj.prototype.replaceCData = function (str) {
@@ -10331,19 +10351,19 @@ DirObj.prototype.replaceCData = function (str) {
 	return str.replace(new RegExp("" + s + "cdata" + e + "([\\s\\S]*?)" + s + "(?:\\/cdata|end cdata)" + e, "g"), function (sstr, data) {
 		_this.cDataContent.push(data);
 		return "" + (
-		// Количество добавляемых строк
+		// The count of added lines
 		"" + s + "__appendLine__ " + (data.match(new RegExp(nextLineRgxp.source, "g")) || "").length + "" + e) + (
 
-		// Метка для замены CDATA
+		// Label to replace CDATA
 		"__CDATA__" + (_this.cDataContent.length - 1) + "_");
 	});
 };
 
 /**
- * Декларировать конец файла шаблонов
+ * Declares the end of templates declaration
  *
- * @param {?string} cacheKey - кеш-ключ
- * @param {(Date|string)} label - заголовок файла шаблонов
+ * @param {?string} cacheKey - a cache-key
+ * @param {(Date|string)} label - the declaration label
  * @return {!DirObj}
  */
 DirObj.prototype.end = function (cacheKey, label) {
@@ -10380,8 +10400,7 @@ DirObj.prototype.end = function (cacheKey, label) {
 };
 
 /**
- * Вернуть true,
- * если возможна запись в результирующую строку JavaScript
+ * Returns true, if is possible to write in a JS string
  * @return {boolean}
  */
 DirObj.prototype.isSimpleOutput = function () {
@@ -10394,8 +10413,7 @@ DirObj.prototype.isSimpleOutput = function () {
 };
 
 /**
- * Вернуть true,
- * если возможна проверка валидности директивы
+ * Returns true, if a directive is ready to test
  * @return {boolean}
  */
 DirObj.prototype.isReady = function () {
@@ -10403,12 +10421,11 @@ DirObj.prototype.isReady = function () {
 };
 
 /**
- * Вернуть true,
- * если ситуация соответствует условию:
- *     не обработка тела прототипа && не внешний прототип &&
+ * Returns true, if
+ *     !proto && !outerLink &&
  *     (
- *         не вложенный блок или прототип в родительской структуре ||
- *         standalone шаблон
+ *         parentTplName && !hasParentBlock ||
+ *         !parentTplName
  *     )
  *
  * @return {boolean}
@@ -10486,17 +10503,17 @@ DirObj.prototype.mod = function (callback) {
 
 
 /*!
- * API для работы с деревом шаблона
+ * API for working with a template tree
  */
 
 /**
- * Проверить наличие указанной директивы в цепочке структуры,
- * начиная с активной
+ * Checks availability of a directive in a chain structure,
+ * including the active
  *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @param {Object=} opt_obj - проверяемый объект
- * @param {?boolean=} opt_returnObj - если true, то в качестве ответа
- *     вернётся ссылка на найденный объект (если таковой есть)
+ * @param {(string|!Object)} name - the directive name or a map of names
+ * @param {Object=} opt_obj - the structure object
+ * @param {?boolean=} opt_returnObj - if is true, then returns a reference to a found object
+ *     (if it exists)
  *
  * @return {(boolean|string|!Object)}
  */
@@ -10521,12 +10538,12 @@ DirObj.prototype.has = function (name, opt_obj, opt_returnObj) {
 };
 
 /**
- * Проверить наличие указанной директивы в цепочке структуры
- * (начальная активная директива исключается)
+ * Checks availability of a directive in a chain structure,
+ * excluding the active
  *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @param {?boolean=} opt_returnObj - если true, то в качестве ответа
- *     вернётся ссылка на найденный объект (если таковой есть)
+ * @param {(string|!Object)} name - the directive name or a map of names
+ * @param {?boolean=} opt_returnObj - if is true, then returns a reference to a found object
+ *     (if it exists)
  *
  * @return {(boolean|string|!Object)}
  */
@@ -10539,11 +10556,12 @@ DirObj.prototype.hasParent = function (name, opt_returnObj) {
 };
 
 /**
- * Проверить наличие указанной директивы в цепочке блочной структуры
+ * Checks availability of a directive in a block chain structure,
+ * including the active
  *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @param {?boolean=} opt_returnObj - если true, то в качестве ответа
- *     вернётся ссылка на найденный объект (если таковой есть)
+ * @param {(string|!Object)} name - the directive name or a map of names
+ * @param {?boolean=} opt_returnObj - if is true, then returns a reference to a found object
+ *     (if it exists)
  *
  * @return {(boolean|string|!Object)}
  */
@@ -10556,12 +10574,12 @@ DirObj.prototype.hasBlock = function (name, opt_returnObj) {
 };
 
 /**
- * Проверить наличие указанной директивы в цепочке блочной структуры
- * (начальная активная директива исключается)
+ * Checks availability of a directive in a block chain structure,
+ * excluding the active
  *
- * @param {(string|!Object)} name - название директивы или таблица названий
- * @param {?boolean=} opt_returnObj - если true, то в качестве ответа
- *     вернётся ссылка на найденный объект (если таковой есть)
+ * @param {(string|!Object)} name - the directive name or a map of names
+ * @param {?boolean=} opt_returnObj - if is true, then returns a reference to a found object
+ *     (if it exists)
  *
  * @return {(boolean|string|!Object)}
  */
@@ -10575,15 +10593,15 @@ DirObj.prototype.hasParentBlock = function (name, opt_returnObj) {
 
 
 /*!
- * API для работы с переменными
+ * API for working with variables
  */
 
 /**
- * Декларировать указанную переменную
+ * Declares a variable and returns a string of declaration
  *
- * @param {string} varName - название переменной
- * @param {boolean=} opt_callParams - если true, то переменная
- *     декларируется как параметр прототипа или вызываемого блока
+ * @param {string} varName - the variable name
+ * @param {boolean=} opt_callParams - if is true, then the variable
+ *     will be declared as a function parameter
  *
  * @return {string}
  */
@@ -10593,7 +10611,7 @@ DirObj.prototype.declVar = function (varName, opt_callParams) {
 	    struct = this.structure;
 
 	if (!opt_callParams && tplName && constCache[tplName][varName]) {
-		this.error("variable \"" + varName + "\" is already defined as constant");
+		this.error("the variable \"" + varName + "\" is already defined as constant");
 	}
 
 	while (!struct.vars) {
@@ -10636,12 +10654,12 @@ DirObj.prototype.declVar = function (varName, opt_callParams) {
 };
 
 /**
- * Парсить указанную строку декларации переменных, провести инициализацию,
- * и вернуть результирующий вариант для шаблона
+ * Parses a string of variables declaration, initializes it and returns
+ * a string of declaration
  *
- * @param {string} str - исходная строка
- * @param {?boolean=} opt_end - если true, то в конце строки ставится ;
- * @param {?string=} [opt_init] - значение для инициализации переменной по умолчанию
+ * @param {string} str - the source string
+ * @param {?boolean=} opt_end - if is true, then will be appended ; to the string
+ * @param {?string=} [opt_init] - a value of a variable by default
  * @return {string}
  */
 DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
@@ -10701,8 +10719,8 @@ DirObj.prototype.multiDeclVar = function (str, opt_end, opt_init) {
 };
 
 /**
- * Декларировать объект arguments
- * и вернуть строку декларации
+ * Declares an object of arguments
+ * and returns a string of declaration
  * @return {string}
  */
 DirObj.prototype.declArguments = function () {
@@ -10727,29 +10745,29 @@ var uid,
 /**
  * Compiles Snakeskin templates
  *
- * @param {(Element|string)} src - a reference to the DOM node, where the templates were declared or a template text
+ * @param {(Element|string)} src - a reference to a DOM node, where the templates were declared or a template text
  * @param {?$$SnakeskinParams=} [opt_params] - additional runtime parameters:
  *
  *     *) [exports = 'default'] - an export type
  *     *) [context] - a storage object for compiled templates
- *            (will be set CommonJS export type)
+ *            (will be set the CommonJS export type)
  *
  *     *) [vars] - a map of super global variables, which will be added to Snakeskin.Vars
  *     *) [cache = true] - if is false, then caching is disabled
  *     *) [debug] - an object, which will be contained some debug information
  *
  *     *) [onError] - a callback for error handling
- *     *) [throws = false] - if is true, then in case of error or missing error handler,
+ *     *) [throws = false] - if is true, then in case of an error or a missing error handler,
  *            then will be thrown an exception
  *
- *     *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with i18n function
- *     *) [i18nFn = 'i18n'] - a name of i18n function
+ *     *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
+ *     *) [i18nFn = 'i18n'] - a name of the i18n function
  *     *) [language] - a map of words for localization (for example, {'Hello world': 'Привет мир'})
  *     *) [words] - an object, which will be contained all found localization words
  *
  *     *) [ignore] - a RegExp object, which specifies whitespace symbols for ignoring
- *     *) [autoReplace = false] - if is false, then macros are disabled
- *     *) [macros] - a map of macros
+ *     *) [autoReplace = false] - if is false, then macros will be disabled
+ *     *) [macros] - a map of the macros
  *     *) [renderAs] - a rendering type of templates:
  *            1) placeholder - all templates will be rendered as "placeholder";
  *            2) interface - all templates will be rendered as "interface";
@@ -10761,38 +10779,34 @@ var uid,
  *            3) dom - renders template to a DocumentFragment object.
  *
  *     *) [lineSeparator = '\n'] - EOL symbol
- *     *) [tolerateWhitespace = false] - if is true, then whitespace symbols will be processed "as is"
- *     *) [inlineIterators = false] - if is true, then all forEach and forIn directives will be rendered as loops
- *     *) [doctype = 'html'] - a type of document:
+ *     *) [tolerateWhitespace = false] - if is true, then whitespaces will be processed "as is"
+ *     *) [inlineIterators = false] - if is true, then all forEach and forIn iterators will be rendered as loops
+ *     *) [doctype = 'xml'] - a type of document:
  *            1) html;
  *            2) xml.
  *
- *     *) [replaceUndef = true] - if is false, то на вывод значений через директиву output
- *            не будет накладываться фильтр undef
+ *     *) [replaceUndef = true] - if is false, then will be disabled the undef filter by default
+ *     *) [escapeOutput = true] - if is false, then will be disabled the html filter by default
  *
- *     *) [escapeOutput = true] - если false, то на вывод значений через директиву output
- *            не будет накладываться фильтр html
+ *     *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode;
+ *     *) [bemFilter = 'bem'] - a name of the bem filter
+ *     *) [prettyPrint = false] - if is true, then output will be formatted
  *
- *     *) [useStrict = true] - если false, то шаблоны компилируются без 'use strict';
- *     *) [bemFilter = 'bem'] - название используемого фильтра для БЭМ
- *     *) [prettyPrint = false] - если true, то полученный JS код шаблона
- *            отображается в удобном для чтения виде
+ * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug:
+ *     *) [file] - a path of a template file
  *
- * @param {?$$SnakeskinInfoParams=} [opt_info] - дополнительная информация об операции:
- *     *) [file] - адрес исходного файла шаблонов
+ * @param {$$SnakeskinSysParams=} [opt_sysParams] - private parameters:
+ *     *) [cacheKey = false] - if is true, then will bi returned a cache key of operation
  *
- * @param {$$SnakeskinSysParams=} [opt_sysParams] - служебные параметры запуска:
- *     *) [cacheKey = false] - если true, то возвращается кеш-ключ шаблона
+ *     *) [scope] - a context of directives
+ *     *) [vars] - a map of local variables
+ *     *) [consts] - an array of constant declarations
  *
- *     *) [scope] - область видимости (контекст) директив
- *     *) [vars] - объект локальных переменных
- *     *) [consts] - массив деклараций констант
+ *     *) [proto] - parameters object of proto
+ *     *) [parent] - a link for the parent object
  *
- *     *) [proto] - объект настроек прототипа
- *     *) [parent] - ссылка на родительский объект
- *
- *     *) [lines] - массив строк шаблона (листинг)
- *     *) [needPrfx] - если true, то директивы декларируются как #{ ... }
+ *     *) [lines] - an array of template lines
+ *     *) [needPrfx] - if is true, then for declaring directives will be used #{ ... }
  *
  * @return {(string|boolean|null)}
  */
@@ -10805,7 +10819,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	/** @type {$$SnakeskinParams} */
 	var p = _.any(opt_params || {});
 
-	// GCC экспорт
+	// GCC export
 	// >>>
 
 	var ctx = p.context || NULL;
@@ -10842,7 +10856,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var words = p.words;
 
 	// <<<
-	// Отладочная информация
+	// Debug information
 	// >>>
 
 	var info = _.any(opt_info || {});
@@ -10857,7 +10871,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// <<<
-	// Работа с кешем
+	// Caching
 	// >>>
 
 	var cacheKey = returnCacheKey(p, ctx);
@@ -10875,7 +10889,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// <<<
-	// Работа с макросами
+	// Working with macros
 	// >>>
 
 	var alb = ADV_LEFT_BLOCK,
@@ -10971,7 +10985,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// <<<
-	// Обработка подключений файлов
+	// File initialization
 	// >>>
 
 	var label = "";
@@ -10998,7 +11012,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// <<<
-	// Основная логика
+	// Transpiler
 	// >>>
 
 	var dir = new DirObj(String(text), {
@@ -11042,8 +11056,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	dir.setMacros = setMacros;
 
-	// Если true, то идёт содержимое директивы,
-	// т.е. { ... }
+	// If is true, then a directive declaration is started,
+	// ie { ... }
 	var begin = false,
 	    pseudoI = false;
 
@@ -11053,25 +11067,24 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	var filterStart = false;
 
-	// Количество открытых { внутри директивы
+	// The number of open { symbols inside a directive
 	var fakeBegin = 0;
 
-	// Если true, то идёт запись простой строки
+	// If is true, then a string declaration is started
 	var beginStr = false;
 
-	// Если true, то предыдущий символ был не экранированный \
+	// If is true, then a previous symbol wasn't escaped
 	var escape = false;
 
-	// Если содержит значение отличное от false,
-	// то значит идёт блок комментариев comment (///, /*, /**)
+	// If isn't false, then a comment block is started (///, /*, /**)
 	var comment = false,
 	    commentStart = 0;
 
-	// Если true, то значит идёт JSDoc
+	// If is true, then JSDoc is started
 	var jsDoc = false,
 	    jsDocStart = false;
 
-	// Флаги для обработки литералов строк и регулярных выражений внутри директивы
+	// The flags for working with string literals and regular expressions inside a directive
 	var bOpen = false,
 	    bEnd,
 	    bEscape = false;
@@ -11079,7 +11092,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var part = "",
 	    rPart = "";
 
-	// Флаги для обработки XML тегов и атрибутов
+	// The flags for working with XML attributes
 	var tOpen = 0,
 	    tAttr = false,
 	    tAttrBegin = false,
@@ -11090,13 +11103,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		"'": true
 	};
 
-	// Флаги для обработки скобок при типографии
+	// The flags for working with quotes
 	var qOpen = 0,
 	    qType = null;
 
 	var prfxI = 0;
 
-	// Флаги для обработки символьных последовательностей
+	// The flags for working with macros
 	var expr = "",
 	    exprPos = 0,
 	    advExprPos = 0;
@@ -11105,7 +11118,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	    freezeI = 0,
 	    freezeTmp = 0;
 
-	// Флаги для обработки строк-локализации
+	// The flags for working with localization literals
 	var i18nStr = "",
 	    i18nStart = false,
 	    i18nDirStart = false;
@@ -11198,7 +11211,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		var isPrefStart = !currentEscape && !begin && el === alb && next === lb;
 
 		if (whiteSpaceRgxp.test(el)) {
-			// Внутри директивы
+			// Inside a directive
 			if (begin) {
 				if (bOpen) {
 					el = escapeNextLine(el);
@@ -11211,15 +11224,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 				}
 
-				// Простой ввод вне деклараций шаблона
+				// Outside a template
 			} else if (!dir.tplName) {
-				// Для JSDoc все символы остаются неизменны,
-				// а в остальных случаях они игнорируются
+				// For JSDoc all of symbols don't change,
+				// but in other case they will be ignored
 				if (!comment && !jsDoc) {
 					continue;
 				}
 
-				// Простой ввод внутри декларации шаблона
+				// Inside a template
 			} else {
 				if (!dir.space && !dir.chainSpace && !dir.strongSpace && !dir.sysSpace) {
 					el = dir.ignore && dir.ignore.test(el) ? "" : el;
@@ -11251,7 +11264,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		if (!bOpen) {
-			// Обработка экранирования
+			// Escaping
 			if (el === "\\" && sysEscapeMap[next] && (!begin || next === I18N) || escape) {
 				escape = !escape;
 			}
@@ -11260,7 +11273,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				continue;
 			}
 
-			// Обработка комментариев
+			// Comments
 			if (!currentEscape) {
 				var commentType = returnComment(str, dir.i),
 				    endComment = returnComment(str, dir.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
@@ -11346,8 +11359,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 				}
 
-				// Начало управляющей конструкции
-				// (не забываем следить за уровнем вложенностей {)
+				// A directive is started
 				if (isPrefStart || el === lb && (begin || !currentEscape)) {
 					if (begin) {
 						fakeBegin++;
@@ -11367,7 +11379,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						continue;
 					}
 
-					// Управляющая конструкция завершилась
+					// A directive is ended
 				} else if (el === rb && begin && (!fakeBegin || ! fakeBegin--)) {
 					begin = false;
 
@@ -11399,8 +11411,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						qType = null;
 					}
 
-					// Директивы начинающиеся с _ считаются приватными
-					// и вырезаются из листинга
+					// All directives, which starts with _
+					// and will be cutted from the code listing
 					if (!dir.proto && commandType.charAt(0) === "_") {
 						var source = "" + alb + "?" + lb + "__.*?__.*?" + rb,
 						    rgxp = rgxpCache[source] || new RegExp(source);
@@ -11526,7 +11538,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 		}
 
-		// Запись команды
+		// Working with a command
 		if (begin) {
 			if (beginStr && dir.isSimpleOutput()) {
 				var prfx = "";
@@ -11541,7 +11553,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				beginStr = false;
 			}
 
-			// Обработка литералов строки и регулярных выражений внутри директивы
+			// Working with literals
 			if (!bOpen) {
 				var skip = false;
 
@@ -11585,7 +11597,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			command += el;
 
-			// Запись строки
+			// Plain text
 		} else {
 			if (jsDoc) {
 				dir.save(el);
@@ -11610,7 +11622,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				dir.error("text can't be used in the global space");
+				dir.error("the text can't be used in the global space");
 				return false;
 			} else {
 				if (struct.strong && !inside[struct.name]["text"]) {
@@ -11619,7 +11631,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						continue;
 					}
 
-					dir.error("directive \"text\" can't be used within the \"" + struct.name + "\"");
+					dir.error("the directive \"text\" can't be used within the \"" + struct.name + "\"");
 					return false;
 				}
 
@@ -11651,8 +11663,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									el = "\"" + el;
 									tAttrEscape = false;
 								}
-
-								// Установка флага о начале декларации xml атрибута
 							} else if (!tAttrBegin) {
 								tAttrBegin = true;
 								if (!tAttrBMap[el]) {
@@ -11661,7 +11671,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								}
 							}
 
-							// Начало декларации xml атрибута
+							// XML attribute is started
 						} else if (tOpen && el === "=") {
 							tAttr = true;
 						}
@@ -11739,15 +11749,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 	}
 
-	// Если есть не закрытый XML тег,
-	// то генерируем ошибку
+	// If we have some unclosed XML tags,
+	// then will be thrown an exception
 	if (tOpen !== 0) {
 		dir.error("invalid XML declaration");
 		return false;
 	}
 
-	// Если количество открытых блоков не совпадает с количеством закрытых,
-	// то генерируем ошибку
+	// If we have some unclosed directives,
+	// then will be thrown an exception
 	if (begin || dir.structure.parent) {
 		dir.error("missing closing or opening tag in the template");
 		return false;
@@ -11758,15 +11768,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return dir.pasteDangerBlocks(dir.res);
 	}
 
-	// Если остались внешние декларации,
-	// которые не были подключены к своему шаблону,
-	// то генерируем ошибку
+	// If we have some outer declarations,
+	// which weren't attached to template,
+	// then will be thrown an exception
 	for (var key in dir.preDefs) {
 		if (!dir.preDefs.hasOwnProperty(key)) {
 			continue;
 		}
 
-		dir.error("template \"" + key + "\" is not defined");
+		dir.error("the template \"" + key + "\" is not defined");
 		return false;
 	}
 
@@ -11785,7 +11795,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	try {
-		// Компиляция на сервере
+		// Server compilation
 		if (IS_NODE) {
 			if (ctx !== NULL) {
 				new Function("module", "exports", "require", "__dirname", "__filename", dir.res)({
@@ -11799,13 +11809,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}, ctx, require, dirname, filename);
 			}
 
-			// commonJS компиляция в браузере
+			// CommonJS compiling in a browser
 		} else if (ctx !== NULL) {
 			new Function("module", "exports", "global", dir.res)({
 				exports: ctx
 			}, ctx, global);
 
-			// Живая компиляция в браузере
+			// Compiling in a browser
 		} else {
 			dir.evalStr(dir.res);
 		}
@@ -11820,8 +11830,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	saveCache(cacheKey, text, p, dir);
 
-	// Если браузер поддерживает FileAPI,
-	// то подключаем скомпилированный шаблон как внешний скрипт
+	// If a browser supports FileAPI,
+	// then the templates will be attached as a external script
 	if (!IS_NODE) {
 		setTimeout(function () {
 			try {
@@ -14565,7 +14575,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		chain: ["if", "unless"]
 	}, function (command) {
 		if (!this.getGroup("if")[this.structure.name]) {
-			return this.error("directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
+			return this.error("the directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
 		}
 
 		if (this.isReady()) {
@@ -14578,7 +14588,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		chain: ["if", "unless"]
 	}, function (command) {
 		if (!this.getGroup("if")[this.structure.name]) {
-			return this.error("directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
+			return this.error("the directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
 		}
 
 		if (this.isReady()) {
@@ -14590,7 +14600,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		chain: ["if", "unless"]
 	}, function (command) {
 		if (!this.getGroup("if")[this.structure.name]) {
-			return this.error("directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
+			return this.error("the directive \"" + this.name + "\" can be used only with a " + groupsList["if"].join(", "));
 		}
 
 		if (command) {
@@ -14638,7 +14648,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		this.startDir();
 
 		if (this.structure.parent.name !== "switch") {
-			return this.error("directive \"" + this.name + "\" can be used only within a \"switch\"");
+			return this.error("the directive \"" + this.name + "\" can be used only within a \"switch\"");
 		}
 
 		if (this.isReady()) {
@@ -14654,7 +14664,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		this.startDir();
 
 		if (this.structure.parent.name !== "switch") {
-			return this.error("directive \"" + this.name + "\" can be used only within a \"switch\"");
+			return this.error("the directive \"" + this.name + "\" can be used only within a \"switch\"");
 		}
 
 		this.append("default: {");
@@ -14774,22 +14784,22 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * Если true, то значит идёт декларация прототипа
+  * If is true, then a proto declaration is started
   * @type {boolean}
   */
 	DirObj.prototype.protoStart = false;
 
 	/**
-  * Индекс анонимных прототипов
+  * The index of anonymous prototypes
   * @type {number}
   */
 	DirObj.prototype.anonI = 0;
 
 	/**
-  * Вернуть строку декларации заданных аргументов прототипа
+  * Returns a declaration string of proto arguments
   *
-  * @param {!Array.<!Array>} protoArgs - массив аргументов прототипа [название, значение по умолчанию]
-  * @param {!Array} args - массив заданных аргументов
+  * @param {!Array.<!Array>} protoArgs - an array of the proto arguments [a name, a value by default]
+  * @param {!Array} args - an array of specified arguments
   * @return {string}
   */
 	DirObj.prototype.returnProtoArgs = function (protoArgs, args) {
@@ -14862,7 +14872,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					if (!tplName) {
 						if (this.structure.parent) {
-							this.error("directive \"outer proto\" can be used only within the global space");
+							this.error("the directive \"outer proto\" can be used only within the global space");
 							return;
 						}
 
@@ -14887,7 +14897,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						this.outerLink = name;
 					}
 				} else if (!this.outerLink && !this.tplName) {
-					return this.error("directive \"" + this.name + "\" can be used only within a " + groupsList["template"].join(", "));
+					return this.error("the directive \"" + this.name + "\" can be used only within a " + groupsList["template"].join(", "));
 				}
 
 				if (!name || !tplName || callBlockNameRgxp.test(name)) {
@@ -14940,7 +14950,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					var dir = String(this.name);
 
 					if (protoCache[tplName][name] && !anonRgxp.test(name)) {
-						return this.error("proto \"" + name + "\" is already defined");
+						return this.error("the proto \"" + name + "\" is already defined");
 					}
 
 					var output = command.split("=>")[1],
@@ -15010,7 +15020,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 						fromProtoCache[tplName] = this.i - this.startTemplateI + 1;
 
-						// Рекурсивно анализируем прототипы блоков
+						// Recursive analysis of proto
 						proto.body = Snakeskin.compile(("" + s + "template " + tplName + "()" + e + (scope ? "" + s + "with " + scope + "" + e : "") + ("" + s + "var __I_PROTO__ = 1" + e) + ("" + s + "__protoWhile__ __I_PROTO__--" + e) + ("" + s + "__setLine__ " + params.line + "" + e) + this.source.substring(params.startTemplateI, this.i - diff) + ("" + s + "__end__" + e) + (scope ? "" + s + "end" + e : "") + ("" + s + "end" + e)).trim(), {
 							inlineIterators: this.inlineIterators,
 							renderMode: this.renderMode,
@@ -15045,7 +15055,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						});
 					}
 
-					// Применение обратных прототипов
 					var back = this.backTable[name];
 					if (back && !back.protoStart) {
 						var args = proto.args,
@@ -15108,7 +15117,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * Количество отложенных return
+  * The number of deferred return callings
   * @type {number}
   */
 	DirObj.prototype.deferReturn = 0;
@@ -15262,7 +15271,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		this.startInlineDir();
 
 		if (!this.getGroup("rootTemplate")[this.structure.parent.name]) {
-			return this.error("directive \"" + this.name + "\" can be used only within the top level of template");
+			return this.error("the directive \"" + this.name + "\" can be used only within the top level of template");
 		}
 
 		var parts = command.split(" ");
@@ -15589,10 +15598,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var parentLinkRgxp = /^&/;
 
 	/**
-  * Анализировать заданную строку декларации тега
-  * и вернуть объект-описание
+  * Analyzes a string of a tag declaration
+  * and returns a reporting object
   *
-  * @param {string} str - исходная строка
+  * @param {string} str - the source string
   * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
   */
 	DirObj.prototype.returnTagDesc = function (str) {
@@ -15670,7 +15679,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				action = el;
 
 				if (el === ".") {
-					// Обработка липких ссылок
 					if (bOpen) {
 						if (points.length) {
 							for (var j = points.length; j--;) {
@@ -15793,45 +15801,45 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * Номер итерации,
-  * где был декларирован активный шаблон
+  * The number of iteration,
+  * where the active template was declared
   * @type {number}
   */
 	DirObj.prototype.startTemplateI = 0;
 
 	/**
-  * Номер строки,
-  * где был декларирован активный шаблон
+  * The number of a line,
+  * where the active template was declared
   * @type {?number}
   */
 	DirObj.prototype.startTemplateLine = null;
 
 	/**
-  * True, если декларируется шаблон-генератор
+  * If is true, then the active template is generator
   * @type {?boolean}
   */
 	DirObj.prototype.generator = null;
 
 	/**
-  * Название активного шаблона
+  * The name of the active template
   * @type {?string}
   */
 	DirObj.prototype.tplName = null;
 
 	/**
-  * Название родительского активного шаблона
+  * The parent name of the active template
   * @type {?string}
   */
 	DirObj.prototype.parentTplName = null;
 
 	/**
-  * Массив декларированных констант
+  * The array of declared constants
   * @type {Array}
   */
 	DirObj.prototype.consts = null;
 
 	/**
-  * Название родительского BEM класса
+  * The name of the parent BEM class
   * @type {string}
   */
 	DirObj.prototype.bemRef = "";
@@ -15873,7 +15881,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					var prfx = "",
 					    pos = void 0;
 
-					// Шаблон-генератор
 					if (/\*/.test(tmpTplName)) {
 						prfx = "*";
 						tmpTplName = tmpTplName.replace(prfx, "");
@@ -15893,7 +15900,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					if (tplName === "init") {
-						return this.error("can't declare template \"" + tplName + "\", try another name");
+						return this.error("can't declare the template \"" + tplName + "\", try another name");
 					}
 
 					this.info.template = this.tplName = tplName;
@@ -15902,9 +15909,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						write[tplName] = false;
 					}
 
-					// Для возможности удобного пост-парсинга,
-					// каждая функция снабжается комментарием вида:
-					// /* Snakeskin template: название шаблона; параметры через запятую */
 					this.save(pos = "/* Snakeskin template: " + tplName + "; " + this.getFnArgs(command).join(",").replace(/=(.*?)(?:,|$)/g, "") + " */", iface, jsDoc);
 
 					if (jsDoc) {
@@ -15982,7 +15986,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					return;
 				}
 
-				// Валидация шаблона для наследования
 				var parentTplName;
 				if (/\)\s+extends\s+/.test(command)) {
 					try {
@@ -16084,11 +16087,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					};
 				}
 
-				this.save( /* cbws */"var __THIS__ = this,__CALLEE__ = __ROOT__" + concatProp(tplName) + ",callee = __CALLEE__;if (!callee.Blocks) {var __BLOCKS__ = __CALLEE__.Blocks = {},blocks = __BLOCKS__;}var __RESULT__ = " + this.declResult() + ",__COMMENT_RESULT__,__NODE__,$0;function getTplResult(opt_clear) {var res = " + this.returnResult() + ";if (opt_clear) {__RESULT__ = " + this.declResult() + ";}return res;}function clearTplResult() {__RESULT__ = " + this.declResult() + ";}var __RETURN__ = false,__RETURN_VAL__;var TPL_NAME = \"" + escapeDoubleQuote(tplName) + "\",PARENT_TPL_NAME" + (parentTplName ? " = \"" + escapeDoubleQuote(parentTplName) + "\"" : "") + ";" + args.defParams + "");
+				this.save( /* cbws */"var __THIS__ = this,__CALLEE__ = __ROOT__" + concatProp(tplName) + ",callee = __CALLEE__;var __BLOCKS__ = __CALLEE__.Blocks = {},blocks = __BLOCKS__;var __RESULT__ = " + this.declResult() + ",__COMMENT_RESULT__,__NODE__,$0;function getTplResult(opt_clear) {var res = " + this.returnResult() + ";if (opt_clear) {__RESULT__ = " + this.declResult() + ";}return res;}function clearTplResult() {__RESULT__ = " + this.declResult() + ";}var __RETURN__ = false,__RETURN_VAL__;var TPL_NAME = \"" + escapeDoubleQuote(tplName) + "\",PARENT_TPL_NAME" + (parentTplName ? " = \"" + escapeDoubleQuote(parentTplName) + "\"" : "") + ";" + args.defParams + "");
 
 				var preDefs = this.preDefs[tplName];
-
-				// Подключение внешних блоков и прототипов
 				if ((!extMap[tplName] || parentTplName) && preDefs) {
 					this.source = this.source.substring(0, this.i + 1) + preDefs.text + this.source.substring(this.i + 1);
 
@@ -16100,7 +16101,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				    proto = this.proto;
 
 				if (proto) {
-					// Вызовы не объявленных прототипов внутри прототипа
 					if (this.backTableI) {
 						(function () {
 							var ctx = proto.ctx;
@@ -16127,10 +16127,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				cache[tplName] = this.source.substring(this.startTemplateI, this.i - diff);
 				table[tplName] = this.blockTable;
 
-				// Обработка наследования:
-				// тело шаблона объединяется с телом родителя
-				// и обработка шаблона начинается заново,
-				// но уже как атомарного (без наследования)
 				if (this.parentTplName) {
 					this.info.line = this.startTemplateLine;
 					this.lines.splice(this.startTemplateLine, this.lines.length);
@@ -16149,7 +16145,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					return;
 				}
 
-				// Вызовы не объявленных прототипов
 				if (this.backTableI) {
 					forIn(this.backTable, function (arr, key) {
 						for (var _i = -1; ++_i < arr.length;) {
@@ -16161,7 +16156,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 							var tmp = protoCache[tplName][key];
 							if (!tmp) {
-								return _this.error("proto \"" + key + "\" is not defined");
+								return _this.error("the proto \"" + key + "\" is not defined");
 							}
 
 							_this.res = _this.res.substring(0, el.pos) + _this.res.substring(el.pos).replace(el.label, (el.argsStr || "") + (el.recursive ? tmp.i + "++;" : tmp.body));
@@ -16231,7 +16226,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		chain: "try"
 	}, function (command) {
 		if (this.structure.name !== "try") {
-			return this.error("directive \"" + this.name + "\" can be used only with a \"try\"");
+			return this.error("the directive \"" + this.name + "\" can be used only with a \"try\"");
 		}
 
 		this.structure.params.chain = true;
@@ -16246,7 +16241,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		chain: "try"
 	}, function () {
 		if (this.structure.name !== "try") {
-			return this.error("directive \"" + this.name + "\" can be used only with a \"try\"");
+			return this.error("the directive \"" + this.name + "\" can be used only with a \"try\"");
 		}
 
 		this.structure.params.chain = true;
@@ -16255,7 +16250,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * Таблица созданных переменных
+  * The map of declared variables
   */
 	DirObj.prototype.varCache = {
 		init: function init() {
@@ -16311,11 +16306,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		var cb = this.has(this.getGroup("callback"));
 
 		if (cb) {
-			return this.error("directive \"" + this.name + "\" can't be used within the \"" + cb + "\"");
+			return this.error("the directive \"" + this.name + "\" can't be used within the \"" + cb + "\"");
 		}
 
 		if (!this.parentTplName && !this.generator && !this.proto && !this.outerLink) {
-			return this.error("directive \"" + this.name + "\" can be used only with a generator");
+			return this.error("the directive \"" + this.name + "\" can be used only with a generator");
 		}
 
 		this.startInlineDir();
