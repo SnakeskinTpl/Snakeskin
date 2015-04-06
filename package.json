@@ -37,7 +37,7 @@
   "scripts": {
     "test": "node test",
     "test-travis": "gulp test",
-    "install": "node node_modules/bower/bin/bower install"
+    "bower": "node node_modules/bower/bin/bower install"
   },
   "dependencies": {
     "commander": "^2.5.0",
