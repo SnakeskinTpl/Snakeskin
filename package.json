@@ -2,7 +2,7 @@
   "name": "snakeskin",
   "description": "Awesome JavaScript template engine.",
   "homepage": "https://github.com/kobezzza/Snakeskin",
-  "version": "6.5.32",
+  "version": "6.5.33",
   "author": {
     "name": "kobezzza",
     "email": "kobezzza@mail.ru",
@@ -37,7 +37,7 @@
   "scripts": {
     "test": "node test",
     "test-travis": "gulp test",
-    "install": "bower install"
+    "install": "node node_modules/bower/bin/bower install"
   },
   "dependencies": {
     "commander": "^2.5.0",
