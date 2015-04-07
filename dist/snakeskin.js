@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.32
+ * Snakeskin v6.6.0
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 21 Mar 2015 10:22:06 GMT
+ * Date: Tue, 07 Apr 2015 08:17:01 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 5, 32],
+	VERSION: [6, 6, 0],
 
 	/**
   * The namespace for directives
@@ -425,7 +425,6 @@ Snakeskin.Filters.undef = function (str) {
 		};
 	})();
 }
-
 /*!
  * Методы live библиотеки Snakeskin
  */
@@ -671,8 +670,8 @@ var beautify,
     space_after_anon_function (default false) - should the space before an anonymous function's parens be added, "function()" vs "function ()",
           NOTE: This option is overriden by jslint_happy (i.e. if jslint_happy is true, space_after_anon_function is true by design)
 
-    brace_style (default "collapse") - "collapse" | "expand" | "end-expand"
-            put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or just put end braces on own line.
+    brace_style (default "collapse") - "collapse" | "expand" | "end-expand" | "none"
+            put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or just put end braces on own line, or attempt to keep them where they are.
 
     space_before_conditional (default true) - should the space before conditional statement be added, "if(true)" vs "if (true)",
 
@@ -765,6 +764,14 @@ var beautify,
 
     function trim(s) {
         return s.replace(/^\s+|\s+$/g, '');
+    }
+
+    function ltrim(s) {
+        return s.replace(/^\s+/g, '');
+    }
+
+    function rtrim(s) {
+        return s.replace(/\s+$/g, '');
     }
 
     function js_beautify(js_source_text, options) {
@@ -880,6 +887,7 @@ var beautify,
         opt.wrap_line_length = (options.wrap_line_length === undefined) ? 0 : parseInt(options.wrap_line_length, 10);
         opt.e4x = (options.e4x === undefined) ? false : options.e4x;
         opt.end_with_newline = (options.end_with_newline === undefined) ? false : options.end_with_newline;
+        opt.comma_first = (options.comma_first === undefined) ? false : options.comma_first;
 
 
         // force opt.space_after_anon_function to true if opt.jslint_happy
@@ -988,7 +996,6 @@ var beautify,
 
         // we could use just string.split, but
         // IE doesn't like returning empty strings
-
         function split_newlines(s) {
             //return s.split(/\x0d\x0a|\x0a/);
 
@@ -1009,6 +1016,7 @@ var beautify,
         function allow_wrap_or_preserved_newline(force_linewrap) {
             force_linewrap = (force_linewrap === undefined) ? false : force_linewrap;
 
+            // Never wrap the first token on a line
             if (output.just_added_newline()) {
                 return
             }
@@ -1016,7 +1024,6 @@ var beautify,
             if ((opt.preserve_newlines && current_token.wanted_newline) || force_linewrap) {
                 print_newline(false, true);
             } else if (opt.wrap_line_length) {
-                // We never wrap the first token of a line due to newline check above.
                 var proposed_line_length = output.current_line.get_character_count() + current_token.text.length +
                     (output.space_before_token ? 1 : 0);
                 if (proposed_line_length >= opt.wrap_line_length) {
@@ -1042,19 +1049,25 @@ var beautify,
         function print_token_line_indentation() {
             if (output.just_added_newline()) {
                 if (opt.keep_array_indentation && is_array(flags.mode) && current_token.wanted_newline) {
-                    // prevent removing of this whitespace as redundant
-                    output.current_line.push('');
-                    for (var i = 0; i < current_token.whitespace_before.length; i += 1) {
-                        output.current_line.push(current_token.whitespace_before[i]);
-                    }
+                    output.current_line.push(current_token.whitespace_before);
                     output.space_before_token = false;
-                } else if (output.add_indent_string(flags.indentation_level)) {
+                } else if (output.set_indent(flags.indentation_level)) {
                     flags.line_indent_level = flags.indentation_level;
                 }
             }
         }
 
         function print_token(printable_token) {
+            if (opt.comma_first && last_type === 'TK_COMMA'
+                && output.just_added_newline()) {
+                if(output.previous_line.last() === ',') {
+                    output.previous_line.pop();
+                    print_token_line_indentation();
+                    output.add_token(',');
+                    output.space_before_token = true;
+                }
+            }
+
             printable_token = printable_token || current_token.text;
             print_token_line_indentation();
             output.add_token(printable_token);
@@ -1319,7 +1332,8 @@ var beautify,
             var empty_anonymous_function = empty_braces && flags.last_word === 'function' &&
                 last_type === 'TK_END_EXPR';
 
-            if (opt.brace_style === "expand") {
+            if (opt.brace_style === "expand" ||
+                (opt.brace_style === "none" && current_token.wanted_newline)) {
                 if (last_type !== 'TK_OPERATOR' &&
                     (empty_anonymous_function ||
                         last_type === 'TK_EQUALS' ||
@@ -1492,7 +1506,9 @@ var beautify,
                 if (!(current_token.type === 'TK_RESERVED' && in_array(current_token.text, ['else', 'catch', 'finally']))) {
                     prefix = 'NEWLINE';
                 } else {
-                    if (opt.brace_style === "expand" || opt.brace_style === "end-expand") {
+                    if (opt.brace_style === "expand" ||
+                        opt.brace_style === "end-expand" ||
+                        (opt.brace_style === "none" && current_token.wanted_newline)) {
                         prefix = 'NEWLINE';
                     } else {
                         prefix = 'SPACE';
@@ -1526,7 +1542,10 @@ var beautify,
             }
 
             if (current_token.type === 'TK_RESERVED' && in_array(current_token.text, ['else', 'catch', 'finally'])) {
-                if (last_type !== 'TK_END_BLOCK' || opt.brace_style === "expand" || opt.brace_style === "end-expand") {
+                if (last_type !== 'TK_END_BLOCK' ||
+                    opt.brace_style === "expand" ||
+                    opt.brace_style === "end-expand" ||
+                    (opt.brace_style === "none" && current_token.wanted_newline)) {
                     print_newline();
                 } else {
                     output.trim(true);
@@ -1629,6 +1648,11 @@ var beautify,
                     print_newline(false, true);
                 } else {
                     output.space_before_token = true;
+                    // for comma-first, we want to allow a newline before the comma
+                    // to turn into a newline after the comma, which we will fixup later
+                    if (opt.comma_first) {
+                        allow_wrap_or_preserved_newline();
+                    }
                 }
                 return;
             }
@@ -1643,6 +1667,11 @@ var beautify,
             } else {
                 // EXPR or DO_BLOCK
                 output.space_before_token = true;
+                // for comma-first, we want to allow a newline before the comma
+                // to turn into a newline after the comma, which we will fixup later
+                if (opt.comma_first) {
+                    allow_wrap_or_preserved_newline();
+                }
             }
 
         }
@@ -1680,12 +1709,6 @@ var beautify,
                 return;
             }
 
-            // http://www.ecma-international.org/ecma-262/5.1/#sec-7.9.1
-            // if there is a newline between -- or ++ and anything else we should preserve it.
-            if (current_token.wanted_newline && (current_token.text === '--' || current_token.text === '++')) {
-                print_newline(false, true);
-            }
-
             // Allow line wrapping between operators
             if (last_type === 'TK_OPERATOR') {
                 allow_wrap_or_preserved_newline();
@@ -1700,18 +1723,33 @@ var beautify,
                 space_before = false;
                 space_after = false;
 
+                // http://www.ecma-international.org/ecma-262/5.1/#sec-7.9.1
+                // if there is a newline between -- or ++ and anything else we should preserve it.
+                if (current_token.wanted_newline && (current_token.text === '--' || current_token.text === '++')) {
+                    print_newline(false, true);
+                }
+
                 if (flags.last_text === ';' && is_expression(flags.mode)) {
                     // for (;; ++i)
                     //        ^^^
                     space_before = true;
                 }
 
-                if (last_type === 'TK_RESERVED' || last_type === 'TK_END_EXPR') {
+                if (last_type === 'TK_RESERVED') {
                     space_before = true;
+                } else if (last_type === 'TK_END_EXPR') {
+                    space_before = !(flags.last_text === ']' && (current_token.text === '--' || current_token.text === '++'));
                 } else if (last_type === 'TK_OPERATOR') {
-                    space_before =
-                        (in_array(current_token.text, ['--', '-']) && in_array(flags.last_text, ['--', '-'])) ||
-                        (in_array(current_token.text, ['++', '+']) && in_array(flags.last_text, ['++', '+']));
+                    // a++ + ++b;
+                    // a - -b
+                    space_before = in_array(current_token.text, ['--', '-', '++', '+']) && in_array(flags.last_text, ['--', '-', '++', '+']);
+                    // + and - are not unary when preceeded by -- or ++ operator
+                    // a-- + b
+                    // a * +b
+                    // a - -b
+                    if (in_array(current_token.text, ['+', '-']) && in_array(flags.last_text, ['--', '++'])) {
+                        space_after = true;
+                    }
                 }
 
                 if ((flags.mode === MODE.BlockStatement || flags.mode === MODE.Statement) && (flags.last_text === '{' || flags.last_text === ';')) {
@@ -1742,7 +1780,7 @@ var beautify,
             var j; // iterator for this case
             var javadoc = false;
             var starless = false;
-            var lastIndent = current_token.whitespace_before.join('');
+            var lastIndent = current_token.whitespace_before;
             var lastIndentLength = lastIndent.length;
 
             // block comment starts with a new line
@@ -1762,7 +1800,7 @@ var beautify,
                 print_newline(false, true);
                 if (javadoc) {
                     // javadoc: reformat and re-indent
-                    print_token(' ' + trim(lines[j]));
+                    print_token(' ' + ltrim(lines[j]));
                 } else if (starless && lines[j].length > lastIndentLength) {
                     // starless: re-indent non-empty content, avoiding trim
                     print_token(lines[j].substring(lastIndentLength));
@@ -1826,69 +1864,89 @@ var beautify,
         }
     }
 
-    function OutputLine() {
-        var character_count = 0;
-        var line_items = [];
+
+    function OutputLine(parent) {
+        var _character_count = 0;
+        // use indent_count as a marker for lines that have preserved indentation
+        var _indent_count = -1;
+
+        var _items = [];
+        var _empty = true;
+
+        this.set_indent = function(level) {
+            _character_count = parent.baseIndentLength + level * parent.indent_length
+            _indent_count = level;
+        }
 
         this.get_character_count = function() {
-            return character_count;
+            return _character_count;
         }
 
-        this.get_item_count = function() {
-            return line_items.length;
-        }
-
-        this.get_output = function() {
-            return line_items.join('');
+        this.is_empty = function() {
+            return _empty;
         }
 
         this.last = function() {
-            if (line_items.length) {
-              return line_items[line_items.length - 1];
+            if (!this._empty) {
+              return _items[_items.length - 1];
             } else {
               return null;
             }
         }
 
         this.push = function(input) {
-            line_items.push(input);
-            character_count += input.length;
+            _items.push(input);
+            _character_count += input.length;
+            _empty = false;
         }
 
-        this.remove_indent = function(indent_string, baseIndentString) {
-            var splice_index = 0;
-
-            // skip empty lines
-            if (line_items.length === 0) {
-                return;
+        this.pop = function() {
+            var item = null;
+            if (!_empty) {
+                item = _items.pop();
+                _character_count -= item.length;
+                _empty = _items.length === 0;
             }
+            return item;
+        }
 
-            // skip the preindent string if present
-            if (baseIndentString && line_items[0] === baseIndentString) {
-                splice_index = 1;
-            }
-
-            // remove one indent, if present
-            if (line_items[splice_index] === indent_string) {
-                character_count -= line_items[splice_index].length;
-                line_items.splice(splice_index, 1);
+        this.remove_indent = function() {
+            if (_indent_count > 0) {
+                _indent_count -= 1;
+                _character_count -= parent.indent_length
             }
         }
 
-        this.trim = function(indent_string, baseIndentString) {
-            while (this.get_item_count() &&
-                (this.last() === ' ' ||
-                    this.last() === indent_string ||
-                    this.last() === baseIndentString)) {
-                var item = line_items.pop();
-                character_count -= item.length;
+        this.trim = function() {
+            while (this.last() === ' ') {
+                var item = _items.pop();
+                _character_count -= 1;
             }
+            _empty = _items.length === 0;
+        }
+
+        this.toString = function() {
+            var result = '';
+            if (!this._empty) {
+                if (_indent_count >= 0) {
+                    result = parent.indent_cache[_indent_count];
+                }
+                result += _items.join('')
+            }
+            return result;
         }
     }
 
     function Output(indent_string, baseIndentString) {
+        baseIndentString = baseIndentString || '';
+        this.indent_cache = [ baseIndentString ];
+        this.baseIndentLength = baseIndentString.length;
+        this.indent_length = indent_string.length;
+
         var lines =[];
         this.baseIndentString = baseIndentString;
+        this.indent_string = indent_string;
+        this.previous_line = null;
         this.current_line = null;
         this.space_before_token = false;
 
@@ -1903,7 +1961,8 @@ var beautify,
             }
 
             if (force_newline || !this.just_added_newline()) {
-                this.current_line = new OutputLine();
+                this.previous_line = this.current_line;
+                this.current_line = new OutputLine(this);
                 lines.push(this.current_line);
                 return true;
             }
@@ -1915,26 +1974,21 @@ var beautify,
         this.add_new_line(true);
 
         this.get_code = function() {
-            var sweet_code = lines[0].get_output();
-            for (var line_index = 1; line_index < lines.length; line_index++) {
-                sweet_code += '\n' + lines[line_index].get_output();
-            }
-            sweet_code = sweet_code.replace(/[\r\n\t ]+$/, '');
+            var sweet_code = lines.join('\n').replace(/[\r\n\t ]+$/, '');
             return sweet_code;
         }
 
-        this.add_indent_string = function(indentation_level) {
-            if (baseIndentString) {
-                this.current_line.push(baseIndentString);
-            }
-
+        this.set_indent = function(level) {
             // Never indent your first output indent at the start of the file
             if (lines.length > 1) {
-                for (var i = 0; i < indentation_level; i += 1) {
-                    this.current_line.push(indent_string);
+                while(level >= this.indent_cache.length) {
+                    this.indent_cache.push(this.indent_cache[this.indent_cache.length - 1] + this.indent_string);
                 }
+
+                this.current_line.set_indent(level);
                 return true;
             }
+            this.current_line.set_indent(0);
             return false;
         }
 
@@ -1944,18 +1998,14 @@ var beautify,
         }
 
         this.add_space_before_token = function() {
-            if (this.space_before_token && this.current_line.get_item_count()) {
-                var last_output = this.current_line.last();
-                if (last_output !== ' ' && last_output !== indent_string && last_output !== baseIndentString) { // prevent occassional duplicate space
-                    this.current_line.push(' ');
-                }
+            if (this.space_before_token && !this.just_added_newline()) {
+                this.current_line.push(' ');
             }
             this.space_before_token = false;
         }
 
         this.remove_redundant_indentation = function (frame) {
             // This implementation is effective but has some issues:
-            //     - less than great performance due to array splicing
             //     - can cause line wrap to happen too soon due to indent removal
             //           after wrap points are calculated
             // These issues are minor compared to ugly indentation.
@@ -1972,7 +2022,7 @@ var beautify,
 
             var output_length = lines.length;
             while (index < output_length) {
-                lines[index].remove_indent(indent_string, baseIndentString);
+                lines[index].remove_indent();
                 index++;
             }
         }
@@ -1983,15 +2033,17 @@ var beautify,
             this.current_line.trim(indent_string, baseIndentString);
 
             while (eat_newlines && lines.length > 1 &&
-                this.current_line.get_item_count() === 0) {
+                this.current_line.is_empty()) {
                 lines.pop();
                 this.current_line = lines[lines.length - 1]
-                this.current_line.trim(indent_string, baseIndentString);
+                this.current_line.trim();
             }
+
+            this.previous_line = lines.length > 1 ? lines[lines.length - 2] : null;
         }
 
         this.just_added_newline = function() {
-            return this.current_line.get_item_count() === 0;
+            return this.current_line.is_empty();
         }
 
         this.just_added_blankline = function() {
@@ -2001,7 +2053,7 @@ var beautify,
                 }
 
                 var line = lines[lines.length - 2];
-                return line.get_item_count() === 0;
+                return line.is_empty();
             }
             return false;
         }
@@ -2014,7 +2066,7 @@ var beautify,
         this.comments_before = [];
         this.newlines = newlines || 0;
         this.wanted_newline = newlines > 0;
-        this.whitespace_before = whitespace_before || [];
+        this.whitespace_before = whitespace_before || '';
         this.parent = null;
     }
 
@@ -2027,8 +2079,8 @@ var beautify,
                 +' <%= <% %> <?= <? ?>').split(' '); // try to be a good boy and try not to break the markup language identifiers
 
         // words which should always start on new line.
-        this.line_starters = 'continue,try,throw,return,var,let,const,if,switch,case,default,for,while,break,function,yield,import,export'.split(',');
-        var reserved_words = this.line_starters.concat(['do', 'in', 'else', 'get', 'set', 'new', 'catch', 'finally', 'typeof']);
+        this.line_starters = 'continue,try,throw,return,var,let,const,if,switch,case,default,for,while,break,function,import,export'.split(',');
+        var reserved_words = this.line_starters.concat(['do', 'in', 'else', 'get', 'set', 'new', 'catch', 'finally', 'typeof', 'yield']);
 
         var n_newlines, whitespace_before_token, in_html_comment, tokens, parser_pos;
         var input_length;
@@ -2083,9 +2135,10 @@ var beautify,
 
         function tokenize_next() {
             var i, resulting_string;
+            var whitespace_on_this_line = [];
 
             n_newlines = 0;
-            whitespace_before_token = [];
+            whitespace_before_token = '';
 
             if (parser_pos >= input_length) {
                 return ['', 'TK_EOF'];
@@ -2107,12 +2160,12 @@ var beautify,
 
                 if (c === '\n') {
                     n_newlines += 1;
-                    whitespace_before_token = [];
+                    whitespace_on_this_line = [];
                 } else if (n_newlines) {
                     if (c === indent_string) {
-                        whitespace_before_token.push(indent_string);
+                        whitespace_on_this_line.push(indent_string);
                     } else if (c !== '\r') {
-                        whitespace_before_token.push(' ');
+                        whitespace_on_this_line.push(' ');
                     }
                 }
 
@@ -2122,6 +2175,10 @@ var beautify,
 
                 c = input.charAt(parser_pos);
                 parser_pos += 1;
+            }
+
+            if(whitespace_on_this_line.length) {
+                whitespace_before_token = whitespace_on_this_line.join('');
             }
 
             if (digit.test(c)) {
@@ -3384,6 +3441,24 @@ parseStatement: true, parseSourceElement: true */
         };
     }
 
+    function isImplicitOctalLiteral() {
+        var i, ch;
+
+        // Implicit octal, unless there is a non-octal digit.
+        // (Annex B.1.1 on Numeric Literals)
+        for (i = index + 1; i < length; ++i) {
+            ch = source[i];
+            if (ch === '8' || ch === '9') {
+                return false;
+            }
+            if (!isOctalDigit(ch)) {
+                return true;
+            }
+        }
+
+        return true;
+    }
+
     function scanNumericLiteral() {
         var number, start, ch;
 
@@ -3405,12 +3480,9 @@ parseStatement: true, parseSourceElement: true */
                     return scanHexLiteral(start);
                 }
                 if (isOctalDigit(ch)) {
-                    return scanOctalLiteral(start);
-                }
-
-                // decimal number starts with '0' such as '09' is illegal.
-                if (ch && isDecimalDigit(ch.charCodeAt(0))) {
-                    throwError({}, Messages.UnexpectedToken, 'ILLEGAL');
+                    if (isImplicitOctalLiteral()) {
+                        return scanOctalLiteral(start);
+                    }
                 }
             }
 
@@ -6273,7 +6345,7 @@ parseStatement: true, parseSourceElement: true */
     }
 
     // Sync with *.json manifests.
-    exports.version = '1.2.4';
+    exports.version = '1.2.5';
 
     exports.tokenize = tokenize;
 
@@ -6317,437 +6389,441 @@ var Escaper,
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.1.18
+ * Escaper v2.2.4
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Sat, 21 Feb 2015 09:19:39 GMT
+ * Date: Mon, 06 Apr 2015 17:45:00 GMT
  */
 
-(function () {
-'use strict';
-var self = this;
-var Escaper = {
-	VERSION: [2, 1, 18]
-};
-
-if (typeof define === "function" && define.amd) {
-	define([], function () {
-		return Escaper;
-	});
-} else if (typeof module === "object" && typeof exports === "object") {
-	module.exports = exports = Escaper;
-} else {
-	self.Escaper = Escaper;
-}
-
-var stringLiterals = {
-	"\"": true,
-	"'": true,
-	"`": true
-};
-
-var literals = {
-	"/": true
-};
-
-for (var key in stringLiterals) {
-	if (!stringLiterals.hasOwnProperty(key)) {
-		continue;
+(function (global, factory) {
+	if (typeof define === 'function' && define.amd) {
+		define('Escaper', ['exports', 'module'], factory);
+	} else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+		factory(exports, module);
+	} else {
+		var mod = {
+			exports: {}
+		};
+		factory(mod.exports, mod);
+		global.Escaper = mod.exports;
 	}
+})(this, function (exports, module) {
+	'use strict';
 
-	literals[key] = true;
-}
+	var Escaper = { VERSION: [2, 2, 4] };
+	module.exports = Escaper;
 
-var singleComments = {
-	"//": true
-};
+	var stringLiterals = {
+		'"': true,
+		'\'': true,
+		'`': true
+	},
+	    literals = {
+		'/': true
+	};
 
-var multComments = {
-	"/*": true,
-	"/**": true,
-	"/*!": true
-};
-
-var keyArr = [],
-    finalMap = {};
-
-for (var key in literals) {
-	if (!literals.hasOwnProperty(key)) {
-		continue;
-	}
-
-	keyArr.push(key);
-	finalMap[key] = true;
-}
-
-for (var key in singleComments) {
-	if (!singleComments.hasOwnProperty(key)) {
-		continue;
-	}
-
-	keyArr.push(key);
-	finalMap[key] = true;
-}
-
-for (var key in multComments) {
-	if (!multComments.hasOwnProperty(key)) {
-		continue;
-	}
-
-	keyArr.push(key);
-	finalMap[key] = true;
-}
-
-var rgxpFlagsMap = {
-	"g": true,
-	"m": true,
-	"i": true,
-	"y": true,
-	"u": true
-};
-
-var rgxpFlags = [];
-for (var key in rgxpFlagsMap) {
-	if (!rgxpFlagsMap.hasOwnProperty(key)) {
-		continue;
-	}
-
-	rgxpFlags.push(key);
-}
-
-var escapeEndMap = {
-	"-": true,
-	"+": true,
-	"*": true,
-	"%": true,
-	"~": true,
-	">": true,
-	"<": true,
-	"^": true,
-	",": true,
-	";": true,
-	"=": true,
-	"|": true,
-	"&": true,
-	"!": true,
-	"?": true,
-	":": true,
-	"(": true,
-	"{": true,
-	"[": true
-};
-
-var escapeEndWordMap = {
-	"typeof": true,
-	"void": true,
-	"instanceof": true,
-	"delete": true,
-	"in": true,
-	"new": true,
-	"of": true
-};
-
-var cache = {},
-    content = [];
-
-/**
- * @param {!Object} obj
- * @param {!Object} p
- * @param {(boolean|number)} val
- */
-function mix(obj, p, val) {
-	for (var key in obj) {
-		if (!obj.hasOwnProperty(key)) {
+	for (var key in stringLiterals) {
+		if (!stringLiterals.hasOwnProperty(key)) {
 			continue;
 		}
 
-		if (key in p === false) {
-			p[key] = val;
-		}
-	}
-}
-
-/** @type {!Array} */
-Escaper.quotContent = content;
-
-var uSRgxp = /[^\s\/]/,
-    wRgxp = /[a-z]/,
-    sRgxp = /\s/,
-    nRgxp = /\r|\n/;
-
-var symbols, snakeskinRgxp;
-
-Escaper.symbols = null;
-Escaper.snakeskinRgxp = null;
-
-/**
- * Replaces all found blocks ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ to
- * __ESCAPER_QUOT__number_ in a string and returns a new string
- *
- * @param {string} str - the source string
- * @param {(Object.<string, boolean>|boolean)=} opt_withCommentsOrParams - parameters:
- *
- *     (if a parameter value is set to -1, then all found matches will be removed from the final string,
- *          or if the value will be set to true/false they will be included/excluded)
- *
- *     *) @all      - replaces all found matches
- *     *) @comments - replaces all kinds of comments
- *     *) @strings  - replaces all kinds of string literals
- *     *) @literals - replaces all kinds of string literals and regular expressions
- *     *) `
- *     *) '
- *     *) "
- *     *) /
- *     *) //
- *     *) /*
- *     *) /**
- *     *) /*!
- *
- *     OR if the value is boolean, then will be replaced all found comments (true) / literals (false)
- *
- * @param {Array=} opt_quotContent - an array for matches
- * @param {?boolean=} [opt_snakeskin] - a private parameter for using with Snakeskin
- * @return {string}
- */
-Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_snakeskin) {
-	symbols = symbols || Escaper.symbols || "a-z";
-
-	snakeskinRgxp = snakeskinRgxp || Escaper.snakeskinRgxp || new RegExp("[!$" + symbols + "_]", "i");
-
-	var isObj = opt_withCommentsOrParams instanceof Object;
-	var p = isObj ? Object(opt_withCommentsOrParams) : {};
-
-	var withComments = false;
-	if (typeof opt_withCommentsOrParams === "boolean") {
-		withComments = Boolean(opt_withCommentsOrParams);
+		literals[key] = true;
 	}
 
-	if ("@comments" in p) {
-		mix(multComments, p, p["@comments"]);
-		mix(singleComments, p, p["@comments"]);
-		delete p["@comments"];
-	}
+	var singleComments = {
+		'//': true
+	},
+	    multComments = {
+		'/*': true,
+		'/**': true,
+		'/*!': true
+	};
 
-	if ("@strings" in p) {
-		mix(stringLiterals, p, p["@strings"]);
-		delete p["@strings"];
-	}
+	var keyArr = [],
+	    finalMap = {};
 
-	if ("@literals" in p) {
-		mix(literals, p, p["@literals"]);
-		delete p["@literals"];
-	}
-
-	if ("@all" in p) {
-		mix(finalMap, p, p["@all"]);
-		delete p["@all"];
-	}
-
-	var cacheKey = "";
-	for (var i = -1; ++i < keyArr.length;) {
-		var el = keyArr[i];
-
-		if (multComments[el] || singleComments[el]) {
-			p[el] = withComments || p[el];
-		} else {
-			p[el] = p[el] || !isObj;
+	for (var key in literals) {
+		if (!literals.hasOwnProperty(key)) {
+			continue;
 		}
 
-		cacheKey += "" + p[el] + ",";
+		keyArr.push(key);
+		finalMap[key] = true;
 	}
 
-	var initStr = str;
-	var stack = opt_quotContent || content;
+	for (var key in singleComments) {
+		if (!singleComments.hasOwnProperty(key)) {
+			continue;
+		}
 
-	if (stack === content && cache[cacheKey] && cache[cacheKey][initStr]) {
-		return cache[cacheKey][initStr];
+		keyArr.push(key);
+		finalMap[key] = true;
 	}
 
-	var begin = false,
-	    end = true;
+	for (var key in multComments) {
+		if (!multComments.hasOwnProperty(key)) {
+			continue;
+		}
 
-	var escape = false,
-	    comment = false;
+		keyArr.push(key);
+		finalMap[key] = true;
+	}
 
-	var selectionStart = 0,
-	    block = false;
+	var rgxpFlags = [],
+	    rgxpFlagsMap = {
+		'g': true,
+		'm': true,
+		'i': true,
+		'y': true,
+		'u': true
+	};
 
-	var templateVar = 0,
-	    filterStart = false;
+	for (var key in rgxpFlagsMap) {
+		if (!rgxpFlagsMap.hasOwnProperty(key)) {
+			continue;
+		}
 
-	var cut, label;
+		rgxpFlags.push(key);
+	}
 
-	var part = "",
-	    rPart = "";
+	var escapeEndMap = {
+		'-': true,
+		'+': true,
+		'*': true,
+		'%': true,
+		'~': true,
+		'>': true,
+		'<': true,
+		'^': true,
+		',': true,
+		';': true,
+		'=': true,
+		'|': true,
+		'&': true,
+		'!': true,
+		'?': true,
+		':': true,
+		'(': true,
+		'{': true,
+		'[': true
+	};
 
-	for (var i = -1; ++i < str.length;) {
-		var el = str.charAt(i),
-		    next = str.charAt(i + 1);
+	var escapeEndWordMap = {
+		'typeof': true,
+		'void': true,
+		'instanceof': true,
+		'delete': true,
+		'in': true,
+		'new': true,
+		'of': true
+	};
 
-		var word = str.substr(i, 2),
-		    extWord = str.substr(i, 3);
+	var cache = {},
+	    content = [];
 
-		if (!comment) {
-			if (!begin) {
-				if (el === "/") {
-					if (singleComments[word] || multComments[word]) {
-						if (singleComments[extWord] || multComments[extWord]) {
-							comment = extWord;
-						} else {
-							comment = word;
+	/**
+  * @param {!Object} obj
+  * @param {!Object} p
+  * @param {(boolean|number)} val
+  */
+	function mix(obj, p, val) {
+		for (var key in obj) {
+			if (!obj.hasOwnProperty(key)) {
+				continue;
+			}
+
+			if (key in p === false) {
+				p[key] = val;
+			}
+		}
+	}
+
+	/** @type {!Array} */
+	Escaper.quotContent = content;
+
+	var uSRgxp = /[^\s\/]/,
+	    wRgxp = /[a-z]/,
+	    sRgxp = /\s/,
+	    nRgxp = /\r|\n/;
+
+	var symbols = void 0,
+	    snakeskinRgxp = void 0;
+
+	Escaper.symbols = null;
+	Escaper.snakeskinRgxp = null;
+
+	var objMap = {
+		'object': true,
+		'function': true
+	};
+
+	/**
+  * Replaces all found blocks ' ... ', " ... ", ` ... `, / ... /, // ..., /* ... *\/ to
+  * __ESCAPER_QUOT__number_ in a string and returns a new string
+  *
+  * @param {string} str - the source string
+  * @param {(Object.<string, boolean>|boolean)=} opt_withCommentsOrParams - parameters:
+  *
+  *     (if a parameter value is set to -1, then all found matches will be removed from the final string,
+  *          or if the value will be set to true/false they will be included/excluded)
+  *
+  *     *) @all      - replaces all found matches
+  *     *) @comments - replaces all kinds of comments
+  *     *) @strings  - replaces all kinds of string literals
+  *     *) @literals - replaces all kinds of string literals and regular expressions
+  *     *) `
+  *     *) '
+  *     *) "
+  *     *) /
+  *     *) //
+  *     *) /*
+  *     *) /**
+  *     *) /*!
+  *
+  *     OR if the value is boolean, then will be replaced all found comments (true) / literals (false)
+  *
+  * @param {Array=} opt_quotContent - an array for matches
+  * @param {?boolean=} [opt_snakeskin] - a private parameter for using with Snakeskin
+  * @return {string}
+  */
+	Escaper.replace = function (str, opt_withCommentsOrParams, opt_quotContent, opt_snakeskin) {
+		symbols = symbols || Escaper.symbols || 'a-z';
+
+		snakeskinRgxp = snakeskinRgxp || Escaper.snakeskinRgxp || new RegExp('[!$' + symbols + '_]', 'i');
+
+		var isObj = Boolean(opt_withCommentsOrParams && objMap[typeof opt_withCommentsOrParams]),
+		    p = isObj ? Object(opt_withCommentsOrParams) : {};
+
+		var withComments = false;
+		if (typeof opt_withCommentsOrParams === 'boolean') {
+			withComments = Boolean(opt_withCommentsOrParams);
+		}
+
+		if ('@comments' in p) {
+			mix(multComments, p, p['@comments']);
+			mix(singleComments, p, p['@comments']);
+			delete p['@comments'];
+		}
+
+		if ('@strings' in p) {
+			mix(stringLiterals, p, p['@strings']);
+			delete p['@strings'];
+		}
+
+		if ('@literals' in p) {
+			mix(literals, p, p['@literals']);
+			delete p['@literals'];
+		}
+
+		if ('@all' in p) {
+			mix(finalMap, p, p['@all']);
+			delete p['@all'];
+		}
+
+		var cacheKey = '';
+		for (var i = -1; ++i < keyArr.length;) {
+			var el = keyArr[i];
+
+			if (multComments[el] || singleComments[el]) {
+				p[el] = withComments || p[el];
+			} else {
+				p[el] = p[el] || !isObj;
+			}
+
+			cacheKey += '' + p[el] + ',';
+		}
+
+		var initStr = str,
+		    stack = opt_quotContent || content;
+
+		if (stack === content && cache[cacheKey] && cache[cacheKey][initStr]) {
+			return cache[cacheKey][initStr];
+		}
+
+		var begin = false,
+		    end = true;
+
+		var escape = false,
+		    comment = false;
+
+		var selectionStart = 0,
+		    block = false;
+
+		var templateVar = 0,
+		    filterStart = false;
+
+		var cut = void 0,
+		    label = void 0;
+
+		var part = '',
+		    rPart = '';
+
+		for (var i = -1; ++i < str.length;) {
+			var el = str.charAt(i),
+			    next = str.charAt(i + 1);
+
+			var word = str.substr(i, 2),
+			    extWord = str.substr(i, 3);
+
+			if (!comment) {
+				if (!begin) {
+					if (el === '/') {
+						if (singleComments[word] || multComments[word]) {
+							if (singleComments[extWord] || multComments[extWord]) {
+								comment = extWord;
+							} else {
+								comment = word;
+							}
+						}
+
+						if (comment) {
+							selectionStart = i;
+							continue;
 						}
 					}
 
-					if (comment) {
-						selectionStart = i;
-						continue;
-					}
-				}
-
-				if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
-					end = true;
-					rPart = "";
-				} else if (uSRgxp.test(el)) {
-					end = false;
-				}
-
-				if (wRgxp.test(el)) {
-					part += el;
-				} else {
-					rPart = part;
-					part = "";
-				}
-
-				var skip = false;
-				if (opt_snakeskin) {
-					if (el === "|" && snakeskinRgxp.test(next)) {
-						filterStart = true;
-						end = false;
-						skip = true;
-					} else if (filterStart && sRgxp.test(el)) {
-						filterStart = false;
+					if (escapeEndMap[el] || escapeEndWordMap[rPart]) {
 						end = true;
-						skip = true;
-					}
-				}
-
-				if (!skip) {
-					if (escapeEndMap[el]) {
-						end = true;
+						rPart = '';
 					} else if (uSRgxp.test(el)) {
 						end = false;
 					}
-				}
-			}
 
-			// [] inside RegExp
-			if (begin === "/" && !escape) {
-				if (el === "[") {
-					block = true;
-				} else if (el === "]") {
-					block = false;
-				}
-			}
+					if (wRgxp.test(el)) {
+						part += el;
+					} else {
+						rPart = part;
+						part = '';
+					}
 
-			if (!begin && templateVar) {
-				if (el === "}") {
-					templateVar--;
-				} else if (el === "{") {
-					templateVar++;
-				}
+					var skip = false;
+					if (opt_snakeskin) {
+						if (el === '|' && snakeskinRgxp.test(next)) {
+							filterStart = true;
+							end = false;
+							skip = true;
+						} else if (filterStart && sRgxp.test(el)) {
+							filterStart = false;
+							end = true;
+							skip = true;
+						}
+					}
 
-				if (!templateVar) {
-					el = "`";
-				}
-			}
-
-			if (begin === "`" && !escape && word === "${") {
-				el = "`";
-				i++;
-				templateVar++;
-			}
-
-			if (finalMap[el] && (el !== "/" || end) && !begin) {
-				begin = el;
-				selectionStart = i;
-			} else if (begin && (el === "\\" || escape)) {
-				escape = !escape;
-			} else if (finalMap[el] && begin === el && !escape && (begin !== "/" || !block)) {
-				if (el === "/") {
-					for (var j = -1; ++j < rgxpFlags.length;) {
-						if (rgxpFlagsMap[str.charAt(i + 1)]) {
-							i++;
+					if (!skip) {
+						if (escapeEndMap[el]) {
+							end = true;
+						} else if (uSRgxp.test(el)) {
+							end = false;
 						}
 					}
 				}
 
-				begin = false;
-				end = false;
+				// [] inside RegExp
+				if (begin === '/' && !escape) {
+					if (el === '[') {
+						block = true;
+					} else if (el === ']') {
+						block = false;
+					}
+				}
 
-				if (p[el]) {
+				if (!begin && templateVar) {
+					if (el === '}') {
+						templateVar--;
+					} else if (el === '{') {
+						templateVar++;
+					}
+
+					if (!templateVar) {
+						el = '`';
+					}
+				}
+
+				if (begin === '`' && !escape && word === '${') {
+					el = '`';
+					i++;
+					templateVar++;
+				}
+
+				if (finalMap[el] && (el !== '/' || end) && !begin) {
+					begin = el;
+					selectionStart = i;
+				} else if (begin && (el === '\\' || escape)) {
+					escape = !escape;
+				} else if (finalMap[el] && begin === el && !escape && (begin !== '/' || !block)) {
+					if (el === '/') {
+						for (var j = -1; ++j < rgxpFlags.length;) {
+							if (rgxpFlagsMap[str.charAt(i + 1)]) {
+								i++;
+							}
+						}
+					}
+
+					begin = false;
+					end = false;
+
+					if (p[el]) {
+						cut = str.substring(selectionStart, i + 1);
+
+						if (p[el] === -1) {
+							label = '';
+						} else {
+							label = '__ESCAPER_QUOT__' + stack.length + '_';
+							stack.push(cut);
+						}
+
+						str = str.substring(0, selectionStart) + label + str.substring(i + 1);
+						i += label.length - cut.length;
+					}
+				}
+			} else if (nRgxp.test(next) && singleComments[comment] || multComments[el + str.charAt(i - 1)] && i - selectionStart > 2 && multComments[comment]) {
+				if (p[comment]) {
 					cut = str.substring(selectionStart, i + 1);
 
-					if (p[el] === -1) {
-						label = "";
+					if (p[comment] === -1) {
+						label = '';
 					} else {
-						label = "__ESCAPER_QUOT__" + stack.length + "_";
+						label = '__ESCAPER_QUOT__' + stack.length + '_';
 						stack.push(cut);
 					}
 
 					str = str.substring(0, selectionStart) + label + str.substring(i + 1);
 					i += label.length - cut.length;
 				}
+
+				comment = false;
 			}
-		} else if (nRgxp.test(next) && singleComments[comment] || multComments[el + str.charAt(i - 1)] && i - selectionStart > 2 && multComments[comment]) {
-			if (p[comment]) {
-				cut = str.substring(selectionStart, i + 1);
-
-				if (p[comment] === -1) {
-					label = "";
-				} else {
-					label = "__ESCAPER_QUOT__" + stack.length + "_";
-					stack.push(cut);
-				}
-
-				str = str.substring(0, selectionStart) + label + str.substring(i + 1);
-				i += label.length - cut.length;
-			}
-
-			comment = false;
 		}
-	}
 
-	if (stack === content) {
-		cache[cacheKey] = cache[cacheKey] || {};
-		cache[cacheKey][initStr] = str;
-	}
+		if (stack === content) {
+			cache[cacheKey] = cache[cacheKey] || {};
+			cache[cacheKey][initStr] = str;
+		}
 
-	return str;
-};
+		return str;
+	};
 
-var pasteRgxp = /__ESCAPER_QUOT__(\d+)_/g;
+	var pasteRgxp = /__ESCAPER_QUOT__(\d+)_/g;
 
-/**
- * Replaces all found blocks __ESCAPER_QUOT__number_ to real content in a string
- * and returns a new string
- *
- * @param {string} str - the source string
- * @param {Array=} opt_quotContent - an array of matches
- * @return {string}
- */
-Escaper.paste = function (str, opt_quotContent) {
-	var stack = opt_quotContent || content;
-	return str.replace(pasteRgxp, function (sstr, pos) {
-		return stack[pos];
-	});
-};
-}).call(new Function('return this')());
-
+	/**
+  * Replaces all found blocks __ESCAPER_QUOT__number_ to real content in a string
+  * and returns a new string
+  *
+  * @param {string} str - the source string
+  * @param {Array=} opt_quotContent - an array of matches
+  * @return {string}
+  */
+	Escaper.paste = function (str, opt_quotContent) {
+		return str.replace(pasteRgxp, function (sstr, pos) {
+			return (opt_quotContent || content)[pos];
+		});
+	};
+});
 if (IS_NODE) {
-	Escaper = exports;
+	Escaper = module.exports;
 	module.exports = exports = root;
 } else {
 	Escaper = global.Escaper;
@@ -6878,6 +6954,8 @@ var sysConst = {
 	"__ATTR_J__": true,
 	"__ATTR_STR__": true,
 	"__ATTR_TMP__": true,
+	"__WRAP_TMP__": true,
+	"__WRAP_CACHE__": true,
 	"__LENGTH__": true,
 	"__KEYS__": true,
 	"__KEY__": true,
@@ -7301,7 +7379,6 @@ DirObj.prototype.prepareArgs = function (str, type, opt_tplName, opt_parentTplNa
 	return res;
 };
 
-
 /*!
  * API for working with the cache
  */
@@ -7453,7 +7530,6 @@ DirObj.prototype.initTemplateCache = function (tplName) {
 
 	return this;
 };
-
 
 Snakeskin.DirObj = DirObj;
 
@@ -7754,7 +7830,6 @@ function DirObj(src, params) {
 	}
 }
 
-
 /**
  * Преобразовать заданное значение в объект
  *
@@ -7823,7 +7898,6 @@ Snakeskin.toObj = function (val, opt_base, opt_onFileExists) {
 
 	return Object(res || {});
 };
-
 
 /*!
  * API для работы с директивами
@@ -8000,7 +8074,6 @@ DirObj.prototype.endDir = function () {
 	return this;
 };
 
-
 /*!
  * API for errors handling
  */
@@ -8112,7 +8185,6 @@ DirObj.prototype.error = function (msg) {
 		console.error("SnakeskinError: " + report);
 	}
 };
-
 
 /*!
  * Методы и функции для экранирования
@@ -8290,7 +8362,6 @@ DirObj.prototype.pasteTplVarBlocks = function (str) {
 	});
 };
 
-
 /**
  * Executes a string
  *
@@ -8320,7 +8391,6 @@ DirObj.prototype.evalStr = function (str) {
 DirObj.prototype.returnEvalVal = function (str) {
 	return this.evalStr("return " + str);
 };
-
 
 {
 	(function () {
@@ -8382,7 +8452,6 @@ DirObj.prototype.returnEvalVal = function (str) {
 	})();
 }
 
-
 var fsStack = [];
 
 /**
@@ -8436,7 +8505,6 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 
 	return false;
 };
-
 
 /**
  * Вернуть полное тело заданного шаблона
@@ -8590,7 +8658,6 @@ DirObj.prototype.getFullBody = function (tplName) {
 
 	return res;
 };
-
 
 /*!
  * API для работы с Jade-Like синтаксисом
@@ -9067,7 +9134,6 @@ DirObj.prototype.getFullBody = function (tplName) {
 	}
 })();
 
-
 /*!
  * API для организации микрошаблонов внутри директивы
  */
@@ -9273,7 +9339,6 @@ DirObj.prototype.replaceTplVars = function (str, opt_sys, opt_replace) {
 	return res;
 };
 
-
 /*!
  * API для работы с именами шаблонов и директив
  */
@@ -9393,13 +9458,12 @@ DirObj.prototype.prepareNameDecl = function (name) {
 	return name.trim();
 };
 
-
 /*!
  * Some helpers
  */
 
 /**
- * Return a list of template names
+ * Returns a list of template names
  * that are involved in an inheritance chain
  *
  * @param {string} name - the template name
@@ -9465,7 +9529,6 @@ DirObj.prototype.popParams = function () {
 
 	return this;
 };
-
 
 /*!
  * API для обработки JS-like конструкций в шаблоне
@@ -9698,11 +9761,10 @@ function concatProp(str) {
 
 	var propValRgxp = /[^-+!(]+/;
 	var exprimaHackFn = function (str) {
-		return str.trim().replace(/^\[(?!\s*])/, "$[").replace(/\byield\b/g, "").replace(/(?:break|continue) [_]{2,}I_PROTO__[${w}]+;/, "");
+		return str.trim().replace(/^({.*)/, "($0)").replace(/^\[(?!\s*])/, "$[").replace(/\byield\b/g, "").replace(/(?:break|continue) [_]{2,}I_PROTO__[${w}]+;/, "");
 	};
 
-	var wrapRgxp = /^\s*\{/,
-	    dangerRgxp = /\)\s*(?:{|=>)/,
+	var dangerRgxp = /\)\s*(?:{|=>)/,
 	    functionRgxp = /\bfunction\b/;
 
 	/**
@@ -10177,11 +10239,6 @@ function concatProp(str) {
 		}
 
 		res = res.replace(unUndefRgxp, "__FILTERS__.undef");
-
-		if (wrapRgxp.test(res)) {
-			res = "(" + res + ")";
-		}
-
 		if (opt_validate !== false) {
 			try {
 				esprima.parse(exprimaHackFn(res));
@@ -10200,7 +10257,6 @@ function concatProp(str) {
 		return res;
 	};
 })();
-
 
 /*!
  * API for working with a queue
@@ -10232,7 +10288,6 @@ DirObj.prototype.applyQueue = function () {
 
 	return this;
 };
-
 
 /*!
  * API for writing final JS
@@ -10320,7 +10375,7 @@ DirObj.prototype.returnResult = function () {
 };
 
 /**
- * Returns a string of a template declaration
+ * Returns a string of template declaration
  * @return {string}
  */
 DirObj.prototype.declResult = function () {
@@ -10501,7 +10556,6 @@ DirObj.prototype.mod = function (callback) {
 	return false;
 };
 
-
 /*!
  * API for working with a template tree
  */
@@ -10590,7 +10644,6 @@ DirObj.prototype.hasParentBlock = function (name, opt_returnObj) {
 
 	return false;
 };
-
 
 /*!
  * API for working with variables
@@ -11056,7 +11109,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	dir.setMacros = setMacros;
 
-	// If is true, then a directive declaration is started,
+	// If is true, then directive declaration is started,
 	// ie { ... }
 	var begin = false,
 	    pseudoI = false;
@@ -11070,7 +11123,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// The number of open { symbols inside a directive
 	var fakeBegin = 0;
 
-	// If is true, then a string declaration is started
+	// If is true, then string declaration is started
 	var beginStr = false;
 
 	// If is true, then a previous symbol wasn't escaped
@@ -12134,7 +12187,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	};
 
 	/**
-  * Таблица обратных вызовов прототипа
+  * The map of prototype callbacks
   */
 	DirObj.prototype.backTable = {
 		init: function init() {
@@ -12143,8 +12196,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	};
 
 	/**
-  * Количество обратных вызовов прототипа
-  * (когда apply до декларации вызываемого прототипа)
+  * The number of prototype callbacks
+  * (when "apply" calls before prototype declaration)
   * @type {number}
   */
 	DirObj.prototype.backTableI = 0;
@@ -12182,13 +12235,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return this.error("invalid form of recursion for the proto (apply \"" + _name + "\" inside \"" + selfProto.name + "\")");
 			}
 
-			// Рекурсивный вызов прототипа
+			// The recursive call of proto
 			if (selfProto && selfProto.name === _name) {
 				this.save(argsStr + this.prepareOutput("__I_PROTO__++", true) + ";");
 
-				// Попытка применить не объявленный прототип
-				// (запоминаем место вызова, чтобы вернуться к нему,
-				//     когда прототип будет объявлен)
+				// Attempt to apply an undefined proto
+				// (memorise the call point and return to it
+				// when the proto will be declared)
 			} else if (!proto || !proto.body) {
 				var back = this.backTable;
 
@@ -12309,13 +12362,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		/**
-   * Вернуть строку декларации XML атрибутов
+   * Returns string declaration of XML attribute
    *
-   * @param {string} str - исходная строка
-   * @param {?string=} [opt_group] - название группы
-   * @param {?string=} opt_separator - разделитель группы
-   * @param {?boolean=} opt_classLink - если true, то значения для атрибута class
-   *     будут сохраняться во временную переменную
+   * @param {string} str - the source string
+   * @param {?string=} [opt_group] - a group name
+   * @param {?string=} opt_separator - a group separator
+   * @param {?boolean=} opt_classLink - if is true, then a value of a class attribute
+   *     will be saved to a variable
    *
    * @return {string}
    */
@@ -12399,9 +12452,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		};
 
 		/**
-   * Разбить строку декларации атрибута на группы
+   * Splits a string of attribute declaration into groups
    *
-   * @param {string} str - исходная строка
+   * @param {string} str - the source string
    * @return {!Array}
    */
 		DirObj.prototype.splitXMLAttrsGroup = function (str) {
@@ -12490,69 +12543,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	})();
 
 
-	Snakeskin.addDirective("setBEM", {
-		placement: "global",
-		notEmpty: true
-	}, function (command) {
-		this.startInlineDir();
-		var parts = command.match(/([^,]+),\s+(.*)/);
-
-		try {
-			bem[parts[1]] = this.evalStr("{" + this.prepareOutput(parts[2], true, null, null, false) + "}");
-		} catch (ignore) {
-			return this.error("invalid \"" + this.name + "\" declaration");
-		}
-	});
-
-	Snakeskin.addDirective("bem", {
-		block: true,
-		placement: "template",
-		notEmpty: true,
-		text: true
-	}, function (command) {
-		this.startDir(null, {
-			tag: /^\(/.test(command) ? /\((.*?)\)/.exec(command)[1] : null
-		});
-
-		var params = this.structure.params;
-
-		command = params.tag ? command.replace(/^[^)]+\)(.*)/, "$1") : command;
-
-		var parts = command.trim().split(","),
-		    bemName = parts[0];
-
-		parts[0] += "'";
-		command = parts.join(",");
-
-		params.original = bem[bemName] && bem[bemName].tag;
-
-		if (this.isReady()) {
-			var str = void 0,
-			    tag = params.tag || params.original || "div",
-			    desc = "{name: \\'" + this.replaceTplVars(command.replace(/\s+/g, " ")) + "}";
-
-			if (this.renderMode === "dom") {
-				str = /* cbws */"__NODE__ = document.createElement('" + tag + "');__NODE__.className = 'i-block';__NODE__.setAttribute('data-params', '" + desc + "');" + this.returnPushNodeDecl() + "";
-			} else {
-				str = this.wrap( /* cbws */"'<" + tag + "class=\"i-block\"data-params=\"" + desc + "\">'");
-			}
-
-			this.append(str);
-		}
-	}, function () {
-		var params = this.structure.params,
-		    str;
-
-		if (this.renderMode == "dom") {
-			str = "__RESULT__.pop();";
-		} else {
-			str = this.wrap("'</" + (params.tag || params.original || "div") + ">'");
-		}
-
-		this.append(str);
-	});
-
-
 	var callBlockNameRgxp = new RegExp("^[^" + symbols + "_$][^" + w + "$]*|[^" + w + "$]+", "i");
 
 	Snakeskin.addDirective("block", {
@@ -12575,7 +12565,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			if (!tplName) {
 				if (this.structure.parent) {
-					this.error("directive \"outer block\" can be used only within the global space");
+					this.error("the directive \"outer block\" can be used only within the global space");
 					return;
 				}
 
@@ -12800,10 +12790,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * Декларировать аргументы функции callback
-  * и вернуть строку декларации
+  * Delcares callback function arguments
+  * and returns a string of declaration
   *
-  * @param {(!Array|string)} parts - строка аргументов или массив параметров директивы
+  * @param {(!Array|string)} parts - a string of arguments or an array
   * @return {string}
   */
 	DirObj.prototype.declCallbackArgs = function (parts) {
@@ -13096,14 +13086,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				    val = parts[0].split("@");
 
 				if (!val[1]) {
-					return this.error("missing version");
+					return this.error("missing the version of the requested library");
 				}
 
 				cdn = cdn && cdn.toLowerCase();
 				val[0] = val[0].toLowerCase();
 
 				if (!lib[val[0]]) {
-					return this.error("requested library is not found");
+					return this.error("the requested library is not found");
 				}
 
 				this.append(this.wrap(
@@ -13145,8 +13135,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * Если true, то идёт декларация XML комментария
-  * в режиме рендеринга dom
+  * If is true, then XML comment is started with DOM render mode
   * @type {boolean}
   */
 	DirObj.prototype.domComment = false;
@@ -13221,8 +13210,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}, setSSFlag);
 
 		/**
-   * Расширить объект a объектом b
-   * (глубокое расширение)
+   * Extends an object A by an object B
+   * (deep extending)
    *
    * @param {!Object} a
    * @param {!Object} b
@@ -13241,11 +13230,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		/**
-   * Вернуть объект, расширенный с помощью заданных объектов
+   * Extends an object and returns it
    *
-   * @param {!Object} base - базовый расширяющий объект
-   * @param {Object=} [opt_adv] - дополнительный расширяющий объект
-   * @param {Object=} [opt_initial] - объект инициализации
+   * @param {!Object} base - the source object
+   * @param {Object=} [opt_adv] - an additional object
+   * @param {Object=} [opt_initial] - an object of initialisation
    * @return {!Object}
    */
 		function mix(base, opt_adv, opt_initial) {
@@ -13330,7 +13319,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			};
 
 			if (flag === "renderAs" && tplName) {
-				return this.error("flag \"renderAs\" can't be used in the template declaration");
+				return this.error("the flag \"renderAs\" can't be used in the template declaration");
 			}
 
 			if (flag in root) {
@@ -13611,7 +13600,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		    insideProto = inside === "proto" || this.proto;
 
 		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error("directive \"" + this.name + "\" can be used only with a cycles, \"proto\" or an async series");
+			return this.error("the directive \"" + this.name + "\" can be used only with a cycles, protos or an async series");
 		}
 
 		this.startInlineDir();
@@ -13622,11 +13611,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (this.isReady()) {
 			if (command === "proto") {
 				if (!insideProto) {
-					return this.error("proto is not defined");
+					return this.error("the proto is not defined");
 				}
 
 				if (insideCallback) {
-					return this.error("can't break proto inside a callback");
+					return this.error("can't break the proto inside a callback");
 				}
 
 				this.append(this.prepareOutput("break __I_PROTO__;", true));
@@ -13665,7 +13654,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		    insideProto = inside === "proto" || this.proto;
 
 		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error("directive \"" + this.name + "\" can be used only with a cycles, \"proto\" or an async series");
+			return this.error("the directive \"" + this.name + "\" can be used only with a cycles, protos or an async series");
 		}
 
 		this.startInlineDir();
@@ -13676,11 +13665,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (this.isReady()) {
 			if (command === "proto") {
 				if (!insideProto) {
-					return this.error("proto is not defined");
+					return this.error("the proto is not defined");
 				}
 
 				if (insideCallback) {
-					return this.error("can't continue proto inside a callback");
+					return this.error("can't continue the proto inside a callback");
 				}
 
 				this.append(this.prepareOutput("continue __I_PROTO__;", true));
@@ -13815,7 +13804,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				end: "repeat"
 			}, function (command) {
 				if (this.structure.name !== "repeat") {
-					return this.error("directive \"" + this.name + "\" can be used only with a \"repeat\"");
+					return this.error("the directive \"" + this.name + "\" can be used only with a \"repeat\"");
 				}
 
 				this.structure.params.chain = true;
@@ -14784,7 +14773,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 
 	/**
-  * If is true, then a proto declaration is started
+  * If is true, then proto declaration is started
   * @type {boolean}
   */
 	DirObj.prototype.protoStart = false;
@@ -15598,7 +15587,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var parentLinkRgxp = /^&/;
 
 	/**
-  * Analyzes a string of a tag declaration
+  * Analyzes a string of tag declaration
   * and returns a reporting object
   *
   * @param {string} str - the source string
@@ -16297,6 +16286,62 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		this.scope.push(this.prepareOutput(command, true));
 	}, function () {
 		this.scope.pop();
+	});
+
+
+	Snakeskin.addDirective("wrap", {
+		block: true,
+		after: {
+			"and": true,
+			"end": true
+		}
+	}, function (command, commandLength, commandType, jsDocStart) {
+		this.startDir(null, {
+			chunkLength: 1,
+			command: command,
+			commandLength: commandLength,
+			commandType: commandType,
+			jsDocStart: jsDocStart
+		});
+
+		if (this.isReady()) {
+			this.append( /* cbws */"var __WRAP_CACHE__ = __RESULT__,__WRAP_TMP__ = [];__RESULT__ = " + this.declResult() + ";");
+		}
+	}, function () {
+		var _this = this;
+		if (this.isReady()) {
+			(function () {
+				_this.append( /* cbws */"__WRAP_TMP__.push(__RESULT__);__RESULT__ = __WRAP_CACHE__;");
+
+				var params = _this.structure.params,
+				    parts = params.command.split(" "),
+				    i = params.chunkLength,
+				    j = 0,
+				    adv = "";
+
+				while (i--) {
+					if (adv) {
+						adv += ",";
+					}
+
+					adv += "__WRAP_TMP__[" + j++ + "]";
+				}
+
+				Snakeskin.Directions[parts[0]].call(_this, parts.slice(1).join(" ").replace(/\((.*?)\)$/, function (sstr, $0) {
+					$0 = $0.trim();
+					return $0 ? "(" + $0 + "," + adv + ")" : "(" + adv + ")";
+				}), params.commandLength, parts[0], params.jsDocStart);
+			})();
+		}
+	});
+
+	Snakeskin.addDirective("and", {
+		chain: "wrap"
+	}, function () {
+		this.structure.params.chunkLength++;
+		if (this.isReady()) {
+			this.append( /* cbws */"__WRAP_TMP__.push(__RESULT__);__RESULT__ = " + this.declResult() + ";");
+		}
 	});
 
 

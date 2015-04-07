@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.5.32 (live)
+ * Snakeskin v6.6.0 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 21 Mar 2015 10:22:06 GMT
+ * Date: Tue, 07 Apr 2015 08:17:01 GMT
  */
 
 (function () {
@@ -35,7 +35,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 5, 32],
+	VERSION: [6, 6, 0],
 
 	/**
   * The namespace for directives
@@ -423,7 +423,6 @@ Snakeskin.Filters.undef = function (str) {
 		};
 	})();
 }
-
 /*!
  * Методы live библиотеки Snakeskin
  */
