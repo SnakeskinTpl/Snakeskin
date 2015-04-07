@@ -37,7 +37,8 @@
   "scripts": {
     "test": "node test",
     "test-travis": "gulp test",
-    "bower": "node node_modules/bower/bin/bower install"
+    "bower": "node node_modules/bower/bin/bower install",
+    "yaspeller": "node node_modules/yaspeller/bin/yaspeller ./"
   },
   "dependencies": {
     "commander": "^2.5.0",
@@ -58,14 +59,12 @@
     "gulp-bump": "^0.1.11",
     "gulp-closure-compiler": "^0.2.7",
     "gulp-download": "0.0.1",
-    "gulp-eol": "^0.1.1",
     "gulp-header": "^1.2.2",
     "gulp-istanbul": "^0.6.0",
     "gulp-jasmine": "^2.0.0",
     "gulp-monic": "^1.0.2",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.0",
-    "gulp-run": "^1.6.5",
     "gulp-wrap": "^0.11.0",
     "yaspeller": "^0.8.1"
   }

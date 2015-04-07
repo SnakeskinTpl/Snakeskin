@@ -1,7 +1,10 @@
-var gulp = require('gulp'),
-	path = require('path');
+var
+	gulp = require('gulp'),
+	path = require('path'),
+	fs = require('fs');
 
-var to5 = require('gulp-6to5'),
+var
+	to5 = require('gulp-6to5'),
 	monic = require('gulp-monic'),
 	gcc = require('gulp-closure-compiler'),
 	rename = require('gulp-rename'),
@@ -11,13 +14,13 @@ var to5 = require('gulp-6to5'),
 	bump = require('gulp-bump'),
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
-	jasmine = require('gulp-jasmine'),
-	eol = require('gulp-eol'),
-	run = require('gulp-run');
+	jasmine = require('gulp-jasmine');
 
 function getVersion() {
-	delete require.cache[require.resolve('./lib/core')];
-	return require('./lib/core').VERSION.join('.');
+	var file = fs.readFileSync(path.join(__dirname, 'lib/core.js'));
+	return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
+		.split(/\s*,\s*/)
+		.join('.');
 }
 
 function getBuilds() {
@@ -25,21 +28,31 @@ function getBuilds() {
 	return Object(require('./builds'));
 }
 
-gulp.task('yaspeller', function () {
-	run('node node_modules/yaspeller/bin/cli.js ./').exec();
-});
+var map = {
+	jscs: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.jscsrc',
+	gitignore: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.gitignore',
+	gitattributes: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.gitattributes',
+	editorconfig: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.editorconfig'
+};
 
-gulp.task('pub', function () {
-	gulp.src('./bin/*.js')
-		.pipe(eol('\n'))
-		.pipe(gulp.dest('./bin'))
-		.on('end', function () {
-			run('npm pub && bower register snakeskin https://github.com/kobezzza/Snakeskin').exec(undefined, function () {
-				gulp.src('./bin/*.js')
-					.pipe(eol())
-					.pipe(gulp.dest('./bin'));
-			});
+for (var key in map) {
+	if (!map.hasOwnProperty(key)) {
+		continue;
+	}
+
+	(function (key, url) {
+		gulp.task('get-settings:' + key, ['build'], function () {
+			download([url]).pipe(gulp.dest('./'));
 		});
+	})(key, map[key]);
+}
+
+gulp.task('get-settings', ['build'], function () {
+	download(
+		Object.keys(map).map(function (key) {
+				return map[key]
+			}
+		)).pipe(gulp.dest('./'));
 });
 
 gulp.task('build', function (callback) {
@@ -107,7 +120,6 @@ gulp.task('build', function (callback) {
 
 			.pipe(header(fullHead))
 			.pipe(rename(key + '.js'))
-			.pipe(eol())
 			.pipe(gulp.dest('./dist/'))
 
 			.on('end', function () {
@@ -125,7 +137,6 @@ gulp.task('predefs', ['build'], function (callback) {
 		'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
 		'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
 	])
-		.pipe(eol())
 		.pipe(gulp.dest('./predefs/src/ws'))
 		.on('end', function () {
 			gulp.src('./predefs/src/index.js')
@@ -202,7 +213,6 @@ function compile(dev) {
 				.pipe(gcc(params))
 				.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
 				.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
-				.pipe(eol())
 				.pipe(gulp.dest('./dist/'))
 				.on('end', function () {
 					i--;
@@ -221,7 +231,6 @@ gulp.task('compile-dev', ['test'], compile(true));
 gulp.task('bump', function () {
 	gulp.src('./*.json')
 		.pipe(bump({version: getVersion()}))
-		.pipe(eol())
 		.pipe(gulp.dest('./'));
 });
 

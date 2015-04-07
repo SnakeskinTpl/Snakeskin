@@ -2,17 +2,13 @@
   "lang": "en,ru",
 
   "fileExtensions": [
-    "md",
-    "js"
+    ".md"
   ],
 
   "excludeFiles": [
     ".git",
-    ".idea",
     "node_modules",
     "bower_components",
-    "test",
-    "demo",
     "coverage",
     "dist",
     "predefs"
