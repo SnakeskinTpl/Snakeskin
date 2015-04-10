@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.6.0
+ * Snakeskin v6.6.1
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 07 Apr 2015 08:17:01 GMT
+ * Date: Fri, 10 Apr 2015 06:23:30 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 6, 0],
+	VERSION: [6, 6, 1],
 
 	/**
   * The namespace for directives
@@ -6389,13 +6389,13 @@ var Escaper,
 
 /* istanbul ignore next */
 /*!
- * Escaper v2.2.4
+ * Escaper v2.2.5
  * https://github.com/kobezzza/Escaper
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Escaper/blob/master/LICENSE
  *
- * Date: Mon, 06 Apr 2015 17:45:00 GMT
+ * Date: Tue, 07 Apr 2015 11:00:14 GMT
  */
 
 (function (global, factory) {
@@ -6413,7 +6413,7 @@ var Escaper,
 })(this, function (exports, module) {
 	'use strict';
 
-	var Escaper = { VERSION: [2, 2, 4] };
+	var Escaper = { VERSION: [2, 2, 5] };
 	module.exports = Escaper;
 
 	var stringLiterals = {
@@ -16305,13 +16305,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		});
 
 		if (this.isReady()) {
-			this.append( /* cbws */"var __WRAP_CACHE__ = __RESULT__,__WRAP_TMP__ = [];__RESULT__ = " + this.declResult() + ";");
+			this.append( /* cbws */"" + this.multiDeclVar("__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = []") + "__RESULT__ = " + this.declResult() + ";");
 		}
 	}, function () {
 		var _this = this;
 		if (this.isReady()) {
 			(function () {
-				_this.append( /* cbws */"__WRAP_TMP__.push(__RESULT__);__RESULT__ = __WRAP_CACHE__;");
+				var tmp = _this.prepareOutput("__WRAP_TMP__", true);
+
+				_this.append( /* cbws */"" + tmp + ".push(__RESULT__);__RESULT__ = " + _this.prepareOutput("__WRAP_CACHE__", true) + ";");
 
 				var params = _this.structure.params,
 				    parts = params.command.split(" "),
@@ -16324,7 +16326,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						adv += ",";
 					}
 
-					adv += "__WRAP_TMP__[" + j++ + "]";
+					adv += "" + tmp + "[" + j++ + "]";
 				}
 
 				Snakeskin.Directions[parts[0]].call(_this, parts.slice(1).join(" ").replace(/\((.*?)\)$/, function (sstr, $0) {
@@ -16340,7 +16342,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}, function () {
 		this.structure.params.chunkLength++;
 		if (this.isReady()) {
-			this.append( /* cbws */"__WRAP_TMP__.push(__RESULT__);__RESULT__ = " + this.declResult() + ";");
+			this.append( /* cbws */"" + this.prepareOutput("__WRAP_TMP__", true) + ".push(__RESULT__);__RESULT__ = " + this.declResult() + ";");
 		}
 	});
 
