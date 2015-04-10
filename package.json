@@ -2,7 +2,7 @@
   "name": "snakeskin",
   "description": "Awesome JavaScript template engine.",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
-  "version": "6.6.0",
+  "version": "6.6.1",
   "author": {
     "name": "kobezzza",
     "email": "kobezzza@mail.ru",
@@ -66,6 +66,7 @@
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.0",
     "gulp-wrap": "^0.11.0",
+    "jscs": "^1.12.0",
     "yaspeller": "^1.1.0"
   }
 }
