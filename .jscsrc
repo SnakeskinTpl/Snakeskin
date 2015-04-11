@@ -5,6 +5,7 @@
     "gulpfile.js",
     "externs.js",
     "dist/*",
+    "test/**/*",
     "predefs/**/*",
     "node_modules/**/*",
     "bower_components/**/*"
@@ -37,7 +38,19 @@
   "requireSpaceBeforeObjectValues": true,
   "disallowTrailingComma": true,
 
-  "requireSpaceAfterLineComment": true,
+  "requireSpaceAfterLineComment": {
+    "allExcept": [
+      "#include",
+      "#without",
+      "#label",
+      "#endlabel",
+      "#if",
+      "#endif",
+      "#set",
+      "#unset"
+    ]
+  },
+
   "requireLineBreakAfterVariableAssignment": true,
   "requirePaddingNewLinesAfterBlocks": true,
   "requireSpaceBeforeBlockStatements": true,
