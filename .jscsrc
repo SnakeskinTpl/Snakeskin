@@ -40,6 +40,7 @@
 
   "requireSpaceAfterLineComment": {
     "allExcept": [
+      "//#include",
       "#include",
       "#without",
       "#label",

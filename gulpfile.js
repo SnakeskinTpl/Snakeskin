@@ -4,7 +4,7 @@ var
 	fs = require('fs');
 
 var
-	to5 = require('gulp-6to5'),
+	babel = require('gulp-babel'),
 	monic = require('gulp-monic'),
 	gcc = require('gulp-closure-compiler'),
 	rename = require('gulp-rename'),
@@ -14,7 +14,8 @@ var
 	bump = require('gulp-bump'),
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
-	jasmine = require('gulp-jasmine');
+	jasmine = require('gulp-jasmine'),
+	del = require('del');
 
 function getVersion() {
 	var file = fs.readFileSync(path.join(__dirname, 'lib/core.js'));
@@ -55,8 +56,9 @@ gulp.task('get-settings', ['build'], function () {
 		)).pipe(gulp.dest('./'));
 });
 
-gulp.task('build', function (callback) {
-	var builds = getBuilds(),
+gulp.task('build', function (cb) {
+	var
+		builds = getBuilds(),
 		i = 0;
 
 	for (var key in builds) {
@@ -81,11 +83,16 @@ gulp.task('build', function (callback) {
 				flags: builds[key]
 			}))
 
-			.pipe(to5({
+			.pipe(babel({
+				compact: false,
+				highlightCode: false,
+				auxiliaryComment: 'istanbul ignore next',
+
+				loose: 'all',
 				blacklist: [
 					'es3.propertyLiterals',
 					'es3.memberExpressionLiterals',
-					'useStrict'
+					'strict'
 				],
 
 				optional: [
@@ -111,7 +118,7 @@ gulp.task('build', function (callback) {
 			// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
 			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
 
-			// Whitespaces in strings of templates
+			// Whitespaces in string templates
 			.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
 				return sstr
 					.replace(/\\n|\\t/g, '')
@@ -126,13 +133,13 @@ gulp.task('build', function (callback) {
 				i--;
 
 				if (!i) {
-					callback();
+					cb();
 				}
 			});
 	}
 });
 
-gulp.task('predefs', ['build'], function (callback) {
+gulp.task('predefs', function (cb) {
 	download([
 		'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
 		'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
@@ -142,11 +149,11 @@ gulp.task('predefs', ['build'], function (callback) {
 			gulp.src('./predefs/src/index.js')
 				.pipe(monic())
 				.pipe(gulp.dest('./predefs/build'))
-				.on('end', callback);
+				.on('end', cb);
 		});
 });
 
-gulp.task('test', ['predefs'], function (callback) {
+gulp.task('test', ['build'], function (cb) {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
 		.pipe(istanbul.hookRequire())
@@ -154,14 +161,16 @@ gulp.task('test', ['predefs'], function (callback) {
 			gulp.src(['./test/test.dev.js'])
 				.pipe(jasmine())
 				.pipe(istanbul.writeReports())
-				.on('end', callback);
+				.on('end', cb);
 		});
 });
 
 function compile(dev) {
-	return function (callback) {
-		var builds = getBuilds(),
-			i = 0;
+	return function (cb) {
+		var
+			builds = getBuilds(),
+			i = 0,
+			dels = [];
 
 		for (var key in builds) {
 			if (!builds.hasOwnProperty(key)) {
@@ -169,9 +178,11 @@ function compile(dev) {
 			}
 
 			i++;
+			dels.push(key + '.min.js');
+
 			var params = {
 				compilerPath: './bower_components/closure-compiler/compiler.jar',
-				fileName: key + '.min.js',
+				fileName: dels[dels.length - 1],
 				compilerFlags: {
 					compilation_level: 'ADVANCED_OPTIMIZATIONS',
 					use_types_for_optimization: null,
@@ -207,26 +218,34 @@ function compile(dev) {
 					'misplacedTypeAnnotation',
 					'typeInvalidation'
 				];
+
+			} else {
+				params.compilerFlags.warning_level = 'QUIET';
 			}
 
 			gulp.src(path.join('./dist/', key + '.js'))
 				.pipe(gcc(params))
-				.pipe(header('/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + ' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'))
+				.pipe(header(
+					'/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
+					' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n')
+				)
+
 				.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
 				.pipe(gulp.dest('./dist/'))
+
 				.on('end', function () {
 					i--;
 
 					if (!i) {
-						callback.apply(this, arguments);
+						del(dels, cb);
 					}
 				});
 		}
 	}
 }
 
-gulp.task('compile', ['test'], compile());
-gulp.task('compile-dev', ['test'], compile(true));
+gulp.task('compile', ['predefs', 'test'], compile());
+gulp.task('compile-dev', ['predefs', 'test'], compile(true));
 
 gulp.task('bump', function () {
 	gulp.src('./*.json')
