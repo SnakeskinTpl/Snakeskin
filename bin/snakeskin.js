@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 global.Snakeskin = require('../snakeskin');
 
-var program = require('commander'),
+var
+	program = require('commander'),
 	beautify = require('js-beautify'),
 	monocle = require('monocle')();
 
-var path = require('path'),
+var
+	path = require('path'),
 	fs = require('fs');
 
 program
@@ -147,15 +149,18 @@ for (var key in params) {
 params.debug = {};
 params.cache = false;
 
-var include = {},
+var
+	include = {},
 	fMap = {},
 	watch = program['watch'];
 
-var prettyPrint = params.prettyPrint,
+var
+	prettyPrint = params.prettyPrint,
 	language = params.language,
 	macros = params.macros;
 
-var exec = program['exec'],
+var
+	exec = program['exec'],
 	tplData = program['data'],
 	mainTpl = program['tpl'];
 
@@ -165,10 +170,12 @@ if (words) {
 	params.words = {};
 }
 
-var args = program['args'],
+var
+	args = program['args'],
 	input;
 
-var file = program['source'],
+var
+	file = program['source'],
 	out = program['output'];
 
 if (!file && args.length) {
@@ -197,7 +204,8 @@ function action(data, file) {
 	console.time('Time');
 
 	file = file || program['file'] || '';
-	var tpls = {},
+	var
+		tpls = {},
 		fileName = '';
 
 	if (file) {
@@ -324,7 +332,8 @@ function action(data, file) {
 				}
 
 			} else {
-				var dataObj,
+				var
+					dataObj,
 					cache;
 
 				if (tplData && tplData !== true) {
@@ -389,7 +398,9 @@ function end() {
 
 if (!file && input == null) {
 	var buf = '';
-	var stdin = process.stdin,
+
+	var
+		stdin = process.stdin,
 		stdout = process.stdout;
 
 	stdin.setEncoding('utf8');
@@ -414,7 +425,8 @@ if (!file && input == null) {
 	if (file) {
 		file = path.normalize(path.resolve(file));
 
-		var isDir = fs.statSync(file).isDirectory(),
+		var
+			isDir = fs.statSync(file).isDirectory(),
 			mask = program['mask'];
 
 		mask = mask &&
@@ -439,7 +451,7 @@ if (!file && input == null) {
 			});
 		};
 
-		var wacthFiles = function () {
+		var wacthFiles = function wacthFiles() {
 			var files = [];
 			for (var key in include) {
 				if (!include.hasOwnProperty(key)) {
