@@ -4,6 +4,8 @@
   "excludeFiles": [
     "gulpfile.js",
     "externs.js",
+    "snakeskin.js",
+    "bin/*",
     "dist/*",
     "test/**/*",
     "predefs/**/*",
