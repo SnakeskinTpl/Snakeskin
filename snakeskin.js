@@ -1,7 +1,8 @@
 /** @type {Snakeskin} */
 var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
-var path = require('path'),
+var
+	path = require('path'),
 	fs = require('fs'),
 	cache = {};
 
@@ -46,7 +47,8 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		return false;
 	}
 
-	var code = fs.readFileSync(result).toString(),
+	var
+		code = fs.readFileSync(result).toString(),
 		label = /label <([\d]+)>/.exec(code);
 
 	if (opt_key === null || !label || fs.statSync(source).mtime.valueOf() != label[1]) {
@@ -107,9 +109,12 @@ exports.check = function (source, result, opt_key, opt_includes) {
 exports.compileFile = function (src, opt_params) {
 	src = path.normalize(path.resolve(module.parent ? path.dirname(module.parent.filename) : '', src));
 
-	var p = opt_params || {};
-	var cacheEnabled = p.cache !== false;
-	var cacheKey = this.compile(null, p, null, {cacheKey: true}),
+	var
+		p = opt_params || {},
+		cacheEnabled = p.cache !== false;
+
+	var
+		cacheKey = this.compile(null, p, null, {cacheKey: true}),
 		fromCache = cacheEnabled &&
 			cache[cacheKey] &&
 			cache[cacheKey][src];
@@ -140,20 +145,22 @@ exports.compileFile = function (src, opt_params) {
 		}
 	}
 
-	var source = fs.readFileSync(src).toString(),
+	var
+		source = fs.readFileSync(src).toString(),
 		resSrc = src + '.js';
 
-	var tpls,
+	var
+		tpls,
 		res = true,
 		that = this;
 
-	var compile = function () {
+	function compile() {
 		res = that.compile(source, p, {file: src});
 
 		if (res !== false) {
 			fs.writeFileSync(resSrc, res);
 		}
-	};
+	}
 
 	if (cacheEnabled) {
 		if (!this.check(src, resSrc, cacheKey)) {
