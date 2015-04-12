@@ -197,7 +197,7 @@ exports.compileFile = function (src, opt_params) {
 /**
  * Returns a reference to a main template
  *
- * @param {!Object} tpls - a template object
+ * @param {!Object} tpls - the template object
  * @param {?string=} [opt_src] - a path to the template file
  * @param {?string=} [opt_tplName] - a name of the main template
  * @return {Function}
