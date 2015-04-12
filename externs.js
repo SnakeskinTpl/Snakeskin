@@ -1,30 +1,30 @@
 /**
  * @typedef {{
- *     exports: (?string|undefined),
- *     context: (Object|undefined),
- *     vars: (Object|undefined),
- *     cache: (?boolean|undefined),
- *     debug: (Object|undefined),
- *     onError: (?function(!Error)|undefined),
- *     throws: (?boolean|undefined),
- *     localization: (?boolean|undefined),
- *     i18nFn: (?string|undefined),
- *     language: (Object|undefined),
- *     words: (Object|undefined),
- *     ignore: (RegExp|undefined),
- *     autoReplace: (?boolean|undefined),
- *     macros: (Object|undefined),
- *     renderAs: (?string|undefined),
- *     renderMode: (?string|undefined),
- *     lineSeparator: (?string|undefined),
- *     tolerateWhitespace: (?boolean|undefined),
- *     inlineIterators: (?boolean|undefined),
- *     doctype: (string|boolean|null|undefined),
- *     replaceUndef: (?boolean|undefined),
- *     escapeOutput: (?boolean|undefined),
- *     useStrict: (?boolean|undefined),
- *     bemFilter: (?string|undefined),
- *     prettyPrint: (?boolean|undefined)
+ *   exports: (?string|undefined),
+ *   context: (Object|undefined),
+ *   vars: (Object|undefined),
+ *   cache: (?boolean|undefined),
+ *   debug: (Object|undefined),
+ *   onError: (?function(!Error)|undefined),
+ *   throws: (?boolean|undefined),
+ *   localization: (?boolean|undefined),
+ *   i18nFn: (?string|undefined),
+ *   language: (Object|undefined),
+ *   words: (Object|undefined),
+ *   ignore: (RegExp|undefined),
+ *   autoReplace: (?boolean|undefined),
+ *   macros: (Object|undefined),
+ *   renderAs: (?string|undefined),
+ *   renderMode: (?string|undefined),
+ *   lineSeparator: (?string|undefined),
+ *   tolerateWhitespace: (?boolean|undefined),
+ *   inlineIterators: (?boolean|undefined),
+ *   doctype: (string|boolean|null|undefined),
+ *   replaceUndef: (?boolean|undefined),
+ *   escapeOutput: (?boolean|undefined),
+ *   useStrict: (?boolean|undefined),
+ *   bemFilter: (?string|undefined),
+ *   prettyPrint: (?boolean|undefined)
  * }}
  */
 var $$SnakeskinParams;
@@ -34,14 +34,14 @@ var $$SnakeskinInfoParams;
 
 /**
  * @typedef {{
- *     cacheKey: (?boolean|undefined),
- *     scope: (Array|undefined),
- *     vars: (Object|undefined),
- *     consts: (Array|undefined),
- *     proto: (Object|undefined),
- *     lines: (Array|undefined),
- *     needPrfx: (?boolean|undefined),
- *     parent
+ *   cacheKey: (?boolean|undefined),
+ *   scope: (Array|undefined),
+ *   vars: (Object|undefined),
+ *   consts: (Array|undefined),
+ *   proto: (Object|undefined),
+ *   lines: (Array|undefined),
+ *   needPrfx: (?boolean|undefined),
+ *   parent
  * }}
  */
 var $$SnakeskinSysParams;
