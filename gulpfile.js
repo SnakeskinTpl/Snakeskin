@@ -14,7 +14,8 @@ var
 	bump = require('gulp-bump'),
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
-	jasmine = require('gulp-jasmine');
+	jasmine = require('gulp-jasmine'),
+	run = require('gulp-run');
 
 function getVersion() {
 	var file = fs.readFileSync(path.join(__dirname, 'lib/core.js'));
@@ -69,10 +70,10 @@ gulp.task('build', function (cb) {
 		var fullHead =
 			'/*!\n' +
 			' * Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + '\n' +
-			' * https://github.com/kobezzza/Snakeskin\n' +
+			' * https://github.com/SnakeskinTpl/Snakeskin\n' +
 			' *\n' +
 			' * Released under the MIT license\n' +
-			' * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE\n' +
+			' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n' +
 			' *\n' +
 			' * Date: ' + new Date().toUTCString() + '\n' +
 			' */\n\n';
@@ -221,7 +222,7 @@ gulp.task('compile', ['predefs', 'test'], function (cb) {
 
 			.pipe(header(
 				'/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
-				' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'
+				' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n'
 			))
 
 			.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
