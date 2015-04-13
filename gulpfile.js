@@ -14,8 +14,7 @@ var
 	bump = require('gulp-bump'),
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
-	jasmine = require('gulp-jasmine'),
-	del = require('del');
+	jasmine = require('gulp-jasmine');
 
 function getVersion() {
 	var file = fs.readFileSync(path.join(__dirname, 'lib/core.js'));
@@ -165,87 +164,71 @@ gulp.task('test', ['build'], function (cb) {
 		});
 });
 
-function compile(dev) {
-	return function (cb) {
-		var
-			builds = getBuilds(),
-			i = 0,
-			dels = [];
+gulp.task('compile', ['predefs', 'test'], function (cb) {
+	var
+		builds = getBuilds(),
+		i = 0;
 
-		for (var key in builds) {
-			if (!builds.hasOwnProperty(key)) {
-				continue;
-			}
+	for (var key in builds) {
+		if (!builds.hasOwnProperty(key)) {
+			continue;
+		}
 
-			i++;
-			dels.push(key + '.min.js');
-
-			var params = {
+		i++;
+		gulp.src(path.join('./dist/', key + '.js'))
+			.pipe(gcc({
+				fileName: key + '.min.js',
 				compilerPath: './bower_components/closure-compiler/compiler.jar',
-				fileName: dels[dels.length - 1],
+				continueWithWarnings: true,
+
 				compilerFlags: {
-					compilation_level: 'ADVANCED_OPTIMIZATIONS',
+					compilation_level: 'ADVANCED',
 					use_types_for_optimization: null,
-					language_in: 'ES5',
+
+					language_in: 'ES6',
+					language_out: 'ES5',
+
 					externs: [
 						'./predefs/build/index.js'
 					],
 
 					jscomp_off: [
 						'nonStandardJsDocs'
+					],
+
+					jscomp_warning: [
+						'invalidCasts',
+						'accessControls',
+						'checkDebuggerStatement',
+						'checkRegExp',
+						'checkTypes',
+						'const',
+						'constantProperty',
+						'deprecated',
+						'externsValidation',
+						'missingProperties',
+						'visibility',
+						'missingReturn',
+						'duplicate',
+						'internetExplorerChecks',
+						'suspiciousCode',
+						'uselessCode',
+						'misplacedTypeAnnotation',
+						'typeInvalidation'
 					]
 				}
-			};
+			}))
 
-			if (dev) {
-				params.compilerFlags.jscomp_warning = [
-					'invalidCasts',
-					'accessControls',
-					'checkDebuggerStatement',
-					'checkRegExp',
-					'checkTypes',
-					'const',
-					'constantProperty',
-					'deprecated',
-					'externsValidation',
-					'missingProperties',
-					'visibility',
-					'missingReturn',
-					'duplicate',
-					'internetExplorerChecks',
-					'suspiciousCode',
-					'uselessCode',
-					'misplacedTypeAnnotation',
-					'typeInvalidation'
-				];
+			.pipe(header(
+				'/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
+				' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n'
+			))
 
-			} else {
-				params.compilerFlags.warning_level = 'QUIET';
-			}
-
-			gulp.src(path.join('./dist/', key + '.js'))
-				.pipe(gcc(params))
-				.pipe(header(
-					'/*! Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
-					' | https://github.com/kobezzza/Snakeskin/blob/master/LICENSE */\n')
-				)
-
-				.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
-				.pipe(gulp.dest('./dist/'))
-
-				.on('end', function () {
-					i--;
-
-					if (!i) {
-						del(dels, cb);
-					}
-				});
-		}
+			.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
+			.pipe(gulp.dest('./dist/'))
+			.on('end', cb);
 	}
-}
-
-gulp.task('compile', ['predefs', 'test'], compile());
-gulp.task('compile-dev', ['predefs', 'test'], compile(true));
+});
 
 gulp.task('bump', function () {
 	gulp.src('./*.json')
