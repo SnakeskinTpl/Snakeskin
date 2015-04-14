@@ -10,7 +10,7 @@
 //#include ../../externs.js
 
 /** @abstract */
-function define(dependencies, fn) {}
+function define(moduleName, dependencies, fn) {}
 define.amd = null;
 
 /**
@@ -44,56 +44,56 @@ define.amd = null;
  *     parent
  * }}
  */
-var $$SnakeskinDirObjParams;
+var $$SnakeskinParserParams;
 
 /**
  * @interface
  * @param {string} src
- * @param {$$SnakeskinDirObjParams} params
+ * @param {$$SnakeskinParserParams} params
  */
-function $$SnakeskinDirObj(src, params) {}
+function $$SnakeskinParser(src, params) {}
 
 /** @type {string} */
-$$SnakeskinDirObj.prototype.renderMode;
+$$SnakeskinParser.prototype.renderMode;
 
 /** @type {boolean} */
-$$SnakeskinDirObj.prototype.tolerateWhitespace;
+$$SnakeskinParser.prototype.tolerateWhitespace;
 
 /** @type {boolean} */
-$$SnakeskinDirObj.prototype.inlineIterators;
+$$SnakeskinParser.prototype.inlineIterators;
 
 /** @type {(string|boolean)} */
-$$SnakeskinDirObj.prototype.doctype;
+$$SnakeskinParser.prototype.doctype;
 
 /** @type {boolean} */
-$$SnakeskinDirObj.prototype.replaceUndef;
+$$SnakeskinParser.prototype.replaceUndef;
 
 /** @type {boolean} */
-$$SnakeskinDirObj.prototype.escapeOutput;
+$$SnakeskinParser.prototype.escapeOutput;
 
 /** @type {(?string|undefined)} */
-$$SnakeskinDirObj.prototype.renderAs;
+$$SnakeskinParser.prototype.renderAs;
 
 /** @type {string} */
-$$SnakeskinDirObj.prototype.exports;
+$$SnakeskinParser.prototype.exports;
 
 /** @type {boolean} */
-$$SnakeskinDirObj.prototype.autoReplace;
+$$SnakeskinParser.prototype.autoReplace;
 
 /** @type {(Object|undefined)} */
-$$SnakeskinDirObj.prototype.macros;
+$$SnakeskinParser.prototype.macros;
 
 /** @type {string} */
-$$SnakeskinDirObj.prototype.bemFilter;
+$$SnakeskinParser.prototype.bemFilter;
 
 /** @type {boolean} */
-$$SnakeskinDirObj.prototype.localization;
+$$SnakeskinParser.prototype.localization;
 
 /** @type {string} */
-$$SnakeskinDirObj.prototype.i18nFn;
+$$SnakeskinParser.prototype.i18nFn;
 
 /** @type {(Object|undefined)} */
-$$SnakeskinDirObj.prototype.language;
+$$SnakeskinParser.prototype.language;
 
 /** @type {(RegExp|undefined)} */
-$$SnakeskinDirObj.prototype.ignore;
+$$SnakeskinParser.prototype.ignore;
