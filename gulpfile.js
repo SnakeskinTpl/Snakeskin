@@ -15,7 +15,8 @@ var
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
 	jasmine = require('gulp-jasmine'),
-	run = require('gulp-run');
+	run = require('gulp-run'),
+	glob = require('glob');
 
 function getVersion() {
 	var file = fs.readFileSync(path.join(__dirname, 'lib/core.js'));
@@ -61,24 +62,77 @@ gulp.task('build', function (cb) {
 		builds = getBuilds(),
 		i = 0;
 
-	for (var key in builds) {
-		if (!builds.hasOwnProperty(key)) {
-			continue;
-		}
+	gulp.src('./lib/**/*.js')
+		.pipe(babel({
+			compact: false,
+			highlightCode: false,
+			auxiliaryComment: 'istanbul ignore next',
 
-		i++;
-		var fullHead =
-			'/*!\n' +
-			' * Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + '\n' +
-			' * https://github.com/SnakeskinTpl/Snakeskin\n' +
-			' *\n' +
-			' * Released under the MIT license\n' +
-			' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n' +
-			' *\n' +
-			' * Date: ' + new Date().toUTCString() + '\n' +
-			' */\n\n';
+			loose: 'all',
+			blacklist: [
+				'es3.propertyLiterals',
+				'es3.memberExpressionLiterals',
+				'strict'
+			],
 
-		gulp.src('./lib/core.js')
+			optional: [
+				'spec.undefinedToVoid',
+				'runtime'
+			]
+		}))
+
+		.pipe(gulp.dest('./tmp'))
+		.on('end', function () {
+			for (var key in builds) {
+				if (!builds.hasOwnProperty(key)) {
+					continue;
+				}
+
+				i++;
+				(function (key) {
+					var fullHead =
+						'/*!\n' +
+						' * Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + '\n' +
+						' * https://github.com/SnakeskinTpl/Snakeskin\n' +
+						' *\n' +
+						' * Released under the MIT license\n' +
+						' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n' +
+						' *\n' +
+						' * Date: ' + new Date().toUTCString() + '\n' +
+						' */\n\n';
+
+					run('node node_modules/mcjs/cli tmp/core.js', {silent: true}).exec()
+
+						// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
+						.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
+
+						// Whitespaces in string templates
+						.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
+							return sstr
+								.replace(/\\n|\\t/g, '')
+								.replace(/\\[\r\n]/g, ' ');
+						}))
+
+						.pipe(header(fullHead))
+						.pipe(rename(key + '.js'))
+						.pipe(gulp.dest('./dist'))
+						.on('end', function () {
+							i--;
+
+							if (!i) {
+								cb();
+							}
+						});
+				})(key);
+			}
+		});
+
+	/*for (var key in builds) {
+		gulp.src('./lib/!**.js')
+			.pipe(run('node node_modules/mcjs/cli').exec());*/
+
+
+		/*gulp.src('./lib/core.js')
 			.pipe(monic({
 				flags: builds[key]
 			}))
@@ -136,7 +190,7 @@ gulp.task('build', function (cb) {
 					cb();
 				}
 			});
-	}
+	}*/
 });
 
 gulp.task('predefs', function (cb) {
