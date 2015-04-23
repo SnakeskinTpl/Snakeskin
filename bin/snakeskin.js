@@ -268,7 +268,7 @@ function action(data, file) {
 		testDir(outFile);
 
 		if (fs.existsSync(outFile) && fs.statSync(outFile).isDirectory()) {
-			outFile = path.join(outFile, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
+			outFile = path.resolve(outFile, file) + (program['extname'] || (execTpl ? '.html' : '.js'));
 		}
 
 		if (file && (!words || fs.existsSync(words)) && params.cache !== false) {
