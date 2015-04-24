@@ -294,11 +294,22 @@ function action(data, file) {
 		}
 	}
 
-	var res = Snakeskin.compile(
-		String(data),
-		params,
-		{file: file}
-	);
+	var res;
+	try {
+		res = Snakeskin.compile(
+			String(data),
+			params,
+			{file: file}
+		);
+
+	} catch (err) {
+		console.error(err);
+		res = '';
+
+		if (!watch) {
+			process.exit(1);
+		}
+	}
 
 	var toConsole = input && !program['output'] ||
 		!outFile;
@@ -328,26 +339,36 @@ function action(data, file) {
 				}
 
 			} else {
-				var dataObj,
-					cache;
+				try {
+					var dataObj,
+						cache;
 
-				if (tplData && tplData !== true) {
-					dataObj = load(tplData);
-				}
-
-				cache =
-					res = tpl(dataObj);
-
-				if (prettyPrint) {
-					if (toConsole) {
-						res = beautify['html'](res);
-
-					} else {
-						res = (beautify[path.extname(outFile).replace(/^\./, '')] || beautify['html'])(res);
+					if (tplData && tplData !== true) {
+						dataObj = load(tplData);
 					}
 
-					if (!res || !res.trim()) {
-						res = cache;
+					cache =
+						res = tpl(dataObj);
+
+					if (prettyPrint) {
+						if (toConsole) {
+							res = beautify['html'](res);
+
+						} else {
+							res = (beautify[path.extname(outFile).replace(/^\./, '')] || beautify['html'])(res);
+						}
+
+						if (!res || !res.trim()) {
+							res = cache;
+						}
+					}
+
+				} catch (err) {
+					console.error(err);
+					res = '';
+
+					if (!watch) {
+						process.exit(1);
 					}
 				}
 			}
