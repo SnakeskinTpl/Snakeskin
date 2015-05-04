@@ -41,10 +41,10 @@
   },
   "dependencies": {
     "commander": "^2.5.0",
+    "esprima": "^2.1.0",
     "glob": "^5.0.5",
     "js-beautify": "^1.5.4",
-    "monocle": "^1.1.51",
-    "esprima": "^2.1.0"
+    "monocle": "^1.1.51"
   },
   "devDependencies": {
     "async": "^0.9.0",
@@ -53,12 +53,13 @@
     "closurecompiler-externs": "^1.0.4",
     "collection.js": "^5.5.5",
     "coveralls": "^2.11.2",
-    "escaper": "^2.0.0",
+    "escaper": "kobezzza/Escaper",
     "escodegen": "^1.6.1",
     "escope": "^1.0.3",
     "gulp": "^3.8.9",
     "gulp-babel": "^5.1.0",
     "gulp-bump": "^0.3.0",
+    "gulp-cached": "^1.0.4",
     "gulp-closure-compiler": "^0.2.7",
     "gulp-download": "0.0.1",
     "gulp-header": "^1.2.2",
@@ -71,6 +72,7 @@
     "gulp-wrap": "^0.11.0",
     "jscs": "^1.12.0",
     "through2": "^0.6.5",
+    "uid": "0.0.2",
     "yaspeller": "^2.0.0"
   }
 }
