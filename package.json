@@ -37,14 +37,14 @@
   "scripts": {
     "test": "bower install && node test",
     "test-coverage": "bower install && gulp test",
-    "full-test": "npm run test-coverage && npm run yaspeller",
-    "yaspeller": "yaspeller ./"
+    "full-test": "npm run test-coverage && npm run yaspeller ./"
   },
   "dependencies": {
     "commander": "^2.5.0",
     "glob": "^5.0.5",
     "js-beautify": "^1.5.4",
-    "monocle": "^1.1.51"
+    "monocle": "^1.1.51",
+    "esprima": "^2.1.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
@@ -56,7 +56,6 @@
     "escaper": "^2.0.0",
     "escodegen": "^1.6.1",
     "escope": "^1.0.3",
-    "esprima": "^2.1.0",
     "gulp": "^3.8.9",
     "gulp-babel": "^5.1.0",
     "gulp-bump": "^0.3.0",
@@ -71,7 +70,6 @@
     "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.11.0",
     "jscs": "^1.12.0",
-    "mcjs": "^1.0.2",
     "through2": "^0.6.5",
     "yaspeller": "^2.0.0"
   }
