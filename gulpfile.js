@@ -1,9 +1,12 @@
 var
-	gulp = require('gulp'),
+	$C = require('collection.js').$C;
+
+var
 	path = require('path'),
 	fs = require('fs');
 
 var
+	gulp = require('gulp'),
 	async = require('async'),
 	glob = require('glob'),
 	through = require('through2');
@@ -104,7 +107,7 @@ gulp.task('build', function (cb) {
 		}))
 
 		.on('error', helpers.error(cb))
-		.pipe(headRgxp, '')
+		.pipe(replace(headRgxp, ''))
 
 		// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
 		.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
@@ -119,20 +122,15 @@ gulp.task('build', function (cb) {
 		.pipe(gulp.dest('./tmp'))
 		.on('end', function () {
 			var tasks = [];
-			for (var key in builds) {
-				if (!builds.hasOwnProperty(key)) {
-					continue;
-				}
-
-				tasks.push(function (key) {
-					return function () {
+			$C(builds).forEach(function (el, key) {
+				tasks.push(function (cb) {
 						var fullHead =
-							helpers.getHead(getVersion(), key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
+							helpers.getHead(true, key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
 							' *\n' +
 							' * Date: ' + new Date().toUTCString() + '\n' +
 							' */\n\n';
 
-						gulp.src('./tmp/index.js')
+						gulp.src('./tmp/core.js')
 							.pipe(monic({
 								replacers: [replacers.modules()]
 							}))
@@ -142,10 +140,8 @@ gulp.task('build', function (cb) {
 							.pipe(rename(key + '.js'))
 							.pipe(gulp.dest('./dist'))
 							.on('end', cb);
-
-					}
-				}(key));
-			}
+					});
+			});
 
 			async.parallel(tasks, cb);
 		});
