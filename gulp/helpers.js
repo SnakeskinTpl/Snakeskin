@@ -1,3 +1,11 @@
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
 var
 	path = require('path'),
 	fs = require('fs');

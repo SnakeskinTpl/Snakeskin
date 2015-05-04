@@ -48,7 +48,7 @@ gulp.task('head', function (cb) {
 
 	function test() {
 		return through.obj(function (file, enc, cb) {
-			if (headRgxp.exec(file.contents.toString()) && RegExp.$1 !== fullHead) {
+			if (!headRgxp.exec(file.contents.toString()) || RegExp.$1 !== fullHead) {
 				this.push(file);
 			}
 
@@ -58,7 +58,7 @@ gulp.task('head', function (cb) {
 
 	async.parallel([
 		function (cb) {
-			gulp.src(['./lib/*.js', './snakeskin.js'], {base: './'})
+			gulp.src(['./@(lib|gulp)/**/*.js', './@(snakeskin|externs).js', './predefs/src/index.js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
@@ -137,7 +137,7 @@ gulp.task('build', function (cb) {
 								replacers: [replacers.modules()]
 							}))
 
-							.on('error', error(cb))
+							.on('error', helpers.error(cb))
 							.pipe(header(fullHead))
 							.pipe(rename(key + '.js'))
 							.pipe(gulp.dest('./dist'))
@@ -156,10 +156,12 @@ gulp.task('predefs', function (cb) {
 		'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
 		'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
 	])
+		.on('error', helpers.error(cb))
 		.pipe(gulp.dest('./predefs/src/ws'))
 		.on('end', function () {
 			gulp.src('./predefs/src/index.js')
 				.pipe(monic())
+				.on('error', helpers.error(cb))
 				.pipe(gulp.dest('./predefs/build'))
 				.on('end', cb);
 		});
@@ -172,6 +174,7 @@ gulp.task('test', ['build'], function (cb) {
 		.on('finish', function () {
 			gulp.src(['./test/test.dev.js'])
 				.pipe(jasmine())
+				.on('error', helpers.error(cb))
 				.pipe(istanbul.writeReports())
 				.on('end', cb);
 		});
@@ -251,8 +254,20 @@ gulp.task('bump', function (cb) {
 });
 
 gulp.task('watch', function () {
-	gulp.watch('./lib/**/*.js', ['build']);
-	gulp.watch('./lib/core.js', ['bump']);
+	async.whilst(
+		function () {
+			return !readyToWatcher;
+		},
+
+		function (cb) {
+			setTimeout(cb, 500);
+		},
+
+		function () {
+			gulp.watch('./lib/**/*.js', ['build']);
+			gulp.watch('./lib/core.js', ['bump']);
+		}
+	);
 });
 
 gulp.task('default', ['compile', 'bump']);
