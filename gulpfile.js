@@ -4,6 +4,11 @@ var
 	fs = require('fs');
 
 var
+	async = require('async'),
+	glob = require('glob'),
+	through = require('through2');
+
+var
 	babel = require('gulp-babel'),
 	monic = require('gulp-monic'),
 	gcc = require('gulp-closure-compiler'),
@@ -15,57 +20,74 @@ var
 	download = require('gulp-download'),
 	istanbul = require('gulp-istanbul'),
 	jasmine = require('gulp-jasmine'),
-	run = require('gulp-run'),
-	glob = require('glob');
+	run = require('gulp-run');
 
-function getVersion() {
-	var file = fs.readFileSync(path.join(__dirname, 'lib/core.js'));
-	return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
-		.split(/\s*,\s*/)
-		.join('.');
-}
+var
+	replacers = require('./gulp/replacers'),
+	helpers = require('./gulp/helpers');
 
-function getBuilds() {
-	delete require.cache[require.resolve('./builds')];
-	return Object(require('./builds'));
-}
+var
+	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/,
+	readyToWatcher = false;
 
-var map = {
-	jscs: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.jscsrc',
-	gitignore: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.gitignore',
-	gitattributes: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.gitattributes',
-	editorconfig: 'https://raw.githubusercontent.com/kobezzza/project-settings/master/.editorconfig'
-};
+gulp.task('copyright', function (cb) {
+	gulp.src('./LICENSE')
+		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, function (sstr, intro, from, to) {
+			var year = new Date().getFullYear();
+			return intro + from + (to || from != year ? '-' + year : '');
+		}))
 
-for (var key in map) {
-	if (!map.hasOwnProperty(key)) {
-		continue;
+		.pipe(gulp.dest('./'))
+		.on('end', cb);
+});
+
+gulp.task('head', function (cb) {
+	var fullHead =
+		helpers.getHead() +
+		' */\n\n';
+
+	function test() {
+		return through.obj(function (file, enc, cb) {
+			if (headRgxp.exec(file.contents.toString()) && RegExp.$1 !== fullHead) {
+				this.push(file);
+			}
+
+			return cb();
+		})
 	}
 
-	(function (key, url) {
-		gulp.task('get-settings:' + key, ['build'], function () {
-			download([url]).pipe(gulp.dest('./'));
-		});
-	})(key, map[key]);
-}
+	async.parallel([
+		function (cb) {
+			gulp.src(['./lib/*.js', './snakeskin.js'], {base: './'})
+				.pipe(test())
+				.pipe(replace(headRgxp, ''))
+				.pipe(header(fullHead))
+				.pipe(gulp.dest('./'))
+				.on('end', cb);
+		},
 
-gulp.task('get-settings', ['build'], function () {
-	download(
-		Object.keys(map).map(function (key) {
-				return map[key]
-			}
-		)).pipe(gulp.dest('./'));
+		function (cb) {
+			gulp.src('./bin/snakeskin.js')
+				.pipe(test())
+				.pipe(replace(headRgxp, ''))
+				.pipe(replace(/^#!.*\n{2}/, function (sstr) {
+					return sstr + fullHead;
+				}))
+
+				.pipe(gulp.dest('./bin'))
+				.on('end', cb);
+		}
+	], function () {
+		readyToWatcher = true;
+		cb();
+	});
 });
 
 gulp.task('build', function (cb) {
-	var
-		builds = getBuilds(),
-		i = 0;
-
+	var builds = helpers.getBuilds();
 	gulp.src('./lib/**/*.js')
 		.pipe(babel({
 			compact: false,
-			highlightCode: false,
 			auxiliaryComment: 'istanbul ignore next',
 
 			loose: 'all',
@@ -81,116 +103,52 @@ gulp.task('build', function (cb) {
 			]
 		}))
 
+		.on('error', helpers.error(cb))
+		.pipe(headRgxp, '')
+
+		// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
+		.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
+
+		// Whitespaces in string templates
+		.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
+			return sstr
+				.replace(/\\n|\\t/g, '')
+				.replace(/\\[\r\n]/g, ' ');
+		}))
+
 		.pipe(gulp.dest('./tmp'))
 		.on('end', function () {
+			var tasks = [];
 			for (var key in builds) {
 				if (!builds.hasOwnProperty(key)) {
 					continue;
 				}
 
-				i++;
-				(function (key) {
-					var fullHead =
-						'/*!\n' +
-						' * Snakeskin v' + getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') + '\n' +
-						' * https://github.com/SnakeskinTpl/Snakeskin\n' +
-						' *\n' +
-						' * Released under the MIT license\n' +
-						' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n' +
-						' *\n' +
-						' * Date: ' + new Date().toUTCString() + '\n' +
-						' */\n\n';
+				tasks.push(function (key) {
+					return function () {
+						var fullHead =
+							helpers.getHead(getVersion(), key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
+							' *\n' +
+							' * Date: ' + new Date().toUTCString() + '\n' +
+							' */\n\n';
 
-					run('node node_modules/mcjs/cli tmp/core.js', {silent: true}).exec()
+						gulp.src('./tmp/index.js')
+							.pipe(monic({
+								replacers: [replacers.modules()]
+							}))
 
-						// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
-						.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
+							.on('error', error(cb))
+							.pipe(header(fullHead))
+							.pipe(rename(key + '.js'))
+							.pipe(gulp.dest('./dist'))
+							.on('end', cb);
 
-						// Whitespaces in string templates
-						.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
-							return sstr
-								.replace(/\\n|\\t/g, '')
-								.replace(/\\[\r\n]/g, ' ');
-						}))
-
-						.pipe(header(fullHead))
-						.pipe(rename(key + '.js'))
-						.pipe(gulp.dest('./dist'))
-						.on('end', function () {
-							i--;
-
-							if (!i) {
-								cb();
-							}
-						});
-				})(key);
+					}
+				}(key));
 			}
+
+			async.parallel(tasks, cb);
 		});
-
-	/*for (var key in builds) {
-		gulp.src('./lib/!**.js')
-			.pipe(run('node node_modules/mcjs/cli').exec());*/
-
-
-		/*gulp.src('./lib/core.js')
-			.pipe(monic({
-				flags: builds[key]
-			}))
-
-			.pipe(babel({
-				compact: false,
-				highlightCode: false,
-				auxiliaryComment: 'istanbul ignore next',
-
-				loose: 'all',
-				blacklist: [
-					'es3.propertyLiterals',
-					'es3.memberExpressionLiterals',
-					'strict'
-				],
-
-				optional: [
-					'spec.undefinedToVoid'
-				]
-			}))
-
-			.pipe(wrap(
-				'(function () {' +
-					'\n' +
-					'\'use strict\';' +
-					'\n' +
-					'var self = this;' +
-					'\n' +
-					'<%= contents %>' +
-					'\n' +
-				'}).call(new Function(\'return this\')());'
-			))
-
-			.pipe(replace(/\/\/\/\/#include/g, '//#include'))
-			.pipe(monic())
-
-			// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
-			.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
-
-			// Whitespaces in string templates
-			.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
-				return sstr
-					.replace(/\\n|\\t/g, '')
-					.replace(/\\[\r\n]/g, ' ');
-			}))
-
-			.pipe(header(fullHead))
-			.pipe(rename(key + '.js'))
-			.pipe(gulp.dest('./dist/'))
-
-			.on('end', function () {
-				i--;
-
-				if (!i) {
-					cb();
-				}
-			});
-	}*/
 });
 
 gulp.task('predefs', function (cb) {
@@ -285,10 +243,11 @@ gulp.task('compile', ['predefs', 'test'], function (cb) {
 	}
 });
 
-gulp.task('bump', function () {
+gulp.task('bump', function (cb) {
 	gulp.src('./*.json')
 		.pipe(bump({version: getVersion()}))
-		.pipe(gulp.dest('./'));
+		.pipe(gulp.dest('./'))
+		.on('end', cb);
 });
 
 gulp.task('watch', function () {

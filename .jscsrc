@@ -5,12 +5,13 @@
     "gulpfile.js",
     "externs.js",
     "snakeskin.js",
-    "bin/*",
-    "dist/*",
-    "test/**/*",
-    "predefs/**/*",
-    "node_modules/**/*",
-    "bower_components/**/*"
+    "bin/**",
+    "gulp/**",
+    "dist/**",
+    "test/**/",
+    "predefs/**",
+    "node_modules/**",
+    "bower_components/**"
   ],
 
   "validateIndentation": "\t",
