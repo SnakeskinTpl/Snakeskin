@@ -53,6 +53,7 @@
     "closurecompiler-externs": "^1.0.4",
     "collection.js": "^5.5.5",
     "coveralls": "^2.11.2",
+    "del": "^1.1.1",
     "escaper": "kobezzza/Escaper",
     "escodegen": "^1.6.1",
     "escope": "^1.0.3",
