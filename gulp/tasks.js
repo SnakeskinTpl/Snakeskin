@@ -19,6 +19,7 @@ var
 	run = require('gulp-run');
 
 exports.head = function (cb) {
+	global.readyToWatcher = false;
 	var fullHead =
 		helpers.getHead() +
 		' */\n\n';

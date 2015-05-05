@@ -9,7 +9,7 @@ var
 	tasks = require('./gulp/tasks');
 
 global.headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/;
-global.readyToWatcher = false;
+global.readyToWatcher = null;
 
 gulp.task('copyright', tasks.copyright);
 gulp.task('head', tasks.head);
@@ -31,7 +31,7 @@ gulp.task('yaspeller', tasks.yaspeller);
 gulp.task('watch', function () {
 	async.whilst(
 		function () {
-			return !readyToWatcher;
+			return readyToWatcher === false;
 		},
 
 		function (cb) {
