@@ -8,11 +8,11 @@
 
 var
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	crypto = require('crypto');
 
 var
-	$C = require('collection.js').$C,
-	uid = require('uid');
+	$C = require('collection.js').$C;
 
 var
 	escaper = require('escaper'),
@@ -20,12 +20,18 @@ var
 	escodegen = require('escodegen'),
 	escope = require('escope');
 
+function uid(src) {
+	var hash = crypto.createHash('sha256');
+	hash.update(src);
+	return hash.digest('base64');
+}
+
 exports.modules = function () {
 	var modules = {};
 	return function (text, file) {
 		var includes = [];
 		var moduleId = modules[file] ||
-			(modules[file] = 'module_' + uid());
+			(modules[file] = 'module_' + uid(file));
 
 		text = 'var ' + moduleId + ' = {};\n' + text.replace(/(['"])use strict\1;?\s*/, '');
 		text = escaper.paste(
@@ -73,7 +79,7 @@ exports.modules = function () {
 					if (fs.statSync(tmpSrc).isFile()) {
 						includes.push('//#include ' + path.relative(base, tmpSrc));
 						var moduleId = modules[tmpSrc] ||
-							(modules[tmpSrc] = 'module_' + uid());
+							(modules[tmpSrc] = 'module_' + uid(tmpSrc));
 
 						return moduleId + end;
 					}

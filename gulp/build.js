@@ -25,7 +25,8 @@ var
 	rename = require('gulp-rename'),
 	header = require('gulp-header'),
 	download = require('gulp-download'),
-	cached = require('gulp-cached');
+	cached = require('gulp-cached'),
+	run = require('gulp-run');
 
 exports.clean = function (cb) {
 	del('./tmp', cb);

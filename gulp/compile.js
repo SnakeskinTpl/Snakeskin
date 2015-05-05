@@ -12,12 +12,14 @@ var
 var
 	gulp = require('gulp'),
 	async = require('async'),
+	path = require('path'),
 	helpers = require('./helpers');
 
 var
 	replace = require('gulp-replace'),
 	header = require('gulp-header'),
-	cached = require('gulp-cached');
+	cached = require('gulp-cached'),
+	gcc = require('gulp-closure-compiler');
 
 module.exports = function (cb) {
 	var
