@@ -73,8 +73,7 @@ exports.build = function (cb) {
 		],
 
 		optional: [
-			'spec.undefinedToVoid',
-			'runtime'
+			'spec.undefinedToVoid'
 		]
 	};
 
