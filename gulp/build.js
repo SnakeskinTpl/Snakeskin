@@ -24,7 +24,8 @@ var
 	replace = require('gulp-replace'),
 	rename = require('gulp-rename'),
 	header = require('gulp-header'),
-	download = require('gulp-download');
+	download = require('gulp-download'),
+	cached = require('gulp-cached');
 
 exports.clean = function (cb) {
 	del('./tmp', cb);
@@ -59,6 +60,7 @@ exports.predefs = function (cb) {
 exports.build = function (cb) {
 	var builds = helpers.getBuilds();
 	gulp.src('./lib/**/*.js')
+		.pipe(cached('build'))
 		.pipe(babel({
 			compact: false,
 			auxiliaryComment: 'istanbul ignore next',

@@ -16,7 +16,8 @@ var
 
 var
 	replace = require('gulp-replace'),
-	header = require('gulp-header');
+	header = require('gulp-header'),
+	cached = require('gulp-cached');
 
 module.exports = function (cb) {
 	var
@@ -26,6 +27,7 @@ module.exports = function (cb) {
 	$C(builds).forEach(function (el, key) {
 		tasks.push(function (cb) {
 			gulp.src(path.join('./dist/', key + '.js'))
+				.pipe(cached('compile'))
 				.pipe(gcc({
 					fileName: key + '.min.js',
 					compilerPath: './bower_components/closure-compiler/compiler.jar',
