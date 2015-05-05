@@ -120,7 +120,8 @@ exports.build = function (cb) {
 						function (cb) {
 							gulp.src('./lib/snakeskin.export.js')
 								.pipe(babel($C.extend(true, {}, babelParams, {
-									modules: 'umd'
+									modules: 'umd',
+									moduleId: 'Snakeskin'
 								})))
 
 								.on('error', helpers.error(cb))
