@@ -12,7 +12,8 @@ var
 var
 	gulp = require('gulp'),
 	async = require('async'),
-	del = require('del');
+	del = require('del'),
+	path = require('path');
 
 var
 	replacers = require('./replacers'),
@@ -60,25 +61,26 @@ exports.predefs = function (cb) {
 
 exports.build = function (cb) {
 	var builds = helpers.getBuilds();
-	gulp.src('./lib/**/*.js')
+	var babelParams = {
+		compact: false,
+		auxiliaryComment: 'istanbul ignore next',
+
+		loose: 'all',
+		blacklist: [
+			'es3.propertyLiterals',
+			'es3.memberExpressionLiterals',
+			'strict'
+		],
+
+		optional: [
+			'spec.undefinedToVoid',
+			'runtime'
+		]
+	};
+
+	gulp.src('./lib/**/!(snakeskin.export).js')
 		.pipe(cached('build'))
-		.pipe(babel({
-			compact: false,
-			auxiliaryComment: 'istanbul ignore next',
-
-			loose: 'all',
-			blacklist: [
-				'es3.propertyLiterals',
-				'es3.memberExpressionLiterals',
-				'strict'
-			],
-
-			optional: [
-				'spec.undefinedToVoid',
-				'runtime'
-			]
-		}))
-
+		.pipe(babel(babelParams))
 		.on('error', helpers.error(cb))
 		.pipe(replace(headRgxp, ''))
 
@@ -97,22 +99,49 @@ exports.build = function (cb) {
 			var tasks = [];
 			$C(builds).forEach(function (el, key) {
 				tasks.push(function (cb) {
+					var name = key + '.js';
 					var fullHead =
 						helpers.getHead(true, key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
 						' *\n' +
 						' * Date: ' + new Date().toUTCString() + '\n' +
 						' */\n\n';
 
-					gulp.src('./tmp/core.js')
-						.pipe(monic({
-							replacers: [replacers.modules()]
-						}))
+					async.series([
+						function (cb) {
+							gulp.src('./tmp/core.js')
+								.pipe(monic({
+									replacers: [replacers.modules()]
+								}))
 
-						.on('error', helpers.error(cb))
-						.pipe(header(fullHead))
-						.pipe(rename(key + '.js'))
-						.pipe(gulp.dest('./dist'))
-						.on('end', cb);
+								.on('error', helpers.error(cb))
+								.pipe(rename(name))
+								.pipe(gulp.dest('./dist'))
+								.on('end', cb);
+						},
+
+						function (cb) {
+							gulp.src('./lib/snakeskin.export.js')
+								.pipe(babel($C.extend(true, {}, babelParams, {
+									modules: 'umd'
+								})))
+
+								.on('error', helpers.error(cb))
+								.pipe(replace(/\$\{dist}/, name))
+								.pipe(replace(/Snakeskin = \['(.*)'\]/, function (sstr, id) {
+									return 'Snakeskin = module_' +
+										replacers.$uid(path.resolve(__dirname, '../tmp/' + id + '.js')) +
+										'.Snakeskin';
+								}))
+
+								.pipe(monic())
+								.on('error', helpers.error(cb))
+
+								.pipe(header(fullHead))
+								.pipe(rename(name))
+								.pipe(gulp.dest('./dist'))
+								.on('end', cb);
+						}
+					], cb);
 				});
 			});
 

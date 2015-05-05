@@ -20,18 +20,30 @@ var
 	escodegen = require('escodegen'),
 	escope = require('escope');
 
+exports.$uid = uid;
+exports.$val = val;
+exports.$normalize = normalize;
+
 function uid(src) {
 	var hash = crypto.createHash('md5');
-	hash.update(src);
+	hash.update(normalize(src));
 	return hash.digest('hex');
+}
+
+function val(src) {
+	return 'module_' + uid(src);
+}
+
+function normalize(src) {
+	return path.normalize(src).split(path.sep).join('/');
 }
 
 exports.modules = function () {
 	var modules = {};
 	return function (text, file) {
-		var includes = [];
-		var moduleId = modules[file] ||
-			(modules[file] = 'module_' + uid(file));
+		var
+			moduleId = modules[file] || (modules[file] = val(file)),
+			includes = [];
 
 		text = 'var ' + moduleId + ' = {};\n' + text.replace(/(['"])use strict\1;?\s*/, '');
 		text = escaper.paste(
@@ -42,10 +54,8 @@ exports.modules = function () {
 
 		text = text.replace(/(?:^|[^.])\brequire\((['"])(.*?)\1\)(;?)/g, function (sstr, q, src, end) {
 			var base = path.dirname(file);
-			src = path
-				.normalize(path.resolve(base, src))
-				.split(path.sep)
-				.join('/');
+			src =
+				normalize(path.resolve(base, src));
 
 			var
 				i = 1,
@@ -66,11 +76,7 @@ exports.modules = function () {
 							break;
 
 						case 0:
-							tmpSrc = path
-								.join(tmpSrc, 'index.js')
-								.split(path.sep)
-								.join('/');
-
+							tmpSrc = normalize(path.join(tmpSrc, 'index.js'));
 							break;
 					}
 				}
@@ -79,7 +85,7 @@ exports.modules = function () {
 					if (fs.statSync(tmpSrc).isFile()) {
 						includes.push('//#include ' + path.relative(base, tmpSrc));
 						var moduleId = modules[tmpSrc] ||
-							(modules[tmpSrc] = 'module_' + uid(tmpSrc));
+							(modules[tmpSrc] = val(tmpSrc));
 
 						return moduleId + end;
 					}
