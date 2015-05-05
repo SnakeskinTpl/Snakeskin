@@ -68,8 +68,7 @@ exports.build = function (cb) {
 		loose: 'all',
 		blacklist: [
 			'es3.propertyLiterals',
-			'es3.memberExpressionLiterals',
-			'strict'
+			'es3.memberExpressionLiterals'
 		],
 
 		optional: [
