@@ -12,8 +12,11 @@ var
 var
 	gulp = require('gulp'),
 	async = require('async'),
-	helpers = require('./helpers'),
 	del = require('del');
+
+var
+	replacers = require('./replacers'),
+	helpers = require('./helpers');
 
 var
 	monic = require('gulp-monic'),
