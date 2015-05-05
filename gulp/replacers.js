@@ -21,9 +21,9 @@ var
 	escope = require('escope');
 
 function uid(src) {
-	var hash = crypto.createHash('sha256');
+	var hash = crypto.createHash('md5');
 	hash.update(src);
-	return hash.digest('base64');
+	return hash.digest('hex');
 }
 
 exports.modules = function () {
