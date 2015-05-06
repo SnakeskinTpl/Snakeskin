@@ -112,10 +112,6 @@ exports.build = function (cb) {
 								}))
 
 								.on('error', helpers.error(cb))
-								.pipe(replace(/\/\/\/\/#/g, '//#'))
-								.pipe(monic())
-								.on('error', helpers.error(cb))
-
 								.pipe(rename(name))
 								.pipe(gulp.dest('./dist'))
 								.on('end', cb);
