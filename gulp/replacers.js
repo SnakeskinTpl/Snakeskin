@@ -15,7 +15,6 @@ var
 	$C = require('collection.js').$C;
 
 var
-	escaper = require('escaper'),
 	esprima = require('esprima'),
 	escodegen = require('escodegen'),
 	escope = require('escope');
@@ -45,12 +44,11 @@ exports.modules = function () {
 			moduleId = modules[file] || (modules[file] = val(file)),
 			includes = [];
 
-		text = 'var ' + moduleId + ' = {};\n' + text.replace(/(['"])use strict\1;?\s*/, '');
-		text = escaper.paste(
-			escaper
-				.replace(text, true)
-				.replace(/(?:^|[^.])\bexports\b/g, moduleId)
-		);
+		text =
+			'var ' + moduleId + ' = {};\n' +
+			'var module = {exports: ' + moduleId + '};\n' +
+			'var exports = ' + moduleId + ';\n' +
+			text.replace(/(['"])use strict\1;?\s*/, '');
 
 		text = text.replace(/(?:^|[^.])\brequire\((['"])(.*?)\1\)(;?)/g, function (sstr, q, src, end) {
 			var base = path.dirname(file);
