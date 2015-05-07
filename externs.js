@@ -24,7 +24,7 @@
  *   macros: (Object|undefined),
  *   renderAs: (?string|undefined),
  *   renderMode: (?string|undefined),
- *   lineSeparator: (?string|undefined),
+ *   eol: (?string|undefined),
  *   tolerateWhitespace: (?boolean|undefined),
  *   inlineIterators: (?boolean|undefined),
  *   doctype: (string|boolean|null|undefined),
