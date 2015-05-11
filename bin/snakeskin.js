@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
 global.Snakeskin = require('../snakeskin');
 
 var
@@ -200,6 +209,7 @@ function testDir(src) {
 	});
 }
 
+var root = '';
 function action(data, file) {
 	console.time('Time');
 
@@ -276,7 +286,10 @@ function action(data, file) {
 		testDir(outFile);
 
 		if (fs.existsSync(outFile) && fs.statSync(outFile).isDirectory()) {
-			outFile = path.join(outFile, path.basename(file)) + (program['extname'] || (execTpl ? '.html' : '.js'));
+			outFile = path.join(outFile, path.relative(root, path.dirname(file)), fileName) +
+				(program['extname'] || (execTpl ? '.html' : '.js'));
+
+			testDir(outFile);
 		}
 
 		if (file && (!words || fs.existsSync(words)) && params.cache !== false) {
@@ -298,11 +311,22 @@ function action(data, file) {
 		}
 	}
 
-	var res = Snakeskin.compile(
-		String(data),
-		params,
-		{file: file}
-	);
+	var res;
+	try {
+		res = Snakeskin.compile(
+			String(data),
+			params,
+			{file: file}
+		);
+
+	} catch (err) {
+		console.error(err);
+		res = '';
+
+		if (!watch) {
+			process.exit(1);
+		}
+	}
 
 	var toConsole = input && !program['output'] ||
 		!outFile;
@@ -332,27 +356,36 @@ function action(data, file) {
 				}
 
 			} else {
-				var
-					dataObj,
-					cache;
+				try {
+					var dataObj,
+						cache;
 
-				if (tplData && tplData !== true) {
-					dataObj = load(tplData);
-				}
-
-				cache =
-					res = tpl(dataObj);
-
-				if (prettyPrint) {
-					if (toConsole) {
-						res = beautify['html'](res);
-
-					} else {
-						res = (beautify[path.extname(outFile).replace(/^\./, '')] || beautify['html'])(res);
+					if (tplData && tplData !== true) {
+						dataObj = load(tplData);
 					}
 
-					if (!res || !res.trim()) {
-						res = cache;
+					cache =
+						res = tpl(dataObj);
+
+					if (prettyPrint) {
+						if (toConsole) {
+							res = beautify['html'](res);
+
+						} else {
+							res = (beautify[path.extname(outFile).replace(/^\./, '')] || beautify['html'])(res);
+						}
+
+						if (!res || !res.trim()) {
+							res = cache;
+						}
+					}
+
+				} catch (err) {
+					console.error(err);
+					res = '';
+
+					if (!watch) {
+						process.exit(1);
 					}
 				}
 			}
@@ -444,7 +477,8 @@ if (!file && input == null) {
 
 					) {
 						monocle.unwatchAll();
-						action(fs.readFileSync(src), src);
+						console.log(file);
+						action(fs.readFileSync(src), src, file);
 						wacthFiles();
 					}
 				}
@@ -516,6 +550,7 @@ if (!file && input == null) {
 				});
 			};
 
+			root = file;
 			renderDir(file);
 
 		} else if (!mask || mask.test(file)) {

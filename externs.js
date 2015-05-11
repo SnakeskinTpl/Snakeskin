@@ -1,3 +1,11 @@
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
 /**
  * @typedef {{
  *   exports: (?string|undefined),
@@ -16,7 +24,7 @@
  *   macros: (Object|undefined),
  *   renderAs: (?string|undefined),
  *   renderMode: (?string|undefined),
- *   lineSeparator: (?string|undefined),
+ *   eol: (?string|undefined),
  *   tolerateWhitespace: (?boolean|undefined),
  *   inlineIterators: (?boolean|undefined),
  *   doctype: (string|boolean|null|undefined),

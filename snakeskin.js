@@ -1,3 +1,11 @@
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
 /** @type {Snakeskin} */
 var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
