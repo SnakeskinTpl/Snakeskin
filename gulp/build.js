@@ -106,7 +106,7 @@ exports.build = function (cb) {
 
 					async.series([
 						function (cb) {
-							gulp.src('./tmp/core.js')
+							gulp.src('./tmp/index.js')
 								.pipe(monic({
 									replacers: [replacers.modules()]
 								}))
