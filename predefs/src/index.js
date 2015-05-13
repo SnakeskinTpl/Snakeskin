@@ -35,7 +35,7 @@ define.amd = null;
  *     localization: boolean,
  *     i18nFn: string,
  *     language: (Object|undefined),
- *     lineSeparator: string,
+ *     eol: string,
  *     tolerateWhitespace: boolean,
  *     replaceUndef: boolean,
  *     escapeOutput: boolean,
