@@ -29,6 +29,14 @@ gulp.task('test-dev', ['compile-fast'], test);
 gulp.task('yaspeller', tasks.yaspeller);
 
 gulp.task('watch', function () {
+	function unbind(name) {
+		return function (e) {
+			if (e.type === 'deleted') {
+				delete cached.caches[name][e.path];
+			}
+		}
+	}
+
 	async.whilst(
 		function () {
 			return readyToWatcher === false;
@@ -39,7 +47,7 @@ gulp.task('watch', function () {
 		},
 
 		function () {
-			gulp.watch('./lib/**/*.js', ['build']);
+			gulp.watch('./lib/**/*.js', ['build']).on('change', unbind('build'));
 			gulp.watch('./lib/core.js', ['bump']);
 			gulp.watch('./*.md', ['yaspeller']);
 		}
