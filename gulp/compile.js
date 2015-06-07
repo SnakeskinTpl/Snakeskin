@@ -6,23 +6,23 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	$C = require('collection.js').$C;
 
-var
+const
 	gulp = require('gulp'),
 	async = require('async'),
 	path = require('path'),
 	helpers = require('./helpers');
 
-var
+const
 	replace = require('gulp-replace'),
 	header = require('gulp-header'),
 	cached = require('gulp-cached'),
 	gcc = require('gulp-closure-compiler');
 
 module.exports = function (cb) {
-	var
+	const
 		builds = helpers.getBuilds(),
 		tasks = [];
 

@@ -6,13 +6,14 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	gulp = require('gulp'),
 	async = require('async'),
 	through = require('through2'),
-	helpers = require('./helpers');
+	helpers = require('./helpers'),
+	fs = require('fs');
 
-var
+const
 	replace = require('gulp-replace'),
 	header = require('gulp-header'),
 	bump = require('gulp-bump'),
@@ -20,7 +21,7 @@ var
 
 exports.head = function (cb) {
 	global.readyToWatcher = false;
-	var fullHead =
+	const fullHead =
 		helpers.getHead() +
 		' */\n\n';
 
@@ -31,7 +32,7 @@ exports.head = function (cb) {
 			}
 
 			return cb();
-		})
+		});
 	}
 
 	async.parallel([
@@ -55,6 +56,7 @@ exports.head = function (cb) {
 				.pipe(gulp.dest('./bin'))
 				.on('end', cb);
 		}
+
 	], function () {
 		global.readyToWatcher = true;
 		cb();
@@ -64,7 +66,7 @@ exports.head = function (cb) {
 exports.copyright = function (cb) {
 	gulp.src('./LICENSE')
 		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, function (sstr, intro, from, to) {
-			var year = new Date().getFullYear();
+			const year = new Date().getFullYear();
 			return intro + from + (to || from != year ? '-' + year : '');
 		}))
 
@@ -78,6 +80,13 @@ exports.bump = function (cb) {
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
 };
+
+gulp.task('npmignore', function (cb) {
+	gulp.src('./.npmignore')
+		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, fs.readFileSync('./.gitignore') + '\n'))
+		.pipe(gulp.dest('./'))
+		.on('end', cb);
+});
 
 exports.yaspeller = function (cb) {
 	run('yaspeller ./').exec()

@@ -1,8 +1,8 @@
-var
+const
 	gulp = require('gulp'),
 	async = require('async');
 
-var
+const
 	build = require('./gulp/build'),
 	compile = require('./gulp/compile'),
 	test = require('./gulp/test'),
@@ -50,8 +50,9 @@ gulp.task('watch', function () {
 			gulp.watch('./lib/**/*.js', ['build']).on('change', unbind('build'));
 			gulp.watch('./lib/core.js', ['bump']);
 			gulp.watch('./*.md', ['yaspeller']);
+			gulp.watch('./.gitignore', ['npmignore']);
 		}
 	);
 });
 
-gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller']);
+gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller', 'npmignore']);

@@ -6,12 +6,12 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	path = require('path'),
 	fs = require('fs');
 
 exports.getVersion = function () {
-	var file = fs.readFileSync(path.join(__dirname, '../lib/core.js'));
+	const file = fs.readFileSync(path.join(__dirname, '../lib/core.js'));
 	return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
 		.split(/\s*,\s*/)
 		.join('.');
@@ -36,5 +36,5 @@ exports.error = function (cb) {
 	return function (err) {
 		console.error(err.message);
 		cb();
-	}
+	};
 };

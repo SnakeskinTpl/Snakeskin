@@ -6,7 +6,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	gulp = require('gulp'),
 	istanbul = require('gulp-istanbul'),
 	jasmine = require('gulp-jasmine'),

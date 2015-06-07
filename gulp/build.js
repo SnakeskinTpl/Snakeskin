@@ -6,20 +6,20 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	$C = require('collection.js').$C;
 
-var
+const
 	gulp = require('gulp'),
 	async = require('async'),
 	del = require('del'),
 	path = require('path');
 
-var
+const
 	replacers = require('./replacers'),
 	helpers = require('./helpers');
 
-var
+const
 	monic = require('gulp-monic'),
 	babel = require('gulp-babel'),
 	replace = require('gulp-replace'),
@@ -56,12 +56,13 @@ exports.predefs = function (cb) {
 				.on('error', helpers.error(cb))
 				.on('finish', cb);
 		}
+
 	], cb);
 };
 
 exports.build = function (cb) {
-	var builds = helpers.getBuilds();
-	var babelParams = {
+	const builds = helpers.getBuilds();
+	const babelParams = {
 		compact: false,
 		auxiliaryComment: 'istanbul ignore next',
 
@@ -94,11 +95,11 @@ exports.build = function (cb) {
 
 		.pipe(gulp.dest('./tmp'))
 		.on('end', function () {
-			var tasks = [];
+			const tasks = [];
 			$C(builds).forEach(function (el, key) {
 				tasks.push(function (cb) {
-					var name = key + '.js';
-					var fullHead =
+					const name = key + '.js';
+					const fullHead =
 						helpers.getHead(true, key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
 						' *\n' +
 						' * Date: ' + new Date().toUTCString() + '\n' +
@@ -140,6 +141,7 @@ exports.build = function (cb) {
 								.pipe(gulp.dest('./dist'))
 								.on('end', cb);
 						}
+
 					], cb);
 				});
 			});

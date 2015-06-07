@@ -6,15 +6,15 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	path = require('path'),
 	fs = require('fs'),
 	crypto = require('crypto');
 
-var
+const
 	$C = require('collection.js').$C;
 
-var
+const
 	esprima = require('esprima'),
 	escodegen = require('escodegen'),
 	escope = require('escope');
@@ -38,9 +38,9 @@ function normalize(src) {
 }
 
 exports.modules = function () {
-	var modules = {};
+	const modules = {};
 	return function (text, file) {
-		var
+		const
 			moduleId = modules[file] || (modules[file] = val(file)),
 			includes = [];
 
@@ -51,7 +51,7 @@ exports.modules = function () {
 			text.replace(/(['"])use strict\1;?\s*/, '');
 
 		text = text.replace(/(?:^|[^.])\brequire\((['"])(.*?)\1\)(;?)/g, function (sstr, q, src, end) {
-			var base = path.dirname(file);
+			const base = path.dirname(file);
 			src =
 				normalize(path.resolve(base, src));
 
@@ -82,8 +82,9 @@ exports.modules = function () {
 				try {
 					if (fs.statSync(tmpSrc).isFile()) {
 						includes.push('//#include ' + path.relative(base, tmpSrc));
-						var moduleId = modules[tmpSrc] ||
-							(modules[tmpSrc] = val(tmpSrc));
+
+						const
+							moduleId = modules[tmpSrc] || (modules[tmpSrc] = val(tmpSrc));
 
 						return moduleId + end;
 					}
@@ -103,7 +104,7 @@ exports.modules = function () {
 		});
 
 		ast = escodegen.attachComments(ast, ast.comments, ast.tokens);
-		var
+		const
 			vars = escope.analyze(ast, {optimistic: true}).scopes[0].variables;
 
 		$C(vars).forEach(function (el) {
