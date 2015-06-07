@@ -1,0 +1,67 @@
+# IDE
+.idea
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# =========================
+# Operating System Files
+# =========================
+# OSX
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must ends with two \r.
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Dependencies
+bower_components
+node_modules
+
+# Build && test
+/coverage
+/predefs/build
+
+# Log
+*.log
+
+# Temporary
+*.tmp
+/tmp
+
+# NPM ignore list
+/lib
+/predefs
+/test
+/bower.json
+/gulpfile.js
+/externs.js
+/.editorconfig
+/.jscsrc
+/.yaspellerrc
+/.travis.yml
+/.gitignore
+/.gitattributes
+/.npmignore

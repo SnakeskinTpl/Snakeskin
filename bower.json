@@ -18,11 +18,19 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "/lib",
+    "/spec",
+    "/predefs",
+    "/package.json",
+    "/gulpfile.js",
+    "/externs.js",
+    "/.editorconfig",
+    "/.jscsrc",
+    "/.yaspellerrc",
+    "/.travis.yml",
+    "/.gitignore",
+    "/.gitattributes",
+    "/.npmignore"
   ],
   "devDependencies": {
     "closure-compiler": "http://dl.google.com/closure-compiler/compiler-latest.zip"
