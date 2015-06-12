@@ -90,6 +90,48 @@ var code;
 /** @type {?} */
 var files;
 
+/** @type {?} */
+var line;
+
+/** @type {?} */
+var alias;
+
+/** @type {?} */
+var text;
+
+/** @type {?} */
+var placement;
+
+/** @type {?} */
+var notEmpty;
+
+/** @type {?} */
+var chain;
+
+/** @type {?} */
+var end;
+
+/** @type {?} */
+var group;
+
+/** @type {?} */
+var sys;
+
+/** @type {?} */
+var block;
+
+/** @type {?} */
+var selfInclude;
+
+/** @type {?} */
+var replacers;
+
+/** @type {?} */
+var inside;
+
+/** @type {?} */
+var after;
+
 /**
  * @typedef {{
  *   exports: (?string|undefined),
