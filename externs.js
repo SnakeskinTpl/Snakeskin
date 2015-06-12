@@ -6,6 +6,84 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+/** @type {?} */
+var value;
+
+/** @type {?} */
+var inline;
+
+/** @type {?} */
+var context;
+
+/** @type {?} */
+var eol;
+
+/** @type {?} */
+var words;
+
+/** @type {?} */
+var exports;
+
+/** @type {?} */
+var prettyPrint;
+
+/** @type {?} */
+var renderMode;
+
+/** @type {?} */
+var inlineIterators;
+
+/** @type {?} */
+var tolerateWhitespace;
+
+/** @type {?} */
+var replaceUndef;
+
+/** @type {?} */
+var escapeOutput;
+
+/** @type {?} */
+var throws;
+
+/** @type {?} */
+var cache;
+
+/** @type {?} */
+var autoReplace;
+
+/** @type {?} */
+var doctype;
+
+/** @type {?} */
+var useStrict;
+
+/** @type {?} */
+var bemFilter;
+
+/** @type {?} */
+var vars;
+
+/** @type {?} */
+var i18nFn;
+
+/** @type {?} */
+var localization;
+
+/** @type {?} */
+var macros;
+
+/** @type {?} */
+var file;
+
+/** @type {?} */
+var language;
+
+/** @type {?} */
+var ignore;
+
+/** @type {?} */
+var cacheKey;
+
 /**
  * @typedef {{
  *   exports: (?string|undefined),
