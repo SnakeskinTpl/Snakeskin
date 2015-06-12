@@ -84,6 +84,12 @@ var ignore;
 /** @type {?} */
 var cacheKey;
 
+/** @type {?} */
+var code;
+
+/** @type {?} */
+var files;
+
 /**
  * @typedef {{
  *   exports: (?string|undefined),
