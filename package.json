@@ -72,7 +72,7 @@
     "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.11.0",
     "jscs": "^1.12.0",
-    "through2": "^0.6.5",
+    "through2": "^2.0.0",
     "yaspeller": "^2.0.0"
   }
 }
