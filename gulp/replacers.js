@@ -20,18 +20,14 @@ const
 	escodegen = require('escodegen'),
 	escope = require('escope');
 
-exports.$uid = uid;
-exports.$val = val;
-exports.$normalize = normalize;
+const val = exports.val = function (src) {
+	return 'module_' + uid(src);
+};
 
 function uid(src) {
-	var hash = crypto.createHash('md5');
+	const hash = crypto.createHash('md5');
 	hash.update(normalize(src));
 	return hash.digest('hex');
-}
-
-function val(src) {
-	return 'module_' + uid(src);
 }
 
 function normalize(src) {
@@ -53,8 +49,7 @@ exports.modules = function () {
 
 		text = text.replace(/(?:^|[^.])\brequire\((['"])(.*?)\1\)(;?)/g, function (sstr, q, src, end) {
 			const base = path.dirname(file);
-			src =
-				normalize(path.resolve(base, src));
+			src = normalize(path.resolve(base, src));
 
 			var
 				i = 1,
@@ -81,13 +76,27 @@ exports.modules = function () {
 				}
 
 				try {
-					if (glob.hasMagic(tmpSrc) || fs.statSync(tmpSrc).isFile()) {
+					const
+						globPattern = glob.hasMagic(tmpSrc);
+
+					if (globPattern || fs.statSync(tmpSrc).isFile()) {
 						includes.push('//#include ' + path.relative(base, tmpSrc));
 
 						const
-							moduleId = modules[tmpSrc] || (modules[tmpSrc] = val(tmpSrc));
+							moduleIds = [];
 
-						return moduleId + end;
+						if (globPattern) {
+							$C(glob.sync(tmpSrc)).forEach(function (file) {
+								file = normalize(file);
+								moduleIds.push(modules[file] || (modules[file] = val(file)));
+							});
+
+						} else {
+							console.log(tmpSrc);
+							moduleIds.push(modules[tmpSrc] || (modules[tmpSrc] = val(tmpSrc)));
+						}
+
+						return moduleIds.join(end) + end;
 					}
 
 				} catch (ignore) {}

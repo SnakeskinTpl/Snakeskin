@@ -128,8 +128,8 @@ exports.build = function (cb) {
 								.on('error', helpers.error(cb))
 								.pipe(replace(/\$\{dist}/, name))
 								.pipe(replace(/Snakeskin = \['(.*)'\]/, function (sstr, id) {
-									return 'Snakeskin = module_' +
-										replacers.$uid(path.resolve(__dirname, '../tmp/' + id + '.js')) +
+									return 'Snakeskin = ' +
+										replacers.val(path.resolve('tmp/' + id + '.js')) +
 										'.Snakeskin';
 								}))
 
