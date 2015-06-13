@@ -64,7 +64,7 @@ exports.build = function (cb) {
 	const builds = helpers.getBuilds();
 	const babelParams = {
 		compact: false,
-		auxiliaryComment: 'istanbul ignore next',
+		auxiliaryCommentBefore: 'istanbul ignore next',
 
 		loose: 'all',
 		blacklist: [

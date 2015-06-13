@@ -9,7 +9,8 @@
 const
 	path = require('path'),
 	fs = require('fs'),
-	crypto = require('crypto');
+	crypto = require('crypto'),
+	glob = require('glob');
 
 const
 	$C = require('collection.js').$C;
@@ -80,7 +81,7 @@ exports.modules = function () {
 				}
 
 				try {
-					if (fs.statSync(tmpSrc).isFile()) {
+					if (glob.hasMagic(tmpSrc) || fs.statSync(tmpSrc).isFile()) {
 						includes.push('//#include ' + path.relative(base, tmpSrc));
 
 						const
