@@ -28,7 +28,7 @@ gulp.task('test', ['build'], test);
 gulp.task('test-dev', ['compile-fast'], test);
 gulp.task('yaspeller', tasks.yaspeller);
 
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], function () {
 	function unbind(name) {
 		return function (e) {
 			if (e.type === 'deleted') {
