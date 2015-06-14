@@ -85,15 +85,8 @@ exports.build = function (cb) {
 
 		// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
 		.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
-
-		// Whitespaces in string templates
-		.pipe(replace(/\/\* cbws \*\/"[\s\S]*?[^\\"]";?(?:$|[}]+$|[)]+;?$)/gm, function (sstr) {
-			return sstr
-				.replace(/\\n|\\t/g, '')
-				.replace(/\\[\r\n]/g, ' ');
-		}))
-
 		.pipe(gulp.dest('./tmp'))
+
 		.on('end', function () {
 			const tasks = [];
 			$C(builds).forEach(function (el, key) {
