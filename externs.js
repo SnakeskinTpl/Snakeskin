@@ -132,6 +132,9 @@ var inside;
 /** @type {?} */
 var after;
 
+/** @type {?} */
+var sync;
+
 /**
  * @typedef {{
  *   exports: (?string|undefined),
