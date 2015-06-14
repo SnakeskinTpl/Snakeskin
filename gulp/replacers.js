@@ -92,7 +92,6 @@ exports.modules = function () {
 							});
 
 						} else {
-							console.log(tmpSrc);
 							moduleIds.push(modules[tmpSrc] || (modules[tmpSrc] = val(tmpSrc)));
 						}
 
