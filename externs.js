@@ -22,9 +22,6 @@ var eol;
 var words;
 
 /** @type {?} */
-var exports;
-
-/** @type {?} */
 var prettyPrint;
 
 /** @type {?} */
@@ -139,7 +136,19 @@ var sync;
 var type;
 
 /** @type {?} */
-var src;
+var id;
+
+/** @type {?} */
+var filename;
+
+/** @type {?} */
+var parent;
+
+/** @type {?} */
+var children;
+
+/** @type {?} */
+var loaded;
 
 /**
  * @typedef {{
