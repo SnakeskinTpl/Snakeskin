@@ -100,10 +100,22 @@ var text;
 var placement;
 
 /** @type {?} */
+var deferInit;
+
+/** @type {?} */
+var generator;
+
+/** @type {?} */
 var notEmpty;
 
 /** @type {?} */
 var chain;
+
+/** @type {?} */
+var renderModeBlacklist;
+
+/** @type {?} */
+var blacklist;
 
 /** @type {?} */
 var end;
