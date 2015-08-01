@@ -256,6 +256,7 @@ function action(data, file) {
 
 	function success() {
 		line();
+		console.log(new Date().toString());
 		console.log('File "' + file + '" has been successfully compiled "' + outFile + '".');
 		console.timeEnd('Time');
 		line();
@@ -303,6 +304,7 @@ function action(data, file) {
 		);
 
 	} catch (err) {
+		console.error(new Date().toString());
 		console.error(err);
 		res = '';
 
@@ -331,6 +333,7 @@ function action(data, file) {
 			}
 
 			if (!tpl) {
+				console.error(new Date().toString());
 				console.error('Template to run is not defined');
 				res = '';
 
@@ -364,6 +367,7 @@ function action(data, file) {
 					}
 
 				} catch (err) {
+					console.error(new Date().toString());
 					console.error(err);
 					res = '';
 
