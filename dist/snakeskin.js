@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.6.5
+ * Snakeskin v6.6.6
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 06 Jul 2015 18:53:46 GMT
+ * Date: Sat, 01 Aug 2015 12:07:11 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 6, 5],
+	VERSION: [6, 6, 6],
 
 	/**
   * The namespace for directives
@@ -9741,7 +9741,6 @@ function concatProp(str) {
 
 				if (unary) {
 					unaryStr = unaryStr || res;
-
 					unary = false;
 				}
 
@@ -9791,6 +9790,8 @@ function concatProp(str) {
 		};
 	};
 
+	var propRgxp = new RegExp("[" + w + "]");
+
 	/**
   * Вернуть true, если указанное слово является свойством в литерале объекта
   *
@@ -9805,8 +9806,8 @@ function concatProp(str) {
 		for (var i = start; i--;) {
 			var el = str.charAt(i);
 
-			if (!whiteSpaceRgxp.test(el)) {
-				res = el === "?";
+			if (!whiteSpaceRgxp.test(el) && (!propRgxp.test(el) || el === "?")) {
+				res = true;
 				break;
 			}
 		}
@@ -10071,7 +10072,13 @@ function concatProp(str) {
 				if (nword && !posNWord && nextCharRgxp.test(el)) {
 					var nextStep = this.getWord(command, i);
 					var word = nextStep.word,
-					    finalWord = nextStep.finalWord;
+					    finalWord = nextStep.finalWord,
+					    tmpFinalWord = void 0;
+
+					if (nextStep.unary) {
+						tmpFinalWord = finalWord.split(" ");
+						finalWord = tmpFinalWord[tmpFinalWord.length - 1];
+					}
 
 					var uAdd = wordAddEnd + addition,
 					    vres = void 0;
@@ -10144,6 +10151,11 @@ function concatProp(str) {
 					if (canParse && isNextAssign(command, i + word.length) && tplName && constCache[tplName] && constCache[tplName][vres]) {
 						this.error("constant \"" + vres + "\" is already defined");
 						return "";
+					}
+
+					if (nextStep.unary) {
+						tmpFinalWord[tmpFinalWord.length - 1] = vres;
+						vres = tmpFinalWord.join(" ");
 					}
 
 					// Данное слово является составным системным,
@@ -11218,7 +11230,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	var begin = false,
 	    pseudoI = false;
 
-	var command = "";
+	var command = "",
+	    commandLength = 0;
+
 	var commandTypeRgxp = /[^\s]+/,
 	    commandRgxp = /[^\s]+\s*/;
 
@@ -11345,6 +11359,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		if (nextLine) {
 			if (next2str === "\r\n") {
+				if (begin) {
+					commandLength++;
+				}
+
 				continue;
 			}
 
@@ -11377,7 +11395,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						el = " ";
 						dir.space = true;
 					} else if (!comment) {
+						commandLength++;
 						continue;
+					} else {
+						commandLength++;
 					}
 				}
 
@@ -11539,8 +11560,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					// A directive is ended
 				} else if (el === rb && begin && (!fakeBegin || ! fakeBegin--)) {
 					begin = false;
-
-					var commandLength = command.length;
 					command = command.trim();
 
 					if (!command) {
@@ -11627,6 +11646,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					command = "";
+					commandLength = 0;
 					continue;
 				} else if (dir.localization && !currentEscape && el === I18N) {
 					if (i18nStart && i18nStr && words && !words[i18nStr]) {
@@ -11753,6 +11773,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 			command += el;
+			commandLength++;
 
 			// Plain text
 		} else {
