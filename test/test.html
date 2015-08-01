@@ -2483,6 +2483,18 @@ fffuuuu' .
 	{&}
 	- if 1
 		1
+
+- template syntax_index17()
+	- page = {}
+	- page.breadcrumbs = []
+	{page|json|!html}
+
+- template syntax_index18() extends syntax_index17
+	- page.breadcrumbs = [{ &
+		href: '/places',
+		title: `Ffffuuu`,
+		angle: true
+	}] .
 				</script>
 
 				<script type="text/javascript">
@@ -2523,6 +2535,8 @@ fffuuuu' .
 							equal(syntax_index13().trim(), '1 1');
 						
 							equal(syntax_index14().trim(), '<div class="foo"></div>');
+						
+							equal(syntax_index18().trim(), '{"breadcrumbs":[{"href":"/places","title":"Ffffuuu","angle":true}]}');
 						
 					});
 				</script>
