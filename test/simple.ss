@@ -13,6 +13,7 @@ simple_output3
 simple_output4
 simple_vars
 simple_юникод
+simple_unary
 
 ###
 
@@ -90,6 +91,15 @@ simple_юникод
 	- block проверка() =>
 		{2|квадрат}
 
+- template simple_unary()
+	: &
+		obj = {mon: {from: 10, to: 20}},
+		day = 'mon'
+	.
+
+	- true ? 'foo-' + obj[day].from : ''
+	- obj[day] && 'from' in obj[day] && 'to' in obj[day]
+
 ###
 
 1 -1 foo} 1
@@ -149,3 +159,7 @@ simple_юникод
 ***
 
 4
+
+***
+
+foo-10 true
