@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Mon, 10 Aug 2015 16:56:29 GMT
+ * Date: Mon, 10 Aug 2015 17:27:51 GMT
  */
 
 (function () {
@@ -14287,7 +14287,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						var args = parts[1] ? parts[1].trim().split(",") : [];
 
 						if (args.length >= 6) {
-							objLength += /* cbws */"" + _this.multiDeclVar("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0") + "if (!" + keys + ") {" + _this.multiDeclVar("__LENGTH__ = 0") + "for (" + _this.multiDeclVar("__KEY__", false) + " in " + cacheObj + ") {if (!" + cacheObj + ".hasOwnProperty(" + _this.prepareOutput("__KEY__", true) + ")) {continue;}" + _this.prepareOutput("__LENGTH__++;", true) + "}}";
+							objLength += /* cbws */"" + _this.multiDeclVar("__LENGTH__ = __KEYS__ ? __KEYS__.length : 0") + "if (!" + keys + ") {" + _this.multiDeclVar("__LENGTH__ = 0") + "for (" + _this.multiDeclVar("__KEY__", false, "") + " in " + cacheObj + ") {if (!" + cacheObj + ".hasOwnProperty(" + _this.prepareOutput("__KEY__", true) + ")) {continue;}" + _this.prepareOutput("__LENGTH__++;", true) + "}}";
 						}
 
 						var resStr = /* cbws */"" + tmpObj + "if (" + cacheObj + ") {if (Array.isArray(" + cacheObj + ")) {" + _this.multiDeclVar("__LENGTH__ =  __I_OBJ__.length") + "for (" + (_this.multiDeclVar("__I__ = -1") + _this.prepareOutput("++__I__ < __LENGTH__;", true)) + ") {";
@@ -14374,7 +14374,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							return str;
 						})();
 
-						var oldEnd = /* cbws */"} else {" + _this.multiDeclVar("__I__ = -1") + "for (" + _this.multiDeclVar("__KEY__", false) + " in " + cacheObj + ") {if (!" + cacheObj + ".hasOwnProperty(" + _this.prepareOutput("__KEY__", true) + ")) {continue;}" + _this.prepareOutput("__I__++;", true) + "";
+						var oldEnd = /* cbws */"} else {" + _this.multiDeclVar("__I__ = -1") + "for (" + _this.multiDeclVar("__KEY__", false, "") + " in " + cacheObj + ") {if (!" + cacheObj + ".hasOwnProperty(" + _this.prepareOutput("__KEY__", true) + ")) {continue;}" + _this.prepareOutput("__I__++;", true) + "";
 
 						oldEnd += (function () {
 							var str = "";
@@ -14477,10 +14477,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						    cacheObj = _this.prepareOutput("__I_OBJ__", true);
 
 						if (args.length >= 6) {
-							objLength += /* cbws */"" + _this.multiDeclVar("__LENGTH__ = 0") + "for (" + _this.multiDeclVar("key", false) + " in " + cacheObj + ") {" + _this.prepareOutput("__LENGTH__++;", true) + "}";
+							objLength += /* cbws */"" + _this.multiDeclVar("__LENGTH__ = 0") + "for (" + _this.multiDeclVar("key", false, "") + " in " + cacheObj + ") {" + _this.prepareOutput("__LENGTH__++;", true) + "}";
 						}
 
-						var resStr = /* cbws */"" + tmpObj + "if (" + cacheObj + ") {" + objLength + "" + _this.multiDeclVar("__I__ = -1") + "for (" + _this.multiDeclVar("__KEY__", false) + " in " + cacheObj + ") {" + _this.prepareOutput("__I__++;", true) + "";
+						var resStr = /* cbws */"" + tmpObj + "if (" + cacheObj + ") {" + objLength + "" + _this.multiDeclVar("__I__ = -1") + "for (" + _this.multiDeclVar("__KEY__", false, "") + " in " + cacheObj + ") {" + _this.prepareOutput("__I__++;", true) + "";
 
 						resStr += (function () {
 							var str = "";
