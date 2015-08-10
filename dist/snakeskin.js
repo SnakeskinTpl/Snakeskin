@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.6.6
+ * Snakeskin v6.6.7
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sat, 01 Aug 2015 12:07:11 GMT
+ * Date: Mon, 10 Aug 2015 16:56:29 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 6, 6],
+	VERSION: [6, 6, 7],
 
 	/**
   * The namespace for directives
@@ -8081,7 +8081,7 @@ DirObj.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 						var el = obj[i],
 						    _key = "" + el.name + "_" + el.params.name;
 
-						if (bTable[_key]) {
+						if (bTable[_key] && bTable[_key] !== true) {
 							bTable[_key].drop = true;
 						} else {
 							bTable[_key] = true;
@@ -9661,7 +9661,7 @@ function concatProp(str) {
 		"do": true,
 		"else": true,
 		"false": true,
-		"finnaly": true,
+		"finally": true,
 		"for": true,
 		"function": true,
 		"if": true,
@@ -9807,6 +9807,10 @@ function concatProp(str) {
 			var el = str.charAt(i);
 
 			if (!whiteSpaceRgxp.test(el) && (!propRgxp.test(el) || el === "?")) {
+				if (el === "{" || el === ",") {
+					break;
+				}
+
 				res = true;
 				break;
 			}
