@@ -13,6 +13,7 @@ syntax_index12
 syntax_index13
 syntax_index14
 syntax_index18
+syntax_index19
 
 ###
 
@@ -167,6 +168,10 @@ fffuuuu' .
 		angle: true
 	}] .
 
+- template syntax_index19()
+	: foo = 1
+	{({foo: foo})|!html|json}
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -226,3 +231,7 @@ fff		uuuu		fffuuuu
 ***
 
 {"breadcrumbs":[{"href":"/places","title":"Ffffuuu","angle":true}]}
+
+***
+
+{"foo":1}

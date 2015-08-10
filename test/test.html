@@ -2495,6 +2495,10 @@ fffuuuu' .
 		title: `Ffffuuu`,
 		angle: true
 	}] .
+
+- template syntax_index19()
+	: foo = 1
+	{({foo: foo})|!html|json}
 				</script>
 
 				<script type="text/javascript">
@@ -2537,6 +2541,8 @@ fffuuuu' .
 							equal(syntax_index14().trim(), '<div class="foo"></div>');
 						
 							equal(syntax_index18().trim(), '{"breadcrumbs":[{"href":"/places","title":"Ffffuuu","angle":true}]}');
+						
+							equal(syntax_index19().trim(), '{"foo":1}');
 						
 					});
 				</script>
