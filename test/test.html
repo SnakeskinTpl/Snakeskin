@@ -2498,7 +2498,7 @@ fffuuuu' .
 
 - template syntax_index19()
 	: foo = 1
-	{({foo: foo})|!html|json}
+	{({foo: foo, foo2: foo})|!html|json}
 				</script>
 
 				<script type="text/javascript">
@@ -2542,7 +2542,7 @@ fffuuuu' .
 						
 							equal(syntax_index18().trim(), '{"breadcrumbs":[{"href":"/places","title":"Ffffuuu","angle":true}]}');
 						
-							equal(syntax_index19().trim(), '{"foo":1}');
+							equal(syntax_index19().trim(), '{"foo":1,"foo2":1}');
 						
 					});
 				</script>

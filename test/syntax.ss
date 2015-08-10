@@ -170,7 +170,7 @@ fffuuuu' .
 
 - template syntax_index19()
 	: foo = 1
-	{({foo: foo})|!html|json}
+	{({foo: foo, foo2: foo})|!html|json}
 
 ###
 
@@ -234,4 +234,4 @@ fff		uuuu		fffuuuu
 
 ***
 
-{"foo":1}
+{"foo":1,"foo2":1}
