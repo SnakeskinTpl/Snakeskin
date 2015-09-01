@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.6.9
+ * Snakeskin v6.6.10
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 01 Sep 2015 08:21:09 GMT
+ * Date: Tue, 01 Sep 2015 10:19:12 GMT
  */
 
 (function () {
@@ -37,7 +37,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 6, 9],
+	VERSION: [6, 6, 10],
 
 	/**
   * The namespace for directives
@@ -7930,7 +7930,7 @@ function DirObj(src, params) {
 	this.res = "";
 
 	if (!this.proto) {
-		this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__AMD__ = typeof define === 'function' && define.amd,__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : __AMD__ ? {} : this;try {__IS_NODE__ = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);if (__AMD__) {define(['Snakeskin'], function (ss) {Snakeskin = Snakeskin || ss;__EXEC__.call(__EXPORTS__);return __EXPORTS__;});} else {__EXEC__.call(__EXPORTS__);return __EXPORTS__;}}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
+		this.res += /* cbws */"This code is generated automatically, don't alter it. */(function () {" + (this.useStrict ? "'use strict';" : "") + "var __IS_NODE__ = false,__AMD__ = typeof define === 'function' && define.amd,__HAS_EXPORTS__ = typeof exports !== 'undefined',__EXPORTS__ = __HAS_EXPORTS__ ? exports : __AMD__ ? {} : this;try {__IS_NODE__ = typeof process === 'object' && Object.prototype.toString.call(process) === '[object process]';} catch (ignore) {}var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;function __INIT__(obj) {Snakeskin = Snakeskin ||(obj instanceof Object ? obj : void 0);" + (this.exports === "default" ? "if (__AMD__) {define(['Snakeskin'], function (ss) {Snakeskin = Snakeskin || ss;__EXEC__.call(__EXPORTS__);return __EXPORTS__;});} else {__EXEC__.call(__EXPORTS__);return __EXPORTS__;}" : "__EXEC__.call(__EXPORTS__);return __EXPORTS__;") + "if (__AMD__) {define(['Snakeskin'], function (ss) {Snakeskin = Snakeskin || ss;__EXEC__.call(__EXPORTS__);return __EXPORTS__;});} else {__EXEC__.call(__EXPORTS__);return __EXPORTS__;}}if (__HAS_EXPORTS__) {__EXPORTS__.init = __INIT__;}function __EXEC__() {var __ROOT__ = this,self = this;var __APPEND__ = Snakeskin.appendChild,__FILTERS__ = Snakeskin.Filters,__VARS__ = Snakeskin.Vars,__LOCAL__ = Snakeskin.LocalVars;" + this.multiDeclVar("$_") + "";
 	}
 }
 
