@@ -2,7 +2,7 @@
   "name": "Snakeskin",
   "description": "Awesome JavaScript template engine.",
   "main": "dist/snakeskin.min.js",
-  "version": "6.6.12",
+  "version": "6.6.13",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
   "keywords": [
     "templates",
