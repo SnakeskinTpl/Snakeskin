@@ -196,8 +196,19 @@ exports.compileFile = function (src, opt_params) {
  * @return {Function}
  */
 exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
-	var tpl;
+	var
+		tpl,
+		tmp = {};
 
+	for (var key in tpls) {
+		if (!tpls.hasOwnProperty(key) || key === 'init') {
+			continue;
+		}
+
+		tmp[key] = tpls[key];
+	}
+
+	tpls = tmp;
 	if (opt_tplName) {
 		tpl = tpls[opt_tplName];
 
