@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.6.13 (live)
+ * Snakeskin v6.6.14 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Tue, 01 Sep 2015 11:43:14 GMT
+ * Date: Sun, 06 Sep 2015 18:03:49 GMT
  */
 
 (function () {
@@ -35,7 +35,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 6, 13],
+	VERSION: [6, 6, 14],
 
 	/**
   * The namespace for directives
@@ -598,7 +598,6 @@ Snakeskin.appendChild = function (node, obj) {
 
 
 
-global["define"] = globalDefine;
 if (typeof define === "function" && define.amd) {
 	define([], function () {
 		return Snakeskin;
