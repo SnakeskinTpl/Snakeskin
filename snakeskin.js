@@ -1,5 +1,5 @@
 /** @type {Snakeskin} */
-var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
+var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin');
 
 var path = require('path'),
 	fs = require('fs'),

@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v6.6.14 (live)
+ * Snakeskin v6.6.15 (live)
  * https://github.com/kobezzza/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/kobezzza/Snakeskin/blob/master/LICENSE
  *
- * Date: Sun, 06 Sep 2015 18:03:49 GMT
+ * Date: Sat, 19 Sep 2015 15:59:29 GMT
  */
 
 (function () {
@@ -35,7 +35,7 @@ var Snakeskin = {
   * The version of Snakeskin
   * @type {!Array}
   */
-	VERSION: [6, 6, 14],
+	VERSION: [6, 6, 15],
 
 	/**
   * The namespace for directives
@@ -421,6 +421,28 @@ Snakeskin.Filters.undef = function (str) {
 		Snakeskin.Filters["default"] = function (val, def) {
 			return val === void 0 ? def : val;
 		};
+
+		Snakeskin.Filters["default"]["!undefSnakeskinFilter"] = true;
+		var nl2brRgxp = /\r?\n|\n/g;
+
+		/**
+   * Перевести символы новой строки в br
+   *
+   * @param {?} val - исходное значение
+   * @return {?}
+   */
+		Snakeskin.Filters["nl2br"] = function (val) {
+			var arr = val.split(nl2brRgxp),
+			    res = "";
+
+			for (var i = 0; i < arr.length; i++) {
+				res += Snakeskin.Filters.html(arr[i]) + "<br>";
+			}
+
+			return res;
+		};
+
+		Snakeskin.Filters["nl2br"]["!htmlSnakeskinFilter"] = true;
 	})();
 }
 /*!
