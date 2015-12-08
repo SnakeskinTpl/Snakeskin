@@ -1,0 +1,10 @@
+{
+  "moduleId": "Snakeskin",
+  "presets": ["es2015"],
+  "compact": false,
+  "auxiliaryCommentBefore": "istanbul ignore next",
+  "plugins": [
+    "transform-undefined-to-void",
+    "transform-es2015-modules-umd"
+  ]
+}
