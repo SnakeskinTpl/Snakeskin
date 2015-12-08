@@ -15,7 +15,7 @@ const
 	glob = require('glob');
 
 const
-	$C = require('collection.js').$C;
+	$C = require('collection.js')['$C'];
 
 const
 	esprima = require('esprima'),
@@ -43,12 +43,12 @@ exports.modules = () => {
 			includes = [];
 
 		text =
-			'var ' + moduleId + ' = {};\n' +
-			'var module = {exports: ' + moduleId + '};\n' +
-			'var exports = ' + moduleId + ';\n' +
+			`var ${moduleId} = {};\n` +
+			`var module = {exports: ${moduleId}};\n` +
+			`var exports = ${moduleId};\n` +
 			text.replace(/(['"])use strict\1;?\s*/, '');
 
-		text = text.replace(/(?:^|[^.])\brequire\((['"])(.*?)\1\)(;?)/g, function (sstr, q, src, end) {
+		text = text.replace(/(?:^|[^.])\brequire\((['"])(.*?)\1\)(;?)/g, (sstr, q, src, end) => {
 			const base = path.dirname(file);
 			src = normalize(path.resolve(base, src));
 
@@ -81,13 +81,13 @@ exports.modules = () => {
 						globPattern = glob.hasMagic(tmpSrc);
 
 					if (globPattern || fs.statSync(tmpSrc).isFile()) {
-						includes.push('//#include ' + path.relative(base, tmpSrc));
+						includes.push(`//#include ${path.relative(base, tmpSrc)}`);
 
 						const
 							moduleIds = [];
 
 						if (globPattern) {
-							$C(glob.sync(tmpSrc)).forEach(function (file) {
+							$C(glob.sync(tmpSrc)).forEach((file) => {
 								file = normalize(file);
 								moduleIds.push(modules[file] || (modules[file] = val(file)));
 							});
@@ -117,7 +117,7 @@ exports.modules = () => {
 		const
 			vars = escope.analyze(ast, {optimistic: true}).scopes[0].variables;
 
-		$C(vars).forEach(function (el) {
+		$C(vars).forEach((el) => {
 			if (!/module_/.test(el.name)) {
 				const
 					newName = `${moduleId}_${el.name}`;

@@ -9,7 +9,7 @@
  */
 
 const
-	$C = require('collection.js').$C;
+	$C = require('collection.js')['$C'];
 
 const
 	gulp = require('gulp'),
@@ -23,17 +23,17 @@ const
 	cached = require('gulp-cached'),
 	gcc = require('gulp-closure-compiler');
 
-module.exports = function (cb) {
+module.exports = (cb) => {
 	const
 		builds = helpers.getBuilds(),
 		tasks = [];
 
-	$C(builds).forEach(function (el, key) {
-		tasks.push(function (cb) {
-			gulp.src(path.join('./dist/', key + '.js'))
+	$C(builds).forEach((el, key) => {
+		tasks.push((cb) => {
+			gulp.src(path.join('./dist/', `${key}.js`))
 				.pipe(cached('compile'))
 				.pipe(gcc({
-					fileName: key + '.min.js',
+					fileName: `${key}.min.js`,
 					compilerPath: './bower_components/closure-compiler/compiler.jar',
 					continueWithWarnings: true,
 
@@ -76,7 +76,8 @@ module.exports = function (cb) {
 				}))
 
 				.pipe(header(
-					'/*! Snakeskin v' + helpers.getVersion() + (key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
+					`'/*! Snakeskin v${helpers.getVersion()}` +
+					(key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
 					' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n'
 				))
 
