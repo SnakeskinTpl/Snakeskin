@@ -10,33 +10,17 @@
 
 const
 	gulp = require('gulp'),
-	async = require('async');
+	async = require('async'),
+	cached = require('gulp-cached');
 
-const
-	build = require('./gulp/build'),
-	compile = require('./gulp/compile'),
-	test = require('./gulp/test'),
-	tasks = require('./gulp/tasks');
+require('./gulp/other');
+require('./gulp/predefs');
+require('./gulp/build');
+require('./gulp/compile');
+require('./gulp/test');
 
 global.headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/;
 global.readyToWatcher = null;
-
-gulp.task('copyright', tasks.copyright);
-gulp.task('head', tasks.head);
-gulp.task('predefs', build.predefs);
-gulp.task('bump', tasks.bump);
-
-gulp.task('clean', build.clean);
-gulp.task('build', build.build);
-gulp.task('full-build', ['clean'], build.build);
-
-gulp.task('compile', ['predefs'], compile);
-gulp.task('compile-fast', compile);
-gulp.task('full-build', ['compile'], test);
-
-gulp.task('test', ['build'], test);
-gulp.task('test-dev', ['compile-fast'], test);
-gulp.task('yaspeller', tasks.yaspeller);
 
 gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], () => {
 	function unbind(name) {

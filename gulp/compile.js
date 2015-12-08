@@ -22,7 +22,10 @@ const
 	cached = require('gulp-cached'),
 	gcc = require('gulp-closure-compiler');
 
-module.exports = (cb) => {
+gulp.task('compile', ['predefs'], compile);
+gulp.task('compile-fast', compile);
+
+function compile(cb) {
 	const
 		builds = helpers.getBuilds(),
 		tasks = [];
@@ -55,4 +58,4 @@ module.exports = (cb) => {
 	});
 
 	async.parallel(tasks, cb);
-};
+}

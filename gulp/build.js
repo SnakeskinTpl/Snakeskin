@@ -14,69 +14,38 @@ const
 const
 	gulp = require('gulp'),
 	async = require('async'),
-	del = require('del'),
 	path = require('path');
 
 const
-	replacers = require('./replacers'),
 	helpers = require('./helpers');
 
 const
+	rollup = require('gulp-rollup'),
 	monic = require('gulp-monic'),
 	babel = require('gulp-babel'),
 	replace = require('gulp-replace'),
 	rename = require('gulp-rename'),
 	header = require('gulp-header'),
-	download = require('gulp-download'),
-	cached = require('gulp-cached'),
-	run = require('gulp-run');
+	cached = require('gulp-cached');
 
-exports.clean = (cb) => {
-	del('./tmp', cb);
-};
+gulp.task('build', build);
+gulp.task('full-build', ['clean'], build);
 
-exports.predefs = (cb) => {
-	async.parallel([
-		(cb) => {
-			download([
-				'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
-				'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
-			])
-				.on('error', helpers.error(cb))
-				.pipe(gulp.dest('./predefs/src/ws'))
-				.on('end', () => {
-					gulp.src('./predefs/src/index.js')
-						.pipe(monic())
-						.on('error', helpers.error(cb))
-						.pipe(gulp.dest('./predefs/build'))
-						.on('end', cb);
-				});
-		},
-
-		(cb) => {
-			run('bower install').exec()
-				.on('error', helpers.error(cb))
-				.on('finish', cb);
-		}
-
-	], cb);
-};
-
-exports.build = (cb) => {
+function build(cb) {
 	const
 		builds = helpers.getBuilds();
 
-	gulp.src('./lib/**/!(snakeskin.export).js')
-		.pipe(cached('build'))
-		.pipe(babel())
-
+	gulp.src('./lib/index.js')
+		.pipe(rollup())
 		.on('error', helpers.error(cb))
+
+		.pipe(babel())
+		.on('error', helpers.error(cb))
+
 		.pipe(replace(headRgxp, ''))
-
-		// Fix for @param {foo} [bar=1] -> @param {foo} [bar]
 		.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
-		.pipe(gulp.dest('./tmp'))
 
+		.pipe(gulp.dest('./tmp'))
 		.on('end', () => {
 			const
 				tasks = [];
@@ -92,45 +61,30 @@ exports.build = (cb) => {
 						` * Date: '${new Date().toUTCString()}\n` +
 						' */\n\n';
 
-					async.series([
-						(cb) => {
-							gulp.src('./tmp/index.js')
-								.pipe(monic({
-									replacers: [replacers.modules()]
-								}))
+					gulp.src('./lib/snakeskin.export.js')
+						.pipe(babel({
+							moduleId: 'Snakeskin',
+							plugins: ['transform-es2015-modules-umd']
+						}))
 
-								.on('error', helpers.error(cb))
-								.pipe(rename(name))
-								.pipe(gulp.dest('./dist'))
-								.on('end', cb);
-						},
+						.on('error', helpers.error(cb))
 
-						(cb) => {
-							gulp.src('./lib/snakeskin.export.js')
-								.pipe(babel({
-									moduleId: 'Snakeskin',
-									plugins: ['transform-es2015-modules-umd']
-								}))
+						.pipe(replace(/\$\{dist}/, name))
+						.pipe(replace(/Snakeskin = \['(.*)'\]/, (sstr, id) =>
+							`Snakeskin = ${replacers.val(path.resolve(`tmp/${id}.js`))}.Snakeskin`
+						))
 
-								.on('error', helpers.error(cb))
-								.pipe(replace(/\$\{dist}/, name))
-								.pipe(replace(/Snakeskin = \['(.*)'\]/, (sstr, id) =>
-									`Snakeskin = ${replacers.val(path.resolve(`tmp/${id}.js`))}.Snakeskin`
-								))
+						.pipe(monic())
+						.on('error', helpers.error(cb))
 
-								.pipe(monic())
-								.on('error', helpers.error(cb))
+						.pipe(header(fullHead))
+						.pipe(rename(name))
 
-								.pipe(header(fullHead))
-								.pipe(rename(name))
-								.pipe(gulp.dest('./dist'))
-								.on('end', cb);
-						}
-
-					], cb);
+						.pipe(gulp.dest('./dist'))
+						.on('end', cb);
 				});
 			});
 
 			async.parallel(tasks, cb);
 		});
-};
+}

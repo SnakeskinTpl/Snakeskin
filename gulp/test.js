@@ -14,7 +14,11 @@ const
 	jasmine = require('gulp-jasmine'),
 	helpers = require('./helpers');
 
-module.exports = (cb) => {
+gulp.task('full-build', ['compile'], test);
+gulp.task('test', ['build'], test);
+gulp.task('test-dev', ['compile-fast'], test);
+
+function test(cb) {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
 		.pipe(istanbul.hookRequire())
@@ -25,4 +29,4 @@ module.exports = (cb) => {
 				.pipe(istanbul.writeReports())
 				.on('end', cb);
 		});
-};
+}
