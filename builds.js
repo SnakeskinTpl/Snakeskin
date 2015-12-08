@@ -1,10 +1,7 @@
 module.exports = {
 	'snakeskin': {
-		'@build': true
-		,'compiler': true
+		'compiler': true
 	},
 
-	'snakeskin.live': {
-		'@build': true
-	}
+	'snakeskin.live': {}
 };
