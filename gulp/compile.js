@@ -18,7 +18,6 @@ const
 	helpers = require('./helpers');
 
 const
-	replace = require('gulp-replace'),
 	header = require('gulp-header'),
 	cached = require('gulp-cached'),
 	gcc = require('gulp-closure-compiler');
@@ -29,59 +28,27 @@ module.exports = (cb) => {
 		tasks = [];
 
 	$C(builds).forEach((el, key) => {
+		const name = key !== 'snakeskin' ? ` (${key.replace(/^snakeskin\./, '')})` : '';
 		tasks.push((cb) => {
+			const gccFlags = $C.extend(
+				false,
+
+				{
+					fileName: `${key}.min.js`
+				},
+
+				require('../gcc.json')
+			);
+
+			const head =
+				`'use strict'; ` +
+				`/*! Snakeskin v${helpers.getVersion()}${name}` +
+				' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n';
+
 			gulp.src(path.join('./dist/', `${key}.js`))
 				.pipe(cached('compile'))
-				.pipe(gcc({
-					fileName: `${key}.min.js`,
-					compilerPath: './bower_components/closure-compiler/compiler.jar',
-					continueWithWarnings: true,
-
-					compilerFlags: {
-						compilation_level: 'ADVANCED',
-						use_types_for_optimization: null,
-
-						language_in: 'ES6',
-						language_out: 'ES5',
-
-						externs: [
-							'./predefs/build/index.js'
-						],
-
-						jscomp_off: [
-							'nonStandardJsDocs'
-						],
-
-						jscomp_warning: [
-							'invalidCasts',
-							'accessControls',
-							'checkDebuggerStatement',
-							'checkRegExp',
-							'checkTypes',
-							'const',
-							'constantProperty',
-							'deprecated',
-							'externsValidation',
-							'missingProperties',
-							'visibility',
-							'missingReturn',
-							'duplicate',
-							'internetExplorerChecks',
-							'suspiciousCode',
-							'uselessCode',
-							'misplacedTypeAnnotation',
-							'typeInvalidation'
-						]
-					}
-				}))
-
-				.pipe(header(
-					`'/*! Snakeskin v${helpers.getVersion()}` +
-					(key !== 'snakeskin' ? ` (${key.replace(/^snakeskin\./, '')})` : '') +
-					' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n'
-				))
-
-				.pipe(replace(/\(function\(.*?\)\{/, '$&\'use strict\';'))
+				.pipe(gcc(gccFlags))
+				.pipe(header(head))
 				.pipe(gulp.dest('./dist'))
 				.on('end', cb);
 		});
