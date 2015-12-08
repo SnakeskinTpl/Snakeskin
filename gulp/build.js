@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -29,20 +31,20 @@ const
 	cached = require('gulp-cached'),
 	run = require('gulp-run');
 
-exports.clean = function (cb) {
+exports.clean = (cb) => {
 	del('./tmp', cb);
 };
 
-exports.predefs = function (cb) {
+exports.predefs = (cb) => {
 	async.parallel([
-		function (cb) {
+		(cb) => {
 			download([
 				'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
 				'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
 			])
 				.on('error', helpers.error(cb))
 				.pipe(gulp.dest('./predefs/src/ws'))
-				.on('end', function () {
+				.on('end', () => {
 					gulp.src('./predefs/src/index.js')
 						.pipe(monic())
 						.on('error', helpers.error(cb))
@@ -51,7 +53,7 @@ exports.predefs = function (cb) {
 				});
 		},
 
-		function (cb) {
+		(cb) => {
 			run('bower install').exec()
 				.on('error', helpers.error(cb))
 				.on('finish', cb);
@@ -60,7 +62,7 @@ exports.predefs = function (cb) {
 	], cb);
 };
 
-exports.build = function (cb) {
+exports.build = (cb) => {
 	const builds = helpers.getBuilds();
 	const babelParams = {
 		compact: false,
@@ -87,10 +89,10 @@ exports.build = function (cb) {
 		.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
 		.pipe(gulp.dest('./tmp'))
 
-		.on('end', function () {
+		.on('end', () => {
 			const tasks = [];
-			$C(builds).forEach(function (el, key) {
-				tasks.push(function (cb) {
+			$C(builds).forEach((el, key) => {
+				tasks.push((cb) => {
 					const name = key + '.js';
 					const fullHead =
 						helpers.getHead(true, key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
@@ -99,7 +101,7 @@ exports.build = function (cb) {
 						' */\n\n';
 
 					async.series([
-						function (cb) {
+						(cb) => {
 							gulp.src('./tmp/index.js')
 								.pipe(monic({
 									replacers: [replacers.modules()]
@@ -111,7 +113,7 @@ exports.build = function (cb) {
 								.on('end', cb);
 						},
 
-						function (cb) {
+						(cb) => {
 							gulp.src('./lib/snakeskin.export.js')
 								.pipe(babel($C.extend(true, {}, babelParams, {
 									modules: 'umd',
@@ -120,11 +122,9 @@ exports.build = function (cb) {
 
 								.on('error', helpers.error(cb))
 								.pipe(replace(/\$\{dist}/, name))
-								.pipe(replace(/Snakeskin = \['(.*)'\]/, function (sstr, id) {
-									return 'Snakeskin = ' +
-										replacers.val(path.resolve('tmp/' + id + '.js')) +
-										'.Snakeskin';
-								}))
+								.pipe(replace(/Snakeskin = \['(.*)'\]/, (sstr, id) =>
+									`Snakeskin = ${replacers.val(path.resolve(`tmp/${id}.js`))}.Snakeskin`
+								))
 
 								.pipe(monic())
 								.on('error', helpers.error(cb))

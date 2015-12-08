@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,11 +14,11 @@ const
 	jasmine = require('gulp-jasmine'),
 	helpers = require('./helpers');
 
-module.exports = function (cb) {
+module.exports = (cb) => {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
 		.pipe(istanbul.hookRequire())
-		.on('finish', function () {
+		.on('finish', () => {
 			gulp.src(['./test/test.dev.js'])
 				.pipe(jasmine())
 				.on('error', helpers.error(cb))

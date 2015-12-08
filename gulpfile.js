@@ -1,3 +1,13 @@
+'use strict';
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
 const
 	gulp = require('gulp'),
 	async = require('async');
@@ -28,25 +38,23 @@ gulp.task('test', ['build'], test);
 gulp.task('test-dev', ['compile-fast'], test);
 gulp.task('yaspeller', tasks.yaspeller);
 
-gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], function () {
+gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], () => {
 	function unbind(name) {
-		return function (e) {
+		return (e) => {
 			if (e.type === 'deleted') {
 				delete cached.caches[name][e.path];
 			}
-		}
+		};
 	}
 
 	async.whilst(
-		function () {
-			return readyToWatcher === false;
-		},
+		() =>
+			readyToWatcher === false,
 
-		function (cb) {
-			setTimeout(cb, 500);
-		},
+		(cb) =>
+			setTimeout(cb, 500),
 
-		function () {
+		() => {
 			gulp.watch('./lib/**/*.js', ['build']).on('change', unbind('build'));
 			gulp.watch('./lib/core.js', ['bump']);
 			gulp.watch('./*.md', ['yaspeller']);

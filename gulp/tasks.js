@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -19,11 +21,11 @@ const
 	bump = require('gulp-bump'),
 	run = require('gulp-run');
 
-exports.head = function (cb) {
+exports.head = (cb) => {
 	global.readyToWatcher = false;
-	const fullHead =
-		helpers.getHead() +
-		' */\n\n';
+
+	const
+		fullHead = `${helpers.getHead()} */\n\n`;
 
 	function test() {
 		return through.obj(function (file, enc, cb) {
@@ -36,7 +38,7 @@ exports.head = function (cb) {
 	}
 
 	async.parallel([
-		function (cb) {
+		(cb) => {
 			gulp.src(['./@(lib|gulp)/**/*.js', './@(snakeskin|externs).js', './predefs/src/index.js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
@@ -45,27 +47,24 @@ exports.head = function (cb) {
 				.on('end', cb);
 		},
 
-		function (cb) {
+		(cb) => {
 			gulp.src('./bin/snakeskin.js')
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
-				.pipe(replace(/^#!.*\n{2}/, function (sstr) {
-					return sstr + fullHead;
-				}))
-
+				.pipe(replace(/^#!.*\n{2}/, (sstr) => sstr + fullHead))
 				.pipe(gulp.dest('./bin'))
 				.on('end', cb);
 		}
 
-	], function () {
+	], () => {
 		global.readyToWatcher = true;
 		cb();
 	});
 };
 
-exports.copyright = function (cb) {
+exports.copyright = (cb) => {
 	gulp.src('./LICENSE')
-		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, function (sstr, intro, from, to) {
+		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (sstr, intro, from, to) => {
 			const year = new Date().getFullYear();
 			return intro + from + (to || from != year ? '-' + year : '');
 		}))
@@ -74,21 +73,21 @@ exports.copyright = function (cb) {
 		.on('end', cb);
 };
 
-exports.bump = function (cb) {
+exports.bump = (cb) => {
 	gulp.src('./*.json')
 		.pipe(bump({version: helpers.getVersion()}))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
 };
 
-gulp.task('npmignore', function (cb) {
+gulp.task('npmignore', (cb) => {
 	gulp.src('./.npmignore')
 		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, fs.readFileSync('./.gitignore') + '\n'))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
 });
 
-exports.yaspeller = function (cb) {
+exports.yaspeller = (cb) => {
 	run('yaspeller ./').exec()
 		.on('error', helpers.error(cb))
 		.on('finish', cb);

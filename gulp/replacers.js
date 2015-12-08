@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -20,9 +22,8 @@ const
 	escodegen = require('escodegen'),
 	escope = require('escope');
 
-const val = exports.val = function (src) {
-	return 'module_' + uid(src);
-};
+const
+	val = exports.val = (src) => `module_${uid(src)}`;
 
 function uid(src) {
 	const hash = crypto.createHash('md5');
@@ -34,9 +35,9 @@ function normalize(src) {
 	return path.normalize(src).split(path.sep).join('/');
 }
 
-exports.modules = function () {
+exports.modules = () => {
 	const modules = {};
-	return function (text, file) {
+	return (text, file) => {
 		const
 			moduleId = modules[file] || (modules[file] = val(file)),
 			includes = [];
@@ -51,7 +52,7 @@ exports.modules = function () {
 			const base = path.dirname(file);
 			src = normalize(path.resolve(base, src));
 
-			var
+			let
 				i = 1,
 				ext = false;
 
@@ -61,7 +62,7 @@ exports.modules = function () {
 			}
 
 			while (i--) {
-				var tmpSrc = src;
+				let tmpSrc = src;
 
 				if (ext) {
 					switch (i) {
@@ -104,7 +105,7 @@ exports.modules = function () {
 			return sstr;
 		});
 
-		var ast = esprima.parse(text, {
+		let ast = esprima.parse(text, {
 			comment: true,
 			range: true,
 			loc: false,
@@ -118,13 +119,14 @@ exports.modules = function () {
 
 		$C(vars).forEach(function (el) {
 			if (!/module_/.test(el.name)) {
-				var newName = moduleId + '_' + el.name;
+				const
+					newName = `${moduleId}_${el.name}`;
 
-				el.references.forEach(function (ref) {
+				el.references.forEach((ref) => {
 					ref.identifier.name = newName;
 				});
 
-				el.identifiers.forEach(function (ident) {
+				el.identifiers.forEach((ident) => {
 					ident.name = newName;
 				});
 			}

@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -33,7 +35,7 @@ exports.getBuilds = function () {
 };
 
 exports.error = function (cb) {
-	return function (err) {
+	return (err) => {
 		console.error(err.message);
 		cb();
 	};
