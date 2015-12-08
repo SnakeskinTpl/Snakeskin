@@ -77,7 +77,7 @@ module.exports = (cb) => {
 
 				.pipe(header(
 					`'/*! Snakeskin v${helpers.getVersion()}` +
-					(key !== 'snakeskin' ? ' (' + key.replace(/^snakeskin\./, '') + ')' : '') +
+					(key !== 'snakeskin' ? ` (${key.replace(/^snakeskin\./, '')})` : '') +
 					' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n'
 				))
 
