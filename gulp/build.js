@@ -68,14 +68,7 @@ exports.build = (cb) => {
 
 	gulp.src('./lib/**/!(snakeskin.export).js')
 		.pipe(cached('build'))
-		.pipe(babel({
-			presets: ['es2015'],
-			compact: false,
-			auxiliaryCommentBefore: 'istanbul ignore next',
-			plugins: [
-				'transform-undefined-to-void'
-			]
-		}))
+		.pipe(babel())
 
 		.on('error', helpers.error(cb))
 		.pipe(replace(headRgxp, ''))
@@ -114,9 +107,12 @@ exports.build = (cb) => {
 
 						(cb) => {
 							gulp.src('./lib/snakeskin.export.js')
-								.pipe(babel())
-								.on('error', helpers.error(cb))
+								.pipe(babel({
+									moduleId: 'Snakeskin',
+									plugins: ['transform-es2015-modules-umd']
+								}))
 
+								.on('error', helpers.error(cb))
 								.pipe(replace(/\$\{dist}/, name))
 								.pipe(replace(/Snakeskin = \['(.*)'\]/, (sstr, id) =>
 									`Snakeskin = ${replacers.val(path.resolve(`tmp/${id}.js`))}.Snakeskin`
