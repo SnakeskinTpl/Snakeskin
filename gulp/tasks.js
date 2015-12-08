@@ -13,13 +13,20 @@ const
 	async = require('async'),
 	through = require('through2'),
 	helpers = require('./helpers'),
+	del = require('del'),
 	fs = require('fs');
 
 const
+	monic = require('gulp-monic'),
+	download = require('gulp-download'),
 	replace = require('gulp-replace'),
 	header = require('gulp-header'),
 	bump = require('gulp-bump'),
 	run = require('gulp-run');
+
+gulp.task('clean', (cb) => {
+	del('./tmp', cb);
+});
 
 gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
@@ -50,6 +57,33 @@ gulp.task('yaspeller', (cb) => {
 	run('yaspeller ./').exec()
 		.on('error', helpers.error(cb))
 		.on('finish', cb);
+});
+
+gulp.task('predefs', (cb) => {
+	async.parallel([
+		(cb) => {
+			download([
+				'https://raw.githubusercontent.com/google/closure-compiler/master/externs/fileapi.js',
+				'https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine.js'
+			])
+				.on('error', helpers.error(cb))
+				.pipe(gulp.dest('./predefs/src/ws'))
+				.on('end', () => {
+					gulp.src('./predefs/src/index.js')
+						.pipe(monic())
+						.on('error', helpers.error(cb))
+						.pipe(gulp.dest('./predefs/build'))
+						.on('end', cb);
+				});
+		},
+
+		(cb) => {
+			run('bower install').exec()
+				.on('error', helpers.error(cb))
+				.on('finish', cb);
+		}
+
+	], cb);
 });
 
 gulp.task('head', (cb) => {
