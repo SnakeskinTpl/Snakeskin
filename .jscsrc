@@ -5,7 +5,6 @@
     "externs.js",
     "snakeskin.js",
     "bin/**",
-    "gulp/**",
     "dist/**",
     "test/**/",
     "predefs/**",
