@@ -71,6 +71,7 @@
     "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.11.0",
     "jscs": "^2.6.0",
+    "monic": "^2.3.7",
     "through2": "^2.0.0",
     "yaspeller": "^2.0.0"
   }
