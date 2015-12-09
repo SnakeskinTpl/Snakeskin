@@ -18,9 +18,11 @@ const
 	helpers = require('./helpers');
 
 const
+	wrap = require('gulp-wrap'),
 	header = require('gulp-header'),
 	cached = require('gulp-cached'),
-	gcc = require('gulp-closure-compiler');
+	gcc = require('gulp-closure-compiler'),
+	eol = require('gulp-eol');
 
 gulp.task('compile', ['predefs'], compile);
 gulp.task('compile-fast', compile);
@@ -44,14 +46,15 @@ function compile(cb) {
 			);
 
 			const head =
-				`'use strict'; ` +
 				`/*! Snakeskin v${helpers.getVersion()}${name}` +
 				' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n';
 
 			gulp.src(path.join('./dist/', `${key}.js`))
 				.pipe(cached('compile'))
 				.pipe(gcc(gccFlags))
+				.pipe(wrap('(function(){\'use strict\';<%= contents %>}).call(this);'))
 				.pipe(header(head))
+				.pipe(eol('\n'))
 				.pipe(gulp.dest('./dist'))
 				.on('end', cb);
 		});

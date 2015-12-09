@@ -22,11 +22,13 @@ function test(cb) {
 	gulp.src('./dist/snakeskin.js')
 		.pipe(istanbul())
 		.pipe(istanbul.hookRequire())
-		.on('finish', () => {
-			gulp.src(['./test/test.dev.js'])
-				.pipe(jasmine())
-				.on('error', helpers.error(cb))
-				.pipe(istanbul.writeReports())
-				.on('end', cb);
-		});
+		.on('finish', runTests);
+
+	function runTests() {
+		gulp.src('./test/test.dev.js')
+			.pipe(jasmine())
+			.on('error', helpers.error(cb))
+			.pipe(istanbul.writeReports())
+			.on('end', cb);
+	}
 }

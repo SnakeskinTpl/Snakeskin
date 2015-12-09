@@ -13,6 +13,7 @@ const
 	async = require('async'),
 	cached = require('gulp-cached');
 
+require('sugar');
 require('./gulp/other');
 require('./gulp/predefs');
 require('./gulp/build');
@@ -23,14 +24,6 @@ global.headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/;
 global.readyToWatcher = null;
 
 gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], () => {
-	function unbind(name) {
-		return (e) => {
-			if (e.type === 'deleted') {
-				delete cached.caches[name][e.path];
-			}
-		};
-	}
-
 	async.whilst(
 		() =>
 			readyToWatcher === false,
@@ -45,6 +38,14 @@ gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], () => {
 			gulp.watch('./.gitignore', ['npmignore']);
 		}
 	);
+
+	function unbind(name) {
+		return (e) => {
+			if (e.type === 'deleted') {
+				delete cached.caches[name][e.path];
+			}
+		};
+	}
 });
 
 gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller', 'npmignore']);
