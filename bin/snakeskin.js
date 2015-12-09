@@ -341,11 +341,15 @@ function action(data, file) {
 				tpl = tpls[mainTpl];
 
 			} else {
+				var tplNames = Object.keys(tpls).filter(function (el) {
+					return el != 'init';
+				}).sort();
+
 				if (file) {
-					tpl = tpls[fileName] || tpls.main || tpls[Object.keys(tpls)[0]];
+					tpl = tpls[fileName] || tpls.main || tpls[tplNames[0]];
 
 				} else {
-					tpl = tpls.main || tpls[Object.keys(tpls)[0]];
+					tpl = tpls.main || tpls[tplNames[0]];
 				}
 			}
 
