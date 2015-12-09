@@ -142,6 +142,8 @@
   },
 
   "requireCapitalizedConstructors": true,
+  "requireEarlyReturn": true,
+
   "disallowSpacesInGenerator": {
     "beforeStar": true
   },
