@@ -1,6 +1,6 @@
 var path = require('path'),
 	fs = require('fs'),
-	eol = require('os').EOL;
+	eol = '\n';
 
 var assert = require('assert'),
 	snakeskin = require('../snakeskin');
