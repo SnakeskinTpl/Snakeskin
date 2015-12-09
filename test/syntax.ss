@@ -12,6 +12,7 @@ syntax_index11
 syntax_index12
 syntax_index13
 syntax_index14
+syntax_index18
 
 ###
 
@@ -154,6 +155,18 @@ fffuuuu' .
 	- if 1
 		1
 
+- template syntax_index17()
+	- page = {}
+	- page.breadcrumbs = []
+	{page|json|!html}
+
+- template syntax_index18() extends syntax_index17
+	- page.breadcrumbs = [{ &
+		href: '/places',
+		title: `Ffffuuu`,
+		angle: true
+	}] .
+
 ###
 
 <span class="bar car foo"><div id="my" class="foo__bar">1</div></span><div id="my" class="&__bar">1</div><div id="my" class="foo__bar">1</div>
@@ -209,3 +222,7 @@ fff		uuuu		fffuuuu
 ***
 
 <div class="foo"></div>
+
+***
+
+{"breadcrumbs":[{"href":"/places","title":"Ffffuuu","angle":true}]}
