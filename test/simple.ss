@@ -159,3 +159,7 @@ simple_unary
 ***
 
 4
+
+***
+
+foo-10 true
