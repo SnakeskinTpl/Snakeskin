@@ -1,8 +1,5 @@
 {
-  "presets": ["es2015"],
+  "presets": ["es2015-rollup"],
   "compact": false,
-  "auxiliaryCommentBefore": "istanbul ignore next",
-  "plugins": [
-    "transform-undefined-to-void"
-  ]
+  "auxiliaryCommentBefore": "istanbul ignore next"
 }
