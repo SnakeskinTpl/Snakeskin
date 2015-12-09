@@ -122,7 +122,7 @@ exports.compileFile = function (src, opt_params) {
 		cacheEnabled = p.cache !== false;
 
 	var
-		cacheKey = this.compile(null, p, null, {cacheKey: true}),
+		cacheKey = exports.compile(null, p, null, {cacheKey: true}),
 		fromCache = cacheEnabled &&
 			cache[cacheKey] &&
 			cache[cacheKey][src];
@@ -159,11 +159,10 @@ exports.compileFile = function (src, opt_params) {
 
 	var
 		tpls,
-		res = true,
-		that = this;
+		res = true;
 
 	function compile() {
-		res = that.compile(source, p, {file: src});
+		res = exports.compile(source, p, {file: src});
 
 		if (res !== false) {
 			fs.writeFileSync(resSrc, res);
@@ -171,7 +170,7 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (cacheEnabled) {
-		if (!this.check(src, resSrc, cacheKey)) {
+		if (!exports.check(src, resSrc, cacheKey)) {
 			compile();
 		}
 
@@ -193,7 +192,7 @@ exports.compileFile = function (src, opt_params) {
 		}
 
 		if (tpls.init) {
-			tpls.init(this);
+			tpls.init(exports);
 		}
 
 		return tpls;
@@ -238,13 +237,13 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
  * @return {Function}
  */
 exports.execFile = function (src, opt_params, opt_tplName) {
-	var tpls = this.compileFile(src, opt_params);
+	var tpls = exports.compileFile(src, opt_params);
 
 	if (!tpls) {
 		return null;
 	}
 
-	return this.returnMainTpl(tpls, src, opt_tplName);
+	return exports.returnMainTpl(tpls, src, opt_tplName);
 };
 
 /**
@@ -264,6 +263,6 @@ exports.exec = function (txt, opt_params, opt_tplName) {
 	opt_params = opt_params || {};
 	opt_params.context = tpls;
 
-	this.compile(txt, opt_params);
-	return this.returnMainTpl(tpls, null, opt_tplName);
+	exports.compile(txt, opt_params);
+	return exports.returnMainTpl(tpls, null, opt_tplName);
 };
