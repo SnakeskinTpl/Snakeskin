@@ -14,7 +14,6 @@ const
 const
 	gulp = require('gulp'),
 	async = require('async'),
-	path = require('path'),
 	helpers = require('./helpers');
 
 const
@@ -49,7 +48,7 @@ function compile(cb) {
 				`/*! Snakeskin v${helpers.getVersion()}${name}` +
 				' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n';
 
-			gulp.src(path.join('./dist/', `${key}.js`))
+			gulp.src(`./dist/${key}.js`)
 				.pipe(cached('compile'))
 				.pipe(gcc(gccFlags))
 				.pipe(wrap('(function(){\'use strict\';<%= contents %>}).call(this);'))

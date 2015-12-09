@@ -14,7 +14,6 @@ const
 const
 	gulp = require('gulp'),
 	async = require('async'),
-	path = require('path'),
 	del = require('del'),
 	helpers = require('./helpers');
 
