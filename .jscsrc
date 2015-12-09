@@ -28,7 +28,6 @@
   "validateQuoteMarks": "'",
 
   "disallowIdenticalDestructuringNames": true,
-  "requireEnhancedObjectLiterals": true,
   "requireObjectDestructuring": true,
   "requireNumericLiterals": true,
   "requireSpread": true,
