@@ -26,10 +26,7 @@ const
 	header = require('gulp-header'),
 	eol = require('gulp-eol');
 
-gulp.task('build', build);
-gulp.task('full-build', ['clean'], build);
-
-function build(cb) {
+gulp.task('build', (cb) => {
 	const
 		builds = helpers.getBuilds(),
 		tasks = [];
@@ -65,7 +62,7 @@ function build(cb) {
 					.pipe(header(fullHead))
 					.pipe(eol('\n'))
 					.pipe(rename({extname: '.js'}))
-					.pipe(gulp.dest('./tmp'))
+					.pipe(gulp.dest('./dist'))
 					.on('end', clean);
 			}
 
@@ -76,4 +73,4 @@ function build(cb) {
 	});
 
 	async.parallel(tasks, cb);
-}
+});

@@ -11,17 +11,12 @@
 const
 	gulp = require('gulp'),
 	helpers = require('./helpers'),
-	del = require('del'),
 	fs = require('fs');
 
 const
 	replace = require('gulp-replace'),
 	bump = require('gulp-bump'),
 	run = require('gulp-run');
-
-gulp.task('clean', (cb) => {
-	del('./tmp', cb);
-});
 
 gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
