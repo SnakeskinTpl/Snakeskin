@@ -28,11 +28,11 @@ export function getCommentType(str, pos) {
 }
 
 /**
- * Returns a string of property concatenation for the specified string
+ * Returns a string of property concatenation for the specified value
  *
- * @param {string} str - source string
+ * @param {string} val - source value
  * @return {string}
  */
-export function concatProp(str) {
-	return str[0] === '[' ? str : `.${str}`;
+export function concatProp(val) {
+	return val[0] === '[' ? val : `.${val}`;
 }

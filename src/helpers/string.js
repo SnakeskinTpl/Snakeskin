@@ -21,7 +21,7 @@ export function ws(strings, ...expr) {
 }
 
 const
-	rRgxp = /([\\\/\'*+?|()\[\]{}.^$-])/g;
+	rRgxp = /([\\\/'*+?|()\[\]{}.^$-])/g;
 
 /**
  * Escapes RegExp characters in a string

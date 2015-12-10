@@ -16,12 +16,12 @@ import { GLOBAL_CACHE, GLOBAL_FN_CACHE } from '../consts/cache';
 import { escapeEOLs } from './escape';
 
 /**
- * Returns data from the cache by a cache key
+ * Returns data from the cache by the specified key
  *
  * @param {?string} cacheKey - cache key
  * @param {string} code - source SS code
- * @param {!Object} params - runtime parameters
- * @param {!Object} ctx - object of the source context
+ * @param {!Object} params - compile parameters
+ * @param {!Object} ctx - context
  * @return {(string|undefined)}
  */
 export function getFromCache(cacheKey, code, params, ctx) {
@@ -67,10 +67,10 @@ export function getFromCache(cacheKey, code, params, ctx) {
 }
 
 /**
- * Returns a cache key for a source
+ * Returns a cache key for the current SS process
  *
- * @param {!Object} params - runtime parameters
- * @param {!Object} ctx - object of the source context
+ * @param {!Object} params - compile parameters
+ * @param {!Object} ctx - context
  * @return {?string}
  */
 export function getCacheKey(params, ctx) {
@@ -97,12 +97,12 @@ export function getCacheKey(params, ctx) {
 }
 
 /**
- * Saves compiled template functions in the cache by a cache key
+ * Saves compiled template functions in the cache by the specified key
  *
- * @param {?string} cacheKey - the cache key
- * @param {string} code - the source SS code
- * @param {!Object} params - runtime parameters
- * @param {!Object} ctx - an object of the source context
+ * @param {?string} cacheKey - cache key
+ * @param {string} code - source SS code
+ * @param {!Object} params - compile parameters
+ * @param {!Object} ctx - context
  */
 export function saveIntoFnCache(cacheKey, code, params, ctx) {
 	if (ctx !== NULL) {
@@ -116,12 +116,12 @@ export function saveIntoFnCache(cacheKey, code, params, ctx) {
 }
 
 /**
- * Saves templates in the cache by a cache key
+ * Saves templates in the cache by the specified key
  *
- * @param {?string} cacheKey - the cache key
- * @param {string} code - the source SS code
- * @param {!Object} params - runtime parameters
- * @param {!Parser} parser - an instance of Parser class
+ * @param {?string} cacheKey - cache key
+ * @param {string} code - source SS code
+ * @param {!Object} params - compile parameters
+ * @param {!Parser} parser - instance of Parser class
  */
 export function saveIntoCache(cacheKey, code, params, parser) {
 	if (cacheKey && (params.cache || GLOBAL_CACHE[cacheKey])) {
