@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -24,7 +26,7 @@ const
 /**
  * Escapes RegExp characters in a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 export function r(str) {

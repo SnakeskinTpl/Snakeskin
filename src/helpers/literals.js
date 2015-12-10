@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,8 +14,8 @@ import { COMMENTS } from '../consts/literals';
 /**
  * Returns a comment type for the specified position of a string
  *
- * @param {string} str - the source string
- * @param {number} pos - the position
+ * @param {string} str - source string
+ * @param {number} pos - position
  * @return {(string|boolean)}
  */
 export function getCommentType(str, pos) {
@@ -26,9 +28,9 @@ export function getCommentType(str, pos) {
 }
 
 /**
- * Returns a string of property concatenation for a string
+ * Returns a string of property concatenation for the specified string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 export function concatProp(str) {

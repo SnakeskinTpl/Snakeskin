@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,7 +14,7 @@ import { isString } from '../helpers/types';
 /**
  * Clones an object
  *
- * @param {?} obj - the source object
+ * @param {?} obj - source object
  * @return {?}
  */
 export function clone(obj) {
@@ -20,11 +22,11 @@ export function clone(obj) {
 }
 
 /**
- * Converts a value to an object
+ * Converts the specified value to an object
  *
- * @param {?} val - an object, a string for parsing or URL for data file
+ * @param {?} val - object, a string for parsing or URL for data file
  * @param {?string=} [opt_base] - base URL
- * @param {?function(string)=} [opt_onFileExists] - a callback function (only if val is URL)
+ * @param {?function(string)=} [opt_onFileExists] - callback function (only if val is URL)
  * @return {!Object}
  */
 export function toObj(val, opt_base, opt_onFileExists) {
@@ -67,12 +69,11 @@ export function toObj(val, opt_base, opt_onFileExists) {
 				}
 
 				return Object(res || {});
-
-			} else {
-				val = old;
 			}
 
 		} catch (ignore) {
+
+		} finally {
 			val = old;
 		}
 	}

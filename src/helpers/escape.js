@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -17,10 +19,10 @@ import {
 /**
  * Escapes backslashes in a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
-export function escapeBackslashs(str) {
+export function escapeBackslashes(str) {
 	return String(str)
 		.replace(backSlashes, '\\\\');
 }
@@ -28,7 +30,7 @@ export function escapeBackslashs(str) {
 /**
  * Escapes single quotes in a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 export function escapeSingleQuotes(str) {
@@ -39,7 +41,7 @@ export function escapeSingleQuotes(str) {
 /**
  * Escapes double quotes in a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 export function escapeDoubleQuotes(str) {
@@ -54,7 +56,7 @@ const
 /**
  * Escapes EOLs in a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 export function escapeEOLs(str) {
@@ -66,7 +68,7 @@ export function escapeEOLs(str) {
 /**
  * Applies default SS escaping to a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 export function applyDefEscape(str) {

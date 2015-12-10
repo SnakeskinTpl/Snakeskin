@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -16,10 +18,10 @@ import { escapeEOLs } from './escape';
 /**
  * Returns data from the cache by a cache key
  *
- * @param {?string} cacheKey - the cache key
- * @param {string} code - the source SS code
+ * @param {?string} cacheKey - cache key
+ * @param {string} code - source SS code
  * @param {!Object} params - runtime parameters
- * @param {!Object} ctx - an object of the source context
+ * @param {!Object} ctx - object of the source context
  * @return {(string|undefined)}
  */
 export function getFromCache(cacheKey, code, params, ctx) {
@@ -68,7 +70,7 @@ export function getFromCache(cacheKey, code, params, ctx) {
  * Returns a cache key for a source
  *
  * @param {!Object} params - runtime parameters
- * @param {!Object} ctx - an object of the source context
+ * @param {!Object} ctx - object of the source context
  * @return {?string}
  */
 export function getCacheKey(params, ctx) {

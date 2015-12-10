@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,9 +15,9 @@ import { macroBlackSymbols } from '../consts/regs';
 /**
  * Sets an object as macros
  *
- * @param {(Object|undefined)} obj - the source object
- * @param {!Object} macros - a macro namespace object
- * @param {?string=} [opt_namespace] - a namespace for adding macros
+ * @param {(Object|undefined)} obj - source object
+ * @param {!Object} macros - macro namespace object
+ * @param {?string=} [opt_namespace] - namespace for adding macros
  * @param {?boolean=} [opt_init=false] - if is true, then macros will be re/initialised
  */
 export function setMacros(obj, macros, opt_namespace, opt_init) {

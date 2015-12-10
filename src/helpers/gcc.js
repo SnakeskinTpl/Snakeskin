@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -9,8 +11,8 @@
 /**
  * Exports an object property for the GCC
  *
- * @param {?} a - an option 1
- * @param {?} b - an option 2
+ * @param {?} a - option 1
+ * @param {?} b - option 2
  * @return {?}
  */
 export function _(a, b) {
@@ -25,7 +27,7 @@ export function _(a, b) {
  * Returns an object with an undefined type
  * (for the GCC)
  *
- * @param {?} val - the source object
+ * @param {?} val - source object
  * @return {?}
  */
 export function any(val) {
