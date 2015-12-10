@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -64,8 +66,8 @@ let
  * Returns a template description object from a string
  * (Jade-Like to SS native)
  *
- * @param {string} str - the source string
- * @param {number} i - the start iteration position
+ * @param {string} str - source string
+ * @param {number} i - start iteration position
  * @return {{str: string, length: number, error: (boolean|null|undefined)}}
  */
 Parser.prototype.toBaseSyntax = function (str, i) {
@@ -340,7 +342,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 /**
  * Returns the end for a block directive
  *
- * @param {!Object} dir - the directive object
+ * @param {!Object} dir - directive object
  * @param {string} space - white spaces
  * @return {string}
  */
@@ -363,8 +365,8 @@ function genEndDir(dir, space) {
 /**
  * Returns an object description of a Jade-Like syntax string
  *
- * @param {string} str - the source string
- * @param {number} i - the start iteration position
+ * @param {string} str - source string
+ * @param {number} i - start iteration position
  * @param {boolean} dir - if is true, then the declaration is considered as a block directive
  * @param {boolean} comment - if is true, then declaration is considered a multiline comment
  * @return {{command: string, length: number, name: string, lastEl: string, sComment: boolean}}
@@ -465,89 +467,88 @@ function getLineDesc(str, i, dir, comment) {
 				lastEl,
 				sComment: !inline && sComment
 			};
+		}
 
-		} else {
-			if (!bOpen && !currentEscape) {
-				const
-					commentType = getCommentType(str, j);
+		if (!bOpen && !currentEscape) {
+			const
+				commentType = getCommentType(str, j);
 
-				if (comment) {
-					comment = commentType !== MULT_COMMENT_END;
+			if (comment) {
+				comment = commentType !== MULT_COMMENT_END;
 
-				} else if (!sComment) {
-					comment = commentType === MULT_COMMENT_START;
+			} else if (!sComment) {
+				comment = commentType === MULT_COMMENT_START;
 
-					if (!comment) {
-						sComment = commentType === SINGLE_COMMENT;
-					}
+				if (!comment) {
+					sComment = commentType === SINGLE_COMMENT;
 				}
 			}
+		}
 
-			if (!comment && !sComment) {
-				if (!bOpen) {
-					if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
-						bEnd = true;
+		if (!comment && !sComment) {
+			if (!bOpen) {
+				if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
+					bEnd = true;
 
-					} else if (rgxp.bEnd.test(el)) {
-						bEnd = false;
-					}
-
-					if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
-						bEnd = true;
-
-					} else if (rgxp.bEnd.test(el)) {
-						bEnd = false;
-					}
-
-					if (rgxp.sysWord.test(el)) {
-						part += el;
-
-					} else {
-						rPart = part;
-						part = '';
-					}
-
-					if (dir && !inline) {
-						inline = str.substr(j, INLINE.length) === INLINE;
-					}
-				}
-
-				if (ESCAPES[el] && (el !== '/' || bEnd) && !bOpen) {
-					bOpen = el;
-
-				} else if (bOpen && (el === '\\' || bEscape)) {
-					bEscape = !bEscape;
-
-				} else if (ESCAPES[el] && bOpen === el && !bEscape) {
-					bOpen = false;
+				} else if (rgxp.bEnd.test(el)) {
 					bEnd = false;
 				}
-			}
 
-			const
-				needSpace = rgxp.lineWhitespace.test(el);
+				if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
+					bEnd = true;
 
-			if (needSpace) {
-				if (nmBrk === false) {
-					nmBrk = true;
+				} else if (rgxp.bEnd.test(el)) {
+					bEnd = false;
 				}
 
-			} else {
-				lastEl = el;
-				lastElI = command.length;
-			}
+				if (rgxp.sysWord.test(el)) {
+					part += el;
 
-			if (!nmBrk && !needSpace) {
-				if (nmBrk === null) {
-					nmBrk = false;
+				} else {
+					rPart = part;
+					part = '';
 				}
 
-				name += el;
+				if (dir && !inline) {
+					inline = str.substr(j, INLINE.length) === INLINE;
+				}
 			}
 
-			if (nmBrk !== null) {
-				command += el;
+			if (ESCAPES[el] && (el !== '/' || bEnd) && !bOpen) {
+				bOpen = el;
+
+			} else if (bOpen && (el === '\\' || bEscape)) {
+				bEscape = !bEscape;
+
+			} else if (ESCAPES[el] && bOpen === el && !bEscape) {
+				bOpen = false;
+				bEnd = false;
 			}
+		}
+
+		const
+			needSpace = rgxp.lineWhitespace.test(el);
+
+		if (needSpace) {
+			if (nmBrk === false) {
+				nmBrk = true;
+			}
+
+		} else {
+			lastEl = el;
+			lastElI = command.length;
+		}
+
+		if (!nmBrk && !needSpace) {
+			if (nmBrk === null) {
+				nmBrk = false;
+			}
+
+			name += el;
+		}
+
+		if (nmBrk !== null) {
+			command += el;
 		}
 	}
 

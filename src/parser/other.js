@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -20,7 +22,7 @@ import {
  * Returns a list of template names
  * that are involved in an inheritance chain
  *
- * @param {string} name - the template name
+ * @param {string} name - template name
  * @return {!Array}
  */
 Parser.getExtList = function (name) {
@@ -39,7 +41,7 @@ Parser.getExtList = function (name) {
 
 /**
  * Clears the cache scope of a template
- * @param {string} name - the template name
+ * @param {string} name - template name
  */
 Parser.clearScopeCache = function (name) {
 	$C(SCOPE).forEach((cluster, key) => {
@@ -63,7 +65,7 @@ Parser.clearScopeCache = function (name) {
 /**
  * Returns diff of a directive command and directive declaration
  *
- * @param {number} length - the command length
+ * @param {number} length - command length
  * @return {number}
  */
 Parser.prototype.getDiff = function (length) {

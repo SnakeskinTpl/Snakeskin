@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -21,8 +23,8 @@ import {
 /**
  * Returns a cache object for a block
  *
- * @param {string} type - the block type (block, proto etc.)
- * @param {?string=} [opt_tplName] - a template name
+ * @param {string} type - block type (block, proto etc.)
+ * @param {?string=} [opt_tplName] - template name
  * @return {Object}
  */
 Parser.prototype.getBlockOutput = function (type, opt_tplName) {
@@ -45,7 +47,7 @@ Parser.prototype.getBlockOutput = function (type, opt_tplName) {
 /**
  * (Re)initializes cache for a template
  *
- * @param {string} tplName - the template name
+ * @param {string} tplName - template name
  * @return {!Parser}
  */
 Parser.prototype.initTemplateCache = function (tplName) {

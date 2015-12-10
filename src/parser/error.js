@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -30,9 +32,7 @@ const
  */
 Parser.prototype.getAdvInfo = function () {
 	const
-		eol = this.eol,
-		info = this.info,
-		line = info.line;
+		{eol, info, info: {line}} = this;
 
 	if (!info) {
 		return '';
@@ -104,7 +104,7 @@ Parser.prototype.getAdvInfo = function () {
 
 /**
  * Returns an error object
- * @param {string} msg - the error message
+ * @param {string} msg - error message
  */
 Parser.prototype.error = function (msg) {
 	this.errors.push(msg);

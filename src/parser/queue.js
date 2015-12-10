@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,7 +14,7 @@ import { Parser } from './constructor';
 /**
  * Appends a function to the queue
  *
- * @param {function(this:Parser)} fn - the source function
+ * @param {function(this:Parser)} fn - source function
  * @return {!Parser}
  */
 Parser.prototype.toQueue = function (fn) {

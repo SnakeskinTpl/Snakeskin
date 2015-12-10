@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -33,7 +35,7 @@ const
  * Returns the full body of a template
  * (with inheritance)
  *
- * @param {string} tplName - the template name
+ * @param {string} tplName - template name
  * @return {string}
  */
 Parser.prototype.getTplFullBody = function (tplName) {

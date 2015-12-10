@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -16,7 +18,7 @@ import { ws } from '../helpers/string';
 /**
  * Returns a real directive name
  *
- * @param {?string} name - the source name
+ * @param {?string} name - source name
  * @return {?string}
  */
 Parser.prototype.getDirName = function (name) {
@@ -26,7 +28,7 @@ Parser.prototype.getDirName = function (name) {
 /**
  * Returns a function name from a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @param {?boolean=} [opt_empty=false] - if is true, then function name can be empty
  * @return {string}
  */
@@ -46,12 +48,12 @@ Parser.prototype.getFnName = function (str, opt_empty) {
  * Replaces all find blocks %fileName% to the active file name
  * and returns a new string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 Parser.prototype.replaceFileNamePatterns = function (str) {
 	const
-		file = this.info.file;
+		{file} = this.info;
 
 	let basename;
 	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (sstr, $1) => {
@@ -98,7 +100,7 @@ export const
  * Prepares a template declaration string
  * (evaluation of expressions, etc.)
  *
- * @param {string} name - the source string
+ * @param {string} name - source string
  * @return {string}
  */
 Parser.prototype.prepareNameDecl = function (name) {

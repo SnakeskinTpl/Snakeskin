@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -18,7 +20,7 @@ import { ws } from '../helpers/string';
  */
 export class Parser {
 	/**
-	 * @param {string} src - the source text of templates
+	 * @param {string} src - source text of templates
 	 * @param {$$SnakeskinParserParams} params - additional parameters
 	 */
 	constructor(src, params) {
@@ -364,6 +366,7 @@ export class Parser {
 											__EXEC__.call(__EXPORTS__);
 											return __EXPORTS__;
 										});
+
 									} else {
 										__EXEC__.call(__EXPORTS__);
 										return __EXPORTS__;

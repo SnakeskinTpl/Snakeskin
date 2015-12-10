@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -32,7 +34,7 @@ Parser.prototype.pasteDangerBlocks = function (str) {
  * Replaces all found blocks __SNAKESKIN__number_ to real content in a string
  * and returns a new string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 Parser.prototype.pasteTplVarBlocks = function (str) {

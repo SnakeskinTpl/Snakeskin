@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -18,7 +20,7 @@ import {
 /**
  * Declares the start of a block directive
  *
- * @param {?string=} [opt_name=this.name] - the directive name
+ * @param {?string=} [opt_name=this.name] - directive name
  * @param {Object=} [opt_params] - additional parameters
  * @param {Object=} [opt_vars] - local variables
  * @return {!Parser}
@@ -55,8 +57,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		.push(obj);
 
 	const
-		blockStruct = this.blockStructure,
-		blockTable = this.blockTable;
+		{blockStruct, blockTable} = this;
 
 	if (blockStruct && this.getGroup('blockInherit')[opt_name]) {
 		const
@@ -139,8 +140,7 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 	this.structure = obj;
 
 	const
-		blockStruct = this.blockStructure,
-		blockTable = this.blockTable;
+		{blockStruct, blockTable} = this;
 
 	if (this.blockStructure && this.getGroup('inlineInherit')[opt_name]) {
 		const

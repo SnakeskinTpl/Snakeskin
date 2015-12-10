@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -28,7 +30,7 @@ import {
 /**
  * Returns an array of function arguments from a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {!Array}
  */
 Parser.prototype.getFnArgs = function (str) {
@@ -85,11 +87,11 @@ Parser.prototype.getFnArgs = function (str) {
  * Searches function arguments from a string
  * and returns an information object
  *
- * @param {string} str - the source string
- * @param {string} type - a function type (template, proto etc.)
- * @param {?string=} [tplName] - a template name
- * @param {?string=} [parentTplName] - a parent template name
- * @param {?string=} [fName] - a custom function name (for proto, block etc.)
+ * @param {string} str - source string
+ * @param {string} type - function type (template, proto etc.)
+ * @param {?string=} [tplName] - template name
+ * @param {?string=} [parentTplName] - parent template name
+ * @param {?string=} [fName] - custom function name (for proto, block etc.)
  * @return {{str: string, list: !Array, defParams: string, scope: (string|undefined)}}
  */
 Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fName} = {}) {
@@ -100,7 +102,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 	let
 		argsList = this.getFnArgs(str),
-		params = argsList.params,
+		{params} = argsList,
 		parentArgs,
 		argsTable;
 
@@ -131,10 +133,9 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 			});
 
 			return tmp;
-
-		} else {
-			argsTable = ARGS[tplName][type][fName] = {};
 		}
+
+		argsTable = ARGS[tplName][type][fName] = {};
 
 	} else {
 		if (parentTplName) {
@@ -147,7 +148,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 	let
 		scope = undefined;
 
-	$C(argsList).forEach((el) => {
+	$C(argsList).forEach((el, i) => {
 		const arg = el.split('=');
 		arg[0] = arg[0].trim();
 
@@ -166,10 +167,9 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 					defParams: '',
 					scope: undefined
 				};
-
-			} else {
-				scope = arg[0].replace(scopeMod, '');
 			}
+
+			scope = arg[0].replace(scopeMod, '');
 		}
 
 		argsTable[arg[0]] = {

@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -14,7 +16,7 @@ import { ROOT } from '../consts/links';
 /**
  * Executes a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {?}
  */
 Parser.prototype.evalStr = function (str) {
@@ -54,31 +56,30 @@ Parser.prototype.evalStr = function (str) {
 			require('path').dirname(ctx.filename),
 			ctx.filename
 		);
-
-	} else {
-		return new Function(
-			'Snakeskin',
-
-			'__FILTERS__',
-			'__VARS__',
-			'__LOCAL__',
-
-			str
-
-		).call(
-			ROOT,
-			Snakeskin,
-			Snakeskin.Filters,
-			Snakeskin.Vars,
-			Snakeskin.LocalVars
-		);
 	}
+
+	return new Function(
+		'Snakeskin',
+
+		'__FILTERS__',
+		'__VARS__',
+		'__LOCAL__',
+
+		str
+
+	).call(
+		ROOT,
+		Snakeskin,
+		Snakeskin.Filters,
+		Snakeskin.Vars,
+		Snakeskin.LocalVars
+	);
 };
 
 /**
  * Executes a string and returns result
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {?}
  */
 Parser.prototype.returnEvalVal = function (str) {

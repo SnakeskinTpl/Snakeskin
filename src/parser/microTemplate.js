@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -36,7 +38,7 @@ import {
  * Splits a string by the space, and returns an array
  * (with directives)
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {!Array}
  */
 Parser.prototype.splitBySpace = function (str) {
@@ -94,7 +96,7 @@ Parser.prototype.splitBySpace = function (str) {
  * Replaces found matches ${ ... } or #{ ... }
  * from a string to SS calls
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @param {?boolean=} [sys=false] - if is true, then call is considered as system
  * @param {?boolean=} [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_
  * @return {string}

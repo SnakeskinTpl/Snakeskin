@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -18,7 +20,7 @@ const
  * Returns a map of directive names,
  * which belong to the specified groups
  *
- * @param {...string} names - the group name
+ * @param {...string} names - group name
  * @return {!Object.<string, boolean>}
  */
 Parser.prototype.getGroup = function (names) {
@@ -60,7 +62,7 @@ Parser.prototype.getGroup = function (names) {
  * Returns an array of directive names,
  * which belong to the specified groups
  *
- * @param {...string} names - the group name
+ * @param {...string} names - group name
  * @return {!Array.<string>}
  */
 Parser.prototype.getGroupList = function (names) {
