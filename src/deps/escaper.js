@@ -11,7 +11,5 @@
 import { GLOBAL } from '../consts/links';
 import { filterStart } from '../consts/regs';
 
-export const
-	escaper = GLOBAL.Escaper || require('escaper');
-
+export const escaper = GLOBAL.Escaper || require('escaper');
 escaper.snakeskinRgxp = filterStart;
