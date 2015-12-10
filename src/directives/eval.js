@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -25,7 +27,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		const params = this.structure.params;
+		const {params} = this.structure;
 		params['@res'] = this.res;
 		this.res = this.res.slice(0, params.from);
 	}
