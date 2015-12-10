@@ -361,21 +361,22 @@ Snakeskin.Filters['tpl'] = function (str, map) {
 };
 
 Snakeskin.Filters['default']['!undefSnakeskinFilter'] = true;
-let nl2brRgxp = /\r?\n|\n/g;
+const
+	nl2brRgxp = /\r?\n|\n/g;
 
 /**
- * Перевести символы новой строки в br
+ * Replaces EOL symbols from a string to <br>
  *
- * @param {?} val - исходное значение
+ * @param {?} val - source string
  * @return {?}
  */
 Snakeskin.Filters['nl2br'] = function (val) {
-	var
-		arr = val.split(nl2brRgxp),
-		res = '';
+	const
+		arr = val.split(nl2brRgxp);
 
-	for (var i = 0; i < arr.length; i++) {
-		res += Snakeskin.Filters.html(arr[i]) + '<br>';
+	let res = '';
+	for (let i = 0; i < arr.length; i++) {
+		res += `${Snakeskin.Filters.html(arr[i])}<br>`;
 	}
 
 	return res;
