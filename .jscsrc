@@ -54,7 +54,6 @@
   "requireSpaceBeforeObjectValues": true,
   "requireSpacesInConditionalExpression": true,
 
-  "requireCapitalizedComments": true,
   "requireSpaceAfterLineComment": {
     "allExcept": [
       "#include",
