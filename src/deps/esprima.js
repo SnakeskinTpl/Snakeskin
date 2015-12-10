@@ -9,5 +9,6 @@
  */
 
 import { GLOBAL } from '../consts/links';
+
 export const
 	esprima = GLOBAL.esprima || require('esprima');

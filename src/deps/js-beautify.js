@@ -9,5 +9,6 @@
  */
 
 import { GLOBAL } from '../consts/links';
+
 export const
 	beautify = GLOBAL.js_beautify || require('js-beautify');
