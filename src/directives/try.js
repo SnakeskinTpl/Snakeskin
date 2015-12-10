@@ -64,7 +64,6 @@ Snakeskin.addDirective(
 	'finally',
 
 	{
-		placement: 'template',
 		chain: 'try'
 	},
 
