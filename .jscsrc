@@ -32,7 +32,6 @@
   "requireObjectDestructuring": true,
   "requireNumericLiterals": true,
   "requireSpread": true,
-  "requireParenthesesAroundArrowParam": true,
   "requireShorthandArrowFunctions": true,
   "requireTemplateStrings": {
     "allExcept": ["stringConcatenation"]
