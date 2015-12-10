@@ -174,9 +174,9 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 		argsTable[arg[0]] = {
 			i,
+			scope,
 			key: arg[0],
-			value: arg[1] && this.pasteDangerBlocks(arg[1].trim()),
-			scope
+			value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
 		};
 	});
 
@@ -206,9 +206,9 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 		} else {
 			argsTable[key] = {
+				key,
 				local: true,
 				i: el.i,
-				key,
 				value: el.value !== undefined ? el.value : 'void 0'
 			};
 		}
@@ -327,10 +327,10 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 	struct.params._consts = constsCache;
 	const res = {
 		params,
-		str: decl,
-		list: args,
 		scope,
-		defParams
+		defParams,
+		str: decl,
+		list: args
 	};
 
 	if (fName) {
