@@ -31,6 +31,7 @@ export const
 	MULT_COMMENT_START = '/*',
 	MULT_COMMENT_END = '*/';
 
+// jscs:disable
 export const COMMENTS = {
 	[SINGLE_COMMENT]: SINGLE_COMMENT,
 	[MULT_COMMENT_START]: MULT_COMMENT_START,

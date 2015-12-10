@@ -49,6 +49,7 @@ import {
 const
 	alb = ADV_LEFT_BLOCK + lb;
 
+// jscs:disable
 export const
 	/**
 	 * Transformer for a group list

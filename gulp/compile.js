@@ -8,8 +8,9 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+// jscs:disable
 const
-	$C = require('collection.js')['$C'];
+	$C = require('collection.js').$C;
 
 const
 	gulp = require('gulp'),
