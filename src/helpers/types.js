@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -7,9 +9,9 @@
  */
 
 /**
- * Returns true if a value is a function
+ * Returns true if the specified value is a function
  *
- * @param {?} obj - the source value
+ * @param {?} obj - source value
  * @return {boolean}
  */
 export function isFunction(obj) {
@@ -17,9 +19,9 @@ export function isFunction(obj) {
 }
 
 /**
- * Returns true if a value is a number
+ * Returns true if the specified value is a number
  *
- * @param {?} obj - the source value
+ * @param {?} obj - source value
  * @return {boolean}
  */
 export function isNumber(obj) {
@@ -27,9 +29,9 @@ export function isNumber(obj) {
 }
 
 /**
- * Returns true if a value is a string
+ * Returns true if the specified value is a string
  *
- * @param {?} obj - the source value
+ * @param {?} obj - source value
  * @return {boolean}
  */
 export function isString(obj) {
@@ -37,9 +39,9 @@ export function isString(obj) {
 }
 
 /**
- * Returns true if a value is a boolean
+ * Returns true if the specified value is a boolean
  *
- * @param {?} obj - the source value
+ * @param {?} obj - source value
  * @return {boolean}
  */
 export function isBoolean(obj) {
@@ -47,9 +49,9 @@ export function isBoolean(obj) {
 }
 
 /**
- * Returns true if a value is an array
+ * Returns true if the specified value is an array
  *
- * @param {?} obj - the source value
+ * @param {?} obj - source value
  * @return {boolean}
  */
 export function isArray(obj) {
@@ -57,9 +59,9 @@ export function isArray(obj) {
 }
 
 /**
- * Returns true if a value is a plain object
+ * Returns true if the specified value is a plain object
  *
- * @param {?} obj - the source value
+ * @param {?} obj - source value
  * @return {boolean}
  */
 export function isObject(obj) {
