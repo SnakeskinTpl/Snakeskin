@@ -28,6 +28,7 @@
   "validateQuoteMarks": "'",
 
   "disallowIdenticalDestructuringNames": true,
+  "requireEnhancedObjectLiterals": true,
   "requireObjectDestructuring": true,
   "requireNumericLiterals": true,
   "requireSpread": true,
@@ -111,6 +112,7 @@
       }
     },
     "checkTypes": "strictNativeCase",
+    "checkParamNames": true,
     "requireHyphenBeforeDescription": true
   },
 
@@ -178,6 +180,7 @@
     "beforeOpeningCurlyBrace": true
   },
 
+  "safeContextKeyword": "that",
   "disallowImplicitTypeConversion": [
     "numeric",
     "string",
