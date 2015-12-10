@@ -178,7 +178,6 @@
     "beforeOpeningCurlyBrace": true
   },
 
-  "safeContextKeyword": "that",
   "disallowImplicitTypeConversion": [
     "numeric",
     "string",
