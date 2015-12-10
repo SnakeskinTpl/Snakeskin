@@ -1,5 +1,4 @@
 {
   "presets": ["es2015-rollup"],
-  "compact": false,
-  "auxiliaryCommentBefore": "istanbul ignore next"
+  "compact": false
 }
