@@ -40,15 +40,15 @@ gulp.task('build', (cb) => {
 			' */\n\n';
 
 		tasks.push((cb) => {
-			gulp.src('./lib/index.js')
+			gulp.src('./src/index.js')
 				.pipe(monic({flags: el}))
 				.on('error', helpers.error(cb))
 				.pipe(rename(name))
-				.pipe(gulp.dest('./lib'))
+				.pipe(gulp.dest('./src'))
 				.on('end', buildSrc);
 
 			function buildSrc() {
-				gulp.src(`./lib/${name}`)
+				gulp.src(`./src/${name}`)
 					.pipe(rollup({
 						format: 'umd',
 						moduleId: 'Snakeskin',
@@ -67,7 +67,7 @@ gulp.task('build', (cb) => {
 			}
 
 			function clean() {
-				del(`./lib/${name}`, cb);
+				del(`./src/${name}`, cb);
 			}
 		});
 	});

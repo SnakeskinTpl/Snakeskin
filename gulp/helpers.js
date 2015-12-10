@@ -19,7 +19,7 @@ module.exports = {
 	},
 
 	getVersion() {
-		const file = fs.readFileSync(path.join(__dirname, '../lib/core.js'));
+		const file = fs.readFileSync(path.join(__dirname, '../src/core.js'));
 		return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
 			.split(/\s*,\s*/)
 			.join('.');

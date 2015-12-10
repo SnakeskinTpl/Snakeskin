@@ -32,8 +32,8 @@ gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], () => {
 			setTimeout(cb, 500),
 
 		() => {
-			gulp.watch('./lib/**/*.js', ['build']).on('change', unbind('build'));
-			gulp.watch('./lib/core.js', ['bump']);
+			gulp.watch('./src/**/*.js', ['build']).on('change', unbind('build'));
+			gulp.watch('./src/core.js', ['bump']);
 			gulp.watch('./*.md', ['yaspeller']);
 			gulp.watch('./.gitignore', ['npmignore']);
 		}

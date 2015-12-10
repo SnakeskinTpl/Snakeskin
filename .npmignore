@@ -52,7 +52,7 @@ node_modules
 /tmp
 
 # NPM ignore list
-/lib
+/src
 /predefs
 /test
 /bower.json

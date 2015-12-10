@@ -66,7 +66,7 @@ gulp.task('head', (cb) => {
 
 	async.parallel([
 		(cb) => {
-			gulp.src(['./@(lib|gulp)/**/*.js', './@(snakeskin|externs).js', './predefs/src/index.js'], {base: './'})
+			gulp.src(['./@(src|gulp)/**/*.js', './@(snakeskin|externs).js', './predefs/src/index.js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
