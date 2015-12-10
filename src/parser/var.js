@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -14,9 +16,9 @@ import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { ws } from '../helpers/string';
 
 /**
- * Declares a variable and returns a string declaration
+ * Declares a variable and returns string declaration
  *
- * @param {string} varName - the variable name
+ * @param {string} varName - variable name
  * @param {boolean=} [opt_function=false] - if is true, then the variable
  *   will be declared as a function parameter
  *
@@ -26,8 +28,7 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	opt_function = opt_function || false;
 
 	const
-		tplName = this.tplName,
-		id = this.environment.id;
+		{tplName, environment: {id}} = this;
 
 	let
 		struct = this.structure;
@@ -65,9 +66,9 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	}
 
 	struct.vars[varName] = {
+		id,
+		global,
 		value: realVar,
-		id: id,
-		global: global,
 		scope: this.scope.length
 	};
 
@@ -79,12 +80,12 @@ Parser.prototype.declVar = function (varName, opt_function) {
 };
 
 /**
- * Parses a string declaration of variables, initializes it
- * and returns a string declaration
+ * Parses string declaration of variables, initializes it
+ * and returns new string declaration
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @param {?boolean=} [opt_end=true] - if is true, then will be appended ; to the string
- * @param {?string=} [opt_def] - a default value for variables
+ * @param {?string=} [opt_def] - default value for variables
  * @return {string}
  */
 Parser.prototype.declVars = function (str, opt_end, opt_def) {
@@ -134,6 +135,7 @@ Parser.prototype.declVars = function (str, opt_end, opt_def) {
 			const
 				val = parts.slice(1).join('=');
 
+			// jscs:disable
 			fin += parts[0] + (val ? this.out(val, {sys: true}) : '') + ',';
 			cache = '';
 
@@ -151,7 +153,7 @@ Parser.prototype.declVars = function (str, opt_end, opt_def) {
 };
 
 /**
- * Declares an object of arguments and returns a string declaration
+ * Declares an object of arguments and returns string declaration
  * @return {string}
  */
 Parser.prototype.declArguments = function () {

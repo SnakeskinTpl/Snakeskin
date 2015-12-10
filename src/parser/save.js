@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -67,10 +69,11 @@ Parser.prototype.$$ = function () {
 /**
  * Appends a string to __RESULT__
  *
- * @param {?string=} [opt_str] - the source string
+ * @param {?string=} [opt_str] - source string
  * @return {string}
  */
 Parser.prototype.wrap = function (opt_str) {
+	// jscs:disable
 	return this.$() + (opt_str || '') + this.$$() + ';';
 };
 
@@ -126,7 +129,7 @@ Parser.prototype.getReturnDecl = function () {
 /**
  * Replaces CDATA blocks in a string
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @return {string}
  */
 Parser.prototype.replaceCData = function (str) {
@@ -150,8 +153,8 @@ Parser.prototype.replaceCData = function (str) {
 /**
  * Declares the end of a template declaration
  *
- * @param {?string} cacheKey - a cache key
- * @param {(Date|string)} label - the declaration label
+ * @param {?string} cacheKey - cache key
+ * @param {(Date|string)} label - declaration label
  * @return {!Parser}
  */
 Parser.prototype.end = function (cacheKey, label) {
@@ -249,9 +252,9 @@ Parser.prototype.isAdvTest = function () {
 /**
  * Adds a string to the JS string if is possible
  *
- * @param {string=} str - the source string
+ * @param {string=} str - source string
  * @param {?boolean=} [opt_interface=false] - if is true, then the current operation is an interface
- * @param {(boolean|number)=} [opt_jsDoc] - the last position of appending JSdoc or false
+ * @param {(boolean|number)=} [opt_jsDoc] - last position of appending jsDoc or false
  * @return {boolean}
  */
 Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
@@ -278,9 +281,9 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
  * Adds a string to the JS string if is possible
  * (with this.isSimpleOutput())
  *
- * @param {(string|function(this:Parser))=} str - the source string or a function
+ * @param {(string|function(this:Parser))=} str - source string or a function
  * @param {?boolean=} [opt_interface=false] - if is true, then the current operation is an interface
- * @param {(boolean|number)=} [opt_jsDoc] - the last position of appending JSdoc or false
+ * @param {(boolean|number)=} [opt_jsDoc] - last position of appending jsDoc or false
  * @return {boolean}
  */
 Parser.prototype.append = function (str, opt_interface, opt_jsDoc) {
@@ -304,7 +307,7 @@ Parser.prototype.append = function (str, opt_interface, opt_jsDoc) {
  * Calls a callback function if is possible to write to the JS string
  * (with this.isSimpleOutput())
  *
- * @param {function(this:Parser)} callback - the callback function
+ * @param {function(this:Parser)} callback - callback function
  * @return {boolean}
  */
 Parser.prototype.mod = function (callback) {

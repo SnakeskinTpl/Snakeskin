@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -14,8 +16,8 @@ import { isArray, isObject } from '../helpers/types';
  * Checks availability of a directive in a chain structure
  *
  * @private
- * @param {(string|!Object|!Array)} name - the directive name, a map of names or an array of names
- * @param {Object=} [opt_obj] - the structure object
+ * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
+ * @param {Object=} [opt_obj] - structure object
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */
@@ -45,8 +47,9 @@ Parser.prototype._has = function (name, opt_obj, opt_return) {
 			}
 
 			return opt_return ? obj : true;
+		}
 
-		} else if (obj.parent && obj.parent.name !== 'root') {
+		if (obj.parent && obj.parent.name !== 'root') {
 			obj = obj.parent;
 
 		} else {
@@ -59,7 +62,7 @@ Parser.prototype._has = function (name, opt_obj, opt_return) {
  * Checks availability of a directive in a chain structure,
  * including the active
  *
- * @param {(string|!Object|!Array)} name - the directive name, a map of names or an array of names
+ * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */
@@ -71,7 +74,7 @@ Parser.prototype.has = function (name, opt_return) {
  * Checks availability of a directive in the chain structure,
  * excluding the active
  *
- * @param {(string|!Object|!Array)} name - the directive name, a map of names or an array of names
+ * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */
@@ -87,7 +90,7 @@ Parser.prototype.hasParent = function (name, opt_return) {
  * Checks availability of a directive in the block chain structure,
  * including the active
  *
- * @param {(string|!Object|!Array)} name - the directive name, a map of names or an array of names
+ * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */
@@ -103,7 +106,7 @@ Parser.prototype.hasBlock = function (name, opt_return) {
  * Checks availability of a directive in the block chain structure,
  * excluding the active
  *
- * @param {(string|!Object|!Array)} name - the directive name, a map of names or an array of names
+ * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */

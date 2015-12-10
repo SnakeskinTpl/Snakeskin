@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -97,15 +99,15 @@ const
  * Returns a full word from a string
  *
  * @private
- * @param {string} str - the source string
- * @param {number} pos - the start search position
+ * @param {string} str - source string
+ * @param {number} pos - start search position
  * @return {{word: string, finalWord: string, unary: string}}
  */
 Parser.prototype._getWord = function (str, pos) {
 	let
 		word = '',
 		res = '',
-		nres = '';
+		nRes = '';
 
 	let
 		pCount = 0,
@@ -157,17 +159,17 @@ Parser.prototype._getWord = function (str, pos) {
 							startD = start,
 							endD = j;
 
-						if (nres) {
+						if (nRes) {
 							startD = start + diff;
 							endD = j + diff + pContent.length;
 						}
 
-						nres =
+						nRes =
 							res.slice(0, startD) +
 							(pContent && this.out(pContent, {sys: true})) +
 							res.slice(endD);
 
-						diff = nres.length - res.length;
+						diff = nRes.length - res.length;
 						pContent = null;
 					}
 
@@ -177,8 +179,8 @@ Parser.prototype._getWord = function (str, pos) {
 			}
 
 			res += el;
-			if (nres) {
-				nres += el;
+			if (nRes) {
+				nRes += el;
 			}
 
 		} else {
@@ -188,7 +190,7 @@ Parser.prototype._getWord = function (str, pos) {
 
 	return {
 		word: res,
-		finalWord: nres || res,
+		finalWord: nRes || res,
 		unary: unaryStr
 	};
 };
@@ -199,9 +201,9 @@ const
 /**
  * Returns true, if a string part is a property of an object literal
  *
- * @param {string} str - the source string
- * @param {number} start - the start search position
- * @param {number} end - the end search position
+ * @param {string} str - source string
+ * @param {number} start - start search position
+ * @param {number} end - end search position
  * @return {boolean}
  */
 function isSyOL(str, start, end) {
@@ -244,8 +246,8 @@ function isSyOL(str, start, end) {
  * Returns true, if the next non-whitespace character
  * in a string is the assignment (=)
  *
- * @param {string} str - the source string
- * @param {number} pos - the start search position
+ * @param {string} str - source string
+ * @param {number} pos - start search position
  * @return {boolean}
  */
 function isNextAssign(str, pos) {
@@ -285,7 +287,7 @@ const
 	firstPropRgxp = /([^.[]+)(.*)/,
 	propValRgxp = /[^-+!(]+/;
 
-const exprimaHackFn = (str) => str
+const esprimaHackFn = (str) => str
 	.trim()
 	.replace(/^({.*)/, '($0)')
 	.replace(/^\[(?!\s*])/, '$[')
@@ -300,7 +302,7 @@ const
  * Prepares a command to output:
  * binds to the scope and initialization filters
  *
- * @param {string} command - the command
+ * @param {string} command - command
  * @param {?boolean=} [sys=false] - if is true, then call is considered as system
  * @param {?boolean=} [breakFirst=false] - if is true, then the first word in the string will be skipped
  * @param {?boolean=} [breakValidate=true] - if is false, then the resulting string won't be validated
@@ -308,7 +310,7 @@ const
  */
 Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {}) {
 	const
-		tplName = this.tplName,
+		{tplName} = this,
 		struct = this.structure;
 
 	if (dangerRgxp.test(command)) {
@@ -344,24 +346,24 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 	// Arrays of final filters and real filters,
 	// for example:
 	// {with foo}
-	//     {bar |ucfisrt bar()|json}
+	//     {bar |ucfirst bar()|json}
 	// {end}
 	//
-	// rvFilter => ['ucfisrt bar()', 'json']
-	// filter => ['ucfisrt foo.bar()', 'json']
+	// rvFilter => ['ucfirst bar()', 'json']
+	// filter => ['ucfirst foo.bar()', 'json']
 	let
 		filter = [],
 		rvFilter = [];
 
 	// true, if it is possible to calculate the word
-	let nword = !breakFirst;
+	let nWord = !breakFirst;
 
 	// The number of words to skip
 	let posNWord = 0;
 
 	// Scope
 	const
-		scope = this.scope,
+		{scope} = this,
 		useWith = Boolean(scope.length);
 
 	// Shifts
@@ -407,8 +409,9 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 
 		if (def) {
 			return def;
+		}
 
-		} else if (extList.length && obj.children[extList[0]]) {
+		if (extList.length && obj.children[extList[0]]) {
 			return search(obj.children[extList.shift()], val, extList);
 		}
 
@@ -497,9 +500,9 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 			}
 
 			// Calculation of a scope:
-			// nword indicates that started a new word;
+			// nWord indicates that started a new word;
 			// posNWord indicates how many new words to skip
-			if (nword && !posNWord && nextCharRgxp.test(el)) {
+			if (nWord && !posNWord && nextCharRgxp.test(el)) {
 				const
 					nextStep = this._getWord(command, i);
 
@@ -507,7 +510,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					uAdd = wordAddEnd + addition,
 					{word, finalWord} = nextStep,
 					tmpFinalWord,
-					vres;
+					vRes;
 
 				if (nextStep.unary) {
 					tmpFinalWord = finalWord.split(' ');
@@ -530,25 +533,25 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 
 				// Export of numeric literals
 				if (numRgxp.test(el)) {
-					vres = finalWord;
+					vRes = finalWord;
 
 				// Export global and super-globals
 				} else if ((useWith && !MODS[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
 					if (useWith) {
-						vres = next === G_MOD ?
+						vRes = next === G_MOD ?
 							finalWord.slice(2) : finalWord;
 
 						// Super-global variable within "with"
 						if (next === G_MOD) {
-							vres = `__VARS__${concatProp(vres)}`;
+							vRes = `__VARS__${concatProp(vRes)}`;
 
 						} else {
-							vres = addScope(vres);
+							vRes = addScope(vRes);
 						}
 
 					// Super-global variable without "with"
 					} else {
-						vres = `__VARS__${concatProp(finalWord.slice(next === G_MOD ? 2 : 1))}`;
+						vRes = `__VARS__${concatProp(finalWord.slice(next === G_MOD ? 2 : 1))}`;
 					}
 
 				} else {
@@ -569,21 +572,21 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 						}
 
 						if (num && (scope.length - num) <= 0) {
-							vres = addScope(rfWord);
+							vRes = addScope(rfWord);
 
 						} else {
-							vres = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
+							vRes = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
 						}
 
 					} else {
 						if (canParse) {
-							vres = addScope(rfWord);
+							vRes = addScope(rfWord);
 
 						} else if (tplName && rfWord === 'this' && !this.hasParent(this.getGroup('selfThis'))) {
-							vres = '__THIS__';
+							vRes = '__THIS__';
 
 						} else {
-							vres = rfWord;
+							vRes = rfWord;
 						}
 					}
 				}
@@ -592,16 +595,16 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					isNextAssign(command, i + word.length) &&
 					tplName &&
 					CONSTS[tplName] &&
-					CONSTS[tplName][vres]
+					CONSTS[tplName][vRes]
 				) {
 
-					this.error(`constant "${vres}" is already defined`);
+					this.error(`constant "${vRes}" is already defined`);
 					return '';
 				}
 
 				if (nextStep.unary) {
-					tmpFinalWord[tmpFinalWord.length - 1] = vres;
-					vres = tmpFinalWord.join(' ');
+					tmpFinalWord[tmpFinalWord.length - 1] = vRes;
+					vRes = tmpFinalWord.join(' ');
 				}
 
 				// This word is a composite system,
@@ -616,20 +619,20 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					!globalUnUndef
 				) {
 
-					vres = `${unUndefLabel}(${vres})`;
+					vRes = `${unUndefLabel}(${vRes})`;
 				}
 
-				wordAddEnd += vres.length - word.length;
-				nword = false;
+				wordAddEnd += vRes.length - word.length;
+				nWord = false;
 
 				if (filterStart) {
 					const last = filter.length - 1;
-					filter[last] += vres;
+					filter[last] += vRes;
 					rvFilter[last] += word;
-					filterAddEnd += vres.length - word.length;
+					filterAddEnd += vRes.length - word.length;
 
 				} else {
-					res = res.slice(0, i + uAdd) + vres + res.slice(i + word.length + uAdd);
+					res = res.slice(0, i + uAdd) + vRes + res.slice(i + word.length + uAdd);
 				}
 
 				i += word.length - 2;
@@ -638,7 +641,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 
 			// Maybe soon will start a new word
 			} else if (newWordRgxp.test(el)) {
-				nword = true;
+				nWord = true;
 
 				if (posNWord) {
 					posNWord--;
@@ -686,14 +689,15 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 				if (!unMap[el]) {
 					arr.push(el);
 
-					const frname = el.split(' ')[0];
+					const
+						frName = el.split(' ')[0];
 
-					if (Snakeskin.Filters[frname]) {
-						if (Snakeskin.Filters[frname]['!htmlSnakeskinFilter']) {
+					if (Snakeskin.Filters[frName]) {
+						if (Snakeskin.Filters[frName]['!htmlSnakeskinFilter']) {
 							unEscape = true;
 						}
 
-						if (Snakeskin.Filters[frname]['!undefSnakeskinFilter']) {
+						if (Snakeskin.Filters[frName]['!undefSnakeskinFilter']) {
 							unUndef = true;
 						}
 					}
@@ -721,11 +725,12 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					input = params.slice(1).join(' ').trim(),
 					current = params.shift().split('.');
 
+				// jscs:disable
 				resTmp =
 					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str += `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
 						resTmp +
-						(input ? ',' + input : '') +
+						(input ? `,${input}` : '') +
 						(filterWrapper || !pCount ? ')' : '') +
 					')'
 				;
@@ -793,7 +798,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 
 		// After 2 iteration begins a filter
 		if (next === FILTER && rgxp.filterStart.test(nNext)) {
-			nword = false;
+			nWord = false;
 
 			if (!filterStart) {
 				if (pCount) {
@@ -812,7 +817,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 			}
 
 		} else if (i === 0 && el === FILTER && rgxp.filterStart.test(next)) {
-			nword = false;
+			nWord = false;
 
 			if (!filterStart) {
 				pContent.push([0, i]);
@@ -830,7 +835,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 	res = res.replace(unUndefRgxp, '__FILTERS__.undef');
 	if (breakValidate !== false) {
 		try {
-			esprima.parse(exprimaHackFn(res));
+			esprima.parse(esprimaHackFn(res));
 
 		} catch (err) {
 			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));

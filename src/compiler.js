@@ -291,7 +291,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// The number of open { symbols inside a directive
 	let fakeBegin = 0;
 
-	// If is true, then a string declaration is started
+	// If is true, then string declaration is started
 	let beginStr = false;
 
 	// If is true, then a previous symbol wasn't escaped
