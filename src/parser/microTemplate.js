@@ -222,6 +222,7 @@ Parser.prototype.replaceTplVars = function (str, {sys, replace} = {}) {
 			} else {
 				escape = false;
 
+				// jscs:disable
 				let tmp =
 					'\' + ' +
 					this.out(this.replaceDangerBlocks(dir).trim() || '\'\'', {sys}) +

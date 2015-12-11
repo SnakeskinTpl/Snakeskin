@@ -186,13 +186,10 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 					{length} = tmpArr;
 
 				let
-					str = tmpArr[0],
+					[str] = tmpArr,
 					shortcut = '';
 
-				const
-					first = str[0];
-
-				if (first === '%') {
+				if (str[0] === '%') {
 					try {
 						str = ws`['${
 							applyDefEscape(

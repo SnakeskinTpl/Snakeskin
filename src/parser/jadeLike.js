@@ -99,7 +99,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				obj.block = false;
 
 			} else {
-				const rightSpace = rightWSRgxp.exec(res)[0];
+				const [rightSpace] = rightWSRgxp.exec(res);
 				res = res.replace(rightPartRgxp, '') +
 					genEndDir(struct, struct.space);
 

@@ -680,7 +680,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		// Closing of a local or a global filter
 		if (filterStart && !pCountFilter && (el === ')' && !breakNum || i === end)) {
 			const
-				pos = pContent[0],
+				[pos] = pContent,
 				fAdd = wordAddEnd - filterAddEnd + addition,
 				fBody = res.slice(pos[0] + (pCount ? addition : 0), pos[1] + fAdd),
 				arr = [];
@@ -690,7 +690,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					arr.push(el);
 
 					const
-						frName = el.split(' ')[0];
+						[frName] = el.split(' ');
 
 					if (Snakeskin.Filters[frName]) {
 						if (Snakeskin.Filters[frName]['!htmlSnakeskinFilter']) {

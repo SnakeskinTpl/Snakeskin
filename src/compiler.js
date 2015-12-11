@@ -635,6 +635,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					const
+						// jscs:disable
 						short1 = command[0],
 						short2 = command.substr(0, 2),
 						replacer = DIR_NAME_REPLACERS[short2] || DIR_NAME_REPLACERS[short1];
@@ -644,7 +645,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					let
-						commandType = commandTypeRgxp.exec(command)[0];
+						[commandType] = commandTypeRgxp.exec(command);
 
 					const
 						isConst = commandType === 'const';
