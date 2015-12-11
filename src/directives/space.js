@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -52,13 +54,11 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.strongSpace) {
-			this.strongSpace--;
-
-			if (!this.strongSpace) {
-				this.space = false;
-			}
+		if (!this.strongSpace || --this.strongSpace) {
+			return;
 		}
+
+		this.space = false;
 	}
 
 );
@@ -71,9 +71,11 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!this.tolerateWhitespace) {
-			this.sysSpace = true;
+		if (this.tolerateWhitespace) {
+			return;
 		}
+
+		this.sysSpace = true;
 	}
 
 );
@@ -86,9 +88,11 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!this.tolerateWhitespace) {
-			this.sysSpace = false;
+		if (this.tolerateWhitespace) {
+			return;
 		}
+
+		this.sysSpace = false;
 	}
 
 );

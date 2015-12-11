@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -54,7 +56,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			tplName = this.tplName,
+			{tplName} = this,
 			source = `^[\$${symbols}_${!this.scope.length ? r(L_MOD) : ''}][$${w}[\\].\\s]*=[^=]`,
 			rgxp = RGXP[source] = RGXP[source] || new RegExp(source, 'i');
 
@@ -202,7 +204,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		Snakeskin.Directives['const'].apply(this, arguments);
+		Snakeskin.Directives['const'].call(this, ...arguments);
 	}
 
 );
@@ -216,17 +218,17 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		Snakeskin.Directives['const'].apply(this, arguments);
+		Snakeskin.Directives['const'].call(this, ...arguments);
 	}
 
 );
 
 /**
  * Returns an information object for a string expression
- * if the string contains assigment of a variable (or a property)
+ * if the string contains assignment of a variable (or a property)
  * OR returns false
  *
- * @param {string} str - the source string
+ * @param {string} str - source string
  * @param {?boolean=} [opt_global=false] - if true, then will be checked string as a super-global variable
  * @return {({key: string, value: string}|boolean)}
  */

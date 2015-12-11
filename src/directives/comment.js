@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -57,10 +59,8 @@ Snakeskin.addDirective(
 
 		let str;
 		if (this.renderMode === 'dom') {
-			str = this.wrap(`'${comment}'`);
 			this.domComment = false;
-
-			str += ws`
+			str = this.wrap(`'${comment}'`) + ws`
 				__NODE__ = document.createComment(__COMMENT_RESULT__);
 				${this.getPushNodeDecl(true)}
 				__COMMENT_RESULT__ = \'\';
