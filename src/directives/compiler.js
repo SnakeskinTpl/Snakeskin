@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { OUTPUT } from '../consts/cache';
 
 Snakeskin.addDirective(
 	'setSSFlag',
@@ -38,8 +39,6 @@ Snakeskin.addDirective(
 );
 
 function setSSFlag(command) {
-	this.startInlineDir();
-
 	const
 		{tplName, info: {file}} = this,
 		[root] = this.params,
@@ -56,9 +55,9 @@ function setSSFlag(command) {
 		cache;
 
 	if (tplName) {
-		cache = outputCache[tplName]['flag'] = outputCache[tplName]['flag'] || {};
+		cache = OUTPUT[tplName]['flag'] = OUTPUT[tplName]['flag'] || {};
 		if (this.parentTplName) {
-			parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]['flag'];
+			parentCache = OUTPUT[this.parentTplName] && OUTPUT[this.parentTplName]['flag'];
 		}
 	}
 
