@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,189 +8,149 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-(() => {
-	Snakeskin.addDirective(
-		'setSSFlag',
+import $C from '../deps/collection';
+import Snakeskin from '../core';
 
-		{
-			placement: 'global',
-			group: 'define',
-			notEmpty: true,
-			replacers: {
-				'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
-			}
-		},
+Snakeskin.addDirective(
+	'setSSFlag',
 
-		setSSFlag
-	);
+	{
+		group: 'define',
+		placement: Snakeskin.placement('global'),
+		notEmpty: true,
+		replacers: {
+			'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
+		}
+	},
 
-	Snakeskin.addDirective(
-		'__setSSFlag__',
+	setSSFlag
+);
 
-		{
-			group: 'define',
-			notEmpty: true,
-			replacers: {
-				'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
-			}
-		},
+Snakeskin.addDirective(
+	'__setSSFlag__',
 
-		setSSFlag
-	);
+	{
+		group: 'define',
+		notEmpty: true,
+		replacers: {
+			'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
+		}
+	},
 
-	/**
-	 * Extends an object A by an object B
-	 * (deep extending)
-	 *
-	 * @param {!Object} a
-	 * @param {!Object} b
-	 * @return {!Object}
-	 */
-	function extend(a, b) {
-		forIn(b, (el, key) => {
-			if (a[key] instanceof Object && el instanceof Object) {
-				extend(a[key], el);
+	setSSFlag
+);
 
-			} else {
-				a[key] = el;
-			}
-		});
+function setSSFlag(command) {
+	this.startInlineDir();
 
-		return a;
-	}
+	const
+		{tplName, info: {file}} = this,
+		[root] = this.params,
+		last = this.params[this.params.length - 1];
 
-	/**
-	 * Extends an object and returns it
-	 *
-	 * @param {!Object} base - the source object
-	 * @param {Object=} [opt_adv] - an additional object
-	 * @param {Object=} [opt_initial] - an object of initialisation
-	 * @return {!Object}
-	 */
 	function mix(base, opt_adv, opt_initial) {
-		var obj = opt_initial || {};
-
-		forIn(opt_adv, (el, key) => {
-			obj[key] = el;
-		});
-
-		return extend(obj, base);
+		return $C.extend(true, $C.extend(false, opt_initial || {}, opt_adv), base);
 	}
 
-	function setSSFlag(command) {
-		this.startInlineDir();
+	let
+		init = false,
+		params = last,
+		parentCache,
+		cache;
 
-		var file = this.info.file,
-			init = false;
-
-		var root = this.params[0],
-			last = this.params[this.params.length - 1],
-			params = last;
-
-		var cache,
-			parentCache,
-			tplName = this.tplName;
-
-		if (tplName) {
-			cache =
-				outputCache[tplName]['flag'] = outputCache[tplName]['flag'] || {};
-
-			if (this.parentTplName) {
-				parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]['flag'];
-			}
+	if (tplName) {
+		cache = outputCache[tplName]['flag'] = outputCache[tplName]['flag'] || {};
+		if (this.parentTplName) {
+			parentCache = outputCache[this.parentTplName] && outputCache[this.parentTplName]['flag'];
 		}
+	}
 
-		if (last['@root'] || (file && last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
-			init = true;
-			params = {
-				'@file': file,
-				'@tplName': tplName
-			};
-
-			let inherit = (obj) => {
-				forIn(obj, (el, key) => {
-					if (key.charAt(0) !== '@' && key in root) {
-						params[key] =
-							this[key] = el;
-
-						if (cache) {
-							cache[key] = el;
-						}
-					}
-				});
-			};
-
-			inherit(last);
-			if (parentCache) {
-				inherit(parentCache);
-			}
-
-			this.params.push(params);
-		}
-
-		var flag,
-			value;
-
-		if (Array.isArray(command)) {
-			flag = command[0];
-			value = command[1];
-
-		} else {
-			let parts = command.split(' ');
-			flag = parts[0];
-
-			try {
-				value = this.returnEvalVal(parts.slice(1).join(' '));
-
-			} catch (err) {
-				return this.error(err.message);
-			}
-		}
-
-		var includeMap = {
-			'language': true,
-			'macros': true
+	if (last['@root'] || (file && last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
+		init = true;
+		params = {
+			'@file': file,
+			'@tplName': tplName
 		};
 
-		if (flag === 'renderAs' && tplName) {
-			return this.error('the flag "renderAs" can\'t be used in the template declaration');
-		}
-
-		if (flag in root) {
-			if (includeMap[flag]) {
-				value = mix(
-					Snakeskin.toObj(value, file, (src) => {
-						var root = this.environment.root || this.environment;
-						root.key.push([src, require('fs').statSync(src).mtime.valueOf()]);
-						this.files[src] = true;
-					}),
-
-					init ?
-						params[flag] : null,
-
-					init ?
-						null : params[flag]
-				);
-
-				if (flag === 'macros') {
-					try {
-						value = this.setMacros(value, null, init);
-
-					} catch (err) {
-						return this.error(err.message);
+		const inherit = (obj) => {
+			$C(obj).forEach((el, key) => {
+				if (key[0] !== '@' && key in root) {
+					params[key] = this[key] = el;
+					if (cache) {
+						cache[key] = el;
 					}
 				}
-			}
+			});
+		};
 
-			params[flag] =
-				this[flag] = value;
+		inherit(last);
+		if (parentCache) {
+			inherit(parentCache);
+		}
 
-			if (cache) {
-				cache[flag] = value;
-			}
+		this.params.push(params);
+	}
 
-		} else if (flag.charAt(0) !== '@') {
-			return this.error(`unknown compiler flag "${flag}"`);
+	let
+		flag,
+		value;
+
+	if (Array.isArray(command)) {
+		[flag, value] = command;
+
+	} else {
+		let parts = command.split(' ');
+		[flag] = parts;
+
+		try {
+			value = this.returnEvalVal(parts.slice(1).join(' '));
+
+		} catch (err) {
+			return this.error(err.message);
 		}
 	}
-})();
+
+	const includeMap = {
+		'language': true,
+		'macros': true
+	};
+
+	if (flag === 'renderAs' && tplName) {
+		return this.error('the flag "renderAs" can\'t be used in the template declaration');
+	}
+
+	if (flag in root) {
+		if (includeMap[flag]) {
+			value = mix(
+				Snakeskin.toObj(value, file, (src) => {
+					const root = this.environment.root || this.environment;
+					root.key.push([src, require('fs').statSync(src).mtime.valueOf()]);
+					this.files[src] = true;
+				}),
+
+				init ?
+					params[flag] : null,
+
+				init ?
+					null : params[flag]
+			);
+
+			if (flag === 'macros') {
+				try {
+					value = this.setMacros(value, null, init);
+
+				} catch (err) {
+					return this.error(err.message);
+				}
+			}
+		}
+
+		params[flag] = this[flag] = value;
+		if (cache) {
+			cache[flag] = value;
+		}
+
+	} else if (flag[0] !== '@') {
+		return this.error(`unknown compiler flag "${flag}"`);
+	}
+}
