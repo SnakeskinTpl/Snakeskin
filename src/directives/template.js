@@ -439,8 +439,8 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 					__RETURN_VAL__;
 
 				var
-					TPL_NAME = "${escapeDoubleQuote(tplName)}",
-					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuote(parentTplName)}"` : ''};
+					TPL_NAME = "${escapeDoubleQuotes(tplName)}",
+					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuotes(parentTplName)}"` : ''};
 
 				${args.defParams}
 			`);

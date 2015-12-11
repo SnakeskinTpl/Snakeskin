@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { OUTPUT } from '../consts/cache';
+import { toObj } from '../helpers/object';
 
 Snakeskin.addDirective(
 	'setSSFlag',
@@ -118,7 +119,7 @@ function setSSFlag(command) {
 	if (flag in root) {
 		if (includeMap[flag]) {
 			value = mix(
-				Snakeskin.toObj(value, file, (src) => {
+				toObj(value, file, (src) => {
 					const root = this.environment.root || this.environment;
 					root.key.push([src, require('fs').statSync(src).mtime.valueOf()]);
 					this.files[src] = true;
