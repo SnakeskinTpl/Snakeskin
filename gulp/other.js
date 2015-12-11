@@ -30,7 +30,7 @@ gulp.task('copyright', (cb) => {
 });
 
 gulp.task('bump', (cb) => {
-	gulp.src('./*.json')
+	gulp.src('./@(package|bower).json')
 		.pipe(bump({version: helpers.getVersion()}))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
