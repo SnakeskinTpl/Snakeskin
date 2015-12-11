@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import esprima from '../deps/esprima';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { concatProp } from '../helpers/literals';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';

@@ -11,7 +11,7 @@
 import $C from '../deps/collection';
 import esprima from '../deps/esprima';
 import Snakeskin from '../core';
-import { Parser } from '../parser/index';
+import Parser from '../parser/index';
 import { ws, r } from '../helpers/string';
 import { symbols } from '../consts/regs';
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';

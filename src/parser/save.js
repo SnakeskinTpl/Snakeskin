@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { eol, singleQuotes } from '../consts/regs';
 import { escapeEOLs } from '../helpers/escape';
 import { WRITE } from '../consts/cache';

@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { IS_NODE } from '../consts/hacks';
 import { ROOT } from '../consts/links';
 

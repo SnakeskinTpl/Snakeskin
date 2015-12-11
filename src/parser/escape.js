@@ -9,7 +9,7 @@
  */
 
 import escaper from '../deps/escaper';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { tplVars } from '../consts/regs';
 
 /**

@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { Parser } from '../parser/index';
+import Parser from '../parser/index';
 
 /**
  * The map of declared variables

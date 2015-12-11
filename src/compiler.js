@@ -11,6 +11,7 @@
 import $C from './deps/collection';
 import beautify from './deps/js-beautify';
 import Snakeskin from './core';
+import Parser from './parser/index';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
 import { any, _ } from './helpers/gcc';
@@ -18,7 +19,6 @@ import { setMacros } from './helpers/macros';
 import { escapeEOLs } from './helpers/escape';
 import { getCommentType } from './helpers/literals';
 import { r } from './helpers/string';
-import { Parser } from './parser/index';
 import * as rgxp from './consts/regs';
 
 import {

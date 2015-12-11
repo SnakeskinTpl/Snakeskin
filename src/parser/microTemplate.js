@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { eol, sysWord, bEnd } from '../consts/regs';
 import { getCommentType } from '../helpers/literals';
 import { applyDefEscape, escapeSingleQuotes } from '../helpers/escape';

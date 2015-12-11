@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-export { Parser } from './constructor';
+export { default as default } from './constructor';
 import './args';
 import './cache';
 import './dir';

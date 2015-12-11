@@ -18,7 +18,7 @@ import { ws } from '../helpers/string';
  * @constructor
  * @implements {$$SnakeskinParser}
  */
-export class Parser {
+export default class Parser {
 	/**
 	 * @param {string} src - source text of templates
 	 * @param {$$SnakeskinParserParams} params - additional parameters

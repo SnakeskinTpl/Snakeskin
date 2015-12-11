@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { r } from '../helpers/string';
 import { isFunction } from '../helpers/types';
 import { HAS_CONSOLE_ERROR } from '../consts/hacks';

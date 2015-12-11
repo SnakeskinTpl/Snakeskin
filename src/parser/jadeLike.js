@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { getCommentType } from '../helpers/literals';

@@ -7,7 +7,7 @@
  */
 
 import Snakeskin from '../core';
-import { Parser } from '../parser/index';
+import Parser from '../parser/index';
 import { ws } from '../helpers/string';
 
 /**

@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { Parser } from './constructor';
+import Parser from './constructor';
 import {
 
 	OUTPUT,

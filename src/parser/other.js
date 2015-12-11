@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import {
 
 	EXT_LIST,

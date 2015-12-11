@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { DIR_GROUPS } from '../consts/cache';
 import { clone } from '../helpers/object';
 

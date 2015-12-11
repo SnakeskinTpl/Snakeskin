@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { Parser } from './constructor';
+import Parser from './constructor';
 import { CONSTS } from '../consts/cache';
 import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { ws } from '../helpers/string';
