@@ -72,7 +72,7 @@ export function escapeEOLs(str) {
  * @return {string}
  */
 export function applyDefEscape(str) {
-	return escapeNextLine(
+	return escapeEOLs(
 		String(str)
 			.replace(backSlashes, '\\\\')
 			.replace(singleQuotes, '\\\'')

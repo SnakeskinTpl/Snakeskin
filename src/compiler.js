@@ -16,7 +16,7 @@ import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
 import { any, _ } from './helpers/gcc';
 import { setMacros } from './helpers/macros';
-import { escapeEOLs } from './helpers/escape';
+import { escapeEOLs, applyDefEscape } from './helpers/escape';
 import { getCommentType } from './helpers/literals';
 import { r } from './helpers/string';
 import * as rgxp from './consts/regs';
