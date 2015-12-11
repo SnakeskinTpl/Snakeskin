@@ -8,8 +8,8 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from './deps/collection';
-import { beautify } from './deps/js-beautify';
+import $C from './deps/collection';
+import beautify from './deps/js-beautify';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
 import { Snakeskin } from './core';

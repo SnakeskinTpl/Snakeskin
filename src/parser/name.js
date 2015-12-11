@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from '../deps/collection';
+import $C from '../deps/collection';
 import { Parser } from './constructor';
 import { DIR_NAME_ALIASES } from '../consts/cache';
 import { IS_NODE } from '../consts/hacks';

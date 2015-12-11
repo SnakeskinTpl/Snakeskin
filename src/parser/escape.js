@@ -8,8 +8,8 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import escaper from '../deps/escaper';
 import { Parser } from './constructor';
-import { escaper } from '../deps/escaper';
 import { tplVars } from '../consts/regs';
 
 /**

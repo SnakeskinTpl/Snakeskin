@@ -13,3 +13,6 @@ import { GLOBAL } from '../consts/links';
 export const
 	$C = GLOBAL.$C || require('collection.js').$C,
 	Collection = GLOBAL.Collection || require('collection.js').Collection;
+
+export default
+	$C;

@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from '../deps/collection';
+import $C from '../deps/collection';
 import { Parser } from './constructor';
 import { eol, sysWord, bEnd } from '../consts/regs';
 import { getCommentType } from '../helpers/literals';

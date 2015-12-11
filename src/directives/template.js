@@ -8,8 +8,8 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from '../deps/collection';
-import { esprima } from '../deps/esprima';
+import $C from '../deps/collection';
+import esprima from '../deps/esprima';
 import { Snakeskin } from '../core';
 import { Parser } from '../parser/index';
 import { ws, r } from '../helpers/string';

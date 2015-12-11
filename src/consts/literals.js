@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from '../deps/collection';
+import $C from '../deps/collection';
 
 // The base directive separators
 // >>>

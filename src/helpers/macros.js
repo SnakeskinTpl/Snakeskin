@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from '../deps/collection';
+import $C from '../deps/collection';
 import { base } from '../consts/macros';
 import { macroBlackSymbols } from '../consts/regs';
 

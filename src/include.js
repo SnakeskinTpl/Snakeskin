@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { $C } from './deps/collection';
+import $C from './deps/collection';
 import { Snakeskin } from './core';
 import { IS_NODE } from './consts/hacks';
 import { whitespaceStart, whitespaceEnd } from './consts/regs';
