@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -7,6 +9,7 @@
  */
 
 import { $C } from '../deps/collection';
+import { esprima } from '../deps/esprima';
 import { Snakeskin } from '../core';
 import { Parser } from '../parser/index';
 import { ws, r } from '../helpers/string';
@@ -100,7 +103,9 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 		},
 
 		function (command, commandLength, type, jsDoc) {
-			const proto = this.proto;
+			const
+				{proto} = this;
+
 			const rank = {
 				'template': 2,
 				'interface': 1,
@@ -114,7 +119,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 
 			let lastName = '';
 			const
-				iface = this.name === 'interface';
+				isInterface = this.name === 'interface';
 
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info.line;
@@ -165,7 +170,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 				}
 
 				const fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
-				this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), iface, jsDoc);
+				this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), isInterface, jsDoc);
 
 				if (jsDoc) {
 					jsDoc += pos.length;
@@ -178,7 +183,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 					.split('.');
 
 				const
-					length = tmpArr.length,
+					{length} = tmpArr,
 					first = str[0];
 
 				let
@@ -223,7 +228,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 							${i === 1 && shortcut ? `var ${shortcut} = ${def};` : ''}
 						`),
 
-						iface,
+						isInterface,
 						jsDoc
 					);
 
@@ -256,10 +261,11 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 
 				tplName = str;
 				this.save(
+					// jscs:disable
 					(length === 1 && shortcut ? `var ${shortcut} = ` : '') +
 						`this${concatProp(tplName)} = function ${prfx}${length > 1 ? lastName : shortcut}(`,
 
-					iface
+					isInterface
 				);
 			}
 
@@ -377,7 +383,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 			const
 				args = this.prepareArgs(command, 'template', {tplName, parentTplName});
 
-			this.save(`${args.str}) {`, iface);
+			this.save(`${args.str}) {`, isInterface);
 			if (args.scope) {
 				this.scope.push(args.scope);
 			}
@@ -528,9 +534,9 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 			}
 
 			const
-				iface = this.structure.name === 'interface';
+				isInterface = this.structure.name === 'interface';
 
-			if (iface) {
+			if (isInterface) {
 				this.save('};', true);
 
 			} else {
@@ -543,7 +549,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 				`);
 			}
 
-			this.save('/* Snakeskin template. */', iface);
+			this.save('/* Snakeskin template. */', isInterface);
 			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
 				this.popParams();
 			}
