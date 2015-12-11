@@ -31,10 +31,7 @@ Snakeskin.addDirective(
 
 	{
 		group: 'define',
-		notEmpty: true,
-		replacers: {
-			'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
-		}
+		notEmpty: true
 	},
 
 	setSSFlag
