@@ -181,7 +181,7 @@ DirObj.prototype.returnTagDesc = function (str) {
 	};
 
 	for (let i = -1; ++i < str.length;) {
-		let el = str.charAt(i);
+		let el = str[i];
 
 		if (bMap[el]) {
 			if (el === '[') {

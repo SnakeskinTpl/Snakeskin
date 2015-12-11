@@ -552,7 +552,7 @@ function getLineDesc(str, i, dir, comment) {
 		}
 	}
 
-	if (dir && lastEl === CONCAT_END && rgxp.whitespace.test(command.charAt(lastElI - 1))) {
+	if (dir && lastEl === CONCAT_END && rgxp.whitespace.test(command[lastElI - 1])) {
 		command = command.slice(0, lastElI) + command.slice(lastElI + 1);
 	}
 

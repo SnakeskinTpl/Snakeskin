@@ -129,7 +129,7 @@
 				arg[0] = opt_group + opt_separator + arg[0];
 
 			} else {
-				arg[0] = arg[0].charAt(0) === '-' ?
+				arg[0] = arg[0][0] === '-' ?
 					`data-${arg[0].slice(1)}` : arg[0];
 			}
 
@@ -215,8 +215,8 @@
 		};
 
 		for (let i = -1; ++i < str.length;) {
-			let el = str.charAt(i),
-				next = str.charAt(i + 1);
+			let el = str[i],
+				next = str[i + 1];
 
 			if (!pOpen) {
 				if (separator[el] && next === '(') {
