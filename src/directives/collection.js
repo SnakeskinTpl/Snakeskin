@@ -6,7 +6,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { Snakeskin } from '../core';
+import Snakeskin from '../core';
 
 Snakeskin.addDirective(
 	'$forEach',

@@ -6,7 +6,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { Snakeskin } from '../core';
+import Snakeskin from '../core';
 import { scopeMod, symbols, w } from '../consts/regs';
 import { q } from './index';
 import { r } from '../helpers/string';

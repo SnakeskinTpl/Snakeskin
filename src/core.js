@@ -8,9 +8,12 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-export const Snakeskin = {
+const Snakeskin = {
 	VERSION: [7, 0, 0]
 };
+
+export default
+	Snakeskin;
 
 /**
  * The operation UID

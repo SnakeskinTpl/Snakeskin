@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { Snakeskin } from '../core';
+import Snakeskin from '../core';
 import { w } from '../consts/regs';
 import { isString } from '../helpers/types';
 

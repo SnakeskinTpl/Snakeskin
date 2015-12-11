@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { Snakeskin } from '../core';
+import Snakeskin from '../core';
 import { stack } from '../include';
 import { SHORTS } from '../consts/literals';
 import { isFunction } from '../helpers/types';

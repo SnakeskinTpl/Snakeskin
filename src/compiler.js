@@ -10,9 +10,9 @@
 
 import $C from './deps/collection';
 import beautify from './deps/js-beautify';
+import Snakeskin from './core';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
-import { Snakeskin } from './core';
 import { any, _ } from './helpers/gcc';
 import { setMacros } from './helpers/macros';
 import { escapeEOLs } from './helpers/escape';

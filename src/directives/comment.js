@@ -6,7 +6,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { Snakeskin } from '../core';
+import Snakeskin from '../core';
 import { Parser } from '../parser/index';
 import { ws } from '../helpers/string';
 

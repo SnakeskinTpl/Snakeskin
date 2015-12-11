@@ -6,7 +6,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { Snakeskin } from '../core';
+import Snakeskin from '../core';
 import { DIR_INSIDE } from '../consts/cache';
 import { ws } from '../helpers/string';
 

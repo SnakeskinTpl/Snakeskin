@@ -9,7 +9,7 @@
  */
 
 import $C from './deps/collection';
-import { Snakeskin } from './core';
+import Snakeskin from './core';
 import { IS_NODE } from './consts/hacks';
 import { whitespaceStart, whitespaceEnd } from './consts/regs';
 import {

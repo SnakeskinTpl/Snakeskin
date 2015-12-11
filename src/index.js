@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-export { Snakeskin as default } from './core';
+export { default as default } from './core';
 
 //#if compiler
 import './compiler';
