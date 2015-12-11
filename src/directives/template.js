@@ -183,12 +183,14 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 					.split('.');
 
 				const
-					{length} = tmpArr,
-					first = str[0];
+					{length} = tmpArr;
 
 				let
 					str = tmpArr[0],
 					shortcut = '';
+
+				const
+					first = str[0];
 
 				if (first === '%') {
 					try {
