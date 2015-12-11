@@ -31,20 +31,20 @@ Parser.prototype.declVar = function (varName, opt_function) {
 		{tplName, environment: {id}} = this;
 
 	let
-		struct = this.structure;
+		{structure} = this;
 
 	if (!opt_function && tplName && CONSTS[tplName][varName]) {
 		this.error(`the variable "${varName}" is already defined as a constant`);
 	}
 
-	while (!struct.vars) {
-		struct = struct.parent;
+	while (!structure.vars) {
+		structure = structure.parent;
 	}
 
 	const
-		val = struct.vars[varName];
+		val = structure.vars[varName];
 
-	if (val && !val.inherited && struct.parent) {
+	if (val && !val.inherited && structure.parent) {
 		return val.value;
 	}
 
@@ -52,9 +52,9 @@ Parser.prototype.declVar = function (varName, opt_function) {
 		realVar,
 		global = false;
 
-	if (struct.name === 'root' || this.getGroup('import')[struct.name]) {
-		if (struct.name !== 'root') {
-			struct = struct.parent;
+	if (structure.name === 'root' || this.getGroup('import')[structure.name]) {
+		if (structure.name !== 'root') {
+			structure = structure.parent;
 		}
 
 		realVar = `__LOCAL__.${varName}_${id}_${Snakeskin.UID}`;
@@ -62,10 +62,10 @@ Parser.prototype.declVar = function (varName, opt_function) {
 		global = true;
 
 	} else {
-		realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${struct.name}_${this.i}`;
+		realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${structure.name}_${this.i}`;
 	}
 
-	struct.vars[varName] = {
+	structure.vars[varName] = {
 		id,
 		global,
 		value: realVar,

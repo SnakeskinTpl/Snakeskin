@@ -98,7 +98,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 	tplName = tplName || this.tplName;
 
 	const
-		struct = this.structure;
+		{structure} = this;
 
 	let
 		argsList = this.getFnArgs(str),
@@ -126,7 +126,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 				tmp = ARGS_RES[tplName][type][fName];
 
 			$C(tmp.list).forEach((el) => {
-				struct.vars[el[2]] = {
+				structure.vars[el[2]] = {
 					value: el[0],
 					scope: this.scope.length
 				};
@@ -256,7 +256,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 		]);
 
 		defParams += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {sys: true})};`;
-		struct.vars[el.key] = {
+		structure.vars[el.key] = {
 			value: el.key,
 			scope: this.scope.length
 		};
@@ -324,7 +324,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 		args = args.concat(locals);
 	}
 
-	struct.params._consts = constsCache;
+	structure.params._consts = constsCache;
 	const res = {
 		params,
 		scope,

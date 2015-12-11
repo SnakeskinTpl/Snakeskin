@@ -310,8 +310,7 @@ const
  */
 Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {}) {
 	const
-		{tplName} = this,
-		struct = this.structure;
+		{tplName, structure} = this;
 
 	if (dangerRgxp.test(command)) {
 		this.error('unsupported syntax');
@@ -381,7 +380,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		globalUnUndef = unUndef;
 
 	const
-		vars = struct.children ? struct.vars : struct.parent.vars;
+		vars = structure.children ? structure.vars : structure.parent.vars;
 
 	let
 		ref = this.hasBlock('block', true),

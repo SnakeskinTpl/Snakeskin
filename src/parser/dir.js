@@ -33,16 +33,16 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_vars = opt_vars || {};
 
 	const
-		struct = this.structure;
+		{structure} = this;
 
-	$C(struct.vars).forEach((el, key) => {
+	$C(structure.vars).forEach((el, key) => {
 		opt_vars[key] = el;
 		opt_vars[key].inherited = true;
 	});
 
 	const obj = {
 		name: opt_name,
-		parent: struct,
+		parent: structure,
 		params: opt_params,
 		stack: [],
 		vars: opt_vars,
@@ -53,7 +53,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 
 	this.inline = false;
 	this.structure = obj;
-	struct.children
+	structure.children
 		.push(obj);
 
 	const

@@ -274,13 +274,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		const
 			ignore = DIR_GROUPS['ignore'][dirName],
-			struct = parser.structure,
-			parentDirName = this.getDirName(struct.name);
+			{structure} = parser,
+			parentDirName = this.getDirName(structure.name);
 
 		parser.name = dirName;
 		switch (p.placement) {
 			case `${alb}template`:
-				if (!struct.parent) {
+				if (!structure.parent) {
 					return parser.error(
 						`the directive "${dirName}" can be used only within: ${q(parser.getGroupList('template'))}`
 					);
@@ -289,7 +289,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				break;
 
 			case `${alb}global`:
-				if (struct.parent) {
+				if (structure.parent) {
 					return parser.error(`the directive "${dirName}" can be used only within the global space`);
 				}
 
@@ -326,7 +326,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys(DIR_BLACKLIST_PLAIN[name]))}`);
 		}
 
-		if (struct.strong) {
+		if (structure.strong) {
 			if (DIR_INSIDE[parentDirName][dirName]) {
 				parser.chainSpace = false;
 
@@ -372,7 +372,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (dirName === sourceName) {
-			if (struct === newStruct) {
+			if (structure === newStruct) {
 				if (!ignore && DIR_AFTER[parentDirName] && !DIR_AFTER[parentDirName][dirName]) {
 					return parser.error(`the directive "${dirName}" can't be used after the "${parentDirName}"`);
 				}

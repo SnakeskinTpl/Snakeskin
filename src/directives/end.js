@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -22,10 +24,9 @@ Snakeskin.addDirective(
 
 	function (command) {
 		let
-			struct = this.structure,
-			name = struct.name;
+			{structure, structure: {name}} = this;
 
-		if (!struct.parent) {
+		if (!structure.parent) {
 			return this.error(`invalid call "end"`);
 		}
 
@@ -39,7 +40,7 @@ Snakeskin.addDirective(
 		}
 
 		if (DIR_INSIDE[name]) {
-			this.chainSpace = struct.parent.strong;
+			this.chainSpace = structure.parent.strong;
 		}
 
 		const
@@ -49,15 +50,15 @@ Snakeskin.addDirective(
 		if (destruct) {
 			destruct.apply(this, arguments);
 
-		} else if (!struct.sys && isSimpleOutput) {
+		} else if (!structure.sys && isSimpleOutput) {
 			this.save('};');
 		}
 
-		Snakeskin.Directives[`${name}BaseEnd`].apply(this, arguments);
+		Snakeskin.Directives[`${name}BaseEnd`].call(this, ...arguments);
 		this.endDir();
 
-		struct = this.structure;
-		name = struct.name;
+		structure = this.structure;
+		name = structure.name;
 
 		if (this.deferReturn && isSimpleOutput) {
 			const
@@ -65,7 +66,7 @@ Snakeskin.addDirective(
 
 			if (this.getGroup('callback')[name]) {
 				const
-					parent = struct.parent.name;
+					parent = structure.parent.name;
 
 				if (async[parent]) {
 					const
@@ -136,7 +137,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		Snakeskin.Directives['end'].apply(this, arguments);
+		Snakeskin.Directives['end'].call(this, ...arguments);
 	}
 
 );

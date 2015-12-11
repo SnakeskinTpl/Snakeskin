@@ -10,6 +10,7 @@
 
 import './directives/index';
 import './directives/private';
+import './directives/compiler';
 import './directives/end';
 import './directives/void';
 import './directives/logic';
