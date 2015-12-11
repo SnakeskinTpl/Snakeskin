@@ -10,8 +10,5 @@
 
 import { GLOBAL } from '../consts/links';
 
-const
-	esprima = GLOBAL.esprima || require('esprima');
-
 export default
-	esprima;
+	GLOBAL.esprima || require('esprima');

@@ -10,8 +10,5 @@
 
 import { GLOBAL } from '../consts/links';
 
-const
-	beautify = GLOBAL.js_beautify || require('js-beautify');
-
 export default
-	beautify;
+	GLOBAL.js_beautify || require('js-beautify');

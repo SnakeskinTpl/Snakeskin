@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-export const base = {
+export default {
 	'@quotes': {
 		'"': [['«', '»'], ['‘', '’']],
 		'\'': [['“', '”'], ['„', '“']]

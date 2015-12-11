@@ -9,7 +9,7 @@
  */
 
 import $C from '../deps/collection';
-import { base } from '../consts/macros';
+import baseMacros from '../consts/macros';
 import { macroBlackSymbols } from '../consts/regs';
 
 /**
@@ -29,7 +29,7 @@ export function setMacros(obj, macros, opt_namespace, opt_init) {
 			combo: {}
 		});
 
-		setMacros(base, macros);
+		setMacros(baseMacros, macros);
 	}
 
 	if (obj == null) {
