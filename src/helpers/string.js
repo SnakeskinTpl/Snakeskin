@@ -8,16 +8,17 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection.js';
 import { isString } from './types';
 
 const
-	wsRgxp = /^\s*|[\r\n]/mg;
+	wsRgxp = /^\s+|[\r\n]+/mg;
 
 /**
  * String tag for truncate starting whitespaces and eol-s
  */
 export function ws(strings, ...expr) {
-	return strings.reduce((str, el, i) => str += el.replace(wsRgxp, '') + (i in expr ? expr[i] : ''));
+	return $C(strings).reduce((str, el, i) => str += el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : ''), '');
 }
 
 const

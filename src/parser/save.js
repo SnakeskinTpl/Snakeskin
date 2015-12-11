@@ -197,14 +197,16 @@ Parser.prototype.end = function (cacheKey, label) {
 	this.res = `/* ${versionDecl}, ${keyDecl}, ${labelDecl}, ${includesDecl}, ${generatedAtDecl}.${resDecl}`;
 	this.res += ws`
 			}
+
 			${
 				this.exports === 'default' ?
-					`
+					ws`
 						if (!__IS_NODE__ && !__HAS_EXPORTS__) {
 							__INIT__();
 						}
 					` : ''
 			}
+
 		}).call(this);
 	`;
 
