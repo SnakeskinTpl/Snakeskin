@@ -134,7 +134,7 @@ function setSSFlag(command) {
 
 			if (flag === 'macros') {
 				try {
-					value = this.setMacros(this.macros, value, null, init);
+					value = this.setMacros(value, this.macros, null, init);
 
 				} catch (err) {
 					return this.error(err.message);
