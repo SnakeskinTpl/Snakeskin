@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -35,14 +37,15 @@ Snakeskin.addDirective(
 			.startInlineDir('cdata')
 			.isSimpleOutput();
 
-		const
-			val = parseInt(command, 10);
-
+		const val = parseInt(command, 10);
 		this.info.line += val;
-		if (!this.proto) {
-			for (let i = 0; i < val; i++) {
-				this.lines[this.info.line + i] = '';
-			}
+
+		if (this.proto) {
+			return;
+		}
+
+		for (let i = 0; i < val; i++) {
+			this.lines[this.info.line + i] = '';
 		}
 	}
 
@@ -56,9 +59,11 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!this.freezeLine) {
-			this.info.line = parseInt(command, 10);
+		if (this.freezeLine) {
+			return;
 		}
+
+		this.info.line = parseInt(command, 10);
 	}
 
 );
@@ -71,10 +76,12 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!this.freezeLine) {
-			this.lines.pop();
-			this.info.line--;
+		if (this.freezeLine) {
+			return;
 		}
+
+		this.lines.pop();
+		this.info.line--;
 	}
 
 );
@@ -101,19 +108,23 @@ Snakeskin.addDirective(
 			line: this.info.line
 		});
 
-		if (!this.freezeLine) {
-			this.info.line = parseInt(command, 10);
+		if (this.freezeLine) {
+			return;
 		}
+
+		this.info.line = parseInt(command, 10);
 	},
 
 	function () {
-		if (!this.freezeLine) {
-			const
-				length = this.info.line = this.structure.params.line;
+		if (this.freezeLine) {
+			return;
+		}
 
-			for (let i = this.lines.length; i < length; i++) {
-				this.lines.push('');
-			}
+		const
+			length = this.info.line = this.structure.params.line;
+
+		for (let i = this.lines.length; i < length; i++) {
+			this.lines.push('');
 		}
 	}
 
