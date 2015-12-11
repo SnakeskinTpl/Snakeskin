@@ -355,7 +355,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 
 			const
 				baseParams = {},
-				flags = command.split('@=');
+				flags = command.split('@=').slice(1);
 
 			if (!parentTplName) {
 				$C(this.params[this.params.length - 1]).forEach((el, key) => {
@@ -365,12 +365,12 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 				});
 			}
 
-			if (parentTplName && flags.length === 1) {
+			if (parentTplName && !flags.length) {
 				flags.push('@skip true');
 			}
 
 			$C(flags).forEach((el) => {
-				const name = el.split(' ')[0];
+				const [name] = el.split(' ');
 				delete baseParams[name];
 				Snakeskin.Directives['__setSSFlag__'].call(this, el);
 			});
