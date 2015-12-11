@@ -12,9 +12,9 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import {
 
-	EXT_LIST,
-	EXT_MAP,
-	SCOPE
+	$extList,
+	$extMap,
+	$scope
 
 } from '../consts/cache';
 
@@ -26,16 +26,16 @@ import {
  * @return {!Array}
  */
 Parser.getExtList = function (name) {
-	if (EXT_LIST[name]) {
-		return EXT_LIST[name].slice();
+	if ($extList[name]) {
+		return $extList[name].slice();
 	}
 
 	const res = [];
-	while (name = EXT_MAP[name]) {
+	while (name = $extMap[name]) {
 		res.unshift(name);
 	}
 
-	EXT_LIST[name] = res;
+	$extList[name] = res;
 	return res.slice();
 };
 
@@ -44,7 +44,7 @@ Parser.getExtList = function (name) {
  * @param {string} name - template name
  */
 Parser.clearScopeCache = function (name) {
-	$C(SCOPE).forEach((cluster, key) => {
+	$C($scope).forEach((cluster, key) => {
 		if (key === 'template') {
 			if (cluster[name] && cluster[name].parent) {
 				delete cluster[name].parent.children[name];

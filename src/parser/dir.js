@@ -12,8 +12,8 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import {
 
-	TEMPLATES,
-	SYS_DIRS
+	$templates,
+	$sysDirs
 
 } from '../consts/cache';
 
@@ -47,7 +47,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		stack: [],
 		vars: opt_vars,
 		children: [],
-		sys: Boolean(SYS_DIRS[opt_name]),
+		sys: Boolean($sysDirs[opt_name]),
 		strong: false
 	};
 
@@ -100,8 +100,8 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 				});
 			};
 
-			if (parent && TEMPLATES[parent][key] && TEMPLATES[parent][key].children) {
-				deep(TEMPLATES[parent][key].children);
+			if (parent && $templates[parent][key] && $templates[parent][key].children) {
+				deep($templates[parent][key].children);
 			}
 		}
 
@@ -131,7 +131,7 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 		stack: [],
 		vars: null,
 		children: null,
-		sys: Boolean(SYS_DIRS[opt_name]),
+		sys: Boolean($sysDirs[opt_name]),
 		strong: false
 	};
 

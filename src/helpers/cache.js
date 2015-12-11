@@ -12,7 +12,7 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { IS_NODE } from '../consts/hacks';
 import { NULL } from '../consts/links';
-import { GLOBAL_CACHE, GLOBAL_FN_CACHE } from '../consts/cache';
+import { $globalCache, $globalFnCache } from '../consts/cache';
 import { escapeEOLs } from './escape';
 
 /**
@@ -25,14 +25,14 @@ import { escapeEOLs } from './escape';
  * @return {(string|undefined)}
  */
 export function getFromCache(cacheKey, code, params, ctx) {
-	if (IS_NODE && ctx !== NULL && GLOBAL_FN_CACHE[cacheKey]) {
-		$C(GLOBAL_FN_CACHE[cacheKey][code]).forEach((el, key) => {
+	if (IS_NODE && ctx !== NULL && $globalFnCache[cacheKey]) {
+		$C($globalFnCache[cacheKey][code]).forEach((el, key) => {
 			ctx[key] = el;
 		});
 	}
 
 	const
-		cache = GLOBAL_CACHE[cacheKey] && GLOBAL_CACHE[cacheKey][code];
+		cache = $globalCache[cacheKey] && $globalCache[cacheKey][code];
 
 	if (cache) {
 		let
@@ -108,9 +108,9 @@ export function saveIntoFnCache(cacheKey, code, params, ctx) {
 	if (ctx !== NULL) {
 		ctx['init'](Snakeskin);
 
-		if (cacheKey && (params.cache || GLOBAL_FN_CACHE[cacheKey])) {
-			GLOBAL_FN_CACHE[cacheKey] = GLOBAL_FN_CACHE[cacheKey] || {};
-			GLOBAL_FN_CACHE[cacheKey][code] = ctx;
+		if (cacheKey && (params.cache || $globalFnCache[cacheKey])) {
+			$globalFnCache[cacheKey] = $globalFnCache[cacheKey] || {};
+			$globalFnCache[cacheKey][code] = ctx;
 		}
 	}
 }
@@ -124,9 +124,9 @@ export function saveIntoFnCache(cacheKey, code, params, ctx) {
  * @param {!Parser} parser - instance of Parser class
  */
 export function saveIntoCache(cacheKey, code, params, parser) {
-	if (cacheKey && (params.cache || GLOBAL_CACHE[cacheKey])) {
-		GLOBAL_CACHE[cacheKey] = GLOBAL_CACHE[cacheKey] || {};
-		GLOBAL_CACHE[cacheKey][code] = {
+	if (cacheKey && (params.cache || $globalCache[cacheKey])) {
+		$globalCache[cacheKey] = $globalCache[cacheKey] || {};
+		$globalCache[cacheKey][code] = {
 			text: parser.res,
 			words: params.words,
 			debug: params.debug

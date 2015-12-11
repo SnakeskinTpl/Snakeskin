@@ -32,9 +32,9 @@ import {
 
 import {
 
-	RGXP,
-	DIR_NAME_REPLACERS,
-	DIR_INSIDE
+	$rgxp,
+	$dirNameReplacers,
+	$dirInside
 
 } from './consts/cache';
 
@@ -638,7 +638,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						// jscs:disable
 						short1 = command[0],
 						short2 = command.substr(0, 2),
-						replacer = DIR_NAME_REPLACERS[short2] || DIR_NAME_REPLACERS[short1];
+						replacer = $dirNameReplacers[short2] || $dirNameReplacers[short1];
 
 					if (replacer) {
 						command = replacer(command);
@@ -663,7 +663,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (!parser.proto && commandType[0] === '_') {
 						const
 							source = `${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`,
-							rgxp = RGXP[source] = RGXP[source] || new RegExp(source);
+							rgxp = $rgxp[source] = $rgxp[source] || new RegExp(source);
 
 						parser.lines[lastLine] = parser.lines[lastLine]
 							.replace(rgxp, '');
@@ -910,7 +910,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return false;
 
 			} else {
-				if (struct.strong && !DIR_INSIDE[struct.name]['text']) {
+				if (struct.strong && !$dirInside[struct.name]['text']) {
 					if (el === ' ') {
 						parser.space = false;
 						continue;

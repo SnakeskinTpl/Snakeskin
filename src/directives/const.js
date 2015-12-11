@@ -25,9 +25,9 @@ import {
 
 import {
 
-	CONSTS,
-	CONST_POSITIONS,
-	RGXP
+	$consts,
+	$constPositions,
+	$rgxp
 
 } from '../consts/cache';
 
@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 		const
 			{tplName} = this,
 			source = `^[\$${symbols}_${!this.scope.length ? r(L_MOD) : ''}][$${w}[\\].\\s]*=[^=]`,
-			rgxp = RGXP[source] = RGXP[source] || new RegExp(source, 'i');
+			rgxp = $rgxp[source] = $rgxp[source] || new RegExp(source, 'i');
 
 		if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
 			if (tplName && type !== 'global') {
@@ -93,7 +93,7 @@ Snakeskin.addDirective(
 				}
 
 				if (this.isAdvTest()) {
-					if (CONSTS[tplName][name]) {
+					if ($consts[tplName][name]) {
 						return this.error(`constant "${name}" is already defined`);
 					}
 
@@ -114,14 +114,14 @@ Snakeskin.addDirective(
 						start = this.i - this.startTemplateI;
 
 					if (parentTpl) {
-						parent = CONSTS[parentTpl][name];
+						parent = $consts[parentTpl][name];
 					}
 
 					if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
 						insideCallBlock = false;
 					}
 
-					CONSTS[tplName][name] = {
+					$consts[tplName][name] = {
 						from: start - commandLength,
 						to: start,
 						block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
@@ -130,7 +130,7 @@ Snakeskin.addDirective(
 					};
 
 					if (!insideCallBlock) {
-						CONST_POSITIONS[tplName] = start + 1;
+						$constPositions[tplName] = start + 1;
 					}
 				}
 
@@ -236,7 +236,7 @@ function isAssign(str, opt_global) {
 	const
 		source = `^[${r(G_MOD)}${r(L_MOD)}$${symbols}_${opt_global ? '[' : ''}]`,
 		key = `${source}[i`,
-		rgxp = RGXP[key] = RGXP[key] || new RegExp(source, 'i');
+		rgxp = $rgxp[key] = $rgxp[key] || new RegExp(source, 'i');
 
 	if (!rgxp.test(str)) {
 		return false;

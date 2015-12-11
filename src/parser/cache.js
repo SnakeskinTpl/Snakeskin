@@ -11,12 +11,12 @@
 import Parser from './constructor';
 import {
 
-	OUTPUT,
-	PROTOS,
-	PROTO_POSITIONS,
-	BLOCKS,
-	CONSTS,
-	CONST_POSITIONS
+	$output,
+	$protos,
+	$protoPositions,
+	$blocks,
+	$consts,
+	$constPositions
 
 } from '../consts/cache';
 
@@ -31,7 +31,7 @@ Parser.prototype.getBlockOutput = function (type, opt_tplName) {
 	opt_tplName = opt_tplName || this.tplName;
 
 	const
-		output = OUTPUT[opt_tplName];
+		output = $output[opt_tplName];
 
 	if (!output) {
 		return null;
@@ -51,11 +51,11 @@ Parser.prototype.getBlockOutput = function (type, opt_tplName) {
  * @return {!Parser}
  */
 Parser.prototype.initTemplateCache = function (tplName) {
-	PROTOS[tplName] = {};
-	PROTO_POSITIONS[tplName] = 0;
-	BLOCKS[tplName] = {};
-	CONSTS[tplName] = {};
-	CONST_POSITIONS[tplName] = 0;
+	$protos[tplName] = {};
+	$protoPositions[tplName] = 0;
+	$blocks[tplName] = {};
+	$consts[tplName] = {};
+	$constPositions[tplName] = 0;
 
 	this.consts = [];
 	this.bemRef = '';

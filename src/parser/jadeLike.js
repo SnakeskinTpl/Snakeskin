@@ -41,12 +41,11 @@ import {
 
 import {
 
-	BLOCK_DIRS,
-	TEXT_DIRS,
-
-	DIR_NAME_REPLACERS,
-	DIR_CHAIN,
-	DIR_END
+	$blockDirs,
+	$textDirs,
+	$dirNameReplacers,
+	$dirChain,
+	$dirEnd
 
 } from '../consts/cache';
 
@@ -91,11 +90,11 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 	function f(struct, obj) {
 		if (struct.block) {
-			if (DIR_CHAIN[struct.name] && DIR_CHAIN[struct.name][obj.name]) {
+			if ($dirChain[struct.name] && $dirChain[struct.name][obj.name]) {
 				obj.block = true;
 				obj.name = struct.name;
 
-			} else if (DIR_END[struct.name] && DIR_END[struct.name][obj.name]) {
+			} else if ($dirEnd[struct.name] && $dirEnd[struct.name][obj.name]) {
 				obj.block = false;
 
 			} else {
@@ -189,14 +188,14 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 				let replacer;
 				if (el === alb) {
-					replacer = DIR_NAME_REPLACERS[diff2str] ||
-						DIR_NAME_REPLACERS[next] ||
-						DIR_NAME_REPLACERS[next2str] ||
-						DIR_NAME_REPLACERS[el];
+					replacer = $dirNameReplacers[diff2str] ||
+						$dirNameReplacers[next] ||
+						$dirNameReplacers[next2str] ||
+						$dirNameReplacers[el];
 
 				} else {
-					replacer = DIR_NAME_REPLACERS[next2str] ||
-						DIR_NAME_REPLACERS[el];
+					replacer = $dirNameReplacers[next2str] ||
+						$dirNameReplacers[el];
 				}
 
 				if (replacer) {
@@ -212,8 +211,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					spaces,
 					space,
 					parent: null,
-					block: dir && BLOCK_DIRS[decl.name],
-					text: !dir || TEXT_DIRS[decl.name],
+					block: dir && $blockDirs[decl.name],
+					text: !dir || $textDirs[decl.name],
 					adv
 				};
 

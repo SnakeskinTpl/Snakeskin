@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import { DIR_NAME_ALIASES } from '../consts/cache';
+import { $dirNameAliases } from '../consts/cache';
 import { IS_NODE } from '../consts/hacks';
 import { applyDefEscape } from '../helpers/escape';
 import { ws } from '../helpers/string';
@@ -22,7 +22,7 @@ import { ws } from '../helpers/string';
  * @return {?string}
  */
 Parser.prototype.getDirName = function (name) {
-	return DIR_NAME_ALIASES[name] || name;
+	return $dirNameAliases[name] || name;
 };
 
 /**

@@ -14,7 +14,7 @@ import Parser from './constructor';
 import { concatProp } from '../helpers/literals';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
-import { CONSTS, SCOPE } from '../consts/cache';
+import { $consts, $scope } from '../consts/cache';
 import {
 
 	FILTER,
@@ -395,7 +395,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		type = 'proto';
 	}
 
-	if (ref && !SCOPE[type][tplName]) {
+	if (ref && !$scope[type][tplName]) {
 		ref = false;
 	}
 
@@ -422,7 +422,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 
 		if (!def) {
 			let refCache = ref &&
-				SCOPE[type][tplName][ref];
+				$scope[type][tplName][ref];
 
 			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
 				if (refCache) {
@@ -430,7 +430,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 				}
 
 				let tplCache = tplName &&
-					SCOPE['template'][tplName];
+					$scope['template'][tplName];
 
 				if (!def && tplCache && tplCache.parent) {
 					def = search(tplCache.root, sstr, getExtList(String(tplName)));
@@ -593,8 +593,8 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 				if (canParse &&
 					isNextAssign(command, i + word.length) &&
 					tplName &&
-					CONSTS[tplName] &&
-					CONSTS[tplName][vRes]
+					$consts[tplName] &&
+					$consts[tplName][vRes]
 				) {
 
 					this.error(`constant "${vRes}" is already defined`);

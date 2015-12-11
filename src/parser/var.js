@@ -11,7 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
-import { CONSTS } from '../consts/cache';
+import { $consts } from '../consts/cache';
 import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { ws } from '../helpers/string';
 
@@ -33,7 +33,7 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	let
 		{structure} = this;
 
-	if (!opt_function && tplName && CONSTS[tplName][varName]) {
+	if (!opt_function && tplName && $consts[tplName][varName]) {
 		this.error(`the variable "${varName}" is already defined as a constant`);
 	}
 

@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import { DIR_GROUPS } from '../consts/cache';
+import { $dirGroups } from '../consts/cache';
 import { clone } from '../helpers/object';
 
 const
@@ -38,12 +38,12 @@ Parser.prototype.getGroup = function (names) {
 
 	$C(arguments).forEach((name) => {
 		if (name === 'callback' && inline) {
-			$C(DIR_GROUPS['inlineIterator']).forEach((el, key) => {
+			$C($dirGroups['inlineIterator']).forEach((el, key) => {
 				ignore[key] = true;
 			});
 		}
 
-		$C(DIR_GROUPS[name]).forEach((el, key) => {
+		$C($dirGroups[name]).forEach((el, key) => {
 			if (ignore[key]) {
 				return;
 			}

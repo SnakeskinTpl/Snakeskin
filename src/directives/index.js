@@ -17,25 +17,25 @@ import { r } from '../helpers/string';
 import { HAS_CONSOLE_LOG } from '../consts/hacks';
 import {
 
-	DIR_NAME_ALIASES,
-	DIR_NAME_REPLACERS,
+	$dirNameAliases,
+	$dirNameReplacers,
 
-	SYS_DIRS,
-	BLOCK_DIRS,
-	TEXT_DIRS,
-	DIR_GROUPS,
+	$sysDirs,
+	$blockDirs,
+	$textDirs,
+	$dirGroups,
 
-	DIR_PLACEMENT,
-	DIR_PLACEMENT_PLAIN,
-	DIR_BLACKLIST,
-	DIR_BLACKLIST_PLAIN,
+	$dirPlacement,
+	$dirPlacementPlain,
+	$dirBlacklist,
+	$direBlacklistPlain,
 
-	DIR_AFTER,
-	DIR_INSIDE,
-	DIR_CHAIN,
-	DIR_END,
+	$dirAfter,
+	$dirInside,
+	$dirChain,
+	$dirEnd,
 
-	CONSTS
+	$consts
 
 } from '../consts/cache';
 
@@ -156,20 +156,20 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_ = ([cache, val]) => ({cache, val});
 
 	$C([
-		_([BLOCK_DIRS, p.block]),
-		_([SYS_DIRS, p.sys]),
-		_([TEXT_DIRS, p.text])
+		_([$blockDirs, p.block]),
+		_([$sysDirs, p.sys]),
+		_([$textDirs, p.text])
 
 	]).forEach(({cache, val}) => {
 		cache[name] = Boolean(val);
 	});
 
 	$C([
-		_([DIR_GROUPS, p.group]),
-		_([DIR_CHAIN, p.chain]),
-		_([DIR_INSIDE, p.inside]),
-		_([DIR_AFTER, p.after]),
-		_([DIR_END, p.end])
+		_([$dirGroups, p.group]),
+		_([$dirChain, p.chain]),
+		_([$dirInside, p.inside]),
+		_([$dirAfter, p.after]),
+		_([$dirEnd, p.end])
 
 	]).forEach(({cache, val}) => {
 		$C([].concat(val)).forEach((key) => {
@@ -179,16 +179,16 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	});
 
 	$C([
-		DIR_CHAIN,
-		DIR_INSIDE,
-		DIR_AFTER,
-		DIR_END
+		$dirChain,
+		$dirInside,
+		$dirAfter,
+		$dirEnd
 
 	]).forEach((cache) => {
 		$C(cache).forEach((el, key) => {
 			if (key[0] === lb) {
 				delete cache[key];
-				$C(DIR_GROUPS[key.slice(1)]).forEach((el, key) => {
+				$C($dirGroups[key.slice(1)]).forEach((el, key) => {
 					cache[key] = cache[key] || {};
 					cache[key][name] = true;
 				});
@@ -200,11 +200,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		([cache, plainCache, val]) => ({cache, plainCache, val});
 
 	$C([
-		_([DIR_PLACEMENT, DIR_PLACEMENT_PLAIN, p.placement]),
-		_([DIR_BLACKLIST, DIR_BLACKLIST_PLAIN, p.blacklist])
+		_([$dirPlacement, $dirPlacementPlain, p.placement]),
+		_([$dirBlacklist, $direBlacklistPlain, p.blacklist])
 
 	]).forEach(({cache, plainCache, val}) => {
-		if (cache === DIR_PLACEMENT && new RegExp(`${r(alb)}?`).test(String(val))) {
+		if (cache === $dirPlacement && new RegExp(`${r(alb)}?`).test(String(val))) {
 			return;
 		}
 
@@ -215,8 +215,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			$C(map).forEach((el, key) => {
 				if (key[0] === lb) {
 					key = key.slice(1);
-					if (DIR_GROUPS[key]) {
-						map[key] = Object.keys(DIR_GROUPS[key]);
+					if ($dirGroups[key]) {
+						map[key] = Object.keys($dirGroups[key]);
 					}
 				}
 			});
@@ -235,11 +235,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			throw new Error(`Invalid shorthand key "${key}" (key.length > 2)`);
 		}
 
-		if (DIR_NAME_REPLACERS[key] && HAS_CONSOLE_LOG) {
+		if ($dirNameReplacers[key] && HAS_CONSOLE_LOG) {
 			console.log(`Warning: replacer "${key}" already exists`);
 		}
 
-		DIR_NAME_REPLACERS[key] = isFunction(el) ?
+		$dirNameReplacers[key] = isFunction(el) ?
 			el : (cmd) => cmd.replace(key, el);
 
 		if (key[0] !== '/') {
@@ -251,7 +251,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		$C([].concat(p.renderModeBlacklist)).reduce((map, el) => (map[el] = true, map), {});
 
 	if (p.alias) {
-		DIR_NAME_ALIASES[name] = name.replace(/__(.*?)__/, '$1');
+		$dirNameAliases[name] = name.replace(/__(.*?)__/, '$1');
 	}
 
 	if (!(p.selfInclude = p.selfInclude !== false)) {
@@ -273,7 +273,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		const
-			ignore = DIR_GROUPS['ignore'][dirName],
+			ignore = $dirGroups['ignore'][dirName],
 			{structure} = parser,
 			parentDirName = this.getDirName(structure.name);
 
@@ -296,9 +296,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				break;
 
 			default:
-				if (p.placement && !parser.has(DIR_PLACEMENT_PLAIN[name])) {
+				if (p.placement && !parser.has($dirPlacementPlain[name])) {
 					return parser.error(
-						`the directive "${dirName}" can be used only within: ${q(Object.keys(DIR_PLACEMENT_PLAIN[name]))}`
+						`the directive "${dirName}" can be used only within: ${q(Object.keys($dirPlacementPlain[name]))}`
 					);
 				}
 		}
@@ -315,19 +315,19 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" can be used only with a generator`);
 		}
 
-		if (p.chain && (!DIR_CHAIN[parentDirName] || !DIR_CHAIN[parentDirName][dirName])) {
+		if (p.chain && (!$dirChain[parentDirName] || !$dirChain[parentDirName][dirName])) {
 			const groups = $C([].concat(p.chain)).reduce((arr, el) =>
 				arr.concat(el[0] === lb ? parser.getGroupList(el.slice(1)) : el), []);
 
 			return parser.error(`the directive "${dirName}" can be used only with: ${q(groups)}`);
 		}
 
-		if (p.blacklist && parser.has(DIR_BLACKLIST_PLAIN[name])) {
-			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys(DIR_BLACKLIST_PLAIN[name]))}`);
+		if (p.blacklist && parser.has($direBlacklistPlain[name])) {
+			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys($direBlacklistPlain[name]))}`);
 		}
 
 		if (structure.strong) {
-			if (DIR_INSIDE[parentDirName][dirName]) {
+			if ($dirInside[parentDirName][dirName]) {
 				parser.chainSpace = false;
 
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
@@ -366,14 +366,14 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		const
 			newStruct = parser.structure;
 
-		if (DIR_INSIDE[dirName]) {
+		if ($dirInside[dirName]) {
 			newStruct.strong = true;
 			parser.chainSpace = true;
 		}
 
 		if (dirName === sourceName) {
 			if (structure === newStruct) {
-				if (!ignore && DIR_AFTER[parentDirName] && !DIR_AFTER[parentDirName][dirName]) {
+				if (!ignore && $dirAfter[parentDirName] && !$dirAfter[parentDirName][dirName]) {
 					return parser.error(`the directive "${dirName}" can't be used after the "${parentDirName}"`);
 				}
 
@@ -391,7 +391,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 						j++;
 					}
 
-					if (!ignore && prev && DIR_AFTER[prev.name] && !DIR_AFTER[prev.name][dirName]) {
+					if (!ignore && prev && $dirAfter[prev.name] && !$dirAfter[prev.name][dirName]) {
 						return parser.error(`the directive "${dirName}" can't be used after the "${prev.name}"`);
 					}
 				}
@@ -429,7 +429,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		$C(params['@consts']).forEach((el, key) => {
-			CONSTS[this.tplName][key] = el;
+			$consts[this.tplName][key] = el;
 		});
 
 		const

@@ -12,11 +12,11 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import {
 
-	EXT_MAP,
-	CACHE,
-	TEMPLATES,
-	ROUTER,
-	ROUTER_POSITIONS
+	$extMap,
+	$cache,
+	$templates,
+	$router,
+	$routerPositions
 
 } from '../consts/cache';
 
@@ -40,7 +40,7 @@ const
  */
 Parser.prototype.getTplFullBody = function (tplName) {
 	const
-		parentTpl = EXT_MAP[tplName],
+		parentTpl = $extMap[tplName],
 		protoLength = 'proto'.length,
 		constLength = 1;
 
@@ -54,7 +54,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 	});
 
 	let
-		res = CACHE[parentTpl];
+		res = $cache[parentTpl];
 
 	if (!this.tolerateWhitespace) {
 		res += `${alb}${lb}__&-__${rb}`;
@@ -66,7 +66,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 		advDiff = [];
 
 	let
-		tb = TEMPLATES[tplName],
+		tb = $templates[tplName],
 		blockDiff,
 		newFrom,
 		prev,
@@ -77,14 +77,14 @@ Parser.prototype.getTplFullBody = function (tplName) {
 		const
 			type = is[i];
 
-		if (ROUTER[type]) {
+		if ($router[type]) {
 			k = `${type}_`;
 
-			el = ROUTER[type][tplName];
-			prev = ROUTER[type][parentTpl];
+			el = $router[type][tplName];
+			prev = $router[type][parentTpl];
 
-			if (ROUTER_POSITIONS[type]) {
-				from = ROUTER_POSITIONS[type][parentTpl];
+			if ($routerPositions[type]) {
+				from = $routerPositions[type][parentTpl];
 				newFrom = null;
 			}
 		}
@@ -96,7 +96,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 
 			let
 				adv = 0,
-				block = CACHE[tplName].slice(current.from, current.to);
+				block = $cache[tplName].slice(current.from, current.to);
 
 			if (parent) {
 				if (parent.output != null && current.output == null && (i % 2 === 0)) {
@@ -110,7 +110,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 					}
 				}
 
-				blockDiff = block.length - CACHE[parentTpl].slice(parent.from, parent.to).length;
+				blockDiff = block.length - $cache[parentTpl].slice(parent.from, parent.to).length;
 			}
 
 			const

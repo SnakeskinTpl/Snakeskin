@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { OUTPUT } from '../consts/cache';
+import { $output } from '../consts/cache';
 import { toObj } from '../helpers/object';
 
 Snakeskin.addDirective(
@@ -56,9 +56,9 @@ function setSSFlag(command) {
 		cache;
 
 	if (tplName) {
-		cache = OUTPUT[tplName]['flag'] = OUTPUT[tplName]['flag'] || {};
+		cache = $output[tplName]['flag'] = $output[tplName]['flag'] || {};
 		if (this.parentTplName) {
-			parentCache = OUTPUT[this.parentTplName] && OUTPUT[this.parentTplName]['flag'];
+			parentCache = $output[this.parentTplName] && $output[this.parentTplName]['flag'];
 		}
 	}
 

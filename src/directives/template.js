@@ -19,19 +19,19 @@ import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
 import {
 
-	WRITE,
-	SCOPE,
+	$write,
+	$scope,
 
-	TEMPLATES,
-	CACHE,
-	PROTOS,
+	$templates,
+	$cache,
+	$protos,
 
-	ARGS,
-	ARGS_RES,
-	OUTPUT,
+	$args,
+	$argsRes,
+	$output,
 
-	EXT_LIST,
-	EXT_MAP
+	$extList,
+	$extMap
 
 } from '../consts/cache';
 
@@ -165,8 +165,8 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 				this.info.template =
 					this.tplName = tplName;
 
-				if (this.name !== 'template' && !WRITE[tplName]) {
-					WRITE[tplName] = false;
+				if (this.name !== 'template' && !$write[tplName]) {
+					$write[tplName] = false;
 				}
 
 				const fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
@@ -313,7 +313,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 					return this.error(err.message);
 				}
 
-				if (CACHE[parentTplName] == null) {
+				if ($cache[parentTplName] == null) {
 					if (!this.renderAs || this.renderAs === 'template') {
 						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
 					}
@@ -325,12 +325,12 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 
 			this.initTemplateCache(tplName);
 
-			if (tplName in EXT_MAP) {
+			if (tplName in $extMap) {
 				Parser.clearScopeCache(tplName);
 			}
 
 			const
-				scope = SCOPE['template'],
+				scope = $scope['template'],
 				parent = scope[parentTplName];
 
 			scope[tplName] = {
@@ -346,12 +346,12 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 				parent.children[tplName] = scope[tplName];
 			}
 
-			ARGS[tplName] = {};
-			ARGS_RES[tplName] = {};
-			OUTPUT[tplName] = {};
+			$args[tplName] = {};
+			$argsRes[tplName] = {};
+			$output[tplName] = {};
 
-			EXT_MAP[tplName] = parentTplName;
-			delete EXT_LIST[tplName];
+			$extMap[tplName] = parentTplName;
+			delete $extList[tplName];
 
 			const
 				baseParams = {},
@@ -446,7 +446,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 			`);
 
 			const preDefs = this.preDefs[tplName];
-			if ((!EXT_MAP[tplName] || parentTplName) && preDefs) {
+			if ((!$extMap[tplName] || parentTplName) && preDefs) {
 				this.source =
 					this.source.slice(0, this.i + 1) +
 					preDefs.text +
@@ -483,8 +483,8 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 			}
 
 			const diff = this.getDiff(commandLength);
-			CACHE[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
-			TEMPLATES[tplName] = this.blockTable;
+			$cache[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
+			$templates[tplName] = this.blockTable;
 
 			if (this.parentTplName) {
 				this.info.line = this.startTemplateLine;
@@ -513,7 +513,7 @@ $C(['template', 'interface', 'placeholder']).forEach((template) => {
 							}
 
 							const
-								tmp = PROTOS[tplName][key];
+								tmp = $protos[tplName][key];
 
 							if (!tmp) {
 								throw `the proto "${key}" is not defined`;

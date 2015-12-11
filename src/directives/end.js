@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { DIR_INSIDE } from '../consts/cache';
+import { $dirInside } from '../consts/cache';
 import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
@@ -39,7 +39,7 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if (DIR_INSIDE[name]) {
+		if ($dirInside[name]) {
 			this.chainSpace = structure.parent.strong;
 		}
 

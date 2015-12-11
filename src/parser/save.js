@@ -12,7 +12,7 @@ import Snakeskin from '../core';
 import Parser from './constructor';
 import { eol, singleQuotes } from '../consts/regs';
 import { escapeEOLs } from '../helpers/escape';
-import { WRITE } from '../consts/cache';
+import { $write } from '../consts/cache';
 import { ws, r } from '../helpers/string';
 import { isFunction } from '../helpers/types';
 
@@ -264,7 +264,7 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
 		return false;
 	}
 
-	if (!this.tplName || WRITE[this.tplName] !== false || opt_interface) {
+	if (!this.tplName || $write[this.tplName] !== false || opt_interface) {
 		if (opt_jsDoc) {
 			const pos = Number(opt_jsDoc);
 			this.res = this.res.slice(0, pos) + str + this.res.slice(pos);
@@ -317,7 +317,7 @@ Parser.prototype.mod = function (callback) {
 		return false;
 	}
 
-	if (!this.tplName || WRITE[this.tplName] !== false) {
+	if (!this.tplName || $write[this.tplName] !== false) {
 		callback.call(this);
 		return true;
 	}

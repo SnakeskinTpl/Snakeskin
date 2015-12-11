@@ -9,71 +9,71 @@
  */
 
 export const
-	DIR_NAME_REPLACERS = {},
-	DIR_NAME_ALIASES = {},
-	DIR_GROUPS = {};
+	$dirNameReplacers = {},
+	$dirNameAliases = {},
+	$dirGroups = {};
 
 export const
-	BLOCK_DIRS = {},
-	TEXT_DIRS = {},
-	SYS_DIRS = {};
+	$blockDirs = {},
+	$textDirs = {},
+	$sysDirs = {};
 
 export const
-	WRITE = {};
+	$write = {};
 
 export const
-	DIR_PLACEMENT = {},
-	DIR_PLACEMENT_PLAIN = {},
-	DIR_BLACKLIST = {},
-	DIR_BLACKLIST_PLAIN = {},
-	DIR_AFTER = {},
-	DIR_INSIDE = {},
-	DIR_CHAIN = {},
-	DIR_END = {};
+	$dirPlacement = {},
+	$dirPlacementPlain = {},
+	$dirBlacklist = {},
+	$direBlacklistPlain = {},
+	$dirAfter = {},
+	$dirInside = {},
+	$dirChain = {},
+	$dirEnd = {};
 
 export const
-	PROTOS = {},
-	PROTO_POSITIONS = {};
+	$protos = {},
+	$protoPositions = {};
 
 export const
-	BLOCKS = {};
+	$blocks = {};
 
 export const
-	CONSTS = {},
-	CONST_POSITIONS = {};
+	$consts = {},
+	$constPositions = {};
 
 export const
-	OUTPUT = {};
+	$output = {};
 
 export const
-	ARGS = {},
-	ARGS_RES = {};
+	$args = {},
+	$argsRes = {};
 
 export const
-	RGXP = {},
-	EXT_MAP = {},
-	EXT_LIST = {};
+	$rgxp = {},
+	$extMap = {},
+	$extList = {};
 
 export const
-	TEMPLATES = {},
-	CACHE = {};
+	$templates = {},
+	$cache = {};
 
 export const
-	GLOBAL_CACHE = {},
-	GLOBAL_FN_CACHE = {};
+	$globalCache = {},
+	$globalFnCache = {};
 
-export const ROUTER = {
-	'block': BLOCKS,
-	'const': CONSTS,
-	'proto': PROTOS
+export const $router = {
+	'block': $blocks,
+	'const': $consts,
+	'proto': $protos
 };
 
-export const ROUTER_POSITIONS = {
-	'const': CONST_POSITIONS,
-	'proto': PROTO_POSITIONS
+export const $routerPositions = {
+	'const': $constPositions,
+	'proto': $protoPositions
 };
 
-export const SCOPE = {
+export const $scope = {
 	'template': {},
 	'proto': {},
 	'block': {}

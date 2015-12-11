@@ -21,9 +21,9 @@ import {
 
 import {
 
-	ARGS,
-	ARGS_RES,
-	CONSTS
+	$args,
+	$argsRes,
+	$consts
 
 } from '../consts/cache';
 
@@ -106,24 +106,24 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 		parentArgs,
 		argsTable;
 
-	if (!ARGS[tplName]) {
-		ARGS[tplName] = {};
-		ARGS_RES[tplName] = {};
+	if (!$args[tplName]) {
+		$args[tplName] = {};
+		$argsRes[tplName] = {};
 	}
 
-	if (!ARGS[tplName][type]) {
-		ARGS[tplName][type] = {};
-		ARGS_RES[tplName][type] = {};
+	if (!$args[tplName][type]) {
+		$args[tplName][type] = {};
+		$argsRes[tplName][type] = {};
 	}
 
 	if (fName) {
-		if (parentTplName && ARGS[parentTplName][type]) {
-			parentArgs = ARGS[parentTplName][type][fName];
+		if (parentTplName && $args[parentTplName][type]) {
+			parentArgs = $args[parentTplName][type][fName];
 		}
 
-		if (ARGS[tplName][type][fName]) {
+		if ($args[tplName][type][fName]) {
 			const
-				tmp = ARGS_RES[tplName][type][fName];
+				tmp = $argsRes[tplName][type][fName];
 
 			$C(tmp.list).forEach((el) => {
 				structure.vars[el[2]] = {
@@ -135,14 +135,14 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 			return tmp;
 		}
 
-		argsTable = ARGS[tplName][type][fName] = {};
+		argsTable = $args[tplName][type][fName] = {};
 
 	} else {
 		if (parentTplName) {
-			parentArgs = ARGS[parentTplName][type];
+			parentArgs = $args[parentTplName][type];
 		}
 
-		argsTable = ARGS[tplName][type];
+		argsTable = $args[tplName][type];
 	}
 
 	let
@@ -228,7 +228,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 	});
 
 	const
-		consts = CONSTS[this.tplName],
+		consts = $consts[this.tplName],
 		constsCache = {},
 		locals = [];
 
@@ -334,7 +334,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 	};
 
 	if (fName) {
-		ARGS_RES[tplName][type][fName] = res;
+		$argsRes[tplName][type][fName] = res;
 	}
 
 	return res;
