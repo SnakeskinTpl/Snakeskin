@@ -49,4 +49,4 @@ node_modules
 
 # Temporary
 *.tmp
-/tmp
+/test/tmp
