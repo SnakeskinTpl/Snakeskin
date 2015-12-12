@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,38 +8,46 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
+import { q } from './index';
+import { escapeBackslashes, escapeEOLs } from '../helpers/escape';
+
 Snakeskin.addDirective(
 	'include',
 
 	{
+		deferInit: true,
 		notEmpty: true
 	},
 
 	function (command) {
 		if (this.tplName || this.hasParent('head')) {
-			return this.error(`directive "${this.name}" can't be used within a ${groupsList['template'].join(', ')} or a "head"`);
+			return this.error(
+				`the directive "${this.name}" can't be used within: ${q(this.getGroupList('template').concat('head'))}`
+			);
 		}
 
 		this.startInlineDir(null, {
 			from: this.res.length
 		});
 
-		var parts = command.split(' as ');
+		const
+			parts = command.split(/\s+as\s+/);
 
 		if (!parts[0]) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		var path = this.out(parts[0], {sys: true}),
-			type = parts[1] ?
-				`'${parts[1].trim()}'` : '\'\'';
+		const
+			path = this.out(parts[0], {sys: true}),
+			type = parts[1] ? `'${parts[1].trim()}'` : `''`;
 
 		if (path !== undefined && type !== undefined) {
 			this.save(ws`
 				Snakeskin.include(
-					'${escapeBackslash(this.info.file || '')}',
+					'${escapeBackslashes(this.info.file || '')}',
 					${this.pasteDangerBlocks(path)},
-					'${escapeNextLine(this.eol)}',
+					'${escapeEOLs(this.eol)}',
 					${type}
 				);
 			`);
@@ -63,29 +73,27 @@ Snakeskin.addDirective(
 	function (command) {
 		command = this.pasteDangerBlocks(command);
 
-		let module = {
+		const module = {
 			exports: {},
-			require: require,
-
+			require,
 			id: this.environment.id + 1,
 			key: null,
-
 			filename: command,
 			parent: this.module,
 			root: this.module.root || this.module,
-
 			children: [],
 			loaded: true
 		};
 
-		module.root.key.push([command, require('fs').statSync(command).mtime.valueOf()]);
+		module.root.key.push([
+			command,
+			require('fs').statSync(command).mtime.valueOf()
+		]);
 
 		this.module.children.push(module);
 		this.module = module;
-
 		this.info.file = command;
 		this.files[command] = true;
-
 		this.save(this.declVars('$_'));
 	}
 );
@@ -98,7 +106,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		var file = this.module.filename;
+		const
+			file = this.module.filename;
 
 		this.module = this.module.parent;
 		this.info.file = this.module.filename;
