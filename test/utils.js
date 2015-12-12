@@ -124,18 +124,16 @@ exports.run = function (params) {
 	}
 };
 
-exports.exists = function (src, cb) {
+exports.exists = function (src) {
 	try {
 		fs.statSync(src);
+		return true;
 
 	} catch (err) {
-		switch (err.code) {
-			case 'ENOENT':
-				cb();
-				break;
-
-			default:
-				throw err;
+		if (err.code === 'ENOENT') {
+			return false;
 		}
+
+		throw err;
 	}
 };

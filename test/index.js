@@ -17,9 +17,9 @@ var
 	fs = require('fs'),
 	mkdirp = require('mkdirp');
 
-utils.exists(utils.to, function () {
+if (!utils.exists(utils.to)) {
 	mkdirp.sync(utils.to);
-});
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +32,6 @@ utils.run({
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-utils.exists(utils.error, function () {
-	fs.unlinkSync(utils.error);
-});
+if (!utils.exists(utils.error)) {
+	mkdirp.sync(utils.error);
+}
