@@ -28,3 +28,4 @@ import './directives/collection';
 import './directives/comment';
 import './directives/doctype';
 import './directives/template';
+import './directives/plain';

@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,24 +15,26 @@ Snakeskin.addDirective(
 
 	{
 		sys: true,
-		placement: 'template',
+		placement: Snakeskin.placement('template'),
 		block: true,
 		selfInclude: false
 	},
 
 	function () {
-		this.startDir();
-
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.enabled = true;
+		if (!this.autoReplace) {
+			return;
 		}
+
+		this.autoReplace = false;
+		this.structure.params.enabled = true;
 	},
 
 	function () {
-		if (this.structure.params.enabled) {
-			this.autoReplace = true;
+		if (!this.structure.params.enabled) {
+			return;
 		}
+
+		this.autoReplace = true;
 	}
 
 );
