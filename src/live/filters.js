@@ -17,6 +17,7 @@ import { isString } from '../helpers/types';
  *
  * @param {!Object} filters - import object
  * @param {?string=} [opt_namespace] - namespace for saving, for example foo.bar
+ * @return {!Object}
  */
 Snakeskin.importFilters = function (filters, opt_namespace) {
 	let
@@ -39,6 +40,8 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 
 		obj[key] = filters[key];
 	}
+
+	return this;
 };
 
 const entityMap = {

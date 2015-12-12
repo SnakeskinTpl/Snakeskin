@@ -238,6 +238,7 @@ var Snakeskin = {
 	 * @abstract
 	 * @param {!Object} filters
 	 * @param {?string=} [opt_namespace]
+	 * @return {!Object}
 	 */
 	importFilters: function (filters, opt_namespace) {},
 
