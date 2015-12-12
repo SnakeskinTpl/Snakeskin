@@ -21,7 +21,7 @@ var
 var
 	from = path.join(__dirname, 'tests'),
 	to = path.join(__dirname, 'tmp'),
-	error = path.join(__dirname, '../error.txt');
+	error = path.join(__dirname, '../error.tmp');
 
 exports.from = from;
 exports.to = to;
@@ -33,28 +33,33 @@ var
 
 exports.run = function (params) {
 	var
-		options = JSON.stringify(params),
+		options = JSON.stringify(params, null, 2),
 		debug = params.debug = {};
 
 	prfx++;
-	fs.readdirSync(from).forEach(exec);
+	glob.sync(path.join(from, '*/*.ss')).forEach(exec);
 
 	function exec(file) {
-		if (path.extname(file) !== '.ss') {
-			return;
-		}
-
-		var
-			src = path.join(from, file),
-			txt = String(fs.readFileSync(src))
+		try {
+			var txt = fs.readFileSync(file, 'utf8')
 				.split('###')
 				.map(function (el) {
 					return el.trim();
 				});
 
-		var
-			starts = txt[0].split(/[\r\n]+/),
-			results = txt[2].split('***');
+			var
+				fileName = path.basename(file),
+				chunkSrc = path.join(to, fileName + '_' + prfx + '.js'),
+				relativeSrc = path.relative(process.cwd(), file);
+
+			var
+				tests = txt[0].split(/[\r\n]+/),
+				results = txt[2].split('***');
+
+		} catch (err) {
+			log('File: ' + (relativeSrc || file) + '\nError: ' + err.message, 'error');
+			return;
+		}
 
 		var obj = {
 			tpl: txt[1],
@@ -62,20 +67,19 @@ exports.run = function (params) {
 			js: []
 		};
 
-		if (!prfx && !/^(?:script|template|include|modules)|_node/.test(file)) {
-			asserts.push(obj);
-		}
-
 		try {
 			var
 				start = Date.now(),
-				res = snakeskin.compile(txt[1], params, {file: path.join(src, file)});
+				res = snakeskin.compile(txt[1], params, {file: file});
 
 			if (!prfx) {
-				console.log(file + ' ' + (Date.now() - start) + 'ms');
+				log(relativeSrc + ' ' + (Date.now() - start) + 'ms');
 			}
 
-			fs.writeFileSync(path.join(path.dirname(src), 'tmp', path.basename(src) + '_' + prfx + '.js'), res);
+			fs.writeFileSync(chunkSrc, res);
+
+			var
+				tpl = require(chunkSrc).init(snakeskin);
 
 		} catch (err) {
 			fs.writeFileSync(
@@ -86,10 +90,7 @@ exports.run = function (params) {
 			throw err;
 		}
 
-		var
-			tpl = require('./tmp/' + file + '_' + prfx + '.js').init(snakeskin);
-
-		starts.forEach(function (el, i) {
+		tests.forEach(function (el, i) {
 			var
 				p = String(el).split(' ; '),
 				res = '';
@@ -102,25 +103,46 @@ exports.run = function (params) {
 
 				res = eval('tpl.' + p[0] + '(' + p.slice(1) + ')');
 				res = res != null ? res.trim() : '';
+
 				assert.equal(
 					res,
 					results[i]
 				);
 
 			} catch (err) {
-				console.error('File: ' + file + ' - ' + prfx + ' (' + options + '), Tpl: ' + p[0]);
-				fs.writeFileSync(
-					error,
-					'File: ' + file + ' - ' + prfx + ' (' + options + '), Tpl: ' + p[0] +
+				var
+					header =
+						'File: ' + relativeSrc + ' (' + prfx + ')' +
+						'\nOptions:\n\n' + options +
+						'\n\nTpl: ' + p[0];
+
+				log(header, 'error');
+
+				var report =
+					header +
+					'\n\n' + line() +
 					'\n\nResult:\n' + res +
 					'\n\nExpected:\n' + results[i] +
+					'\n\n' + line() +
 					'\n\nTest:\n' + txt[1] +
-					'\n\nCode:\n' + debug['code']
-				);
+					'\n\nCode:\n' + debug['code'];
 
+				fs.writeFileSync(error, report);
 				throw err;
 			}
 		});
+	}
+
+	function log(message, type) {
+		type = type || 'log';
+		console[type](line());
+		console[type](new Date().toString());
+		console[type](message);
+		console[type](line());
+	}
+
+	function line() {
+		return new Array(80).join('~');
 	}
 };
 
