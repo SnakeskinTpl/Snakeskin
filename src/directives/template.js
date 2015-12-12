@@ -86,9 +86,9 @@ Parser.prototype.consts = null;
  */
 Parser.prototype.bemRef = '';
 
-$C(['template', 'interface', 'placeholder']).forEach((template) => {
+$C(['template', 'interface', 'placeholder']).forEach((dir) => {
 	Snakeskin.addDirective(
-		template,
+		dir,
 
 		{
 			deferInit: true,
