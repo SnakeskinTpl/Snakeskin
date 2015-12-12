@@ -1,46 +1,46 @@
-basicHelloWord1
-basicHelloWord2
-basicHelloWord3
-basicHelloWord4
-basicHelloWord5
+basicHelloWorld1
+basicHelloWorld2
+basicHelloWorld3
+basicHelloWorld4
+basicHelloWorld5
 
 ###
 
-{template basicHelloWord1()}
-	Hello word!
+{template basicHelloWorld1()}
+	Hello world!
 {end template}
 
-{template basicHelloWord2()}
-	Hello word!
+{template basicHelloWorld2()}
+	Hello world!
 {end}
 
-{template basicHelloWord3()}
-	Hello word!
+{template basicHelloWorld3()}
+	Hello world!
 {/}
 
-{template basicHelloWord4()}
-	Hello word!
+{template basicHelloWorld4()}
+	Hello world!
 {/template}
 
-- template basicHelloWord5()
-	Hello word!
+- template basicHelloWorld5()
+	Hello world!
 
 ###
 
-Hello word!
+Hello world!
 
 ***
 
-Hello word!
+Hello world!
 
 ***
 
-Hello word!
+Hello world!
 
 ***
 
-Hello word!
+Hello world!
 
 ***
 
-Hello word!
+Hello world!
