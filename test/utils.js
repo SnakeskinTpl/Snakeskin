@@ -49,8 +49,11 @@ exports.run = function (params) {
 
 			var
 				fileName = path.basename(file),
-				chunkSrc = path.join(to, fileName + '_' + prfx + '.js'),
+				cat = path.basename(path.dirname(file)),
+				chunkSrc = path.join(to, fileName + '_' + prfx + '.' + cat + '.js'),
 				relativeSrc = path.relative(process.cwd(), file);
+
+			console.log('\n###### ' + cat + '\n');
 
 			var
 				tests = txt[0].split(/[\r\n]+/),
@@ -135,7 +138,6 @@ exports.run = function (params) {
 
 	function log(message, type) {
 		type = type || 'log';
-		console[type](line());
 		console[type](new Date().toString());
 		console[type](message);
 		console[type](line());
