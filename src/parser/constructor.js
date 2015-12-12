@@ -336,9 +336,9 @@ export default class Parser {
 
 		if (!this.proto) {
 			this.res += ws`
-				This code is generated automatically, don\'t alter it. */
+				This code is generated automatically, don't alter it. */
 				(function () {
-					${this.useStrict ? '\'use strict\';' : ''}
+					${this.useStrict ? `'use strict';` : ''}
 
 				var
 					__IS_NODE__ = false,

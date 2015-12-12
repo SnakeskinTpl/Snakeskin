@@ -906,7 +906,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				parser.error('text can\'t be used in the global space');
+				parser.error(`text can't be used in the global space`);
 				return false;
 
 			} else {

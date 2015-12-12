@@ -40,10 +40,10 @@ Snakeskin.addDirective(
 		let str;
 		if (this.renderMode === 'dom') {
 			this.domComment = true;
-			str = '__COMMENT_RESULT__ = \'\';';
+			str = `__COMMENT_RESULT__ = '';`;
 
 		} else {
-			str = this.wrap('\'<!--\'');
+			str = this.wrap(`'<!--'`);
 		}
 
 		if (command) {
@@ -63,7 +63,7 @@ Snakeskin.addDirective(
 			str = this.wrap(`'${comment}'`) + ws`
 				__NODE__ = document.createComment(__COMMENT_RESULT__);
 				${this.getPushNodeDecl(true)}
-				__COMMENT_RESULT__ = \'\';
+				__COMMENT_RESULT__ = '';
 			`;
 
 		} else {

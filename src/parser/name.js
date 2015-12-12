@@ -58,12 +58,12 @@ Parser.prototype.replaceFileNamePatterns = function (str) {
 	let basename;
 	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (sstr, $1) => {
 		if (!file) {
-			this.error('the placeholder %fileName% can\'t be used without the "file" option');
+			this.error(`the placeholder %fileName% can't be used without the "file" option`);
 			return '';
 		}
 
 		if (!IS_NODE) {
-			this.error('the placeholder %fileName% can\'t be used with live compilation in a browser');
+			this.error(`the placeholder %fileName% can't be used with live compilation in a browser`);
 			return '';
 		}
 

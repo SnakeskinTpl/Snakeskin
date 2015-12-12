@@ -224,9 +224,9 @@ Parser.prototype.replaceTplVars = function (str, {sys, replace} = {}) {
 
 				// jscs:disable
 				let tmp =
-					'\' + ' +
-					this.out(this.replaceDangerBlocks(dir).trim() || '\'\'', {sys}) +
-					' + \'';
+					`' + ` +
+					this.out(this.replaceDangerBlocks(dir).trim() || `''`, {sys}) +
+					` + '`;
 
 				if (replace) {
 					res += `__SNAKESKIN__${this.dirContent.length}_`;

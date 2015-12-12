@@ -113,7 +113,7 @@ function setSSFlag(command) {
 	};
 
 	if (flag === 'renderAs' && tplName) {
-		return this.error('the flag "renderAs" can\'t be used in the template declaration');
+		return this.error(`the flag "renderAs" can't be used in the template declaration`);
 	}
 
 	if (flag in root) {

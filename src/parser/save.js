@@ -99,7 +99,7 @@ Parser.prototype.getPushNodeDecl = function (opt_inline) {
 Parser.prototype.getReturnResultDecl = function () {
 	switch (this.renderMode) {
 		case 'stringBuffer':
-			return '__RESULT__.join(\'\')';
+			return `__RESULT__.join('')`;
 
 		case 'dom':
 			return '__RESULT__[0]';
@@ -122,7 +122,7 @@ Parser.prototype.getReturnDecl = function () {
 			return '[document.createDocumentFragment()]';
 
 		default:
-			return '\'\'';
+			return `''`;
 	}
 };
 
