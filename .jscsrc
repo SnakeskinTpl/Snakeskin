@@ -6,7 +6,7 @@
     "snakeskin.js",
     "bin/**",
     "dist/**",
-    "test/**/",
+    "test/**",
     "predefs/**",
     "node_modules/**",
     "bower_components/**"
