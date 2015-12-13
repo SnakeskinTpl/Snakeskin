@@ -172,7 +172,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$dirEnd, p.end])
 
 	]).forEach(({cache, val}) => {
-		$C([].concat(val)).forEach((key) => {
+		$C(val != null ? [].concat(val) : []).forEach((key) => {
 			cache[key] = cache[key] || {};
 			cache[key][name] = true;
 		});
