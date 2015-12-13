@@ -93,7 +93,7 @@ Snakeskin.addDirective(
 				parts.shift();
 			}
 
-			this.append($=> `} else if (${prfx}(${this.out(parts.join(' '), true)})) {`);
+			this.append($=> `} else if (${prfx}(${this.out(parts.join(' '), {sys: true})})) {`);
 
 		} else {
 			this.append('} else {');
