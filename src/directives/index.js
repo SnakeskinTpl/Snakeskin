@@ -28,7 +28,7 @@ import {
 	$dirPlacement,
 	$dirPlacementPlain,
 	$dirBlacklist,
-	$direBlacklistPlain,
+	$dirBlacklistPlain,
 
 	$dirAfter,
 	$dirInside,
@@ -201,7 +201,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 		_([$dirPlacement, $dirPlacementPlain, p.placement]),
-		_([$dirBlacklist, $direBlacklistPlain, p.blacklist])
+		_([$dirBlacklist, $dirBlacklistPlain, p.blacklist])
 
 	]).forEach(({cache, plainCache, val}) => {
 		if (cache === $dirPlacement && new RegExp(`${r(alb)}?`).test(String(val))) {
@@ -322,8 +322,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" can be used only with: ${q(groups)}`);
 		}
 
-		if (p.blacklist && parser.has($direBlacklistPlain[name])) {
-			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys($direBlacklistPlain[name]))}`);
+		if (p.blacklist && parser.has($dirBlacklistPlain[name])) {
+			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys($dirBlacklistPlain[name]))}`);
 		}
 
 		if (structure.strong) {

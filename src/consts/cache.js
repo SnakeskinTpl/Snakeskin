@@ -25,7 +25,7 @@ export const
 	$dirPlacement = {},
 	$dirPlacementPlain = {},
 	$dirBlacklist = {},
-	$direBlacklistPlain = {},
+	$dirBlacklistPlain = {},
 	$dirAfter = {},
 	$dirInside = {},
 	$dirChain = {},
