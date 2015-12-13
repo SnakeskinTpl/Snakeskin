@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -7,11 +9,6 @@
  */
 
 import Snakeskin from '../core';
-
-const
-	varDeclRgxp = /\bvar\b/,
-	splitDeclRgxp = /;/,
-	forRgxp = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/;
 
 Snakeskin.addDirective(
 	'for',
@@ -23,18 +20,21 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.startDir();
-
-		if (splitDeclRgxp.test(command)) {
-			let parts = command.split(';');
+		if (/;/.test(command)) {
+			const
+				parts = command.split(';');
 
 			if (parts.length !== 3) {
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
 			if (this.isReady()) {
-				let decl = varDeclRgxp.test(parts[0]) ?
-					this.declVars(parts[0].replace(varDeclRgxp, '')) : this.out(parts[0], {sys: true});
+				const
+					varDeclRgxp = /\bvar\b/;
+
+				const
+					decl = varDeclRgxp.test(parts[0]) ?
+						this.declVars(parts[0].replace(varDeclRgxp, '')) : this.out(parts[0], {sys: true});
 
 				parts[1] = parts[1] && `(${parts[1]})`;
 				parts[2] = parts[2] && `(${parts[2]})`;
@@ -43,16 +43,15 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			let parts = forRgxp.exec(command);
+			const
+				parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
 
 			if (!parts) {
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
 			if (this.isReady()) {
-				let decl = parts[1] ?
-					this.declVars(parts[2], false, '') : this.out(parts[2], {sys: true});
-
+				const decl = parts[1] ? this.declVars(parts[2], false, '') : this.out(parts[2], {sys: true});
 				this.append(`for (${decl} ${parts[3]} ${this.out(parts[4], {sys: true})}) {`);
 			}
 		}
@@ -68,6 +67,7 @@ Snakeskin.addDirective(
 	'while',
 
 	{
+		deferInit: true,
 		block: true,
 		notEmpty: true,
 		group: 'cycle',
@@ -77,18 +77,12 @@ Snakeskin.addDirective(
 	function (command) {
 		if (this.structure.name == 'do') {
 			this.structure.params.chain = true;
-
-			if (this.isReady()) {
-				this.append(`} while (${this.out(command, {sys: true})});`);
-			}
-
+			this.append($=> `} while (${this.out(command, {sys: true})});`);
 			Snakeskin.Directives['end'].call(this);
 
 		} else {
 			this.startDir();
-			if (this.isReady()) {
-				this.append(`while (${this.out(command, {sys: true})}) {`);
-			}
+			this.append($=> `while (${this.out(command, {sys: true})}) {`);
 		}
 	},
 
@@ -104,21 +98,19 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		group: 'cycle',
-		after: {
-			'while': true,
-			'end': true
-		}
+		after: ['while', 'end']
 	},
 
 	function () {
-		this.startDir();
 		this.append('do {');
 	},
 
 	function () {
-		if (!this.structure.params.chain) {
-			this.append('} while (true);');
+		if (this.structure.params.chain) {
+			return;
 		}
+
+		this.append('} while (true);');
 	}
 
 );
@@ -129,21 +121,19 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		group: 'cycle',
-		after: {
-			'until': true,
-			'end': true
-		}
+		after: ['until', 'end']
 	},
 
 	function () {
-		this.startDir();
 		this.append('do {');
 	},
 
 	function () {
-		if (!this.structure.params.chain) {
-			this.append('} while (true);');
+		if (this.structure.params.chain) {
+			return;
 		}
+
+		this.append('} while (true);');
 	}
 
 );
@@ -163,10 +153,7 @@ Snakeskin.addDirective(
 		}
 
 		this.structure.params.chain = true;
-
-		if (this.isReady()) {
-			this.append(`} while (${this.out(command, {sys: true})});`);
-		}
+		this.append($=> `} while (${this.out(command, {sys: true})});`);
 
 		Snakeskin.Directives['end'].call(this);
 	}
