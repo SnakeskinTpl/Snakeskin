@@ -30,3 +30,4 @@ import './directives/doctype';
 import './directives/template';
 import './directives/plain';
 import './directives/include';
+import './directives/cycles';
