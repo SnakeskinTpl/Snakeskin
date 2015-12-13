@@ -47,7 +47,7 @@ basicTry4
 
 - template basicTry4()
 	- try
-		? foo.bar.baz}
+		? foo.bar.baz
 	- catch err
 		{err.message}
 	- finally
