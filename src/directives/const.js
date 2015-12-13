@@ -64,15 +64,17 @@ Snakeskin.addDirective(
 			if (tplName && type !== 'global') {
 				const
 					parts = command.split('='),
-					prop = parts[0] && parts[0].trim();
+					prop = parts[0].trim();
 
 				if (!parts[1] || !parts[1].trim()) {
 					return this.error(`invalid constant declaration`);
 				}
 
-				let name = this.pasteDangerBlocks(prop);
+				let
+					name = this.pasteDangerBlocks(prop);
+
 				if (name[0] === L_MOD) {
-					return this.error(`can't declare constant "${name.slice(1)}" with the context modifier "${L_MOD}"`);
+					return this.error(`can't declare the constant "${name.slice(1)}" with the context modifier "${L_MOD}"`);
 				}
 
 				name = name.replace(constNameRgxp, '.$2');
@@ -94,15 +96,15 @@ Snakeskin.addDirective(
 
 				if (this.isAdvTest()) {
 					if ($consts[tplName][name]) {
-						return this.error(`constant "${name}" is already defined`);
+						return this.error(`the constant "${name}" is already defined`);
 					}
 
 					if (this.varCache[tplName][name]) {
-						return this.error(`constant "${name}" is already defined as variable`);
+						return this.error(`the constant "${name}" is already defined as variable`);
 					}
 
 					if (SYS_CONSTS[name]) {
-						return this.error(`can't declare constant "${name}", try another name`);
+						return this.error(`can't declare the constant "${name}", try another name`);
 					}
 
 					let

@@ -280,6 +280,14 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
 };
 
 /**
+ * Returns true, if a directive is ready to test
+ * @return {boolean}
+ */
+Parser.prototype.isReady = function () {
+	return !this.protoStart && (!this.proto || !this.proto.parentTplName);
+};
+
+/**
  * Adds a string to the JS string if is possible
  * (with this.isSimpleOutput())
  *
@@ -290,7 +298,7 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
  */
 Parser.prototype.append = function (str, opt_interface, opt_jsDoc) {
 	if (isFunction(str)) {
-		if (!this.protoStart && (!this.proto || !this.proto.parentTplName)) {
+		if (this.isReady()) {
 			str = str.call(this);
 
 		} else {
