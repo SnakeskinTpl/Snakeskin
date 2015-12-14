@@ -14,7 +14,8 @@ Snakeskin.addDirective(
 	'break',
 
 	{
-		deferInit: true
+		deferInit: true,
+		group: 'control'
 	},
 
 	function (command) {
@@ -89,7 +90,8 @@ Snakeskin.addDirective(
 	'continue',
 
 	{
-		deferInit: true
+		deferInit: true,
+		group: 'control'
 	},
 
 	function (command) {
