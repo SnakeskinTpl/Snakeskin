@@ -199,8 +199,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$dirAfter, p.after])
 
 	]).forEach(({cache, val}) => {
-		cache[name] = cache[name] || {};
-		$C(concat(val)).forEach((key) => cache[name][key] = true);
+		$C(concat(val)).forEach((key) => {
+			cache[name] = cache[name] || {};
+			cache[name][key] = true
+		});
 	});
 
 	$C([$dirInside, $dirAfter]).forEach((cache) => {
@@ -210,7 +212,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 					return;
 				}
 
-				$C($dirGroups[key.slice(1)]).forEach((val, key) => el[key] = true)
+				$C($dirGroups[key.slice(1)]).forEach((val, key) => dir[key] = true)
 			});
 		});
 	});
