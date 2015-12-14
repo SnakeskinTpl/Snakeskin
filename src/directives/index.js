@@ -69,11 +69,12 @@ Snakeskin.group = function (name) {
  * @param {string} name - directive name
  * @param {{
  *   deferInit: (?boolean|undefined),
- *   alias: (?boolean|undefined),
  *   generator: (?boolean|undefined),
  *   notEmpty: (?boolean|undefined),
- *   renderModeBlacklist: (Array|string|undefined),
+ *   alias: (?boolean|undefined),
  *   group: (Array|string|undefined),
+ *   renderModesBlacklist: (Array|string|undefined),
+ *   renderModesWhitelist: (Array|string|undefined),
  *   placement: (Array|string|undefined),
  *   ancestorsBlacklist: (Array|string|undefined),
  *   ancestorsWhitelist: (Array|string|undefined),
@@ -89,15 +90,18 @@ Snakeskin.group = function (name) {
  * }} params - additional parameters:
  *
  *   *) [params.deferInit = false] - if is true, the directive won't be started automatically
+ *   *) [params.generator = false] - if is true, the directive can be used only with generators
+ *   *) [params.notEmpty = false] - if is true, then the directive can't be empty
  *   *) [params.alias = false] - if is true, then the directive is considered as an alias
  *        (only for private directives)
  *
- *   *) [params.generator = false] - if is true, the directive can be used only with generators
- *   *) [params.notEmpty = false] - if is true, then the directive can't be empty
- *   *) [params.renderModesBlacklist] - render mode, which can't be used with the current directive
+ *   *) [params.group] - group name, which includes the current directive
  *        or an array of names
  *
- *   *) [params.group] - group name, which includes the current directive
+ *   *) [params.renderModesBlacklist] - rendering mode, which can't be used with the current directive
+ *        or an array of names
+ *
+ *   *) [params.renderModesWhitelist] - rendering mode, which can be used with the current directive
  *        or an array of names
  *
  *   *) [params.placement] - placement of the directive: global or template
@@ -307,11 +311,22 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" must have a body`);
 		}
 
-		const renderModesBlacklist =
-			$C(concat(p.renderModesBlacklist)).reduce((map, el) => (map[el] = true, map), {});
+		const
+			rmBlacklistList = concat(p.renderModesBlacklist),
+			rmBlacklist = $C(rmBlacklistList).reduce((map, el) => (map[el] = true, map), {});
 
-		if (p.renderModesBlacklist && renderModesBlacklist[parser.renderMode]) {
-			return parser.error(`the directive "${this.name}" can't be used with the "${parser.renderMode}" render mode`);
+		if (p.renderModesBlacklist && rmBlacklist[parser.renderMode]) {
+			return parser.error(`the directive "${dirName}" can't be used with: ${q(rmBlacklist)} rendering modes`);
+		}
+
+		const
+			rmWhitelistList = concat(p.renderModesWhitelist),
+			rmWhitelist = $C(rmWhitelistList).reduce((map, el) => (map[el] = true, map), {});
+
+		if (p.renderModesWhitelist && !rmWhitelist[parser.renderMode]) {
+			return parser.error(
+				`the directive "${dirName}" can be used only with: ${q(rmWhitelistList)} rendering modes`
+			);
 		}
 
 		if (p.generator && !parser.parentTplName && !parser.generator && !parser.proto && !parser.outerLink) {
