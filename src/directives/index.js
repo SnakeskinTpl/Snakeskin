@@ -156,8 +156,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$sysDirs, p.sys]),
 		_([$textDirs, p.text])
 
-	]).forEach(({cache, val}) =>
-		(cache[name] = Boolean(val), true));
+	]).forEach(({cache, val}) => {
+		cache[name] = Boolean(val);
+	});
 
 	$C([
 
@@ -165,39 +166,54 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$dirChain, p.chain]),
 		_([$dirEnd, p.end])
 
-	]).forEach(({cache, val}) =>
-		$C(concat(val)).forEach((key) =>
-			(cache[key] = cache[key] || {})[name] = true));
+	]).forEach(({cache, val}) => {
+		$C(concat(val)).forEach((key) => {
+			if (cache === $dirGroups && {[gPrfx]: true, [pPrfx]: true}[key[0]]) {
+				throw new Error(`Invalid group name "${key}" (group name can't begin with "${gPrfx}" or "${pPrfx}")`);
+			}
 
-	$C([$dirChain, $dirEnd]).forEach((cache) =>
+			cache[key] = cache[key] || {};
+			cache[key][name] = true;
+		});
+	});
+
+	$C([$dirChain, $dirEnd]).forEach((cache) => {
 		$C(cache).forEach((el, key) => {
 			if (key[0] !== gPrfx) {
 				return;
 			}
 
-			delete cache[key];
-			$C($dirGroups[key.slice(1)]).forEach((el, key) => {
-				cache[key] = cache[key] || {};
-				cache[key][name] = true;
+			const
+				link = cache[key];
+
+			$C($dirGroups[key.slice(1)]).forEach((el, group) => {
+				cache[group] = cache[group] || {};
+				$C(link).forEach((el, dir) => cache[group][dir] = true);
 			});
-		}));
+		});
+	});
 
 	$C([
 
 		_([$dirInside, p.inside]),
 		_([$dirAfter, p.after])
 
-	]).forEach(({cache, val}) =>
-		$C(concat(val)).forEach((key) => {
-			cache[name] = cache[name] || {};
+	]).forEach(({cache, val}) => {
+		cache[name] = cache[name] || {};
+		$C(concat(val)).forEach((key) => cache[name][key] = true);
+	});
 
-			if (key[0] === gPrfx) {
-				$C($dirGroups[key.slice(1)]).forEach((el, key) => cache[name][key] = true);
+	$C([$dirInside, $dirAfter]).forEach((cache) => {
+		$C(cache).forEach((dir) => {
+			$C(dir).forEach((el, key) => {
+				if (key[0] !== gPrfx) {
+					return;
+				}
 
-			} else {
-				cache[name][key] = true;
-			}
-		}));
+				$C($dirGroups[key.slice(1)]).forEach((val, key) => el[key] = true)
+			});
+		});
+	});
 
 	_ =
 		([cache, plainCache, val]) => ({cache, plainCache, val});
