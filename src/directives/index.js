@@ -150,7 +150,8 @@ Snakeskin.placement = function (name) {
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	const
-		p = params || {};
+		p = params || {},
+		concat = (val) => val != null ? [].concat(val) : [];
 
 	let
 		_ = ([cache, val]) => ({cache, val});
@@ -160,19 +161,15 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$sysDirs, p.sys]),
 		_([$textDirs, p.text])
 
-	]).forEach(({cache, val}) => {
-		cache[name] = Boolean(val);
-	});
+	]).forEach(({cache, val}) => { cache[name] = Boolean(val); });
 
 	$C([
 		_([$dirGroups, p.group]),
 		_([$dirChain, p.chain]),
-		_([$dirInside, p.inside]),
-		_([$dirAfter, p.after]),
 		_([$dirEnd, p.end])
 
 	]).forEach(({cache, val}) => {
-		$C(val != null ? [].concat(val) : []).forEach((key) => {
+		$C(concat(val)).forEach((key) => {
 			cache[key] = cache[key] || {};
 			cache[key][name] = true;
 		});
@@ -180,18 +177,35 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 		$dirChain,
-		$dirInside,
-		$dirAfter,
 		$dirEnd
 
 	]).forEach((cache) => {
 		$C(cache).forEach((el, key) => {
+			if (key[0] !== lb) {
+				return;
+			}
+
+			delete cache[key];
+			$C($dirGroups[key.slice(1)]).forEach((el, key) => {
+				cache[key] = cache[key] || {};
+				cache[key][name] = true;
+			});
+		});
+	});
+
+	$C([
+		_([$dirInside, p.inside]),
+		_([$dirAfter, p.after])
+
+	]).forEach(({cache, val}) => {
+		$C(concat(val)).forEach((key) => {
+			cache[name] = cache[name] || {};
+
 			if (key[0] === lb) {
-				delete cache[key];
-				$C($dirGroups[key.slice(1)]).forEach((el, key) => {
-					cache[key] = cache[key] || {};
-					cache[key][name] = true;
-				});
+				$C($dirGroups[key.slice(1)]).forEach((el, key) => cache[name][key] = true);
+
+			} else {
+				cache[name][key] = true;
 			}
 		});
 	});
@@ -208,25 +222,25 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return;
 		}
 
-		cache[name] = $C([].concat(val)).reduce((map, el) =>
+		cache[name] = $C(concat(val)).reduce((map, el) =>
 			(map[el] = [el], map), {});
 
 		$C(cache).forEach((map, key) => {
 			$C(map).forEach((el, key) => {
-				if (key[0] === lb) {
-					key = key.slice(1);
-					if ($dirGroups[key]) {
-						map[key] = Object.keys($dirGroups[key]);
-					}
+				if (key[0] !== lb) {
+					return;
+				}
+
+				key = key.slice(1);
+				if ($dirGroups[key]) {
+					map[key] = Object.keys($dirGroups[key]);
 				}
 			});
 
 			plainCache[key] = {};
-			$C(map).forEach((el) => {
-				$C(el).forEach((el) => {
-					plainCache[key][el] = true;
-				});
-			});
+			$C(map).forEach((el) =>
+				$C(el).forEach((el) =>
+					plainCache[key][el] = true));
 		});
 	});
 
