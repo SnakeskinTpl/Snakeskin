@@ -311,6 +311,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" must have a body`);
 		}
 
+		if (p.generator && !parser.parentTplName && !parser.generator && !parser.proto && !parser.outerLink) {
+			return parser.error(`the directive "${dirName}" can be used only with a generator`);
+		}
+
 		const
 			rmBlacklistList = concat(p.renderModesBlacklist),
 			rmBlacklist = $C(rmBlacklistList).reduce((map, el) => (map[el] = true, map), {});
@@ -327,10 +331,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(
 				`the directive "${dirName}" can be used only with: ${q(rmWhitelistList)} rendering modes`
 			);
-		}
-
-		if (p.generator && !parser.parentTplName && !parser.generator && !parser.proto && !parser.outerLink) {
-			return parser.error(`the directive "${dirName}" can be used only with a generator`);
 		}
 
 		if (p.chain && (!$dirChain[parentDirName] || !$dirChain[parentDirName][dirName])) {
