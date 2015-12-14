@@ -67,6 +67,7 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 			const
 				file = fs.readFileSync(src, 'utf8');
 
+			// jscs:disable
 			stack.push(
 				`${s}__setFile__ ${src}${e}` +
 
