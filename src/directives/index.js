@@ -50,7 +50,8 @@ export const
 	q = (arr) => $C(arr).map((el) => `"${el}"`).join(', ');
 
 const
-	prfx = '@';
+	gPrfx = '@',
+	pPrfx = '%';
 
 /**
  * Initialises the specified group
@@ -59,7 +60,7 @@ const
  * @return {string}
  */
 Snakeskin.group = function (name) {
-	return prfx + name;
+	return gPrfx + name;
 };
 
 /**
@@ -69,7 +70,7 @@ Snakeskin.group = function (name) {
  * @return {string}
  */
 Snakeskin.placement = function (name) {
-	return prfx + name;
+	return pPrfx + name;
 };
 
 /**
@@ -163,8 +164,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	]).forEach(({cache, val}) => {
 		$C(concat(val)).forEach((key) => {
-			if (cache === $dirGroups && key[0] === prfx) {
-				throw new Error(`Invalid group name "${key}" (group name can't begin with "${prfx}")`);
+			if (cache === $dirGroups && {[gPrfx]: true, [pPrfx]: true}[key[0]]) {
+				throw new Error(`Invalid group name "${key}" (group name can't begin with "${gPrfx}" or "${pPrfx}")`);
 			}
 
 			cache[key] = cache[key] || {};
@@ -178,7 +179,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	]).forEach((cache) => {
 		$C(cache).forEach((el, key) => {
-			if (key[0] !== prfx) {
+			if (key[0] !== gPrfx) {
 				return;
 			}
 
@@ -198,7 +199,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		$C(concat(val)).forEach((key) => {
 			cache[name] = cache[name] || {};
 
-			if (key[0] === prfx) {
+			if (key[0] === gPrfx) {
 				$C($dirGroups[key.slice(1)]).forEach((el, key) => cache[name][key] = true);
 
 			} else {
@@ -215,7 +216,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$dirBlacklist, $dirBlacklistPlain, p.blacklist])
 
 	]).forEach(({cache, plainCache, val}) => {
-		if (cache === $dirPlacement && val[0] === prfx) {
+		if (cache === $dirPlacement && String(val)[0] === pPrfx) {
 			return;
 		}
 
@@ -224,7 +225,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		$C(cache).forEach((map, key) => {
 			$C(map).forEach((el, key) => {
-				if (key[0] !== prfx) {
+				if (key[0] !== gPrfx) {
 					return;
 				}
 
@@ -290,7 +291,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		parser.name = dirName;
 		switch (p.placement) {
-			case `${prfx}template`:
+			case `${pPrfx}template`:
 				if (!structure.parent) {
 					return parser.error(
 						`the directive "${dirName}" can be used only within: ${q(parser.getGroupList('template'))}`
@@ -299,7 +300,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 				break;
 
-			case `${prfx}global`:
+			case `${pPrfx}global`:
 				if (structure.parent) {
 					return parser.error(`the directive "${dirName}" can be used only within the global space`);
 				}
@@ -328,7 +329,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (p.chain && (!$dirChain[parentDirName] || !$dirChain[parentDirName][dirName])) {
 			const groups = $C([].concat(p.chain)).reduce((arr, el) =>
-				arr.concat(el[0] === prfx ? parser.getGroupList(el.slice(1)) : el), []);
+				arr.concat(el[0] === gPrfx ? parser.getGroupList(el.slice(1)) : el), []);
 
 			return parser.error(`the directive "${dirName}" can be used only with: ${q(groups)}`);
 		}
