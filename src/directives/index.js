@@ -151,33 +151,25 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_ = ([cache, val]) => ({cache, val});
 
 	$C([
+
 		_([$blockDirs, p.block]),
 		_([$sysDirs, p.sys]),
 		_([$textDirs, p.text])
 
-	]).forEach(({cache, val}) => { cache[name] = Boolean(val); });
+	]).forEach(({cache, val}) =>
+		(cache[name] = Boolean(val), true));
 
 	$C([
+
 		_([$dirGroups, p.group]),
 		_([$dirChain, p.chain]),
 		_([$dirEnd, p.end])
 
-	]).forEach(({cache, val}) => {
-		$C(concat(val)).forEach((key) => {
-			if (cache === $dirGroups && {[gPrfx]: true, [pPrfx]: true}[key[0]]) {
-				throw new Error(`Invalid group name "${key}" (group name can't begin with "${gPrfx}" or "${pPrfx}")`);
-			}
+	]).forEach(({cache, val}) =>
+		$C(concat(val)).forEach((key) =>
+			(cache[key] = cache[key] || {})[name] = true));
 
-			cache[key] = cache[key] || {};
-			cache[key][name] = true;
-		});
-	});
-
-	$C([
-		$dirChain,
-		$dirEnd
-
-	]).forEach((cache) => {
+	$C([$dirChain, $dirEnd]).forEach((cache) =>
 		$C(cache).forEach((el, key) => {
 			if (key[0] !== gPrfx) {
 				return;
@@ -188,14 +180,14 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				cache[key] = cache[key] || {};
 				cache[key][name] = true;
 			});
-		});
-	});
+		}));
 
 	$C([
+
 		_([$dirInside, p.inside]),
 		_([$dirAfter, p.after])
 
-	]).forEach(({cache, val}) => {
+	]).forEach(({cache, val}) =>
 		$C(concat(val)).forEach((key) => {
 			cache[name] = cache[name] || {};
 
@@ -205,8 +197,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			} else {
 				cache[name][key] = true;
 			}
-		});
-	});
+		}));
 
 	_ =
 		([cache, plainCache, val]) => ({cache, plainCache, val});
