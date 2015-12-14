@@ -101,17 +101,14 @@ basicLogic6
 	- switch 2
 		- case 1
 			Goodbye
-
 		> 2
 			Hello
-
 		- default
 			Hi
 
 	- switch 2
 		- case 1
 			hell !
-
 		- default
 			world !
 
