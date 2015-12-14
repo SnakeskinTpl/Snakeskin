@@ -160,8 +160,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	]).forEach(({cache, val}) => {
 		$C(concat(val)).forEach((key) => {
-			if (cache === $dirGroups && {[gPrfx]: true, [pPrfx]: true}[key[0]]) {
-				throw new Error(`Invalid group name "${key}" (group name can't begin with "${gPrfx}" or "${pPrfx}")`);
+			if (cache === $dirGroups && key[0] === gPrfx) {
+				throw new Error(`Invalid group name "${key}" (group name can't begin with "${gPrfx}"`);
 			}
 
 			cache[key] = cache[key] || {};
