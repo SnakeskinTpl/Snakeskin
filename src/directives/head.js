@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 	{
 		sys: true,
 		block: true,
-		placement: Snakeskin.placement('global'),
+		placement: 'global',
 		group: [
 			'define',
 			'import'

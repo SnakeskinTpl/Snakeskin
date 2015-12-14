@@ -51,8 +51,7 @@ export const
 	q = (arr) => $C(arr).map((el) => `"${el}"`).join(', ');
 
 const
-	gPrfx = '@',
-	pPrfx = '%';
+	gPrfx = '@';
 
 /**
  * Initialises the specified group
@@ -65,16 +64,6 @@ Snakeskin.group = function (name) {
 };
 
 /**
- * Initialises the specified placement
- *
- * @param {string} name - group name
- * @return {string}
- */
-Snakeskin.placement = function (name) {
-	return pPrfx + name;
-};
-
-/**
  * Adds a new directive to the SS namespace
  *
  * @param {string} name - directive name
@@ -84,8 +73,8 @@ Snakeskin.placement = function (name) {
  *   generator: (?boolean|undefined),
  *   notEmpty: (?boolean|undefined),
  *   renderModeBlacklist: (Array|string|undefined),
- *   placement: (Array|string|undefined),
  *   group: (Array|string|undefined),
+ *   placement: (Array|string|undefined),
  *   ancestorsBlacklist: (Array|string|undefined),
  *   ancestorsWhitelist: (Array|string|undefined),
  *   chain: (Array|string|undefined),
@@ -105,15 +94,13 @@ Snakeskin.placement = function (name) {
  *
  *   *) [params.generator = false] - if is true, the directive can be used only with generators
  *   *) [params.notEmpty = false] - if is true, then the directive can't be empty
- *   *) [params.renderModeBlacklist] - render mode, which can't be used with the current directive
+ *   *) [params.renderModesBlacklist] - render mode, which can't be used with the current directive
  *        or an array of names
- *
- *   *) [params.placement] - placement of the directive: a name/group of a parent directive or
- *        Snakeskin.placement ('global' or 'template')
  *
  *   *) [params.group] - group name, which includes the current directive
  *        or an array of names
  *
+ *   *) [params.placement] - placement of the directive: global or template
  *   *) [params.ancestorsBlacklist] - directive/group name, which can't be an ancestor for the current directive
  *        or an array of names
  *
@@ -231,10 +218,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$dirAncestorsWhitelist, $dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
 
 	]).forEach(({cache, plainCache, val}) => {
-		if (cache === $dirPlacement && String(val)[0] === pPrfx) {
-			return;
-		}
-
 		cache[name] = $C(concat(val)).reduce((map, el) =>
 			(map[el] = [el], map), {});
 
@@ -274,9 +257,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 	});
 
-	const renderModeBlacklist =
-		$C([].concat(p.renderModeBlacklist)).reduce((map, el) => (map[el] = true, map), {});
-
 	if (p.alias) {
 		$dirNameAliases[name] = name.replace(/__(.*?)__/, '$1');
 	}
@@ -306,7 +286,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		parser.name = dirName;
 		switch (p.placement) {
-			case `${pPrfx}template`:
+			case 'template':
 				if (!structure.parent) {
 					return parser.error(
 						`the directive "${dirName}" can be used only within: ${q(parser.getGroupList('template'))}`
@@ -315,26 +295,22 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 				break;
 
-			case `${pPrfx}global`:
+			case 'global':
 				if (structure.parent) {
 					return parser.error(`the directive "${dirName}" can be used only within the global space`);
 				}
 
 				break;
-
-			default:
-				if (p.placement && !parser.has($dirPlacementPlain[name])) {
-					return parser.error(
-						`the directive "${dirName}" can be used only within: ${q(Object.keys($dirPlacementPlain[name]))}`
-					);
-				}
 		}
 
 		if (p.notEmpty && !command) {
 			return parser.error(`the directive "${dirName}" must have a body`);
 		}
 
-		if (p.renderModeBlacklist && renderModeBlacklist[parser.renderMode]) {
+		const renderModesBlacklist =
+			$C(concat(p.renderModesBlacklist)).reduce((map, el) => (map[el] = true, map), {});
+
+		if (p.renderModesBlacklist && renderModesBlacklist[parser.renderMode]) {
 			return parser.error(`the directive "${this.name}" can't be used with the "${parser.renderMode}" render mode`);
 		}
 
@@ -350,7 +326,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (p.ancestorsBlacklist && parser.has($dirAncestorsBlacklistPlain[name])) {
-			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys($dirAncestorsBlacklistPlain[name]))}`);
+			return parser.error(
+				`the directive "${dirName}" can't be used with: ${q(Object.keys($dirAncestorsBlacklistPlain[name]))}`
+			);
 		}
 
 		if (p.ancestorsWhitelist && !parser.has($dirAncestorsWhitelistPlain[name])) {

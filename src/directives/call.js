@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 	'call',
 
 	{
-		placement: Snakeskin.placement('template'),
+		placement: 'template',
 		notEmpty: true,
 		text: true,
 		replacers: {

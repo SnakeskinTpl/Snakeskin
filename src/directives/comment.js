@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 		deferInit: true,
 		block: true,
 		selfInclude: false,
-		placement: Snakeskin.placement('template'),
+		placement: 'template',
 		replacers: {
 			'@!': 'comment ',
 			'/@': 'end comment'

@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 
 	{
 		group: 'define',
-		placement: Snakeskin.placement('global'),
+		placement: 'global',
 		notEmpty: true,
 		replacers: {
 			'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')

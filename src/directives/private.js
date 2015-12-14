@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 	{
 		deferInit: true,
 		group: 'ignore',
-		placement: Snakeskin.placement('template')
+		placement: 'template'
 	},
 
 	function (command) {

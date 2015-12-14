@@ -93,7 +93,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 		{
 			deferInit: true,
 			block: true,
-			placement: Snakeskin.placement('global'),
+			placement: 'global',
 			notEmpty: true,
 			group: [
 				'template',

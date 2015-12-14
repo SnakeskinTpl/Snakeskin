@@ -15,7 +15,7 @@ Snakeskin.addDirective(
 
 	{
 		sys: true,
-		placement: Snakeskin.placement('template'),
+		placement: 'template',
 		block: true,
 		selfInclude: false
 	},

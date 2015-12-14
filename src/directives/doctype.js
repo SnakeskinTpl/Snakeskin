@@ -50,8 +50,8 @@ Snakeskin.addDirective(
 	'doctype',
 
 	{
-		placement: Snakeskin.placement('template'),
-		renderModeBlacklist: 'dom'
+		placement: 'template',
+		renderModesBlacklist: 'dom'
 	},
 
 	function (command) {

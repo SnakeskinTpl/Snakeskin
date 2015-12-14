@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 		deferInit: true,
 		sys: true,
 		block: true,
-		placement: Snakeskin.placement('global')
+		placement: 'global'
 	},
 
 	function () {
