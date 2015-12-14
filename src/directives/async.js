@@ -28,7 +28,7 @@ for (
 				'series'
 			],
 
-			inside: {
+			children: {
 				'callback': true,
 				'final': true
 			}
@@ -64,7 +64,7 @@ for (
 				'Async'
 			],
 
-			inside: {
+			children: {
 				'callback': true
 			}
 		},

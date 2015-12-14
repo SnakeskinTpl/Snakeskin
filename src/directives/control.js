@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,21 +8,25 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
+
 Snakeskin.addDirective(
 	'break',
 
 	{
-
+		deferInit: true
 	},
 
 	function (command) {
-		var combo = this.getGroup('cycle', 'async');
+		const combo = this.getGroup('cycle', 'async');
 		combo['proto'] = true;
 
-		var cycles = this.getGroup('cycle'),
+		const
+			cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
-		var inside = this.has(combo),
+		const
+			inside = this.has(combo),
 			insideCallback = this.has(this.getGroup('callback')),
 			insideProto = inside === 'proto' || this.proto;
 
@@ -56,7 +62,8 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
-				let val = command ? this.out(command, {sys: true}) : 'false';
+				const
+					val = command ? this.out(command, {sys: true}) : 'false';
 
 				if (inside === 'waterfall') {
 					this.append(`return arguments[arguments.length - 1](${val});`);
@@ -82,17 +89,19 @@ Snakeskin.addDirective(
 	'continue',
 
 	{
-
+		deferInit: true
 	},
 
 	function (command) {
-		var combo = this.getGroup('cycle', 'async');
+		const combo = this.getGroup('cycle', 'async');
 		combo['proto'] = true;
 
-		var cycles = this.getGroup('cycle'),
+		const
+			cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
-		var inside = this.has(combo),
+		const
+			inside = this.has(combo),
 			insideCallback = this.has(this.getGroup('callback')),
 			insideProto = inside === 'proto' || this.proto;
 
@@ -128,7 +137,8 @@ Snakeskin.addDirective(
 				}
 
 			} else if (async[inside]) {
-				let val = command ? `null,${this.out(command, {sys: true})}` : '';
+				const
+					val = command ? `undefined,${this.out(command, {sys: true})}` : '';
 
 				if (inside === 'waterfall') {
 					this.append(`return arguments[arguments.length - 1](${val});`);

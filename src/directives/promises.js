@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		notEmpty: true,
-		inside: 'callback',
+		children: 'callback',
 		group: [
 			'async',
 			'basicAsync'

@@ -34,7 +34,7 @@ import {
 
 	$rgxp,
 	$dirNameReplacers,
-	$dirInside
+	$dirChildren
 
 } from './consts/cache';
 
@@ -910,7 +910,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return false;
 
 			} else {
-				if (struct.strong && !$dirInside[struct.name]['text']) {
+				if (struct.strong && !$dirChildren[struct.name]['text']) {
 					if (el === ' ') {
 						parser.space = false;
 						continue;

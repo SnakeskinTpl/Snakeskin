@@ -24,10 +24,12 @@ export const
 export const
 	$dirPlacement = {},
 	$dirPlacementPlain = {},
-	$dirBlacklist = {},
-	$dirBlacklistPlain = {},
+	$dirAncestorsBlacklist = {},
+	$dirAncestorsBlacklistPlain = {},
+	$dirAncestorsWhitelist = {},
+	$dirAncestorsWhitelistPlain = {},
 	$dirAfter = {},
-	$dirInside = {},
+	$dirChildren = {},
 	$dirChain = {},
 	$dirEnd = {};
 

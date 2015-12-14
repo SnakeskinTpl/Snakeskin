@@ -19,6 +19,7 @@ import {
 
 	$dirNameAliases,
 	$dirNameReplacers,
+	$consts,
 
 	$sysDirs,
 	$blockDirs,
@@ -27,15 +28,15 @@ import {
 
 	$dirPlacement,
 	$dirPlacementPlain,
-	$dirBlacklist,
-	$dirBlacklistPlain,
+	$dirAncestorsBlacklist,
+	$dirAncestorsBlacklistPlain,
+	$dirAncestorsWhitelist,
+	$dirAncestorsWhitelistPlain,
 
 	$dirAfter,
-	$dirInside,
+	$dirChildren,
 	$dirChain,
-	$dirEnd,
-
-	$consts
+	$dirEnd
 
 } from '../consts/cache';
 
@@ -85,10 +86,11 @@ Snakeskin.placement = function (name) {
  *   renderModeBlacklist: (Array|string|undefined),
  *   placement: (Array|string|undefined),
  *   group: (Array|string|undefined),
- *   blacklist: (Array|string|undefined),
+ *   ancestorsBlacklist: (Array|string|undefined),
+ *   ancestorsWhitelist: (Array|string|undefined),
  *   chain: (Array|string|undefined),
  *   end: (Array|string|undefined),
- *   inside: (Array|string|undefined),
+ *   children: (Array|string|undefined),
  *   after: (Array|string|undefined),
  *   sys: (?boolean|undefined),
  *   text: (?boolean|undefined),
@@ -112,13 +114,16 @@ Snakeskin.placement = function (name) {
  *   *) [params.group] - group name, which includes the current directive
  *        or an array of names
  *
- *   *) [params.blacklist] - directive/group name, which can't be used with the current directive
+ *   *) [params.ancestorsBlacklist] - directive/group name, which can't be an ancestor for the current directive
+ *        or an array of names
+ *
+ *   *) [params.ancestorsWhitelist] - directive/group name, which can be an ancestor for the current directive
  *        or an array of names
  *
  *   *) [params.chain] - directive/group name, which is a master for the current directive
  *        or an array of names
  *
- *   *) [params.inside] - directive/group name, which can be included in the current directive
+ *   *) [params.children] - directive/group name, which can be a child of the current directive
  *        or an array of names
  *
  *   *) [params.after] - directive/group name, which can be placed after the current directive
@@ -195,7 +200,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 
-		_([$dirInside, p.inside]),
+		_([$dirChildren, p.children]),
 		_([$dirAfter, p.after])
 
 	]).forEach(({cache, val}) => {
@@ -205,7 +210,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C([$dirInside, $dirAfter]).forEach((cache) => {
+	$C([$dirChildren, $dirAfter]).forEach((cache) => {
 		$C(cache).forEach((dir) => {
 			$C(dir).forEach((el, key) => {
 				if (key[0] !== gPrfx) {
@@ -222,7 +227,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 		_([$dirPlacement, $dirPlacementPlain, p.placement]),
-		_([$dirBlacklist, $dirBlacklistPlain, p.blacklist])
+		_([$dirAncestorsBlacklist, $dirAncestorsBlacklistPlain, p.ancestorsBlacklist]),
+		_([$dirAncestorsWhitelist, $dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
 
 	]).forEach(({cache, plainCache, val}) => {
 		if (cache === $dirPlacement && String(val)[0] === pPrfx) {
@@ -343,12 +349,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" can be used only with: ${q(groups)}`);
 		}
 
-		if (p.blacklist && parser.has($dirBlacklistPlain[name])) {
-			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys($dirBlacklistPlain[name]))}`);
+		if (p.ancestorsBlacklist && parser.has($dirAncestorsBlacklistPlain[name])) {
+			return parser.error(`the directive "${dirName}" can't be used with: ${q(Object.keys($dirAncestorsBlacklistPlain[name]))}`);
+		}
+
+		if (p.ancestorsWhitelist && !parser.has($dirAncestorsWhitelistPlain[name])) {
+			return parser.error(
+				`the directive "${dirName}" can be used only with: ${q(Object.keys($dirAncestorsWhitelistPlain[name]))}`
+			);
 		}
 
 		if (structure.strong) {
-			if ($dirInside[parentDirName][dirName]) {
+			if ($dirChildren[parentDirName][dirName]) {
 				parser.chainSpace = false;
 
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
@@ -387,7 +399,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		const
 			newStruct = parser.structure;
 
-		if ($dirInside[dirName]) {
+		if ($dirChildren[dirName]) {
 			newStruct.strong = true;
 			parser.chainSpace = true;
 		}

@@ -108,7 +108,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		notEmpty: true,
-		inside: Snakeskin.group('case')
+		children: Snakeskin.group('case')
 	},
 
 	function (command) {
