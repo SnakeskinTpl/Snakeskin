@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 		placement: 'global',
 		notEmpty: true,
 		replacers: {
-			'@=': (cmd) => cmd.replace('@=', 'setSSFlag ')
+			'@=': 'setSSFlag '
 		}
 	},
 
