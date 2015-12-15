@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable safeContextKeyword
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -201,7 +203,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	]).forEach(({cache, val}) => {
 		$C(concat(val)).forEach((key) => {
 			cache[name] = cache[name] || {};
-			cache[name][key] = true
+			cache[name][key] = true;
 		});
 	});
 
@@ -212,7 +214,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 					return;
 				}
 
-				$C($dirGroups[key.slice(1)]).forEach((val, key) => dir[key] = true)
+				$C($dirGroups[key.slice(1)]).forEach((val, key) => dir[key] = true);
 			});
 		});
 	});
