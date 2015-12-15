@@ -453,10 +453,11 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 		function (command, commandLength) {
 			const
-				{tplName, proto, proto: {ctx}} = this;
+				{tplName, proto} = this;
 
 			if (proto) {
 				if (this.backTableI) {
+					const {ctx} = proto;
 					ctx.backTableI += this.backTableI;
 					$C(this.backTable).forEach((el, key) => {
 						$C(el).forEach((el) => {
