@@ -40,48 +40,50 @@ Snakeskin.addDirective(
 			this.skipSpace = true;
 		}
 
-		if (this.isReady()) {
-			if (command === 'proto') {
-				if (!insideProto) {
-					return this.error('the proto is not defined');
-				}
+		if (!this.isReady()) {
+			return;
+		}
 
-				if (insideCallback) {
-					return this.error('can\'t break the proto inside a callback');
-				}
-
-				this.append(this.out('break __I_PROTO__;', {sys: true}));
-				return;
+		if (command === 'proto') {
+			if (!insideProto) {
+				return this.error('the proto is not defined');
 			}
 
-			if (cycles[inside]) {
-				if (inside === insideCallback) {
-					this.append('return false;');
+			if (insideCallback) {
+				return this.error(`can't break the proto inside a callback`);
+			}
 
-				} else {
-					this.append('break;');
-				}
+			this.append(this.out('break __I_PROTO__;', {sys: true}));
+			return;
+		}
 
-			} else if (async[inside]) {
-				const
-					val = command ? this.out(command, {sys: true}) : 'false';
-
-				if (inside === 'waterfall') {
-					this.append(`return arguments[arguments.length - 1](${val});`);
-
-				} else {
-					this.append(ws`
-						if (typeof arguments[0] === 'function') {
-							return arguments[0](${val});
-						}
-
-						return false;
-					`);
-				}
+		if (cycles[inside]) {
+			if (inside === insideCallback) {
+				this.append('return false;');
 
 			} else {
-				this.append(this.out('break __I_PROTO__;', {sys: true}));
+				this.append('break;');
 			}
+
+		} else if (async[inside]) {
+			const
+				val = command ? this.out(command, {sys: true}) : 'false';
+
+			if (inside === 'waterfall') {
+				this.append(`return arguments[arguments.length - 1](${val});`);
+
+			} else {
+				this.append(ws`
+					if (typeof arguments[0] === 'function') {
+						return arguments[0](${val});
+					}
+
+					return false;
+				`);
+			}
+
+		} else {
+			this.append(this.out('break __I_PROTO__;', {sys: true}));
 		}
 	}
 );
@@ -116,48 +118,50 @@ Snakeskin.addDirective(
 			this.skipSpace = true;
 		}
 
-		if (this.isReady()) {
-			if (command === 'proto') {
-				if (!insideProto) {
-					return this.error(`the proto is not defined`);
-				}
+		if (!this.isReady()) {
+			return;
+		}
 
-				if (insideCallback) {
-					return this.error('can\'t continue the proto inside a callback');
-				}
-
-				this.append(this.out('continue __I_PROTO__;', {sys: true}));
-				return;
+		if (command === 'proto') {
+			if (!insideProto) {
+				return this.error(`the proto is not defined`);
 			}
 
-			if (cycles[inside]) {
-				if (inside === insideCallback) {
-					this.append('return;');
+			if (insideCallback) {
+				return this.error(`can't continue the proto inside a callback`);
+			}
 
-				} else {
-					this.append('continue;');
-				}
+			this.append(this.out('continue __I_PROTO__;', {sys: true}));
+			return;
+		}
 
-			} else if (async[inside]) {
-				const
-					val = command ? `undefined,${this.out(command, {sys: true})}` : '';
-
-				if (inside === 'waterfall') {
-					this.append(`return arguments[arguments.length - 1](${val});`);
-
-				} else {
-					this.append(ws`
-						if (typeof arguments[0] === 'function') {
-							return arguments[0](${val});
-						}
-
-						return;
-					`);
-				}
+		if (cycles[inside]) {
+			if (inside === insideCallback) {
+				this.append('return;');
 
 			} else {
-				this.append(this.out('continue __I_PROTO__;', {sys: true}));
+				this.append('continue;');
 			}
+
+		} else if (async[inside]) {
+			const
+				val = command ? `undefined,${this.out(command, {sys: true})}` : '';
+
+			if (inside === 'waterfall') {
+				this.append(`return arguments[arguments.length - 1](${val});`);
+
+			} else {
+				this.append(ws`
+					if (typeof arguments[0] === 'function') {
+						return arguments[0](${val});
+					}
+
+					return;
+				`);
+			}
+
+		} else {
+			this.append(this.out('continue __I_PROTO__;', {sys: true}));
 		}
 	}
 );
