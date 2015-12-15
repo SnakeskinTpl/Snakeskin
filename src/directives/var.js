@@ -25,9 +25,7 @@ Snakeskin.addDirective(
 
 	{
 		notEmpty: true,
-		replacers: {
-			':': 'var '
-		}
+		replacers: {':': 'var '}
 	},
 
 	function (command) {

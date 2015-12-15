@@ -14,10 +14,10 @@ Snakeskin.addDirective(
 	'eval',
 
 	{
-		deferInit: true,
-		sys: true,
 		block: true,
-		placement: 'global'
+		deferInit: true,
+		placement: 'global',
+		sys: true
 	},
 
 	function () {

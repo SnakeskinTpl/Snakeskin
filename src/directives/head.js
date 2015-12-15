@@ -14,13 +14,10 @@ Snakeskin.addDirective(
 	'head',
 
 	{
-		sys: true,
 		block: true,
+		group: ['define', 'import'],
 		placement: 'global',
-		group: [
-			'define',
-			'import'
-		]
+		sys: true
 	}
 
 );

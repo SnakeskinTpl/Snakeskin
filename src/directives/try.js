@@ -49,8 +49,8 @@ Snakeskin.addDirective(
 	'catch',
 
 	{
-		notEmpty: true,
-		chain: 'try'
+		chain: 'try',
+		notEmpty: true
 	},
 
 	function (command) {

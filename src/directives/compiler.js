@@ -18,8 +18,8 @@ Snakeskin.addDirective(
 
 	{
 		group: 'define',
-		placement: 'global',
 		notEmpty: true,
+		placement: 'global',
 		replacers: {
 			'@=': 'setSSFlag '
 		}

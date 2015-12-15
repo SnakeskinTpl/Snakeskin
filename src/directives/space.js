@@ -15,9 +15,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		replacers: {
-			'&': 'ignoreWhitespaces '
-		}
+		replacers: {'&': 'ignoreWhitespaces '}
 	},
 
 	function () {
@@ -32,9 +30,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		replacers: {
-			'&+': 'ignoreAllWhitespaces '
-		}
+		replacers: {'&+': 'ignoreAllWhitespaces '}
 	},
 
 	function () {
@@ -48,9 +44,7 @@ Snakeskin.addDirective(
 
 	{
 		placement: 'template',
-		replacers: {
-			'&-': 'unIgnoreAllWhitespaces '
-		}
+		replacers: {'&-': 'unIgnoreAllWhitespaces '}
 	},
 
 	function () {

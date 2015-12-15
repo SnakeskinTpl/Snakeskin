@@ -14,9 +14,9 @@ Snakeskin.addDirective(
 	'with',
 
 	{
-		sys: true,
 		block: true,
-		notEmpty: true
+		notEmpty: true,
+		sys: true
 	},
 
 	function (command) {

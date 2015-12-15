@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 
+// jscs:disable
 const types = {
 	'html': '<!DOCTYPE html>',
 	'xml': '<?xml version="1.0" encoding="utf-8" ?>',

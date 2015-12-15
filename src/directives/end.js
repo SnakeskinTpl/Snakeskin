@@ -17,9 +17,7 @@ Snakeskin.addDirective(
 
 	{
 		deferInit: true,
-		replacers: {
-			'/': 'end '
-		}
+		replacers: {'/': 'end '}
 	},
 
 	function (command) {
@@ -132,8 +130,8 @@ Snakeskin.addDirective(
 	'__end__',
 
 	{
-		deferInit: true,
-		alias: true
+		alias: true,
+		deferInit: true
 	},
 
 	function () {

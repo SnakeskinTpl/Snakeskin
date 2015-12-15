@@ -15,8 +15,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true,
-		group: 'if'
+		group: 'if',
+		notEmpty: true
 	},
 
 	function (command) {
@@ -34,8 +34,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true,
-		group: 'if'
+		group: 'if',
+		notEmpty: true
 	},
 
 	function (command) {
@@ -44,34 +44,6 @@ Snakeskin.addDirective(
 
 	function () {
 		this.append('}');
-	}
-
-);
-
-Snakeskin.addDirective(
-	'elseIf',
-
-	{
-		notEmpty: true,
-		chain: Snakeskin.group('if')
-	},
-
-	function (command) {
-		this.append($=> `} else if (${this.out(command, {sys: true})}) {`);
-	}
-
-);
-
-Snakeskin.addDirective(
-	'elseUnless',
-
-	{
-		notEmpty: true,
-		chain: Snakeskin.group('if')
-	},
-
-	function (command) {
-		this.append($=> `} else if (!(${this.out(command, {sys: true})})) {`);
 	}
 
 );
@@ -107,8 +79,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true,
-		children: Snakeskin.group('case')
+		children: Snakeskin.group('case'),
+		notEmpty: true
 	},
 
 	function (command) {
@@ -126,12 +98,9 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true,
 		group: 'case',
-		replacers: {
-			'>': 'case ',
-			'/>': 'end case'
-		}
+		notEmpty: true,
+		replacers: {'/>': 'end case', '>': 'case '}
 	},
 
 	function (command) {

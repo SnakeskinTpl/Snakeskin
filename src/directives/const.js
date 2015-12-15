@@ -124,11 +124,11 @@ Snakeskin.addDirective(
 					}
 
 					$consts[tplName][name] = {
-						from: start - commandLength,
-						to: start,
 						block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
+						from: start - commandLength,
 						needPrfx: this.needPrfx,
-						output: output ? '?' : null
+						output: output ? '?' : null,
+						to: start
 					};
 
 					if (!insideCallBlock) {
@@ -200,8 +200,8 @@ Snakeskin.addDirective(
 
 	{
 		deferInit: true,
-		placement: 'template',
 		notEmpty: true,
+		placement: 'template',
 		text: true
 	},
 
@@ -249,6 +249,7 @@ function isAssign(str, opt_global) {
 		count = 0,
 		eq = false;
 
+	// jscs:disable
 	const advEqMap = {
 		'+': true,
 		'-': true,

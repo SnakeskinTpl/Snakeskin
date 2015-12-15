@@ -73,9 +73,10 @@ Snakeskin.addDirective(
 	function (command) {
 		command = this.pasteDangerBlocks(command);
 
+		// jscs:disable
 		const module = {
-			exports: {},
 			require,
+			exports: {},
 			id: this.environment.id + 1,
 			key: null,
 			filename: command,

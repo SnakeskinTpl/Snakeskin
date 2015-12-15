@@ -14,14 +14,10 @@ Snakeskin.addDirective(
 	'$forEach',
 
 	{
-		deferInit: true,
 		block: true,
-		notEmpty: true,
-		group: [
-			'cycle',
-			'callback',
-			'selfThis'
-		]
+		deferInit: true,
+		group: ['cycle', 'callback', 'selfThis'],
+		notEmpty: true
 	},
 
 	function (command) {

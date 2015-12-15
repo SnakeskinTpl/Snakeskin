@@ -22,14 +22,11 @@ Snakeskin.addDirective(
 	'comment',
 
 	{
-		deferInit: true,
 		block: true,
-		selfInclude: false,
+		deferInit: true,
 		placement: 'template',
-		replacers: {
-			'@!': 'comment ',
-			'/@': 'end comment'
-		}
+		replacers: {'/@': 'end comment', '@!': 'comment '},
+		selfInclude: false
 	},
 
 	function (command) {

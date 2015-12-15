@@ -91,21 +91,18 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 		dir,
 
 		{
-			deferInit: true,
 			block: true,
-			placement: 'global',
+			deferInit: true,
+			group: ['template', 'rootTemplate', 'define'],
 			notEmpty: true,
-			group: [
-				'template',
-				'rootTemplate',
-				'define'
-			]
+			placement: 'global'
 		},
 
 		function (command, commandLength, type, jsDoc) {
 			const
 				{proto} = this;
 
+			// jscs:disable
 			const rank = {
 				'template': 2,
 				'interface': 1,

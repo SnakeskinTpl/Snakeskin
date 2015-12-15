@@ -14,12 +14,10 @@ Snakeskin.addDirective(
 	'call',
 
 	{
-		placement: 'template',
 		notEmpty: true,
-		text: true,
-		replacers: {
-			'^=': 'call '
-		}
+		placement: 'template',
+		replacers: {'^=': 'call '},
+		text: true
 	},
 
 	function (command) {

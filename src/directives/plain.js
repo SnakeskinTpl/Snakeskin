@@ -14,10 +14,10 @@ Snakeskin.addDirective(
 	'plain',
 
 	{
-		sys: true,
-		placement: 'template',
 		block: true,
-		selfInclude: false
+		placement: 'template',
+		selfInclude: false,
+		sys: true
 	},
 
 	function () {

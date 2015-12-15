@@ -15,8 +15,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		notEmpty: true,
-		group: 'cycle'
+		group: 'cycle',
+		notEmpty: true
 	},
 
 	function (command) {
@@ -67,11 +67,11 @@ Snakeskin.addDirective(
 	'while',
 
 	{
-		deferInit: true,
 		block: true,
-		notEmpty: true,
+		deferInit: true,
+		end: 'do',
 		group: 'cycle',
-		end: 'do'
+		notEmpty: true
 	},
 
 	function (command) {
@@ -96,9 +96,9 @@ Snakeskin.addDirective(
 	'do',
 
 	{
+		after: ['while', 'end'],
 		block: true,
-		group: 'cycle',
-		after: ['while', 'end']
+		group: 'cycle'
 	},
 
 	function () {
@@ -119,9 +119,9 @@ Snakeskin.addDirective(
 	'repeat',
 
 	{
+		after: ['until', 'end'],
 		block: true,
-		group: 'cycle',
-		after: ['until', 'end']
+		group: 'cycle'
 	},
 
 	function () {
@@ -143,8 +143,8 @@ Snakeskin.addDirective(
 
 	{
 		deferInit: true,
-		notEmpty: true,
-		end: 'repeat'
+		end: 'repeat',
+		notEmpty: true
 	},
 
 	function (command) {
