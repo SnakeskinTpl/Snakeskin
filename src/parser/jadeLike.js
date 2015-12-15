@@ -181,9 +181,9 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				if (!decl) {
 					this.error('invalid syntax');
 					return {
-						str: '',
+						error: true,
 						length: 0,
-						error: true
+						str: ''
 					};
 				}
 
@@ -207,14 +207,14 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					adv = el === alb ? alb : '';
 
 				const obj = {
+					adv,
+					block: dir && $blockDirs[decl.name],
 					dir,
 					name: decl.name,
-					spaces,
-					space,
 					parent: null,
-					block: dir && $blockDirs[decl.name],
-					text: !dir || $textDirs[decl.name],
-					adv
+					space,
+					spaces,
+					text: !dir || $textDirs[decl.name]
 				};
 
 				if (struct) {
@@ -245,8 +245,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						f(struct, obj);
 						if (!struct.parent) {
 							return {
-								str: res,
-								length: length - tSpace - 1
+								length: length - tSpace - 1,
+								str: res
 							};
 						}
 
@@ -258,8 +258,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 							if (!struct) {
 								return {
-									str: res,
-									length: length - tSpace - 1
+									length: length - tSpace - 1,
+									str: res
 								};
 							}
 						}
@@ -309,12 +309,12 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 				if (dir && txt) {
 					const inline = {
-						dir: false,
-						spaces: spaces + 1,
-						space: '',
-						parent: obj,
+						adv: '',
 						block: false,
-						adv: ''
+						dir: false,
+						parent: obj,
+						space: '',
+						spaces: spaces + 1
 					};
 
 					inline.parent = obj;
@@ -334,8 +334,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 	}
 
 	return {
-		str: res,
-		length
+		length,
+		str: res
 	};
 };
 
@@ -369,7 +369,7 @@ function genEndDir(dir, space) {
  * @param {number} i - start iteration position
  * @param {boolean} dir - if is true, then the declaration is considered as a block directive
  * @param {boolean} comment - if is true, then declaration is considered a multiline comment
- * @return {{command: string, length: number, name: string, lastEl: string, sComment: boolean}}
+ * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
 function getLineDesc(str, i, dir, comment) {
 	let
@@ -462,9 +462,9 @@ function getLineDesc(str, i, dir, comment) {
 
 			return {
 				command,
+				lastEl,
 				length,
 				name,
-				lastEl,
 				sComment: !inline && sComment
 			};
 		}
@@ -558,9 +558,9 @@ function getLineDesc(str, i, dir, comment) {
 
 	return {
 		command,
+		lastEl,
 		length,
 		name,
-		lastEl,
 		sComment: !inline && sComment
 	};
 }

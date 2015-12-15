@@ -92,7 +92,7 @@ Parser.prototype.getFnArgs = function (str) {
  * @param {?string=} [tplName] - template name
  * @param {?string=} [parentTplName] - parent template name
  * @param {?string=} [fName] - custom function name (for proto, block etc.)
- * @return {{str: string, list: !Array, defParams: string, scope: (string|undefined)}}
+ * @return {{defParams: string, list: !Array, params, scope: (string|undefined), str: string}}
  */
 Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fName} = {}) {
 	tplName = tplName || this.tplName;
@@ -127,8 +127,8 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 			$C(tmp.list).forEach((el) => {
 				structure.vars[el[2]] = {
-					value: el[0],
-					scope: this.scope.length
+					scope: this.scope.length,
+					value: el[0]
 				};
 			});
 
@@ -161,11 +161,11 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 			if (scope) {
 				this.error(`invalid "${this.name}" declaration`);
 				return {
-					params: false,
-					str: '',
-					list: [],
 					defParams: '',
-					scope: undefined
+					list: [],
+					params: false,
+					scope: undefined,
+					str: ''
 				};
 			}
 
@@ -174,8 +174,8 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 		argsTable[arg[0]] = {
 			i,
-			scope,
 			key: arg[0],
+			scope,
 			value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
 		};
 	});
@@ -206,9 +206,9 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 		} else {
 			argsTable[key] = {
+				i: el.i,
 				key,
 				local: true,
-				i: el.i,
 				value: el.value !== undefined ? el.value : 'void 0'
 			};
 		}
@@ -257,8 +257,8 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 		defParams += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {sys: true})};`;
 		structure.vars[el.key] = {
-			value: el.key,
-			scope: this.scope.length
+			scope: this.scope.length,
+			value: el.key
 		};
 	});
 
@@ -326,11 +326,11 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 	structure.params._consts = constsCache;
 	const res = {
+		defParams,
+		list: args,
 		params,
 		scope,
-		defParams,
-		str: decl,
-		list: args
+		str: decl
 	};
 
 	if (fName) {

@@ -141,8 +141,8 @@ Parser.prototype.getTplFullBody = function (tplName) {
 					res.slice(parent.to + adv);
 
 				advDiff.push({
-					val: parent.from,
-					adv: blockDiff
+					adv: blockDiff,
+					val: parent.from
 				});
 
 			} else if (!parent) {
@@ -166,8 +166,8 @@ Parser.prototype.getTplFullBody = function (tplName) {
 							res.slice(from);
 
 						advDiff.push({
-							val: newFrom,
-							adv: block.length
+							adv: block.length,
+							val: newFrom
 						});
 
 						from = from + block.length;

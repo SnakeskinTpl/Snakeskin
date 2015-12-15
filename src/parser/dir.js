@@ -41,14 +41,14 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	});
 
 	const obj = {
-		name: opt_name,
-		parent: structure,
-		params: opt_params,
-		stack: [],
-		vars: opt_vars,
 		children: [],
+		name: opt_name,
+		params: opt_params,
+		parent: structure,
+		stack: [],
+		strong: false,
 		sys: Boolean($sysDirs[opt_name]),
-		strong: false
+		vars: opt_vars
 	};
 
 	this.inline = false;
@@ -71,10 +71,10 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 
 		} else {
 			sub = {
+				children: [],
 				name: opt_name,
-				parent: blockStruct,
 				params: opt_params,
-				children: []
+				parent: blockStruct
 			};
 
 			if (blockTable[key] === true) {
@@ -125,14 +125,14 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 		this.name = opt_name || this.name;
 
 	const obj = {
-		name: opt_name,
-		parent: this.structure,
-		params: opt_params,
-		stack: [],
-		vars: null,
 		children: null,
+		name: opt_name,
+		params: opt_params,
+		parent: this.structure,
+		stack: [],
+		strong: false,
 		sys: Boolean($sysDirs[opt_name]),
-		strong: false
+		vars: null
 	};
 
 	this.inline = true;
@@ -154,8 +154,8 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 		} else {
 			sub = {
 				name: opt_name,
-				parent: blockStruct,
-				params: opt_params
+				params: opt_params,
+				parent: blockStruct
 			};
 
 			if (blockTable[key] === true) {

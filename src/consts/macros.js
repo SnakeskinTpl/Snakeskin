@@ -1,6 +1,7 @@
 'use strict';
 
 // jscs:disable validateOrderInObjectKeys
+// jscs:disable requireTemplateStrings
 
 /*!
  * Snakeskin
