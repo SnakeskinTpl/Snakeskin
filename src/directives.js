@@ -37,3 +37,4 @@ import './directives/async';
 import './directives/decl';
 import './directives/data';
 import './directives/callBlock';
+import './directives/return';
