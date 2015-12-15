@@ -68,14 +68,18 @@ import {
  *   or a text of the templates
  *
  * @param {?$$SnakeskinParams=} [opt_params] - additional runtime parameters:
- *
- *   *) [exports = 'default'] - export type
- *   *) [context] - storage object for the compiled templates
+ *   *) [cache = true] - if is false, then caching will be disabled
+ *   *) [prettyPrint = false] - if is true, then output code will be formatted
+ *   *) [exports = 'default'] - export type for compiled templates
+ *   *) [vars] - map of super global variables, which will be added to Snakeskin.Vars
+ *   *) [debug] - object, which will be contained some debug information
+ *   *) [context] - storage object for compiled templates
  *        (will be set the CommonJS export type)
  *
- *   *) [vars] - map of super global variables, which will be added to Snakeskin.Vars
- *   *) [cache = true] - if is false, then caching will be disabled
- *   *) [debug] - object, which will be contained some debug information
+ *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode;
+ *   *) [doctype = 'xml'] - type of document:
+ *        1) html;
+ *        2) xml.
  *
  *   *) [onError] - callback for an error handling
  *   *) [throws = false] - if is true, then in case of an error or a missing error handler,
@@ -87,8 +91,11 @@ import {
  *   *) [words] - object, which will be contained all found localization words
  *
  *   *) [ignore] - RegExp object, which specifies whitespace symbols for ignoring
+ *   *) [tolerateWhitespace = false] - if is true, then whitespaces will be processed "as is"
+ *   *) [eol = '\n'] - EOL symbol
+ *
  *   *) [autoReplace = false] - if is false, then macros will be disabled
- *   *) [macros] - map of the macros
+ *   *) [macros] - map of macros
  *   *) [renderAs] - rendering type of templates:
  *        1) placeholder - all templates will be rendered as "placeholder";
  *        2) interface - all templates will be rendered as "interface";
@@ -96,39 +103,19 @@ import {
  *
  *   *) [renderMode = 'stringConcat'] - rendering mode of templates:
  *        1) stringConcat - renders template to a string, for concatenation of strings will be used operator;
- *        2) stringBuffer - renders template to a string, for concatenation of strings
- *          will be used Snakeskin.StringBuffer;
+ *        2) stringBuffer - renders template to a string, for concatenation of strings will be used Snakeskin.StringBuffer;
  *        3) dom - renders template to a DocumentFragment object.
  *
- *   *) [eol = '\n'] - EOL symbol
- *   *) [tolerateWhitespace = false] - if is true, then whitespaces will be processed "as is"
  *   *) [inlineIterators = false] - if is true, then all forEach and forIn iterators will be rendered as loops
- *   *) [doctype = 'xml'] - type of document:
- *        1) html;
- *        2) xml.
- *
  *   *) [replaceUndef = true] - if is false, then will be disabled the undef filter by default
  *   *) [escapeOutput = true] - if is false, then will be disabled the html filter by default
- *
- *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode;
  *   *) [bemFilter = 'bem'] - name of the bem filter
- *   *) [prettyPrint = false] - if is true, then output will be formatted
  *
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug:
- *   *) [file] - path of a template file
+ *   *) [file] - path to a template file
  *
- * @param {$$SnakeskinSysParams=} [opt_sysParams] - private parameters:
- *   *) [cacheKey = false] - if is true, then will bi returned a cache key of operation
- *
- *   *) [scope] - context of directives
- *   *) [vars] - map of local variables
- *   *) [consts] - array of constant declarations
- *
- *   *) [proto] - parameters object of proto
- *   *) [parent] - link for the parent object
- *
- *   *) [lines] - array of template lines
- *   *) [needPrfx] - if is true, then for declaring directives will be used #{ ... }
+ * @param {$$SnakeskinSysParams=} [opt_sysParams] - system parameters:
+ *   *) [cacheKey = false] - if is true, then will be returned a cache key for the current operation
  *
  * @return {(string|boolean|null)}
  */
@@ -249,8 +236,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		if (IS_NODE && info.file) {
 			const
-				path = require('path'),
-				fs = require('fs');
+				fs = require('fs'),
+				path = require('path');
 
 			filename =
 				info.file = path.normalize(path.resolve(info.file));
@@ -332,9 +319,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// The flags for working with quotes
 	let
 		qOpen = 0,
-		qType = null;
-
-	let prfxI = 0;
+		qType = null,
+		prfxI = 0;
 
 	// The flags for working with macros
 	let
