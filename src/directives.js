@@ -33,3 +33,4 @@ import './directives/include';
 import './directives/cycles';
 import './directives/control';
 import './directives/iterators';
+import './directives/async';

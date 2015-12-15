@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,76 +8,45 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Snakeskin from '../core';
 
-for (
-	let i = -1,
-		series = ['parallel', 'series', 'waterfall']
-	;
-
-	++i < series.length
-	;
-) {
-
+$C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 	Snakeskin.addDirective(
-		series[i],
+		dir,
 
 		{
 			block: true,
-			group: [
-				'async',
-				'Async',
-				'series'
-			],
-
-			children: {
-				'callback': true,
-				'final': true
-			}
+			children: ['callback', 'final'],
+			group: ['async', 'Async', 'series']
 		},
 
 		function (command, commandLength, type) {
-			this.startDir();
-			this.append(`${this.out('async', {sys: true})}.${type}([`);
+			this.append($=> `${this.out('async', {sys: true})}.${type}([`);
 		},
 
 		function () {
-			this.append(']);');
+			this.append($=> ']);');
 		}
 	);
-}
+});
 
-for (
-	let i = -1,
-		async = ['whilst', 'doWhilst', 'forever']
-	;
-
-	++i < async.length
-	;
-) {
-
+$C(['whilst', 'doWhilst', 'forever']).forEach((dir) => {
 	Snakeskin.addDirective(
-		async[i],
+		dir,
 
 		{
 			block: true,
-			group: [
-				'async',
-				'Async'
-			],
-
-			children: {
-				'callback': true
-			}
+			children: 'callback',
+			group: ['async', 'Async']
 		},
 
 		function (command, commandLength, type) {
-			this.startDir();
-			this.append(`${this.out('async', {sys: true})}.${type}(`);
+			this.append($=> `${this.out('async', {sys: true})}.${type}(`);
 		},
 
 		function () {
-			this.append(');');
+			this.append($=> ');');
 		}
 	);
-}
+});
