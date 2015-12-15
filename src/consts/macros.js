@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable validateOrderInObjectKeys
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin

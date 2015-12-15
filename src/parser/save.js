@@ -73,8 +73,7 @@ Parser.prototype.$$ = function () {
  * @return {string}
  */
 Parser.prototype.wrap = function (opt_str) {
-	// jscs:disable
-	return this.$() + (opt_str || '') + this.$$() + ';';
+	return `${this.$()}${opt_str || ''}${this.$$()};`;
 };
 
 /**

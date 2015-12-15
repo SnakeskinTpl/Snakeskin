@@ -76,7 +76,7 @@ export const $routerPositions = {
 };
 
 export const $scope = {
-	'template': {},
+	'block': {},
 	'proto': {},
-	'block': {}
+	'template': {}
 };

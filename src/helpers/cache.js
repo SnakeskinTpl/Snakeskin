@@ -127,9 +127,9 @@ export function saveIntoCache(cacheKey, code, params, parser) {
 	if (cacheKey && (params.cache || $globalCache[cacheKey])) {
 		$globalCache[cacheKey] = $globalCache[cacheKey] || {};
 		$globalCache[cacheKey][code] = {
+			debug: params.debug,
 			text: parser.res,
-			words: params.words,
-			debug: params.debug
+			words: params.words
 		};
 	}
 }

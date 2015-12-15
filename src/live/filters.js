@@ -45,11 +45,11 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 };
 
 const entityMap = {
-	'&': '&amp;',
-	'<': '&lt;',
-	'>': '&gt;',
 	'"': '&quot;',
-	'\'': '&#39;'
+	'&': '&amp;',
+	'\'': '&#39;',
+	'<': '&lt;',
+	'>': '&gt;'
 };
 
 export const
@@ -59,12 +59,12 @@ export const
 	escapeHTML = (s) => entityMap[s] || s;
 
 const uentityMap = {
-	'&amp;': '&',
-	'&lt;': '<',
-	'&gt;': '>',
-	'&quot;': '"',
 	'&#39;': '\'',
-	'&#x2F;': '/'
+	'&#x2F;': '/',
+	'&amp;': '&',
+	'&gt;': '>',
+	'&lt;': '<',
+	'&quot;': '"'
 };
 
 export const

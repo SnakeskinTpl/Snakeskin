@@ -23,10 +23,10 @@ import { macroBlackSymbols } from '../consts/regs';
 export function setMacros(obj, macros, opt_namespace, opt_init) {
 	if (opt_init) {
 		$C.extend(false, macros, {
-			map: {},
+			combo: {},
 			groups: {},
 			inline: {'\\': true},
-			combo: {}
+			map: {}
 		});
 
 		setMacros(baseMacros, macros);

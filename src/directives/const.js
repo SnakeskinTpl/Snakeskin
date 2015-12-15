@@ -249,16 +249,15 @@ function isAssign(str, opt_global) {
 		count = 0,
 		eq = false;
 
-	// jscs:disable
 	const advEqMap = {
+		'&': true,
+		'*': true,
 		'+': true,
 		'-': true,
-		'*': true,
 		'/': true,
 		'^': true,
-		'~': true,
 		'|': true,
-		'&': true
+		'~': true
 	};
 
 	const bAdvMap = {

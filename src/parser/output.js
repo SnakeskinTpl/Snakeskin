@@ -1,5 +1,8 @@
 'use strict';
 
+// jscs:disable requireTemplateStrings
+// jscs:disable validateOrderInObjectKeys
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -724,7 +727,6 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					input = params.slice(1).join(' ').trim(),
 					current = params.shift().split('.');
 
-				// jscs:disable
 				resTmp =
 					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str += `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
@@ -776,7 +778,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					last = filter.length - 1,
 					cache = filter[last];
 
-				filter[last] = this.out(cache, {sys: true, breakFirst: true, validate: true});
+				filter[last] = this.out(cache, {breakFirst: true, sys: true, validate: true});
 				const
 					length = filter[last].length - cache.length;
 

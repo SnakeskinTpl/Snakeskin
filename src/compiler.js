@@ -205,10 +205,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// >>>
 
 	let macros = {
-		map: {},
+		combo: {},
 		groups: {},
 		inline: {},
-		combo: {}
+		map: {}
 	};
 
 	if (sp.proto) {
@@ -343,8 +343,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		clrL = true,
 		templateMap = parser.getGroup('rootTemplate');
 
-	/** @return {{macros, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} */
-	parser.getCompileVars = () => ({macros, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI});
+	/** @return {{macros, prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen}} */
+	parser.getCompileVars = () => ({macros, prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen});
 
 	/** @param {{macros, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
 	parser.setCompileVars = (obj) => {
@@ -510,8 +510,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					endComment = getCommentType(str, parser.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
 
 				const map = {
-					[SINGLE_COMMENT]: true,
-					[MULT_COMMENT_START]: true
+					[MULT_COMMENT_START]: true,
+					[SINGLE_COMMENT]: true
 				};
 
 				if (map[commentType] || endComment) {
@@ -621,8 +621,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					const
-						// jscs:disable
-						short1 = command[0],
+						short1 = command[0], // jscs:ignore
 						short2 = command.substr(0, 2),
 						replacer = $dirNameReplacers[short2] || $dirNameReplacers[short1];
 
@@ -1085,13 +1084,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					parser.res
 				)(
 					{
-						exports: ctx,
-						require,
-						id: filename,
-						filename,
-						parent: module,
 						children: [],
-						loaded: true
+						exports: ctx,
+						filename,
+						id: filename,
+						loaded: true,
+						parent: module,
+						require
 					},
 
 					ctx,

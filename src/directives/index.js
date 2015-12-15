@@ -40,7 +40,9 @@ import {
 
 } from '../consts/cache';
 
-// jscs:disable
+// FIXME https://github.com/jscs-dev/node-jscs/issues/2017
+// jscs:disable jsDoc
+
 export const
 	/**
 	 * Transformer for a group list
@@ -49,6 +51,8 @@ export const
 	 * @return {string}
 	 */
 	q = (arr) => $C(arr).map((el) => `"${el}"`).join(', ');
+
+// jscs:enable jsDoc
 
 const
 	gPrfx = '@';

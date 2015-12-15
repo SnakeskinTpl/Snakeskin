@@ -66,10 +66,10 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	}
 
 	structure.vars[varName] = {
-		id,
 		global,
-		value: realVar,
-		scope: this.scope.length
+		id,
+		scope: this.scope.length,
+		value: realVar
 	};
 
 	if (tplName) {
@@ -135,8 +135,7 @@ Parser.prototype.declVars = function (str, opt_end, opt_def) {
 			const
 				val = parts.slice(1).join('=');
 
-			// jscs:disable
-			fin += parts[0] + (val ? this.out(val, {sys: true}) : '') + ',';
+			fin += `${parts[0]}${val ? this.out(val, {sys: true}) : ''},`;
 			cache = '';
 
 			return;

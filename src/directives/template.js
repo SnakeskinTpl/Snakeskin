@@ -102,11 +102,10 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			const
 				{proto} = this;
 
-			// jscs:disable
 			const rank = {
-				'template': 2,
 				'interface': 1,
-				'placeholder': 0
+				'placeholder': 0,
+				'template': 2
 			};
 
 			this.startDir(
@@ -257,8 +256,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				tplName = str;
 				this.save(
-					// jscs:disable
-					(length === 1 && shortcut ? `var ${shortcut} = ` : '') +
+					(length === 1 && shortcut ? `var ${shortcut} = ` : '') + // jscs:ignore
 						`this${concatProp(tplName)} = function ${prfx}${length > 1 ? lastName : shortcut}(`,
 
 					isInterface
@@ -269,9 +267,9 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				this.tplName = tplName;
 
 			this.blockStructure = {
+				children: [],
 				name: 'root',
-				parent: null,
-				children: []
+				parent: null
 			};
 
 			this.blockTable = {};
@@ -331,9 +329,9 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				parent = scope[parentTplName];
 
 			scope[tplName] = {
+				children: {},
 				id: this.environment.id,
-				parent: parent,
-				children: {}
+				parent
 			};
 
 			scope[tplName].root = parent ?
@@ -377,7 +375,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			});
 
 			const
-				args = this.prepareArgs(command, 'template', {tplName, parentTplName});
+				args = this.prepareArgs(command, 'template', {parentTplName, tplName});
 
 			this.save(`${args.str}) {`, isInterface);
 			if (args.scope) {
@@ -396,8 +394,8 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			$C(predefs).forEach((el) => {
 				this.structure.vars[el] = {
-					value: el,
-					scope: 0
+					scope: 0,
+					value: el
 				};
 			});
 
@@ -455,14 +453,10 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 		function (command, commandLength) {
 			const
-				tplName = this.tplName,
-				proto = this.proto;
+				{tplName, proto, proto: {ctx}} = this;
 
 			if (proto) {
 				if (this.backTableI) {
-					const
-						ctx = proto.ctx;
-
 					ctx.backTableI += this.backTableI;
 					$C(this.backTable).forEach((el, key) => {
 						$C(el).forEach((el) => {
@@ -519,11 +513,13 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 							this.res =
 								this.res.slice(0, el.pos) +
 								this.res.slice(el.pos).replace(el.label, (el.argsStr || '') +
-								(el.recursive ? tmp.i + '++;' : tmp.body));
+								(el.recursive ? `${tmp.i}++;` : tmp.body));
 						});
 					});
 
-				} catch (err) { return this.error(err); }
+				} catch (err) {
+					return this.error(err);
+				}
 
 				this.backTable = {};
 				this.backTableI = 0;
