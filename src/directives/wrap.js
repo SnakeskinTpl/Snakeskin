@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,15 +8,15 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
+
 Snakeskin.addDirective(
 	'wrap',
 
 	{
+		after: ['and', 'end'],
 		block: true,
-		after: {
-			'and': true,
-			'end': true
-		}
+		deferInit: true
 	},
 
 	function (command, commandLength, commandType, jsDocStart) {
@@ -26,53 +28,56 @@ Snakeskin.addDirective(
 			jsDocStart
 		});
 
-		if (this.isReady()) {
-			this.append(ws`
-				${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = []`)}
-				__RESULT__ = ${this.getReturnDecl()};
-			`);
-		}
+		this.append($=> ws`
+			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = []`)}
+			__RESULT__ = ${this.getReturnDecl()};
+		`);
 	},
 
 	function () {
-		if (this.isReady()) {
-			let tmp = this.out('__WRAP_TMP__', {sys: true});
+		if (!this.isReady()) {
+			return;
+		}
 
-			this.append(ws`
-				${tmp}.push(__RESULT__);
-				__RESULT__ = ${this.out('__WRAP_CACHE__', {sys: true})};
-			`);
+		const
+			tmp = this.out('__WRAP_TMP__', {sys: true});
 
-			let
-				params = this.structure.params,
-				parts = params.command.split(' '),
-				i = params.chunkLength,
-				j = 0,
-				adv = '';
+		this.append(ws`
+			${tmp}.push(__RESULT__);
+			__RESULT__ = ${this.out('__WRAP_CACHE__', {sys: true})};
+		`);
 
-			while (i--) {
-				if (adv) {
-					adv += ',';
-				}
+		const
+			{params} = this.structure,
+			parts = params.command.split(' ');
 
-				adv += `${tmp}[${j++}]`;
+		let
+			i = params.chunkLength,
+			j = 0,
+			adv = '';
+
+		while (i--) {
+			if (adv) {
+				adv += ',';
 			}
 
-			Snakeskin.Directives[parts[0]].call(
-				this,
-				parts
-					.slice(1)
-					.join(' ')
-					.replace(/\((.*?)\)$/, (sstr, $0) => {
-						$0 = $0.trim();
-						return $0 ? `(${$0},${adv})` : `(${adv})`;
-					}),
-
-				params.commandLength,
-				parts[0],
-				params.jsDocStart
-			);
+			adv += `${tmp}[${j++}]`;
 		}
+
+		Snakeskin.Directives[parts[0]].call(
+			this,
+			parts
+				.slice(1)
+				.join(' ')
+				.replace(/\((.*?)\)$/, (sstr, $0) => {
+					$0 = $0.trim();
+					return $0 ? `(${$0},${adv})` : `(${adv})`;
+				}),
+
+			params.commandLength,
+			parts[0],
+			params.jsDocStart
+		);
 	}
 
 );
@@ -86,12 +91,10 @@ Snakeskin.addDirective(
 
 	function () {
 		this.structure.params.chunkLength++;
-		if (this.isReady()) {
-			this.append(ws`
-				${this.out('__WRAP_TMP__', {sys: true})}.push(__RESULT__);
-				__RESULT__ = ${this.getReturnDecl()};
-			`);
-		}
+		this.append($=> ws`
+			${this.out('__WRAP_TMP__', {sys: true})}.push(__RESULT__);
+			__RESULT__ = ${this.getReturnDecl()};
+		`);
 	}
 
 );

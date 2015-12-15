@@ -38,3 +38,4 @@ import './directives/decl';
 import './directives/data';
 import './directives/callBlock';
 import './directives/return';
+import './directives/wrap';
