@@ -52,10 +52,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'callback',
-		replacers: {
-			'()': (cmd) => cmd.replace('()', 'callback ')
-		}
+		group: ['callback', 'AsyncCallback'],
+		replacers: {'()': 'callback '}
 	},
 
 	function (command) {
@@ -101,16 +99,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: [
-			'callback',
-			'basicAsync'
-		],
-
-		chain: [
-			'parallel',
-			'series',
-			'waterfall'
-		]
+		chain: ['parallel', 'series', 'waterfall'],
+		group: ['callback', 'basicAsync']
 	},
 
 	function (command) {
