@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,41 +8,44 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
+
 Snakeskin.addDirective(
 	'callBlock',
 
 	{
-		placement: 'template',
 		notEmpty: true,
-		text: true,
-		replacers: {
-			'~=': (cmd) => cmd.replace('~=', 'callBlock ')
-		}
+		placement: 'template',
+		replacers: {'~=': 'callBlock '},
+		text: true
 	},
 
 	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			let str;
+		if (!this.isReady()) {
+			return;
+		}
+
+		let str;
+
+		const
+			name = this.getFnName(command);
+
+		if (name === '&') {
 			const
-				name = this.getFnName(command);
+				block = this.hasBlock('block', true);
 
-			if (name === '&') {
-				const block = this.hasBlock('block', true);
-
-				if (block) {
-					str = block.params.fn + this.out(command.replace(name, ''), {sys: true});
-
-				} else {
-					return this.error(`invalid "${this.name}" declaration`);
-				}
+			if (block) {
+				str = block.params.fn + this.out(command.replace(name, ''), {sys: true});
 
 			} else {
-				str = this.out(`__BLOCKS__.${command}`, {sys: true});
+				return this.error(`invalid "${this.name}" declaration`);
 			}
 
-			this.append(this.wrap(str));
+		} else {
+			str = this.out(`__BLOCKS__.${command}`, {sys: true});
 		}
+
+		this.append(this.wrap(str));
 	}
 
 );

@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,22 +8,19 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
+
 Snakeskin.addDirective(
 	'data',
 
 	{
-		placement: 'template',
 		notEmpty: true,
-		text: true,
-		replacers: {
-			'=': (cmd) => cmd.replace('=', 'data ')
-		}
+		placement: 'template',
+		replacers: {'=': 'data '},
+		text: true
 	},
 
 	function (command) {
-		this.startInlineDir();
-		if (this.isReady()) {
-			this.append(this.wrap(`'${this.replaceTplVars(command)}'`));
-		}
+		this.append($=> this.wrap(`'${this.replaceTplVars(command)}'`));
 	}
 );
