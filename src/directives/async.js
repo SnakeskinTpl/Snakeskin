@@ -26,7 +26,7 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 		},
 
 		function () {
-			this.append($=> ']);');
+			this.append(']);');
 		}
 	);
 });
@@ -46,7 +46,7 @@ $C(['whilst', 'doWhilst', 'forever']).forEach((dir) => {
 		},
 
 		function () {
-			this.append($=> ');');
+			this.append(');');
 		}
 	);
 });
