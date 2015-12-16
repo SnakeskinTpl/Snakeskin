@@ -57,6 +57,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (command) {
+			if (!this.isReady()) {
+				return;
+			}
+
 			const
 				parts = command.split(' '),
 				prfx = parts[0] === 'unless' ? '!' : '';
@@ -65,7 +69,7 @@ Snakeskin.addDirective(
 				parts.shift();
 			}
 
-			this.append($=> `} else if (${prfx}(${this.out(parts.join(' '), {sys: true})})) {`);
+			this.append(`} else if (${prfx}(${this.out(parts.join(' '), {sys: true})})) {`);
 
 		} else {
 			this.append('} else {');

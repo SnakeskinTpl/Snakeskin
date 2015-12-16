@@ -145,21 +145,21 @@ Snakeskin.addDirective(
 					return this.error(`invalid "${this.name}" declaration`);
 				}
 
-				const
-					mod = G_MOD + G_MOD;
-
-				if (command[0] !== G_MOD) {
-					command = mod + command;
-
-				} else {
-					command = command.replace(scopeMod, mod);
-				}
-
 				if (output && tplName) {
 					this.text = true;
-					this.append(this.wrap(`${this.out(desc.key, {sys: true})} = ${this.out(desc.value)};`));
+					this.append($=> this.wrap(`${this.out(desc.key, {sys: true})} = ${this.out(desc.value)};`));
 
 				} else {
+					const
+						mod = G_MOD + G_MOD;
+
+					if (command[0] !== G_MOD) {
+						command = mod + command;
+
+					} else {
+						command = command.replace(scopeMod, mod);
+					}
+
 					this.save(`${this.out(command, {sys: true})};`);
 				}
 			}
