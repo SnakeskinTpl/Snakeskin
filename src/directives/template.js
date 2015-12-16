@@ -98,7 +98,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			placement: 'global'
 		},
 
-		function (command, commandLength, type, jsDoc) {
+		function (command, commandLength, type, raw, jsDoc) {
 			const
 				{proto} = this;
 

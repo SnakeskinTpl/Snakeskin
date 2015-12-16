@@ -141,8 +141,8 @@ Snakeskin.group = function (name) {
  *          '?': 'void '
  *        }
  *
- * @param {function(this:Parser, string, number, string, (boolean|number))=} opt_constr - constructor
- * @param {function(this:Parser, string, number, string, (boolean|number))=} opt_destruct - destructor
+ * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_constr - constructor
+ * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	const
@@ -276,7 +276,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	}
 
 	/** @this {Parser} */
-	Snakeskin.Directives[name] = function (command, commandLength, type, jsDoc) {
+	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
 		const
 			sourceName = this.getDirName(name);
 
@@ -388,7 +388,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (opt_constr) {
-			opt_constr.call(parser, command, commandLength, type, jsDoc);
+			opt_constr.call(parser, command, commandLength, type, raw, jsDoc);
 		}
 
 		if (parser.structure.params['@from'] === undefined) {
@@ -437,7 +437,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			baseEnd.call(parser);
 
 			if (opt_destruct) {
-				opt_destruct.call(parser, command, commandLength, type, jsDoc);
+				opt_destruct.call(parser, command, commandLength, type, raw, jsDoc);
 			}
 
 			parser.inline = null;

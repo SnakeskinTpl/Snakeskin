@@ -19,13 +19,14 @@ Snakeskin.addDirective(
 		deferInit: true
 	},
 
-	function (command, commandLength, commandType, jsDocStart) {
+	function (command, commandLength, commandType, raw, jsDocStart) {
 		this.startDir(null, {
 			chunkLength: 1,
 			command,
 			commandLength,
 			commandType,
-			jsDocStart
+			jsDocStart,
+			raw
 		});
 
 		this.append($=> ws`
@@ -76,6 +77,7 @@ Snakeskin.addDirective(
 
 			params.commandLength,
 			parts[0],
+			params.raw,
 			params.jsDocStart
 		);
 	}

@@ -614,6 +614,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				// Directive is ended
 				} else if (el === rb && begin && (!fakeBegin || !(fakeBegin--))) {
 					begin = false;
+
+					const raw = command;
 					command = command.trim();
 
 					if (!command) {
@@ -665,6 +667,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						command,
 						commandLength,
 						commandType,
+						raw,
 						jsDocStart
 					);
 
