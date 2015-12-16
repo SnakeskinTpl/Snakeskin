@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,32 +8,41 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var callBlockNameRgxp = new RegExp(`^[^${symbols}_$][^${w}$]*|[^${w}$]+`, 'i');
+import $C from '../deps/collection';
+import Snakeskin from '../core';
+import {
+
+	LEFT_BLOCK as lb,
+	RIGHT_BLOCK as rb,
+	ADV_LEFT_BLOCK as alb
+
+} from '../consts/literals';
+
+const
+	callBlockNameRgxp = new RegExp(`^[^${symbols}_$][^${w}$]*|[^${w}$]+`, 'i');
 
 Snakeskin.addDirective(
 	'block',
 
 	{
-		sys: true,
 		block: true,
+		deferInit: true,
+		group: ['template', 'inherit', 'define', 'blockInherit'],
 		notEmpty: true,
-		group: [
-			'template',
-			'inherit',
-			'define',
-			'blockInherit'
-		]
+		sys: true
 	},
 
 	function (command, commandLength) {
-		var name = this.getFnName(command),
-			tplName = this.tplName;
+		let
+			{tplName} = this,
+			name = this.getFnName(command);
 
 		if (!name) {
 			return this.error(`invalid "${this.name}" name`);
 		}
 
-		var parts = name.split('->');
+		const
+			parts = name.split('->');
 
 		if (parts[1]) {
 			name = parts[1].trim();
@@ -43,8 +54,7 @@ Snakeskin.addDirective(
 				}
 
 				try {
-					tplName =
-						this.tplName = this.prepareNameDecl(parts[0]);
+					tplName = this.tplName = this.prepareNameDecl(parts[0]);
 
 				} catch (err) {
 					return this.error(err.message);
@@ -67,85 +77,88 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.outerLink && !this.tplName) {
-			return this.error(`directive "${this.name}" can be used only within a ${groupsList['template'].join(', ')}`);
+			return this.error(`the directive "${this.name}" can be used only within a ${groupsList['template'].join(', ')}`);
 		}
 
 		if (!name || !tplName || callBlockNameRgxp.test(name)) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		var scope =
-			scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {};
-
-		var parentScope,
+		const
+			scope = scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {},
 			parentTplName = extMap[tplName];
+
+		let
+			current = scope[name],
+			parentScope;
 
 		if (parentTplName) {
 			parentScope =
 				scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
 		}
 
-		var current = scope[name];
 		if (!scope[name]) {
-			current =
-				scope[name] = {
-					id: this.environment.id,
-					children: {}
-				};
+			current = scope[name] = {
+				children: {},
+				id: this.environment.id
+			};
 		}
 
 		if (!this.outerLink && !current.root) {
-			let parent = parentScope &&
-				parentScope[name];
+			const
+				parent = parentScope && parentScope[name];
 
 			current.parent = parent;
 			current.overridden = Boolean(parentTplName && this.parentTplName);
-			current.root = parent ?
-				parent.root : scope[name];
+			current.root = parent ? parent.root : scope[name];
 
 			if (parent) {
 				parent.children[tplName] = scope[name];
 			}
 		}
 
-		var start = this.i - this.startTemplateI;
+		const
+			start = this.i - this.startTemplateI;
+
 		this.startDir(null, {
-			name: name,
-			from: this.outerLink ?
-				this.i - this.getDiff(commandLength) : start + 1
+			from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1,
+			name
 		});
 
-		var struct = this.structure,
+		const
+			{structure} = this,
 			dir = String(this.name);
 
-		var params,
+		let
+			params,
 			output;
 
 		if (name !== command) {
-			let ouptupCache = this.getBlockOutput(dir);
+			const
+				outputCache = this.getBlockOutput(dir);
 
-			if (ouptupCache) {
+			if (outputCache) {
 				output = command.split('=>')[1];
-				params = ouptupCache[name];
+				params = outputCache[name];
 
 				if (output != null) {
 					params =
-						ouptupCache[name] = output;
+						outputCache[name] = output;
 				}
 			}
 		}
 
 		if (this.isAdvTest()) {
 			if (blockCache[tplName][name]) {
-				return this.error(`block "${name}" is already defined`);
+				return this.error(`the block "${name}" is already defined`);
 			}
 
-			let args = this.prepareArgs(
+			const args = this.prepareArgs(
 				command,
 				dir,
 				{
-					parentTplName: this.parentTplName,
-					fName: name
+					fName: name,
+					parentTplName: this.parentTplName
 				}
 			);
 
@@ -155,24 +168,25 @@ Snakeskin.addDirective(
 
 			this.structure.params.args = args.params;
 			blockCache[tplName][name] = {
+				args,
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
-				args: args,
-				output: output
+				output
 			};
 
 			if (args.scope) {
 				this.scope.push(args.scope);
-				struct.params._scope = true;
+				structure.params._scope = true;
 			}
 		}
 
 		if (this.isSimpleOutput()) {
-			let args = blockCache[tplName][name].args;
+			const
+				{args} = blockCache[tplName][name];
 
 			if (args.params) {
-				let fnDecl = `__BLOCKS__.${name}`;
-				struct.params.fn = fnDecl;
+				const
+					fnDecl = structure.params.fn = `__BLOCKS__.${name}`;
 
 				this.save(ws`
 					if (!${fnDecl}) {
@@ -199,45 +213,44 @@ Snakeskin.addDirective(
 				`);
 
 				if (params != null) {
-					let str = '',
-						vars = struct.vars;
+					const
+						{vars} = structure;
 
-					struct.vars = struct.parent.vars;
+					structure.vars = structure.parent.vars;
 					params = this.getFnArgs(`(${params})`);
 
-					for (let i = -1; ++i < params.length;) {
-						str += `${this.out(params[i], {sys: true})},`
-					}
-
-					struct.vars = vars;
-					str = str.slice(0, -1);
-					struct.params.params = str;
+					structure.vars = vars;
+					structure.params.params = $C(params)
+						.reduce((res, el) => res += `${this.out(el, {sys: true})},`, '')
+						.slice(0, -1);
 				}
 			}
 		}
 	},
 
 	function (command, commandLength) {
-		var params = this.structure.params,
+		const
+			{params} = this.structure,
 			diff = this.getDiff(commandLength);
 
-		var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-			e = RIGHT_BLOCK;
+		const
+			s = (this.needPrfx ? alb : '') + lb,
+			e = rb;
 
 		if (this.outerLink === params.name) {
-			let obj = this.preDefs[this.tplName],
-				nl = this.eol,
+			const
+				obj = this.preDefs[this.tplName],
 				i = Number(obj.i);
 
 			obj.text += ws`
-				${nl}${this.source.slice(params.from, i)}
+				${this.eol}${this.source.slice(params.from, i)}
 				${s}__cutLine__${e}
 
 					${s}__switchLine__ ${obj.startLine}${e}
 						${this.source.slice(i, this.i - diff)}
 					${s}__end__${e}
 
-				${nl}${this.source.slice(this.i - diff, this.i + 1)}
+				${this.eol}${this.source.slice(this.i - diff, this.i + 1)}
 				${s}__cutLine__${e}
 			`;
 
@@ -248,7 +261,8 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		var block = blockCache[this.tplName][params.name];
+		const
+			block = blockCache[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
 			this.save(ws`
@@ -265,11 +279,11 @@ Snakeskin.addDirective(
 				return this.error('invalid "block" declaration');
 			}
 
-			let start = this.i - this.startTemplateI;
+			const
+				start = this.i - this.startTemplateI;
+
 			block.to = start + 1;
-			block.content = this.source
-				.slice(this.startTemplateI)
-				.slice(params.from, start - diff);
+			block.content = this.source.slice(this.startTemplateI).slice(params.from, start - diff);
 		}
 	}
 );

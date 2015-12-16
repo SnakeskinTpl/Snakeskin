@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { isArray } from '../helpers/types';
 import { scopeMod } from '../consts/regs';
 import {
 
@@ -26,6 +27,50 @@ import {
 	$consts
 
 } from '../consts/cache';
+
+/**
+ * Declares callback function arguments
+ * and returns a string of declaration
+ *
+ * @param {(!Array|string)} parts - string of arguments or an array
+ * @return {string}
+ */
+Parser.prototype.declCallbackArgs = function (parts) {
+	const
+		args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').split(/\s*,\s*/);
+
+	let
+		scope;
+
+	$C(args).forEach((el, i) => {
+		const
+			mod = scopeMod.test(el);
+
+		if (mod) {
+			if (scope) {
+				this.error(`invalid "${this.name}" declaration`);
+
+			} else {
+				el = el.replace(scopeMod, '');
+			}
+		}
+
+		if (el) {
+			args[i] = this.declVar(el, true);
+
+			if (mod) {
+				scope = args[i];
+			}
+		}
+	});
+
+	if (scope) {
+		this.scope.push(scope);
+		this.structure.params._scope = true;
+	}
+
+	return args.join(',');
+};
 
 /**
  * Returns an array of function arguments from a string
