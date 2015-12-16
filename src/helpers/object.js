@@ -47,10 +47,9 @@ export function toObj(val, opt_base, opt_onFileExists) {
 			}
 
 			val = path.normalize(path.resolve(val));
+
 			if (fs.statSync(val).isFile()) {
-				if (opt_onFileExists) {
-					opt_onFileExists(val);
-				}
+				opt_onFileExists && opt_onFileExists(val);
 
 				const
 					content = fs.readFileSync(val, 'utf8');
