@@ -16,7 +16,7 @@ import { $globalCache, $globalFnCache } from '../consts/cache';
 import { escapeEOLs } from './escape';
 
 /**
- * Returns data from the cache by the specified key
+ * Returns data from the SS cache by the specified key
  *
  * @param {?string} key - cache key
  * @param {string} code - source SS code
@@ -92,7 +92,7 @@ export function getCacheKey(params, ctx) {
 }
 
 /**
- * Saves compiled template functions in the cache by the specified key
+ * Saves compiled template functions in the SS cache by the specified key
  *
  * @param {?string} key - cache key
  * @param {string} code - source SS code
@@ -113,7 +113,7 @@ export function saveIntoFnCache(key, code, params, ctx) {
 }
 
 /**
- * Saves templates in the cache by the specified key
+ * Saves templates in the SS cache by the specified key
  *
  * @param {?string} key - cache key
  * @param {string} code - source SS code
