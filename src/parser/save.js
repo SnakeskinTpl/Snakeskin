@@ -222,7 +222,7 @@ Parser.prototype.isSimpleOutput = function () {
 		return false;
 	}
 
-	return !this.parentTplName && !this.protoStart && !this.outerLink && (!this.proto || !this.proto.parentTplName);
+	return !this.parentTplName && !this.outerLink && this.isReady();
 };
 
 /**
