@@ -26,11 +26,9 @@ import {
  * @return {!Parser}
  */
 Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
-	opt_name =
-		this.name = opt_name || this.name;
-
-	opt_params = opt_params || {};
 	opt_vars = opt_vars || {};
+	opt_params = opt_params || {};
+	opt_name = this.name = opt_name || this.name;
 
 	const
 		{structure} = this;
@@ -53,8 +51,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 
 	this.inline = false;
 	this.structure = obj;
-	structure.children
-		.push(obj);
+	structure.children.push(obj);
 
 	const
 		{blockStruct, blockTable} = this;
@@ -115,14 +112,13 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 /**
  * Declares the start of an inline directive
  *
- * @param {?string=} [opt_name=this.name] - the directive name
+ * @param {?string=} [opt_name=this.name] - directive name
  * @param {Object=} [opt_params] - additional parameters
  * @return {!Parser}
  */
 Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 	opt_params = opt_params || {};
-	opt_name =
-		this.name = opt_name || this.name;
+	opt_name = this.name = opt_name || this.name;
 
 	const obj = {
 		children: null,

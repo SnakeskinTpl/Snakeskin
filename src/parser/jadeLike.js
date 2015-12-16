@@ -68,7 +68,7 @@ let
  *
  * @param {string} str - source string
  * @param {number} i - start iteration position
- * @return {{str: string, length: number, error: (boolean|null|undefined)}}
+ * @return {{code: string, length: number, error: (boolean|null|undefined)}}
  */
 Parser.prototype.toBaseSyntax = function (str, i) {
 	needSpace = !this.tolerateWhitespace;
@@ -83,7 +83,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 	let
 		struct,
-		res = '';
+		code = '';
 
 	let
 		length = 0,
@@ -99,15 +99,17 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				obj.block = false;
 
 			} else {
-				const [rightSpace] = rightWSRgxp.exec(res);
-				res = res.replace(rightPartRgxp, '') +
+				const
+					[rightSpace] = rightWSRgxp.exec(code);
+
+				code = code.replace(rightPartRgxp, '') +
 					genEndDir(struct, struct.space);
 
 				if (rightSpace && needSpace) {
-					res += `${struct.adv}${lb}__&-__${rb}`;
+					code += `${struct.adv}${lb}__&-__${rb}`;
 				}
 
-				res += rightSpace;
+				code += rightSpace;
 			}
 
 		} else {
@@ -135,10 +137,10 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 			if (clrL) {
 				if (clrL === 1 && needSpace) {
-					res += `${alb}${lb}__&-__${rb}`;
+					code += `${alb}${lb}__&-__${rb}`;
 				}
 
-				res += el;
+				code += el;
 			}
 
 			clrL++;
@@ -181,9 +183,9 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				if (!decl) {
 					this.error('invalid syntax');
 					return {
+						code: '',
 						error: true,
-						length: 0,
-						str: ''
+						length: 0
 					};
 				}
 
@@ -245,21 +247,22 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						f(struct, obj);
 						if (!struct.parent) {
 							return {
-								length: length - tSpace - 1,
-								str: res
+								code,
+								length: length - tSpace - 1
 							};
 						}
 
 					} else {
 						while (struct.spaces >= spaces) {
 							f(struct, obj);
-							struct = struct
-								.parent;
+
+							struct =
+								struct.parent;
 
 							if (!struct) {
 								return {
-									length: length - tSpace - 1,
-									str: res
+									code,
+									length: length - tSpace - 1
 								};
 							}
 						}
@@ -292,13 +295,13 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				}
 
 				struct = obj;
-				res += space;
+				code += space;
 
 				if (needSpace && (obj.text || !Snakeskin.Directives[obj.name])) {
-					res += `${alb}${lb}__&-__${rb}`;
+					code += `${alb}${lb}__&-__${rb}`;
 				}
 
-				res += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+				code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 				endDirInit = false;
 
 				const declDiff = decl.length - 1;
@@ -319,7 +322,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 					inline.parent = obj;
 					struct = inline;
-					res += txt;
+					code += txt;
 				}
 			}
 		}
@@ -327,16 +330,13 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 	while (struct) {
 		if (struct.block) {
-			res += genEndDir(struct, struct.space);
+			code += genEndDir(struct, struct.space);
 		}
 
 		struct = struct.parent;
 	}
 
-	return {
-		length,
-		str: res
-	};
+	return {code, length};
 };
 
 /**
@@ -428,13 +428,11 @@ function getLineDesc(str, i, dir, comment) {
 					dirStart = rgxp.whitespace.test(str[j - 2]);
 
 				let literal;
-				brk = dirStart &&
-					prevEl === CONCAT_END;
+				brk = dirStart && prevEl === CONCAT_END;
 
 				if (dirStart && (prevEl === CONCAT && command !== CONCAT || brk)) {
 					literal = prevEl;
-					command = command.slice(0, lastElI - 1) +
-						command.slice(lastElI + 1);
+					command = command.slice(0, lastElI - 1) + command.slice(lastElI + 1);
 
 				} else if (concatLine && !bOpen) {
 					command += el;

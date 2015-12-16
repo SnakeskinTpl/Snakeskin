@@ -886,7 +886,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					parser.source =
 						parser.source.slice(0, parser.i - adv) +
-						source.str +
+						source.code +
 						parser.source.slice(parser.i + source.length - adv);
 
 					parser.lines[lastLine] = parser.lines[lastLine].slice(0, -1);

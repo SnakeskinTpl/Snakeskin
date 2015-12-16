@@ -78,10 +78,9 @@ Parser.prototype.getTplFullBody = function (tplName) {
 			type = is[i];
 
 		if ($router[type]) {
-			k = `${type}_`;
-
 			el = $router[type][tplName];
 			prev = $router[type][parentTpl];
+			k = `${type}_`;
 
 			if ($routerPositions[type]) {
 				from = $routerPositions[type][parentTpl];
