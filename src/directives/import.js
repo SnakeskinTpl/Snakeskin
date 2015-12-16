@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,6 +14,7 @@ Snakeskin.addDirective(
 	'import',
 
 	{
+		deferInit: true,
 		notEmpty: true
 	},
 
@@ -33,22 +36,20 @@ Snakeskin.addDirective(
 		this.startInlineDir();
 		if (this.environment.id === 0) {
 			const
-				key = `${obj}_00_${uid}`;
+				key = `${obj}_00_${Snakeskin.UID}`;
 
 			this.save(ws`
 				var ${key} = __LOCAL__.${key} = ${this.out(parts.slice(1).join('='), {sys: true})};
 			`);
 
-			let
-				root = this.structure;
-
+			let root = this.structure;
 			while (root.name !== 'root') {
 				root = root.parent;
 			}
 
 			root.vars[`${obj}_00`] = {
-				value: `__LOCAL__.${key}`,
-				scope: 0
+				scope: 0,
+				value: `__LOCAL__.${key}`
 			};
 		}
 	}

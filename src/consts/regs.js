@@ -100,3 +100,6 @@ export const
 	w = `${symbols}0-9_`,
 	escaperPart = /^__ESCAPER_QUOT__\d+_/,
 	tplVars = /__SNAKESKIN__(\d+)_/g;
+
+export const
+	emptyCommandParams = /^([^\s]+?\(|\()/;

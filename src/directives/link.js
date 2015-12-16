@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,122 +8,125 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-{
-	let types = {
-		'css': {
-			'type': 'text/css',
-			'rel': 'stylesheet'
-		},
+import $C from '../deps/collection';
+import Snakeskin from '../core';
+import { emptyCommandParams } from '../consts/regs';
 
-		'acss': {
-			'type': 'text/css',
-			'rel': 'alternate stylesheet'
-		}
-	};
+const types = {
+	'acss': {
+		'rel': 'alternate stylesheet',
+		'type': 'text/css'
+	},
 
-	let typesStr = {
-		dom: {},
-		string: {}
-	};
+	'css': {
+		'rel': 'stylesheet',
+		'type': 'text/css'
+	}
+};
 
-	forIn(types, (el, key) => {
-		forIn(el, (el, attr) => {
-			typesStr.dom[key] = typesStr.dom[key] || '';
-			typesStr.dom[key] += `__NODE__.${attr} = '${el}';`;
-			typesStr.string[key] = typesStr.string[key] || '';
-			typesStr.string[key] += ` ${attr}="${el}"`;
-		});
+const typesStr = {
+	dom: {},
+	string: {}
+};
+
+$C(types).forEach((el, key) => {
+	$C(el).forEach((el, attr) => {
+		typesStr.dom[key] = typesStr.dom[key] || '';
+		typesStr.dom[key] += `__NODE__.${attr} = '${el}';`;
+		typesStr.string[key] = typesStr.string[key] || '';
+		typesStr.string[key] += ` ${attr}="${el}"`;
 	});
+});
 
-	Snakeskin.addDirective(
-		'link',
+Snakeskin.addDirective(
+	'link',
 
-		{
-			placement: 'template',
-			block: true,
-			selfInclude: false
-		},
+	{
+		block: true,
+		placement: 'template',
+		selfInclude: false
+	},
 
-		function (command) {
-			this.startDir();
-			this.skipSpace = true;
+	function (command) {
+		this.skipSpace = true;
 
-			if (this.autoReplace) {
-				this.autoReplace = false;
-				this.structure.params.autoReplace = true;
-			}
-
-			if (this.isReady()) {
-				if (command) {
-					command = command.replace(emptyCommandParamsRgxp, 'css $1');
-
-				} else {
-					command = 'css';
-				}
-
-				let parts = splitBySpace(command),
-					type = parts[0],
-					dom = !this.domComment && this.renderMode === 'dom';
-
-				let str;
-				if (dom) {
-					str = ws`
-						__NODE__ = document.createElement('link');
-						${typesStr.dom[type.toLowerCase()] || ''}
-						${this.wrap('__NODE__')}
-						__RESULT__.push(__NODE__);
-					`;
-
-				} else {
-					str = this.wrap(`'<link ${(typesStr.string[type] || this.replaceTplVars(type)).trim()}'`);
-				}
-
-				this.append(str);
-
-				if (parts.length > 1) {
-					/** @type {!Array} */
-					let args = _.any([].slice.call(arguments));
-
-					args[0] = parts.slice(1).join(' ');
-					args[1] = args[0].length;
-
-					Snakeskin.Directives['attr'].apply(this, args);
-					this.inline = false;
-				}
-
-				if (dom) {
-					str = '__NODE__.href =';
-
-				} else {
-					str = this.wrap('\' href="\'');
-				}
-
-				this.append(str);
-			}
-		},
-
-		function () {
-			if (!this.tolerateWhitespace) {
-				this.skipSpace = true;
-			}
-
-			if (this.structure.params.autoReplace) {
-				this.autoReplace = true;
-			}
-
-			let str;
-
-			if (!this.domComment && this.renderMode === 'dom') {
-				str = ws`
-					__RESULT__.pop();
-					__NODE__ = null;
-				`;
-
-			} else {
-				str = this.wrap(`'"${this.doctype === 'xml' ? '/' : ''}>'`);
-			}
-
-			this.append(str);
+		if (this.autoReplace) {
+			this.autoReplace = false;
+			this.structure.params.autoReplace = true;
 		}
-	);
-}
+
+		if (!this.isReady()) {
+			return;
+		}
+
+		if (command) {
+			command = command.replace(emptyCommandParams, 'css $1');
+
+		} else {
+			command = 'css';
+		}
+
+		const
+			parts = this.splitBySpace(command),
+			dom = !this.domComment && this.renderMode === 'dom',
+			[type] = parts;
+
+		let str;
+		if (dom) {
+			str = ws`
+				__NODE__ = document.createElement('link');
+				${typesStr.dom[type.toLowerCase()] || ''}
+				${this.wrap('__NODE__')}
+				__RESULT__.push(__NODE__);
+			`;
+
+		} else {
+			str = this.wrap(`'<link ${(typesStr.string[type] || this.replaceTplVars(type)).trim()}'`);
+		}
+
+		this.append(str);
+
+		if (parts.length > 1) {
+			/** @type {!Array} */
+			let args = _.any([].slice.call(arguments));
+
+			args[0] = parts.slice(1).join(' ');
+			args[1] = args[0].length;
+
+			Snakeskin.Directives['attr'].call(this, ...args);
+			this.inline = false;
+		}
+
+		if (dom) {
+			str = '__NODE__.href =';
+
+		} else {
+			str = this.wrap(`' href="'`);
+		}
+
+		this.append(str);
+	},
+
+	function () {
+		if (!this.tolerateWhitespace) {
+			this.skipSpace = true;
+		}
+
+		if (this.structure.params.autoReplace) {
+			this.autoReplace = true;
+		}
+
+		let str;
+		if (!this.domComment && this.renderMode === 'dom') {
+			str = ws`
+				__RESULT__.pop();
+				__NODE__ = null;
+			`;
+
+		} else {
+			str = this.wrap(`'"${this.doctype === 'xml' ? '/' : ''}>'`);
+		}
+
+		this.append($=> str);
+	}
+);

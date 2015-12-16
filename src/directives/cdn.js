@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable maximumLineLength
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -7,6 +9,9 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+import $C from '../deps/collection';
+import Snakeskin from '../core';
 
 const lib = {
 	'angularjs': {
@@ -174,13 +179,15 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		var
-			parts = splitBySpace(command),
+		const
+			parts = this.splitBySpace(command);
+
+		let
 			cdn = parts.slice(1).join(' '),
 			val = parts[0].split('@');
 
 		if (!val[1]) {
-			return this.error(`missing the version of the requested library`);
+			return this.error(`missing a version of the requested library`);
 		}
 
 		cdn = cdn && cdn.toLowerCase();
@@ -190,7 +197,7 @@ Snakeskin.addDirective(
 			return this.error(`the requested library is not found`);
 		}
 
-		this.append(
+		this.append($=>
 			this.wrap(
 				ws`'${(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
 					val[1],
