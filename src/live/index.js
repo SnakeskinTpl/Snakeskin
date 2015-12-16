@@ -11,7 +11,7 @@
  */
 
 import Snakeskin from '../core';
-import { isString } from '../helpers/types';
+import { isString, isArray } from '../helpers/types';
 import './filters';
 
 /**
@@ -45,7 +45,7 @@ Snakeskin.forEach = function (obj, callback) {
 	let
 		length = 0;
 
-	if (Array.isArray(obj)) {
+	if (isArray(obj)) {
 		length = obj.length;
 		for (let i = -1; ++i < length;) {
 			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {

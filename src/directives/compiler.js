@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { $output } from '../consts/cache';
+import { isArray } from '../helpers/types';
 import { toObj } from '../helpers/object';
 
 Snakeskin.addDirective(
@@ -92,7 +93,7 @@ function setSSFlag(command) {
 		flag,
 		value;
 
-	if (Array.isArray(command)) {
+	if (isArray(command)) {
 		[flag, value] = command;
 
 	} else {

@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import baseMacros from '../consts/macros';
 import { macroBlackSymbols } from '../consts/regs';
+import { isArray } from './types';
 
 /**
  * Sets an object as macros
@@ -42,40 +43,39 @@ export function setMacros(obj, macros, opt_namespace, opt_init) {
 	} else {
 		$C(obj).forEach((el, key) => {
 			if (key[0] === '@' && !opt_namespace) {
-				setMacros(el, macros, key);
+				return setMacros(el, macros, key);
+			}
+
+			if (opt_namespace) {
+				macros.groups[opt_namespace] = macros.groups[opt_namespace] || {};
+			}
+
+			if (el) {
+				if (macroBlackSymbols.test(key)) {
+					throw new Error(`Invalid macro "${key}"`);
+				}
+
+				if (isArray(macros[key])) {
+					macros.combo[key] = true;
+				}
+
+				if (el.inline) {
+					macros.inline[key[0]] = true;
+				}
+
+				if (opt_namespace) {
+					macros.groups[opt_namespace][key] = macros.map[key];
+				}
+
+				macros.map[key] = el.value || el;
 
 			} else {
 				if (opt_namespace) {
-					macros.groups[opt_namespace] = macros.groups[opt_namespace] || {};
+					delete macros.groups[opt_namespace][key];
 				}
 
-				if (el) {
-					if (macroBlackSymbols.test(key)) {
-						throw new Error(`Invalid macro "${key}"`);
-					}
-
-					macros.map[key] = el.value || el;
-
-					if (Array.isArray(macros[key])) {
-						macros.combo[key] = true;
-					}
-
-					if (el.inline) {
-						macros.inline[key[0]] = true;
-					}
-
-					if (opt_namespace) {
-						macros.groups[opt_namespace][key] = macros.map[key];
-					}
-
-				} else {
-					delete macros.map[key];
-					delete macros.combo[key];
-
-					if (opt_namespace) {
-						delete macros.groups[opt_namespace][key];
-					}
-				}
+				delete macros.map[key];
+				delete macros.combo[key];
 			}
 		});
 	}
