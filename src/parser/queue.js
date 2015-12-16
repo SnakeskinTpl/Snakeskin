@@ -12,7 +12,7 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 
 /**
- * Appends a function to the queue
+ * Appends a function to the SS queue
  *
  * @param {function(this:Parser)} fn - source function
  * @return {!Parser}
@@ -23,7 +23,7 @@ Parser.prototype.toQueue = function (fn) {
 };
 
 /**
- * Executes all functions in the queue
+ * Executes all functions in the SS queue
  * @return {!Parser}
  */
 Parser.prototype.applyQueue = function () {

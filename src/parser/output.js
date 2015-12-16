@@ -460,13 +460,10 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		if (multPropRgxp.test(str)) {
 			let fistProp = firstPropRgxp.exec(str);
 			fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
-			str = fistProp.slice(1).join('');
-
-		} else {
-			str = str.replace(propValRgxp, replacePropVal);
+			return fistProp.slice(1).join('');
 		}
 
-		return str;
+		return str.replace(propValRgxp, replacePropVal);
 	}
 
 	if (!command) {
@@ -478,7 +475,9 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		commandLength = command.length,
 		end = commandLength - 1;
 
-	const cacheLink = replacePropVal('$_');
+	const
+		cacheLink = replacePropVal('$_');
+
 	let
 		isFilter,
 		breakNum;

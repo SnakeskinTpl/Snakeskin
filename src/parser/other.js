@@ -40,7 +40,7 @@ Parser.getExtList = function (name) {
 };
 
 /**
- * Clears the cache scope of a template
+ * Clears the SS cache scope of a template
  * @param {string} name - template name
  */
 Parser.clearScopeCache = function (name) {
