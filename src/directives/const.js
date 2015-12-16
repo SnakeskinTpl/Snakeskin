@@ -172,24 +172,26 @@ Snakeskin.addDirective(
 				return this.error(`the directive "${this.name}" can be used only within a ${q(this.getGroupList('template'))}`);
 			}
 
-			if (this.isReady()) {
-				const
-					desc = isAssign(command);
+			if (!this.isReady()) {
+				return;
+			}
 
-				if (desc) {
-					if (output) {
-						this.append(this.wrap(`${this.out(desc.key, {sys: true})} = ${this.out(desc.value)};`));
+			const
+				desc = isAssign(command);
 
-					} else {
-						this.text = false;
-						this.append(`${this.out(command, {sys: true})};`);
-					}
+			if (desc) {
+				if (output) {
+					this.append(this.wrap(`${this.out(desc.key, {sys: true})} = ${this.out(desc.value)};`));
 
-					return;
+				} else {
+					this.text = false;
+					this.append(`${this.out(command, {sys: true})};`);
 				}
 
-				this.append(this.wrap(this.out(command)));
+				return;
 			}
+
+			this.append(this.wrap(this.out(command)));
 		}
 	}
 
