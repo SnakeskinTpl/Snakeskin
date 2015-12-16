@@ -21,6 +21,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!this.isReady()) {
+			return;
+		}
+
 		const
 			code = this.replaceTplVars(command);
 
@@ -36,6 +40,6 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		this.append($=> this.wrap(`'{${add}${code}'`));
+		this.append(this.wrap(`'{${add}${code}'`));
 	}
 );
