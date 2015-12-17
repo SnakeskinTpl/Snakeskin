@@ -102,4 +102,5 @@ export const
 	tplVars = /__SNAKESKIN__(\d+)_/g;
 
 export const
-	emptyCommandParams = /^([^\s]+?\(|\()/;
+	emptyCommandParams = /^([^\s]+?\(|\()/,
+	parentLink = /^&/;
