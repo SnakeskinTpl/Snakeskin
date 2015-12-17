@@ -121,7 +121,7 @@ Snakeskin.forIn = function (obj, callback) {
 	}
 };
 
-const inlineTagMap = {
+export const inlineTagMap = {
 	'img': true,
 	'link': true,
 	'embed': true,

@@ -49,3 +49,4 @@ import './directives/style';
 import './directives/link';
 import './directives/block';
 import './directives/attr';
+import './directives/tag';
