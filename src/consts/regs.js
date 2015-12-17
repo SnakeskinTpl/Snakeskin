@@ -102,5 +102,6 @@ export const
 	tplVars = /__SNAKESKIN__(\d+)_/g;
 
 export const
+	callBlockName = new RegExp(`^[^${symbols}_$][^${w}$]*|[^${w}$]+`, 'i'),
 	emptyCommandParams = /^([^\s]+?\(|\()/,
 	parentLink = /^&/;

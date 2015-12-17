@@ -26,4 +26,6 @@ import './queue';
 import './save';
 import './tree';
 import './var';
+import './proto';
 import './attr';
+import './tag';
