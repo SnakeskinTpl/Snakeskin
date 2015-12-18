@@ -14,13 +14,7 @@ import $C from './deps/collection';
 import Snakeskin from './core';
 import { IS_NODE } from './consts/hacks';
 import { whitespaceStart, whitespaceEnd } from './consts/regs';
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from './consts/literals';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from './consts/literals';
 
 export const
 	stack = [];
@@ -45,8 +39,8 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 		glob = require('glob').sync;
 
 	const
-		s = alb + lb,
-		e = rb;
+		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
 
 	try {
 		const

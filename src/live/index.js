@@ -1,7 +1,5 @@
 'use strict';
 
-// jscs:disable validateOrderInObjectKeys
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -11,6 +9,7 @@
  */
 
 import Snakeskin from '../core';
+import { inlineTags } from '../consts/html';
 import { isString, isArray } from '../helpers/types';
 import './filters';
 
@@ -121,23 +120,6 @@ Snakeskin.forIn = function (obj, callback) {
 	}
 };
 
-export const inlineTagMap = {
-	'img': true,
-	'link': true,
-	'embed': true,
-	'br': true,
-	'hr': true,
-	'wbr': true,
-	'meta': true,
-	'input': true,
-	'source': true,
-	'track': true,
-	'base': true,
-	'area': true,
-	'col': true,
-	'param': true
-};
-
 /**
  * Appends a node or a text to the source
  *
@@ -146,7 +128,7 @@ export const inlineTagMap = {
  * @return {(!Element|!Text|string)}
  */
 Snakeskin.appendChild = function (node, obj) {
-	if (node.tagName && inlineTagMap[node.tagName.toLowerCase()]) {
+	if (node.tagName && inlineTags[node.tagName.toLowerCase()]) {
 		return String(obj).trim();
 	}
 
