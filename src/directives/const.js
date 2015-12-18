@@ -12,24 +12,8 @@ import Snakeskin from '../core';
 import { scopeMod, symbols, w } from '../consts/regs';
 import { q } from './index';
 import { r } from '../helpers/string';
-import {
-
-	SYS_CONSTS,
-	B_OPEN,
-	B_CLOSE,
-
-	G_MOD,
-	L_MOD
-
-} from '../consts/literals';
-
-import {
-
-	$consts,
-	$constPositions,
-	$rgxp
-
-} from '../consts/cache';
+import { SYS_CONSTS, B_OPEN, B_CLOSE, G_MOD, L_MOD } from '../consts/literals';
+import { $consts, $constPositions, $rgxp } from '../consts/cache';
 
 const
 	constNameRgxp = /\[(['"`])(.*?)\1]/g,
