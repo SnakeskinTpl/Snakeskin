@@ -9,16 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import Parser from '../parser/index';
-
-/**
- * The map of declared variables
- */
-Parser.prototype.varCache = {
-	init() {
-		return {};
-	}
-};
 
 Snakeskin.addDirective(
 	'var',

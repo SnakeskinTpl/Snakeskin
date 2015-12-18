@@ -17,74 +17,21 @@ import { symbols } from '../consts/regs';
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
+import { G_MOD, L_MOD } from '../consts/literals';
 import {
 
 	$write,
 	$scope,
-
 	$templates,
 	$cache,
 	$protos,
-
 	$args,
 	$argsRes,
 	$output,
-
 	$extList,
 	$extMap
 
 } from '../consts/cache';
-
-import {
-
-	G_MOD,
-	L_MOD
-
-} from '../consts/literals';
-
-/**
- * The number of iteration,
- * where the active template was declared
- * @type {number}
- */
-Parser.prototype.startTemplateI = 0;
-
-/**
- * The number of a line,
- * where the active template was declared
- * @type {?number}
- */
-Parser.prototype.startTemplateLine = null;
-
-/**
- * If is true, then the active template is generator
- * @type {?boolean}
- */
-Parser.prototype.generator = null;
-
-/**
- * The name of the active template
- * @type {?string}
- */
-Parser.prototype.tplName = null;
-
-/**
- * The parent name of the active template
- * @type {?string}
- */
-Parser.prototype.parentTplName = null;
-
-/**
- * The array of declared constants
- * @type {Array}
- */
-Parser.prototype.consts = null;
-
-/**
- * The name of the parent BEM class
- * @type {string}
- */
-Parser.prototype.bemRef = '';
 
 $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 	Snakeskin.addDirective(
