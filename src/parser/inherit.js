@@ -28,9 +28,6 @@ import {
 
 } from '../consts/literals';
 
-const
-	sort = (a, b) => a.val - b.val;
-
 /**
  * Returns the full body of a template
  * (with inheritance)
@@ -72,6 +69,9 @@ Parser.prototype.getTplFullBody = function (tplName) {
 		prev,
 		el,
 		k;
+
+	const
+		sort = (a, b) => a.val - b.val;
 
 	for (let i = 0; i < length; i++) {
 		const

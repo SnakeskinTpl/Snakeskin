@@ -18,22 +18,18 @@ import {
 
 	SHORTS,
 	BASE_SHORTS,
-
 	FILTER,
 	CONCAT,
 	CONCAT_END,
 	IGNORE,
 	INLINE,
-
 	STRONG_SYS_ESCAPES,
 	ESCAPES,
 	ESCAPES_END,
 	ESCAPES_END_WORD,
-
 	MULT_COMMENT_START,
 	MULT_COMMENT_END,
 	SINGLE_COMMENT,
-
 	LEFT_BLOCK as lb,
 	RIGHT_BLOCK as rb,
 	ADV_LEFT_BLOCK as alb
@@ -60,7 +56,7 @@ const
 let
 	endDirInit,
 	needSpace,
-	nl;
+	eol;
 
 /**
  * Returns a template description object from a string
@@ -72,7 +68,7 @@ let
  */
 Parser.prototype.toBaseSyntax = function (str, i) {
 	needSpace = !this.tolerateWhitespace;
-	nl = this.eol;
+	eol = this.eol;
 	endDirInit = false;
 
 	let
@@ -146,7 +142,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 			clrL++;
 			init = true;
 			spaces = 0;
-			space = nl;
+			space = eol;
 
 		} else if (init) {
 			if (rgxp.whitespace.test(el)) {
@@ -352,10 +348,10 @@ function genEndDir(dir, space) {
 		tmp;
 
 	if (needSpace) {
-		tmp = `${endDirInit ? '' : `${s}__&+__${rb}`}${nl}`;
+		tmp = `${endDirInit ? '' : `${s}__&+__${rb}`}${eol}`;
 
 	} else {
-		tmp = nl + (space || '').slice(1);
+		tmp = eol + (space || '').slice(1);
 	}
 
 	endDirInit = true;

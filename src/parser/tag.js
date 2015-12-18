@@ -11,13 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { parentLink } from '../consts/regs';
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 /**
  * Analyzes a string of tag declaration
@@ -47,8 +41,8 @@ DirObj.prototype.returnTagDesc = function (str) {
 		classes = [];
 
 	const
-		s = alb + lb,
-		e = rb;
+		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
 
 	let
 		bOpen = 0,

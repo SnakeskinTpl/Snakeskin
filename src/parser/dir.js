@@ -10,12 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import {
-
-	$templates,
-	$sysDirs
-
-} from '../consts/cache';
+import { $templates, $sysDirs } from '../consts/cache';
 
 /**
  * Declares the start of a block directive

@@ -18,16 +18,13 @@ import {
 	MICRO_TEMPLATES,
 	MICRO_TEMPLATE_LENGTH,
 	MICRO_TEMPLATE_ESCAPES,
-
 	STRONG_SYS_ESCAPES,
 	ESCAPES,
 	ESCAPES_END,
 	ESCAPES_END_WORD,
-
 	MULT_COMMENT_START,
 	MULT_COMMENT_END,
 	SINGLE_COMMENT,
-
 	LEFT_BLOCK as lb,
 	RIGHT_BLOCK as rb,
 	ADV_LEFT_BLOCK as alb
@@ -35,7 +32,7 @@ import {
 } from '../consts/literals';
 
 /**
- * Splits a string by the space, and returns an array
+ * Splits a string by a space and returns an array
  * (with directives)
  *
  * @param {string} str - source string

@@ -12,21 +12,8 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import { isArray } from '../helpers/types';
 import { scopeMod } from '../consts/regs';
-import {
-
-	G_MOD,
-	B_OPEN,
-	B_CLOSE
-
-} from '../consts/literals';
-
-import {
-
-	$args,
-	$argsRes,
-	$consts
-
-} from '../consts/cache';
+import { G_MOD, B_OPEN, B_CLOSE } from '../consts/literals';
+import { $args, $argsRes, $consts } from '../consts/cache';
 
 /**
  * Declares callback function arguments
@@ -66,7 +53,7 @@ Parser.prototype.declCallbackArgs = function (parts) {
 
 	if (scope) {
 		this.scope.push(scope);
-		this.structure.params._scope = true;
+		this.structure.params['@scope'] = true;
 	}
 
 	return args.join(',');
@@ -369,7 +356,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 		args = args.concat(locals);
 	}
 
-	structure.params._consts = constsCache;
+	structure.params['@consts'] = constsCache;
 	const res = {
 		defParams,
 		list: args,

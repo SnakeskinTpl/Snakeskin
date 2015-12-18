@@ -10,13 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import {
-
-	$extList,
-	$extMap,
-	$scope
-
-} from '../consts/cache';
+import { $extList, $extMap, $scope } from '../consts/cache';
 
 /**
  * Returns a list of template names

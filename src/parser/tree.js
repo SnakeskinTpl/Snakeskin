@@ -19,7 +19,7 @@ import { isArray, isObject } from '../helpers/types';
  * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {Object=} [opt_obj] - structure object
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object)}
+ * @return {(boolean|string|!Object<string, boolean>)}
  */
 Parser.prototype._has = function (name, opt_obj, opt_return) {
 	let obj = opt_obj;
@@ -64,7 +64,7 @@ Parser.prototype._has = function (name, opt_obj, opt_return) {
  *
  * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object)}
+ * @return {(boolean|string|!Object<string, boolean>)}
  */
 Parser.prototype.has = function (name, opt_return) {
 	return this._has(name, this.structure, opt_return);
@@ -76,7 +76,7 @@ Parser.prototype.has = function (name, opt_return) {
  *
  * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object)}
+ * @return {(boolean|string|!Object<string, boolean>)}
  */
 Parser.prototype.hasParent = function (name, opt_return) {
 	if (this.structure.parent) {
@@ -92,7 +92,7 @@ Parser.prototype.hasParent = function (name, opt_return) {
  *
  * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object)}
+ * @return {(boolean|string|!Object<string, boolean>)}
  */
 Parser.prototype.hasBlock = function (name, opt_return) {
 	if (this.blockStructure) {
@@ -108,7 +108,7 @@ Parser.prototype.hasBlock = function (name, opt_return) {
  *
  * @param {(string|!Object|!Array)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object)}
+ * @return {(boolean|string|!Object<string, boolean>)}
  */
 Parser.prototype.hasParentBlock = function (name, opt_return) {
 	if (this.blockStructure && this.blockStructure.parent) {

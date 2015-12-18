@@ -22,10 +22,8 @@ import {
 
 	FILTER,
 	MODS,
-
 	G_MOD,
 	L_MOD,
-
 	P_OPEN,
 	P_CLOSE
 

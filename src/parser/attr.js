@@ -11,13 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { parentLink } from '../consts/regs';
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 const
 	escapeEqRgxp = /===|==|([\\]+)=/g,
@@ -81,8 +75,8 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 		ref = this.bemRef;
 
 	const
-		s = alb + lb,
-		e = rb;
+		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
 
 	const res = $C(parts).reduce((res, el) => {
 		el = el
@@ -107,7 +101,6 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 
 		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
 		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
-
 		res += ws`
 			var __ATTR_STR__ = \'\',
 				__ATTR_J__ = 0;
@@ -120,7 +113,6 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 			arg[0] = arg[0][0] === '-' ? `data-${arg[0].slice(1)}` : arg[0];
 		}
 
-		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
 		res += $C(this.splitBySpace(arg[1])).reduce((val) => {
 			val = val.trim();
 
@@ -139,8 +131,10 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 
 		}, 'res');
 
+		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
 		res += `if ((${arg[0]}) != null && (${arg[0]}) != '') {`;
-		let tmp = ws`
+
+		const tmp = ws`
 			if (__NODE__) {
 				__NODE__.setAttribute(${arg[0]}, ${empty} ? ${arg[0]} : __ATTR_STR__ );
 
