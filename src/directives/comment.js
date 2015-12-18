@@ -12,12 +12,6 @@ import Snakeskin from '../core';
 import Parser from '../parser/index';
 import { ws } from '../helpers/string';
 
-/**
- * If is true, then XML comment is started with DOM render mode
- * @type {boolean}
- */
-Parser.prototype.domComment = false;
-
 Snakeskin.addDirective(
 	'comment',
 

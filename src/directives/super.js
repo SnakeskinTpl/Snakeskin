@@ -9,13 +9,8 @@
  */
 
 import Snakeskin from '../core';
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { ws } from '../helpers/string';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 Snakeskin.addDirective(
 	'super',
@@ -59,8 +54,8 @@ Snakeskin.addDirective(
 		}
 
 		const
-			s = (this.needPrfx ? alb : '') + lb,
-			e = rb;
+			s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
 
 		if (cache && !drop) {
 			const

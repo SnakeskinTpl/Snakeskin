@@ -12,6 +12,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
 
 const lib = {
 	'angularjs': {
@@ -162,11 +163,7 @@ const lib = {
 };
 
 function first(obj) {
-	for (let key in obj) {
-		if (obj.hasOwnProperty(key)) {
-			return obj[key];
-		}
-	}
+	return $C(obj).get({mult: false});
 }
 
 Snakeskin.addDirective(

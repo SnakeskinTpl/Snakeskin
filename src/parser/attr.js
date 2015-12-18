@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { ws } from '../helpers/string';
 import { parentLink } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 

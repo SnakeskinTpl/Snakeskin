@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import Parser from '../parser/index';
+import { ws } from '../helpers/string';
 
 /**
  * The number of deferred return calls

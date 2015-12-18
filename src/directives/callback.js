@@ -9,6 +9,7 @@
  */
 
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'callback',
@@ -35,10 +36,10 @@ Snakeskin.addDirective(
 			async = this.getGroup('async'),
 			{parent} = this.structure;
 
-		this.structure.params.insideAsync = async[parent.name];
+		this.structure.params.insideAsync =
+			async[parent.name];
 
 		let length = 0;
-
 		$C(parent.children).forEach(({name}) => {
 			if (name === 'callback') {
 				length++;

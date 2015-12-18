@@ -10,14 +10,9 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
 import { callBlockName } from '../consts/regs';
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 Snakeskin.addDirective(
 	'proto',
@@ -79,7 +74,7 @@ Snakeskin.addDirective(
 					clearScopeCache(tplName);
 				}
 
-				let desc = this.preDefs[tplName] = this.preDefs[tplName] || {
+				const desc = this.preDefs[tplName] = this.preDefs[tplName] || {
 					text: ''
 				};
 
@@ -196,8 +191,8 @@ Snakeskin.addDirective(
 			diff = this.getDiff(commandLength);
 
 		const
-			s = (this.needPrfx ? alb : '') + lb,
-			e = rb;
+			s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
+			e = RIGHT_BLOCK;
 
 		const
 			{space, eol} = this;

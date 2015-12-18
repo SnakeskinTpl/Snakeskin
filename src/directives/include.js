@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { q } from './index';
+import { ws } from '../helpers/string';
 import { escapeBackslashes, escapeEOLs } from '../helpers/escape';
 
 Snakeskin.addDirective(

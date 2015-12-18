@@ -10,7 +10,8 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { inlineTagMap } from '../live/index';
+import { ws } from '../helpers/string';
+import { inlineTags } from '../consts/html';
 
 Snakeskin.addDirective(
 	'tag',
@@ -51,7 +52,7 @@ Snakeskin.addDirective(
 			{params} = this.structure;
 
 		params.tag = desc.tag;
-		params.block = inlineTagMap[desc.tag] !== undefined ? !inlineTagMap[desc.tag] : !desc.inline;
+		params.block = inlineTags[desc.tag] !== undefined ? !inlineTags[desc.tag] : !desc.inline;
 
 		const
 			groups = this.splitXMLAttrsGroup(parts.slice(1).join(' ')),

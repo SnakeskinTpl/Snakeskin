@@ -9,6 +9,7 @@
  */
 
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'import',

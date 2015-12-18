@@ -10,6 +10,23 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { ws } from '../helpers/string';
+
+/**
+ * The map of prototype callbacks
+ */
+Parser.prototype.backTable = {
+	init() {
+		return {};
+	}
+};
+
+/**
+ * The number of prototype callbacks
+ * (when "apply" calls before prototype declaration)
+ * @type {number}
+ */
+Parser.prototype.backTableI = 0;
 
 /**
  * If is true, then proto declaration is started

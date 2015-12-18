@@ -14,13 +14,19 @@ import { parentLink } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 /**
+ * If is true, then XML comment is started with DOM render mode
+ * @type {boolean}
+ */
+Parser.prototype.domComment = false;
+
+/**
  * Analyzes a string of tag declaration
  * and returns a reporting object
  *
  * @param {string} str - source string
  * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
  */
-DirObj.prototype.returnTagDesc = function (str) {
+Parser.prototype.returnTagDesc = function (str) {
 	str = this.replaceTplVars(str, {replace: true});
 
 	const

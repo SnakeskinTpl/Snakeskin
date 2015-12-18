@@ -11,22 +11,6 @@
 import Snakeskin from '../core';
 import { $protos } from '../consts/cache';
 
-/**
- * The map of prototype callbacks
- */
-DirObj.prototype.backTable = {
-	init() {
-		return {};
-	}
-};
-
-/**
- * The number of prototype callbacks
- * (when "apply" calls before prototype declaration)
- * @type {number}
- */
-DirObj.prototype.backTableI = 0;
-
 Snakeskin.addDirective(
 	'apply',
 
@@ -42,11 +26,13 @@ Snakeskin.addDirective(
 			return;
 		}
 
+		let
+			name = this.getFnName(command);
+
 		const
 			{tplName} = this,
 			args = this.getFnArgs(command);
 
-		let name = this.getFnName(command);
 		if (name === '&' && this.proto) {
 			name = this.proto.name;
 		}
