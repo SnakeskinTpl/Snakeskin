@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
+import { scopeMod } from '../consts/regs';
 
 /**
  * The map of prototype callbacks
@@ -60,7 +61,7 @@ Parser.prototype.returnProtoArgs = function (protoArgs, args) {
 		let
 			[arg, def] = el;
 
-		arg = arg.replace(scopeModRgxp, '');
+		arg = arg.replace(scopeMod, '');
 		if (def !== undefined) {
 			def = this.out(def, {sys: true});
 		}

@@ -12,6 +12,7 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { inlineTags } from '../consts/html';
+import { emptyCommandParams } from '../consts/regs';
 
 Snakeskin.addDirective(
 	'tag',
@@ -38,7 +39,7 @@ Snakeskin.addDirective(
 		}
 
 		if (command) {
-			command = command.replace(emptyCommandParamsRgxp, 'div $1');
+			command = command.replace(emptyCommandParams, 'div $1');
 
 		} else {
 			command = 'div';
