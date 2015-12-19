@@ -34,7 +34,7 @@ import {
 
 	$rgxp,
 	$dirNameReplacers,
-	$dirChildren
+	$dirChildrenChain
 
 } from './consts/cache';
 
@@ -460,7 +460,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Inside a template
 			} else {
-				if (!parser.space && !parser.chainSpace && !strongSpace && !parser.sysSpace) {
+				if (!parser.space && !strongSpace && !parser.sysSpace) {
 					el = parser.ignore && parser.ignore.test(el) ?
 						'' : el;
 
@@ -477,7 +477,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else {
 			clrL = false;
 
-			if (!begin && !parser.chainSpace && !strongSpace && !parser.sysSpace) {
+			if (!begin && !strongSpace && !parser.sysSpace) {
 				if (!currentEscape && (isPrefStart ? el === alb : el === lb)) {
 					parser.prevSpace = parser.space;
 
@@ -696,7 +696,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						}
 					}
 
-					if (parser.text && !parser.chainSpace && !parser.strongSpace[parser.strongSpace.length - 1]) {
+					if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
 						parser.sysSpace = false;
 						parser.space = parser.prevSpace = false;
 					}
@@ -896,7 +896,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return false;
 
 			} else {
-				if (struct.strong && !$dirChildren[struct.name]['text']) {
+				if (struct.strong && !$dirChildrenChain[struct.name]['text']) {
 					if (el === ' ') {
 						parser.space = false;
 						continue;

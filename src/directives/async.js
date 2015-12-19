@@ -17,7 +17,7 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 
 		{
 			block: true,
-			children: ['callback', 'final'],
+			childrenChain: ['callback', 'final'],
 			group: ['async', 'Async', 'series']
 		},
 
@@ -37,7 +37,7 @@ $C(['whilst', 'doWhilst', 'forever']).forEach((dir) => {
 
 		{
 			block: true,
-			children: 'callback',
+			childrenChain: 'callback',
 			group: ['async', 'Async']
 		},
 

@@ -130,7 +130,6 @@ Snakeskin.addDirective(
 			start = this.i - this.startTemplateI;
 
 		this.startDir(null, {
-			chainSpace: this.chainSpace,
 			from: this.i - this.getDiff(commandLength),
 			fromBody: start + 1,
 			line: this.info.line,
@@ -199,7 +198,6 @@ Snakeskin.addDirective(
 
 		this.sysSpace = params.sysSpace;
 		this.strongSpace = params.strongSpace;
-		this.chainSpace = params.chainSpace;
 		this.space = params.space;
 
 		if (this.outerLink === name) {
@@ -283,7 +281,6 @@ Snakeskin.addDirective(
 						needPrfx: this.needPrfx,
 						parent: this,
 						proto: {
-							chainSpace: this.chainSpace,
 							ctx: this,
 							name,
 							parentTplName: this.parentTplName,

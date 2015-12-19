@@ -36,7 +36,7 @@ import {
 	$dirAncestorsWhitelistPlain,
 
 	$dirAfter,
-	$dirChildren,
+	$dirChildrenChain,
 	$dirChain,
 	$dirEnd
 
@@ -86,7 +86,7 @@ Snakeskin.group = function (name) {
  *   ancestorsWhitelist: (Array|string|undefined),
  *   chain: (Array|string|undefined),
  *   end: (Array|string|undefined),
- *   children: (Array|string|undefined),
+ *   childrenChain: (Array|string|undefined),
  *   after: (Array|string|undefined),
  *   sys: (?boolean|undefined),
  *   text: (?boolean|undefined),
@@ -120,7 +120,7 @@ Snakeskin.group = function (name) {
  *   *) [params.chain] - directive/group name, which is a master for the current directive
  *        or an array of names
  *
- *   *) [params.children] - directive/group name, which can be a child of the current directive
+ *   *) [params.childrenChain] - directive/group name, which can be a child of the current directive
  *        or an array of names
  *
  *   *) [params.after] - directive/group name, which can be placed after the current directive
@@ -197,7 +197,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 
-		_([$dirChildren, p.children]),
+		_([$dirChildrenChain, p.childrenChain]),
 		_([$dirAfter, p.after])
 
 	]).forEach(({cache, val}) => {
@@ -207,7 +207,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C([$dirChildren, $dirAfter]).forEach((cache) => {
+	$C([$dirChildrenChain, $dirAfter]).forEach((cache) => {
 		$C(cache).forEach((dir) => {
 			$C(dir).forEach((el, key) => {
 				if (key[0] !== gPrfx) {
@@ -359,8 +359,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (structure.strong) {
-			if ($dirChildren[parentDirName][dirName]) {
-				parser.chainSpace = false;
+			if ($dirChildrenChain[parentDirName][dirName]) {
+				parser.strongSpace.push(parser.strongSpace[parser.strongSpace.length - 2]);
 
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
 				return parser.error(`the directive "${dirName}" can't be used within the "${parentDirName}"`);
@@ -398,9 +398,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		const
 			newStruct = parser.structure;
 
-		if ($dirChildren[dirName]) {
+		if ($dirChildrenChain[dirName]) {
 			newStruct.strong = true;
-			parser.chainSpace = true;
+			parser.strongSpace.push(true);
 		}
 
 		if (dirName === sourceName) {

@@ -83,7 +83,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		children: Snakeskin.group('case'),
+		childrenChain: Snakeskin.group('case'),
 		notEmpty: true
 	},
 

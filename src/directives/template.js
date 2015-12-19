@@ -225,7 +225,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			if (proto) {
 				this.sysSpace = proto.sysSpace;
 				this.strongSpace = proto.strongSpace;
-				this.chainSpace = proto.chainSpace;
 				this.space = proto.space;
 				return;
 			}

@@ -61,7 +61,6 @@ Parser.prototype.initTemplateCache = function (tplName) {
 	this.bemRef = '';
 	this.strongSpace = [false];
 	this.sysSpace = false;
-	this.chainSpace = false;
 	this.space = !this.tolerateWhitespace;
 
 	return this;

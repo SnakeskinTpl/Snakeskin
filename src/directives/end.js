@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { $dirChildren } from '../consts/cache';
+import { $dirChildrenChain } from '../consts/cache';
 import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
@@ -37,8 +37,8 @@ Snakeskin.addDirective(
 			}
 		}
 
-		if ($dirChildren[name]) {
-			this.chainSpace = structure.parent.strong;
+		if ($dirChildrenChain[name]) {
+			this.strongSpace.pop();
 		}
 
 		const

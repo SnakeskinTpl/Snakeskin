@@ -185,9 +185,6 @@ export default class Parser {
 		/** @type {boolean} */
 		this.prevSpace = false;
 
-		/** @type {boolean} */
-		this.chainSpace = false;
-
 		/** @type {!Array<boolean>} */
 		this.strongSpace = [false];
 
