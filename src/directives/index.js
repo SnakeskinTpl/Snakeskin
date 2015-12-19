@@ -454,10 +454,14 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	/** @this {Parser} */
 	const baseEnd = Snakeskin.Directives[`${name}BaseEnd`] = function () {
 		const
-			{params} = this.structure;
+			{structure, structure: {params}} = this;
 
 		if (params['@scope']) {
 			this.scope.pop();
+		}
+
+		if ($dirChildrenChain[structure.name] || $dirChildrenChain[structure.parent.name]) {
+			this.strongSpace.pop();
 		}
 
 		$C(params['@consts']).forEach((el, key) => {

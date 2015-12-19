@@ -9,7 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { $dirChildrenChain } from '../consts/cache';
 import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
@@ -35,10 +34,6 @@ Snakeskin.addDirective(
 			if (!(this.renderAs && group[name] && group[command])) {
 				return this.error(`invalid closing directive, expected: "${name}", declared: "${command}"`);
 			}
-		}
-
-		if ($dirChildrenChain[name]) {
-			this.strongSpace.pop();
 		}
 
 		const
