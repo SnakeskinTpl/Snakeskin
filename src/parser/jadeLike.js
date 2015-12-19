@@ -349,7 +349,7 @@ function genEndDir(dir, space) {
 
 	let tmp;
 	if (needSpace) {
-		tmp = `${endDirInit ? '' : `${s}__&+__${e}`}${eol}`;
+		tmp = `${eol}${endDirInit ? '' : `${s}__&+__${e}`}`;
 
 	} else {
 		tmp = eol + (space || '').slice(1);
