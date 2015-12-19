@@ -64,14 +64,6 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'sp',
-
-	{
-		text: true
-	}
-);
-
-Snakeskin.addDirective(
 	'__sp__',
 
 	{
