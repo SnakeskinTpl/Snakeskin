@@ -56,7 +56,7 @@ Snakeskin.addDirective(
 		params.block = inlineTags[desc.tag] !== undefined ? !inlineTags[desc.tag] : !desc.inline;
 
 		const
-			groups = this.splitXMLAttrsGroup(parts.slice(1).join(' ')),
+			groups = this.splitXMLAttrGroup(parts.slice(1).join(' ')),
 			dom = !this.domComment && this.renderMode === 'dom';
 
 		let str = ws`

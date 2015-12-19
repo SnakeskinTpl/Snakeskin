@@ -29,12 +29,17 @@ Snakeskin.addDirective(
 	'ignoreAllWhitespaces',
 
 	{
+		block: true,
 		placement: 'template',
 		replacers: {'&+': 'ignoreAllWhitespaces '}
 	},
 
 	function () {
-		this.strongSpace++;
+		this.strongSpace.push(true);
+	},
+
+	function () {
+		this.strongSpace.pop();
 	}
 
 );
@@ -43,18 +48,36 @@ Snakeskin.addDirective(
 	'unIgnoreAllWhitespaces',
 
 	{
+		block: true,
 		placement: 'template',
 		replacers: {'&-': 'unIgnoreAllWhitespaces '}
 	},
 
 	function () {
-		if (!this.strongSpace || --this.strongSpace) {
-			return;
-		}
+		this.strongSpace.push(false);
+	},
 
-		this.space = false;
+	function () {
+		this.strongSpace.pop();
 	}
 
+);
+
+Snakeskin.addDirective(
+	'sp',
+
+	{
+		text: true
+	}
+);
+
+Snakeskin.addDirective(
+	'__sp__',
+
+	{
+		group: 'ignore',
+		text: true
+	}
 );
 
 Snakeskin.addDirective(
@@ -89,12 +112,4 @@ Snakeskin.addDirective(
 		this.sysSpace = false;
 	}
 
-);
-
-Snakeskin.addDirective(
-	'sp',
-
-	{
-		text: true
-	}
 );

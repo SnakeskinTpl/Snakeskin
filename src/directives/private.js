@@ -87,15 +87,6 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
-	'__sp__',
-
-	{
-		group: 'ignore',
-		text: true
-	}
-);
-
-Snakeskin.addDirective(
 	'__switchLine__',
 
 	{
