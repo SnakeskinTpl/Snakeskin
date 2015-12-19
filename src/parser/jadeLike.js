@@ -343,19 +343,20 @@ Parser.prototype.toBaseSyntax = function (str, i) {
  * @return {string}
  */
 function genEndDir(dir, space) {
-	let
+	const
 		s = dir.adv + lb,
-		tmp;
+		e = rb;
 
+	let tmp;
 	if (needSpace) {
-		tmp = `${endDirInit ? '' : `${s}__&+__${rb}`}${eol}`;
+		tmp = `${endDirInit ? '' : `${s}__&+__${e}`}${eol}`;
 
 	} else {
 		tmp = eol + (space || '').slice(1);
 	}
 
 	endDirInit = true;
-	return `${tmp}${s}__end__${rb}${s}__cutLine__${rb}`;
+	return `${tmp}${s}__end__${e}${s}__cutLine__${e}`;
 }
 
 /**
