@@ -186,7 +186,7 @@ Parser.prototype.returnTagDesc = function (str) {
 				classes[classes.length - 1] += el;
 				break;
 
-			case ':':
+			case '!':
 				pseudo[pseudo.length - 1] += el;
 				break;
 
