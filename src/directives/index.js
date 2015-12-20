@@ -86,9 +86,10 @@ Snakeskin.group = function (name) {
  *   ancestorsBlacklist: (Array|string|undefined),
  *   ancestorsWhitelist: (Array|string|undefined),
  *   chain: (Array|string|undefined),
- *   end: (Array|string|undefined),
  *   childrenChain: (Array|string|undefined),
  *   after: (Array|string|undefined),
+ *   end: (Array|string|undefined),
+ *   trim: (?{left: boolean, right: boolean}),
  *   sys: (?boolean|undefined),
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
@@ -129,6 +130,12 @@ Snakeskin.group = function (name) {
  *
  *   *) [params.end] - directive/group name, which must be closed using the current directive
  *        or an array of names
+ *
+ *   *) [params.trim] - trim for the directive content (Jade-Like mode)
+ *        trim: {
+ *          left: true,
+ *          right: false
+ *        }
  *
  *   *) [params.sys = false] - if is true, then the directive is considered as a system type
  *   *) [params.text = false] - if is true, then the directive will be outputted as a plain text
