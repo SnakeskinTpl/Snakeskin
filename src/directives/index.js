@@ -89,7 +89,7 @@ Snakeskin.group = function (name) {
  *   childrenChain: (Array|string|undefined),
  *   after: (Array|string|undefined),
  *   end: (Array|string|undefined),
- *   trim: (?{left: boolean, right: boolean}),
+ *   trim: ({left: boolean, right: boolean}|undefined),
  *   sys: (?boolean|undefined),
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
