@@ -42,7 +42,8 @@ import {
 	$textDirs,
 	$dirNameReplacers,
 	$dirChain,
-	$dirEnd
+	$dirEnd,
+	$dirTrim
 
 } from '../consts/cache';
 
@@ -85,7 +86,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 		length = 0,
 		tSpace = 0;
 
-	function f(struct, obj) {
+	function end(struct, obj) {
 		if (struct.block) {
 			if ($dirChain[struct.name] && $dirChain[struct.name][obj.name]) {
 				obj.block = true;
@@ -95,17 +96,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				obj.block = false;
 
 			} else {
-				const
-					[rightSpace] = rightWSRgxp.exec(code);
-
-				code = code.replace(rightPartRgxp, '') +
-					genEndDir(struct, struct.space);
-
-				if (rightSpace && needSpace) {
-					code += `${struct.adv}${lb}__&-__${rb}`;
-				}
-
-				code += rightSpace;
+				code = appendDirEnd(code, struct);
 			}
 
 		} else {
@@ -212,7 +203,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					parent: null,
 					space,
 					spaces,
-					text: !dir || $textDirs[decl.name]
+					text: !dir || $textDirs[decl.name],
+					trim: dir && $dirTrim[decl.name] || {}
 				};
 
 				if (struct) {
@@ -240,7 +232,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 							obj.adv = adv = alb;
 						}
 
-						f(struct, obj);
+						end(struct, obj);
 						if (!struct.parent) {
 							return {
 								code,
@@ -250,12 +242,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 					} else {
 						while (struct.spaces >= spaces) {
-							f(struct, obj);
-
-							struct =
-								struct.parent;
-
-							if (!struct) {
+							end(struct, obj);
+							if (!(struct = struct.parent)) {
 								return {
 									code,
 									length: length - tSpace - 1
@@ -282,8 +270,14 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						parts = [decl.command];
 
 					} else {
-						parts = $C(this.replaceDangerBlocks(decl.command).split(INLINE))
-							.map((el) => this.pasteDangerBlocks(el));
+						parts = $C(
+							this.replaceDangerBlocks(decl.command).split(INLINE)
+
+						).map((el) => this.pasteDangerBlocks(el));
+
+						if (obj.trim.left) {
+							parts[1] = `${s}__&+__${e}${parts[1] || ''}`;
+						}
 					}
 
 					txt = parts.slice(1).join(INLINE);
@@ -325,10 +319,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 	}
 
 	while (struct) {
-		if (struct.block) {
-			code += genEndDir(struct, struct.space);
-		}
-
+		code = appendDirEnd(code, struct);
 		struct = struct.parent;
 	}
 
@@ -336,27 +327,41 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 };
 
 /**
- * Returns the end for a block directive
+ * Appends the directive end for a resulting string
+ * and returns a new string
  *
- * @param {!Object} dir - directive object
- * @param {string} space - white spaces
+ * @param {string} code - resulting string
+ * @param {!Object} struct - structure object
  * @return {string}
  */
-function genEndDir(dir, space) {
+function appendDirEnd(code, struct) {
+	if (!struct.block) {
+		return code;
+	}
+
+	const [rightSpace] = rightWSRgxp.exec(code);
+	code = code.replace(rightPartRgxp, '');
+
 	const
-		s = dir.adv + lb,
+		s = struct.adv + lb,
 		e = rb;
 
 	let tmp;
 	if (needSpace) {
-		tmp = `${eol}${endDirInit ? '' : `${s}__&+__${e}`}`;
+		tmp = `${struct.trim.right ? '' : eol}${endDirInit ? '' : `${s}__&+__${e}`}${struct.trim.right ? eol : ''}`;
 
 	} else {
-		tmp = eol + (space || '').slice(1);
+		tmp = eol + (struct.space).slice(1);
 	}
 
 	endDirInit = true;
-	return `${tmp}${s}__end__${e}${s}__cutLine__${e}`;
+	code += `${tmp}${s}__end__${e}${s}__cutLine__${e}`;
+
+	if (rightSpace && needSpace) {
+		code += `${struct.adv}${lb}__&-__${rb}`;
+	}
+
+	return code += rightSpace;
 }
 
 /**
