@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 import { emptyCommandParams } from '../consts/regs';
 
 const types = {
@@ -91,7 +92,7 @@ Snakeskin.addDirective(
 
 		if (parts.length > 1) {
 			/** @type {!Array} */
-			let args = _.any([].slice.call(arguments));
+			let args = any([].slice.call(arguments));
 
 			args[0] = parts.slice(1).join(' ');
 			args[1] = args[0].length;
