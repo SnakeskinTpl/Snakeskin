@@ -60,9 +60,9 @@ Parser.prototype.returnTagDesc = function (str) {
 	};
 
 	const sys = {
+		'!': true,
 		'#': true,
-		'.': true,
-		'!': true
+		'.': true
 	};
 
 	const error = {
