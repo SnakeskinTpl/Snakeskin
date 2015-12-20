@@ -23,6 +23,11 @@ const types = {
 	'css': {
 		'rel': 'stylesheet',
 		'type': 'text/css'
+	},
+
+	'icon': {
+		'rel': 'icon',
+		'type': 'image/x-icon'
 	}
 };
 
@@ -72,7 +77,9 @@ Snakeskin.addDirective(
 
 		const
 			parts = this.splitBySpace(command),
-			dom = !this.domComment && this.renderMode === 'dom',
+			dom = !this.domComment && this.renderMode === 'dom';
+
+		const
 			[type] = parts;
 
 		let str;
@@ -85,7 +92,7 @@ Snakeskin.addDirective(
 			`;
 
 		} else {
-			str = this.wrap(`'<link ${(typesStr.string[type] || this.replaceTplVars(type)).trim()}'`);
+			str = this.wrap(`'<link ${(typesStr.string[type] || '').trim()}'`);
 		}
 
 		this.append(str);
