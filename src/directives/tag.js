@@ -22,17 +22,17 @@ Snakeskin.addDirective(
 		deferInit: true,
 		placement: 'template',
 		replacers: {'/<': 'end tag', '<': 'tag '},
-		text: true
+		text: true,
+		trim: {
+			left: true,
+			right: true
+		}
 	},
 
 	function (command) {
 		this.startDir(null, {
 			bemRef: this.bemRef
 		});
-
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
 
 		if (!this.isReady()) {
 			return;

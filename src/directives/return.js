@@ -19,10 +19,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
 		if (!this.isReady()) {
 			return;
 		}

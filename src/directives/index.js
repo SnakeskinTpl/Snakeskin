@@ -38,7 +38,8 @@ import {
 	$dirAfter,
 	$dirChildrenChain,
 	$dirChain,
-	$dirEnd
+	$dirEnd,
+	$dirTrim
 
 } from '../consts/cache';
 
@@ -154,12 +155,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 
+		_([$dirTrim, p.trim]),
 		_([$blockDirs, p.block]),
 		_([$sysDirs, p.sys]),
 		_([$textDirs, p.text])
 
 	]).forEach(({cache, val}) => {
-		cache[name] = Boolean(val);
+		cache[name] = cache === $dirTrim ? val : Boolean(val);
 	});
 
 	$C([

@@ -64,10 +64,6 @@ Snakeskin.addDirective(
 			return this.error('invalid doctype');
 		}
 
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
 		this.append($=> this.wrap(`'${types[type]}'`));
 	}
 

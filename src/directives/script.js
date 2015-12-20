@@ -29,14 +29,14 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		placement: 'template',
-		selfInclude: false
+		selfInclude: false,
+		trim: {
+			left: true,
+			right: true
+		}
 	},
 
 	function (command) {
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
 		if (this.autoReplace) {
 			this.autoReplace = false;
 			this.structure.params.autoReplace = true;
@@ -96,10 +96,6 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
 		if (this.structure.params.autoReplace) {
 			this.autoReplace = true;
 		}
