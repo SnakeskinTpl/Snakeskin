@@ -330,17 +330,17 @@ Parser.prototype.toBaseSyntax = function (str, i) {
  * Appends the directive end for a resulting string
  * and returns a new string
  *
- * @param {string} code - resulting string
+ * @param {string} str - resulting string
  * @param {!Object} struct - structure object
  * @return {string}
  */
-function appendDirEnd(code, struct) {
+function appendDirEnd(str, struct) {
 	if (!struct.block) {
-		return code;
+		return str;
 	}
 
-	const [rightSpace] = rightWSRgxp.exec(code);
-	code = code.replace(rightPartRgxp, '');
+	const [rightSpace] = rightWSRgxp.exec(str);
+	str = str.replace(rightPartRgxp, '');
 
 	const
 		s = struct.adv + lb,
@@ -355,13 +355,13 @@ function appendDirEnd(code, struct) {
 	}
 
 	endDirInit = true;
-	code += `${tmp}${s}__end__${e}${s}__cutLine__${e}`;
+	str += `${tmp}${s}__end__${e}${s}__cutLine__${e}`;
 
 	if (rightSpace && needSpace) {
-		code += `${struct.adv}${lb}__&-__${rb}`;
+		str += `${struct.adv}${lb}__&-__${rb}`;
 	}
 
-	return code += rightSpace;
+	return str += rightSpace;
 }
 
 /**
