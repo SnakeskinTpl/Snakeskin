@@ -104,8 +104,8 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
 		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 		res += ws`
-			var __ATTR_STR__ = \'\',
-				__ATTR_J__ = 0;
+			var __ATTR_J__ = 0;
+			var __ATTR_STR__ = '';
 		`;
 
 		if (opt_group) {
