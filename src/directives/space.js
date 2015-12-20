@@ -66,6 +66,15 @@ Snakeskin.addDirective(
 );
 
 Snakeskin.addDirective(
+	'sp',
+
+	{
+		replacers: {'\\': 'sp '},
+		text: true
+	}
+);
+
+Snakeskin.addDirective(
 	'__sp__',
 
 	{
