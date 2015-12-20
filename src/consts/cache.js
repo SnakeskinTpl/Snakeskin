@@ -31,7 +31,8 @@ export const
 	$dirAfter = {},
 	$dirChildrenChain = {},
 	$dirChain = {},
-	$dirEnd = {};
+	$dirEnd = {},
+	$dirTrim = {};
 
 export const
 	$protos = {},
