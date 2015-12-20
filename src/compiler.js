@@ -701,12 +701,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						parser.space = parser.prevSpace = false;
 					}
 
-					if (parser.skipSpace) {
-						parser.space = parser.prevSpace = true;
-					}
-
 					jsDocStart = false;
-					parser.skipSpace = false;
 					parser.text = false;
 
 					if (fnRes === false) {

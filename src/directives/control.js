@@ -37,10 +37,6 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
 		if (!this.isReady()) {
 			return;
 		}
@@ -115,10 +111,6 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir();
-		if (!this.tolerateWhitespace) {
-			this.skipSpace = true;
-		}
-
 		if (!this.isReady()) {
 			return;
 		}

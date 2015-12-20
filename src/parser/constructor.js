@@ -180,9 +180,6 @@ export default class Parser {
 		this.space = false;
 
 		/** @type {boolean} */
-		this.skipSpace = false;
-
-		/** @type {boolean} */
 		this.prevSpace = false;
 
 		/** @type {!Array<boolean>} */
