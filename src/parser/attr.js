@@ -115,7 +115,7 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 			arg[0] = arg[0][0] === '-' ? `data-${arg[0].slice(1)}` : arg[0];
 		}
 
-		res += $C(this.splitBySpace(arg[1])).reduce((val) => {
+		res += $C(this.splitBySpace(arg[1])).reduce((res, val) => {
 			val = val.trim();
 
 			if (parentLink.test(val) && ref) {
@@ -131,7 +131,7 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 				}
 			`;
 
-		}, 'res');
+		}, '');
 
 		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
 		res += `if ((${arg[0]}) != null && (${arg[0]}) != '') {`;
