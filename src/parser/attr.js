@@ -13,6 +13,7 @@ import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { parentLink } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
 const
 	escapeEqRgxp = /===|==|([\\]+)=/g,
