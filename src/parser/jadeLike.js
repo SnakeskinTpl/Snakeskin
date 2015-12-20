@@ -365,7 +365,7 @@ function appendDirEnd(code, struct) {
 }
 
 /**
- * Returns an object description of a Jade-Like syntax string
+ * Returns an object description for a Jade-Like syntax string
  *
  * @param {string} str - source string
  * @param {number} i - start iteration position
