@@ -62,7 +62,7 @@ Parser.prototype.returnTagDesc = function (str) {
 	const sys = {
 		'#': true,
 		'.': true,
-		':': true
+		'!': true
 	};
 
 	const error = {
@@ -166,7 +166,7 @@ Parser.prototype.returnTagDesc = function (str) {
 				types.push(!bOpen);
 				classes.push('');
 
-			} else if (el === ':') {
+			} else if (el === '!') {
 				if (!inline) {
 					inline = pseudo[pseudo.length - 1] === 'inline';
 				}
