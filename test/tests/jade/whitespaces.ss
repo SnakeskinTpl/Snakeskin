@@ -1,7 +1,9 @@
 wsTplStart
 wsTplStartWithIgnore
-ignoreAllWhitespaces1
-ignoreAllWhitespaces2
+ignoreAllWs1
+ignoreAllWs2
+wsWithTags1
+wsWithTags2
 
 ###
 
@@ -17,7 +19,7 @@ ignoreAllWhitespaces2
 		bar
 	baz
 
-- template ignoreAllWhitespaces1()
+- template ignoreAllWs1()
 	&+
 		bla bla bla
 		&-
@@ -26,7 +28,7 @@ ignoreAllWhitespaces2
 
 	bla bla bla
 
-- template ignoreAllWhitespaces2()
+- template ignoreAllWs2()
 	&+
 		- switch true
 			> true
@@ -37,6 +39,22 @@ ignoreAllWhitespaces2
 	bar
 	bar
 	bar
+
+- template wsWithTags1()
+	< div
+		foo
+
+	bar
+
+- template wsWithTags2()
+	< div
+		foo
+	< div
+		bar
+
+	< div
+		baz
+		\
 
 ###
 
@@ -53,3 +71,11 @@ blablablabar bar bar bzzbzzbzz bla bla bla
 ***
 
 blablabla bar bar bar
+
+***
+
+<div>foo</div> bar
+
+***
+
+<div>foo</div><div>bar</div> <div>baz </div>
