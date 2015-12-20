@@ -40,6 +40,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.strongSpace.pop();
+		this.sysSpace = Number(this.sysSpace);
 	}
 
 );
@@ -59,6 +60,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.strongSpace.pop();
+		this.sysSpace = Number(this.sysSpace);
 	}
 
 );
@@ -99,6 +101,10 @@ Snakeskin.addDirective(
 	function () {
 		if (this.tolerateWhitespace) {
 			return;
+		}
+
+		if (this.sysSpace === 1) {
+			this.space = false;
 		}
 
 		this.sysSpace = false;
