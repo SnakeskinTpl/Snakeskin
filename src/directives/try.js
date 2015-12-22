@@ -14,6 +14,7 @@ Snakeskin.addDirective(
 	'throw',
 
 	{
+		group: 'throw',
 		notEmpty: true
 	},
 
@@ -27,7 +28,8 @@ Snakeskin.addDirective(
 	'try',
 
 	{
-		block: true
+		block: true,
+		group: 'try'
 	},
 
 	function () {
@@ -49,6 +51,7 @@ Snakeskin.addDirective(
 	'catch',
 
 	{
+		group: 'catch',
 		notEmpty: true,
 		with: 'try'
 	},
@@ -64,6 +67,7 @@ Snakeskin.addDirective(
 	'finally',
 
 	{
+		group: 'finally',
 		with: 'try'
 	},
 
