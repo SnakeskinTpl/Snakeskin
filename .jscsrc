@@ -114,7 +114,6 @@
       }
     },
     "checkTypes": "strictNativeCase",
-    "checkParamNames": true,
     "requireHyphenBeforeDescription": true
   },
 
