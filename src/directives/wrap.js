@@ -15,9 +15,9 @@ Snakeskin.addDirective(
 	'wrap',
 
 	{
-		after: ['and', 'end'],
 		block: true,
-		deferInit: true
+		deferInit: true,
+		endsWith: ['and', 'end']
 	},
 
 	function (command, commandLength, commandType, raw, jsDocStart) {
