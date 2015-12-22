@@ -22,20 +22,16 @@ import {
 	$dirNameAliases,
 	$dirNameReplacers,
 	$consts,
-
 	$sysDirs,
 	$blockDirs,
 	$textDirs,
 	$dirGroups,
-
 	$dirPlacement,
 	$dirPlacementPlain,
 	$dirAncestorsBlacklist,
 	$dirAncestorsBlacklistPlain,
 	$dirAncestorsWhitelist,
 	$dirAncestorsWhitelistPlain,
-
-	$dirAfter,
 	$dirParents,
 	$dirChain,
 	$dirEnd,
@@ -87,8 +83,8 @@ Snakeskin.group = function (name) {
  *   ancestorsWhitelist: (Array|string|undefined),
  *   with: (Array|string|undefined),
  *   parents: (Array|string|undefined),
- *   after: (Array|string|undefined),
- *   end: (Array|string|undefined),
+ *   endsWith: (Array|string|undefined),
+ *   endFor: (Array|string|undefined),
  *   trim: ({left: boolean, right: boolean}|undefined),
  *   sys: (?boolean|undefined),
  *   text: (?boolean|undefined),
@@ -128,10 +124,10 @@ Snakeskin.group = function (name) {
  *   *) [params.children] - directive/group name, which can be a child of the current directive
  *        or an array of names
  *
- *   *) [params.after] - directive/group name, which can be placed after the current directive
+ *   *) [params.endsWith] - directive/group name, which can be placed after the current directive
  *        or an array of names
  *
- *   *) [params.end] - directive/group name, which must be closed using the current directive
+ *   *) [params.endFor] - directive/group name, which must be closed using the current directive
  *        or an array of names
  *
  *   *) [params.trim] - trim for the directive content (Jade-Like mode)
@@ -160,6 +156,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		p = params || {},
 		concat = (val) => val != null ? [].concat(val) : [];
 
+	if (p.block) {
+		p.endsWith = p.endsWith || 'end';
+	}
+
 	let
 		_ = ([cache, val]) => ({cache, val});
 
@@ -179,7 +179,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$dirGroups, p.group]),
 		_([$dirChain, p.with]),
 		_([$dirParents, p.parents]),
-		_([$dirEnd, p.end])
+		_([$dirEnd, p.endFor])
 
 	]).forEach(({cache, val}) => {
 		$C(concat(val)).forEach((key) => {
@@ -192,7 +192,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C([$dirChain, $dirEnd]).forEach((cache) => {
+	$C([$dirChain, $dirParents, $dirEnd]).forEach((cache) => {
 		$C(cache).forEach((el, key) => {
 			if (key[0] !== gPrfx) {
 				return;
@@ -211,7 +211,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	$C([
 
 		_([$dirParents, p.children]),
-		_([$dirAfter, p.after])
+		_([$dirEnd, p.endsWith])
 
 	]).forEach(({cache, val}) => {
 		$C(concat(val)).forEach((key) => {
@@ -220,7 +220,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C([$dirParents, $dirAfter]).forEach((cache) => {
+	$C([$dirParents, $dirEnd]).forEach((cache) => {
 		$C(cache).forEach((dir) => {
 			$C(dir).forEach((el, key) => {
 				if (key[0] !== gPrfx) {
@@ -418,7 +418,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (dirName === sourceName) {
 			if (structure === newStruct) {
-				if (!ignore && $dirAfter[parentDirName] && !$dirAfter[parentDirName][dirName]) {
+				if (!ignore && $dirEnd[parentDirName] && !$dirEnd[parentDirName][dirName]) {
 					return parser.error(`the directive "${dirName}" can't be used after the "${parentDirName}"`);
 				}
 
@@ -436,7 +436,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 						j++;
 					}
 
-					if (!ignore && prev && $dirAfter[prev.name] && !$dirAfter[prev.name][dirName]) {
+					console.log(prev && prev.name, dirName);
+
+					if (!ignore && prev && $dirEnd[prev.name] && !$dirEnd[prev.name][dirName]) {
 						return parser.error(`the directive "${dirName}" can't be used after the "${prev.name}"`);
 					}
 				}

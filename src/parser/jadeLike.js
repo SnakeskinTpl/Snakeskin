@@ -329,8 +329,6 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 		struct = struct.parent;
 	}
 
-	console.log(code);
-
 	return {code, length};
 };
 

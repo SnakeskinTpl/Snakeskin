@@ -76,7 +76,6 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		end: 'do',
 		group: 'cycle',
 		notEmpty: true
 	},
@@ -108,8 +107,8 @@ Snakeskin.addDirective(
 	'do',
 
 	{
-		after: ['while', 'end'],
 		block: true,
+		endsWith: ['while', 'end'],
 		group: 'cycle'
 	},
 
@@ -123,47 +122,6 @@ Snakeskin.addDirective(
 		}
 
 		this.append('} while (true);');
-	}
-
-);
-
-Snakeskin.addDirective(
-	'repeat',
-
-	{
-		after: ['until', 'end'],
-		block: true,
-		group: 'cycle'
-	},
-
-	function () {
-		this.append('do {');
-	},
-
-	function () {
-		if (this.structure.params.chain) {
-			return;
-		}
-
-		this.append('} while (true);');
-	}
-
-);
-
-Snakeskin.addDirective(
-	'until',
-
-	{
-		deferInit: true,
-		end: 'repeat',
-		notEmpty: true,
-		with: 'repeat'
-	},
-
-	function (command) {
-		this.structure.params.chain = true;
-		this.append($=> `} while (${this.out(command, {sys: true})});`);
-		Snakeskin.Directives['end'].call(this);
 	}
 
 );
