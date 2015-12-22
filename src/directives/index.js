@@ -436,8 +436,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 						j++;
 					}
 
-					console.log(prev && prev.name, dirName);
-
 					if (!ignore && prev && $dirEnd[prev.name] && !$dirEnd[prev.name][dirName]) {
 						return parser.error(`the directive "${dirName}" can't be used after the "${prev.name}"`);
 					}
