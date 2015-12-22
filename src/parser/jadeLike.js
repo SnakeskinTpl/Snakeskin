@@ -88,14 +88,20 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 	function end(struct, obj) {
 		if (struct.block) {
-			if ($dirChain[struct.name] && $dirChain[struct.name][obj.name]) {
+			const
+				isChain = $dirChain[struct.name] && $dirChain[struct.name][obj.name],
+				isEnd = $dirEnd[struct.name] && $dirEnd[struct.name][obj.name];
+
+			if (isChain) {
 				obj.block = true;
 				obj.name = struct.name;
+			}
 
-			} else if ($dirEnd[struct.name] && $dirEnd[struct.name][obj.name]) {
+			if (isEnd) {
 				obj.block = false;
+			}
 
-			} else {
+			if (!isChain && !isEnd) {
 				code = appendDirEnd(code, struct);
 			}
 
@@ -322,6 +328,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 		code = appendDirEnd(code, struct);
 		struct = struct.parent;
 	}
+
+	console.log(code);
 
 	return {code, length};
 };
