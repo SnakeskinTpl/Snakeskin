@@ -89,7 +89,7 @@ Snakeskin.addDirective(
 	'and',
 
 	{
-		chain: 'wrap'
+		with: 'wrap'
 	},
 
 	function () {

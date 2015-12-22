@@ -29,8 +29,8 @@ export const
 	$dirAncestorsWhitelist = {},
 	$dirAncestorsWhitelistPlain = {},
 	$dirAfter = {},
-	$dirChildrenChain = {},
 	$dirChain = {},
+	$dirParents = {},
 	$dirEnd = {},
 	$dirTrim = {};
 

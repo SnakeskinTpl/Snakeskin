@@ -52,7 +52,7 @@ Snakeskin.addDirective(
 	'else',
 
 	{
-		chain: Snakeskin.group('if')
+		with: Snakeskin.group('if')
 	},
 
 	function (command) {
@@ -83,7 +83,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		childrenChain: Snakeskin.group('case'),
+		children: Snakeskin.group('case'),
 		notEmpty: true
 	},
 

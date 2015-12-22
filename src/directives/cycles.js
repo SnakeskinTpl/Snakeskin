@@ -154,10 +154,10 @@ Snakeskin.addDirective(
 	'until',
 
 	{
-		chain: 'repeat',
 		deferInit: true,
 		end: 'repeat',
-		notEmpty: true
+		notEmpty: true,
+		with: 'repeat'
 	},
 
 	function (command) {

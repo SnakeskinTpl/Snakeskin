@@ -36,7 +36,7 @@ import {
 	$dirAncestorsWhitelistPlain,
 
 	$dirAfter,
-	$dirChildrenChain,
+	$dirParents,
 	$dirChain,
 	$dirEnd,
 	$dirTrim
@@ -85,8 +85,8 @@ Snakeskin.group = function (name) {
  *   placement: (Array|string|undefined),
  *   ancestorsBlacklist: (Array|string|undefined),
  *   ancestorsWhitelist: (Array|string|undefined),
- *   chain: (Array|string|undefined),
- *   childrenChain: (Array|string|undefined),
+ *   with: (Array|string|undefined),
+ *   parents: (Array|string|undefined),
  *   after: (Array|string|undefined),
  *   end: (Array|string|undefined),
  *   trim: ({left: boolean, right: boolean}|undefined),
@@ -119,10 +119,13 @@ Snakeskin.group = function (name) {
  *   *) [params.ancestorsWhitelist] - directive/group name, which can be an ancestor for the current directive
  *        or an array of names
  *
- *   *) [params.chain] - directive/group name, which is a master for the current directive
+ *   *) [params.with] - directive/group name, which is a master for the current directive
  *        or an array of names
  *
- *   *) [params.childrenChain] - directive/group name, which can be a child of the current directive
+ *   *) [params.parents] - directive/group name, which can be a parent for the current directive
+ *        or an array of names
+ *
+ *   *) [params.children] - directive/group name, which can be a child of the current directive
  *        or an array of names
  *
  *   *) [params.after] - directive/group name, which can be placed after the current directive
@@ -174,7 +177,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	$C([
 
 		_([$dirGroups, p.group]),
-		_([$dirChain, p.chain]),
+		_([$dirChain, p.with]),
+		_([$dirParents, p.parents]),
 		_([$dirEnd, p.end])
 
 	]).forEach(({cache, val}) => {
@@ -206,7 +210,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([
 
-		_([$dirChildrenChain, p.childrenChain]),
+		_([$dirParents, p.children]),
 		_([$dirAfter, p.after])
 
 	]).forEach(({cache, val}) => {
@@ -216,7 +220,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C([$dirChildrenChain, $dirAfter]).forEach((cache) => {
+	$C([$dirParents, $dirAfter]).forEach((cache) => {
 		$C(cache).forEach((dir) => {
 			$C(dir).forEach((el, key) => {
 				if (key[0] !== gPrfx) {
@@ -348,8 +352,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			);
 		}
 
-		if (p.chain && (!$dirChain[parentDirName] || !$dirChain[parentDirName][dirName])) {
-			const groups = $C([].concat(p.chain)).reduce((arr, el) =>
+		if (p.with && (!$dirChain[parentDirName] || !$dirChain[parentDirName][dirName])) {
+			const groups = $C([].concat(p.with)).reduce((arr, el) =>
 				arr.concat(el[0] === gPrfx ? parser.getGroupList(el.slice(1)) : el), []);
 
 			return parser.error(`the directive "${dirName}" can be used only with: ${q(groups)}`);
@@ -368,7 +372,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (structure.strong) {
-			if ($dirChildrenChain[parentDirName][dirName]) {
+			if ($dirParents[parentDirName][dirName]) {
 				parser.strongSpace.push(parser.strongSpace[parser.strongSpace.length - 2]);
 
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
@@ -387,7 +391,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		const
 			from = parser.res.length;
 
-		if (!p.deferInit && !p.chain) {
+		if (!p.deferInit && !p.with) {
 			if (p.block) {
 				parser.startDir();
 
@@ -407,7 +411,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		const
 			newStruct = parser.structure;
 
-		if ($dirChildrenChain[dirName]) {
+		if ($dirParents[dirName]) {
 			newStruct.strong = true;
 			parser.strongSpace.push(true);
 		}
@@ -469,7 +473,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			this.scope.pop();
 		}
 
-		if ($dirChildrenChain[structure.name] || $dirChildrenChain[structure.parent.name]) {
+		if ($dirParents[structure.name] || $dirParents[structure.parent.name]) {
 			this.strongSpace.pop();
 		}
 

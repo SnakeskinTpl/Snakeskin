@@ -66,9 +66,9 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		chain: ['parallel', 'series', 'waterfall'],
 		deferInit: true,
-		group: ['callback', 'basicAsync']
+		group: ['callback', 'basicAsync'],
+		with: ['parallel', 'series', 'waterfall']
 	},
 
 	function (command) {
