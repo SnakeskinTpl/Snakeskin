@@ -15,6 +15,7 @@ Snakeskin.addDirective(
 	'attr',
 
 	{
+		group: ['attr', 'output'],
 		notEmpty: true,
 		placement: 'template',
 		text: true
@@ -22,8 +23,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.append($=>
-			$C(this.splitXMLAttrGroup(command))
-				.reduce((res, el) => res += this.returnXMLAttrDecl(el.attr, el.group, el.separator), '')
+			$C(this.splitXMLAttrGroup(command)).reduce((res, el) => res += this.returnXMLAttrDecl(el), '')
 		);
 	}
 );

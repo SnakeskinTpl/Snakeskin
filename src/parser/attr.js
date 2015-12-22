@@ -50,30 +50,29 @@ function unEscapeOr(ignore, $1, $2) {
 /**
  * Returns string declaration of XML attribute
  *
- * @param {string} str - source string
- * @param {?string=} [opt_group] - group name
- * @param {?string=} [opt_separator='-'] - group separator
- * @param {?boolean=} [opt_classLink=false] - if is true, then a value of a class attribute
- *   will be saved to a variable
- *
+ * @param {string} attr - source string
+ * @param {?string=} [group] - group name
+ * @param {?string=} [separator='-'] - group separator
+ * @param {?boolean=} [opt_classLink=false] - if is true, then a value of a class attribute will be saved to a variable
  * @return {string}
  */
-Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, opt_classLink) {
+Parser.prototype.returnXMLAttrDecl = function ({attr, group, separator}, opt_classLink) {
 	const
-		{attr, attrEscape} = this;
+		rAttr = this.attr,
+		rEscape = this.attrEscape;
 
 	this.attr = true;
 	this.attrEscape = true;
 
-	opt_group = opt_group || '';
-	opt_separator = opt_separator || '-';
+	group = group || '';
+	separator = separator || '-';
 
-	str = str
+	attr = attr
 		.replace(escapeHTMLRgxp, escapeHTML)
 		.replace(escapeOrRgxp, escapeOr);
 
 	const
-		parts = str.split('|'),
+		parts = attr.split('|'),
 		ref = this.bemRef;
 
 	const
@@ -108,8 +107,8 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 			var __ATTR_STR__ = '';
 		`;
 
-		if (opt_group) {
-			arg[0] = opt_group + opt_separator + arg[0];
+		if (group) {
+			arg[0] = group + separator + arg[0];
 
 		} else {
 			arg[0] = arg[0][0] === '-' ? `data-${arg[0].slice(1)}` : arg[0];
@@ -163,8 +162,8 @@ Parser.prototype.returnXMLAttrDecl = function (str, opt_group, opt_separator, op
 
 	}, '');
 
-	this.attr = attr;
-	this.attrEscape = attrEscape;
+	this.attr = rAttr;
+	this.attrEscape = rEscape;
 
 	return res;
 };

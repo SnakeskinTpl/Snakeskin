@@ -75,7 +75,7 @@ Snakeskin.addDirective(
 		}
 
 		str += $C(groups)
-			.reduce((res, el) => res += this.returnXMLAttrDecl(el.attr, el.group, el.separator, true), '');
+			.reduce((res, el) => res += this.returnXMLAttrDecl(el, true), '');
 
 		if (desc.id) {
 			if (dom) {
