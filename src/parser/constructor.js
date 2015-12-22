@@ -141,7 +141,7 @@ export default class Parser {
 		 * If is true, then compiling will be broken
 		 * @type {boolean}
 		 */
-		this.brk = false;
+		this.break = false;
 
 		/**
 		 * The array of errors

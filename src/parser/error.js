@@ -108,10 +108,10 @@ Parser.prototype.getAdvInfo = function () {
  */
 Parser.prototype.error = function (msg) {
 	this.errors.push(msg);
-	this.brk = true;
+	this.break = true;
 
 	if (this.proto) {
-		this.parent.brk = true;
+		this.parent.break = true;
 	}
 
 	const

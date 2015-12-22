@@ -669,7 +669,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						jsDocStart
 					);
 
-					if (parser.brk) {
+					if (parser.break) {
 						return false;
 					}
 
