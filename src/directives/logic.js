@@ -15,7 +15,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'if',
+		group: ['if', 'logic'],
 		notEmpty: true
 	},
 
@@ -34,7 +34,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'if',
+		group: ['if', 'logic'],
 		notEmpty: true
 	},
 
@@ -52,10 +52,12 @@ Snakeskin.addDirective(
 	'else',
 
 	{
+		group: ['else', 'logic'],
 		with: Snakeskin.group('if')
 	},
 
 	function (command) {
+		// else if OR else unless
 		if (command) {
 			if (!this.isReady()) {
 				return;
@@ -84,6 +86,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		children: Snakeskin.group('case'),
+		group: ['switch', 'logic'],
 		notEmpty: true
 	},
 
@@ -102,7 +105,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'case',
+		group: ['case', 'logic'],
 		notEmpty: true,
 		replacers: {'/>': 'end case', '>': 'case '}
 	},
@@ -122,7 +125,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'case'
+		group: ['case', 'logic']
 	},
 
 	function () {
