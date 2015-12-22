@@ -15,7 +15,7 @@ import './directives/end';
 import './directives/void';
 import './directives/logic';
 import './directives/yield';
-import './directives/try';
+import './directives/exception';
 import './directives/var';
 import './directives/with';
 import './directives/call';
