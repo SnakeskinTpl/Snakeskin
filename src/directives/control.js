@@ -8,6 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 
@@ -15,30 +16,30 @@ Snakeskin.addDirective(
 	'break',
 
 	{
-		deferInit: true,
-		group: 'control'
+		group: ['break', 'control']
 	},
 
 	function (command) {
-		const combo = this.getGroup('cycle', 'async');
-		combo['proto'] = true;
+		if (!this.isReady()) {
+			return;
+		}
 
 		const
 			cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
+		const inside = this.hasParent(
+			$C.extend(false, this.getGroup('cycle', 'async'), {
+				'proto': true
+			})
+		);
+
 		const
-			inside = this.has(combo),
-			insideCallback = this.has(this.getGroup('callback')),
+			insideCallback = this.hasParent(this.getGroup('callback')),
 			insideProto = inside === 'proto' || this.proto;
 
 		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error(`the directive "${this.name}" can be used only with a cycles, protos or an async series`);
-		}
-
-		this.startInlineDir();
-		if (!this.isReady()) {
-			return;
+			return this.error(`the directive "${this.name}" can be used only with cycles, protos or async series`);
 		}
 
 		if (command === 'proto') {
@@ -89,30 +90,30 @@ Snakeskin.addDirective(
 	'continue',
 
 	{
-		deferInit: true,
-		group: 'control'
+		group: ['continue', 'control']
 	},
 
 	function (command) {
-		const combo = this.getGroup('cycle', 'async');
-		combo['proto'] = true;
+		if (!this.isReady()) {
+			return;
+		}
 
 		const
 			cycles = this.getGroup('cycle'),
 			async = this.getGroup('async');
 
+		const inside = this.hasParent(
+			$C.extend(false, this.getGroup('cycle', 'async'), {
+				'proto': true
+			})
+		);
+
 		const
-			inside = this.has(combo),
-			insideCallback = this.has(this.getGroup('callback')),
+			insideCallback = this.hasParent(this.getGroup('callback')),
 			insideProto = inside === 'proto' || this.proto;
 
 		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error(`the directive "${this.name}" can be used only with a cycles, protos or an async series`);
-		}
-
-		this.startInlineDir();
-		if (!this.isReady()) {
-			return;
+			return this.error(`the directive "${this.name}" can be used only with cycles, protos or async series`);
 		}
 
 		if (command === 'proto') {

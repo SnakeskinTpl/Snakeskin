@@ -16,6 +16,7 @@ Snakeskin.addDirective(
 
 	{
 		deferInit: true,
+		group: 'end',
 		replacers: {'/': 'end '}
 	},
 

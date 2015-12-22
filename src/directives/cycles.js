@@ -16,11 +16,15 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: 'cycle',
+		group: ['for', 'cycle'],
 		notEmpty: true
 	},
 
 	function (command) {
+		if (!this.isReady()) {
+			return;
+		}
+
 		// for var i = 0; i < 3; i++
 		if (/;/.test(command)) {
 			const
@@ -28,10 +32,6 @@ Snakeskin.addDirective(
 
 			if (parts.length !== 3) {
 				return this.error(`invalid "${this.name}" declaration`);
-			}
-
-			if (!this.isReady()) {
-				return;
 			}
 
 			const
@@ -55,10 +55,6 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
-			if (!this.isReady()) {
-				return;
-			}
-
 			const decl = parts[1] ? this.declVars(parts[2], false, '') : this.out(parts[2], {sys: true});
 			this.append(`for (${decl} ${parts[3]} ${this.out(parts[4], {sys: true})}) {`);
 		}
@@ -76,7 +72,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: 'cycle',
+		group: ['while', 'cycle'],
 		notEmpty: true
 	},
 
@@ -108,8 +104,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		endsWith: ['while', 'end'],
-		group: 'cycle'
+		endsWith: [Snakeskin.group('while'), 'end'],
+		group: ['do', 'cycle']
 	},
 
 	function () {

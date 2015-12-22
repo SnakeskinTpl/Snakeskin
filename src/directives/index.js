@@ -156,10 +156,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		p = params || {},
 		concat = (val) => val != null ? [].concat(val) : [];
 
-	if (p.block) {
-		p.endsWith = p.endsWith || 'end';
-	}
-
 	let
 		_ = ([cache, val]) => ({cache, val});
 
@@ -363,13 +359,17 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (p.ancestorsBlacklist && parser.has($dirAncestorsBlacklistPlain[name])) {
 			return parser.error(
-				`the directive "${dirName}" can't be used within directives ${q(Object.keys($dirAncestorsBlacklistPlain[name]))}`
+				`the directive "${dirName}" can't be used within directives ${
+					q(Object.keys($dirAncestorsBlacklistPlain[name]))
+				}`
 			);
 		}
 
 		if (p.ancestorsWhitelist && !parser.has($dirAncestorsWhitelistPlain[name])) {
 			return parser.error(
-				`the directive "${dirName}" can be used only within directives ${q(Object.keys($dirAncestorsWhitelistPlain[name]))}`
+				`the directive "${dirName}" can be used only within directives ${
+					q(Object.keys($dirAncestorsWhitelistPlain[name]))
+				}`
 			);
 		}
 
