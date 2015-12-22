@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 		group: 'define',
 		notEmpty: true,
 		placement: 'global',
-		replacers: {
+		shorthands: {
 			'@=': 'setSSFlag '
 		}
 	},

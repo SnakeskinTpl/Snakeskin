@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 		group: ['callBlock', 'output'],
 		notEmpty: true,
 		placement: 'template',
-		replacers: {'~=': 'callBlock '},
+		shorthands: {'~=': 'callBlock '},
 		text: true
 	},
 

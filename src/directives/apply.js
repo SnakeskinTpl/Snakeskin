@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		notEmpty: true,
 		placement: 'template',
-		replacers: {'+=': 'apply '},
+		shorthands: {'+=': 'apply '},
 		text: true
 	},
 

@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		placement: 'template',
-		replacers: {'/<': 'end tag', '<': 'tag '},
+		shorthands: {'/<': 'end tag', '<': 'tag '},
 		text: true,
 		trim: {
 			left: true,

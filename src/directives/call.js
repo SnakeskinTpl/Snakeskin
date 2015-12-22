@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 		group: ['call', 'output'],
 		notEmpty: true,
 		placement: 'template',
-		replacers: {'^=': 'call '},
+		shorthands: {'^=': 'call '},
 		text: true
 	},
 

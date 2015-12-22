@@ -20,7 +20,7 @@ import { HAS_CONSOLE_LOG } from '../consts/hacks';
 import {
 
 	$dirNameAliases,
-	$dirNameReplacers,
+	$dirNameShorthands,
 	$consts,
 	$sysDirs,
 	$blockDirs,
@@ -90,7 +90,7 @@ Snakeskin.group = function (name) {
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
  *   selfInclude: (?boolean|undefined),
- *   replacers: (Object.<string, (string|function(string): string)>|undefined)
+ *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
  * }} params - additional parameters:
  *
  *   *) [params.deferInit = false] - if is true, the directive won't be started automatically
@@ -142,8 +142,8 @@ Snakeskin.group = function (name) {
  *   *) [params.selfInclude = true] - if is false, then the directive can't be placed inside an another directive
  *        of the same type
  *
- *   *) [params.replacers] - shorthands for the directive
- *        replacers: {
+ *   *) [params.shorthands] - shorthands for the directive
+ *        shorthands: {
  *          // Can be no more than two symbols in the key
  *          '?': 'void '
  *        }
@@ -259,16 +259,16 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C(p.replacers).forEach((el, key) => {
+	$C(p.shorthands).forEach((el, key) => {
 		if (key.length > 2) {
 			throw new Error(`Invalid shorthand key "${key}" (key.length > 2)`);
 		}
 
-		if ($dirNameReplacers[key] && HAS_CONSOLE_LOG) {
+		if ($dirNameShorthands[key] && HAS_CONSOLE_LOG) {
 			console.log(`Warning: replacer "${key}" already exists`);
 		}
 
-		$dirNameReplacers[key] = isFunction(el) ?
+		$dirNameShorthands[key] = isFunction(el) ?
 			el : (cmd) => cmd.replace(key, el);
 
 		if (key[0] !== '/') {

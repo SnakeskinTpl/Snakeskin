@@ -40,7 +40,7 @@ import {
 
 	$blockDirs,
 	$textDirs,
-	$dirNameReplacers,
+	$dirNameShorthands,
 	$dirChain,
 	$dirEnd,
 	$dirTrim
@@ -184,14 +184,14 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 				let replacer;
 				if (el === alb) {
-					replacer = $dirNameReplacers[diff2str] ||
-						$dirNameReplacers[next] ||
-						$dirNameReplacers[next2str] ||
-						$dirNameReplacers[el];
+					replacer = $dirNameShorthands[diff2str] ||
+						$dirNameShorthands[next] ||
+						$dirNameShorthands[next2str] ||
+						$dirNameShorthands[el];
 
 				} else {
-					replacer = $dirNameReplacers[next2str] ||
-						$dirNameReplacers[el];
+					replacer = $dirNameShorthands[next2str] ||
+						$dirNameShorthands[el];
 				}
 
 				if (replacer) {

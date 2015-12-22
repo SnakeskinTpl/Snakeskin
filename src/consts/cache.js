@@ -9,7 +9,7 @@
  */
 
 export const
-	$dirNameReplacers = {},
+	$dirNameShorthands = {},
 	$dirNameAliases = {},
 	$dirGroups = {};
 

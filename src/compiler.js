@@ -33,7 +33,7 @@ import {
 import {
 
 	$rgxp,
-	$dirNameReplacers,
+	$dirNameShorthands,
 	$dirParents
 
 } from './consts/cache';
@@ -623,7 +623,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					const
 						short1 = command[0], // jscs:ignore
 						short2 = command.substr(0, 2),
-						replacer = $dirNameReplacers[short2] || $dirNameReplacers[short1];
+						replacer = $dirNameShorthands[short2] || $dirNameShorthands[short1];
 
 					if (replacer) {
 						command = replacer(command);

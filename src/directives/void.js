@@ -15,7 +15,7 @@ Snakeskin.addDirective(
 
 	{
 		notEmpty: true,
-		replacers: {'?': 'void '}
+		shorthands: {'?': 'void '}
 	},
 
 	function (command) {

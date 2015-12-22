@@ -107,7 +107,7 @@ Snakeskin.addDirective(
 		block: true,
 		group: ['case', 'logic'],
 		notEmpty: true,
-		replacers: {'/>': 'end case', '>': 'case '}
+		shorthands: {'/>': 'end case', '>': 'case '}
 	},
 
 	function (command) {

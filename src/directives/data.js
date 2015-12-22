@@ -16,7 +16,7 @@ Snakeskin.addDirective(
 	{
 		notEmpty: true,
 		placement: 'template',
-		replacers: {'=': 'data '},
+		shorthands: {'=': 'data '},
 		text: true
 	},
 
