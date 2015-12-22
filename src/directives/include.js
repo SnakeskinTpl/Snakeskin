@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 		}
 
 		this.startInlineDir(null, {
-			from: this.res.length
+			from: this.result.length
 		});
 
 		const
@@ -60,7 +60,7 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		this.res = this.res.slice(0, this.structure.params.from);
+		this.result = this.result.slice(0, this.structure.params.from);
 	}
 );
 

@@ -289,7 +289,7 @@ export default class Parser {
 		 * The content of CDATA blocks
 		 * @type {!Array}
 		 */
-		this.cDataContent = [];
+		this.cdataContent = [];
 
 		/**
 		 * The map of included files
@@ -328,10 +328,10 @@ export default class Parser {
 		 * The final JS string
 		 * @type {string}
 		 */
-		this.res = '';
+		this.result = '';
 
 		if (!this.proto) {
-			this.res += ws`
+			this.result += ws`
 				This code is generated automatically, don't alter it. */
 				(function () {
 					${this.useStrict ? `'use strict';` : ''}

@@ -531,7 +531,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 								beginStr = true;
 								jsDoc = true;
-								jsDocStart = parser.res.length;
+								jsDocStart = parser.result.length;
 
 							} else {
 								comment = commentType;
@@ -976,12 +976,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 									clearMacroExpr();
 
 								} else if (macros.inline[el] && !macros.inline[prev] && !parser.macros[expr + el]) {
-									exprPos = parser.res.length;
+									exprPos = parser.result.length;
 									expr = el;
 
 								} else {
 									if (!expr) {
-										exprPos = parser.res.length;
+										exprPos = parser.result.length;
 									}
 
 									expr += el;
@@ -992,8 +992,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						if (parser.macros[expr]) {
 							const
 								modStr =
-									parser.res.slice(0, exprPos) +
-									parser.res.slice(exprPos + expr.length + advExprPos);
+									parser.result.slice(0, exprPos) +
+									parser.result.slice(exprPos + expr.length + advExprPos);
 
 							let
 								val = parser.macros[expr].call ?
@@ -1001,7 +1001,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 							val = String(val);
 							advExprPos += val.length;
-							parser.mod(() => parser.res = modStr);
+							parser.mod(() => parser.result = modStr);
 							parser.save(val);
 
 						} else {
@@ -1040,7 +1040,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (parser.proto) {
 		sp.parent.setCompileVars(parser.getCompileVars());
-		return parser.pasteDangerBlocks(parser.res);
+		return parser.pasteDangerBlocks(parser.result);
 	}
 
 	// If we have some outer declarations,
@@ -1053,14 +1053,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	parser.end(cacheKey, label);
 
 	if (p.prettyPrint) {
-		parser.res = beautify(parser.res);
-		parser.res = parser.res.replace(new RegExp(rgxp.eol.source, 'g'), p.eol);
+		parser.result = beautify(parser.result);
+		parser.result = parser.result.replace(new RegExp(rgxp.eol.source, 'g'), p.eol);
 	}
 
-	parser.res += p.eol;
+	parser.result += p.eol;
 
 	if (p.debug) {
-		p.debug.code = parser.res;
+		p.debug.code = parser.result;
 		p.debug.files = parser.files;
 	}
 
@@ -1077,7 +1077,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					'__dirname',
 					'__filename',
 
-					parser.res
+					parser.result
 				)(
 					{
 						children: [],
@@ -1104,7 +1104,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				'exports',
 				'global',
 
-				parser.res
+				parser.result
 			)(
 				{
 					exports: ctx
@@ -1116,7 +1116,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Compiling in a browser
 		} else {
-			parser.evalStr(parser.res);
+			parser.evalStr(parser.result);
 		}
 
 		saveIntoFnCache(cacheKey, text, p, ctx);
@@ -1136,7 +1136,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		setTimeout(() => {
 			try {
 				const
-					blob = new Blob([parser.res], {type: 'application/javascript'}),
+					blob = new Blob([parser.result], {type: 'application/javascript'}),
 					script = document.createElement('script');
 
 				script.src = URL.createObjectURL(blob);
@@ -1146,5 +1146,5 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}, 50);
 	}
 
-	return parser.res;
+	return parser.result;
 };

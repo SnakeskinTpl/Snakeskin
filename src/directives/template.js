@@ -457,9 +457,9 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 								throw `the proto "${key}" is not defined`;
 							}
 
-							this.res =
-								this.res.slice(0, el.pos) +
-								this.res.slice(el.pos).replace(el.label, (el.argsStr || '') +
+							this.result =
+								this.result.slice(0, el.pos) +
+								this.result.slice(el.pos).replace(el.label, (el.argsStr || '') +
 								(el.recursive ? `${tmp.i}++;` : tmp.body));
 						});
 					});

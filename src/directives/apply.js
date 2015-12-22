@@ -75,7 +75,7 @@ Snakeskin.addDirective(
 			back[name].push({
 				args,
 				label: new RegExp(`\\/\\* __APPLY__${key} \\*\\/`),
-				pos: this.res.length,
+				pos: this.result.length,
 				proto: selfProto ? cache[selfProto.name] : null,
 				recursive: Boolean(proto)
 			});

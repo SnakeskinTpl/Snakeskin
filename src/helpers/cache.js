@@ -127,7 +127,7 @@ export function saveIntoCache(key, code, params, parser) {
 
 	$globalCache[key] = $C.extend(false, $globalCache[key], {
 		debug: params.debug,
-		text: params.res,
+		text: params.result,
 		words: params.words
 	});
 }

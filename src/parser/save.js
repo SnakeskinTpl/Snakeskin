@@ -138,13 +138,13 @@ Parser.prototype.replaceCData = function (str) {
 
 	return str
 		.replace(new RegExp(`${r(s)}cdata${r(e)}([\\s\\S]*?)${r(s)}(?:\\/cdata|end cdata)${r(e)}`, 'g'), (sstr, data) => {
-			this.cDataContent.push(data);
+			this.cdataContent.push(data);
 			return String(
 					// The number of added lines
 					`${s}__appendLine__ ${(data.match(new RegExp(eol.source, 'g')) || '').length}${e}` +
 
 					// Label to replace CDATA
-					`__CDATA__${this.cDataContent.length - 1}_`
+					`__CDATA__${this.cdataContent.length - 1}_`
 			);
 		});
 };
@@ -160,15 +160,15 @@ Parser.prototype.end = function (cacheKey, label) {
 	label = label || '';
 	switch (this.renderMode) {
 		case 'stringBuffer':
-			this.res = this.res.replace(/__RESULT__\.push\(''\);/g, '');
+			this.result = this.result.replace(/__RESULT__\.push\(''\);/g, '');
 			break;
 
 		case 'dom':
-			this.res = this.res.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
+			this.result = this.result.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
 			break;
 
 		default:
-			this.res = this.res.replace(/__RESULT__ \+= '';/g, '');
+			this.result = this.result.replace(/__RESULT__ \+= '';/g, '');
 			break;
 	}
 
@@ -177,11 +177,11 @@ Parser.prototype.end = function (cacheKey, label) {
 		includes = JSON.stringify(this.environment.key);
 	}
 
-	this.res = this.pasteDangerBlocks(this.res)
+	this.result = this.pasteDangerBlocks(this.result)
 		.replace(
 			/__CDATA__(\d+)_/g,
 			(sstr, pos) => escapeEOLs(
-				this.cDataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)
+				this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)
 			).replace(singleQuotes, '&#39;')
 		);
 
@@ -191,10 +191,10 @@ Parser.prototype.end = function (cacheKey, label) {
 		labelDecl = `label <${label.valueOf()}>`,
 		includesDecl = `includes <${includes}>`,
 		generatedAtDecl = `generated at <${new Date().valueOf()}>`,
-		resDecl = `${this.eol}   ${this.res}`;
+		resDecl = `${this.eol}   ${this.result}`;
 
-	this.res = `/* ${versionDecl}, ${keyDecl}, ${labelDecl}, ${includesDecl}, ${generatedAtDecl}.${resDecl}`;
-	this.res += ws`
+	this.result = `/* ${versionDecl}, ${keyDecl}, ${labelDecl}, ${includesDecl}, ${generatedAtDecl}.${resDecl}`;
+	this.result += ws`
 			}
 
 			${
@@ -266,10 +266,10 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
 	if (!this.tplName || $write[this.tplName] !== false || opt_interface) {
 		if (opt_jsDoc) {
 			const pos = Number(opt_jsDoc);
-			this.res = this.res.slice(0, pos) + str + this.res.slice(pos);
+			this.result = this.result.slice(0, pos) + str + this.result.slice(pos);
 
 		} else {
-			this.res += str;
+			this.result += str;
 		}
 
 		return true;

@@ -224,7 +224,7 @@ Snakeskin.addDirective(
 		this.append(resStr);
 		this.structure.params = {
 			end,
-			from: this.res.length,
+			from: this.result.length,
 			oldEnd
 		};
 	},
@@ -238,7 +238,7 @@ Snakeskin.addDirective(
 			{params} = this.structure;
 
 		if (this.inlineIterators) {
-			const part = this.res.slice(params.from);
+			const part = this.result.slice(params.from);
 			this.append(`} ${params.end + part} } ${params.oldEnd + part} }}}}`);
 
 		} else {

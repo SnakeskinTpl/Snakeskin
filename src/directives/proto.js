@@ -284,7 +284,7 @@ Snakeskin.addDirective(
 							ctx: this,
 							name,
 							parentTplName: this.parentTplName,
-							pos: this.res.length,
+							pos: this.result.length,
 							recursive: params.recursive,
 							space: this.space,
 							strongSpace: this.strongSpace,
@@ -310,11 +310,11 @@ Snakeskin.addDirective(
 					}
 
 					if (!el.outer) {
-						this.res =
-							this.res.slice(0, el.pos) +
+						this.result =
+							this.result.slice(0, el.pos) +
 							this.returnProtoArgs(args, el.args) +
 							protoCache[tplName][name].body +
-							this.res.slice(el.pos);
+							this.result.slice(el.pos);
 
 					} else {
 						structure.vars = el.vars;

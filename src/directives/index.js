@@ -391,7 +391,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		const
-			from = parser.res.length;
+			from = parser.result.length;
 
 		if (!p.deferInit && !p.with) {
 			if (p.block) {
@@ -494,7 +494,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 
 		const
-			res = params['@res'] ? params['@res'] : this.res;
+			res = params['@res'] ? params['@res'] : this.result;
 
 		const
 			from = params['@from'],

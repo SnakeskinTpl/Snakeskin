@@ -22,14 +22,14 @@ Snakeskin.addDirective(
 
 	function () {
 		this.startDir(null, {
-			from: this.res.length
+			from: this.result.length
 		});
 	},
 
 	function () {
 		const {params} = this.structure;
-		params['@res'] = this.res;
-		this.res = this.res.slice(0, params.from);
+		params['@res'] = this.result;
+		this.result = this.result.slice(0, params.from);
 	}
 
 );
