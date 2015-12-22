@@ -16,6 +16,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		group: 'eval',
 		logic: true,
 		placement: 'global'
 	},

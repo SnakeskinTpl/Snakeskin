@@ -14,6 +14,7 @@ Snakeskin.addDirective(
 	'decl',
 
 	{
+		group: ['decl', 'escape', 'output'],
 		notEmpty: true,
 		placement: 'template',
 		shorthands: {'{': 'decl '},

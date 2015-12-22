@@ -14,12 +14,13 @@ Snakeskin.addDirective(
 	'set',
 
 	{
+		group: 'set',
 		notEmpty: true
 	},
 
 	function (command) {
-		if (!this.getGroup('rootTemplate')[this.structure.parent.name]) {
-			return this.error(`the directive "${this.name}" can be used only within the top level of template`);
+		if (!this.isReady()) {
+			return;
 		}
 
 		const

@@ -14,6 +14,7 @@ Snakeskin.addDirective(
 	'data',
 
 	{
+		group: ['data', 'escape', 'output'],
 		notEmpty: true,
 		placement: 'template',
 		shorthands: {'=': 'data '},

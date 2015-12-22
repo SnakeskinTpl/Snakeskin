@@ -39,7 +39,6 @@ import './directives/decl';
 import './directives/data';
 import './directives/return';
 import './directives/wrap';
-import './directives/import';
 import './directives/super';
 import './directives/set';
 import './directives/cdn';

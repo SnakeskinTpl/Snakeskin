@@ -14,6 +14,7 @@ Snakeskin.addDirective(
 	'ignoreWhitespaces',
 
 	{
+		group: ['ignoreWhitespaces', 'space'],
 		placement: 'template',
 		shorthands: {'&': 'ignoreWhitespaces '}
 	},
@@ -30,6 +31,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
+		group: ['ignoreAllWhitespaces', 'space'],
 		placement: 'template',
 		shorthands: {'&+': 'ignoreAllWhitespaces '}
 	},
@@ -50,6 +52,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
+		group: ['unIgnoreAllWhitespaces', 'space'],
 		placement: 'template',
 		shorthands: {'&-': 'unIgnoreAllWhitespaces '}
 	},
@@ -69,6 +72,7 @@ Snakeskin.addDirective(
 	'sp',
 
 	{
+		group: ['sp', 'space'],
 		shorthands: {'\\': 'sp '},
 		text: true
 	}

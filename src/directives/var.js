@@ -14,6 +14,7 @@ Snakeskin.addDirective(
 	'var',
 
 	{
+		group: 'var',
 		notEmpty: true,
 		shorthands: {':': 'var '}
 	},
