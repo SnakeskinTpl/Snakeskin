@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import { $templates, $sysDirs } from '../consts/cache';
+import { $templates, $logicDirs } from '../consts/cache';
 
 /**
  * Declares the start of a block directive
@@ -40,7 +40,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		parent: structure,
 		stack: [],
 		strong: false,
-		sys: Boolean($sysDirs[opt_name]),
+		sys: Boolean($logicDirs[opt_name]),
 		vars: opt_vars
 	};
 
@@ -122,7 +122,7 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 		parent: this.structure,
 		stack: [],
 		strong: false,
-		sys: Boolean($sysDirs[opt_name]),
+		sys: Boolean($logicDirs[opt_name]),
 		vars: null
 	};
 

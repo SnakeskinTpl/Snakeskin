@@ -22,7 +22,7 @@ import {
 	$dirNameAliases,
 	$dirNameShorthands,
 	$consts,
-	$sysDirs,
+	$logicDirs,
 	$blockDirs,
 	$textDirs,
 	$dirGroups,
@@ -86,7 +86,7 @@ Snakeskin.group = function (name) {
  *   endsWith: (Array|string|undefined),
  *   endFor: (Array|string|undefined),
  *   trim: ({left: boolean, right: boolean}|undefined),
- *   sys: (?boolean|undefined),
+ *   logic: (?boolean|undefined),
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
  *   selfInclude: (?boolean|undefined),
@@ -136,7 +136,7 @@ Snakeskin.group = function (name) {
  *          right: false
  *        }
  *
- *   *) [params.sys = false] - if is true, then the directive is considered as a system type
+ *   *) [params.logic = false] - if is true, then the directive is considered as a system type
  *   *) [params.text = false] - if is true, then the directive will be outputted as a plain text
  *   *) [params.block = false] - if is true, then the directive is considered as a block type
  *   *) [params.selfInclude = true] - if is false, then the directive can't be placed inside an another directive
@@ -163,7 +163,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		_([$dirTrim, p.trim]),
 		_([$blockDirs, p.block]),
-		_([$sysDirs, p.sys]),
+		_([$logicDirs, p.logic]),
 		_([$textDirs, p.text])
 
 	]).forEach(({cache, val}) => {

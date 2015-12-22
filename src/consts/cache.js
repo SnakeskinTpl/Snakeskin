@@ -16,7 +16,7 @@ export const
 export const
 	$blockDirs = {},
 	$textDirs = {},
-	$sysDirs = {};
+	$logicDirs = {};
 
 export const
 	$write = {};
