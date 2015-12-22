@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 			parts[1] = parts[1] && `(${parts[1]})`;
 			parts[2] = parts[2] && `(${parts[2]})`;
 
-			this.append(`for (${decl + this.out(parts.slice(1).join(';'), {sys: true})}) {`);
+			this.append(`for (${decl}${this.out(parts.slice(1).join(';'), {sys: true})}) {`);
 
 		// for var key in obj OR for var el of obj
 		} else {

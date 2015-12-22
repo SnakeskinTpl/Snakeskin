@@ -57,12 +57,12 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		if (!this.isReady()) {
+			return;
+		}
+
 		// else if OR else unless
 		if (command) {
-			if (!this.isReady()) {
-				return;
-			}
-
 			const
 				parts = command.split(' '),
 				prfx = parts[0] === 'unless' ? '!' : '';
