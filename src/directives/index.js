@@ -312,7 +312,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			case 'template':
 				if (!structure.parent) {
 					return parser.error(
-						`the directive "${dirName}" can be used only within: ${q(parser.getGroupList('template'))}`
+						`the directive "${dirName}" can be used only within directives ${q(parser.getGroupList('template'))}`
 					);
 				}
 
@@ -331,7 +331,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (p.generator && !parser.parentTplName && !parser.generator && !parser.proto && !parser.outerLink) {
-			return parser.error(`the directive "${dirName}" can be used only with a generator`);
+			return parser.error(`the directive "${dirName}" can be used only within a generator template`);
 		}
 
 		const
@@ -339,7 +339,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			rmBlacklist = $C(rmBlacklistList).reduce((map, el) => (map[el] = true, map), {});
 
 		if (p.renderModesBlacklist && rmBlacklist[parser.renderMode]) {
-			return parser.error(`the directive "${dirName}" can't be used with: ${q(rmBlacklist)} rendering modes`);
+			return parser.error(`the directive "${dirName}" can't be used with directives ${q(rmBlacklist)} rendering modes`);
 		}
 
 		const
@@ -348,7 +348,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (p.renderModesWhitelist && !rmWhitelist[parser.renderMode]) {
 			return parser.error(
-				`the directive "${dirName}" can be used only with: ${q(rmWhitelistList)} rendering modes`
+				`the directive "${dirName}" can be used only with directives ${q(rmWhitelistList)} rendering modes`
 			);
 		}
 
@@ -356,18 +356,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			const groups = $C([].concat(p.with)).reduce((arr, el) =>
 				arr.concat(el[0] === gPrfx ? parser.getGroupList(el.slice(1)) : el), []);
 
-			return parser.error(`the directive "${dirName}" can be used only with: ${q(groups)}`);
+			return parser.error(`the directive "${dirName}" can be used only with directives ${q(groups)}`);
 		}
 
 		if (p.ancestorsBlacklist && parser.has($dirAncestorsBlacklistPlain[name])) {
 			return parser.error(
-				`the directive "${dirName}" can't be used with: ${q(Object.keys($dirAncestorsBlacklistPlain[name]))}`
+				`the directive "${dirName}" can't be used within directives ${q(Object.keys($dirAncestorsBlacklistPlain[name]))}`
 			);
 		}
 
 		if (p.ancestorsWhitelist && !parser.has($dirAncestorsWhitelistPlain[name])) {
 			return parser.error(
-				`the directive "${dirName}" can be used only with: ${q(Object.keys($dirAncestorsWhitelistPlain[name]))}`
+				`the directive "${dirName}" can be used only within directives ${q(Object.keys($dirAncestorsWhitelistPlain[name]))}`
 			);
 		}
 

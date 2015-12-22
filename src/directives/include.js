@@ -24,7 +24,7 @@ Snakeskin.addDirective(
 	function (command) {
 		if (this.tplName || this.hasParent('head')) {
 			return this.error(
-				`the directive "${this.name}" can't be used within: ${q(this.getGroupList('template').concat('head'))}`
+				`the directive "${this.name}" can't be used within directives ${q(this.getGroupList('template').concat('head'))}`
 			);
 		}
 
