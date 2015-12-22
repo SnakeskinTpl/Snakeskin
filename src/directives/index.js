@@ -303,9 +303,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		const
+			{structure} = parser;
+
+		const
 			ignore = $dirGroups['ignore'][dirName],
-			{structure} = parser,
-			parentDirName = this.getDirName(structure.name);
+			prevDirName = this.getDirName(structure.name);
 
 		parser.name = dirName;
 		switch (p.placement) {
@@ -352,7 +354,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			);
 		}
 
-		if (p.with && (!$dirChain[parentDirName] || !$dirChain[parentDirName][dirName])) {
+		if (p.with && (!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName])) {
 			const groups = $C([].concat(p.with)).reduce((arr, el) =>
 				arr.concat(el[0] === gPrfx ? parser.getGroupList(el.slice(1)) : el), []);
 
@@ -372,11 +374,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (structure.strong) {
-			if ($dirParents[parentDirName][dirName]) {
+			if ($dirParents[prevDirName][dirName]) {
 				parser.strongSpace.push(parser.strongSpace[parser.strongSpace.length - 2]);
 
 			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
-				return parser.error(`the directive "${dirName}" can't be used within the "${parentDirName}"`);
+				return parser.error(`the directive "${dirName}" can't be used within the "${prevDirName}"`);
 			}
 		}
 
@@ -418,8 +420,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (dirName === sourceName) {
 			if (structure === newStruct) {
-				if (!ignore && $dirEnd[parentDirName] && !$dirEnd[parentDirName][dirName]) {
-					return parser.error(`the directive "${dirName}" can't be used after the "${parentDirName}"`);
+				if (
+					!ignore &&
+					(!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName]) &&
+					$dirEnd[prevDirName] && !$dirEnd[prevDirName][dirName]
+
+				) {
+					return parser.error(`the directive "${dirName}" can't be used after the "${prevDirName}"`);
 				}
 
 			} else {
@@ -436,7 +443,12 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 						j++;
 					}
 
-					if (!ignore && prev && $dirEnd[prev.name] && !$dirEnd[prev.name][dirName]) {
+					if (
+						!ignore && prev &&
+						(!$dirChain[prev.name] || !$dirChain[prev.name][dirName]) &&
+						$dirEnd[prev.name] && !$dirEnd[prev.name][dirName]
+
+					) {
 						return parser.error(`the directive "${dirName}" can't be used after the "${prev.name}"`);
 					}
 				}
