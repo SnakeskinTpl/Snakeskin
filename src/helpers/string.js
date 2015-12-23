@@ -15,9 +15,14 @@ const
 	wsRgxp = /^\s+|[\r\n]+/mg;
 
 /**
- * String tag for truncate starting whitespaces and eol-s
+ * String tag (for ES6 string templates) for truncate starting whitespaces and eol-s
+ *
+ * @param {!Array.<string>} strings
+ * @param {...string} expr
+ * @return {string}
  */
-export function ws(strings, ...expr) {
+export function ws(strings, expr) {
+	expr = $C.toArray(arguments).slice(1);
 	return $C(strings).reduce((str, el, i) => str += el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : ''), '');
 }
 
