@@ -86,7 +86,7 @@ Snakeskin.Filters.html = function (str, opt_attr, opt_force) {
 
 	let res = String(str);
 	if (opt_attr && opt_force) {
-		res = res.replace(escapeAttrRgxp, '$1"$2"');
+		// res = res.replace(escapeAttrRgxp, '$1"$2"');
 	}
 
 	res = res.replace(escapeHTMLRgxp, escapeHTML);
@@ -346,6 +346,10 @@ Snakeskin.Filters['default'] = function (val, def) {
 	return val === undefined ? def : val;
 };
 
+Snakeskin.Filters['default']['ssFilterParams'] = {
+	'!html': false
+};
+
 const
 	tplRgxp = /\${(.*?)}/g;
 
@@ -363,7 +367,6 @@ Snakeskin.Filters['tpl'] = function (str, map) {
 	return String(str).replace(tplRgxp, (sstr, $0) => $0 in map ? map[$0] : '');
 };
 
-Snakeskin.Filters['default']['!undefSnakeskinFilter'] = true;
 const
 	nl2brRgxp = /\r?\n|\n/g;
 
@@ -385,4 +388,35 @@ Snakeskin.Filters['nl2br'] = function (val) {
 	return res;
 };
 
-Snakeskin.Filters['nl2br']['!htmlSnakeskinFilter'] = true;
+Snakeskin.Filters['nl2br']['ssFilterParams'] = {
+	'!html': false
+};
+
+let example = {
+	bar: 'baz',
+
+	baz: ['foo', 'baz'],
+
+	foo: {
+		value: 'foo',
+		filters: [{default: ['baz']}, {html: []}]
+	},
+
+	'ng-': {
+		repeat: 'foo bar'
+	}
+};
+
+Snakeskin.Filters['attr'] = function (val, cache) {
+	function convert(obj) {
+		Snakeskin.forEach(obj, (el) => {
+
+		});
+	}
+
+	return '';
+};
+
+Snakeskin.Filters['attr']['ssFilterParams'] = {
+	'bind': ['__ATTR_CACHE__']
+};

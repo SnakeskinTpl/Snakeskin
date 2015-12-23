@@ -311,7 +311,8 @@ const
  */
 Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {}) {
 	const
-		{tplName, structure} = this;
+		{tplName, structure} = this,
+		Filters = $C(Snakeskin.Filters);
 
 	if (dangerRgxp.test(command)) {
 		this.error('unsupported syntax');
@@ -685,29 +686,16 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 				arr = [];
 
 			$C(filter).forEach((el) => {
-				if (!unMap[el]) {
-					arr.push(el);
-
-					const
-						[frName] = el.split(' ');
-
-					if (Snakeskin.Filters[frName]) {
-						if (Snakeskin.Filters[frName]['!htmlSnakeskinFilter']) {
-							unEscape = true;
-						}
-
-						if (Snakeskin.Filters[frName]['!undefSnakeskinFilter']) {
-							unUndef = true;
-						}
-					}
-
-				} else {
+				if (unMap[el]) {
 					if (el === '!html' && (!pCount || filterWrapper)) {
 						unEscape = true;
 
 					} else if (el === '!undef') {
 						unUndef = true;
 					}
+
+				} else {
+					arr.push(el);
 				}
 			});
 
@@ -724,10 +712,29 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					input = params.slice(1).join(' ').trim(),
 					current = params.shift().split('.');
 
+				let bind;
+				if (Filters.in(current)) {
+					const
+						filterParams = Filters.get(current)['ssFilterParams'];
+
+					if (filterParams) {
+						bind = filterParams['bind'];
+
+						if (filterParams['!html'] === false) {
+							unEscape = true;
+						}
+
+						if (filterParams['!undef'] === false) {
+							unUndef = true;
+						}
+					}
+				}
+
 				resTmp =
 					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str += `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
 						resTmp +
+						(bind ? `,${bind.join(',')}` : '') +
 						(input ? `,${input}` : '') +
 						(filterWrapper || !pCount ? ')' : '') +
 					')'

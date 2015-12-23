@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'attr',
@@ -23,7 +24,29 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.append($=>
-			$C(this.splitXMLAttrGroup(command)).reduce((res, el) => res += this.returnXMLAttrDecl(el), '')
+			ws`
+				var
+					__ATTR_CACHE__ = {},
+					__ATTR_CONCAT_MAP__ = {'class': true};
+
+				${
+					$C(this.splitXMLAttrGroup(command))
+						.reduce((res, el) => res += this.returnXMLAttrDecl(el), '')
+				}
+
+				for (var __KEY__ in __ATTR_CACHE__) {
+					if (!__ATTR_CACHE__.hasOwnProperty(__KEY__)) {
+						continue;
+					}
+
+					if (__NODE__) {
+						__NODE__.setAttribute(__KEY__, __ATTR_CACHE__[__KEY__]);
+
+					} else {
+						${this.wrap(`' ' + __KEY__ + (__ATTR_CACHE__[__KEY__] && '="' + __ATTR_CACHE__[__KEY__] + '"')`)}
+					}
+				}
+			`
 		);
 	}
 );

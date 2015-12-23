@@ -60,9 +60,9 @@ Snakeskin.addDirective(
 			dom = !this.domComment && this.renderMode === 'dom';
 
 		let str = ws`
-			var __ATTR_TMP__ = {
-				'class': ''
-			};
+			var
+				__ATTR_CACHE__ = {},
+				__ATTR_CONCAT_MAP__ = {'class': true};
 		`;
 
 		if (dom) {
@@ -74,39 +74,38 @@ Snakeskin.addDirective(
 			str += this.wrap(`'<${desc.tag}'`);
 		}
 
-		str += $C(groups)
-			.reduce((res, el) => res += this.returnXMLAttrDecl(el, true), '');
-
 		if (desc.id) {
-			if (dom) {
-				str += `__NODE__.id = '${desc.id}';`;
-
-			} else {
-				str += this.wrap(`' id="${desc.id}"'`);
-			}
+			str += `__ATTR_CACHE__['id'] = __ATTR_CACHE__['id'] || '${desc.id}';`;
 		}
 
 		if (desc.classes.length) {
-			str += ws`
-				__ATTR_TMP__['class'] += (__ATTR_TMP__['class'] ? ' ' : '') + '${desc.classes.join(' ')}';
-			`;
+			str += `__ATTR_CACHE__['class'] = (__ATTR_CACHE__['class'] || '') + '${desc.classes.join(' ')}';`;
 		}
 
-		if (dom) {
-			str += ws`
-				if (__ATTR_TMP__['class']) {
-					__NODE__.className = __ATTR_TMP__['class'];
+		str += $C(groups)
+			.reduce((res, el) => res += this.returnXMLAttrDecl(el), '');
+
+		str += ws`
+			for (var __KEY__ in __ATTR_CACHE__) {
+				if (!__ATTR_CACHE__.hasOwnProperty(__KEY__)) {
+					continue;
 				}
 
-				${this.getPushNodeDecl(!params.block)}
-			`;
+				if (__NODE__) {
+					__NODE__.setAttribute(__KEY__, __ATTR_CACHE__[__KEY__]);
 
-		} else {
-			str += this.wrap(ws`
-				(__ATTR_TMP__['class'] ? ' class="' + __ATTR_TMP__['class'] + '"' : '') + '${
-					!params.block && this.doctype === 'xml' ? '/' : ''
-				}>'
-			`);
+				} else {
+					${this.wrap(`' ' + __KEY__ + (__ATTR_CACHE__[__KEY__] && '="' + __ATTR_CACHE__[__KEY__] + '"')`)}
+				}
+			}
+		`;
+
+		if (!dom) {
+			if (!params.block && this.doctype === 'xml') {
+				str += this.wrap(`'/'`);
+			}
+
+			str += this.wrap(`'>'`);
 		}
 
 		this.append(str);

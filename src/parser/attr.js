@@ -11,7 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
-import { parentLink } from '../consts/regs';
+import { tplVars, parentLink } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
@@ -48,15 +48,19 @@ function unEscapeOr(ignore, $1, $2) {
 }
 
 /**
- * Returns string declaration of XML attribute
+ * Returns string declaration of the specified XML attribute
  *
- * @param {string} attr - source string
- * @param {?string=} [group] - group name
- * @param {?string=} [separator='-'] - group separator
- * @param {?boolean=} [opt_classLink=false] - if is true, then a value of a class attribute will be saved to a variable
+ * @param {{attr: string, group: (?string|undefined), separator: (?string|undefined)}} params - parameters:
+ *   *) attr - source attribute
+ *   *) [group] - group name
+ *   *) [separator='-'] - group separator
+
  * @return {string}
  */
-Parser.prototype.returnXMLAttrDecl = function ({attr, group, separator}, opt_classLink) {
+Parser.prototype.returnXMLAttrDecl = function (params) {
+	let
+		{attr, group, separator} = params;
+
 	const
 		rAttr = this.attr,
 		rEscape = this.attrEscape;
@@ -66,7 +70,6 @@ Parser.prototype.returnXMLAttrDecl = function ({attr, group, separator}, opt_cla
 
 	group = group || '';
 	separator = separator || '-';
-
 	attr = attr
 		.replace(escapeHTMLRgxp, escapeHTML)
 		.replace(escapeOrRgxp, escapeOr);
@@ -103,8 +106,9 @@ Parser.prototype.returnXMLAttrDecl = function ({attr, group, separator}, opt_cla
 		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
 		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
 		res += ws`
-			var __ATTR_J__ = 0;
-			var __ATTR_STR__ = '';
+			var
+				__ATTR_POS__ = 0,
+				__ATTR_STR__ = '';
 		`;
 
 		if (group) {
@@ -125,40 +129,22 @@ Parser.prototype.returnXMLAttrDecl = function ({attr, group, separator}, opt_cla
 			val = `'${this.pasteTplVarBlocks(val)}'`;
 			return res += ws`
 				if ((${val}) != null && (${val}) !== '') {
-					__ATTR_STR__ += __ATTR_J__ ? ' ' + ${val} : ${val};
-					__ATTR_J__++;
+					__ATTR_STR__ += __ATTR_POS__ ? ' ' + ${val} : ${val};
+					__ATTR_POS__++;
 				}
 			`;
 
 		}, '');
 
 		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
-		res += `if ((${arg[0]}) != null && (${arg[0]}) != '') {`;
 
-		const tmp = ws`
-			if (__NODE__) {
-				__NODE__.setAttribute(${arg[0]}, ${empty} ? ${arg[0]} : __ATTR_STR__ );
-
-			} else {
-				${this.wrap(`' ' + ${arg[0]} + (${empty} ? '' : '="' + __ATTR_STR__ + '"')`)}
+		return res += ws`
+			if ((${arg[0]}) != null && (${arg[0]}) != '') {
+				__ATTR_CACHE__[${arg[0]}] = __ATTR_CONCAT_MAP__[${arg[0]}] ? __ATTR_CACHE__[${arg[0]}] || '' : '';
+				__ATTR_CACHE__[${arg[0]}] += __ATTR_CACHE__[${arg[0]}] && !__NODE__ ? ' ' : '';
+				__ATTR_CACHE__[${arg[0]}] += ${empty} ? __NODE__ ? ${arg[0]} : '' : __ATTR_STR__;
 			}
 		`;
-
-		if (opt_classLink) {
-			res += ws`
-				if (__ATTR_TMP__[(${arg[0]})] != null) {
-					__ATTR_TMP__[(${arg[0]})] += __ATTR_STR__;
-
-				} else {
-					${tmp}
-				}
-			`;
-
-		} else {
-			res += tmp;
-		}
-
-		return res += '}';
 
 	}, '');
 
