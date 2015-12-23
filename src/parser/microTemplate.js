@@ -32,11 +32,11 @@ import {
 } from '../consts/literals';
 
 /**
- * Splits a string by a space and returns an array
+ * Splits a string by a space and returns an array of string parts
  * (with directives)
  *
  * @param {string} str - source string
- * @return {!Array}
+ * @return {!Array<string>}
  */
 Parser.prototype.splitBySpace = function (str) {
 	const
@@ -92,8 +92,7 @@ Parser.prototype.splitBySpace = function (str) {
 };
 
 /**
- * Replaces found matches ${ ... } or #{ ... }
- * from a string to SS calls
+ * Replaces found matches ${ ... } or #{ ... } from a string to SS calls
  *
  * @param {string} str - source string
  * @param {{sys: (?boolean|undefined), replace: (?boolean|undefined)}} params - additional parameters:
