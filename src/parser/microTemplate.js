@@ -96,11 +96,14 @@ Parser.prototype.splitBySpace = function (str) {
  * from a string to SS calls
  *
  * @param {string} str - source string
- * @param {?boolean=} [sys=false] - if is true, then call is considered as system
- * @param {?boolean=} [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_
+ * @param {{sys: (?boolean|undefined), replace: (?boolean|undefined)}} params - additional parameters:
+ *   *) [sys=false] - if is true, then call is considered as system
+ *   *) [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_
+ *
  * @return {string}
  */
-Parser.prototype.replaceTplVars = function (str, {sys, replace} = {}) {
+Parser.prototype.replaceTplVars = function (str, params) {
+	const {sys, replace} = params || {};
 	str = this.pasteDangerBlocks(str);
 
 	let
