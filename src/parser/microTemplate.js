@@ -10,7 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import { eol, sysWord, bEnd } from '../consts/regs';
+import * as rgxp from '../consts/regs';
 import { getCommentType } from '../helpers/literals';
 import { applyDefEscape, escapeSingleQuotes } from '../helpers/escape';
 import {
@@ -44,12 +44,14 @@ Parser.prototype.splitBySpace = function (str) {
 
 	let
 		escape = false,
-		bOpen = 0,
-		bStart = false;
+		bStart = false,
+		bOpen = 0;
 
 	for (let i = 0; i < str.length; i++) {
 		const
-			currentEscape = escape,
+			currentEscape = escape;
+
+		const
 			el = str[i],
 			part = str.substr(i, MICRO_TEMPLATE_LENGTH);
 
@@ -154,7 +156,7 @@ Parser.prototype.replaceTplVars = function (str, {sys, replace} = {}) {
 				}
 
 				if (!currentEscape) {
-					let
+					const
 						commentType = getCommentType(str, pos);
 
 					if (commentType) {
@@ -170,7 +172,7 @@ Parser.prototype.replaceTplVars = function (str, {sys, replace} = {}) {
 							}
 						}
 
-					} else if (eol.test(el) && comment === SINGLE_COMMENT) {
+					} else if (rgxp.eol.test(el) && comment === SINGLE_COMMENT) {
 						comment = false;
 					}
 				}
@@ -182,11 +184,11 @@ Parser.prototype.replaceTplVars = function (str, {sys, replace} = {}) {
 				if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
 					bEnd = true;
 
-				} else if (bEnd.test(el)) {
+				} else if (rgxp.bEnd.test(el)) {
 					bEnd = false;
 				}
 
-				if (sysWord.test(el)) {
+				if (rgxp.sysWord.test(el)) {
 					part += el;
 
 				} else {
