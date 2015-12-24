@@ -51,6 +51,10 @@ Snakeskin.addDirective(
 
 		$C.extend(false, this.structure.params, {inline, tag});
 
+		if (tag === '?') {
+			return;
+		}
+
 		let str =
 			this.getXMLTagDeclStart(tag) +
 			this.getXMLAttrsDeclStart() +
@@ -77,7 +81,7 @@ Snakeskin.addDirective(
 		this.bemRef = params.bemRef;
 		this.prevSpace = false;
 
-		if (!this.isReady()) {
+		if (!this.isReady() || params.tag === '?') {
 			return;
 		}
 

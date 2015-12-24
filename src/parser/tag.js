@@ -13,7 +13,7 @@ import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { parentLink } from '../consts/regs';
 import { inlineTags } from '../consts/html';
-import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK, FILTER } from '../consts/literals';
 
 /**
  * If is true, then XML comment is started with DOM render mode
