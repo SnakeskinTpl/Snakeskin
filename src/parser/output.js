@@ -303,7 +303,7 @@ const
  * Prepares a command to output:
  * binds to the scope and initialization filters
  *
- * @param {string} command - command
+ * @param {string} command - source command
  * @param {?{
  *   unsafe: (?boolean|undefined),
  *   skipFirstWord: (?boolean|undefined),
