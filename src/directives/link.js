@@ -76,7 +76,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			parts = this.splitBySpace(command),
+			parts = this.getTokens(command),
 			dom = !this.domComment && this.renderMode === 'dom';
 
 		const

@@ -177,7 +177,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			parts = this.splitBySpace(command);
+			parts = this.getTokens(command);
 
 		let
 			cdn = parts.slice(1).join(' '),

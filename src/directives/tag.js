@@ -46,7 +46,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			parts = this.splitBySpace(command),
+			parts = this.getTokens(command),
 			desc = this.returnTagDesc(parts[0]);
 
 		const

@@ -118,7 +118,7 @@ Parser.prototype.returnXMLAttrDecl = function (params) {
 			arg[0] = arg[0][0] === '-' ? `data-${arg[0].slice(1)}` : arg[0];
 		}
 
-		res += $C(this.splitBySpace(arg[1])).reduce((res, val) => {
+		res += $C(this.getTokens(arg[1])).reduce((res, val) => {
 			val = val.trim();
 
 			if (parentLink.test(val) && ref) {

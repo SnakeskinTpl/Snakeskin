@@ -18,7 +18,7 @@ import './eval';
 import './group';
 import './inherit';
 import './jadeLike';
-import './microTemplate';
+import './interpolation';
 import './name';
 import './other';
 import './output';

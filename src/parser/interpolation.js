@@ -32,15 +32,15 @@ import {
 } from '../consts/literals';
 
 /**
- * Splits a string by a space and returns an array of string parts
- * (with directives)
+ * Splits a string by a separator
+ * and returns an array of tokens
  *
  * @param {string} str - source string
  * @return {!Array<string>}
  */
-Parser.prototype.splitBySpace = function (str) {
+Parser.prototype.getTokens = function (str) {
 	const
-		res = [''];
+		arr = [''];
 
 	let
 		escape = false,
@@ -55,13 +55,16 @@ Parser.prototype.splitBySpace = function (str) {
 			el = str[i],
 			part = str.substr(i, MICRO_TEMPLATE_LENGTH);
 
+		let
+			last = arr.length - 1;
+
 		if (el === '\\' || escape) {
 			escape = !escape;
 		}
 
 		if (!currentEscape && MICRO_TEMPLATES[part]) {
 			i += MICRO_TEMPLATE_LENGTH - 1;
-			res[res.length - 1] += part;
+			arr[last] += part;
 			bStart = true;
 			bOpen++;
 			continue;
@@ -80,15 +83,15 @@ Parser.prototype.splitBySpace = function (str) {
 		}
 
 		if (el === ' ' && !bOpen) {
-			res.push('');
+			last = arr.push('') - 1;
 		}
 
 		if (el !== ' ' || bOpen) {
-			res[res.length - 1] += el;
+			arr[last] += el;
 		}
 	}
 
-	return res;
+	return arr;
 };
 
 /**
@@ -107,7 +110,9 @@ Parser.prototype.replaceTplVars = function (str, opt_params) {
 
 	let
 		start = 0,
-		begin = 0,
+		begin = 0;
+
+	let
 		dir = '',
 		res = '';
 
