@@ -383,7 +383,11 @@ export default class Parser {
 					function __EXEC__() {
 						var
 							__ROOT__ = this,
-							self = this;
+							self = __ROOT__;
+
+						var
+							TRUE = new Boolean(true),
+							FALSE = new Boolean(false);
 
 						var
 							__APPEND__ = Snakeskin.appendChild,

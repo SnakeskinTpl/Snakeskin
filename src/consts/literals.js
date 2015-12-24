@@ -215,6 +215,8 @@ export const SYS_CONSTS = {
 	'__LOCAL__': true,
 	'__THIS__': true,
 	'__INCLUDE__': true,
+	'TRUE': true,
+	'FALSE': true,
 	'$_': true,
 	'$0': true
 };
