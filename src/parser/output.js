@@ -100,12 +100,11 @@ const
 /**
  * Returns a full word from a string
  *
- * @private
  * @param {string} str - source string
  * @param {number} pos - start search position
  * @return {{word: string, finalWord: string, unary: string}}
  */
-Parser.prototype._getWord = function (str, pos) {
+Parser.prototype.getWordFromPos = function (str, pos) {
 	let
 		word = '',
 		res = '',
@@ -515,7 +514,7 @@ Parser.prototype.out = function (command, opt_params) {
 			// posNWord indicates how many new words to skip
 			if (nWord && !posNWord && nextCharRgxp.test(el)) {
 				const
-					nextStep = this._getWord(command, i);
+					nextStep = this.getWordFromPos(command, i);
 
 				let
 					uAdd = wordAddEnd + addition,
