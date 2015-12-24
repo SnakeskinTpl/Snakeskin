@@ -720,11 +720,11 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					if (filterParams) {
 						bind = filterParams['bind'];
 
-						if (filterParams['!html'] === false) {
+						if (filterParams['!html']) {
 							unEscape = true;
 						}
 
-						if (filterParams['!undef'] === false) {
+						if (filterParams['!undef']) {
 							unUndef = true;
 						}
 					}

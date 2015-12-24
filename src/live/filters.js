@@ -347,7 +347,7 @@ Snakeskin.Filters['default'] = function (val, def) {
 };
 
 Snakeskin.Filters['default']['ssFilterParams'] = {
-	'!html': false
+	'!html': true
 };
 
 const
@@ -389,22 +389,7 @@ Snakeskin.Filters['nl2br'] = function (val) {
 };
 
 Snakeskin.Filters['nl2br']['ssFilterParams'] = {
-	'!html': false
-};
-
-let example = {
-	bar: 'baz',
-
-	baz: ['foo', 'baz'],
-
-	foo: {
-		value: 'foo',
-		filters: [{default: ['baz']}, {html: []}]
-	},
-
-	'ng-': {
-		repeat: 'foo bar'
-	}
+	'!html': true
 };
 
 Snakeskin.Filters['attr'] = function (val, cache) {
@@ -418,5 +403,6 @@ Snakeskin.Filters['attr'] = function (val, cache) {
 };
 
 Snakeskin.Filters['attr']['ssFilterParams'] = {
+	'!html': true,
 	'bind': ['__ATTR_CACHE__']
 };
