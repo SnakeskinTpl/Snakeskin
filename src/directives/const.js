@@ -74,7 +74,7 @@ Snakeskin.addDirective(
 						this.append(this.wrap(`${prop} = ${this.out(parts.slice(1).join('='))};`));
 
 					} else {
-						this.append(`${prop} = ${this.out(parts.slice(1).join('='), {sys: true})};`);
+						this.append(`${prop} = ${this.out(parts.slice(1).join('='), {unsafe: true})};`);
 					}
 				}
 
@@ -131,7 +131,7 @@ Snakeskin.addDirective(
 
 				if (output && tplName) {
 					this.text = true;
-					this.append($=> this.wrap(`${this.out(desc.key, {sys: true})} = ${this.out(desc.value)};`));
+					this.append($=> this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
 
 				} else {
 					const
@@ -144,7 +144,7 @@ Snakeskin.addDirective(
 						command = command.replace(scopeMod, mod);
 					}
 
-					this.save(`${this.out(command, {sys: true})};`);
+					this.save(`${this.out(command, {unsafe: true})};`);
 				}
 			}
 
@@ -165,11 +165,11 @@ Snakeskin.addDirective(
 
 			if (desc) {
 				if (output) {
-					this.append(this.wrap(`${this.out(desc.key, {sys: true})} = ${this.out(desc.value)};`));
+					this.append(this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
 
 				} else {
 					this.text = false;
-					this.append(`${this.out(command, {sys: true})};`);
+					this.append(`${this.out(command, {unsafe: true})};`);
 				}
 
 				return;

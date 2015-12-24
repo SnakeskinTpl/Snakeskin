@@ -51,7 +51,7 @@ Snakeskin.addDirective(
 				return this.error(`can't break the proto inside a callback`);
 			}
 
-			this.append(this.out('break __I_PROTO__;', {sys: true}));
+			this.append(this.out('break __I_PROTO__;', {unsafe: true}));
 			return;
 		}
 
@@ -65,7 +65,7 @@ Snakeskin.addDirective(
 
 		} else if (async[inside]) {
 			const
-				val = command ? this.out(command, {sys: true}) : 'false';
+				val = command ? this.out(command, {unsafe: true}) : 'false';
 
 			if (inside === 'waterfall') {
 				this.append(`return arguments[arguments.length - 1](${val});`);
@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			this.append(this.out('break __I_PROTO__;', {sys: true}));
+			this.append(this.out('break __I_PROTO__;', {unsafe: true}));
 		}
 	}
 );
@@ -125,7 +125,7 @@ Snakeskin.addDirective(
 				return this.error(`can't continue the proto inside a callback`);
 			}
 
-			this.append(this.out('continue __I_PROTO__;', {sys: true}));
+			this.append(this.out('continue __I_PROTO__;', {unsafe: true}));
 			return;
 		}
 
@@ -139,7 +139,7 @@ Snakeskin.addDirective(
 
 		} else if (async[inside]) {
 			const
-				val = command ? `undefined,${this.out(command, {sys: true})}` : '';
+				val = command ? `undefined,${this.out(command, {unsafe: true})}` : '';
 
 			if (inside === 'waterfall') {
 				this.append(`return arguments[arguments.length - 1](${val});`);
@@ -155,7 +155,7 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			this.append(this.out('continue __I_PROTO__;', {sys: true}));
+			this.append(this.out('continue __I_PROTO__;', {unsafe: true}));
 		}
 	}
 );

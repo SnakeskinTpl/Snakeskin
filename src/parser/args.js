@@ -287,7 +287,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 			old
 		]);
 
-		defParams += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {sys: true})};`;
+		defParams += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {unsafe: true})};`;
 		structure.vars[el.key] = {
 			scope: this.scope.length,
 			value: el.key
@@ -338,7 +338,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 
 		if (el.value !== undefined) {
 			defParams +=
-				`${el.key} = ${el.key} != null ? ${el.key} : ${this.out(this.replaceDangerBlocks(el.value), {sys: true})};`;
+				`${el.key} = ${el.key} != null ? ${el.key} : ${this.out(this.replaceDangerBlocks(el.value), {unsafe: true})};`;
 		}
 
 		if (i !== argsList.length - 1) {

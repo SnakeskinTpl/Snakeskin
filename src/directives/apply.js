@@ -53,7 +53,7 @@ Snakeskin.addDirective(
 
 		// The recursive call of proto
 		if (selfProto && selfProto.name === name) {
-			this.save(`${argsStr}${this.out('__I_PROTO__++', {sys: true})};`);
+			this.save(`${argsStr}${this.out('__I_PROTO__++', {unsafe: true})};`);
 
 		// Attempt to apply an undefined proto
 		// (memorise the call point and return to it

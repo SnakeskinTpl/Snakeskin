@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 		if (destruct) {
 			destruct.apply(this, arguments);
 
-		} else if (!structure.sys && isSimpleOutput) {
+		} else if (!structure.logic && isSimpleOutput) {
 			this.save('};');
 		}
 

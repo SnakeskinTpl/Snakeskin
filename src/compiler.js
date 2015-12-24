@@ -891,7 +891,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return false;
 
 			} else {
-				if (struct.strong && !$dirParents[struct.name]['text']) {
+				if (struct.chain && !$dirParents[struct.name]['text']) {
 					if (el === ' ') {
 						parser.space = false;
 						continue;

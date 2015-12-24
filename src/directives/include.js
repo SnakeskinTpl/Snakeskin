@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			path = this.out(parts[0], {sys: true}),
+			path = this.out(parts[0], {unsafe: true}),
 			type = parts[1] ? `'${parts[1].trim()}'` : `''`;
 
 		if (path !== undefined && type !== undefined) {

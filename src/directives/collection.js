@@ -34,7 +34,7 @@ Snakeskin.addDirective(
 		});
 
 		this.append($=> ws`
-			${this.out(`$C(${parts[0]})`, {sys: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
+			${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
 				${this.declArguments()}
 		`);
 	},
@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 			{params} = this.structure.params;
 
 		if (params) {
-			this.append($=> `}, ${this.out(params, {sys: true})});`);
+			this.append($=> `}, ${this.out(params, {unsafe: true})});`);
 
 		} else {
 			this.append('});');

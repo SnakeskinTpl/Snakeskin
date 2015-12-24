@@ -34,13 +34,13 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	});
 
 	const obj = {
+		chain: false,
 		children: [],
+		logic: Boolean($logicDirs[opt_name]),
 		name: opt_name,
 		params: opt_params,
 		parent: structure,
 		stack: [],
-		strong: false,
-		sys: Boolean($logicDirs[opt_name]),
 		vars: opt_vars
 	};
 
@@ -116,13 +116,13 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 	opt_name = this.name = opt_name || this.name;
 
 	const obj = {
+		chain: false,
 		children: null,
+		logic: Boolean($logicDirs[opt_name]),
 		name: opt_name,
 		params: opt_params,
 		parent: this.structure,
 		stack: [],
-		strong: false,
-		sys: Boolean($logicDirs[opt_name]),
 		vars: null
 	};
 

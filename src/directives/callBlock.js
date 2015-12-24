@@ -36,14 +36,14 @@ Snakeskin.addDirective(
 				block = this.hasBlock('block', true);
 
 			if (block) {
-				str = block.params.fn + this.out(command.replace(name, ''), {sys: true});
+				str = block.params.fn + this.out(command.replace(name, ''), {unsafe: true});
 
 			} else {
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
 		} else {
-			str = this.out(`__BLOCKS__.${command}`, {sys: true});
+			str = this.out(`__BLOCKS__.${command}`, {unsafe: true});
 		}
 
 		this.append(this.wrap(str));

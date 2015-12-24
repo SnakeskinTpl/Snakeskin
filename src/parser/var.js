@@ -144,7 +144,7 @@ Parser.prototype.declVars = function (str, opt_end, opt_def) {
 			const
 				val = parts.slice(1).join('=');
 
-			fin += `${parts[0]}${val ? this.out(val, {sys: true}) : ''},`;
+			fin += `${parts[0]}${val ? this.out(val, {unsafe: true}) : ''},`;
 			cache = '';
 
 			return;

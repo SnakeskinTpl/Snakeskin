@@ -56,14 +56,14 @@ Parser.prototype.returnProtoArgs = function (protoArgs, args) {
 
 	return $C(protoArgs).reduce((res, el, i) => {
 		const
-			val = this.out(args[i] || 'void 0', {sys: true});
+			val = this.out(args[i] || 'void 0', {unsafe: true});
 
 		let
 			[arg, def] = el;
 
 		arg = arg.replace(scopeMod, '');
 		if (def !== undefined) {
-			def = this.out(def, {sys: true});
+			def = this.out(def, {unsafe: true});
 		}
 
 		if (protoArgs['__SNAKESKIN_TMP__needArgs'] && i === length - 1) {
@@ -81,7 +81,7 @@ Parser.prototype.returnProtoArgs = function (protoArgs, args) {
 			res += ws`
 				var ${arg} = ${
 					def !== undefined ?
-						val ? `${val} != null ? ${val} : ${this.out(def, {sys: true})}` : def : val || 'void 0'
+						val ? `${val} != null ? ${val} : ${this.out(def, {unsafe: true})}` : def : val || 'void 0'
 				};
 			`;
 		}

@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 		if (!this.inlineIterators) {
 			if (parts.length === 3) {
 				this.append(ws`
-					${this.out(`$C(${parts[0]})`, {sys: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
+					${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
 						${this.declArguments()}
 				`);
 
@@ -53,7 +53,7 @@ Snakeskin.addDirective(
 
 			this.append(ws`
 				Snakeskin.forEach(
-					${this.out(parts[0], {sys: true})},
+					${this.out(parts[0], {unsafe: true})},
 					function (${this.declCallbackArgs(parts[1])}) {
 						${this.declArguments()}
 			`);
@@ -63,10 +63,10 @@ Snakeskin.addDirective(
 
 		const
 			tmpObj = this.declVars(`__I_OBJ__ = ${obj}`),
-			cacheObj = this.out('__I_OBJ__', {sys: true});
+			cacheObj = this.out('__I_OBJ__', {unsafe: true});
 
 		const
-			keys = this.out('__KEYS__', {sys: true}),
+			keys = this.out('__KEYS__', {unsafe: true}),
 			args = parts[1] ? parts[1].split(',') : [];
 
 		let
@@ -80,11 +80,11 @@ Snakeskin.addDirective(
 					${this.declVars('__LENGTH__ = 0')}
 
 					for (${this.declVars('__KEY__', false, '')} in ${cacheObj}) {
-						if (!${cacheObj}.hasOwnProperty(${this.out('__KEY__', {sys: true})})) {
+						if (!${cacheObj}.hasOwnProperty(${this.out('__KEY__', {unsafe: true})})) {
 							continue;
 						}
 
-						${this.out('__LENGTH__++;', {sys: true})}
+						${this.out('__LENGTH__++;', {unsafe: true})}
 					}
 				}
 			`;
@@ -96,7 +96,7 @@ Snakeskin.addDirective(
 			if (${cacheObj}) {
 				if (Array.isArray(${cacheObj})) {
 					${this.declVars('__LENGTH__ =  __I_OBJ__.length')}
-					for (${this.declVars('__I__ = -1') + this.out('++__I__ < __LENGTH__;', {sys: true})}) {
+					for (${this.declVars('__I__ = -1') + this.out('++__I__ < __LENGTH__;', {unsafe: true})}) {
 		`;
 
 		resStr += $C(args).reduce((res, el, i) => {
@@ -136,7 +136,7 @@ Snakeskin.addDirective(
 
 				if (${keys}) {
 					${this.declVars(`__LENGTH__ = __KEYS__.length`)}
-					for (${this.declVars('__I__ = -1') + this.out('++__I__ < __LENGTH__;', {sys: true})}) {
+					for (${this.declVars('__I__ = -1') + this.out('++__I__ < __LENGTH__;', {unsafe: true})}) {
 		`;
 
 		end += $C(args).reduce((res, el, i) => {
@@ -179,11 +179,11 @@ Snakeskin.addDirective(
 				${this.declVars('__I__ = -1')}
 
 				for (${this.declVars('__KEY__', false, '')} in ${cacheObj}) {
-					if (!${cacheObj}.hasOwnProperty(${this.out('__KEY__', {sys: true})})) {
+					if (!${cacheObj}.hasOwnProperty(${this.out('__KEY__', {unsafe: true})})) {
 						continue;
 					}
 
-					${this.out('__I__++;', {sys: true})}
+					${this.out('__I__++;', {unsafe: true})}
 		`;
 
 		oldEnd += $C(args).reduce((res, el, i) => {
@@ -243,7 +243,7 @@ Snakeskin.addDirective(
 
 		} else {
 			if (params.params) {
-				this.append(`}, ${this.out(params.params, {sys: true})});`);
+				this.append(`}, ${this.out(params.params, {unsafe: true})});`);
 
 			} else {
 				this.append('});');
@@ -277,7 +277,7 @@ Snakeskin.addDirective(
 		if (!this.inlineIterators) {
 			this.append(ws`
 				Snakeskin.forIn(
-					${this.out(parts[0], {sys: true})},
+					${this.out(parts[0], {unsafe: true})},
 					function (${this.declCallbackArgs(parts[1])}) {
 						${this.declArguments()}
 			`);
@@ -288,7 +288,7 @@ Snakeskin.addDirective(
 		const
 			args = parts[1] ? parts[1].split(',') : [],
 			tmpObj = this.declVars(`__I_OBJ__ = ${obj}`),
-			cacheObj = this.out('__I_OBJ__', {sys: true});
+			cacheObj = this.out('__I_OBJ__', {unsafe: true});
 
 		let
 			objLength = '';
@@ -298,7 +298,7 @@ Snakeskin.addDirective(
 				${this.declVars('__LENGTH__ = 0')}
 
 				for (${this.declVars('key', false, '')} in ${cacheObj}) {
-					${this.out('__LENGTH__++;', {sys: true})}
+					${this.out('__LENGTH__++;', {unsafe: true})}
 				}
 			`;
 		}
@@ -312,7 +312,7 @@ Snakeskin.addDirective(
 				${this.declVars('__I__ = -1')}
 
 				for (${this.declVars('__KEY__', false, '')} in ${cacheObj}) {
-					${this.out('__I__++;', {sys: true})}
+					${this.out('__I__++;', {unsafe: true})}
 		`;
 
 		resStr += $C(args).reduce((res, el, i) => {

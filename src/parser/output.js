@@ -13,6 +13,7 @@
 
 import $C from '../deps/collection';
 import esprima from '../deps/esprima';
+import Snakeskin from '../core';
 import Parser from './constructor';
 import { concatProp } from '../helpers/literals';
 import { r } from '../helpers/string';
@@ -167,7 +168,7 @@ Parser.prototype._getWord = function (str, pos) {
 
 						nRes =
 							res.slice(0, startD) +
-							(pContent && this.out(pContent, {sys: true})) +
+							(pContent && this.out(pContent, {unsafe: true})) +
 							res.slice(endD);
 
 						diff = nRes.length - res.length;
@@ -304,12 +305,22 @@ const
  * binds to the scope and initialization filters
  *
  * @param {string} command - command
- * @param {?boolean=} [sys=false] - if is true, then call is considered as system
- * @param {?boolean=} [breakFirst=false] - if is true, then the first word in the string will be skipped
- * @param {?boolean=} [breakValidate=true] - if is false, then the resulting string won't be validated
+ * @param {?{
+ *   unsafe: (?boolean|undefined),
+ *   skipFirstWord: (?boolean|undefined),
+ *   skipValidation: (?boolean|undefined)
+ * }=} [opt_params] - additional parameters:
+ *
+ *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
+ *   *) [skipFirstWord=false] - if is true, then the first word in the string will be skipped
+ *   *) [skipValidation=true] - if is false, then the resulting string won't be validated
+ *
  * @return {string}
  */
-Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {}) {
+Parser.prototype.out = function (command, opt_params) {
+	const
+		{unsafe, skipFirstWord, skipValidation} = opt_params || {};
+
 	const
 		{tplName, structure} = this,
 		Filters = $C(Snakeskin.Filters);
@@ -357,7 +368,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		rvFilter = [];
 
 	// true, if it is possible to calculate the word
-	let nWord = !breakFirst;
+	let nWord = !skipFirstWord;
 
 	// The number of words to skip
 	let posNWord = 0;
@@ -614,7 +625,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 
 				} else if (
 					canParse &&
-					!sys && !filterStart &&
+					!unsafe && !filterStart &&
 					(!nextStep.unary || undefUnaryBlackWords[nextStep.unary]) &&
 					!globalUnUndef
 				) {
@@ -782,7 +793,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 					last = filter.length - 1,
 					cache = filter[last];
 
-				filter[last] = this.out(cache, {breakFirst: true, sys: true, validate: true});
+				filter[last] = this.out(cache, {skipFirstWord: true, logic: true, skipValidation: true});
 				const
 					length = filter[last].length - cache.length;
 
@@ -838,7 +849,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 	}
 
 	res = res.replace(unUndefRgxp, '__FILTERS__.undef');
-	if (breakValidate !== false) {
+	if (skipValidation !== false) {
 		try {
 			esprima.parse(esprimaHackFn(res));
 
@@ -848,7 +859,7 @@ Parser.prototype.out = function (command, {sys, breakFirst, breakValidate} = {})
 		}
 	}
 
-	if (!unEscape && !sys) {
+	if (!unEscape && !unsafe) {
 		res = `__FILTERS__.html(${res}, ${this.attr}, ${this.attrEscape})`;
 	}
 

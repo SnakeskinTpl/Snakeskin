@@ -22,7 +22,7 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 		},
 
 		function (command, commandLength, type) {
-			this.append($=> `${this.out('async', {sys: true})}.${type}([`);
+			this.append($=> `${this.out('async', {unsafe: true})}.${type}([`);
 		},
 
 		function () {
@@ -42,7 +42,7 @@ $C(['whilst', 'doWhilst', 'forever']).forEach((dir) => {
 		},
 
 		function (command, commandLength, type) {
-			this.append($=> `${this.out('async', {sys: true})}.${type}(`);
+			this.append($=> `${this.out('async', {unsafe: true})}.${type}(`);
 		},
 
 		function () {

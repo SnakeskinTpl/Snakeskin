@@ -98,14 +98,18 @@ Parser.prototype.getTokens = function (str) {
  * Replaces found matches ${ ... } or #{ ... } from a string to SS calls
  *
  * @param {string} str - source string
- * @param {?{sys: (?boolean|undefined), replace: (?boolean|undefined)}=} [opt_params] - additional parameters:
- *   *) [sys=false] - if is true, then call is considered as system
+ * @param {?{
+ *   unsafe: (?boolean|undefined),
+ *   replace: (?boolean|undefined)
+ * }=} [opt_params] - additional parameters:
+ *
+ *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
  *   *) [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_
  *
  * @return {string}
  */
 Parser.prototype.replaceTplVars = function (str, opt_params) {
-	const {sys, replace} = opt_params || {};
+	const {unsafe, replace} = opt_params || {};
 	str = this.pasteDangerBlocks(str);
 
 	let
@@ -229,7 +233,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params) {
 				escape = false;
 
 				let
-					tmp = `' + ${this.out(this.replaceDangerBlocks(dir).trim() || `''`, {sys})} + '`;
+					tmp = `' + ${this.out(this.replaceDangerBlocks(dir).trim() || `''`, {unsafe})} + '`;
 
 				if (replace) {
 					res += `__SNAKESKIN__${this.dirContent.length}_`;

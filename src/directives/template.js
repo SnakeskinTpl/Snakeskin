@@ -137,7 +137,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 						str = ws`['${
 							applyDefEscape(
 								this.returnEvalVal(
-									this.out(str.slice(1), {sys: true})
+									this.out(str.slice(1), {unsafe: true})
 								)
 							)
 						}']`;
@@ -183,7 +183,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 							str += ws`['${
 								applyDefEscape(
 									this.returnEvalVal(
-										this.out(el, {sys: true})
+										this.out(el, {unsafe: true})
 									)
 								)
 							}']`;

@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 
 		const
 			cb = this.hasParent(this.getGroup('callback')),
-			val = command ? this.out(command, {sys: true}) : this.getReturnResultDecl();
+			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl();
 
 		if (cb) {
 			let str = '';

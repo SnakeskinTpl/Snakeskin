@@ -23,7 +23,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (command) {
-			this.append($=> `yield ${this.out(command, {sys: true})};`);
+			this.append($=> `yield ${this.out(command, {unsafe: true})};`);
 
 		} else {
 			this.append($=>

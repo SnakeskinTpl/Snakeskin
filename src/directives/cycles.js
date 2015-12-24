@@ -39,12 +39,12 @@ Snakeskin.addDirective(
 
 			const
 				decl = varDeclRgxp.test(parts[0]) ?
-					this.declVars(parts[0].replace(varDeclRgxp, '')) : this.out(parts[0], {sys: true});
+					this.declVars(parts[0].replace(varDeclRgxp, '')) : this.out(parts[0], {unsafe: true});
 
 			parts[1] = parts[1] && `(${parts[1]})`;
 			parts[2] = parts[2] && `(${parts[2]})`;
 
-			this.append(`for (${decl}${this.out(parts.slice(1).join(';'), {sys: true})}) {`);
+			this.append(`for (${decl}${this.out(parts.slice(1).join(';'), {unsafe: true})}) {`);
 
 		// for var key in obj OR for var el of obj
 		} else {
@@ -55,8 +55,8 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
-			const decl = parts[1] ? this.declVars(parts[2], false, '') : this.out(parts[2], {sys: true});
-			this.append(`for (${decl} ${parts[3]} ${this.out(parts[4], {sys: true})}) {`);
+			const decl = parts[1] ? this.declVars(parts[2], false, '') : this.out(parts[2], {unsafe: true});
+			this.append(`for (${decl} ${parts[3]} ${this.out(parts[4], {unsafe: true})}) {`);
 		}
 	},
 
@@ -80,7 +80,7 @@ Snakeskin.addDirective(
 		// do { ... } while ( ... )
 		if (this.structure.name === 'do') {
 			this.append($=> ws`
-				} while (${this.out(command, {sys: true})});
+				} while (${this.out(command, {unsafe: true})});
 			`);
 
 			this.structure.params.chain = true;
@@ -89,7 +89,7 @@ Snakeskin.addDirective(
 		// while ( ... ) { ... }
 		} else {
 			this.startDir();
-			this.append($=> `while (${this.out(command, {sys: true})}) {`);
+			this.append($=> `while (${this.out(command, {unsafe: true})}) {`);
 		}
 	},
 

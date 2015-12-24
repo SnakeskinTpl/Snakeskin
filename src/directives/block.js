@@ -214,7 +214,7 @@ Snakeskin.addDirective(
 
 					structure.vars = vars;
 					structure.params.params = $C(params)
-						.reduce((res, el) => res += `${this.out(el, {sys: true})},`, '')
+						.reduce((res, el) => res += `${this.out(el, {unsafe: true})},`, '')
 						.slice(0, -1);
 				}
 			}

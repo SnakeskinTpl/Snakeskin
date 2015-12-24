@@ -245,8 +245,8 @@ export default class Parser {
 			 *   stack: !Array,
 			 *   vars: Object,
 			 *   children: Array,
-			 *   sys: boolean,
-			 *   strong: boolean
+			 *   logic: boolean,
+			 *   chain: boolean
 			 * }}
 			 */
 			parent: null,
@@ -257,8 +257,8 @@ export default class Parser {
 			vars: params.vars || {},
 			children: [],
 
-			sys: false,
-			strong: false
+			logic: false,
+			chain: false
 		};
 
 		/**

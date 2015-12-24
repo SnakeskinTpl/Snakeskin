@@ -369,9 +369,9 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		const i = this.out('__I_PROTO__', {sys: true});
+		const i = this.out('__I_PROTO__', {unsafe: true});
 		protoCache[this.tplName][this.proto.name].i = i;
-		this.save(`${i}:while (${this.out(command, {sys: true})}) {`);
+		this.save(`${i}:while (${this.out(command, {unsafe: true})}) {`);
 	},
 
 	function () {

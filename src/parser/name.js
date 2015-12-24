@@ -125,7 +125,7 @@ Parser.prototype.prepareNameDecl = function (name) {
 				str += ws`['${
 					applyDefEscape(
 						this.returnEvalVal(
-							this.out(el, {sys: true})
+							this.out(el, {unsafe: true})
 						)
 					)
 				}']`;

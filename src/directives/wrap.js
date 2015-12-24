@@ -42,11 +42,11 @@ Snakeskin.addDirective(
 		}
 
 		const
-			tmp = this.out('__WRAP_TMP__', {sys: true});
+			tmp = this.out('__WRAP_TMP__', {unsafe: true});
 
 		this.append(ws`
 			${tmp}.push(__RESULT__);
-			__RESULT__ = ${this.out('__WRAP_CACHE__', {sys: true})};
+			__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
 		`);
 
 		const
@@ -95,7 +95,7 @@ Snakeskin.addDirective(
 	function () {
 		this.structure.params.chunkLength++;
 		this.append($=> ws`
-			${this.out('__WRAP_TMP__', {sys: true})}.push(__RESULT__);
+			${this.out('__WRAP_TMP__', {unsafe: true})}.push(__RESULT__);
 			__RESULT__ = ${this.getReturnDecl()};
 		`);
 	}
