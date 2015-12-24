@@ -11,7 +11,6 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
-import { inlineTags } from '../consts/html';
 import { emptyCommandParams } from '../consts/regs';
 
 Snakeskin.addDirective(
@@ -48,53 +47,27 @@ Snakeskin.addDirective(
 
 		const
 			parts = this.getTokens(command),
-			desc = this.returnTagDesc(parts[0]);
+			{tag, inline, id, classes} = this.returnXMLTagDesc(parts[0]);
 
-		const
-			{params} = this.structure;
+		$C.extend(false, this.structure.params, {inline, tag});
 
-		params.tag = desc.tag;
-		params.block = inlineTags[desc.tag] !== undefined ? !inlineTags[desc.tag] : !desc.inline;
+		let str =
+			this.getXMLTagDeclStart(tag) +
+			this.getXMLAttrsDeclStart() +
+			this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
-		const
-			dom = !this.domComment && this.renderMode === 'dom';
-
-		let
-			str = this.getXMLAttrsDeclStart();
-
-		if (dom) {
-			str += ws`
-				$0 = __NODE__ = document.createElement('${desc.tag}');
-			`;
-
-		} else {
-			str += this.wrap(`'<${desc.tag}'`);
+		if (id) {
+			str += `__ATTR_CACHE__['id'] = '${id}' || __ATTR_CACHE__['id'];`;
 		}
 
-		str += this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
-
-		if (desc.id) {
-			str += `__ATTR_CACHE__['id'] = '${desc.id}' || __ATTR_CACHE__['id'];`;
-		}
-
-		if (desc.classes.length) {
+		if (classes.length) {
 			str += ws`
 				__ATTR_CACHE__['class'] =
-					'${desc.classes.join(' ')}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');
+					'${classes.join(' ')}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');
 			`;
 		}
 
-		str += this.getXMLAttrsDeclEnd();
-
-		if (!dom) {
-			if (!params.block && this.doctype === 'xml') {
-				str += this.wrap(`'/'`);
-			}
-
-			str += this.wrap(`'>'`);
-		}
-
-		this.append(str);
+		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(tag, inline));
 	},
 
 	function () {
@@ -104,22 +77,10 @@ Snakeskin.addDirective(
 		this.bemRef = params.bemRef;
 		this.prevSpace = false;
 
-		if (!this.isReady() || !params.block) {
+		if (!this.isReady()) {
 			return;
 		}
 
-		let str;
-		if (!this.domComment && this.renderMode === 'dom') {
-			str = ws`
-				__RESULT__.pop();
-				$0 = __RESULT__.length > 1 ?
-					__RESULT__[__RESULT__.length - 1] : void 0;
-			`;
-
-		} else {
-			str = this.wrap(`'</${params.tag}>'`);
-		}
-
-		this.append($=> str);
+		this.append(this.getEndXMLTagDecl(params.tag, params.inline));
 	}
 );

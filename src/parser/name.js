@@ -133,7 +133,7 @@ Parser.prototype.prepareNameDecl = function (name) {
 				return str;
 			}
 
-			return str += str ? `.${el}` : el;
+			return str + (str ? `.${el}` : el);
 		}, '');
 	}
 

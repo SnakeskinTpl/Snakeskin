@@ -367,7 +367,7 @@ function appendDirEnd(str, struct) {
 		str += `${struct.adv}${lb}__&-__${rb}`;
 	}
 
-	return str += rightSpace;
+	return str + rightSpace;
 }
 
 /**

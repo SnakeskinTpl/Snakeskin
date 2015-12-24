@@ -178,7 +178,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			}
 
 			val = `'${this.pasteTplVarBlocks(val)}'`;
-			return res += ws`
+			return ws`
+				${res}
 				if ((${val}) != null && (${val}) !== '') {
 					__ATTR_STR__ += __ATTR_POS__ ? ' ' + ${val} : ${val};
 					__ATTR_POS__++;
@@ -188,7 +189,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		}, '');
 
 		args[0] = `'${this.pasteTplVarBlocks(args[0])}'`;
-		return res += ws`
+		return ws`
+			${res}
 			if ((${args[0]}) != null && (${args[0]}) != '') {
 				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] ? __ATTR_CACHE__[${args[0]}] || '' : '';
 				__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] && !__NODE__ ? ' ' : '';

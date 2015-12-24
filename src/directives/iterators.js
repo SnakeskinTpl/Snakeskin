@@ -126,7 +126,7 @@ Snakeskin.addDirective(
 					break;
 			}
 
-			return res += this.declVars(el);
+			return res + this.declVars(el);
 
 		}, '');
 
@@ -170,7 +170,7 @@ Snakeskin.addDirective(
 					break;
 			}
 
-			return res += this.declVars(el);
+			return res + this.declVars(el);
 
 		}, '');
 
@@ -217,7 +217,7 @@ Snakeskin.addDirective(
 					break;
 			}
 
-			return res += this.declVars(el);
+			return res + this.declVars(el);
 
 		}, '');
 
@@ -346,7 +346,7 @@ Snakeskin.addDirective(
 					break;
 			}
 
-			return res += this.declVars(el);
+			return res + this.declVars(el);
 
 		}, '');
 

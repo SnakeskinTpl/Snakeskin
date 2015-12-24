@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { parentLink } from '../consts/regs';
+import { inlineTags } from '../consts/html';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 /**
@@ -20,13 +21,66 @@ import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 Parser.prototype.domComment = false;
 
 /**
- * Analyzes a string of tag declaration
+ * Returns start declaration of the specified XML tag
+ *
+ * @param {string} tag - tag name
+ * @return {string}
+ */
+Parser.prototype.getXMLTagDeclStart = function (tag) {
+	if (!this.domComment && this.renderMode === 'dom') {
+		return ws`
+			$0 = __NODE__ = document.createElement('${tag}');
+		`;
+	}
+
+	return this.wrap(`'<${tag}'`);
+};
+
+/**
+ * Returns end declaration of the specified XML tag
+ *
+ * @param {string} tag - tag name
+ * @param {?boolean=} [opt_inline=false] - if true, then the tag is inline
+ * @return {string}
+ */
+Parser.prototype.getXMLTagDeclEnd = function (tag, opt_inline) {
+	if (!this.domComment && this.renderMode === 'dom') {
+		return '';
+	}
+
+	return this.wrap(`'${(opt_inline || inlineTags[tag]) && this.doctype === 'xml' ? '/' : ''}>'`);
+};
+
+/**
+ * Returns string declaration of a closing tag for the specified XML tag
+ *
+ * @param {string} tag - tag name
+ * @param {?boolean=} [opt_inline=false] - if true, then the tag is inline
+ * @return {string}
+ */
+Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
+	if (opt_inline || inlineTags[tag]) {
+		return '';
+	}
+
+	if (!this.domComment && this.renderMode === 'dom') {
+		return ws`
+			__RESULT__.pop();
+			$0 = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : void 0;
+		`;
+	}
+
+	return this.wrap(`'</${tag}>'`);
+};
+
+/**
+ * Analyzes a string of XML tag declaration
  * and returns a reporting object
  *
  * @param {string} str - source string
  * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
  */
-Parser.prototype.returnTagDesc = function (str) {
+Parser.prototype.returnXMLTagDesc = function (str) {
 	str = this.replaceTplVars(str, {replace: true});
 
 	const
