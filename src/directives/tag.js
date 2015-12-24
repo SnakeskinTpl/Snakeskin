@@ -74,11 +74,14 @@ Snakeskin.addDirective(
 		str += this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
 		if (desc.id) {
-			str += `__ATTR_CACHE__['id'] = __ATTR_CACHE__['id'] || '${desc.id}';`;
+			str += `__ATTR_CACHE__['id'] = '${desc.id}' || __ATTR_CACHE__['id'];`;
 		}
 
 		if (desc.classes.length) {
-			str += `__ATTR_CACHE__['class'] = (__ATTR_CACHE__['class'] || '') + '${desc.classes.join(' ')}';`;
+			str += ws`
+				__ATTR_CACHE__['class'] =
+					'${desc.classes.join(' ')}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');
+			`;
 		}
 
 		str += this.getXMLAttrsDeclEnd();
