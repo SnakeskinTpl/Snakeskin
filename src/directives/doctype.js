@@ -52,11 +52,16 @@ Snakeskin.addDirective(
 	'doctype',
 
 	{
+		group: ['doctype', 'tag', 'output'],
 		placement: 'template',
 		renderModesBlacklist: 'dom'
 	},
 
 	function (command) {
+		if (!this.isReady()) {
+			return;
+		}
+
 		const
 			type = (command || 'html').toLowerCase();
 
@@ -64,7 +69,7 @@ Snakeskin.addDirective(
 			return this.error('invalid doctype');
 		}
 
-		this.append($=> this.wrap(`'${types[type]}'`));
+		this.append(this.wrap(`'${types[type]}'`));
 	}
 
 );

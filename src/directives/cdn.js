@@ -170,12 +170,16 @@ Snakeskin.addDirective(
 	'cdn',
 
 	{
+		group: ['cdn', 'tag', 'output'],
 		notEmpty: true,
-		placement: 'template',
-		text: true
+		placement: 'template'
 	},
 
 	function (command) {
+		if (!this.isReady()) {
+			return;
+		}
+
 		const
 			parts = this.getTokens(command);
 
@@ -187,21 +191,17 @@ Snakeskin.addDirective(
 			return this.error(`missing a version of the requested library`);
 		}
 
-		cdn = cdn && cdn.toLowerCase();
+		cdn = (cdn || '').toLowerCase();
 		val[0] = val[0].toLowerCase();
 
 		if (!lib[val[0]]) {
 			return this.error(`the requested library is not found`);
 		}
 
-		this.append($=>
-			this.wrap(
-				ws`'${(cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]))(
-					val[1],
-					this.doctype === 'xml' ?
-						'/' : ''
-				)}'`
-			)
-		);
+		const
+			fn = cdn ? lib[val[0]][cdn] || first(lib[val[0]]) : first(lib[val[0]]),
+			res = fn(val[1], this.doctype === 'xml' ? '/' : '');
+
+		this.append(this.wrap(`'${res}'`));
 	}
 );

@@ -17,15 +17,20 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		group: ['comment', 'tag', 'output'],
 		placement: 'template',
-		shorthands: {'/@': 'end comment', '@!': 'comment '},
-		selfInclude: false
+		selfInclude: false,
+		shorthands: {'/@': 'end comment', '@!': 'comment '}
 	},
 
 	function (command) {
 		this.startDir(null, {
 			conditional: Boolean(command)
 		});
+
+		if (!this.isReady()) {
+			return;
+		}
 
 		let str;
 		if (this.renderMode === 'dom') {
@@ -44,23 +49,29 @@ Snakeskin.addDirective(
 	},
 
 	function () {
+		this.domComment = false;
+
+		if (!this.isReady()) {
+			return;
+		}
+
 		const
-			comment = this.structure.params.conditional ? ' <![endif]' : '';
+			{conditional} = this.structure.params ? ' <![endif]' : '';
 
 		let str;
 		if (this.renderMode === 'dom') {
-			this.domComment = false;
-			str = this.wrap(`'${comment}'`) + ws`
+			str = ws`
+				'${conditional}'
 				__NODE__ = document.createComment(__COMMENT_RESULT__);
 				${this.getPushNodeDecl(true)}
 				__COMMENT_RESULT__ = '';
 			`;
 
 		} else {
-			str = this.wrap(`'${comment}-->'`);
+			str = `'${conditional}-->'`;
 		}
 
-		this.append(str);
+		this.append(this.wrap(str));
 	}
 
 );

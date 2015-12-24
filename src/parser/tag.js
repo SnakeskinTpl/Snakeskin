@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { ws } from '../helpers/string';
 import { parentLink } from '../consts/regs';
 import { inlineTags } from '../consts/html';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
@@ -19,6 +20,23 @@ import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
  * @type {boolean}
  */
 Parser.prototype.domComment = false;
+
+/**
+ * Returns string declaration of a opening tag for the specified XML tag
+ *
+ * @param {string} tag - tag name
+ * @param {?string=} [opt_attrs] - tag attributes
+ * @param {?boolean=} [opt_inline=false] - if true, then the tag is inline
+ * @return {string}
+ */
+Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
+	return (
+		this.getXMLTagDeclStart(tag) +
+		this.getXMLAttrsDeclStart() +
+		(opt_attrs ? this.getXMLAttrsDecl(opt_attrs) : '') +
+		this.getXMLTagDeclEnd(tag, opt_inline)
+	);
+};
 
 /**
  * Returns start declaration of the specified XML tag

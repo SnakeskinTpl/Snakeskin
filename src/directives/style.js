@@ -22,6 +22,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
+		group: ['style', 'tag', 'output'],
 		placement: 'template',
 		selfInclude: false,
 		trim: {
@@ -49,44 +50,9 @@ Snakeskin.addDirective(
 
 		const
 			parts = this.getTokens(command),
-			dom = !this.domComment && this.renderMode === 'dom',
-			[type] = parts;
+			type = types[parts[0].toLowerCase()] || this.replaceTplVars(parts[0]);
 
-		const
-			desc = types[type.toLowerCase()] || this.replaceTplVars(type);
-
-		let str;
-		if (dom) {
-			str = ws`
-				__NODE__ = document.createElement('style');
-				__NODE__.type = '${desc}';
-			`;
-
-		} else {
-			str = this.wrap(`'<style type="${desc}"'`);
-		}
-
-		this.append(str);
-
-		if (parts.length > 1) {
-			/** @type {!Array} */
-			let args = any([].slice.call(arguments));
-
-			args[0] = parts.slice(1).join(' ');
-			args[1] = args[0].length;
-
-			Snakeskin.Directives['attr'].call(this, ...args);
-			this.inline = false;
-		}
-
-		if (dom) {
-			str = this.getPushNodeDecl();
-
-		} else {
-			str = this.wrap('\'>\'');
-		}
-
-		this.append(str);
+		this.append(this.getXMLTagDecl('style', `(type = ${type}) ${parts.slice(1).join(' ')}`));
 	},
 
 	function () {
@@ -94,14 +60,6 @@ Snakeskin.addDirective(
 			this.autoReplace = true;
 		}
 
-		let str;
-		if (!this.domComment && this.renderMode === 'dom') {
-			str = '__RESULT__.pop();';
-
-		} else {
-			str = this.wrap(`'</style>'`);
-		}
-
-		this.append($=> str);
+		this.append($=> this.getEndXMLTagDecl('style'));
 	}
 );
