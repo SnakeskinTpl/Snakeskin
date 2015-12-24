@@ -11,17 +11,17 @@
 import Snakeskin from '../core';
 
 Snakeskin.addDirective(
-	'data',
+	'literal',
 
 	{
-		group: ['data', 'escape', 'output'],
+		group: ['literal', 'escape', 'output'],
 		notEmpty: true,
 		placement: 'template',
-		shorthands: {'=': 'data '},
+		shorthands: {'{': 'literal {'},
 		text: true
 	},
 
 	function (command) {
-		this.append($=> this.wrap(`'${this.replaceTplVars(command)}'`));
+		this.append($=> this.wrap(`'{${this.replaceTplVars(command)}}'`));
 	}
 );
