@@ -23,30 +23,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=>
-			ws`
-				var
-					__ATTR_CACHE__ = {},
-					__ATTR_CONCAT_MAP__ = {'class': true};
-
-				${
-					$C(this.splitXMLAttrGroup(command))
-						.reduce((res, el) => res += this.returnXMLAttrDecl(el), '')
-				}
-
-				for (var __KEY__ in __ATTR_CACHE__) {
-					if (!__ATTR_CACHE__.hasOwnProperty(__KEY__)) {
-						continue;
-					}
-
-					if (__NODE__) {
-						__NODE__.setAttribute(__KEY__, __ATTR_CACHE__[__KEY__]);
-
-					} else {
-						${this.wrap(`' ' + __KEY__ + (__ATTR_CACHE__[__KEY__] && '="' + __ATTR_CACHE__[__KEY__] + '"')`)}
-					}
-				}
-			`
-		);
+		this.append($=> this.getXMLAttrsDecl(command));
 	}
 );

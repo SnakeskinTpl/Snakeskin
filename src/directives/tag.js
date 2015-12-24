@@ -20,6 +20,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		group: ['tag', 'output'],
 		placement: 'template',
 		shorthands: {'/<': 'end tag', '<': 'tag '},
 		text: true,
@@ -56,14 +57,10 @@ Snakeskin.addDirective(
 		params.block = inlineTags[desc.tag] !== undefined ? !inlineTags[desc.tag] : !desc.inline;
 
 		const
-			groups = this.splitXMLAttrGroup(parts.slice(1).join(' ')),
 			dom = !this.domComment && this.renderMode === 'dom';
 
-		let str = ws`
-			var
-				__ATTR_CACHE__ = {},
-				__ATTR_CONCAT_MAP__ = {'class': true};
-		`;
+		let
+			str = this.getXMLAttrsDeclStart();
 
 		if (dom) {
 			str += ws`
@@ -74,6 +71,8 @@ Snakeskin.addDirective(
 			str += this.wrap(`'<${desc.tag}'`);
 		}
 
+		str += this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
+
 		if (desc.id) {
 			str += `__ATTR_CACHE__['id'] = __ATTR_CACHE__['id'] || '${desc.id}';`;
 		}
@@ -82,23 +81,7 @@ Snakeskin.addDirective(
 			str += `__ATTR_CACHE__['class'] = (__ATTR_CACHE__['class'] || '') + '${desc.classes.join(' ')}';`;
 		}
 
-		str += $C(groups)
-			.reduce((res, el) => res += this.returnXMLAttrDecl(el), '');
-
-		str += ws`
-			for (var __KEY__ in __ATTR_CACHE__) {
-				if (!__ATTR_CACHE__.hasOwnProperty(__KEY__)) {
-					continue;
-				}
-
-				if (__NODE__) {
-					__NODE__.setAttribute(__KEY__, __ATTR_CACHE__[__KEY__]);
-
-				} else {
-					${this.wrap(`' ' + __KEY__ + (__ATTR_CACHE__[__KEY__] && '="' + __ATTR_CACHE__[__KEY__] + '"')`)}
-				}
-			}
-		`;
+		str += this.getXMLAttrsDeclEnd();
 
 		if (!dom) {
 			if (!params.block && this.doctype === 'xml') {
@@ -118,20 +101,22 @@ Snakeskin.addDirective(
 		this.bemRef = params.bemRef;
 		this.prevSpace = false;
 
-		if (params.block) {
-			let str;
-			if (!this.domComment && this.renderMode === 'dom') {
-				str = ws`
-					__RESULT__.pop();
-					$0 = __RESULT__.length > 1 ?
-						__RESULT__[__RESULT__.length - 1] : void 0;
-				`;
-
-			} else {
-				str = this.wrap(`'</${params.tag}>'`);
-			}
-
-			this.append($=> str);
+		if (!this.isReady() || !params.block) {
+			return;
 		}
+
+		let str;
+		if (!this.domComment && this.renderMode === 'dom') {
+			str = ws`
+				__RESULT__.pop();
+				$0 = __RESULT__.length > 1 ?
+					__RESULT__[__RESULT__.length - 1] : void 0;
+			`;
+
+		} else {
+			str = this.wrap(`'</${params.tag}>'`);
+		}
+
+		this.append($=> str);
 	}
 );

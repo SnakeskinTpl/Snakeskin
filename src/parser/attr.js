@@ -15,6 +15,60 @@ import { tplVars, parentLink } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
+/**
+ * Returns string declaration of the specified XML attributes
+ *
+ * @param {string} str - source string
+ * @return {string}
+ */
+Parser.prototype.getXMLAttrsDecl = function (str) {
+	return this.getXMLAttrsDeclStart() + this.getXMLAttrsDeclBody(str) + this.getXMLAttrsDeclEnd();
+};
+
+/**
+ * Returns start declaration of XML attributes
+ * @return {string}
+ */
+Parser.prototype.getXMLAttrsDeclStart = function () {
+	return ws`
+		var
+			__ATTR_CACHE__ = {},
+			__ATTR_CONCAT_MAP__ = {'class': true};
+	`;
+};
+
+/**
+ * Returns declaration body of the specified XML attributes
+ *
+ * @param {string} str - source string
+ * @return {string}
+ */
+Parser.prototype.getXMLAttrsDeclBody = function (str) {
+	return $C(this.splitXMLAttrGroup(str))
+		.reduce((res, el) => res += this.getXMLAttrDecl(el), '');
+};
+
+/**
+ * Returns end declaration of XML attributes
+ * @return {string}
+ */
+Parser.prototype.getXMLAttrsDeclEnd = function () {
+	return ws`
+		for (var __KEY__ in __ATTR_CACHE__) {
+			if (!__ATTR_CACHE__.hasOwnProperty(__KEY__)) {
+				continue;
+			}
+
+			if (__NODE__) {
+				__NODE__.setAttribute(__KEY__, __ATTR_CACHE__[__KEY__]);
+
+			} else {
+				${this.wrap(`' ' + __KEY__ + (__ATTR_CACHE__[__KEY__] && '="' + __ATTR_CACHE__[__KEY__] + '"')`)}
+			}
+		}
+	`;
+};
+
 const
 	escapeEqRgxp = /===|==|([\\]+)=/g,
 	escapeOrRgxp = /\|\||([\\]+)\|/g;
@@ -57,7 +111,7 @@ function unEscapeOr(ignore, $1, $2) {
 
  * @return {string}
  */
-Parser.prototype.returnXMLAttrDecl = function (params) {
+Parser.prototype.getXMLAttrDecl = function (params) {
 	let
 		{attr, group, separator} = params;
 
@@ -87,24 +141,23 @@ Parser.prototype.returnXMLAttrDecl = function (params) {
 			.replace(unEscapeOrRgxp, unEscapeOr)
 			.replace(escapeEqRgxp, escapeEq);
 
-		const
-			arg = el.split('=');
-
 		let
-			empty = arg.length !== 2;
+			args = el.split('='),
+			empty = args.length !== 2;
 
 		if (empty) {
 			if (this.doctype === 'xml') {
-				arg[1] = arg[0];
+				args[1] = args[0];
 				empty = false;
 
 			} else {
-				arg[1] = '';
+				args[1] = '';
 			}
 		}
 
-		arg[0] = arg[0].trim().replace(unEscapeEqRgxp, unEscapeEq);
-		arg[1] = arg[1].trim().replace(unEscapeEqRgxp, unEscapeEq);
+		args = $C(args).map((el) =>
+			el.trim().replace(unEscapeEqRgxp, unEscapeEq));
+
 		res += ws`
 			var
 				__ATTR_POS__ = 0,
@@ -112,15 +165,13 @@ Parser.prototype.returnXMLAttrDecl = function (params) {
 		`;
 
 		if (group) {
-			arg[0] = group + separator + arg[0];
+			args[0] = group + separator + args[0];
 
 		} else {
-			arg[0] = arg[0][0] === '-' ? `data-${arg[0].slice(1)}` : arg[0];
+			args[0] = args[0][0] === '-' ? `data-${args[0].slice(1)}` : args[0];
 		}
 
-		res += $C(this.getTokens(arg[1])).reduce((res, val) => {
-			val = val.trim();
-
+		res += $C(this.getTokens(args[1])).reduce((res, val) => {
 			if (parentLink.test(val) && ref) {
 				val = `${s}'${ref}'${FILTER}${this.bemFilter} '${val.slice('&amp;'.length)}',$0${e}`;
 				val = this.pasteDangerBlocks(this.replaceTplVars(val));
@@ -136,13 +187,12 @@ Parser.prototype.returnXMLAttrDecl = function (params) {
 
 		}, '');
 
-		arg[0] = `'${this.pasteTplVarBlocks(arg[0])}'`;
-
+		args[0] = `'${this.pasteTplVarBlocks(args[0])}'`;
 		return res += ws`
-			if ((${arg[0]}) != null && (${arg[0]}) != '') {
-				__ATTR_CACHE__[${arg[0]}] = __ATTR_CONCAT_MAP__[${arg[0]}] ? __ATTR_CACHE__[${arg[0]}] || '' : '';
-				__ATTR_CACHE__[${arg[0]}] += __ATTR_CACHE__[${arg[0]}] && !__NODE__ ? ' ' : '';
-				__ATTR_CACHE__[${arg[0]}] += ${empty} ? __NODE__ ? ${arg[0]} : '' : __ATTR_STR__;
+			if ((${args[0]}) != null && (${args[0]}) != '') {
+				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] ? __ATTR_CACHE__[${args[0]}] || '' : '';
+				__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] && !__NODE__ ? ' ' : '';
+				__ATTR_CACHE__[${args[0]}] += ${empty} ? __NODE__ ? ${args[0]} : '' : __ATTR_STR__;
 			}
 		`;
 
@@ -155,7 +205,7 @@ Parser.prototype.returnXMLAttrDecl = function (params) {
 };
 
 /**
- * Splits a string of attribute declaration into groups
+ * Splits a string of XML attribute declaration into groups
  *
  * @param {string} str - source string
  * @return {!Array<{attr: string, group: ?string, separator: ?string}>}
@@ -168,7 +218,14 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 	this.attr = true;
 	this.attrEscape = true;
 
-	str = this.replaceTplVars(str, {replace: true});
+	str =
+		this.replaceTplVars(str, {replace: true});
+
+	const separators = {
+		'-': true,
+		':': true,
+		'_': true
+	};
 
 	const
 		groups = [];
@@ -176,31 +233,25 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 	let
 		group = '',
 		attr = '',
-		sep = '';
+		separator = '',
+		pOpen = 0;
 
-	const separator = {
-		'-': true,
-		':': true,
-		'_': true
-	};
-
-	let pOpen = 0;
 	for (let i = 0; i < str.length; i++) {
 		let
 			el = str[i],
 			next = str[i + 1];
 
 		if (!pOpen) {
-			if (separator[el] && next === '(') {
+			if (separators[el] && next === '(') {
 				pOpen++;
 				i++;
-				sep = el;
+				separator = el;
 				continue;
 			}
 
 			if (el === '(') {
 				pOpen++;
-				sep = '';
+				separator = '';
 				continue;
 			}
 		}
@@ -216,12 +267,12 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 					groups.push({
 						attr: attr.trim(),
 						group: Snakeskin.Filters.html(group, true).trim(),
-						separator: sep
+						separator
 					});
 
 					group = '';
 					attr = '';
-					sep = '';
+					separator = '';
 
 					i++;
 					continue;
