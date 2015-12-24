@@ -8,30 +8,147 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { isArray } from '../helpers/types';
+import { toObj } from '../helpers/object';
+import { $output } from '../consts/cache';
 
 Snakeskin.addDirective(
 	'set',
 
 	{
-		group: 'set',
+		group: ['set', 'define'],
+		notEmpty: true,
+		placement: 'global',
+		shorthands: {
+			'@=': 'set '
+		}
+	},
+
+	set
+);
+
+Snakeskin.addDirective(
+	'__set__',
+
+	{
+		group: 'define',
 		notEmpty: true
 	},
 
-	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
+	set
+);
 
-		const
-			parts = command.split(' ');
+function set(command) {
+	const
+		{tplName, info: {file}} = this,
+		[root] = this.params,
+		last = this.params[this.params.length - 1];
 
-		if (parts.length < 2) {
-			return this.error(`invalid "${this.name}" declaration`);
-		}
+	function mix(base, opt_adv, opt_initial) {
+		return $C.extend(true, $C.extend(false, opt_initial || {}, opt_adv), base);
+	}
 
-		if (parts[0] === '&') {
-			this.bemRef = this.replaceTplVars(parts.slice(1).join(' '));
+	let
+		init = false,
+		params = last,
+		parentCache,
+		cache;
+
+	if (tplName) {
+		cache = $output[tplName]['flag'] = $output[tplName]['flag'] || {};
+		if (this.parentTplName) {
+			parentCache = $output[this.parentTplName] && $output[this.parentTplName]['flag'];
 		}
 	}
-);
+
+	if (last['@root'] || (file && last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
+		init = true;
+		params = {
+			'@file': file,
+			'@tplName': tplName
+		};
+
+		const inherit = (obj) => {
+			$C(obj).forEach((el, key) => {
+				if (key[0] !== '@' && key in root) {
+					params[key] = this[key] = el;
+					if (cache) {
+						cache[key] = el;
+					}
+				}
+			});
+		};
+
+		inherit(last);
+		if (parentCache) {
+			inherit(parentCache);
+		}
+
+		this.params.push(params);
+	}
+
+	let
+		flag,
+		value;
+
+	if (isArray(command)) {
+		[flag, value] = command;
+
+	} else {
+		let parts = command.split(' ');
+		[flag] = parts;
+
+		try {
+			value = this.returnEvalVal(parts.slice(1).join(' '));
+
+		} catch (err) {
+			return this.error(err.message);
+		}
+	}
+
+	const includeMap = {
+		'language': true,
+		'macros': true
+	};
+
+	if (flag === 'renderAs' && tplName) {
+		return this.error(`the flag "renderAs" can't be used in the template declaration`);
+	}
+
+	if (flag in root) {
+		if (includeMap[flag]) {
+			value = mix(
+				toObj(value, file, (src) => {
+					const root = this.environment.root || this.environment;
+					root.key.push([src, require('fs').statSync(src).mtime.valueOf()]);
+					this.files[src] = true;
+				}),
+
+				init ?
+					params[flag] : null,
+
+				init ?
+					null : params[flag]
+			);
+
+			if (flag === 'macros') {
+				try {
+					value = this.setMacros(value, this.macros, null, init);
+
+				} catch (err) {
+					return this.error(err.message);
+				}
+			}
+		}
+
+		params[flag] = this[flag] = value;
+		if (cache) {
+			cache[flag] = value;
+		}
+
+	} else if (flag[0] !== '@') {
+		return this.error(`unknown compiler flag "${flag}"`);
+	}
+}

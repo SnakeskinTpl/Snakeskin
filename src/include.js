@@ -67,7 +67,7 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 				`${s}__setFile__ ${src}${e}` +
 
 				(opt_type ?
-					`${s}__setSSFlag__ renderAs '${opt_type}'${e}` : '') +
+					`${s}__set__ renderAs '${opt_type}'${e}` : '') +
 
 				`${whitespaceStart.test(file) ? '' : nl}` +
 

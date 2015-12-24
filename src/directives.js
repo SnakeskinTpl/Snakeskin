@@ -10,7 +10,7 @@
 
 import './directives/index';
 import './directives/private';
-import './directives/compiler';
+import './directives/set';
 import './directives/end';
 import './directives/void';
 import './directives/logic';
@@ -39,7 +39,6 @@ import './directives/literal';
 import './directives/return';
 import './directives/wrap';
 import './directives/super';
-import './directives/set';
 import './directives/cdn';
 import './directives/script';
 import './directives/style';

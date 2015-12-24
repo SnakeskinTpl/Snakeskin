@@ -313,11 +313,11 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			$C(flags).forEach((el) => {
 				const [name] = el.split(' ');
 				delete baseParams[name];
-				Snakeskin.Directives['__setSSFlag__'].call(this, el);
+				Snakeskin.Directives['__set__'].call(this, el);
 			});
 
 			$C(baseParams).forEach((el, key) => {
-				Snakeskin.Directives['__setSSFlag__'].call(this, [key, el]);
+				Snakeskin.Directives['__set__'].call(this, [key, el]);
 			});
 
 			const
