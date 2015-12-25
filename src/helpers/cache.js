@@ -76,7 +76,6 @@ export function getCacheKey(params, ctx) {
 			escapeEOLs(params.eol),
 			params.doctype,
 			params.tolerateWhitespace,
-			params.inlineIterators,
 			params.renderAs,
 			params.renderMode,
 			params.replaceUndef,

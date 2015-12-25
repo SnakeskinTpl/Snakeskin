@@ -100,7 +100,6 @@ import {
  *        2) stringBuffer - renders template to a string, for concatenation of strings will be used Snakeskin.StringBuffer;
  *        3) dom - renders template to a DocumentFragment object.
  *
- *   *) [inlineIterators = false] - if is true, then all forEach and forIn iterators will be rendered as loops
  *   *) [replaceUndef = true] - if is false, then will be disabled the undef filter by default
  *   *) [escapeOutput = true] - if is false, then will be disabled the html filter by default
  *   *) [bemFilter = 'bem'] - name of the bem filter
@@ -134,7 +133,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.exports = p.exports || 'default';
 	p.prettyPrint = p.prettyPrint || false;
 	p.renderMode = p.renderMode || 'stringConcat';
-	p.inlineIterators = p.inlineIterators || false;
 	p.tolerateWhitespace = p.tolerateWhitespace || false;
 	p.replaceUndef = p.replaceUndef !== false;
 	p.escapeOutput = p.escapeOutput !== false;

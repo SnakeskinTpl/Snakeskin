@@ -262,7 +262,6 @@ Snakeskin.addDirective(
 						doctype: this.doctype,
 						eol: this.eol,
 						escapeOutput: this.escapeOutput,
-						inlineIterators: this.inlineIterators,
 						language: this.language,
 						localization: this.localization,
 						renderMode: this.renderMode,

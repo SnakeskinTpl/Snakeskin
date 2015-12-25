@@ -25,36 +25,20 @@ const
  */
 Parser.prototype.getGroup = function (names) {
 	const
-		inline = this.inlineIterators,
 		cacheKey = $C.toArray(arguments).join();
 
-	if (cache[inline] && cache[inline][cacheKey]) {
-		return clone(cache[inline][cacheKey]);
+	if (cache[cacheKey]) {
+		return clone(cache[cacheKey]);
 	}
 
 	const
-		map = {},
-		ignore = {};
+		map = {};
 
 	$C(arguments).forEach((name) => {
-		if (name === 'callback' && inline) {
-			$C($dirGroups['inlineIterator']).forEach((el, key) => {
-				ignore[key] = true;
-			});
-		}
-
-		$C($dirGroups[name]).forEach((el, key) => {
-			if (ignore[key]) {
-				return;
-			}
-
-			map[key] = true;
-		});
+		$C($dirGroups[name]).forEach((el, key) => map[key] = true);
 	});
 
-	cache[inline] = cache[inline] || {};
-	cache[inline][cacheKey] = clone(map);
-
+	cache[cacheKey] = clone(map);
 	return map;
 };
 

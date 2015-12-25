@@ -69,9 +69,6 @@ export default class Parser {
 		/** @type {boolean} */
 		this.tolerateWhitespace = params.tolerateWhitespace;
 
-		/** @type {boolean} */
-		this.inlineIterators = params.inlineIterators;
-
 		/** @type {(string|boolean)} */
 		this.doctype = params.doctype;
 
@@ -110,7 +107,6 @@ export default class Parser {
 			{
 				'@root': true,
 				renderMode: this.renderMode,
-				inlineIterators: this.inlineIterators,
 				doctype: this.doctype,
 				escapeOutput: this.escapeOutput,
 				renderAs: this.renderAs,
