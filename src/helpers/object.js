@@ -10,6 +10,7 @@
 
 import { IS_NODE } from '../consts/hacks';
 import { isString } from '../helpers/types';
+import { any } from '../helpers/gcc';
 
 /**
  * Clones an object
@@ -24,9 +25,9 @@ export function clone(obj) {
 /**
  * Converts the specified value to an object
  *
- * @param {?} val - object, a string for parsing or URL for data file
- * @param {?string=} [opt_base] - base URL
- * @param {?function(string)=} [opt_onFileExists] - callback function (only if val is URL)
+ * @param {?} val - object, a string for parsing or src for a file
+ * @param {?string=} [opt_base] - base src
+ * @param {?function(string)=} [opt_onFileExists] - callback function (only if val is src)
  * @return {!Object}
  */
 export function toObj(val, opt_base, opt_onFileExists) {
@@ -38,15 +39,18 @@ export function toObj(val, opt_base, opt_onFileExists) {
 	if (IS_NODE) {
 		const
 			path = require('path'),
-			fs = require('fs'),
+			fs = require('fs');
+
+		const
 			old = val;
 
 		try {
-			if (opt_base) {
-				val = path.resolve(path.dirname(opt_base), val);
-			}
-
-			val = path.normalize(path.resolve(val));
+			val = path.normalize(
+				path.resolve(
+					opt_base ?
+						path.join(path.dirname(opt_base), val) : val
+				)
+			);
 
 			if (fs.statSync(val).isFile()) {
 				opt_onFileExists && opt_onFileExists(val);
@@ -67,14 +71,12 @@ export function toObj(val, opt_base, opt_onFileExists) {
 					}
 				}
 
-				return Object(res || {});
+				return any(res || {});
 			}
 
-		} catch (ignore) {
+		} catch (ignore) {}
 
-		} finally {
-			val = old;
-		}
+		val = old;
 	}
 
 	try {
@@ -89,5 +91,5 @@ export function toObj(val, opt_base, opt_onFileExists) {
 		}
 	}
 
-	return Object(res || {});
+	return any(res || {});
 }

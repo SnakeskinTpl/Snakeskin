@@ -8,13 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import {
-
-	backSlashes,
-	singleQuotes,
-	doubleQuotes
-
-} from '../consts/regs';
+import { backSlashes, singleQuotes, doubleQuotes } from '../consts/regs';
 
 /**
  * Escapes backslashes in a string
