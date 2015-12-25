@@ -12,7 +12,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { stack } from '../include';
+import { stack } from '../helpers/include';
 import { SHORTS } from '../consts/literals';
 import { isFunction } from '../helpers/types';
 import { r } from '../helpers/string';

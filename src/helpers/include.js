@@ -10,11 +10,11 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from './deps/collection';
-import Snakeskin from './core';
-import { IS_NODE } from './consts/hacks';
-import { wsStart, wsEnd } from './consts/regs';
-import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from './consts/literals';
+import $C from '../deps/collection';
+import Snakeskin from '../core';
+import { IS_NODE } from '../consts/hacks';
+import { wsStart, wsEnd } from '../consts/regs';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 export const
 	stack = [];
