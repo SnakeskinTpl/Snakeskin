@@ -12,6 +12,7 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { symbols, w } from '../consts/regs';
+import { $scope, $extMap, $blocks } from '../consts/cache';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 const
@@ -56,9 +57,9 @@ Snakeskin.addDirective(
 					return this.error(err.message);
 				}
 
-				if (tplName in extMap) {
-					delete extMap[tplName];
-					clearScopeCache(tplName);
+				if (tplName in $extMap) {
+					delete $extMap[tplName];
+					this.clearScopeCache(tplName);
 				}
 
 				const desc = this.preDefs[tplName] = this.preDefs[tplName] || {
@@ -80,8 +81,8 @@ Snakeskin.addDirective(
 		}
 
 		const
-			scope = scopeCache[this.name][tplName] = scopeCache[this.name][tplName] || {},
-			parentTplName = extMap[tplName];
+			scope = $scope[this.name][tplName] = $scope[this.name][tplName] || {},
+			parentTplName = $extMap[tplName];
 
 		let
 			current = scope[name],
@@ -89,7 +90,7 @@ Snakeskin.addDirective(
 
 		if (parentTplName) {
 			parentScope =
-				scopeCache[this.name][parentTplName] = scopeCache[this.name][parentTplName] || {};
+				$scope[this.name][parentTplName] = $scope[this.name][parentTplName] || {};
 		}
 
 		if (!scope[name]) {
@@ -144,7 +145,7 @@ Snakeskin.addDirective(
 		}
 
 		if (this.isAdvTest()) {
-			if (blockCache[tplName][name]) {
+			if ($blocks[tplName][name]) {
 				return this.error(`the block "${name}" is already defined`);
 			}
 
@@ -162,7 +163,7 @@ Snakeskin.addDirective(
 			}
 
 			this.structure.params.args = args.params;
-			blockCache[tplName][name] = {
+			$blocks[tplName][name] = {
 				args,
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
@@ -177,7 +178,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			const
-				{args} = blockCache[tplName][name];
+				{args} = $blocks[tplName][name];
 
 			if (args.params) {
 				const
@@ -256,7 +257,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			block = blockCache[this.tplName][params.name];
+			block = $blocks[this.tplName][params.name];
 
 		if (this.isSimpleOutput() && params.fn) {
 			this.save(ws`
