@@ -259,14 +259,12 @@ Snakeskin.addDirective(
 					// jscs:enable requireTemplateStrings
 
 					{
-						autoReplace: this.autoReplace,
 						doctype: this.doctype,
 						eol: this.eol,
 						escapeOutput: this.escapeOutput,
 						inlineIterators: this.inlineIterators,
 						language: this.language,
 						localization: this.localization,
-						macros: this.macros,
 						renderMode: this.renderMode,
 						replaceUndef: this.replaceUndef,
 						throws: this.throws,

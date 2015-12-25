@@ -87,12 +87,6 @@ export default class Parser {
 		/** @type {string} */
 		this.exports = params.exports;
 
-		/** @type {boolean} */
-		this.autoReplace = params.autoReplace !== false;
-
-		/** @type {(Object|undefined)} */
-		this.macros = params.macros;
-
 		/** @type {string} */
 		this.bemFilter = params.bemFilter;
 
@@ -121,8 +115,6 @@ export default class Parser {
 				escapeOutput: this.escapeOutput,
 				renderAs: this.renderAs,
 				replaceUndef: this.replaceUndef,
-				autoReplace: this.autoReplace,
-				macros: this.macros,
 				localization: this.localization,
 				i18nFn: this.i18nFn,
 				bemFilter: this.bemFilter,

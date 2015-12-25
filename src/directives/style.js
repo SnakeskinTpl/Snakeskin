@@ -32,11 +32,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (this.autoReplace) {
-			this.autoReplace = false;
-			this.structure.params.autoReplace = true;
-		}
-
 		if (!this.isReady()) {
 			return;
 		}
@@ -56,10 +51,6 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.structure.params.autoReplace) {
-			this.autoReplace = true;
-		}
-
 		this.append($=> this.getEndXMLTagDecl('style'));
 	}
 );

@@ -109,8 +109,7 @@ function set(command) {
 	}
 
 	const includeMap = {
-		'language': true,
-		'macros': true
+		'language': true
 	};
 
 	if (flag === 'renderAs' && tplName) {
@@ -132,15 +131,6 @@ function set(command) {
 				init ?
 					null : params[flag]
 			);
-
-			if (flag === 'macros') {
-				try {
-					value = this.setMacros(value, this.macros, null, init);
-
-				} catch (err) {
-					return this.error(err.message);
-				}
-			}
 		}
 
 		params[flag] = this[flag] = value;

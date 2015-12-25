@@ -69,7 +69,7 @@ export function getFromCache(key, code, params, ctx) {
  * @return {?string}
  */
 export function getCacheKey(params, ctx) {
-	return params.language || params.macros ?
+	return params.language ?
 		null : [
 			params.exports,
 			ctx !== NULL,
@@ -83,7 +83,6 @@ export function getCacheKey(params, ctx) {
 			params.escapeOutput,
 			params.prettyPrint,
 			params.ignore,
-			params.autoReplace,
 			params.localization,
 			params.i18nFn,
 			params.bemFilter,

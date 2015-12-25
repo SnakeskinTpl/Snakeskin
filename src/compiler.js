@@ -15,7 +15,6 @@ import Parser from './parser/index';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
 import { any, _ } from './helpers/gcc';
-import { setMacros } from './helpers/macros';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';
 import { getCommentType } from './helpers/literals';
 import { r } from './helpers/string';
@@ -91,8 +90,6 @@ import {
  *   *) [tolerateWhitespace = false] - if is true, then whitespaces will be processed "as is"
  *   *) [eol = '\n'] - EOL symbol
  *
- *   *) [autoReplace = false] - if is false, then macros will be disabled
- *   *) [macros] - map of macros
  *   *) [renderAs] - rendering type of templates:
  *        1) placeholder - all templates will be rendered as "placeholder";
  *        2) interface - all templates will be rendered as "interface";
@@ -143,7 +140,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.escapeOutput = p.escapeOutput !== false;
 	p.throws = p.throws || false;
 	p.cache = p.cache !== false;
-	p.autoReplace = p.autoReplace || false;
 	p.doctype = p.doctype !== false && (p.doctype || 'xml');
 
 	if (p.renderMode === 'dom') {
@@ -198,24 +194,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	// <<<
-	// Working with macros
-	// >>>
-
-	let macros = {
-		combo: {},
-		groups: {},
-		inline: {},
-		map: {}
-	};
-
-	if (sp.proto) {
-		macros = p.macros;
-
-	} else {
-		setMacros(p.macros, macros, null, true);
-	}
-
-	// <<<
 	// File initialization
 	// >>>
 
@@ -253,7 +231,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Transpiler
 	// >>>
 
-	const parser = new Parser(String(text), $C.extend({traits: true}, {info, macros}, p, sp));
+	const parser = new Parser(String(text), $C.extend({traits: true}, {info}, p, sp));
 	parser.setMacros = setMacros;
 
 	// If is true, then a directive declaration is started,
@@ -286,6 +264,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		comment = false,
 		commentStart = 0;
 
+	let
+		prevCommentSpace = false,
+		freezeI = 0,
+		freezeTmp = 0;
+
 	// If is true, then JSDoc is started
 	let
 		jsDoc = false,
@@ -308,10 +291,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		tAttrBegin = false,
 		tAttrEscape = false;
 
-	let tAttrBMap = {
+	const tAttrBMap = {
 		'"': true,
 		'\'': true
 	};
+
+	const
+		templateMap = parser.getGroup('rootTemplate');
 
 	// The flags for working with quotes
 	let
@@ -319,33 +305,18 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		qType = null,
 		prfxI = 0;
 
-	// The flags for working with macros
-	let
-		expr = '',
-		exprPos = 0,
-		advExprPos = 0;
-
-	let
-		prevCommentSpace = false,
-		freezeI = 0,
-		freezeTmp = 0;
-
 	// The flags for working with localization literals
 	let
 		i18nStr = '',
 		i18nStart = false,
-		i18nDirStart = false;
+		i18nDirStart = false,
+		clrL = true;
 
-	let
-		clrL = true,
-		templateMap = parser.getGroup('rootTemplate');
+	/** @return {{prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen}} */
+	parser.getCompileVars = () => ({prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen});
 
-	/** @return {{macros, prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen}} */
-	parser.getCompileVars = () => ({macros, prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen});
-
-	/** @param {{macros, tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
+	/** @param {{tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
 	parser.setCompileVars = (obj) => {
-		macros = obj.macros;
 		tOpen = obj.tOpen;
 
 		tAttr =
@@ -362,11 +333,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	if (sp.proto) {
 		parser.setCompileVars(sp.parent.getCompileVars());
-	}
-
-	function clearMacroExpr() {
-		expr = '';
-		advExprPos = 0;
 	}
 
 	while (++parser.i < parser.source.length) {
@@ -948,69 +914,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						parser.attrEscape = tAttrEscape;
 					}
 
-					if (parser.autoReplace) {
-						if (!tOpen) {
-							if (macros.combo[el]) {
-								const
-									val = parser.macros[el];
-
-								if (!qType) {
-									qType = el;
-									el = val[0][0];
-									qOpen++;
-
-								} else if (el === qType) {
-									qType = null;
-									el = val[0][1];
-									qOpen = 0;
-
-								} else {
-									el = (val[1] || val[0])[qOpen % 2 ? 0 : 1];
-									qOpen++;
-								}
-
-								el = String(el.call ? el() : el);
-
-							} else {
-								if (rgxp.whitespace.test(el)) {
-									clearMacroExpr();
-
-								} else if (macros.inline[el] && !macros.inline[prev] && !parser.macros[expr + el]) {
-									exprPos = parser.result.length;
-									expr = el;
-
-								} else {
-									if (!expr) {
-										exprPos = parser.result.length;
-									}
-
-									expr += el;
-								}
-							}
-						}
-
-						if (parser.macros[expr]) {
-							const
-								modStr =
-									parser.result.slice(0, exprPos) +
-									parser.result.slice(exprPos + expr.length + advExprPos);
-
-							let
-								val = parser.macros[expr].call ?
-									parser.macros[expr]() : parser.macros[expr];
-
-							val = String(val);
-							advExprPos += val.length;
-							parser.mod(() => parser.result = modStr);
-							parser.save(val);
-
-						} else {
-							parser.save(applyDefEscape(el));
-						}
-
-					} else {
-						parser.save(applyDefEscape(el));
-					}
+					parser.save(applyDefEscape(el));
 				}
 
 				parser.inline = null;
