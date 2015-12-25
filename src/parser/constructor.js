@@ -48,7 +48,6 @@ export default class Parser {
 		/** @type {!Array} */
 		this.scope = params.scope || [];
 
-
 		/** @type {!Object} */
 		this.info = params.info;
 

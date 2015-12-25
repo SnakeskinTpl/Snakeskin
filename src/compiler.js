@@ -10,32 +10,20 @@
 
 import $C from './deps/collection';
 import beautify from './deps/js-beautify';
+
 import Snakeskin from './core';
 import Parser from './parser/index';
+
+import * as rgxp from './consts/regs';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
-import { any, _ } from './helpers/gcc';
-import { escapeEOLs, applyDefEscape } from './helpers/escape';
-import { getCommentType } from './helpers/literals';
+import { $rgxp, $dirNameShorthands, $dirParents } from './consts/cache';
+
 import { r } from './helpers/string';
-import * as rgxp from './consts/regs';
-
-import {
-
-	getFromCache,
-	getCacheKey,
-	saveIntoFnCache,
-	saveIntoCache
-
-} from './helpers/cache';
-
-import {
-
-	$rgxp,
-	$dirNameShorthands,
-	$dirParents
-
-} from './consts/cache';
+import { any, _ } from './helpers/gcc';
+import { getCommentType } from './helpers/literals';
+import { escapeEOLs, applyDefEscape } from './helpers/escape';
+import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache } from './helpers/cache';
 
 import {
 
@@ -43,7 +31,6 @@ import {
 	FILTER,
 	SHORTS,
 	SYS_ESCAPES,
-	STRONG_SYS_ESCAPES,
 	ESCAPES,
 	ESCAPES_END,
 	ESCAPES_END_WORD,
@@ -144,7 +131,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// >>>
 
 	const
-		info = any($C.extend(false, {line: 1}, opt_info || {}));
+		info = any($C.extend(false, {line: 1}, opt_info));
 
 	let text;
 	if (typeof src === 'object' && 'innerHTML' in src) {
@@ -195,8 +182,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			fs = require('fs'),
 			path = require('path');
 
-		filename =
-			info.file = path.normalize(path.resolve(info.file));
+		filename = info.file = path.normalize(
+			path.resolve(info.file)
+		);
 
 		dirname = path.dirname(filename);
 		Snakeskin.LocalVars.include[filename] = 'index';
@@ -221,13 +209,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	let
 		command = '',
-		commandLength = 0;
+		commandLength = 0,
+		filterStart = false;
 
 	const
 		commandTypeRgxp = /[^\s]+/,
 		commandRgxp = /[^\s]+\s*/;
-
-	let filterStart = false;
 
 	// The number of open { symbols inside a directive
 	let fakeBegin = 0;
@@ -244,10 +231,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		commentStart = 0;
 
 	let
-		prevCommentSpace = false,
 		freezeI = 0,
 		freezeTmp = 0,
 		prfxI = 0;
+
+	let
+		prevCommentSpace = false,
+		clrL = true;
 
 	// If is true, then JSDoc is started
 	let
@@ -280,8 +270,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	let
 		i18nStr = '',
 		i18nStart = false,
-		i18nDirStart = false,
-		clrL = true;
+		i18nDirStart = false;
 
 	while (++parser.i < parser.source.length) {
 		const
@@ -309,8 +298,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		const
 			eol = rgxp.eol.test(el),
-			currentClrL = clrL,
-			strongSpace = parser.strongSpace[parser.strongSpace.length - 1];
+			cClrL = clrL,
+			space = parser.strongSpace[parser.strongSpace.length - 1];
 
 		if (eol) {
 			if (substr2 === '\r\n') {
@@ -339,8 +328,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		}
 
 		const
-			currentEscape = escape,
-			isPrefStart = !currentEscape && !begin && el === alb && next === lb;
+			cEscape = escape,
+			isPrefStart = !cEscape && !begin && substr2 === alb + lb;
 
 		if (rgxp.ws.test(el)) {
 			// Inside a directive
@@ -372,7 +361,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			// Inside a template
 			} else {
-				if (!parser.space && !strongSpace && !parser.sysSpace) {
+				if (!space && !parser.space && !parser.sysSpace) {
 					el = parser.ignore && parser.ignore.test(el) ?
 						'' : el;
 
@@ -389,8 +378,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		} else {
 			clrL = false;
 
-			if (!begin && !strongSpace && !parser.sysSpace) {
-				if (!currentEscape && (isPrefStart ? el === alb : el === lb)) {
+			if (!begin && !space && !parser.sysSpace) {
+				if (!cEscape && (isPrefStart ? el === alb : el === lb)) {
 					parser.prevSpace = parser.space;
 
 				} else {
@@ -414,7 +403,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				continue;
 			}
 
-			if (!currentEscape) {
+			if (!cEscape) {
 				const
 					commentType = getCommentType(str, parser.i),
 					endComment = getCommentType(str, parser.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
@@ -483,11 +472,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 			if (!jsDoc) {
 				if (i18nStart) {
-					if (!currentEscape && el === '"' && !parser.language) {
+					if (!cEscape && el === '"' && !parser.language) {
 						el = '\\"';
 					}
 
-					if (currentEscape || el !== I18N) {
+					if (cEscape || el !== I18N) {
 						if (pseudoI !== false) {
 							continue;
 						}
@@ -501,7 +490,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				// Directive is started
-				if (isPrefStart || (el === lb && (begin || !currentEscape))) {
+				if (isPrefStart || (el === lb && (begin || !cEscape))) {
 					if (begin) {
 						fakeBegin++;
 
@@ -544,18 +533,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					let
 						[commandType] = commandTypeRgxp.exec(command);
 
-					const isConst = commandType === 'const';
+					const
+						isConst = commandType === 'const';
+
 					commandType = Snakeskin.Directives[commandType] ? commandType : 'const';
 
 					// All directives, which starts with _
 					// will be cutted from the code listing
 					if (commandType[0] === '_') {
-						const
-							source = `${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`,
-							rgxp = $rgxp[source] = $rgxp[source] || new RegExp(source);
-
+						const source = `${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`;
 						parser.lines[lastLine] = parser.lines[lastLine]
-							.replace(rgxp, '');
+							.replace($rgxp[source] = $rgxp[source] || new RegExp(source), '');
 					}
 
 					command = parser.replaceDangerBlocks(
@@ -617,7 +605,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					commandLength = 0;
 					continue;
 
-				} else if (parser.localization && !currentEscape && el === I18N) {
+				} else if (parser.localization && !cEscape && el === I18N) {
 					if (i18nStart && i18nStr && p.words && !p.words[i18nStr]) {
 						p.words[i18nStr] = i18nStr;
 					}
@@ -701,7 +689,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		if (begin) {
 			if (beginStr && parser.isSimpleOutput()) {
 				let prfx = '';
-
 				if (parser.renderMode !== 'dom' && tAttr && !tAttrBegin) {
 					prfx = '"';
 					tAttrBegin = true;
@@ -715,7 +702,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			// Working with literals
 			if (!bOpen) {
 				let skip = false;
-
 				if (el === FILTER && rgxp.filterStart.test(next)) {
 					filterStart = true;
 					bEnd = false;
@@ -772,7 +758,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				if (currentClrL && !parser.tplName && (SHORTS[el] || SHORTS[substr2])) {
+				// Convert Jade-Like to classic
+				if (cClrL && !parser.tplName && (SHORTS[el] || SHORTS[substr2])) {
 					const
 						adv = parser.lines[lastLine].length - 1,
 						source = parser.toBaseSyntax(parser.source, parser.i - adv);
@@ -815,11 +802,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					if (parser.renderMode !== 'dom') {
 						if (el === '<') {
 							tOpen++;
-							clearMacroExpr();
 
 						} else if (el === '>') {
 							tOpen--;
-							clearMacroExpr();
 						}
 
 						if (tAttr) {
@@ -887,15 +872,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		return false;
 	}
 
+	// Attach a compilation label
 	parser.end(cacheKey, label);
 
+	// Beautify
 	if (p.prettyPrint) {
 		parser.result = beautify(parser.result);
 		parser.result = parser.result.replace(new RegExp(rgxp.eol.source, 'g'), p.eol);
 	}
 
+	// Line feed
 	parser.result += p.eol;
 
+	// Save some debug information
 	if (p.debug) {
 		p.debug.code = parser.result;
 		p.debug.files = parser.files;
@@ -905,17 +894,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		// Server compilation
 		if (IS_NODE) {
 			if (ctx !== NULL) {
-				new Function(
-					'module',
-
-					'exports',
-					'require',
-
-					'__dirname',
-					'__filename',
-
-					parser.result
-				)(
+				new Function('module', 'exports', 'require', '__dirname', '__filename', parser.result)(
 					{
 						children: [],
 						exports: ctx,
@@ -928,7 +907,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					ctx,
 					require,
-
 					dirname,
 					filename
 				);
@@ -936,20 +914,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// CommonJS compiling in a browser
 		} else if (ctx !== NULL) {
-			new Function(
-				'module',
-				'exports',
-				'global',
-
-				parser.result
-			)(
-				{
-					exports: ctx
-				},
-
-				ctx,
-				GLOBAL
-			);
+			new Function('module', 'exports', 'global', parser.result)({exports: ctx}, ctx, GLOBAL);
 
 		// Compiling in a browser
 		} else {
