@@ -8,9 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'attr',
@@ -23,6 +21,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> this.getXMLAttrsDecl(command));
+		this.append(this.getXMLAttrsDecl(command));
 	}
 );

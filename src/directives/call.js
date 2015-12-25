@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> this.wrap(this.out(command, {unsafe: true})));
+		this.append(this.wrap(this.out(command, {unsafe: true})));
 	}
 
 );

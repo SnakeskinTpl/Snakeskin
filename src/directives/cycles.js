@@ -9,7 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'for',
@@ -75,17 +74,14 @@ Snakeskin.addDirective(
 	function (command) {
 		// do { ... } while ( ... )
 		if (this.structure.name === 'do') {
-			this.append($=> ws`
-				} while (${this.out(command, {unsafe: true})});
-			`);
-
+			this.append(`} while (${this.out(command, {unsafe: true})});`);
 			this.structure.params.chain = true;
 			Snakeskin.Directives['end'].call(this);
 
 		// while ( ... ) { ... }
 		} else {
 			this.startDir();
-			this.append($=> `while (${this.out(command, {unsafe: true})}) {`);
+			this.append(`while (${this.out(command, {unsafe: true})}) {`);
 		}
 	},
 

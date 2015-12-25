@@ -19,7 +19,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> `throw ${this.out(command, {unsafe: true})};`);
+		this.append(`throw ${this.out(command, {unsafe: true})};`);
 	}
 
 );
@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.structure.params.chain = true;
-		this.append($=> `} catch (${this.declVar(command)}) {`);
+		this.append(`} catch (${this.declVar(command)}) {`);
 	}
 
 );

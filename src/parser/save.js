@@ -265,7 +265,7 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
  * Adds a string to the JS string if is possible
  * (with this.isSimpleOutput())
  *
- * @param {(string|function(this:Parser))=} str - source string or a function
+ * @param {string=} str - source string
  * @param {?boolean=} [opt_interface=false] - if is true, then the current operation is an interface
  * @param {(boolean|number)=} [opt_jsDoc] - last position of appending jsDoc or false
  * @return {boolean}
@@ -273,10 +273,6 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
 Parser.prototype.append = function (str, opt_interface, opt_jsDoc) {
 	if (!this.isSimpleOutput()) {
 		return false;
-	}
-
-	if (isFunction(str)) {
-		str = str.call(this);
 	}
 
 	return this.save(str, opt_interface, opt_jsDoc);

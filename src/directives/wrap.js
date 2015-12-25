@@ -30,7 +30,7 @@ Snakeskin.addDirective(
 			raw
 		});
 
-		this.append($=> ws`
+		this.append(ws`
 			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = []`)}
 			__RESULT__ = ${this.getReturnDecl()};
 		`);
@@ -90,7 +90,7 @@ Snakeskin.addDirective(
 
 	function () {
 		this.structure.params.chunkLength++;
-		this.append($=> ws`
+		this.append(ws`
 			${this.out('__WRAP_TMP__', {unsafe: true})}.push(__RESULT__);
 			__RESULT__ = ${this.getReturnDecl()};
 		`);

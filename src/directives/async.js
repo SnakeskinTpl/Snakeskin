@@ -22,7 +22,7 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 		},
 
 		function (command, commandLength, type) {
-			this.append($=> `${this.out('async', {unsafe: true})}.${type}([`);
+			this.append(`${this.out('async', {unsafe: true})}.${type}([`);
 		},
 
 		function () {
@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> `${this.out(command, {unsafe: true})}.then(`);
+		this.append(`${this.out(command, {unsafe: true})}.then(`);
 	},
 
 	function () {

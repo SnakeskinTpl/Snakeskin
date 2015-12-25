@@ -29,23 +29,20 @@ Snakeskin.addDirective(
 		}
 
 		if (command && command !== name) {
-			const
-				group = this.getGroup('rootTemplate');
-
-			if (!(this.renderAs && group[name] && group[command])) {
+			const group = this.getGroup('rootTemplate');
+			if (!this.renderAs || !group[name] || !group[command]) {
 				return this.error(`invalid closing directive, expected: "${name}", declared: "${command}"`);
 			}
 		}
 
 		const
-			destruct = Snakeskin.Directives[`${name}End`],
-			isSimpleOutput = this.isSimpleOutput();
+			destruct = Snakeskin.Directives[`${name}End`];
 
 		if (destruct) {
 			destruct.apply(this, arguments);
 
-		} else if (!structure.logic && isSimpleOutput) {
-			this.save('};');
+		} else if (!structure.logic) {
+			this.append('};');
 		}
 
 		Snakeskin.Directives[`${name}BaseEnd`].call(this, ...arguments);
@@ -54,7 +51,7 @@ Snakeskin.addDirective(
 		structure = this.structure;
 		name = structure.name;
 
-		if (this.deferReturn && isSimpleOutput) {
+		if (this.deferReturn) {
 			const
 				async = this.getGroup('async');
 
@@ -67,21 +64,21 @@ Snakeskin.addDirective(
 						basicAsync = this.getGroup('basicAsync');
 
 					if (basicAsync[name] || basicAsync[parent]) {
-						this.save(ws`
+						this.append(ws`
 							if (__RETURN__) {
 								return false;
 							}
 						`);
 
 					} else if (parent === 'waterfall') {
-						this.save(ws`
+						this.append(ws`
 							if (__RETURN__) {
 								return arguments[arguments.length - 1](__RETURN_VAL__);
 							}
 						`);
 
 					} else {
-						this.save(ws`
+						this.append(ws`
 							if (__RETURN__) {
 								if (typeof arguments[0] === 'function') {
 									return arguments[0](__RETURN_VAL__);
@@ -95,7 +92,7 @@ Snakeskin.addDirective(
 					this.deferReturn = 0;
 
 				} else if (this.deferReturn > 1) {
-					this.save(ws`
+					this.append(ws`
 						if (__RETURN__) {
 							return false;
 						}
@@ -107,7 +104,7 @@ Snakeskin.addDirective(
 				}
 
 			} else if (!async[name]) {
-				this.save(ws`
+				this.append(ws`
 					if (__RETURN__) {
 						return __RETURN_VAL__;
 					}

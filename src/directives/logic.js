@@ -20,7 +20,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> `if (${this.out(command, {unsafe: true})}) {`);
+		this.append(`if (${this.out(command, {unsafe: true})}) {`);
 	},
 
 	function () {
@@ -39,7 +39,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> `if (!(${this.out(command, {unsafe: true})})) {`);
+		this.append(`if (!(${this.out(command, {unsafe: true})})) {`);
 	},
 
 	function () {
@@ -87,7 +87,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> `switch (${this.out(command, {unsafe: true})}) {`);
+		this.append(`switch (${this.out(command, {unsafe: true})}) {`);
 	},
 
 	function () {
@@ -107,7 +107,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> `case ${this.out(command, {unsafe: true})}: {`);
+		this.append(`case ${this.out(command, {unsafe: true})}: {`);
 	},
 
 	function () {

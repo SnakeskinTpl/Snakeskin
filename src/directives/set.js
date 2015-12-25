@@ -10,9 +10,9 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { $output } from '../consts/cache';
 import { isArray } from '../helpers/types';
 import { toObj } from '../helpers/object';
-import { $output } from '../consts/cache';
 
 Snakeskin.addDirective(
 	'set',
@@ -108,16 +108,12 @@ function set(command) {
 		}
 	}
 
-	const includeMap = {
-		'language': true
-	};
-
 	if (flag === 'renderAs' && tplName) {
 		return this.error(`the flag "renderAs" can't be used in the template declaration`);
 	}
 
 	if (flag in root) {
-		if (includeMap[flag]) {
+		if (flag === 'language') {
 			value = mix(
 				toObj(value, file, (src) => {
 					const root = this.environment.root || this.environment;
@@ -133,7 +129,9 @@ function set(command) {
 			);
 		}
 
-		params[flag] = this[flag] = value;
+		params[flag] =
+			this[flag] = value;
+
 		if (cache) {
 			cache[flag] = value;
 		}

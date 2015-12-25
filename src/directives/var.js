@@ -20,7 +20,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append($=> this.declVars(command));
+		this.append(this.declVars(command));
 	}
 
 );

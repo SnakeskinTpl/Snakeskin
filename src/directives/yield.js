@@ -23,15 +23,13 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (command) {
-			this.append($=> `yield ${this.out(command, {unsafe: true})};`);
+			this.append(`yield ${this.out(command, {unsafe: true})};`);
 
 		} else {
-			this.append($=>
-				ws`
-					yield ${this.getReturnResultDecl()};
-					__RESULT__ = ${this.getReturnDecl()};
-				`
-			);
+			this.append(ws`
+				yield ${this.getReturnResultDecl()};
+				__RESULT__ = ${this.getReturnDecl()};
+			`);
 		}
 	}
 
