@@ -120,10 +120,10 @@ Parser.prototype.getFnArgs = function (str) {
  * and returns an information object
  *
  * @param {string} str - source string
- * @param {string} type - function type (template, proto etc.)
+ * @param {string} type - function type (template, block etc.)
  * @param {?string=} [tplName] - template name
  * @param {?string=} [parentTplName] - parent template name
- * @param {?string=} [fName] - custom function name (for proto, block etc.)
+ * @param {?string=} [fName] - custom function name (for template, block etc.)
  * @return {{defParams: string, list: !Array, params, scope: (string|undefined), str: string}}
  */
 Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fName} = {}) {
@@ -295,24 +295,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 	});
 
 	let
-		args = [],
-		needArgs = type === 'proto';
-
-	if (needArgs) {
-		$C(argsList).forEach((el) => {
-			if (el.key === 'arguments') {
-				needArgs = false;
-				return false;
-			}
-		});
-
-		if (needArgs) {
-			argsList.push({
-				i: argsList.length,
-				key: 'arguments'
-			});
-		}
-	}
+		args = [];
 
 	$C(argsList).forEach((el, i) => {
 		el.key = el.key.replace(scopeMod, '');
@@ -346,17 +329,9 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 		}
 	});
 
-	if (needArgs) {
-		const tmp = args.pop();
-		args = args.concat(locals);
-		args.push(tmp);
-		args['__SNAKESKIN_TMP__needArgs'] = true;
-
-	} else {
-		args = args.concat(locals);
-	}
-
+	args = args.concat(locals);
 	structure.params['@consts'] = constsCache;
+
 	const res = {
 		defParams,
 		list: args,

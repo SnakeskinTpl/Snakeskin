@@ -27,6 +27,5 @@ import './save';
 import './tree';
 import './var';
 import './template';
-import './proto';
 import './attr';
 import './tag';

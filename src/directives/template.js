@@ -24,7 +24,6 @@ import {
 	$scope,
 	$templates,
 	$cache,
-	$protos,
 	$args,
 	$argsRes,
 	$output,
@@ -46,9 +45,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 		},
 
 		function (command, commandLength, type, raw, jsDoc) {
-			const
-				{proto} = this;
-
 			const rank = {
 				'interface': 1,
 				'placeholder': 0,
@@ -56,7 +52,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			};
 
 			this.startDir(
-				!proto && this.renderAs && rank[this.renderAs] < rank[type] ?
+				this.renderAs && rank[this.renderAs] < rank[type] ?
 					this.renderAs : null
 			);
 
@@ -75,69 +71,114 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				tmpTplName = this.getFnName(command),
 				tplName = this.pasteDangerBlocks(tmpTplName);
 
-			if (!proto) {
-				tmpTplName = this.replaceFileNamePatterns(tmpTplName);
+			tmpTplName = this.replaceFileNamePatterns(tmpTplName);
 
-				let
-					prfx = '',
-					pos;
+			let
+				prfx = '',
+				pos;
 
-				if (/\*/.test(tmpTplName)) {
-					prfx = '*';
-					tmpTplName = tmpTplName.replace(prfx, '');
+			if (/\*/.test(tmpTplName)) {
+				prfx = '*';
+				tmpTplName = tmpTplName.replace(prfx, '');
+			}
+
+			tplName = this.pasteDangerBlocks(tmpTplName);
+			this.generator = Boolean(prfx);
+
+			try {
+				if (!tplName || nameRgxp.test(tplName)) {
+					throw false;
 				}
 
-				tplName = this.pasteDangerBlocks(tmpTplName);
-				this.generator = Boolean(prfx);
+				esprima.parse(tplName.replace(esprimaNameHackRgxp, ''));
 
+			} catch (ignore) {
+				return this.error(`invalid "${this.name}" name`);
+			}
+
+			if (tplName === 'init') {
+				return this.error(`can't declare the template "${tplName}", try another name`);
+			}
+
+			this.info.template =
+				this.tplName = tplName;
+
+			if (this.name !== 'template' && !$write[tplName]) {
+				$write[tplName] = false;
+			}
+
+			const fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
+			this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), isInterface, jsDoc);
+
+			if (jsDoc) {
+				jsDoc += pos.length;
+			}
+
+			const tmpArr = tmpTplName
+				.replace(nmssRgxp, '%')
+				.replace(nmsRgxp, '.%')
+				.replace(nmeRgxp, '')
+				.split('.');
+
+			const
+				{length} = tmpArr;
+
+			let
+				[str] = tmpArr,
+				shortcut = '';
+
+			if (str[0] === '%') {
 				try {
-					if (!tplName || nameRgxp.test(tplName)) {
-						throw false;
-					}
+					str = ws`['${
+						applyDefEscape(
+							this.returnEvalVal(
+								this.out(str.slice(1), {unsafe: true})
+							)
+						)
+					}']`;
 
-					esprima.parse(tplName.replace(esprimaNameHackRgxp, ''));
-
-				} catch (ignore) {
-					return this.error(`invalid "${this.name}" name`);
+				} catch (err) {
+					return this.error(err.message);
 				}
 
-				if (tplName === 'init') {
-					return this.error(`can't declare the template "${tplName}", try another name`);
+			} else {
+				shortcut = str;
+			}
+
+			for (let i = 1; i < length; i++) {
+				let el = tmpArr[i];
+
+				const
+					custom = el[0] === '%',
+					def = `this${concatProp(str)}`;
+
+				if (custom) {
+					el = el.slice(1);
 				}
 
-				this.info.template =
-					this.tplName = tplName;
+				this.save(
+					(pos = ws`
+						if (${def} == null) {
+							${def} = {};
+						}
 
-				if (this.name !== 'template' && !$write[tplName]) {
-					$write[tplName] = false;
-				}
+						${i === 1 && shortcut ? `var ${shortcut} = ${def};` : ''}
+					`),
 
-				const fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
-				this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), isInterface, jsDoc);
+					isInterface,
+					jsDoc
+				);
 
 				if (jsDoc) {
 					jsDoc += pos.length;
 				}
 
-				const tmpArr = tmpTplName
-					.replace(nmssRgxp, '%')
-					.replace(nmsRgxp, '.%')
-					.replace(nmeRgxp, '')
-					.split('.');
-
-				const
-					{length} = tmpArr;
-
-				let
-					[str] = tmpArr,
-					shortcut = '';
-
-				if (str[0] === '%') {
+				if (custom) {
 					try {
-						str = ws`['${
+						str += ws`['${
 							applyDefEscape(
 								this.returnEvalVal(
-									this.out(str.slice(1), {unsafe: true})
+									this.out(el, {unsafe: true})
 								)
 							)
 						}']`;
@@ -146,69 +187,22 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 						return this.error(err.message);
 					}
 
-				} else {
-					shortcut = str;
+					continue;
+
+				} else if (i === length - 1) {
+					lastName = el;
 				}
 
-				for (let i = 1; i < length; i++) {
-					let el = tmpArr[i];
-
-					const
-						custom = el[0] === '%',
-						def = `this${concatProp(str)}`;
-
-					if (custom) {
-						el = el.slice(1);
-					}
-
-					this.save(
-						(pos = ws`
-							if (${def} == null) {
-								${def} = {};
-							}
-
-							${i === 1 && shortcut ? `var ${shortcut} = ${def};` : ''}
-						`),
-
-						isInterface,
-						jsDoc
-					);
-
-					if (jsDoc) {
-						jsDoc += pos.length;
-					}
-
-					if (custom) {
-						try {
-							str += ws`['${
-								applyDefEscape(
-									this.returnEvalVal(
-										this.out(el, {unsafe: true})
-									)
-								)
-							}']`;
-
-						} catch (err) {
-							return this.error(err.message);
-						}
-
-						continue;
-
-					} else if (i === length - 1) {
-						lastName = el;
-					}
-
-					str += `.${el}`;
-				}
-
-				tplName = str;
-				this.save(
-					(length === 1 && shortcut ? `var ${shortcut} = ` : '') + // jscs:ignore
-						`this${concatProp(tplName)} = function ${prfx}${length > 1 ? lastName : shortcut}(`,
-
-					isInterface
-				);
+				str += `.${el}`;
 			}
+
+			tplName = str;
+			this.save(
+				(length === 1 && shortcut ? `var ${shortcut} = ` : '') + // jscs:ignore
+					`this${concatProp(tplName)} = function ${prfx}${length > 1 ? lastName : shortcut}(`,
+
+				isInterface
+			);
 
 			this.info.template =
 				this.tplName = tplName;
@@ -221,13 +215,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			this.blockTable = {};
 			this.varCache[tplName] = {};
-
-			if (proto) {
-				this.sysSpace = proto.sysSpace;
-				this.strongSpace = proto.strongSpace;
-				this.space = proto.space;
-				return;
-			}
 
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
@@ -399,26 +386,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 		function (command, commandLength) {
 			const
-				{tplName, proto} = this;
-
-			if (proto) {
-				if (this.backTableI) {
-					const {ctx} = proto;
-					ctx.backTableI += this.backTableI;
-					$C(this.backTable).forEach((el, key) => {
-						$C(el).forEach((el) => {
-							el.pos += proto.pos;
-							el.outer = true;
-							el.vars = this.structure.vars;
-						});
-
-						ctx.backTable[key] = ctx.backTable[key] ?
-							ctx.backTable[key].concat(el) : el;
-					});
-				}
-
-				return;
-			}
+				{tplName} = this;
 
 			const diff = this.getDiff(commandLength);
 			$cache[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
@@ -440,36 +408,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				this.blockTable = {};
 				this.varCache[tplName] = {};
 				return;
-			}
-
-			if (this.backTableI) {
-				try {
-					$C(this.backTable).forEach((arr, key) => {
-						$C(arr).forEach((el) => {
-							if (!el.outer) {
-								return;
-							}
-
-							const
-								tmp = $protos[tplName][key];
-
-							if (!tmp) {
-								throw `the proto "${key}" is not defined`;
-							}
-
-							this.result =
-								this.result.slice(0, el.pos) +
-								this.result.slice(el.pos).replace(el.label, (el.argsStr || '') +
-								(el.recursive ? `${tmp.i}++;` : tmp.body));
-						});
-					});
-
-				} catch (err) {
-					return this.error(err);
-				}
-
-				this.backTable = {};
-				this.backTableI = 0;
 			}
 
 			const

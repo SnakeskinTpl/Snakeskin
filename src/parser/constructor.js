@@ -48,8 +48,6 @@ export default class Parser {
 		/** @type {!Array} */
 		this.scope = params.scope || [];
 
-		/** @type {Object} */
-		this.proto = params.proto || null;
 
 		/** @type {!Object} */
 		this.info = params.info;
@@ -194,13 +192,13 @@ export default class Parser {
 		this.i = -1;
 
 		/**
-		 * The tree of blocks: proto, block, const
+		 * The tree of blocks: block, const
 		 * @type {Object}
 		 */
 		this.blockStructure = null;
 
 		/**
-		 * The map for blocks: proto, block, const
+		 * The map for blocks: block, const
 		 * @type {Object}
 		 */
 		this.blockTable = null;
@@ -316,75 +314,71 @@ export default class Parser {
 		 * The final JS string
 		 * @type {string}
 		 */
-		this.result = '';
+		this.result = ws`
+			This code is generated automatically, don't alter it. */
+			(function () {
+				${this.useStrict ? `'use strict';` : ''}
 
-		if (!this.proto) {
-			this.result += ws`
-				This code is generated automatically, don't alter it. */
-				(function () {
-					${this.useStrict ? `'use strict';` : ''}
+			var
+				__IS_NODE__ = false,
+				${this.exports === 'default' ? `__AMD__ = typeof define === 'function' && define.amd,` : ''}
+				__HAS_EXPORTS__ = typeof exports !== 'undefined',
+				__EXPORTS__ = __HAS_EXPORTS__ ? exports : ${this.exports === 'default' ? '__AMD__ ? {} :' : ''} this;
 
-				var
-					__IS_NODE__ = false,
-					${this.exports === 'default' ? `__AMD__ = typeof define === 'function' && define.amd,` : ''}
-					__HAS_EXPORTS__ = typeof exports !== 'undefined',
-					__EXPORTS__ = __HAS_EXPORTS__ ? exports : ${this.exports === 'default' ? '__AMD__ ? {} :' : ''} this;
+				try {
+					__IS_NODE__ = typeof process === 'object' && Object().toString.call(process) === '[object process]';
 
-					try {
-						__IS_NODE__ = typeof process === 'object' && Object().toString.call(process) === '[object process]';
+				} catch (ignore) {}
 
-					} catch (ignore) {}
+				var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
 
-					var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
+				function __INIT__(obj) {
+					Snakeskin = Snakeskin ||
+						(obj instanceof Object ? obj : void 0);
 
-					function __INIT__(obj) {
-						Snakeskin = Snakeskin ||
-							(obj instanceof Object ? obj : void 0);
-
-						${
-							this.exports === 'default' ?
-								`
-									if (__AMD__) {
-										define(['Snakeskin'], function (ss) {
-											Snakeskin = Snakeskin || ss;
-											__EXEC__.call(__EXPORTS__);
-											return __EXPORTS__;
-										});
-
-									} else {
+					${
+						this.exports === 'default' ?
+							`
+								if (__AMD__) {
+									define(['Snakeskin'], function (ss) {
+										Snakeskin = Snakeskin || ss;
 										__EXEC__.call(__EXPORTS__);
 										return __EXPORTS__;
-									}
-								` :
+									});
 
-								`
+								} else {
 									__EXEC__.call(__EXPORTS__);
 									return __EXPORTS__;
-								`
-						}
+								}
+							` :
+
+							`
+								__EXEC__.call(__EXPORTS__);
+								return __EXPORTS__;
+							`
 					}
+				}
 
-					if (__HAS_EXPORTS__) {
-						__EXPORTS__.init = __INIT__;
-					}
+				if (__HAS_EXPORTS__) {
+					__EXPORTS__.init = __INIT__;
+				}
 
-					function __EXEC__() {
-						var
-							__ROOT__ = this,
-							self = __ROOT__;
+				function __EXEC__() {
+					var
+						__ROOT__ = this,
+						self = __ROOT__;
 
-						var
-							TRUE = new Boolean(true),
-							FALSE = new Boolean(false);
+					var
+						TRUE = new Boolean(true),
+						FALSE = new Boolean(false);
 
-						var
-							__APPEND__ = Snakeskin.appendChild,
-							__FILTERS__ = Snakeskin.Filters,
-							__VARS__ = Snakeskin.Vars,
-							__LOCAL__ = Snakeskin.LocalVars;
+					var
+						__APPEND__ = Snakeskin.appendChild,
+						__FILTERS__ = Snakeskin.Filters,
+						__VARS__ = Snakeskin.Vars,
+						__LOCAL__ = Snakeskin.LocalVars;
 
-						${this.declVars('$_')}
-			`;
-		}
+					${this.declVars('$_')}
+		`;
 	};
 }

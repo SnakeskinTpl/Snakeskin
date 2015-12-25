@@ -110,10 +110,6 @@ Parser.prototype.error = function (msg) {
 	this.errors.push(msg);
 	this.break = true;
 
-	if (this.proto) {
-		this.parent.break = true;
-	}
-
 	const
 		report = `${msg}; ${this.getAdvInfo()}`,
 		error = $C.extend(false, new Error(report), {name: 'SnakeskinError'});

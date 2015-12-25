@@ -37,10 +37,6 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!this.isReady()) {
-			return;
-		}
-
 		const
 			tmp = this.out('__WRAP_TMP__', {unsafe: true});
 

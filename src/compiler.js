@@ -200,29 +200,27 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		dirname,
 		filename;
 
-	if (!sp.proto) {
-		Snakeskin.LocalVars.include = {};
-		Snakeskin.UID = Math.random()
-			.toString(16)
-			.replace('0.', '')
-			.slice(0, 5);
+	Snakeskin.LocalVars.include = {};
+	Snakeskin.UID = Math.random()
+		.toString(16)
+		.replace('0.', '')
+		.slice(0, 5);
 
-		if (IS_NODE && info.file) {
-			const
-				fs = require('fs'),
-				path = require('path');
+	if (IS_NODE && info.file) {
+		const
+			fs = require('fs'),
+			path = require('path');
 
-			filename =
-				info.file = path.normalize(path.resolve(info.file));
+		filename =
+			info.file = path.normalize(path.resolve(info.file));
 
-			dirname = path.dirname(filename);
-			Snakeskin.LocalVars.include[filename] = 'index';
+		dirname = path.dirname(filename);
+		Snakeskin.LocalVars.include[filename] = 'index';
 
-			try {
-				label = fs.statSync(filename).mtime;
+		try {
+			label = fs.statSync(filename).mtime;
 
-			} catch (ignore) {}
-		}
+		} catch (ignore) {}
 	}
 
 	// <<<
@@ -295,31 +293,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		'\'': true
 	};
 
-	const
-		templateMap = parser.getGroup('rootTemplate');
-
 	// The flags for working with localization literals
 	let
 		i18nStr = '',
 		i18nStart = false,
 		i18nDirStart = false,
 		clrL = true;
-
-	/** @return {{prfxI, tAttr, tAttrBegin, tAttrEscape, tOpen}} */
-	parser.getCompileVars = () => ({prfxI, tAttr, tAttrBegin, tAttrEscape, tOpen});
-
-	/** @param {{prfxI, tAttr, tAttrBegin, tAttrEscape, tOpen}} obj */
-	parser.setCompileVars = (obj) => {
-		tOpen = obj.tOpen;
-		tAttr = parser.attr = obj.tAttr;
-		tAttrBegin = obj.tAttrBegin;
-		tAttrEscape = parser.attrEscape = obj.tAttrEscape;
-		prfxI = obj.prfxI;
-	};
-
-	if (sp.proto) {
-		parser.setCompileVars(sp.parent.getCompileVars());
-	}
 
 	while (++parser.i < parser.source.length) {
 		const
@@ -340,7 +319,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			lastLine = line - 1;
 
 		let
-			modLine = !parser.freezeLine && !parser.proto && parser.lines.length === line;
+			modLine = !parser.freezeLine && parser.lines.length === line;
 
 		if (freezeI) {
 			freezeI--;
@@ -584,20 +563,12 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					let
 						[commandType] = commandTypeRgxp.exec(command);
 
-					const
-						isConst = commandType === 'const';
-
+					const isConst = commandType === 'const';
 					commandType = Snakeskin.Directives[commandType] ? commandType : 'const';
-					clearMacroExpr();
-
-					if (templateMap[commandType] && !sp.proto) {
-						qOpen = 0;
-						qType = null;
-					}
 
 					// All directives, which starts with _
 					// will be cutted from the code listing
-					if (!parser.proto && commandType[0] === '_') {
+					if (commandType[0] === '_') {
 						const
 							source = `${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`,
 							rgxp = $rgxp[source] = $rgxp[source] || new RegExp(source);
@@ -926,11 +897,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	if (begin || parser.structure.parent) {
 		parser.error('missing closing or opening tag in the template');
 		return false;
-	}
-
-	if (parser.proto) {
-		sp.parent.setCompileVars(parser.getCompileVars());
-		return parser.pasteDangerBlocks(parser.result);
 	}
 
 	// If we have some outer declarations,

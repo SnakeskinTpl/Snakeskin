@@ -28,10 +28,6 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		if (!this.isReady()) {
-			return;
-		}
-
 		const
 			async = this.getGroup('async'),
 			{parent} = this.structure;

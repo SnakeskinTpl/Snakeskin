@@ -22,10 +22,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
-
 		let str;
 
 		const

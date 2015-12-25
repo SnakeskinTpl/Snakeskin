@@ -38,7 +38,6 @@ import {
 Parser.prototype.getTplFullBody = function (tplName) {
 	const
 		parentTpl = $extMap[tplName],
-		protoLength = 'proto'.length,
 		constLength = 1;
 
 	const
@@ -130,7 +129,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 					from += blockDiff;
 
 					if (newFrom > from) {
-						from = newFrom + (type === 'proto' ? protoLength : constLength);
+						from = newFrom + constLength;
 					}
 				}
 
@@ -151,14 +150,12 @@ Parser.prototype.getTplFullBody = function (tplName) {
 						break;
 
 					case 'const_add':
-					case 'proto_add':
 						if (newFrom === null) {
 							newFrom = from;
 							from += adv;
 						}
 
-						block = type === 'const_add' ?
-							`${current.needPrfx ? alb : ''}${lb}${block}${rb}` : block;
+						block = type === `${current.needPrfx ? alb : ''}${lb}${block}${rb}`;
 
 						res = res.slice(0, from) +
 							block +

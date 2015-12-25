@@ -40,10 +40,6 @@ Snakeskin.addDirective(
 		const val = parseInt(command, 10);
 		this.info.line += val;
 
-		if (this.proto) {
-			return;
-		}
-
 		for (let i = 0; i < val; i++) {
 			this.lines[this.info.line + i] = '';
 		}

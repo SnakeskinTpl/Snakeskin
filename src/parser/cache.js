@@ -12,8 +12,6 @@ import Parser from './constructor';
 import {
 
 	$output,
-	$protos,
-	$protoPositions,
 	$blocks,
 	$consts,
 	$constPositions
@@ -23,7 +21,7 @@ import {
 /**
  * Returns a cache object for a block
  *
- * @param {string} type - block type (block, proto etc.)
+ * @param {string} type - block type
  * @param {?string=} [opt_tplName] - template name
  * @return {Object}
  */
@@ -51,8 +49,6 @@ Parser.prototype.getBlockOutput = function (type, opt_tplName) {
  * @return {!Parser}
  */
 Parser.prototype.initTemplateCache = function (tplName) {
-	$protos[tplName] = {};
-	$protoPositions[tplName] = 0;
 	$blocks[tplName] = {};
 	$consts[tplName] = {};
 	$constPositions[tplName] = 0;

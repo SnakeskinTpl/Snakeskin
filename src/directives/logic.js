@@ -57,10 +57,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
-
 		// else if OR else unless
 		if (command) {
 			const

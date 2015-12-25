@@ -222,32 +222,15 @@ Parser.prototype.isSimpleOutput = function () {
 		return false;
 	}
 
-	return !this.parentTplName && !this.outerLink && this.isReady();
+	return !this.parentTplName && !this.outerLink;
 };
 
 /**
- * Returns true, if
- *   !proto && !outerLink &&
- *   (
- *       parentTplName && !hasParentBlock ||
- *       !parentTplName
- *   )
- *
+ * Returns true, if !outerLink && (parentTplName && !hasParentBlock || !parentTplName)
  * @return {boolean}
  */
 Parser.prototype.isAdvTest = function () {
-	const res = (
-		!this.proto && !this.outerLink &&
-		(
-			(this.parentTplName && !this.hasParentBlock({
-				'block': true,
-				'proto': true
-			})) ||
-			!this.parentTplName
-		)
-	);
-
-	return Boolean(res);
+	return Boolean(!this.outerLink && (this.parentTplName && !this.hasParentBlock('block') || !this.parentTplName));
 };
 
 /**
@@ -279,14 +262,6 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
 };
 
 /**
- * Returns true, if a directive is ready to test
- * @return {boolean}
- */
-Parser.prototype.isReady = function () {
-	return !this.protoStart && (!this.proto || !this.proto.parentTplName);
-};
-
-/**
  * Adds a string to the JS string if is possible
  * (with this.isSimpleOutput())
  *
@@ -296,17 +271,12 @@ Parser.prototype.isReady = function () {
  * @return {boolean}
  */
 Parser.prototype.append = function (str, opt_interface, opt_jsDoc) {
-	if (isFunction(str)) {
-		if (this.isReady()) {
-			str = str.call(this);
-
-		} else {
-			return false;
-		}
-	}
-
 	if (!this.isSimpleOutput()) {
 		return false;
+	}
+
+	if (isFunction(str)) {
+		str = str.call(this);
 	}
 
 	return this.save(str, opt_interface, opt_jsDoc);

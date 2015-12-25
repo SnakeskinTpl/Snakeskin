@@ -37,10 +37,6 @@ Snakeskin.addDirective(
 			params: parts[2] ? parts[1] : null
 		});
 
-		if (!this.isReady()) {
-			return;
-		}
-
 		if (parts.length === 3) {
 			this.append(ws`
 				${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
@@ -59,10 +55,6 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (!this.isReady()) {
-			return;
-		}
-
 		const
 			{params} = this.structure.params;
 
@@ -91,10 +83,6 @@ Snakeskin.addDirective(
 
 		if (!parts.length || parts.length > 2) {
 			return this.error(`invalid "${this.name}" declaration`);
-		}
-
-		if (!this.isReady()) {
-			return;
 		}
 
 		this.append(ws`

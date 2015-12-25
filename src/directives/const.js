@@ -64,18 +64,16 @@ Snakeskin.addDirective(
 				name = name.replace(constNameRgxp, '.$2');
 				this.startInlineDir('const', {name});
 
-				if (this.isReady()) {
-					if (!propAssignRgxp.test(prop)) {
-						this.consts.push(`var ${prop};`);
-					}
+				if (!propAssignRgxp.test(prop)) {
+					this.consts.push(`var ${prop};`);
+				}
 
-					if (output) {
-						this.text = true;
-						this.append(this.wrap(`${prop} = ${this.out(parts.slice(1).join('='))};`));
+				if (output) {
+					this.text = true;
+					this.append(this.wrap(`${prop} = ${this.out(parts.slice(1).join('='))};`));
 
-					} else {
-						this.append(`${prop} = ${this.out(parts.slice(1).join('='), {unsafe: true})};`);
-					}
+				} else {
+					this.append(`${prop} = ${this.out(parts.slice(1).join('='), {unsafe: true})};`);
 				}
 
 				if (this.isAdvTest()) {
@@ -93,7 +91,7 @@ Snakeskin.addDirective(
 
 					let
 						parent,
-						insideCallBlock = this.hasParentBlock(['block', 'proto'], true);
+						insideCallBlock = this.hasParentBlock('block', true);
 
 					const
 						parentTpl = this.parentTplName,
@@ -154,10 +152,6 @@ Snakeskin.addDirective(
 
 			if (!tplName) {
 				return this.error(`the directive "${this.name}" can be used only within a ${q(this.getGroupList('template'))}`);
-			}
-
-			if (!this.isReady()) {
-				return;
 			}
 
 			const

@@ -401,10 +401,6 @@ Parser.prototype.out = function (command, opt_params) {
 	if (ref) {
 		ref = ref.params.name;
 		type = 'block';
-
-	} else if (this.proto) {
-		ref = this.proto.name;
-		type = 'proto';
 	}
 
 	if (ref && !$scope[type][tplName]) {

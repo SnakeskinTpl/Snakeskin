@@ -28,10 +28,6 @@ Snakeskin.addDirective(
 			conditional: Boolean(command)
 		});
 
-		if (!this.isReady()) {
-			return;
-		}
-
 		let str;
 		if (this.renderMode === 'dom') {
 			this.domComment = true;
@@ -50,10 +46,6 @@ Snakeskin.addDirective(
 
 	function () {
 		this.domComment = false;
-
-		if (!this.isReady()) {
-			return;
-		}
 
 		const
 			{conditional} = this.structure.params ? ' <![endif]' : '';

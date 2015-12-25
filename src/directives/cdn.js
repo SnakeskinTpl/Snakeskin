@@ -176,10 +176,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
-
 		const
 			parts = this.getTokens(command);
 

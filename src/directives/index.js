@@ -328,7 +328,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" must have a body`);
 		}
 
-		if (p.generator && !parser.parentTplName && !parser.generator && !parser.proto && !parser.outerLink) {
+		if (p.generator && !parser.parentTplName && !parser.generator && !parser.outerLink) {
 			return parser.error(`the directive "${dirName}" can be used only within a generator template`);
 		}
 

@@ -34,10 +34,6 @@ Snakeskin.addDirective(
 			bemRef: this.bemRef
 		});
 
-		if (!this.isReady()) {
-			return;
-		}
-
 		if (command) {
 			command = command.replace(emptyCommandParams, 'div $1');
 
@@ -81,7 +77,7 @@ Snakeskin.addDirective(
 		this.bemRef = params.bemRef;
 		this.prevSpace = false;
 
-		if (!this.isReady() || params.tag === '?') {
+		if (params.tag === '?') {
 			return;
 		}
 

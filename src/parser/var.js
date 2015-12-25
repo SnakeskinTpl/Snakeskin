@@ -71,7 +71,7 @@ Parser.prototype.declVar = function (varName, opt_function) {
 		global = true;
 
 	} else {
-		realVar = `__${varName}_${this.proto ? this.proto.name : ''}_${structure.name}_${this.i}`;
+		realVar = `__${varName}_${structure.name}_${this.i}`;
 	}
 
 	structure.vars[varName] = {

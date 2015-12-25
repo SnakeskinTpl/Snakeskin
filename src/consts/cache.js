@@ -34,10 +34,6 @@ export const
 	$dirTrim = {};
 
 export const
-	$protos = {},
-	$protoPositions = {};
-
-export const
 	$blocks = {};
 
 export const
@@ -66,17 +62,14 @@ export const
 
 export const $router = {
 	'block': $blocks,
-	'const': $consts,
-	'proto': $protos
+	'const': $consts
 };
 
 export const $routerPositions = {
-	'const': $constPositions,
-	'proto': $protoPositions
+	'const': $constPositions
 };
 
 export const $scope = {
 	'block': {},
-	'proto': {},
 	'template': {}
 };

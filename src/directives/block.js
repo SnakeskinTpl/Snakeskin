@@ -66,7 +66,6 @@ Snakeskin.addDirective(
 				desc.i = this.i + 1;
 
 				this.outerLink = name;
-				this.protoStart = true;
 			}
 
 		} else if (!this.outerLink && !this.tplName) {
@@ -249,7 +248,6 @@ Snakeskin.addDirective(
 
 			this.outerLink = null;
 			this.tplName = null;
-			this.protoStart = false;
 
 			return;
 		}

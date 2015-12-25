@@ -39,10 +39,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
-
 		if (command) {
 			command = command.replace(emptyCommandParams, 'js $1');
 

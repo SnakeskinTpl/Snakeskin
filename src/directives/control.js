@@ -16,54 +16,23 @@ Snakeskin.addDirective(
 	'break',
 
 	{
+		ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('async')],
 		group: ['break', 'control']
 	},
 
 	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
-
 		const
-			cycles = this.getGroup('cycle'),
-			async = this.getGroup('async');
+			inside = this.hasParent(this.getGroup('cycle', 'async'));
 
-		const inside = this.hasParent(
-			$C.extend(false, this.getGroup('cycle', 'async'), {
-				'proto': true
-			})
-		);
-
-		const
-			insideCallback = this.hasParent(this.getGroup('callback')),
-			insideProto = inside === 'proto' || this.proto;
-
-		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error(`the directive "${this.name}" can be used only with cycles, protos or async series`);
-		}
-
-		if (command === 'proto') {
-			if (!insideProto) {
-				return this.error('the proto is not defined');
-			}
-
-			if (insideCallback) {
-				return this.error(`can't break the proto inside a callback`);
-			}
-
-			this.append(this.out('break __I_PROTO__;', {unsafe: true}));
-			return;
-		}
-
-		if (cycles[inside]) {
-			if (inside === insideCallback) {
+		if (this.getGroup('cycle')[inside]) {
+			if (inside === this.hasParent(this.getGroup('callback'))) {
 				this.append('return false;');
 
 			} else {
 				this.append('break;');
 			}
 
-		} else if (async[inside]) {
+		} else if (this.getGroup('async')[inside]) {
 			const
 				val = command ? this.out(command, {unsafe: true}) : 'false';
 
@@ -90,54 +59,23 @@ Snakeskin.addDirective(
 	'continue',
 
 	{
+		ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('async')],
 		group: ['continue', 'control']
 	},
 
 	function (command) {
-		if (!this.isReady()) {
-			return;
-		}
-
 		const
-			cycles = this.getGroup('cycle'),
-			async = this.getGroup('async');
+			inside = this.hasParent(this.getGroup('cycle', 'async'));
 
-		const inside = this.hasParent(
-			$C.extend(false, this.getGroup('cycle', 'async'), {
-				'proto': true
-			})
-		);
-
-		const
-			insideCallback = this.hasParent(this.getGroup('callback')),
-			insideProto = inside === 'proto' || this.proto;
-
-		if (!cycles[inside] && !async[inside] && !insideProto) {
-			return this.error(`the directive "${this.name}" can be used only with cycles, protos or async series`);
-		}
-
-		if (command === 'proto') {
-			if (!insideProto) {
-				return this.error(`the proto is not defined`);
-			}
-
-			if (insideCallback) {
-				return this.error(`can't continue the proto inside a callback`);
-			}
-
-			this.append(this.out('continue __I_PROTO__;', {unsafe: true}));
-			return;
-		}
-
-		if (cycles[inside]) {
-			if (inside === insideCallback) {
+		if (this.getGroup('cycle')[inside]) {
+			if (inside === this.hasParent(this.getGroup('callback'))) {
 				this.append('return;');
 
 			} else {
 				this.append('continue;');
 			}
 
-		} else if (async[inside]) {
+		} else if (this.getGroup('async')[inside]) {
 			const
 				val = command ? `undefined,${this.out(command, {unsafe: true})}` : '';
 
