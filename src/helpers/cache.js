@@ -78,8 +78,6 @@ export function getCacheKey(params, ctx) {
 			params.tolerateWhitespaces,
 			params.renderAs,
 			params.renderMode,
-			params.replaceUndef,
-			params.escapeOutput,
 			params.prettyPrint,
 			params.ignore,
 			params.localization,

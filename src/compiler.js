@@ -100,8 +100,6 @@ import {
  *        2) stringBuffer - renders template to a string, for concatenation of strings will be used Snakeskin.StringBuffer;
  *        3) dom - renders template to a DocumentFragment object.
  *
- *   *) [replaceUndef = true] - if is false, then will be disabled the undef filter by default
- *   *) [escapeOutput = true] - if is false, then will be disabled the html filter by default
  *   *) [bemFilter = 'bem'] - name of the bem filter
  *
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug:
@@ -134,8 +132,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.prettyPrint = p.prettyPrint || false;
 	p.renderMode = p.renderMode || 'stringConcat';
 	p.tolerateWhitespaces = p.tolerateWhitespaces || false;
-	p.replaceUndef = p.replaceUndef !== false;
-	p.escapeOutput = p.escapeOutput !== false;
 	p.throws = p.throws || false;
 	p.cache = p.cache !== false;
 	p.doctype = p.doctype !== false && (p.doctype || 'xml');

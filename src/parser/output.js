@@ -384,11 +384,11 @@ Parser.prototype.out = function (command, opt_params) {
 		filterAddEnd = 0;
 
 	// true, if the !html filter is applied
-	let unEscape = !this.escapeOutput;
+	let unEscape = false;
 
 	// true, if the !undef filter is applied
 	let
-		unUndef = !this.replaceUndef,
+		unUndef = false,
 		globalUnUndef = unUndef;
 
 	const

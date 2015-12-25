@@ -70,12 +70,6 @@ export default class Parser {
 		/** @type {(string|boolean)} */
 		this.doctype = params.doctype;
 
-		/** @type {boolean} */
-		this.replaceUndef = params.replaceUndef;
-
-		/** @type {boolean} */
-		this.escapeOutput = params.escapeOutput;
-
 		/** @type {(?string|undefined)} */
 		this.renderAs = params.renderAs;
 
@@ -106,9 +100,7 @@ export default class Parser {
 				'@root': true,
 				renderMode: this.renderMode,
 				doctype: this.doctype,
-				escapeOutput: this.escapeOutput,
 				renderAs: this.renderAs,
-				replaceUndef: this.replaceUndef,
 				localization: this.localization,
 				i18nFn: this.i18nFn,
 				bemFilter: this.bemFilter,
