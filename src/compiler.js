@@ -60,9 +60,11 @@ import {
  *   *) [debug] - object, which will be contained some debug information
  *
  *   *) [exports = 'default'] - export type for compiled templates
- *   *) [bemFilter = 'bem'] - name of the bem filter
  *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode
  *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
+ *
+ *   *) [bemFilter = 'bem'] - name of the bem filter
+ *   *) [filters = ['undef', 'html']] - list of default filters for output
  *
  *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
  *   *) [i18nFn = 'i18n'] - name of the i18n function
@@ -117,6 +119,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.cache = p.cache !== false;
 	p.useStrict = p.useStrict !== false;
 	p.bemFilter = p.bemFilter || 'bem';
+	p.filters = p.filters || ['undef', 'html'];
 	p.vars = p.vars || {};
 
 	$C(p.vars).forEach((val, key) => {

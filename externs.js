@@ -188,7 +188,8 @@ var loaded;
  *   escapeOutput: (?boolean|undefined),
  *   useStrict: (?boolean|undefined),
  *   bemFilter: (?string|undefined),
- *   prettyPrint: (?boolean|undefined)
+ *   prettyPrint: (?boolean|undefined),
+ *   filters: (Array<string>|undefined)
  * }}
  */
 var $$SnakeskinParams;

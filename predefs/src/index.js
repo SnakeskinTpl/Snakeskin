@@ -40,6 +40,7 @@ define.amd = null;
  *     replaceUndef: boolean,
  *     escapeOutput: boolean,
  *     bemFilter: string,
+ *     filters: !Array<string>,
  *     renderMode: string,
  *     lines: (Array|undefined),
  *     needPrfx: (?boolean|undefined),

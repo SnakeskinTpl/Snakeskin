@@ -82,6 +82,7 @@ export function getCacheKey(params, ctx) {
 			params.localization,
 			params.i18nFn,
 			params.bemFilter,
+			params.filters,
 			params.useStrict
 		].join();
 }

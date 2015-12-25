@@ -45,7 +45,7 @@ export default class Parser {
 		/** @type {?function(!Error)} */
 		this.onError = params.onError || null;
 
-		/** @type {!Array} */
+		/** @type {!Array<string>} */
 		this.scope = params.scope || [];
 
 		/** @type {!Object} */
@@ -78,6 +78,9 @@ export default class Parser {
 		/** @type {string} */
 		this.bemFilter = params.bemFilter;
 
+		/** @type {!Array<string>} */
+		this.filters = params.filters;
+
 		/** @type {boolean} */
 		this.localization = params.localization;
 
@@ -92,7 +95,7 @@ export default class Parser {
 
 		/**
 		 * Stack parameters that can be changed in a code
-		 * @type {!Array}
+		 * @type {!Array<!Object>}
 		 */
 		this.params = [
 			{
@@ -102,6 +105,7 @@ export default class Parser {
 				localization: this.localization,
 				i18nFn: this.i18nFn,
 				bemFilter: this.bemFilter,
+				filters: this.filters,
 				language: this.language,
 				ignore: this.ignore,
 				tolerateWhitespaces: this.tolerateWhitespaces
