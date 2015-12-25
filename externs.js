@@ -31,7 +31,7 @@ var renderMode;
 var inlineIterators;
 
 /** @type {?} */
-var tolerateWhitespace;
+var tolerateWhitespaces;
 
 /** @type {?} */
 var replaceUndef;
@@ -181,7 +181,7 @@ var loaded;
  *   renderAs: (?string|undefined),
  *   renderMode: (?string|undefined),
  *   eol: (?string|undefined),
- *   tolerateWhitespace: (?boolean|undefined),
+ *   tolerateWhitespaces: (?boolean|undefined),
  *   inlineIterators: (?boolean|undefined),
  *   doctype: (string|boolean|null|undefined),
  *   replaceUndef: (?boolean|undefined),

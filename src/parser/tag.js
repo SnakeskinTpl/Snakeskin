@@ -11,7 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
-import { parentLink } from '../consts/regs';
+import { classRef } from '../consts/regs';
 import { inlineTags } from '../consts/html';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK, FILTER } from '../consts/literals';
 
@@ -195,12 +195,12 @@ Parser.prototype.returnXMLTagDesc = function (str) {
 									pos = point.from;
 
 								if (point.val != null) {
-									tmp = tmp.replace(parentLink, point.val);
+									tmp = tmp.replace(classRef, point.val);
 								}
 
 								while (points[pos] != null) {
 									const {val, from} = points[pos];
-									tmp = tmp.replace(parentLink, val);
+									tmp = tmp.replace(classRef, val);
 									pos = from;
 								}
 
@@ -279,10 +279,10 @@ Parser.prototype.returnXMLTagDesc = function (str) {
 			point = points[i];
 
 		if (point && point.val != null) {
-			el = el.replace(parentLink, point.val);
+			el = el.replace(classRef, point.val);
 		}
 
-		if (parentLink.test(el) && ref) {
+		if (classRef.test(el) && ref) {
 			el = `${s}'${ref}'${FILTER}${this.bemFilter} '${el.slice(1)}',$0${e}`;
 			el = this.pasteDangerBlocks(this.replaceTplVars(el));
 

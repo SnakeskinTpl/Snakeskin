@@ -11,37 +11,21 @@
  */
 
 import { r } from '../helpers/string';
-import {
-
-	G_MOD,
-	LEFT_BLOCK,
-	RIGHT_BLOCK,
-	ADV_LEFT_BLOCK
-
-} from './literals';
-
-const
-	g = r(G_MOD),
-	lb = r(LEFT_BLOCK),
-	rb = r(RIGHT_BLOCK),
-	alb = r(ADV_LEFT_BLOCK);
+import { G_MOD } from './literals';
 
 export const
-	scopeMod = new RegExp(`^${g}+`);
+	scopeMod = new RegExp(`^${r(G_MOD)}+`);
 
 export const
 	eol = /\r?\n|\r/,
 	ws = /\s/,
-	lineWs = / |\t/;
-
-export const
+	lineWs = / |\t/,
 	wsStart = new RegExp(`^[ \\t]*(?:${eol.source})`),
 	wsEnd = new RegExp(`^(?:${eol.source})[ \\t]*$`);
 
 export const
 	bEnd = /[^\s\/]/,
-	sysWord = /[a-z]/,
-	macroBlackSymbols = new RegExp(`[<\\/>${lb}${alb}${rb}]`);
+	sysWord = /[a-z]/;
 
 export const
 	backSlashes = /\\/g,
@@ -102,6 +86,5 @@ export const
 	tplVars = /__SNAKESKIN__(\d+)_/g;
 
 export const
-	callBlockName = new RegExp(`^[^${symbols}_$][^${w}$]*|[^${w}$]+`, 'i'),
 	emptyCommandParams = /^([^\s]+?\(|\()/,
-	parentLink = /^&/;
+	classRef = /^&/;

@@ -11,8 +11,11 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
-import { callBlockName } from '../consts/regs';
+import { symbols, w } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+
+const
+	callBlockNameRgxp = new RegExp(`^[^${symbols}_$][^${w}$]*|[^${w}$]+`, 'i');
 
 Snakeskin.addDirective(
 	'block',
@@ -72,7 +75,7 @@ Snakeskin.addDirective(
 			return this.error(`the directive "${this.name}" can be used only within a ${groupsList['template'].join(', ')}`);
 		}
 
-		if (!name || !tplName || callBlockName.test(name)) {
+		if (!name || !tplName || callBlockNameRgxp.test(name)) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
@@ -154,7 +157,7 @@ Snakeskin.addDirective(
 				}
 			);
 
-			if (args.params && callBlockName.test(name)) {
+			if (args.params && callBlockNameRgxp.test(name)) {
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 

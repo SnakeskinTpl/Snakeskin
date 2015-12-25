@@ -11,7 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
-import { tplVars, parentLink } from '../consts/regs';
+import { tplVars, classRef } from '../consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
@@ -172,7 +172,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		}
 
 		res += $C(this.getTokens(args[1])).reduce((res, val) => {
-			if (parentLink.test(val) && ref) {
+			if (classRef.test(val) && ref) {
 				val = `${s}'${ref}'${FILTER}${this.bemFilter} '${val.slice('&amp;'.length)}',$0${e}`;
 				val = this.pasteDangerBlocks(this.replaceTplVars(val));
 			}
