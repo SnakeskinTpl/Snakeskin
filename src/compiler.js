@@ -161,7 +161,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	let text;
 	if (typeof src === 'object' && 'innerHTML' in src) {
 		info.node = src;
-		text = src.innerHTML.replace(rgxp.whitespaceStart, '');
+		text = src.innerHTML.replace(rgxp.wsStart, '');
 
 	} else {
 		text = String(src);
@@ -356,7 +356,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			currentEscape = escape,
 			isPrefStart = !currentEscape && !begin && el === alb && next === lb;
 
-		if (rgxp.whitespace.test(el)) {
+		if (rgxp.ws.test(el)) {
 			// Inside a directive
 			if (begin) {
 				if (bOpen) {
@@ -735,7 +735,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					bEnd = false;
 					skip = true;
 
-				} else if (filterStart && rgxp.whitespace.test(el)) {
+				} else if (filterStart && rgxp.ws.test(el)) {
 					filterStart = false;
 					bEnd = true;
 					skip = true;

@@ -31,12 +31,12 @@ export const
 
 export const
 	eol = /\r?\n|\r/,
-	whitespace = /\s/,
-	lineWhitespace = / |\t/;
+	ws = /\s/,
+	lineWs = / |\t/;
 
 export const
-	whitespaceStart = new RegExp(`^[ \\t]*(?:${eol.source})`),
-	whitespaceEnd = new RegExp(`^(?:${eol.source})[ \\t]*$`);
+	wsStart = new RegExp(`^[ \\t]*(?:${eol.source})`),
+	wsEnd = new RegExp(`^(?:${eol.source})[ \\t]*$`);
 
 export const
 	bEnd = /[^\s\/]/,

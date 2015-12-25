@@ -13,22 +13,22 @@
 import $C from './deps/collection';
 import Snakeskin from './core';
 import { IS_NODE } from './consts/hacks';
-import { whitespaceStart, whitespaceEnd } from './consts/regs';
+import { wsStart, wsEnd } from './consts/regs';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from './consts/literals';
 
 export const
 	stack = [];
 
 /**
- * Adds file content to the stack
+ * Adds file content by the specified src to the stack
  *
- * @param {string} base - base URL
- * @param {string} url - file URL
- * @param {string} nl - EOL symbol
+ * @param {string} base - base src
+ * @param {string} url - file src
+ * @param {string} eol - EOL symbol
  * @param {?string=} [opt_type] - rendering mode for templates
  * @return {(string|boolean)}
  */
-Snakeskin.include = function (base, url, nl, opt_type) {
+Snakeskin.include = function (base, url, eol, opt_type) {
 	if (!IS_NODE) {
 		return false;
 	}
@@ -69,11 +69,11 @@ Snakeskin.include = function (base, url, nl, opt_type) {
 				(opt_type ?
 					`${s}__set__ renderAs '${opt_type}'${e}` : '') +
 
-				`${whitespaceStart.test(file) ? '' : nl}` +
+				`${wsStart.test(file) ? '' : eol}` +
 
 				file +
 
-				`${whitespaceEnd.test(file) ? '' : `${nl}${s}__cutLine__${e}`}` +
+				`${wsEnd.test(file) ? '' : `${eol}${s}__cutLine__${e}`}` +
 				`${s}__endSetFile__${e}`
 			);
 		});

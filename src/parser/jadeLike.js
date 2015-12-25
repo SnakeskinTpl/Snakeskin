@@ -142,7 +142,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 			space = eol;
 
 		} else if (init) {
-			if (rgxp.whitespace.test(el)) {
+			if (rgxp.ws.test(el)) {
 				spaces++;
 				space += el;
 				tSpace++;
@@ -163,7 +163,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				}
 
 				const chr = str[j + diff];
-				nextSpace = !chr || rgxp.whitespace.test(chr);
+				nextSpace = !chr || rgxp.ws.test(chr);
 
 				let dir = (SHORTS[el] || SHORTS[next2str]) && nextSpace,
 					decl = getLineDesc(
@@ -433,7 +433,7 @@ function getLineDesc(str, i, dir, comment) {
 
 			} else if (!sComment && dir) {
 				const
-					dirStart = rgxp.whitespace.test(str[j - 2]);
+					dirStart = rgxp.ws.test(str[j - 2]);
 
 				let literal;
 				brk = dirStart && prevEl === CONCAT_END;
@@ -533,7 +533,7 @@ function getLineDesc(str, i, dir, comment) {
 		}
 
 		const
-			needSpace = rgxp.lineWhitespace.test(el);
+			needSpace = rgxp.lineWs.test(el);
 
 		if (needSpace) {
 			if (nmBrk === false) {
@@ -558,7 +558,7 @@ function getLineDesc(str, i, dir, comment) {
 		}
 	}
 
-	if (dir && lastEl === CONCAT_END && rgxp.whitespace.test(command[lastElI - 1])) {
+	if (dir && lastEl === CONCAT_END && rgxp.ws.test(command[lastElI - 1])) {
 		command = command.slice(0, lastElI) + command.slice(lastElI + 1);
 	}
 
