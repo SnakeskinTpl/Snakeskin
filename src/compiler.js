@@ -267,7 +267,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	let
 		prevCommentSpace = false,
 		freezeI = 0,
-		freezeTmp = 0;
+		freezeTmp = 0,
+		prfxI = 0;
 
 	// If is true, then JSDoc is started
 	let
@@ -299,12 +300,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	const
 		templateMap = parser.getGroup('rootTemplate');
 
-	// The flags for working with quotes
-	let
-		qOpen = 0,
-		qType = null,
-		prfxI = 0;
-
 	// The flags for working with localization literals
 	let
 		i18nStr = '',
@@ -312,22 +307,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		i18nDirStart = false,
 		clrL = true;
 
-	/** @return {{prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen}} */
-	parser.getCompileVars = () => ({prfxI, qOpen, qType, tAttr, tAttrBegin, tAttrEscape, tOpen});
+	/** @return {{prfxI, tAttr, tAttrBegin, tAttrEscape, tOpen}} */
+	parser.getCompileVars = () => ({prfxI, tAttr, tAttrBegin, tAttrEscape, tOpen});
 
-	/** @param {{tOpen, tAttr, tAttrBegin, tAttrEscape, qOpen, qType, prfxI}} obj */
+	/** @param {{prfxI, tAttr, tAttrBegin, tAttrEscape, tOpen}} obj */
 	parser.setCompileVars = (obj) => {
 		tOpen = obj.tOpen;
-
-		tAttr =
-			parser.attr = obj.tAttr;
-
+		tAttr = parser.attr = obj.tAttr;
 		tAttrBegin = obj.tAttrBegin;
-		tAttrEscape =
-			parser.attrEscape = obj.tAttrEscape;
-
-		qOpen = obj.qOpen;
-		qType = obj.qType;
+		tAttrEscape = parser.attrEscape = obj.tAttrEscape;
 		prfxI = obj.prfxI;
 	};
 
