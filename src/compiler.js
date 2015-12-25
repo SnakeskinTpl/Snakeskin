@@ -65,21 +65,17 @@ import {
  *
  * @param {?$$SnakeskinParams=} [opt_params] - additional runtime parameters:
  *   *) [cache = true] - if is false, then caching will be disabled
- *   *) [prettyPrint = false] - if is true, then output code will be formatted
- *   *) [exports = 'default'] - export type for compiled templates
  *   *) [vars] - map of super global variables, which will be added to Snakeskin.Vars
- *   *) [debug] - object, which will be contained some debug information
  *   *) [context] - storage object for compiled templates
- *        (will be set the CommonJS export type)
- *
- *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode;
- *   *) [doctype = 'xml'] - type of document:
- *        1) html;
- *        2) xml.
  *
  *   *) [onError] - callback for an error handling
- *   *) [throws = false] - if is true, then in case of an error or a missing error handler,
- *        then will be thrown an exception
+ *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
+ *   *) [debug] - object, which will be contained some debug information
+ *
+ *   *) [exports = 'default'] - export type for compiled templates
+ *   *) [bemFilter = 'bem'] - name of the bem filter
+ *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode
+ *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
  *
  *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
  *   *) [i18nFn = 'i18n'] - name of the i18n function
@@ -99,8 +95,6 @@ import {
  *        1) stringConcat - renders template to a string, for concatenation of strings will be used operator;
  *        2) stringBuffer - renders template to a string, for concatenation of strings will be used Snakeskin.StringBuffer;
  *        3) dom - renders template to a DocumentFragment object.
- *
- *   *) [bemFilter = 'bem'] - name of the bem filter
  *
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug:
  *   *) [file] - path to a template file
@@ -134,12 +128,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.tolerateWhitespaces = p.tolerateWhitespaces || false;
 	p.throws = p.throws || false;
 	p.cache = p.cache !== false;
-	p.doctype = p.doctype !== false && (p.doctype || 'xml');
-
-	if (p.renderMode === 'dom') {
-		p.doctype = false;
-	}
-
 	p.useStrict = p.useStrict !== false;
 	p.bemFilter = p.bemFilter || 'bem';
 	p.vars = p.vars || {};
@@ -297,17 +285,15 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	while (++parser.i < parser.source.length) {
 		const
-			str = parser.source,
-			struct = parser.structure;
+			{source: str, structure} = parser;
 
 		let
 			el = str[parser.i];
 
 		const
 			rEl = el,
-			prev = str[parser.i - 1],
 			next = str[parser.i + 1],
-			next2str = str.substr(parser.i, 2);
+			substr2 = str.substr(parser.i, 2);
 
 		const
 			{line} = info,
@@ -327,7 +313,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			strongSpace = parser.strongSpace[parser.strongSpace.length - 1];
 
 		if (eol) {
-			if (next2str === '\r\n') {
+			if (substr2 === '\r\n') {
 				if (begin) {
 					commandLength++;
 				}
@@ -716,7 +702,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			if (beginStr && parser.isSimpleOutput()) {
 				let prfx = '';
 
-				if (parser.doctype && tAttr && !tAttrBegin) {
+				if (parser.renderMode !== 'dom' && tAttr && !tAttrBegin) {
 					prfx = '"';
 					tAttrBegin = true;
 					tAttrEscape = true;
@@ -786,7 +772,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					continue;
 				}
 
-				if (currentClrL && !parser.tplName && (SHORTS[el] || SHORTS[next2str])) {
+				if (currentClrL && !parser.tplName && (SHORTS[el] || SHORTS[substr2])) {
 					const
 						adv = parser.lines[lastLine].length - 1,
 						source = parser.toBaseSyntax(parser.source, parser.i - adv);
@@ -809,13 +795,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				return false;
 
 			} else {
-				if (struct.chain && !$dirParents[struct.name]['text']) {
+				if (structure.chain && !$dirParents[structure.name]['text']) {
 					if (el === ' ') {
 						parser.space = false;
 						continue;
 					}
 
-					parser.error(`text can't be used within the "${struct.name}"`);
+					parser.error(`text can't be used within the "${structure.name}"`);
 					return false;
 				}
 
@@ -826,7 +812,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
-					if (parser.doctype) {
+					if (parser.renderMode !== 'dom') {
 						if (el === '<') {
 							tOpen++;
 							clearMacroExpr();

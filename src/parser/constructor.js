@@ -99,7 +99,6 @@ export default class Parser {
 			{
 				'@root': true,
 				renderMode: this.renderMode,
-				doctype: this.doctype,
 				renderAs: this.renderAs,
 				localization: this.localization,
 				i18nFn: this.i18nFn,
