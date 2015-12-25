@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		this.startDir(parts.length === 3 ? '$forEach' : null, {
+		this.startDir(null, {
 			params: parts[2] ? parts[1] : null
 		});
 

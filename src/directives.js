@@ -23,7 +23,6 @@ import './directives/head';
 import './directives/eval';
 import './directives/space';
 import './directives/const';
-import './directives/collection';
 import './directives/comment';
 import './directives/doctype';
 import './directives/template';
