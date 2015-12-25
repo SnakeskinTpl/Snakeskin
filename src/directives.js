@@ -36,7 +36,6 @@ import './directives/literal';
 import './directives/return';
 import './directives/wrap';
 import './directives/super';
-import './directives/cdn';
 import './directives/script';
 import './directives/style';
 import './directives/link';
