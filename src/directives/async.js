@@ -31,22 +31,22 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 	);
 });
 
-$C(['whilst', 'doWhilst', 'forever']).forEach((dir) => {
-	Snakeskin.addDirective(
-		dir,
+Snakeskin.addDirective(
+	'when',
 
-		{
-			block: true,
-			children: 'callback',
-			group: [dir, 'async', 'Async']
-		},
+	{
+		block: true,
+		children: 'callback',
+		group: ['when', 'promise', 'async', 'basicAsync'],
+		notEmpty: true
+	},
 
-		function (command, commandLength, type) {
-			this.append($=> `${this.out('async', {unsafe: true})}.${type}(`);
-		},
+	function (command) {
+		this.append($=> `${this.out(command, {unsafe: true})}.then(`);
+	},
 
-		function () {
-			this.append(');');
-		}
-	);
-});
+	function () {
+		this.append(');');
+	}
+
+);
