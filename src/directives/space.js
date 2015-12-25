@@ -95,7 +95,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.tolerateWhitespace) {
+		if (this.tolerateWhitespaces) {
 			return;
 		}
 
@@ -112,7 +112,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.tolerateWhitespace) {
+		if (this.tolerateWhitespaces) {
 			return;
 		}
 

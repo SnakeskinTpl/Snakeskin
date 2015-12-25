@@ -68,7 +68,7 @@ let
  * @return {{code: string, length: number, error: (boolean|null|undefined)}}
  */
 Parser.prototype.toBaseSyntax = function (str, i) {
-	needSpace = !this.tolerateWhitespace;
+	needSpace = !this.tolerateWhitespaces;
 	eol = this.eol;
 	endDirInit = false;
 

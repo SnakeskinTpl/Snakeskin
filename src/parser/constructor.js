@@ -65,7 +65,7 @@ export default class Parser {
 		this.renderMode = params.renderMode;
 
 		/** @type {boolean} */
-		this.tolerateWhitespace = params.tolerateWhitespace;
+		this.tolerateWhitespaces = params.tolerateWhitespaces;
 
 		/** @type {(string|boolean)} */
 		this.doctype = params.doctype;
@@ -114,7 +114,7 @@ export default class Parser {
 				bemFilter: this.bemFilter,
 				language: this.language,
 				ignore: this.ignore,
-				tolerateWhitespace: this.tolerateWhitespace
+				tolerateWhitespaces: this.tolerateWhitespaces
 			}
 		];
 

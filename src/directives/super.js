@@ -60,7 +60,7 @@ Snakeskin.addDirective(
 		if (cache && !drop) {
 			const
 				diff = this.getDiff(commandLength),
-				sp = !this.tolerateWhitespace ? `${s}__&-__${e}` : '';
+				sp = !this.tolerateWhitespaces ? `${s}__&-__${e}` : '';
 
 			this.source = ws`
 				${this.source.slice(0, this.i - diff)}

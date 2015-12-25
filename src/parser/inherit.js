@@ -52,7 +52,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 	let
 		res = $cache[parentTpl];
 
-	if (!this.tolerateWhitespace) {
+	if (!this.tolerateWhitespaces) {
 		res += `${alb}${lb}__&-__${rb}`;
 	}
 

@@ -87,7 +87,7 @@ import {
  *   *) [words] - object, which will be contained all found localization words
  *
  *   *) [ignore] - RegExp object, which specifies whitespace symbols for ignoring
- *   *) [tolerateWhitespace = false] - if is true, then whitespaces will be processed "as is"
+ *   *) [tolerateWhitespaces = false] - if is true, then whitespaces will be processed "as is"
  *   *) [eol = '\n'] - EOL symbol
  *
  *   *) [renderAs] - rendering type of templates:
@@ -133,7 +133,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.exports = p.exports || 'default';
 	p.prettyPrint = p.prettyPrint || false;
 	p.renderMode = p.renderMode || 'stringConcat';
-	p.tolerateWhitespace = p.tolerateWhitespace || false;
+	p.tolerateWhitespaces = p.tolerateWhitespaces || false;
 	p.replaceUndef = p.replaceUndef !== false;
 	p.escapeOutput = p.escapeOutput !== false;
 	p.throws = p.throws || false;
@@ -228,7 +228,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// >>>
 
 	const parser = new Parser(String(text), $C.extend({traits: true}, {info}, p, sp));
-	parser.setMacros = setMacros;
 
 	// If is true, then a directive declaration is started,
 	// ie { ... }
@@ -395,7 +394,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					el = parser.ignore && parser.ignore.test(el) ?
 						'' : el;
 
-					if (el && !parser.tolerateWhitespace) {
+					if (el && !parser.tolerateWhitespaces) {
 						el = ' ';
 						parser.space = true;
 					}
