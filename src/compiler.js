@@ -942,7 +942,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					script = document.createElement('script');
 
 				script.src = URL.createObjectURL(blob);
-				document.head.appendChild(script);
+				document.head.appendChild(any(script));
 
 			} catch (ignore) {}
 		}, 50);
