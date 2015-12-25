@@ -31,7 +31,7 @@ Parser.prototype.pasteDangerBlocks = function (str) {
 };
 
 /**
- * Replaces all found blocks __SNAKESKIN__number_ to real content in a string
+ * Replaces all found blocks __SNAKESKIN__\d+_ to real content in a string
  * and returns a new string
  *
  * @param {string} str - source string

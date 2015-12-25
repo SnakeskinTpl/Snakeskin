@@ -9,14 +9,7 @@
  */
 
 import Parser from './constructor';
-import {
-
-	$output,
-	$blocks,
-	$consts,
-	$constPositions
-
-} from '../consts/cache';
+import { $output, $blocks, $consts, $constPositions } from '../consts/cache';
 
 /**
  * Returns a cache object for a block
@@ -49,15 +42,16 @@ Parser.prototype.getBlockOutput = function (type, opt_tplName) {
  * @return {!Parser}
  */
 Parser.prototype.initTemplateCache = function (tplName) {
+	this.consts = [];
+	this.bemRef = '';
+
+	this.space = !this.tolerateWhitespaces;
+	this.strongSpace = [false];
+	this.sysSpace = false;
+
 	$blocks[tplName] = {};
 	$consts[tplName] = {};
 	$constPositions[tplName] = 0;
-
-	this.consts = [];
-	this.bemRef = '';
-	this.strongSpace = [false];
-	this.sysSpace = false;
-	this.space = !this.tolerateWhitespaces;
 
 	return this;
 };

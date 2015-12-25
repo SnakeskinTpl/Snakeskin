@@ -28,18 +28,14 @@ Parser.prototype.evalStr = function (str) {
 	if (IS_NODE) {
 		return new Function(
 			'Snakeskin',
-
 			'__FILTERS__',
 			'__VARS__',
 			'__LOCAL__',
-
 			'module',
 			'exports',
 			'require',
-
 			'__dirname',
 			'__filename',
-
 			str
 
 		).call(
@@ -48,26 +44,15 @@ Parser.prototype.evalStr = function (str) {
 			Snakeskin.Filters,
 			Snakeskin.Vars,
 			Snakeskin.LocalVars,
-
 			ctx,
 			ctx.exports,
 			require,
-
 			require('path').dirname(ctx.filename),
 			ctx.filename
 		);
 	}
 
-	return new Function(
-		'Snakeskin',
-
-		'__FILTERS__',
-		'__VARS__',
-		'__LOCAL__',
-
-		str
-
-	).call(
+	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', str).call(
 		ROOT,
 		Snakeskin,
 		Snakeskin.Filters,

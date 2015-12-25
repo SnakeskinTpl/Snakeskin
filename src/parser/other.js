@@ -13,7 +13,7 @@ import Parser from './constructor';
 import { $extList, $extMap, $scope } from '../consts/cache';
 
 /**
- * Returns a list of template names
+ * Returns an array of template names
  * that are involved in an inheritance chain
  *
  * @param {string} name - template name

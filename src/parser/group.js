@@ -17,7 +17,7 @@ const
 	cache = {};
 
 /**
- * Returns a map of directive names,
+ * Returns a map of directive names
  * which belong to the specified groups
  *
  * @param {...string} names - group name
@@ -34,16 +34,16 @@ Parser.prototype.getGroup = function (names) {
 	const
 		map = {};
 
-	$C(arguments).forEach((name) => {
-		$C($dirGroups[name]).forEach((el, key) => map[key] = true);
-	});
+	$C(arguments).forEach((name) =>
+		$C($dirGroups[name]).forEach((el, key) =>
+			map[key] = true));
 
 	cache[cacheKey] = clone(map);
 	return map;
 };
 
 /**
- * Returns an array of directive names,
+ * Returns an array of directive names
  * which belong to the specified groups
  *
  * @param {...string} names - group name
