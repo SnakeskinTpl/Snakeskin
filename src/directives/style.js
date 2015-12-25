@@ -9,8 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
-import { any } from '../helpers/gcc';
 import { emptyCommandParams } from '../consts/regs';
 
 const types = {
