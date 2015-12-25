@@ -17,6 +17,14 @@ export const
 	scopeMod = new RegExp(`^${r(G_MOD)}+`);
 
 export const
+	escaperPart = /^__ESCAPER_QUOT__\d+_/,
+	tplVars = /__SNAKESKIN__(\d+)_/g;
+
+export const
+	emptyCommandParams = /^([^\s]+?\(|\()/,
+	classRef = /^&/;
+
+export const
 	eol = /\r?\n|\r/,
 	ws = /\s/,
 	lineWs = / |\t/,
@@ -81,10 +89,4 @@ export const symbols =
 
 export const
 	filterStart = new RegExp(`[!$${symbols}_]`),
-	w = `${symbols}0-9_`,
-	escaperPart = /^__ESCAPER_QUOT__\d+_/,
-	tplVars = /__SNAKESKIN__(\d+)_/g;
-
-export const
-	emptyCommandParams = /^([^\s]+?\(|\()/,
-	classRef = /^&/;
+	w = `${symbols}0-9_`;
