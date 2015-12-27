@@ -34,6 +34,7 @@ import './directives/callback';
 import './directives/async';
 import './directives/literal';
 import './directives/return';
+import './directives/target';
 import './directives/wrap';
 import './directives/super';
 import './directives/script';
