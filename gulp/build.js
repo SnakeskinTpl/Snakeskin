@@ -52,6 +52,7 @@ gulp.task('build', (cb) => {
 				gulp.src(`./src/${name}`)
 					.pipe(rollup({
 						format: 'umd',
+						// moduleId: 'Snakeskin',
 						moduleName: 'Snakeskin',
 						plugins: [babel()]
 					}))
