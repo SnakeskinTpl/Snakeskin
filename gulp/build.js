@@ -68,7 +68,7 @@ gulp.task('build', (cb) => {
 			}
 
 			function clean() {
-				del(`./src/${name}`, cb);
+				del(`./src/${name}`).then(() => cb());
 			}
 		});
 	});
