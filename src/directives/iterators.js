@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['cycle', 'callback'],
+		group: ['forEach', 'iterator', 'cycle', 'callback'],
 		notEmpty: true
 	},
 
@@ -26,8 +26,7 @@ Snakeskin.addDirective(
 		command = command.replace(/=>>/g, '=>=>');
 
 		const
-			parts = command.split(/\s*=>\s*/),
-			[obj] = parts;
+			parts = command.split(/\s*=>\s*/);
 
 		if (!parts.length || parts.length > 3) {
 			return this.error(`invalid "${this.name}" declaration`);
@@ -72,14 +71,13 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['cycle', 'callback'],
+		group: ['forIn', 'iterator', 'cycle', 'callback'],
 		notEmpty: true
 	},
 
 	function (command) {
 		const
-			parts = command.split(/\s*=>\s*/),
-			[obj] = parts;
+			parts = command.split(/\s*=>\s*/);
 
 		if (!parts.length || parts.length > 2) {
 			return this.error(`invalid "${this.name}" declaration`);

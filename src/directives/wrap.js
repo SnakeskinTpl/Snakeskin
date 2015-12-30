@@ -50,7 +50,7 @@ Snakeskin.addDirective(
 		`);
 
 		const
-			{params: p} = this.structure;
+			p = this.structure.params;
 
 		let
 			i = p.chunks,

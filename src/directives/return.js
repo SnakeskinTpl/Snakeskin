@@ -15,6 +15,7 @@ Snakeskin.addDirective(
 	'return',
 
 	{
+		group: 'return',
 		placement: 'template'
 	},
 

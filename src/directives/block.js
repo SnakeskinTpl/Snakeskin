@@ -226,7 +226,7 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		const
-			{params: p} = this.structure,
+			p = this.structure.params,
 			diff = this.getDiff(commandLength);
 
 		const

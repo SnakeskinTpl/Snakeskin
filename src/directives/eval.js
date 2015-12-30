@@ -28,7 +28,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		const {params: p} = this.structure;
+		const p = this.structure.params;
 		p['@res'] = this.result;
 		this.result = this.result.slice(0, p.from);
 	}

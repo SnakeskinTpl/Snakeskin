@@ -67,7 +67,7 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{params: p} = this.structure;
+			p = this.structure.params;
 
 		this.bemRef = p.bemRef;
 		this.prevSpace = false;

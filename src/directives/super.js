@@ -10,12 +10,14 @@
 
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { $router } from '../consts/cache';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 Snakeskin.addDirective(
 	'super',
 
 	{
+		group: 'super',
 		placement: 'template'
 	},
 
@@ -37,7 +39,7 @@ Snakeskin.addDirective(
 				const
 					{name} = obj.params;
 
-				cache = routerCache[obj.name][this.parentTplName][name];
+				cache = $router[obj.name][this.parentTplName][name];
 				drop = this.blockTable[`${obj.name}_${name}`].drop;
 
 				if (cache) {
