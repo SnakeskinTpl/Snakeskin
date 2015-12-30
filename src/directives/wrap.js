@@ -83,10 +83,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		trim: {
-			left: true,
-			right: true
-		}
+		trim: true
 	},
 
 	function (command) {
@@ -164,10 +161,7 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		shorthands: {'*': 'putIn '},
-		trim: {
-			left: true,
-			right: true
-		}
+		trim: true
 	},
 
 	function (ref) {

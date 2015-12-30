@@ -85,7 +85,7 @@ Snakeskin.group = function (name) {
  *   parents: (Array|string|undefined),
  *   endsWith: (Array|string|undefined),
  *   endFor: (Array|string|undefined),
- *   trim: ({left: boolean, right: boolean}|undefined),
+ *   trim: ({left: boolean, right: boolean}|boolean|undefined),
  *   logic: (?boolean|undefined),
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
@@ -167,7 +167,30 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$textDirs, p.text])
 
 	]).forEach(({cache, val}) => {
-		cache[name] = cache === $dirTrim ? val : Boolean(val);
+		if (cache === $dirTrim) {
+			switch (val) {
+				case true:
+					val = {
+						left: true,
+						right: true
+					};
+
+					break;
+
+				case false:
+					val = {
+						left: false,
+						right: false
+					};
+
+					break;
+			}
+
+			cache[name] = val;
+
+		} else {
+			cache[name] = Boolean(val);
+		}
 	});
 
 	$C([

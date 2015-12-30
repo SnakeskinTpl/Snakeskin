@@ -23,10 +23,7 @@ Snakeskin.addDirective(
 		group: ['style', 'tag', 'output'],
 		placement: 'template',
 		selfInclude: false,
-		trim: {
-			left: true,
-			right: true
-		}
+		trim: true
 	},
 
 	function (command) {

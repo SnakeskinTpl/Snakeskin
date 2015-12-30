@@ -23,10 +23,7 @@ Snakeskin.addDirective(
 		placement: 'template',
 		shorthands: {'/<': 'end tag', '<': 'tag '},
 		text: true,
-		trim: {
-			left: true,
-			right: true
-		}
+		trim: true
 	},
 
 	function (command) {
