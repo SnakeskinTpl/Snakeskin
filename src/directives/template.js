@@ -340,7 +340,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				var
 					__BLOCKS__ = __CALLEE__.Blocks = {},
-					blocks = __BLOCKS__;
+					self = __BLOCKS__;
 
 				var
 					__RESULT__ = ${this.getReturnDecl()},

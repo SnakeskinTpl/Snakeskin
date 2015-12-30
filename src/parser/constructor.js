@@ -359,8 +359,7 @@ export default class Parser {
 
 				function __EXEC__() {
 					var
-						__ROOT__ = this,
-						self = __ROOT__;
+						__ROOT__ = this;
 
 					var
 						TRUE = new Boolean(true),

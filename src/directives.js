@@ -40,6 +40,5 @@ import './directives/script';
 import './directives/style';
 import './directives/link';
 import './directives/block';
-import './directives/callBlock';
 import './directives/attr';
 import './directives/tag';

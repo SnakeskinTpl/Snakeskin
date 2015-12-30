@@ -17,12 +17,32 @@ Snakeskin.addDirective(
 		group: ['call', 'output'],
 		notEmpty: true,
 		placement: 'template',
-		shorthands: {'^=': 'call '},
+		shorthands: {'+=': 'call '},
 		text: true
 	},
 
 	function (command) {
-		this.append(this.wrap(this.out(command, {unsafe: true})));
+		let str;
+
+		const
+			name = this.getFnName(command);
+
+		if (name === '&') {
+			const
+				block = this.hasBlock('block', true);
+
+			if (block) {
+				str = block.params.fn + this.out(command.replace(name, ''), {unsafe: true});
+
+			} else {
+				return this.error(`invalid "${this.name}" declaration`);
+			}
+
+		} else {
+			str = this.out(command, {unsafe: true});
+		}
+
+		this.append(this.wrap(str));
 	}
 
 );
