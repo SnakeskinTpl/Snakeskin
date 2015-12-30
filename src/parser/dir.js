@@ -49,9 +49,9 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	structure.children.push(obj);
 
 	const
-		{blockStruct, blockTable} = this;
+		{blockStructure, blockTable} = this;
 
-	if (blockStruct && this.getGroup('blockInherit')[opt_name]) {
+	if (blockStructure && this.getGroup('blockInherit')[opt_name]) {
 		const
 			parent = this.parentTplName,
 			key = `${opt_name}_${opt_params.name}`;
@@ -59,14 +59,14 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		let sub;
 		if (blockTable[key] && blockTable[key] !== true) {
 			sub = blockTable[key];
-			sub.parent = blockStruct;
+			sub.parent = blockStructure;
 
 		} else {
 			sub = {
 				children: [],
 				name: opt_name,
 				params: opt_params,
-				parent: blockStruct
+				parent: blockStructure
 			};
 
 			if (blockTable[key] === true) {
@@ -97,7 +97,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 			}
 		}
 
-		blockStruct.children.push(sub);
+		blockStructure.children.push(sub);
 		this.blockStructure = sub;
 	}
 
@@ -131,22 +131,22 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 	this.structure = obj;
 
 	const
-		{blockStruct, blockTable} = this;
+		{blockStructure, blockTable} = this;
 
-	if (this.blockStructure && this.getGroup('inlineInherit')[opt_name]) {
+	if (blockStructure && this.getGroup('inlineInherit')[opt_name]) {
 		const
 			key = `${opt_name}_${opt_params.name}`;
 
 		let sub;
 		if (blockTable[key] && blockTable[key] !== true) {
 			sub = blockTable[key];
-			sub.parent = blockStruct;
+			sub.parent = blockStructure;
 
 		} else {
 			sub = {
 				name: opt_name,
 				params: opt_params,
-				parent: blockStruct
+				parent: blockStructure
 			};
 
 			if (blockTable[key] === true) {
@@ -155,7 +155,7 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 		}
 
 		blockTable[key] = sub;
-		blockStruct.children.push(sub);
+		blockStructure.children.push(sub);
 		this.blockStructure = sub;
 	}
 
