@@ -371,6 +371,14 @@ export default class Parser {
 						__VARS__ = Snakeskin.Vars,
 						__LOCAL__ = Snakeskin.LocalVars;
 
+					function Unsafe(val) {
+						this.value = val;
+					}
+
+					Unsafe.prototype.valueOf = function () {
+						return this.value;
+					};
+
 					${this.declVars('$_')}
 		`;
 	};

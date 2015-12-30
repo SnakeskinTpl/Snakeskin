@@ -855,7 +855,7 @@ Parser.prototype.out = function (command, opt_params) {
 	}
 
 	if (!unEscape && !unsafe) {
-		res = `__FILTERS__.html(${res}, ${this.attr}, ${this.attrEscape})`;
+		res = `__FILTERS__.html(${res}, ${this.attr}, ${this.attrEscape}, Unsafe)`;
 	}
 
 	return res;

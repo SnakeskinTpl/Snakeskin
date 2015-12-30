@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 
 		this.append(ws`
 			if (__RESULT__.length) {
-				${tmp}.push(__RESULT__);
+				${tmp}.push(new Unsafe(__RESULT__));
 				__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
 			}
 		`);
@@ -134,7 +134,7 @@ Snakeskin.addDirective(
 			if (__RESULT__.length) {
 				${tmp}.push({
 					key: undefined,
-					value: __RESULT__
+					value: new Unsafe(__RESULT__)
 				});
 			}
 
@@ -196,7 +196,7 @@ Snakeskin.addDirective(
 					if (!${pos} && __RESULT__.length) {
 						${tmp}.push({
 							key: '${ref}',
-							value: __RESULT__
+							value: new Unsafe(__RESULT__)
 						});
 
 						__RESULT__ = ${this.getReturnDecl()};
@@ -226,7 +226,7 @@ Snakeskin.addDirective(
 		switch (structure.parent.name) {
 			case 'wrap':
 				this.append(ws`
-					${tmp}.push(__RESULT__);
+					${tmp}.push(new Unsafe(__RESULT__));
 					__RESULT__ = ${this.getReturnDecl()};
 				`);
 
@@ -236,7 +236,7 @@ Snakeskin.addDirective(
 				this.append(ws`
 					${tmp}.push({
 						key: '${ref}',
-						value: __RESULT__
+						value: new Unsafe(__RESULT__)
 					});
 
 					__RESULT__ = ${this.getReturnDecl()};

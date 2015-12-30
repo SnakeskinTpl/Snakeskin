@@ -77,11 +77,16 @@ export const
  * @param {?} str - source string
  * @param {?boolean=} [opt_attr=false] - if is true, then should be additional escaping for html attributes
  * @param {?boolean=} [opt_force=false] - if is true, then attributes will be escaped forcibly
+ * @param {?=} [opt_unsafe] - instance of the Unsafe class
  * @return {(string|!DocumentFragment)}
  */
-Snakeskin.Filters.html = function (str, opt_attr, opt_force) {
-	if (typeof DocumentFragment !== 'undefined' && str instanceof DocumentFragment) {
+Snakeskin.Filters.html = function (str, opt_attr, opt_force, opt_unsafe) {
+	if (typeof DocumentFragment === 'function' && str instanceof DocumentFragment) {
 		return str;
+	}
+
+	if (typeof opt_unsafe === 'function' && str instanceof opt_unsafe) {
+		return str.valueOf();
 	}
 
 	let res = String(str);
