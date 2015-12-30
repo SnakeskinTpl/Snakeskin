@@ -8,6 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 
@@ -16,22 +17,17 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		deferInit: true,
-		endsWith: ['and', 'end']
+		deferInit: true
 	},
 
-	function (command, commandLength, commandType, raw, jsDocStart) {
+	function (command) {
 		this.startDir(null, {
-			chunkLength: 1,
-			command,
-			commandLength,
-			commandType,
-			jsDocStart,
-			raw
+			chunks: 1,
+			command
 		});
 
 		this.append(ws`
-			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = []`)}
+			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = [], __WRAP_POS__ = 0`)}
 			__RESULT__ = ${this.getReturnDecl()};
 		`);
 	},
@@ -46,54 +42,189 @@ Snakeskin.addDirective(
 		`);
 
 		const
-			{params} = this.structure,
-			parts = params.command.split(' ');
+			{params} = this.structure;
 
 		let
-			i = params.chunkLength,
-			j = 0,
-			adv = '';
+			i = params.chunks,
+			j = 0;
+
+		let
+			wrapParams = '';
 
 		while (i--) {
-			if (adv) {
-				adv += ',';
+			if (wrapParams) {
+				wrapParams += ',';
 			}
 
-			adv += `${tmp}[${j++}]`;
+			wrapParams += `${tmp}[${j++}]`;
 		}
 
-		Snakeskin.Directives[parts[0]].call(
+		Snakeskin.Directives['call'].call(
 			this,
-			parts
-				.slice(1)
-				.join(' ')
-				.replace(/\((.*?)\)$/, (sstr, $0) => {
-					$0 = $0.trim();
-					return $0 ? `(${$0},${adv})` : `(${adv})`;
-				}),
-
-			params.commandLength,
-			parts[0],
-			params.raw,
-			params.jsDocStart
+			params.command.replace(/\((.*?)\)$/, (sstr, $0) => {
+				$0 = $0.trim();
+				return $0 ? `(${$0},${wrapParams})` : `(${wrapParams})`;
+			})
 		);
 	}
 
 );
 
 Snakeskin.addDirective(
-	'and',
+	'target',
 
 	{
-		with: 'wrap'
+		block: true,
+		deferInit: true,
+		trim: {
+			left: true,
+			right: true
+		}
+	},
+
+	function (command) {
+		const
+			[obj, ref] = command.split(/\s+as\s+/);
+
+		if (ref) {
+			this.declVar(ref);
+		}
+
+		this.startDir();
+
+		let
+			str = this.declVars(`__TARGET_REF__ = ${obj}`);
+
+		$C.extend(false, this.structure.params, {
+			ref: this.out('__TARGET_REF__', {unsafe: true})
+		});
+
+		if (ref) {
+			str += this.out(`var ${ref} = __TARGET_REF__;`, {skipFirstWord: true, unsafe: true});
+		}
+
+		this.append(ws`
+			${str}
+			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = [], __WRAP_POS__ = 0`)}
+			__RESULT__ = ${this.getReturnDecl()};
+		`);
 	},
 
 	function () {
-		this.structure.params.chunkLength++;
+		const
+			{structure} = this,
+			{ref} = structure.params;
+
 		this.append(ws`
-			${this.out('__WRAP_TMP__', {unsafe: true})}.push(__RESULT__);
-			__RESULT__ = ${this.getReturnDecl()};
+			if (__RESULT__.length) {
+				${this.out('__WRAP_TMP__', {unsafe: true})}.push({value: __RESULT__, key: '${ref}'});
+			}
+
+			Snakeskin.forEach(${this.out('__WRAP_TMP__', {unsafe: true})}, function (el) {
+				if (Array.isArray(${ref})) {
+					${ref}.push(el.value);
+
+				} else {
+					${ref}[el.key] = el.value;
+				}
+			});
+
+			__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
 		`);
+
+		switch (structure.parent.name) {
+			case 'wrap':
+			case 'putIn':
+				this.append(`__RESULT__ = ${ref};`);
+				break;
+
+			default:
+				this.append(`__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};`);
+		}
+	}
+
+);
+
+Snakeskin.addDirective(
+	'putIn',
+
+	{
+		block: true,
+		deferInit: true,
+		shorthands: {'*': 'putIn '},
+		trim: {
+			left: true,
+			right: true
+		}
+	},
+
+	function (ref) {
+		this.startDir(null, {ref});
+
+		const
+			{parent} = this.structure;
+
+		const
+			tmp = this.out('__WRAP_TMP__', {unsafe: true}),
+			pos = this.out('__WRAP_POS__', {unsafe: true});
+
+		switch (parent.name) {
+			case 'wrap':
+				parent.params.chunks++;
+				this.append(ws`
+					if (${pos} || __RESULT__.length) {
+						${tmp}.push(__RESULT__);
+						__RESULT__ = ${this.getReturnDecl()};
+					}
+
+					${pos}++;
+				`);
+
+				break;
+
+			case 'target':
+				this.append(ws`
+					if (${pos} || __RESULT__.length) {
+						${tmp}.push({value: __RESULT__, key: '${ref}'});
+						__RESULT__ = ${this.getReturnDecl()};
+					}
+
+					${pos}++;
+				`);
+
+				break;
+
+			default:
+				this.append(ws`
+					${this.declVars(`__WRAP_CACHE__ = __RESULT__`)}
+					__RESULT__ = ${this.getReturnDecl()};
+				`);
+		}
+	},
+
+	function () {
+		const
+			{structure} = this,
+			{ref} = structure.params;
+
+		switch (structure.parent.name) {
+			case 'wrap':
+				return;
+
+			case 'target':
+				this.append(ws`
+					${this.out('__WRAP_TMP__', {unsafe: true})}.push({value: __RESULT__, key: '${ref}'});
+					__RESULT__ = ${this.getReturnDecl()};
+				`);
+
+				break;
+
+			default:
+				this.append(ws`
+					${this.out(`${ref} = __RESULT__`, {unsafe: true})};
+					__RESULT__ = ${this.getReturnDecl()};
+				`);
+		}
 	}
 
 );

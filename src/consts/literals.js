@@ -204,6 +204,7 @@ export const SYS_CONSTS = {
 	'__ATTR_STR__': true,
 	'__ATTR_CONCAT_MAP__': true,
 	'__ATTR_CACHE__': true,
+	'__WRAP_POS__': true,
 	'__WRAP_TMP__': true,
 	'__WRAP_CACHE__': true,
 	'__LENGTH__': true,
