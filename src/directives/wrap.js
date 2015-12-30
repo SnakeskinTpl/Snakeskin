@@ -117,16 +117,14 @@ Snakeskin.addDirective(
 
 		this.append(ws`
 			if (__RESULT__.length) {
-				${this.out('__WRAP_TMP__', {unsafe: true})}.push({value: __RESULT__, key: '${ref}'});
+				${this.out('__WRAP_TMP__', {unsafe: true})}.push({
+					key: '${ref}',
+					value: __RESULT__
+				});
 			}
 
 			Snakeskin.forEach(${this.out('__WRAP_TMP__', {unsafe: true})}, function (el) {
-				if (Array.isArray(${ref})) {
-					${ref}.push(el.value);
-
-				} else {
-					${ref}[el.key] = el.value;
-				}
+				${ref}[el.key || ${ref}.length] = el.value;
 			});
 
 			__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
@@ -172,7 +170,7 @@ Snakeskin.addDirective(
 			case 'wrap':
 				parent.params.chunks++;
 				this.append(ws`
-					if (${pos} || __RESULT__.length) {
+					if (!${pos} && __RESULT__.length) {
 						${tmp}.push(__RESULT__);
 						__RESULT__ = ${this.getReturnDecl()};
 					}
@@ -184,8 +182,12 @@ Snakeskin.addDirective(
 
 			case 'target':
 				this.append(ws`
-					if (${pos} || __RESULT__.length) {
-						${tmp}.push({value: __RESULT__, key: '${ref}'});
+					if (!${pos} && __RESULT__.length) {
+						${tmp}.push({
+							key: '${ref}',
+							value: __RESULT__
+						});
+
 						__RESULT__ = ${this.getReturnDecl()};
 					}
 
@@ -209,11 +211,20 @@ Snakeskin.addDirective(
 
 		switch (structure.parent.name) {
 			case 'wrap':
-				return;
+				this.append(ws`
+					${this.out('__WRAP_TMP__', {unsafe: true})}.push(__RESULT__);
+					__RESULT__ = ${this.getReturnDecl()};
+				`);
+
+				break;
 
 			case 'target':
 				this.append(ws`
-					${this.out('__WRAP_TMP__', {unsafe: true})}.push({value: __RESULT__, key: '${ref}'});
+					${this.out('__WRAP_TMP__', {unsafe: true})}.push({
+						key: '${ref}',
+						value: __RESULT__
+					});
+
 					__RESULT__ = ${this.getReturnDecl()};
 				`);
 
