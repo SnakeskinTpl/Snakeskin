@@ -17,7 +17,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		deferInit: true
+		deferInit: true,
+		group: ['wrap', 'output']
 	},
 
 	function (command) {
@@ -83,6 +84,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		group: ['target', 'void', 'var'],
 		trim: true
 	},
 
@@ -160,6 +162,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		group: ['putIn', 'void'],
 		shorthands: {'*': 'putIn '},
 		trim: true
 	},

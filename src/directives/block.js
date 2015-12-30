@@ -226,20 +226,20 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		const
-			{params} = this.structure,
+			{params: p} = this.structure,
 			diff = this.getDiff(commandLength);
 
 		const
 			s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
 			e = RIGHT_BLOCK;
 
-		if (this.outerLink === params.name) {
+		if (this.outerLink === p.name) {
 			const
 				obj = this.preDefs[this.tplName],
 				i = Number(obj.i);
 
 			obj.text += ws`
-				${this.eol}${this.source.slice(params.from, i)}
+				${this.eol}${this.source.slice(p.from, i)}
 				${s}__cutLine__${e}
 
 					${s}__switchLine__ ${obj.startLine}${e}
@@ -257,15 +257,15 @@ Snakeskin.addDirective(
 		}
 
 		const
-			block = $blocks[this.tplName][params.name];
+			block = $blocks[this.tplName][p.name];
 
-		if (this.isSimpleOutput() && params.fn) {
+		if (this.isSimpleOutput() && p.fn) {
 			this.save(ws`
 						return ${this.getReturnResultDecl()};
 					};
 				}
 
-				${params.params != null ? this.wrap(`${params.fn}(${params.params})`) : ''}
+				${p.params != null ? this.wrap(`${p.fn}(${p.params})`) : ''}
 			`);
 		}
 
@@ -278,7 +278,7 @@ Snakeskin.addDirective(
 				start = this.i - this.startTemplateI;
 
 			block.to = start + 1;
-			block.content = this.source.slice(this.startTemplateI).slice(params.from, start - diff);
+			block.content = this.source.slice(this.startTemplateI).slice(p.from, start - diff);
 		}
 	}
 );

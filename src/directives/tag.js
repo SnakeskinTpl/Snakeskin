@@ -67,15 +67,15 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{params} = this.structure;
+			{params: p} = this.structure;
 
-		this.bemRef = params.bemRef;
+		this.bemRef = p.bemRef;
 		this.prevSpace = false;
 
-		if (params.tag === '?') {
+		if (p.tag === '?') {
 			return;
 		}
 
-		this.append(this.getEndXMLTagDecl(params.tag, params.inline));
+		this.append(this.getEndXMLTagDecl(p.tag, p.inline));
 	}
 );
