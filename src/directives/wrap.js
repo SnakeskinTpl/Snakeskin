@@ -27,7 +27,12 @@ Snakeskin.addDirective(
 		});
 
 		this.append(ws`
-			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = [], __WRAP_POS__ = 0`)}
+			${this.declVars(ws`
+				__WRAP_CACHE__ = __RESULT__,
+				__WRAP_TMP__ = [],
+				__WRAP_POS__ = 0`
+			)}
+
 			__RESULT__ = ${this.getReturnDecl()};
 		`);
 	},
@@ -37,15 +42,17 @@ Snakeskin.addDirective(
 			tmp = this.out('__WRAP_TMP__', {unsafe: true});
 
 		this.append(ws`
-			${tmp}.push(__RESULT__);
-			__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
+			if (__RESULT__.length) {
+				${tmp}.push(__RESULT__);
+				__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
+			}
 		`);
 
 		const
-			{params} = this.structure;
+			{params: p} = this.structure;
 
 		let
-			i = params.chunks,
+			i = p.chunks,
 			j = 0;
 
 		let
@@ -61,7 +68,7 @@ Snakeskin.addDirective(
 
 		Snakeskin.Directives['call'].call(
 			this,
-			params.command.replace(/\((.*?)\)$/, (sstr, $0) => {
+			p.command.replace(/\((.*?)\)$/, (sstr, $0) => {
 				$0 = $0.trim();
 				return $0 ? `(${$0},${wrapParams})` : `(${wrapParams})`;
 			})
@@ -105,7 +112,13 @@ Snakeskin.addDirective(
 
 		this.append(ws`
 			${str}
-			${this.declVars(`__WRAP_CACHE__ = __RESULT__, __WRAP_TMP__ = [], __WRAP_POS__ = 0`)}
+
+			${this.declVars(ws`
+				__WRAP_CACHE__ = __RESULT__,
+				__WRAP_TMP__ = [],
+				__WRAP_POS__ = 0
+			`)}
+
 			__RESULT__ = ${this.getReturnDecl()};
 		`);
 	},
@@ -115,19 +128,20 @@ Snakeskin.addDirective(
 			{structure} = this,
 			{ref} = structure.params;
 
+		const
+			tmp = this.out('__WRAP_TMP__', {unsafe: true});
+
 		this.append(ws`
 			if (__RESULT__.length) {
-				${this.out('__WRAP_TMP__', {unsafe: true})}.push({
-					key: '${ref}',
+				${tmp}.push({
+					key: undefined,
 					value: __RESULT__
 				});
 			}
 
-			Snakeskin.forEach(${this.out('__WRAP_TMP__', {unsafe: true})}, function (el) {
+			Snakeskin.forEach(${tmp}, function (el) {
 				${ref}[el.key || ${ref}.length] = el.value;
 			});
-
-			__RESULT__ = ${this.out('__WRAP_CACHE__', {unsafe: true})};
 		`);
 
 		switch (structure.parent.name) {
@@ -209,10 +223,13 @@ Snakeskin.addDirective(
 			{structure} = this,
 			{ref} = structure.params;
 
+		const
+			tmp = this.out('__WRAP_TMP__', {unsafe: true});
+
 		switch (structure.parent.name) {
 			case 'wrap':
 				this.append(ws`
-					${this.out('__WRAP_TMP__', {unsafe: true})}.push(__RESULT__);
+					${tmp}.push(__RESULT__);
 					__RESULT__ = ${this.getReturnDecl()};
 				`);
 
@@ -220,7 +237,7 @@ Snakeskin.addDirective(
 
 			case 'target':
 				this.append(ws`
-					${this.out('__WRAP_TMP__', {unsafe: true})}.push({
+					${tmp}.push({
 						key: '${ref}',
 						value: __RESULT__
 					});
