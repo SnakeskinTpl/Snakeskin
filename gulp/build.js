@@ -52,7 +52,7 @@ gulp.task('build', (cb) => {
 				gulp.src(`./src/${name}`)
 					.pipe(rollup({
 						format: 'umd',
-						// moduleId: 'Snakeskin',
+						moduleId: 'Snakeskin',
 						moduleName: 'Snakeskin',
 						plugins: [babel()]
 					}))
@@ -68,7 +68,7 @@ gulp.task('build', (cb) => {
 			}
 
 			function clean() {
-				del(`./src/${name}`).then(cb);
+				del(`./src/${name}`, cb);
 			}
 		});
 	});
