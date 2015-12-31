@@ -31,7 +31,7 @@ Snakeskin.addDirective(
 				this.append('break;');
 			}
 
-		} else if (this.getGroup('async')[inside]) {
+		} else {
 			const
 				val = command ? this.out(command, {unsafe: true}) : 'false';
 
@@ -47,9 +47,6 @@ Snakeskin.addDirective(
 					return false;
 				`);
 			}
-
-		} else {
-			this.append(this.out('break __I_PROTO__;', {unsafe: true}));
 		}
 	}
 );
@@ -74,7 +71,7 @@ Snakeskin.addDirective(
 				this.append('continue;');
 			}
 
-		} else if (this.getGroup('async')[inside]) {
+		} else {
 			const
 				val = command ? `undefined,${this.out(command, {unsafe: true})}` : '';
 
@@ -90,9 +87,6 @@ Snakeskin.addDirective(
 					return;
 				`);
 			}
-
-		} else {
-			this.append(this.out('continue __I_PROTO__;', {unsafe: true}));
 		}
 	}
 );
