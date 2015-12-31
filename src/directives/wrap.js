@@ -13,12 +13,13 @@ import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
-	'wrap',
+	'call',
 
 	{
 		block: true,
 		deferInit: true,
-		group: ['wrap', 'output']
+		group: ['call', 'output'],
+		shorthands: {'+=': 'call ', '/+': 'end call'}
 	},
 
 	function (command) {
@@ -67,13 +68,31 @@ Snakeskin.addDirective(
 			wrapParams += `${tmp}[${j++}]`;
 		}
 
-		Snakeskin.Directives['call'].call(
-			this,
-			p.command.replace(/\((.*?)\)$/, (sstr, $0) => {
-				$0 = $0.trim();
-				return $0 ? `(${$0},${wrapParams})` : `(${wrapParams})`;
-			})
-		);
+		let str;
+		const command = p.command.replace(/\((.*?)\)$/, (sstr, $0) => {
+			$0 = $0.trim();
+			return $0 ? `(${$0},${wrapParams})` : `(${wrapParams})`;
+		});
+
+		const
+			name = this.getFnName(command);
+
+		if (name === '&') {
+			const
+				block = this.hasBlock('block', true);
+
+			if (block) {
+				str = block.params.fn + this.out(command.replace(name, ''), {unsafe: true});
+
+			} else {
+				return this.error(`invalid "${this.name}" declaration`);
+			}
+
+		} else {
+			str = this.out(command, {unsafe: true});
+		}
+
+		this.append(this.wrap(str));
 	}
 
 );
@@ -144,7 +163,7 @@ Snakeskin.addDirective(
 		`);
 
 		switch (structure.parent.name) {
-			case 'wrap':
+			case 'call':
 			case 'putIn':
 				this.append(`__RESULT__ = ${ref};`);
 				break;
@@ -163,7 +182,7 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		group: ['putIn', 'void'],
-		shorthands: {'*': 'putIn '},
+		shorthands: {'*': 'putIn ', '/*': 'end putIn'},
 		trim: true
 	},
 
@@ -178,7 +197,7 @@ Snakeskin.addDirective(
 			pos = this.out('__WRAP_POS__', {unsafe: true});
 
 		switch (parent.name) {
-			case 'wrap':
+			case 'call':
 				parent.params.chunks++;
 				this.append(ws`
 					if (!${pos} && __RESULT__.length) {
@@ -224,7 +243,7 @@ Snakeskin.addDirective(
 			tmp = this.out('__WRAP_TMP__', {unsafe: true});
 
 		switch (structure.parent.name) {
-			case 'wrap':
+			case 'call':
 				this.append(ws`
 					${tmp}.push(new Unsafe(__RESULT__));
 					__RESULT__ = ${this.getReturnDecl()};

@@ -18,7 +18,6 @@ import './directives/yield';
 import './directives/exception';
 import './directives/var';
 import './directives/with';
-import './directives/call';
 import './directives/head';
 import './directives/eval';
 import './directives/space';
