@@ -70,7 +70,7 @@ export function getFromCache(key, code, params, ctx) {
  */
 export function getCacheKey(params, ctx) {
 	return params.language ?
-		null : [
+		null : JSON.stringify([
 			params.exports,
 			ctx !== NULL,
 			escapeEOLs(params.eol),
@@ -85,7 +85,7 @@ export function getCacheKey(params, ctx) {
 			params.bemFilter,
 			params.filters,
 			params.useStrict
-		].join();
+		]);
 }
 
 /**

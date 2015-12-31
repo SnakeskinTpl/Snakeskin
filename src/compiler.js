@@ -121,7 +121,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.useStrict = p.useStrict !== false;
 	p.literalBounds = p.literalBounds || ['{{', '}}'];
 	p.bemFilter = p.bemFilter || 'bem';
-	p.filters = p.filters || ['undef', 'html'];
+	p.filters = p.filters || [{'undef': {local: true}}, 'html'];
 	p.vars = p.vars || {};
 
 	$C(p.vars).forEach((val, key) => {
