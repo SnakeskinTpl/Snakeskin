@@ -434,14 +434,14 @@ Parser.prototype.out = function (command, opt_params) {
 
 			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
 				if (refCache) {
-					def = search(refCache.root, sstr, getExtList(String(tplName)));
+					def = search(refCache.root, sstr, Parser.getExtList(String(tplName)));
 				}
 
 				let tplCache = tplName &&
 					$scope['template'][tplName];
 
 				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.root, sstr, getExtList(String(tplName)));
+					def = search(tplCache.root, sstr, Parser.getExtList(String(tplName)));
 				}
 			}
 
