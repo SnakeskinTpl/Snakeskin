@@ -858,5 +858,5 @@ Parser.prototype.out = function (command, opt_params) {
 		res = `__FILTERS__.html(${res}, ${this.attr}, ${this.attrEscape}, Unsafe)`;
 	}
 
-	return res;
+	return `__FILTERS__.node(${res}, __NODE__)`;
 };

@@ -74,22 +74,22 @@ export const
 /**
  * Escapes HTML entities from a string
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @param {?boolean=} [opt_attr=false] - if is true, then should be additional escaping for html attributes
  * @param {?boolean=} [opt_force=false] - if is true, then attributes will be escaped forcibly
  * @param {?=} [opt_unsafe] - instance of the Unsafe class
- * @return {(string|!DocumentFragment)}
+ * @return {(string|!Node)}
  */
-Snakeskin.Filters.html = function (str, opt_attr, opt_force, opt_unsafe) {
-	if (typeof DocumentFragment === 'function' && str instanceof DocumentFragment) {
-		return str;
+Snakeskin.Filters.html = function (val, opt_attr, opt_force, opt_unsafe) {
+	if (typeof Node === 'function' && val instanceof Node) {
+		return val;
 	}
 
-	if (typeof opt_unsafe === 'function' && str instanceof opt_unsafe) {
-		return str.valueOf();
+	if (typeof opt_unsafe === 'function' && val instanceof opt_unsafe) {
+		return val.valueOf();
 	}
 
-	let res = String(str);
+	let res = String(val);
 	if (opt_attr && opt_force) {
 		// res = res.replace(escapeAttrRgxp, '$1"$2"');
 	}
@@ -101,6 +101,22 @@ Snakeskin.Filters.html = function (str, opt_attr, opt_force, opt_unsafe) {
 	}
 
 	return res;
+};
+
+/**
+ * Appends a value to a root node
+ *
+ * @param {?} val - source value
+ * @param {(Node|undefined)} node - root node
+ * @return {(string|!Node)}
+ */
+Snakeskin.Filters.node = function (val, node) {
+	if (node && typeof Node === 'function' && val instanceof Node) {
+		node.appendChild(val);
+		return '';
+	}
+
+	return val;
 };
 
 /**
