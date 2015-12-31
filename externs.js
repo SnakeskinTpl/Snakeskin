@@ -187,6 +187,7 @@ var loaded;
  *   replaceUndef: (?boolean|undefined),
  *   escapeOutput: (?boolean|undefined),
  *   useStrict: (?boolean|undefined),
+ *   literalBounds: (Array<string>|undefined)
  *   bemFilter: (?string|undefined),
  *   prettyPrint: (?boolean|undefined),
  *   filters: (Array<string>|undefined)

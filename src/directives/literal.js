@@ -22,6 +22,8 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		this.append(this.wrap(`'{${this.replaceTplVars(command)}}'`));
+		this.append(this.wrap(
+			`'${this.literalBounds[0]}${this.replaceTplVars(command.replace(/^{|}$/g, ''))}${this.literalBounds[1]}'`
+		));
 	}
 );

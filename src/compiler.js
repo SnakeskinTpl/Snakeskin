@@ -63,6 +63,7 @@ import {
  *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode
  *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
  *
+ *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
  *   *) [bemFilter = 'bem'] - name of the bem filter
  *   *) [filters = ['undef', 'html']] - list of default filters for output
  *
@@ -118,6 +119,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	p.throws = p.throws || false;
 	p.cache = p.cache !== false;
 	p.useStrict = p.useStrict !== false;
+	p.literalBounds = p.literalBounds || ['{{', '}}'];
 	p.bemFilter = p.bemFilter || 'bem';
 	p.filters = p.filters || ['undef', 'html'];
 	p.vars = p.vars || {};
