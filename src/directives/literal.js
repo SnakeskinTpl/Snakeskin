@@ -23,7 +23,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		this.append(this.wrap(
-			`'${this.literalBounds[0]}${this.replaceTplVars(command.replace(/^{|}$/g, ''))}${this.literalBounds[1]}'`
+			`'${this.literalBounds[0]}${this.replaceTplVars(command.replace(/^\s*\{|}\s*$/g, ''))}${this.literalBounds[1]}'`
 		));
 	}
 );
