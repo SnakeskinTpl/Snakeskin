@@ -70,7 +70,6 @@ const blackWords = {
 	'while': true,
 	'with': true,
 	'class': true,
-	'debugger': true,
 	'interface': true,
 	'async': true,
 	'await': true
@@ -84,7 +83,7 @@ const unaryBlackWords = {
 	'of': true
 };
 
-const undefUnaryBlackWords = {
+const unUndefUnaryBlackWords = {
 	'new': true
 };
 
@@ -621,7 +620,7 @@ Parser.prototype.out = function (command, opt_params) {
 				} else if (
 					canParse &&
 					!unsafe && !filterStart &&
-					(!nextStep.unary || undefUnaryBlackWords[nextStep.unary]) &&
+					(!nextStep.unary || unUndefUnaryBlackWords[nextStep.unary]) &&
 					!globalUnUndef
 				) {
 
