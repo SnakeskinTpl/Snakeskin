@@ -312,30 +312,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	/** @this {Parser} */
 	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
 		const
-			sourceName = this.getDirName(name);
-
-		let
-			parser = this,
-			dirName = sourceName;
-
-		if (parser.ctx) {
-			dirName = this.getDirName(parser.name) || dirName;
-			parser = parser.ctx;
-		}
+			{structure} = this;
 
 		const
-			{structure} = parser;
+			dirName = this.name = this.getDirName(name),
+			prevDirName = this.getDirName(structure.name),
+			ignore = $dirGroups['ignore'][dirName];
 
-		const
-			ignore = $dirGroups['ignore'][dirName],
-			prevDirName = this.getDirName(structure.name);
-
-		parser.name = dirName;
 		switch (p.placement) {
 			case 'template':
 				if (!structure.parent) {
-					return parser.error(
-						`the directive "${dirName}" can be used only within directives ${q(parser.getGroupList('template'))}`
+					return this.error(
+						`the directive "${dirName}" can be used only within directives ${q(this.getGroupList('template'))}`
 					);
 				}
 
@@ -343,55 +331,57 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 			case 'global':
 				if (structure.parent) {
-					return parser.error(`the directive "${dirName}" can be used only within the global space`);
+					return this.error(`the directive "${dirName}" can be used only within the global space`);
 				}
 
 				break;
 		}
 
 		if (p.notEmpty && !command) {
-			return parser.error(`the directive "${dirName}" must have a body`);
+			return this.error(`the directive "${dirName}" must have a body`);
 		}
 
-		if (p.generator && !parser.parentTplName && !parser.generator && !parser.outerLink) {
-			return parser.error(`the directive "${dirName}" can be used only within a generator template`);
+		if (p.generator && !this.parentTplName && !this.generator && !this.outerLink) {
+			return this.error(`the directive "${dirName}" can be used only within a generator template`);
 		}
 
 		const
 			rmBlacklistList = concat(p.renderModesBlacklist),
 			rmBlacklist = $C(rmBlacklistList).reduce((map, el) => (map[el] = true, map), {});
 
-		if (p.renderModesBlacklist && rmBlacklist[parser.renderMode]) {
-			return parser.error(`the directive "${dirName}" can't be used with directives ${q(rmBlacklist)} rendering modes`);
+		if (p.renderModesBlacklist && rmBlacklist[this.renderMode]) {
+			return this.error(
+				`the directive "${dirName}" can't be used with directives ${q(rmBlacklist)} rendering modes`
+			);
 		}
 
 		const
 			rmWhitelistList = concat(p.renderModesWhitelist),
 			rmWhitelist = $C(rmWhitelistList).reduce((map, el) => (map[el] = true, map), {});
 
-		if (p.renderModesWhitelist && !rmWhitelist[parser.renderMode]) {
-			return parser.error(
+		if (p.renderModesWhitelist && !rmWhitelist[this.renderMode]) {
+			return this.error(
 				`the directive "${dirName}" can be used only with directives ${q(rmWhitelistList)} rendering modes`
 			);
 		}
 
 		if (p.with && (!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName])) {
 			const groups = $C([].concat(p.with)).reduce((arr, el) =>
-				arr.concat(el[0] === gPrfx ? parser.getGroupList(el.slice(1)) : el), []);
+				arr.concat(el[0] === gPrfx ? this.getGroupList(el.slice(1)) : el), []);
 
-			return parser.error(`the directive "${dirName}" can be used only with directives ${q(groups)}`);
+			return this.error(`the directive "${dirName}" can be used only with directives ${q(groups)}`);
 		}
 
-		if (p.ancestorsBlacklist && parser.has(dirAncestorsBlacklistPlain[name])) {
-			return parser.error(
+		if (p.ancestorsBlacklist && this.has(dirAncestorsBlacklistPlain[name])) {
+			return this.error(
 				`the directive "${dirName}" can't be used within directives ${
 					q(Object.keys(dirAncestorsBlacklistPlain[name]))
 				}`
 			);
 		}
 
-		if (p.ancestorsWhitelist && !parser.has(dirAncestorsWhitelistPlain[name])) {
-			return parser.error(
+		if (p.ancestorsWhitelist && !this.has(dirAncestorsWhitelistPlain[name])) {
+			return this.error(
 				`the directive "${dirName}" can be used only within directives ${
 					q(Object.keys(dirAncestorsWhitelistPlain[name]))
 				}`
@@ -400,98 +390,96 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (structure.strong) {
 			if ($dirParents[prevDirName][dirName]) {
-				parser.strongSpace.push(parser.strongSpace[parser.strongSpace.length - 2]);
+				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
 
-			} else if (!ignore && sourceName === dirName && dirName !== 'end') {
-				return parser.error(`the directive "${dirName}" can't be used within the "${prevDirName}"`);
+			} else if (!ignore && dirName !== 'end') {
+				return this.error(`the directive "${dirName}" can't be used within the "${prevDirName}"`);
 			}
 		}
 
-		if (!p.selfInclude && parser.has(dirName)) {
-			return parser.error(`the directive "${dirName}" can't be used within the "${dirName}"`);
+		if (!p.selfInclude && this.has(dirName)) {
+			return this.error(`the directive "${dirName}" can't be used within the "${dirName}"`);
 		}
 
 		if (p.text) {
-			parser.text = true;
+			this.text = true;
 		}
 
 		if (!p.deferInit && !p.with) {
 			if (p.block) {
-				parser.startDir();
+				this.startDir();
 
 			} else {
-				parser.startInlineDir();
+				this.startInlineDir();
 			}
-		}
-
-		if (opt_constr) {
-			opt_constr.call(parser, command, commandLength, type, raw, jsDoc);
 		}
 
 		if (p.filters) {
-			parser.appendDefaultFilters(p.filters);
+			this.appendDefaultFilters(p.filters);
+		}
+
+		if (opt_constr) {
+			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
 		}
 
 		const
-			newStruct = parser.structure;
+			newStructure = this.structure;
 
 		if ($dirParents[dirName]) {
-			newStruct.strong = true;
-			parser.strongSpace.push(true);
+			newStructure.strong = true;
+			this.strongSpace.push(true);
 		}
 
-		if (dirName === sourceName) {
-			if (structure === newStruct) {
+		if (structure === newStructure) {
+			if (
+				!ignore &&
+				(!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName]) &&
+				$dirEnd[prevDirName] && !$dirEnd[prevDirName][dirName]
+
+			) {
+				return this.error(`the directive "${dirName}" can't be used after the "${prevDirName}"`);
+			}
+
+		} else {
+			const
+				siblings = dirName === 'end' ?
+					newStructure.children : newStructure.parent && newStructure.parent.children;
+
+			if (siblings) {
+				let
+					j = 1,
+					prev;
+
+				while ((prev = siblings[siblings.length - j]) && (prev.name === 'text' || prev === newStructure)) {
+					j++;
+				}
+
 				if (
-					!ignore &&
-					(!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName]) &&
-					$dirEnd[prevDirName] && !$dirEnd[prevDirName][dirName]
+					!ignore && prev &&
+					(!$dirChain[prev.name] || !$dirChain[prev.name][dirName]) &&
+					$dirEnd[prev.name] && !$dirEnd[prev.name][dirName]
 
 				) {
-					return parser.error(`the directive "${dirName}" can't be used after the "${prevDirName}"`);
-				}
-
-			} else {
-				const
-					siblings = sourceName === 'end' ?
-						newStruct.children : newStruct.parent && newStruct.parent.children;
-
-				if (siblings) {
-					let
-						j = 1,
-						prev;
-
-					while ((prev = siblings[siblings.length - j]) && (prev.name === 'text' || prev === newStruct)) {
-						j++;
-					}
-
-					if (
-						!ignore && prev &&
-						(!$dirChain[prev.name] || !$dirChain[prev.name][dirName]) &&
-						$dirEnd[prev.name] && !$dirEnd[prev.name][dirName]
-
-					) {
-						return parser.error(`the directive "${dirName}" can't be used after the "${prev.name}"`);
-					}
+					return this.error(`the directive "${dirName}" can't be used after the "${prev.name}"`);
 				}
 			}
 		}
 
-		parser
+		this
 			.applyQueue();
 
-		if (parser.inline === true) {
-			baseEnd.call(parser);
+		if (this.inline === true) {
+			baseEnd.call(this);
 
 			if (opt_destruct) {
-				opt_destruct.call(parser, command, commandLength, type, raw, jsDoc);
+				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
 			}
 
-			parser.inline = null;
-			parser.structure = parser.structure.parent;
+			this.inline = null;
+			this.structure = this.structure.parent;
 
-			if (parser.blockStructure && parser.blockStructure.name === 'const') {
-				parser.blockStructure = parser.blockStructure.parent;
+			if (this.blockStructure && this.blockStructure.name === 'const') {
+				this.blockStructure = this.blockStructure.parent;
 			}
 		}
 	};
