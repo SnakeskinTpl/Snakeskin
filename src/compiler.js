@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable validateOrderInObjectKeys
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -97,39 +99,36 @@ import {
 Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	src = src || '';
 
-	/** @type {$$SnakeskinSysParams} */
-	const
-		sp = any(opt_sysParams || {});
-
 	/** @type {$$SnakeskinParams} */
-	const
-		p = any(opt_params || {});
+	const p = any(
+		$C.extend(false, {
+			cache: true,
+			renderMode: 'stringConcat',
+			vars: {},
+			throws: true,
+			exports: 'default',
+			useStrict: true,
+			prettyPrint: false,
+			bemFilter: 'bem',
+			literalBounds: ['{{', '}}'],
+			filters: {
+				global: [
+					{'html': [(o) => o.attr, (o) => o.attrEscape, 'Unsafe']}
+				],
 
-	// GCC export
-	// >>>
+				local: ['undef']
+			},
+			tolerateWhitespaces: false,
+			eol: '\n',
+			localization: true,
+			i18nFn: 'i18n'
+		}, opt_params)
+	);
 
-	const
-		ctx = p.context || NULL;
-
-	p.eol = p.eol || '\n';
-	p.exports = p.exports || 'default';
-	p.prettyPrint = p.prettyPrint || false;
-	p.renderMode = p.renderMode || 'stringConcat';
-	p.tolerateWhitespaces = p.tolerateWhitespaces || false;
-	p.throws = p.throws || false;
-	p.cache = p.cache !== false;
-	p.useStrict = p.useStrict !== false;
-	p.literalBounds = p.literalBounds || ['{{', '}}'];
-	p.bemFilter = p.bemFilter || 'bem';
-	p.filters = p.filters || [{'undef': {local: true}}, 'html'];
-	p.vars = p.vars || {};
-
+	// Set super global variables
 	$C(p.vars).forEach((val, key) => {
 		Snakeskin.Vars[key] = val;
 	});
-
-	p.i18nFn = p.i18nFn || 'i18n';
-	p.localization = p.localization !== false;
 
 	// <<<
 	// Debug information
@@ -151,7 +150,13 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Caching
 	// >>>
 
+	/** @type {$$SnakeskinSysParams} */
+	const sp = any(
+		$C.extend(false, {cacheKey: false}, opt_sysParams)
+	);
+
 	const
+		ctx = p.context || NULL,
 		cacheKey = getCacheKey(p, ctx);
 
 	if (sp.cacheKey) {
@@ -204,7 +209,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Transpiler
 	// >>>
 
-	const parser = new Parser(String(text), $C.extend({traits: true}, {info}, p, sp));
+	const
+		parser = new Parser(String(text), $C.extend({traits: true}, {info}, p, sp));
 
 	// If is true, then a directive declaration is started,
 	// ie { ... }
@@ -235,27 +241,27 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		comment = false,
 		commentStart = 0;
 
-	let
-		freezeI = 0,
-		freezeTmp = 0,
-		prfxI = 0;
-
-	let
-		prevCommentSpace = false,
-		clrL = true;
-
 	// If is true, then JSDoc is started
 	let
 		jsDoc = false,
 		jsDocStart = false;
 
+	// Debug flags
+	let
+		freezeI = 0,
+		freezeTmp = 0,
+		prfxI = 0;
+
+	// The flags for working with whitespaces
+	let
+		prevCommentSpace = false,
+		clrL = true;
+
 	// The flags for working with string literals and regular expressions inside a directive
 	let
 		bOpen = false,
 		bEnd,
-		bEscape = false;
-
-	let
+		bEscape = false,
 		part = '',
 		rPart = '';
 
