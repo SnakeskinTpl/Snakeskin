@@ -337,7 +337,7 @@ export default class Parser {
 
 					${
 						this.exports === 'default' ?
-							`
+							ws`
 								if (__AMD__) {
 									define(['Snakeskin'], function (ss) {
 										Snakeskin = Snakeskin || ss;

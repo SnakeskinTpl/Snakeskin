@@ -405,9 +405,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			this.text = true;
 		}
 
-		const
-			from = this.result.length;
-
 		if (!p.deferInit && !p.with) {
 			if (p.block) {
 				this.startDir();
@@ -517,8 +514,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			from = params['@from'],
 			to = res.length;
 
+		if (from == null) {
+			return;
+		}
+
 		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
 			try {
+				console.log(res.slice(from, to));
 				this.evalStr(res.slice(from, to));
 
 			} catch (err) {
