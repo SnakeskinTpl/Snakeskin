@@ -16,15 +16,6 @@ import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { ws } from '../helpers/string';
 
 /**
- * The map of declared variables
- */
-Parser.prototype.varCache = {
-	init() {
-		return {};
-	}
-};
-
-/**
  * Declares a variable and returns string declaration
  *
  * @param {string} varName - variable name
@@ -82,7 +73,7 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	};
 
 	if (tplName) {
-		this.varCache[tplName][varName] = true;
+		this.vars[tplName][varName] = true;
 	}
 
 	return realVar;

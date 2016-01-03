@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 						return this.error(`the constant "${name}" is already defined`);
 					}
 
-					if (this.varCache[tplName][name]) {
+					if (this.vars[tplName][name]) {
 						return this.error(`the constant "${name}" is already defined as variable`);
 					}
 

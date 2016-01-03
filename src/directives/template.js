@@ -214,7 +214,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			};
 
 			this.blockTable = {};
-			this.varCache[tplName] = {};
+			this.vars[tplName] = {};
 
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
@@ -406,7 +406,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				this.i = this.startTemplateI - 1;
 				this.parentTplName = null;
 				this.blockTable = {};
-				this.varCache[tplName] = {};
+				this.vars[tplName] = {};
 				return;
 			}
 

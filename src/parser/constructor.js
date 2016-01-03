@@ -27,13 +27,6 @@ export default class Parser {
 	 * @param {$$SnakeskinParserParams} params - additional parameters
 	 */
 	constructor(src, params) {
-		$C(this).forEach((el, key) => {
-			if (el && isFunction(el.init)) {
-				this[key] = el.init();
-			}
-
-		}, {notOwn: true});
-
 		/** @type {Parser} */
 		this.parent = params.parent || null;
 
@@ -121,6 +114,12 @@ export default class Parser {
 			/** @type {(Array|undefined)} */
 			this.consts = params.consts;
 		}
+
+		/**
+		 * The map of declared variables
+		 * @type {!Object}
+		 */
+		this.vars = {};
 
 		/**
 		 * If is true, then compiling will be broken
