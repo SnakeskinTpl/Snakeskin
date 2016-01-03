@@ -190,7 +190,7 @@ var loaded;
  *   literalBounds: (Array<string>|undefined)
  *   bemFilter: (?string|undefined),
  *   prettyPrint: (?boolean|undefined),
- *   filters: (Array<string>|undefined)
+ *   filters: (Object|undefined)
  * }}
  */
 var $$SnakeskinParams;
