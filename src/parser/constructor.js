@@ -13,6 +13,7 @@
 import $C from '../deps/collection';
 import { IS_NODE } from '../consts/hacks';
 import { ws } from '../helpers/string';
+import { isFunction } from '../helpers/types';
 
 /**
  * The class for parsing SS templates
@@ -27,7 +28,7 @@ export default class Parser {
 	 */
 	constructor(src, params) {
 		$C(this).forEach((el, key) => {
-			if (el && el.init) {
+			if (el && isFunction(el.init)) {
 				this[key] = el.init();
 			}
 
@@ -81,8 +82,8 @@ export default class Parser {
 		/** @type {string} */
 		this.bemFilter = params.bemFilter;
 
-		/** @type {!Array<string>} */
-		this.filters = params.filters;
+		/** @type {!Array} */
+		this.filters = this.appendDefaultFilters(params.filters);
 
 		/** @type {boolean} */
 		this.localization = params.localization;
@@ -328,7 +329,8 @@ export default class Parser {
 
 				} catch (ignore) {}
 
-				var Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
+				var
+					Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
 
 				function __INIT__(obj) {
 					Snakeskin = Snakeskin ||

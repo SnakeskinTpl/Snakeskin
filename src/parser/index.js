@@ -29,3 +29,4 @@ import './var';
 import './template';
 import './attr';
 import './tag';
+import './filters';
