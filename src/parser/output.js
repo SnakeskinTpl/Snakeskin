@@ -736,7 +736,7 @@ Parser.prototype.out = function (command, opt_params) {
 				}
 
 				resTmp =
-					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str += `['${el}']`, '')}` +
+					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str + `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
 						resTmp +
 						(bind ? `,${bind.join(',')}` : '') +
