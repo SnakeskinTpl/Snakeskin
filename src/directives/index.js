@@ -26,12 +26,6 @@ import {
 	$blockDirs,
 	$textDirs,
 	$dirGroups,
-	$dirPlacement,
-	$dirPlacementPlain,
-	$dirAncestorsBlacklist,
-	$dirAncestorsBlacklistPlain,
-	$dirAncestorsWhitelist,
-	$dirAncestorsWhitelistPlain,
 	$dirParents,
 	$dirChain,
 	$dirEnd,
@@ -65,6 +59,14 @@ const
 Snakeskin.group = function (name) {
 	return gPrfx + name;
 };
+
+const
+	dirPlacement = {},
+	dirPlacementPlain = {},
+	dirAncestorsBlacklist = {},
+	dirAncestorsBlacklistPlain = {},
+	dirAncestorsWhitelist = {},
+	dirAncestorsWhitelistPlain = {};
 
 /**
  * Adds a new directive to the SS namespace
@@ -153,7 +155,7 @@ Snakeskin.group = function (name) {
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	const
-		p = params || {},
+		p = $C.extend(false, {}, params),
 		concat = (val) => val != null ? [].concat(val) : [];
 
 	let
@@ -255,9 +257,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		([cache, plainCache, val]) => ({cache, plainCache, val});
 
 	$C([
-		_([$dirPlacement, $dirPlacementPlain, p.placement]),
-		_([$dirAncestorsBlacklist, $dirAncestorsBlacklistPlain, p.ancestorsBlacklist]),
-		_([$dirAncestorsWhitelist, $dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
+		_([dirPlacement, dirPlacementPlain, p.placement]),
+		_([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]),
+		_([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
 
 	]).forEach(({cache, plainCache, val}) => {
 		cache[name] = $C(concat(val)).reduce((map, el) =>
@@ -380,18 +382,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return parser.error(`the directive "${dirName}" can be used only with directives ${q(groups)}`);
 		}
 
-		if (p.ancestorsBlacklist && parser.has($dirAncestorsBlacklistPlain[name])) {
+		if (p.ancestorsBlacklist && parser.has(dirAncestorsBlacklistPlain[name])) {
 			return parser.error(
 				`the directive "${dirName}" can't be used within directives ${
-					q(Object.keys($dirAncestorsBlacklistPlain[name]))
+					q(Object.keys(dirAncestorsBlacklistPlain[name]))
 				}`
 			);
 		}
 
-		if (p.ancestorsWhitelist && !parser.has($dirAncestorsWhitelistPlain[name])) {
+		if (p.ancestorsWhitelist && !parser.has(dirAncestorsWhitelistPlain[name])) {
 			return parser.error(
 				`the directive "${dirName}" can be used only within directives ${
-					q(Object.keys($dirAncestorsWhitelistPlain[name]))
+					q(Object.keys(dirAncestorsWhitelistPlain[name]))
 				}`
 			);
 		}
@@ -413,9 +415,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			parser.text = true;
 		}
 
-		const
-			from = parser.result.length;
-
 		if (!p.deferInit && !p.with) {
 			if (p.block) {
 				parser.startDir();
@@ -429,8 +428,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			opt_constr.call(parser, command, commandLength, type, raw, jsDoc);
 		}
 
-		if (parser.structure.params['@from'] === undefined) {
-			parser.structure.params['@from'] = from;
+		if (p.filters) {
+			parser.appendDefaultFilters(p.filters);
 		}
 
 		const
@@ -502,14 +501,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	/** @this {Parser} */
 	const baseEnd = Snakeskin.Directives[`${name}BaseEnd`] = function () {
 		const
-			{structure, structure: {params}} = this;
+			{structure, structure: {params, parent}} = this;
 
 		if (params['@scope']) {
 			this.scope.pop();
 		}
 
-		if ($dirParents[structure.name] || $dirParents[structure.parent.name]) {
+		if ($dirParents[structure.name] || parent && $dirParents[parent.name]) {
 			this.strongSpace.pop();
+		}
+
+		if (p.filters) {
+			this.filters.pop();
 		}
 
 		$C(params['@consts']).forEach((el, key) => {
@@ -517,18 +520,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 
 		const
-			res = params['@res'] ? params['@res'] : this.result;
-
-		const
-			from = params['@from'],
+			res = params['@result'] ? params['@result'] : this.result,
 			to = res.length;
-
-		if (from == null) {
-			return;
-		}
-
-		const
-			{parent} = this.structure;
 
 		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
 			try {
@@ -547,5 +540,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				stack.splice(0, stack.length);
 			}
 		}
+
+		this.endDir();
 	};
 };

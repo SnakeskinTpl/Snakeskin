@@ -10,7 +10,6 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
 import { emptyCommandParams } from '../consts/regs';
 
 Snakeskin.addDirective(
@@ -19,6 +18,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		filters: {local: ['attr']},
 		group: ['tag', 'output'],
 		placement: 'template',
 		shorthands: {'/<': 'end tag', '<': 'tag '},

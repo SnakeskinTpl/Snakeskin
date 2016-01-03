@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 
 	function () {
 		const p = this.structure.params;
-		p['@res'] = this.result;
+		p['@result'] = this.result;
 		this.result = this.result.slice(0, p.from);
 	}
 

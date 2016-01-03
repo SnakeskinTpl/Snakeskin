@@ -39,19 +39,19 @@ Snakeskin.addDirective(
 			destruct = Snakeskin.Directives[`${name}End`];
 
 		if (destruct) {
-			destruct.apply(this, arguments);
+			destruct.call(this, ...arguments);
 
 		} else if (!structure.logic) {
 			this.append('};');
 		}
 
 		Snakeskin.Directives[`${name}BaseEnd`].call(this, ...arguments);
-		this.endDir();
-
-		structure = this.structure;
-		name = structure.name;
+		this.toQueue(() => this.startInlineDir());
 
 		if (this.deferReturn) {
+			let
+				{structure, structure: {name}} = this;
+
 			const
 				async = this.getGroup('async');
 
@@ -113,8 +113,6 @@ Snakeskin.addDirective(
 				this.deferReturn = 0;
 			}
 		}
-
-		this.toQueue(() => this.startInlineDir());
 	}
 
 );

@@ -22,12 +22,6 @@ export const
 	$write = {};
 
 export const
-	$dirPlacement = {},
-	$dirPlacementPlain = {},
-	$dirAncestorsBlacklist = {},
-	$dirAncestorsBlacklistPlain = {},
-	$dirAncestorsWhitelist = {},
-	$dirAncestorsWhitelistPlain = {},
 	$dirChain = {},
 	$dirParents = {},
 	$dirEnd = {},
