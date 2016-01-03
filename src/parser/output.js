@@ -15,6 +15,7 @@ import $C from '../deps/collection';
 import esprima from '../deps/esprima';
 import Snakeskin from '../core';
 import Parser from './constructor';
+import { isFunction } from '../helpers/types';
 import { concatProp } from '../helpers/literals';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
@@ -263,11 +264,6 @@ function isNextAssign(str, pos) {
 	return false;
 }
 
-const unMap = {
-	'!html': true,
-	'!undef': true
-};
-
 const
 	unUndefLabel = '{undef}',
 	unUndefRgxp = new RegExp(r(unUndefLabel), 'g');
@@ -365,18 +361,20 @@ Parser.prototype.out = function (command, opt_params) {
 		filters = [],
 		rvFilters = [];
 
+	const
+		defFilters = this.filters[this.filters.length - 1],
+		unFMap = {};
+
 	// true, if it is possible to calculate the word
 	let nWord = !skipFirstWord;
 
 	// The number of words to skip
 	let posNWord = 0;
 
-	// Scope
 	const
 		{scope} = this,
 		useWith = Boolean(scope.length);
 
-	// Shifts
 	let
 		addition = 0,
 		wordAddEnd = 0,
@@ -512,8 +510,10 @@ Parser.prototype.out = function (command, opt_params) {
 					nextStep = this.getWordFromPos(command, i);
 
 				let
+					{word, finalWord} = nextStep;
+
+				let
 					uAdd = wordAddEnd + addition,
-					{word, finalWord} = nextStep,
 					tmpFinalWord,
 					vRes;
 
@@ -617,14 +617,15 @@ Parser.prototype.out = function (command, opt_params) {
 				if (comboBlackWords[finalWord]) {
 					posNWord = 2;
 
-				} else if (
-					canParse &&
-					!unsafe && !filterStart &&
-					(!nextStep.unary || unUndefUnaryBlackWords[nextStep.unary]) &&
-					!globalUnUndef
-				) {
+				} else if (canParse && !unsafe && !filterStart && (!nextStep.unary || unUndefUnaryBlackWords[nextStep.unary])) {
+					vRes = $C(defFilters.local).reduce((val, filter) => (
+						$C(filter).reduce(
+							(str, args, filter) =>
+								`(${val}|${filter} ${$C(args).map((el) => isFunction(el) ? el(this) : el).join(',')}@)`,
 
-					vRes = `${unUndefLabel}(${vRes})`;
+							''
+						)
+					), vRes);
 				}
 
 				wordAddEnd += vRes.length - word.length;
@@ -686,27 +687,32 @@ Parser.prototype.out = function (command, opt_params) {
 		if (filterStart && !pCountFilter && (el === ')' && !breakNum || i === end)) {
 			const
 				[pos] = pContent,
-				fAdd = wordAddEnd - filterAddEnd + addition,
-				fBody = res.slice(pos[0] + (pCount ? addition : 0), pos[1] + fAdd),
-				arr = [];
+				localUnFMap = {};
 
-			$C(filters).forEach((el) => {
-				if (el[0] === '!') {
-					unFilters[el] = true;
+			const
+				fAdd = wordAddEnd - filterAddEnd + addition,
+				fBody = res.slice(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
+
+			const
+				isGlobalFilter = i === end && el != ')';
+
+			filters = $C(filters).get((el) => {
+				if (el[0] !== '!') {
+					return true;
+				}
+
+				const
+					filter = el.slice(1);
+
+				if (isGlobalFilter) {
+					unFMap[filter] = true;
 
 				} else {
-					arr.push(el);
+					localUnFMap[filter] = true;
 				}
 			});
 
-			filters = arr;
-			let resTmp = fBody.trim();
-
-			if (!resTmp) {
-				resTmp = 'void 0';
-			}
-
-			$C(filters).forEach((el) => {
+			let tmp = $C(filters).reduce((decl, el) => {
 				const
 					params = el.split(' '),
 					input = params.slice(1).join(' ').trim(),
@@ -714,57 +720,58 @@ Parser.prototype.out = function (command, opt_params) {
 
 				let bind;
 				if (Filters.in(current)) {
-					const
-						filterParams = Filters.get(current)['ssFilterParams'];
+					$C(Filters.get(current)['ssFilterParams']).forEach((el, key) => {
+						if (key[0] === '!') {
+							const
+								filter = el.slice(1);
 
-					if (filterParams) {
-						bind = filterParams['bind'];
+							if (isGlobalFilter) {
+								unFMap[filter] = true;
 
-						if (filterParams['!html']) {
-							unEscape = true;
+							} else {
+								localUnFMap[filter] = true;
+							}
+
+						} else if (key === 'bind') {
+							bind = el;
 						}
-
-						if (filterParams['!undef']) {
-							unUndef = true;
-						}
-					}
+					});
 				}
 
-				resTmp =
+				decl =
 					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str + `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
-						resTmp +
+						decl +
 						(bind ? `,${bind.join(',')}` : '') +
 						(input ? `,${input}` : '') +
 						(filterWrapper || !pCount ? ')' : '') +
 					')'
 				;
-			});
 
-			resTmp = resTmp.replace(unUndefRgxp, unUndef ? '' : '__FILTERS__.undef');
-			unUndef = globalUnUndef;
+				return decl;
 
-			const
-				fstr = rvFilters.join().length + 1;
+			}, fBody.trim() || 'void 0');
 
-			res = pCount ?
-				res.slice(0, pos[0] + addition) +
-					resTmp +
-					res.slice(pos[1] + fAdd + fstr) :
+			if (!isGlobalFilter) {
+				$C(localUnFMap).forEach((el, filter) => {
+					tmp = tmp.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')');
+				});
+			}
 
-				resTmp;
+			const fStr = rvFilters.join().length + 1;
+			res = pCount ? res.slice(0, pos[0] + addition) + tmp + res.slice(pos[1] + fAdd + fStr) : tmp;
 
 			pContent.shift();
 			filters = [];
-			rvFilters = [];
 			filterStart = false;
+			rvFilters = [];
 
 			if (pCount) {
 				pCount--;
 				filterWrapper = false;
 			}
 
-			wordAddEnd += resTmp.length - fBody.length - fstr;
+			wordAddEnd += tmp.length - fBody.length - fStr;
 
 			if (!pCount) {
 				addition += wordAddEnd - filterAddEnd;
@@ -837,8 +844,9 @@ Parser.prototype.out = function (command, opt_params) {
 		}
 	}
 
-	res = res.replace(unUndefRgxp, '__FILTERS__.undef');
-	if (skipValidation !== false) {
+	console.log(res);
+
+	/*if (skipValidation !== false) {
 		try {
 			esprima.parse(esprimaHackFn(res));
 
@@ -846,15 +854,30 @@ Parser.prototype.out = function (command, opt_params) {
 			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
 			return '';
 		}
-	}
+	}*/
 
 	if (unsafe) {
 		return res;
 	}
 
-	if (!unEscape) {
-		res = `__FILTERS__.html(${res}, ${this.attr}, ${this.attrEscape}, Unsafe)`;
-	}
+	res = $C(defFilters.global).reduce((val, filter) => (
+		$C(filter).reduce(
+			(str, args, filter) =>
+				`(${val}|${filter} ${$C(args).map((el) => isFunction(el) ? el(this) : el).join(',')}@)`,
+
+			''
+		)
+	), res);
+
+	$C(unFMap).forEach((el, filter) => {
+		res = res.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')');
+	});
+
+	console.log(res);
+
+	res = this.out(res.replace(/@\)/g, ')'), {unsafe: true, skipFirstWord, skipValidation});
+
+	console.log(res);
 
 	return `__FILTERS__.node(${res}, __NODE__)`;
 };
