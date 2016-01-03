@@ -362,8 +362,8 @@ Parser.prototype.out = function (command, opt_params) {
 	// rvFilter => ['ucfirst bar()', 'json']
 	// filter => ['ucfirst foo.bar()', 'json']
 	let
-		filter = [],
-		rvFilter = [];
+		filters = [],
+		rvFilters = [];
 
 	// true, if it is possible to calculate the word
 	let nWord = !skipFirstWord;
@@ -631,9 +631,9 @@ Parser.prototype.out = function (command, opt_params) {
 				nWord = false;
 
 				if (filterStart) {
-					const last = filter.length - 1;
-					filter[last] += vRes;
-					rvFilter[last] += word;
+					const last = filters.length - 1;
+					filters[last] += vRes;
+					rvFilters[last] += word;
 					filterAddEnd += vRes.length - word.length;
 
 				} else {
@@ -671,9 +671,9 @@ Parser.prototype.out = function (command, opt_params) {
 
 			// Filter body
 			} else if (el !== ')' || pCountFilter) {
-				const last = filter.length - 1;
-				filter[last] += el;
-				rvFilter[last] += el;
+				const last = filters.length - 1;
+				filters[last] += el;
+				rvFilters[last] += el;
 			}
 		}
 
@@ -690,28 +690,23 @@ Parser.prototype.out = function (command, opt_params) {
 				fBody = res.slice(pos[0] + (pCount ? addition : 0), pos[1] + fAdd),
 				arr = [];
 
-			$C(filter).forEach((el) => {
-				if (unMap[el]) {
-					if (el === '!html' && (!pCount || filterWrapper)) {
-						unEscape = true;
-
-					} else if (el === '!undef') {
-						unUndef = true;
-					}
+			$C(filters).forEach((el) => {
+				if (el[0] === '!') {
+					unFilters[el] = true;
 
 				} else {
 					arr.push(el);
 				}
 			});
 
-			filter = arr;
+			filters = arr;
 			let resTmp = fBody.trim();
 
 			if (!resTmp) {
 				resTmp = 'void 0';
 			}
 
-			$C(filter).forEach((el) => {
+			$C(filters).forEach((el) => {
 				const
 					params = el.split(' '),
 					input = params.slice(1).join(' ').trim(),
@@ -750,7 +745,7 @@ Parser.prototype.out = function (command, opt_params) {
 			unUndef = globalUnUndef;
 
 			const
-				fstr = rvFilter.join().length + 1;
+				fstr = rvFilters.join().length + 1;
 
 			res = pCount ?
 				res.slice(0, pos[0] + addition) +
@@ -760,8 +755,8 @@ Parser.prototype.out = function (command, opt_params) {
 				resTmp;
 
 			pContent.shift();
-			filter = [];
-			rvFilter = [];
+			filters = [];
+			rvFilters = [];
 			filterStart = false;
 
 			if (pCount) {
@@ -784,12 +779,12 @@ Parser.prototype.out = function (command, opt_params) {
 
 			if (!pCountFilter) {
 				const
-					last = filter.length - 1,
-					cache = filter[last];
+					last = filters.length - 1,
+					cache = filters[last];
 
-				filter[last] = this.out(cache, {skipFirstWord: true, logic: true, skipValidation: true});
+				filters[last] = this.out(cache, {skipFirstWord: true, logic: true, skipValidation: true});
 				const
-					length = filter[last].length - cache.length;
+					length = filters[last].length - cache.length;
 
 				wordAddEnd += length;
 				filterAddEnd += length;
@@ -821,8 +816,8 @@ Parser.prototype.out = function (command, opt_params) {
 
 			filterStart = true;
 			if (!pCountFilter) {
-				filter.push(nNext);
-				rvFilter.push(nNext);
+				filters.push(nNext);
+				rvFilters.push(nNext);
 				i += 2;
 			}
 
@@ -835,8 +830,8 @@ Parser.prototype.out = function (command, opt_params) {
 
 			filterStart = true;
 			if (!pCountFilter) {
-				filter.push(next);
-				rvFilter.push(next);
+				filters.push(next);
+				rvFilters.push(next);
 				i++;
 			}
 		}
@@ -853,7 +848,11 @@ Parser.prototype.out = function (command, opt_params) {
 		}
 	}
 
-	if (!unEscape && !unsafe) {
+	if (unsafe) {
+		return res;
+	}
+
+	if (!unEscape) {
 		res = `__FILTERS__.html(${res}, ${this.attr}, ${this.attrEscape}, Unsafe)`;
 	}
 
