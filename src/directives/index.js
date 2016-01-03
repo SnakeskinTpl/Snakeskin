@@ -405,6 +405,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			this.text = true;
 		}
 
+		const
+			from = this.result.length;
+
 		if (!p.deferInit && !p.with) {
 			if (p.block) {
 				this.startDir();
@@ -414,6 +417,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			}
 		}
 
+		const newStructure = this.structure;
+		newStructure.params['@from'] = this.result.length;
+
 		if (p.filters) {
 			this.appendDefaultFilters(p.filters);
 		}
@@ -421,9 +427,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		if (opt_constr) {
 			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
 		}
-
-		const
-			newStructure = this.structure;
 
 		if ($dirParents[dirName]) {
 			newStructure.strong = true;
@@ -508,7 +511,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 
 		const
-			res = params['@result'] ? params['@result'] : this.result,
+			res = params['@result'] ? params['@result'] : this.result;
+
+		const
+			from = params['@from'],
 			to = res.length;
 
 		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
@@ -528,7 +534,5 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				stack.splice(0, stack.length);
 			}
 		}
-
-		this.endDir();
 	};
 };

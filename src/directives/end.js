@@ -46,7 +46,10 @@ Snakeskin.addDirective(
 		}
 
 		Snakeskin.Directives[`${name}BaseEnd`].call(this, ...arguments);
-		this.toQueue(() => this.startInlineDir());
+
+		this
+			.endDir()
+			.toQueue(() => this.startInlineDir());
 
 		if (this.deferReturn) {
 			let
