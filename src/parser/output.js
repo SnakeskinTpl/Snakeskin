@@ -106,11 +106,6 @@ const
  */
 Parser.prototype.getWordFromPos = function (str, pos) {
 	let
-		word = '',
-		res = '',
-		nRes = '';
-
-	let
 		pCount = 0,
 		diff = 0;
 
@@ -120,72 +115,74 @@ Parser.prototype.getWordFromPos = function (str, pos) {
 
 	let
 		unary,
-		unaryStr = '';
+		unaryStr = '',
+		word = '';
+
+	let
+		res = '',
+		nRes = '';
 
 	for (let i = pos, j = 0; i < str.length; i++, j++) {
 		const
 			el = str[i];
 
-		if (pCount || nextWordCharRgxp.test(el) || (el === ' ' && (unary = unaryBlackWords[word]))) {
-			if (el === ' ') {
-				word = '';
+		if (!pCount && !nextWordCharRgxp.test(el) && (el !== ' ' || !(unary = unaryBlackWords[word]))) {
+			break;
+		}
 
-			} else {
-				word += el;
-			}
-
-			if (unary) {
-				unaryStr = unaryStr || res;
-				unary = false;
-			}
-
-			if (pContent !== null && (pCount > 1 || (pCount === 1 && !P_CLOSE[el]))) {
-				pContent += el;
-			}
-
-			if (P_OPEN[el]) {
-				if (pContent === null) {
-					start = j + 1;
-					pContent = '';
-				}
-
-				pCount++;
-
-			} else if (P_CLOSE[el]) {
-				if (pCount) {
-					pCount--;
-
-					if (!pCount) {
-						let
-							startD = start,
-							endD = j;
-
-						if (nRes) {
-							startD = start + diff;
-							endD = j + diff + pContent.length;
-						}
-
-						nRes =
-							res.slice(0, startD) +
-							(pContent && this.out(pContent, {unsafe: true})) +
-							res.slice(endD);
-
-						diff = nRes.length - res.length;
-						pContent = null;
-					}
-
-				} else {
-					break;
-				}
-			}
-
-			res += el;
-			if (nRes) {
-				nRes += el;
-			}
+		if (el === ' ') {
+			word = '';
 
 		} else {
-			break;
+			word += el;
+		}
+
+		if (unary) {
+			unaryStr = unaryStr || res;
+			unary = false;
+		}
+
+		if (pContent !== null && (pCount > 1 || (pCount === 1 && !P_CLOSE[el]))) {
+			pContent += el;
+		}
+
+		if (P_OPEN[el]) {
+			if (pContent === null) {
+				start = j + 1;
+				pContent = '';
+			}
+
+			pCount++;
+
+		} else if (P_CLOSE[el]) {
+			if (!pCount) {
+				break;
+			}
+
+			pCount--;
+			if (!pCount) {
+				let
+					startD = start,
+					endD = j;
+
+				if (nRes) {
+					startD = start + diff;
+					endD = j + diff + pContent.length;
+				}
+
+				nRes =
+					res.slice(0, startD) +
+					(pContent && this.out(pContent, {unsafe: true})) +
+					res.slice(endD);
+
+				diff = nRes.length - res.length;
+				pContent = null;
+			}
+		}
+
+		res += el;
+		if (nRes) {
+			nRes += el;
 		}
 	}
 
@@ -265,10 +262,6 @@ function isNextAssign(str, pos) {
 }
 
 const
-	unUndefLabel = '{undef}',
-	unUndefRgxp = new RegExp(r(unUndefLabel), 'g');
-
-const
 	ssfRgxp = /__FILTERS__\./,
 	nextCharRgxp = new RegExp(`[${r(G_MOD)}${r(L_MOD)}$+\\-~!${rgxp.w}]`),
 	newWordRgxp = new RegExp(`[^${r(G_MOD)}${r(L_MOD)}$${rgxp.w}[\\].]`);
@@ -295,7 +288,7 @@ const
 	functionRgxp = /\bfunction\b/;
 
 /**
- * Prepares a command to output:
+ * Prepares the specified command to output:
  * binds to the scope and initialization filters
  *
  * @param {string} command - source command
@@ -379,14 +372,6 @@ Parser.prototype.out = function (command, opt_params) {
 		addition = 0,
 		wordAddEnd = 0,
 		filterAddEnd = 0;
-
-	// true, if the !html filter is applied
-	let unEscape = false;
-
-	// true, if the !undef filter is applied
-	let
-		unUndef = false,
-		globalUnUndef = unUndef;
 
 	const
 		vars = structure.children ? structure.vars : structure.parent.vars;
