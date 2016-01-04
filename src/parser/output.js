@@ -352,7 +352,7 @@ Parser.prototype.out = function (command, opt_params) {
 	// filter => ['ucfirst foo.bar()', 'json']
 	let
 		filters = [],
-		rvFilters = [];
+		rFilters = [];
 
 	const
 		defFilters = this.filters[this.filters.length - 1],
@@ -368,13 +368,13 @@ Parser.prototype.out = function (command, opt_params) {
 		{scope} = this,
 		useWith = Boolean(scope.length);
 
-	let
-		addition = 0,
-		wordAddEnd = 0,
-		filterAddEnd = 0;
-
 	const
 		vars = structure.children ? structure.vars : structure.parent.vars;
+
+	let
+		add = 0,
+		wordAddEnd = 0,
+		filterAddEnd = 0;
 
 	let
 		ref = this.hasBlock('block', true),
@@ -394,7 +394,8 @@ Parser.prototype.out = function (command, opt_params) {
 			return false;
 		}
 
-		const def = vars[`${val}_${obj.id}`];
+		const
+			def = vars[`${val}_${obj.id}`];
 
 		if (def) {
 			return def;
@@ -408,19 +409,20 @@ Parser.prototype.out = function (command, opt_params) {
 	}
 
 	const replacePropVal = (sstr) => {
-		let def = vars[sstr];
+		let
+			def = vars[sstr];
 
 		if (!def) {
-			let refCache = ref &&
-				$scope[type][tplName][ref];
+			let
+				refCache = ref && $scope[type][tplName][ref];
 
 			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
 				if (refCache) {
 					def = search(refCache.root, sstr, Parser.getExtList(String(tplName)));
 				}
 
-				let tplCache = tplName &&
-					$scope['template'][tplName];
+				let
+					tplCache = tplName && $scope['template'][tplName];
 
 				if (!def && tplCache && tplCache.parent) {
 					def = search(tplCache.root, sstr, Parser.getExtList(String(tplName)));
@@ -498,7 +500,7 @@ Parser.prototype.out = function (command, opt_params) {
 					{word, finalWord} = nextStep;
 
 				let
-					uAdd = wordAddEnd + addition,
+					uAdd = wordAddEnd + add,
 					tmpFinalWord,
 					vRes;
 
@@ -619,7 +621,7 @@ Parser.prototype.out = function (command, opt_params) {
 				if (filterStart) {
 					const last = filters.length - 1;
 					filters[last] += vRes;
-					rvFilters[last] += word;
+					rFilters[last] += word;
 					filterAddEnd += vRes.length - word.length;
 
 				} else {
@@ -659,7 +661,7 @@ Parser.prototype.out = function (command, opt_params) {
 			} else if (el !== ')' || pCountFilter) {
 				const last = filters.length - 1;
 				filters[last] += el;
-				rvFilters[last] += el;
+				rFilters[last] += el;
 			}
 		}
 
@@ -675,8 +677,8 @@ Parser.prototype.out = function (command, opt_params) {
 				localUnFMap = {};
 
 			const
-				fAdd = wordAddEnd - filterAddEnd + addition,
-				fBody = res.slice(pos[0] + (pCount ? addition : 0), pos[1] + fAdd);
+				fAdd = wordAddEnd - filterAddEnd + add,
+				fBody = res.slice(pos[0] + (pCount ? add : 0), pos[1] + fAdd);
 
 			const
 				isGlobalFilter = i === end && el != ')';
@@ -743,13 +745,13 @@ Parser.prototype.out = function (command, opt_params) {
 				});
 			}
 
-			const fStr = rvFilters.join().length + 1;
-			res = pCount ? res.slice(0, pos[0] + addition) + tmp + res.slice(pos[1] + fAdd + fStr) : tmp;
+			const fStr = rFilters.join().length + 1;
+			res = pCount ? res.slice(0, pos[0] + add) + tmp + res.slice(pos[1] + fAdd + fStr) : tmp;
 
 			pContent.shift();
 			filters = [];
 			filterStart = false;
-			rvFilters = [];
+			rFilters = [];
 
 			if (pCount) {
 				pCount--;
@@ -759,7 +761,7 @@ Parser.prototype.out = function (command, opt_params) {
 			wordAddEnd += tmp.length - fBody.length - fStr;
 
 			if (!pCount) {
-				addition += wordAddEnd - filterAddEnd;
+				add += wordAddEnd - filterAddEnd;
 				wordAddEnd = 0;
 				filterAddEnd = 0;
 			}
@@ -809,7 +811,7 @@ Parser.prototype.out = function (command, opt_params) {
 			filterStart = true;
 			if (!pCountFilter) {
 				filters.push(nNext);
-				rvFilters.push(nNext);
+				rFilters.push(nNext);
 				i += 2;
 			}
 
@@ -823,7 +825,7 @@ Parser.prototype.out = function (command, opt_params) {
 			filterStart = true;
 			if (!pCountFilter) {
 				filters.push(next);
-				rvFilters.push(next);
+				rFilters.push(next);
 				i++;
 			}
 		}
