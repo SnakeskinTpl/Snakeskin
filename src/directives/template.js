@@ -17,7 +17,7 @@ import { symbols } from '../consts/regs';
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
-import { G_MOD, L_MOD } from '../consts/literals';
+import { G_MOD } from '../consts/literals';
 import {
 
 	$write,
@@ -65,7 +65,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			const
 				nameRgxp = new RegExp(`^[^${symbols}_$[]`, 'i'),
-				esprimaNameHackRgxp = new RegExp(`[${r(G_MOD)}${r(L_MOD)}]`, 'g');
+				esprimaNameHackRgxp = new RegExp(`[${r(G_MOD)}]`, 'g');
 
 			let
 				tmpTplName = this.getFnName(command),

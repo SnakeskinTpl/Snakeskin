@@ -12,7 +12,7 @@ import Snakeskin from '../core';
 import { scopeMod, symbols, w } from '../consts/regs';
 import { q } from './index';
 import { r } from '../helpers/string';
-import { SYS_CONSTS, B_OPEN, B_CLOSE, G_MOD, L_MOD } from '../consts/literals';
+import { SYS_CONSTS, B_OPEN, B_CLOSE, G_MOD } from '../consts/literals';
 import { $consts, $constPositions, $rgxp } from '../consts/cache';
 
 const
@@ -41,7 +41,7 @@ Snakeskin.addDirective(
 
 		const
 			{tplName} = this,
-			source = `^[\$${symbols}_${!this.scope.length ? r(L_MOD) : ''}][$${w}[\\].\\s]*=[^=]`,
+			source = `^[\$${symbols}_][$${w}[\\].\\s]*=[^=]`,
 			rgxp = $rgxp[source] = $rgxp[source] || new RegExp(source, 'i');
 
 		if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
@@ -56,10 +56,6 @@ Snakeskin.addDirective(
 
 				let
 					name = this.pasteDangerBlocks(prop);
-
-				if (name[0] === L_MOD) {
-					return this.error(`can't declare the constant "${name.slice(1)}" with the context modifier "${L_MOD}"`);
-				}
 
 				name = name.replace(constNameRgxp, '.$2');
 				this.startInlineDir('const', {name});
@@ -216,7 +212,7 @@ Snakeskin.addDirective(
  */
 function isAssign(str, opt_global) {
 	const
-		source = `^[${r(G_MOD)}${r(L_MOD)}$${symbols}_${opt_global ? '[' : ''}]`,
+		source = `^[${r(G_MOD)}$${symbols}_${opt_global ? '[' : ''}]`,
 		key = `${source}[i`,
 		rgxp = $rgxp[key] = $rgxp[key] || new RegExp(source, 'i');
 

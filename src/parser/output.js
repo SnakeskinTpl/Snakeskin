@@ -23,9 +23,7 @@ import { $consts, $scope } from '../consts/cache';
 import {
 
 	FILTER,
-	MODS,
 	G_MOD,
-	L_MOD,
 	P_OPEN,
 	P_CLOSE
 
@@ -95,7 +93,7 @@ const comboBlackWords = {
 };
 
 const
-	nextWordCharRgxp = new RegExp(`[${r(G_MOD)}${r(L_MOD)}$+\\-~!${rgxp.w}[\\]().]`);
+	nextWordCharRgxp = new RegExp(`[${r(G_MOD)}$+\\-~!${rgxp.w}[\\]().]`);
 
 /**
  * Returns a full word from a string
@@ -263,13 +261,8 @@ function isNextAssign(str, pos) {
 
 const
 	ssfRgxp = /__FILTERS__\./,
-	nextCharRgxp = new RegExp(`[${r(G_MOD)}${r(L_MOD)}$+\\-~!${rgxp.w}]`),
-	newWordRgxp = new RegExp(`[^${r(G_MOD)}${r(L_MOD)}$${rgxp.w}[\\].]`);
-
-const
-	numRgxp = /[0-9]/,
-	modRgxp = new RegExp(`${r(L_MOD)}(?:\\d+|)`),
-	strongModRgxp = new RegExp(`${r(L_MOD)}(\\d+)`);
+	nextCharRgxp = new RegExp(`[${r(G_MOD)}$+\\-~!${rgxp.w}]`),
+	newWordRgxp = new RegExp(`[^${r(G_MOD)}$${rgxp.w}[\\].]`);
 
 const
 	multPropRgxp = /\[|\./,
@@ -524,8 +517,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 				let
 					uAdd = wordAddEnd + add,
-					tmpFinalWord,
-					vRes;
+					tmpFinalWord;
 
 				if (nextStep.unary) {
 					tmpFinalWord = finalWord.split(' ');
@@ -546,64 +538,20 @@ Parser.prototype.out = function (command, opt_params) {
 					return '';
 				}
 
-				// Export of numeric literals
-				if (numRgxp.test(el)) {
-					vRes = finalWord;
+				let vRes;
+				if (canParse && el === G_MOD) {
+					if (next === G_MOD) {
+						vRes = `__VARS__${concatProp(finalWord.slice(2))}`;
 
-				// Export global and super-globals
-				} else if ((useWith && !MODS[el] || el === G_MOD && (useWith ? next === G_MOD : true)) && canParse) {
-					if (useWith) {
-						vRes = next === G_MOD ?
-							finalWord.slice(2) : finalWord;
-
-						// Super-global variable within "with"
-						if (next === G_MOD) {
-							vRes = `__VARS__${concatProp(vRes)}`;
-
-						} else {
-							vRes = addScope(vRes);
-						}
-
-					// Super-global variable without "with"
-					} else {
-						vRes = `__VARS__${concatProp(finalWord.slice(next === G_MOD ? 2 : 1))}`;
+					} else if (useWith) {
+						vRes = addScope(scope[scope.length - 1]) + concatProp(finalWord.slice(1));
 					}
+
+				} else if (finalWord === 'this' && tplName && !this.hasParent(this.getGroup('selfThis'))) {
+					vRes = '__THIS__';
 
 				} else {
-					let
-						rfWord = finalWord.replace(modRgxp, '');
-
-					if (canParse && useWith && MODS[el]) {
-						if (el === G_MOD) {
-							rfWord = rfWord.slice(1);
-						}
-
-						let num = 0;
-
-						// Clarification of a scope
-						if (el === L_MOD) {
-							const val = strongModRgxp.exec(finalWord);
-							num = val ? val[1] : 1;
-						}
-
-						if (num && (scope.length - num) <= 0) {
-							vRes = addScope(rfWord);
-
-						} else {
-							vRes = addScope(scope[scope.length - 1 - num]) + concatProp(rfWord);
-						}
-
-					} else {
-						if (canParse) {
-							vRes = addScope(rfWord);
-
-						} else if (tplName && rfWord === 'this' && !this.hasParent(this.getGroup('selfThis'))) {
-							vRes = '__THIS__';
-
-						} else {
-							vRes = rfWord;
-						}
-					}
+					vRes = finalWord;
 				}
 
 				if (canParse &&

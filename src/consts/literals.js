@@ -61,13 +61,7 @@ export const
 // >>>
 
 export const
-	L_MOD = '#',
 	G_MOD = '@';
-
-export const MODS = {
-	[L_MOD]: true,
-	[G_MOD]: true
-};
 
 // <<<
 // Jade-Like
