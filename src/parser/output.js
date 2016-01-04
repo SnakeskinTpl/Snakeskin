@@ -455,6 +455,24 @@ Parser.prototype.out = function (command, opt_params) {
 		return str.replace(propValRgxp, replacePropVal);
 	}
 
+	const addDefFilters = (str, filters) =>
+		$C(filters).reduce((val, filter) => (
+			$C(filter).reduce(
+				(str, args, filter) =>
+					`(${val}|${filter} ${$C(args).map((el) => isFunction(el) ? el(this) : el).join(',')}@)`,
+
+				''
+			)
+		), str);
+
+	function removeDefFilters(str, map) {
+		$C(map).forEach((el, filter) => {
+			str = str.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')');
+		});
+
+		return str;
+	}
+
 	if (!command) {
 		this.error('invalid syntax');
 		return '';
@@ -604,14 +622,7 @@ Parser.prototype.out = function (command, opt_params) {
 					posNWord = 2;
 
 				} else if (canParse && !unsafe && !filterStart && (!nextStep.unary || unUndefUnaryBlackWords[nextStep.unary])) {
-					vRes = $C(defFilters.local).reduce((val, filter) => (
-						$C(filter).reduce(
-							(str, args, filter) =>
-								`(${val}|${filter} ${$C(args).map((el) => isFunction(el) ? el(this) : el).join(',')}@)`,
-
-							''
-						)
-					), vRes);
+					vRes = addDefFilters(vRes, defFilters.local);
 				}
 
 				wordAddEnd += vRes.length - word.length;
@@ -739,9 +750,7 @@ Parser.prototype.out = function (command, opt_params) {
 			}, fBody.trim() || 'void 0');
 
 			if (!isGlobalFilter) {
-				$C(localUnFMap).forEach((el, filter) => {
-					tmp = tmp.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')');
-				});
+				tmp = removeDefFilters(tmp, localUnFMap);
 			}
 
 			const fStr = rFilters.join().length + 1;
@@ -830,9 +839,16 @@ Parser.prototype.out = function (command, opt_params) {
 		}
 	}
 
-	console.log(res);
+	if (!unsafe) {
+		res = this.out(
+			removeDefFilters(addDefFilters(res, defFilters.global), unFMap).replace(/@\)/g, ')'),
+			{unsafe: true, skipFirstWord, skipValidation}
+		);
 
-	/*if (skipValidation !== false) {
+		res = `__FILTERS__.node(${res}, __NODE__)`;
+	}
+
+	if (skipValidation !== false) {
 		try {
 			esprima.parse(esprimaHackFn(res));
 
@@ -840,30 +856,7 @@ Parser.prototype.out = function (command, opt_params) {
 			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
 			return '';
 		}
-	}*/
-
-	if (unsafe) {
-		return res;
 	}
 
-	res = $C(defFilters.global).reduce((val, filter) => (
-		$C(filter).reduce(
-			(str, args, filter) =>
-				`(${val}|${filter} ${$C(args).map((el) => isFunction(el) ? el(this) : el).join(',')}@)`,
-
-			''
-		)
-	), res);
-
-	$C(unFMap).forEach((el, filter) => {
-		res = res.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')');
-	});
-
-	console.log(res);
-
-	res = this.out(res.replace(/@\)/g, ')'), {unsafe: true, skipFirstWord, skipValidation});
-
-	console.log(res);
-
-	return `__FILTERS__.node(${res}, __NODE__)`;
+	return res;
 };
