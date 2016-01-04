@@ -103,6 +103,10 @@ Snakeskin.Filters.html = function (val, opt_attr, opt_force, opt_unsafe) {
 	return res;
 };
 
+Snakeskin.Filters['html']['ssFilterParams'] = {
+	'bind': [(o) => o.attr, (o) => o.attrEscape, 'Unsafe']
+};
+
 /**
  * Appends a value to a root node
  *

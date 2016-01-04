@@ -111,13 +111,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			prettyPrint: false,
 			bemFilter: 'bem',
 			literalBounds: ['{{', '}}'],
-			filters: {
-				global: [
-					{'html': [(o) => o.attr, (o) => o.attrEscape, 'Unsafe']}
-				],
-
-				local: ['undef']
-			},
+			filters: {global: ['html', 'undef'], local: ['undef']},
 			tolerateWhitespaces: false,
 			eol: '\n',
 			localization: true,
