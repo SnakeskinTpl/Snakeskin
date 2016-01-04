@@ -455,15 +455,21 @@ Parser.prototype.out = function (command, opt_params) {
 		return str.replace(propValRgxp, replacePropVal);
 	}
 
-	const addDefFilters = (str, filters) =>
-		$C(filters).reduce((val, filter) => (
-			$C(filter).reduce(
-				(str, args, filter) =>
-					`(${val}|${filter} ${$C(args).map((el) => isFunction(el) ? el(this) : el).join(',')}@)`,
+	const joinFParams = (params) =>
+		$C(params).map((el) => isFunction(el) ? el(this) : el).join(',');
 
-				''
-			)
-		), str);
+	const addDefFilters = (str, filters) => {
+		const un = {};
+		const tmp = $C(filters).reduce((val, filter) => {
+			const reduce = (str, args, filter) =>
+				`(${val}|${filter} ${joinFParams(args)}@)`;
+
+			return $C(filter).reduce(reduce, '');
+
+		}, str);
+
+		return removeDefFilters(tmp, un);
+	};
 
 	function removeDefFilters(str, map) {
 		$C(map).forEach((el, filter) => {
@@ -739,7 +745,7 @@ Parser.prototype.out = function (command, opt_params) {
 					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str + `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
 						decl +
-						(bind ? `,${bind.join(',')}` : '') +
+						(bind ? `,${joinFParams(bind)}` : '') +
 						(input ? `,${input}` : '') +
 						(filterWrapper || !pCount ? ')' : '') +
 					')'
