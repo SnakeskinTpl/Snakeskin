@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import * as rgxp from '../consts/regs';
 import { getCommentType } from '../helpers/literals';
@@ -27,72 +26,8 @@ import {
 	SINGLE_COMMENT,
 	LEFT_BLOCK as lb,
 	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
 
 } from '../consts/literals';
-
-/**
- * Splits a string by a separator
- * and returns an array of tokens
- *
- * @param {string} str - source string
- * @return {!Array<string>}
- */
-Parser.prototype.getTokens = function (str) {
-	const
-		arr = [''];
-
-	let
-		escape = false,
-		bStart = false,
-		bOpen = 0;
-
-	for (let i = 0; i < str.length; i++) {
-		const
-			currentEscape = escape;
-
-		const
-			el = str[i],
-			part = str.substr(i, MICRO_TEMPLATE_LENGTH);
-
-		let
-			last = arr.length - 1;
-
-		if (el === '\\' || escape) {
-			escape = !escape;
-		}
-
-		if (!currentEscape && MICRO_TEMPLATES[part]) {
-			i += MICRO_TEMPLATE_LENGTH - 1;
-			arr[last] += part;
-			bStart = true;
-			bOpen++;
-			continue;
-		}
-
-		if (bStart) {
-			switch (el) {
-				case lb:
-					bOpen++;
-					break;
-
-				case rb:
-					bOpen--;
-					break;
-			}
-		}
-
-		if (el === ' ' && !bOpen) {
-			last = arr.push('') - 1;
-		}
-
-		if (el !== ' ' || bOpen) {
-			arr[last] += el;
-		}
-	}
-
-	return arr;
-};
 
 /**
  * Replaces found matches ${ ... } or #{ ... } from a string to SS calls

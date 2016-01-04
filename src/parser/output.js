@@ -17,6 +17,8 @@ import Snakeskin from '../core';
 import Parser from './constructor';
 import { isFunction } from '../helpers/types';
 import { concatProp } from '../helpers/literals';
+import { isNextAssign, isSyOL } from '../helpers/analysis';
+import { any } from '../helpers/gcc';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
@@ -74,190 +76,15 @@ const blackWords = {
 	'await': true
 };
 
-const unaryBlackWords = {
-	'new': true,
-	'typeof': true,
-	'instanceof': true,
-	'in': true,
-	'of': true
-};
-
 const unUndefUnaryBlackWords = {
 	'new': true
 };
 
 const comboBlackWords = {
-	'var': true,
 	'const': true,
-	'let': true
+	'let': true,
+	'var': true
 };
-
-const
-	nextWordCharRgxp = new RegExp(`[${r(G_MOD)}$+\\-~!${rgxp.w}[\\]().]`);
-
-/**
- * Returns a full word from a string
- *
- * @param {string} str - source string
- * @param {number} pos - start search position
- * @return {{word: string, finalWord: string, unary: string}}
- */
-Parser.prototype.getWordFromPos = function (str, pos) {
-	let
-		pCount = 0,
-		diff = 0;
-
-	let
-		start = 0,
-		pContent = null;
-
-	let
-		unary,
-		unaryStr = '',
-		word = '';
-
-	let
-		res = '',
-		nRes = '';
-
-	for (let i = pos, j = 0; i < str.length; i++, j++) {
-		const
-			el = str[i];
-
-		if (!pCount && !nextWordCharRgxp.test(el) && (el !== ' ' || !(unary = unaryBlackWords[word]))) {
-			break;
-		}
-
-		if (el === ' ') {
-			word = '';
-
-		} else {
-			word += el;
-		}
-
-		if (unary) {
-			unaryStr = unaryStr || res;
-			unary = false;
-		}
-
-		if (pContent !== null && (pCount > 1 || (pCount === 1 && !P_CLOSE[el]))) {
-			pContent += el;
-		}
-
-		if (P_OPEN[el]) {
-			if (pContent === null) {
-				start = j + 1;
-				pContent = '';
-			}
-
-			pCount++;
-
-		} else if (P_CLOSE[el]) {
-			if (!pCount) {
-				break;
-			}
-
-			pCount--;
-			if (!pCount) {
-				let
-					startD = start,
-					endD = j;
-
-				if (nRes) {
-					startD = start + diff;
-					endD = j + diff + pContent.length;
-				}
-
-				nRes =
-					res.slice(0, startD) +
-					(pContent && this.out(pContent, {unsafe: true})) +
-					res.slice(endD);
-
-				diff = nRes.length - res.length;
-				pContent = null;
-			}
-		}
-
-		res += el;
-		if (nRes) {
-			nRes += el;
-		}
-	}
-
-	return {
-		word: res,
-		finalWord: nRes || res,
-		unary: unaryStr
-	};
-};
-
-const
-	propRgxp = new RegExp(`[${rgxp.w}]`);
-
-/**
- * Returns true, if a string part is a property of an object literal
- *
- * @param {string} str - source string
- * @param {number} start - start search position
- * @param {number} end - end search position
- * @return {boolean}
- */
-function isSyOL(str, start, end) {
-	let res;
-
-	while (start--) {
-		const
-			el = str[start];
-
-		if (!rgxp.eol.test(el)) {
-			res = el === '?';
-			break;
-		}
-
-		if (!rgxp.eol.test(el) && (!propRgxp.test(el) || el === '?')) {
-			if (el === '{' || el === ',') {
-				break;
-			}
-
-			res = true;
-			break;
-		}
-	}
-
-	if (!res) {
-		for (let i = end; i < str.length; i++) {
-			const
-				el = str[i];
-
-			if (!rgxp.eol.test(el)) {
-				return el === ':';
-			}
-		}
-	}
-
-	return false;
-}
-
-/**
- * Returns true, if the next non-whitespace character
- * in a string is the assignment (=)
- *
- * @param {string} str - source string
- * @param {number} pos - start search position
- * @return {boolean}
- */
-function isNextAssign(str, pos) {
-	for (let i = pos; i < str.length; i++) {
-		const
-			el = str[i];
-
-		if (!rgxp.eol.test(el)) {
-			return el === '=' && str[i + 1] !== '=';
-		}
-	}
-
-	return false;
-}
 
 const
 	ssfRgxp = /__FILTERS__\./,
@@ -269,16 +96,15 @@ const
 	firstPropRgxp = /([^.[]+)(.*)/,
 	propValRgxp = /[^-+!(]+/;
 
+const
+	dangerRgxp = /\)\s*(?:{|=>)/,
+	functionRgxp = /\bfunction\b/;
+
 const esprimaHackFn = (str) => str
 	.trim()
 	.replace(/^({.*)/, '($0)')
 	.replace(/^\[(?!\s*])/, '$[')
-	.replace(/\byield\b/g, '')
-	.replace(/(?:break|continue) [_]{2,}I_PROTO__[${rgxp.w}]+;/, '');
-
-const
-	dangerRgxp = /\)\s*(?:{|=>)/,
-	functionRgxp = /\bfunction\b/;
+	.replace(/\byield\b/g, '');
 
 /**
  * Prepares the specified command to output:
@@ -315,25 +141,28 @@ Parser.prototype.out = function (command, opt_params) {
 
 	let res = command;
 
-	// The number of open parentheses in the string
-	// (open parenthesis inside the filter aren't considered)
-	let pCount = 0;
+	let
+		// The number of open parentheses in the string
+		// (open parenthesis inside the filter aren't considered)
+		pCount = 0,
 
-	// The number of open parentheses inside a filter:
-	// |foo (1 + 2) / 3
-	let pCountFilter = 0;
+		// The number of open parentheses inside a filter:
+		// |foo (1 + 2) / 3
+		pCountFilter = 0;
 
-	// The array of positions for opening and closing parenthesis (pCount),
-	// goes in ascending order of nested blocks, such as:
-	// ((a + b)) => [[1, 7], [0, 8]]
-	const pContent = [];
+	const
+		// The array of positions for opening and closing parenthesis (pCount),
+		// goes in ascending order of nested blocks, such as:
+		// ((a + b)) => [[1, 7], [0, 8]]
+		pContent = [];
 
-	// true, if there is filter declaration
-	let filterStart = false;
+	let
+		// true, if there is filter declaration
+		filterStart = false,
 
-	// true, if there is a filter-wrapper, ie
-	// (2 / 3)|round
-	let filterWrapper = false;
+		// true, if there is a filter-wrapper, ie
+		// (2 / 3)|round
+		filterWrapper = false;
 
 	// Arrays of final filters and real filters,
 	// for example:
@@ -349,17 +178,14 @@ Parser.prototype.out = function (command, opt_params) {
 
 	const
 		defFilters = this.filters[this.filters.length - 1],
-		unFMap = {};
+		cancelFilters = {};
 
-	// true, if it is possible to calculate the word
-	let nWord = !skipFirstWord;
+	let
+		// true, if it is possible to calculate a word
+		nWord = !skipFirstWord,
 
-	// The number of words to skip
-	let posNWord = 0;
-
-	const
-		{scope} = this,
-		useWith = Boolean(scope.length);
+		// The number of words to skip
+		posNWord = 0;
 
 	const
 		vars = structure.children ? structure.vars : structure.parent.vars;
@@ -382,7 +208,13 @@ Parser.prototype.out = function (command, opt_params) {
 		ref = false;
 	}
 
-	function search(obj, val, extList) {
+	/**
+	 * @param {!Object} obj
+	 * @param {string} val
+	 * @param {!Array<string>} extList
+	 * @return {(string|boolean)}
+	 */
+	const search = (obj, val, extList) => {
 		if (!obj) {
 			return false;
 		}
@@ -399,11 +231,15 @@ Parser.prototype.out = function (command, opt_params) {
 		}
 
 		return false;
-	}
+	};
 
-	const replacePropVal = (sstr) => {
+	/**
+	 * @param {string} str
+	 * @return {string}
+	 */
+	const replacePropVal = (str) => {
 		let
-			def = vars[sstr];
+			def = vars[str];
 
 		if (!def) {
 			let
@@ -411,23 +247,23 @@ Parser.prototype.out = function (command, opt_params) {
 
 			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
 				if (refCache) {
-					def = search(refCache.root, sstr, Parser.getExtList(String(tplName)));
+					def = search(refCache.root, str, Parser.getExtList(String(tplName)));
 				}
 
 				let
 					tplCache = tplName && $scope['template'][tplName];
 
 				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.root, sstr, Parser.getExtList(String(tplName)));
+					def = search(tplCache.root, str, Parser.getExtList(String(tplName)));
 				}
 			}
 
 			if (!def && refCache) {
-				def = vars[`${sstr}_${refCache.id}`];
+				def = vars[`${str}_${refCache.id}`];
 			}
 
 			if (!def) {
-				def = vars[`${sstr}_${this.environment.id}`] || vars[`${sstr}_00`];
+				def = vars[`${str}_${this.environment.id}`] || vars[`${str}_00`];
 			}
 		}
 
@@ -435,27 +271,54 @@ Parser.prototype.out = function (command, opt_params) {
 			return def.value;
 		}
 
-		return sstr;
+		return str;
 	};
 
-	function addScope(str) {
+	/**
+	 * @param {string} str
+	 * @return {string}
+	 */
+	const addScope = (str) => {
 		if (multPropRgxp.test(str)) {
-			let fistProp = firstPropRgxp.exec(str);
-			fistProp[1] = fistProp[1].replace(propValRgxp, replacePropVal);
+			let
+				fistProp = firstPropRgxp.exec(str);
+
+			fistProp[1] = fistProp[1]
+				.replace(propValRgxp, replacePropVal);
+
 			return fistProp.slice(1).join('');
 		}
 
 		return str.replace(propValRgxp, replacePropVal);
-	}
+	};
 
-	const joinFParams = (params) =>
-		$C(params).map((el) => isFunction(el) ? el(this) : el).join(',');
+	/**
+	 * @param {!Array<string>} params
+	 * @return {string}
+	 */
+	const joinFilterParams = (params) =>
+		any($C(params).map((el) => isFunction(el) ? el(this) : el).join(','));
 
+	/**
+	 * @param {string} str
+	 * @param {!Object} map
+	 * @return {string}
+	 */
+	const removeDefFilters = (str, map) =>
+		any($C(map).reduce((str, el, filter) => str.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')'), str));
+
+	/**
+	 * @param {string} str
+	 * @param {!Array<!Object>} filters
+	 * @return {string}
+	 */
 	const addDefFilters = (str, filters) => {
-		const un = {};
+		const
+			un = {};
+
 		const tmp = $C(filters).reduce((val, filter) => {
 			const reduce = (str, args, filter) =>
-				`(${val}|${filter} ${joinFParams(args)}@)`;
+				`(${val}|${filter} ${joinFilterParams(args)}@)`;
 
 			return $C(filter).reduce(reduce, '');
 
@@ -464,22 +327,14 @@ Parser.prototype.out = function (command, opt_params) {
 		return removeDefFilters(tmp, un);
 	};
 
-	function removeDefFilters(str, map) {
-		$C(map).forEach((el, filter) => {
-			str = str.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')');
-		});
-
-		return str;
-	}
-
 	if (!command) {
 		this.error('invalid syntax');
 		return '';
 	}
 
 	const
-		commandLength = command.length,
-		end = commandLength - 1;
+		cmdLength = command.length,
+		end = cmdLength - 1;
 
 	const
 		cacheLink = replacePropVal('$_');
@@ -488,7 +343,7 @@ Parser.prototype.out = function (command, opt_params) {
 		isFilter,
 		breakNum;
 
-	for (let i = 0; i < commandLength; i++) {
+	for (let i = 0; i < cmdLength; i++) {
 		const
 			el = command[i],
 			next = command[i + 1],
@@ -505,7 +360,6 @@ Parser.prototype.out = function (command, opt_params) {
 				}
 			}
 
-			// Calculation of a scope:
 			// nWord indicates that started a new word;
 			// posNWord indicates how many new words to skip
 			if (nWord && !posNWord && nextCharRgxp.test(el)) {
@@ -524,14 +378,20 @@ Parser.prototype.out = function (command, opt_params) {
 					finalWord = tmpFinalWord[tmpFinalWord.length - 1];
 				}
 
-				// If true, then the word is:
+				// If true, then a word is:
 				// not from blacklist,
 				// not a filter,
 				// not a number,
 				// not a Escaper literal,
 				// not a property ({property: )
-				const canParse = !blackWords[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
-					isNaN(Number(word)) && !rgxp.escaperPart.test(word) && !isSyOL(command, i, i + word.length);
+				const canParse =
+					!blackWords[word] &&
+					!pCountFilter &&
+					!ssfRgxp.test(word) &&
+					!isFilter &&
+					isNaN(Number(word)) &&
+					!rgxp.escaperPart.test(word) &&
+					!isSyOL(command, i, i + word.length);
 
 				if (canParse && functionRgxp.test(word)) {
 					this.error('unsupported syntax');
@@ -539,12 +399,17 @@ Parser.prototype.out = function (command, opt_params) {
 				}
 
 				let vRes;
-				if (canParse && el === G_MOD) {
-					if (next === G_MOD) {
-						vRes = `__VARS__${concatProp(finalWord.slice(2))}`;
+				if (canParse) {
+					if (el === G_MOD) {
+						if (next === G_MOD) {
+							vRes = `__VARS__${concatProp(finalWord.slice(2))}`;
 
-					} else if (useWith) {
-						vRes = addScope(scope[scope.length - 1]) + concatProp(finalWord.slice(1));
+						} else if (this.scope.length) {
+							vRes = addScope(this.scope[this.scope.length - 1]) + concatProp(finalWord.slice(1));
+						}
+
+					} else {
+						vRes = addScope(finalWord);
 					}
 
 				} else if (finalWord === 'this' && tplName && !this.hasParent(this.getGroup('selfThis'))) {
@@ -554,11 +419,13 @@ Parser.prototype.out = function (command, opt_params) {
 					vRes = finalWord;
 				}
 
-				if (canParse &&
-					isNextAssign(command, i + word.length) &&
+				if (
+					canParse &&
 					tplName &&
 					$consts[tplName] &&
-					$consts[tplName][vRes]
+					$consts[tplName][vRes] &&
+					isNextAssign(command, i + word.length)
+
 				) {
 
 					this.error(`constant "${vRes}" is already defined`);
@@ -570,8 +437,6 @@ Parser.prototype.out = function (command, opt_params) {
 					vRes = tmpFinalWord.join(' ');
 				}
 
-				// This word is a composite system,
-				// skip 2 words
 				if (comboBlackWords[finalWord]) {
 					posNWord = 2;
 
@@ -583,9 +448,9 @@ Parser.prototype.out = function (command, opt_params) {
 				nWord = false;
 
 				if (filterStart) {
-					const last = filters.length - 1;
-					filters[last] += vRes;
-					rFilters[last] += word;
+					const l = filters.length - 1;
+					filters[l] += vRes;
+					rFilters[l] += word;
 					filterAddEnd += vRes.length - word.length;
 
 				} else {
@@ -599,20 +464,14 @@ Parser.prototype.out = function (command, opt_params) {
 			// Maybe soon will start a new word
 			} else if (newWordRgxp.test(el)) {
 				nWord = true;
-
-				if (posNWord) {
-					posNWord--;
-				}
+				posNWord && posNWord--;
 			}
 
 			if (!filterStart) {
 				if (el === ')') {
 					// Closing parenthesis, and the next two characters aren't filter
 					if (next !== FILTER || !rgxp.filterStart.test(nNext)) {
-						if (pCount) {
-							pCount--;
-						}
-
+						pCount && pCount--;
 						pContent.shift();
 						continue;
 
@@ -623,9 +482,9 @@ Parser.prototype.out = function (command, opt_params) {
 
 			// Filter body
 			} else if (el !== ')' || pCountFilter) {
-				const last = filters.length - 1;
-				filters[last] += el;
-				rFilters[last] += el;
+				const l = filters.length - 1;
+				filters[l] += el;
+				rFilters[l] += el;
 			}
 		}
 
@@ -634,11 +493,11 @@ Parser.prototype.out = function (command, opt_params) {
 			return '';
 		}
 
-		// Closing of a local or a global filter
+		// Closing of a filter
 		if (filterStart && !pCountFilter && (el === ')' && !breakNum || i === end)) {
 			const
 				[pos] = pContent,
-				localUnFMap = {};
+				cancelLocalFilters = {};
 
 			const
 				fAdd = wordAddEnd - filterAddEnd + add,
@@ -656,10 +515,10 @@ Parser.prototype.out = function (command, opt_params) {
 					filter = el.slice(1);
 
 				if (isGlobalFilter) {
-					unFMap[filter] = true;
+					cancelFilters[filter] = true;
 
 				} else {
-					localUnFMap[filter] = true;
+					cancelLocalFilters[filter] = true;
 				}
 			});
 
@@ -669,7 +528,7 @@ Parser.prototype.out = function (command, opt_params) {
 					input = params.slice(1).join(' ').trim(),
 					current = params.shift().split('.');
 
-				let bind;
+				let bind = [];
 				if (Filters.in(current)) {
 					$C(Filters.get(current)['ssFilterParams']).forEach((el, key) => {
 						if (key[0] === '!') {
@@ -677,14 +536,14 @@ Parser.prototype.out = function (command, opt_params) {
 								filter = el.slice(1);
 
 							if (isGlobalFilter) {
-								unFMap[filter] = true;
+								cancelFilters[filter] = true;
 
 							} else {
-								localUnFMap[filter] = true;
+								cancelLocalFilters[filter] = true;
 							}
 
 						} else if (key === 'bind') {
-							bind = el;
+							bind = bind.concat(el);
 						}
 					});
 				}
@@ -693,7 +552,7 @@ Parser.prototype.out = function (command, opt_params) {
 					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str + `['${el}']`, '')}` +
 						(filterWrapper || !pCount ? '.call(this,' : '') +
 						decl +
-						(bind ? `,${joinFParams(bind)}` : '') +
+						(bind.length ? `,${joinFilterParams(bind)}` : '') +
 						(input ? `,${input}` : '') +
 						(filterWrapper || !pCount ? ')' : '') +
 					')'
@@ -704,7 +563,7 @@ Parser.prototype.out = function (command, opt_params) {
 			}, fBody.trim() || 'void 0');
 
 			if (!isGlobalFilter) {
-				tmp = removeDefFilters(tmp, localUnFMap);
+				tmp = removeDefFilters(tmp, cancelLocalFilters);
 			}
 
 			const fStr = rFilters.join().length + 1;
@@ -735,12 +594,12 @@ Parser.prototype.out = function (command, opt_params) {
 
 			if (!pCountFilter) {
 				const
-					last = filters.length - 1,
-					cache = filters[last];
+					l = filters.length - 1,
+					cache = filters[l];
 
-				filters[last] = this.out(cache, {skipFirstWord: true, logic: true, skipValidation: true});
+				filters[l] = this.out(cache, {skipFirstWord: true, logic: true, skipValidation: true});
 				const
-					length = filters[last].length - cache.length;
+					length = filters[l].length - cache.length;
 
 				wordAddEnd += length;
 				filterAddEnd += length;
@@ -753,9 +612,7 @@ Parser.prototype.out = function (command, opt_params) {
 		}
 
 		isFilter = el === FILTER;
-		if (breakNum) {
-			breakNum--;
-		}
+		breakNum && breakNum--;
 
 		// After 2 iteration begins a filter
 		if (next === FILTER && rgxp.filterStart.test(nNext)) {
@@ -795,7 +652,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 	if (!unsafe) {
 		res = this.out(
-			removeDefFilters(addDefFilters(res, defFilters.global), unFMap).replace(/@\)/g, ')'),
+			removeDefFilters(addDefFilters(res, defFilters.global), cancelFilters).replace(/@\)/g, ')'),
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 
