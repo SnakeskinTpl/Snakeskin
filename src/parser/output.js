@@ -335,7 +335,7 @@ Parser.prototype.out = function (command, opt_params) {
 	// ((a + b)) => [[1, 7], [0, 8]]
 	const pContent = [];
 
-	// true, if there is a filter declaration
+	// true, if there is filter declaration
 	let filterStart = false;
 
 	// true, if there is a filter-wrapper, ie
@@ -479,7 +479,6 @@ Parser.prototype.out = function (command, opt_params) {
 
 		if (!breakNum) {
 			if (el === '(') {
-				// Parenthesis opened inside a filter declaration
 				if (filterStart) {
 					pCountFilter++;
 
@@ -515,7 +514,7 @@ Parser.prototype.out = function (command, opt_params) {
 				// not a number,
 				// not a Escaper literal,
 				// not a property ({property: )
-				let canParse = !blackWords[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
+				const canParse = !blackWords[word] && !pCountFilter && !ssfRgxp.test(word) && !isFilter &&
 					isNaN(Number(word)) && !rgxp.escaperPart.test(word) && !isSyOL(command, i, i + word.length);
 
 				if (canParse && functionRgxp.test(word)) {
