@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { inlineTags } from '../consts/html';
+import { any } from '../helpers/gcc';
 import { isString, isArray } from '../helpers/types';
 import './filters';
 
@@ -136,6 +137,6 @@ Snakeskin.appendChild = function (node, obj) {
 		obj = document.createTextNode(obj);
 	}
 
-	node.appendChild(obj);
+	node.appendChild(any(obj));
 	return obj;
 };

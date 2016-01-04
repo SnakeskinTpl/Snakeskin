@@ -44,6 +44,39 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 	return this;
 };
 
+/**
+ * Sets parameters to the specified Snakeskin filter
+ *
+ * @param {(string|!Function)} filter - filter name or the filter function
+ * @param {Object} params - parameters
+ * @return {!Function}
+ */
+Snakeskin.setFilterParams = function (filter, params) {
+	if (isString(filter)) {
+		Snakeskin.Filters[filter]['ssFilterParams'] = params;
+		return Snakeskin.Filters[filter];
+	}
+
+	filter['ssFilterParams'] = params;
+	return filter;
+};
+
+/**
+ * Appends a value to a root node
+ *
+ * @param {?} val - source value
+ * @param {(Node|undefined)} node - root node
+ * @return {(string|!Node)}
+ */
+Snakeskin.Filters.node = function (val, node) {
+	if (node && typeof Node === 'function' && val instanceof Node) {
+		node.appendChild(val);
+		return '';
+	}
+
+	return val;
+};
+
 const entityMap = {
 	'"': '&quot;',
 	'&': '&amp;',
@@ -75,17 +108,17 @@ export const
  * Escapes HTML entities from a string
  *
  * @param {?} val - source value
+ * @param {?} Unsafe - instance of the Unsafe class
  * @param {?boolean=} [opt_attr=false] - if is true, then should be additional escaping for html attributes
  * @param {?boolean=} [opt_force=false] - if is true, then attributes will be escaped forcibly
- * @param {?=} [opt_unsafe] - instance of the Unsafe class
  * @return {(string|!Node)}
  */
-Snakeskin.Filters.html = function (val, opt_attr, opt_force, opt_unsafe) {
+Snakeskin.Filters['html'] = function (val, Unsafe, opt_attr, opt_force) {
 	if (typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
 
-	if (typeof opt_unsafe === 'function' && val instanceof opt_unsafe) {
+	if (val instanceof Unsafe) {
 		return val.valueOf();
 	}
 
@@ -103,44 +136,28 @@ Snakeskin.Filters.html = function (val, opt_attr, opt_force, opt_unsafe) {
 	return res;
 };
 
-Snakeskin.Filters['html']['ssFilterParams'] = {
-	'bind': [(o) => o.attr, (o) => o.attrEscape, 'Unsafe']
-};
-
-/**
- * Appends a value to a root node
- *
- * @param {?} val - source value
- * @param {(Node|undefined)} node - root node
- * @return {(string|!Node)}
- */
-Snakeskin.Filters.node = function (val, node) {
-	if (node && typeof Node === 'function' && val instanceof Node) {
-		node.appendChild(val);
-		return '';
-	}
-
-	return val;
-};
+Snakeskin.setFilterParams('html', {
+	'bind': ['Unsafe', (o) => o.attr, (o) => o.attrEscape]
+});
 
 /**
  * Replaces undefined to ''
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {?}
  */
-Snakeskin.Filters.undef = function (str) {
-	return str !== undefined ? str : '';
+Snakeskin.Filters.undef = function (val) {
+	return val !== undefined ? val : '';
 };
 
 /**
  * Replaces escaped HTML entities to real content
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['uhtml'] = function (str) {
-	return String(str).replace(uescapeHTMLRgxp, uescapeHTML);
+Snakeskin.Filters['uhtml'] = function (val) {
+	return String(val).replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
 const
@@ -149,11 +166,11 @@ const
 /**
  * Removes < > from a string
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['stripTags'] = function (str) {
-	return String(str).replace(stripTagsRgxp, '');
+Snakeskin.Filters['stripTags'] = function (val) {
+	return String(val).replace(stripTagsRgxp, '');
 };
 
 const
@@ -164,11 +181,11 @@ const
  * Encodes URL
  *
  * @see https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/encodeURI
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['uri'] = function (str) {
-	return encodeURI(String(str))
+Snakeskin.Filters['uri'] = function (val) {
+	return encodeURI(String(val))
 		.replace(uriO, '[')
 		.replace(uriC, ']');
 };
@@ -176,53 +193,53 @@ Snakeskin.Filters['uri'] = function (str) {
 /**
  * Converts a string to uppercase
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['upper'] = function (str) {
-	return String(str).toUpperCase();
+Snakeskin.Filters['upper'] = function (val) {
+	return String(val).toUpperCase();
 };
 
 /**
  * Converts the first letter of a string to uppercase
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['ucfirst'] = function (str) {
-	str = String(str);
-	return str.charAt(0).toUpperCase() + str.slice(1);
+Snakeskin.Filters['ucfirst'] = function (val) {
+	val = String(val);
+	return val.charAt(0).toUpperCase() + val.slice(1);
 };
 
 /**
  * Converts a string to lowercase
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['lower'] = function (str) {
-	return String(str).toLowerCase();
+Snakeskin.Filters['lower'] = function (val) {
+	return String(val).toLowerCase();
 };
 
 /**
  * Converts the first letter of a string to lowercase
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['lcfirst'] = function (str) {
-	str = String(str);
-	return str.charAt(0).toLowerCase() + str.slice(1);
+Snakeskin.Filters['lcfirst'] = function (val) {
+	val = String(val);
+	return val.charAt(0).toLowerCase() + val.slice(1);
 };
 
 /**
  * Removes whitespace from both ends of a string
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['trim'] = function (str) {
-	return String(str).trim();
+Snakeskin.Filters['trim'] = function (val) {
+	return String(val).trim();
 };
 
 const
@@ -232,18 +249,18 @@ const
  * Removes whitespace from both ends of a string
  * and collapses whitespace
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['collapse'] = function (str) {
-	return String(str).replace(spaceCollapseRgxp, ' ').trim();
+Snakeskin.Filters['collapse'] = function (val) {
+	return String(val).replace(spaceCollapseRgxp, ' ').trim();
 };
 
 /**
  * Truncates a string to the specified length
  * (at the end puts three dots)
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @param {number} length - maximum length
  * @param {?boolean=} [opt_wordOnly=false] - if is false, then the string will be truncated without
  *   taking into account the integrity of the words
@@ -251,14 +268,14 @@ Snakeskin.Filters['collapse'] = function (str) {
  * @param {?boolean=} [opt_html=false] - if is true, then the dots will be inserted as HTML-mnemonic
  * @return {string}
  */
-Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
-	str = String(str);
-	if (!str || str.length <= length) {
-		return str;
+Snakeskin.Filters['truncate'] = function (val, length, opt_wordOnly, opt_html) {
+	val = String(val);
+	if (!val || val.length <= length) {
+		return val;
 	}
 
 	const
-		tmp = str.slice(0, length - 1);
+		tmp = val.slice(0, length - 1);
 
 	let
 		i = tmp.length,
@@ -279,65 +296,65 @@ Snakeskin.Filters['truncate'] = function (str, length, opt_wordOnly, opt_html) {
 /**
  * Returns a new string of repetitions of a string
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @param {?number=} [opt_num=2] - number of repetitions
  * @return {string}
  */
-Snakeskin.Filters['repeat'] = function (str, opt_num) {
-	return new Array(opt_num != null ? opt_num + 1 : 3).join(str);
+Snakeskin.Filters['repeat'] = function (val, opt_num) {
+	return new Array(opt_num != null ? opt_num + 1 : 3).join(val);
 };
 
 /**
  * Removes a slice from a string
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @param {(string|RegExp)} search - searching slice
  * @return {string}
  */
-Snakeskin.Filters['remove'] = function (str, search) {
-	return String(str).replace(search, '');
+Snakeskin.Filters['remove'] = function (val, search) {
+	return String(val).replace(search, '');
 };
 
 /**
  * Replaces a slice from a string to a new string
  *
- * @param {?} str - source string
+ * @param {?} val - source value
  * @param {(string|!RegExp)} search - searching slice
  * @param {string} replace - string for replacing
  * @return {string}
  */
-Snakeskin.Filters['replace'] = function (str, search, replace) {
-	return String(str).replace(search, replace);
+Snakeskin.Filters['replace'] = function (val, search, replace) {
+	return String(val).replace(search, replace);
 };
 
 /**
  * Converts a value to JSON
  *
- * @param {(Object|Array|string|number|boolean)} obj - source parameter
+ * @param {(Object|Array|string|number|boolean)} val - source value
  * @return {string}
  */
-Snakeskin.Filters['json'] = function (obj) {
-	return JSON.stringify(obj);
+Snakeskin.Filters['json'] = function (val) {
+	return JSON.stringify(val);
 };
 
 /**
  * Converts a value to a string
  *
- * @param {(Object|Array|string|number|boolean)} obj - source parameter
+ * @param {(Object|Array|string|number|boolean)} val - source value
  * @return {string}
  */
-Snakeskin.Filters['string'] = function (obj) {
-	if (isString(obj) && obj instanceof String === false) {
-		return JSON.stringify(obj);
+Snakeskin.Filters['string'] = function (val) {
+	if (isString(val) && val instanceof String === false) {
+		return JSON.stringify(val);
 	}
 
-	return String(obj);
+	return String(val);
 };
 
 /**
  * Parses a string as JSON
  *
- * @param {?} val - source string
+ * @param {?} val - source value
  * @return {?}
  */
 Snakeskin.Filters['parse'] = function (val) {
@@ -352,18 +369,22 @@ Snakeskin.Filters['parse'] = function (val) {
  * BEM filter
  *
  * @param {?} block - block name
- * @param {?} part - second part of declaration
  * @param {(Element|undefined)} node - link for a node (only for renderMode = dom)
+ * @param {?} part - second part of declaration
  * @return {string}
  */
-Snakeskin.Filters['bem'] = function (block, part, node) {
+Snakeskin.Filters['bem'] = function (block, node, part) {
 	return String(block) + String(part);
 };
+
+Snakeskin.setFilterParams('bem', {
+	'bind': ['$0']
+});
 
 /**
  * Sets a default value for the specified parameter
  *
- * @param {?} val - source parameter
+ * @param {?} val - source value
  * @param {?} def - value
  * @return {?}
  */
@@ -371,9 +392,9 @@ Snakeskin.Filters['default'] = function (val, def) {
 	return val === undefined ? def : val;
 };
 
-Snakeskin.Filters['default']['ssFilterParams'] = {
+Snakeskin.setFilterParams('default', {
 	'!html': true
-};
+});
 
 const
 	tplRgxp = /\${(.*?)}/g;
@@ -384,12 +405,12 @@ const
  * @example
  * 'hello ${name}' |tpl {name: 'Kobezzza'}
  *
- * @param {?} str - source string
+ * @param {?} tpl - source template
  * @param {!Object} map - map of values
  * @return {string}
  */
-Snakeskin.Filters['tpl'] = function (str, map) {
-	return String(str).replace(tplRgxp, (sstr, $0) => $0 in map ? map[$0] : '');
+Snakeskin.Filters['tpl'] = function (tpl, map) {
+	return String(tpl).replace(tplRgxp, (sstr, $0) => $0 in map ? map[$0] : '');
 };
 
 const
@@ -398,7 +419,7 @@ const
 /**
  * Replaces EOL symbols from a string to <br>
  *
- * @param {?} val - source string
+ * @param {?} val - source value
  * @return {?}
  */
 Snakeskin.Filters['nl2br'] = function (val) {
@@ -414,7 +435,8 @@ Snakeskin.Filters['nl2br'] = function (val) {
 };
 
 Snakeskin.Filters['nl2br']['ssFilterParams'] = {
-	'!html': true
+	'!html': true,
+	'bind': ['__NODE__']
 };
 
 Snakeskin.Filters['attr'] = function (val, cache) {
@@ -427,7 +449,7 @@ Snakeskin.Filters['attr'] = function (val, cache) {
 	return '';
 };
 
-Snakeskin.Filters['attr']['ssFilterParams'] = {
+Snakeskin.setFilterParams('default', {
 	'!html': true,
-	'bind': ['__ATTR_CACHE__']
-};
+	'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE']
+});

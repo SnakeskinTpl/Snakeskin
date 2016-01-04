@@ -9,10 +9,11 @@
  */
 
 import $C from '../deps/collection';
+import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { tplVars, classRef } from '../consts/regs';
-import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+import { FILTER, LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
 /**
@@ -45,7 +46,7 @@ Parser.prototype.getXMLAttrsDeclStart = function () {
  */
 Parser.prototype.getXMLAttrsDeclBody = function (str) {
 	return $C(this.splitXMLAttrGroup(str))
-		.reduce((res, el) => res += this.getXMLAttrDecl(el), '');
+		.reduce((res, el) => res + this.getXMLAttrDecl(el), '');
 };
 
 /**
@@ -173,7 +174,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		res += $C(this.getTokens(args[1])).reduce((res, val) => {
 			if (classRef.test(val) && ref) {
-				val = `${s}'${ref}'${FILTER}${this.bemFilter} '${val.slice('&amp;'.length)}',$0${e}`;
+				val = `${s}'${ref}'${FILTER}${this.bemFilter} '${val.slice('&amp;'.length)}'${e}`;
 				val = this.pasteDangerBlocks(this.replaceTplVars(val));
 			}
 

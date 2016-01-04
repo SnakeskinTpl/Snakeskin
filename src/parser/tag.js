@@ -84,7 +84,7 @@ Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
 	if (!this.domComment && this.renderMode === 'dom') {
 		return ws`
 			__RESULT__.pop();
-			$0 = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : void 0;
+			$0 = __NODE__ = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : void 0;
 		`;
 	}
 
@@ -283,7 +283,7 @@ Parser.prototype.returnXMLTagDesc = function (str) {
 		}
 
 		if (classRef.test(el) && ref) {
-			el = `${s}'${ref}'${FILTER}${this.bemFilter} '${el.slice(1)}',$0${e}`;
+			el = `${s}'${ref}'${FILTER}${this.bemFilter} '${el.slice(1)}'${e}`;
 			el = this.pasteDangerBlocks(this.replaceTplVars(el));
 
 		} else if (el && types[i]) {
