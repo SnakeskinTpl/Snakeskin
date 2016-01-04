@@ -12,20 +12,23 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { $consts } from '../consts/cache';
-import { B_OPEN, B_CLOSE } from '../consts/literals';
+import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
 import { ws } from '../helpers/string';
 
 /**
  * Declares a variable and returns string declaration
  *
- * @param {string} varName - variable name
- * @param {boolean=} [opt_function=false] - if is true, then the variable
- *   will be declared as a function parameter
+ * @param {string} name - variable name
+ * @param {?{fn: (?boolean|undefined), sys: (?boolean|undefined)}=} [opt_params] - addition parameters:
+ *
+ *   *) [fn=false] - if is true, then the variable will be declared as a function parameter
+ *   *) [sys=false] - if is true, then the variable will be declared as system
  *
  * @return {string}
  */
-Parser.prototype.declVar = function (varName, opt_function) {
-	opt_function = opt_function || false;
+Parser.prototype.declVar = function (name, opt_params) {
+	const
+		p = $C.extend(false, {}, opt_params);
 
 	const
 		{tplName, environment: {id}} = this;
@@ -33,8 +36,12 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	let
 		{structure} = this;
 
-	if (!opt_function && tplName && $consts[tplName][varName]) {
-		this.error(`the variable "${varName}" is already defined as a constant`);
+	if (!p.fn && tplName && $consts[tplName][name]) {
+		this.error(`the variable "${name}" is already defined as a constant`);
+	}
+
+	if (!p.sys && SYS_CONSTS[name]) {
+		return this.error(`can't declare the variable "${name}", try another name`);
 	}
 
 	while (!structure.vars) {
@@ -42,7 +49,7 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	}
 
 	const
-		val = structure.vars[varName];
+		val = structure.vars[name];
 
 	if (val && !val.inherited && structure.parent) {
 		return val.value;
@@ -57,15 +64,15 @@ Parser.prototype.declVar = function (varName, opt_function) {
 			structure = structure.parent;
 		}
 
-		realVar = `__LOCAL__.${varName}_${id}_${Snakeskin.UID}`;
-		varName += `_${id}`;
+		realVar = `__LOCAL__.${name}_${id}_${Snakeskin.UID}`;
+		name += `_${id}`;
 		global = true;
 
 	} else {
-		realVar = `__${varName}_${structure.name}_${this.i}`;
+		realVar = `__${name}_${structure.name}_${this.i}`;
 	}
 
-	structure.vars[varName] = {
+	structure.vars[name] = {
 		global,
 		id,
 		scope: this.scope.length,
@@ -73,7 +80,7 @@ Parser.prototype.declVar = function (varName, opt_function) {
 	};
 
 	if (tplName) {
-		this.vars[tplName][varName] = true;
+		this.vars[tplName][name] = true;
 	}
 
 	return realVar;
@@ -84,17 +91,24 @@ Parser.prototype.declVar = function (varName, opt_function) {
  * and returns new string declaration
  *
  * @param {string} str - source string
- * @param {?boolean=} [opt_end=true] - if is true, then will be appended ; to the string
- * @param {?string=} [opt_def] - default value for variables
+ * @param {?{
+ *   end: (?boolean|undefined),
+ *   def: (?string|undefined),
+ *   sys: (?boolean|undefined)
+ * }=} [opt_params] - addition parameters:
+ *
+ *   *) [end=true] - if is true, then will be appended ; to the string
+ *   *) [def='void 0'] - default value for variables
+ *   *) [sys=false] - if is true, then the variable will be declared as system
+ *
  * @return {string}
  */
-Parser.prototype.declVars = function (str, opt_end, opt_def) {
-	opt_end = opt_end !== false;
-	opt_def = opt_def == null ?
-		'void 0' : opt_def;
+Parser.prototype.declVars = function (str, opt_params) {
+	const
+		p = $C.extend(false, {def: 'void 0', end: true}, opt_params);
 
 	let
-		isSys = 0,
+		bOpen = 0,
 		cache = '';
 
 	let
@@ -111,26 +125,26 @@ Parser.prototype.declVars = function (str, opt_end, opt_def) {
 
 	$C(str).forEach((el, i) => {
 		if (B_OPEN[el]) {
-			isSys++;
+			bOpen++;
 
 		} else if (B_CLOSE[el]) {
-			isSys--;
+			bOpen--;
 		}
 
 		const
 			lastIteration = i === str.length - 1;
 
-		if ((el === ',' || lastIteration) && !isSys) {
+		if ((el === ',' || lastIteration) && !bOpen) {
 			if (lastIteration) {
 				cache += el;
 			}
 
 			const
 				parts = cache.split('='),
-				realVar = this.declVar(parts[0].trim());
+				realVar = this.declVar(parts[0].trim(), {sys: p.sys});
 
-			parts[0] = realVar + (opt_def || parts[1] ? '=' : '');
-			parts[1] = parts[1] || opt_def;
+			parts[0] = realVar + (p.def || parts[1] ? '=' : '');
+			parts[1] = parts[1] || p.def;
 
 			const
 				val = parts.slice(1).join('=');
@@ -144,11 +158,11 @@ Parser.prototype.declVars = function (str, opt_end, opt_def) {
 		cache += el;
 	});
 
-	if (isSys) {
+	if (bOpen) {
 		this.error(`invalid "${this.name}" declaration`);
 	}
 
-	return fin.slice(0, -1) + (opt_end ? ';' : '');
+	return fin.slice(0, -1) + (p.end ? ';' : '');
 };
 
 /**

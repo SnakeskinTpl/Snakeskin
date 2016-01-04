@@ -43,7 +43,7 @@ Parser.prototype.declCallbackArgs = function (parts) {
 		}
 
 		if (el) {
-			args[i] = this.declVar(el, true);
+			args[i] = this.declVar(el, {fn: true});
 
 			if (mod) {
 				scope = args[i];
@@ -278,7 +278,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 			old = el.key;
 
 		if (fName) {
-			el.key = this.declVar(el.key, true);
+			el.key = this.declVar(el.key, {fn: true});
 		}
 
 		locals.push([
@@ -309,7 +309,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 		}
 
 		if (fName) {
-			el.key = this.declVar(el.key, true);
+			el.key = this.declVar(el.key, {fn: true});
 		}
 
 		decl += el.key;

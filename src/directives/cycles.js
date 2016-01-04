@@ -50,7 +50,7 @@ Snakeskin.addDirective(
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
-			const decl = parts[1] ? this.declVars(parts[2], false, '') : this.out(parts[2], {unsafe: true});
+			const decl = parts[1] ? this.declVars(parts[2], {def: '', end: false}) : this.out(parts[2], {unsafe: true});
 			this.append(`for (${decl} ${parts[3]} ${this.out(parts[4], {unsafe: true})}) {`);
 		}
 	},
