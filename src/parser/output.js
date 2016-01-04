@@ -80,7 +80,7 @@ const unUndefUnaryBlackWords = {
 	'new': true
 };
 
-const comboBlackWords = {
+const declBlackWords = {
 	'const': true,
 	'let': true,
 	'var': true
@@ -437,7 +437,7 @@ Parser.prototype.out = function (command, opt_params) {
 					vRes = tmpFinalWord.join(' ');
 				}
 
-				if (comboBlackWords[finalWord]) {
+				if (declBlackWords[finalWord]) {
 					posNWord = 2;
 
 				} else if (canParse && !unsafe && !filterStart && (!nextStep.unary || unUndefUnaryBlackWords[nextStep.unary])) {
