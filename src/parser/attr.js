@@ -57,7 +57,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 	return ws`
 		Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
 			${
-				this.renderMode === 'dom' && !this.domComment ?
+				!this.domComment && this.renderMode === 'dom' ?
 					'$0.setAttribute(key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
 			}
 		});
@@ -185,12 +185,16 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		}, '');
 
 		args[0] = `'${this.pasteTplVarBlocks(args[0])}'`;
+
+		const
+			isDOMRenderMode = !this.domComment && this.renderMode === 'dom';
+
 		return ws`
 			${res}
 			if ((${args[0]}) != null && (${args[0]}) != '') {
 				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] ? __ATTR_CACHE__[${args[0]}] || '' : '';
-				__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] && !$0 ? ' ' : '';
-				__ATTR_CACHE__[${args[0]}] += ${empty} ? $0 ? ${args[0]} : '' : __ATTR_STR__;
+				${isDOMRenderMode ? '' : `__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] ? ' ' : '';`}
+				${isDOMRenderMode ? `${empty} ? ${args[0]} : __ATTR_STR__` : `${empty} ? '' : __ATTR_STR__`}
 			}
 		`;
 
