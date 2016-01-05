@@ -657,7 +657,7 @@ Parser.prototype.out = function (command, opt_params) {
 		);
 
 		if (this.renderMode === 'dom' && !this.domComment) {
-			res = `__FILTERS__['node'](${res}, __NODE__)`;
+			res = `__FILTERS__['node'](${res}, $0)`;
 		}
 	}
 

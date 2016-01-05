@@ -341,8 +341,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				var
 					__RESULT__ = ${this.getResultDecl()},
 					__COMMENT_RESULT__,
-					__NODE__,
-					$0;
+					$0 = ${this.renderMode === 'dom' ? '__RESULT__[0]' : ''};
 
 				function getTplResult(opt_clear) {
 					var res = ${this.getReturnResultDecl()};

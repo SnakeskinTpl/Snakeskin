@@ -58,7 +58,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 		Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
 			${
 				this.renderMode === 'dom' && !this.domComment ?
-					'__NODE__.setAttribute(key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
+					'$0.setAttribute(key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
 			}
 		});
 	`;
@@ -189,8 +189,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			${res}
 			if ((${args[0]}) != null && (${args[0]}) != '') {
 				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] ? __ATTR_CACHE__[${args[0]}] || '' : '';
-				__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] && !__NODE__ ? ' ' : '';
-				__ATTR_CACHE__[${args[0]}] += ${empty} ? __NODE__ ? ${args[0]} : '' : __ATTR_STR__;
+				__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] && !$0 ? ' ' : '';
+				__ATTR_CACHE__[${args[0]}] += ${empty} ? $0 ? ${args[0]} : '' : __ATTR_STR__;
 			}
 		`;
 

@@ -40,9 +40,7 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
  */
 Parser.prototype.getXMLTagDeclStart = function (tag) {
 	if (!this.domComment && this.renderMode === 'dom') {
-		return ws`
-			$0 = __NODE__ = document.createElement('${tag}');
-		`;
+		return `$0 = document.createElement('${tag}');`;
 	}
 
 	return this.wrap(`'<${tag}'`);
@@ -60,7 +58,9 @@ Parser.prototype.getXMLTagDeclEnd = function (tag, opt_inline) {
 		inline = opt_inline || inlineTags[tag];
 
 	if (!this.domComment && this.renderMode === 'dom') {
-		return this.wrap('__NODE__') + (inline ? '' : '__RESULT__.push(__NODE__);');
+		return this.wrap('$0') + (
+			inline ? '$0 = __RESULT__[__RESULT__.length - 1];' : '__RESULT__.push($0);'
+		);
 	}
 
 	return this.wrap(`'${inline && this.doctype === 'xml' ? '/' : ''}>'`);
@@ -81,7 +81,7 @@ Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
 	if (!this.domComment && this.renderMode === 'dom') {
 		return ws`
 			__RESULT__.pop();
-			$0 = __NODE__ = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : undefined;
+			$0 = __RESULT__[__RESULT__.length - 1];
 		`;
 	}
 

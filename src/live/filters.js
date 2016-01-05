@@ -436,7 +436,7 @@ Snakeskin.Filters['nl2br'] = function (val) {
 
 Snakeskin.Filters['nl2br']['ssFilterParams'] = {
 	'!html': true,
-	'bind': ['__NODE__']
+	'bind': ['$0']
 };
 
 Snakeskin.Filters['attr'] = function (val, cache) {

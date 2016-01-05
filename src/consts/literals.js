@@ -188,7 +188,6 @@ export const SYS_CONSTS = {
 	'__CDATA__': true,
 	'__RETURN__': true,
 	'__RETURN_VAL__': true,
-	'__NODE__': true,
 	'__ATTR_POS__': true,
 	'__ATTR_STR__': true,
 	'__ATTR_CONCAT_MAP__': true,
