@@ -16,7 +16,7 @@ import { inlineTags } from '../consts/html';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK, FILTER } from '../consts/literals';
 
 /**
- * Returns string declaration of a opening tag for the specified XML tag
+ * Returns string declaration of an opening tag for the specified XML tag
  *
  * @param {string} tag - tag name
  * @param {?string=} [opt_attrs] - tag attributes
@@ -158,7 +158,6 @@ Parser.prototype.returnXMLTagDesc = function (str) {
 		if (bStart && el !== '.') {
 			this.error('invalid syntax');
 			return error;
-
 		}
 
 		bStart = false;
@@ -267,7 +266,6 @@ Parser.prototype.returnXMLTagDesc = function (str) {
 	}
 
 	let ref = this.bemRef;
-
 	$C(classes).forEach((el, i) => {
 		const
 			point = points[i];

@@ -55,7 +55,7 @@ Snakeskin.addDirective(
 			str = ws`
 				'${conditional}'
 				__NODE__ = document.createComment(__COMMENT_RESULT__);
-				${this.getPushNodeDecl(true)}
+				${this.getNodeDecl(true)}
 				__COMMENT_RESULT__ = '';
 			`;
 

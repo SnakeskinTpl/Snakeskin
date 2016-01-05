@@ -10,10 +10,10 @@
 
 import Snakeskin from '../core';
 import Parser from './constructor';
-import { eol, singleQuotes } from '../consts/regs';
 import { escapeEOLs } from '../helpers/escape';
-import { $write } from '../consts/cache';
 import { ws, r } from '../helpers/string';
+import { eol, singleQuotes } from '../consts/regs';
+import { $write } from '../consts/cache';
 import { isFunction } from '../helpers/types';
 
 import {
@@ -83,7 +83,7 @@ Parser.prototype.wrap = function (opt_str) {
  * @param {?boolean=} [opt_inline=false] - if is true, then the node considered as inline
  * @return {string}
  */
-Parser.prototype.getPushNodeDecl = function (opt_inline) {
+Parser.prototype.getNodeDecl = function (opt_inline) {
 	return ws`
 		${this.wrap('__NODE__')}
 		${opt_inline ? '' : '__RESULT__.push(__NODE__);'}
@@ -109,7 +109,7 @@ Parser.prototype.getReturnResultDecl = function () {
 };
 
 /**
- * Returns a string of a template declaration
+ * Returns a string of template declaration
  * @return {string}
  */
 Parser.prototype.getReturnDecl = function () {
@@ -150,7 +150,7 @@ Parser.prototype.replaceCData = function (str) {
 };
 
 /**
- * Declares the end of a template declaration
+ * Declares the end of template declaration
  *
  * @param {?string} cacheKey - cache key
  * @param {(Date|string)} label - declaration label
@@ -213,11 +213,11 @@ Parser.prototype.end = function (cacheKey, label) {
 };
 
 /**
- * Returns true, if is possible to write in the JS string
+ * Returns true if is possible to write in the JS string
  * @return {boolean}
  */
 Parser.prototype.isSimpleOutput = function () {
-	if (this.getDirName(this.name) !== 'end' && this.chain) {
+	if (this.name !== 'end' && this.chain) {
 		this.error(`the directive "${this.structure.name}" can not be used with a "${this.chain}"`);
 		return false;
 	}
@@ -226,7 +226,7 @@ Parser.prototype.isSimpleOutput = function () {
 };
 
 /**
- * Returns true, if !outerLink && (parentTplName && !hasParentBlock || !parentTplName)
+ * Returns true if !outerLink && (parentTplName && !hasParentBlock || !parentTplName)
  * @return {boolean}
  */
 Parser.prototype.isAdvTest = function () {
