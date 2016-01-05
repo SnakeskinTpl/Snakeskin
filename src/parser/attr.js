@@ -192,9 +192,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		return ws`
 			${res}
 			if ((${args[0]}) != null && (${args[0]}) != '') {
-				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] ? __ATTR_CACHE__[${args[0]}] || '' : '';
+				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] && __ATTR_CACHE__[${args[0]}] || '';
 				${isDOMRenderMode ? '' : `__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] ? ' ' : '';`}
-				${isDOMRenderMode ? `${empty} ? ${args[0]} : __ATTR_STR__` : `${empty} ? '' : __ATTR_STR__`}
+				__ATTR_CACHE__[${args[0]}] += ${empty ? isDOMRenderMode ? args[0] : '' : '__ATTR_STR__'}
 			}
 		`;
 
