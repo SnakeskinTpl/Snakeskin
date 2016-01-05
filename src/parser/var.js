@@ -11,9 +11,9 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
+import { ws } from '../helpers/string';
 import { $consts } from '../consts/cache';
 import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
-import { ws } from '../helpers/string';
 
 /**
  * Declares a variable and returns string declaration

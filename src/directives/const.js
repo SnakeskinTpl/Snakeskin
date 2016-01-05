@@ -125,7 +125,7 @@ Snakeskin.addDirective(
 
 				if (output && tplName) {
 					this.text = true;
-					this.append($=> this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
+					this.append(this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
 
 				} else {
 					const

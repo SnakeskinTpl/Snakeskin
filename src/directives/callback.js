@@ -53,7 +53,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.append($=> `})${this.structure.params.insideAsync ? '' : ';'}`);
+		this.append(`})${this.structure.params.insideAsync ? '' : ';'}`);
 	}
 );
 
@@ -83,7 +83,7 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-		this.append($=> ws`
+		this.append(ws`
 			], function (${this.declCallbackArgs(parts)}) {
 				${this.declArguments()}
 		`);

@@ -12,8 +12,8 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { r } from '../helpers/string';
-import * as rgxp from '../consts/regs';
 import { getCommentType } from '../helpers/literals';
+import * as rgxp from '../consts/regs';
 import {
 
 	SHORTS,
@@ -60,12 +60,12 @@ let
 	eol;
 
 /**
- * Returns a template description object from a string
+ * Returns a template description object from a string from the specified position
  * (Jade-Like to SS native)
  *
  * @param {string} str - source string
- * @param {number} i - start iteration position
- * @return {{code: string, length: number, error: (boolean|null|undefined)}}
+ * @param {number} i - start position
+ * @return {{code: string, length: number, error: (?boolean|undefined)}}
  */
 Parser.prototype.toBaseSyntax = function (str, i) {
 	needSpace = !this.tolerateWhitespaces;
@@ -86,6 +86,10 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 		length = 0,
 		tSpace = 0;
 
+	/**
+	 * @param {!Object} struct
+	 * @param {!Object} obj
+	 */
 	function end(struct, obj) {
 		if (struct.block) {
 			const
@@ -374,9 +378,9 @@ function appendDirEnd(str, struct) {
  * Returns an object description for a Jade-Like syntax string
  *
  * @param {string} str - source string
- * @param {number} i - start iteration position
+ * @param {number} i - start position
  * @param {boolean} dir - if is true, then the declaration is considered as a block directive
- * @param {boolean} comment - if is true, then declaration is considered a multiline comment
+ * @param {boolean} comment - if is true, then declaration is considered as a multiline comment
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
 function getLineDesc(str, i, dir, comment) {

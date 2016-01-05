@@ -10,8 +10,8 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import { $dirGroups } from '../consts/cache';
 import { clone } from '../helpers/object';
+import { $dirGroups } from '../consts/cache';
 
 const
 	cache = {};

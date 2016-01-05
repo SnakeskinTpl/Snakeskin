@@ -12,7 +12,7 @@ import Parser from './constructor';
 import { $output, $blocks, $consts, $constPositions } from '../consts/cache';
 
 /**
- * Returns a cache object for a block
+ * Returns a cache object for the specified block
  *
  * @param {string} type - block type
  * @param {?string=} [opt_tplName] - template name

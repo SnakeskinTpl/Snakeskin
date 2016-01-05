@@ -13,13 +13,7 @@ import Parser from './constructor';
 import { r } from '../helpers/string';
 import { isFunction } from '../helpers/types';
 import { HAS_CONSOLE_ERROR } from '../consts/hacks';
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { LEFT_BLOCK as lb, RIGHT_BLOCK as rb, ADV_LEFT_BLOCK as alb } from '../consts/literals';
 
 const
 	cutRgxp = /\/\*!!= (.*?) =\*\//g,

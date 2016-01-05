@@ -125,7 +125,7 @@ const esprimaHackFn = (str) => str
  */
 Parser.prototype.out = function (command, opt_params) {
 	const
-		{unsafe, skipFirstWord, skipValidation} = opt_params || {};
+		{unsafe, skipFirstWord, skipValidation} = $C.extend(false, {}, opt_params);
 
 	const
 		{tplName, structure} = this,
@@ -247,14 +247,14 @@ Parser.prototype.out = function (command, opt_params) {
 
 			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
 				if (refCache) {
-					def = search(refCache.root, str, Parser.getExtList(String(tplName)));
+					def = search(refCache.root, str, this.getExtList(String(tplName)));
 				}
 
 				let
 					tplCache = tplName && $scope['template'][tplName];
 
 				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.root, str, Parser.getExtList(String(tplName)));
+					def = search(tplCache.root, str, this.getExtList(String(tplName)));
 				}
 			}
 

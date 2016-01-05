@@ -118,6 +118,6 @@ Snakeskin.addDirective(
 			str = this.wrap(`'"${this.doctype === 'xml' ? '/' : ''}>'`);
 		}
 
-		this.append($=> str);
+		this.append(str);
 	}
 );

@@ -102,6 +102,7 @@ function unEscapeOr(ignore, $1, $2) {
  * Returns string declaration of the specified XML attribute
  *
  * @param {{attr: string, group: (?string|undefined), separator: (?string|undefined)}} params - parameters:
+ *
  *   *) attr - source attribute
  *   *) [group] - group name
  *   *) [separator='-'] - group separator

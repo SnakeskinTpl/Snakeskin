@@ -10,34 +10,19 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import {
-
-	$extMap,
-	$cache,
-	$templates,
-	$router,
-	$routerPositions
-
-} from '../consts/cache';
-
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { $extMap, $cache, $templates, $router, $routerPositions } from '../consts/cache';
+import { LEFT_BLOCK as lb, RIGHT_BLOCK as rb, ADV_LEFT_BLOCK as alb } from '../consts/literals';
 
 /**
- * Returns the full body of a template
+ * Returns the full body of the specified template
  * (with inheritance)
  *
- * @param {string} tplName - template name
+ * @param {string} name - template name
  * @return {string}
  */
-Parser.prototype.getTplFullBody = function (tplName) {
+Parser.prototype.getTplFullBody = function (name) {
 	const
-		parentTpl = $extMap[tplName],
+		parentTpl = $extMap[name],
 		constLength = 1;
 
 	const
@@ -49,9 +34,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 		is[i * 2 + 1] = `${el}_add`;
 	});
 
-	let
-		res = $cache[parentTpl];
-
+	let res = $cache[parentTpl];
 	if (!this.tolerateWhitespaces) {
 		res += `${alb}${lb}__&-__${rb}`;
 	}
@@ -62,7 +45,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 		advDiff = [];
 
 	let
-		tb = $templates[tplName],
+		tb = $templates[name],
 		blockDiff,
 		newFrom,
 		prev,
@@ -77,7 +60,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 			type = is[i];
 
 		if ($router[type]) {
-			el = $router[type][tplName];
+			el = $router[type][name];
 			prev = $router[type][parentTpl];
 			k = `${type}_`;
 
@@ -94,7 +77,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 
 			let
 				adv = 0,
-				block = $cache[tplName].slice(current.from, current.to);
+				block = $cache[name].slice(current.from, current.to);
 
 			if (parent) {
 				if (parent.output != null && current.output == null && (i % 2 === 0)) {
@@ -104,7 +87,7 @@ Parser.prototype.getTplFullBody = function (tplName) {
 						block += current.output;
 
 					} else {
-						this.getBlockOutput(type, tplName)[key] = current.output;
+						this.getBlockOutput(type, name)[key] = current.output;
 					}
 				}
 
@@ -155,7 +138,8 @@ Parser.prototype.getTplFullBody = function (tplName) {
 							from += adv;
 						}
 
-						block = type === `${current.needPrfx ? alb : ''}${lb}${block}${rb}`;
+						block =
+							type === `${current.needPrfx ? alb : ''}${lb}${block}${rb}`;
 
 						res = res.slice(0, from) +
 							block +

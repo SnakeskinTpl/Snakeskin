@@ -8,9 +8,9 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { IS_NODE } from '../consts/hacks';
-import { isString } from '../helpers/types';
 import { any } from '../helpers/gcc';
+import { isString } from '../helpers/types';
+import { IS_NODE } from '../consts/hacks';
 
 /**
  * Clones an object

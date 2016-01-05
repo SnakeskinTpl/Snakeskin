@@ -41,8 +41,7 @@ export const COMMENTS = {
 };
 
 export const MICRO_TEMPLATES = {
-	'${': true,
-	'#{': true
+	'${': true
 };
 
 export const

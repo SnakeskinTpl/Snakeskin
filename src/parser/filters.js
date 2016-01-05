@@ -20,7 +20,7 @@ import { isString } from '../helpers/types';
  */
 Parser.prototype.appendDefaultFilters = function (filters) {
 	const
-		obj = $C.extend(false, {}, filters);
+		obj = $C.extend(false, {global: [], local: []}, filters);
 
 	$C(obj).forEach((el) => {
 		$C(el).forEach((filter, i) => {

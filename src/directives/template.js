@@ -11,7 +11,6 @@
 import $C from '../deps/collection';
 import esprima from '../deps/esprima';
 import Snakeskin from '../core';
-import Parser from '../parser/index';
 import { ws, r } from '../helpers/string';
 import { symbols } from '../consts/regs';
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
@@ -58,7 +57,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			let lastName = '';
 			const
-				isInterface = this.name === 'interface';
+				iface = this.name === 'interface';
 
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info.line;
@@ -108,7 +107,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			}
 
 			const fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
-			this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), isInterface, jsDoc);
+			this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), {iface, jsDoc});
 
 			if (jsDoc) {
 				jsDoc += pos.length;
@@ -165,8 +164,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 						${i === 1 && shortcut ? `var ${shortcut} = ${def};` : ''}
 					`),
 
-					isInterface,
-					jsDoc
+					{iface, jsDoc}
 				);
 
 				if (jsDoc) {
@@ -201,7 +199,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				(length === 1 && shortcut ? `var ${shortcut} = ` : '') + // jscs:ignore
 					`this${concatProp(tplName)} = function ${prfx}${length > 1 ? lastName : shortcut}(`,
 
-				isInterface
+				{iface}
 			);
 
 			this.info.template =
@@ -254,7 +252,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			this.initTemplateCache(tplName);
 
 			if (tplName in $extMap) {
-				Parser.clearScopeCache(tplName);
+				this.clearScopeCache(tplName);
 			}
 
 			const
@@ -310,7 +308,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			const
 				args = this.prepareArgs(command, 'template', {parentTplName, tplName});
 
-			this.save(`${args.str}) {`, isInterface);
+			this.save(`${args.str}) {`, {iface});
 			if (args.scope) {
 				this.scope.push(args.scope);
 			}
@@ -409,10 +407,10 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			}
 
 			const
-				isInterface = this.structure.name === 'interface';
+				iface = this.structure.name === 'interface';
 
-			if (isInterface) {
-				this.save('};', true);
+			if (iface) {
+				this.save('};', {iface});
 
 			} else {
 				this.save(ws`
@@ -424,7 +422,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				`);
 			}
 
-			this.save('/* Snakeskin template. */', isInterface);
+			this.save('/* Snakeskin template. */', {iface});
 			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
 				this.popParams();
 			}

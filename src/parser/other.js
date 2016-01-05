@@ -19,7 +19,7 @@ import { $extList, $extMap, $scope } from '../consts/cache';
  * @param {string} name - template name
  * @return {!Array}
  */
-Parser.getExtList = function (name) {
+Parser.prototype.getExtList = function (name) {
 	if ($extList[name]) {
 		return $extList[name].slice();
 	}
@@ -34,10 +34,12 @@ Parser.getExtList = function (name) {
 };
 
 /**
- * Clears the SS cache scope of a template
+ * Clears the SS cache scope of the specified template
+ *
  * @param {string} name - template name
+ * @return {!Parser}
  */
-Parser.clearScopeCache = function (name) {
+Parser.prototype.clearScopeCache = function (name) {
 	$C($scope).forEach((cluster, key) => {
 		if (key === 'template') {
 			if (cluster[name] && cluster[name].parent) {
@@ -54,6 +56,8 @@ Parser.clearScopeCache = function (name) {
 
 		delete cluster[name];
 	});
+
+	return this;
 };
 
 /**

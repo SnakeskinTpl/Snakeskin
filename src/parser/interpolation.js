@@ -8,10 +8,11 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Parser from './constructor';
-import * as rgxp from '../consts/regs';
 import { getCommentType } from '../helpers/literals';
 import { applyDefEscape, escapeSingleQuotes } from '../helpers/escape';
+import * as rgxp from '../consts/regs';
 import {
 
 	MICRO_TEMPLATES,
@@ -24,13 +25,13 @@ import {
 	MULT_COMMENT_START,
 	MULT_COMMENT_END,
 	SINGLE_COMMENT,
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
+	LEFT_BLOCK,
+	RIGHT_BLOCK,
 
 } from '../consts/literals';
 
 /**
- * Replaces found matches ${ ... } or #{ ... } from a string to SS calls
+ * Replaces found matches ${ ... } from a string to SS calls
  *
  * @param {string} str - source string
  * @param {?{
@@ -44,7 +45,7 @@ import {
  * @return {string}
  */
 Parser.prototype.replaceTplVars = function (str, opt_params) {
-	const {unsafe, replace} = opt_params || {};
+	const {unsafe, replace} = $C.extend(false, {}, opt_params);
 	str = this.pasteDangerBlocks(str);
 
 	let
@@ -142,10 +143,10 @@ Parser.prototype.replaceTplVars = function (str, opt_params) {
 					part = '';
 				}
 
-				if (el === lb) {
+				if (el === LEFT_BLOCK) {
 					begin++;
 
-				} else if (el === rb) {
+				} else if (el === RIGHT_BLOCK) {
 					begin--;
 				}
 			}

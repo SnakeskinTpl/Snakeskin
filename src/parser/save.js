@@ -8,6 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { escapeEOLs } from '../helpers/escape';
@@ -15,14 +16,7 @@ import { ws, r } from '../helpers/string';
 import { eol, singleQuotes } from '../consts/regs';
 import { $write } from '../consts/cache';
 import { isFunction } from '../helpers/types';
-
-import {
-
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
-
-} from '../consts/literals';
+import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 
 /**
  * Returns a string for the beginning of concatenation with __RESULT__
@@ -133,8 +127,8 @@ Parser.prototype.getReturnDecl = function () {
  */
 Parser.prototype.replaceCData = function (str) {
 	const
-		s = alb + lb,
-		e = rb;
+		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
+		e = RIGHT_BLOCK;
 
 	return str
 		.replace(new RegExp(`${r(s)}cdata${r(e)}([\\s\\S]*?)${r(s)}(?:\\/cdata|end cdata)${r(e)}`, 'g'), (sstr, data) => {
@@ -150,7 +144,7 @@ Parser.prototype.replaceCData = function (str) {
 };
 
 /**
- * Declares the end of template declaration
+ * Declares the end of Snakeskin declaration
  *
  * @param {?string} cacheKey - cache key
  * @param {(Date|string)} label - declaration label
@@ -158,6 +152,8 @@ Parser.prototype.replaceCData = function (str) {
  */
 Parser.prototype.end = function (cacheKey, label) {
 	label = label || '';
+
+	// Replace some trash :)
 	switch (this.renderMode) {
 		case 'stringBuffer':
 			this.result = this.result.replace(/__RESULT__\.push\(''\);/g, '');
@@ -172,24 +168,18 @@ Parser.prototype.end = function (cacheKey, label) {
 			break;
 	}
 
-	let includes = '';
-	if (this.environment.key.length) {
-		includes = JSON.stringify(this.environment.key);
-	}
-
 	this.result = this.pasteDangerBlocks(this.result)
 		.replace(
 			/__CDATA__(\d+)_/g,
-			(sstr, pos) => escapeEOLs(
-				this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)
-			).replace(singleQuotes, '&#39;')
+			(sstr, pos) =>
+				escapeEOLs(this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
 		);
 
 	const
 		versionDecl = `Snakeskin v${Snakeskin.VERSION.join('.')}`,
 		keyDecl = `key <${cacheKey}>`,
 		labelDecl = `label <${label.valueOf()}>`,
-		includesDecl = `includes <${includes}>`,
+		includesDecl = `includes <${this.environment.key.length ? JSON.stringify(this.environment.key) : ''}>`,
 		generatedAtDecl = `generated at <${new Date().valueOf()}>`,
 		resDecl = `${this.eol}   ${this.result}`;
 
@@ -229,21 +219,27 @@ Parser.prototype.isAdvTest = function () {
 };
 
 /**
- * Adds a string to the JS string if is possible
+ * Adds a string to the result JS string if is possible
  *
  * @param {string=} str - source string
- * @param {?boolean=} [opt_interface=false] - if is true, then the current operation is an interface
- * @param {(boolean|number)=} [opt_jsDoc] - last position of appending jsDoc or false
+ * @param {?{iface: (?boolean|undefined), jsDoc: (?boolean|number|undefined)}=} [opt_params] - addition parameters:
+ *
+ *   *) [iface=false] - if is true, then the current operation is an interface
+ *   *) [jsDoc] - last position of appending jsDoc or false
+ *
  * @return {boolean}
  */
-Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
+Parser.prototype.save = function (str, opt_params) {
+	const
+		{iface, jsDoc} = $C.extend(false, {}, opt_params);
+
 	if (str === undefined) {
 		return false;
 	}
 
-	if (!this.tplName || $write[this.tplName] !== false || opt_interface) {
-		if (opt_jsDoc) {
-			const pos = Number(opt_jsDoc);
+	if (!this.tplName || $write[this.tplName] !== false || iface) {
+		if (jsDoc) {
+			const pos = Number(jsDoc);
 			this.result = this.result.slice(0, pos) + str + this.result.slice(pos);
 
 		} else {
@@ -257,38 +253,21 @@ Parser.prototype.save = function (str, opt_interface, opt_jsDoc) {
 };
 
 /**
- * Adds a string to the JS string if is possible
+ * Adds a string to the result JS string if is possible
  * (with this.isSimpleOutput())
  *
  * @param {string=} str - source string
- * @param {?boolean=} [opt_interface=false] - if is true, then the current operation is an interface
- * @param {(boolean|number)=} [opt_jsDoc] - last position of appending jsDoc or false
- * @return {boolean}
- */
-Parser.prototype.append = function (str, opt_interface, opt_jsDoc) {
-	if (!this.isSimpleOutput()) {
-		return false;
-	}
-
-	return this.save(str, opt_interface, opt_jsDoc);
-};
-
-/**
- * Calls a callback function if is possible to write to the JS string
- * (with this.isSimpleOutput())
+ * @param {?{iface: (?boolean|undefined), jsDoc: (?boolean|number|undefined)}=} [opt_params] - addition parameters:
  *
- * @param {function(this:Parser)} callback - callback function
+ *   *) [iface=false] - if is true, then the current operation is an interface
+ *   *) [jsDoc] - last position of appending jsDoc or false
+ *
  * @return {boolean}
  */
-Parser.prototype.mod = function (callback) {
+Parser.prototype.append = function (str, opt_params) {
 	if (!this.isSimpleOutput()) {
 		return false;
 	}
 
-	if (!this.tplName || $write[this.tplName] !== false) {
-		callback.call(this);
-		return true;
-	}
-
-	return false;
+	return this.save(str, opt_params);
 };

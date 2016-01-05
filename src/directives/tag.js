@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 
 		const
 			parts = this.getTokens(command),
-			{tag, inline, id, classes} = this.returnXMLTagDesc(parts[0]);
+			{tag, inline, id, classes} = this.getXMLTagDesc(parts[0]);
 
 		$C.extend(false, this.structure.params, {inline, tag});
 

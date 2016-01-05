@@ -10,10 +10,10 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { ws } from '../helpers/string';
+import { applyDefEscape } from '../helpers/escape';
 import { $dirNameAliases } from '../consts/cache';
 import { IS_NODE } from '../consts/hacks';
-import { applyDefEscape } from '../helpers/escape';
-import { ws } from '../helpers/string';
 
 /**
  * Returns a real directive name
