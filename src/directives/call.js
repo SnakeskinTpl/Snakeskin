@@ -48,7 +48,7 @@ Snakeskin.addDirective(
 
 		this.append(ws`
 			if (__RESULT__.length) {
-				${tmp}.push(new Unsafe(__RESULT__));
+				${tmp}.push(Unsafe(__RESULT__));
 				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
 			}
 		`);

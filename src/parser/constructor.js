@@ -405,6 +405,14 @@ export default class Parser {
 						__LOCAL__ = Snakeskin.LocalVars;
 
 					function Unsafe(val) {
+						if (!this || this.constructor !== Unsafe) {
+							if (typeof val === 'string') {
+								return new Unsafe(val);
+							}
+
+							return val;
+						}
+
 						this.value = val;
 					}
 

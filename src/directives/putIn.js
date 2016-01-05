@@ -51,7 +51,7 @@ Snakeskin.addDirective(
 					if (!${pos} && __RESULT__.length) {
 						${tmp}.push({
 							key: '${ref}',
-							value: new Unsafe(__RESULT__)
+							value: Unsafe(__RESULT__)
 						});
 
 						__RESULT__ = ${this.getReturnDecl()};
@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 		switch (structure.parent.name) {
 			case 'call':
 				this.append(ws`
-					${tmp}.push(new Unsafe(__RESULT__));
+					${tmp}.push(Unsafe(__RESULT__));
 					__RESULT__ = ${this.getReturnDecl()};
 				`);
 
@@ -91,7 +91,7 @@ Snakeskin.addDirective(
 				this.append(ws`
 					${tmp}.push({
 						key: '${ref}',
-						value: new Unsafe(__RESULT__)
+						value: Unsafe(__RESULT__)
 					});
 
 					__RESULT__ = ${this.getReturnDecl()};

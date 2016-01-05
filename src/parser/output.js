@@ -656,7 +656,7 @@ Parser.prototype.out = function (command, opt_params) {
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 
-		res = `__FILTERS__.node(${res}, __NODE__)`;
+		res = `__FILTERS__['node'](${res}, __NODE__)`;
 	}
 
 	if (skipValidation !== false) {

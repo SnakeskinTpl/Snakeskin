@@ -68,7 +68,7 @@ Snakeskin.setFilterParams = function (filter, params) {
  * @param {(Node|undefined)} node - root node
  * @return {(string|!Node)}
  */
-Snakeskin.Filters.node = function (val, node) {
+Snakeskin.Filters['node'] = function (val, node) {
 	if (node && typeof Node === 'function' && val instanceof Node) {
 		node.appendChild(val);
 		return '';
@@ -117,6 +117,8 @@ Snakeskin.Filters['html'] = function (val, Unsafe, opt_attr, opt_force) {
 	if (typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
+
+	console.log(121, val, Unsafe);
 
 	if (val instanceof Unsafe) {
 		return val.valueOf();
