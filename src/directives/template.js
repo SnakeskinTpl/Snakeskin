@@ -339,7 +339,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					self = callee.Blocks = {};
 
 				var
-					__RESULT__ = ${this.getReturnDecl()},
+					__RESULT__ = ${this.getResultDecl()},
 					__COMMENT_RESULT__,
 					__NODE__,
 					$0;
@@ -348,14 +348,14 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					var res = ${this.getReturnResultDecl()};
 
 					if (opt_clear) {
-						__RESULT__ = ${this.getReturnDecl()};
+						__RESULT__ = ${this.getResultDecl()};
 					}
 
 					return res;
 				}
 
 				function clearTplResult() {
-					__RESULT__ = ${this.getReturnDecl()};
+					__RESULT__ = ${this.getResultDecl()};
 				}
 
 				var

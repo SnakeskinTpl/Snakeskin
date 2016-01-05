@@ -28,7 +28,7 @@ Snakeskin.addDirective(
 		} else {
 			this.append(ws`
 				yield ${this.getReturnResultDecl()};
-				__RESULT__ = ${this.getReturnDecl()};
+				__RESULT__ = ${this.getResultDecl()};
 			`);
 		}
 	}

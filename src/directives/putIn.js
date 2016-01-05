@@ -38,7 +38,7 @@ Snakeskin.addDirective(
 				this.append(ws`
 					if (!${pos} && __RESULT__.length) {
 						${tmp}.push(__RESULT__);
-						__RESULT__ = ${this.getReturnDecl()};
+						__RESULT__ = ${this.getResultDecl()};
 					}
 
 					${pos}++;
@@ -54,7 +54,7 @@ Snakeskin.addDirective(
 							value: Unsafe(__RESULT__)
 						});
 
-						__RESULT__ = ${this.getReturnDecl()};
+						__RESULT__ = ${this.getResultDecl()};
 					}
 
 					${pos}++;
@@ -65,7 +65,7 @@ Snakeskin.addDirective(
 			default:
 				this.append(ws`
 					${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
-					__RESULT__ = ${this.getReturnDecl()};
+					__RESULT__ = ${this.getResultDecl()};
 				`);
 		}
 	},
@@ -82,7 +82,7 @@ Snakeskin.addDirective(
 			case 'call':
 				this.append(ws`
 					${tmp}.push(Unsafe(__RESULT__));
-					__RESULT__ = ${this.getReturnDecl()};
+					__RESULT__ = ${this.getResultDecl()};
 				`);
 
 				break;
@@ -94,7 +94,7 @@ Snakeskin.addDirective(
 						value: Unsafe(__RESULT__)
 					});
 
-					__RESULT__ = ${this.getReturnDecl()};
+					__RESULT__ = ${this.getResultDecl()};
 				`);
 
 				break;
@@ -102,7 +102,7 @@ Snakeskin.addDirective(
 			default:
 				this.append(ws`
 					${this.out(`${ref} = __RESULT__`, {unsafe: true})};
-					__RESULT__ = ${this.getReturnDecl()};
+					__RESULT__ = ${this.getResultDecl()};
 				`);
 		}
 	}

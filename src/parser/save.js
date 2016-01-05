@@ -86,6 +86,23 @@ Parser.prototype.getNodeDecl = function (opt_inline) {
 };
 
 /**
+ * Returns a string of template declaration
+ * @return {string}
+ */
+Parser.prototype.getResultDecl = function () {
+	switch (this.renderMode) {
+		case 'stringBuffer':
+			return 'new Snakeskin.StringBuffer()';
+
+		case 'dom':
+			return '[document.createDocumentFragment()]';
+
+		default:
+			return `''`;
+	}
+};
+
+/**
  * Returns a string of template content
  * @return {string}
  */
@@ -99,23 +116,6 @@ Parser.prototype.getReturnResultDecl = function () {
 
 		default:
 			return '__RESULT__';
-	}
-};
-
-/**
- * Returns a string of template declaration
- * @return {string}
- */
-Parser.prototype.getReturnDecl = function () {
-	switch (this.renderMode) {
-		case 'stringBuffer':
-			return 'new Snakeskin.StringBuffer()';
-
-		case 'dom':
-			return '[document.createDocumentFragment()]';
-
-		default:
-			return `''`;
 	}
 };
 

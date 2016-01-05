@@ -55,7 +55,7 @@ Snakeskin.addDirective(
 				{sys: true}
 			)}
 
-			__RESULT__ = ${this.getReturnDecl()};
+			__RESULT__ = ${this.getResultDecl()};
 		`);
 	},
 
