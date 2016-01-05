@@ -217,11 +217,6 @@ Parser.prototype.end = function (cacheKey, label) {
  * @return {boolean}
  */
 Parser.prototype.isSimpleOutput = function () {
-	if (this.name !== 'end' && this.chain) {
-		this.error(`the directive "${this.structure.name}" can not be used with a "${this.chain}"`);
-		return false;
-	}
-
 	return !this.parentTplName && !this.outerLink;
 };
 

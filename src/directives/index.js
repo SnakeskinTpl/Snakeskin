@@ -388,7 +388,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			);
 		}
 
-		if (structure.strong) {
+		if (structure.chain) {
 			if ($dirParents[prevDirName][dirName]) {
 				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
 
@@ -426,7 +426,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if ($dirParents[dirName]) {
-			newStructure.strong = true;
+			newStructure.chain = true;
 			this.strongSpace.push(true);
 		}
 
