@@ -56,11 +56,14 @@ Parser.prototype.getXMLTagDeclStart = function (tag) {
  * @return {string}
  */
 Parser.prototype.getXMLTagDeclEnd = function (tag, opt_inline) {
+	const
+		inline = opt_inline || inlineTags[tag];
+
 	if (!this.domComment && this.renderMode === 'dom') {
-		return '';
+		return this.wrap('__NODE__') + (inline ? '' : '__RESULT__.push(__NODE__);');
 	}
 
-	return this.wrap(`'${(opt_inline || inlineTags[tag]) && this.doctype === 'xml' ? '/' : ''}>'`);
+	return this.wrap(`'${inline && this.doctype === 'xml' ? '/' : ''}>'`);
 };
 
 /**

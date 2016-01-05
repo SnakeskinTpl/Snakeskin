@@ -51,9 +51,7 @@ Snakeskin.addDirective(
 		let str;
 		if (this.renderMode === 'dom') {
 			str = ws`
-				${this.wrap(`'${end}'`)}
-				$0 = __NODE__ = document.createComment(__COMMENT_RESULT__);
-				${this.getNodeDecl(true)}
+				${this.wrap(`'${end}' + ($0 = __NODE__ = document.createComment(__COMMENT_RESULT__))`)}
 				__COMMENT_RESULT__ = '';
 			`;
 

@@ -71,21 +71,6 @@ Parser.prototype.wrap = function (opt_str) {
 };
 
 /**
- * Returns a string of a node declaration
- * (for renderMode == dom)
- *
- * @param {?boolean=} [opt_inline=false] - if is true, then the node considered as inline
- * @return {string}
- */
-Parser.prototype.getNodeDecl = function (opt_inline) {
-	return ws`
-		${this.wrap('__NODE__')}
-		${opt_inline ? '' : '__RESULT__.push(__NODE__);'}
-		__NODE__ = null;
-	`;
-};
-
-/**
  * Returns a string of template declaration
  * @return {string}
  */
