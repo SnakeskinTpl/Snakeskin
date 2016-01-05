@@ -26,7 +26,6 @@ import './queue';
 import './save';
 import './tree';
 import './var';
-import './template';
 import './attr';
 import './tag';
 import './filters';

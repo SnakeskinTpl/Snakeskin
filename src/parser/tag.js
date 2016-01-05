@@ -16,12 +16,6 @@ import { inlineTags } from '../consts/html';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK, FILTER } from '../consts/literals';
 
 /**
- * If is true, then XML comment is started with DOM render mode
- * @type {boolean}
- */
-Parser.prototype.domComment = false;
-
-/**
  * Returns string declaration of a opening tag for the specified XML tag
  *
  * @param {string} tag - tag name

@@ -110,10 +110,11 @@ export default class Parser {
 			}
 		];
 
-		if (params.consts) {
-			/** @type {(Array|undefined)} */
-			this.consts = params.consts;
-		}
+		/**
+		 * The array of declared constants
+		 * @type {Array}
+		 */
+		this.consts = null;
 
 		/**
 		 * The map of declared variables
@@ -146,10 +147,40 @@ export default class Parser {
 		this.tplName = null;
 
 		/**
-		 * The map of directives, which can go after the active
-		 * @type {Object}
+		 * The parent name of the active template
+		 * @type {?string}
 		 */
-		this.after = null;
+		this.parentTplName = null;
+
+		/**
+		 * If is true, then the active template is generator
+		 * @type {?boolean}
+		 */
+		this.generator = null;
+
+		/**
+		 * The number of deferred return calls
+		 * @type {number}
+		 */
+		this.deferReturn = 0;
+
+		/**
+		 * The number of iteration, where the active template was declared
+		 * @type {number}
+		 */
+		this.startTemplateI = 0;
+
+		/**
+		 * The number of a line, where the active template was declared
+		 * @type {?number}
+		 */
+		this.startTemplateLine = null;
+
+		/**
+		 * The name of the parent BEM class
+		 * @type {string}
+		 */
+		this.bemRef = '';
 
 		/**
 		 * If is false, then template can't be inserted into the resulting JS string
@@ -219,7 +250,6 @@ export default class Parser {
 		 */
 		this.structure = {
 			name: 'root',
-
 			/**
 			 * @type {?{
 			 *   name:
@@ -234,13 +264,10 @@ export default class Parser {
 			 * }}
 			 */
 			parent: null,
-
 			params: {},
 			stack: [],
-
-			vars: params.vars || {},
+			vars: {},
 			children: [],
-
 			logic: false,
 			chain: false
 		};
@@ -256,6 +283,12 @@ export default class Parser {
 		 * @type {boolean}
 		 */
 		this.text = false;
+
+		/**
+		 * If is true, then XML comment is started with DOM render mode
+		 * @type {boolean}
+		 */
+		this.domComment = false;
 
 		/**
 		 * The content of Escaper blocks
@@ -287,17 +320,12 @@ export default class Parser {
 		 */
 		this.environment = {
 			exports: {},
-			require: IS_NODE ?
-				require : null,
-
+			require: IS_NODE ? require : null,
 			id: 0,
 			key: [],
-
 			root: null,
 			filename: this.info.file,
-			parent: IS_NODE ?
-				module : null,
-
+			parent: IS_NODE ? module : null,
 			children: [],
 			loaded: true
 		};
@@ -306,7 +334,7 @@ export default class Parser {
 		 * The source text of templates
 		 * @type {string}
 		 */
-		this.source = this.replaceCData(String(src));
+		this.source = this.replaceCData(src);
 
 		/**
 		 * The final JS string
