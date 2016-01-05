@@ -107,15 +107,18 @@ Parser.prototype.getResultDecl = function () {
  * @return {string}
  */
 Parser.prototype.getReturnResultDecl = function () {
+	const
+		r = '__RESULT__ instanceof __RAW_RESULT__ ? __RESULT__.value : ';
+
 	switch (this.renderMode) {
 		case 'stringBuffer':
-			return `__RESULT__.join('')`;
+			return `${r}__RESULT__.join('')`;
 
 		case 'dom':
-			return '__RESULT__[0]';
+			return `${r}__RESULT__[0]`;
 
 		default:
-			return '__RESULT__';
+			return `${r}__RESULT__`;
 	}
 };
 

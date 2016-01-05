@@ -361,7 +361,7 @@ export default class Parser {
 
 				function __INIT__(obj) {
 					Snakeskin = Snakeskin ||
-						(obj instanceof Object ? obj : void 0);
+						(obj instanceof Object ? obj : undefined);
 
 					${
 						this.exports === 'default' ?
@@ -404,6 +404,11 @@ export default class Parser {
 						__VARS__ = Snakeskin.Vars,
 						__LOCAL__ = Snakeskin.LocalVars;
 
+					function __RAW_RESULT__(val) {
+						this.value = val;
+						this.length = 1;
+					}
+
 					function Unsafe(val) {
 						if (!this || this.constructor !== Unsafe) {
 							if (typeof val === 'string') {
@@ -415,10 +420,6 @@ export default class Parser {
 
 						this.value = val;
 					}
-
-					Unsafe.prototype.valueOf = function () {
-						return this.value;
-					};
 
 					${this.declVars('$_', {sys: true})}
 		`;

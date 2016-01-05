@@ -71,7 +71,7 @@ Snakeskin.addDirective(
 			if (__RESULT__.length) {
 				${tmp}.push({
 					key: undefined,
-					value: Unsafe(__RESULT__)
+					value: Unsafe(${this.getReturnResultDecl()})
 				});
 			}
 
@@ -84,7 +84,7 @@ Snakeskin.addDirective(
 			case 'call':
 			case 'putIn':
 			case 'target':
-				this.append(`__RESULT__ = ${ref};`);
+				this.append(`__RESULT__ = new __RESULT_TYPE__(${ref});`);
 				break;
 
 			default:

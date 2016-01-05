@@ -560,7 +560,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 				return decl;
 
-			}, fBody.trim() || 'void 0');
+			}, fBody.trim() || 'undefined');
 
 			if (!isGlobalFilter) {
 				tmp = removeDefFilters(tmp, cancelLocalFilters);

@@ -78,7 +78,7 @@ Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
 	if (!this.domComment && this.renderMode === 'dom') {
 		return ws`
 			__RESULT__.pop();
-			$0 = __NODE__ = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : void 0;
+			$0 = __NODE__ = __RESULT__.length > 1 ? __RESULT__[__RESULT__.length - 1] : undefined;
 		`;
 	}
 

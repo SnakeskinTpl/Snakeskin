@@ -96,14 +96,14 @@ Parser.prototype.declVar = function (name, opt_params) {
  * }=} [opt_params] - addition parameters:
  *
  *   *) [end=true] - if is true, then will be appended ; to the string
- *   *) [def='void 0'] - default value for variables
+ *   *) [def='undefined'] - default value for variables
  *   *) [sys=false] - if is true, then the variable will be declared as system
  *
  * @return {string}
  */
 Parser.prototype.declVars = function (str, opt_params) {
 	const
-		{def, end, sys} = $C.extend(false, {def: 'void 0', end: true}, opt_params);
+		{def, end, sys} = $C.extend(false, {def: 'undefined', end: true}, opt_params);
 
 	let
 		bOpen = 0,

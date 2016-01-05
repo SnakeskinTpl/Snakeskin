@@ -241,7 +241,7 @@ Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fNa
 				i: el.i,
 				key,
 				local: true,
-				value: el.value !== undefined ? el.value : 'void 0'
+				value: el.value !== undefined ? el.value : 'undefined'
 			};
 		}
 	});

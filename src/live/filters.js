@@ -118,10 +118,8 @@ Snakeskin.Filters['html'] = function (val, Unsafe, opt_attr, opt_force) {
 		return val;
 	}
 
-	console.log(121, val, Unsafe);
-
 	if (val instanceof Unsafe) {
-		return val.valueOf();
+		return val.value;
 	}
 
 	let res = String(val);

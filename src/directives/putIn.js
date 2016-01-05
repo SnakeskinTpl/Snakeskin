@@ -37,7 +37,7 @@ Snakeskin.addDirective(
 				parent.params.chunks++;
 				this.append(ws`
 					if (!${pos} && __RESULT__.length) {
-						${tmp}.push(__RESULT__);
+						${tmp}.push(${this.getReturnResultDecl()});
 						__RESULT__ = ${this.getResultDecl()};
 					}
 
@@ -51,7 +51,7 @@ Snakeskin.addDirective(
 					if (!${pos} && __RESULT__.length) {
 						${tmp}.push({
 							key: '${ref}',
-							value: Unsafe(__RESULT__)
+							value: Unsafe(${this.getReturnResultDecl()})
 						});
 
 						__RESULT__ = ${this.getResultDecl()};
@@ -64,7 +64,7 @@ Snakeskin.addDirective(
 
 			default:
 				this.append(ws`
-					${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
+					${this.declVars(`__CALL_CACHE__ = ${this.getReturnResultDecl()}`, {sys: true})}
 					__RESULT__ = ${this.getResultDecl()};
 				`);
 		}
@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 		switch (structure.parent.name) {
 			case 'call':
 				this.append(ws`
-					${tmp}.push(Unsafe(__RESULT__));
+					${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
 					__RESULT__ = ${this.getResultDecl()};
 				`);
 
@@ -91,7 +91,7 @@ Snakeskin.addDirective(
 				this.append(ws`
 					${tmp}.push({
 						key: '${ref}',
-						value: Unsafe(__RESULT__)
+						value: Unsafe(${this.getReturnResultDecl()})
 					});
 
 					__RESULT__ = ${this.getResultDecl()};
@@ -101,7 +101,7 @@ Snakeskin.addDirective(
 
 			default:
 				this.append(ws`
-					${this.out(`${ref} = __RESULT__`, {unsafe: true})};
+					${this.out(`${ref} = ${this.getReturnResultDecl()}`, {unsafe: true})};
 					__RESULT__ = ${this.getResultDecl()};
 				`);
 		}
