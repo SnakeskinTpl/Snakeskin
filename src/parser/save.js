@@ -108,7 +108,7 @@ Parser.prototype.getResultDecl = function () {
  */
 Parser.prototype.getReturnResultDecl = function () {
 	const
-		r = '__RESULT__ instanceof __RAW_RESULT__ ? __RESULT__.value : ';
+		r = '__RESULT__ instanceof Raw ? __RESULT__.value : ';
 
 	switch (this.renderMode) {
 		case 'stringBuffer':

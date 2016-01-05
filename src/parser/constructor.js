@@ -404,7 +404,7 @@ export default class Parser {
 						__VARS__ = Snakeskin.Vars,
 						__LOCAL__ = Snakeskin.LocalVars;
 
-					function __RAW_RESULT__(val) {
+					function Raw(val) {
 						this.value = val;
 						this.length = 1;
 					}

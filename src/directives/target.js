@@ -84,7 +84,7 @@ Snakeskin.addDirective(
 			case 'call':
 			case 'putIn':
 			case 'target':
-				this.append(`__RESULT__ = new __RESULT_TYPE__(${ref});`);
+				this.append(`__RESULT__ = new Raw(${ref});`);
 				break;
 
 			default:
