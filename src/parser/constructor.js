@@ -384,7 +384,7 @@ export default class Parser {
 						return this.value;
 					};
 
-					${this.declVars('$_')}
+					${this.declVars('$_', {sys: true})}
 		`;
 	};
 }

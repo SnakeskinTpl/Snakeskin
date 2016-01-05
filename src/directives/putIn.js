@@ -64,7 +64,7 @@ Snakeskin.addDirective(
 
 			default:
 				this.append(ws`
-					${this.declVars(`__CALL_CACHE__ = __RESULT__`)}
+					${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
 					__RESULT__ = ${this.getReturnDecl()};
 				`);
 		}

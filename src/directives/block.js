@@ -182,7 +182,7 @@ Snakeskin.addDirective(
 
 			if (args.params) {
 				const
-					fnDecl = structure.params.fn = `__BLOCKS__.${name}`;
+					fnDecl = structure.params.fn = `self.${name}`;
 
 				this.save(ws`
 					if (!${fnDecl}) {

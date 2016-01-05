@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 		this.startDir();
 
 		let
-			str = this.declVars(`__TARGET_REF__ = ${obj}`);
+			str = this.declVars(`__TARGET_REF__ = ${obj}`, {sys: true});
 
 		$C.extend(false, this.structure.params, {
 			ref: this.out('__TARGET_REF__', {unsafe: true})
@@ -46,11 +46,14 @@ Snakeskin.addDirective(
 		this.append(ws`
 			${str}
 
-			${this.declVars(ws`
-				__CALL_CACHE__ = __RESULT__,
-				__CALL_TMP__ = [],
-				__CALL_POS__ = 0
-			`)}
+			${this.declVars(
+				ws`
+					__CALL_CACHE__ = __RESULT__,
+					__CALL_TMP__ = [],
+					__CALL_POS__ = 0
+				`,
+				{sys: true}
+			)}
 
 			__RESULT__ = ${this.getReturnDecl()};
 		`);

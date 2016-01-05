@@ -95,7 +95,7 @@ Snakeskin.addDirective(
 		this.module = module;
 		this.info.file = command;
 		this.files[command] = true;
-		this.save(this.declVars('$_'));
+		this.save(this.declVars('$_', {sys: true}));
 	}
 );
 

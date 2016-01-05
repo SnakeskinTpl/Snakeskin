@@ -317,7 +317,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			const predefs = [
 				'callee',
-				'blocks',
+				'self',
 				'getTplResult',
 				'clearTplResult',
 				'$0',
@@ -334,13 +334,11 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			this.save(ws`
 				var
-					__THIS__ = this,
-					__CALLEE__ = __ROOT__${concatProp(tplName)},
-					callee = __CALLEE__;
+					__THIS__ = this;
 
 				var
-					__BLOCKS__ = __CALLEE__.Blocks = {},
-					self = __BLOCKS__;
+					callee = __ROOT__${concatProp(tplName)},
+					self = callee.Blocks = {};
 
 				var
 					__RESULT__ = ${this.getReturnDecl()},
