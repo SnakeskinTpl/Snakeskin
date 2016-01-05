@@ -28,19 +28,17 @@ import { ws } from '../helpers/string';
  */
 Parser.prototype.declVar = function (name, opt_params) {
 	const
-		p = $C.extend(false, {}, opt_params);
-
-	const
+		{fn, sys} = $C.extend(false, {}, opt_params),
 		{tplName, environment: {id}} = this;
 
 	let
 		{structure} = this;
 
-	if (!p.fn && tplName && $consts[tplName][name]) {
+	if (!fn && tplName && $consts[tplName][name]) {
 		this.error(`the variable "${name}" is already defined as a constant`);
 	}
 
-	if (!p.sys && SYS_CONSTS[name]) {
+	if (!sys && SYS_CONSTS[name]) {
 		return this.error(`can't declare the variable "${name}", try another name`);
 	}
 
@@ -105,7 +103,7 @@ Parser.prototype.declVar = function (name, opt_params) {
  */
 Parser.prototype.declVars = function (str, opt_params) {
 	const
-		p = $C.extend(false, {def: 'void 0', end: true}, opt_params);
+		{def, end, sys} = $C.extend(false, {def: 'void 0', end: true}, opt_params);
 
 	let
 		bOpen = 0,
@@ -141,10 +139,10 @@ Parser.prototype.declVars = function (str, opt_params) {
 
 			const
 				parts = cache.split('='),
-				realVar = this.declVar(parts[0].trim(), {sys: p.sys});
+				realVar = this.declVar(parts[0].trim(), {sys});
 
-			parts[0] = realVar + (p.def || parts[1] ? '=' : '');
-			parts[1] = parts[1] || p.def;
+			parts[0] = realVar + (def || parts[1] ? '=' : '');
+			parts[1] = parts[1] || def;
 
 			const
 				val = parts.slice(1).join('=');
@@ -162,7 +160,7 @@ Parser.prototype.declVars = function (str, opt_params) {
 		this.error(`invalid "${this.name}" declaration`);
 	}
 
-	return fin.slice(0, -1) + (p.end ? ';' : '');
+	return fin.slice(0, -1) + (end ? ';' : '');
 };
 
 /**
