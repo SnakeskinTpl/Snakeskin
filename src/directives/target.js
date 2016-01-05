@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 		});
 
 		if (ref) {
-			str += this.out(`var ${ref} = __TARGET_REF__;`, {unsafe: true});
+			str += this.out(`var ${ref} = __TARGET_REF__;`, {skipFirstWord: true, unsafe: true});
 		}
 
 		this.append(ws`
@@ -84,7 +84,7 @@ Snakeskin.addDirective(
 			case 'call':
 			case 'putIn':
 			case 'target':
-				this.append(`__RESULT__ = new Raw(${ref});`);
+				this.append(`__RESULT__ = new Data(${ref});`);
 				break;
 
 			default:

@@ -206,7 +206,7 @@ export const SYS_CONSTS = {
 	'FALSE': true,
 	'TPL_NAME': true,
 	'PARENT_TPL_NAME': true,
-	'Raw': true,
+	'Data': true,
 	'Unsafe': true,
 	'Snakeskin': true,
 	'getTplResult': true,

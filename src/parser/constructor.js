@@ -404,12 +404,16 @@ export default class Parser {
 						__VARS__ = Snakeskin.Vars,
 						__LOCAL__ = Snakeskin.LocalVars;
 
-					function Raw(val) {
+					function Data(val) {
+						if (!this || this.constructor !== Data) {
+							return new Data(val);
+						}
+
 						this.value = val;
 						this.length = 1;
 					}
 
-					Raw.prototype.push = function (val) {
+					Data.prototype.push = function (val) {
 						this.value += val;
 					};
 
