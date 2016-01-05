@@ -56,11 +56,9 @@ Parser.prototype.getXMLAttrsDeclBody = function (str) {
 Parser.prototype.getXMLAttrsDeclEnd = function () {
 	return ws`
 		Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
-			if (__NODE__) {
-				__NODE__.setAttribute(key, el);
-
-			} else {
-				${this.wrap(`' ' + key + (el && '="' + el + '"')`)}
+			${
+				this.renderMode === 'dom' && !this.domComment ?
+					'__NODE__.setAttribute(key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
 			}
 		});
 	`;

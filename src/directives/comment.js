@@ -23,10 +23,8 @@ Snakeskin.addDirective(
 		shorthands: {'/@': 'end comment', '@!': 'comment '}
 	},
 
-	function (command) {
-		this.startDir(null, {
-			conditional: Boolean(command)
-		});
+	function (condition) {
+		this.startDir(null, {condition});
 
 		let str;
 		if (this.renderMode === 'dom') {
@@ -37,8 +35,8 @@ Snakeskin.addDirective(
 			str = this.wrap(`'<!--'`);
 		}
 
-		if (command) {
-			str += this.wrap(`'[if ${this.replaceTplVars(command)}]>'`);
+		if (condition) {
+			str += this.wrap(`'[if ${this.replaceTplVars(condition)}]>'`);
 		}
 
 		this.append(str);
@@ -48,22 +46,22 @@ Snakeskin.addDirective(
 		this.domComment = false;
 
 		const
-			{conditional} = this.structure.params ? ' <![endif]' : '';
+			end = this.structure.params.condition ? ' <![endif]' : '';
 
 		let str;
 		if (this.renderMode === 'dom') {
 			str = ws`
-				'${conditional}'
-				__NODE__ = document.createComment(__COMMENT_RESULT__);
+				${this.wrap(`'${end}'`)}
+				$0 = __NODE__ = document.createComment(__COMMENT_RESULT__);
 				${this.getNodeDecl(true)}
 				__COMMENT_RESULT__ = '';
 			`;
 
 		} else {
-			str = `'${conditional}-->'`;
+			str = this.wrap(`'${end}-->'`);
 		}
 
-		this.append(this.wrap(str));
+		this.append(str);
 	}
 
 );
