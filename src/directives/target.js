@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 		});
 
 		if (ref) {
-			str += this.out(`var ${ref} = __TARGET_REF__;`, {skipFirstWord: true, unsafe: true});
+			str += this.out(`var ${ref} = __TARGET_REF__;`, {unsafe: true});
 		}
 
 		this.append(ws`

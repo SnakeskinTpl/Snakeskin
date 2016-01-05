@@ -409,6 +409,10 @@ export default class Parser {
 						this.length = 1;
 					}
 
+					Raw.prototype.push = function (val) {
+						this.value += val;
+					};
+
 					function Unsafe(val) {
 						if (!this || this.constructor !== Unsafe) {
 							if (typeof val === 'string') {
