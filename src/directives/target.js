@@ -68,14 +68,14 @@ Snakeskin.addDirective(
 			tmp = this.out('__CALL_TMP__', {unsafe: true});
 
 		this.append(ws`
-			if (__RESULT__.length) {
+			if (__LENGTH__(__RESULT__)) {
 				${tmp}.push({
 					key: undefined,
 					value: Unsafe(${this.getReturnResultDecl()})
 				});
 			}
 
-			Snakeskin.forEach(${tmp}, function (el) {
+			Snakeskin.forEach(${tmp}, function (el, i) {
 				${ref}[el.key || ${ref}.length] = el.value;
 			});
 		`);

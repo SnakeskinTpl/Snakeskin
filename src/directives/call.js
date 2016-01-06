@@ -47,7 +47,7 @@ Snakeskin.addDirective(
 			tmp = this.out('__CALL_TMP__', {unsafe: true});
 
 		this.append(ws`
-			if (__RESULT__.length) {
+			if (__LENGTH__(__RESULT__)) {
 				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
 				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
 			}

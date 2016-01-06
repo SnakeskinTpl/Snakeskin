@@ -202,6 +202,7 @@ export const SYS_CONSTS = {
 	'__LOCAL__': true,
 	'__THIS__': true,
 	'__INCLUDE__': true,
+	'__LENGTH__': true,
 	'TRUE': true,
 	'FALSE': true,
 	'TPL_NAME': true,
