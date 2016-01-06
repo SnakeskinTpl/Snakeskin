@@ -49,12 +49,12 @@ Snakeskin.addDirective(
 		this.append(ws`
 			if (__LENGTH__(__RESULT__)) {
 				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
-				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
 			}
 		`);
 
 		const
-			p = this.structure.params;
+			{structure} = this,
+			p = structure.params;
 
 		let
 			i = p.chunks,
@@ -95,7 +95,19 @@ Snakeskin.addDirective(
 			str = this.out(command, {unsafe: true});
 		}
 
-		this.append(this.wrap(str));
+		switch (structure.parent.name) {
+			case 'call':
+			case 'putIn':
+			case 'target':
+				this.append(`__RESULT__ = ${str};`);
+				break;
+
+			default:
+				this.append(ws`
+					__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+					${this.wrap(str)}
+				`);
+		}
 	}
 
 );

@@ -133,8 +133,8 @@ Snakeskin.appendChild = function (node, obj) {
 		return String(obj).trim();
 	}
 
-	if (isString(obj)) {
-		obj = document.createTextNode(obj);
+	if (obj instanceof Node === false) {
+		obj = document.createTextNode(String(obj));
 	}
 
 	node.appendChild(any(obj));
