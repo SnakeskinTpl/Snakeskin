@@ -533,7 +533,7 @@ Parser.prototype.out = function (command, opt_params) {
 					$C(Filters.get(current)['ssFilterParams']).forEach((el, key) => {
 						if (key[0] === '!') {
 							const
-								filter = el.slice(1);
+								filter = key.slice(1);
 
 							if (isGlobalFilter) {
 								cancelFilters[filter] = true;
