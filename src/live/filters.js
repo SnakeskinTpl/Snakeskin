@@ -9,8 +9,9 @@
  */
 
 import Snakeskin from '../core';
+import { isString, isObject } from '../helpers/types';
+import { attrSeparators } from '../consts/html';
 import { w } from '../consts/regs';
-import { isString } from '../helpers/types';
 
 /**
  * Imports an object to Snakeskin.Filters
@@ -24,22 +25,14 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 		obj = Snakeskin.Filters;
 
 	if (opt_namespace) {
-		const
-			parts = opt_namespace.split('.');
-
-		for (let i = -1; ++i < parts.length;) {
-			obj[parts[i]] = obj[parts[i]] || {};
-			obj = obj[parts[i]];
-		}
+		Snakeskin.forEach(opt_namespace.split('.'), (el) => {
+			obj[el] = obj[el] || {};
+			obj = obj[el];
+		});
 	}
 
-	for (let key in filters) {
-		if (!filters.hasOwnProperty(key)) {
-			continue;
-		}
-
-		obj[key] = filters[key];
-	}
+	Snakeskin.forEach(filters, (el, key) =>
+		obj[key] = el);
 
 	return this;
 };
@@ -62,10 +55,10 @@ Snakeskin.setFilterParams = function (filter, params) {
 };
 
 /**
- * Appends a value to a root node
+ * Appends a value to a node
  *
  * @param {?} val - source value
- * @param {(Node|undefined)} node - root node
+ * @param {(Node|undefined)} node - source node
  * @return {(string|!Node)}
  */
 Snakeskin.Filters['node'] = function (val, node) {
@@ -146,7 +139,7 @@ Snakeskin.setFilterParams('html', {
  * @param {?} val - source value
  * @return {?}
  */
-Snakeskin.Filters.undef = function (val) {
+Snakeskin.Filters['undef'] = function (val) {
 	return val !== undefined ? val : '';
 };
 
@@ -439,17 +432,56 @@ Snakeskin.Filters['nl2br']['ssFilterParams'] = {
 	'bind': ['$0']
 };
 
-Snakeskin.Filters['attr'] = function (val, cache) {
-	function convert(obj) {
-		Snakeskin.forEach(obj, (el) => {
+/**
+ * @param str
+ * @return {string}
+ */
+function dasherize(str) {
+	let res = str[0].toLowerCase();
 
-		});
+	for (let i = 1; i < str.length; i++) {
+		const
+			el = str.charAt(i);
+
+		if (el.toUpperCase() === el) {
+			res += `-${el}`;
+
+		} else {
+			res += el;
+		}
 	}
 
-	return '';
+	return res;
+}
+
+Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
+	function convert(obj, prfx = '') {
+		Snakeskin.forEach(obj, (el, key) => {
+			if (el === FALSE) {
+				return;
+			}
+
+			if (isObject(el)) {
+				return convert(el, prfx + attrSeparators[String(key).slice(-1)] ? key : `${key}-`);
+			}
+
+			const
+				attr = dasherize(prfx + key);
+
+			if (el === TRUE) {
+				el = doctype === 'xml' ? attr : '';
+			}
+
+			cache[attr] = el;
+		});
+
+		return '';
+	}
+
+	return convert(val);
 };
 
-Snakeskin.setFilterParams('default', {
+Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE']
+	'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE', (o) => o.doctype]
 });

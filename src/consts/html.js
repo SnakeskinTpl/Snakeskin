@@ -24,3 +24,9 @@ export const inlineTags = {
 	'track': true,
 	'wbr': true
 };
+
+export const attrSeparators = {
+	'-': true,
+	':': true,
+	'_': true
+};

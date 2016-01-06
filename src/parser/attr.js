@@ -12,6 +12,7 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
+import { attrSeparators } from '../consts/html';
 import { tplVars, classRef } from '../consts/regs';
 import { FILTER, LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
@@ -223,12 +224,6 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 	str =
 		this.replaceTplVars(str, {replace: true});
 
-	const separators = {
-		'-': true,
-		':': true,
-		'_': true
-	};
-
 	const
 		groups = [];
 
@@ -244,7 +239,7 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 			next = str[i + 1];
 
 		if (!pOpen) {
-			if (separators[el] && next === '(') {
+			if (attrSeparators[el] && next === '(') {
 				pOpen++;
 				i++;
 				separator = el;

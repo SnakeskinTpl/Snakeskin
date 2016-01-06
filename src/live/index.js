@@ -9,9 +9,9 @@
  */
 
 import Snakeskin from '../core';
-import { inlineTags } from '../consts/html';
 import { any } from '../helpers/gcc';
 import { isString, isArray } from '../helpers/types';
+import { inlineTags } from '../consts/html';
 import './filters';
 
 /**
