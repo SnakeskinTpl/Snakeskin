@@ -106,7 +106,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				$write[tplName] = false;
 			}
 
-			const fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
+			const fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
 			this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), {iface, jsDoc});
 
 			if (jsDoc) {

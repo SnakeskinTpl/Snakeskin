@@ -56,7 +56,7 @@ Parser.prototype.declCallbackArgs = function (parts) {
 		this.structure.params['@scope'] = true;
 	}
 
-	return args.join(',');
+	return args.join();
 };
 
 /**

@@ -297,7 +297,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const joinFilterParams = (params) =>
-		any($C(params).map((el) => isFunction(el) ? el(this) : el).join(','));
+		any($C(params).map((el) => isFunction(el) ? String(el(this)) : el).join());
 
 	/**
 	 * @param {string} str
