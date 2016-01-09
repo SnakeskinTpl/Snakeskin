@@ -40,6 +40,38 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 	return this;
 };
 
+Filters['console'] = {
+	'dir'(val) {
+		console.dir(val);
+		return val;
+	},
+
+	'error'(val) {
+		console.error(val);
+		return val;
+	},
+
+	'info'(val) {
+		console.info(val);
+		return val;
+	},
+
+	'log'(val) {
+		console.log(val);
+		return val;
+	},
+
+	'table'(val) {
+		console.table(val);
+		return val;
+	},
+
+	'warn'(val) {
+		console.warn(val);
+		return val;
+	}
+};
+
 /**
  * Sets parameters to the specified Snakeskin filter
  *
