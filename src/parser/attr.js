@@ -13,7 +13,7 @@ import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
-import { symbols, classRef } from '../consts/regs';
+import { attrKey, classRef } from '../consts/regs';
 import { FILTER, LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
@@ -162,9 +162,6 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 	}, '');
 };
 
-const
-	attrGroupRgxp = new RegExp(`([${symbols}0-9]+)`);
-
 /**
  * Splits a string of XML attribute declaration into groups
  *
@@ -213,7 +210,7 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 
 				if (!pOpen) {
 					const
-						tmp = attrGroupRgxp.exec(group);
+						tmp = attrKey.exec(group);
 
 					groups.push({
 						attr: attr.trim(),

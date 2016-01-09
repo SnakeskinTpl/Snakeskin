@@ -89,3 +89,6 @@ export const symbols =
 export const
 	filterStart = new RegExp(`[!$${symbols}_]`),
 	w = `${symbols}0-9_`;
+
+export const
+	attrKey = /([^\s=]+)/;

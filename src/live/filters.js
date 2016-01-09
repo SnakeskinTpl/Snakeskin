@@ -11,7 +11,7 @@
 import Snakeskin from '../core';
 import { isString, isObject, isFunction } from '../helpers/types';
 import { attrSeparators } from '../consts/html';
-import { w } from '../consts/regs';
+import { attrKey } from '../consts/regs';
 
 const
 	{Filters} = Snakeskin;
@@ -460,16 +460,13 @@ function dasherize(str) {
 	return res;
 }
 
-const
-	attrKeyRgxp = new RegExp(`([${w}\\-:]+)`);
-
 Filters['attrKey'] = Filters['attrKeyGroup'] = function (val) {
-	const tmp = attrKeyRgxp.exec(String(val));
+	const tmp = attrKey.exec(String(val));
 	return tmp && tmp[1] || 'undefined';
 };
 
 Filters['attrKeyGroup'] = function (val) {
-	const tmp = attrKeyRgxp.exec(String(val));
+	const tmp = attrKey.exec(String(val));
 	return tmp && tmp[1] || '';
 };
 
