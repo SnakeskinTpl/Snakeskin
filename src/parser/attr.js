@@ -13,7 +13,7 @@ import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
-import { classRef } from '../consts/regs';
+import { symbols, classRef } from '../consts/regs';
 import { FILTER, LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
@@ -65,42 +65,10 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 	`;
 };
 
-const
-	escapeEqRgxp = /===|==|([\\]+)=/g,
-	escapeOrRgxp = /\|\||([\\]+)\|/g;
-
-const
-	unEscapeEqRgxp = /__SNAKESKIN_EQ__(\d+)_(\d+)_/g,
-	unEscapeOrRgxp = /__SNAKESKIN_OR__(\d+)_(\d+)_/g;
-
-function escapeEq(sstr, $1) {
-	if ($1 && $1.length % 2 === 0) {
-		return sstr;
-	}
-
-	return `__SNAKESKIN_EQ__${sstr.split('=').length}_${$1.length}_`;
-}
-
-function escapeOr(sstr, $1) {
-	if ($1 && $1.length % 2 === 0) {
-		return sstr;
-	}
-
-	return `__SNAKESKIN_OR__${sstr.split('|').length}_${$1.length}_`;
-}
-
-function unEscapeEq(ignore, $1, $2) {
-	return new Array(Number($2)).join('\\') + new Array(Number($1)).join('=');
-}
-
-function unEscapeOr(ignore, $1, $2) {
-	return new Array(Number($2)).join('\\') + new Array(Number($1)).join('|');
-}
-
 /**
  * Returns string declaration of the specified XML attribute
  *
- * @param {{attr: string, group: (?string|undefined), separator: (?string|undefined)}} params - parameters:
+ * @param {{attr: string, group: (string|undefined), separator: (string|undefined)}} params - parameters:
  *
  *   *) attr - source attribute
  *   *) [group] - group name
@@ -110,16 +78,10 @@ function unEscapeOr(ignore, $1, $2) {
  */
 Parser.prototype.getXMLAttrDecl = function (params) {
 	let
-		{attr, group, separator} = params;
-
-	group = group || '';
-	separator = separator || '-';
-	attr = attr
-		.replace(escapeHTMLRgxp, escapeHTML)
-		.replace(escapeOrRgxp, escapeOr);
+		{group = '', separator = '-'} = params;
 
 	const
-		parts = attr.split('|'),
+		parts = params.attr.split(' | '),
 		ref = this.bemRef;
 
 	const
@@ -127,12 +89,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		e = RIGHT_BLOCK;
 
 	return $C(parts).reduce((res, el) => {
-		el = el
-			.replace(unEscapeOrRgxp, unEscapeOr)
-			.replace(escapeEqRgxp, escapeEq);
-
 		let
-			args = el.split('='),
+			args = el.split(' = '),
 			empty = args.length !== 2;
 
 		if (empty) {
@@ -146,7 +104,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		}
 
 		args = $C(args).map((el) =>
-			el.trim().replace(unEscapeEqRgxp, unEscapeEq));
+			el.trim());
 
 		res += ws`
 			__ATTR_POS__ = 0;
@@ -204,6 +162,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 	}, '');
 };
 
+const
+	attrGroupRgxp = new RegExp(`([${symbols}0-9]+)`);
+
 /**
  * Splits a string of XML attribute declaration into groups
  *
@@ -251,9 +212,12 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 				pOpen--;
 
 				if (!pOpen) {
+					const
+						tmp = attrGroupRgxp.exec(group);
+
 					groups.push({
 						attr: attr.trim(),
-						group,
+						group: tmp && tmp[1] || null,
 						separator
 					});
 

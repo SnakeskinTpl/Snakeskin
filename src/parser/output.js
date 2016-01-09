@@ -659,6 +659,8 @@ Parser.prototype.out = function (command, opt_params) {
 		if (!this.domComment && this.renderMode === 'dom') {
 			res = `__FILTERS__['node'](${res}, $0)`;
 		}
+
+		res = `__FILTERS__['htmlObject'](${res})`;
 	}
 
 	if (skipValidation !== false) {

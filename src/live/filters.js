@@ -13,8 +13,11 @@ import { isString, isObject, isFunction } from '../helpers/types';
 import { attrSeparators } from '../consts/html';
 import { w } from '../consts/regs';
 
+const
+	{Filters} = Snakeskin;
+
 /**
- * Imports an object to Snakeskin.Filters
+ * Imports an object to Filters
  *
  * @param {!Object} filters - import object
  * @param {?string=} [opt_namespace] - namespace for saving, for example foo.bar
@@ -22,7 +25,7 @@ import { w } from '../consts/regs';
  */
 Snakeskin.importFilters = function (filters, opt_namespace) {
 	let
-		obj = Snakeskin.Filters;
+		obj = Filters;
 
 	if (opt_namespace) {
 		Snakeskin.forEach(opt_namespace.split('.'), (el) => {
@@ -46,8 +49,8 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
  */
 Snakeskin.setFilterParams = function (filter, params) {
 	if (isString(filter)) {
-		Snakeskin.Filters[filter]['ssFilterParams'] = params;
-		return Snakeskin.Filters[filter];
+		Filters[filter]['ssFilterParams'] = params;
+		return Filters[filter];
 	}
 
 	filter['ssFilterParams'] = params;
@@ -61,7 +64,7 @@ Snakeskin.setFilterParams = function (filter, params) {
  * @param {(Node|undefined)} node - source node
  * @return {(string|!Node)}
  */
-Snakeskin.Filters['node'] = function (val, node) {
+Filters['node'] = function (val, node) {
 	if (node && typeof Node === 'function' && val instanceof Node) {
 		node.appendChild(val);
 		return '';
@@ -103,16 +106,32 @@ export const
  * @param {?string=} [opt_attr] - type of attr declaration
  * @return {(string|!Node)}
  */
-Snakeskin.Filters['html'] = function (val, opt_unsafe, opt_attr) {
+Filters['html'] = function (val, opt_unsafe, opt_attr) {
 	if (typeof Node === 'function' && val instanceof Node) {
 		return val;
+	}
+
+	if (val instanceof Snakeskin.HTMLObject) {
+		Snakeskin.forEach(val.value, (el, key, data) => {
+			data[key] = Filters['html'](el, opt_unsafe, val.attr);
+		});
+
+		return '';
 	}
 
 	if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
 		return val.value;
 	}
 
-	return String(opt_attr ? Snakeskin.Filters[opt_attr](val) : val).replace(escapeHTMLRgxp, escapeHTML);
+	return String(opt_attr ? Filters[opt_attr](val) : val).replace(escapeHTMLRgxp, escapeHTML);
+};
+
+Filters['htmlObject'] = function (val) {
+	if (val instanceof Snakeskin.HTMLObject) {
+		return '';
+	}
+
+	return val;
 };
 
 Snakeskin.setFilterParams('html', {
@@ -125,7 +144,7 @@ Snakeskin.setFilterParams('html', {
  * @param {?} val - source value
  * @return {?}
  */
-Snakeskin.Filters['undef'] = function (val) {
+Filters['undef'] = function (val) {
 	return val !== undefined ? val : '';
 };
 
@@ -135,7 +154,7 @@ Snakeskin.Filters['undef'] = function (val) {
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['uhtml'] = function (val) {
+Filters['uhtml'] = function (val) {
 	return String(val).replace(uescapeHTMLRgxp, uescapeHTML);
 };
 
@@ -148,7 +167,7 @@ const
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['stripTags'] = function (val) {
+Filters['stripTags'] = function (val) {
 	return String(val).replace(stripTagsRgxp, '');
 };
 
@@ -163,7 +182,7 @@ const
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['uri'] = function (val) {
+Filters['uri'] = function (val) {
 	return encodeURI(String(val))
 		.replace(uriO, '[')
 		.replace(uriC, ']');
@@ -175,7 +194,7 @@ Snakeskin.Filters['uri'] = function (val) {
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['upper'] = function (val) {
+Filters['upper'] = function (val) {
 	return String(val).toUpperCase();
 };
 
@@ -185,7 +204,7 @@ Snakeskin.Filters['upper'] = function (val) {
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['ucfirst'] = function (val) {
+Filters['ucfirst'] = function (val) {
 	val = String(val);
 	return val.charAt(0).toUpperCase() + val.slice(1);
 };
@@ -196,7 +215,7 @@ Snakeskin.Filters['ucfirst'] = function (val) {
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['lower'] = function (val) {
+Filters['lower'] = function (val) {
 	return String(val).toLowerCase();
 };
 
@@ -206,7 +225,7 @@ Snakeskin.Filters['lower'] = function (val) {
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['lcfirst'] = function (val) {
+Filters['lcfirst'] = function (val) {
 	val = String(val);
 	return val.charAt(0).toLowerCase() + val.slice(1);
 };
@@ -217,7 +236,7 @@ Snakeskin.Filters['lcfirst'] = function (val) {
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['trim'] = function (val) {
+Filters['trim'] = function (val) {
 	return String(val).trim();
 };
 
@@ -231,7 +250,7 @@ const
  * @param {?} val - source value
  * @return {string}
  */
-Snakeskin.Filters['collapse'] = function (val) {
+Filters['collapse'] = function (val) {
 	return String(val).replace(spaceCollapseRgxp, ' ').trim();
 };
 
@@ -247,7 +266,7 @@ Snakeskin.Filters['collapse'] = function (val) {
  * @param {?boolean=} [opt_html=false] - if is true, then the dots will be inserted as HTML-mnemonic
  * @return {string}
  */
-Snakeskin.Filters['truncate'] = function (val, length, opt_wordOnly, opt_html) {
+Filters['truncate'] = function (val, length, opt_wordOnly, opt_html) {
 	val = String(val);
 	if (!val || val.length <= length) {
 		return val;
@@ -279,7 +298,7 @@ Snakeskin.Filters['truncate'] = function (val, length, opt_wordOnly, opt_html) {
  * @param {?number=} [opt_num=2] - number of repetitions
  * @return {string}
  */
-Snakeskin.Filters['repeat'] = function (val, opt_num) {
+Filters['repeat'] = function (val, opt_num) {
 	return new Array(opt_num != null ? opt_num + 1 : 3).join(val);
 };
 
@@ -290,7 +309,7 @@ Snakeskin.Filters['repeat'] = function (val, opt_num) {
  * @param {(string|RegExp)} search - searching slice
  * @return {string}
  */
-Snakeskin.Filters['remove'] = function (val, search) {
+Filters['remove'] = function (val, search) {
 	return String(val).replace(search, '');
 };
 
@@ -302,7 +321,7 @@ Snakeskin.Filters['remove'] = function (val, search) {
  * @param {string} replace - string for replacing
  * @return {string}
  */
-Snakeskin.Filters['replace'] = function (val, search, replace) {
+Filters['replace'] = function (val, search, replace) {
 	return String(val).replace(search, replace);
 };
 
@@ -312,7 +331,7 @@ Snakeskin.Filters['replace'] = function (val, search, replace) {
  * @param {(Object|Array|string|number|boolean)} val - source value
  * @return {string}
  */
-Snakeskin.Filters['json'] = function (val) {
+Filters['json'] = function (val) {
 	return JSON.stringify(val);
 };
 
@@ -322,7 +341,7 @@ Snakeskin.Filters['json'] = function (val) {
  * @param {(Object|Array|string|number|boolean)} val - source value
  * @return {string}
  */
-Snakeskin.Filters['string'] = function (val) {
+Filters['string'] = function (val) {
 	if (isString(val) && val instanceof String === false) {
 		return JSON.stringify(val);
 	}
@@ -336,7 +355,7 @@ Snakeskin.Filters['string'] = function (val) {
  * @param {?} val - source value
  * @return {?}
  */
-Snakeskin.Filters['parse'] = function (val) {
+Filters['parse'] = function (val) {
 	if (!isString(val)) {
 		return val;
 	}
@@ -352,7 +371,7 @@ Snakeskin.Filters['parse'] = function (val) {
  * @param {?} part - second part of declaration
  * @return {string}
  */
-Snakeskin.Filters['bem'] = function (block, node, part) {
+Filters['bem'] = function (block, node, part) {
 	return String(block) + String(part);
 };
 
@@ -367,7 +386,7 @@ Snakeskin.setFilterParams('bem', {
  * @param {?} def - value
  * @return {?}
  */
-Snakeskin.Filters['default'] = function (val, def) {
+Filters['default'] = function (val, def) {
 	return val === undefined ? def : val;
 };
 
@@ -388,7 +407,7 @@ const
  * @param {!Object} map - map of values
  * @return {string}
  */
-Snakeskin.Filters['tpl'] = function (tpl, map) {
+Filters['tpl'] = function (tpl, map) {
 	return String(tpl).replace(tplRgxp, (sstr, $0) => $0 in map ? map[$0] : '');
 };
 
@@ -401,19 +420,19 @@ const
  * @param {?} val - source value
  * @return {?}
  */
-Snakeskin.Filters['nl2br'] = function (val) {
+Filters['nl2br'] = function (val) {
 	const
 		arr = val.split(nl2brRgxp);
 
 	let res = '';
 	for (let i = 0; i < arr.length; i++) {
-		res += `${Snakeskin.Filters['html'](arr[i])}<br>`;
+		res += `${Filters['html'](arr[i])}<br>`;
 	}
 
 	return res;
 };
 
-Snakeskin.Filters['nl2br']['ssFilterParams'] = {
+Filters['nl2br']['ssFilterParams'] = {
 	'!html': true,
 	'bind': ['$0']
 };
@@ -427,9 +446,10 @@ function dasherize(str) {
 
 	for (let i = 1; i < str.length; i++) {
 		const
-			el = str.charAt(i);
+			el = str.charAt(i),
+			up = el.toUpperCase();
 
-		if (el.toUpperCase() === el) {
+		if (up === el && up !== el.toLowerCase()) {
 			res += `-${el}`;
 
 		} else {
@@ -441,21 +461,26 @@ function dasherize(str) {
 }
 
 const
-	attrKeyRgxp = new RegExp(`([${w}\\-:]+)`),
-	attrValRgxp = /(javascript)(:|;)/g;
+	attrKeyRgxp = new RegExp(`([${w}\\-:]+)`);
 
-Snakeskin.Filters['attrKey'] = function (val) {
+Filters['attrKey'] = Filters['attrKeyGroup'] = function (val) {
+	const tmp = attrKeyRgxp.exec(String(val));
+	return tmp && tmp[1] || 'undefined';
+};
+
+Filters['attrKeyGroup'] = function (val) {
 	const tmp = attrKeyRgxp.exec(String(val));
 	return tmp && tmp[1] || '';
 };
 
-Snakeskin.Filters['attrKeyGroup'] = Snakeskin.Filters['attrKey'];
+const
+	attrValRgxp = /(javascript)(:|;)/g;
 
-Snakeskin.Filters['attrVal'] = function (val) {
+Filters['attrVal'] = function (val) {
 	return String(val).replace(attrValRgxp, '$1&#31;$2');
 };
 
-Snakeskin.Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
+Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
 	if (type !== 'attrKey') {
 		return String(val);
 	}
@@ -467,11 +492,12 @@ Snakeskin.Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
 			}
 
 			if (isObject(el)) {
-				return convert(el, prfx + attrSeparators[String(key).slice(-1)] ? key : `${key}-`);
+				const group = Filters['attrKeyGroup'](key);
+				return convert(el, prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : `${group}-`));
 			}
 
 			const
-				attr = dasherize(prfx + key);
+				attr = Filters['attrKey'](dasherize(prfx + key));
 
 			if (el === TRUE) {
 				el = doctype === 'xml' ? attr : '';
@@ -480,7 +506,7 @@ Snakeskin.Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
 			cache[attr] = el;
 		});
 
-		return '';
+		return new Snakeskin.HTMLObject(cache, 'attrVal');
 	}
 
 	return convert(val);
