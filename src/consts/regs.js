@@ -17,8 +17,7 @@ export const
 	scopeMod = new RegExp(`^${r(G_MOD)}+`);
 
 export const
-	escaperPart = /^__ESCAPER_QUOT__\d+_/,
-	tplVars = /__SNAKESKIN__(\d+)_/g;
+	escaperPart = /^__ESCAPER_QUOT__\d+_/;
 
 export const
 	emptyCommandParams = /^([^\s]+?\(|\()/,

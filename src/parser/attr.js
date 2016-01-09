@@ -13,7 +13,7 @@ import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
-import { tplVars, classRef } from '../consts/regs';
+import { classRef } from '../consts/regs';
 import { FILTER, LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
@@ -149,14 +149,18 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			el.trim().replace(unEscapeEqRgxp, unEscapeEq));
 
 		res += ws`
-			var
-				__ATTR_POS__ = 0,
-				__ATTR_STR__ = '',
-				__ATTR_TMP__;
+			__ATTR_POS__ = 0;
+			__ATTR_STR__ = '';
+			__ATTR_TYPE__ = 'attrVal';
 		`;
 
 		if (group) {
-			args[0] = group + separator + args[0];
+			args[0] = ws`
+				' + (__ATTR_TYPE__ = 'attrKeyGroup', '') +
+				'${group}${separator}' +
+				(__ATTR_TYPE__ = 'attrKey', '') +
+				'${args[0]}
+			`;
 
 		} else {
 			args[0] = args[0][0] === '-' ? `data-${args[0].slice(1)}` : args[0];
@@ -168,10 +172,10 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 				val = this.pasteDangerBlocks(this.replaceTplVars(val));
 			}
 
-			val = `'${this.pasteTplVarBlocks(val)}'`;
 			return ws`
 				${res}
-				__ATTR_TMP__ = ${val};
+				__ATTR_TMP__ = '${this.pasteTplVarBlocks(val)}';
+
 				if (__ATTR_TMP__ != null && __ATTR_TMP__ !== '') {
 					__ATTR_STR__ += __ATTR_POS__ ? ' ' + __ATTR_TMP__ : __ATTR_TMP__;
 					__ATTR_POS__++;
@@ -180,19 +184,21 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		}, '');
 
-		args[0] = `'${this.pasteTplVarBlocks(args[0])}'`;
-
 		const
 			isDOMRenderMode = !this.domComment && this.renderMode === 'dom';
 
 		return ws`
 			${res}
-			__ATTR_TMP__ = ${args[0]};
+			__ATTR_TYPE__ = 'attrKey';
+			__ATTR_TMP__ = '${this.pasteTplVarBlocks(args[0])}';
+
 			if (__ATTR_TMP__ != null && __ATTR_TMP__ != '') {
 				__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || '';
 				${isDOMRenderMode ? '' : `__ATTR_CACHE__[__ATTR_TMP__] += __ATTR_CACHE__[__ATTR_TMP__] ? ' ' : '';`}
 				__ATTR_CACHE__[__ATTR_TMP__] += ${empty ? isDOMRenderMode ? '__ATTR_TMP__' : `''` : '__ATTR_STR__'};
 			}
+
+			__ATTR_POS__ = __ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 		`;
 
 	}, '');
@@ -247,7 +253,7 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 				if (!pOpen) {
 					groups.push({
 						attr: attr.trim(),
-						group: Snakeskin.Filters.html(group).trim(),
+						group,
 						separator
 					});
 

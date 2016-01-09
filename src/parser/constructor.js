@@ -393,6 +393,12 @@ export default class Parser {
 						FALSE = new Boolean(false);
 
 					var
+						__ATTR_POS__,
+						__ATTR_STR__,
+						__ATTR_TMP__,
+						__ATTR_TYPE__;
+
+					var
 						__APPEND__ = Snakeskin.appendChild,
 						__FILTERS__ = Snakeskin.Filters,
 						__VARS__ = Snakeskin.Vars,

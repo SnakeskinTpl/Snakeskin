@@ -193,6 +193,7 @@ export const SYS_CONSTS = {
 	'__ATTR_STR__': true,
 	'__ATTR_CONCAT_MAP__': true,
 	'__ATTR_CACHE__': true,
+	'__ATTR_TYPE__': true,
 	'__TARGET_REF__': true,
 	'__CALL_POS__': true,
 	'__CALL_TMP__': true,

@@ -30,6 +30,24 @@ import {
 
 } from '../consts/literals';
 
+const
+	tplVarsRgxp = /__SNAKESKIN__(\d+)_/g;
+
+/**
+ * Replaces all found blocks __SNAKESKIN__\d+_ to real content in a string
+ * and returns a new string
+ *
+ * @param {string} str - source string
+ * @param {(?function(string): string)=} [opt_fn] - function wrapper
+ * @return {string}
+ */
+Parser.prototype.pasteTplVarBlocks = function (str, opt_fn) {
+	return str.replace(tplVarsRgxp, (sstr, pos) => {
+		const val = this.dirContent[pos];
+		return `' + ${opt_fn ? opt_fn(val) : val} + '`;
+	});
+};
+
 /**
  * Replaces found matches ${ ... } from a string to SS calls
  *
@@ -42,9 +60,10 @@ import {
  *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
  *   *) [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_
  *
+ * @param {(?function(string): string)=} [opt_wrap] - function wrapper
  * @return {string}
  */
-Parser.prototype.replaceTplVars = function (str, opt_params) {
+Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 	const {unsafe, replace} = $C.extend(false, {}, opt_params);
 	str = this.pasteDangerBlocks(str);
 
@@ -168,15 +187,19 @@ Parser.prototype.replaceTplVars = function (str, opt_params) {
 			} else {
 				escape = false;
 
-				let
-					tmp = `' + ${this.out(this.replaceDangerBlocks(dir).trim() || `''`, {unsafe})} + '`;
+				if (opt_wrap) {
+					dir = opt_wrap(dir);
+				}
+
+				const
+					tmp = this.out(this.replaceDangerBlocks(dir).trim() || `''`, {unsafe});
 
 				if (replace) {
 					res += `__SNAKESKIN__${this.dirContent.length}_`;
 					this.dirContent.push(tmp);
 
 				} else {
-					res += tmp;
+					res += `' + ${tmp} + '`;
 				}
 			}
 

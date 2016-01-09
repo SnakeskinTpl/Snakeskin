@@ -10,7 +10,6 @@
 
 import escaper from '../deps/escaper';
 import Parser from './constructor';
-import { tplVars } from '../consts/regs';
 
 /**
  * @see Escaper.replace
@@ -28,15 +27,4 @@ Parser.prototype.replaceDangerBlocks = function (str) {
  */
 Parser.prototype.pasteDangerBlocks = function (str) {
 	return escaper.paste(str, this.quotContent);
-};
-
-/**
- * Replaces all found blocks __SNAKESKIN__\d+_ to real content in a string
- * and returns a new string
- *
- * @param {string} str - source string
- * @return {string}
- */
-Parser.prototype.pasteTplVarBlocks = function (str) {
-	return str.replace(tplVars, (sstr, pos) => this.dirContent[pos]);
 };

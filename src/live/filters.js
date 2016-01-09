@@ -100,9 +100,10 @@ export const
  *
  * @param {?} val - source value
  * @param {?=} [opt_unsafe] - instance of the Unsafe class
+ * @param {?string=} [opt_attr] - type of attr declaration
  * @return {(string|!Node)}
  */
-Snakeskin.Filters['html'] = function (val, opt_unsafe) {
+Snakeskin.Filters['html'] = function (val, opt_unsafe, opt_attr) {
 	if (typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
@@ -111,11 +112,11 @@ Snakeskin.Filters['html'] = function (val, opt_unsafe) {
 		return val.value;
 	}
 
-	return String(val).replace(escapeHTMLRgxp, escapeHTML);
+	return String(opt_attr ? Snakeskin.Filters[opt_attr](val) : val).replace(escapeHTMLRgxp, escapeHTML);
 };
 
 Snakeskin.setFilterParams('html', {
-	'bind': ['Unsafe']
+	'bind': ['Unsafe', '__ATTR_TYPE__']
 });
 
 /**
@@ -406,7 +407,7 @@ Snakeskin.Filters['nl2br'] = function (val) {
 
 	let res = '';
 	for (let i = 0; i < arr.length; i++) {
-		res += `${Snakeskin.Filters.html(arr[i])}<br>`;
+		res += `${Snakeskin.Filters['html'](arr[i])}<br>`;
 	}
 
 	return res;
@@ -440,10 +441,25 @@ function dasherize(str) {
 }
 
 const
-	escapeAttrRgxp = new RegExp(`([$${w}]\\s*=\\s*)([^"'\\s>=]+)`, 'g'),
-	escapeJSRgxp = /(javascript)(:|;)/;
+	attrKeyRgxp = new RegExp(`([${w}\\-:]+)`),
+	attrValRgxp = /(javascript)(:|;)/g;
 
-Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
+Snakeskin.Filters['attrKey'] = function (val) {
+	const tmp = attrKeyRgxp.exec(String(val));
+	return tmp && tmp[1] || '';
+};
+
+Snakeskin.Filters['attrKeyGroup'] = Snakeskin.Filters['attrKey'];
+
+Snakeskin.Filters['attrVal'] = function (val) {
+	return String(val).replace(attrValRgxp, '$1&#31;$2');
+};
+
+Snakeskin.Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
+	if (type !== 'attrKey') {
+		return String(val);
+	}
+
 	function convert(obj, prfx = '') {
 		Snakeskin.forEach(obj, (el, key) => {
 			if (el === FALSE) {
@@ -472,5 +488,5 @@ Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE', (o) => `'${o.doctype}'`]
+	'bind': ['__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE', (o) => `'${o.doctype}'`]
 });
