@@ -206,12 +206,6 @@ export default class Parser {
 		/** @type {number} */
 		this.freezeLine = 0;
 
-		/** @type {boolean} */
-		this.attr = false;
-
-		/** @type {boolean} */
-		this.attrEscape = false;
-
 		// <<<
 
 		/**

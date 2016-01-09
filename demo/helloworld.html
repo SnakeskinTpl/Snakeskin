@@ -14,28 +14,15 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			@= renderMode 'dom'
 			- template foo()
-				- target {} as bar
-					* foo
-						< .foo
-
-				//? console.log(bar)
-				- return Data(bar)
-
-			- template bar()
-				1
-				- target [] as baz
-					+= foo()
-				{baz[0].foo}
-				2
+				< div ${'foo'} = ${'bar'}
 		</script>
 
 		<script>
 			var d = {};
 			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
-			//console.log(d.code);
-			console.log(bar());
+			console.log(d.code);
+			console.log(foo());
 		</script>
 	</body>
 </html>

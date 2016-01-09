@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 06 Jan 2016 09:56:17 GMT
+ * Date: 'Sat, 09 Jan 2016 11:15:37 GMT
  */
 
 (function (global, factory) {
@@ -73,23 +73,6 @@
      */
     Snakeskin.cache = {};
 
-        var inlineTags = {
-    	'area': true,
-    	'base': true,
-    	'br': true,
-    	'col': true,
-    	'embed': true,
-    	'hr': true,
-    	'img': true,
-    	'input': true,
-    	'link': true,
-    	'meta': true,
-    	'param': true,
-    	'source': true,
-    	'track': true,
-    	'wbr': true
-    };
-
     /**
      * Returns an object with an undefined type
      * (for the GCC)
@@ -99,6 +82,17 @@
      */
     function any(val) {
       return val;
+    }
+
+        /**
+     * Returns true if the specified value is a function
+     *
+     * @param {?} obj - source value
+     * @return {boolean}
+     */
+
+    function isFunction(obj) {
+      return typeof obj === 'function';
     }
 
     /**
@@ -121,6 +115,39 @@
       return Array.isArray(obj);
     }
 
+    /**
+     * Returns true if the specified value is a plain object
+     *
+     * @param {?} obj - source value
+     * @return {boolean}
+     */
+    function isObject(obj) {
+      return Boolean(obj) && obj.constructor === Object;
+    }
+
+        var inlineTags = {
+    	'area': true,
+    	'base': true,
+    	'br': true,
+    	'col': true,
+    	'embed': true,
+    	'hr': true,
+    	'img': true,
+    	'input': true,
+    	'link': true,
+    	'meta': true,
+    	'param': true,
+    	'source': true,
+    	'track': true,
+    	'wbr': true
+    };
+
+    var attrSeparators = {
+    	'-': true,
+    	':': true,
+    	'_': true
+    };
+
     var IS_NODE = (function () {
     	try {
     		return (typeof process === 'undefined' ? 'undefined' : babelHelpers_typeof(process)) === 'object' && ({}).toString.call(process) === '[object process]';
@@ -128,6 +155,9 @@
     		return false;
     	}
     })();
+
+    var HAS_CONSOLE_LOG = typeof console !== 'undefined' && isFunction(console.log);
+    var HAS_CONSOLE_ERROR = typeof console !== 'undefined' && isFunction(console.error);
 
     var GLOBAL = new Function('return this')();
     var ROOT = IS_NODE ? exports : GLOBAL;
@@ -227,21 +257,15 @@
       var obj = Snakeskin.Filters;
 
       if (opt_namespace) {
-        var parts = opt_namespace.split('.');
-
-        for (var i = -1; ++i < parts.length;) {
-          obj[parts[i]] = obj[parts[i]] || {};
-          obj = obj[parts[i]];
-        }
+        Snakeskin.forEach(opt_namespace.split('.'), function (el) {
+          obj[el] = obj[el] || {};
+          obj = obj[el];
+        });
       }
 
-      for (var key in filters) {
-        if (!filters.hasOwnProperty(key)) {
-          continue;
-        }
-
-        obj[key] = filters[key];
-      }
+      Snakeskin.forEach(filters, function (el, key) {
+        return obj[key] = el;
+      });
 
       return this;
     };
@@ -264,10 +288,10 @@
     };
 
     /**
-     * Appends a value to a root node
+     * Appends a value to a node
      *
      * @param {?} val - source value
-     * @param {(Node|undefined)} node - root node
+     * @param {(Node|undefined)} node - source node
      * @return {(string|!Node)}
      */
     Snakeskin.Filters['node'] = function (val, node) {
@@ -288,7 +312,6 @@
     };
 
     var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g;
-    var escapeJSRgxp = /(javascript)(:|;)/;
     var escapeHTML = function escapeHTML(s) {
       return entityMap[s] || s;
     };
@@ -309,40 +332,23 @@
      * Escapes HTML entities from a string
      *
      * @param {?} val - source value
-     * @param {?} Unsafe - instance of the Unsafe class
-     * @param {?boolean=} opt_attr - if is true, then should be additional escaping for html attributes
-     * @param {?boolean=} opt_force - if is true, then attributes will be escaped forcibly
+     * @param {?=} [opt_unsafe] - instance of the Unsafe class
      * @return {(string|!Node)}
      */
-    Snakeskin.Filters['html'] = function (val, Unsafe, opt_attr, opt_force) {
+    Snakeskin.Filters['html'] = function (val, opt_unsafe) {
       if (typeof Node === 'function' && val instanceof Node) {
         return val;
       }
 
-      if (val instanceof Unsafe) {
+      if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
         return val.value;
       }
 
-      var res = String(val);
-      if (opt_attr && opt_force) {
-        // res = res.replace(escapeAttrRgxp, '$1"$2"');
-      }
-
-      res = res.replace(escapeHTMLRgxp, escapeHTML);
-
-      if (opt_attr) {
-        res = res.replace(escapeJSRgxp, '$1&#31;$2');
-      }
-
-      return res;
+      return String(val).replace(escapeHTMLRgxp, escapeHTML);
     };
 
     Snakeskin.setFilterParams('html', {
-      'bind': ['Unsafe', function (o) {
-        return o.attr;
-      }, function (o) {
-        return o.attrEscape;
-      }]
+      'bind': ['Unsafe']
     });
 
     /**
@@ -351,7 +357,7 @@
      * @param {?} val - source value
      * @return {?}
      */
-    Snakeskin.Filters.undef = function (val) {
+    Snakeskin.Filters['undef'] = function (val) {
       return val !== undefined ? val : '';
     };
 
@@ -634,17 +640,63 @@
       'bind': ['$0']
     };
 
-    Snakeskin.Filters['attr'] = function (val, cache) {
-      function convert(obj) {
-        Snakeskin.forEach(obj, function (el) {});
+    /**
+     * @param str
+     * @return {string}
+     */
+    function dasherize(str) {
+      var res = str[0].toLowerCase();
+
+      for (var i = 1; i < str.length; i++) {
+        var el = str.charAt(i);
+
+        if (el.toUpperCase() === el) {
+          res += '-' + el;
+        } else {
+          res += el;
+        }
       }
 
-      return '';
+      return res;
+    }
+
+    Snakeskin.Filters['attrKey'] = function (val) {};
+
+    Snakeskin.Filters['attrVal'] = function (val) {};
+
+    Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
+      function convert(obj) {
+        var prfx = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+
+        Snakeskin.forEach(obj, function (el, key) {
+          if (el === FALSE) {
+            return;
+          }
+
+          if (isObject(el)) {
+            return convert(el, prfx + attrSeparators[String(key).slice(-1)] ? key : key + '-');
+          }
+
+          var attr = dasherize(prfx + key);
+
+          if (el === TRUE) {
+            el = doctype === 'xml' ? attr : '';
+          }
+
+          cache[attr] = el;
+        });
+
+        return '';
+      }
+
+      return convert(val);
     };
 
-    Snakeskin.setFilterParams('default', {
+    Snakeskin.setFilterParams('attr', {
       '!html': true,
-      'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE']
+      'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE', function (o) {
+        return '\'' + o.doctype + '\'';
+      }]
     });
 
     /**

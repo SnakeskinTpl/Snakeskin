@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 06 Jan 2016 09:56:17 GMT
+ * Date: 'Sat, 09 Jan 2016 11:15:37 GMT
  */
 
 (function (global, factory) {
@@ -418,12 +418,6 @@
     	/** @type {number} */
     	this.freezeLine = 0;
 
-    	/** @type {boolean} */
-    	this.attr = false;
-
-    	/** @type {boolean} */
-    	this.attrEscape = false;
-
     	// <<<
 
     	/**
@@ -708,6 +702,7 @@
     	'__CDATA__': true,
     	'__RETURN__': true,
     	'__RETURN_VAL__': true,
+    	'__ATTR_TMP__': true,
     	'__ATTR_POS__': true,
     	'__ATTR_STR__': true,
     	'__ATTR_CONCAT_MAP__': true,
@@ -839,7 +834,7 @@
     		this.structure.params['@scope'] = true;
     	}
 
-    	return args.join(',');
+    	return args.join();
     };
 
     /**
@@ -2950,8 +2945,8 @@
       */
     	var joinFilterParams = function joinFilterParams(params) {
     		return any($C$1(params).map(function (el) {
-    			return isFunction(el) ? el(_this) : el;
-    		}).join(','));
+    			return isFunction(el) ? String(el(_this)) : el;
+    		}).join());
     	};
 
     	/**
@@ -3156,7 +3151,7 @@
     					if (Filters.in(current)) {
     						$C$1(Filters.get(current)['ssFilterParams']).forEach(function (el, key) {
     							if (key[0] === '!') {
-    								var filter = el.slice(1);
+    								var filter = key.slice(1);
 
     								if (isGlobalFilter) {
     									cancelFilters[filter] = true;
@@ -3796,6 +3791,29 @@
     	return ws$1(_templateObject$18, this.declVars('arguments = __ARGUMENTS__'));
     };
 
+        var inlineTags = {
+    	'area': true,
+    	'base': true,
+    	'br': true,
+    	'col': true,
+    	'embed': true,
+    	'hr': true,
+    	'img': true,
+    	'input': true,
+    	'link': true,
+    	'meta': true,
+    	'param': true,
+    	'source': true,
+    	'track': true,
+    	'wbr': true
+    };
+
+    var attrSeparators = {
+    	'-': true,
+    	':': true,
+    	'_': true
+    };
+
     /**
      * Imports an object to Snakeskin.Filters
      *
@@ -3807,21 +3825,15 @@
       var obj = Snakeskin.Filters;
 
       if (opt_namespace) {
-        var parts = opt_namespace.split('.');
-
-        for (var i = -1; ++i < parts.length;) {
-          obj[parts[i]] = obj[parts[i]] || {};
-          obj = obj[parts[i]];
-        }
+        Snakeskin.forEach(opt_namespace.split('.'), function (el) {
+          obj[el] = obj[el] || {};
+          obj = obj[el];
+        });
       }
 
-      for (var key in filters) {
-        if (!filters.hasOwnProperty(key)) {
-          continue;
-        }
-
-        obj[key] = filters[key];
-      }
+      Snakeskin.forEach(filters, function (el, key) {
+        return obj[key] = el;
+      });
 
       return this;
     };
@@ -3844,10 +3856,10 @@
     };
 
     /**
-     * Appends a value to a root node
+     * Appends a value to a node
      *
      * @param {?} val - source value
-     * @param {(Node|undefined)} node - root node
+     * @param {(Node|undefined)} node - source node
      * @return {(string|!Node)}
      */
     Snakeskin.Filters['node'] = function (val, node) {
@@ -3869,7 +3881,6 @@
 
     var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g;
     var escapeAttrRgxp = new RegExp('([$' + w + ']\\s*=\\s*)([^"\'\\s>=]+)', 'g');
-    var escapeJSRgxp = /(javascript)(:|;)/;
     var escapeHTML = function escapeHTML(s) {
       return entityMap[s] || s;
     };
@@ -3890,40 +3901,23 @@
      * Escapes HTML entities from a string
      *
      * @param {?} val - source value
-     * @param {?} Unsafe - instance of the Unsafe class
-     * @param {?boolean=} opt_attr - if is true, then should be additional escaping for html attributes
-     * @param {?boolean=} opt_force - if is true, then attributes will be escaped forcibly
+     * @param {?=} [opt_unsafe] - instance of the Unsafe class
      * @return {(string|!Node)}
      */
-    Snakeskin.Filters['html'] = function (val, Unsafe, opt_attr, opt_force) {
+    Snakeskin.Filters['html'] = function (val, opt_unsafe) {
       if (typeof Node === 'function' && val instanceof Node) {
         return val;
       }
 
-      if (val instanceof Unsafe) {
+      if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
         return val.value;
       }
 
-      var res = String(val);
-      if (opt_attr && opt_force) {
-        // res = res.replace(escapeAttrRgxp, '$1"$2"');
-      }
-
-      res = res.replace(escapeHTMLRgxp, escapeHTML);
-
-      if (opt_attr) {
-        res = res.replace(escapeJSRgxp, '$1&#31;$2');
-      }
-
-      return res;
+      return String(val).replace(escapeHTMLRgxp, escapeHTML);
     };
 
     Snakeskin.setFilterParams('html', {
-      'bind': ['Unsafe', function (o) {
-        return o.attr;
-      }, function (o) {
-        return o.attrEscape;
-      }]
+      'bind': ['Unsafe']
     });
 
     /**
@@ -3932,7 +3926,7 @@
      * @param {?} val - source value
      * @return {?}
      */
-    Snakeskin.Filters.undef = function (val) {
+    Snakeskin.Filters['undef'] = function (val) {
       return val !== undefined ? val : '';
     };
 
@@ -4215,24 +4209,70 @@
       'bind': ['$0']
     };
 
-    Snakeskin.Filters['attr'] = function (val, cache) {
-      function convert(obj) {
-        Snakeskin.forEach(obj, function (el) {});
+    /**
+     * @param str
+     * @return {string}
+     */
+    function dasherize(str) {
+      var res = str[0].toLowerCase();
+
+      for (var i = 1; i < str.length; i++) {
+        var el = str.charAt(i);
+
+        if (el.toUpperCase() === el) {
+          res += '-' + el;
+        } else {
+          res += el;
+        }
       }
 
-      return '';
+      return res;
+    }
+
+    Snakeskin.Filters['attrKey'] = function (val) {};
+
+    Snakeskin.Filters['attrVal'] = function (val) {};
+
+    Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
+      function convert(obj) {
+        var prfx = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+
+        Snakeskin.forEach(obj, function (el, key) {
+          if (el === FALSE) {
+            return;
+          }
+
+          if (isObject(el)) {
+            return convert(el, prfx + attrSeparators[String(key).slice(-1)] ? key : key + '-');
+          }
+
+          var attr = dasherize(prfx + key);
+
+          if (el === TRUE) {
+            el = doctype === 'xml' ? attr : '';
+          }
+
+          cache[attr] = el;
+        });
+
+        return '';
+      }
+
+      return convert(val);
     };
 
-    Snakeskin.setFilterParams('default', {
+    Snakeskin.setFilterParams('attr', {
       '!html': true,
-      'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE']
+      'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE', function (o) {
+        return '\'' + o.doctype + '\'';
+      }]
     });
 
     var _templateObject$19 = babelHelpers_taggedTemplateLiteral(['\n\t\tvar\n\t\t\t__ATTR_CACHE__ = {},\n\t\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\t'], ['\n\t\tvar\n\t\t\t__ATTR_CACHE__ = {},\n\t\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\t']);
     var _templateObject2$13 = babelHelpers_taggedTemplateLiteral(['\n\t\tSnakeskin.forEach(__ATTR_CACHE__, function (el, key) {\n\t\t\t', '\n\t\t});\n\t'], ['\n\t\tSnakeskin.forEach(__ATTR_CACHE__, function (el, key) {\n\t\t\t', '\n\t\t});\n\t']);
-    var _templateObject3$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\t__ATTR_POS__ = 0,\n\t\t\t\t__ATTR_STR__ = \'\';\n\t\t'], ['\n\t\t\tvar\n\t\t\t\t__ATTR_POS__ = 0,\n\t\t\t\t__ATTR_STR__ = \'\';\n\t\t']);
-    var _templateObject4$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\tif ((', ') != null && (', ') !== \'\') {\n\t\t\t\t\t__ATTR_STR__ += __ATTR_POS__ ? \' \' + ', ' : ', ';\n\t\t\t\t\t__ATTR_POS__++;\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\tif ((', ') != null && (', ') !== \'\') {\n\t\t\t\t\t__ATTR_STR__ += __ATTR_POS__ ? \' \' + ', ' : ', ';\n\t\t\t\t\t__ATTR_POS__++;\n\t\t\t\t}\n\t\t\t']);
-    var _templateObject5$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\t\t\tif ((', ') != null && (', ') != \'\') {\n\t\t\t\t__ATTR_CACHE__[', '] = __ATTR_CONCAT_MAP__[', '] && __ATTR_CACHE__[', '] || \'\';\n\t\t\t\t', '\n\t\t\t\t__ATTR_CACHE__[', '] += ', '\n\t\t\t}\n\t\t'], ['\n\t\t\t', '\n\t\t\tif ((', ') != null && (', ') != \'\') {\n\t\t\t\t__ATTR_CACHE__[', '] = __ATTR_CONCAT_MAP__[', '] && __ATTR_CACHE__[', '] || \'\';\n\t\t\t\t', '\n\t\t\t\t__ATTR_CACHE__[', '] += ', '\n\t\t\t}\n\t\t']);
+    var _templateObject3$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\t__ATTR_POS__ = 0,\n\t\t\t\t__ATTR_STR__ = \'\',\n\t\t\t\t__ATTR_TMP__;\n\t\t'], ['\n\t\t\tvar\n\t\t\t\t__ATTR_POS__ = 0,\n\t\t\t\t__ATTR_STR__ = \'\',\n\t\t\t\t__ATTR_TMP__;\n\t\t']);
+    var _templateObject4$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__ATTR_TMP__ = ', ';\n\t\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ !== \'\') {\n\t\t\t\t\t__ATTR_STR__ += __ATTR_POS__ ? \' \' + __ATTR_TMP__ : __ATTR_TMP__;\n\t\t\t\t\t__ATTR_POS__++;\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__ATTR_TMP__ = ', ';\n\t\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ !== \'\') {\n\t\t\t\t\t__ATTR_STR__ += __ATTR_POS__ ? \' \' + __ATTR_TMP__ : __ATTR_TMP__;\n\t\t\t\t\t__ATTR_POS__++;\n\t\t\t\t}\n\t\t\t']);
+    var _templateObject5$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\t\t\t__ATTR_TMP__ = ', ';\n\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ != \'\') {\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || \'\';\n\t\t\t\t', '\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] += ', ';\n\t\t\t}\n\t\t'], ['\n\t\t\t', '\n\t\t\t__ATTR_TMP__ = ', ';\n\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ != \'\') {\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || \'\';\n\t\t\t\t', '\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] += ', ';\n\t\t\t}\n\t\t']);
     /**
      * Returns string declaration of the specified XML attributes
      *
@@ -4319,12 +4359,6 @@
     	var group = params.group;
     	var separator = params.separator;
 
-    	var rAttr = this.attr,
-    	    rEscape = this.attrEscape;
-
-    	this.attr = true;
-    	this.attrEscape = true;
-
     	group = group || '';
     	separator = separator || '-';
     	attr = attr.replace(escapeHTMLRgxp, escapeHTML).replace(escapeOrRgxp, escapeOr);
@@ -4335,7 +4369,7 @@
     	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
     	    e = RIGHT_BLOCK;
 
-    	var res = $C$1(parts).reduce(function (res, el) {
+    	return $C$1(parts).reduce(function (res, el) {
     		el = el.replace(unEscapeOrRgxp, unEscapeOr).replace(escapeEqRgxp, escapeEq);
 
     		var args = el.split('='),
@@ -4369,20 +4403,15 @@
     			}
 
     			val = '\'' + _this2.pasteTplVarBlocks(val) + '\'';
-    			return ws$1(_templateObject4$4, res, val, val, val, val);
+    			return ws$1(_templateObject4$4, res, val);
     		}, '');
 
     		args[0] = '\'' + _this2.pasteTplVarBlocks(args[0]) + '\'';
 
     		var isDOMRenderMode = !_this2.domComment && _this2.renderMode === 'dom';
 
-    		return ws$1(_templateObject5$2, res, args[0], args[0], args[0], args[0], args[0], isDOMRenderMode ? '' : '__ATTR_CACHE__[' + args[0] + '] += __ATTR_CACHE__[' + args[0] + '] ? \' \' : \'\';', args[0], empty ? isDOMRenderMode ? args[0] : '' : '__ATTR_STR__');
+    		return ws$1(_templateObject5$2, res, args[0], isDOMRenderMode ? '' : '__ATTR_CACHE__[__ATTR_TMP__] += __ATTR_CACHE__[__ATTR_TMP__] ? \' \' : \'\';', empty ? isDOMRenderMode ? '__ATTR_TMP__' : '\'\'' : '__ATTR_STR__');
     	}, '');
-
-    	this.attr = rAttr;
-    	this.attrEscape = rEscape;
-
-    	return res;
     };
 
     /**
@@ -4392,19 +4421,7 @@
      * @return {!Array<{attr: string, group: ?string, separator: ?string}>}
      */
     Parser.prototype.splitXMLAttrGroup = function (str) {
-    	var rAttr = this.attr,
-    	    rEscape = this.attrEscape;
-
-    	this.attr = true;
-    	this.attrEscape = true;
-
     	str = this.replaceTplVars(str, { replace: true });
-
-    	var separators = {
-    		'-': true,
-    		':': true,
-    		'_': true
-    	};
 
     	var groups = [];
 
@@ -4418,7 +4435,7 @@
     		    next = str[i + 1];
 
     		if (!pOpen) {
-    			if (separators[el] && next === '(') {
+    			if (attrSeparators[el] && next === '(') {
     				pOpen++;
     				i++;
     				separator = el;
@@ -4441,7 +4458,7 @@
     				if (!pOpen) {
     					groups.push({
     						attr: attr.trim(),
-    						group: Snakeskin.Filters.html(group, true).trim(),
+    						group: Snakeskin.Filters.html(group).trim(),
     						separator: separator
     					});
 
@@ -4470,27 +4487,7 @@
     		});
     	}
 
-    	this.attr = rAttr;
-    	this.attrEscape = rEscape;
-
     	return groups;
-    };
-
-        var inlineTags = {
-    	'area': true,
-    	'base': true,
-    	'br': true,
-    	'col': true,
-    	'embed': true,
-    	'hr': true,
-    	'img': true,
-    	'input': true,
-    	'link': true,
-    	'meta': true,
-    	'param': true,
-    	'source': true,
-    	'track': true,
-    	'wbr': true
     };
 
         var _templateObject$20 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t__RESULT__.pop();\n\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t'], ['\n\t\t\t__RESULT__.pop();\n\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t']);
@@ -5221,17 +5218,6 @@
     	    part = '',
     	    rPart = '';
 
-    	// The flags for working with XML attributes
-    	var tOpen = 0,
-    	    tAttr = false,
-    	    tAttrBegin = false,
-    	    tAttrEscape = false;
-
-    	var tAttrBMap = {
-    		'"': true,
-    		'\'': true
-    	};
-
     	// The flags for working with localization literals
     	var i18nStr = '',
     	    i18nStart = false,
@@ -5603,14 +5589,7 @@
     		// Working with a command
     		if (begin) {
     			if (beginStr && parser.isSimpleOutput()) {
-    				var prfx = '';
-    				if (parser.renderMode !== 'dom' && tAttr && !tAttrBegin) {
-    					prfx = '"';
-    					tAttrBegin = true;
-    					tAttrEscape = true;
-    				}
-
-    				parser.save(prfx + '\'' + parser.$$() + ';');
+    				parser.save('\'' + parser.$$() + ';');
     				beginStr = false;
     			}
 
@@ -5703,42 +5682,6 @@
     							beginStr = true;
     						}
 
-    						if (parser.renderMode !== 'dom') {
-    							if (el === '<') {
-    								tOpen++;
-    							} else if (el === '>') {
-    								tOpen--;
-    							}
-
-    							if (tAttr) {
-    								if (tAttrBegin && (tAttrEscape ? el === ' ' : tAttrBMap[el]) || !tOpen) {
-    									tAttr = false;
-
-    									if (tOpen) {
-    										tAttrBegin = false;
-    									}
-
-    									if (tAttrEscape) {
-    										el = '"' + el;
-    										tAttrEscape = false;
-    									}
-    								} else if (!tAttrBegin) {
-    									tAttrBegin = true;
-    									if (!tAttrBMap[el]) {
-    										tAttrEscape = true;
-    										el = '"' + el;
-    									}
-    								}
-
-    								// XML attribute is started
-    							} else if (tOpen && el === '=') {
-    									tAttr = true;
-    								}
-
-    							parser.attr = Boolean(tOpen);
-    							parser.attrEscape = tAttrEscape;
-    						}
-
     						parser.save(applyDefEscape(el));
     					}
 
@@ -5751,13 +5694,6 @@
     					parser.space = true;
     				}
     			}
-    	}
-
-    	// If we have some unclosed XML tags,
-    	// then will be thrown an exception
-    	if (tOpen !== 0) {
-    		parser.error('invalid XML declaration');
-    		return false;
     	}
 
     	// If we have some unclosed directives,
@@ -7265,7 +7201,7 @@
     			$write[tplName] = false;
     		}
 
-    		var fnArgsKey = this.getFnArgs(command).join(',').replace(/=(.*?)(?:,|$)/g, '');
+    		var fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
     		this.save(pos = '/* Snakeskin template: ' + tplName + '; ' + fnArgsKey + ' */', { iface: iface, jsDoc: jsDoc });
 
     		if (jsDoc) {

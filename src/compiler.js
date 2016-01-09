@@ -259,18 +259,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		part = '',
 		rPart = '';
 
-	// The flags for working with XML attributes
-	let
-		tOpen = 0,
-		tAttr = false,
-		tAttrBegin = false,
-		tAttrEscape = false;
-
-	const tAttrBMap = {
-		'"': true,
-		'\'': true
-	};
-
 	// The flags for working with localization literals
 	let
 		i18nStr = '',
@@ -693,14 +681,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 		// Working with a command
 		if (begin) {
 			if (beginStr && parser.isSimpleOutput()) {
-				let prfx = '';
-				if (parser.renderMode !== 'dom' && tAttr && !tAttrBegin) {
-					prfx = '"';
-					tAttrBegin = true;
-					tAttrEscape = true;
-				}
-
-				parser.save(`${prfx}'${parser.$$()};`);
+				parser.save(`'${parser.$$()};`);
 				beginStr = false;
 			}
 
@@ -804,44 +785,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						beginStr = true;
 					}
 
-					if (parser.renderMode !== 'dom') {
-						if (el === '<') {
-							tOpen++;
-
-						} else if (el === '>') {
-							tOpen--;
-						}
-
-						if (tAttr) {
-							if (tAttrBegin && (tAttrEscape ? el === ' ' : tAttrBMap[el]) || !tOpen) {
-								tAttr = false;
-
-								if (tOpen) {
-									tAttrBegin = false;
-								}
-
-								if (tAttrEscape) {
-									el = `"${el}`;
-									tAttrEscape = false;
-								}
-
-							} else if (!tAttrBegin) {
-								tAttrBegin = true;
-								if (!tAttrBMap[el]) {
-									tAttrEscape = true;
-									el = `"${el}`;
-								}
-							}
-
-						// XML attribute is started
-						} else if (tOpen && el === '=') {
-							tAttr = true;
-						}
-
-						parser.attr = Boolean(tOpen);
-						parser.attrEscape = tAttrEscape;
-					}
-
 					parser.save(applyDefEscape(el));
 				}
 
@@ -854,13 +797,6 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				parser.space = true;
 			}
 		}
-	}
-
-	// If we have some unclosed XML tags,
-	// then will be thrown an exception
-	if (tOpen !== 0) {
-		parser.error(`invalid XML declaration`);
-		return false;
 	}
 
 	// If we have some unclosed directives,

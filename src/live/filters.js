@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { isString, isObject } from '../helpers/types';
+import { isString, isObject, isFunction } from '../helpers/types';
 import { attrSeparators } from '../consts/html';
 import { w } from '../consts/regs';
 
@@ -80,8 +80,6 @@ const entityMap = {
 
 export const
 	escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
-	escapeAttrRgxp = new RegExp(`([$${w}]\\s*=\\s*)([^"'\\s>=]+)`, 'g'),
-	escapeJSRgxp = /(javascript)(:|;)/,
 	escapeHTML = (s) => entityMap[s] || s;
 
 const uentityMap = {
@@ -101,36 +99,23 @@ export const
  * Escapes HTML entities from a string
  *
  * @param {?} val - source value
- * @param {?} Unsafe - instance of the Unsafe class
- * @param {?boolean=} [opt_attr=false] - if is true, then should be additional escaping for html attributes
- * @param {?boolean=} [opt_force=false] - if is true, then attributes will be escaped forcibly
+ * @param {?=} [opt_unsafe] - instance of the Unsafe class
  * @return {(string|!Node)}
  */
-Snakeskin.Filters['html'] = function (val, Unsafe, opt_attr, opt_force) {
+Snakeskin.Filters['html'] = function (val, opt_unsafe) {
 	if (typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
 
-	if (val instanceof Unsafe) {
+	if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
 		return val.value;
 	}
 
-	let res = String(val);
-	if (opt_attr && opt_force) {
-		// res = res.replace(escapeAttrRgxp, '$1"$2"');
-	}
-
-	res = res.replace(escapeHTMLRgxp, escapeHTML);
-
-	if (opt_attr) {
-		res = res.replace(escapeJSRgxp, '$1&#31;$2');
-	}
-
-	return res;
+	return String(val).replace(escapeHTMLRgxp, escapeHTML);
 };
 
 Snakeskin.setFilterParams('html', {
-	'bind': ['Unsafe', (o) => o.attr, (o) => o.attrEscape]
+	'bind': ['Unsafe']
 });
 
 /**
@@ -454,6 +439,10 @@ function dasherize(str) {
 	return res;
 }
 
+const
+	escapeAttrRgxp = new RegExp(`([$${w}]\\s*=\\s*)([^"'\\s>=]+)`, 'g'),
+	escapeJSRgxp = /(javascript)(:|;)/;
+
 Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
 	function convert(obj, prfx = '') {
 		Snakeskin.forEach(obj, (el, key) => {
@@ -483,5 +472,5 @@ Snakeskin.Filters['attr'] = function (val, cache, TRUE, FALSE, doctype) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE', (o) => o.doctype]
+	'bind': ['__ATTR_CACHE__', 'TRUE', 'FALSE', (o) => `'${o.doctype}'`]
 });

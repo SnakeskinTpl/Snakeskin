@@ -112,13 +112,6 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 	let
 		{attr, group, separator} = params;
 
-	const
-		rAttr = this.attr,
-		rEscape = this.attrEscape;
-
-	this.attr = true;
-	this.attrEscape = true;
-
 	group = group || '';
 	separator = separator || '-';
 	attr = attr
@@ -133,7 +126,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
-	const res = $C(parts).reduce((res, el) => {
+	return $C(parts).reduce((res, el) => {
 		el = el
 			.replace(unEscapeOrRgxp, unEscapeOr)
 			.replace(escapeEqRgxp, escapeEq);
@@ -158,7 +151,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		res += ws`
 			var
 				__ATTR_POS__ = 0,
-				__ATTR_STR__ = '';
+				__ATTR_STR__ = '',
+				__ATTR_TMP__;
 		`;
 
 		if (group) {
@@ -177,8 +171,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			val = `'${this.pasteTplVarBlocks(val)}'`;
 			return ws`
 				${res}
-				if ((${val}) != null && (${val}) !== '') {
-					__ATTR_STR__ += __ATTR_POS__ ? ' ' + ${val} : ${val};
+				__ATTR_TMP__ = ${val};
+				if (__ATTR_TMP__ != null && __ATTR_TMP__ !== '') {
+					__ATTR_STR__ += __ATTR_POS__ ? ' ' + __ATTR_TMP__ : __ATTR_TMP__;
 					__ATTR_POS__++;
 				}
 			`;
@@ -192,19 +187,15 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		return ws`
 			${res}
-			if ((${args[0]}) != null && (${args[0]}) != '') {
-				__ATTR_CACHE__[${args[0]}] = __ATTR_CONCAT_MAP__[${args[0]}] && __ATTR_CACHE__[${args[0]}] || '';
-				${isDOMRenderMode ? '' : `__ATTR_CACHE__[${args[0]}] += __ATTR_CACHE__[${args[0]}] ? ' ' : '';`}
-				__ATTR_CACHE__[${args[0]}] += ${empty ? isDOMRenderMode ? args[0] : '' : '__ATTR_STR__'}
+			__ATTR_TMP__ = ${args[0]};
+			if (__ATTR_TMP__ != null && __ATTR_TMP__ != '') {
+				__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || '';
+				${isDOMRenderMode ? '' : `__ATTR_CACHE__[__ATTR_TMP__] += __ATTR_CACHE__[__ATTR_TMP__] ? ' ' : '';`}
+				__ATTR_CACHE__[__ATTR_TMP__] += ${empty ? isDOMRenderMode ? '__ATTR_TMP__' : `''` : '__ATTR_STR__'};
 			}
 		`;
 
 	}, '');
-
-	this.attr = rAttr;
-	this.attrEscape = rEscape;
-
-	return res;
 };
 
 /**
@@ -214,13 +205,6 @@ Parser.prototype.getXMLAttrDecl = function (params) {
  * @return {!Array<{attr: string, group: ?string, separator: ?string}>}
  */
 Parser.prototype.splitXMLAttrGroup = function (str) {
-	const
-		rAttr = this.attr,
-		rEscape = this.attrEscape;
-
-	this.attr = true;
-	this.attrEscape = true;
-
 	str =
 		this.replaceTplVars(str, {replace: true});
 
@@ -263,7 +247,7 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 				if (!pOpen) {
 					groups.push({
 						attr: attr.trim(),
-						group: Snakeskin.Filters.html(group, true).trim(),
+						group: Snakeskin.Filters.html(group).trim(),
 						separator
 					});
 
@@ -292,9 +276,6 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 			separator: null
 		});
 	}
-
-	this.attr = rAttr;
-	this.attrEscape = rEscape;
 
 	return groups;
 };
