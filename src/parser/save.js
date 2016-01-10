@@ -159,7 +159,7 @@ Parser.prototype.end = function (cacheKey, label) {
 	this.result = this.pasteDangerBlocks(this.result)
 		.replace(
 			/__CDATA__(\d+)_/g,
-			(sstr, pos) =>
+			(str, pos) =>
 				escapeEOLs(this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
 		);
 

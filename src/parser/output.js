@@ -669,7 +669,7 @@ Parser.prototype.out = function (command, opt_params) {
 			esprima.parse(esprimaHackFn(res));
 
 		} catch (err) {
-			this.error(err.message.replace(/.*?: (\w)/, (sstr, $1) => $1.toLowerCase()));
+			this.error(err.message.replace(/.*?: (\w)/, (str, $1) => $1.toLowerCase()));
 			return '';
 		}
 	}

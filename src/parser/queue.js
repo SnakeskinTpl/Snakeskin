@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { any } from '../helpers/gcc';
 
 /**
  * Appends a function to the SS queue
@@ -29,7 +30,7 @@ Parser.prototype.toQueue = function (fn) {
 Parser.prototype.applyQueue = function () {
 	$C(this.structure.stack).forEach((fn, i, stack) => {
 		fn.call(this);
-		stack.shift();
+		any(stack).shift();
 
 	}, {live: true});
 
