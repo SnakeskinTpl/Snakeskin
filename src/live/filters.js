@@ -488,13 +488,21 @@ Filters['nl2br'] = function (val, node, doctype) {
 		arr = val.split(nl2brRgxp);
 
 	let res = '';
+
 	for (let i = 0; i < arr.length; i++) {
+		const
+			el = arr[i];
+
+		if (!el) {
+			continue;
+		}
+
 		if (node) {
-			node.appendChild(any(document.createTextNode(arr[i])));
-			node.appendChild(any(document.createElement('bre')));
+			node.appendChild(any(document.createTextNode(el)));
+			node.appendChild(any(document.createElement('br')));
 
 		} else {
-			res += `${Filters['html'](arr[i])}<br${doctype === 'xml' ? '/' : ''}>`;
+			res += `${Filters['html'](el)}<br${doctype === 'xml' ? '/' : ''}>`;
 		}
 	}
 
