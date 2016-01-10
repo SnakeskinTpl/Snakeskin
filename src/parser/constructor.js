@@ -405,8 +405,15 @@ export default class Parser {
 						__LOCAL__ = Snakeskin.LocalVars;
 
 					function __LENGTH__(val) {
-						return typeof Node === 'function' && val[0] instanceof Node === true ?
-							val[0].childNodes.length : val.length;
+						if (typeof Node === 'function' && val[0] instanceof Node === true) {
+							return val[0].childNodes.length;
+						}
+
+						if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
+							return val;
+						}
+
+						return 1;
 					}
 
 					function Data(val) {
@@ -415,7 +422,6 @@ export default class Parser {
 						}
 
 						this.value = val;
-						this.length = 1;
 					}
 
 					Data.prototype.push = function (val) {

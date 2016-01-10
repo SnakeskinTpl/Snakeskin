@@ -56,7 +56,7 @@ Parser.prototype.replaceFileNamePatterns = function (str) {
 		{file} = this.info;
 
 	let basename;
-	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (sstr, $1) => {
+	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (str, $1) => {
 		if (!file) {
 			this.error(`the placeholder %fileName% can't be used without the "file" option`);
 			return '';
@@ -73,18 +73,18 @@ Parser.prototype.replaceFileNamePatterns = function (str) {
 		}
 
 		let
-			str = basename;
+			res = basename;
 
 		if ($1) {
 			if ($1 !== '.') {
-				str = `${$1}'${str}'`;
+				res = `${$1}'${res}'`;
 
 			} else {
-				str = $1 + str;
+				res = $1 + res;
 			}
 		}
 
-		return str;
+		return res;
 	}));
 
 	return str;

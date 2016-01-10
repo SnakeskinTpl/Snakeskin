@@ -119,7 +119,7 @@ Parser.prototype.replaceCData = function (str) {
 		e = RIGHT_BLOCK;
 
 	return str
-		.replace(new RegExp(`${r(s)}cdata${r(e)}([\\s\\S]*?)${r(s)}(?:\\/cdata|end cdata)${r(e)}`, 'g'), (sstr, data) => {
+		.replace(new RegExp(`${r(s)}cdata${r(e)}([\\s\\S]*?)${r(s)}(?:\\/cdata|end cdata)${r(e)}`, 'g'), (str, data) => {
 			this.cdataContent.push(data);
 			return String(
 					// The number of added lines
