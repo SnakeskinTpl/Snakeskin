@@ -12,6 +12,7 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 import { $consts } from '../consts/cache';
 import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
 
@@ -19,7 +20,7 @@ import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
  * Declares a variable and returns string declaration
  *
  * @param {string} name - variable name
- * @param {?{fn: (?boolean|undefined), sys: (?boolean|undefined)}=} [opt_params] - addition parameters:
+ * @param {?{fn: (boolean|undefined), sys: (boolean|undefined)}=} [opt_params] - addition parameters:
  *
  *   *) [fn=false] - if is true, then the variable will be declared as a function parameter
  *   *) [sys=false] - if is true, then the variable will be declared as system
@@ -27,8 +28,10 @@ import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
  * @return {string}
  */
 Parser.prototype.declVar = function (name, opt_params) {
+	name = name.trim();
+
 	const
-		{fn, sys} = $C.extend(false, {}, opt_params),
+		{fn, sys} = any(opt_params || {}),
 		{tplName, environment: {id}} = this;
 
 	let
@@ -90,9 +93,9 @@ Parser.prototype.declVar = function (name, opt_params) {
  *
  * @param {string} str - source string
  * @param {?{
- *   end: (?boolean|undefined),
- *   def: (?string|undefined),
- *   sys: (?boolean|undefined)
+ *   end: (boolean|undefined),
+ *   def: (string|undefined),
+ *   sys: (boolean|undefined)
  * }=} [opt_params] - addition parameters:
  *
  *   *) [end=true] - if is true, then will be appended ; to the string
@@ -103,7 +106,7 @@ Parser.prototype.declVar = function (name, opt_params) {
  */
 Parser.prototype.declVars = function (str, opt_params) {
 	const
-		{def, end, sys} = $C.extend(false, {def: 'undefined', end: true}, opt_params);
+		{def = 'undefined', end = true, sys} = any(opt_params || {});
 
 	let
 		bOpen = 0,
@@ -139,7 +142,7 @@ Parser.prototype.declVars = function (str, opt_params) {
 
 			const
 				parts = cache.split('='),
-				realVar = this.declVar(parts[0].trim(), {sys});
+				realVar = this.declVar(parts[0], {sys});
 
 			parts[0] = realVar + (def || parts[1] ? '=' : '');
 			parts[1] = parts[1] || def;
