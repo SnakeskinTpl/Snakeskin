@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { isString, isObject, isFunction } from '../helpers/types';
+import { any } from '../helpers/gcc';
 import { attrSeparators } from '../consts/html';
 import { attrKey } from '../consts/regs';
 
@@ -468,7 +469,7 @@ const
  * @return {string}
  */
 Filters['tpl'] = function (tpl, map) {
-	return String(tpl).replace(tplRgxp, (sstr, $0) => $0 in map ? map[$0] : '');
+	return String(tpl).replace(tplRgxp, (str, $0) => $0 in map ? map[$0] : '');
 };
 
 const
@@ -478,15 +479,23 @@ const
  * Replaces EOL symbols from a string to <br>
  *
  * @param {?} val - source value
+ * @param {(Node|undefined)} node - source node
+ * @param {string} doctype - document type
  * @return {?}
  */
-Filters['nl2br'] = function (val) {
+Filters['nl2br'] = function (val, node, doctype) {
 	const
 		arr = val.split(nl2brRgxp);
 
 	let res = '';
 	for (let i = 0; i < arr.length; i++) {
-		res += `${Filters['html'](arr[i])}<br>`;
+		if (node) {
+			node.appendChild(any(document.createTextNode(arr[i])));
+			node.appendChild(any(document.createElement('bre')));
+
+		} else {
+			res += `${Filters['html'](arr[i])}<br${doctype === 'xml' ? '/' : ''}>`;
+		}
 	}
 
 	return res;
@@ -494,7 +503,7 @@ Filters['nl2br'] = function (val) {
 
 Filters['nl2br']['ssFilterParams'] = {
 	'!html': true,
-	'bind': ['$0']
+	'bind': ['$0', (o) => `'${o.doctype}'`]
 };
 
 /**
