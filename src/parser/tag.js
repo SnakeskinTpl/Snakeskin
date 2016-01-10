@@ -93,7 +93,7 @@ Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
  * and returns a reporting object
  *
  * @param {string} str - source string
- * @return {{tag: string, id: string, classes: !Array, pseudo: !Array, inline: boolean}}
+ * @return {{tag: string, id: string, classes: !Array<string>, pseudo: !Array<string>, inline: boolean}}
  */
 Parser.prototype.getXMLTagDesc = function (str) {
 	str = this.replaceTplVars(str, {replace: true});

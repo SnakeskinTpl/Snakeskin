@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { any } from '../helpers/gcc';
 import { isArray } from '../helpers/types';
 import { scopeMod } from '../consts/regs';
 import { G_MOD, B_OPEN, B_CLOSE } from '../consts/literals';
@@ -121,15 +122,21 @@ Parser.prototype.getFnArgs = function (str) {
  *
  * @param {string} str - source string
  * @param {string} type - function type (template, block etc.)
- * @param {?string=} [tplName] - template name
- * @param {?string=} [parentTplName] - parent template name
- * @param {?string=} [fName] - custom function name (for template, block etc.)
+ * @param {?{
+ *   tplName: (string|undefined),
+ *   parentTplName: (string|undefined),
+ *   fName: (string|undefined),
+ * }=} [opt_params] - additional parameters:
+ *
+ *   *) [tplName] - template name
+ *   *) [parentTplName] - parent template name
+ *   *) [fName] - custom function name (for template, block etc.)
+ *
  * @return {{defParams: string, list: !Array, params, scope: (string|undefined), str: string}}
  */
-Parser.prototype.prepareArgs = function (str, type, {tplName, parentTplName, fName} = {}) {
-	tplName = tplName || this.tplName;
-
+Parser.prototype.prepareArgs = function (str, type, opt_params) {
 	const
+		{tplName = this.tplName, parentTplName, fName} = any(opt_params || {}),
 		{structure} = this;
 
 	let

@@ -10,10 +10,8 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import { IS_NODE } from '../consts/hacks';
 import { ws } from '../helpers/string';
-import { isFunction } from '../helpers/types';
 
 /**
  * The class for parsing SS templates

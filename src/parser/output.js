@@ -18,6 +18,7 @@ import Parser from './constructor';
 import { isFunction } from '../helpers/types';
 import { concatProp } from '../helpers/literals';
 import { isNextAssign, isSyOL } from '../helpers/analysis';
+import { getRgxp } from '../helpers/cache';
 import { any } from '../helpers/gcc';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
@@ -98,7 +99,8 @@ const
 
 const
 	dangerRgxp = /\)\s*(?:{|=>)/,
-	functionRgxp = /\bfunction\b/;
+	functionRgxp = /\bfunction\b/,
+	defFilterRgxp = /#;/g;
 
 const esprimaHackFn = (str) => str
 	.trim()
@@ -112,9 +114,9 @@ const esprimaHackFn = (str) => str
  *
  * @param {string} command - source command
  * @param {?{
- *   unsafe: (?boolean|undefined),
- *   skipFirstWord: (?boolean|undefined),
- *   skipValidation: (?boolean|undefined)
+ *   unsafe: (boolean|undefined),
+ *   skipFirstWord: (boolean|undefined),
+ *   skipValidation: (boolean|undefined)
  * }=} [opt_params] - additional parameters:
  *
  *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
@@ -125,7 +127,7 @@ const esprimaHackFn = (str) => str
  */
 Parser.prototype.out = function (command, opt_params) {
 	const
-		{unsafe, skipFirstWord, skipValidation} = $C.extend(false, {}, opt_params);
+		{unsafe, skipFirstWord, skipValidation} = any(opt_params || {});
 
 	const
 		{tplName, structure} = this,
@@ -305,7 +307,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const removeDefFilters = (str, map) =>
-		any($C(map).reduce((str, el, filter) => str.replace(new RegExp(`\\|${filter} .*?(?=#;)`, 'g'), ''), str));
+		any($C(map).reduce((str, el, filter) => str.replace(getRgxp(`\\|${filter} .*?(?=#;)`, 'g'), ''), str));
 
 	/**
 	 * @param {string} str
@@ -317,13 +319,13 @@ Parser.prototype.out = function (command, opt_params) {
 			isLocalFilter = filters === defFilters.local,
 			prfx = [isLocalFilter ? '(' : '', isLocalFilter ? ')' : ''];
 
-		return $C(filters).reduce((val, filter) => {
+		return any($C(filters).reduce((val, filter) => {
 			const reduce = (str, args, filter) =>
 				`${prfx[0]}${val}|${filter} ${joinFilterParams(args)}#;${prfx[1]}`;
 
 			return $C(filter).reduce(reduce, '');
 
-		}, str);
+		}, str));
 	};
 
 	if (!command) {
@@ -651,7 +653,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 	if (!unsafe) {
 		res = this.out(
-			removeDefFilters(addDefFilters(res, defFilters.global), cancelFilters).replace(/#;/g, ''),
+			removeDefFilters(addDefFilters(res, defFilters.global), cancelFilters).replace(defFilterRgxp, ''),
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 

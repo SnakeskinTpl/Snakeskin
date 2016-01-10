@@ -167,11 +167,10 @@ Parser.prototype.getXMLAttrDecl = function (params) {
  * Splits a string of XML attribute declaration into groups
  *
  * @param {string} str - source string
- * @return {!Array<{attr: string, group: ?string, separator: ?string}>}
+ * @return {!Array<{attr: string, group: (string|undefined), separator: (string|undefined)}>}
  */
 Parser.prototype.splitXMLAttrGroup = function (str) {
-	str =
-		this.replaceTplVars(str, {replace: true});
+	str = this.replaceTplVars(str, {replace: true});
 
 	const
 		groups = [];
@@ -215,7 +214,7 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 
 					groups.push({
 						attr: attr.trim(),
-						group: tmp && tmp[1] || null,
+						group: tmp && tmp[1] || undefined,
 						separator
 					});
 
@@ -240,8 +239,8 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 	if (group && !attr) {
 		groups.push({
 			attr: group.trim(),
-			group: null,
-			separator: null
+			group: undefined,
+			separator: undefined
 		});
 	}
 

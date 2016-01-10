@@ -8,9 +8,9 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
+import { any } from '../helpers/gcc';
 import { escapeEOLs } from '../helpers/escape';
 import { ws, r } from '../helpers/string';
 import { eol, singleQuotes } from '../consts/regs';
@@ -210,7 +210,7 @@ Parser.prototype.isAdvTest = function () {
  * Adds a string to the result JS string if is possible
  *
  * @param {string=} str - source string
- * @param {?{iface: (?boolean|undefined), jsDoc: (?boolean|number|undefined)}=} [opt_params] - addition parameters:
+ * @param {?{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}=} [opt_params] - addition parameters:
  *
  *   *) [iface=false] - if is true, then the current operation is an interface
  *   *) [jsDoc] - last position of appending jsDoc or false
@@ -219,7 +219,7 @@ Parser.prototype.isAdvTest = function () {
  */
 Parser.prototype.save = function (str, opt_params) {
 	const
-		{iface, jsDoc} = $C.extend(false, {}, opt_params);
+		{iface, jsDoc} = any(opt_params || {});
 
 	if (str === undefined) {
 		return false;
@@ -245,7 +245,7 @@ Parser.prototype.save = function (str, opt_params) {
  * (with this.isSimpleOutput())
  *
  * @param {string=} str - source string
- * @param {?{iface: (?boolean|undefined), jsDoc: (?boolean|number|undefined)}=} [opt_params] - addition parameters:
+ * @param {?{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}=} [opt_params] - addition parameters:
  *
  *   *) [iface=false] - if is true, then the current operation is an interface
  *   *) [jsDoc] - last position of appending jsDoc or false

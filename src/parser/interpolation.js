@@ -8,10 +8,10 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { getCommentType } from '../helpers/literals';
 import { applyDefEscape, escapeSingleQuotes } from '../helpers/escape';
+import { any } from '../helpers/gcc';
 import * as rgxp from '../consts/regs';
 import {
 
@@ -65,7 +65,7 @@ Parser.prototype.pasteTplVarBlocks = function (str, opt_fn) {
  * @return {string}
  */
 Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
-	const {unsafe, replace} = $C.extend(false, {}, opt_params);
+	const {unsafe, replace} = any(opt_params || {});
 	str = this.pasteDangerBlocks(str);
 
 	let
