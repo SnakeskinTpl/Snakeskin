@@ -19,13 +19,13 @@ import Parser from './parser/index';
 import * as rgxp from './consts/regs';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
-import { $rgxp, $dirNameShorthands, $dirParents } from './consts/cache';
+import { $dirNameShorthands, $dirParents } from './consts/cache';
 
 import { r } from './helpers/string';
 import { any, _ } from './helpers/gcc';
 import { getCommentType } from './helpers/literals';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';
-import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache } from './helpers/cache';
+import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache, getRgxp } from './helpers/cache';
 
 import {
 
@@ -534,9 +534,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					// All directives, which starts with _
 					// will be cutted from the code listing
 					if (commandType[0] === '_') {
-						const source = `${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`;
 						parser.lines[lastLine] = parser.lines[lastLine]
-							.replace($rgxp[source] = $rgxp[source] || new RegExp(source), '');
+							.replace(getRgxp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`), '');
 					}
 
 					command = parser.replaceDangerBlocks(

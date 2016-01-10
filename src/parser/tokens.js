@@ -147,18 +147,16 @@ Parser.prototype.getTokens = function (str) {
 
 	for (let i = 0; i < str.length; i++) {
 		const
-			currentEscape = escape;
-
-		const
 			el = str[i],
-			part = str.substr(i, MICRO_TEMPLATE_LENGTH);
+			part = str.substr(i, MICRO_TEMPLATE_LENGTH),
+			cEscape = escape;
 
 		if (el === '\\' || escape) {
 			escape = !escape;
 		}
 
 		let l = arr.length - 1;
-		if (!currentEscape && MICRO_TEMPLATES[part]) {
+		if (!cEscape && MICRO_TEMPLATES[part]) {
 			i += MICRO_TEMPLATE_LENGTH - 1;
 			arr[l] += part;
 			bStart = true;

@@ -413,8 +413,8 @@ function getLineDesc(str, i, dir, comment) {
 
 	for (let j = i; j < str.length; j++) {
 		const
-			currentEscape = escape,
-			el = str[j];
+			el = str[j],
+			cEscape = escape;
 
 		if (!bOpen && (el === '\\' || escape)) {
 			escape = !escape;
@@ -479,7 +479,7 @@ function getLineDesc(str, i, dir, comment) {
 			};
 		}
 
-		if (!bOpen && !currentEscape) {
+		if (!bOpen && !cEscape) {
 			const
 				commentType = getCommentType(str, j);
 

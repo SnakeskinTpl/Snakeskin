@@ -15,6 +15,7 @@ import { applyDefEscape, escapeSingleQuotes } from '../helpers/escape';
 import * as rgxp from '../consts/regs';
 import {
 
+	FILTER,
 	MICRO_TEMPLATES,
 	MICRO_TEMPLATE_LENGTH,
 	MICRO_TEMPLATE_ESCAPES,
@@ -53,8 +54,8 @@ Parser.prototype.pasteTplVarBlocks = function (str, opt_fn) {
  *
  * @param {string} str - source string
  * @param {?{
- *   unsafe: (?boolean|undefined),
- *   replace: (?boolean|undefined)
+ *   unsafe: (boolean|undefined),
+ *   replace: (boolean|undefined)
  * }=} [opt_params] - additional parameters:
  *
  *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
@@ -77,7 +78,8 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 
 	let
 		escape = false,
-		comment = false;
+		comment = false,
+		filterStart = false;
 
 	let
 		bOpen = false,
@@ -95,7 +97,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 
 	for (let i = 0; i < str.length; i++) {
 		const
-			currentEscape = escape,
+			cEscape = escape,
 			pos = i;
 
 		let
@@ -121,7 +123,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 					i++;
 				}
 
-				if (!currentEscape) {
+				if (!cEscape) {
 					const
 						commentType = getCommentType(str, pos);
 
@@ -160,6 +162,27 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 				} else {
 					rPart = part;
 					part = '';
+				}
+
+				let skip = false;
+				if (el === FILTER && rgxp.filterStart.test(next)) {
+					filterStart = true;
+					bEnd = false;
+					skip = true;
+
+				} else if (filterStart && rgxp.ws.test(el)) {
+					filterStart = false;
+					bEnd = true;
+					skip = true;
+				}
+
+				if (!skip) {
+					if (ESCAPES_END[el]) {
+						bEnd = true;
+
+					} else if (rgxp.bEnd.test(el)) {
+						bEnd = false;
+					}
 				}
 
 				if (el === LEFT_BLOCK) {
@@ -212,7 +235,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 				continue;
 			}
 
-			if (!currentEscape && MICRO_TEMPLATES[str.substr(pos, MICRO_TEMPLATE_LENGTH)]) {
+			if (!cEscape && MICRO_TEMPLATES[str.substr(pos, MICRO_TEMPLATE_LENGTH)]) {
 				begin++;
 				dir = '';
 				start = i;
@@ -221,7 +244,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 				continue;
 			}
 
-			res += el !== '\\' || currentEscape ?
+			res += el !== '\\' || cEscape ?
 				applyDefEscape(el) : escapeSingleQuotes(el);
 		}
 	}

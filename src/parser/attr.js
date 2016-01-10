@@ -33,9 +33,8 @@ Parser.prototype.getXMLAttrsDecl = function (str) {
  */
 Parser.prototype.getXMLAttrsDeclStart = function () {
 	return ws`
-		var
-			__ATTR_CACHE__ = {},
-			__ATTR_CONCAT_MAP__ = {'class': true};
+		__ATTR_CACHE__ = {};
+		__ATTR_CONCAT_MAP__ = {'class': true};
 	`;
 };
 
@@ -62,6 +61,8 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 					'$0.setAttribute(key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
 			}
 		});
+
+		__ATTR_CACHE__ = __ATTR_CONCAT_MAP__ = undefined;
 	`;
 };
 

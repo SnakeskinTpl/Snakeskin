@@ -305,7 +305,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const removeDefFilters = (str, map) =>
-		any($C(map).reduce((str, el, filter) => str.replace(new RegExp(`\\|${filter} .*?@\\)`, 'g'), ')'), str));
+		any($C(map).reduce((str, el, filter) => str.replace(new RegExp(`\\|${filter} .*?(?=#;)`, 'g'), ''), str));
 
 	/**
 	 * @param {string} str
@@ -314,17 +314,16 @@ Parser.prototype.out = function (command, opt_params) {
 	 */
 	const addDefFilters = (str, filters) => {
 		const
-			un = {};
+			isLocalFilter = filters === defFilters.local,
+			prfx = [isLocalFilter ? '(' : '', isLocalFilter ? ')' : ''];
 
-		const tmp = $C(filters).reduce((val, filter) => {
+		return $C(filters).reduce((val, filter) => {
 			const reduce = (str, args, filter) =>
-				`(${val}|${filter} ${joinFilterParams(args)}@)`;
+				`${prfx[0]}${val}|${filter} ${joinFilterParams(args)}#;${prfx[1]}`;
 
 			return $C(filter).reduce(reduce, '');
 
 		}, str);
-
-		return removeDefFilters(tmp, un);
 	};
 
 	if (!command) {
@@ -652,7 +651,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 	if (!unsafe) {
 		res = this.out(
-			removeDefFilters(addDefFilters(res, defFilters.global), cancelFilters).replace(/@\)/g, ')'),
+			removeDefFilters(addDefFilters(res, defFilters.global), cancelFilters).replace(/#;/g, ''),
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 

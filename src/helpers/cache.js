@@ -12,7 +12,7 @@ import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { NULL } from '../consts/links';
 import { IS_NODE } from '../consts/hacks';
-import { $globalCache, $globalFnCache } from '../consts/cache';
+import { $globalCache, $globalFnCache, $rgxp } from '../consts/cache';
 import { escapeEOLs } from './escape';
 
 /**
@@ -129,4 +129,9 @@ export function saveIntoCache(key, code, params, parser) {
 			words: params.words
 		}
 	});
+}
+
+export function getRgxp(source, flags = '') {
+	$rgxp[flags] = $rgxp[flags] || {};
+	return $rgxp[flags][source] = $rgxp[flags][source] || new RegExp(source, flags);
 }

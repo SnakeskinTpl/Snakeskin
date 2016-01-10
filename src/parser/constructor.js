@@ -396,7 +396,9 @@ export default class Parser {
 						__ATTR_POS__,
 						__ATTR_STR__,
 						__ATTR_TMP__,
-						__ATTR_TYPE__;
+						__ATTR_TYPE__,
+						__ATTR_CACHE__,
+						__ATTR_CONCAT_MAP__;
 
 					var
 						__APPEND__ = Snakeskin.appendChild,
