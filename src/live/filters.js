@@ -40,32 +40,60 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 	return this;
 };
 
+/**
+ * Console API
+ * @const
+ */
 Filters['console'] = {
+	/**
+	 * @param {?} val
+	 * @return {?}
+	 */
 	'dir'(val) {
 		console.dir(val);
 		return val;
 	},
 
+	/**
+	 * @param {?} val
+	 * @return {?}
+	 */
 	'error'(val) {
 		console.error(val);
 		return val;
 	},
 
+	/**
+	 * @param {?} val
+	 * @return {?}
+	 */
 	'info'(val) {
 		console.info(val);
 		return val;
 	},
 
+	/**
+	 * @param {?} val
+	 * @return {?}
+	 */
 	'log'(val) {
 		console.log(val);
 		return val;
 	},
 
+	/**
+	 * @param {?} val
+	 * @return {?}
+	 */
 	'table'(val) {
 		console.table(val);
 		return val;
 	},
 
+	/**
+	 * @param {?} val
+	 * @return {?}
+	 */
 	'warn'(val) {
 		console.warn(val);
 		return val;
@@ -135,7 +163,7 @@ export const
  *
  * @param {?} val - source value
  * @param {?=} [opt_unsafe] - instance of the Unsafe class
- * @param {?string=} [opt_attr] - type of attr declaration
+ * @param {?string=} [opt_attr] - type of attribute declaration
  * @return {(string|!Node)}
  */
 Filters['html'] = function (val, opt_unsafe, opt_attr) {
@@ -492,11 +520,23 @@ function dasherize(str) {
 	return res;
 }
 
+/**
+ * Escapes HTML entities from an attribute name
+ *
+ * @param {?} val - source value
+ * @return {string}
+ */
 Filters['attrKey'] = Filters['attrKeyGroup'] = function (val) {
 	const tmp = attrKey.exec(String(val));
 	return tmp && tmp[1] || 'undefined';
 };
 
+/**
+ * Escapes HTML entities from an attribute group
+ *
+ * @param {?} val - source value
+ * @return {string}
+ */
 Filters['attrKeyGroup'] = function (val) {
 	const tmp = attrKey.exec(String(val));
 	return tmp && tmp[1] || '';
@@ -505,11 +545,28 @@ Filters['attrKeyGroup'] = function (val) {
 const
 	attrValRgxp = /(javascript)(:|;)/g;
 
+/**
+ * Escapes HTML entities from an attribute value
+ *
+ * @param {?} val - source value
+ * @return {string}
+ */
 Filters['attrVal'] = function (val) {
 	return String(val).replace(attrValRgxp, '$1&#31;$2');
 };
 
-Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
+/**
+ * Sets an attributes to a node
+ *
+ * @param {?} val - source value
+ * @param {string} doctype - document type
+ * @param {string} type - type of attribute declaration
+ * @param {!Object} cache - attribute cache object
+ * @param {!Boolean} TRUE - true value
+ * @param {!Boolean} FALSE - false value
+ * @return {(string|Snakeskin.HTMLObject)}
+ */
+Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 	if (type !== 'attrKey') {
 		return String(val);
 	}
@@ -543,5 +600,5 @@ Filters['attr'] = function (val, type, cache, TRUE, FALSE, doctype) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	'bind': ['__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE', (o) => `'${o.doctype}'`]
+	'bind': [(o) => `'${o.doctype}'`, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE']
 });

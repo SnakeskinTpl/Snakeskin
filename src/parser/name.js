@@ -106,7 +106,7 @@ export const
 Parser.prototype.prepareNameDecl = function (name) {
 	name = this.replaceFileNamePatterns(name);
 	if (nmRgxp.test(name)) {
-		name = $C(
+		name = String($C(
 			name
 				.replace(nmssRgxp, '%')
 				.replace(nmsRgxp, '.%')
@@ -134,7 +134,7 @@ Parser.prototype.prepareNameDecl = function (name) {
 			}
 
 			return str + (str ? `.${el}` : el);
-		}, '');
+		}, ''));
 	}
 
 	return name.trim();

@@ -141,10 +141,10 @@ Snakeskin.appendChild = function (node, obj) {
 };
 
 /**
- * Escapes HTML entities from an object
+ * Special Snakeskin class for escaping HTML entities from an object
  *
  * @param {?} val - source value
- * @param {?string=} [opt_attr] - type of attr declaration
+ * @param {?string=} [opt_attr] - type of attribute declaration
  * @return {(string|!Node)}
  */
 Snakeskin.HTMLObject = function (val, opt_attr) {

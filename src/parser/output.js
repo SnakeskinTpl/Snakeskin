@@ -299,7 +299,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const joinFilterParams = (params) =>
-		any($C(params).map((el) => isFunction(el) ? String(el(this)) : el).join());
+		String($C(params).map((el) => isFunction(el) ? String(el(this)) : el).join());
 
 	/**
 	 * @param {string} str
@@ -307,7 +307,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const removeDefFilters = (str, map) =>
-		any($C(map).reduce((str, el, filter) => str.replace(getRgxp(`\\|${filter} .*?(?=#;)`, 'g'), ''), str));
+		String($C(map).reduce((str, el, filter) => str.replace(getRgxp(`\\|${filter} .*?(?=#;)`, 'g'), ''), str));
 
 	/**
 	 * @param {string} str
@@ -319,7 +319,7 @@ Parser.prototype.out = function (command, opt_params) {
 			isLocalFilter = filters === defFilters.local,
 			prfx = [isLocalFilter ? '(' : '', isLocalFilter ? ')' : ''];
 
-		return any($C(filters).reduce((val, filter) => {
+		return String($C(filters).reduce((val, filter) => {
 			const reduce = (str, args, filter) =>
 				`${prfx[0]}${val}|${filter} ${joinFilterParams(args)}#;${prfx[1]}`;
 

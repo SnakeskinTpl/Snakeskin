@@ -45,8 +45,8 @@ Parser.prototype.getXMLAttrsDeclStart = function () {
  * @return {string}
  */
 Parser.prototype.getXMLAttrsDeclBody = function (str) {
-	return $C(this.splitXMLAttrGroup(str))
-		.reduce((res, el) => res + this.getXMLAttrDecl(el), '');
+	return String($C(this.splitXMLAttrGroup(str))
+		.reduce((res, el) => res + this.getXMLAttrDecl(el), ''));
 };
 
 /**
@@ -89,7 +89,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
 		e = RIGHT_BLOCK;
 
-	return $C(parts).reduce((res, el) => {
+	return String($C(parts).reduce((res, el) => {
 		let
 			args = el.split(' = '),
 			empty = args.length !== 2;
@@ -160,7 +160,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			__ATTR_POS__ = __ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 		`;
 
-	}, '');
+	}, ''));
 };
 
 /**
