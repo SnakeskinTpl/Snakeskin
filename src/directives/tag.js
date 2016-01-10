@@ -58,8 +58,8 @@ Snakeskin.addDirective(
 		}
 
 		if (classes.length) {
-			const clStr = classes.join(' ');
-			str += `__ATTR_CACHE__['class'] = '${clStr}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');`;
+			const c = classes.join(' ');
+			str += `__ATTR_CACHE__['class'] = '${c}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');`;
 		}
 
 		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(tag, inline));

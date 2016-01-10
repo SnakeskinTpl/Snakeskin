@@ -27,7 +27,8 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
 	return (
 		this.getXMLTagDeclStart(tag) +
 		this.getXMLAttrsDeclStart() +
-		(opt_attrs ? this.getXMLAttrsDecl(opt_attrs) : '') +
+		(opt_attrs ? this.getXMLAttrsDeclBody(opt_attrs) : '') +
+		this.getXMLAttrsDeclEnd() +
 		this.getXMLTagDeclEnd(tag, opt_inline)
 	);
 };
