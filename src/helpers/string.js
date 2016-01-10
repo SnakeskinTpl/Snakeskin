@@ -9,6 +9,7 @@
  */
 
 import $C from '../deps/collection.js';
+import { any } from './gcc';
 import { isString } from './types';
 
 const
@@ -23,7 +24,7 @@ const
  */
 export function ws(strings, expr) {
 	expr = $C.toArray(arguments).slice(1);
-	return $C(strings).reduce((str, el, i) => str += el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : ''), '');
+	return any($C(strings).reduce((str, el, i) => str + el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : ''), ''));
 }
 
 const

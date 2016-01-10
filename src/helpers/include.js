@@ -20,15 +20,15 @@ export const
 	stack = [];
 
 /**
- * Adds file content by the specified src to the stack
+ * Adds file content by the specified path to the stack
  *
- * @param {string} base - base src
- * @param {string} url - file src
+ * @param {string} base - base path
+ * @param {string} file - file path
  * @param {string} eol - EOL symbol
- * @param {?string=} [opt_type] - rendering mode for templates
+ * @param {?string=} [opt_renderMode] - rendering mode for templates
  * @return {(string|boolean)}
  */
-Snakeskin.include = function (base, url, eol, opt_type) {
+Snakeskin.include = function (base, file, eol, opt_renderMode) {
 	if (!IS_NODE) {
 		return false;
 	}
@@ -44,12 +44,12 @@ Snakeskin.include = function (base, url, eol, opt_type) {
 
 	try {
 		const
-			extname = path.extname(url),
+			extname = path.extname(file),
 			{include} = Snakeskin.LocalVars;
 
 		const src = path.resolve(
 			path.dirname(base),
-			url + (extname ? '' : '.ss')
+			file + (extname ? '' : '.ss')
 		);
 
 		$C(glob.hasMagic(src) ? glob(src) : [src]).forEach((src) => {
@@ -66,8 +66,8 @@ Snakeskin.include = function (base, url, eol, opt_type) {
 			stack.push(
 				`${s}__setFile__ ${src}${e}` +
 
-				(opt_type ?
-					`${s}__set__ renderAs '${opt_type}'${e}` : '') +
+				(opt_renderMode ?
+					`${s}__set__ renderAs '${opt_renderMode}'${e}` : '') +
 
 				`${wsStart.test(file) ? '' : eol}` +
 

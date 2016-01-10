@@ -25,8 +25,8 @@ export function clone(obj) {
 /**
  * Converts the specified value to an object
  *
- * @param {?} val - object, a string for parsing or src for a file
- * @param {?string=} [opt_base] - base src
+ * @param {?} val - object, a string for parsing or a file path
+ * @param {?string=} [opt_base] - base path
  * @param {?function(string)=} [opt_onFileExists] - callback function (only if val is src)
  * @return {!Object}
  */

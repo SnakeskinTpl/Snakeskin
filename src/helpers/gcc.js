@@ -24,7 +24,7 @@ export function _(a, b) {
 }
 
 /**
- * Returns an object with an undefined type
+ * Gets an object with an undefined type
  * (for the GCC)
  *
  * @param {?} val - source object

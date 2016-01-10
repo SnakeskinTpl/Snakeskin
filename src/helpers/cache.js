@@ -131,7 +131,14 @@ export function saveIntoCache(key, code, params, parser) {
 	});
 }
 
-export function getRgxp(source, flags = '') {
-	$rgxp[flags] = $rgxp[flags] || {};
-	return $rgxp[flags][source] = $rgxp[flags][source] || new RegExp(source, flags);
+/**
+ * Returns RegExp by the specified text
+ *
+ * @param {string} source - source RegExp text
+ * @param {string=} [opt_flags] - RegExp flags
+ * @return {!RegExp}
+ */
+export function getRgxp(source, opt_flags = '') {
+	$rgxp[opt_flags] = $rgxp[opt_flags] || {};
+	return $rgxp[opt_flags][source] = $rgxp[opt_flags][source] || new RegExp(source, opt_flags);
 }
