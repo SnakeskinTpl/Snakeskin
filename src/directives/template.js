@@ -302,7 +302,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			});
 
 			$C(baseParams).forEach((el, key) => {
-				Snakeskin.Directives['__set__'].call(this, ...[key, el]);
+				Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
 			});
 
 			const

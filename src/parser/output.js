@@ -407,6 +407,10 @@ Parser.prototype.out = function (command, opt_params) {
 
 						} else if (this.scope.length) {
 							vRes = addScope(this.scope[this.scope.length - 1]) + concatProp(finalWord.slice(1));
+
+						} else {
+							this.error(`invalid usage of context modifier @`);
+							return '';
 						}
 
 					} else {
