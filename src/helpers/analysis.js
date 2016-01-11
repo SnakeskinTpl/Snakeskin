@@ -8,9 +8,10 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { w, eol } from '../consts/regs';
+import { w, eol, symbols } from '../consts/regs';
 import { G_MOD, B_OPEN, B_CLOSE } from '../consts/literals';
 import { getRgxp } from '../helpers/cache';
+import { r } from '../helpers/string';
 
 const
 	propRgxp = new RegExp(`[${w}]`);

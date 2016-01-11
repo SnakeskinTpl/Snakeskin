@@ -528,8 +528,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						[commandType] = commandTypeRgxp.exec(command);
 
 					const
-						defDirs = {'const': true, 'global': true, 'output': true},
-						isDefDir = defDirs[commandType];
+						defDirs = {'const': true, 'global': true, 'output': true};
 
 					if (!Snakeskin.Directives[commandType]) {
 						if (isAssignExpression(command)) {
@@ -550,8 +549,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					command = parser.replaceDangerBlocks(
-						isDefDir || defDirs[commandType] ?
-							command.replace(commandRgxp, '') : command
+						!defDirs[commandType] ? command.replace(commandRgxp, '') : command
 					);
 
 					parser.space = parser.prevSpace;
