@@ -30,8 +30,6 @@ Snakeskin.addDirective(
 			return;
 		}
 
-		this.startInlineDir('const');
-
 		const
 			output = command.slice(-1) === '?';
 
@@ -55,6 +53,8 @@ Snakeskin.addDirective(
 
 		const
 			name = this.pasteDangerBlocks(prop).replace(/\[(['"`])(.*?)\1]/g, '.$2');
+
+		this.startInlineDir('const', {name});
 
 		if (!/[.\[]/.test(prop)) {
 			this.consts.push(`var ${prop};`);
