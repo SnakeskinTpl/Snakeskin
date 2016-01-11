@@ -25,9 +25,6 @@ export default class Parser {
 	 * @param {$$SnakeskinParserParams} params - additional parameters
 	 */
 	constructor(src, params) {
-		/** @type {Parser} */
-		this.parent = params.parent || null;
-
 		/** @type {boolean} */
 		this.throws = params.throws;
 
