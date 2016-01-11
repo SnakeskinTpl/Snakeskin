@@ -129,8 +129,30 @@ function set(command) {
 			);
 		}
 
-		params[flag] =
-			this[flag] = value;
+		switch (flag) {
+			case 'filters':
+				value = this.appendDefaultFilters(value);
+				break;
+
+			case 'language':
+				value = mix(
+					toObj(value, file, (src) => {
+						const root = this.environment.root || this.environment;
+						root.key.push([src, require('fs').statSync(src).mtime.valueOf()]);
+						this.files[src] = true;
+					}),
+
+					init ?
+						params[flag] : null,
+
+					init ?
+						null : params[flag]
+				);
+
+				break;
+		}
+
+		params[flag] = this[flag] = value;
 
 		if (cache) {
 			cache[flag] = value;

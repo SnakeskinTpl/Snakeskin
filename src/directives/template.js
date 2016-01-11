@@ -10,12 +10,16 @@
 
 import $C from '../deps/collection';
 import esprima from '../deps/esprima';
+
 import Snakeskin from '../core';
-import { ws, r } from '../helpers/string';
-import { symbols } from '../consts/regs';
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
+
+import { ws, r } from '../helpers/string';
 import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
+import { getRgxp } from '../helpers/cache';
+
+import { symbols } from '../consts/regs';
 import { G_MOD } from '../consts/literals';
 import {
 
@@ -33,7 +37,7 @@ import {
 
 $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 	Snakeskin.addDirective(
-		dir,
+		String(dir),
 
 		{
 			block: true,
@@ -63,14 +67,12 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			this.startTemplateLine = this.info.line;
 
 			const
-				nameRgxp = new RegExp(`^[^${symbols}_$[]`, 'i'),
-				esprimaNameHackRgxp = new RegExp(`[${r(G_MOD)}]`, 'g');
+				nameRgxp = getRgxp(`^[^${symbols}_$[]`, 'i'),
+				esprimaNameHackRgxp = getRgxp(`[${r(G_MOD)}]`, 'g');
 
 			let
-				tmpTplName = this.getFnName(command),
-				tplName = this.pasteDangerBlocks(tmpTplName);
-
-			tmpTplName = this.replaceFileNamePatterns(tmpTplName);
+				tmpTplName = this.replaceFileNamePatterns(this.getFnName(command)),
+				tplName;
 
 			let
 				prfx = '',
@@ -99,9 +101,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				return this.error(`can't declare the template "${tplName}", try another name`);
 			}
 
-			this.info.template =
-				this.tplName = tplName;
-
+			this.info.template = this.tplName = tplName;
 			if (this.name !== 'template' && !$write[tplName]) {
 				$write[tplName] = false;
 			}
@@ -202,9 +202,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				{iface}
 			);
 
-			this.info.template =
-				this.tplName = tplName;
-
+			this.info.template = this.tplName = tplName;
 			this.blockStructure = {
 				children: [],
 				name: 'root',
@@ -232,8 +230,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				}
 
 				try {
-					parentTplName =
-						this.parentTplName = this.prepareNameDecl(parentTplName);
+					parentTplName = this.parentTplName = this.prepareNameDecl(parentTplName);
 
 				} catch (err) {
 					return this.error(err.message);
@@ -285,7 +282,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			if (!parentTplName) {
 				$C(this.params[this.params.length - 1]).forEach((el, key) => {
-					if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
+					if (String(key) !== 'renderAs' && key[0] !== '@' && el !== undefined) {
 						baseParams[key] = el;
 					}
 				});
@@ -296,13 +293,16 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			}
 
 			$C(flags).forEach((el) => {
-				const [name] = el.split(' ');
+				const
+					val = String(el).trim(),
+					[name] = val.split(' ');
+
 				delete baseParams[name];
-				Snakeskin.Directives['__set__'].call(this, el);
+				Snakeskin.Directives['__set__'].call(this, val);
 			});
 
 			$C(baseParams).forEach((el, key) => {
-				Snakeskin.Directives['__set__'].call(this, [key, el]);
+				Snakeskin.Directives['__set__'].call(this, ...[key, el]);
 			});
 
 			const
