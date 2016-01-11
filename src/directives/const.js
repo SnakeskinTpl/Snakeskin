@@ -9,280 +9,102 @@
  */
 
 import Snakeskin from '../core';
-import { scopeMod, symbols, w } from '../consts/regs';
-import { q } from './index';
-import { r } from '../helpers/string';
-import { SYS_CONSTS, B_OPEN, B_CLOSE, G_MOD } from '../consts/literals';
-import { $consts, $constPositions, $rgxp } from '../consts/cache';
-
-const
-	constNameRgxp = /\[(['"`])(.*?)\1]/g,
-	propAssignRgxp = /[.\[]/;
+import { symbols, w } from '../consts/regs';
+import { SYS_CONSTS } from '../consts/literals';
+import { $consts, $constPositions } from '../consts/cache';
+import { getRgxp } from '../helpers/cache';
 
 Snakeskin.addDirective(
 	'const',
 
 	{
 		deferInit: true,
-		group: [
-			'inherit',
-			'inlineInherit'
-		]
+		group: ['const', 'inherit', 'inlineInherit']
 	},
 
-	function (command, commandLength, type) {
-		let
-			output = false;
+	function (command, commandLength) {
+		const
+			{tplName} = this,
+			output = command.slice(-1) === '?';
 
-		if (command.slice(-1) === '?') {
-			output = true;
+		if (output) {
 			command = command.slice(0, -1);
 		}
 
-		const
-			{tplName} = this,
-			source = `^[\$${symbols}_][$${w}[\\].\\s]*=[^=]`,
-			rgxp = $rgxp[source] = $rgxp[source] || new RegExp(source, 'i');
+		if (!tplName || getRgxp(`^[\$${symbols}_][$${w}[\\].\\s]*=[^=]`, 'i').test(command)) {
+			if (!tplName) {
+				Snakeskin.Directives['global'].call(this, ...arguments);
+				return;
+			}
 
-		if (type === 'global' || (!tplName || rgxp.test(command)) && type !== 'output') {
-			if (tplName && type !== 'global') {
-				const
-					parts = command.split('='),
-					prop = parts[0].trim();
+			const
+				parts = command.split('='),
+				prop = parts[0].trim();
 
-				if (!parts[1] || !parts[1].trim()) {
-					return this.error(`invalid constant declaration`);
-				}
+			if (!parts[1] || !parts[1].trim()) {
+				return this.error(`invalid "${this.name}" declaration`);
+			}
 
-				let
-					name = this.pasteDangerBlocks(prop);
+			const name = this.pasteDangerBlocks(prop).replace(/\[(['"`])(.*?)\1]/g, '.$2');
+			this.startInlineDir('const', {name});
 
-				name = name.replace(constNameRgxp, '.$2');
-				this.startInlineDir('const', {name});
+			if (!/[.\[]/.test(prop)) {
+				this.consts.push(`var ${prop};`);
+			}
 
-				if (!propAssignRgxp.test(prop)) {
-					this.consts.push(`var ${prop};`);
-				}
-
-				if (output) {
-					this.text = true;
-					this.append(this.wrap(`${prop} = ${this.out(parts.slice(1).join('='))};`));
-
-				} else {
-					this.append(`${prop} = ${this.out(parts.slice(1).join('='), {unsafe: true})};`);
-				}
-
-				if (this.isAdvTest()) {
-					if ($consts[tplName][name]) {
-						return this.error(`the constant "${name}" is already defined`);
-					}
-
-					if (this.vars[tplName][name]) {
-						return this.error(`the constant "${name}" is already defined as variable`);
-					}
-
-					if (SYS_CONSTS[name]) {
-						return this.error(`can't declare the constant "${name}", try another name`);
-					}
-
-					let
-						parent,
-						insideCallBlock = this.hasParentBlock('block', true);
-
-					const
-						parentTpl = this.parentTplName,
-						start = this.i - this.startTemplateI;
-
-					if (parentTpl) {
-						parent = $consts[parentTpl][name];
-					}
-
-					if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
-						insideCallBlock = false;
-					}
-
-					$consts[tplName][name] = {
-						block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
-						from: start - commandLength,
-						needPrfx: this.needPrfx,
-						output: output ? '?' : null,
-						to: start
-					};
-
-					if (!insideCallBlock) {
-						$constPositions[tplName] = start + 1;
-					}
-				}
+			if (output) {
+				this.text = true;
+				this.append(this.wrap(`${prop} = ${this.out(parts.slice(1).join('='))};`));
 
 			} else {
-				this.startInlineDir('global');
-				const
-					desc = isAssign(command, true);
+				this.append(`${prop} = ${this.out(parts.slice(1).join('='), {unsafe: true})};`);
+			}
 
-				if (!desc) {
-					return this.error(`invalid "${this.name}" declaration`);
+			if (this.isAdvTest()) {
+				if ($consts[tplName][name]) {
+					return this.error(`the constant "${name}" is already defined`);
 				}
 
-				if (output && tplName) {
-					this.text = true;
-					this.append(this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
+				if (this.vars[tplName][name]) {
+					return this.error(`the constant "${name}" is already defined as variable`);
+				}
 
-				} else {
-					const
-						mod = G_MOD + G_MOD;
+				if (SYS_CONSTS[name]) {
+					return this.error(`can't declare the constant "${name}", try another name`);
+				}
 
-					if (command[0] !== G_MOD) {
-						command = mod + command;
+				const
+					parentTpl = this.parentTplName,
+					start = this.i - this.startTemplateI;
 
-					} else {
-						command = command.replace(scopeMod, mod);
-					}
+				let
+					parent,
+					insideCallBlock = this.hasParentBlock('block', true);
 
-					this.save(`${this.out(command, {unsafe: true})};`);
+				if (parentTpl) {
+					parent = $consts[parentTpl][name];
+				}
+
+				if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
+					insideCallBlock = false;
+				}
+
+				$consts[tplName][name] = {
+					block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
+					from: start - commandLength,
+					needPrfx: this.needPrfx,
+					output: output ? '?' : null,
+					to: start
+				};
+
+				if (!insideCallBlock) {
+					$constPositions[tplName] = start + 1;
 				}
 			}
 
 		} else {
-			this.startInlineDir('output');
-			this.text = true;
-
-			if (!tplName) {
-				return this.error(`the directive "${this.name}" can be used only within a ${q(this.getGroupList('template'))}`);
-			}
-
-			const
-				desc = isAssign(command);
-
-			if (desc) {
-				if (output) {
-					this.append(this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
-
-				} else {
-					this.text = false;
-					this.append(`${this.out(command, {unsafe: true})};`);
-				}
-
-				return;
-			}
-
-			this.append(this.wrap(this.out(command)));
+			Snakeskin.Directives['output'].call(this, ...arguments);
 		}
 	}
 
 );
-
-Snakeskin.addDirective(
-	'output',
-
-	{
-		deferInit: true,
-		notEmpty: true,
-		placement: 'template',
-		text: true
-	},
-
-	function () {
-		Snakeskin.Directives['const'].call(this, ...arguments);
-	}
-
-);
-
-Snakeskin.addDirective(
-	'global',
-
-	{
-		deferInit: true,
-		notEmpty: true
-	},
-
-	function () {
-		Snakeskin.Directives['const'].call(this, ...arguments);
-	}
-
-);
-
-/**
- * Returns an information object for a string expression
- * if the string contains assignment of a variable (or a property)
- * OR returns false
- *
- * @param {string} str - source string
- * @param {?boolean=} [opt_global=false] - if true, then will be checked string as a super-global variable
- * @return {({key: string, value: string}|boolean)}
- */
-function isAssign(str, opt_global) {
-	const
-		source = `^[${r(G_MOD)}$${symbols}_${opt_global ? '[' : ''}]`,
-		key = `${source}[i`,
-		rgxp = $rgxp[key] = $rgxp[key] || new RegExp(source, 'i');
-
-	if (!rgxp.test(str)) {
-		return false;
-	}
-
-	let
-		prop = '',
-		count = 0,
-		eq = false;
-
-	const advEqMap = {
-		'&': true,
-		'*': true,
-		'+': true,
-		'-': true,
-		'/': true,
-		'^': true,
-		'|': true,
-		'~': true
-	};
-
-	const bAdvMap = {
-		'<': true,
-		'>': true
-	};
-
-	for (let i = 0; i < str.length; i++) {
-		const el = str[i];
-		prop += el;
-
-		if (B_OPEN[el]) {
-			count++;
-			continue;
-
-		} else if (B_CLOSE[el]) {
-			count--;
-			continue;
-		}
-
-		const
-			prev = str[i - 1],
-			next = str[i + 1];
-
-		if (!eq && !count &&
-			(
-				el === '=' && next !== '=' && prev !== '=' && !advEqMap[prev] && !bAdvMap[prev] ||
-				advEqMap[el] && next === '=' ||
-				bAdvMap[el] && bAdvMap[next] && str[i + 2] === '='
-			)
-		) {
-
-			let diff = 1;
-
-			if (advEqMap[el]) {
-				diff = 2;
-
-			} else if (bAdvMap[el]) {
-				diff = 3;
-			}
-
-			return {
-				key: prop.slice(0, -1),
-				value: str.slice(i + diff)
-			};
-		}
-
-		eq = el === '=';
-	}
-
-	return false;
-}

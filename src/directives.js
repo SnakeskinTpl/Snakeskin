@@ -22,6 +22,8 @@ import './directives/head';
 import './directives/eval';
 import './directives/space';
 import './directives/const';
+import './directives/global';
+import './directives/output';
 import './directives/comment';
 import './directives/doctype';
 import './directives/template';

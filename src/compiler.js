@@ -24,6 +24,7 @@ import { $dirNameShorthands, $dirParents } from './consts/cache';
 import { r } from './helpers/string';
 import { any, _ } from './helpers/gcc';
 import { getCommentType } from './helpers/literals';
+import { isAssignExpression } from './helpers/analysis';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';
 import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache, getRgxp } from './helpers/cache';
 
@@ -527,9 +528,19 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 						[commandType] = commandTypeRgxp.exec(command);
 
 					const
-						isConst = commandType === 'const';
+						defDirs = {'const': true, 'global': true, 'output': true},
+						isDefDir = defDirs[commandType];
 
-					commandType = Snakeskin.Directives[commandType] ? commandType : 'const';
+					if (!Snakeskin.Directives[commandType]) {
+						if (isAssignExpression(command)) {
+							commandType = parser.tplName ? 'const' : 'global';
+
+						} else {
+							commandType = 'output';
+						}
+					}
+
+					commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
 
 					// All directives, which starts with _
 					// will be cutted from the code listing
@@ -539,8 +550,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					}
 
 					command = parser.replaceDangerBlocks(
-						(isConst || commandType !== 'const' ?
-							command.replace(commandRgxp, '') : command)
+						isDefDir || defDirs[commandType] ?
+							command.replace(commandRgxp, '') : command
 					);
 
 					parser.space = parser.prevSpace;
