@@ -23,7 +23,12 @@ export function getCommentType(str, pos) {
 		return false;
 	}
 
-	const res = $C(COMMENTS).get({filter: (el) => COMMENTS[str.substr(pos, el.length)], mult: false});
+	const res = $C(COMMENTS).get({filter: (el) => {
+		const chunk = str.substr(pos, el.length);
+		return COMMENTS[chunk] && chunk === el;
+
+	}, mult: false});
+
 	return res ? String(res) : false;
 }
 

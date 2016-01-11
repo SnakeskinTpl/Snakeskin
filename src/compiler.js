@@ -23,7 +23,7 @@ import { $dirNameShorthands, $dirParents } from './consts/cache';
 
 import { r } from './helpers/string';
 import { any, _ } from './helpers/gcc';
-import { getCommentType } from './helpers/literals';
+import { getCommentType, getCommentType2 } from './helpers/literals';
 import { isAssignExpression } from './helpers/analysis';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';
 import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache, getRgxp } from './helpers/cache';
@@ -419,14 +419,14 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							parser.i += commentType.length - 1;
 
 						} else if (commentType === MULT_COMMENT_START) {
-							if (str.substr(parser.i, JS_DOC.length) === JS_DOC && !begin) {
+							if (!begin && str.substr(parser.i, JS_DOC.length) === JS_DOC) {
 								if (beginStr && parser.isSimpleOutput()) {
 									parser.save(`'${parser.$$()};`);
 								}
 
-								beginStr = true;
 								jsDoc = true;
 								jsDocStart = parser.result.length;
+								beginStr = true;
 
 							} else {
 								comment = commentType;
@@ -753,7 +753,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 				}
 
 				// Convert Jade-Like to classic
-				if (cClrL && !parser.tplName && (SHORTS[el] || SHORTS[substr2])) {
+				if (cClrL && (SHORTS[el] || SHORTS[substr2])) {
 					const
 						adv = parser.lines[lastLine].length - 1,
 						source = parser.toBaseSyntax(parser.source, parser.i - adv);
