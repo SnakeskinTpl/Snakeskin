@@ -22,12 +22,14 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			output = command.slice(-1) === '?',
-			desc = isAssignExpression(command);
+			output = command.slice(-1) === '?';
 
 		if (output) {
 			command = command.slice(0, -1);
 		}
+
+		const
+			desc = isAssignExpression(command);
 
 		if (desc) {
 			if (output) {

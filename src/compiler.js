@@ -810,7 +810,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// If we have some unclosed directives,
 	// then will be thrown an exception
 	if (begin || parser.structure.parent) {
-		parser.error('missing closing or opening tag in the template');
+		parser.error('missing closing or opening directives in the template');
 		return false;
 	}
 

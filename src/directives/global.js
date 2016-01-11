@@ -22,13 +22,14 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			output = command.slice(-1) === '?',
-			desc = isAssignExpression(command);
+			output = command.slice(-1) === '?';
 
 		if (output) {
 			command = command.slice(0, -1);
-			this.text = true;
 		}
+
+		const
+			desc = isAssignExpression(command);
 
 		if (!desc || output && !this.tplName) {
 			return this.error(`invalid "${this.name}" declaration`);

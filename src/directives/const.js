@@ -31,12 +31,12 @@ Snakeskin.addDirective(
 			command = command.slice(0, -1);
 		}
 
-		if (!tplName || getRgxp(`^[\$${symbols}_][$${w}[\\].\\s]*=[^=]`, 'i').test(command)) {
-			if (!tplName) {
-				Snakeskin.Directives['global'].call(this, ...arguments);
-				return;
-			}
+		if (!tplName) {
+			Snakeskin.Directives['global'].call(this, ...arguments);
+			return;
+		}
 
+		if (getRgxp(`^[\$${symbols}_][$${w}[\\].\\s]*=[^=]`, 'i').test(command)) {
 			const
 				parts = command.split('='),
 				prop = parts[0].trim();
