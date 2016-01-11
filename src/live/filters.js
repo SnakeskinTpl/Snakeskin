@@ -51,7 +51,7 @@ Filters['console'] = {
 	 * @return {?}
 	 */
 	'dir'(val) {
-		console.dir(val);
+		console.dir(...arguments);
 		return val;
 	},
 
@@ -60,7 +60,7 @@ Filters['console'] = {
 	 * @return {?}
 	 */
 	'error'(val) {
-		console.error(val);
+		console.error(...arguments);
 		return val;
 	},
 
@@ -69,7 +69,7 @@ Filters['console'] = {
 	 * @return {?}
 	 */
 	'info'(val) {
-		console.info(val);
+		console.info(...arguments);
 		return val;
 	},
 
@@ -78,7 +78,7 @@ Filters['console'] = {
 	 * @return {?}
 	 */
 	'log'(val) {
-		console.log(val);
+		console.log(...arguments);
 		return val;
 	},
 
@@ -87,7 +87,7 @@ Filters['console'] = {
 	 * @return {?}
 	 */
 	'table'(val) {
-		console.table(val);
+		console.table(...arguments);
 		return val;
 	},
 
@@ -96,7 +96,7 @@ Filters['console'] = {
 	 * @return {?}
 	 */
 	'warn'(val) {
-		console.warn(val);
+		console.warn(...arguments);
 		return val;
 	}
 };
