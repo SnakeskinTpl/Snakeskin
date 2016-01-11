@@ -34,6 +34,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		filters: {global: ['attr', 'html'], local: ['undef']},
+		group: ['link', 'tag', 'output'],
 		placement: 'template',
 		selfInclude: false,
 		trim: true

@@ -24,7 +24,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['template', 'inherit', 'define', 'blockInherit'],
+		group: ['block', 'template', 'define', 'inherit', 'blockInherit'],
 		logic: true,
 		notEmpty: true
 	},
@@ -73,7 +73,7 @@ Snakeskin.addDirective(
 			}
 
 		} else if (!this.outerLink && !this.tplName) {
-			return this.error(`the directive "${this.name}" can be used only within a ${groupsList['template'].join(', ')}`);
+			return this.error(`the directive "${this.name}" can be used only within a template`);
 		}
 
 		if (!name || !tplName || callBlockNameRgxp.test(name)) {
@@ -89,8 +89,7 @@ Snakeskin.addDirective(
 			parentScope;
 
 		if (parentTplName) {
-			parentScope =
-				$scope[this.name][parentTplName] = $scope[this.name][parentTplName] || {};
+			parentScope = $scope[this.name][parentTplName] = $scope[this.name][parentTplName] || {};
 		}
 
 		if (!scope[name]) {
@@ -217,7 +216,7 @@ Snakeskin.addDirective(
 
 					structure.vars = vars;
 					structure.params.params = $C(params)
-						.reduce((res, el) => res += `${this.out(el, {unsafe: true})},`, '')
+						.reduce((res, el) => `${res}${this.out(el, {unsafe: true})},`, '')
 						.slice(0, -1);
 				}
 			}
