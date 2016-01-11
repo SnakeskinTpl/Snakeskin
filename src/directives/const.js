@@ -9,10 +9,9 @@
  */
 
 import Snakeskin from '../core';
-import { symbols, w } from '../consts/regs';
+import { scopeMod } from '../consts/regs';
 import { SYS_CONSTS } from '../consts/literals';
 import { $consts, $constPositions } from '../consts/cache';
-import { getRgxp } from '../helpers/cache';
 
 Snakeskin.addDirective(
 	'const',
@@ -24,86 +23,89 @@ Snakeskin.addDirective(
 
 	function (command, commandLength) {
 		const
-			{tplName} = this,
-			output = command.slice(-1) === '?';
-
-		if (output) {
-			command = command.slice(0, -1);
-		}
+			{tplName} = this;
 
 		if (!tplName) {
 			Snakeskin.Directives['global'].call(this, ...arguments);
 			return;
 		}
 
-		if (getRgxp(`^[\$${symbols}_][$${w}[\\].\\s]*=[^=]`, 'i').test(command)) {
+		this.startInlineDir('const');
+
+		const
+			output = command.slice(-1) === '?';
+
+		if (output) {
+			command = command.slice(0, -1);
+		}
+
+		const
+			parts = command.split('=');
+
+		if (!parts[1] || !parts[1].trim()) {
+			return this.error(`invalid "${this.name}" declaration`);
+		}
+
+		let
+			prop = parts[0].trim();
+
+		if (scopeMod.test(prop)) {
+			prop = this.out(prop, {unsafe: true});
+		}
+
+		const
+			name = this.pasteDangerBlocks(prop).replace(/\[(['"`])(.*?)\1]/g, '.$2');
+
+		if (!/[.\[]/.test(prop)) {
+			this.consts.push(`var ${prop};`);
+		}
+
+		const
+			str = `${prop} = ${this.out(parts.slice(1).join('='), {unsafe: !output})};`;
+
+		this.text = output;
+		this.append(output ? this.wrap(str) : str);
+
+		if (this.isAdvTest()) {
+			if ($consts[tplName][name]) {
+				return this.error(`the constant "${name}" is already defined`);
+			}
+
+			if (this.vars[tplName][name]) {
+				return this.error(`the constant "${name}" is already defined as variable`);
+			}
+
+			if (SYS_CONSTS[name]) {
+				return this.error(`can't declare the constant "${name}", try another name`);
+			}
+
 			const
-				parts = command.split('='),
-				prop = parts[0].trim();
+				parentTpl = this.parentTplName,
+				start = this.i - this.startTemplateI;
 
-			if (!parts[1] || !parts[1].trim()) {
-				return this.error(`invalid "${this.name}" declaration`);
+			let
+				parent,
+				insideCallBlock = this.hasParentBlock('block', true);
+
+			if (parentTpl) {
+				parent = $consts[parentTpl][name];
 			}
 
-			const name = this.pasteDangerBlocks(prop).replace(/\[(['"`])(.*?)\1]/g, '.$2');
-			this.startInlineDir('const', {name});
-
-			if (!/[.\[]/.test(prop)) {
-				this.consts.push(`var ${prop};`);
+			if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
+				insideCallBlock = false;
 			}
 
-			if (output) {
-				this.text = true;
-				this.append(this.wrap(`${prop} = ${this.out(parts.slice(1).join('='))};`));
+			$consts[tplName][name] = {
+				block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
+				from: start - commandLength,
+				needPrfx: this.needPrfx,
+				output: output ? '?' : null,
+				to: start
+			};
 
-			} else {
-				this.append(`${prop} = ${this.out(parts.slice(1).join('='), {unsafe: true})};`);
+			if (!insideCallBlock) {
+				$constPositions[tplName] = start + 1;
 			}
-
-			if (this.isAdvTest()) {
-				if ($consts[tplName][name]) {
-					return this.error(`the constant "${name}" is already defined`);
-				}
-
-				if (this.vars[tplName][name]) {
-					return this.error(`the constant "${name}" is already defined as variable`);
-				}
-
-				if (SYS_CONSTS[name]) {
-					return this.error(`can't declare the constant "${name}", try another name`);
-				}
-
-				const
-					parentTpl = this.parentTplName,
-					start = this.i - this.startTemplateI;
-
-				let
-					parent,
-					insideCallBlock = this.hasParentBlock('block', true);
-
-				if (parentTpl) {
-					parent = $consts[parentTpl][name];
-				}
-
-				if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
-					insideCallBlock = false;
-				}
-
-				$consts[tplName][name] = {
-					block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
-					from: start - commandLength,
-					needPrfx: this.needPrfx,
-					output: output ? '?' : null,
-					to: start
-				};
-
-				if (!insideCallBlock) {
-					$constPositions[tplName] = start + 1;
-				}
-			}
-
-		} else {
-			Snakeskin.Directives['output'].call(this, ...arguments);
 		}
 	}
 

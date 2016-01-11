@@ -21,28 +21,6 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		const
-			output = command.slice(-1) === '?';
-
-		if (output) {
-			command = command.slice(0, -1);
-		}
-
-		const
-			desc = isAssignExpression(command);
-
-		if (desc) {
-			if (output) {
-				this.append(this.wrap(`${this.out(desc.key, {unsafe: true})} = ${this.out(desc.value)};`));
-
-			} else {
-				this.text = false;
-				this.append(`${this.out(command, {unsafe: true})};`);
-			}
-
-			return;
-		}
-
 		this.append(this.wrap(this.out(command)));
 	}
 
