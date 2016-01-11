@@ -26,7 +26,7 @@ Parser.prototype.getTplFullBody = function (name) {
 		constLength = 1;
 
 	const
-		isDecl = $C(this.getGroup('inherit')).get(),
+		isDecl = this.getGroupList('inherit'),
 		is = {};
 
 	$C(isDecl).forEach((el, i) => {
