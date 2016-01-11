@@ -137,8 +137,7 @@ Snakeskin.addDirective(
 				params = outputCache[name];
 
 				if (output != null) {
-					params =
-						outputCache[name] = output;
+					params = outputCache[name] = output;
 				}
 			}
 		}
@@ -164,6 +163,7 @@ Snakeskin.addDirective(
 			this.structure.params.args = args.params;
 			$blocks[tplName][name] = {
 				args,
+				external: Boolean(parts.length),
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
 				output

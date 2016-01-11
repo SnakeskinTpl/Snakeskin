@@ -129,17 +129,20 @@ Parser.prototype.getTplFullBody = function (name) {
 			} else if (!parent) {
 				switch (type) {
 					case 'block_add':
-						res += block;
-						break;
+						if (!current.external) {
+							res += block;
+							break;
+						}
 
+					case 'block_add':
 					case 'const_add':
 						if (newFrom === null) {
 							newFrom = from;
 							from += adv;
 						}
 
-						block =
-							type === `${current.needPrfx ? alb : ''}${lb}${block}${rb}`;
+						block = type === 'const_add' ?
+							`${current.needPrfx ? alb : ''}${lb}${block}${rb}` : block;
 
 						res = res.slice(0, from) +
 							block +
