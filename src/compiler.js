@@ -527,14 +527,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					let
 						[commandType] = commandTypeRgxp.exec(command);
 
-					const defDirs = {
-						'const': true,
-						'decorator': true,
-						'global': true,
-						'output': true
-					};
+					const
+						defDir = !Snakeskin.Directives[commandType];
 
-					if (!Snakeskin.Directives[commandType]) {
+					if (defDir) {
 						if (isAssignExpression(command)) {
 							commandType = parser.tplName ? 'const' : 'global';
 
@@ -545,15 +541,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
 
-					// All directives from the ignore group
+					const
+						ignoreRgxp = getRgxp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`);
+
+					// All directives, which matches to the template __.*?__
 					// will be cutted from the code listing
-					if (parser.getGroup('ignore')[commandType]) {
-						parser.lines[lastLine] = parser.lines[lastLine]
-							.replace(getRgxp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`), '');
+					if (ignoreRgxp.test(commandType)) {
+						parser.lines[lastLine] = parser.lines[lastLine] .replace(ignoreRgxp, '');
 					}
 
 					command = parser.replaceDangerBlocks(
-						!defDirs[commandType] ? command.replace(commandRgxp, '') : command
+						defDir ? command : command.replace(commandRgxp, '')
 					);
 
 					parser.space = parser.prevSpace;
