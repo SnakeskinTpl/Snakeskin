@@ -401,7 +401,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return this.error(`the directive "${dirName}" can't be used within the "${dirName}"`);
 		}
 
-		if (this.decorators.length && !ignore && !this.getGroup('template', 'private')[dirName]) {
+		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'private')[dirName]) {
 			return this.error(`decorators can't be used after ${dirName}`);
 		}
 
