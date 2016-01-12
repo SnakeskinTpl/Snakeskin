@@ -173,6 +173,7 @@ var loaded;
  *   throws: (?boolean|undefined),
  *   localization: (?boolean|undefined),
  *   i18nFn: (?string|undefined),
+ *   i18nOptions: (?string|undefined),
  *   language: (Object|undefined),
  *   words: (Object|undefined),
  *   ignore: (RegExp|undefined),

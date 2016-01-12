@@ -34,6 +34,7 @@ define.amd = null;
  *     doctype: (string|boolean),
  *     localization: boolean,
  *     i18nFn: string,
+ *     i18nOptions: (?string|undefined),
  *     language: (Object|undefined),
  *     eol: string,
  *     tolerateWhitespaces: boolean,

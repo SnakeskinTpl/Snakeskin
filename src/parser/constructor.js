@@ -79,6 +79,9 @@ export default class Parser {
 		/** @type {string} */
 		this.i18nFn = params.i18nFn;
 
+		/** @type {(?string|undefined)} */
+		this.i18nFnOptions = params.i18nFnOptions;
+
 		/** @type {(Object|undefined)} */
 		this.language = params.language;
 
@@ -96,6 +99,7 @@ export default class Parser {
 				renderAs: this.renderAs,
 				localization: this.localization,
 				i18nFn: this.i18nFn,
+				i18nFnOptions: this.i18nFnOptions,
 				literalBounds: this.literalBounds,
 				bemFilter: this.bemFilter,
 				filters: this.filters,

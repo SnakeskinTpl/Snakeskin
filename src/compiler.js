@@ -72,6 +72,7 @@ import {
  *
  *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
  *   *) [i18nFn = 'i18n'] - name of the i18n function
+ *   *) [i18nOptions] - additional option for the i18n function or array of options
  *   *) [language] - map of words for the localization (for example, {'Hello world': 'Привет мир'})
  *   *) [words] - object, which will be contained all found localization words
  *
@@ -116,7 +117,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			tolerateWhitespaces: false,
 			eol: '\n',
 			localization: true,
-			i18nFn: 'i18n'
+			i18nFn: 'i18n',
+			i18nOptions: []
 		}, opt_params)
 	);
 
@@ -633,7 +635,26 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStr = '';
 
 							if (begin) {
-								el = '")';
+								const
+									opts = parser.i18nFnOptions,
+									localOpts = next === '(';
+
+								if (localOpts) {
+									parser.lines[lastLine] += next;
+									parser.i++;
+								}
+
+								el = '"';
+								if (localOpts) {
+									el += ', ';
+
+								} else {
+									if (opts) {
+										el += `, ${opts}`;
+									}
+
+									el += ')';
+								}
 
 								if (i18nDirStart) {
 									freezeI += freezeTmp;
