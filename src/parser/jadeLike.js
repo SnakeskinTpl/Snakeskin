@@ -16,6 +16,7 @@ import { getCommentType } from '../helpers/literals';
 import * as rgxp from '../consts/regs';
 import {
 
+	I18N,
 	SHORTS,
 	BASE_SHORTS,
 	FILTER,
@@ -169,13 +170,15 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				const chr = str[j + diff];
 				nextSpace = !chr || rgxp.ws.test(chr);
 
-				let dir = (SHORTS[el] || SHORTS[next2str]) && nextSpace,
-					decl = getLineDesc(
-						str,
-						nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
-						Boolean(dir),
-						next2str === MULT_COMMENT_START
-					);
+				let
+					dir = (SHORTS[el] || SHORTS[next2str]) && nextSpace;
+
+				const decl = getLineDesc(
+					str,
+					nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
+					Boolean(dir),
+					next2str === MULT_COMMENT_START
+				);
 
 				if (!decl) {
 					this.error('invalid syntax');

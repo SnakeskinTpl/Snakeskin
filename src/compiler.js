@@ -23,10 +23,10 @@ import { $dirNameShorthands, $dirParents } from './consts/cache';
 
 import { r } from './helpers/string';
 import { any, _ } from './helpers/gcc';
-import { getCommentType, getCommentType2 } from './helpers/literals';
+import { getCommentType } from './helpers/literals';
 import { isAssignExpression } from './helpers/analysis';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';
-import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache, getRgxp } from './helpers/cache';
+import { getFromCache, getCacheKey, saveIntoFnCache, saveIntoCache } from './helpers/cache';
 
 import {
 
@@ -220,7 +220,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 	const
 		commandTypeRgxp = /[^\s]+/,
-		commandRgxp = /[^\s]+\s*/;
+		commandRgxp = /[^\s]+\s*/,
+		ignoreRgxp = new RegExp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`, 'g');
 
 	// The number of open { symbols inside a directive
 	let fakeBegin = 0;
@@ -541,13 +542,10 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 					commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
 
-					const
-						ignoreRgxp = getRgxp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`);
-
 					// All directives, which matches to the template __.*?__
 					// will be cutted from the code listing
 					if (ignoreRgxp.test(commandType)) {
-						parser.lines[lastLine] = parser.lines[lastLine] .replace(ignoreRgxp, '');
+						parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
 					}
 
 					command = parser.replaceDangerBlocks(
@@ -882,22 +880,5 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	}
 
 	saveIntoCache(cacheKey, text, p, parser);
-
-	// If a browser supports FileAPI,
-	// then the templates will be attached as an external script
-	if (!IS_NODE) {
-		setTimeout(() => {
-			try {
-				const
-					blob = new Blob([parser.result], {type: 'application/javascript'}),
-					script = document.createElement('script');
-
-				script.src = URL.createObjectURL(blob);
-				document.head.appendChild(any(script));
-
-			} catch (ignore) {}
-		}, 50);
-	}
-
 	return parser.result;
 };
