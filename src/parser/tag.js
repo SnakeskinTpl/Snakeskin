@@ -67,20 +67,40 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 	if (!this.domComment && this.renderMode === 'dom') {
 		return ws`
 			${this.wrap('$0')}
-			if (${opt_inline} || __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}]) {
+
+			__INLINE_TAG__ = __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}];
+
+			if (${opt_inline} || __INLINE_TAG__) {
+				if (__INLINE_TAG__ !== true) {
+					$0.setAttribute(__INLINE_TAG__,
+				}
+
 				$0 = __RESULT__[__RESULT__.length - 1];
 
 			} else {
 				__RESULT__.push($0);
 			}
+
+			__INLINE_TAG__ = undefined;
 		`;
 	}
 
 	return ws`
-		if (${this.doctype === 'xml'} && (${opt_inline} || __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}])) {
-			${this.wrap(`'/'`)}
+		__INLINE_TAG__ = __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}];
+
+		if (${opt_inline} || __INLINE_TAG__) {
+			if (__INLINE_TAG__ === true) {
+				${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
+
+			} else {
+				${this.wrap(`' ' + __INLINE_TAG__ + '="'`)}
+			}
+
+		} else {
+			${this.wrap(`'>'`)}
 		}
-		${this.wrap(`'>'`)}
+
+		__INLINE_TAG__ = undefined;
 	`;
 };
 
@@ -93,26 +113,36 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 	opt_inline = Boolean(opt_inline);
 
-	if (opt_inline) {
-		return '';
-	}
-
 	const
 		link = this.out(`__TAG__`, {unsafe: true});
 
 	if (!this.domComment && this.renderMode === 'dom') {
 		return ws`
-			if (${!opt_inline} && !__INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}]) {
+			__INLINE_TAG__ = __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}];
+
+			if (${opt_inline} || __INLINE_TAG__ && __INLINE_TAG__ !== true) {
+				/*${this.out(`__TAG__`, {unsafe: true})}.setAttribute();*/
+
+			} else {
 				__RESULT__.pop();
 				$0 = __RESULT__[__RESULT__.length - 1];
 			}
+
+			__INLINE_TAG__ = undefined;
 		`;
 	}
 
 	return ws`
-		if (${!opt_inline} && !__INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}]) {
+		__INLINE_TAG__ = __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}];
+
+		if (${opt_inline} || __INLINE_TAG__ && __INLINE_TAG__ !== true) {
+			${this.wrap(`'"${this.doctype === 'xml' ? '/' : ''}>'`)}
+
+		} else {
 			${this.wrap(`'</' + ${link} + '>'`)}
 		}
+
+		__INLINE_TAG__ = undefined;
 	`;
 };
 

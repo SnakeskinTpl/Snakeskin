@@ -206,6 +206,7 @@ export const SYS_CONSTS = {
 	'__INCLUDE__': true,
 	'__LENGTH__': true,
 	'__DECORATE__': true,
+	'__INLINE_TAG__': true,
 	'__INLINE_TAGS__': true,
 	'__TAG__': true,
 	'TRUE': true,

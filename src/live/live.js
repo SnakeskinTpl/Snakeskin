@@ -156,19 +156,19 @@ Snakeskin.forIn = function (obj, callback) {
  * @const
  */
 Snakeskin.inlineTags = {
-	'area': true,
-	'base': true,
+	'area': 'href',
+	'base': 'href',
 	'br': true,
 	'col': true,
-	'embed': true,
+	'embed': 'src',
 	'hr': true,
-	'img': true,
-	'input': true,
-	'link': true,
-	'meta': true,
-	'param': true,
-	'source': true,
-	'track': true,
+	'img': 'src',
+	'input': 'value',
+	'link': 'href',
+	'meta': 'content',
+	'param': 'value',
+	'source': 'src',
+	'track': 'src',
 	'wbr': true
 };
 

@@ -24,7 +24,7 @@ import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
  */
 Parser.prototype.$ = function () {
 	if (this.domComment) {
-		return '__COMMENT_RESULT__ +=';
+		return '__COMMENT_RESULT__ += ';
 	}
 
 	switch (this.renderMode) {
@@ -32,10 +32,10 @@ Parser.prototype.$ = function () {
 			return '__RESULT__.push(';
 
 		case 'dom':
-			return '__APPEND__(__RESULT__[__RESULT__.length - 1],';
+			return '__APPEND__(__RESULT__[__RESULT__.length - 1], __INLINE_TAGS__[__INLINE_TAGS__.length - 1], ';
 
 		default:
-			return '__RESULT__ +=';
+			return '__RESULT__ += ';
 	}
 };
 
@@ -148,7 +148,11 @@ Parser.prototype.end = function (cacheKey, label) {
 			break;
 
 		case 'dom':
-			this.result = this.result.replace(/__APPEND__\(__RESULT__\[__RESULT__\.length - 1],''\);/g, '');
+			this.result = this.result.replace(
+				/__APPEND__\(__RESULT__\[__RESULT__\.length - 1], __INLINE_TAGS__\[__INLINE_TAGS__.length - 1], ''\);/g,
+				''
+			);
+
 			break;
 
 		default:
