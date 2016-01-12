@@ -405,6 +405,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			this.text = true;
 		}
 
+		if (p.filters) {
+			this.appendDefaultFilters(p.filters);
+		}
+
+		const
+			from = this.result.length;
+
 		if (!p.deferInit && !p.with) {
 			if (p.block) {
 				this.startDir();
@@ -414,15 +421,15 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			}
 		}
 
-		const newStructure = this.structure;
-		newStructure.params['@from'] = this.result.length;
-
-		if (p.filters) {
-			this.appendDefaultFilters(p.filters);
-		}
-
 		if (opt_constr) {
 			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
+		}
+
+		const
+			newStructure = this.structure;
+
+		if (newStructure.params['@from'] === undefined) {
+			newStructure.params['@from'] = from;
 		}
 
 		if ($dirParents[dirName]) {
