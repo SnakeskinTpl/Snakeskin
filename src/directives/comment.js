@@ -20,7 +20,7 @@ Snakeskin.addDirective(
 		group: ['comment', 'tag', 'output'],
 		placement: 'template',
 		selfInclude: false,
-		shorthands: {'/@': 'end comment', '@!': 'comment '}
+		shorthands: {'/!': 'end comment', '<!': 'comment '}
 	},
 
 	function (condition) {
