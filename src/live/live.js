@@ -23,6 +23,38 @@ Snakeskin.StringBuffer = function () {
 	return [];
 };
 
+/**
+ * DocumentFragment constructor
+ *
+ * @constructor
+ * @return {!DocumentFragment}
+ */
+Snakeskin.DocumentFragment = function () {
+	return document.createDocumentFragment();
+};
+
+/**
+ * Element constructor
+ *
+ * @constructor
+ * @param {string} name - element name
+ * @return {!Element}
+ */
+Snakeskin.Element = function (name) {
+	return document.createElement(name);
+};
+
+/**
+ * Comment constructor
+ *
+ * @constructor
+ * @param {string} text - comment text
+ * @return {!Comment}
+ */
+Snakeskin.Comment = function (text) {
+	return document.createComment(text);
+};
+
 const
 	keys = (() => /\[native code]/.test(Object.keys && Object.keys.toString()) && Object.keys)();
 

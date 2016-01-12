@@ -53,7 +53,7 @@ Snakeskin.addDirective(
 			this.domComment = false;
 
 			str += ws`
-				${this.wrap('document.createComment(__COMMENT_RESULT__)')}
+				${this.wrap('new Snakeskin.Comment(__COMMENT_RESULT__)')}
 				__COMMENT_RESULT__ = '';
 			`;
 

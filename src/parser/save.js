@@ -80,7 +80,7 @@ Parser.prototype.getResultDecl = function () {
 			return 'new Snakeskin.StringBuffer()';
 
 		case 'dom':
-			return '[document.createDocumentFragment()]';
+			return '[new Snakeskin.DocumentFragment()]';
 
 		default:
 			return `''`;

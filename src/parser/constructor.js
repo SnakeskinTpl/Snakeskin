@@ -398,6 +398,9 @@ export default class Parser {
 						FALSE = new Boolean(false);
 
 					var
+						__INLINE_TAGS__ === Snakeskin.inlineTags;
+
+					var
 						__ATTR_POS__,
 						__ATTR_STR__,
 						__ATTR_TMP__,

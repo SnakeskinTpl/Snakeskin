@@ -41,7 +41,7 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
  */
 Parser.prototype.getXMLTagDeclStart = function (tag) {
 	if (!this.domComment && this.renderMode === 'dom') {
-		return `$0 = document.createElement('${tag}');`;
+		return `$0 = new Snakeskin.Element('${tag}');`;
 	}
 
 	return this.wrap(`'<${tag}'`);
