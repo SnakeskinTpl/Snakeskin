@@ -40,9 +40,13 @@ Snakeskin.addDirective(
 
 		const
 			parts = this.getTokens(command),
-			{tag, inline, id, classes} = this.getXMLTagDesc(parts[0]);
+			{tag, id, inline, inlineMap, classes} = this.getXMLTagDesc(parts[0]);
 
-		$C.extend(false, this.structure.params, {inline, tag});
+		$C.extend(false, this.structure.params, {inline, inlineMap, tag});
+
+		if (inlineMap) {
+			this.append(`__INLINE_TAGS__.push(${this.out(inlineMap, {unsafe: true})});`);
+		}
 
 		if (tag === '?') {
 			return;
@@ -62,7 +66,7 @@ Snakeskin.addDirective(
 			str += `__ATTR_CACHE__['class'] = '${c}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');`;
 		}
 
-		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(tag, inline));
+		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));
 	},
 
 	function () {
@@ -72,10 +76,17 @@ Snakeskin.addDirective(
 		this.bemRef = p.bemRef;
 		this.prevSpace = false;
 
-		if (p.tag === '?') {
-			return;
+		let
+			str = '';
+
+		if (p.tag !== '?') {
+			str += this.getEndXMLTagDecl(p.inline);
 		}
 
-		this.append(this.getEndXMLTagDecl(p.tag, p.inline));
+		if (p.inlineMap) {
+			str += `__INLINE_TAGS__.pop();`;
+		}
+
+		this.append(str);
 	}
 );

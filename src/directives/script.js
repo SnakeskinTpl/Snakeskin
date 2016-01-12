@@ -50,6 +50,6 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		this.append(this.getEndXMLTagDecl('script'));
+		this.append(this.getEndXMLTagDecl());
 	}
 );

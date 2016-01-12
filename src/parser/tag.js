@@ -12,7 +12,6 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { classRef } from '../consts/regs';
-import { inlineTags } from '../consts/html';
 import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK, FILTER } from '../consts/literals';
 
 /**
@@ -29,7 +28,7 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
 		this.getXMLAttrsDeclStart() +
 		(opt_attrs ? this.getXMLAttrsDeclBody(opt_attrs) : '') +
 		this.getXMLAttrsDeclEnd() +
-		this.getXMLTagDeclEnd(tag, opt_inline)
+		this.getXMLTagDeclEnd(opt_inline)
 	);
 };
 
@@ -40,53 +39,81 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
  * @return {string}
  */
 Parser.prototype.getXMLTagDeclStart = function (tag) {
+	let
+		str = this.declVars(`__TAG__ = '${tag}'`, {sys: true});
+
+	const
+		link = this.out(`__TAG__`, {unsafe: true});
+
 	if (!this.domComment && this.renderMode === 'dom') {
-		return `$0 = new Snakeskin.Element('${tag}');`;
+		return `${str}$0 = new Snakeskin.Element(${link});`;
 	}
 
-	return this.wrap(`'<${tag}'`);
+	return str + this.wrap(`'<' + ${link}`);
 };
 
 /**
  * Returns end declaration of the specified XML tag
  *
- * @param {string} tag - tag name
  * @param {?boolean=} [opt_inline=false] - if true, then the tag is inline
  * @return {string}
  */
-Parser.prototype.getXMLTagDeclEnd = function (tag, opt_inline) {
+Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
+	opt_inline = Boolean(opt_inline);
+
 	const
-		inline = opt_inline || inlineTags[tag];
+		link = this.out(`__TAG__`, {unsafe: true});
 
 	if (!this.domComment && this.renderMode === 'dom') {
-		return this.wrap('$0') + (
-			inline ? '$0 = __RESULT__[__RESULT__.length - 1];' : '__RESULT__.push($0);'
-		);
+		return ws`
+			${this.wrap('$0')}
+			if (${opt_inline} || __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}]) {
+				$0 = __RESULT__[__RESULT__.length - 1];
+
+			} else {
+				__RESULT__.push($0);
+			}
+		`;
 	}
 
-	return this.wrap(`'${inline && this.doctype === 'xml' ? '/' : ''}>'`);
+	return ws`
+		if (${this.doctype === 'xml'} && (${opt_inline} || __INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}])) {
+			${this.wrap(`'/'`)}
+		}
+		${this.wrap(`'>'`)}
+	`;
 };
 
 /**
  * Returns string declaration of a closing tag for the specified XML tag
  *
- * @param {string} tag - tag name
  * @param {?boolean=} [opt_inline=false] - if true, then the tag is inline
  * @return {string}
  */
-Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
-	if (opt_inline || inlineTags[tag]) {
+Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
+	opt_inline = Boolean(opt_inline);
+
+	if (opt_inline) {
 		return '';
 	}
 
+	const
+		link = this.out(`__TAG__`, {unsafe: true});
+
 	if (!this.domComment && this.renderMode === 'dom') {
 		return ws`
-			__RESULT__.pop();
-			$0 = __RESULT__[__RESULT__.length - 1];
+			if (${!opt_inline} && !__INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}]) {
+				__RESULT__.pop();
+				$0 = __RESULT__[__RESULT__.length - 1];
+			}
 		`;
 	}
 
-	return this.wrap(`'</${tag}>'`);
+	return ws`
+		if (${!opt_inline} && !__INLINE_TAGS__[__INLINE_TAGS__.length - 1][${link}]) {
+			${this.wrap(`'</' + ${link} + '>'`)}
+		}
+	`;
 };
 
 /**
@@ -94,7 +121,14 @@ Parser.prototype.getEndXMLTagDecl = function (tag, opt_inline) {
  * and returns a reporting object
  *
  * @param {string} str - source string
- * @return {{tag: string, id: string, classes: !Array<string>, pseudo: !Array<string>, inline: boolean}}
+ * @return {{
+ *   tag: string,
+ *   id: string,
+ *   classes: !Array<string>,
+ *   pseudo: !Array<string>,
+ *   inline: boolean,
+ *   inlineMap: (boolean|string)
+ * }}
  */
 Parser.prototype.getXMLTagDesc = function (str) {
 	str = this.replaceTplVars(str, {replace: true});
@@ -110,6 +144,7 @@ Parser.prototype.getXMLTagDesc = function (str) {
 
 	let
 		inline = false,
+		inlineMap = false,
 		hasId = false;
 
 	const
@@ -139,9 +174,22 @@ Parser.prototype.getXMLTagDesc = function (str) {
 		classes: [],
 		id: '',
 		inline: false,
+		inlineMap: false,
 		pseudo: [],
 		tag: ''
 	};
+
+	function pseudoHelper() {
+		const
+			val = pseudo[pseudo.length - 1];
+
+		if (val === 'inline') {
+			inline = true;
+
+		} else if (/inline=/.test(val)) {
+			inlineMap = val.split('=')[1].trim();
+		}
+	}
 
 	for (let i = 0; i < str.length; i++) {
 		const
@@ -236,10 +284,7 @@ Parser.prototype.getXMLTagDesc = function (str) {
 				classes.push('');
 
 			} else if (el === '!') {
-				if (!inline) {
-					inline = pseudo[pseudo.length - 1] === 'inline';
-				}
-
+				pseudoHelper();
 				pseudo.push('');
 			}
 
@@ -290,15 +335,13 @@ Parser.prototype.getXMLTagDesc = function (str) {
 	});
 
 	this.bemRef = ref;
-
-	if (!inline) {
-		inline = pseudo[pseudo.length - 1] === 'inline';
-	}
+	pseudoHelper();
 
 	return {
 		classes,
 		id: this.pasteTplVarBlocks(id),
 		inline,
+		inlineMap,
 		pseudo,
 		tag: this.pasteTplVarBlocks(tag)
 	};

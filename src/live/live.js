@@ -11,7 +11,6 @@
 import Snakeskin from '../core';
 import { any } from '../helpers/gcc';
 import { isArray } from '../helpers/types';
-import { inlineTags } from '../consts/html';
 
 /**
  * StringBuffer constructor
@@ -153,6 +152,27 @@ Snakeskin.forIn = function (obj, callback) {
 };
 
 /**
+ * Map of empty tag names
+ * @const
+ */
+Snakeskin.inlineTags = {
+	'area': true,
+	'base': true,
+	'br': true,
+	'col': true,
+	'embed': true,
+	'hr': true,
+	'img': true,
+	'input': true,
+	'link': true,
+	'meta': true,
+	'param': true,
+	'source': true,
+	'track': true,
+	'wbr': true
+};
+
+/**
  * Appends a node or a text to the source
  *
  * @param {!Element} node - source element
@@ -160,10 +180,6 @@ Snakeskin.forIn = function (obj, callback) {
  * @return {(!Element|!Text|string)}
  */
 Snakeskin.appendChild = function (node, obj) {
-	if (node.tagName && inlineTags[node.tagName.toLowerCase()]) {
-		return String(obj).trim();
-	}
-
 	if (obj instanceof Node === false) {
 		obj = document.createTextNode(String(obj));
 	}
