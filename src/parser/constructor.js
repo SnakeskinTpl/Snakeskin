@@ -234,6 +234,12 @@ export default class Parser {
 		this.outerLink = null;
 
 		/**
+		 * The list of decorators
+		 * @type {!Array.<string>}
+		 */
+		this.decorators = [];
+
+		/**
 		 * The template structure
 		 * @type {!Object}
 		 */
@@ -400,6 +406,15 @@ export default class Parser {
 						__FILTERS__ = Snakeskin.Filters,
 						__VARS__ = Snakeskin.Vars,
 						__LOCAL__ = Snakeskin.LocalVars;
+
+					function __DECORATE__(decorators, fn) {
+						Snakeskin.forEach(decorators, function (decorator) {
+							fn = decorator(fn);
+						});
+
+						fn.decorators = decorators;
+						return fn;
+					}
 
 					function __LENGTH__(val) {
 						if (typeof Node === 'function' && val[0] instanceof Node === true) {

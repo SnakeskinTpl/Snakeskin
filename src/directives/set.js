@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 	'set',
 
 	{
-		group: ['set', 'define'],
+		group: 'set',
 		notEmpty: true,
 		placement: 'global',
 		shorthands: {
@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 	'__set__',
 
 	{
-		group: 'define',
+		group: 'ignore',
 		notEmpty: true
 	},
 

@@ -68,7 +68,7 @@ Snakeskin.addDirective(
 	'__setFile__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function (command) {
@@ -103,7 +103,7 @@ Snakeskin.addDirective(
 	'__endSetFile__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function () {

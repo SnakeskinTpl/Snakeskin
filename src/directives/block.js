@@ -46,8 +46,7 @@ Snakeskin.addDirective(
 
 			if (!tplName) {
 				if (this.structure.parent) {
-					this.error(`the directive "outer block" can be used only within the global space`);
-					return;
+					return this.error(`the directive "outer block" can be used only within the global space`);
 				}
 
 				try {

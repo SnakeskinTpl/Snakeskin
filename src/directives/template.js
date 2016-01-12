@@ -25,6 +25,7 @@ import {
 
 	$write,
 	$scope,
+	$decorators,
 	$templates,
 	$cache,
 	$args,
@@ -59,7 +60,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					this.renderAs : null
 			);
 
-			let lastName = '';
 			const
 				iface = this.name === 'interface';
 
@@ -113,25 +113,24 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				jsDoc += pos.length;
 			}
 
-			const tmpArr = tmpTplName
+			const tmpTplNameArr = tmpTplName
 				.replace(nmssRgxp, '%')
 				.replace(nmsRgxp, '.%')
 				.replace(nmeRgxp, '')
 				.split('.');
 
 			const
-				{length} = tmpArr;
+				tplNameLength = tmpTplNameArr.length;
 
-			let
-				[str] = tmpArr,
-				shortcut = '';
+			let shortcut = '';
+			[tmpTplName] = tmpTplNameArr;
 
-			if (str[0] === '%') {
+			if (tmpTplName[0] === '%') {
 				try {
-					str = ws`['${
+					tmpTplName = ws`['${
 						applyDefEscape(
 							this.returnEvalVal(
-								this.out(str.slice(1), {unsafe: true})
+								this.out(tmpTplName.slice(1), {unsafe: true})
 							)
 						)
 					}']`;
@@ -141,15 +140,16 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				}
 
 			} else {
-				shortcut = str;
+				shortcut = tmpTplName;
 			}
 
-			for (let i = 1; i < length; i++) {
-				let el = tmpArr[i];
+			let lastName = '';
+			for (let i = 1; i < tplNameLength; i++) {
+				let el = tmpTplNameArr[i];
 
 				const
 					custom = el[0] === '%',
-					def = `this${concatProp(str)}`;
+					def = `this${concatProp(tmpTplName)}`;
 
 				if (custom) {
 					el = el.slice(1);
@@ -173,7 +173,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				if (custom) {
 					try {
-						str += ws`['${
+						tmpTplName += ws`['${
 							applyDefEscape(
 								this.returnEvalVal(
 									this.out(el, {unsafe: true})
@@ -187,30 +187,21 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 					continue;
 
-				} else if (i === length - 1) {
+				} else if (i === tplNameLength - 1) {
 					lastName = el;
 				}
 
-				str += `.${el}`;
+				tmpTplName += `.${el}`;
 			}
 
-			tplName = str;
-			this.save(
-				(length === 1 && shortcut ? `var ${shortcut} = ` : '') + // jscs:ignore
-					`this${concatProp(tplName)} = function ${prfx}${length > 1 ? lastName : shortcut}(`,
-
-				{iface}
-			);
-
-			this.info.template = this.tplName = tplName;
+			this.info.template = this.tplName = tplName = tmpTplName;
+			this.vars[tplName] = {};
+			this.blockTable = {};
 			this.blockStructure = {
 				children: [],
 				name: 'root',
 				parent: null
 			};
-
-			this.blockTable = {};
-			this.vars[tplName] = {};
 
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
@@ -246,6 +237,18 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				}
 			}
 
+			const
+				decorators = (parentTplName ? $decorators[parentTplName] : []).concat(this.decorators);
+
+			this.save(ws`
+				${tplNameLength === 1 && shortcut ? `var ${shortcut} = ` : ''}
+				this${concatProp(tplName)} =
+				 __DECORATE__([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
+
+				{iface}
+			);
+
+			this.decorators = [];
 			this.initTemplateCache(tplName);
 
 			if (tplName in $extMap) {
@@ -272,7 +275,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			$args[tplName] = {};
 			$argsRes[tplName] = {};
 			$output[tplName] = {};
-
+			$decorators[tplName] = decorators;
 			$extMap[tplName] = parentTplName;
 			delete $extList[tplName];
 
@@ -415,7 +418,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				this.save(ws`
 						${this.consts.join('')}
 						return ${this.getReturnResultDecl()};
-					};
+					});
 
 					Snakeskin.cache["${escapeDoubleQuotes(tplName)}"] = this${concatProp(tplName)};
 				`);

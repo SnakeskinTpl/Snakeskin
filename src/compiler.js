@@ -527,23 +527,27 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 					let
 						[commandType] = commandTypeRgxp.exec(command);
 
-					const
-						defDirs = {'const': true, 'global': true, 'output': true};
+					const defDirs = {
+						'const': true,
+						'decorator': true,
+						'global': true,
+						'output': true
+					};
 
 					if (!Snakeskin.Directives[commandType]) {
 						if (isAssignExpression(command)) {
 							commandType = parser.tplName ? 'const' : 'global';
 
 						} else {
-							commandType = 'output';
+							commandType = parser.tplName ? 'output' : 'decorator';
 						}
 					}
 
 					commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
 
-					// All directives, which starts with _
+					// All directives from the ignore group
 					// will be cutted from the code listing
-					if (commandType[0] === '_') {
+					if (parser.getGroup('ignore')[commandType]) {
 						parser.lines[lastLine] = parser.lines[lastLine]
 							.replace(getRgxp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`), '');
 					}

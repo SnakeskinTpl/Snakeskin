@@ -125,7 +125,8 @@ Snakeskin.addDirective(
 
 	{
 		alias: true,
-		deferInit: true
+		deferInit: true,
+		group: 'ignore'
 	},
 
 	function () {

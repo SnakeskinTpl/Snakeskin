@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 	'__setError__',
 
 	{
-
+		group: 'ignore'
 	},
 
 	function (command) {

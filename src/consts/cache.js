@@ -39,7 +39,8 @@ export const
 
 export const
 	$args = {},
-	$argsRes = {};
+	$argsRes = {},
+	$decorators = {};
 
 export const
 	$rgxp = {},
