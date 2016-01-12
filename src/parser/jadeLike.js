@@ -438,32 +438,38 @@ function getLineDesc(str, i, dir, comment) {
 			if (comment || (sComment && concatLine)) {
 				command += el;
 
-			} else if (!sComment && dir) {
-				const
-					dirStart = rgxp.ws.test(str[j - 2]);
+			} else if (!sComment) {
+				if (dir) {
+					const
+						dirStart = rgxp.ws.test(str[j - 2]);
 
-				let literal;
-				brk = dirStart && prevEl === CONCAT_END;
+					let literal;
+					brk = dirStart && prevEl === CONCAT_END;
 
-				if (dirStart && (prevEl === CONCAT && command !== CONCAT || brk)) {
-					literal = prevEl;
-					command = command.slice(0, lastElI - 1) + command.slice(lastElI + 1);
+					if (dirStart && (prevEl === CONCAT && command !== CONCAT || brk)) {
+						literal = prevEl;
+						command = command.slice(0, lastElI - 1) + command.slice(lastElI + 1);
 
-				} else if (concatLine && !bOpen) {
-					command += el;
-				}
-
-				if (concatLine && !brk) {
-					continue;
-				}
-
-				if (literal === CONCAT) {
-					concatLine = true;
-
-					if (!bOpen) {
+					} else if (concatLine && !bOpen) {
 						command += el;
 					}
 
+					if (concatLine && !brk) {
+						continue;
+					}
+
+					if (literal === CONCAT || bOpen) {
+						concatLine = literal !== CONCAT ? 1 : true;
+
+						if (!bOpen) {
+							command += el;
+						}
+
+						continue;
+					}
+
+				} else if (bOpen) {
+					concatLine = 1;
 					continue;
 				}
 			}
@@ -527,14 +533,19 @@ function getLineDesc(str, i, dir, comment) {
 				}
 			}
 
-			if (ESCAPES[el] && (el !== '/' || bEnd) && !bOpen) {
+			if ((ESCAPES[el] || el === I18N) && (el !== '/' || bEnd) && !bOpen) {
 				bOpen = el;
 
 			} else if (bOpen && (el === '\\' || bEscape)) {
 				bEscape = !bEscape;
 
-			} else if (ESCAPES[el] && bOpen === el && !bEscape) {
+			} else if ((ESCAPES[el] || el === I18N) && bOpen === el && !bEscape) {
 				bOpen = false;
+
+				if (concatLine === 1) {
+					concatLine = false;
+				}
+
 				bEnd = false;
 			}
 		}
