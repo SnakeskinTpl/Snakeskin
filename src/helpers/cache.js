@@ -71,7 +71,7 @@ export function getFromCache(key, code, params, ctx) {
 export function getCacheKey(params, ctx) {
 	return params.language ?
 		null : JSON.stringify([
-			params.exports,
+			params.module,
 			ctx !== NULL,
 			escapeEOLs(params.eol),
 			params.tolerateWhitespaces,

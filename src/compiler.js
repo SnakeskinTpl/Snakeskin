@@ -62,7 +62,7 @@ import {
  *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
  *   *) [debug] - object, which will be contained some debug information
  *
- *   *) [exports = 'default'] - export type for compiled templates
+ *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, commonjs, global)
  *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode
  *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
  *
@@ -108,7 +108,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			renderMode: 'stringConcat',
 			vars: {},
 			throws: true,
-			exports: 'default',
+			module: 'umd',
 			useStrict: true,
 			prettyPrint: false,
 			bemFilter: 'bem',

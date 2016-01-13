@@ -62,7 +62,7 @@ export default class Parser {
 		this.renderAs = params.renderAs;
 
 		/** @type {string} */
-		this.exports = params.exports;
+		this.module = params.module;
 
 		/** @type {!Array<string>} */
 		this.literalBounds = params.literalBounds;

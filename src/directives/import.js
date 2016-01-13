@@ -23,6 +23,36 @@ Snakeskin.addDirective(
 	function (command) {
 		this.structure.vars = {};
 
+		/*let
+			res = 'import ',
+			from = '';
+
+		command = command.replace(/\s+from\s+.*!/, (str) => {
+			from = str;
+			return '';
+		});
+
+		if (!from) {
+			return this.error(`invalid "${this.name}" declaration`);
+		}
+
+		const f = (str) =>
+			$C(str.split(/\s*,\s*!/)).reduce((arr, decl) => {
+				const parts = decl.split(/\s+as\s+/);
+				arr.push(`${parts[0]} as ${this.declVar(parts[1] || parts[0])}`);
+				return arr;
+
+			}, []).join();
+
+		command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*(,?)\s*!/, (str, prfComma, decl, postComma) => {
+			res += `${prfComma ? ', ' : ''}{ ${f(decl)} }${postComma ? ',' : ''}`;
+			return prfComma || '';
+		});
+
+		this.append(res + f(command) + from);*/
+
+		this.structure.vars = {};
+
 		let
 			res = '',
 			from = '';
