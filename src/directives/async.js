@@ -13,7 +13,7 @@ import Snakeskin from '../core';
 
 $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 	Snakeskin.addDirective(
-		String(dir),
+		dir,
 
 		{
 			block: true,

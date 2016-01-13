@@ -38,7 +38,7 @@ import {
 
 $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 	Snakeskin.addDirective(
-		String(dir),
+		dir,
 
 		{
 			block: true,
@@ -285,7 +285,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			if (!parentTplName) {
 				$C(this.params[this.params.length - 1]).forEach((el, key) => {
-					if (String(key) !== 'renderAs' && key[0] !== '@' && el !== undefined) {
+					if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
 						baseParams[key] = el;
 					}
 				});
@@ -296,12 +296,13 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			}
 
 			$C(flags).forEach((el) => {
+				el = el.trim();
+
 				const
-					val = String(el).trim(),
-					[name] = val.split(' ');
+					[name] = el.split(' ');
 
 				delete baseParams[name];
-				Snakeskin.Directives['__set__'].call(this, val);
+				Snakeskin.Directives['__set__'].call(this, el);
 			});
 
 			$C(baseParams).forEach((el, key) => {

@@ -130,7 +130,8 @@ Parser.prototype.out = function (command, opt_params) {
 		{unsafe, skipFirstWord, skipValidation} = any(opt_params || {});
 
 	const
-		{tplName, structure} = this,
+		{structure} = this,
+		tplName = String(this.tplName),
 		Filters = $C(Snakeskin.Filters);
 
 	if (dangerRgxp.test(command)) {
@@ -249,14 +250,14 @@ Parser.prototype.out = function (command, opt_params) {
 
 			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
 				if (refCache) {
-					def = search(refCache.root, str, this.getExtList(String(tplName)));
+					def = search(refCache.root, str, this.getExtList(tplName));
 				}
 
 				let
 					tplCache = tplName && $scope['template'][tplName];
 
 				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.root, str, this.getExtList(String(tplName)));
+					def = search(tplCache.root, str, this.getExtList(tplName));
 				}
 			}
 
