@@ -661,7 +661,7 @@ Parser.prototype.out = function (command, opt_params) {
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 
-		if (!this.domComment && this.renderMode === 'dom') {
+		if (!this.stringResult && this.renderMode === 'dom') {
 			res = `__FILTERS__['node'](${res}, $0)`;
 		}
 

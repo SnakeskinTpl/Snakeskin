@@ -28,8 +28,8 @@ Snakeskin.addDirective(
 
 		let str;
 		if (this.renderMode === 'dom') {
-			this.domComment = true;
-			str = `__COMMENT_RESULT__ = '';`;
+			this.stringResult = true;
+			str = `__STRING_RESULT__ = '';`;
 
 		} else {
 			str = this.wrap(`'<!--'`);
@@ -50,11 +50,11 @@ Snakeskin.addDirective(
 		if (this.renderMode === 'dom') {
 			str = this.wrap(`'${end}'`);
 
-			this.domComment = false;
+			this.stringResult = false;
 
 			str += ws`
-				${this.wrap('new Snakeskin.Comment(__COMMENT_RESULT__)')}
-				__COMMENT_RESULT__ = '';
+				${this.wrap('new Snakeskin.Comment(__STRING_RESULT__)')}
+				__STRING_RESULT__ = '';
 			`;
 
 		} else {

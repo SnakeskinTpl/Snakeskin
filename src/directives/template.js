@@ -311,28 +311,11 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			const
 				args = this.prepareArgs(command, 'template', {parentTplName, tplName});
 
-			this.save(`${args.str}) {`, {iface});
 			if (args.scope) {
 				this.scope.push(args.scope);
 			}
 
-			const predefs = [
-				'callee',
-				'self',
-				'getTplResult',
-				'clearTplResult',
-				'$0',
-				'TPL_NAME',
-				'PARENT_TPL_NAME'
-			];
-
-			$C(predefs).forEach((el) => {
-				this.structure.vars[el] = {
-					scope: 0,
-					value: el
-				};
-			});
-
+			this.save(`${args.str}) {`, {iface});
 			this.save(ws`
 				var
 					__THIS__ = this;
@@ -343,7 +326,22 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				var
 					__RESULT__ = ${this.getResultDecl()},
-					__COMMENT_RESULT__,
+					__RESULT_TO_STRING__ = false,
+					__STRING_RESULT__;
+
+				var
+					__ATTR_POS__,
+					__ATTR_STR__,
+					__ATTR_TMP__,
+					__ATTR_TYPE__,
+					__ATTR_CACHE__,
+					__ATTR_CONCAT_MAP__;
+
+				var
+					__INLINE_TAGS__ = Snakeskin.inlineTags,
+					__INLINE_TAG__;
+
+				var
 					$0 = ${this.renderMode === 'dom' ? '__RESULT__[0]' : 'undefined'};
 
 				function getTplResult(opt_clear) {

@@ -184,7 +184,7 @@ export const SYS_CONSTS = {
 	'__ROOT__': true,
 	'__ARGUMENTS__': true,
 	'__RESULT__': true,
-	'__COMMENT_RESULT__': true,
+	'__STRING_RESULT__': true,
 	'__CDATA__': true,
 	'__RETURN__': true,
 	'__RETURN_VAL__': true,

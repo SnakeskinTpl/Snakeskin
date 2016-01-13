@@ -57,7 +57,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 	return ws`
 		Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
 			${
-				!this.domComment && this.renderMode === 'dom' ?
+				!this.stringResult && this.renderMode === 'dom' ?
 					'$0.setAttribute(key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
 			}
 		});
@@ -144,7 +144,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		}, '');
 
 		const
-			isDOMRenderMode = !this.domComment && this.renderMode === 'dom';
+			isDOMRenderMode = !this.stringResult && this.renderMode === 'dom';
 
 		return ws`
 			${res}

@@ -23,8 +23,8 @@ import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
  * @return {string}
  */
 Parser.prototype.$ = function () {
-	if (this.domComment) {
-		return '__COMMENT_RESULT__ += ';
+	if (this.stringResult) {
+		return '__STRING_RESULT__ += ';
 	}
 
 	switch (this.renderMode) {
@@ -44,7 +44,7 @@ Parser.prototype.$ = function () {
  * @return {string}
  */
 Parser.prototype.$$ = function () {
-	if (this.domComment) {
+	if (this.stringResult) {
 		return '';
 	}
 

@@ -42,10 +42,10 @@ Snakeskin.addDirective(
 			parts = this.getTokens(command),
 			{tag, id, inline, inlineMap, classes} = this.getXMLTagDesc(parts[0]);
 
-		$C.extend(false, this.structure.params, {inline, inlineMap, tag});
+		$C.extend(false, this.structure.params, {inline, tag});
 
 		if (inlineMap) {
-			this.append(`__INLINE_TAGS__.push(${this.out(inlineMap, {unsafe: true})});`);
+			this.append(`__INLINE_TAGS__ = ${inlineMap}`);
 		}
 
 		if (tag === '?') {
@@ -76,17 +76,10 @@ Snakeskin.addDirective(
 		this.bemRef = p.bemRef;
 		this.prevSpace = false;
 
-		let
-			str = '';
-
-		if (p.tag !== '?') {
-			str += this.getEndXMLTagDecl(p.inline);
+		if (p.tag === '?') {
+			return;
 		}
 
-		if (p.inlineMap) {
-			str += `__INLINE_TAGS__.pop();`;
-		}
-
-		this.append(str);
+		this.append(this.getEndXMLTagDecl(p.inline));
 	}
 );

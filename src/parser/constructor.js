@@ -284,10 +284,10 @@ export default class Parser {
 		this.text = false;
 
 		/**
-		 * If is true, then XML comment is started with DOM render mode
+		 * If is true, then the output will be saved to __STRING_RESULT__ as a string
 		 * @type {boolean}
 		 */
-		this.domComment = false;
+		this.stringResult = false;
 
 		/**
 		 * The content of Escaper blocks
@@ -396,18 +396,6 @@ export default class Parser {
 					var
 						TRUE = new Boolean(true),
 						FALSE = new Boolean(false);
-
-					var
-						__INLINE_TAGS__ = [Snakeskin.inlineTags],
-						__INLINE_TAG__;
-
-					var
-						__ATTR_POS__,
-						__ATTR_STR__,
-						__ATTR_TMP__,
-						__ATTR_TYPE__,
-						__ATTR_CACHE__,
-						__ATTR_CONCAT_MAP__;
 
 					var
 						__APPEND__ = Snakeskin.appendChild,
