@@ -45,7 +45,7 @@ Snakeskin.addDirective(
 		$C.extend(false, this.structure.params, {inline, tag});
 
 		if (inlineMap) {
-			this.append(`__INLINE_TAGS__ = ${inlineMap}`);
+			this.append(this.declVars(`__INLINE_TAGS__ = ${inlineMap}`, {sys: true}));
 		}
 
 		if (tag === '?') {
