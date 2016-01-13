@@ -67,11 +67,12 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 	if (!this.stringResult && this.renderMode === 'dom') {
 		return ws`
 			${this.wrap('$0')}
-			if (${opt_inline} || ${inlineTag}) {
-				if (${inlineTag} !== true) {
-					$0.setAttribute(__INLINE_TAG__,
-				}
+			if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
+				$0 = __RESULT__[__RESULT__.length - 1];
 
+			} else if (${inlineTag} && ${inlineTag} !== true) {
+				${this.declVars('__CALL_CACHE__ = __RESULT__, __NODE__ = $0', {sys: true})}
+				__RESULT__ = ${this.getResultDecl()};
 				$0 = __RESULT__[__RESULT__.length - 1];
 
 			} else {
@@ -81,13 +82,13 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 	}
 
 	return ws`
-		if (${opt_inline} || ${inlineTag}) {
-			if (${inlineTag} === true) {
-				${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
+		if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
+			${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
 
-			} else {
-				${this.wrap(`' ' + ${inlineTag} + '="'`)}
-			}
+		} else if (${inlineTag} && ${inlineTag} !== true) {
+			${this.wrap(`' ' + ${inlineTag} + '="'`)}
+			${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
+			__RESULT__ = ${this.getResultDecl()};
 
 		} else {
 			${this.wrap(`'>'`)}
@@ -109,10 +110,19 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 
 	if (!this.stringResult && this.renderMode === 'dom') {
 		return ws`
-			if (${opt_inline} || ${inlineTag} && ${inlineTag} !== true) {
-				/*${this.out(`__TAG__`, {unsafe: true})}.setAttribute();*/
+			if (${inlineTag} && ${inlineTag} !== true) {
+				${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
 
-			} else {
+				__RESULT__ =
+					${this.out('__CALL_CACHE__', {unsafe: true})};
+
+				Snakeskin.setAttribute(
+					${this.out(`__NODE__`, {unsafe: true})},
+					${inlineTag},
+					${this.out('__CALL_TMP__', {unsafe: true})}
+				);
+
+			} else if (${!opt_inline}) {
 				__RESULT__.pop();
 				$0 = __RESULT__[__RESULT__.length - 1];
 			}
@@ -120,10 +130,15 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 	}
 
 	return ws`
-		if (${opt_inline} || ${inlineTag} && ${inlineTag} !== true) {
-			${this.wrap(`'"${this.doctype === 'xml' ? '/' : ''}>'`)}
+		if (${inlineTag} && ${inlineTag} !== true) {
+			${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
 
-		} else {
+			__RESULT__ =
+					${this.out('__CALL_CACHE__', {unsafe: true})};
+
+			${this.wrap(`${this.out('__CALL_TMP__')} + '"${this.doctype === 'xml' ? '/' : ''}>'`)}
+
+		} else if (${!opt_inline}) {
 			${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
 		}
 	`;

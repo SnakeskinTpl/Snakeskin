@@ -326,7 +326,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				var
 					__RESULT__ = ${this.getResultDecl()},
-					__RESULT_TO_STRING__ = false,
 					__STRING_RESULT__;
 
 				var

@@ -13,6 +13,18 @@ import { any } from '../helpers/gcc';
 import { isArray } from '../helpers/types';
 
 /**
+ * Special Snakeskin class for escaping HTML entities from an object
+ *
+ * @param {?} val - source value
+ * @param {?string=} [opt_attr] - type of attribute declaration
+ * @return {(string|!Node)}
+ */
+Snakeskin.HTMLObject = function (val, opt_attr) {
+	this.value = val;
+	this.attr = opt_attr;
+};
+
+/**
  * StringBuffer constructor
  *
  * @constructor
@@ -176,8 +188,8 @@ Snakeskin.inlineTags = {
  * Appends a node or a text to the source
  *
  * @param {!Element} node - source element
- * @param {(!Element|!Text|string)} obj - element for appending
- * @return {(!Element|!Text|string)}
+ * @param {?} obj - element for appending
+ * @return {(!Element|!Text)}
  */
 Snakeskin.appendChild = function (node, obj) {
 	if (obj instanceof Node === false) {
@@ -189,13 +201,12 @@ Snakeskin.appendChild = function (node, obj) {
 };
 
 /**
- * Special Snakeskin class for escaping HTML entities from an object
+ * Sets an attribute to the specified element
  *
- * @param {?} val - source value
- * @param {?string=} [opt_attr] - type of attribute declaration
- * @return {(string|!Node)}
+ * @param {!Element} node - source element
+ * @param {string} name - attribute name
+ * @param {?} val - attribute value
  */
-Snakeskin.HTMLObject = function (val, opt_attr) {
-	this.value = val;
-	this.attr = opt_attr;
+Snakeskin.setAttribute = function (node, name, val) {
+	node.setAttribute(name, val instanceof Node === false ? String(val) : val.textContent);
 };

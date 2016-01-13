@@ -209,6 +209,7 @@ export const SYS_CONSTS = {
 	'__INLINE_TAG__': true,
 	'__INLINE_TAGS__': true,
 	'__TAG__': true,
+	'__NODE__': true,
 	'TRUE': true,
 	'FALSE': true,
 	'TPL_NAME': true,

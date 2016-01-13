@@ -32,7 +32,7 @@ Parser.prototype.$ = function () {
 			return '__RESULT__.push(';
 
 		case 'dom':
-			return '__APPEND__(__RESULT__[__RESULT__.length - 1], __INLINE_TAGS__[__INLINE_TAGS__.length - 1], ';
+			return '__APPEND__(__RESULT__[__RESULT__.length - 1], ';
 
 		default:
 			return '__RESULT__ += ';
