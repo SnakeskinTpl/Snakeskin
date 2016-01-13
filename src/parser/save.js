@@ -32,7 +32,7 @@ Parser.prototype.$ = function () {
 			return '__RESULT__.push(';
 
 		case 'dom':
-			return '__APPEND__(__RESULT__[__RESULT__.length - 1], ';
+			return 'Snakeskin.appendChild(__RESULT__[__RESULT__.length - 1], ';
 
 		default:
 			return '__RESULT__ += ';
@@ -149,7 +149,7 @@ Parser.prototype.end = function (cacheKey, label) {
 
 		case 'dom':
 			this.result = this.result.replace(
-				/__APPEND__\(__RESULT__\[__RESULT__\.length - 1], __INLINE_TAGS__\[__INLINE_TAGS__.length - 1], ''\);/g,
+				/Snakeskin\.appendChild\(__RESULT__\[__RESULT__\.length - 1], ''\);/g,
 				''
 			);
 

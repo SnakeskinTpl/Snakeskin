@@ -203,7 +203,6 @@ export const SYS_CONSTS = {
 	'__CALL_POS__': true,
 	'__CALL_TMP__': true,
 	'__CALL_CACHE__': true,
-	'__APPEND__': true,
 	'__FILTERS__': true,
 	'__VARS__': true,
 	'__LOCAL__': true,
