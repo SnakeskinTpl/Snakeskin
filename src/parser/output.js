@@ -266,7 +266,7 @@ Parser.prototype.out = function (command, opt_params) {
 			}
 
 			if (!def) {
-				def = vars[`${str}_${this.environment.id}`] || vars[`${str}_00`];
+				def = vars[`${str}_${this.environment.id}`];
 			}
 		}
 

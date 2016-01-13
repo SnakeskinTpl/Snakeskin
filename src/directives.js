@@ -28,6 +28,7 @@ import './directives/comment';
 import './directives/doctype';
 import './directives/decorator';
 import './directives/template';
+import './directives/import';
 import './directives/include';
 import './directives/cycles';
 import './directives/control';

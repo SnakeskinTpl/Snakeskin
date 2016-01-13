@@ -57,34 +57,35 @@ Parser.prototype.declVar = function (name, opt_params) {
 	}
 
 	let
-		realVar,
+		link,
 		global = false;
 
-	if (structure.name === 'root' || this.getGroup('import')[structure.name]) {
-		if (structure.name !== 'root') {
-			structure = structure.parent;
-		}
-
-		realVar = `__LOCAL__.${name}_${id}_${Snakeskin.UID}`;
-		name += `_${id}`;
+	if (structure.name === 'root') {
 		global = true;
+		name += `_${id}`;
+		link = `__LOCAL__.${name}_${id}_${Snakeskin.UID}`;
 
 	} else {
-		realVar = `__${name}_${structure.name}_${this.i}`;
+		if (this.getGroup('head')[structure.name]) {
+			structure = structure.parent;
+			name += `_${id}`;
+		}
+
+		link = `__${name}_${structure.name}_${this.i}`;
 	}
 
 	structure.vars[name] = {
 		global,
 		id,
 		scope: this.scope.length,
-		value: realVar
+		value: link
 	};
 
 	if (tplName) {
 		this.vars[tplName][name] = true;
 	}
 
-	return realVar;
+	return link;
 };
 
 /**
@@ -120,7 +121,7 @@ Parser.prototype.declVars = function (str, opt_params) {
 		struct = struct.parent;
 	}
 
-	if (struct.name === 'root' || this.getGroup('import')[struct.name]) {
+	if (struct.name === 'root') {
 		fin = '';
 	}
 
