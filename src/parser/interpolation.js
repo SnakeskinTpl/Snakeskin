@@ -16,8 +16,7 @@ import * as rgxp from '../consts/regs';
 import {
 
 	FILTER,
-	MICRO_TEMPLATES,
-	MICRO_TEMPLATE_LENGTH,
+	MICRO_TEMPLATE,
 	MICRO_TEMPLATE_ESCAPES,
 	STRONG_SYS_ESCAPES,
 	ESCAPES,
@@ -235,11 +234,11 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 				continue;
 			}
 
-			if (!cEscape && MICRO_TEMPLATES[str.substr(pos, MICRO_TEMPLATE_LENGTH)]) {
+			if (!cEscape && str.substr(pos, MICRO_TEMPLATE.length) === MICRO_TEMPLATE) {
 				begin++;
 				dir = '';
 				start = i;
-				i += MICRO_TEMPLATE_LENGTH - 1;
+				i += MICRO_TEMPLATE.length - 1;
 				escape = false;
 				continue;
 			}

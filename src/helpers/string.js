@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection.js';
 import { any } from './gcc';
 import { isString } from './types';
 
@@ -23,7 +22,7 @@ const
  * @return {string}
  */
 export function ws(strings, expr) {
-	expr = $C.toArray(arguments).slice(1);
+	expr = [].slice.call(arguments, 1);
 	return any($C(strings).reduce((str, el, i) => str + el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : ''), ''));
 }
 

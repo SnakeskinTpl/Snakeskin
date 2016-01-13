@@ -11,6 +11,7 @@
  */
 
 import { r } from '../helpers/string';
+import { attrSeparators } from './html';
 import { G_MOD } from './literals';
 
 export const
@@ -19,8 +20,17 @@ export const
 export const
 	escaperPart = /^__ESCAPER_QUOT__\d+_/;
 
+const tmpSep = [];
+for (let key in attrSeparators) {
+	if (!attrSeparators.hasOwnProperty(key)) {
+		continue;
+	}
+
+	tmpSep.push(r(key));
+}
+
 export const
-	emptyCommandParams = /^([^\s]+?\(|\()/,
+	emptyCommandParams = new RegExp(`^([^\\s]+?[${tmpSep.join('')}]\\(|\\()`),
 	classRef = /^&/;
 
 export const

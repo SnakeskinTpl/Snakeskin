@@ -11,8 +11,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
-
 // The base directive separators
 // >>>
 
@@ -40,12 +38,8 @@ export const COMMENTS = {
 	[MULT_COMMENT_END]: MULT_COMMENT_END
 };
 
-export const MICRO_TEMPLATES = {
-	'${': true
-};
-
 export const
-	MICRO_TEMPLATE_LENGTH = Object.keys(MICRO_TEMPLATES)[0].length;
+	MICRO_TEMPLATE = '${';
 
 export const BASE_SHORTS = {
 	'-': true,
@@ -53,7 +47,15 @@ export const BASE_SHORTS = {
 };
 
 export const
-	SHORTS = $C(BASE_SHORTS).map((el) => el);
+	SHORTS = {};
+
+for (let key in BASE_SHORTS) {
+	if (!BASE_SHORTS.hasOwnProperty(key)) {
+		continue;
+	}
+
+	SHORTS[key] = true;
+}
 
 // <<<
 // The context modifiers
@@ -88,29 +90,32 @@ export const SYS_ESCAPES = {
 	[I18N]: true,
 	[LEFT_BLOCK]: true,
 	[ADV_LEFT_BLOCK]: true,
-	[SINGLE_COMMENT[0]]: true,
-	[MULT_COMMENT_START[0]]: true,
+	[SINGLE_COMMENT.charAt(0)]: true,
+	[MULT_COMMENT_START.charAt(0)]: true,
 	[CONCAT]: true,
 	[CONCAT_END]: true,
 	[IGNORE]: true,
-	[INLINE.trim()[0]]: true
+	[INLINE.trim().charAt(0)]: true
 };
 
-$C(BASE_SHORTS).forEach((el, key) =>
-	SYS_ESCAPES[key[0]] = true);
+for (let key in BASE_SHORTS) {
+	if (!BASE_SHORTS.hasOwnProperty(key)) {
+		continue;
+	}
+
+	SYS_ESCAPES[key.charAt(0)] = true;
+}
 
 export const STRONG_SYS_ESCAPES = {
 	'\\': true,
-	[SINGLE_COMMENT[0]]: true,
-	[MULT_COMMENT_START[0]]: true
+	[SINGLE_COMMENT.charAt(0)]: true,
+	[MULT_COMMENT_START.charAt(0)]: true
 };
 
 export const MICRO_TEMPLATE_ESCAPES = {
-	'\\': true
+	'\\': true,
+	[MICRO_TEMPLATE.charAt(0)]: true
 };
-
-$C(MICRO_TEMPLATES).forEach((el, key) =>
-	MICRO_TEMPLATE_ESCAPES[key[0]] = true);
 
 export const ESCAPES = {
 	'"': true,

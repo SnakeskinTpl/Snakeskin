@@ -41,7 +41,7 @@ Parser.prototype.getExtList = function (name) {
  */
 Parser.prototype.clearScopeCache = function (name) {
 	$C($scope).forEach((cluster, key) => {
-		if (key === 'template') {
+		if (String(key) === 'template') {
 			if (cluster[name] && cluster[name].parent) {
 				delete cluster[name].parent.children[name];
 			}

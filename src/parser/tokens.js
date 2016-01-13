@@ -16,8 +16,7 @@ import {
 	G_MOD,
 	P_OPEN,
 	P_CLOSE,
-	MICRO_TEMPLATES,
-	MICRO_TEMPLATE_LENGTH,
+	MICRO_TEMPLATE,
 	LEFT_BLOCK,
 	RIGHT_BLOCK
 
@@ -148,7 +147,7 @@ Parser.prototype.getTokens = function (str) {
 	for (let i = 0; i < str.length; i++) {
 		const
 			el = str[i],
-			part = str.substr(i, MICRO_TEMPLATE_LENGTH),
+			part = str.substr(i, MICRO_TEMPLATE.length),
 			cEscape = escape;
 
 		if (el === '\\' || escape) {
@@ -156,8 +155,8 @@ Parser.prototype.getTokens = function (str) {
 		}
 
 		let l = arr.length - 1;
-		if (!cEscape && MICRO_TEMPLATES[part]) {
-			i += MICRO_TEMPLATE_LENGTH - 1;
+		if (!cEscape && part === MICRO_TEMPLATE) {
+			i += MICRO_TEMPLATE.length - 1;
 			arr[l] += part;
 			bStart = true;
 			bOpen++;
