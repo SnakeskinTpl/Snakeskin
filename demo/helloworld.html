@@ -13,16 +13,29 @@
 	<body>
 		<div id="test"></div>
 
+		<script>
+			function baz(params) {
+				return function (fn) {
+					return function () {
+						return fn.apply(this, arguments) + 222;
+					};
+				};
+			}
+
+			function i18n(w) {
+				return w;
+			}
+		</script>
+
 		<script type="text/x-snakeskin-template" id="templates">
-			- template foo()
-				< div ${'foo'} = ${'bar'}
+			- template bar()
 		</script>
 
 		<script>
 			var d = {};
 			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
 			console.log(d.code);
-			console.log(foo());
+			console.log(bar());
 		</script>
 	</body>
 </html>

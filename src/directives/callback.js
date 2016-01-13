@@ -48,7 +48,6 @@ Snakeskin.addDirective(
 
 		this.append(ws`
 			${async[parent.name] && length > 1 ? ', ' : ''}(function (${this.declCallbackArgs(parts)}) {
-				${this.declArguments()}
 		`);
 	},
 
@@ -85,7 +84,6 @@ Snakeskin.addDirective(
 		this.startDir();
 		this.append(ws`
 			], function (${this.declCallbackArgs(parts)}) {
-				${this.declArguments()}
 		`);
 	},
 

@@ -166,14 +166,3 @@ Parser.prototype.declVars = function (str, opt_params) {
 
 	return fin.slice(0, -1) + (end ? ';' : '');
 };
-
-/**
- * Declares an object of arguments and returns string declaration
- * @return {string}
- */
-Parser.prototype.declArguments = function () {
-	return ws`
-		var __ARGUMENTS__ = arguments;
-		${this.declVars('arguments = __ARGUMENTS__')}
-	`;
-};

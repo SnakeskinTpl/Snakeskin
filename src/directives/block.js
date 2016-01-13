@@ -187,8 +187,6 @@ Snakeskin.addDirective(
 						${fnDecl} = function (${args.str}) {
 							var __RESULT__ = ${this.getResultDecl()};
 
-							${this.declArguments()}
-
 							function getTplResult(opt_clear) {
 								var res = ${this.getReturnResultDecl()};
 
