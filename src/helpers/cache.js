@@ -72,6 +72,8 @@ export function getCacheKey(params, ctx) {
 	return params.language ?
 		null : JSON.stringify([
 			params.module,
+			params.moduleId,
+			params.moduleName,
 			ctx !== NULL,
 			escapeEOLs(params.eol),
 			params.tolerateWhitespaces,

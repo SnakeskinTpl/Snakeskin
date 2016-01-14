@@ -181,12 +181,6 @@ export const P_CLOSE = {
 // >>>
 
 export const SYS_CONSTS = {
-	'__IS_NODE__': true,
-	'__AMD__': true,
-	'__EXPORTS__': true,
-	'__HAS_EXPORTS__': true,
-	'__INIT__': true,
-	'__ROOT__': true,
 	'__RESULT__': true,
 	'__STRING_RESULT__': true,
 	'__CDATA__': true,
@@ -215,6 +209,11 @@ export const SYS_CONSTS = {
 	'__NODE__': true,
 	'TRUE': true,
 	'FALSE': true,
+	'module': true,
+	'exports': true,
+	'require': true,
+	'__dirname': true,
+	'__filename': true,
 	'TPL_NAME': true,
 	'PARENT_TPL_NAME': true,
 	'Data': true,

@@ -63,6 +63,9 @@ import {
  *   *) [debug] - object, which will be contained some debug information
  *
  *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, commonjs, global)
+ *   *) [moduleId = 'tpls'] - module id for AMD/UMD declaration
+ *   *) [moduleName] - module name for global/UMD declaration
+ *
  *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode
  *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
  *
@@ -109,6 +112,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			vars: {},
 			throws: true,
 			module: 'umd',
+			moduleId: 'tpls',
 			useStrict: true,
 			prettyPrint: false,
 			bemFilter: 'bem',
@@ -888,6 +892,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 
 		// Compiling in a browser
 		} else {
+			console.log(parser.result);
 			parser.evalStr(parser.result);
 		}
 

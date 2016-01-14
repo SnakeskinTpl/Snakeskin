@@ -10,9 +10,9 @@
 
 import Snakeskin from '../core';
 import Parser from './constructor';
+import { r } from '../helpers/string';
 import { any } from '../helpers/gcc';
 import { escapeEOLs } from '../helpers/escape';
-import { ws, r } from '../helpers/string';
 import { eol, singleQuotes } from '../consts/regs';
 import { $write } from '../consts/cache';
 import { isFunction } from '../helpers/types';
@@ -176,20 +176,10 @@ Parser.prototype.end = function (cacheKey, label) {
 		resDecl = `${this.eol}   ${this.result}`;
 
 	this.result = `/* ${versionDecl}, ${keyDecl}, ${labelDecl}, ${includesDecl}, ${generatedAtDecl}.${resDecl}`;
-	this.result += ws`
-			}
 
-			${
-				this.exports === 'default' ?
-					ws`
-						if (!__IS_NODE__ && !__HAS_EXPORTS__) {
-							__INIT__();
-						}
-					` : ''
-			}
-
-		}).call(this);
-	`;
+	if (this.module !== 'native') {
+		this.result += '});';
+	}
 
 	return this;
 };

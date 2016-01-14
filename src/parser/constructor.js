@@ -64,6 +64,12 @@ export default class Parser {
 		/** @type {string} */
 		this.module = params.module;
 
+		/** @type {(?string|undefined)} */
+		this.moduleId = params.moduleId;
+
+		/** @type {(?string|undefined)} */
+		this.moduleName = params.moduleName;
+
 		/** @type {!Array<string>} */
 		this.literalBounds = params.literalBounds;
 
@@ -339,115 +345,103 @@ export default class Parser {
 		 * The final JS string
 		 * @type {string}
 		 */
-		this.result = ws`
-			This code is generated automatically, don't alter it. */
-			(function () {
+		this.result = `This code is generated automatically, don't alter it. */`;
+
+		if (this.module === 'native') {
+			this.result += ws`
 				${this.useStrict ? `'use strict';` : ''}
+				import Snakeskin from 'snakeskin';
+			`;
 
-			var
-				__IS_NODE__ = false,
-				${this.exports === 'default' ? `__AMD__ = typeof define === 'function' && define.amd,` : ''}
-				__HAS_EXPORTS__ = typeof exports !== 'undefined',
-				__EXPORTS__ = __HAS_EXPORTS__ ? exports : ${this.exports === 'default' ? '__AMD__ ? {} :' : ''} this;
-
-				try {
-					__IS_NODE__ = typeof process === 'object' && Object().toString.call(process) === '[object process]';
-
-				} catch (ignore) {}
-
-				var
-					Snakeskin = (__IS_NODE__ ? global : this).Snakeskin;
-
-				function __INIT__(obj) {
-					Snakeskin = Snakeskin ||
-						(obj instanceof Object ? obj : undefined);
+		} else {
+			this.result += ws`
+				(function (global, factory) {
+					${
+						{'commonjs': true, 'umd': true}[this.module] ?
+							ws`
+								if (typeof exports === 'object' && typeof module !== 'undefined') {
+									factory(exports, require('snakeskin'));
+									return;
+								}
+							` : ''
+					}
 
 					${
-						this.exports === 'default' ?
+						{'amd': true, 'umd': true}[this.module] ?
 							ws`
-								if (__AMD__) {
-									define(['Snakeskin'], function (ss) {
-										Snakeskin = Snakeskin || ss;
-										__EXEC__.call(__EXPORTS__);
-										return __EXPORTS__;
-									});
-
-								} else {
-									__EXEC__.call(__EXPORTS__);
-									return __EXPORTS__;
+								if (typeof define === 'function' && define.amd) {
+									define('${this.moduleId}', ['exports', 'Snakeskin'], factory);
+									return;
 								}
-							` :
-
-							`
-								__EXEC__.call(__EXPORTS__);
-								return __EXPORTS__;
-							`
+							` : ''
 					}
+
+					${
+						{'global': true, 'umd': true}[this.module] ?
+							`factory(${this.moduleName ? `global.${this.moduleName} = {}` : 'global'}, Snakeskin);` : ''
+					}
+
+				})(this, function (exports, Snakeskin) {
+					${this.useStrict ? `'use strict';` : ''}
+			`;
+		}
+
+		this.result += ws`
+			var
+				__FILTERS__ = Snakeskin.Filters,
+				__VARS__ = Snakeskin.Vars,
+				__LOCAL__ = Snakeskin.LocalVars;
+
+			function __DECORATE__(decorators, fn) {
+				Snakeskin.forEach(decorators, function (decorator) {
+					fn = decorator(fn);
+				});
+
+				fn.decorators = decorators;
+				return fn;
+			}
+
+			function __LENGTH__(val) {
+				if (typeof Node === 'function' && val[0] instanceof Node === true) {
+					return val[0].childNodes.length;
 				}
 
-				if (__HAS_EXPORTS__) {
-					__EXPORTS__.init = __INIT__;
+				if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
+					return val;
 				}
 
-				function __EXEC__() {
-					var
-						__ROOT__ = this;
+				return 1;
+			}
 
-					var
-						TRUE = new Boolean(true),
-						FALSE = new Boolean(false);
+			var
+				TRUE = new Boolean(true),
+				FALSE = new Boolean(false);
 
-					var
-						__FILTERS__ = Snakeskin.Filters,
-						__VARS__ = Snakeskin.Vars,
-						__LOCAL__ = Snakeskin.LocalVars;
+			function Data(val) {
+				if (!this || this.constructor !== Data) {
+					return new Data(val);
+				}
 
-					function __DECORATE__(decorators, fn) {
-						Snakeskin.forEach(decorators, function (decorator) {
-							fn = decorator(fn);
-						});
+				this.value = val;
+			}
 
-						fn.decorators = decorators;
-						return fn;
+			Data.prototype.push = function (val) {
+				this.value += val;
+			};
+
+			function Unsafe(val) {
+				if (!this || this.constructor !== Unsafe) {
+					if (typeof val === 'string') {
+						return new Unsafe(val);
 					}
 
-					function __LENGTH__(val) {
-						if (typeof Node === 'function' && val[0] instanceof Node === true) {
-							return val[0].childNodes.length;
-						}
+					return val;
+				}
 
-						if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
-							return val;
-						}
+				this.value = val;
+			}
 
-						return 1;
-					}
-
-					function Data(val) {
-						if (!this || this.constructor !== Data) {
-							return new Data(val);
-						}
-
-						this.value = val;
-					}
-
-					Data.prototype.push = function (val) {
-						this.value += val;
-					};
-
-					function Unsafe(val) {
-						if (!this || this.constructor !== Unsafe) {
-							if (typeof val === 'string') {
-								return new Unsafe(val);
-							}
-
-							return val;
-						}
-
-						this.value = val;
-					}
-
-					${this.declVars('$_', {sys: true})}
+			${this.declVars('$_', {sys: true})}
 		`;
 	};
 }

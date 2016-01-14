@@ -149,7 +149,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				const
 					custom = el[0] === '%',
-					def = `this${concatProp(tmpTplName)}`;
+					def = `exports${concatProp(tmpTplName)}`;
 
 				if (custom) {
 					el = el.slice(1);
@@ -242,7 +242,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			this.save(ws`
 				${tplNameLength === 1 && shortcut ? `var ${shortcut} = ` : ''}
-				this${concatProp(tplName)} =
+				exports${concatProp(tplName)} =
 				 __DECORATE__([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
 
 				{iface}
@@ -322,7 +322,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					__THIS__ = this;
 
 				var
-					callee = __ROOT__${concatProp(tplName)},
+					callee = exports${concatProp(tplName)},
 					self = callee.Blocks = {};
 
 				var
@@ -418,7 +418,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 						return ${this.getReturnResultDecl()};
 					});
 
-					Snakeskin.cache["${escapeDoubleQuotes(tplName)}"] = this${concatProp(tplName)};
+					Snakeskin.cache["${escapeDoubleQuotes(tplName)}"] = exports${concatProp(tplName)};
 				`);
 			}
 
