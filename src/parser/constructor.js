@@ -359,7 +359,7 @@ export default class Parser {
 			this.result += ws`
 				(function (global, factory) {
 					${
-						{'commonjs': true, 'umd': true}[this.module] ?
+						{'cjs': true, 'umd': true}[this.module] ?
 							ws`
 								if (typeof exports === 'object' && typeof module !== 'undefined') {
 									factory(exports, require('snakeskin'));

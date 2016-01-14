@@ -62,7 +62,7 @@ import {
  *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
  *   *) [debug] - object, which will be contained some debug information
  *
- *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, commonjs, global)
+ *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, cjs, global)
  *   *) [moduleId = 'tpls'] - module id for AMD/UMD declaration
  *   *) [moduleName] - module name for global/UMD declaration
  *
