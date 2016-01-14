@@ -362,7 +362,7 @@ export default class Parser {
 						{'cjs': true, 'umd': true}[this.module] ?
 							ws`
 								if (typeof exports === 'object' && typeof module !== 'undefined') {
-									factory(exports, require('snakeskin'));
+									factory(exports, typeof Snakeskin === 'undefined' ? require('snakeskin') : Snakeskin);
 									return;
 								}
 							` : ''
