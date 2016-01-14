@@ -400,6 +400,22 @@ export default class Parser {
 				__VARS__ = Snakeskin.Vars,
 				__LOCAL__ = Snakeskin.LocalVars;
 
+			function __LENGTH__(val) {
+				if (typeof Node === 'function' && val[0] instanceof Node === true) {
+					return val[0].childNodes.length;
+				}
+
+				if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
+					return val;
+				}
+
+				return 1;
+			}
+
+			function __ESCAPE_D_Q__(str) {
+				return str.replace(/"/g, "&quot;")
+			}
+
 			var
 				TRUE = new Boolean(true),
 				FALSE = new Boolean(false);

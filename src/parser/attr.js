@@ -58,7 +58,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 		Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
 			${
 				!this.stringResult && this.renderMode === 'dom' ?
-					'Snakeskin.setAttribute($0, key, el);' : this.wrap(`' ' + key + (el && '="' + el + '"')`)
+					'Snakeskin.setAttribute($0, key, el);' : this.wrap(`' ' + key + (el && '="' + __ESCAPE_D_Q__(el) + '"')`)
 			}
 		});
 

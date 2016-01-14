@@ -223,21 +223,3 @@ Snakeskin.decorate = function (decorators, fn) {
 	fn.decorators = decorators;
 	return fn;
 };
-
-/**
- * Returns length of the specified value
- *
- * @param {?} val - source value
- * @return {number}
- */
-Snakeskin.length = function (val) {
-	if (typeof Node === 'function' && val[0] instanceof Node === true) {
-		return val[0].childNodes.length;
-	}
-
-	if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
-		return val;
-	}
-
-	return 1;
-};
