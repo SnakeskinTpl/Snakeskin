@@ -28,7 +28,10 @@ Snakeskin.addDirective(
 
 		let str;
 		if (this.renderMode === 'dom') {
-			this.stringResult = true;
+			if (!this.stringResult) {
+				this.stringResult = this.structure.params.stringResult = true;
+			}
+
 			str = `__STRING_RESULT__ = '';`;
 
 		} else {
@@ -44,13 +47,16 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			end = this.structure.params.condition ? ' <![endif]' : '';
+			p = this.structure.params,
+			end = p.condition ? ' <![endif]' : '';
 
 		let str;
 		if (this.renderMode === 'dom') {
 			str = this.wrap(`'${end}'`);
 
-			this.stringResult = false;
+			if (p.stringResult) {
+				this.stringResult = false;
+			}
 
 			str += ws`
 				${this.wrap('new Snakeskin.Comment(__STRING_RESULT__)')}

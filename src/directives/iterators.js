@@ -37,6 +37,10 @@ Snakeskin.addDirective(
 		});
 
 		if (parts.length === 3) {
+			if (!this.selfThis) {
+				this.selfThis = this.structure.params.selfThis = true;
+			}
+
 			this.append(ws`
 				${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
 			`);
@@ -79,6 +83,10 @@ Snakeskin.addDirective(
 
 		if (!parts.length || parts.length > 2) {
 			return this.error(`invalid "${this.name}" declaration`);
+		}
+
+		if (this.structure.params.selfThis) {
+			this.selfThis = false;
 		}
 
 		this.append(ws`

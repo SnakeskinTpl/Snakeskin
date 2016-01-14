@@ -419,7 +419,7 @@ Parser.prototype.out = function (command, opt_params) {
 						vRes = addScope(finalWord);
 					}
 
-				} else if (finalWord === 'this' && tplName && !this.hasParent(this.getGroup('selfThis'))) {
+				} else if (finalWord === 'this' && tplName && !this.selfThis) {
 					vRes = '__THIS__';
 
 				} else {

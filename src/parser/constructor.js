@@ -188,6 +188,12 @@ export default class Parser {
 		this.bemRef = '';
 
 		/**
+		 * If is true, then the this value inside functions won't be replaced to __THIS__
+		 * @type {boolean}
+		 */
+		this.selfThis = false;
+
+		/**
 		 * If is false, then template can't be inserted into the resulting JS string
 		 * @type {boolean}
 		 */
