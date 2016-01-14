@@ -44,7 +44,7 @@ const
 Parser.prototype.pasteTplVarBlocks = function (str, opt_fn) {
 	return str.replace(tplVarsRgxp, (str, pos) => {
 		const val = this.dirContent[pos];
-		return `' + ${opt_fn ? opt_fn(val) : val} + '`;
+		return `' + (${opt_fn ? opt_fn(val) : val}) + '`;
 	});
 };
 
@@ -221,7 +221,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 					this.dirContent.push(tmp);
 
 				} else {
-					res += `' + ${tmp} + '`;
+					res += `' + (${tmp}) + '`;
 				}
 			}
 

@@ -95,7 +95,8 @@ const
 const
 	multPropRgxp = /\[|\./,
 	firstPropRgxp = /([^.[]+)(.*)/,
-	propValRgxp = /[^-+!(]+/;
+	propValRgxp = /[^-+!(]+/,
+	smartStrRgxp = /^"|"$/g;
 
 const
 	dangerRgxp = /\)\s*(?:{|=>)/,
@@ -422,6 +423,15 @@ Parser.prototype.out = function (command, opt_params) {
 					vRes = '__THIS__';
 
 				} else {
+					if (rgxp.escaperPart.test(finalWord)) {
+						const
+							raw = this.pasteDangerBlocks(finalWord);
+
+						if (raw[0] === '"') {
+							finalWord = this.replaceTplVars(raw, {unsafe: true}).replace(smartStrRgxp, `'`);
+						}
+					}
+
 					vRes = finalWord;
 				}
 
