@@ -456,23 +456,6 @@ Snakeskin.setFilterParams('default', {
 });
 
 const
-	tplRgxp = /\${(.*?)}/g;
-
-/**
- * Returns a string result of the specified template
- *
- * @example
- * 'hello ${name}' |tpl {name: 'Kobezzza'}
- *
- * @param {?} tpl - source template
- * @param {!Object} map - map of values
- * @return {string}
- */
-Filters['tpl'] = function (tpl, map) {
-	return String(tpl).replace(tplRgxp, (str, $0) => $0 in map ? map[$0] : '');
-};
-
-const
 	nl2brRgxp = /\r?\n|\n/g;
 
 /**
