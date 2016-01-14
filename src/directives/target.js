@@ -68,7 +68,7 @@ Snakeskin.addDirective(
 			tmp = this.out('__CALL_TMP__', {unsafe: true});
 
 		this.append(ws`
-			if (__LENGTH__(__RESULT__)) {
+			if (Snakeskin.length(__RESULT__)) {
 				${tmp}.push({
 					key: undefined,
 					value: Unsafe(${this.getReturnResultDecl()})

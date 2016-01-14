@@ -210,3 +210,34 @@ Snakeskin.appendChild = function (node, obj) {
 Snakeskin.setAttribute = function (node, name, val) {
 	node.setAttribute(name, val instanceof Node === false ? String(val) : val.textContent);
 };
+
+/**
+ * Decorates a function by another functions
+ *
+ * @param {!Array<!Function>} decorators - array of decorator functions
+ * @param {!Function} fn - source function
+ * @return {!Function}
+ */
+Snakeskin.decorate = function (decorators, fn) {
+	Snakeskin.forEach(decorators, (decorator) => fn = decorator(fn));
+	fn.decorators = decorators;
+	return fn;
+};
+
+/**
+ * Returns length of the specified value
+ *
+ * @param {?} val - source value
+ * @return {number}
+ */
+Snakeskin.length = function (val) {
+	if (typeof Node === 'function' && val[0] instanceof Node === true) {
+		return val[0].childNodes.length;
+	}
+
+	if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
+		return val;
+	}
+
+	return 1;
+};

@@ -36,7 +36,7 @@ Snakeskin.addDirective(
 			case 'call':
 				parent.params.chunks++;
 				this.append(ws`
-					if (!${pos} && __LENGTH__(__RESULT__)) {
+					if (!${pos} && Snakeskin.length(__RESULT__)) {
 						${tmp}.push(${this.getReturnResultDecl()});
 						__RESULT__ = ${this.getResultDecl()};
 					}
@@ -48,7 +48,7 @@ Snakeskin.addDirective(
 
 			case 'target':
 				this.append(ws`
-					if (!${pos} && __LENGTH__(__RESULT__)) {
+					if (!${pos} && Snakeskin.length(__RESULT__)) {
 						${tmp}.push({
 							key: '${ref}',
 							value: Unsafe(${this.getReturnResultDecl()})

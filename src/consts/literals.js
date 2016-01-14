@@ -201,8 +201,6 @@ export const SYS_CONSTS = {
 	'__LOCAL__': true,
 	'__THIS__': true,
 	'__INCLUDE__': true,
-	'__LENGTH__': true,
-	'__DECORATE__': true,
 	'__INLINE_TAG__': true,
 	'__INLINE_TAGS__': true,
 	'__TAG__': true,

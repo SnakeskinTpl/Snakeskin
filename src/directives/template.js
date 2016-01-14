@@ -97,10 +97,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				return this.error(`invalid "${this.name}" name`);
 			}
 
-			if (tplName === 'init') {
-				return this.error(`can't declare the template "${tplName}", try another name`);
-			}
-
 			this.info.template = this.tplName = tplName;
 			if (this.name !== 'template' && !$write[tplName]) {
 				$write[tplName] = false;
@@ -120,7 +116,8 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				.split('.');
 
 			const
-				tplNameLength = tmpTplNameArr.length;
+				tplNameLength = tmpTplNameArr.length,
+				exports = this.module === 'native' ? 'export ' : '';
 
 			let shortcut = '';
 			[tmpTplName] = tmpTplNameArr;
@@ -161,7 +158,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 							${def} = {};
 						}
 
-						${i === 1 && shortcut ? `var ${shortcut} = ${def};` : ''}
+						${i === 1 && shortcut ? `${exports}var ${shortcut} = ${def};` : ''}
 					`),
 
 					{iface, jsDoc}
@@ -196,6 +193,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			this.info.template = this.tplName = tplName = tmpTplName;
 			this.vars[tplName] = {};
+
 			this.blockTable = {};
 			this.blockStructure = {
 				children: [],
@@ -241,9 +239,9 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				decorators = (parentTplName ? $decorators[parentTplName] : []).concat(this.decorators);
 
 			this.save(ws`
-				${tplNameLength === 1 && shortcut ? `var ${shortcut} = ` : ''}
+				${tplNameLength === 1 && shortcut ? `${exports}var ${shortcut} = ` : ''}
 				exports${concatProp(tplName)} =
-				 __DECORATE__([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
+				 Snakeskin.decorate([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
 
 				{iface}
 			);

@@ -351,6 +351,8 @@ export default class Parser {
 			this.result += ws`
 				${this.useStrict ? `'use strict';` : ''}
 				import Snakeskin from 'snakeskin';
+				var exports = {};
+				export default exports;
 			`;
 
 		} else {
@@ -391,27 +393,6 @@ export default class Parser {
 				__FILTERS__ = Snakeskin.Filters,
 				__VARS__ = Snakeskin.Vars,
 				__LOCAL__ = Snakeskin.LocalVars;
-
-			function __DECORATE__(decorators, fn) {
-				Snakeskin.forEach(decorators, function (decorator) {
-					fn = decorator(fn);
-				});
-
-				fn.decorators = decorators;
-				return fn;
-			}
-
-			function __LENGTH__(val) {
-				if (typeof Node === 'function' && val[0] instanceof Node === true) {
-					return val[0].childNodes.length;
-				}
-
-				if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
-					return val;
-				}
-
-				return 1;
-			}
 
 			var
 				TRUE = new Boolean(true),
