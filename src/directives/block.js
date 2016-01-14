@@ -263,6 +263,14 @@ Snakeskin.addDirective(
 
 				${p.params != null ? this.wrap(`${p.fn}(${p.params})`) : ''}
 			`);
+
+			switch (this.getNonLogicParent().name) {
+				case 'call':
+				case 'putIn':
+				case 'target':
+					this.append(`__RESULT__ = new Data(${p.fn});`);
+					break;
+			}
 		}
 
 		if (this.isAdvTest()) {

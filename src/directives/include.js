@@ -56,7 +56,7 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		if (this.hasParent('eval')) {
+		if (this.hasParent(this.getGroup('eval'))) {
 			return;
 		}
 

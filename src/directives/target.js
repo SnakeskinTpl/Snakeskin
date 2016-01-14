@@ -61,10 +61,7 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{structure} = this,
-			{ref} = structure.params;
-
-		const
+			{ref} = this.structure.params,
 			tmp = this.out('__CALL_TMP__', {unsafe: true});
 
 		this.append(ws`
@@ -80,7 +77,7 @@ Snakeskin.addDirective(
 			});
 		`);
 
-		switch (structure.parent.name) {
+		switch (this.getNonLogicParent().name) {
 			case 'call':
 			case 'putIn':
 			case 'target':

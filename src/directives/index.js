@@ -388,15 +388,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			);
 		}
 
-		if (structure.chain) {
-			if ($dirParents[prevDirName][dirName]) {
-				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
-
-			} else if (!ignore && dirName !== 'end') {
-				return this.error(`the directive "${dirName}" can't be used within the "${prevDirName}"`);
-			}
-		}
-
 		if (!p.selfInclude && this.has(dirName)) {
 			return this.error(`the directive "${dirName}" can't be used within the "${dirName}"`);
 		}
@@ -427,6 +418,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (opt_constr) {
 			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
+		}
+
+		if (structure.chain && !ignore && !this.isLogic()) {
+			const
+				parent = this.getNonLogicParent().name;
+
+			if ($dirParents[parent] && $dirParents[parent][dirName]) {
+				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
+
+			} else if (dirName !== 'end') {
+				return this.error(`the directive "${dirName}" can't be used within the "${parent}"`);
+			}
 		}
 
 		const
@@ -506,7 +509,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			this.scope.pop();
 		}
 
-		if ($dirParents[structure.name] || parent && $dirParents[parent.name]) {
+		const
+			chainParent = $dirParents[this.getNonLogicParent().name];
+
+		if ($dirParents[structure.name] || chainParent && chainParent[structure.name]) {
 			this.strongSpace.pop();
 		}
 

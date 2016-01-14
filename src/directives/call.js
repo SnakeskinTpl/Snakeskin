@@ -53,8 +53,7 @@ Snakeskin.addDirective(
 		`);
 
 		const
-			{structure} = this,
-			p = structure.params;
+			p = this.structure.params;
 
 		let
 			i = p.chunks,
@@ -95,7 +94,7 @@ Snakeskin.addDirective(
 			str = this.out(command, {unsafe: true});
 		}
 
-		switch (structure.parent.name) {
+		switch (this.getNonLogicParent().name) {
 			case 'call':
 			case 'putIn':
 			case 'target':

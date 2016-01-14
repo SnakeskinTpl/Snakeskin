@@ -11,6 +11,34 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { isArray, isObject } from '../helpers/types';
+import { $logicDirs } from '../consts/cache';
+
+/**
+ * Returns an object of the closest non logic parent directive
+ * @return {!Object}
+ */
+Parser.prototype.getNonLogicParent = function () {
+	let
+		obj = this.structure.parent;
+
+	while (true) {
+		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.args)) {
+			obj = obj.parent;
+			continue;
+		}
+
+		return obj;
+	}
+};
+
+/**
+ * Returns true if the current directive is logic
+ * @return {boolean}
+ */
+Parser.prototype.isLogic = function () {
+	const {structure} = this;
+	return $logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.args);
+};
 
 /**
  * Checks availability of a directive in a chain structure
@@ -39,7 +67,7 @@ Parser.prototype._has = function (name, opt_obj, opt_return) {
 
 	while (true) {
 		const
-			nm = this.getDirName(obj.name);
+			nm = obj.name;
 
 		if (name[nm] || nm === name) {
 			if (name[nm]) {
