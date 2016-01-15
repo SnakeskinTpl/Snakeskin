@@ -639,33 +639,25 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStr = '';
 
 							if (begin) {
-								const
-									opts = parser.i18nFnOptions,
-									localOpts = next === '(';
-
-								if (localOpts) {
+								el = '"';
+								if (next === '(') {
+									el += ',';
 									parser.lines[lastLine] += next;
 									parser.i++;
-								}
-
-								el = '"';
-								if (localOpts) {
-									el += ', ';
 
 								} else {
-									if (opts) {
-										el += `, ${opts}`;
+									if (parser.i18nFnOptions) {
+										el += `, ${parser.i18nFnOptions}`;
 									}
 
 									el += ')';
 								}
 
 								if (i18nDirStart) {
+									i18nDirStart = false;
+									parser.freezeLine--;
 									freezeI += freezeTmp;
 									freezeTmp = 0;
-
-									parser.freezeLine--;
-									i18nDirStart = false;
 								}
 
 							} else {
@@ -688,7 +680,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStart = true;
 
 							if (begin) {
-								el = `${parser.i18nFn}("`;
+								el = `\${${parser.i18nFn}("`;
 
 							} else {
 								const
