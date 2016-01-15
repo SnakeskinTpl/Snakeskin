@@ -14,7 +14,7 @@ import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
 import { attrKey, classRef } from '../consts/regs';
-import { FILTER, LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+import { FILTER, LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
 /**
@@ -86,8 +86,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		ref = this.bemRef;
 
 	const
-		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
+		s = ADV_LEFT_BOUND + LEFT_BOUND,
+		e = RIGHT_BOUND;
 
 	return String($C(parts).reduce((res, el) => {
 		let

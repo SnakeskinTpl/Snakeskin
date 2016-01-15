@@ -12,7 +12,7 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { classRef } from '../consts/regs';
-import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK, FILTER } from '../consts/literals';
+import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND, FILTER } from '../consts/literals';
 
 /**
  * Returns string declaration of an opening tag for the specified XML tag
@@ -180,8 +180,8 @@ Parser.prototype.getXMLTagDesc = function (str) {
 		classes = [];
 
 	const
-		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
+		s = ADV_LEFT_BOUND + LEFT_BOUND,
+		e = RIGHT_BOUND;
 
 	let
 		bOpen = 0,

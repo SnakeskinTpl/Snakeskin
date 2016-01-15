@@ -15,9 +15,9 @@
 // >>>
 
 export const
-	LEFT_BLOCK = '{',
-	RIGHT_BLOCK = '}',
-	ADV_LEFT_BLOCK = '#';
+	LEFT_BOUND = '{',
+	RIGHT_BOUND = '}',
+	ADV_LEFT_BOUND = '#';
 
 // <<<
 // The additional directive separators
@@ -88,8 +88,8 @@ export const
 export const SYS_ESCAPES = {
 	'\\': true,
 	[I18N]: true,
-	[LEFT_BLOCK]: true,
-	[ADV_LEFT_BLOCK]: true,
+	[LEFT_BOUND]: true,
+	[ADV_LEFT_BOUND]: true,
 	[SINGLE_COMMENT.charAt(0)]: true,
 	[MULT_COMMENT_START.charAt(0)]: true,
 	[CONCAT]: true,

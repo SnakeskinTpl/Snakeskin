@@ -17,8 +17,8 @@ import {
 	P_OPEN,
 	P_CLOSE,
 	MICRO_TEMPLATE,
-	LEFT_BLOCK,
-	RIGHT_BLOCK
+	LEFT_BOUND,
+	RIGHT_BOUND
 
 } from '../consts/literals';
 
@@ -165,11 +165,11 @@ Parser.prototype.getTokens = function (str) {
 
 		if (bStart) {
 			switch (el) {
-				case LEFT_BLOCK:
+				case LEFT_BOUND:
 					bOpen++;
 					break;
 
-				case RIGHT_BLOCK:
+				case RIGHT_BOUND:
 					bOpen--;
 					break;
 			}

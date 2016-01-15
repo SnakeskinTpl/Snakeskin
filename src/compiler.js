@@ -41,9 +41,9 @@ import {
 	MULT_COMMENT_START,
 	MULT_COMMENT_END,
 	SINGLE_COMMENT,
-	LEFT_BLOCK as lb,
-	RIGHT_BLOCK as rb,
-	ADV_LEFT_BLOCK as alb
+	LEFT_BOUND as lb,
+	RIGHT_BOUND as rb,
+	ADV_LEFT_BOUND as alb
 
 } from './consts/literals';
 

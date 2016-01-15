@@ -11,7 +11,7 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { $extMap, $cache, $templates, $router, $routerPositions } from '../consts/cache';
-import { LEFT_BLOCK as lb, RIGHT_BLOCK as rb, ADV_LEFT_BLOCK as alb } from '../consts/literals';
+import { LEFT_BOUND as lb, RIGHT_BOUND as rb, ADV_LEFT_BOUND as alb } from '../consts/literals';
 
 /**
  * Returns the full body of the specified template

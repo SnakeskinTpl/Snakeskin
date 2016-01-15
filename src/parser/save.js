@@ -16,7 +16,7 @@ import { escapeEOLs } from '../helpers/escape';
 import { eol, singleQuotes } from '../consts/regs';
 import { $write } from '../consts/cache';
 import { isFunction } from '../helpers/types';
-import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 /**
  * Returns a string for the beginning of concatenation with __RESULT__
@@ -115,8 +115,8 @@ Parser.prototype.getReturnResultDecl = function () {
  */
 Parser.prototype.replaceCData = function (str) {
 	const
-		s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-		e = RIGHT_BLOCK;
+		s = ADV_LEFT_BOUND + LEFT_BOUND,
+		e = RIGHT_BOUND;
 
 	return str
 		.replace(new RegExp(`${r(s)}cdata${r(e)}([\\s\\S]*?)${r(s)}(?:\\/cdata|end cdata)${r(e)}`, 'g'), (str, data) => {

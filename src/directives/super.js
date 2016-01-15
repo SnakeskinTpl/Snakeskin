@@ -11,7 +11,7 @@
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { $router } from '../consts/cache';
-import { LEFT_BLOCK, RIGHT_BLOCK, ADV_LEFT_BLOCK } from '../consts/literals';
+import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 Snakeskin.addDirective(
 	'super',
@@ -56,8 +56,8 @@ Snakeskin.addDirective(
 		}
 
 		const
-			s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-			e = RIGHT_BLOCK;
+			s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
+			e = RIGHT_BOUND;
 
 		if (cache && !drop) {
 			const

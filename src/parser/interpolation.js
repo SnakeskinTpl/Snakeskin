@@ -25,8 +25,8 @@ import {
 	MULT_COMMENT_START,
 	MULT_COMMENT_END,
 	SINGLE_COMMENT,
-	LEFT_BLOCK,
-	RIGHT_BLOCK,
+	LEFT_BOUND,
+	RIGHT_BOUND,
 
 } from '../consts/literals';
 
@@ -184,10 +184,10 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 					}
 				}
 
-				if (el === LEFT_BLOCK) {
+				if (el === LEFT_BOUND) {
 					begin++;
 
-				} else if (el === RIGHT_BLOCK) {
+				} else if (el === RIGHT_BOUND) {
 					begin--;
 				}
 			}
