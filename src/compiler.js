@@ -271,7 +271,9 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	let
 		i18nStr = '',
 		i18nStart = false,
-		i18nDirStart = false;
+		i18nDirStart = false,
+		i18nTpl = false,
+		i18nPOpen = 0;
 
 	while (++parser.i < parser.source.length) {
 		const
@@ -472,6 +474,17 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 			}
 
 			if (!jsDoc) {
+				if (begin) {
+					if (i18nPOpen && el === ')' && !--i18nPOpen) {
+						el = el + (i18nTpl ? '' : '}');
+						i18nTpl = false;
+					}
+
+					if (!cEscape && substr2 === '${') {
+						i18nTpl = true;
+					}
+				}
+
 				if (i18nStart) {
 					if (!cEscape && el === '"' && !parser.language) {
 						el = '\\"';
@@ -642,6 +655,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 								el = '"';
 								if (next === '(') {
 									el += ',';
+									i18nPOpen++;
 									parser.lines[lastLine] += next;
 									parser.i++;
 
@@ -650,7 +664,8 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 										el += `, ${parser.i18nFnOptions}`;
 									}
 
-									el += ')';
+									el += `)${i18nTpl ? '' : '}'}`;
+									i18nTpl = false;
 								}
 
 								if (i18nDirStart) {
@@ -680,7 +695,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 							i18nStart = true;
 
 							if (begin) {
-								el = `\${${parser.i18nFn}("`;
+								el = `${i18nTpl ? '' : '${'}${parser.i18nFn}("`;
 
 							} else {
 								const
