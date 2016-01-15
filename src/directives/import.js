@@ -24,14 +24,14 @@ Snakeskin.addDirective(
 		this.structure.vars = {};
 
 		const
-			nativeExport = this.module === 'native';
+			isNativeExport = this.module === 'native';
 
 		let
-			res = nativeExport ? 'import ' : '',
+			res = isNativeExport ? 'import ' : '',
 			from = '';
 
 		command = command.replace(/\s+from\s+([^\s]+)\s*/, (str, path) => {
-			if (nativeExport) {
+			if (isNativeExport) {
 				from = str;
 
 			} else {
@@ -54,7 +54,7 @@ Snakeskin.addDirective(
 				const
 					parts = decl.split(/\s+as\s+/);
 
-				if (nativeExport) {
+				if (isNativeExport) {
 					arr.push(`${parts[0]} as ${this.declVar(parts[1] || parts[0])}`);
 
 				} else {
@@ -65,11 +65,11 @@ Snakeskin.addDirective(
 
 				return arr;
 
-			}, []).join(nativeExport ? ',' : '');
+			}, []).join(isNativeExport ? ',' : '');
 		};
 
 		command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*(,?)\s*/, (str, prfComma, decl, postComma) => {
-			if (nativeExport) {
+			if (isNativeExport) {
 				res += `${prfComma ? ', ' : ''}{ ${f(decl)} }${postComma ? ',' : ''}`;
 
 			} else {
@@ -79,7 +79,7 @@ Snakeskin.addDirective(
 			return prfComma || '';
 		});
 
-		this.append(res + f(command, true) + (nativeExport ? from : ''));
+		this.append(res + f(command, true) + (isNativeExport ? from : ''));
 	}
 
 );
