@@ -23,7 +23,15 @@ const
  */
 export function ws(strings, expr) {
 	expr = [].slice.call(arguments, 1);
-	return any($C(strings).reduce((str, el, i) => str + el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : ''), ''));
+
+	let
+		res = '';
+
+	for (let i = 0; i < strings.length; i++) {
+		res += strings[i].replace(wsRgxp, ' ') + (i in expr ? expr[i] : '');
+	}
+
+	return res;
 }
 
 const
