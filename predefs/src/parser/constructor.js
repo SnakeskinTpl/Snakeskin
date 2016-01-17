@@ -32,60 +32,6 @@
 var $$SnakeskinParserParams;
 
 /** @type {?} */
-var throws;
-
-/** @type {?} */
-var onError;
-
-/** @type {?} */
-var module;
-
-/** @type {?} */
-var moduleId;
-
-/** @type {?} */
-var moduleName;
-
-/** @type {?} */
-var useStrict;
-
-/** @type {?} */
-var literalBounds;
-
-/** @type {?} */
-var bemFilter;
-
-/** @type {?} */
-var filters;
-
-/** @type {?} */
-var localization;
-
-/** @type {?} */
-var i18nFn;
-
-/** @type {?} */
-var i18nFnOptions;
-
-/** @type {?} */
-var language;
-
-/** @type {?} */
-var ignore;
-
-/** @type {?} */
-var tolerateWhitespaces;
-
-/** @type {?} */
-var eol;
-
-/** @type {?} */
-var renderAs;
-
-/** @type {?} */
-var renderMode;
-
-/** @type {?} */
 var info;
 
 /**

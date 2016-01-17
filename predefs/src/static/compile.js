@@ -44,7 +44,7 @@ var template;
  *   prettyPrint: (?boolean|undefined),
  *   literalBounds: (Array<string>|undefined),
  *   bemFilter: (?string|undefined),
- *   filters: (Object|undefined)
+ *   filters: (Object|undefined),
  *   localization: (?boolean|undefined),
  *   i18nFn: (?string|undefined),
  *   i18nFnOptions: (?string|undefined),
@@ -79,9 +79,6 @@ var throws;
 
 /** @type {?} */
 var debug;
-
-/** @type {?} */
-var module;
 
 /** @type {?} */
 var moduleId;

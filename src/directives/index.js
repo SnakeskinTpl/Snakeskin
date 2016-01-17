@@ -15,6 +15,7 @@ import Snakeskin from '../core';
 import { stack } from '../helpers/include';
 import { SHORTS } from '../consts/literals';
 import { isFunction } from '../helpers/types';
+import { any } from '../helpers/gcc';
 import { r } from '../helpers/string';
 import { HAS_CONSOLE_LOG } from '../consts/hacks';
 import {
@@ -37,14 +38,14 @@ import {
 // FIXME https://github.com/jscs-dev/node-jscs/issues/2017
 // jscs:disable jsDoc
 
+/**
+ * Transformer for a group list
+ *
+ * @param {Array} arr - source list
+ * @return {string}
+ */
 export const
-	/**
-	 * Transformer for a group list
-	 *
-	 * @param {Array} arr - source list
-	 * @return {string}
-	 */
-	q = (arr) => $C(arr).map((el) => `"${el}"`).join(', ');
+	q = (arr) => any($C(arr).map((el) => `"${el}"`).join(', '));
 
 // jscs:enable jsDoc
 

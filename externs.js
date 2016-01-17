@@ -66,6 +66,8 @@ Snakeskin.group = function (name) {};
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
  *   selfInclude: (?boolean|undefined),
+ *   interpolation: (?boolean|undefined),
+ *   selfThis: (?boolean|undefined),
  *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
  * }}
  */
@@ -126,6 +128,9 @@ var block;
 var selfInclude;
 
 /** @type {?} */
+var selfThis;
+
+/** @type {?} */
 var shorthands;
 
 /**
@@ -173,9 +178,9 @@ var template;
  *   moduleName: (?string|undefined),
  *   useStrict: (?boolean|undefined),
  *   prettyPrint: (?boolean|undefined),
- *   literalBounds: (Array<string>|undefined)
+ *   literalBounds: (Array<string>|undefined),
  *   bemFilter: (?string|undefined),
- *   filters: (Object|undefined)
+ *   filters: (Object|undefined),
  *   localization: (?boolean|undefined),
  *   i18nFn: (?string|undefined),
  *   i18nFnOptions: (?string|undefined),
@@ -210,9 +215,6 @@ var throws;
 
 /** @type {?} */
 var debug;
-
-/** @type {?} */
-var module;
 
 /** @type {?} */
 var moduleId;
@@ -332,9 +334,6 @@ var $$SnakeskinParserGetXMLAttrDeclParams;
 var attr;
 
 /** @type {?} */
-var group;
-
-/** @type {?} */
 var separator;
 
 /**
@@ -373,60 +372,6 @@ $$SnakeskinParser.prototype.splitXMLAttrGroup = function (str) {};
  * }}
  */
 var $$SnakeskinParserParams;
-
-/** @type {?} */
-var throws;
-
-/** @type {?} */
-var onError;
-
-/** @type {?} */
-var module;
-
-/** @type {?} */
-var moduleId;
-
-/** @type {?} */
-var moduleName;
-
-/** @type {?} */
-var useStrict;
-
-/** @type {?} */
-var literalBounds;
-
-/** @type {?} */
-var bemFilter;
-
-/** @type {?} */
-var filters;
-
-/** @type {?} */
-var localization;
-
-/** @type {?} */
-var i18nFn;
-
-/** @type {?} */
-var i18nFnOptions;
-
-/** @type {?} */
-var language;
-
-/** @type {?} */
-var ignore;
-
-/** @type {?} */
-var tolerateWhitespaces;
-
-/** @type {?} */
-var eol;
-
-/** @type {?} */
-var renderAs;
-
-/** @type {?} */
-var renderMode;
 
 /** @type {?} */
 var info;
@@ -552,7 +497,7 @@ $$SnakeskinParser.prototype.startTemplateLine;
 /** @type {string} */
 $$SnakeskinParser.prototype.bemRef;
 
-/** @type {boolean} */
+/** @type {!Array<boolean>} */
 $$SnakeskinParser.prototype.selfThis;
 
 /**  @type {boolean} */

@@ -35,9 +35,6 @@ var $$SnakeskinParserGetXMLAttrDeclParams;
 var attr;
 
 /** @type {?} */
-var group;
-
-/** @type {?} */
 var separator;
 
 /**
