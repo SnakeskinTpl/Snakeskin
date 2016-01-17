@@ -21,3 +21,25 @@ Snakeskin.importFilters = function (filters, opt_namespace) {};
  * @return {!Function}
  */
 Snakeskin.setFilterParams = function (filter, params) {};
+
+/**
+ * @param {(Array|Object|undefined)} obj
+ * @param {(
+ *   function(?, number, !Array, boolean, boolean, number)|
+ *   function(?, string, !Object, number, boolean, boolean, number)
+ * )} callback - callback function
+ */
+Snakeskin.forEach = function (obj, callback) {};
+
+/**
+ * @param {(Object|undefined)} obj
+ * @param {function(?, string, !Object, number, boolean, boolean, number)} callback
+ */
+Snakeskin.forIn = function (obj, callback) {};
+
+/**
+ * @param {!Array<!Function>} decorators
+ * @param {!Function} fn
+ * @return {!Function}
+ */
+Snakeskin.decorate = function (decorators, fn) {};
