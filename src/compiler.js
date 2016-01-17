@@ -75,7 +75,7 @@ import {
  *
  *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
  *   *) [i18nFn = 'i18n'] - name of the i18n function
- *   *) [i18nOptions] - additional option for the i18n function or array of options
+ *   *) [i18nFnOptions] - additional option for the i18n function or array of options
  *   *) [language] - map of words for the localization (for example, {'Hello world': 'Привет мир'})
  *   *) [words] - object, which will be contained all found localization words
  *

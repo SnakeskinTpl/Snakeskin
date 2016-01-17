@@ -25,41 +25,11 @@ export default class Parser {
 	 * @param {$$SnakeskinParserParams} params - additional parameters
 	 */
 	constructor(src, params) {
+		/** @type {(?function(!Error)|undefined)} */
+		this.onError = params.onError;
+
 		/** @type {boolean} */
 		this.throws = params.throws;
-
-		/** @type {boolean} */
-		this.useStrict = params.useStrict;
-
-		/** @type {?function(!Error)} */
-		this.onError = params.onError || null;
-
-		/** @type {!Array<string>} */
-		this.scope = params.scope || [];
-
-		/** @type {!Object} */
-		this.info = params.info;
-
-		/** @type {boolean} */
-		this.needPrfx = params.needPrfx || false;
-
-		/** @type {!Array} */
-		this.lines = params.lines || [''];
-
-		/** @type {string} */
-		this.eol = params.eol;
-
-		/** @type {string} */
-		this.renderMode = params.renderMode;
-
-		/** @type {boolean} */
-		this.tolerateWhitespaces = params.tolerateWhitespaces;
-
-		/** @type {(string|boolean)} */
-		this.doctype = params.doctype;
-
-		/** @type {(?string|undefined)} */
-		this.renderAs = params.renderAs;
 
 		/** @type {string} */
 		this.module = params.module;
@@ -69,6 +39,9 @@ export default class Parser {
 
 		/** @type {(?string|undefined)} */
 		this.moduleName = params.moduleName;
+
+		/** @type {boolean} */
+		this.useStrict = params.useStrict;
 
 		/** @type {!Array<string>} */
 		this.literalBounds = params.literalBounds;
@@ -94,6 +67,21 @@ export default class Parser {
 		/** @type {(RegExp|undefined)} */
 		this.ignore = params.ignore;
 
+		/** @type {boolean} */
+		this.tolerateWhitespaces = params.tolerateWhitespaces;
+
+		/** @type {string} */
+		this.eol = params.eol;
+
+		/** @type {(?string|undefined)} */
+		this.renderAs = params.renderAs;
+
+		/** @type {string} */
+		this.renderMode = params.renderMode;
+
+		/** @type {!Object} */
+		this.info = params.info;
+
 		/**
 		 * Stack parameters that can be changed in a code
 		 * @type {!Array<!Object>}
@@ -116,6 +104,30 @@ export default class Parser {
 		];
 
 		/**
+		 * If is true, then for declaring directives must use advanced syntax
+		 * @type {boolean}
+		 */
+		this.needPrfx = false;
+
+		/**
+		 * The source code for debugger
+		 * @type {!Array}
+		 */
+		this.lines = [''];
+
+		/**
+		 * The array of errors
+		 * @type {!Array}
+		 */
+		this.errors = [];
+
+		/**
+		 * If is true, then compiling will be broken
+		 * @type {boolean}
+		 */
+		this.break = false;
+
+		/**
 		 * The array of declared constants
 		 * @type {Array}
 		 */
@@ -128,22 +140,22 @@ export default class Parser {
 		this.vars = {};
 
 		/**
-		 * If is true, then compiling will be broken
-		 * @type {boolean}
-		 */
-		this.break = false;
-
-		/**
-		 * The array of errors
-		 * @type {!Array}
-		 */
-		this.errors = [];
-
-		/**
 		 * The name of the active directive
 		 * @type {?string}
 		 */
 		this.name = null;
+
+		/**
+		 * If is true, then the active directive is inline
+		 * @type {?boolean}
+		 */
+		this.inline = null;
+
+		/**
+		 * If is true, then the active directive has a text type
+		 * @type {boolean}
+		 */
+		this.text = false;
 
 		/**
 		 * The name of the active template
@@ -156,6 +168,12 @@ export default class Parser {
 		 * @type {?string}
 		 */
 		this.parentTplName = null;
+
+		/**
+		 * The document type
+		 * @type {string}
+		 */
+		this.doctype = 'html';
 
 		/**
 		 * If is true, then the active template is generator
@@ -199,6 +217,24 @@ export default class Parser {
 		 */
 		this.canWrite = true;
 
+		/**
+		 * The list of decorators
+		 * @type {!Array.<string>}
+		 */
+		this.decorators = [];
+
+		/**
+		 * The cache of outer prototypes / blocks
+		 * @type {!Object}
+		 */
+		this.preDefs = {};
+
+		/**
+		 * The name of the active outer prototype / block
+		 * @type {?string}
+		 */
+		this.outerLink = null;
+
 		// Whitespace
 		// >>>
 
@@ -238,24 +274,6 @@ export default class Parser {
 		this.blockTable = null;
 
 		/**
-		 * The cache of outer prototypes / blocks
-		 * @type {!Object}
-		 */
-		this.preDefs = {};
-
-		/**
-		 * The name of the active outer prototype / block
-		 * @type {?string}
-		 */
-		this.outerLink = null;
-
-		/**
-		 * The list of decorators
-		 * @type {!Array.<string>}
-		 */
-		this.decorators = [];
-
-		/**
 		 * The template structure
 		 * @type {!Object}
 		 */
@@ -282,18 +300,6 @@ export default class Parser {
 			logic: false,
 			chain: false
 		};
-
-		/**
-		 * If is true, then the active directive is inline
-		 * @type {?boolean}
-		 */
-		this.inline = null;
-
-		/**
-		 * If is true, then the active directive has a text type
-		 * @type {boolean}
-		 */
-		this.text = false;
 
 		/**
 		 * If is true, then the output will be saved to __STRING_RESULT__ as a string
