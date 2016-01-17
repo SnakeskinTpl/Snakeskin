@@ -123,6 +123,9 @@ const
  *   *) [params.selfInclude = true] - if is false, then the directive can't be placed inside an another directive
  *        of the same type
  *
+ *   *) [params.selfThis = false] - if is true, then inside the directive block all calls of this won't
+ *        be replaced to __THIS__
+ *
  *   *) [params.shorthands] - shorthands for the directive
  *        shorthands: {
  *          // Can be no more than two symbols in the key
@@ -288,6 +291,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		p.block = true;
 	}
 
+	let selfThis;
+
 	/** @this {Parser} */
 	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
 		const
@@ -395,6 +400,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			}
 		}
 
+		selfThis = this.selfThis;
+		if (p.selfThis && !selfThis) {
+			this.selfThis = true;
+		}
+
 		if (opt_constr) {
 			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
 		}
@@ -497,6 +507,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (p.filters) {
 			this.filters.pop();
+		}
+
+		if (p.selfThis && !selfThis) {
+			this.selfThis = false;
 		}
 
 		$C(params['@consts']).forEach((el, key) => {
