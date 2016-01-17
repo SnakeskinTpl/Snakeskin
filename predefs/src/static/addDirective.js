@@ -100,7 +100,7 @@ var shorthands;
  * @abstract
  * @param {string} name
  * @param {$$SnakeskinAddDirectiveParams} params
- * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_constr
- * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct
+ * @param {function(this:$$SnakeskinParser, string, number, string, string, (boolean|number))=} opt_constr
+ * @param {function(this:$$SnakeskinParser, string, number, string, string, (boolean|number))=} opt_destruct
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {};
