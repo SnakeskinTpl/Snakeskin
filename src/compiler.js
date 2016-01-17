@@ -19,7 +19,7 @@ import Parser from './parser/index';
 import * as rgxp from './consts/regs';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
-import { $dirNameShorthands, $dirParents } from './consts/cache';
+import { $dirInterpolation, $dirNameShorthands, $dirParents } from './consts/cache';
 
 import { r } from './helpers/string';
 import { any, _ } from './helpers/gcc';
@@ -265,8 +265,13 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		i18nStr = '',
 		i18nStart = false,
 		i18nDirStart = false,
+		i18nInterpolation = false,
 		i18nTpl = false,
 		i18nPOpen = 0;
+
+	function getReplacer(val) {
+		return $dirNameShorthands[val.substr(0, 2)] || $dirNameShorthands[val[0]];
+	}
 
 	while (++parser.i < parser.source.length) {
 		const
@@ -473,7 +478,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							i18nPOpen++;
 
 						} else if (el === ')' && !--i18nPOpen) {
-							el = el + (i18nTpl ? '' : rb);
+							el = el + (!i18nInterpolation || i18nTpl ? '' : rb);
 							i18nTpl = false;
 						}
 					}
@@ -534,9 +539,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 
 					const
-						short1 = command[0], // jscs:ignore
-						short2 = command.substr(0, 2),
-						replacer = $dirNameShorthands[short2] || $dirNameShorthands[short1];
+						replacer = getReplacer(command);
 
 					if (replacer) {
 						command = replacer(command);
@@ -662,7 +665,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 										el += `, ${parser.i18nFnOptions}`;
 									}
 
-									el += `)${i18nTpl ? '' : rb}`;
+									el += `)${!i18nInterpolation || i18nTpl ? '' : rb}`;
 									i18nTpl = false;
 								}
 
@@ -691,9 +694,21 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 						} else {
 							i18nStart = true;
+							i18nInterpolation = false;
 
 							if (begin) {
-								el = `${i18nTpl ? '' : '${'}${parser.i18nFn}("`;
+								let
+									[cmd] = (commandRgxp.exec(command) || ['']);
+
+								const
+									replacer = getReplacer(cmd);
+
+								if (replacer) {
+									cmd = replacer(cmd);
+								}
+
+								i18nInterpolation = (cmd = cmd.trim()) && $dirInterpolation[cmd];
+								el = `${!i18nInterpolation || i18nTpl ? '' : MICRO_TEMPLATE}${parser.i18nFn}("`;
 
 							} else {
 								const

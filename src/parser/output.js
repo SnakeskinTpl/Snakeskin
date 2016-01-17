@@ -414,7 +414,7 @@ Parser.prototype.out = function (command, opt_params) {
 						vRes = addScope(finalWord);
 					}
 
-				} else if (finalWord === 'this' && tplName && !this.selfThis) {
+				} else if (finalWord === 'this' && tplName && !this.selfThis[this.selfThis.length - 1]) {
 					vRes = '__THIS__';
 
 				} else {

@@ -32,15 +32,16 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
+		const
+			is$C = parts.length === 3;
+
 		this.startDir(null, {
+			$C: is$C,
 			params: parts[2] ? parts[1] : null
 		});
 
-		if (parts.length === 3) {
-			if (!this.selfThis) {
-				this.selfThis = this.structure.params.selfThis = true;
-			}
-
+		if (is$C) {
+			this.selfThis.push(true);
 			this.append(ws`
 				${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${this.declCallbackArgs(parts)}) {
 			`);
@@ -57,10 +58,14 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{params} = this.structure.params;
+			{p} = this.structure;
 
-		if (params) {
-			this.append(`}, ${this.out(params, {unsafe: true})});`);
+		if (p.$C) {
+			this.selfThis.pop();
+		}
+
+		if (p.params) {
+			this.append(`}, ${this.out(p.params, {unsafe: true})});`);
 
 		} else {
 			this.append('});');
@@ -83,10 +88,6 @@ Snakeskin.addDirective(
 
 		if (!parts.length || parts.length > 2) {
 			return this.error(`invalid "${this.name}" declaration`);
-		}
-
-		if (this.structure.params.selfThis) {
-			this.selfThis = false;
 		}
 
 		this.append(ws`

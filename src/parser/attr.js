@@ -209,12 +209,9 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 				pOpen--;
 
 				if (!pOpen) {
-					const
-						tmp = attrKey.exec(group);
-
 					groups.push({
 						attr: attr.trim(),
-						group: tmp && tmp[1] || undefined,
+						group: (attrKey.exec(group) || [])[1],
 						separator
 					});
 

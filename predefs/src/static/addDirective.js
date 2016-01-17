@@ -34,6 +34,7 @@ Snakeskin.group = function (name) {};
  *   text: (?boolean|undefined),
  *   block: (?boolean|undefined),
  *   selfInclude: (?boolean|undefined),
+ *   interpolation: (?boolean|undefined),
  *   selfThis: (?boolean|undefined),
  *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
  * }}

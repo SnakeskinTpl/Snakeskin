@@ -25,7 +25,8 @@ export const
 	$dirChain = {},
 	$dirParents = {},
 	$dirEnd = {},
-	$dirTrim = {};
+	$dirTrim = {},
+	$dirInterpolation = {};
 
 export const
 	$blocks = {};

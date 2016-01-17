@@ -209,7 +209,7 @@ $$SnakeskinParser.prototype.startTemplateLine;
 /** @type {string} */
 $$SnakeskinParser.prototype.bemRef;
 
-/** @type {boolean} */
+/** @type {!Array<boolean>} */
 $$SnakeskinParser.prototype.selfThis;
 
 /**  @type {boolean} */
