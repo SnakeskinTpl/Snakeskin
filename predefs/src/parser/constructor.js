@@ -173,6 +173,9 @@ $$SnakeskinParser.prototype.consts;
 /** @type {!Object} */
 $$SnakeskinParser.prototype.vars;
 
+/** @type {!Array<string>} */
+$$SnakeskinParser.prototype.scope;
+
 /** @type {?string} */
 $$SnakeskinParser.prototype.name;
 

@@ -140,6 +140,12 @@ export default class Parser {
 		this.vars = {};
 
 		/**
+		 * The scope of blocks
+		 * @type {!Array<string>}
+		 */
+		this.scope = [];
+
+		/**
 		 * The name of the active directive
 		 * @type {?string}
 		 */
