@@ -13,3 +13,9 @@
 //#include ../../node_modules/closurecompiler-externs/path.js
 //#include ../../node_modules/closurecompiler-externs/fs.js
 //#include ../../node_modules/closurecompiler-externs/core.js
+
+/* ~~~ */
+
+//#include ./deps/**/*.js
+//#include ./main/**/*.js
+//#include ./parser/**/*.js
