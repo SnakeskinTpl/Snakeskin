@@ -584,7 +584,7 @@ Filters['attrVal'] = function (val) {
  * @return {(string|Snakeskin.HTMLObject)}
  */
 Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
-	if (type !== 'attrKey') {
+	if (type !== 'attrKey' || !isObject(val)) {
 		return String(val);
 	}
 
