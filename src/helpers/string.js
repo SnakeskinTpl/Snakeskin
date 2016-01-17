@@ -8,9 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import { any } from './gcc';
-import { isString } from './types';
-
 const
 	wsRgxp = /^\s+|[\r\n]+/mg;
 
