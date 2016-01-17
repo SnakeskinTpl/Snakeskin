@@ -20,6 +20,7 @@ Snakeskin.addDirective(
 		deferInit: true,
 		filters: {global: ['attr', 'html'], local: ['undef']},
 		group: ['tag', 'output'],
+		interpolation: true,
 		placement: 'template',
 		shorthands: {'/<': 'end tag', '<': 'tag '},
 		text: true,

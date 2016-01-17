@@ -18,6 +18,7 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		group: ['comment', 'tag', 'output'],
+		interpolation: true,
 		placement: 'template',
 		selfInclude: false,
 		shorthands: {'/!': 'end comment', '<!': 'comment '}
