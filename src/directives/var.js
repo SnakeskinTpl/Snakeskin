@@ -23,7 +23,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			putIn = /^putIn\s+([^\s]+)$/.exec(command);
+			putIn = /^putIn\s+([^\s=]+)$/.exec(command);
 
 		if (putIn) {
 			this.append(this.declVars(putIn[1]));
