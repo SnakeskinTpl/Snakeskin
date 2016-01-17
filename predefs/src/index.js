@@ -16,6 +16,8 @@
 
 /* ~~~ */
 
+//#include ./links.js
+//#include ./api.js
 //#include ./deps/**/*.js
 //#include ./main/**/*.js
 //#include ./parser/**/*.js
