@@ -22,6 +22,29 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		const
+			short = command.slice(-1) === '/';
+
+		if (short) {
+			this.startInlineDir(null, {short: true});
+
+			const
+				out = this.out(`${command.slice(0, -1)};`, {unsafe: true});
+
+			switch (this.getNonLogicParent().name) {
+				case 'call':
+				case 'putIn':
+				case 'target':
+					this.append(`__RESULT__ = Unsafe(${out});`);
+					break;
+
+				default:
+					this.append(this.wrap(out));
+			}
+
+			return;
+		}
+
 		this.startDir(null, {
 			chunks: 1,
 			command
@@ -44,6 +67,13 @@ Snakeskin.addDirective(
 
 	function () {
 		const
+			p = this.structure.params;
+
+		if (p.short) {
+			return;
+		}
+
+		const
 			tmp = this.out('__CALL_TMP__', {unsafe: true});
 
 		this.append(ws`
@@ -51,9 +81,6 @@ Snakeskin.addDirective(
 				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
 			}
 		`);
-
-		const
-			p = this.structure.params;
 
 		let
 			i = p.chunks,
