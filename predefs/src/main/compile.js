@@ -6,11 +6,27 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-/** @typedef {{file: (?string|undefined)}} */
+/**
+ * @typedef {{
+ *    file: (?string|undefined),
+ *    line: (?number|undefined),
+ *    node: (Element|undefined),
+ *    template: (?string|undefined)
+ * }}
+ */
 var $$SnakeskinInfoParams;
 
 /** @type {?} */
 var file;
+
+/** @type {?} */
+var line;
+
+/** @type {?} */
+var node;
+
+/** @type {?} */
+var template;
 
 /**
  * @typedef {{
@@ -31,7 +47,7 @@ var file;
  *   filters: (Object|undefined)
  *   localization: (?boolean|undefined),
  *   i18nFn: (?string|undefined),
- *   i18nOptions: (?string|undefined),
+ *   i18nFnOptions: (?string|undefined),
  *   language: (Object|undefined),
  *   words: (Object|undefined),
  *   ignore: (RegExp|undefined),
@@ -95,7 +111,7 @@ var localization;
 var i18nFn;
 
 /** @type {?} */
-var i18nOptions;
+var i18nFnOptions;
 
 /** @type {?} */
 var language;

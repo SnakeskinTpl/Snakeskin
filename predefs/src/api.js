@@ -8,8 +8,23 @@
 
 /** @const */
 var Snakeskin = {
+	/** @type {?string} */
+	UID: null,
+
 	/** @type {!Array} */
 	VERSION: [],
+
+	/** @const */
+	Filters: {},
+
+	/** @const */
+	Vars: {},
+
+	/** @const */
+	LocalVars: {},
+
+	/** @const */
+	cache: {},
 
 	/**
 	 * @abstract
