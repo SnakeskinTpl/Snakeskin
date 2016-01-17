@@ -125,7 +125,7 @@ Parser.prototype.getFnArgs = function (str) {
  * @param {?{
  *   tplName: (string|undefined),
  *   parentTplName: (string|undefined),
- *   fName: (string|undefined),
+ *   fName: (string|undefined)
  * }=} [opt_params] - additional parameters:
  *
  *   *) [tplName] - template name

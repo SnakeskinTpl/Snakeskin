@@ -42,7 +42,7 @@ var template;
  *   moduleName: (?string|undefined),
  *   useStrict: (?boolean|undefined),
  *   prettyPrint: (?boolean|undefined),
- *   literalBounds: (Array<string>|undefined)
+ *   literalBounds: (Array<string>|undefined),
  *   bemFilter: (?string|undefined),
  *   filters: (Object|undefined)
  *   localization: (?boolean|undefined),
