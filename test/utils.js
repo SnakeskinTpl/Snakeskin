@@ -7,7 +7,7 @@
  */
 
 const
-	snakeskin = require('../snakeskin');
+	snakeskin = global.Snakeskin = require('../snakeskin');
 
 var
 	path = require('path'),
@@ -82,7 +82,7 @@ exports.run = function (params) {
 			fs.writeFileSync(chunkSrc, res);
 
 			var
-				tpl = require(chunkSrc).init(snakeskin);
+				tpl = require(chunkSrc);
 
 		} catch (err) {
 			fs.writeFileSync(
