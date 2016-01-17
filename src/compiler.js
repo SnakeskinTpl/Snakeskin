@@ -96,12 +96,9 @@ import {
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug:
  *   *) [file] - path to a template file
  *
- * @param {$$SnakeskinSysParams=} [opt_sysParams] - system parameters:
- *   *) [cacheKey = false] - if is true, then will be returned a cache key for the current operation
- *
  * @return {(string|boolean|null)}
  */
-Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
+Snakeskin.compile = function (src, opt_params, opt_info) {
 	src = src || '';
 
 	/** @type {$$SnakeskinParams} */
@@ -151,16 +148,11 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// Caching
 	// >>>
 
-	/** @type {$$SnakeskinSysParams} */
-	const sp = any(
-		$C.extend(false, {cacheKey: false}, opt_sysParams)
-	);
-
 	const
 		ctx = p.context || NULL,
 		cacheKey = getCacheKey(p, ctx);
 
-	if (sp.cacheKey) {
+	if (p.getCacheKey) {
 		return cacheKey;
 	}
 
@@ -211,7 +203,7 @@ Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
 	// >>>
 
 	const
-		parser = new Parser(String(text), $C.extend({traits: true}, {info}, p, sp));
+		parser = new Parser(String(text), $C.extend({traits: true}, {info}, p));
 
 	// If is true, then a directive declaration is started,
 	// ie { ... }
