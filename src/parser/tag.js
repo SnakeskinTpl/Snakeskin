@@ -149,14 +149,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
  * and returns a reporting object
  *
  * @param {string} str - source string
- * @return {{
- *   tag: string,
- *   id: string,
- *   classes: !Array<string>,
- *   pseudo: !Array<string>,
- *   inline: boolean,
- *   inlineMap: (boolean|string)
- * }}
+ * @return {$$SnakeskinParserGetXMLTagDescResult}
  */
 Parser.prototype.getXMLTagDesc = function (str) {
 	str = this.replaceTplVars(str, {replace: true});

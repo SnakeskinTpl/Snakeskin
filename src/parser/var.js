@@ -20,7 +20,7 @@ import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
  * Declares a variable and returns string declaration
  *
  * @param {string} name - variable name
- * @param {?{fn: (boolean|undefined), sys: (boolean|undefined)}=} [opt_params] - addition parameters:
+ * @param {?$$SnakeskinParserDeclVarParams=} [opt_params] - addition parameters:
  *
  *   *) [fn=false] - if is true, then the variable will be declared as a function parameter
  *   *) [sys=false] - if is true, then the variable will be declared as system
@@ -93,11 +93,7 @@ Parser.prototype.declVar = function (name, opt_params) {
  * and returns new string declaration
  *
  * @param {string} str - source string
- * @param {?{
- *   end: (boolean|undefined),
- *   def: (string|undefined),
- *   sys: (boolean|undefined)
- * }=} [opt_params] - addition parameters:
+ * @param {?$$SnakeskinParserDeclVarsParams=} [opt_params] - addition parameters:
  *
  *   *) [end=true] - if is true, then will be appended ; to the string
  *   *) [def='undefined'] - default value for variables

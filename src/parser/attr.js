@@ -69,7 +69,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 /**
  * Returns string declaration of the specified XML attribute
  *
- * @param {{attr: string, group: (string|undefined), separator: (string|undefined)}} params - parameters:
+ * @param {$$SnakeskinParserGetXMLAttrDeclParams} params - parameters:
  *
  *   *) attr - source attribute
  *   *) [group] - group name
@@ -167,7 +167,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
  * Splits a string of XML attribute declaration into groups
  *
  * @param {string} str - source string
- * @return {!Array<{attr: string, group: (string|undefined), separator: (string|undefined)}>}
+ * @return {!Array<$$SnakeskinParserGetXMLAttrDeclParams>}
  */
 Parser.prototype.splitXMLAttrGroup = function (str) {
 	str = this.replaceTplVars(str, {replace: true});

@@ -52,10 +52,7 @@ Parser.prototype.pasteTplVarBlocks = function (str, opt_fn) {
  * Replaces found matches ${ ... } from a string to SS calls
  *
  * @param {string} str - source string
- * @param {?{
- *   unsafe: (boolean|undefined),
- *   replace: (boolean|undefined)
- * }=} [opt_params] - additional parameters:
+ * @param {?$$SnakeskinParserReplaceTplVarsParams=} [opt_params] - additional parameters:
  *
  *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
  *   *) [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_

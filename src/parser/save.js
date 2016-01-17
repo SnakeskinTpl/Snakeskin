@@ -204,7 +204,7 @@ Parser.prototype.isAdvTest = function () {
  * Adds a string to the result JS string if is possible
  *
  * @param {string=} str - source string
- * @param {?{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}=} [opt_params] - addition parameters:
+ * @param {?$$SnakeskinParserSaveParams=} [opt_params] - addition parameters:
  *
  *   *) [iface=false] - if is true, then the current operation is an interface
  *   *) [jsDoc] - last position of appending jsDoc or false
@@ -239,7 +239,7 @@ Parser.prototype.save = function (str, opt_params) {
  * (with this.isSimpleOutput())
  *
  * @param {string=} str - source string
- * @param {?{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}=} [opt_params] - addition parameters:
+ * @param {?$$SnakeskinParserSaveParams=} [opt_params] - addition parameters:
  *
  *   *) [iface=false] - if is true, then the current operation is an interface
  *   *) [jsDoc] - last position of appending jsDoc or false
