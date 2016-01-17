@@ -72,28 +72,7 @@ const
  * Adds a new directive to the SS namespace
  *
  * @param {string} name - directive name
- * @param {{
- *   deferInit: (?boolean|undefined),
- *   generator: (?boolean|undefined),
- *   notEmpty: (?boolean|undefined),
- *   alias: (?boolean|undefined),
- *   group: (Array|string|undefined),
- *   renderModesBlacklist: (Array|string|undefined),
- *   renderModesWhitelist: (Array|string|undefined),
- *   placement: (Array|string|undefined),
- *   ancestorsBlacklist: (Array|string|undefined),
- *   ancestorsWhitelist: (Array|string|undefined),
- *   with: (Array|string|undefined),
- *   parents: (Array|string|undefined),
- *   endsWith: (Array|string|undefined),
- *   endFor: (Array|string|undefined),
- *   trim: ({left: boolean, right: boolean}|boolean|undefined),
- *   logic: (?boolean|undefined),
- *   text: (?boolean|undefined),
- *   block: (?boolean|undefined),
- *   selfInclude: (?boolean|undefined),
- *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
- * }} params - additional parameters:
+ * @param {$$SnakeskinAddDirectiveParams} params - additional parameters:
  *
  *   *) [params.deferInit = false] - if is true, the directive won't be started automatically
  *   *) [params.generator = false] - if is true, the directive can be used only with generators

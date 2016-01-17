@@ -42,6 +42,23 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
 };
 
 /**
+ * Sets parameters to the specified Snakeskin filter
+ *
+ * @param {(string|!Function)} filter - filter name or the filter function
+ * @param {Object} params - parameters
+ * @return {!Function}
+ */
+Snakeskin.setFilterParams = function (filter, params) {
+	if (isString(filter)) {
+		Filters[filter]['ssFilterParams'] = params;
+		return Filters[filter];
+	}
+
+	filter['ssFilterParams'] = params;
+	return filter;
+};
+
+/**
  * Console API
  * @const
  */
@@ -99,23 +116,6 @@ Filters['console'] = {
 		console.warn(...arguments);
 		return val;
 	}
-};
-
-/**
- * Sets parameters to the specified Snakeskin filter
- *
- * @param {(string|!Function)} filter - filter name or the filter function
- * @param {Object} params - parameters
- * @return {!Function}
- */
-Snakeskin.setFilterParams = function (filter, params) {
-	if (isString(filter)) {
-		Filters[filter]['ssFilterParams'] = params;
-		return Filters[filter];
-	}
-
-	filter['ssFilterParams'] = params;
-	return filter;
 };
 
 /**
