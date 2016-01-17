@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable requireObjectDestructuring
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -8,7 +10,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-// jscs:disable
 const
 	$C = require('collection.js').$C;
 
