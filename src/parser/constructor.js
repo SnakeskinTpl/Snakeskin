@@ -25,11 +25,11 @@ export default class Parser {
 	 * @param {$$SnakeskinParserParams} params - additional parameters
 	 */
 	constructor(src, params) {
-		/** @type {(?function(!Error)|undefined)} */
-		this.onError = params.onError;
-
 		/** @type {boolean} */
 		this.throws = params.throws;
+
+		/** @type {(?function(!Error)|undefined)} */
+		this.onError = params.onError;
 
 		/** @type {string} */
 		this.module = params.module;
@@ -79,7 +79,7 @@ export default class Parser {
 		/** @type {string} */
 		this.renderMode = params.renderMode;
 
-		/** @type {!Object} */
+		/** @type {{file, line, node, template}} */
 		this.info = params.info;
 
 		/**
