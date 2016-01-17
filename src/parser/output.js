@@ -95,8 +95,7 @@ const
 const
 	multPropRgxp = /\[|\./,
 	firstPropRgxp = /([^.[]+)(.*)/,
-	propValRgxp = /[^-+!(]+/,
-	smartStrRgxp = /^"|"$/g;
+	propValRgxp = /[^-+!(]+/;
 
 const
 	dangerRgxp = /\)\s*(?:{|=>)/,
