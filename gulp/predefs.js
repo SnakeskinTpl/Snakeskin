@@ -18,20 +18,47 @@ const
 	monic = require('gulp-monic'),
 	download = require('gulp-download'),
 	replace = require('gulp-replace'),
+	rename = require('gulp-rename'),
 	header = require('gulp-header'),
 	run = require('gulp-run');
 
+const
+	fullHead = `${helpers.getHead()} */\n\n`;
+
 gulp.task('predefs', (cb) => {
-	run('bower install').exec()
-		.on('error', helpers.error(cb))
-		.on('finish', cb);
+	async.parallel([
+		(cb) => {
+			gulp.src('./predefs/src/index.js')
+				.pipe(monic())
+				.on('error', helpers.error(cb))
+				.pipe(replace(headRgxp.addFlag('g'), ''))
+				.pipe(gulp.dest('./predefs/build'))
+				.on('end', cb);
+		},
+
+		(cb) => {
+			gulp.src('./predefs/src/index.js')
+				.pipe(monic({flags: {externs: true}}))
+				.on('error', helpers.error(cb))
+				.pipe(replace(headRgxp.addFlag('g'), ''))
+				.pipe(replace(/(\s)+$/, '$1'))
+				.pipe(header(fullHead))
+				.pipe(rename('externs.js'))
+				.pipe(gulp.dest('./'))
+				.on('end', cb);
+		},
+
+		(cb) => {
+			run('bower install').exec()
+				.on('error', helpers.error(cb))
+				.on('finish', cb);
+		}
+
+	], cb);
 });
 
 gulp.task('head', (cb) => {
 	global.readyToWatcher = false;
-
-	const
-		fullHead = `${helpers.getHead()} */\n\n`;
 
 	function test() {
 		return through.obj(function (file, enc, cb) {
@@ -45,7 +72,7 @@ gulp.task('head', (cb) => {
 
 	async.parallel([
 		(cb) => {
-			gulp.src(['./@(src|gulp)/**/*.js', './@(snakeskin|externs).js', './predefs/src/index.js'], {base: './'})
+			gulp.src(['./@(src|gulp)/**/*.js', './predefs/src/**/*.js', './snakeskin.js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))

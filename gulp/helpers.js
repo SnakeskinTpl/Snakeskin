@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable requireTemplateStrings
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,16 +15,16 @@ const
 	fs = require('fs');
 
 module.exports = {
+	error(cb) {
+		return (err) => {
+			console.error(err.message);
+			cb();
+		};
+	},
+
 	getBuilds() {
 		delete require.cache[require.resolve('../builds')];
 		return Object(require('../builds'));
-	},
-
-	getVersion() {
-		const file = fs.readFileSync(path.join(__dirname, '../src/core.js'));
-		return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
-			.split(/\s*,\s*/)
-			.join('.');
 	},
 
 	getHead(opt_version, opt_key) {
@@ -35,10 +37,10 @@ module.exports = {
 			' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n';
 	},
 
-	error(cb) {
-		return (err) => {
-			console.error(err.message);
-			cb();
-		};
+	getVersion() {
+		const file = fs.readFileSync(path.join(__dirname, '../src/core.js'));
+		return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
+			.split(/\s*,\s*/)
+			.join('.');
 	}
 };
