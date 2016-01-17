@@ -7,59 +7,48 @@
  */
 
 /** @type {Snakeskin} */
-var ss = module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin');
+module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin');
+
+var
+	$C = require('collection.js').$C;
 
 var
 	path = require('path'),
 	fs = require('fs'),
 	cache = {};
 
-function clone(obj) {
-	return JSON.parse(JSON.stringify(obj));
-}
-
-// Declarative export for working autocomplete in editors
-
-/** @see {Snakeskin.VERSION} */
-exports.VERSION = ss.VERSION;
-
-/** @see {Snakeskin.Filters} */
-exports.Filters = ss.Filters;
-
-/** @see {Snakeskin.Vars} */
-exports.Vars = ss.Vars;
-
-/** @see {Snakeskin.importFilters} */
-exports.importFilters = ss.importFilters;
-
-/** @see {Snakeskin.compile} */
-exports.compile = ss.compile;
-
 /**
- * Returns true, when a template file corresponds to a compiled file
- * by timestamp
+ * Returns true if a template file corresponds to a compiled file by a timestamp
  *
- * @param {string} source - a path to the template file
- * @param {string} result - a path to the compiled file
- * @param {(string|boolean|null)=} [opt_key] - a key of compile parameters
+ * @param {string} source - path to the template file
+ * @param {string} result - path to the compiled file
+ * @param {(string|boolean|null)=} [opt_key] - key of compile parameters
  * @param {?boolean=} [opt_includes=false] - if is true, then returns an array of included files
  * @return {(boolean|!Array)}
  */
 exports.check = function (source, result, opt_key, opt_includes) {
-	var ctx = module.parent ? path.dirname(module.parent.filename) : '';
+	var
+		ctx = module.parent ? path.dirname(module.parent.filename) : '';
 
 	source = path.normalize(path.resolve(ctx, source));
 	result = path.normalize(path.resolve(ctx, result));
 
-	if (!fs.existsSync(source) || !fs.existsSync(result)) {
+	try {
+		var sourceStat = fs.statSync(source);
+
+		if (!sourceStat.isFile() || !fs.statSync(result).isFile()) {
+			return false;
+		}
+
+	} catch (ignore) {
 		return false;
 	}
 
 	var
-		code = fs.readFileSync(result).toString(),
+		code = fs.readFileSync(result, 'utf8'),
 		label = /label <([\d]+)>/.exec(code);
 
-	if (opt_key === null || !label || fs.statSync(source).mtime.valueOf() != label[1]) {
+	if (opt_key === null || !label || sourceStat.mtime.valueOf() != label[1]) {
 		return false;
 	}
 
@@ -77,24 +66,24 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		return false;
 	}
 
-	if (includes[1]) {
-		includes = JSON.parse(includes[1]);
-
-		for (var i = 0; i < includes.length; i++) {
-			var el = includes[i];
-
-			if (fs.existsSync(el[0])) {
-				if (fs.statSync(el[0]).mtime.valueOf() != el[1]) {
-					return false;
-				}
-
-			} else {
-				return false;
+	function test(el) {
+		if (fs.existsSync(el[0])) {
+			if (fs.statSync(el[0]).mtime.valueOf() != el[1]) {
+				return true;
 			}
+
+		} else {
+			return true;
+		}
+	}
+
+	if (includes[1]) {
+		if ($C(JSON.parse(includes[1])).some(test)) {
+			return false;
 		}
 
 		if (opt_includes) {
-			return includes.map(function (el) {
+			return $C(includes).map(function (el) {
 				return el[0];
 			});
 		}
@@ -104,10 +93,10 @@ exports.check = function (source, result, opt_key, opt_includes) {
 };
 
 /**
- * Compiles a template file and returns a reference to a resulting object
- * or false, if an error occurs during compilation
+ * Compiles a template file and returns a reference to the resulting object
+ * or false if an error occurs during compilation
  *
- * @param {string} src - a path to the template file
+ * @param {string} src - path to the template file
  *
  * @see Snakeskin.compile
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
@@ -118,14 +107,16 @@ exports.compileFile = function (src, opt_params) {
 	src = path.normalize(path.resolve(module.parent ? path.dirname(module.parent.filename) : '', src));
 
 	var
-		p = opt_params || {},
+		p = $C.extend(false, {}, opt_params),
 		cacheEnabled = p.cache !== false;
 
 	var
-		cacheKey = exports.compile(null, p, null, {cacheKey: true}),
-		fromCache = cacheEnabled &&
-			cache[cacheKey] &&
-			cache[cacheKey][src];
+		cacheKey = exports.compile(null, $C.extend(false, {}, p, {getCacheKey: true})),
+		fromCache = cacheEnabled && cache[cacheKey] && cache[cacheKey][src];
+
+	function clone(obj) {
+		return JSON.parse(JSON.stringify(obj));
+	}
 
 	if (fromCache) {
 		var tmp = fromCache;
@@ -202,27 +193,17 @@ exports.compileFile = function (src, opt_params) {
 };
 
 /**
- * Returns a reference to a main template
+ * Returns a reference to the main template
  *
- * @param {!Object} tpls - the template object
- * @param {?string=} [opt_src] - a path to the template file
- * @param {?string=} [opt_tplName] - a name of the main template
+ * @param {!Object} tpls - template object
+ * @param {?string=} [opt_src] - path to the template file
+ * @param {?string=} [opt_tplName] - name of the main template
  * @return {Function}
  */
 exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
 	var
-		tpl,
-		tmp = {};
+		tpl;
 
-	for (var key in tpls) {
-		if (!tpls.hasOwnProperty(key) || key === 'init') {
-				continue;
-			}
-
-			tmp[key] = tpls[key];
-	}
-
-	tpls = tmp;
 	if (opt_tplName) {
 		tpl = tpls[opt_tplName];
 
@@ -237,14 +218,14 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
 };
 
 /**
- * Compiles a template file and returns a reference to a main template
+ * Compiles a template file and returns a reference to the main template
  *
- * @param {string} src - a path to the template file
+ * @param {string} src - path to the template file
  *
  * @see Snakeskin.compile
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  *
- * @param {?string=} [opt_tplName] - a name of the main template
+ * @param {?string=} [opt_tplName] - name of the main template
  * @return {Function}
  */
 exports.execFile = function (src, opt_params, opt_tplName) {
@@ -258,14 +239,14 @@ exports.execFile = function (src, opt_params, opt_tplName) {
 };
 
 /**
- * Compiles a template text and returns a reference to a main template
+ * Compiles a template text and returns a reference to the main template
  *
- * @param {string} txt - the source text
+ * @param {string} txt - source text
  *
  * @see Snakeskin.compile
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  *
- * @param {?string=} [opt_tplName] - a name of the main template
+ * @param {?string=} [opt_tplName] - name of the main template
  * @return {Function}
  */
 exports.exec = function (txt, opt_params, opt_tplName) {
