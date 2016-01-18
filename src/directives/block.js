@@ -253,7 +253,8 @@ Snakeskin.addDirective(
 		}
 
 		const
-			block = $blocks[this.tplName][p.name];
+			block = $blocks[this.tplName][p.name],
+			output = p.params != null;
 
 		if (this.isSimpleOutput() && p.fn) {
 			this.save(ws`
@@ -261,10 +262,10 @@ Snakeskin.addDirective(
 					};
 				}
 
-				${p.params != null ? this.wrap(`${p.fn}(${p.params})`) : ''}
+				${output ? this.wrap(`${p.fn}(${p.params})`) : ''}
 			`);
 
-			if (this.hasParent(this.getGroup('microTemplate'))) {
+			if (!output && this.hasParent(this.getGroup('microTemplate'))) {
 				this.append(`__RESULT__ = new Data(${p.fn});`);
 			}
 		}
