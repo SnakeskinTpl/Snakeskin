@@ -307,7 +307,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		switch (p.placement) {
 			case 'template':
-				if (!structure.parent) {
+				if (!this.tplName) {
 					return this.error(
 						`the directive "${dirName}" can be used only within directives ${q(this.getGroupList('template'))}`
 					);
