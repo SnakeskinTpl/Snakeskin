@@ -86,7 +86,6 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 			${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
 
 		} else if (${inlineTag} && ${inlineTag} !== true) {
-			${this.wrap(`' ' + ${inlineTag} + '="'`)}
 			${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
 			__RESULT__ = ${this.getResultDecl()};
 
@@ -136,7 +135,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 			__RESULT__ =
 					${this.out('__CALL_CACHE__', {unsafe: true})};
 
-			${this.wrap(`${this.out('__CALL_TMP__')} + '"${this.doctype === 'xml' ? '/' : ''}>'`)}
+			${this.wrap(`' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"${this.doctype === 'xml' ? '/' : ''}>'`)}
 
 		} else if (${!opt_inline}) {
 			${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
