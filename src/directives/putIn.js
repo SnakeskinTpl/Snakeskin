@@ -26,7 +26,7 @@ Snakeskin.addDirective(
 		this.startDir(null, {ref});
 
 		const
-			parent = this.getNonLogicParent();
+			parent = this.hasParent(this.getGroup('microTemplate'), true);
 
 		const
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
@@ -71,7 +71,7 @@ Snakeskin.addDirective(
 
 		const
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
-			parent = this.getNonLogicParent().name;
+			parent = this.hasParent(this.getGroup('microTemplate'));
 
 		if (this.getGroup('call')[parent]) {
 			this.append(ws`

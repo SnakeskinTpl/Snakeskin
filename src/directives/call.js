@@ -31,7 +31,7 @@ Snakeskin.addDirective(
 			const
 				out = this.out(`${command.slice(0, -1)};`, {unsafe: true});
 
-			if (this.getGroup('microTemplate')[this.getNonLogicParent().name]) {
+			if (this.hasParent(this.getGroup('microTemplate'))) {
 				this.append(`__RESULT__ = Unsafe(${out});`);
 
 			} else {
@@ -117,7 +117,7 @@ Snakeskin.addDirective(
 			str = this.out(command, {unsafe: true});
 		}
 
-		if (this.getGroup('microTemplate')[this.getNonLogicParent().name]) {
+		if (this.hasParent(this.getGroup('microTemplate'))) {
 			this.append(`__RESULT__ = Unsafe(${str});`);
 
 		} else {

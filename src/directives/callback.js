@@ -34,7 +34,7 @@ Snakeskin.addDirective(
 			pstfx = '';
 
 		const
-			parent = this.getNonLogicParent();
+			parent = this.hasParent(this.getGroup('async', 'microTemplate'), true);
 
 		if (this.getGroup('async')[parent.name]) {
 			let
@@ -78,7 +78,7 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			parent = this.getNonLogicParent().name;
+			parent = this.hasParent(this.getGroup('async', 'microTemplate'));
 
 		if (this.getGroup('async')[parent]) {
 			this.append('})');

@@ -264,7 +264,7 @@ Snakeskin.addDirective(
 				${p.params != null ? this.wrap(`${p.fn}(${p.params})`) : ''}
 			`);
 
-			if (this.getGroup('microTemplate')[this.getNonLogicParent().name]) {
+			if (this.hasParent(this.getGroup('microTemplate'))) {
 				this.append(`__RESULT__ = new Data(${p.fn});`);
 			}
 		}

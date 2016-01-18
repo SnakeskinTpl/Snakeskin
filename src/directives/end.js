@@ -50,12 +50,9 @@ Snakeskin.addDirective(
 
 			) {
 				const
-					parent = this.getNonLogicParent().name;
+					parent = this.hasParent(async);
 
-				if (async[parent]) {
-					const
-						basicAsync = this.getGroup('basicAsync');
-
+				if (parent) {
 					if (this.getGroup('waterfall')[parent]) {
 						this.append(ws`
 							if (__RETURN__) {
