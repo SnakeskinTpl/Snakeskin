@@ -15,12 +15,12 @@ import { ws } from '../helpers/string';
 
 /**
  * The class for parsing SS templates
- *
- * @constructor
- * @implements {$$SnakeskinParser}
  */
 export default class Parser {
 	/**
+	 * @constructor
+	 * @implements {$$SnakeskinParser}
+	 *
 	 * @param {string} src - source text of templates
 	 * @param {$$SnakeskinParserParams} params - additional parameters
 	 */

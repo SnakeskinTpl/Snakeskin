@@ -15,9 +15,9 @@ import { isArray } from '../helpers/types';
 /**
  * Special Snakeskin class for escaping HTML entities from an object
  *
+ * @constructor
  * @param {?} val - source value
  * @param {?string=} [opt_attr] - type of attribute declaration
- * @return {(string|!Node)}
  */
 Snakeskin.HTMLObject = function (val, opt_attr) {
 	this.value = val;

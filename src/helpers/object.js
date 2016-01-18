@@ -56,7 +56,7 @@ export function toObj(val, opt_base, opt_onFileExists) {
 				opt_onFileExists && opt_onFileExists(val);
 
 				const
-					content = fs.readFileSync(val, 'utf8');
+					content = any(fs.readFileSync(val, 'utf8'));
 
 				try {
 					res = JSON.parse(content);

@@ -55,7 +55,7 @@ Snakeskin.setFilterParams = function (filter, params) {
 	}
 
 	filter['ssFilterParams'] = params;
-	return filter;
+	return any(filter);
 };
 
 /**
@@ -588,7 +588,8 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 		return String(val);
 	}
 
-	function convert(obj, prfx = '') {
+	function convert(obj, prfx) {
+		prfx = prfx || '';
 		Snakeskin.forEach(obj, (el, key) => {
 			if (el === FALSE) {
 				return;
