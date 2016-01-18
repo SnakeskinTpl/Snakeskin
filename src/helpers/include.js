@@ -12,12 +12,15 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { toObj } from './object';
 import { IS_NODE } from '../consts/hacks';
 import { wsStart, wsEnd } from '../consts/regs';
 import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 export const
 	stack = [];
+
+Snakeskin.toObj = toObj;
 
 /**
  * Adds file content by the specified path to the stack
@@ -36,7 +39,7 @@ Snakeskin.include = function (base, file, eol, opt_renderMode) {
 	const
 		fs = require('fs'),
 		path = require('path'),
-		glob = require('glob').sync;
+		glob = require('glob');
 
 	const
 		s = ADV_LEFT_BOUND + LEFT_BOUND,
@@ -52,7 +55,7 @@ Snakeskin.include = function (base, file, eol, opt_renderMode) {
 			file + (extname ? '' : '.ss')
 		);
 
-		$C(glob.hasMagic(src) ? glob(src) : [src]).forEach((src) => {
+		$C(glob.hasMagic(src) ? glob.sync(src) : [src]).forEach((src) => {
 			src = path.normalize(src);
 
 			if (include[src]) {
