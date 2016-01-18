@@ -48,7 +48,7 @@ Snakeskin.addDirective(
 				}
 			});
 
-			prfx = length ? ',' : '';
+			prfx = length > 1 ? ',' : '';
 
 		} else if (this.getGroup('microTemplate')[parent.name]) {
 			prfx = `__RESULT__ = new Data`;
@@ -66,7 +66,7 @@ Snakeskin.addDirective(
 	'final',
 
 	{
-		group: ['final', 'function', 'basicAsync'],
+		group: ['final', 'function'],
 		with: Snakeskin.group('Async')
 	},
 
