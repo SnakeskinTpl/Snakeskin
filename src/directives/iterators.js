@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{p} = this.structure;
+			p = this.structure.params;
 
 		if (p.$C) {
 			this.selfThis.pop();
