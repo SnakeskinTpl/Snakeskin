@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 				if (this.getGroup('Async')[asyncParent]) {
 					str += def;
 
-					if (asyncParent === 'waterfall') {
+					if (this.getGroup('waterfall')[asyncParent]) {
 						str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 					} else {
@@ -62,11 +62,7 @@ Snakeskin.addDirective(
 					this.deferReturn = 0;
 
 				} else {
-					str += ws`
-						__RETURN__ = true;
-						__RETURN_VAL__ = ${val};
-					`;
-
+					str += def;
 					this.deferReturn = 1;
 				}
 
