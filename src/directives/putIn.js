@@ -36,7 +36,7 @@ Snakeskin.addDirective(
 			parent.params.chunks++;
 			this.append(ws`
 				if (!${pos} && __LENGTH__(__RESULT__)) {
-					${tmp}.push(${this.getReturnResultDecl()});
+					${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
 					__RESULT__ = ${this.getResultDecl()};
 				}
 
