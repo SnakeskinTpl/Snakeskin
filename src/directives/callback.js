@@ -8,6 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 
@@ -16,7 +17,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['callback', 'AsyncCallback'],
+		group: ['callback', 'function'],
 		shorthands: {'()': 'callback '}
 	},
 
@@ -32,10 +33,9 @@ Snakeskin.addDirective(
 			async = this.getGroup('async'),
 			{parent} = this.structure;
 
-		this.structure.params.insideAsync =
-			async[parent.name];
-
+		this.structure.params.insideAsync = async[parent.name];
 		let length = 0;
+
 		$C(parent.children).forEach(({name}) => {
 			if (name === 'callback') {
 				length++;
@@ -60,20 +60,13 @@ Snakeskin.addDirective(
 	'final',
 
 	{
+		ancestorsWhitelist: Snakeskin.group('series'),
 		block: true,
-		deferInit: true,
-		group: ['callback', 'basicAsync'],
+		group: ['callback', 'function', 'basicAsync'],
 		with: ['parallel', 'series', 'waterfall']
 	},
 
 	function (command) {
-		const
-			async = this.getGroup('series');
-
-		if (!async[this.structure.name]) {
-			return this.error(`directive "${this.name}" can be used only with a "${groupsList['series'].join(', ')}"`);
-		}
-
 		const
 			parts = command.split('=>');
 
@@ -81,10 +74,7 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		this.startDir();
-		this.append(ws`
-			], function (${this.declCallbackArgs(parts)}) {
-		`);
+		this.append(`], function (${this.declCallbackArgs(parts)}) {`);
 	},
 
 	function () {

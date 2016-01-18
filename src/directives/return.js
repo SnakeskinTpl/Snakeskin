@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			cb = this.hasParent(this.getGroup('callback')),
+			cb = this.hasParent(this.getGroup('function')),
 			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl();
 
 		if (cb) {
@@ -32,7 +32,7 @@ Snakeskin.addDirective(
 			`;
 
 			let asyncParent;
-			if (cb === 'callback') {
+			if (this.getGroup('callback')[cb]) {
 				asyncParent = this.hasParent(this.getGroup('async'));
 			}
 

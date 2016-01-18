@@ -15,27 +15,25 @@ Snakeskin.addDirective(
 	'break',
 
 	{
-		ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('async')],
+		ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
 		group: ['break', 'control']
 	},
 
 	function (command) {
 		const
-			inside = this.hasParent(this.getGroup('cycle', 'async'));
+			inside = this.hasParent(this.getGroup('cycle', 'iterator', 'async'));
 
 		if (this.getGroup('cycle')[inside]) {
-			if (inside === this.hasParent(this.getGroup('callback'))) {
-				this.append('return false;');
+			this.append('break;');
 
-			} else {
-				this.append('break;');
-			}
+		} else if (this.getGroup('iterator')[inside]) {
+			this.append('return false;');
 
 		} else {
 			const
 				val = command ? this.out(command, {unsafe: true}) : 'false';
 
-			if (inside === 'waterfall') {
+			if (this.getGroup('waterfall')[inside]) {
 				this.append(`return arguments[arguments.length - 1](${val});`);
 
 			} else {
@@ -55,27 +53,25 @@ Snakeskin.addDirective(
 	'continue',
 
 	{
-		ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('async')],
+		ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
 		group: ['continue', 'control']
 	},
 
 	function (command) {
 		const
-			inside = this.hasParent(this.getGroup('cycle', 'async'));
+			inside = this.hasParent(this.getGroup('cycle', 'iterator', 'async'));
 
 		if (this.getGroup('cycle')[inside]) {
-			if (inside === this.hasParent(this.getGroup('callback'))) {
-				this.append('return;');
+			this.append('continue;');
 
-			} else {
-				this.append('continue;');
-			}
+		} else if (this.getGroup('iterator')[inside]) {
+			this.append('return;');
 
 		} else {
 			const
 				val = command ? `undefined,${this.out(command, {unsafe: true})}` : '';
 
-			if (inside === 'waterfall') {
+			if (this.getGroup('waterfall')[inside]) {
 				this.append(`return arguments[arguments.length - 1](${val});`);
 
 			} else {

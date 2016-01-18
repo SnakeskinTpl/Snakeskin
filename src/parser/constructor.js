@@ -225,7 +225,7 @@ export default class Parser {
 
 		/**
 		 * The list of decorators
-		 * @type {!Array.<string>}
+		 * @type {!Array<string>}
 		 */
 		this.decorators = [];
 

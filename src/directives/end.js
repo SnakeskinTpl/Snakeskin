@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 			const
 				async = this.getGroup('async');
 
-			if (this.getGroup('callback')[name]) {
+			if (this.getGroup('function')[name]) {
 				const
 					parent = structure.parent.name;
 

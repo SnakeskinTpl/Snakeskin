@@ -14,7 +14,7 @@ const
 /**
  * String tag (for ES6 string templates) for truncate starting whitespaces and eol-s
  *
- * @param {!Array.<string>} strings
+ * @param {!Array<string>} strings
  * @param {...string} expr
  * @return {string}
  */

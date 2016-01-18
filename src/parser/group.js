@@ -21,7 +21,7 @@ const
  * which belong to the specified groups
  *
  * @param {...string} names - group name
- * @return {!Object.<string, boolean>}
+ * @return {!Object<string, boolean>}
  */
 Parser.prototype.getGroup = function (names) {
 	const
@@ -47,7 +47,7 @@ Parser.prototype.getGroup = function (names) {
  * which belong to the specified groups
  *
  * @param {...string} names - group name
- * @return {!Array.<string>}
+ * @return {!Array<string>}
  */
 Parser.prototype.getGroupList = function (names) {
 	return Object.keys(this.getGroup(...arguments));
