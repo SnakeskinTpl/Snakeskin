@@ -43,7 +43,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 		{
 			block: true,
 			deferInit: true,
-			group: ['template', 'rootTemplate', 'define'],
+			group: [dir, 'template', 'rootTemplate', 'define'],
 			notEmpty: true,
 			placement: 'global'
 		},

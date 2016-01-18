@@ -52,7 +52,7 @@ Snakeskin.addDirective(
 	'doctype',
 
 	{
-		group: ['doctype', 'tag', 'output'],
+		group: ['doctype', 'output'],
 		placement: 'template',
 		renderModesBlacklist: 'dom'
 	},
