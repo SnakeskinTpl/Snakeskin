@@ -58,10 +58,7 @@ Snakeskin.addDirective(
 				}
 
 			} else {
-				if (this.getGroup('async')[fnParent]) {
-					this.deferReturn = 0;
-
-				} else {
+				if (!this.getGroup('async')[fnParent]) {
 					str += def;
 					this.deferReturn = 1;
 				}

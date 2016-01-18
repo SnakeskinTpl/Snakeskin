@@ -35,6 +35,72 @@ Snakeskin.addDirective(
 			}
 		}
 
+		if (this.deferReturn) {
+			let
+				{name} = this.structure;
+
+			const
+				async = this.getGroup('async');
+
+			if (this.getGroup('function', 'async')[name]) {
+				const
+					parent = this.getNonLogicParent().name;
+
+				if (async[parent]) {
+					const
+						basicAsync = this.getGroup('basicAsync');
+
+					if (this.getGroup('waterfall')[parent]) {
+						this.append(ws`
+							if (__RETURN__) {
+								return arguments[arguments.length - 1](__RETURN_VAL__);
+							}
+						`);
+
+					} else if (this.getGroup('Async')[parent]) {
+						this.append(ws`
+							if (__RETURN__) {
+								if (typeof arguments[0] === 'function') {
+									return arguments[0](__RETURN_VAL__);
+								}
+
+								return false;
+							}
+						`);
+
+					} else {
+						this.append(ws`
+							if (__RETURN__) {
+								return false;
+							}
+						`);
+					}
+
+					this.deferReturn = 0;
+
+				} else if (this.deferReturn) {
+					if (this.deferReturn > 1) {
+						this.append(ws`
+							if (__RETURN__) {
+								return false;
+							}
+						`);
+					}
+
+					this.deferReturn++;
+				}
+
+			} else if (!async[name]) {
+				this.append(ws`
+					if (__RETURN__) {
+						return __RETURN_VAL__;
+					}
+				`);
+
+				this.deferReturn = 0;
+			}
+		}
+
 		const
 			destruct = Snakeskin.Directives[`${name}End`];
 
@@ -50,72 +116,6 @@ Snakeskin.addDirective(
 		this
 			.endDir()
 			.toQueue(() => this.startInlineDir());
-
-		if (this.deferReturn) {
-			let
-				{structure, structure: {name}} = this;
-
-			const
-				async = this.getGroup('async');
-
-			if (this.getGroup('function')[name]) {
-				const
-					parent = structure.parent.name;
-
-				if (async[parent]) {
-					const
-						basicAsync = this.getGroup('basicAsync');
-
-					if (basicAsync[name] || basicAsync[parent]) {
-						this.append(ws`
-							if (__RETURN__) {
-								return false;
-							}
-						`);
-
-					} else if (parent === 'waterfall') {
-						this.append(ws`
-							if (__RETURN__) {
-								return arguments[arguments.length - 1](__RETURN_VAL__);
-							}
-						`);
-
-					} else {
-						this.append(ws`
-							if (__RETURN__) {
-								if (typeof arguments[0] === 'function') {
-									return arguments[0](__RETURN_VAL__);
-								}
-
-								return false;
-							}
-						`);
-					}
-
-					this.deferReturn = 0;
-
-				} else if (this.deferReturn > 1) {
-					this.append(ws`
-						if (__RETURN__) {
-							return false;
-						}
-					`);
-				}
-
-				if (this.deferReturn !== 0) {
-					this.deferReturn++;
-				}
-
-			} else if (!async[name]) {
-				this.append(ws`
-					if (__RETURN__) {
-						return __RETURN_VAL__;
-					}
-				`);
-
-				this.deferReturn = 0;
-			}
-		}
 	}
 
 );
