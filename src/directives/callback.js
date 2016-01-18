@@ -10,7 +10,6 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'callback',
@@ -29,30 +28,37 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
+		let
+			prfx = '';
+
 		const
-			async = this.getGroup('async'),
-			{parent} = this.structure;
+			parent = this.getNonLogicParent();
 
-		this.structure.params.insideAsync = async[parent.name];
-		let length = 0;
+		if (this.getGroup('async')[parent.name]) {
+			let
+				length = 0;
 
-		$C(parent.children).forEach(({name}) => {
-			if (this.getGroup('callback')[name]) {
-				length++;
-			}
+			$C(parent.children).forEach(({name}) => {
+				if (this.getGroup('callback')[name]) {
+					length++;
+				}
 
-			if (length > 1) {
-				return false;
-			}
-		});
+				if (length > 1) {
+					return false;
+				}
+			});
 
-		this.append(ws`
-			${async[parent.name] && length > 1 ? ', ' : ''}(function (${this.declCallbackArgs(parts)}) {
-		`);
+			prfx = length ? ',' : '';
+
+		} else if (this.getGroup('microTemplate')[parent.name]) {
+			prfx = `__RESULT__ = new Data`;
+		}
+
+		this.append(`${prfx}(function (${this.declCallbackArgs(parts)}) {`);
 	},
 
 	function () {
-		this.append(`})${this.structure.params.insideAsync ? '' : ';'}`);
+		this.append(`})${this.getGroup('async')[this.getNonLogicParent().name] ? '' : ';'}`);
 	}
 );
 
