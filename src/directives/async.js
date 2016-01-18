@@ -17,8 +17,8 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 
 		{
 			block: true,
-			children: ['callback', 'final'],
-			group: [dir, 'async', 'Async', 'series']
+			children: Snakeskin.group('callback'),
+			group: [dir, 'Async', 'async']
 		},
 
 		function (command, commandLength, type) {
@@ -26,7 +26,7 @@ $C(['parallel', 'series', 'waterfall']).forEach((dir) => {
 		},
 
 		function () {
-			this.append(']);');
+			this.append(`${this.structure.params.final ? '}' : ']'});`);
 		}
 	);
 });
@@ -36,8 +36,8 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		children: 'callback',
-		group: ['when', 'promise', 'async', 'basicAsync'],
+		children: Snakeskin.group('callback'),
+		group: ['when', 'promise', 'async'],
 		notEmpty: true
 	},
 

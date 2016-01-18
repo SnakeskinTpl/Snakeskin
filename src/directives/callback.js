@@ -37,7 +37,7 @@ Snakeskin.addDirective(
 		let length = 0;
 
 		$C(parent.children).forEach(({name}) => {
-			if (name === 'callback') {
+			if (this.getGroup('callback')[name]) {
 				length++;
 			}
 
@@ -60,10 +60,8 @@ Snakeskin.addDirective(
 	'final',
 
 	{
-		ancestorsWhitelist: Snakeskin.group('series'),
-		block: true,
-		group: ['callback', 'function', 'basicAsync'],
-		with: ['parallel', 'series', 'waterfall']
+		group: ['final', 'function', 'basicAsync'],
+		with: Snakeskin.group('Async')
 	},
 
 	function (command) {
@@ -74,11 +72,7 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
+		this.structure.params.final = true;
 		this.append(`], function (${this.declCallbackArgs(parts)}) {`);
-	},
-
-	function () {
-		this.append('});');
-		this.endDir();
 	}
 );
