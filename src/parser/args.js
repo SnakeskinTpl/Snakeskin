@@ -25,7 +25,7 @@ import { $args, $argsRes, $consts } from '../consts/cache';
  */
 Parser.prototype.declCallbackArgs = function (parts) {
 	const
-		args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').split(/\s*,\s*/);
+		args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').trim().split(/\s*,\s*/);
 
 	let
 		scope;

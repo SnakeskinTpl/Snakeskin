@@ -9,7 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { q } from './index';
 import { ws } from '../helpers/string';
 import { escapeBackslashes, escapeEOLs } from '../helpers/escape';
 
@@ -17,17 +16,13 @@ Snakeskin.addDirective(
 	'include',
 
 	{
+		ancestorsBlacklist: [Snakeskin.group('head'), Snakeskin.group('template')],
 		deferInit: true,
+		group: 'include',
 		notEmpty: true
 	},
 
 	function (command) {
-		if (this.tplName || this.hasParent('head')) {
-			return this.error(
-				`the directive "${this.name}" can't be used within directives ${q(this.getGroupList('template').concat('head'))}`
-			);
-		}
-
 		this.startInlineDir(null, {
 			from: this.result.length
 		});

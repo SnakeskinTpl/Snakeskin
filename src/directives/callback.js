@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
 
 Snakeskin.addDirective(
 	'callback',
@@ -29,7 +30,8 @@ Snakeskin.addDirective(
 		}
 
 		let
-			prfx = '';
+			prfx = '',
+			pstfx = '';
 
 		const
 			parent = this.getNonLogicParent();
@@ -52,13 +54,41 @@ Snakeskin.addDirective(
 
 		} else if (this.getGroup('microTemplate')[parent.name]) {
 			prfx = `__RESULT__ = new Data`;
+			pstfx = ws`
+				var __RESULT__ = ${this.getResultDecl()};
+
+				function getTplResult(opt_clear) {
+					var res = ${this.getReturnResultDecl()};
+
+					if (opt_clear) {
+						__RESULT__ = ${this.getResultDecl()};
+					}
+
+					return res;
+				}
+
+				function clearTplResult() {
+					__RESULT__ = ${this.getResultDecl()};
+				}
+			`;
 		}
 
-		this.append(`${prfx}(function (${this.declCallbackArgs(parts)}) {`);
+		this.append(`${prfx}(function (${this.declCallbackArgs(parts)}) {${pstfx}`);
 	},
 
 	function () {
-		this.append(`})${this.getGroup('async')[this.getNonLogicParent().name] ? '' : ';'}`);
+		const
+			parent = this.getNonLogicParent().name;
+
+		if (this.getGroup('async')[parent]) {
+			this.append('})');
+
+		} else if (this.getGroup('microTemplate')[parent]) {
+			this.append(`return ${this.getReturnResultDecl()}; });`);
+
+		} else {
+			this.append('});');
+		}
 	}
 );
 
