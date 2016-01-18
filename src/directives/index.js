@@ -49,7 +49,7 @@ export const
 
 // jscs:enable jsDoc
 
-const
+export const
 	gPrfx = '@';
 
 /**
@@ -263,10 +263,16 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				}
 			});
 
-			plainCache[key] = {};
-			$C(map).forEach((el) =>
-				$C(el).forEach((el) =>
-					plainCache[key][el] = true));
+			if (key[0] !== gPrfx) {
+				plainCache[key] = {};
+				$C(map).forEach((el) =>
+					$C(el).forEach((el) => {
+						if (el[0] !== gPrfx) {
+							plainCache[key][el] = true;
+						}
+					})
+				);
+			}
 		});
 	});
 

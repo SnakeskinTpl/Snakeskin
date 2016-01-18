@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { gPrfx } from '../directives/index';
 import { clone } from '../helpers/object';
 import { $dirGroups } from '../consts/cache';
 
@@ -35,8 +36,12 @@ Parser.prototype.getGroup = function (names) {
 		map = {};
 
 	$C(arguments).forEach((name) =>
-		$C($dirGroups[name]).forEach((el, key) =>
-			map[key] = true));
+		$C($dirGroups[name]).forEach((el, key) => {
+			if (key !== gPrfx) {
+				map[key] = true;
+			}
+		})
+	);
 
 	cache[cacheKey] = clone(map);
 	return map;
