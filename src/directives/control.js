@@ -21,7 +21,21 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			inside = this.hasParent(this.getGroup('cycle', 'iterator', 'async'));
+			valid = ['cycle', 'iterator', 'async'],
+			all = valid.concat('block', 'microTemplate');
+
+		const
+			inside = this.hasParent(this.getGroup(...valid)),
+			parent = this.hasParent(this.getGroup(...all), true);
+
+		if (
+			parent.name === 'block' && parent.params.args ||
+			this.getGroup('microTemplate')[parent.name] &&
+			this.getGroup('callback')[this.hasParent(this.getGroup(...valid, 'callback'))]
+
+		) {
+			return this.error(`the directive "${this.name}" can't be used within the "${parent.name}"`);
+		}
 
 		if (this.getGroup('cycle')[inside]) {
 			this.append('break;');
@@ -59,7 +73,21 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			inside = this.hasParent(this.getGroup('cycle', 'iterator', 'async'));
+			valid = ['cycle', 'iterator', 'async'],
+			all = valid.concat('block', 'microTemplate');
+
+		const
+			inside = this.hasParent(this.getGroup(...valid)),
+			parent = this.hasParent(this.getGroup(...all), true);
+
+		if (
+			parent.name === 'block' && parent.params.args ||
+			this.getGroup('microTemplate')[parent.name] &&
+			this.getGroup('callback')[this.hasParent(this.getGroup(...valid, 'callback'))]
+
+		) {
+			return this.error(`the directive "${this.name}" can't be used within the "${parent.name}"`);
+		}
 
 		if (this.getGroup('cycle')[inside]) {
 			this.append('continue;');
