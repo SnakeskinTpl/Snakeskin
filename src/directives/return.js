@@ -21,55 +21,74 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			fnParent = this.hasParent(this.getGroup('function', 'async')),
+			valid = ['function', 'async'],
+			all = valid.concat('block', 'microTemplate');
+
+		const
+			inside = this.hasParent(this.getGroup(...valid, 'function')),
 			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl();
 
-		if (fnParent) {
-			let str = '';
-			const def = ws`
-				__RETURN__ = true;
-				__RETURN_VAL__ = ${val};
-			`;
+		const def = ws`
+			__RETURN__ = true;
+			__RETURN_VAL__ = ${val};
+		`;
 
-			let asyncParent;
-			if (this.getGroup('callback')[fnParent]) {
-				asyncParent = this.hasParent(this.getGroup('async'));
-			}
+		let
+			parent = this.hasParent(this.getGroup(...all), true);
 
-			if (asyncParent) {
-				if (this.getGroup('Async')[asyncParent]) {
-					str += def;
+		if (this.getGroup('callback')[parent.name]) {
+			parent = this._has(this.getGroup(...all), parent.parent, true);
+		}
 
-					if (this.getGroup('waterfall')[asyncParent]) {
-						str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
+		if (
+			!inside ||
+			parent.name === 'block' && parent.params.args ||
+			this.getGroup('microTemplate')[parent.name] &&
+			this.getGroup('callback')[this.hasParent(this.getGroup(...valid, 'callback'))]
 
-					} else {
-						str += ws`
-							if (typeof arguments[0] === 'function') {
-								return arguments[0](__RETURN_VAL__);
-							}
+		) {
+			this.append(`return ${val};`);
+			return;
+		}
 
-							return false;
-						`;
-					}
+		let
+			str = '',
+			asyncParent;
+
+		if (this.getGroup('callback')[inside]) {
+			asyncParent = this.hasParent(this.getGroup('async'));
+		}
+
+		if (asyncParent) {
+			if (this.getGroup('Async')[asyncParent]) {
+				str += def;
+
+				if (this.getGroup('waterfall')[asyncParent]) {
+					str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 				} else {
-					str += 'return false;';
+					str += ws`
+						if (typeof arguments[0] === 'function') {
+							return arguments[0](__RETURN_VAL__);
+						}
+
+						return false;
+					`;
 				}
 
 			} else {
-				if (!this.getGroup('async')[fnParent]) {
-					str += def;
-					this.deferReturn = 1;
-				}
-
 				str += 'return false;';
 			}
 
-			this.append(str);
-
 		} else {
-			this.append(`return ${val};`);
+			if (!this.getGroup('async')[inside]) {
+				str += def;
+				this.deferReturn = 1;
+			}
+
+			str += 'return false;';
 		}
+
+		this.append(str);
 	}
 );
