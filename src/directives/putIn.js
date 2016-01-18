@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['putIn', 'void'],
+		group: ['putIn', 'microTemplate', 'void'],
 		shorthands: {'*': 'putIn ', '/*': 'end putIn'},
 		trim: true
 	},
@@ -32,75 +32,68 @@ Snakeskin.addDirective(
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
 			pos = this.out('__CALL_POS__', {unsafe: true});
 
-		switch (parent.name) {
-			case 'call':
-				parent.params.chunks++;
-				this.append(ws`
-					if (!${pos} && __LENGTH__(__RESULT__)) {
-						${tmp}.push(${this.getReturnResultDecl()});
-						__RESULT__ = ${this.getResultDecl()};
-					}
-
-					${pos}++;
-				`);
-
-				break;
-
-			case 'target':
-				this.append(ws`
-					if (!${pos} && __LENGTH__(__RESULT__)) {
-						${tmp}.push({
-							key: '${ref}',
-							value: Unsafe(${this.getReturnResultDecl()})
-						});
-
-						__RESULT__ = ${this.getResultDecl()};
-					}
-
-					${pos}++;
-				`);
-
-				break;
-
-			default:
-				this.append(ws`
-					${this.declVars(`__CALL_CACHE__ = ${this.getReturnResultDecl()}`, {sys: true})}
+		if (this.getGroup('call')[parent.name]) {
+			parent.params.chunks++;
+			this.append(ws`
+				if (!${pos} && __LENGTH__(__RESULT__)) {
+					${tmp}.push(${this.getReturnResultDecl()});
 					__RESULT__ = ${this.getResultDecl()};
-				`);
-		}
-	},
+				}
 
-	function () {
-		const
-			{ref} = this.structure.params,
-			tmp = this.out('__CALL_TMP__', {unsafe: true});
+				${pos}++;
+			`);
 
-		switch (this.getNonLogicParent().name) {
-			case 'call':
-				this.append(ws`
-					${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
-					__RESULT__ = ${this.getResultDecl()};
-				`);
-
-				break;
-
-			case 'target':
-				this.append(ws`
+		} else if (this.getGroup('target')[parent.name]) {
+			this.append(ws`
+				if (!${pos} && __LENGTH__(__RESULT__)) {
 					${tmp}.push({
 						key: '${ref}',
 						value: Unsafe(${this.getReturnResultDecl()})
 					});
 
 					__RESULT__ = ${this.getResultDecl()};
-				`);
+				}
 
-				break;
+				${pos}++;
+			`);
 
-			default:
-				this.append(ws`
-					${this.out(`${ref} = ${this.getReturnResultDecl()}`, {unsafe: true})};
-					__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
-				`);
+		} else {
+			this.append(ws`
+				${this.declVars(`__CALL_CACHE__ = ${this.getReturnResultDecl()}`, {sys: true})}
+				__RESULT__ = ${this.getResultDecl()};
+			`);
+		}
+	},
+
+	function () {
+		const
+			{ref} = this.structure.params;
+
+		const
+			tmp = this.out('__CALL_TMP__', {unsafe: true}),
+			parent = this.getNonLogicParent().name;
+
+		if (this.getGroup('call')[parent]) {
+			this.append(ws`
+				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
+				__RESULT__ = ${this.getResultDecl()};
+			`);
+
+		} else if (this.getGroup('target')[parent]) {
+			this.append(ws`
+				${tmp}.push({
+					key: '${ref}',
+					value: Unsafe(${this.getReturnResultDecl()})
+				});
+
+				__RESULT__ = ${this.getResultDecl()};
+			`);
+
+		} else {
+			this.append(ws`
+				${this.out(`${ref} = ${this.getReturnResultDecl()}`, {unsafe: true})};
+				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+			`);
 		}
 	}
 

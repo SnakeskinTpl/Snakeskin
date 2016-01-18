@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['target', 'void', 'var'],
+		group: ['target', 'microTemplate', 'var', 'void'],
 		trim: true
 	},
 
@@ -77,15 +77,11 @@ Snakeskin.addDirective(
 			});
 		`);
 
-		switch (this.getNonLogicParent().name) {
-			case 'call':
-			case 'putIn':
-			case 'target':
-				this.append(`__RESULT__ = new Data(${ref});`);
-				break;
+		if (this.getGroup('microTemplate')[this.getNonLogicParent().name]) {
+			this.append(`__RESULT__ = new Data(${ref});`);
 
-			default:
-				this.append(`__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};`);
+		} else {
+			this.append(`__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};`);
 		}
 	}
 

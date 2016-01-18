@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['call', 'output'],
+		group: ['call', 'microTemplate', 'output'],
 		shorthands: {'+=': 'call ', '/+': 'end call'}
 	},
 
@@ -31,15 +31,11 @@ Snakeskin.addDirective(
 			const
 				out = this.out(`${command.slice(0, -1)};`, {unsafe: true});
 
-			switch (this.getNonLogicParent().name) {
-				case 'call':
-				case 'putIn':
-				case 'target':
-					this.append(`__RESULT__ = Unsafe(${out});`);
-					break;
+			if (this.getGroup('microTemplate')[this.getNonLogicParent().name]) {
+				this.append(`__RESULT__ = Unsafe(${out});`);
 
-				default:
-					this.append(this.wrap(out));
+			} else {
+				this.append(this.wrap(out));
 			}
 
 			return;
@@ -121,18 +117,14 @@ Snakeskin.addDirective(
 			str = this.out(command, {unsafe: true});
 		}
 
-		switch (this.getNonLogicParent().name) {
-			case 'call':
-			case 'putIn':
-			case 'target':
-				this.append(`__RESULT__ = Unsafe(${str});`);
-				break;
+		if (this.getGroup('microTemplate')[this.getNonLogicParent().name]) {
+			this.append(`__RESULT__ = Unsafe(${str});`);
 
-			default:
-				this.append(ws`
-					__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
-					${this.wrap(str)}
-				`);
+		} else {
+			this.append(ws`
+				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+				${this.wrap(str)}
+			`);
 		}
 	}
 
