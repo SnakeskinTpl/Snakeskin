@@ -34,7 +34,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['if', 'unless', 'logic'],
+		group: ['unless', 'if', 'logic'],
 		notEmpty: true
 	},
 
