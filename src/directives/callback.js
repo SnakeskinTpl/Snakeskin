@@ -78,7 +78,9 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
+		this.structure.chain = false;
 		this.structure.params.final = true;
+
 		this.append(`], function (${this.declCallbackArgs(parts)}) {`);
 	}
 );

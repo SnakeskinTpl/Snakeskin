@@ -302,7 +302,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		const
 			dirName = this.name = this.getDirName(name),
-			prevDirName = this.getDirName(structure.name),
+			prevDirName = structure.name,
 			ignore = $dirGroups['ignore'][dirName];
 
 		switch (p.placement) {
@@ -351,7 +351,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			);
 		}
 
-		if (p.with && (!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName])) {
+		const
+			prevChain = $dirChain[prevDirName] && $dirChain[prevDirName][dirName];
+
+		if (p.with && !prevChain) {
 			const groups = $C([].concat(p.with)).reduce((arr, el) =>
 				arr.concat(el[0] === gPrfx ? this.getGroupList(el.slice(1)) : el), []);
 
@@ -410,7 +413,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
 		}
 
-		if (structure.chain && !ignore && !this.isLogic()) {
+		if (structure.chain && !prevChain && !ignore && !this.isLogic()) {
 			const
 				parent = this.getNonLogicParent().name;
 
