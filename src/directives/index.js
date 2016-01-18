@@ -263,16 +263,14 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				}
 			});
 
-			if (key[0] !== GROUP) {
-				plainCache[key] = {};
-				$C(map).forEach((el) =>
-					$C(el).forEach((el) => {
-						if (el[0] !== GROUP) {
-							plainCache[key][el] = true;
-						}
-					})
-				);
-			}
+			plainCache[key] = {};
+			$C(map).forEach((el) =>
+				$C(el).forEach((el) => {
+					if (el[0] !== GROUP) {
+						plainCache[key][el] = true;
+					}
+				})
+			);
 		});
 	});
 
