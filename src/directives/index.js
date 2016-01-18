@@ -50,7 +50,7 @@ export const
 // jscs:enable jsDoc
 
 export const
-	gPrfx = '@';
+	GROUP = '@';
 
 /**
  * Initialises the specified group
@@ -59,7 +59,7 @@ export const
  * @return {string}
  */
 Snakeskin.group = function (name) {
-	return gPrfx + name;
+	return GROUP + name;
 };
 
 const
@@ -190,8 +190,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	]).forEach(({cache, val}) => {
 		$C(concat(val)).forEach((key) => {
-			if (cache === $dirGroups && key[0] === gPrfx) {
-				throw new Error(`Invalid group name "${key}" (group name can't begin with "${gPrfx}"`);
+			if (cache === $dirGroups && key[0] === GROUP) {
+				throw new Error(`Invalid group name "${key}" (group name can't begin with "${GROUP}"`);
 			}
 
 			cache[key] = cache[key] || {};
@@ -201,7 +201,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	$C([$dirChain, $dirParents, $dirEnd]).forEach((cache) => {
 		$C(cache).forEach((el, key) => {
-			if (key[0] !== gPrfx) {
+			if (key[0] !== GROUP) {
 				return;
 			}
 
@@ -230,7 +230,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	$C([$dirParents, $dirEnd]).forEach((cache) => {
 		$C(cache).forEach((dir) => {
 			$C(dir).forEach((el, key) => {
-				if (key[0] !== gPrfx) {
+				if (key[0] !== GROUP) {
 					return;
 				}
 
@@ -253,7 +253,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		$C(cache).forEach((map, key) => {
 			$C(map).forEach((el, key) => {
-				if (key[0] !== gPrfx) {
+				if (key[0] !== GROUP) {
 					return;
 				}
 
@@ -263,11 +263,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				}
 			});
 
-			if (key[0] !== gPrfx) {
+			if (key[0] !== GROUP) {
 				plainCache[key] = {};
 				$C(map).forEach((el) =>
 					$C(el).forEach((el) => {
-						if (el[0] !== gPrfx) {
+						if (el[0] !== GROUP) {
 							plainCache[key][el] = true;
 						}
 					})
@@ -362,7 +362,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (p.with && !prevChain) {
 			const groups = $C([].concat(p.with)).reduce((arr, el) =>
-				arr.concat(el[0] === gPrfx ? this.getGroupList(el.slice(1)) : el), []);
+				arr.concat(el[0] === GROUP ? this.getGroupList(el.slice(1)) : el), []);
 
 			return this.error(`the directive "${dirName}" can be used only with directives ${q(groups)}`);
 		}
