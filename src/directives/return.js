@@ -26,7 +26,7 @@ Snakeskin.addDirective(
 
 		const
 			cb = this.getGroup('callback'),
-			inside = this.hasParent(this.getGroup(...valid, 'function')),
+			inside = this.hasParent(this.getGroup(...valid)),
 			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl();
 
 		const def = ws`
@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 		if (
 			!inside ||
 			parent.name === 'block' && parent.params.args ||
-			this.getGroup('microTemplate')[parent.name] && cb[this.hasParent(this.getGroup(...valid, 'callback'))]
+			cb[inside] && this.getGroup('microTemplate')[parent.name]
 
 		) {
 			this.append(`return ${val};`);

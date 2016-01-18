@@ -42,7 +42,13 @@ Snakeskin.addDirective(
 			const
 				async = this.getGroup('async');
 
-			if (this.getGroup('function', 'async')[name]) {
+			if (
+				this.getGroup('function', 'async')[name] && (
+					this.getGroup('callback')[name] ?
+						!this.getGroup('microTemplate')[this.hasParent(this.getGroup('microTemplate', 'async'))] : true
+				)
+
+			) {
 				const
 					parent = this.getNonLogicParent().name;
 
