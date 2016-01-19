@@ -147,15 +147,15 @@ export default class Parser {
 
 		/**
 		 * The name of the active directive
-		 * @type {?string}
+		 * @type {(string|undefined)}
 		 */
-		this.name = null;
+		this.name = undefined;
 
 		/**
 		 * If is true, then the active directive is inline
-		 * @type {?boolean}
+		 * @type {boolean}
 		 */
-		this.inline = null;
+		this.inline = false;
 
 		/**
 		 * If is true, then the active directive has a text type
@@ -165,15 +165,15 @@ export default class Parser {
 
 		/**
 		 * The name of the active template
-		 * @type {?string}
+		 * @type {(string|undefined)}
 		 */
-		this.tplName = null;
+		this.tplName = undefined;
 
 		/**
 		 * The parent name of the active template
-		 * @type {?string}
+		 * @type {(string|undefined)}
 		 */
-		this.parentTplName = null;
+		this.parentTplName = undefined;
 
 		/**
 		 * The document type
@@ -183,9 +183,9 @@ export default class Parser {
 
 		/**
 		 * If is true, then the active template is generator
-		 * @type {?boolean}
+		 * @type {boolean}
 		 */
-		this.generator = null;
+		this.generator = false;
 
 		/**
 		 * The number of deferred return calls
@@ -201,9 +201,9 @@ export default class Parser {
 
 		/**
 		 * The number of a line, where the active template was declared
-		 * @type {?number}
+		 * @type {(number|undefined)}
 		 */
-		this.startTemplateLine = null;
+		this.startTemplateLine = undefined;
 
 		/**
 		 * The name of the parent BEM class
@@ -237,9 +237,9 @@ export default class Parser {
 
 		/**
 		 * The name of the active outer prototype / block
-		 * @type {?string}
+		 * @type {(string|undefined)}
 		 */
-		this.outerLink = null;
+		this.outerLink = undefined;
 
 		// Whitespace
 		// >>>

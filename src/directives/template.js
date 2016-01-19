@@ -230,8 +230,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
 					}
 
-					parentTplName =
-						this.parentTplName = null;
+					parentTplName = this.parentTplName = undefined;
 				}
 			}
 
@@ -380,9 +379,9 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 		function (command, commandLength) {
 			const
-				{tplName} = this;
+				tplName = String(this.tplName),
+				diff = this.getDiff(commandLength);
 
-			const diff = this.getDiff(commandLength);
 			$cache[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
 			$templates[tplName] = this.blockTable;
 
@@ -398,7 +397,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				this.initTemplateCache(tplName);
 				this.startDir(this.structure.name);
 				this.i = this.startTemplateI - 1;
-				this.parentTplName = null;
+				this.parentTplName = undefined;
 				this.blockTable = {};
 				this.vars[tplName] = {};
 				return;
@@ -426,7 +425,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			}
 
 			this.canWrite = true;
-			this.tplName = null;
+			this.tplName = undefined;
 			delete this.info.template;
 
 			if (this.scope.length) {

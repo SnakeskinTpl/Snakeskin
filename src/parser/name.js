@@ -18,11 +18,11 @@ import { IS_NODE } from '../consts/hacks';
 /**
  * Returns a real directive name
  *
- * @param {?string} name - source name
- * @return {?string}
+ * @param {string} name - source name
+ * @return {string}
  */
 Parser.prototype.getDirName = function (name) {
-	return $dirNameAliases[name] || name;
+	return $dirNameAliases[name];
 };
 
 /**

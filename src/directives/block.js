@@ -246,9 +246,7 @@ Snakeskin.addDirective(
 				${s}__cutLine__${e}
 			`;
 
-			this.outerLink = null;
-			this.tplName = null;
-
+			this.outerLink = this.tplName = undefined;
 			return;
 		}
 

@@ -841,7 +841,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					parser.save(applyDefEscape(el));
 				}
 
-				parser.inline = null;
+				parser.inline = false;
 				parser.structure = parser.structure.parent;
 			}
 
