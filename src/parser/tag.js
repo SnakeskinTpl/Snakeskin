@@ -14,6 +14,9 @@ import { ws } from '../helpers/string';
 import { classRef } from '../consts/regs';
 import { MICRO_TEMPLATE, RIGHT_BOUND, FILTER } from '../consts/literals';
 
+export const
+	defaultTag = 'div';
+
 /**
  * Returns string declaration of an opening tag for the specified XML tag
  *
@@ -40,7 +43,7 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
  */
 Parser.prototype.getXMLTagDeclStart = function (tag) {
 	let
-		str = this.declVars(`__TAG__ = '${tag}'`, {sys: true});
+		str = this.declVars(`__TAG__ = ('${tag}').trim() || '${defaultTag}'`, {sys: true});
 
 	const
 		link = this.out(`__TAG__`, {unsafe: true});

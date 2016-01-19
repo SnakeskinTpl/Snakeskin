@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Snakeskin from '../core';
+import { defaultTag } from '../parser/tag';
 import { emptyCommandParams } from '../consts/regs';
 
 Snakeskin.addDirective(
@@ -33,10 +34,10 @@ Snakeskin.addDirective(
 		});
 
 		if (command) {
-			command = command.replace(emptyCommandParams, 'div $1');
+			command = command.replace(emptyCommandParams, `${defaultTag} $1`);
 
 		} else {
-			command = 'div';
+			command = defaultTag;
 		}
 
 		const
