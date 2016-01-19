@@ -135,17 +135,21 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 					__RESULT__ =
 						${this.out('__CALL_CACHE__', {unsafe: true})};
 
-					Snakeskin.setAttribute(
-						${this.out(`__NODE__`, {unsafe: true})},
-						${inlineTag},
-						${this.out('__CALL_TMP__', {unsafe: true})}
-					);
+					if (${inlineTag} in __ATTR_CACHE__ === false) {
+						Snakeskin.setAttribute(
+							${this.out(`__NODE__`, {unsafe: true})},
+							${inlineTag},
+							${this.out('__CALL_TMP__', {unsafe: true})}
+						);
+					}
 
 				} else if (${!opt_inline}) {
 					__RESULT__.pop();
 					$0 = __RESULT__[__RESULT__.length - 1];
 				}
 			}
+
+			__ATTR_CACHE__ = undefined;
 		`;
 	}
 
@@ -157,12 +161,20 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 				__RESULT__ =
 						${this.out('__CALL_CACHE__', {unsafe: true})};
 
-				${this.wrap(`' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"${this.doctype === 'xml' ? '/' : ''}>'`)}
+				if (${inlineTag} in __ATTR_CACHE__ === false) {
+					${this.wrap(ws`
+						' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"'
+					`)}
+				}
+
+				${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
 
 			} else if (${!opt_inline}) {
 				${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
 			}
 		}
+
+		__ATTR_CACHE__ = undefined;
 	`;
 };
 

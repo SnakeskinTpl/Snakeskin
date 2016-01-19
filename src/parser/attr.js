@@ -72,7 +72,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 			});
 		}
 
-		__ATTR_CACHE__ = __ATTR_CONCAT_MAP__ = undefined;
+		__ATTR_CONCAT_MAP__ = undefined;
 	`;
 };
 
