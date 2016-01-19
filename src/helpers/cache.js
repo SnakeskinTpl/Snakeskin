@@ -104,7 +104,6 @@ export function saveIntoFnCache(key, code, params, ctx) {
 		return;
 	}
 
-	ctx['init'](Snakeskin);
 	if (!key || !(params.cache || $globalCache[key])) {
 		return;
 	}

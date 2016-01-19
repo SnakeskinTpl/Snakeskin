@@ -11,173 +11,54 @@
 global.Snakeskin = require('../snakeskin');
 
 var
+	$C = require('collection.js').$C;
+
+var
 	program = require('commander'),
 	beautify = require('js-beautify'),
 	monocle = require('monocle')();
 
 var
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	mkdirp = require('mkdirp'),
+	exists = require('exists-sync');
 
 program
 	.version(Snakeskin.VERSION.join('.'))
 
 	.usage('[options] [dir|file ...]')
-	.option('-p, --params [src]', 'Set an options object or a path to an options file')
+	.option('-p, --params [src]', 'compile parameters or a path to a file with parameters')
 
-	.option('-s, --source [src]', 'Set a path to a template file or a directory')
-	.option('-f, --file [src]', 'Set a path to a template file (meta-information)')
-	.option('-m, --mask [mask]', 'Set a mask for template files (RegExp)')
-	.option('-w, --watch', 'Watch files for changes and automatically recompile')
+	.option('-s, --source [src]', 'path to the template file | template directory')
+	.option('-f, --file [src]', 'path to the template file (meta-information)')
+	.option('-m, --mask [mask]', 'mask for template files (RegExp)')
+	.option('-w, --watch', 'watch files for changes and automatically recompile')
 
-	.option('-o, --output [src]', 'Set a path to a file to save')
-	.option('--extname [ext]', 'Set a file extension for a files saving (if "output" is a directory)')
-	.option('--exports [type]', 'Set an export type')
+	.option('-o, --output [src]', 'path to the output file to save')
+	.option('--extname [ext]', 'file extension for output files (if "output" is a directory)')
 
-	.option('-e, --exec', 'Execute the compiled template')
-	.option('-d, --data [src]', 'Set a path to a data file or a data object')
-	.option('-t, --tpl [name]', 'Set a name of the main template')
+	.option('-e, --exec', 'execute the compiled template')
+	.option('-d, --data [src]', 'data object or a path to the data file for executed templates')
+	.option('-t, --tpl [name]', 'name of the main template')
 
-	.option('--disable-localization', 'Disable support for localization')
-	.option('--i18n-fn [name]', 'Set a name of the i18n function')
-	.option('--language [src]', 'Set a localization object or a path to a localization file')
-	.option('--words [src]', 'Set a path to a localization file to save')
-
-	.option('--disable-use-strict', 'Disable the \'use strict\'; mode')
-	.option('--bem-filter [name]', 'Set a name of the bem filter')
-	.option('--line-separator [char]', 'Set a newline character (eol)')
-	.option('--tolerate-whitespace', 'Tolerate whitespaces in the templates')
-	.option('--ignore', 'Set a RegExp for ignoring whitespaces')
-	.option('--auto-replace', 'Enable support for macros')
-	.option('--macros [src]', 'Set a macros object or a path to a macros file')
-
-	.option('--doctype [type]', 'Set using doctype: xml (by default) or html')
-	.option('--inline-iterators', 'Set that all forEach and forIn iterators will be rendered as loops')
-	.option('--disable-escape-output', 'Disable the html filter by default')
-	.option('--disable-replace-undef', 'Disable the undef filter by default')
-
-	.option('--render-as [mode]', 'Render all templates as "interface" or "placeholder"')
-	.option('--render-mode [mode]', 'Render all templates in a mode: stringConcat, stringBuffer, dom')
-
-	.option('--pretty-print', 'Set formatting output')
 	.parse(process.argv);
 
-var params = Snakeskin.toObj(program['params']) || {};
-
-if (params instanceof Object === false) {
-	params = {};
-}
-
-params.doctype = 'doctype' in program ?
-	program['doctype'] : params.doctype;
-
-params.exports = 'exports' in program ?
-	program['exports'] : params.exports;
-
-params.localization = 'disableLocalization' in program ?
-	!program['disableLocalization'] : params.localization;
-
-params.i18nFn = 'i18nFn' in program ?
-	program['i18nFn'] : params.i18nFn;
-
-params.language = 'language' in program ?
-	program['language'] : params.language;
-
-params.words = 'words' in program ?
-	program['words'] : params.words;
-
-params.renderAs = 'renderAs' in program ?
-	program['renderAs'] : params.renderAs;
-
-params.renderMode = 'renderMode' in program ?
-	program['renderMode'] : params.renderMode;
-
-params.inlineIterators = 'inlineIterators' in program ?
-	program['inlineIterators'] : params.inlineIterators;
-
-params.replaceUndef = 'disableReplaceUndef' in program ?
-	!program['disableReplaceUndef'] : params.replaceUndef;
-
-params.escapeOutput = 'disableEscapeOutput' in program ?
-	!program['disableEscapeOutput'] : params.escapeOutput;
-
-params.prettyPrint = 'prettyPrint' in program ?
-	program['prettyPrint'] : params.prettyPrint;
-
-params.useStrict = 'disableUseStrict' in program ?
-	!program['disableUseStrict'] : params.useStrict;
-
-params.bemFilter = 'bemFilter' in program ?
-	program['bemFilter'] : params.bemFilter;
-
-params.lineSeparator = 'lineSeparator' in program ?
-	program['lineSeparator'] : params.lineSeparator;
-
-params.tolerateWhitespace = 'tolerateWhitespace' in program ?
-	program['tolerateWhitespace'] : params.tolerateWhitespace;
-
-params.ignore = 'ignore' in program ?
-	program['ignore'] : params.ignore;
-
-params.autoReplace = 'autoReplace' in program ?
-	program['autoReplace'] : params.autoReplace;
-
-params.macros = 'macros' in program ?
-	program['macros'] : params.macros;
-
-for (var key in params) {
-	if (!params.hasOwnProperty(key)) {
-		continue;
-	}
-
-	var el = params[key];
-	switch (el) {
-		case 'true':
-			el = true;
-			break;
-
-		case 'false':
-			el = false;
-			break;
-
-		case 'null':
-			el = null;
-			break;
-
-		default:
-			if (typeof el === 'string') {
-				var nm = Number(el);
-				el = isNaN(nm) ?
-					el : nm;
-			}
-	}
-
-	params[key] = el;
-}
-
-params.debug = {};
-params.cache = false;
+var
+	params = $C.extend(false, {}, Snakeskin.toObj(program['params']), {debug: {}, cache: false}),
+	prettyPrint = params.prettyPrint,
+	language = params.language,
+	words = params.words;
 
 var
 	include = {},
-	fMap = {},
-	watch = program['watch'];
-
-var
-	prettyPrint = params.prettyPrint,
-	language = params.language,
-	macros = params.macros;
+	fMap = {};
 
 var
 	exec = program['exec'],
 	tplData = program['data'],
-	mainTpl = program['tpl'];
-
-var words = params.words;
-
-if (words) {
-	params.words = {};
-}
+	mainTpl = program['tpl'],
+	watch = program['watch'];
 
 var
 	args = program['args'],
@@ -190,30 +71,20 @@ var
 if (!file && args.length) {
 	input = args.join(' ');
 
-	if (fs.existsSync(input)) {
+	if (exists(input)) {
 		file = input;
 		input = false;
 	}
 }
 
-var calls = {};
+var
+	calls = {},
+	root = '';
 
-function testDir(src) {
-	src = path.normalize(path.resolve(src));
-	(path.extname(src) ? path.dirname(src) : src).split(path.sep).forEach(function (el, i, data) {
-		var src = data.slice(0, i + 1).join(path.sep);
-
-		if (src && !fs.existsSync(src)) {
-			fs.mkdirSync(src);
-		}
-	});
-}
-
-var root = '';
 function action(data, file) {
 	console.time('Time');
-
 	file = file || program['file'] || '';
+
 	var
 		tpls = {},
 		fileName = '';
@@ -236,17 +107,13 @@ function action(data, file) {
 	}
 
 	function load(val) {
-		val = pathTpl(val);
-		var tmp = val;
+		var tmp = val = pathTpl(val);
+		val = path.normalize(path.resolve(val));
 
-		val = path.normalize(
-			path.resolve(val)
-		);
-
-		if (fs.existsSync(val) && fileName && fs.statSync(val).isDirectory()) {
+		if (fileName && exists(val) && fs.statSync(val).isDirectory()) {
 			tmp = path.join(val, fileName) + '.js';
 
-			if (!fs.existsSync(tmp)) {
+			if (!exists(tmp)) {
 				tmp += 'on';
 			}
 		}
@@ -263,10 +130,6 @@ function action(data, file) {
 		params.language = load(language);
 	}
 
-	if (macros) {
-		params.macros = load(macros);
-	}
-
 	function line() {
 		console.log(new Array(80).join('~'));
 	}
@@ -274,27 +137,33 @@ function action(data, file) {
 	function success() {
 		line();
 		console.log(new Date().toString());
-		console.log('File "' + file + '" has been successfully compiled "' + outFile + '".');
+		console.log('File "' + file + '" was successfully compiled -> "' + outFile + '".');
 		console.timeEnd('Time');
 		line();
 	}
 
-	var outFile = out,
+	var
+		outFile = out,
 		execTpl = tplData || mainTpl || exec;
 
 	if (outFile) {
 		outFile = path.normalize(path.resolve(pathTpl(outFile)));
 		testDir(outFile);
 
-		if (fs.existsSync(outFile) && fs.statSync(outFile).isDirectory()) {
+		if (exists(outFile) && fs.statSync(outFile).isDirectory()) {
 			outFile = path.join(outFile, path.relative(root, path.dirname(file)), fileName) +
 				(program['extname'] || (execTpl ? '.html' : '.js'));
 
 			testDir(outFile);
 		}
 
-		if (file && (!words || fs.existsSync(words)) && params.cache !== false) {
-			var includes = Snakeskin.check(file, outFile, Snakeskin.compile(null, params, null, {cacheKey: true}), true);
+		if (file && (!words || exists(words)) && params.cache !== false) {
+			var includes = Snakeskin.check(
+				file,
+				outFile,
+				Snakeskin.compile(null, $C.extend(false, {}, params, {getCacheKey: true})),
+				true
+			);
 
 			if (includes) {
 				success();
@@ -330,28 +199,12 @@ function action(data, file) {
 		}
 	}
 
-	var toConsole = input && !program['output'] ||
-		!outFile;
+	var
+		toConsole = input && !program['output'] || !outFile;
 
 	if (res !== false) {
 		if (execTpl) {
-			var tpl;
-
-			if (mainTpl && mainTpl !== true) {
-				tpl = tpls[mainTpl];
-
-			} else {
-				var tplNames = Object.keys(tpls).filter(function (el) {
-					return el != 'init';
-				}).sort();
-
-				if (file) {
-					tpl = tpls[fileName] || tpls.main || tpls[tplNames[0]];
-
-				} else {
-					tpl = tpls.main || tpls[tplNames[0]];
-				}
-			}
+			var tpl = Snakeskin.returnMainTpl(tpls, fileName, mainTpl);
 
 			if (!tpl) {
 				console.log(new Date().toString());
@@ -364,15 +217,15 @@ function action(data, file) {
 
 			} else {
 				try {
-					var dataObj,
+					var
+						dataObj,
 						cache;
 
 					if (tplData && tplData !== true) {
 						dataObj = load(tplData);
 					}
 
-					cache =
-						res = tpl(dataObj);
+					cache = res = tpl(dataObj);
 
 					if (prettyPrint) {
 						if (toConsole) {
@@ -412,14 +265,10 @@ function action(data, file) {
 			include[file][file] = true;
 
 			if (tmp) {
-				for (var key in tmp) {
-					if (!tmp.hasOwnProperty(key)) {
-						continue;
-					}
-
+				$C(tmp).forEach(function (el, key) {
 					include[key] = include[key] || {};
 					include[key][file] = true;
-				}
+				});
 			}
 		}
 
@@ -435,6 +284,11 @@ function end() {
 		testDir(words);
 		fs.writeFileSync(words, JSON.stringify(params.words, null, '\t'));
 	}
+}
+
+function testDir(src) {
+	src = path.normalize(path.resolve(src));
+	mkdirp.sync(path.extname(src) ? path.dirname(src) : src);
 }
 
 if (!file && input == null) {
@@ -454,11 +308,11 @@ if (!file && input == null) {
 		end();
 	}).resume();
 
-	var nl = params.lineSeparator || '\n';
+	var eol = params.eol || '\n';
 	process.on('SIGINT', function () {
-		stdout.write(nl);
+		stdout.write(eol);
 		stdin.emit('end');
-		stdout.write(nl);
+		stdout.write(eol);
 		process.exit();
 	});
 
@@ -468,10 +322,7 @@ if (!file && input == null) {
 
 		var
 			isDir = fs.statSync(file).isDirectory(),
-			mask = program['mask'];
-
-		mask = mask &&
-			new RegExp(mask);
+			mask = program['mask'] && new RegExp(program['mask']);
 
 		var watchDir = function () {
 			monocle.watchDirectory({
@@ -479,7 +330,7 @@ if (!file && input == null) {
 				listener: function (f) {
 					var src = f.fullPath;
 					if (!fMap[src] &&
-						fs.existsSync(src) &&
+						exists(src) &&
 						!f.stat.isDirectory() &&
 						(mask ? mask.test(src) : path.extname(src) === '.ss')
 
@@ -487,40 +338,34 @@ if (!file && input == null) {
 						monocle.unwatchAll();
 						console.log(file);
 						action(fs.readFileSync(src), src, file);
-						wacthFiles();
+						watchFiles();
 					}
 				}
 			});
 		};
 
-		var wacthFiles = function wacthFiles() {
+		var watchFiles = function watchFiles() {
 			var files = [];
-			for (var key in include) {
-				if (!include.hasOwnProperty(key)) {
-					continue;
-				}
 
+			$C(include).forEach(function (el, key) {
 				fMap[key] = true;
 				files.push(key);
-			}
+			});
 
 			monocle.watchFiles({
 				files: files,
 				listener: function (f) {
-					var src = f.fullPath,
+					var
+						src = f.fullPath,
 						files = include[src];
 
 					if (files && !calls[src]) {
 						calls[src] = setTimeout(function () {
 							monocle.unwatchAll();
 
-							for (var key in files) {
-								if (!files.hasOwnProperty(key)) {
-									continue;
-								}
-
+							$C(files).forEach(function (el, key) {
 								if ((!mask || mask.test(key))) {
-									if (fs.existsSync(key)) {
+									if (exists(key)) {
 										action(fs.readFileSync(key), key);
 
 									} else {
@@ -528,10 +373,10 @@ if (!file && input == null) {
 										delete fMap[key];
 									}
 								}
-							}
+							});
 
 							delete calls[src];
-							wacthFiles();
+							watchFiles();
 						}, 60);
 					}
 
@@ -566,7 +411,7 @@ if (!file && input == null) {
 		}
 
 		if (watch) {
-			wacthFiles();
+			watchFiles();
 		}
 
 	} else {
