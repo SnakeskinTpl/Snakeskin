@@ -45,7 +45,12 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
-		const f = (str, global) => {
+		/**
+		 * @param {string} str
+		 * @param {?boolean=} [opt_global]
+		 * @return {string}
+		 */
+		const f = (str, opt_global) => {
 			if (!str.length) {
 				return '';
 			}
@@ -59,7 +64,7 @@ Snakeskin.addDirective(
 
 				} else {
 					arr.push(this.declVars(
-						`${parts[1] || parts[0]} = ${from}${global || parts[0] === '*' ? '' : `.${parts[1] || parts[0]}`}`
+						`${parts[1] || parts[0]} = ${from}${opt_global || parts[0] === '*' ? '' : `.${parts[1] || parts[0]}`}`
 					));
 				}
 
