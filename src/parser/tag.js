@@ -46,10 +46,20 @@ Parser.prototype.getXMLTagDeclStart = function (tag) {
 		link = this.out(`__TAG__`, {unsafe: true});
 
 	if (!this.stringResult && this.renderMode === 'dom') {
-		return `${str}$0 = new Snakeskin.Element(${link});`;
+		return ws`
+			${str}
+			if (${link} !== '?') {
+				$0 = new Snakeskin.Element(${link});
+			}
+		`;
 	}
 
-	return str + this.wrap(`'<' + ${link}`);
+	return ws`
+		${str}
+		if (${link} !== '?') {
+			${this.wrap(`'<' + ${link}`)}
+		}
+	`;
 };
 
 /**
@@ -62,35 +72,40 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 	opt_inline = Boolean(opt_inline);
 
 	const
+		link = this.out(`__TAG__`, {unsafe: true}),
 		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true});
 
 	if (!this.stringResult && this.renderMode === 'dom') {
 		return ws`
-			${this.wrap('$0')}
-			if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
-				$0 = __RESULT__[__RESULT__.length - 1];
+			if (${link} !== '?') {
+				${this.wrap('$0')}
+				if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
+					$0 = __RESULT__[__RESULT__.length - 1];
 
-			} else if (${inlineTag} && ${inlineTag} !== true) {
-				${this.declVars('__CALL_CACHE__ = __RESULT__, __NODE__ = $0', {sys: true})}
-				__RESULT__ = ${this.getResultDecl()};
-				$0 = __RESULT__[__RESULT__.length - 1];
+				} else if (${inlineTag} && ${inlineTag} !== true) {
+					${this.declVars('__CALL_CACHE__ = __RESULT__, __NODE__ = $0', {sys: true})}
+					__RESULT__ = ${this.getResultDecl()};
+					$0 = __RESULT__[__RESULT__.length - 1];
 
-			} else {
-				__RESULT__.push($0);
+				} else {
+					__RESULT__.push($0);
+				}
 			}
 		`;
 	}
 
 	return ws`
-		if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
-			${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
+		if (${link} !== '?') {
+			if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
+				${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
 
-		} else if (${inlineTag} && ${inlineTag} !== true) {
-			${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
-			__RESULT__ = ${this.getResultDecl()};
+			} else if (${inlineTag} && ${inlineTag} !== true) {
+				${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
+				__RESULT__ = ${this.getResultDecl()};
 
-		} else {
-			${this.wrap(`'>'`)}
+			} else {
+				${this.wrap(`'>'`)}
+			}
 		}
 	`;
 };
@@ -105,40 +120,45 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 	opt_inline = Boolean(opt_inline);
 
 	const
+		link = this.out(`__TAG__`, {unsafe: true}),
 		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true});
 
 	if (!this.stringResult && this.renderMode === 'dom') {
 		return ws`
-			if (${inlineTag} && ${inlineTag} !== true) {
-				${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
+			if (${link} !== '?') {
+				if (${inlineTag} && ${inlineTag} !== true) {
+					${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
 
-				__RESULT__ =
-					${this.out('__CALL_CACHE__', {unsafe: true})};
+					__RESULT__ =
+						${this.out('__CALL_CACHE__', {unsafe: true})};
 
-				Snakeskin.setAttribute(
-					${this.out(`__NODE__`, {unsafe: true})},
-					${inlineTag},
-					${this.out('__CALL_TMP__', {unsafe: true})}
-				);
+					Snakeskin.setAttribute(
+						${this.out(`__NODE__`, {unsafe: true})},
+						${inlineTag},
+						${this.out('__CALL_TMP__', {unsafe: true})}
+					);
 
-			} else if (${!opt_inline}) {
-				__RESULT__.pop();
-				$0 = __RESULT__[__RESULT__.length - 1];
+				} else if (${!opt_inline}) {
+					__RESULT__.pop();
+					$0 = __RESULT__[__RESULT__.length - 1];
+				}
 			}
 		`;
 	}
 
 	return ws`
-		if (${inlineTag} && ${inlineTag} !== true) {
-			${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
+		if (${link} !== '?') {
+			if (${inlineTag} && ${inlineTag} !== true) {
+				${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
 
-			__RESULT__ =
-					${this.out('__CALL_CACHE__', {unsafe: true})};
+				__RESULT__ =
+						${this.out('__CALL_CACHE__', {unsafe: true})};
 
-			${this.wrap(`' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"${this.doctype === 'xml' ? '/' : ''}>'`)}
+				${this.wrap(`' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"${this.doctype === 'xml' ? '/' : ''}>'`)}
 
-		} else if (${!opt_inline}) {
-			${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
+			} else if (${!opt_inline}) {
+				${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
+			}
 		}
 	`;
 };
