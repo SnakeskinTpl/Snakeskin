@@ -171,7 +171,7 @@ function action(data, file) {
 				include[file] = include[file] || {};
 				include[file][file] = true;
 
-				includes.forEach(function (key) {
+				$C(includes).forEach(function (key) {
 					include[key] = include[key] || {};
 					include[key][file] = true;
 				});
@@ -329,9 +329,9 @@ if (!file && input == null) {
 				root: file,
 				listener: function (f) {
 					var src = f.fullPath;
-					if (!fMap[src] &&
-						exists(src) &&
-						!f.stat.isDirectory() &&
+
+					if (
+						!fMap[src] && exists(src) && !f.stat.isDirectory() &&
 						(mask ? mask.test(src) : path.extname(src) === '.ss')
 
 					) {
@@ -391,7 +391,7 @@ if (!file && input == null) {
 
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = function (dir) {
-				fs.readdirSync(dir).forEach(function (el) {
+				$C(fs.readdirSync(dir)).forEach(function (el) {
 					var src = path.join(dir, el);
 
 					if (fs.statSync(src).isDirectory()) {
