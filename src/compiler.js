@@ -204,7 +204,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	const
-		parser = new Parser(String(text), $C.extend({traits: true}, {info}, p));
+		parser = new Parser(text, $C.extend({traits: true}, {info}, p));
 
 	// If is true, then a directive declaration is started,
 	// ie { ... }
@@ -269,6 +269,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		i18nTpl = false,
 		i18nPOpen = 0;
 
+	/**
+	 * @param {string} val
+	 * @return {(function(string): string|undefined)}
+	 */
 	function getReplacer(val) {
 		return $dirNameShorthands[val.substr(0, 2)] || $dirNameShorthands[val[0]];
 	}
