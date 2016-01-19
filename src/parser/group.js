@@ -26,7 +26,7 @@ const
  */
 Parser.prototype.getGroup = function (names) {
 	const
-		cacheKey = $C.toArray(arguments).join();
+		cacheKey = Array.from(arguments).join();
 
 	if (cache[cacheKey]) {
 		return clone(cache[cacheKey]);

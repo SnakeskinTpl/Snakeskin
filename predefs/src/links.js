@@ -9,6 +9,10 @@
 /** @type {!Window} */
 var GLOBAL;
 
-/** @abstract */
+/**
+ * @param {string|!Array<string>} moduleName
+ * @param {!Array<string>|!Function} dependencies
+ * @param {!Function=} [fn]
+ */
 function define(moduleName, dependencies, fn) {}
 define.amd = null;
