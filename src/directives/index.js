@@ -486,7 +486,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
 			}
 
-			this.inline = false;
+			this.inline = null;
 			this.structure = this.structure.parent;
 
 			if (this.blockStructure && this.blockStructure.name === 'const') {

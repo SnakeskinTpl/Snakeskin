@@ -153,9 +153,9 @@ export default class Parser {
 
 		/**
 		 * If is true, then the active directive is inline
-		 * @type {boolean}
+		 * @type {?boolean}
 		 */
-		this.inline = false;
+		this.inline = null;
 
 		/**
 		 * If is true, then the active directive has a text type
