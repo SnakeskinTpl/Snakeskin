@@ -61,12 +61,6 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 	return ws`
 		if (typeof ${link} === 'undefined' || ${link} !== '?') {
 			Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
-				key = key.trim();
-
-				if (!key) {
-					return;
-				}
-
 				var
 					attr = el[0] === TRUE ? ${isDOMRenderMode || this.doctype === 'xml' ? 'key' : `TRUE`} : el.join(' ');
 
