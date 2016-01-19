@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "commander": "^2.5.0",
+    "core-js": "^2.0.3",
     "esprima": "^2.1.0",
     "exists-sync": "0.0.3",
     "glob": "^6.0.0",

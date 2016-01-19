@@ -8,12 +8,9 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-export { default as default } from './core';
+import { IS_NODE } from '../consts/hacks';
 
-//#if compiler
-import './deps/core';
-import './compiler';
-import './directives';
-//#endif
+if (IS_NODE) {
+	require('core-js/es6');
+}
 
-import './live/index';
