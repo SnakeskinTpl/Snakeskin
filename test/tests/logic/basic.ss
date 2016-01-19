@@ -1,75 +1,10 @@
 basicLogic1
 basicLogic2
 basicLogic3
-basicLogic4
-basicLogic5
-basicLogic6
 
 ###
 
-{template basicLogic1()}
-	{if true}
-		Hello
-	{/}
-
-	{if false}
-		hell
-	{else}
-		world
-	{/}
-
-	{if false}
-		?
-	{else if true}
-		!
-	{/}
-{/template}
-
-{template basicLogic2()}
-	{unless false}
-		Hello
-	{/}
-
-	{unless true}
-		hell
-	{else}
-		world
-	{/}
-
-	{unless true}
-		?
-	{else unless false}
-		!
-	{/}
-{/template}
-
-{template basicLogic3()}
-	{switch 2}
-		{case 1}
-			Goodbye
-		{/}
-
-		{> 2}
-			Hello
-		{/}
-
-		{default}
-			Hi
-		{/}
-	{/}
-
-	{switch 2}
-		{case 1}
-			hell !
-		{/}
-
-		{default}
-			world !
-		{/}
-	{/}
-{/template}
-
-- template basicLogic4()
+- template basicLogic1()
 	- if true
 		Hello
 
@@ -83,7 +18,7 @@ basicLogic6
 	- else if true
 		!
 
-- template basicLogic5()
+- template basicLogic2()
 	- unless false
 		Hello
 
@@ -97,7 +32,7 @@ basicLogic6
 	- else unless false
 		!
 
-- template basicLogic6()
+- template basicLogic3()
 	- switch 2
 		- case 1
 			Goodbye
@@ -113,18 +48,6 @@ basicLogic6
 			world !
 
 ###
-
-Hello world !
-
-***
-
-Hello world !
-
-***
-
-Hello world !
-
-***
 
 Hello world !
 
