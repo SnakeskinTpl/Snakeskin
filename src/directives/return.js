@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
 	'return',
@@ -26,7 +27,7 @@ Snakeskin.addDirective(
 
 		const
 			cb = this.getGroup('callback'),
-			inside = this.hasParent(this.getGroup(...valid)),
+			inside = any(this.hasParent(this.getGroup(...valid))),
 			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl();
 
 		const def = ws`
@@ -35,16 +36,17 @@ Snakeskin.addDirective(
 		`;
 
 		let
-			parent = this.hasParent(this.getGroup(...all), true);
+			parent = any(this.hasParent(this.getGroup(...all), true));
 
-		if (cb[parent.name]) {
-			parent = this._has(this.getGroup(...all), parent.parent, true);
+		if (parent && cb[parent.name]) {
+			parent = any(this._has(this.getGroup(...all), parent.parent, true));
 		}
 
 		if (
-			!inside ||
-			parent.name === 'block' && parent.params.args ||
-			cb[inside] && this.getGroup('microTemplate')[parent.name]
+			!inside || parent && (
+				parent.name === 'block' && parent.params.args ||
+				cb[inside] && this.getGroup('microTemplate')[parent.name]
+			)
 
 		) {
 			this.append(`return ${val};`);
@@ -55,8 +57,8 @@ Snakeskin.addDirective(
 			str = '',
 			asyncParent;
 
-		if (this.getGroup('callback')[inside]) {
-			asyncParent = this.hasParent(this.getGroup('async'));
+		if (inside && this.getGroup('callback')[inside]) {
+			asyncParent = any(this.hasParent(this.getGroup('async')));
 		}
 
 		if (asyncParent) {
@@ -81,7 +83,7 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			if (!this.getGroup('async')[inside]) {
+			if (inside && !this.getGroup('async')[inside]) {
 				str += def;
 				this.deferReturn = 1;
 			}

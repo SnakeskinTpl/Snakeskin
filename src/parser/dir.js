@@ -23,7 +23,7 @@ import { $templates, $logicDirs } from '../consts/cache';
 Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_vars = opt_vars || {};
 	opt_params = opt_params || {};
-	opt_name = this.name = opt_name || this.name;
+	opt_name = this.name = String(opt_name || this.name);
 
 	const
 		{structure} = this;
@@ -113,7 +113,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
  */
 Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 	opt_params = opt_params || {};
-	opt_name = this.name = opt_name || this.name;
+	opt_name = this.name = String(opt_name || this.name);
 
 	const obj = {
 		chain: false,

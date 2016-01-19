@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
 	'putIn',
@@ -26,13 +27,13 @@ Snakeskin.addDirective(
 		this.startDir(null, {ref});
 
 		const
-			parent = this.hasParent(this.getGroup('microTemplate'), true);
+			parent = any(this.hasParent(this.getGroup('microTemplate'), true));
 
 		const
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
 			pos = this.out('__CALL_POS__', {unsafe: true});
 
-		if (this.getGroup('call')[parent.name]) {
+		if (parent && this.getGroup('call')[parent.name]) {
 			parent.params.chunks++;
 			this.append(ws`
 				if (!${pos} && __LENGTH__(__RESULT__)) {
@@ -43,7 +44,7 @@ Snakeskin.addDirective(
 				${pos}++;
 			`);
 
-		} else if (this.getGroup('target')[parent.name]) {
+		} else if (parent && this.getGroup('target')[parent.name]) {
 			this.append(ws`
 				if (!${pos} && __LENGTH__(__RESULT__)) {
 					${tmp}.push({
@@ -71,15 +72,15 @@ Snakeskin.addDirective(
 
 		const
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
-			parent = this.hasParent(this.getGroup('microTemplate'));
+			parent = any(this.hasParent(this.getGroup('microTemplate')));
 
-		if (this.getGroup('call')[parent]) {
+		if (parent && this.getGroup('call')[parent]) {
 			this.append(ws`
 				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
 				__RESULT__ = ${this.getResultDecl()};
 			`);
 
-		} else if (this.getGroup('target')[parent]) {
+		} else if (parent && this.getGroup('target')[parent]) {
 			this.append(ws`
 				${tmp}.push({
 					key: '${ref}',

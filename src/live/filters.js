@@ -588,8 +588,13 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 		return String(val);
 	}
 
-	function convert(obj, prfx) {
-		prfx = prfx || '';
+	/**
+	 * @param {Object} obj
+	 * @param {?string=} opt_prfx
+	 * @return {Snakeskin.HTMLObject}
+	 */
+	function convert(obj, opt_prfx) {
+		opt_prfx = opt_prfx || '';
 		Snakeskin.forEach(obj, (el, key) => {
 			if (el === FALSE) {
 				return;
@@ -597,11 +602,11 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 
 			if (isObject(el)) {
 				const group = Filters['attrKeyGroup'](key);
-				return convert(el, prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : `${group}-`));
+				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : `${group}-`));
 			}
 
 			const
-				attr = Filters['attrKey'](dasherize(prfx + key));
+				attr = Filters['attrKey'](dasherize(opt_prfx + key));
 
 			if (el === TRUE) {
 				el = doctype === 'xml' ? attr : '';

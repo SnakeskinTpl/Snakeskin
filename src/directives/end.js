@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
 	'end',
@@ -45,12 +46,12 @@ Snakeskin.addDirective(
 			if (
 				this.getGroup('function', 'async')[name] && (
 					this.getGroup('callback')[name] ?
-						!this.getGroup('microTemplate')[this.hasParent(this.getGroup('microTemplate', 'async'))] : true
+						!this.getGroup('microTemplate')[any(this.hasParent(this.getGroup('microTemplate', 'async')))] : true
 				)
 
 			) {
 				const
-					parent = this.hasParent(async);
+					parent = any(this.hasParent(async));
 
 				if (parent) {
 					if (this.getGroup('waterfall')[parent]) {

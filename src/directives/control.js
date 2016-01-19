@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
 	'break',
@@ -25,13 +26,13 @@ Snakeskin.addDirective(
 			all = valid.concat('block', 'microTemplate');
 
 		const
-			inside = this.hasParent(this.getGroup(...valid)),
-			parent = this.hasParent(this.getGroup(...all), true);
+			inside = any(this.hasParent(this.getGroup(...valid))),
+			parent = any(this.hasParent(this.getGroup(...all), true));
 
 		if (
 			parent.name === 'block' && parent.params.args ||
 			this.getGroup('microTemplate')[parent.name] &&
-			this.getGroup('callback')[this.hasParent(this.getGroup(...valid, 'callback'))]
+			this.getGroup('callback')[any(this.hasParent(this.getGroup(...valid, 'callback')))]
 
 		) {
 			return this.error(`the directive "${this.name}" can't be used within the "${parent.name}"`);
@@ -77,13 +78,13 @@ Snakeskin.addDirective(
 			all = valid.concat('block', 'microTemplate');
 
 		const
-			inside = this.hasParent(this.getGroup(...valid)),
-			parent = this.hasParent(this.getGroup(...all), true);
+			inside = any(this.hasParent(this.getGroup(...valid))),
+			parent = any(this.hasParent(this.getGroup(...all), true));
 
 		if (
 			parent.name === 'block' && parent.params.args ||
 			this.getGroup('microTemplate')[parent.name] &&
-			this.getGroup('callback')[this.hasParent(this.getGroup(...valid, 'callback'))]
+			this.getGroup('callback')[any(this.hasParent(this.getGroup(...valid, 'callback')))]
 
 		) {
 			return this.error(`the directive "${this.name}" can't be used within the "${parent.name}"`);

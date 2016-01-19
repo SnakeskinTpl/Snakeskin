@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
 	'callback',
@@ -34,27 +35,28 @@ Snakeskin.addDirective(
 			pstfx = '';
 
 		const
-			parent = this.hasParent(this.getGroup('async', 'microTemplate'), true);
+			parent = any(this.hasParent(this.getGroup('async', 'microTemplate'), true));
 
-		if (this.getGroup('async')[parent.name]) {
-			let
-				length = 0;
+		if (parent) {
+			if (this.getGroup('async')[parent.name]) {
+				let
+					length = 0;
 
-			$C(parent.children).forEach(({name}) => {
-				if (this.getGroup('callback')[name]) {
-					length++;
-				}
+				$C(parent.children).forEach(({name}) => {
+					if (this.getGroup('callback')[name]) {
+						length++;
+					}
 
-				if (length > 1) {
-					return false;
-				}
-			});
+					if (length > 1) {
+						return false;
+					}
+				});
 
-			prfx = length > 1 ? ',' : '';
+				prfx = length > 1 ? ',' : '';
 
-		} else if (this.getGroup('microTemplate')[parent.name]) {
-			prfx = `__RESULT__ = new Data`;
-			pstfx = ws`
+			} else if (this.getGroup('microTemplate')[parent.name]) {
+				prfx = `__RESULT__ = new Data`;
+				pstfx = ws`
 				var __RESULT__ = ${this.getResultDecl()};
 
 				function getTplResult(opt_clear) {
@@ -71,20 +73,23 @@ Snakeskin.addDirective(
 					__RESULT__ = ${this.getResultDecl()};
 				}
 			`;
+			}
 		}
 
 		this.append(`${prfx}(function (${this.declCallbackArgs(parts)}) {${pstfx}`);
 	},
 
 	function () {
-		const
-			parent = this.hasParent(this.getGroup('async', 'microTemplate'));
+		let
+			parent = any(this.hasParent(this.getGroup('async', 'microTemplate')));
 
-		if (this.getGroup('async')[parent]) {
-			this.append('})');
+		if (parent) {
+			if (this.getGroup('async')[parent]) {
+				this.append('})');
 
-		} else if (this.getGroup('microTemplate')[parent]) {
-			this.append(`return ${this.getReturnResultDecl()}; });`);
+			} else if (this.getGroup('microTemplate')[parent]) {
+				this.append(`return ${this.getReturnResultDecl()}; });`);
+			}
 
 		} else {
 			this.append('});');
