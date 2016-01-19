@@ -64,8 +64,8 @@ Snakeskin.addDirective(
 		}
 
 		if (classes.length) {
-			const c = JSON.stringify(classes);
-			str += `__ATTR_CACHE__['class'] = ${c}.concat(__ATTR_CACHE__['class'] || []);`;
+			const c = $C(classes).map((el) => `'${el}'`).join(',');
+			str += `__ATTR_CACHE__['class'] = [${c}].concat(__ATTR_CACHE__['class'] || []);`;
 		}
 
 		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));
