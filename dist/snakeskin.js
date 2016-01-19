@@ -5,26 +5,28 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 13 Jan 2016 14:17:03 GMT
+ * Date: 'Tue, 19 Jan 2016 10:57:56 GMT
  */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define('Snakeskin', factory) :
-    global.Snakeskin = factory();
+    (global.Snakeskin = factory());
 }(this, function () { 'use strict';
 
-    function babelHelpers_typeof (obj) {
-      return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj;
+    var babelHelpers_typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
     };
 
-    function babelHelpers_classCallCheck (instance, Constructor) {
+    var babelHelpers_classCallCheck = function (instance, Constructor) {
       if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
       }
     };
 
-    function babelHelpers_defineProperty (obj, key, value) {
+    var babelHelpers_defineProperty = function (obj, key, value) {
       if (key in obj) {
         Object.defineProperty(obj, key, {
           value: value,
@@ -39,7 +41,7 @@
       return obj;
     };
 
-    var babelHelpers_slicedToArray = (function () {
+    var babelHelpers_slicedToArray = function () {
       function sliceIterator(arr, i) {
         var _arr = [];
         var _n = true;
@@ -75,14 +77,24 @@
           throw new TypeError("Invalid attempt to destructure non-iterable instance");
         }
       };
-    })();
+    }();
 
-    function babelHelpers_taggedTemplateLiteral (strings, raw) {
+    var babelHelpers_taggedTemplateLiteral = function (strings, raw) {
       return Object.freeze(Object.defineProperties(strings, {
         raw: {
           value: Object.freeze(raw)
         }
       }));
+    };
+
+    var babelHelpers_toConsumableArray = function (arr) {
+      if (Array.isArray(arr)) {
+        for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+        return arr2;
+      } else {
+        return Array.from(arr);
+      }
     };
 
         var Snakeskin = {
@@ -166,51 +178,49 @@
       return Boolean(obj) && obj.constructor === Object;
     }
 
-    var IS_NODE = (function () {
+    var IS_NODE = function () {
     	try {
-    		return (typeof process === 'undefined' ? 'undefined' : babelHelpers_typeof(process)) === 'object' && ({}).toString.call(process) === '[object process]';
+    		return (typeof process === 'undefined' ? 'undefined' : babelHelpers_typeof(process)) === 'object' && {}.toString.call(process) === '[object process]';
     	} catch (ignore) {
     		return false;
     	}
-    })();
+    }();
 
     var HAS_CONSOLE_LOG = typeof console !== 'undefined' && isFunction(console.log);
     var HAS_CONSOLE_ERROR = typeof console !== 'undefined' && isFunction(console.error);
+
+    if (IS_NODE) {
+      require('core-js/es6');
+    }
 
     var GLOBAL = new Function('return this')();
     var ROOT = IS_NODE ? exports : GLOBAL;
     var NULL = {};
 
-    var $C$1 = GLOBAL.$C || require('collection.js').$C;
+    var $C = GLOBAL.$C || require('collection.js').$C;
     var Collection = GLOBAL.Collection || require('collection.js').Collection;
 
     var beautify = GLOBAL.js_beautify || require('js-beautify');
 
-    /**
-     * Gets an object with an undefined type
-     * (for the GCC)
-     *
-     * @param {?} val - source object
-     * @return {?}
-     */
-    function any(val) {
-      return val;
-    }
-
-    var wsRgxp = /^\s+|[\r\n]+/mg;
+        var wsRgxp = /^\s+|[\r\n]+/mg;
 
     /**
      * String tag (for ES6 string templates) for truncate starting whitespaces and eol-s
      *
-     * @param {!Array.<string>} strings
-     * @param {...string} expr
+     * @param {!Array<string>} strings
+     * @param {...?} expr
      * @return {string}
      */
     function ws$1(strings, expr) {
       expr = [].slice.call(arguments, 1);
-      return any($C(strings).reduce(function (str, el, i) {
-        return str + el.replace(wsRgxp, ' ') + (i in expr ? expr[i] : '');
-      }, ''));
+
+      var res = '';
+
+      for (var i = 0; i < strings.length; i++) {
+        res += strings[i].replace(wsRgxp, ' ') + (i in expr ? expr[i] : '');
+      }
+
+      return res;
     }
 
     var rRgxp = /([\\\/'*+?|()\[\]{}.^$-])/g;
@@ -225,17 +235,20 @@
       return str.replace(rRgxp, '\\$1');
     }
 
-    var _templateObject$14 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tThis code is generated automatically, don\'t alter it. */\n\t\t\t(function () {\n\t\t\t\t', '\n\n\t\t\tvar\n\t\t\t\t__IS_NODE__ = false,\n\t\t\t\t', '\n\t\t\t\t__HAS_EXPORTS__ = typeof exports !== \'undefined\',\n\t\t\t\t__EXPORTS__ = __HAS_EXPORTS__ ? exports : ', ' this;\n\n\t\t\t\ttry {\n\t\t\t\t\t__IS_NODE__ = typeof process === \'object\' && Object().toString.call(process) === \'[object process]\';\n\n\t\t\t\t} catch (ignore) {}\n\n\t\t\t\tvar\n\t\t\t\t\tSnakeskin = (__IS_NODE__ ? global : this).Snakeskin;\n\n\t\t\t\tfunction __INIT__(obj) {\n\t\t\t\t\tSnakeskin = Snakeskin ||\n\t\t\t\t\t\t(obj instanceof Object ? obj : undefined);\n\n\t\t\t\t\t', '\n\t\t\t\t}\n\n\t\t\t\tif (__HAS_EXPORTS__) {\n\t\t\t\t\t__EXPORTS__.init = __INIT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __EXEC__() {\n\t\t\t\t\tvar\n\t\t\t\t\t\t__ROOT__ = this;\n\n\t\t\t\t\tvar\n\t\t\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\t\t\tvar\n\t\t\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t\t\t__LOCAL__ = Snakeskin.LocalVars;\n\n\t\t\t\t\tfunction __DECORATE__(decorators, fn) {\n\t\t\t\t\t\tSnakeskin.forEach(decorators, function (decorator) {\n\t\t\t\t\t\t\tfn = decorator(fn);\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\tfn.decorators = decorators;\n\t\t\t\t\t\treturn fn;\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction __LENGTH__(val) {\n\t\t\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\t\t\treturn val;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn 1;\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction Data(val) {\n\t\t\t\t\t\tif (!this || this.constructor !== Data) {\n\t\t\t\t\t\t\treturn new Data(val);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tthis.value = val;\n\t\t\t\t\t}\n\n\t\t\t\t\tData.prototype.push = function (val) {\n\t\t\t\t\t\tthis.value += val;\n\t\t\t\t\t};\n\n\t\t\t\t\tfunction Unsafe(val) {\n\t\t\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\treturn val;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tthis.value = val;\n\t\t\t\t\t}\n\n\t\t\t\t\t', '\n\t\t'], ['\n\t\t\tThis code is generated automatically, don\'t alter it. */\n\t\t\t(function () {\n\t\t\t\t', '\n\n\t\t\tvar\n\t\t\t\t__IS_NODE__ = false,\n\t\t\t\t', '\n\t\t\t\t__HAS_EXPORTS__ = typeof exports !== \'undefined\',\n\t\t\t\t__EXPORTS__ = __HAS_EXPORTS__ ? exports : ', ' this;\n\n\t\t\t\ttry {\n\t\t\t\t\t__IS_NODE__ = typeof process === \'object\' && Object().toString.call(process) === \'[object process]\';\n\n\t\t\t\t} catch (ignore) {}\n\n\t\t\t\tvar\n\t\t\t\t\tSnakeskin = (__IS_NODE__ ? global : this).Snakeskin;\n\n\t\t\t\tfunction __INIT__(obj) {\n\t\t\t\t\tSnakeskin = Snakeskin ||\n\t\t\t\t\t\t(obj instanceof Object ? obj : undefined);\n\n\t\t\t\t\t', '\n\t\t\t\t}\n\n\t\t\t\tif (__HAS_EXPORTS__) {\n\t\t\t\t\t__EXPORTS__.init = __INIT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __EXEC__() {\n\t\t\t\t\tvar\n\t\t\t\t\t\t__ROOT__ = this;\n\n\t\t\t\t\tvar\n\t\t\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\t\t\tvar\n\t\t\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t\t\t__LOCAL__ = Snakeskin.LocalVars;\n\n\t\t\t\t\tfunction __DECORATE__(decorators, fn) {\n\t\t\t\t\t\tSnakeskin.forEach(decorators, function (decorator) {\n\t\t\t\t\t\t\tfn = decorator(fn);\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\tfn.decorators = decorators;\n\t\t\t\t\t\treturn fn;\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction __LENGTH__(val) {\n\t\t\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\t\t\treturn val;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn 1;\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction Data(val) {\n\t\t\t\t\t\tif (!this || this.constructor !== Data) {\n\t\t\t\t\t\t\treturn new Data(val);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tthis.value = val;\n\t\t\t\t\t}\n\n\t\t\t\t\tData.prototype.push = function (val) {\n\t\t\t\t\t\tthis.value += val;\n\t\t\t\t\t};\n\n\t\t\t\t\tfunction Unsafe(val) {\n\t\t\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\treturn val;\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tthis.value = val;\n\t\t\t\t\t}\n\n\t\t\t\t\t', '\n\t\t']);
-    var _templateObject2$10 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (__AMD__) {\n\t\t\t\t\t\t\t\t\tdefine([\'Snakeskin\'], function (ss) {\n\t\t\t\t\t\t\t\t\t\tSnakeskin = Snakeskin || ss;\n\t\t\t\t\t\t\t\t\t\t__EXEC__.call(__EXPORTS__);\n\t\t\t\t\t\t\t\t\t\treturn __EXPORTS__;\n\t\t\t\t\t\t\t\t\t});\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t__EXEC__.call(__EXPORTS__);\n\t\t\t\t\t\t\t\t\treturn __EXPORTS__;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (__AMD__) {\n\t\t\t\t\t\t\t\t\tdefine([\'Snakeskin\'], function (ss) {\n\t\t\t\t\t\t\t\t\t\tSnakeskin = Snakeskin || ss;\n\t\t\t\t\t\t\t\t\t\t__EXEC__.call(__EXPORTS__);\n\t\t\t\t\t\t\t\t\t\treturn __EXPORTS__;\n\t\t\t\t\t\t\t\t\t});\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t__EXEC__.call(__EXPORTS__);\n\t\t\t\t\t\t\t\t\treturn __EXPORTS__;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
+    var _templateObject$14 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\timport Snakeskin from \'snakeskin\';\n\t\t\t\tvar exports = {};\n\t\t\t\texport default exports;\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\timport Snakeskin from \'snakeskin\';\n\t\t\t\tvar exports = {};\n\t\t\t\texport default exports;\n\t\t\t']);
+    var _templateObject2$9 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin) {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin) {\n\t\t\t\t\t', '\n\t\t\t']);
+    var _templateObject3$7 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'snakeskin\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'snakeskin\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
+    var _templateObject4$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
+    var _templateObject5$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Data(val) {\n\t\t\t\tif (!this || this.constructor !== Data) {\n\t\t\t\t\treturn new Data(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tData.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Data(val) {\n\t\t\t\tif (!this || this.constructor !== Data) {\n\t\t\t\t\treturn new Data(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tData.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\t', '\n\t\t']);
     /**
      * The class for parsing SS templates
-     *
-     * @constructor
-     * @implements {$$SnakeskinParser}
      */
 
     var Parser =
     /**
+     * @constructor
+     * @implements {$$SnakeskinParser}
+     *
      * @param {string} src - source text of templates
      * @param {$$SnakeskinParserParams} params - additional parameters
      */
@@ -245,41 +258,20 @@
     	/** @type {boolean} */
     	this.throws = params.throws;
 
-    	/** @type {boolean} */
-    	this.useStrict = params.useStrict;
-
-    	/** @type {?function(!Error)} */
-    	this.onError = params.onError || null;
-
-    	/** @type {!Array<string>} */
-    	this.scope = params.scope || [];
-
-    	/** @type {!Object} */
-    	this.info = params.info;
-
-    	/** @type {boolean} */
-    	this.needPrfx = params.needPrfx || false;
-
-    	/** @type {!Array} */
-    	this.lines = params.lines || [''];
+    	/** @type {(?function(!Error)|undefined)} */
+    	this.onError = params.onError;
 
     	/** @type {string} */
-    	this.eol = params.eol;
-
-    	/** @type {string} */
-    	this.renderMode = params.renderMode;
-
-    	/** @type {boolean} */
-    	this.tolerateWhitespaces = params.tolerateWhitespaces;
-
-    	/** @type {(string|boolean)} */
-    	this.doctype = params.doctype;
+    	this.module = params.module;
 
     	/** @type {(?string|undefined)} */
-    	this.renderAs = params.renderAs;
+    	this.moduleId = params.moduleId;
 
-    	/** @type {string} */
-    	this.exports = params.exports;
+    	/** @type {(?string|undefined)} */
+    	this.moduleName = params.moduleName;
+
+    	/** @type {boolean} */
+    	this.useStrict = params.useStrict;
 
     	/** @type {!Array<string>} */
     	this.literalBounds = params.literalBounds;
@@ -305,6 +297,21 @@
     	/** @type {(RegExp|undefined)} */
     	this.ignore = params.ignore;
 
+    	/** @type {boolean} */
+    	this.tolerateWhitespaces = params.tolerateWhitespaces;
+
+    	/** @type {string} */
+    	this.eol = params.eol;
+
+    	/** @type {(?string|undefined)} */
+    	this.renderAs = params.renderAs;
+
+    	/** @type {string} */
+    	this.renderMode = params.renderMode;
+
+    	/** @type {{file, line, node, template}} */
+    	this.info = params.info;
+
     	/**
       * Stack parameters that can be changed in a code
       * @type {!Array<!Object>}
@@ -325,6 +332,30 @@
     	}];
 
     	/**
+      * If is true, then for declaring directives must use advanced syntax
+      * @type {boolean}
+      */
+    	this.needPrfx = false;
+
+    	/**
+      * The source code for debugger
+      * @type {!Array}
+      */
+    	this.lines = [''];
+
+    	/**
+      * The array of errors
+      * @type {!Array}
+      */
+    	this.errors = [];
+
+    	/**
+      * If is true, then compiling will be broken
+      * @type {boolean}
+      */
+    	this.break = false;
+
+    	/**
       * The array of declared constants
       * @type {Array}
       */
@@ -337,40 +368,52 @@
     	this.vars = {};
 
     	/**
-      * If is true, then compiling will be broken
-      * @type {boolean}
+      * The scope of blocks
+      * @type {!Array<string>}
       */
-    	this.break = false;
-
-    	/**
-      * The array of errors
-      * @type {!Array}
-      */
-    	this.errors = [];
+    	this.scope = [];
 
     	/**
       * The name of the active directive
-      * @type {?string}
+      * @type {(string|undefined)}
       */
-    	this.name = null;
+    	this.name = undefined;
+
+    	/**
+      * If is true, then the active directive is inline
+      * @type {?boolean}
+      */
+    	this.inline = null;
+
+    	/**
+      * If is true, then the active directive has a text type
+      * @type {boolean}
+      */
+    	this.text = false;
 
     	/**
       * The name of the active template
-      * @type {?string}
+      * @type {(string|undefined)}
       */
-    	this.tplName = null;
+    	this.tplName = undefined;
 
     	/**
       * The parent name of the active template
-      * @type {?string}
+      * @type {(string|undefined)}
       */
-    	this.parentTplName = null;
+    	this.parentTplName = undefined;
+
+    	/**
+      * The document type
+      * @type {string}
+      */
+    	this.doctype = 'html';
 
     	/**
       * If is true, then the active template is generator
-      * @type {?boolean}
+      * @type {boolean}
       */
-    	this.generator = null;
+    	this.generator = false;
 
     	/**
       * The number of deferred return calls
@@ -386,9 +429,9 @@
 
     	/**
       * The number of a line, where the active template was declared
-      * @type {?number}
+      * @type {(number|undefined)}
       */
-    	this.startTemplateLine = null;
+    	this.startTemplateLine = undefined;
 
     	/**
       * The name of the parent BEM class
@@ -397,10 +440,34 @@
     	this.bemRef = '';
 
     	/**
+      * If the last value is true, then the this value inside functions won't be replaced to __THIS__
+      * @type {!Array<boolean>}
+      */
+    	this.selfThis = [false];
+
+    	/**
       * If is false, then template can't be inserted into the resulting JS string
       * @type {boolean}
       */
     	this.canWrite = true;
+
+    	/**
+      * The list of decorators
+      * @type {!Array<string>}
+      */
+    	this.decorators = [];
+
+    	/**
+      * The cache of outer prototypes / blocks
+      * @type {!Object}
+      */
+    	this.preDefs = {};
+
+    	/**
+      * The name of the active outer prototype / block
+      * @type {(string|undefined)}
+      */
+    	this.outerLink = undefined;
 
     	// Whitespace
     	// >>>
@@ -441,24 +508,6 @@
     	this.blockTable = null;
 
     	/**
-      * The cache of outer prototypes / blocks
-      * @type {!Object}
-      */
-    	this.preDefs = {};
-
-    	/**
-      * The name of the active outer prototype / block
-      * @type {?string}
-      */
-    	this.outerLink = null;
-
-    	/**
-      * The list of decorators
-      * @type {!Array.<string>}
-      */
-    	this.decorators = [];
-
-    	/**
       * The template structure
       * @type {!Object}
       */
@@ -485,18 +534,6 @@
     		logic: false,
     		chain: false
     	};
-
-    	/**
-      * If is true, then the active directive is inline
-      * @type {?boolean}
-      */
-    	this.inline = null;
-
-    	/**
-      * If is true, then the active directive has a text type
-      * @type {boolean}
-      */
-    	this.text = false;
 
     	/**
       * If is true, then the output will be saved to __STRING_RESULT__ as a string
@@ -554,15 +591,34 @@
       * The final JS string
       * @type {string}
       */
-    	this.result = ws$1(_templateObject$14, this.useStrict ? '\'use strict\';' : '', this.exports === 'default' ? '__AMD__ = typeof define === \'function\' && define.amd,' : '', this.exports === 'default' ? '__AMD__ ? {} :' : '', this.exports === 'default' ? ws$1(_templateObject2$10) : '\n\t\t\t\t\t\t\t\t__EXEC__.call(__EXPORTS__);\n\t\t\t\t\t\t\t\treturn __EXPORTS__;\n\t\t\t\t\t\t\t', this.declVars('$_', { sys: true }));
+    	this.result = 'This code is generated automatically, don\'t alter it. */';
+
+    	if (this.module === 'native') {
+    		this.result += ws$1(_templateObject$14, this.useStrict ? '\'use strict\';' : '');
+    	} else {
+    		this.result += ws$1(_templateObject2$9, { 'cjs': true, 'umd': true }[this.module] ? ws$1(_templateObject3$7) : '', { 'amd': true, 'umd': true }[this.module] ? ws$1(_templateObject4$4, this.moduleId) : '', { 'global': true, 'umd': true }[this.module] ? 'factory(' + (this.moduleName ? 'global.' + this.moduleName + ' = {}' : 'global') + ', Snakeskin);' : '', this.useStrict ? '\'use strict\';' : '');
+    	}
+
+    	this.result += ws$1(_templateObject5$2, this.declVars('$_', { sys: true }));
     };
+
+    /**
+     * Gets an object with an undefined type
+     * (for the GCC)
+     *
+     * @param {?} val - source object
+     * @return {?}
+     */
+    function any(val) {
+      return val;
+    }
 
     var _COMMENTS;
     var _SYS_ESCAPES;
     var _STRONG_SYS_ESCAPES;
-    var LEFT_BLOCK = '{';
-    var RIGHT_BLOCK = '}';
-    var ADV_LEFT_BLOCK = '#';
+    var LEFT_BOUND = '{';
+    var RIGHT_BOUND = '}';
+    var ADV_LEFT_BOUND = '#';
     // <<<
     // The additional directive separators
     // >>>
@@ -618,7 +674,7 @@
 
     var SYS_ESCAPES = (_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers_defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers_defineProperty(_SYS_ESCAPES, LEFT_BLOCK, true), babelHelpers_defineProperty(_SYS_ESCAPES, ADV_LEFT_BLOCK, true), babelHelpers_defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers_defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers_defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
+    }, babelHelpers_defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers_defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers_defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers_defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers_defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers_defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
     for (var key$1 in BASE_SHORTS) {
     	if (!BASE_SHORTS.hasOwnProperty(key$1)) {
@@ -700,18 +756,13 @@
     // >>>
 
     var SYS_CONSTS = {
-    	'__IS_NODE__': true,
-    	'__AMD__': true,
-    	'__EXPORTS__': true,
-    	'__HAS_EXPORTS__': true,
-    	'__INIT__': true,
-    	'__ROOT__': true,
-    	'__ARGUMENTS__': true,
     	'__RESULT__': true,
     	'__STRING_RESULT__': true,
     	'__CDATA__': true,
     	'__RETURN__': true,
     	'__RETURN_VAL__': true,
+    	'__LENGTH__': true,
+    	'__ESCAPE_D_Q__': true,
     	'__ATTR_TMP__': true,
     	'__ATTR_POS__': true,
     	'__ATTR_STR__': true,
@@ -727,14 +778,17 @@
     	'__LOCAL__': true,
     	'__THIS__': true,
     	'__INCLUDE__': true,
-    	'__LENGTH__': true,
-    	'__DECORATE__': true,
     	'__INLINE_TAG__': true,
     	'__INLINE_TAGS__': true,
     	'__TAG__': true,
     	'__NODE__': true,
     	'TRUE': true,
     	'FALSE': true,
+    	'module': true,
+    	'exports': true,
+    	'require': true,
+    	'__dirname': true,
+    	'__filename': true,
     	'TPL_NAME': true,
     	'PARENT_TPL_NAME': true,
     	'Data': true,
@@ -742,6 +796,7 @@
     	'Snakeskin': true,
     	'getTplResult': true,
     	'clearTplResult': true,
+    	'arguments': true,
     	'self': true,
     	'callee': true,
     	'$_': true,
@@ -797,6 +852,7 @@
     var $dirParents = {};
     var $dirEnd = {};
     var $dirTrim = {};
+    var $dirInterpolation = {};
     var $blocks = {};
 
     var $consts = {};
@@ -837,11 +893,11 @@
     Parser.prototype.declCallbackArgs = function (parts) {
     	var _this = this;
 
-    	var args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').split(/\s*,\s*/);
+    	var args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').trim().split(/\s*,\s*/);
 
     	var scope = undefined;
 
-    	$C$1(args).forEach(function (el, i) {
+    	$C(args).forEach(function (el, i) {
     		var mod = scopeMod.test(el);
 
     		if (mod) {
@@ -882,7 +938,7 @@
     	    arg = '',
     	    params = false;
 
-    	$C$1(str).forEach(function (el) {
+    	$C(str).forEach(function (el) {
     		if (pOpen ? B_OPEN[el] : el === '(') {
     			pOpen++;
     			params = true;
@@ -931,7 +987,7 @@
      * @param {?{
      *   tplName: (string|undefined),
      *   parentTplName: (string|undefined),
-     *   fName: (string|undefined),
+     *   fName: (string|undefined)
      * }=} [opt_params] - additional parameters:
      *
      *   *) [tplName] - template name
@@ -976,7 +1032,7 @@
     		if ($args[tplName][type][fName]) {
     			var tmp = $argsRes[tplName][type][fName];
 
-    			$C$1(tmp.list).forEach(function (el) {
+    			$C(tmp.list).forEach(function (el) {
     				structure.vars[el[2]] = {
     					scope: _this2.scope.length,
     					value: el[0]
@@ -997,7 +1053,7 @@
 
     	var scope = undefined;
 
-    	$C$1(argsList).forEach(function (el, i) {
+    	$C(argsList).forEach(function (el, i) {
     		var arg = el.split('=');
     		arg[0] = arg[0].trim();
 
@@ -1029,7 +1085,7 @@
     		};
     	});
 
-    	$C$1(parentArgs).forEach(function (el, key) {
+    	$C(parentArgs).forEach(function (el, key) {
     		var aKey = undefined;
     		if (scopeMod.test(key)) {
     			aKey = key.replace(scopeMod, '');
@@ -1063,7 +1119,7 @@
     	argsList = [];
     	var localVars = [];
 
-    	$C$1(argsTable).forEach(function (el) {
+    	$C(argsTable).forEach(function (el) {
     		if (el.local) {
     			localVars[el.i] = el;
     		} else {
@@ -1078,7 +1134,7 @@
     	var decl = '',
     	    defParams = '';
 
-    	$C$1(localVars).forEach(function (el) {
+    	$C(localVars).forEach(function (el) {
     		if (!el) {
     			return;
     		}
@@ -1101,7 +1157,7 @@
 
     	var args = [];
 
-    	$C$1(argsList).forEach(function (el, i) {
+    	$C(argsList).forEach(function (el, i) {
     		el.key = el.key.replace(scopeMod, '');
 
     		var old = el.key;
@@ -1200,11 +1256,11 @@
     Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
     	opt_vars = opt_vars || {};
     	opt_params = opt_params || {};
-    	opt_name = this.name = opt_name || this.name;
+    	opt_name = this.name = String(opt_name || this.name);
 
     	var structure = this.structure;
 
-    	$C$1(structure.vars).forEach(function (el, key) {
+    	$C(structure.vars).forEach(function (el, key) {
     		opt_vars[key] = el;
     		opt_vars[key].inherited = true;
     	});
@@ -1250,7 +1306,7 @@
 
     				blockTable[key] = sub;
     				var deep = function deep(obj) {
-    					$C$1(obj).forEach(function (el) {
+    					$C(obj).forEach(function (el) {
     						var key = el.name + '_' + el.params.name;
 
     						if (blockTable[key] && blockTable[key] !== true) {
@@ -1287,7 +1343,7 @@
      */
     Parser.prototype.startInlineDir = function (opt_name, opt_params) {
     	opt_params = opt_params || {};
-    	opt_name = this.name = opt_name || this.name;
+    	opt_name = this.name = String(opt_name || this.name);
 
     	var obj = {
     		chain: false,
@@ -1348,7 +1404,7 @@
     };
 
     var cutRgxp = /\/\*!!= (.*?) =\*\//g;
-    var privateRgxp = new RegExp(r(ADV_LEFT_BLOCK) + '?' + r(LEFT_BLOCK) + '__.*?__.*?' + r(RIGHT_BLOCK), 'g');
+    var privateRgxp = new RegExp(r(ADV_LEFT_BOUND) + '?' + r(LEFT_BOUND) + '__.*?__.*?' + r(RIGHT_BOUND), 'g');
     var styleRgxp = /\t|[ ]{4}/g;
     /**
      * Returns additional information for an error
@@ -1363,7 +1419,7 @@
     		return '';
     	}
 
-    	var str = $C$1(info).reduce(function (res, el, key) {
+    	var str = $C(info).reduce(function (res, el, key) {
     		if (el != null) {
     			if (el.innerHTML) {
     				res += key + ': (class: ' + (el.className || 'undefined') + ', id: ' + (el.id || 'undefined') + '); ';
@@ -1422,7 +1478,7 @@
     	this.break = true;
 
     	var report = msg + '; ' + this.getAdvInfo(),
-    	    error = $C$1.extend(false, new Error(report), { name: 'SnakeskinError' });
+    	    error = $C.extend(false, new Error(report), { name: 'SnakeskinError' });
 
     	if (this.onError) {
     		this.onError(error);
@@ -1520,7 +1576,7 @@
     			if (fs.statSync(val).isFile()) {
     				opt_onFileExists && opt_onFileExists(val);
 
-    				var content = fs.readFileSync(val, 'utf8');
+    				var content = any(fs.readFileSync(val, 'utf8'));
 
     				try {
     					res = JSON.parse(content);
@@ -1553,6 +1609,554 @@
     	return any(res || {});
     }
 
+    var stack = [];
+
+    Snakeskin.toObj = toObj;
+
+    /**
+     * Adds file content by the specified path to the stack
+     *
+     * @param {string} base - base path
+     * @param {string} file - file path
+     * @param {string} eol - EOL symbol
+     * @param {?string=} [opt_renderMode] - rendering mode for templates
+     * @return {(string|boolean)}
+     */
+    Snakeskin.include = function (base, file, eol, opt_renderMode) {
+    	if (!IS_NODE) {
+    		return false;
+    	}
+
+    	var fs = require('fs'),
+    	    path = require('path'),
+    	    glob = require('glob');
+
+    	var s = ADV_LEFT_BOUND + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
+
+    	try {
+    		var _ret = function () {
+    			var extname = path.extname(file);
+    			var include = Snakeskin.LocalVars.include;
+
+    			var src = path.resolve(path.dirname(base), file + (extname ? '' : '.ss'));
+
+    			$C(glob.hasMagic(src) ? glob.sync(src) : [src]).forEach(function (src) {
+    				src = path.normalize(src);
+
+    				if (include[src]) {
+    					return;
+    				}
+
+    				include[src] = true;
+    				var file = fs.readFileSync(src, 'utf8');
+
+    				stack.push(s + '__setFile__ ' + src + e + (opt_renderMode ? s + '__set__ renderAs \'' + opt_renderMode + '\'' + e : '') + ('' + (wsStart.test(file) ? '' : eol)) + file + ('' + (wsEnd.test(file) ? '' : '' + eol + s + '__cutLine__' + e)) + (s + '__endSetFile__' + e));
+    			});
+
+    			return {
+    				v: true
+    			};
+    		}();
+
+    		if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers_typeof(_ret)) === "object") return _ret.v;
+    	} catch (err) {
+    		stack.push(s + '__setError__ ' + err.message + e);
+    	}
+
+    	return false;
+    };
+
+    // FIXME https://github.com/jscs-dev/node-jscs/issues/2017
+    // jscs:disable jsDoc
+
+    /**
+     * Transformer for a group list
+     *
+     * @param {Array} arr - source list
+     * @return {string}
+     */
+    var q = function q(arr) {
+    	return any($C(arr).map(function (el) {
+    		return '"' + el + '"';
+    	}).join(', '));
+    };
+
+    // jscs:enable jsDoc
+
+    var GROUP = '@';
+
+    /**
+     * Initialises the specified group
+     *
+     * @param {string} name - group name
+     * @return {string}
+     */
+    Snakeskin.group = function (name) {
+    	return GROUP + name;
+    };
+
+    var dirPlacement = {};
+    var dirPlacementPlain = {};
+    var dirAncestorsBlacklist = {};
+    var dirAncestorsBlacklistPlain = {};
+    var dirAncestorsWhitelist = {};
+    var dirAncestorsWhitelistPlain = {};
+    /**
+     * Adds a new directive to the SS namespace
+     *
+     * @param {string} name - directive name
+     * @param {$$SnakeskinAddDirectiveParams} params - additional parameters:
+     *
+     *   *) [params.deferInit = false] - if is true, the directive won't be started automatically
+     *   *) [params.generator = false] - if is true, the directive can be used only with generators
+     *   *) [params.notEmpty = false] - if is true, then the directive can't be empty
+     *   *) [params.alias = false] - if is true, then the directive is considered as an alias
+     *        (only for private directives)
+     *
+     *   *) [params.group] - group name, which includes the current directive
+     *        or an array of names
+     *
+     *   *) [params.renderModesBlacklist] - rendering mode, which can't be used with the current directive
+     *        or an array of names
+     *
+     *   *) [params.renderModesWhitelist] - rendering mode, which can be used with the current directive
+     *        or an array of names
+     *
+     *   *) [params.placement] - placement of the directive: global or template
+     *   *) [params.ancestorsBlacklist] - directive/group name, which can't be an ancestor for the current directive
+     *        or an array of names
+     *
+     *   *) [params.ancestorsWhitelist] - directive/group name, which can be an ancestor for the current directive
+     *        or an array of names
+     *
+     *   *) [params.with] - directive/group name, which is a master for the current directive
+     *        or an array of names
+     *
+     *   *) [params.parents] - directive/group name, which can be a parent for the current directive
+     *        or an array of names
+     *
+     *   *) [params.children] - directive/group name, which can be a child of the current directive
+     *        or an array of names
+     *
+     *   *) [params.endsWith] - directive/group name, which can be placed after the current directive
+     *        or an array of names
+     *
+     *   *) [params.endFor] - directive/group name, which must be closed using the current directive
+     *        or an array of names
+     *
+     *   *) [params.trim] - trim for the directive content (Jade-Like mode)
+     *        trim: {
+     *          left: true,
+     *          right: false
+     *        }
+     *
+     *   *) [params.logic = false] - if is true, then the directive is considered as a system type
+     *   *) [params.text = false] - if is true, then the directive will be outputted as a plain text
+     *   *) [params.block = false] - if is true, then the directive is considered as a block type
+     *   *) [params.selfInclude = true] - if is false, then the directive can't be placed inside an another directive
+     *        of the same type
+     *
+     *   *) [params.interpolation = false] - if is true, then the directive will be support interpolation
+     *   *) [params.selfThis = false] - if is true, then inside the directive block all calls of this won't
+     *        be replaced to __THIS__
+     *
+     *   *) [params.shorthands] - shorthands for the directive
+     *        shorthands: {
+     *          // Can be no more than two symbols in the key
+     *          '?': 'void '
+     *        }
+     *
+     * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_constr - constructor
+     * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
+     */
+    Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
+    	var p = $C.extend(false, {}, params),
+    	    concat = function concat(val) {
+    		return val != null ? [].concat(val) : [];
+    	};
+
+    	var _ = function _(_ref) {
+    		var _ref2 = babelHelpers_slicedToArray(_ref, 2);
+
+    		var cache = _ref2[0];
+    		var val = _ref2[1];
+    		return { cache: cache, val: val };
+    	};
+
+    	$C([_([$dirTrim, p.trim]), _([$blockDirs, p.block]), _([$logicDirs, p.logic]), _([$textDirs, p.text]), _([$dirInterpolation, p.interpolation])]).forEach(function (_ref3) {
+    		var cache = _ref3.cache;
+    		var val = _ref3.val;
+
+    		if (cache === $dirTrim) {
+    			switch (val) {
+    				case true:
+    					val = {
+    						left: true,
+    						right: true
+    					};
+
+    					break;
+
+    				case false:
+    					val = {
+    						left: false,
+    						right: false
+    					};
+
+    					break;
+    			}
+
+    			cache[name] = val;
+    		} else {
+    			cache[name] = Boolean(val);
+    		}
+    	});
+
+    	$C([_([$dirGroups, p.group]), _([$dirChain, p.with]), _([$dirParents, p.parents]), _([$dirEnd, p.endFor])]).forEach(function (_ref4) {
+    		var cache = _ref4.cache;
+    		var val = _ref4.val;
+
+    		$C(concat(val)).forEach(function (key) {
+    			if (cache === $dirGroups && key[0] === GROUP) {
+    				throw new Error('Invalid group name "' + key + '" (group name can\'t begin with "' + GROUP + '"');
+    			}
+
+    			cache[key] = cache[key] || {};
+    			cache[key][name] = true;
+    		});
+    	});
+
+    	$C([$dirChain, $dirParents, $dirEnd]).forEach(function (cache) {
+    		$C(cache).forEach(function (el, key) {
+    			if (key[0] !== GROUP) {
+    				return;
+    			}
+
+    			var link = cache[key];
+
+    			$C($dirGroups[key.slice(1)]).forEach(function (el, group) {
+    				cache[group] = cache[group] || {};
+    				$C(link).forEach(function (el, dir) {
+    					return cache[group][dir] = true;
+    				});
+    			});
+    		});
+    	});
+
+    	$C([_([$dirParents, p.children]), _([$dirEnd, p.endsWith])]).forEach(function (_ref5) {
+    		var cache = _ref5.cache;
+    		var val = _ref5.val;
+
+    		$C(concat(val)).forEach(function (key) {
+    			cache[name] = cache[name] || {};
+    			cache[name][key] = true;
+    		});
+    	});
+
+    	$C([$dirParents, $dirEnd]).forEach(function (cache) {
+    		$C(cache).forEach(function (dir) {
+    			$C(dir).forEach(function (el, key) {
+    				if (key[0] !== GROUP) {
+    					return;
+    				}
+
+    				$C($dirGroups[key.slice(1)]).forEach(function (val, key) {
+    					return dir[key] = true;
+    				});
+    			});
+    		});
+    	});
+
+    	_ = function _(_ref6) {
+    		var _ref7 = babelHelpers_slicedToArray(_ref6, 3);
+
+    		var cache = _ref7[0];
+    		var plainCache = _ref7[1];
+    		var val = _ref7[2];
+    		return { cache: cache, plainCache: plainCache, val: val };
+    	};
+
+    	$C([_([dirPlacement, dirPlacementPlain, p.placement]), _([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]), _([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])]).forEach(function (_ref8) {
+    		var cache = _ref8.cache;
+    		var plainCache = _ref8.plainCache;
+    		var val = _ref8.val;
+
+    		cache[name] = $C(concat(val)).reduce(function (map, el) {
+    			return map[el] = [el], map;
+    		}, {});
+
+    		$C(cache).forEach(function (map, key) {
+    			$C(map).forEach(function (el, key) {
+    				if (key[0] !== GROUP) {
+    					return;
+    				}
+
+    				key = key.slice(1);
+    				if ($dirGroups[key]) {
+    					map[key] = Object.keys($dirGroups[key]);
+    				}
+    			});
+
+    			plainCache[key] = {};
+    			$C(map).forEach(function (el) {
+    				return $C(el).forEach(function (el) {
+    					if (el[0] !== GROUP) {
+    						plainCache[key][el] = true;
+    					}
+    				});
+    			});
+    		});
+    	});
+
+    	$C(p.shorthands).forEach(function (el, key) {
+    		if (key.length > 2) {
+    			throw new Error('Invalid shorthand key "' + key + '" (key.length > 2)');
+    		}
+
+    		if ($dirNameShorthands[key] && HAS_CONSOLE_LOG) {
+    			console.log('Warning: replacer "' + key + '" already exists');
+    		}
+
+    		$dirNameShorthands[key] = isFunction(el) ? el : function (cmd) {
+    			return cmd.replace(key, el);
+    		};
+
+    		if (key[0] !== '/') {
+    			SHORTS[key] = true;
+    		}
+    	});
+
+    	if (p.alias) {
+    		$dirNameAliases[name] = name.replace(/__(.*?)__/, '$1');
+    	}
+
+    	if (!(p.selfInclude = p.selfInclude !== false)) {
+    		p.block = true;
+    	}
+
+    	/** @this {Parser} */
+    	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
+    		var _this = this;
+
+    		var structure = this.structure;
+
+    		var dirName = this.name = this.getDirName(name),
+    		    prevDirName = structure.name,
+    		    ignore = $dirGroups['ignore'][dirName];
+
+    		switch (p.placement) {
+    			case 'template':
+    				if (!this.tplName) {
+    					return this.error('the directive "' + dirName + '" can be used only within directives ' + q(this.getGroupList('template')));
+    				}
+
+    				break;
+
+    			case 'global':
+    				if (structure.parent) {
+    					return this.error('the directive "' + dirName + '" can be used only within the global space');
+    				}
+
+    				break;
+    		}
+
+    		if (p.notEmpty && !command) {
+    			return this.error('the directive "' + dirName + '" must have a body');
+    		}
+
+    		if (p.generator && !this.parentTplName && !this.generator && !this.outerLink) {
+    			return this.error('the directive "' + dirName + '" can be used only within a generator template');
+    		}
+
+    		var rmBlacklistList = concat(p.renderModesBlacklist),
+    		    rmBlacklist = $C(rmBlacklistList).reduce(function (map, el) {
+    			return map[el] = true, map;
+    		}, {});
+
+    		if (p.renderModesBlacklist && rmBlacklist[this.renderMode]) {
+    			return this.error('the directive "' + dirName + '" can\'t be used with directives ' + q(rmBlacklist) + ' rendering modes');
+    		}
+
+    		var rmWhitelistList = concat(p.renderModesWhitelist),
+    		    rmWhitelist = $C(rmWhitelistList).reduce(function (map, el) {
+    			return map[el] = true, map;
+    		}, {});
+
+    		if (p.renderModesWhitelist && !rmWhitelist[this.renderMode]) {
+    			return this.error('the directive "' + dirName + '" can be used only with directives ' + q(rmWhitelistList) + ' rendering modes');
+    		}
+
+    		var prevChain = $dirChain[prevDirName] && $dirChain[prevDirName][dirName];
+
+    		if (p.with && !prevChain) {
+    			var groups = $C([].concat(p.with)).reduce(function (arr, el) {
+    				return arr.concat(el[0] === GROUP ? _this.getGroupList(el.slice(1)) : el);
+    			}, []);
+
+    			return this.error('the directive "' + dirName + '" can be used only with directives ' + q(groups));
+    		}
+
+    		if (p.ancestorsBlacklist && this.has(dirAncestorsBlacklistPlain[name])) {
+    			return this.error('the directive "' + dirName + '" can\'t be used within directives ' + q(Object.keys(dirAncestorsBlacklistPlain[name])));
+    		}
+
+    		if (p.ancestorsWhitelist && !this.has(dirAncestorsWhitelistPlain[name])) {
+    			return this.error('the directive "' + dirName + '" can be used only within directives ' + q(Object.keys(dirAncestorsWhitelistPlain[name])));
+    		}
+
+    		if (!p.selfInclude && this.has(dirName)) {
+    			return this.error('the directive "' + dirName + '" can\'t be used within the "' + dirName + '"');
+    		}
+
+    		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'private')[dirName]) {
+    			return this.error('decorators can\'t be used after ' + dirName);
+    		}
+
+    		if (p.text) {
+    			this.text = true;
+    		}
+
+    		if (p.filters) {
+    			this.appendDefaultFilters(p.filters);
+    		}
+
+    		var from = this.result.length;
+
+    		if (!p.deferInit && !p.with) {
+    			if (p.block) {
+    				this.startDir();
+    			} else {
+    				this.startInlineDir();
+    			}
+    		}
+
+    		if (p.selfThis) {
+    			this.selfThis.push(true);
+    		}
+
+    		if (opt_constr) {
+    			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
+    		}
+
+    		if (structure.chain && !prevChain && !ignore && !this.isLogic()) {
+    			var parent = this.getNonLogicParent().name;
+
+    			if ($dirParents[parent] && $dirParents[parent][dirName]) {
+    				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
+    			} else if (dirName !== 'end') {
+    				return this.error('the directive "' + dirName + '" can\'t be used within the "' + parent + '"');
+    			}
+    		}
+
+    		var newStructure = this.structure;
+
+    		if (newStructure.params['@from'] === undefined) {
+    			newStructure.params['@from'] = from;
+    		}
+
+    		if ($dirParents[dirName]) {
+    			newStructure.chain = true;
+    			this.strongSpace.push(true);
+    		}
+
+    		if (structure === newStructure) {
+    			if (!ignore && (!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName]) && $dirEnd[prevDirName] && !$dirEnd[prevDirName][dirName]) {
+    				return this.error('the directive "' + dirName + '" can\'t be used after the "' + prevDirName + '"');
+    			}
+    		} else {
+    			var siblings = dirName === 'end' ? newStructure.children : newStructure.parent && newStructure.parent.children;
+
+    			if (siblings) {
+    				var j = 1,
+    				    prev = undefined;
+
+    				while ((prev = siblings[siblings.length - j]) && (prev.name === 'text' || prev === newStructure)) {
+    					j++;
+    				}
+
+    				if (!ignore && prev && (!$dirChain[prev.name] || !$dirChain[prev.name][dirName]) && $dirEnd[prev.name] && !$dirEnd[prev.name][dirName]) {
+    					return this.error('the directive "' + dirName + '" can\'t be used after the "' + prev.name + '"');
+    				}
+    			}
+    		}
+
+    		this.applyQueue();
+
+    		if (this.inline === true) {
+    			baseEnd.call(this);
+
+    			if (opt_destruct) {
+    				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
+    			}
+
+    			this.inline = null;
+    			this.structure = this.structure.parent;
+
+    			if (this.blockStructure && this.blockStructure.name === 'const') {
+    				this.blockStructure = this.blockStructure.parent;
+    			}
+    		}
+    	};
+
+    	Snakeskin.Directives[name + 'End'] = opt_destruct;
+
+    	/** @this {Parser} */
+    	var baseEnd = Snakeskin.Directives[name + 'BaseEnd'] = function () {
+    		var _this2 = this;
+
+    		var structure = this.structure;
+    		var _structure = this.structure;
+    		var params = _structure.params;
+    		var parent = _structure.parent;
+
+    		if (params['@scope']) {
+    			this.scope.pop();
+    		}
+
+    		var chainParent = $dirParents[this.getNonLogicParent().name];
+
+    		if ($dirParents[structure.name] || chainParent && chainParent[structure.name]) {
+    			this.strongSpace.pop();
+    		}
+
+    		if (p.filters) {
+    			this.filters.pop();
+    		}
+
+    		if (p.selfThis) {
+    			this.selfThis.pop();
+    		}
+
+    		$C(params['@consts']).forEach(function (el, key) {
+    			$consts[_this2.tplName][key] = el;
+    		});
+
+    		var res = params['@result'] ? params['@result'] : this.result;
+
+    		var from = params['@from'],
+    		    to = res.length;
+
+    		if (from == null) {
+    			return;
+    		}
+
+    		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
+    			try {
+    				this.evalStr(res.slice(from, to));
+    			} catch (err) {
+    				return this.error(err.message);
+    			}
+
+    			if (stack.length) {
+    				this.source = this.source.slice(0, this.i + 1) + this.replaceCData(stack.join('')) + this.source.slice(this.i + 1);
+
+    				stack.splice(0, stack.length);
+    			}
+    		}
+    	};
+    };
+
     var cache = {};
 
     /**
@@ -1560,10 +2164,10 @@
      * which belong to the specified groups
      *
      * @param {...string} names - group name
-     * @return {!Object.<string, boolean>}
+     * @return {!Object<string, boolean>}
      */
     Parser.prototype.getGroup = function (names) {
-      var cacheKey = $C$1.toArray(arguments).join();
+      var cacheKey = Array.from(arguments).join();
 
       if (cache[cacheKey]) {
         return clone(cache[cacheKey]);
@@ -1571,9 +2175,11 @@
 
       var map = {};
 
-      $C$1(arguments).forEach(function (name) {
-        return $C$1($dirGroups[name]).forEach(function (el, key) {
-          return map[key] = true;
+      $C(arguments).forEach(function (name) {
+        return $C($dirGroups[name]).forEach(function (el, key) {
+          if (key !== GROUP) {
+            map[key] = true;
+          }
         });
       });
 
@@ -1586,7 +2192,7 @@
      * which belong to the specified groups
      *
      * @param {...string} names - group name
-     * @return {!Array.<string>}
+     * @return {!Array<string>}
      */
     Parser.prototype.getGroupList = function (names) {
       return Object.keys(this.getGroup.apply(this, arguments));
@@ -1608,14 +2214,14 @@
     	var isDecl = this.getGroupList('inherit'),
     	    is = {};
 
-    	$C$1(isDecl).forEach(function (el, i) {
+    	$C(isDecl).forEach(function (el, i) {
     		is[i * 2] = el;
     		is[i * 2 + 1] = el + '_add';
     	});
 
     	var res = $cache[parentTpl];
     	if (!this.tolerateWhitespaces) {
-    		res += '' + ADV_LEFT_BLOCK + LEFT_BLOCK + '__&-__' + RIGHT_BLOCK;
+    		res += '' + ADV_LEFT_BOUND + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
     	}
 
     	var length = isDecl.length * 2,
@@ -1647,7 +2253,7 @@
     			}
     		}
 
-    		$C$1(el).forEach(function (val, key) {
+    		$C(el).forEach(function (val, key) {
     			var current = el[key],
     			    parent = !tb[k + key].drop && prev[key];
 
@@ -1670,7 +2276,7 @@
 
     			var diff = parent ? parent.from : from;
 
-    			$C$1(advDiff.sort(sort)).forEach(function (el) {
+    			$C(advDiff.sort(sort)).forEach(function (el) {
     				if (el.val <= diff) {
     					adv += el.adv;
     				} else {
@@ -1709,7 +2315,7 @@
     							from += adv;
     						}
 
-    						block = type === 'const_add' ? '' + (current.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK + block + RIGHT_BLOCK : block;
+    						block = type === 'const_add' ? '' + (current.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND + block + RIGHT_BOUND : block;
 
     						res = res.slice(0, from) + block + res.slice(from);
 
@@ -1744,7 +2350,7 @@
         return false;
       }
 
-      var res = $C$1(COMMENTS).get({ filter: function filter(el) {
+      var res = $C(COMMENTS).get({ filter: function filter(el) {
           var chunk = str.substr(pos, el.length);
           return COMMENTS[chunk] && chunk === el;
         }, mult: false });
@@ -1764,9 +2370,9 @@
 
     var commandRgxp = /([^\s]+).*/;
     var nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/;
-    var rightPartRgxp = new RegExp('(?:' + r(ADV_LEFT_BLOCK) + '?' + LEFT_BLOCK + '__&-__' + r(RIGHT_BLOCK) + '|)\\s*$');
+    var rightPartRgxp = new RegExp('(?:' + r(ADV_LEFT_BOUND) + '?' + LEFT_BOUND + '__&-__' + r(RIGHT_BOUND) + '|)\\s*$');
     var rightWSRgxp = /\s*$/;
-    var lastSymbolRgxp = new RegExp('(' + r(ADV_LEFT_BLOCK) + '|\\\\)$');
+    var lastSymbolRgxp = new RegExp('(' + r(ADV_LEFT_BOUND) + '|\\\\)$');
     var endDirInit = undefined;
     var needSpace = undefined;
     var eol$1 = undefined;
@@ -1840,7 +2446,7 @@
 
     			if (clrL) {
     				if (clrL === 1 && needSpace) {
-    					code += '' + ADV_LEFT_BLOCK + LEFT_BLOCK + '__&-__' + RIGHT_BLOCK;
+    					code += '' + ADV_LEFT_BOUND + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
     				}
 
     				code += el;
@@ -1862,7 +2468,7 @@
     				init = false;
     				clrL = 0;
 
-    				if (el === ADV_LEFT_BLOCK) {
+    				if (el === ADV_LEFT_BOUND) {
     					diff = SHORTS[diff2str] ? 3 : SHORTS[next] ? 2 : 1;
     				} else {
     					diff = SHORTS[next2str] ? 2 : 1;
@@ -1885,7 +2491,7 @@
     				}
 
     				var replacer = undefined;
-    				if (el === ADV_LEFT_BLOCK) {
+    				if (el === ADV_LEFT_BOUND) {
     					replacer = $dirNameShorthands[diff2str] || $dirNameShorthands[next] || $dirNameShorthands[next2str] || $dirNameShorthands[el];
     				} else {
     					replacer = $dirNameShorthands[next2str] || $dirNameShorthands[el];
@@ -1895,7 +2501,7 @@
     					decl.name = replacer(decl.name).replace(commandRgxp, '$1');
     				}
 
-    				var adv = el === ADV_LEFT_BLOCK ? ADV_LEFT_BLOCK : '';
+    				var adv = el === ADV_LEFT_BOUND ? ADV_LEFT_BOUND : '';
 
     				var obj = {
     					adv: adv,
@@ -1919,7 +2525,7 @@
     							}
 
     							dir = obj.dir = obj.block = false;
-    							obj.adv = adv = ADV_LEFT_BLOCK;
+    							obj.adv = adv = ADV_LEFT_BOUND;
     						}
     					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
     						obj.parent = struct.parent;
@@ -1930,7 +2536,7 @@
     							}
 
     							dir = obj.dir = obj.block = false;
-    							obj.adv = adv = ADV_LEFT_BLOCK;
+    							obj.adv = adv = ADV_LEFT_BOUND;
     						}
 
     						end(struct, obj);
@@ -1955,8 +2561,8 @@
     					}
     				}
 
-    				var s = dir ? adv + LEFT_BLOCK : '',
-    				    e = dir ? RIGHT_BLOCK : '';
+    				var s = dir ? adv + LEFT_BOUND : '',
+    				    e = dir ? RIGHT_BOUND : '';
 
     				var parts = undefined,
     				    txt = undefined;
@@ -1967,7 +2573,7 @@
     					if (decl.sComment) {
     						parts = [decl.command];
     					} else {
-    						parts = $C$1(this.replaceDangerBlocks(decl.command).split(INLINE)).map(function (el) {
+    						parts = $C(this.replaceDangerBlocks(decl.command).split(INLINE)).map(function (el) {
     							return _this.pasteDangerBlocks(el);
     						});
 
@@ -1984,7 +2590,7 @@
     				code += space;
 
     				if (needSpace && (obj.text || !Snakeskin.Directives[obj.name])) {
-    					code += '' + ADV_LEFT_BLOCK + LEFT_BLOCK + '__&-__' + RIGHT_BLOCK;
+    					code += '' + ADV_LEFT_BOUND + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
     				}
 
     				code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
@@ -2043,8 +2649,8 @@
 
     	str = str.replace(rightPartRgxp, '');
 
-    	var s = struct.adv + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
+    	var s = struct.adv + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
 
     	var tmp = undefined;
     	if (needSpace) {
@@ -2057,7 +2663,7 @@
     	str += '' + tmp + s + '__end__' + e + s + '__cutLine__' + e;
 
     	if (rightSpace && needSpace) {
-    		str += '' + struct.adv + LEFT_BLOCK + '__&-__' + RIGHT_BLOCK;
+    		str += '' + struct.adv + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
     	}
 
     	return str + rightSpace;
@@ -2321,7 +2927,7 @@
 
     	return str.replace(tplVarsRgxp, function (str, pos) {
     		var val = _this.dirContent[pos];
-    		return '\' + ' + (opt_fn ? opt_fn(val) : val) + ' + \'';
+    		return '\' + (' + (opt_fn ? opt_fn(val) : val) + ') + \'';
     	});
     };
 
@@ -2329,10 +2935,7 @@
      * Replaces found matches ${ ... } from a string to SS calls
      *
      * @param {string} str - source string
-     * @param {?{
-     *   unsafe: (boolean|undefined),
-     *   replace: (boolean|undefined)
-     * }=} [opt_params] - additional parameters:
+     * @param {?$$SnakeskinParserReplaceTplVarsParams=} [opt_params] - additional parameters:
      *
      *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
      *   *) [replace=false] - if is true, then matches will be replaced to __SNAKESKIN__\d+_
@@ -2451,9 +3054,9 @@
     					}
     				}
 
-    				if (el === LEFT_BLOCK) {
+    				if (el === LEFT_BOUND) {
     					begin++;
-    				} else if (el === RIGHT_BLOCK) {
+    				} else if (el === RIGHT_BOUND) {
     					begin--;
     				}
     			}
@@ -2482,7 +3085,7 @@
     					res += '__SNAKESKIN__' + this.dirContent.length + '_';
     					this.dirContent.push(tmp);
     				} else {
-    					res += '\' + ' + tmp + ' + \'';
+    					res += '\' + (' + tmp + ') + \'';
     				}
     			}
     		} else {
@@ -2515,8 +3118,8 @@
     /**
      * Returns a real directive name
      *
-     * @param {?string} name - source name
-     * @return {?string}
+     * @param {string} name - source name
+     * @return {string}
      */
     Parser.prototype.getDirName = function (name) {
     	return $dirNameAliases[name] || name;
@@ -2601,7 +3204,7 @@
 
     	name = this.replaceFileNamePatterns(name);
     	if (nmRgxp.test(name)) {
-    		name = String($C$1(name.replace(nmssRgxp, '%').replace(nmsRgxp, '.%').replace(nmeRgxp, '').split('.')).reduce(function (str, el) {
+    		name = String($C(name.replace(nmssRgxp, '%').replace(nmsRgxp, '.%').replace(nmeRgxp, '').split('.')).reduce(function (str, el) {
     			var custom = el[0] === '%';
 
     			if (custom) {
@@ -2649,13 +3252,13 @@
      * @return {!Parser}
      */
     Parser.prototype.clearScopeCache = function (name) {
-    	$C$1($scope).forEach(function (cluster, key) {
+    	$C($scope).forEach(function (cluster, key) {
     		if (key === 'template') {
     			if (cluster[name] && cluster[name].parent) {
     				delete cluster[name].parent.children[name];
     			}
     		} else {
-    			$C$1(cluster[name]).forEach(function (el) {
+    			$C(cluster[name]).forEach(function (el) {
     				if (el.parent) {
     					delete el.parent.children[name];
     				}
@@ -2687,7 +3290,7 @@
 
     	this.params.pop();
 
-    	$C$1(this.params[this.params.length - 1]).forEach(function (el, key) {
+    	$C(this.params[this.params.length - 1]).forEach(function (el, key) {
     		_this[key] = el;
     	});
 
@@ -2707,7 +3310,7 @@
      */
     function getFromCache(key, code, params, ctx) {
     	if (IS_NODE && ctx !== NULL && $globalFnCache[key]) {
-    		$C$1($globalFnCache[key][code]).forEach(function (el, key) {
+    		$C($globalFnCache[key][code]).forEach(function (el, key) {
     			ctx[key] = el;
     		});
     	}
@@ -2723,7 +3326,7 @@
     			return;
     		}
 
-    		$C$1(cache.words).forEach(function (el, key) {
+    		$C(cache.words).forEach(function (el, key) {
     			params.words[key] = el;
     		});
     	}
@@ -2733,7 +3336,7 @@
     			return;
     		}
 
-    		$C$1(cache.debug).forEach(function (el, key) {
+    		$C(cache.debug).forEach(function (el, key) {
     			params.debug[key] = el;
     		});
     	}
@@ -2749,7 +3352,7 @@
      * @return {?string}
      */
     function getCacheKey(params, ctx) {
-    	return params.language ? null : JSON.stringify([params.exports, ctx !== NULL, escapeEOLs(params.eol), params.tolerateWhitespaces, params.renderAs, params.renderMode, params.prettyPrint, params.ignore, params.localization, params.i18nFn, params.i18nFnOptions, params.literalBounds, params.bemFilter, params.filters, params.useStrict]);
+    	return params.language ? null : JSON.stringify([params.module, params.moduleId, params.moduleName, ctx !== NULL, escapeEOLs(params.eol), params.tolerateWhitespaces, params.renderAs, params.renderMode, params.prettyPrint, params.ignore, params.localization, params.i18nFn, params.i18nFnOptions, params.literalBounds, params.bemFilter, params.filters, params.useStrict]);
     }
 
     /**
@@ -2765,12 +3368,11 @@
     		return;
     	}
 
-    	ctx['init'](Snakeskin);
     	if (!key || !(params.cache || $globalCache[key])) {
     		return;
     	}
 
-    	$globalFnCache[key] = $C$1.extend(false, $globalFnCache[key], babelHelpers_defineProperty({}, code, ctx));
+    	$globalFnCache[key] = $C.extend(false, $globalFnCache[key], babelHelpers_defineProperty({}, code, ctx));
     }
 
     /**
@@ -2786,7 +3388,7 @@
     		return;
     	}
 
-    	$globalCache[key] = $C$1.extend(false, $globalCache[key], babelHelpers_defineProperty({}, code, {
+    	$globalCache[key] = $C.extend(false, $globalCache[key], babelHelpers_defineProperty({}, code, {
     		debug: params.debug,
     		text: parser.result,
     		words: params.words
@@ -3017,11 +3619,7 @@
      * binds to the scope and initialization filters
      *
      * @param {string} command - source command
-     * @param {?{
-     *   unsafe: (boolean|undefined),
-     *   skipFirstWord: (boolean|undefined),
-     *   skipValidation: (boolean|undefined)
-     * }=} [opt_params] - additional parameters:
+     * @param {?$$SnakeskinParserOutParams=} [opt_params] - additional parameters:
      *
      *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
      *   *) [skipFirstWord=false] - if is true, then the first word in the string will be skipped
@@ -3040,7 +3638,7 @@
 
     	var structure = this.structure;
     	var tplName = String(this.tplName);
-    	var Filters = $C$1(Snakeskin.Filters);
+    	var Filters = $C(Snakeskin.Filters);
 
     	if (dangerRgxp.test(command)) {
     		this.error('unsupported syntax');
@@ -3200,7 +3798,7 @@
       * @return {string}
       */
     	var joinFilterParams = function joinFilterParams(params) {
-    		return String($C$1(params).map(function (el) {
+    		return String($C(params).map(function (el) {
     			return isFunction(el) ? String(el(_this)) : el;
     		}).join());
     	};
@@ -3211,7 +3809,7 @@
       * @return {string}
       */
     	var removeDefFilters = function removeDefFilters(str, map) {
-    		return String($C$1(map).reduce(function (str, el, filter) {
+    		return String($C(map).reduce(function (str, el, filter) {
     			return str.replace(getRgxp('\\|' + filter + ' .*?(?=#;)', 'g'), '');
     		}, str));
     	};
@@ -3225,12 +3823,12 @@
     		var isLocalFilter = filters === defFilters.local,
     		    prfx = [isLocalFilter ? '(' : '', isLocalFilter ? ')' : ''];
 
-    		return String($C$1(filters).reduce(function (val, filter) {
+    		return String($C(filters).reduce(function (val, filter) {
     			var reduce = function reduce(str, args, filter) {
     				return '' + prfx[0] + val + '|' + filter + ' ' + joinFilterParams(args) + '#;' + prfx[1];
     			};
 
-    			return $C$1(filter).reduce(reduce, '');
+    			return $C(filter).reduce(reduce, '');
     		}, str));
     	};
 
@@ -3305,7 +3903,7 @@
     					} else {
     						vRes = addScope(finalWord);
     					}
-    				} else if (finalWord === 'this' && tplName && !this.hasParent(this.getGroup('selfThis'))) {
+    				} else if (finalWord === 'this' && tplName && !this.selfThis[this.selfThis.length - 1]) {
     					vRes = '__THIS__';
     				} else {
     					vRes = finalWord;
@@ -3386,7 +3984,7 @@
 
     				var isGlobalFilter = i === end && el != ')';
 
-    				filters = $C$1(filters).get(function (el) {
+    				filters = $C(filters).get(function (el) {
     					if (el[0] !== '!') {
     						return true;
     					}
@@ -3400,14 +3998,14 @@
     					}
     				});
 
-    				var tmp = $C$1(filters).reduce(function (decl, el) {
+    				var tmp = $C(filters).reduce(function (decl, el) {
     					var params = el.split(' '),
     					    input = params.slice(1).join(' ').trim(),
     					    current = params.shift().split('.');
 
     					var bind = [];
     					if (Filters.in(current)) {
-    						$C$1(Filters.get(current)['ssFilterParams']).forEach(function (el, key) {
+    						$C(Filters.get(current)['ssFilterParams']).forEach(function (el, key) {
     							if (key[0] === '!') {
     								var filter = key.slice(1);
 
@@ -3422,7 +4020,7 @@
     						});
     					}
 
-    					decl = '(' + cacheLink + ' = __FILTERS__' + $C$1(current).reduce(function (str, el) {
+    					decl = '(' + cacheLink + ' = __FILTERS__' + $C(current).reduce(function (str, el) {
     						return str + ('[\'' + el + '\']');
     					}, '') + (filterWrapper || !pCount ? '.call(this,' : '') + decl + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + ')';
 
@@ -3556,7 +4154,7 @@
     Parser.prototype.applyQueue = function () {
       var _this = this;
 
-      $C$1(this.structure.stack).forEach(function (fn, i, stack) {
+      $C(this.structure.stack).forEach(function (fn, i, stack) {
         fn.call(_this);
         any(stack).shift();
       }, { live: true });
@@ -3564,8 +4162,6 @@
       return this;
     };
 
-    var _templateObject$16 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t}\n\n\t\t\t', '\n\n\t\t}).call(this);\n\t'], ['\n\t\t\t}\n\n\t\t\t', '\n\n\t\t}).call(this);\n\t']);
-    var _templateObject2$11 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\tif (!__IS_NODE__ && !__HAS_EXPORTS__) {\n\t\t\t\t\t\t\t__INIT__();\n\t\t\t\t\t\t}\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (!__IS_NODE__ && !__HAS_EXPORTS__) {\n\t\t\t\t\t\t\t__INIT__();\n\t\t\t\t\t\t}\n\t\t\t\t\t']);
     /**
      * Returns a string for the beginning of concatenation with __RESULT__
      * @return {string}
@@ -3663,8 +4259,8 @@
     Parser.prototype.replaceCData = function (str) {
     	var _this = this;
 
-    	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
+    	var s = ADV_LEFT_BOUND + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
 
     	return str.replace(new RegExp(r(s) + 'cdata' + r(e) + '([\\s\\S]*?)' + r(s) + '(?:\\/cdata|end cdata)' + r(e), 'g'), function (str, data) {
     		_this.cdataContent.push(data);
@@ -3717,7 +4313,10 @@
     	    resDecl = this.eol + '   ' + this.result;
 
     	this.result = '/* ' + versionDecl + ', ' + keyDecl + ', ' + labelDecl + ', ' + includesDecl + ', ' + generatedAtDecl + '.' + resDecl;
-    	this.result += ws$1(_templateObject$16, this.exports === 'default' ? ws$1(_templateObject2$11) : '');
+
+    	if (this.module !== 'native') {
+    		this.result += '});';
+    	}
 
     	return this;
     };
@@ -3742,7 +4341,7 @@
      * Adds a string to the result JS string if is possible
      *
      * @param {string=} str - source string
-     * @param {?{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}=} [opt_params] - addition parameters:
+     * @param {?$$SnakeskinParserSaveParams=} [opt_params] - addition parameters:
      *
      *   *) [iface=false] - if is true, then the current operation is an interface
      *   *) [jsDoc] - last position of appending jsDoc or false
@@ -3778,7 +4377,7 @@
      * (with this.isSimpleOutput())
      *
      * @param {string=} str - source string
-     * @param {?{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}=} [opt_params] - addition parameters:
+     * @param {?$$SnakeskinParserSaveParams=} [opt_params] - addition parameters:
      *
      *   *) [iface=false] - if is true, then the current operation is an interface
      *   *) [jsDoc] - last position of appending jsDoc or false
@@ -3794,6 +4393,33 @@
     };
 
     /**
+     * Returns an object of the closest non logic parent directive
+     * @return {!Object}
+     */
+    Parser.prototype.getNonLogicParent = function () {
+    	var obj = this.structure.parent;
+
+    	while (true) {
+    		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.args)) {
+    			obj = obj.parent;
+    			continue;
+    		}
+
+    		return obj;
+    	}
+    };
+
+    /**
+     * Returns true if the current directive is logic
+     * @return {boolean}
+     */
+    Parser.prototype.isLogic = function () {
+    	var structure = this.structure;
+
+    	return $logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.args);
+    };
+
+    /**
      * Checks availability of a directive in a chain structure
      *
      * @private
@@ -3803,37 +4429,37 @@
      * @return {(boolean|string|!Object<string, boolean>)}
      */
     Parser.prototype._has = function (name, opt_obj, opt_return) {
-      var obj = opt_obj;
+    	var obj = opt_obj;
 
-      if (isArray(name)) {
-        name = $C$1(name).reduce(function (map, el) {
-          if (isObject(el)) {
-            $C$1.extend(false, map, el);
-          } else {
-            map[el] = true;
-          }
+    	if (isArray(name)) {
+    		name = $C(name).reduce(function (map, el) {
+    			if (isObject(el)) {
+    				$C.extend(false, map, el);
+    			} else {
+    				map[el] = true;
+    			}
 
-          return map;
-        }, {});
-      }
+    			return map;
+    		}, {});
+    	}
 
-      while (true) {
-        var nm = this.getDirName(obj.name);
+    	while (true) {
+    		var nm = obj.name;
 
-        if (name[nm] || nm === name) {
-          if (name[nm]) {
-            return opt_return ? obj : nm;
-          }
+    		if (name[nm] || nm === name) {
+    			if (name[nm]) {
+    				return opt_return ? obj : nm;
+    			}
 
-          return opt_return ? obj : true;
-        }
+    			return opt_return ? obj : true;
+    		}
 
-        if (obj.parent && obj.parent.name !== 'root') {
-          obj = obj.parent;
-        } else {
-          return false;
-        }
-      }
+    		if (obj.parent && obj.parent.name !== 'root') {
+    			obj = obj.parent;
+    		} else {
+    			return false;
+    		}
+    	}
     };
 
     /**
@@ -3845,7 +4471,7 @@
      * @return {(boolean|string|!Object<string, boolean>)}
      */
     Parser.prototype.has = function (name, opt_return) {
-      return this._has(name, this.structure, opt_return);
+    	return this._has(name, this.structure, opt_return);
     };
 
     /**
@@ -3857,11 +4483,11 @@
      * @return {(boolean|string|!Object<string, boolean>)}
      */
     Parser.prototype.hasParent = function (name, opt_return) {
-      if (this.structure.parent) {
-        return this._has(name, this.structure.parent, opt_return);
-      }
+    	if (this.structure.parent) {
+    		return this._has(name, this.structure.parent, opt_return);
+    	}
 
-      return false;
+    	return false;
     };
 
     /**
@@ -3873,11 +4499,11 @@
      * @return {(boolean|string|!Object<string, boolean>)}
      */
     Parser.prototype.hasBlock = function (name, opt_return) {
-      if (this.blockStructure) {
-        return this._has(name, this.blockStructure, opt_return);
-      }
+    	if (this.blockStructure) {
+    		return this._has(name, this.blockStructure, opt_return);
+    	}
 
-      return false;
+    	return false;
     };
 
     /**
@@ -3889,20 +4515,18 @@
      * @return {(boolean|string|!Object<string, boolean>)}
      */
     Parser.prototype.hasParentBlock = function (name, opt_return) {
-      if (this.blockStructure && this.blockStructure.parent) {
-        return this._has(name, this.blockStructure.parent, opt_return);
-      }
+    	if (this.blockStructure && this.blockStructure.parent) {
+    		return this._has(name, this.blockStructure.parent, opt_return);
+    	}
 
-      return false;
+    	return false;
     };
-
-        var _templateObject$17 = babelHelpers_taggedTemplateLiteral(['\n\t\tvar __ARGUMENTS__ = arguments;\n\t\t', '\n\t'], ['\n\t\tvar __ARGUMENTS__ = arguments;\n\t\t', '\n\t']);
 
     /**
      * Declares a variable and returns string declaration
      *
      * @param {string} name - variable name
-     * @param {?{fn: (boolean|undefined), sys: (boolean|undefined)}=} [opt_params] - addition parameters:
+     * @param {?$$SnakeskinParserDeclVarParams=} [opt_params] - addition parameters:
      *
      *   *) [fn=false] - if is true, then the variable will be declared as a function parameter
      *   *) [sys=false] - if is true, then the variable will be declared as system
@@ -3974,11 +4598,7 @@
      * and returns new string declaration
      *
      * @param {string} str - source string
-     * @param {?{
-     *   end: (boolean|undefined),
-     *   def: (string|undefined),
-     *   sys: (boolean|undefined)
-     * }=} [opt_params] - addition parameters:
+     * @param {?$$SnakeskinParserDeclVarsParams=} [opt_params] - addition parameters:
      *
      *   *) [end=true] - if is true, then will be appended ; to the string
      *   *) [def='undefined'] - default value for variables
@@ -4011,7 +4631,7 @@
     		fin = '';
     	}
 
-    	$C$1(str).forEach(function (el, i) {
+    	$C(str).forEach(function (el, i) {
     		if (B_OPEN[el]) {
     			bOpen++;
     		} else if (B_CLOSE[el]) {
@@ -4049,14 +4669,6 @@
     	return fin.slice(0, -1) + (end ? ';' : '');
     };
 
-    /**
-     * Declares an object of arguments and returns string declaration
-     * @return {string}
-     */
-    Parser.prototype.declArguments = function () {
-    	return ws$1(_templateObject$17, this.declVars('arguments = __ARGUMENTS__'));
-    };
-
     var Filters = Snakeskin.Filters;
 
     /**
@@ -4082,6 +4694,23 @@
     	});
 
     	return this;
+    };
+
+    /**
+     * Sets parameters to the specified Snakeskin filter
+     *
+     * @param {(string|!Function)} filter - filter name or the filter function
+     * @param {Object} params - parameters
+     * @return {!Function}
+     */
+    Snakeskin.setFilterParams = function (filter, params) {
+    	if (isString(filter)) {
+    		Filters[filter]['ssFilterParams'] = params;
+    		return Filters[filter];
+    	}
+
+    	filter['ssFilterParams'] = params;
+    	return any(filter);
     };
 
     /**
@@ -4155,23 +4784,6 @@
     		(_console6 = console).warn.apply(_console6, arguments);
     		return val;
     	}
-    };
-
-    /**
-     * Sets parameters to the specified Snakeskin filter
-     *
-     * @param {(string|!Function)} filter - filter name or the filter function
-     * @param {Object} params - parameters
-     * @return {!Function}
-     */
-    Snakeskin.setFilterParams = function (filter, params) {
-    	if (isString(filter)) {
-    		Filters[filter]['ssFilterParams'] = params;
-    		return Filters[filter];
-    	}
-
-    	filter['ssFilterParams'] = params;
-    	return filter;
     };
 
     /**
@@ -4433,6 +5045,24 @@
     	return String(val).replace(search, replace);
     };
 
+    var tplRgxp = /\${(.*?)}/g;
+
+    /**
+     * Returns a string result of the specified template
+     *
+     * @example
+     * 'hello ${name}' |tpl {name: 'Kobezzza'}
+     *
+     * @param {?} tpl - source template
+     * @param {!Object} map - map of values
+     * @return {string}
+     */
+    Filters['tpl'] = function (tpl, map) {
+    	return String(tpl).replace(tplRgxp, function (str, $0) {
+    		return $0 in map ? map[$0] : '';
+    	});
+    };
+
     /**
      * Converts a value to JSON
      *
@@ -4501,24 +5131,6 @@
     Snakeskin.setFilterParams('default', {
     	'!html': true
     });
-
-    var tplRgxp = /\${(.*?)}/g;
-
-    /**
-     * Returns a string result of the specified template
-     *
-     * @example
-     * 'hello ${name}' |tpl {name: 'Kobezzza'}
-     *
-     * @param {?} tpl - source template
-     * @param {!Object} map - map of values
-     * @return {string}
-     */
-    Filters['tpl'] = function (tpl, map) {
-    	return String(tpl).replace(tplRgxp, function (str, $0) {
-    		return $0 in map ? map[$0] : '';
-    	});
-    };
 
     var nl2brRgxp = /\r?\n|\n/g;
 
@@ -4627,13 +5239,17 @@
      * @return {(string|Snakeskin.HTMLObject)}
      */
     Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
-    	if (type !== 'attrKey') {
+    	if (type !== 'attrKey' || !isObject(val)) {
     		return String(val);
     	}
 
-    	function convert(obj) {
-    		var prfx = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-
+    	/**
+      * @param {Object} obj
+      * @param {?string=} opt_prfx
+      * @return {Snakeskin.HTMLObject}
+      */
+    	function convert(obj, opt_prfx) {
+    		opt_prfx = opt_prfx || '';
     		Snakeskin.forEach(obj, function (el, key) {
     			if (el === FALSE) {
     				return;
@@ -4641,10 +5257,10 @@
 
     			if (isObject(el)) {
     				var group = Filters['attrKeyGroup'](key);
-    				return convert(el, prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
+    				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
     			}
 
-    			var attr = Filters['attrKey'](dasherize(prfx + key));
+    			var attr = Filters['attrKey'](dasherize(opt_prfx + key));
 
     			if (el === TRUE) {
     				el = doctype === 'xml' ? attr : '';
@@ -4666,10 +5282,10 @@
     	}, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE']
     });
 
-    var _templateObject$18 = babelHelpers_taggedTemplateLiteral(['\n\t\t__ATTR_CACHE__ = {};\n\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\t'], ['\n\t\t__ATTR_CACHE__ = {};\n\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\t']);
-    var _templateObject2$12 = babelHelpers_taggedTemplateLiteral(['\n\t\tSnakeskin.forEach(__ATTR_CACHE__, function (el, key) {\n\t\t\t', '\n\t\t});\n\n\t\t__ATTR_CACHE__ = __ATTR_CONCAT_MAP__ = undefined;\n\t'], ['\n\t\tSnakeskin.forEach(__ATTR_CACHE__, function (el, key) {\n\t\t\t', '\n\t\t});\n\n\t\t__ATTR_CACHE__ = __ATTR_CONCAT_MAP__ = undefined;\n\t']);
+    var _templateObject$16 = babelHelpers_taggedTemplateLiteral(['\n\t\t__ATTR_CACHE__ = {};\n\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\t'], ['\n\t\t__ATTR_CACHE__ = {};\n\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\t']);
+    var _templateObject2$10 = babelHelpers_taggedTemplateLiteral(['\n\t\tSnakeskin.forEach(__ATTR_CACHE__, function (el, key) {\n\t\t\t', '\n\t\t});\n\n\t\t__ATTR_CACHE__ = __ATTR_CONCAT_MAP__ = undefined;\n\t'], ['\n\t\tSnakeskin.forEach(__ATTR_CACHE__, function (el, key) {\n\t\t\t', '\n\t\t});\n\n\t\t__ATTR_CACHE__ = __ATTR_CONCAT_MAP__ = undefined;\n\t']);
     var _templateObject3$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t__ATTR_POS__ = 0;\n\t\t\t__ATTR_STR__ = \'\';\n\t\t\t__ATTR_TYPE__ = \'attrVal\';\n\t\t'], ['\n\t\t\t__ATTR_POS__ = 0;\n\t\t\t__ATTR_STR__ = \'\';\n\t\t\t__ATTR_TYPE__ = \'attrVal\';\n\t\t']);
-    var _templateObject4$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\' + (__ATTR_TYPE__ = \'attrKeyGroup\', \'\') +\n\t\t\t\t\'', '', '\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'\') +\n\t\t\t\t\'', '\n\t\t\t'], ['\n\t\t\t\t\' + (__ATTR_TYPE__ = \'attrKeyGroup\', \'\') +\n\t\t\t\t\'', '', '\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'\') +\n\t\t\t\t\'', '\n\t\t\t']);
+    var _templateObject4$5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\' + (__ATTR_TYPE__ = \'attrKeyGroup\', \'\') +\n\t\t\t\t\'', '', '\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'\') +\n\t\t\t\t\'', '\n\t\t\t'], ['\n\t\t\t\t\' + (__ATTR_TYPE__ = \'attrKeyGroup\', \'\') +\n\t\t\t\t\'', '', '\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'\') +\n\t\t\t\t\'', '\n\t\t\t']);
     var _templateObject5$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__ATTR_TMP__ = \'', '\';\n\n\t\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ !== \'\') {\n\t\t\t\t\t__ATTR_STR__ += __ATTR_POS__ ? \' \' + __ATTR_TMP__ : __ATTR_TMP__;\n\t\t\t\t\t__ATTR_POS__++;\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__ATTR_TMP__ = \'', '\';\n\n\t\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ !== \'\') {\n\t\t\t\t\t__ATTR_STR__ += __ATTR_POS__ ? \' \' + __ATTR_TMP__ : __ATTR_TMP__;\n\t\t\t\t\t__ATTR_POS__++;\n\t\t\t\t}\n\t\t\t']);
     var _templateObject6$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\t\t\t__ATTR_TYPE__ = \'attrKey\';\n\t\t\t__ATTR_TMP__ = \'', '\';\n\n\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ != \'\') {\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || \'\';\n\t\t\t\t', '\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] += ', ';\n\t\t\t}\n\n\t\t\t__ATTR_POS__ = __ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;\n\t\t'], ['\n\t\t\t', '\n\t\t\t__ATTR_TYPE__ = \'attrKey\';\n\t\t\t__ATTR_TMP__ = \'', '\';\n\n\t\t\tif (__ATTR_TMP__ != null && __ATTR_TMP__ != \'\') {\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || \'\';\n\t\t\t\t', '\n\t\t\t\t__ATTR_CACHE__[__ATTR_TMP__] += ', ';\n\t\t\t}\n\n\t\t\t__ATTR_POS__ = __ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;\n\t\t']);
     /**
@@ -4687,7 +5303,7 @@
      * @return {string}
      */
     Parser.prototype.getXMLAttrsDeclStart = function () {
-    	return ws$1(_templateObject$18);
+    	return ws$1(_templateObject$16);
     };
 
     /**
@@ -4699,7 +5315,7 @@
     Parser.prototype.getXMLAttrsDeclBody = function (str) {
     	var _this = this;
 
-    	return String($C$1(this.splitXMLAttrGroup(str)).reduce(function (res, el) {
+    	return String($C(this.splitXMLAttrGroup(str)).reduce(function (res, el) {
     		return res + _this.getXMLAttrDecl(el);
     	}, ''));
     };
@@ -4709,13 +5325,13 @@
      * @return {string}
      */
     Parser.prototype.getXMLAttrsDeclEnd = function () {
-    	return ws$1(_templateObject2$12, !this.stringResult && this.renderMode === 'dom' ? 'Snakeskin.setAttribute($0, key, el);' : this.wrap('\' \' + key + (el && \'="\' + el + \'"\')'));
+    	return ws$1(_templateObject2$10, !this.stringResult && this.renderMode === 'dom' ? 'Snakeskin.setAttribute($0, key, el);' : this.wrap('\' \' + key + (el && \'="\' + __ESCAPE_D_Q__(el) + \'"\')'));
     };
 
     /**
      * Returns string declaration of the specified XML attribute
      *
-     * @param {{attr: string, group: (string|undefined), separator: (string|undefined)}} params - parameters:
+     * @param {$$SnakeskinParserGetXMLAttrDeclParams} params - parameters:
      *
      *   *) attr - source attribute
      *   *) [group] - group name
@@ -4734,10 +5350,10 @@
     	var parts = params.attr.split(' | '),
     	    ref = this.bemRef;
 
-    	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
+    	var s = ADV_LEFT_BOUND + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
 
-    	return String($C$1(parts).reduce(function (res, el) {
+    	return String($C(parts).reduce(function (res, el) {
     		var args = el.split(' = '),
     		    empty = args.length !== 2;
 
@@ -4750,19 +5366,19 @@
     			}
     		}
 
-    		args = $C$1(args).map(function (el) {
+    		args = $C(args).map(function (el) {
     			return el.trim();
     		});
 
     		res += ws$1(_templateObject3$8);
 
     		if (group) {
-    			args[0] = ws$1(_templateObject4$4, group, separator, args[0]);
+    			args[0] = ws$1(_templateObject4$5, group, separator, args[0]);
     		} else {
     			args[0] = args[0][0] === '-' ? 'data-' + args[0].slice(1) : args[0];
     		}
 
-    		res += $C$1(_this2.getTokens(args[1])).reduce(function (res, val) {
+    		res += $C(_this2.getTokens(args[1])).reduce(function (res, val) {
     			if (classRef.test(val) && ref) {
     				val = s + '\'' + ref + '\'' + FILTER + _this2.bemFilter + ' \'' + val.slice('&amp;'.length) + '\'' + e;
     				val = _this2.pasteDangerBlocks(_this2.replaceTplVars(val));
@@ -4781,7 +5397,7 @@
      * Splits a string of XML attribute declaration into groups
      *
      * @param {string} str - source string
-     * @return {!Array<{attr: string, group: (string|undefined), separator: (string|undefined)}>}
+     * @return {!Array<$$SnakeskinParserGetXMLAttrDeclParams>}
      */
     Parser.prototype.splitXMLAttrGroup = function (str) {
     	str = this.replaceTplVars(str, { replace: true });
@@ -4819,11 +5435,9 @@
     				pOpen--;
 
     				if (!pOpen) {
-    					var tmp = attrKey.exec(group);
-
     					groups.push({
     						attr: attr.trim(),
-    						group: tmp && tmp[1] || undefined,
+    						group: (attrKey.exec(group) || [])[1],
     						separator: separator
     					});
 
@@ -4855,10 +5469,10 @@
     	return groups;
     };
 
-    var _templateObject$19 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\t\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else if (', ' && ', ' !== true) {\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else {\n\t\t\t\t__RESULT__.push($0);\n\t\t\t}\n\t\t'], ['\n\t\t\t', '\n\t\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else if (', ' && ', ' !== true) {\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else {\n\t\t\t\t__RESULT__.push($0);\n\t\t\t}\n\t\t']);
-    var _templateObject2$13 = babelHelpers_taggedTemplateLiteral(['\n\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t', '\n\n\t\t} else if (', ' && ', ' !== true) {\n\t\t\t', '\n\t\t\t', '\n\t\t\t__RESULT__ = ', ';\n\n\t\t} else {\n\t\t\t', '\n\t\t}\n\t'], ['\n\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t', '\n\n\t\t} else if (', ' && ', ' !== true) {\n\t\t\t', '\n\t\t\t', '\n\t\t\t__RESULT__ = ', ';\n\n\t\t} else {\n\t\t\t', '\n\t\t}\n\t']);
+    var _templateObject$17 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\t\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else if (', ' && ', ' !== true) {\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else {\n\t\t\t\t__RESULT__.push($0);\n\t\t\t}\n\t\t'], ['\n\t\t\t', '\n\t\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else if (', ' && ', ' !== true) {\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t} else {\n\t\t\t\t__RESULT__.push($0);\n\t\t\t}\n\t\t']);
+    var _templateObject2$11 = babelHelpers_taggedTemplateLiteral(['\n\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t', '\n\n\t\t} else if (', ' && ', ' !== true) {\n\t\t\t', '\n\t\t\t__RESULT__ = ', ';\n\n\t\t} else {\n\t\t\t', '\n\t\t}\n\t'], ['\n\t\tif (', ' && (!', ' || ', ' === true)) {\n\t\t\t', '\n\n\t\t} else if (', ' && ', ' !== true) {\n\t\t\t', '\n\t\t\t__RESULT__ = ', ';\n\n\t\t} else {\n\t\t\t', '\n\t\t}\n\t']);
     var _templateObject3$9 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tif (', ' && ', ' !== true) {\n\t\t\t\t', '\n\n\t\t\t\t__RESULT__ =\n\t\t\t\t\t', ';\n\n\t\t\t\tSnakeskin.setAttribute(\n\t\t\t\t\t', ',\n\t\t\t\t\t', ',\n\t\t\t\t\t', '\n\t\t\t\t);\n\n\t\t\t} else if (', ') {\n\t\t\t\t__RESULT__.pop();\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t\t}\n\t\t'], ['\n\t\t\tif (', ' && ', ' !== true) {\n\t\t\t\t', '\n\n\t\t\t\t__RESULT__ =\n\t\t\t\t\t', ';\n\n\t\t\t\tSnakeskin.setAttribute(\n\t\t\t\t\t', ',\n\t\t\t\t\t', ',\n\t\t\t\t\t', '\n\t\t\t\t);\n\n\t\t\t} else if (', ') {\n\t\t\t\t__RESULT__.pop();\n\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t\t}\n\t\t']);
-    var _templateObject4$5 = babelHelpers_taggedTemplateLiteral(['\n\t\tif (', ' && ', ' !== true) {\n\t\t\t', '\n\n\t\t\t__RESULT__ =\n\t\t\t\t\t', ';\n\n\t\t\t', '\n\n\t\t} else if (', ') {\n\t\t\t', '\n\t\t}\n\t'], ['\n\t\tif (', ' && ', ' !== true) {\n\t\t\t', '\n\n\t\t\t__RESULT__ =\n\t\t\t\t\t', ';\n\n\t\t\t', '\n\n\t\t} else if (', ') {\n\t\t\t', '\n\t\t}\n\t']);
+    var _templateObject4$6 = babelHelpers_taggedTemplateLiteral(['\n\t\tif (', ' && ', ' !== true) {\n\t\t\t', '\n\n\t\t\t__RESULT__ =\n\t\t\t\t\t', ';\n\n\t\t\t', '\n\n\t\t} else if (', ') {\n\t\t\t', '\n\t\t}\n\t'], ['\n\t\tif (', ' && ', ' !== true) {\n\t\t\t', '\n\n\t\t\t__RESULT__ =\n\t\t\t\t\t', ';\n\n\t\t\t', '\n\n\t\t} else if (', ') {\n\t\t\t', '\n\t\t}\n\t']);
     /**
      * Returns string declaration of an opening tag for the specified XML tag
      *
@@ -4901,10 +5515,10 @@
     	var inlineTag = this.out('__INLINE_TAGS__[__TAG__]', { unsafe: true });
 
     	if (!this.stringResult && this.renderMode === 'dom') {
-    		return ws$1(_templateObject$19, this.wrap('$0'), opt_inline, inlineTag, inlineTag, inlineTag, inlineTag, this.declVars('__CALL_CACHE__ = __RESULT__, __NODE__ = $0', { sys: true }), this.getResultDecl());
+    		return ws$1(_templateObject$17, this.wrap('$0'), opt_inline, inlineTag, inlineTag, inlineTag, inlineTag, this.declVars('__CALL_CACHE__ = __RESULT__, __NODE__ = $0', { sys: true }), this.getResultDecl());
     	}
 
-    	return ws$1(_templateObject2$13, opt_inline, inlineTag, inlineTag, this.wrap('\'' + (this.doctype === 'xml' ? '/' : '') + '>\''), inlineTag, inlineTag, this.wrap('\' \' + ' + inlineTag + ' + \'="\''), this.declVars('__CALL_CACHE__ = __RESULT__', { sys: true }), this.getResultDecl(), this.wrap('\'>\''));
+    	return ws$1(_templateObject2$11, opt_inline, inlineTag, inlineTag, this.wrap('\'' + (this.doctype === 'xml' ? '/' : '') + '>\''), inlineTag, inlineTag, this.declVars('__CALL_CACHE__ = __RESULT__', { sys: true }), this.getResultDecl(), this.wrap('\'>\''));
     };
 
     /**
@@ -4922,7 +5536,7 @@
     		return ws$1(_templateObject3$9, inlineTag, inlineTag, this.declVars('__CALL_TMP__ = ' + this.getReturnResultDecl(), { sys: true }), this.out('__CALL_CACHE__', { unsafe: true }), this.out('__NODE__', { unsafe: true }), inlineTag, this.out('__CALL_TMP__', { unsafe: true }), !opt_inline);
     	}
 
-    	return ws$1(_templateObject4$5, inlineTag, inlineTag, this.declVars('__CALL_TMP__ = ' + this.getReturnResultDecl(), { sys: true }), this.out('__CALL_CACHE__', { unsafe: true }), this.wrap(this.out('__CALL_TMP__') + ' + \'"' + (this.doctype === 'xml' ? '/' : '') + '>\''), !opt_inline, this.wrap('\'</\' + ' + this.out('__TAG__', { unsafe: true }) + ' + \'>\''));
+    	return ws$1(_templateObject4$6, inlineTag, inlineTag, this.declVars('__CALL_TMP__ = ' + this.getReturnResultDecl(), { sys: true }), this.out('__CALL_CACHE__', { unsafe: true }), this.wrap('\' \' + ' + inlineTag + ' + \'="\' + ' + this.out('__CALL_TMP__') + ' + \'"' + (this.doctype === 'xml' ? '/' : '') + '>\''), !opt_inline, this.wrap('\'</\' + ' + this.out('__TAG__', { unsafe: true }) + ' + \'>\''));
     };
 
     /**
@@ -4930,14 +5544,7 @@
      * and returns a reporting object
      *
      * @param {string} str - source string
-     * @return {{
-     *   tag: string,
-     *   id: string,
-     *   classes: !Array<string>,
-     *   pseudo: !Array<string>,
-     *   inline: boolean,
-     *   inlineMap: (boolean|string)
-     * }}
+     * @return {$$SnakeskinParserGetXMLTagDescResult}
      */
     Parser.prototype.getXMLTagDesc = function (str) {
     	var _this = this;
@@ -4958,8 +5565,8 @@
     	var pseudo = [],
     	    classes = [];
 
-    	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
+    	var s = ADV_LEFT_BOUND + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
 
     	var bOpen = 0,
     	    bStart = false;
@@ -5030,7 +5637,7 @@
     			if (el === '.') {
     				if (bOpen) {
     					if (points.length) {
-    						$C$1(points).forEach(function (point, i) {
+    						$C(points).forEach(function (point, i) {
     							if (point) {
     								if (point.stage >= bOpen) {
     									return;
@@ -5114,7 +5721,7 @@
     	}
 
     	var ref = this.bemRef;
-    	$C$1(classes).forEach(function (el, i) {
+    	$C(classes).forEach(function (el, i) {
     		var point = points[i];
 
     		if (point && point.val != null) {
@@ -5151,10 +5758,10 @@
      * @return {!Array}
      */
     Parser.prototype.appendDefaultFilters = function (filters) {
-    	var obj = $C$1.extend(false, { global: [], local: [] }, filters);
+    	var obj = $C.extend(false, { global: [], local: [] }, filters);
 
-    	$C$1(obj).forEach(function (el) {
-    		$C$1(el).forEach(function (filter, i) {
+    	$C(obj).forEach(function (el) {
+    		$C(el).forEach(function (filter, i) {
     			if (isString(filter)) {
     				el[i] = babelHelpers_defineProperty({}, filter, []);
     			}
@@ -5295,11 +5902,11 @@
 
     		if (bStart) {
     			switch (el) {
-    				case LEFT_BLOCK:
+    				case LEFT_BOUND:
     					bOpen++;
     					break;
 
-    				case RIGHT_BLOCK:
+    				case RIGHT_BOUND:
     					bOpen--;
     					break;
     			}
@@ -5332,7 +5939,10 @@
      *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
      *   *) [debug] - object, which will be contained some debug information
      *
-     *   *) [exports = 'default'] - export type for compiled templates
+     *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, cjs, global)
+     *   *) [moduleId = 'tpls'] - module id for AMD/UMD declaration
+     *   *) [moduleName] - module name for global/UMD declaration
+     *
      *   *) [useStrict = true] - if is false, then all templates will be compiled without the 'use strict'; mode
      *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
      *
@@ -5342,7 +5952,7 @@
      *
      *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
      *   *) [i18nFn = 'i18n'] - name of the i18n function
-     *   *) [i18nOptions] - additional option for the i18n function or array of options
+     *   *) [i18nFnOptions] - additional option for the i18n function or array of options
      *   *) [language] - map of words for the localization (for example, {'Hello world': 'Привет мир'})
      *   *) [words] - object, which will be contained all found localization words
      *
@@ -5363,21 +5973,19 @@
      * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug:
      *   *) [file] - path to a template file
      *
-     * @param {$$SnakeskinSysParams=} [opt_sysParams] - system parameters:
-     *   *) [cacheKey = false] - if is true, then will be returned a cache key for the current operation
-     *
      * @return {(string|boolean|null)}
      */
-    Snakeskin.compile = function (src, opt_params, opt_info, opt_sysParams) {
+    Snakeskin.compile = function (src, opt_params, opt_info) {
     	src = src || '';
 
     	/** @type {$$SnakeskinParams} */
-    	var p = any($C$1.extend(false, {
+    	var p = any($C.extend(false, {
     		cache: true,
     		renderMode: 'stringConcat',
     		vars: {},
     		throws: true,
-    		exports: 'default',
+    		module: 'umd',
+    		moduleId: 'tpls',
     		useStrict: true,
     		prettyPrint: false,
     		bemFilter: 'bem',
@@ -5391,7 +5999,7 @@
     	}, opt_params));
 
     	// Set super global variables
-    	$C$1(p.vars).forEach(function (val, key) {
+    	$C(p.vars).forEach(function (val, key) {
     		Snakeskin.Vars[key] = val;
     	});
 
@@ -5399,7 +6007,7 @@
     	// Debug information
     	// >>>
 
-    	var info = any($C$1.extend(false, { line: 1 }, opt_info));
+    	var info = any($C.extend(false, { line: 1 }, opt_info));
 
     	var text = undefined;
     	if ((typeof src === 'undefined' ? 'undefined' : babelHelpers_typeof(src)) === 'object' && 'innerHTML' in src) {
@@ -5413,13 +6021,10 @@
     	// Caching
     	// >>>
 
-    	/** @type {$$SnakeskinSysParams} */
-    	var sp = any($C$1.extend(false, { cacheKey: false }, opt_sysParams));
-
     	var ctx = p.context || NULL,
     	    cacheKey = getCacheKey(p, ctx);
 
-    	if (sp.cacheKey) {
+    	if (p.getCacheKey) {
     		return cacheKey;
     	}
 
@@ -5460,7 +6065,7 @@
     	// Transpiler
     	// >>>
 
-    	var parser = new Parser(String(text), $C$1.extend({ traits: true }, { info: info }, p, sp));
+    	var parser = new Parser(String(text), $C.extend({ traits: true }, { info: info }, p));
 
     	// If is true, then a directive declaration is started,
     	// ie { ... }
@@ -5473,7 +6078,7 @@
 
     	var commandTypeRgxp = /[^\s]+/,
     	    commandRgxp = /[^\s]+\s*/,
-    	    ignoreRgxp = new RegExp(r(ADV_LEFT_BLOCK) + '?' + r(LEFT_BLOCK) + '__.*?__.*?' + r(RIGHT_BLOCK), 'g');
+    	    ignoreRgxp = new RegExp(r(ADV_LEFT_BOUND) + '?' + r(LEFT_BOUND) + '__.*?__.*?' + r(RIGHT_BOUND), 'g');
 
     	// The number of open { symbols inside a directive
     	var fakeBegin = 0;
@@ -5511,7 +6116,14 @@
     	// The flags for working with localization literals
     	var i18nStr = '',
     	    i18nStart = false,
-    	    i18nDirStart = false;
+    	    i18nDirStart = false,
+    	    i18nInterpolation = false,
+    	    i18nTpl = false,
+    	    i18nPOpen = 0;
+
+    	function getReplacer(val) {
+    		return $dirNameShorthands[val.substr(0, 2)] || $dirNameShorthands[val[0]];
+    	}
 
     	while (++parser.i < parser.source.length) {
     		var str = parser.source;
@@ -5563,7 +6175,7 @@
     		}
 
     		var cEscape = escape,
-    		    isPrefStart = !cEscape && !begin && substr2 === ADV_LEFT_BLOCK + LEFT_BLOCK;
+    		    isPrefStart = !cEscape && !begin && substr2 === ADV_LEFT_BOUND + LEFT_BOUND;
 
     		if (ws.test(el)) {
     			// Inside a directive
@@ -5607,7 +6219,7 @@
     			clrL = false;
 
     			if (!begin && !space && !parser.sysSpace) {
-    				if (!cEscape && (isPrefStart ? el === ADV_LEFT_BLOCK : el === LEFT_BLOCK)) {
+    				if (!cEscape && (isPrefStart ? el === ADV_LEFT_BOUND : el === LEFT_BOUND)) {
     					parser.prevSpace = parser.space;
     				} else {
     					parser.prevSpace = false;
@@ -5691,6 +6303,21 @@
     			}
 
     			if (!jsDoc) {
+    				if (begin) {
+    					if (i18nPOpen) {
+    						if (el === '(') {
+    							i18nPOpen++;
+    						} else if (el === ')' && ! --i18nPOpen) {
+    							el = el + (!i18nInterpolation || i18nTpl ? '' : RIGHT_BOUND);
+    							i18nTpl = false;
+    						}
+    					}
+
+    					if (!cEscape && substr2 === MICRO_TEMPLATE) {
+    						i18nTpl = true;
+    					}
+    				}
+
     				if (i18nStart) {
     					if (!cEscape && el === '"' && !parser.language) {
     						el = '\\"';
@@ -5710,7 +6337,7 @@
     				}
 
     				// Directive is started
-    				if (isPrefStart || el === LEFT_BLOCK && (begin || !cEscape)) {
+    				if (isPrefStart || el === LEFT_BOUND && (begin || !cEscape)) {
     					if (begin) {
     						fakeBegin++;
     					} else if (!parser.needPrfx || isPrefStart) {
@@ -5719,7 +6346,7 @@
     							parser.needPrfx = true;
 
     							if (modLine) {
-    								parser.lines[lastLine] += LEFT_BLOCK;
+    								parser.lines[lastLine] += LEFT_BOUND;
     							}
     						}
 
@@ -5730,7 +6357,7 @@
     					}
 
     					// Directive is ended
-    				} else if (el === RIGHT_BLOCK && begin && (!fakeBegin || ! fakeBegin--)) {
+    				} else if (el === RIGHT_BOUND && begin && (!fakeBegin || ! fakeBegin--)) {
     						begin = false;
 
     						var raw = command;
@@ -5740,10 +6367,7 @@
     							continue;
     						}
 
-    						var short1 = command[0],
-    						    // jscs:ignore
-    						short2 = command.substr(0, 2),
-    						    replacer = $dirNameShorthands[short2] || $dirNameShorthands[short1];
+    						var replacer = getReplacer(command);
 
     						if (replacer) {
     							command = replacer(command);
@@ -5842,34 +6466,29 @@
     								i18nStr = '';
 
     								if (begin) {
-    									var opts = parser.i18nFnOptions,
-    									    localOpts = next === '(';
-
-    									if (localOpts) {
+    									el = '"';
+    									if (next === '(') {
+    										el += ',';
+    										i18nPOpen++;
     										parser.lines[lastLine] += next;
     										parser.i++;
-    									}
-
-    									el = '"';
-    									if (localOpts) {
-    										el += ', ';
     									} else {
-    										if (opts) {
-    											el += ', ' + opts;
+    										if (parser.i18nFnOptions) {
+    											el += ', ' + parser.i18nFnOptions;
     										}
 
-    										el += ')';
+    										el += ')' + (!i18nInterpolation || i18nTpl ? '' : RIGHT_BOUND);
+    										i18nTpl = false;
     									}
 
     									if (i18nDirStart) {
+    										i18nDirStart = false;
+    										parser.freezeLine--;
     										freezeI += freezeTmp;
     										freezeTmp = 0;
-
-    										parser.freezeLine--;
-    										i18nDirStart = false;
     									}
     								} else {
-    									var advStr = FILTER + '!html' + RIGHT_BLOCK;
+    									var advStr = FILTER + '!html' + RIGHT_BOUND;
 
     									freezeTmp = advStr.length;
     									parser.source = str.slice(0, parser.i + 1) + advStr + str.slice(parser.i + 1);
@@ -5881,13 +6500,27 @@
     								}
     							} else {
     								i18nStart = true;
+    								i18nInterpolation = false;
 
     								if (begin) {
-    									el = parser.i18nFn + '("';
+    									var _ref = commandRgxp.exec(command) || [''];
+
+    									var _ref2 = babelHelpers_slicedToArray(_ref, 1);
+
+    									var cmd = _ref2[0];
+
+    									var replacer = getReplacer(cmd);
+
+    									if (replacer) {
+    										cmd = replacer(cmd);
+    									}
+
+    									i18nInterpolation = (cmd = cmd.trim()) && $dirInterpolation[cmd];
+    									el = '' + (!i18nInterpolation || i18nTpl ? '' : MICRO_TEMPLATE) + parser.i18nFn + '("';
     								} else {
     									var diff = Number(parser.needPrfx) + 1;
 
-    									parser.source = str.slice(0, parser.i) + (parser.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK + str.slice(parser.i);
+    									parser.source = str.slice(0, parser.i) + (parser.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND + str.slice(parser.i);
 
     									pseudoI = parser.i - diff;
     									parser.i += diff;
@@ -6020,7 +6653,7 @@
     	// If we have some outer declarations,
     	// which weren't attached to template,
     	// then will be thrown an exception
-    	if ($C$1(parser.preDefs).some(function (el, key) {
+    	if ($C(parser.preDefs).some(function (el, key) {
     		return parser.error('the template "' + key + '" is not defined'), true;
     	})) {
     		return false;
@@ -6078,554 +6711,6 @@
 
     	saveIntoCache(cacheKey, text, p, parser);
     	return parser.result;
-    };
-
-    var stack = [];
-
-    /**
-     * Adds file content by the specified path to the stack
-     *
-     * @param {string} base - base path
-     * @param {string} file - file path
-     * @param {string} eol - EOL symbol
-     * @param {?string=} [opt_renderMode] - rendering mode for templates
-     * @return {(string|boolean)}
-     */
-    Snakeskin.include = function (base, file, eol, opt_renderMode) {
-    	if (!IS_NODE) {
-    		return false;
-    	}
-
-    	var fs = require('fs'),
-    	    path = require('path'),
-    	    glob = require('glob').sync;
-
-    	var s = ADV_LEFT_BLOCK + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
-
-    	try {
-    		var _ret = (function () {
-    			var extname = path.extname(file);
-    			var include = Snakeskin.LocalVars.include;
-
-    			var src = path.resolve(path.dirname(base), file + (extname ? '' : '.ss'));
-
-    			$C$1(glob.hasMagic(src) ? glob(src) : [src]).forEach(function (src) {
-    				src = path.normalize(src);
-
-    				if (include[src]) {
-    					return;
-    				}
-
-    				include[src] = true;
-    				var file = fs.readFileSync(src, 'utf8');
-
-    				stack.push(s + '__setFile__ ' + src + e + (opt_renderMode ? s + '__set__ renderAs \'' + opt_renderMode + '\'' + e : '') + ('' + (wsStart.test(file) ? '' : eol)) + file + ('' + (wsEnd.test(file) ? '' : '' + eol + s + '__cutLine__' + e)) + (s + '__endSetFile__' + e));
-    			});
-
-    			return {
-    				v: true
-    			};
-    		})();
-
-    		if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers_typeof(_ret)) === "object") return _ret.v;
-    	} catch (err) {
-    		stack.push(s + '__setError__ ' + err.message + e);
-    	}
-
-    	return false;
-    };
-
-    // FIXME https://github.com/jscs-dev/node-jscs/issues/2017
-    // jscs:disable jsDoc
-
-    var
-    /**
-     * Transformer for a group list
-     *
-     * @param {Array} arr - source list
-     * @return {string}
-     */
-    q = function q(arr) {
-    	return $C$1(arr).map(function (el) {
-    		return '"' + el + '"';
-    	}).join(', ');
-    };
-
-    // jscs:enable jsDoc
-
-    var gPrfx = '@';
-
-    /**
-     * Initialises the specified group
-     *
-     * @param {string} name - group name
-     * @return {string}
-     */
-    Snakeskin.group = function (name) {
-    	return gPrfx + name;
-    };
-
-    var dirPlacement = {};
-    var dirPlacementPlain = {};
-    var dirAncestorsBlacklist = {};
-    var dirAncestorsBlacklistPlain = {};
-    var dirAncestorsWhitelist = {};
-    var dirAncestorsWhitelistPlain = {};
-    /**
-     * Adds a new directive to the SS namespace
-     *
-     * @param {string} name - directive name
-     * @param {{
-     *   deferInit: (?boolean|undefined),
-     *   generator: (?boolean|undefined),
-     *   notEmpty: (?boolean|undefined),
-     *   alias: (?boolean|undefined),
-     *   group: (Array|string|undefined),
-     *   renderModesBlacklist: (Array|string|undefined),
-     *   renderModesWhitelist: (Array|string|undefined),
-     *   placement: (Array|string|undefined),
-     *   ancestorsBlacklist: (Array|string|undefined),
-     *   ancestorsWhitelist: (Array|string|undefined),
-     *   with: (Array|string|undefined),
-     *   parents: (Array|string|undefined),
-     *   endsWith: (Array|string|undefined),
-     *   endFor: (Array|string|undefined),
-     *   trim: ({left: boolean, right: boolean}|boolean|undefined),
-     *   logic: (?boolean|undefined),
-     *   text: (?boolean|undefined),
-     *   block: (?boolean|undefined),
-     *   selfInclude: (?boolean|undefined),
-     *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
-     * }} params - additional parameters:
-     *
-     *   *) [params.deferInit = false] - if is true, the directive won't be started automatically
-     *   *) [params.generator = false] - if is true, the directive can be used only with generators
-     *   *) [params.notEmpty = false] - if is true, then the directive can't be empty
-     *   *) [params.alias = false] - if is true, then the directive is considered as an alias
-     *        (only for private directives)
-     *
-     *   *) [params.group] - group name, which includes the current directive
-     *        or an array of names
-     *
-     *   *) [params.renderModesBlacklist] - rendering mode, which can't be used with the current directive
-     *        or an array of names
-     *
-     *   *) [params.renderModesWhitelist] - rendering mode, which can be used with the current directive
-     *        or an array of names
-     *
-     *   *) [params.placement] - placement of the directive: global or template
-     *   *) [params.ancestorsBlacklist] - directive/group name, which can't be an ancestor for the current directive
-     *        or an array of names
-     *
-     *   *) [params.ancestorsWhitelist] - directive/group name, which can be an ancestor for the current directive
-     *        or an array of names
-     *
-     *   *) [params.with] - directive/group name, which is a master for the current directive
-     *        or an array of names
-     *
-     *   *) [params.parents] - directive/group name, which can be a parent for the current directive
-     *        or an array of names
-     *
-     *   *) [params.children] - directive/group name, which can be a child of the current directive
-     *        or an array of names
-     *
-     *   *) [params.endsWith] - directive/group name, which can be placed after the current directive
-     *        or an array of names
-     *
-     *   *) [params.endFor] - directive/group name, which must be closed using the current directive
-     *        or an array of names
-     *
-     *   *) [params.trim] - trim for the directive content (Jade-Like mode)
-     *        trim: {
-     *          left: true,
-     *          right: false
-     *        }
-     *
-     *   *) [params.logic = false] - if is true, then the directive is considered as a system type
-     *   *) [params.text = false] - if is true, then the directive will be outputted as a plain text
-     *   *) [params.block = false] - if is true, then the directive is considered as a block type
-     *   *) [params.selfInclude = true] - if is false, then the directive can't be placed inside an another directive
-     *        of the same type
-     *
-     *   *) [params.shorthands] - shorthands for the directive
-     *        shorthands: {
-     *          // Can be no more than two symbols in the key
-     *          '?': 'void '
-     *        }
-     *
-     * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_constr - constructor
-     * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
-     */
-    Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
-    	var p = $C$1.extend(false, {}, params),
-    	    concat = function concat(val) {
-    		return val != null ? [].concat(val) : [];
-    	};
-
-    	var _ = function _(_ref) {
-    		var _ref2 = babelHelpers_slicedToArray(_ref, 2);
-
-    		var cache = _ref2[0];
-    		var val = _ref2[1];
-    		return { cache: cache, val: val };
-    	};
-
-    	$C$1([_([$dirTrim, p.trim]), _([$blockDirs, p.block]), _([$logicDirs, p.logic]), _([$textDirs, p.text])]).forEach(function (_ref3) {
-    		var cache = _ref3.cache;
-    		var val = _ref3.val;
-
-    		if (cache === $dirTrim) {
-    			switch (val) {
-    				case true:
-    					val = {
-    						left: true,
-    						right: true
-    					};
-
-    					break;
-
-    				case false:
-    					val = {
-    						left: false,
-    						right: false
-    					};
-
-    					break;
-    			}
-
-    			cache[name] = val;
-    		} else {
-    			cache[name] = Boolean(val);
-    		}
-    	});
-
-    	$C$1([_([$dirGroups, p.group]), _([$dirChain, p.with]), _([$dirParents, p.parents]), _([$dirEnd, p.endFor])]).forEach(function (_ref4) {
-    		var cache = _ref4.cache;
-    		var val = _ref4.val;
-
-    		$C$1(concat(val)).forEach(function (key) {
-    			if (cache === $dirGroups && key[0] === gPrfx) {
-    				throw new Error('Invalid group name "' + key + '" (group name can\'t begin with "' + gPrfx + '"');
-    			}
-
-    			cache[key] = cache[key] || {};
-    			cache[key][name] = true;
-    		});
-    	});
-
-    	$C$1([$dirChain, $dirParents, $dirEnd]).forEach(function (cache) {
-    		$C$1(cache).forEach(function (el, key) {
-    			if (key[0] !== gPrfx) {
-    				return;
-    			}
-
-    			var link = cache[key];
-
-    			$C$1($dirGroups[key.slice(1)]).forEach(function (el, group) {
-    				cache[group] = cache[group] || {};
-    				$C$1(link).forEach(function (el, dir) {
-    					return cache[group][dir] = true;
-    				});
-    			});
-    		});
-    	});
-
-    	$C$1([_([$dirParents, p.children]), _([$dirEnd, p.endsWith])]).forEach(function (_ref5) {
-    		var cache = _ref5.cache;
-    		var val = _ref5.val;
-
-    		$C$1(concat(val)).forEach(function (key) {
-    			cache[name] = cache[name] || {};
-    			cache[name][key] = true;
-    		});
-    	});
-
-    	$C$1([$dirParents, $dirEnd]).forEach(function (cache) {
-    		$C$1(cache).forEach(function (dir) {
-    			$C$1(dir).forEach(function (el, key) {
-    				if (key[0] !== gPrfx) {
-    					return;
-    				}
-
-    				$C$1($dirGroups[key.slice(1)]).forEach(function (val, key) {
-    					return dir[key] = true;
-    				});
-    			});
-    		});
-    	});
-
-    	_ = function (_ref6) {
-    		var _ref7 = babelHelpers_slicedToArray(_ref6, 3);
-
-    		var cache = _ref7[0];
-    		var plainCache = _ref7[1];
-    		var val = _ref7[2];
-    		return { cache: cache, plainCache: plainCache, val: val };
-    	};
-
-    	$C$1([_([dirPlacement, dirPlacementPlain, p.placement]), _([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]), _([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])]).forEach(function (_ref8) {
-    		var cache = _ref8.cache;
-    		var plainCache = _ref8.plainCache;
-    		var val = _ref8.val;
-
-    		cache[name] = $C$1(concat(val)).reduce(function (map, el) {
-    			return map[el] = [el], map;
-    		}, {});
-
-    		$C$1(cache).forEach(function (map, key) {
-    			$C$1(map).forEach(function (el, key) {
-    				if (key[0] !== gPrfx) {
-    					return;
-    				}
-
-    				key = key.slice(1);
-    				if ($dirGroups[key]) {
-    					map[key] = Object.keys($dirGroups[key]);
-    				}
-    			});
-
-    			plainCache[key] = {};
-    			$C$1(map).forEach(function (el) {
-    				return $C$1(el).forEach(function (el) {
-    					return plainCache[key][el] = true;
-    				});
-    			});
-    		});
-    	});
-
-    	$C$1(p.shorthands).forEach(function (el, key) {
-    		if (key.length > 2) {
-    			throw new Error('Invalid shorthand key "' + key + '" (key.length > 2)');
-    		}
-
-    		if ($dirNameShorthands[key] && HAS_CONSOLE_LOG) {
-    			console.log('Warning: replacer "' + key + '" already exists');
-    		}
-
-    		$dirNameShorthands[key] = isFunction(el) ? el : function (cmd) {
-    			return cmd.replace(key, el);
-    		};
-
-    		if (key[0] !== '/') {
-    			SHORTS[key] = true;
-    		}
-    	});
-
-    	if (p.alias) {
-    		$dirNameAliases[name] = name.replace(/__(.*?)__/, '$1');
-    	}
-
-    	if (!(p.selfInclude = p.selfInclude !== false)) {
-    		p.block = true;
-    	}
-
-    	/** @this {Parser} */
-    	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
-    		var _this = this;
-
-    		var structure = this.structure;
-
-    		var dirName = this.name = this.getDirName(name),
-    		    prevDirName = this.getDirName(structure.name),
-    		    ignore = $dirGroups['ignore'][dirName];
-
-    		switch (p.placement) {
-    			case 'template':
-    				if (!structure.parent) {
-    					return this.error('the directive "' + dirName + '" can be used only within directives ' + q(this.getGroupList('template')));
-    				}
-
-    				break;
-
-    			case 'global':
-    				if (structure.parent) {
-    					return this.error('the directive "' + dirName + '" can be used only within the global space');
-    				}
-
-    				break;
-    		}
-
-    		if (p.notEmpty && !command) {
-    			return this.error('the directive "' + dirName + '" must have a body');
-    		}
-
-    		if (p.generator && !this.parentTplName && !this.generator && !this.outerLink) {
-    			return this.error('the directive "' + dirName + '" can be used only within a generator template');
-    		}
-
-    		var rmBlacklistList = concat(p.renderModesBlacklist),
-    		    rmBlacklist = $C$1(rmBlacklistList).reduce(function (map, el) {
-    			return map[el] = true, map;
-    		}, {});
-
-    		if (p.renderModesBlacklist && rmBlacklist[this.renderMode]) {
-    			return this.error('the directive "' + dirName + '" can\'t be used with directives ' + q(rmBlacklist) + ' rendering modes');
-    		}
-
-    		var rmWhitelistList = concat(p.renderModesWhitelist),
-    		    rmWhitelist = $C$1(rmWhitelistList).reduce(function (map, el) {
-    			return map[el] = true, map;
-    		}, {});
-
-    		if (p.renderModesWhitelist && !rmWhitelist[this.renderMode]) {
-    			return this.error('the directive "' + dirName + '" can be used only with directives ' + q(rmWhitelistList) + ' rendering modes');
-    		}
-
-    		if (p.with && (!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName])) {
-    			var groups = $C$1([].concat(p.with)).reduce(function (arr, el) {
-    				return arr.concat(el[0] === gPrfx ? _this.getGroupList(el.slice(1)) : el);
-    			}, []);
-
-    			return this.error('the directive "' + dirName + '" can be used only with directives ' + q(groups));
-    		}
-
-    		if (p.ancestorsBlacklist && this.has(dirAncestorsBlacklistPlain[name])) {
-    			return this.error('the directive "' + dirName + '" can\'t be used within directives ' + q(Object.keys(dirAncestorsBlacklistPlain[name])));
-    		}
-
-    		if (p.ancestorsWhitelist && !this.has(dirAncestorsWhitelistPlain[name])) {
-    			return this.error('the directive "' + dirName + '" can be used only within directives ' + q(Object.keys(dirAncestorsWhitelistPlain[name])));
-    		}
-
-    		if (structure.chain) {
-    			if ($dirParents[prevDirName][dirName]) {
-    				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
-    			} else if (!ignore && dirName !== 'end') {
-    				return this.error('the directive "' + dirName + '" can\'t be used within the "' + prevDirName + '"');
-    			}
-    		}
-
-    		if (!p.selfInclude && this.has(dirName)) {
-    			return this.error('the directive "' + dirName + '" can\'t be used within the "' + dirName + '"');
-    		}
-
-    		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'private')[dirName]) {
-    			return this.error('decorators can\'t be used after ' + dirName);
-    		}
-
-    		if (p.text) {
-    			this.text = true;
-    		}
-
-    		if (p.filters) {
-    			this.appendDefaultFilters(p.filters);
-    		}
-
-    		var from = this.result.length;
-
-    		if (!p.deferInit && !p.with) {
-    			if (p.block) {
-    				this.startDir();
-    			} else {
-    				this.startInlineDir();
-    			}
-    		}
-
-    		if (opt_constr) {
-    			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
-    		}
-
-    		var newStructure = this.structure;
-
-    		if (newStructure.params['@from'] === undefined) {
-    			newStructure.params['@from'] = from;
-    		}
-
-    		if ($dirParents[dirName]) {
-    			newStructure.chain = true;
-    			this.strongSpace.push(true);
-    		}
-
-    		if (structure === newStructure) {
-    			if (!ignore && (!$dirChain[prevDirName] || !$dirChain[prevDirName][dirName]) && $dirEnd[prevDirName] && !$dirEnd[prevDirName][dirName]) {
-    				return this.error('the directive "' + dirName + '" can\'t be used after the "' + prevDirName + '"');
-    			}
-    		} else {
-    			var siblings = dirName === 'end' ? newStructure.children : newStructure.parent && newStructure.parent.children;
-
-    			if (siblings) {
-    				var j = 1,
-    				    prev = undefined;
-
-    				while ((prev = siblings[siblings.length - j]) && (prev.name === 'text' || prev === newStructure)) {
-    					j++;
-    				}
-
-    				if (!ignore && prev && (!$dirChain[prev.name] || !$dirChain[prev.name][dirName]) && $dirEnd[prev.name] && !$dirEnd[prev.name][dirName]) {
-    					return this.error('the directive "' + dirName + '" can\'t be used after the "' + prev.name + '"');
-    				}
-    			}
-    		}
-
-    		this.applyQueue();
-
-    		if (this.inline === true) {
-    			baseEnd.call(this);
-
-    			if (opt_destruct) {
-    				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
-    			}
-
-    			this.inline = null;
-    			this.structure = this.structure.parent;
-
-    			if (this.blockStructure && this.blockStructure.name === 'const') {
-    				this.blockStructure = this.blockStructure.parent;
-    			}
-    		}
-    	};
-
-    	Snakeskin.Directives[name + 'End'] = opt_destruct;
-
-    	/** @this {Parser} */
-    	var baseEnd = Snakeskin.Directives[name + 'BaseEnd'] = function () {
-    		var _this2 = this;
-
-    		var structure = this.structure;
-    		var _structure = this.structure;
-    		var params = _structure.params;
-    		var parent = _structure.parent;
-
-    		if (params['@scope']) {
-    			this.scope.pop();
-    		}
-
-    		if ($dirParents[structure.name] || parent && $dirParents[parent.name]) {
-    			this.strongSpace.pop();
-    		}
-
-    		if (p.filters) {
-    			this.filters.pop();
-    		}
-
-    		$C$1(params['@consts']).forEach(function (el, key) {
-    			$consts[_this2.tplName][key] = el;
-    		});
-
-    		var res = params['@result'] ? params['@result'] : this.result;
-
-    		var from = params['@from'],
-    		    to = res.length;
-
-    		if (from == null) {
-    			return;
-    		}
-
-    		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
-    			try {
-    				this.evalStr(res.slice(from, to));
-    			} catch (err) {
-    				return this.error(err.message);
-    			}
-
-    			if (stack.length) {
-    				this.source = this.source.slice(0, this.i + 1) + this.replaceCData(stack.join('')) + this.source.slice(this.i + 1);
-
-    				stack.splice(0, stack.length);
-    			}
-    		}
-    	};
     };
 
     Snakeskin.addDirective('__setError__', {
@@ -6722,7 +6807,7 @@
     	var last = this.params[this.params.length - 1];
 
     	function mix(base, opt_adv, opt_initial) {
-    		return $C$1.extend(true, $C$1.extend(false, opt_initial || {}, opt_adv), base);
+    		return $C.extend(true, $C.extend(false, opt_initial || {}, opt_adv), base);
     	}
 
     	var init = false,
@@ -6745,7 +6830,7 @@
     		};
 
     		var inherit = function inherit(obj) {
-    			$C$1(obj).forEach(function (el, key) {
+    			$C(obj).forEach(function (el, key) {
     				if (key[0] !== '@' && key in root) {
     					params[key] = _this[key] = el;
     					if (cache) {
@@ -6823,11 +6908,10 @@
     	}
     }
 
-    var _templateObject = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
-    var _templateObject2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn arguments[arguments.length - 1](__RETURN_VAL__);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn arguments[arguments.length - 1](__RETURN_VAL__);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
-    var _templateObject3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
-    var _templateObject4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t}\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t}\n\t\t\t\t\t']);
-    var _templateObject5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\treturn __RETURN_VAL__;\n\t\t\t\t\t}\n\t\t\t\t'], ['\n\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\treturn __RETURN_VAL__;\n\t\t\t\t\t}\n\t\t\t\t']);
+    var _templateObject = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn arguments[arguments.length - 1](__RETURN_VAL__);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn arguments[arguments.length - 1](__RETURN_VAL__);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
+    var _templateObject2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
+    var _templateObject3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
+    var _templateObject4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\treturn __RETURN_VAL__;\n\t\t\t\t\t}\n\t\t\t\t'], ['\n\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\treturn __RETURN_VAL__;\n\t\t\t\t\t}\n\t\t\t\t']);
     Snakeskin.addDirective('end', {
     	deferInit: true,
     	group: 'end',
@@ -6850,6 +6934,38 @@
     		}
     	}
 
+    	if (this.deferReturn) {
+    		var _name = this.structure.name;
+
+    		var async = this.getGroup('async');
+
+    		if (this.getGroup('function', 'async')[_name] && (this.getGroup('callback')[_name] ? !this.getGroup('microTemplate')[any(this.hasParent(this.getGroup('microTemplate', 'async')))] : true)) {
+    			var parent = any(this.hasParent(async));
+
+    			if (parent) {
+    				if (this.getGroup('waterfall')[parent]) {
+    					this.append(ws$1(_templateObject));
+    				} else if (this.getGroup('Async')[parent]) {
+    					this.append(ws$1(_templateObject2));
+    				} else {
+    					this.append(ws$1(_templateObject3));
+    				}
+
+    				this.deferReturn = 0;
+    			} else if (this.deferReturn) {
+    				if (this.deferReturn > 1) {
+    					this.append(ws$1(_templateObject3));
+    				}
+
+    				this.deferReturn++;
+    			}
+    		} else if (!async[_name]) {
+    			this.append(ws$1(_templateObject4));
+
+    			this.deferReturn = 0;
+    		}
+    	}
+
     	var destruct = Snakeskin.Directives[name + 'End'];
 
     	if (destruct) {
@@ -6863,41 +6979,6 @@
     	this.endDir().toQueue(function () {
     		return _this.startInlineDir();
     	});
-
-    	if (this.deferReturn) {
-    		var _structure = this.structure;
-    		var _name = this.structure.name;
-
-    		var async = this.getGroup('async');
-
-    		if (this.getGroup('callback')[_name]) {
-    			var parent = _structure.parent.name;
-
-    			if (async[parent]) {
-    				var basicAsync = this.getGroup('basicAsync');
-
-    				if (basicAsync[_name] || basicAsync[parent]) {
-    					this.append(ws$1(_templateObject));
-    				} else if (parent === 'waterfall') {
-    					this.append(ws$1(_templateObject2));
-    				} else {
-    					this.append(ws$1(_templateObject3));
-    				}
-
-    				this.deferReturn = 0;
-    			} else if (this.deferReturn > 1) {
-    				this.append(ws$1(_templateObject4));
-    			}
-
-    			if (this.deferReturn !== 0) {
-    				this.deferReturn++;
-    			}
-    		} else if (!async[_name]) {
-    			this.append(ws$1(_templateObject5));
-
-    			this.deferReturn = 0;
-    		}
-    	}
     });
 
     Snakeskin.addDirective('__end__', {
@@ -6930,7 +7011,7 @@
 
     Snakeskin.addDirective('unless', {
     	block: true,
-    	group: ['if', 'unless', 'logic'],
+    	group: ['unless', 'if', 'logic'],
     	notEmpty: true
     }, function (command) {
     	this.append('if (!(' + this.out(command, { unsafe: true }) + ')) {');
@@ -6991,9 +7072,9 @@
         var _templateObject$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tyield ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\tyield ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
 
     Snakeskin.addDirective('yield', {
-    	ancestorsBlacklist: Snakeskin.group('callback'),
+    	ancestorsBlacklist: Snakeskin.group('function'),
     	generator: true,
-    	group: ['yield', 'generator'],
+    	group: 'yield',
     	placement: 'template'
     }, function (command) {
     	if (command) {
@@ -7041,12 +7122,33 @@
     });
 
     Snakeskin.addDirective('var', {
+    	block: true,
+    	deferInit: true,
     	group: 'var',
     	notEmpty: true,
     	shorthands: { ':': 'var ' }
     }, function (command) {
-    	this.append(this.declVars(command));
-    });
+    	var putIn = /^putIn\s+([^\s=,]+)$/.exec(command);
+
+    	if (putIn) {
+    		this.append(this.declVars(putIn[1]));
+    		Snakeskin.Directives['putIn'].call(this, putIn[1]);
+    	} else {
+    		var short = command.slice(-1) === '/';
+
+    		if (short) {
+    			command = command.slice(0, -1);
+    		}
+
+    		this.append(this.declVars(command));
+
+    		if (short) {
+    			this.startInlineDir();
+    		} else {
+    			this.startDir();
+    		}
+    	}
+    }, function () {});
 
     Snakeskin.addDirective('with', {
     	block: true,
@@ -7183,7 +7285,7 @@
 
     	var name = this.pasteDangerBlocks(prop).replace(/\[(['"`])(.*?)\1]/g, '.$2');
 
-    	this.startInlineDir('const', { name: name });
+    	this.startInlineDir(null, { name: name });
 
     	if (!/[.\[]/.test(prop)) {
     		this.consts.push('var ' + prop + ';');
@@ -7280,6 +7382,7 @@
     	block: true,
     	deferInit: true,
     	group: ['comment', 'tag', 'output'],
+    	interpolation: true,
     	placement: 'template',
     	selfInclude: false,
     	shorthands: { '/!': 'end comment', '<!': 'comment ' }
@@ -7288,7 +7391,10 @@
 
     	var str = undefined;
     	if (this.renderMode === 'dom') {
-    		this.stringResult = true;
+    		if (!this.stringResult) {
+    			this.stringResult = this.structure.params.stringResult = true;
+    		}
+
     		str = '__STRING_RESULT__ = \'\';';
     	} else {
     		str = this.wrap('\'<!--\'');
@@ -7300,13 +7406,16 @@
 
     	this.append(str);
     }, function () {
-    	var end = this.structure.params.condition ? ' <![endif]' : '';
+    	var p = this.structure.params,
+    	    end = p.condition ? ' <![endif]' : '';
 
     	var str = undefined;
     	if (this.renderMode === 'dom') {
     		str = this.wrap('\'' + end + '\'');
 
-    		this.stringResult = false;
+    		if (p.stringResult) {
+    			this.stringResult = false;
+    		}
 
     		str += ws$1(_templateObject$2, this.wrap('new Snakeskin.Comment(__STRING_RESULT__)'));
     	} else {
@@ -7345,7 +7454,7 @@
     };
 
     Snakeskin.addDirective('doctype', {
-    	group: ['doctype', 'tag', 'output'],
+    	group: ['doctype', 'output'],
     	placement: 'template',
     	renderModesBlacklist: 'dom'
     }, function (command) {
@@ -7376,14 +7485,14 @@
 
     var _templateObject$3 = babelHelpers_taggedTemplateLiteral(['[\'', '\']'], ['[\'', '\']']);
     var _templateObject2$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\tif (', ' == null) {\n\t\t\t\t\t\t\t', ' = {};\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t', '\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (', ' == null) {\n\t\t\t\t\t\t\t', ' = {};\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t', '\n\t\t\t\t\t']);
-    var _templateObject3$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\tthis', ' =\n\t\t\t\t __DECORATE__([', '], function ', '', '('], ['\n\t\t\t\t', '\n\t\t\t\tthis', ' =\n\t\t\t\t __DECORATE__([', '], function ', '', '(']);
-    var _templateObject4$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = __ROOT__', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_POS__,\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = __ROOT__', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_POS__,\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t']);
-    var _templateObject5$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = this', ';\n\t\t\t\t'], ['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = this', ';\n\t\t\t\t']);
-    $C$1(['template', 'interface', 'placeholder']).forEach(function (dir) {
+    var _templateObject3$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '('], ['\n\t\t\t\t', '\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '(']);
+    var _templateObject4$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_POS__,\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_POS__,\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t']);
+    var _templateObject5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t'], ['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t']);
+    $C(['template', 'interface', 'placeholder']).forEach(function (dir) {
     	Snakeskin.addDirective(dir, {
     		block: true,
     		deferInit: true,
-    		group: ['template', 'rootTemplate', 'define'],
+    		group: [dir, 'template', 'rootTemplate', 'define'],
     		notEmpty: true,
     		placement: 'global'
     	}, function (command, commandLength, type, raw, jsDoc) {
@@ -7429,10 +7538,6 @@
     			return this.error('invalid "' + this.name + '" name');
     		}
 
-    		if (tplName === 'init') {
-    			return this.error('can\'t declare the template "' + tplName + '", try another name');
-    		}
-
     		this.info.template = this.tplName = tplName;
     		if (this.name !== 'template' && !$write[tplName]) {
     			$write[tplName] = false;
@@ -7447,7 +7552,8 @@
 
     		var tmpTplNameArr = tmpTplName.replace(nmssRgxp, '%').replace(nmsRgxp, '.%').replace(nmeRgxp, '').split('.');
 
-    		var tplNameLength = tmpTplNameArr.length;
+    		var tplNameLength = tmpTplNameArr.length,
+    		    exports = this.module === 'native' ? 'export ' : '';
 
     		var shortcut = '';
 
@@ -7470,13 +7576,13 @@
     			var el = tmpTplNameArr[i];
 
     			var custom = el[0] === '%',
-    			    def = 'this' + concatProp(tmpTplName);
+    			    def = 'exports' + concatProp(tmpTplName);
 
     			if (custom) {
     				el = el.slice(1);
     			}
 
-    			this.save(pos = ws$1(_templateObject2$1, def, def, i === 1 && shortcut ? 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
+    			this.save(pos = ws$1(_templateObject2$1, def, def, i === 1 && shortcut ? exports + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
 
     			if (jsDoc) {
     				jsDoc += pos.length;
@@ -7499,6 +7605,7 @@
 
     		this.info.template = this.tplName = tplName = tmpTplName;
     		this.vars[tplName] = {};
+
     		this.blockTable = {};
     		this.blockStructure = {
     			children: [],
@@ -7531,13 +7638,13 @@
     					return this.error('the specified template "' + parentTplName + '" for inheritance is not defined');
     				}
 
-    				parentTplName = this.parentTplName = null;
+    				parentTplName = this.parentTplName = undefined;
     			}
     		}
 
     		var decorators = (parentTplName ? $decorators[parentTplName] : []).concat(this.decorators);
 
-    		this.save(ws$1(_templateObject3$1, tplNameLength === 1 && shortcut ? 'var ' + shortcut + ' = ' : '', concatProp(tplName), decorators.join(), prfx, tplNameLength > 1 ? lastName : shortcut), { iface: iface });
+    		this.save(ws$1(_templateObject3$1, tplNameLength === 1 && shortcut ? exports + 'var ' + shortcut + ' = ' : '', concatProp(tplName), decorators.join(), prfx, tplNameLength > 1 ? lastName : shortcut), { iface: iface });
 
     		this.decorators = [];
     		this.initTemplateCache(tplName);
@@ -7572,7 +7679,7 @@
     		    flags = command.split('@=').slice(1);
 
     		if (!parentTplName) {
-    			$C$1(this.params[this.params.length - 1]).forEach(function (el, key) {
+    			$C(this.params[this.params.length - 1]).forEach(function (el, key) {
     				if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
     					baseParams[key] = el;
     				}
@@ -7583,7 +7690,7 @@
     			flags.push('@skip true');
     		}
 
-    		$C$1(flags).forEach(function (el) {
+    		$C(flags).forEach(function (el) {
     			el = el.trim();
 
     			var _el$split = el.split(' ');
@@ -7596,7 +7703,7 @@
     			Snakeskin.Directives['__set__'].call(_this, el);
     		});
 
-    		$C$1(baseParams).forEach(function (el, key) {
+    		$C(baseParams).forEach(function (el, key) {
     			Snakeskin.Directives['__set__'].call(_this, [key, key === 'filters' ? el[el.length - 1] : el]);
     		});
 
@@ -7616,9 +7723,9 @@
     			delete this.preDefs[tplName];
     		}
     	}, function (command, commandLength) {
-    		var tplName = this.tplName;
+    		var tplName = String(this.tplName),
+    		    diff = this.getDiff(commandLength);
 
-    		var diff = this.getDiff(commandLength);
     		$cache[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
     		$templates[tplName] = this.blockTable;
 
@@ -7631,7 +7738,7 @@
     			this.initTemplateCache(tplName);
     			this.startDir(this.structure.name);
     			this.i = this.startTemplateI - 1;
-    			this.parentTplName = null;
+    			this.parentTplName = undefined;
     			this.blockTable = {};
     			this.vars[tplName] = {};
     			return;
@@ -7642,7 +7749,7 @@
     		if (iface) {
     			this.save('};', { iface: iface });
     		} else {
-    			this.save(ws$1(_templateObject5$1, this.consts.join(''), this.getReturnResultDecl(), escapeDoubleQuotes(tplName), concatProp(tplName)));
+    			this.save(ws$1(_templateObject5, this.consts.join(''), this.getReturnResultDecl(), escapeDoubleQuotes(tplName), concatProp(tplName)));
     		}
 
     		this.save('/* Snakeskin template. */', { iface: iface });
@@ -7651,7 +7758,7 @@
     		}
 
     		this.canWrite = true;
-    		this.tplName = null;
+    		this.tplName = undefined;
     		delete this.info.template;
 
     		if (this.scope.length) {
@@ -7669,11 +7776,18 @@
 
     	this.structure.vars = {};
 
-    	var res = '',
+    	var isNativeExport = this.module === 'native';
+
+    	var res = isNativeExport ? 'import ' : '',
     	    from = '';
 
     	command = command.replace(/\s+from\s+([^\s]+)\s*/, function (str, path) {
-    		from = 'require(' + path + ')';
+    		if (isNativeExport) {
+    			from = str;
+    		} else {
+    			from = 'require(' + path + ')';
+    		}
+
     		return '';
     	});
 
@@ -7681,38 +7795,50 @@
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
-    	var f = function f(str, global) {
+    	/**
+      * @param {string} str
+      * @param {?boolean=} [opt_global]
+      * @return {string}
+      */
+    	var f = function f(str, opt_global) {
     		if (!str.length) {
     			return '';
     		}
 
-    		return $C$1(str.split(/\s*,\s*/)).reduce(function (arr, decl) {
+    		return $C(str.split(/\s*,\s*/)).reduce(function (arr, decl) {
     			var parts = decl.split(/\s+as\s+/);
 
-    			arr.push(_this.declVars((parts[1] || parts[0]) + ' = ' + from + (global || parts[0] === '*' ? '' : '.' + (parts[1] || parts[0]))));
+    			if (isNativeExport) {
+    				arr.push(parts[0] + ' as ' + _this.declVar(parts[1] || parts[0]));
+    			} else {
+    				arr.push(_this.declVars((parts[1] || parts[0]) + ' = ' + from + (opt_global || parts[0] === '*' ? '' : '.' + (parts[1] || parts[0]))));
+    			}
 
     			return arr;
-    		}, []).join('');
+    		}, []).join(isNativeExport ? ',' : '');
     	};
 
-    	command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*,?\s*/, function (str, prfComma, decl) {
-    		res += f(decl, false);
+    	command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*(,?)\s*/, function (str, prfComma, decl, postComma) {
+    		if (isNativeExport) {
+    			res += (prfComma ? ', ' : '') + '{ ' + f(decl) + ' }' + (postComma ? ',' : '');
+    		} else {
+    			res += f(decl);
+    		}
+
     		return prfComma || '';
     	});
 
-    	this.append(res + f(command, true));
+    	this.append(res + f(command, true) + (isNativeExport ? from : ''));
     });
 
         var _templateObject$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t'], ['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t']);
 
     Snakeskin.addDirective('include', {
+    	ancestorsBlacklist: [Snakeskin.group('head'), Snakeskin.group('template')],
     	deferInit: true,
+    	group: 'include',
     	notEmpty: true
     }, function (command) {
-    	if (this.tplName || this.hasParent('head')) {
-    		return this.error('the directive "' + this.name + '" can\'t be used within directives ' + q(this.getGroupList('template').concat('head')));
-    	}
-
     	this.startInlineDir(null, {
     		from: this.result.length
     	});
@@ -7730,7 +7856,7 @@
     		this.save(ws$1(_templateObject$4, escapeBackslashes(this.info.file || ''), this.pasteDangerBlocks(path), escapeEOLs(this.eol), type));
     	}
     }, function () {
-    	if (this.hasParent('eval')) {
+    	if (this.hasParent(this.getGroup('eval'))) {
     		return;
     	}
 
@@ -7742,22 +7868,25 @@
     }, function (command) {
     	command = this.pasteDangerBlocks(command);
 
+    	var env = this.environment;
+
     	var module = {
     		children: [],
     		exports: {},
     		filename: command,
-    		id: this.environment.id + 1,
+    		id: env.id + 1,
     		key: null,
     		loaded: true,
-    		parent: this.module,
+    		parent: this.environment,
     		require: require,
-    		root: this.module.root || this.module
+    		root: env.root || env
     	};
 
     	module.root.key.push([command, require('fs').statSync(command).mtime.valueOf()]);
 
-    	this.module.children.push(module);
-    	this.module = module;
+    	env.children.push(module);
+    	this.environment = module;
+
     	this.info.file = command;
     	this.files[command] = true;
     	this.save(this.declVars('$_', { sys: true }));
@@ -7766,12 +7895,12 @@
     Snakeskin.addDirective('__endSetFile__', {
     	group: 'ignore'
     }, function () {
-    	var file = this.module.filename;
+    	var filename = this.environment.filename;
 
-    	this.module = this.module.parent;
-    	this.info.file = this.module.filename;
+    	this.environment = this.environment.parent;
+    	this.info.file = this.environment.filename;
 
-    	if (this.params[this.params.length - 1]['@file'] === file) {
+    	if (this.params[this.params.length - 1]['@file'] === filename) {
     		this.popParams();
     	}
     });
@@ -7851,21 +7980,27 @@
     var _templateObject$5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t}\n\n\t\t\t\t\treturn false;\n\t\t\t\t'], ['\n\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t}\n\n\t\t\t\t\treturn false;\n\t\t\t\t']);
     var _templateObject2$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t}\n\n\t\t\t\t\treturn;\n\t\t\t\t'], ['\n\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t}\n\n\t\t\t\t\treturn;\n\t\t\t\t']);
     Snakeskin.addDirective('break', {
-    	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('async')],
+    	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
     	group: ['break', 'control']
     }, function (command) {
-    	var inside = this.hasParent(this.getGroup('cycle', 'async'));
+    	var valid = ['cycle', 'iterator', 'async'],
+    	    all = valid.concat('block', 'microTemplate');
+
+    	var inside = any(this.hasParent(this.getGroup.apply(this, valid))),
+    	    parent = any(this.hasParent(this.getGroup.apply(this, babelHelpers_toConsumableArray(all)), true));
+
+    	if (parent.name === 'block' && parent.params.args || this.getGroup('microTemplate')[parent.name] && this.getGroup('callback')[any(this.hasParent(this.getGroup.apply(this, valid.concat(['callback']))))]) {
+    		return this.error('the directive "' + this.name + '" can\'t be used within the "' + parent.name + '"');
+    	}
 
     	if (this.getGroup('cycle')[inside]) {
-    		if (inside === this.hasParent(this.getGroup('callback'))) {
-    			this.append('return false;');
-    		} else {
-    			this.append('break;');
-    		}
+    		this.append('break;');
+    	} else if (this.getGroup('iterator')[inside]) {
+    		this.append('return false;');
     	} else {
     		var val = command ? this.out(command, { unsafe: true }) : 'false';
 
-    		if (inside === 'waterfall') {
+    		if (this.getGroup('waterfall')[inside]) {
     			this.append('return arguments[arguments.length - 1](' + val + ');');
     		} else {
     			this.append(ws$1(_templateObject$5, val));
@@ -7874,21 +8009,27 @@
     });
 
     Snakeskin.addDirective('continue', {
-    	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('async')],
+    	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
     	group: ['continue', 'control']
     }, function (command) {
-    	var inside = this.hasParent(this.getGroup('cycle', 'async'));
+    	var valid = ['cycle', 'iterator', 'async'],
+    	    all = valid.concat('block', 'microTemplate');
+
+    	var inside = any(this.hasParent(this.getGroup.apply(this, valid))),
+    	    parent = any(this.hasParent(this.getGroup.apply(this, babelHelpers_toConsumableArray(all)), true));
+
+    	if (parent.name === 'block' && parent.params.args || this.getGroup('microTemplate')[parent.name] && this.getGroup('callback')[any(this.hasParent(this.getGroup.apply(this, valid.concat(['callback']))))]) {
+    		return this.error('the directive "' + this.name + '" can\'t be used within the "' + parent.name + '"');
+    	}
 
     	if (this.getGroup('cycle')[inside]) {
-    		if (inside === this.hasParent(this.getGroup('callback'))) {
-    			this.append('return;');
-    		} else {
-    			this.append('continue;');
-    		}
+    		this.append('continue;');
+    	} else if (this.getGroup('iterator')[inside]) {
+    		this.append('return;');
     	} else {
     		var val = command ? 'undefined,' + this.out(command, { unsafe: true }) : '';
 
-    		if (inside === 'waterfall') {
+    		if (this.getGroup('waterfall')[inside]) {
     			this.append('return arguments[arguments.length - 1](' + val + ');');
     		} else {
     			this.append(ws$1(_templateObject2$2, val));
@@ -7896,13 +8037,13 @@
     	}
     });
 
-    var _templateObject$6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t']);
-    var _templateObject2$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t']);
-    var _templateObject3$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t']);
+    var _templateObject$6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t'], ['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t']);
+    var _templateObject2$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t'], ['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t']);
+    var _templateObject3$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t'], ['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t']);
     Snakeskin.addDirective('forEach', {
     	block: true,
     	deferInit: true,
-    	group: ['forEach', 'iterator', 'cycle', 'callback'],
+    	group: ['forEach', 'iterator', 'function'],
     	notEmpty: true
     }, function (command) {
     	command = command.replace(/=>>/g, '=>=>');
@@ -7913,22 +8054,30 @@
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
+    	var is$C = parts.length === 3;
+
     	this.startDir(null, {
+    		$C: is$C,
     		params: parts[2] ? parts[1] : null
     	});
 
-    	if (parts.length === 3) {
-    		this.append(ws$1(_templateObject$6, this.out('$C(' + parts[0] + ')', { unsafe: true }), this.declCallbackArgs(parts), this.declArguments()));
+    	if (is$C) {
+    		this.selfThis.push(true);
+    		this.append(ws$1(_templateObject$6, this.out('$C(' + parts[0] + ')', { unsafe: true }), this.declCallbackArgs(parts)));
 
     		return;
     	}
 
-    	this.append(ws$1(_templateObject2$3, this.out(parts[0], { unsafe: true }), this.declCallbackArgs(parts[1]), this.declArguments()));
+    	this.append(ws$1(_templateObject2$3, this.out(parts[0], { unsafe: true }), this.declCallbackArgs(parts[1])));
     }, function () {
-    	var params = this.structure.params.params;
+    	var p = this.structure.params;
 
-    	if (params) {
-    		this.append('}, ' + this.out(params, { unsafe: true }) + ');');
+    	if (p.$C) {
+    		this.selfThis.pop();
+    	}
+
+    	if (p.params) {
+    		this.append('}, ' + this.out(p.params, { unsafe: true }) + ');');
     	} else {
     		this.append('});');
     	}
@@ -7936,7 +8085,7 @@
 
     Snakeskin.addDirective('forIn', {
     	block: true,
-    	group: ['forIn', 'iterator', 'cycle', 'callback'],
+    	group: ['forIn', 'iterator', 'function'],
     	notEmpty: true
     }, function (command) {
     	var parts = command.split(/\s*=>\s*/);
@@ -7945,88 +8094,103 @@
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
-    	this.append(ws$1(_templateObject3$2, this.out(parts[0], { unsafe: true }), this.declCallbackArgs(parts[1]), this.declArguments()));
+    	this.append(ws$1(_templateObject3$2, this.out(parts[0], { unsafe: true }), this.declCallbackArgs(parts[1])));
     }, function () {
     	this.append('});');
     });
 
-    var _templateObject$7 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '(function (', ') {\n\t\t\t\t', '\n\t\t'], ['\n\t\t\t', '(function (', ') {\n\t\t\t\t', '\n\t\t']);
-    var _templateObject2$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t], function (', ') {\n\t\t\t\t', '\n\t\t'], ['\n\t\t\t], function (', ') {\n\t\t\t\t', '\n\t\t']);
+        var _templateObject$7 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tvar __RESULT__ = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\tvar __RESULT__ = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t']);
+
     Snakeskin.addDirective('callback', {
     	block: true,
-    	group: ['callback', 'AsyncCallback'],
+    	group: ['callback', 'function'],
     	shorthands: { '()': 'callback ' }
     }, function (command) {
+    	var _this = this;
+
     	var parts = command.split('=>');
 
     	if (!parts.length || parts.length > 2) {
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
-    	var async = this.getGroup('async');
-    	var parent = this.structure.parent;
+    	var prfx = '',
+    	    pstfx = '';
 
-    	this.structure.params.insideAsync = async[parent.name];
+    	var parent = any(this.hasParent(this.getGroup('async', 'microTemplate'), true));
 
-    	var length = 0;
-    	$C(parent.children).forEach(function (_ref) {
-    		var name = _ref.name;
+    	if (parent) {
+    		if (this.getGroup('async')[parent.name]) {
+    			(function () {
+    				var length = 0;
 
-    		if (name === 'callback') {
-    			length++;
+    				$C(parent.children).forEach(function (_ref) {
+    					var name = _ref.name;
+
+    					if (_this.getGroup('callback')[name]) {
+    						length++;
+    					}
+
+    					if (length > 1) {
+    						return false;
+    					}
+    				});
+
+    				prfx = length > 1 ? ',' : '';
+    			})();
+    		} else if (this.getGroup('microTemplate')[parent.name]) {
+    			prfx = '__RESULT__ = new Data';
+    			pstfx = ws$1(_templateObject$7, this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl());
     		}
+    	}
 
-    		if (length > 1) {
-    			return false;
-    		}
-    	});
-
-    	this.append(ws$1(_templateObject$7, async[parent.name] && length > 1 ? ', ' : '', this.declCallbackArgs(parts), this.declArguments()));
+    	this.append(prfx + '(function (' + this.declCallbackArgs(parts) + ') {' + pstfx);
     }, function () {
-    	this.append('})' + (this.structure.params.insideAsync ? '' : ';'));
+    	var parent = any(this.hasParent(this.getGroup('async', 'microTemplate')));
+
+    	if (parent) {
+    		if (this.getGroup('async')[parent]) {
+    			this.append('})');
+    		} else if (this.getGroup('microTemplate')[parent]) {
+    			this.append('return ' + this.getReturnResultDecl() + '; });');
+    		}
+    	} else {
+    		this.append('});');
+    	}
     });
 
     Snakeskin.addDirective('final', {
-    	block: true,
-    	deferInit: true,
-    	group: ['callback', 'basicAsync'],
-    	with: ['parallel', 'series', 'waterfall']
+    	group: ['final', 'function'],
+    	with: Snakeskin.group('Async')
     }, function (command) {
-    	var async = this.getGroup('series');
-
-    	if (!async[this.structure.name]) {
-    		return this.error('directive "' + this.name + '" can be used only with a "' + groupsList['series'].join(', ') + '"');
-    	}
-
     	var parts = command.split('=>');
 
     	if (!parts.length || parts.length > 2) {
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
-    	this.startDir();
-    	this.append(ws$1(_templateObject2$4, this.declCallbackArgs(parts), this.declArguments()));
-    }, function () {
-    	this.append('});');
-    	this.endDir();
+    	this.structure.chain = false;
+    	this.structure.params.final = true;
+
+    	this.append('], function (' + this.declCallbackArgs(parts) + ') {');
     });
 
-    $C$1(['parallel', 'series', 'waterfall']).forEach(function (dir) {
+    $C(['parallel', 'series', 'waterfall']).forEach(function (dir) {
     	Snakeskin.addDirective(dir, {
     		block: true,
-    		children: ['callback', 'final'],
-    		group: [dir, 'async', 'Async', 'series']
+    		children: Snakeskin.group('callback'),
+    		group: [dir, 'Async', 'async']
     	}, function (command, commandLength, type) {
     		this.append(this.out('async', { unsafe: true }) + '.' + type + '([');
     	}, function () {
-    		this.append(']);');
+    		this.append((this.structure.params.final ? '}' : ']') + ');');
     	});
     });
 
     Snakeskin.addDirective('when', {
     	block: true,
-    	children: 'callback',
-    	group: ['when', 'promise', 'async', 'basicAsync'],
+    	children: Snakeskin.group('callback'),
+    	group: ['when', 'promise', 'async'],
     	notEmpty: true
     }, function (command) {
     	this.append(this.out(command, { unsafe: true }) + '.then(');
@@ -8044,59 +8208,70 @@
     	this.append(this.wrap('\'' + this.literalBounds[0] + this.replaceTplVars(command.replace(/^\s*\{|}\s*$/g, '')) + this.literalBounds[1] + '\''));
     });
 
-    var _templateObject$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t__RETURN__ = true;\n\t\t\t\t__RETURN_VAL__ = ', ';\n\t\t\t'], ['\n\t\t\t\t__RETURN__ = true;\n\t\t\t\t__RETURN_VAL__ = ', ';\n\t\t\t']);
-    var _templateObject2$5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t']);
-    var _templateObject3$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\t__RETURN__ = true;\n\t\t\t\t\t\t__RETURN_VAL__ = ', ';\n\t\t\t\t\t'], ['\n\t\t\t\t\t\t__RETURN__ = true;\n\t\t\t\t\t\t__RETURN_VAL__ = ', ';\n\t\t\t\t\t']);
+    var _templateObject$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t'], ['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t']);
+    var _templateObject2$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
     Snakeskin.addDirective('return', {
     	group: 'return',
     	placement: 'template'
     }, function (command) {
-    	var cb = this.hasParent(this.getGroup('callback')),
+    	var valid = ['function', 'async'],
+    	    all = valid.concat('block', 'microTemplate');
+
+    	var cb = this.getGroup('callback'),
+    	    inside = any(this.hasParent(this.getGroup.apply(this, valid))),
     	    val = command ? this.out(command, { unsafe: true }) : this.getReturnResultDecl();
 
-    	if (cb) {
-    		var str = '';
-    		var def = ws$1(_templateObject$8, val);
+    	var def = ws$1(_templateObject$8, val);
 
-    		var asyncParent = undefined;
-    		if (cb === 'callback') {
-    			asyncParent = this.hasParent(this.getGroup('async'));
-    		}
+    	var parent = any(this.hasParent(this.getGroup.apply(this, babelHelpers_toConsumableArray(all)), true));
 
-    		if (asyncParent) {
-    			if (this.getGroup('Async')[asyncParent]) {
-    				str += def;
+    	if (parent && cb[parent.name]) {
+    		parent = any(this._has(this.getGroup.apply(this, babelHelpers_toConsumableArray(all)), parent.parent, true));
+    	}
 
-    				if (asyncParent === 'waterfall') {
-    					str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
-    				} else {
-    					str += ws$1(_templateObject2$5);
-    				}
+    	if (!inside || parent && (parent.name === 'block' && parent.params.args || cb[inside] && this.getGroup('microTemplate')[parent.name])) {
+    		this.append('return ' + val + ';');
+    		return;
+    	}
+
+    	var str = '',
+    	    asyncParent = undefined;
+
+    	if (inside && this.getGroup('callback')[inside]) {
+    		asyncParent = any(this.hasParent(this.getGroup('async')));
+    	}
+
+    	if (asyncParent) {
+    		if (this.getGroup('Async')[asyncParent]) {
+    			str += def;
+
+    			if (this.getGroup('waterfall')[asyncParent]) {
+    				str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
     			} else {
-    				str += 'return false;';
+    				str += ws$1(_templateObject2$4);
     			}
     		} else {
-    			if (!this.getGroup('basicAsync')[cb]) {
-    				str += ws$1(_templateObject3$3, val);
-    			}
-
     			str += 'return false;';
-    			this.deferReturn = cb !== 'final' ? 1 : 0;
+    		}
+    	} else {
+    		if (inside && !this.getGroup('async')[inside]) {
+    			str += def;
+    			this.deferReturn = 1;
     		}
 
-    		this.append(str);
-    	} else {
-    		this.append('return ' + val + ';');
+    		str += 'return false;';
     	}
+
+    	this.append(str);
     });
 
     var _templateObject$9 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t'], ['\n\t\t\t', '\n\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t']);
-    var _templateObject2$6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
-    var _templateObject3$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push({\n\t\t\t\t\tkey: undefined,\n\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t});\n\t\t\t}\n\n\t\t\tSnakeskin.forEach(', ', function (el, i) {\n\t\t\t\t', '[el.key || ', '.length] = el.value;\n\t\t\t});\n\t\t'], ['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push({\n\t\t\t\t\tkey: undefined,\n\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t});\n\t\t\t}\n\n\t\t\tSnakeskin.forEach(', ', function (el, i) {\n\t\t\t\t', '[el.key || ', '.length] = el.value;\n\t\t\t});\n\t\t']);
+    var _templateObject2$5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
+    var _templateObject3$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push({\n\t\t\t\t\tkey: undefined,\n\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t});\n\t\t\t}\n\n\t\t\tSnakeskin.forEach(', ', function (el, i) {\n\t\t\t\t', '[el.key || ', '.length] = el.value;\n\t\t\t});\n\t\t'], ['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push({\n\t\t\t\t\tkey: undefined,\n\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t});\n\t\t\t}\n\n\t\t\tSnakeskin.forEach(', ', function (el, i) {\n\t\t\t\t', '[el.key || ', '.length] = el.value;\n\t\t\t});\n\t\t']);
     Snakeskin.addDirective('target', {
     	block: true,
     	deferInit: true,
-    	group: ['target', 'void', 'var'],
+    	group: ['target', 'microTemplate', 'var', 'void'],
     	trim: true
     }, function (command) {
     	var _command$split = command.split(/\s+as\s+/);
@@ -8114,7 +8289,7 @@
 
     	var str = this.declVars('__TARGET_REF__ = ' + obj, { sys: true });
 
-    	$C$1.extend(false, this.structure.params, {
+    	$C.extend(false, this.structure.params, {
     		ref: this.out('__TARGET_REF__', { unsafe: true })
     	});
 
@@ -8122,24 +8297,17 @@
     		str += this.out('var ' + ref + ' = __TARGET_REF__;', { skipFirstWord: true, unsafe: true });
     	}
 
-    	this.append(ws$1(_templateObject$9, str, this.declVars(ws$1(_templateObject2$6), { sys: true }), this.getResultDecl()));
+    	this.append(ws$1(_templateObject$9, str, this.declVars(ws$1(_templateObject2$5), { sys: true }), this.getResultDecl()));
     }, function () {
-    	var structure = this.structure;
-    	var ref = structure.params.ref;
-
+    	var ref = this.structure.params.ref;
     	var tmp = this.out('__CALL_TMP__', { unsafe: true });
 
-    	this.append(ws$1(_templateObject3$4, tmp, this.getReturnResultDecl(), tmp, ref, ref));
+    	this.append(ws$1(_templateObject3$3, tmp, this.getReturnResultDecl(), tmp, ref, ref));
 
-    	switch (structure.parent.name) {
-    		case 'call':
-    		case 'putIn':
-    		case 'target':
-    			this.append('__RESULT__ = new Data(' + ref + ');');
-    			break;
-
-    		default:
-    			this.append('__RESULT__ = ' + this.out('__CALL_CACHE__', { unsafe: true }) + ';');
+    	if (this.hasParent(this.getGroup('microTemplate'))) {
+    		this.append('__RESULT__ = new Data(' + ref + ');');
+    	} else {
+    		this.append('__RESULT__ = ' + this.out('__CALL_CACHE__', { unsafe: true }) + ';');
     	}
     });
 
@@ -8178,8 +8346,8 @@
     		}
     	}
 
-    	var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
+    	var s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
 
     	if (cache && !drop) {
     		var diff = this.getDiff(commandLength),
@@ -8221,6 +8389,7 @@
     	block: true,
     	filters: { global: ['attr', 'html'], local: ['undef'] },
     	group: ['script', 'tag', 'output'],
+    	interpolation: true,
     	placement: 'template',
     	selfInclude: false,
     	trim: true
@@ -8247,6 +8416,7 @@
     	block: true,
     	filters: { global: ['attr', 'html'], local: ['undef'] },
     	group: ['style', 'tag', 'output'],
+    	interpolation: true,
     	placement: 'template',
     	selfInclude: false,
     	trim: true
@@ -8286,6 +8456,7 @@
     	block: true,
     	filters: { global: ['attr', 'html'], local: ['undef'] },
     	group: ['link', 'tag', 'output'],
+    	interpolation: true,
     	placement: 'template',
     	selfInclude: false,
     	trim: true
@@ -8307,28 +8478,47 @@
     });
 
     var _templateObject$11 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t'], ['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t']);
-    var _templateObject2$7 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
-    var _templateObject3$5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t}\n\t\t'], ['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t}\n\t\t']);
-    var _templateObject4$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t', '\n\t\t\t\t'], ['\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t', '\n\t\t\t\t']);
+    var _templateObject2$6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
+    var _templateObject3$4 = babelHelpers_taggedTemplateLiteral(['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t}\n\t\t'], ['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t}\n\t\t']);
+    var _templateObject4$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t', '\n\t\t\t']);
     Snakeskin.addDirective('call', {
     	block: true,
     	deferInit: true,
-    	group: ['call', 'output'],
+    	group: ['call', 'microTemplate', 'output'],
     	shorthands: { '+=': 'call ', '/+': 'end call' }
     }, function (command) {
+    	var short = command.slice(-1) === '/';
+
+    	if (short) {
+    		this.startInlineDir(null, { short: true });
+
+    		var out = this.out(command.slice(0, -1) + ';', { unsafe: true });
+
+    		if (this.hasParent(this.getGroup('microTemplate'))) {
+    			this.append('__RESULT__ = Unsafe(' + out + ');');
+    		} else {
+    			this.append(this.wrap(out));
+    		}
+
+    		return;
+    	}
+
     	this.startDir(null, {
     		chunks: 1,
     		command: command
     	});
 
-    	this.append(ws$1(_templateObject$11, this.declVars(ws$1(_templateObject2$7), { sys: true }), this.getResultDecl()));
+    	this.append(ws$1(_templateObject$11, this.declVars(ws$1(_templateObject2$6), { sys: true }), this.getResultDecl()));
     }, function () {
+    	var p = this.structure.params;
+
+    	if (p.short) {
+    		return;
+    	}
+
     	var tmp = this.out('__CALL_TMP__', { unsafe: true });
 
-    	this.append(ws$1(_templateObject3$5, tmp, this.getReturnResultDecl()));
-
-    	var structure = this.structure;
-    	var p = structure.params;
+    	this.append(ws$1(_templateObject3$4, tmp, this.getReturnResultDecl()));
 
     	var i = p.chunks,
     	    j = 0;
@@ -8363,78 +8553,59 @@
     		str = this.out(command, { unsafe: true });
     	}
 
-    	switch (structure.parent.name) {
-    		case 'call':
-    		case 'putIn':
-    		case 'target':
-    			this.append('__RESULT__ = Unsafe(' + str + ');');
-    			break;
-
-    		default:
-    			this.append(ws$1(_templateObject4$2, this.out('__CALL_CACHE__', { unsafe: true }), this.wrap(str)));
+    	if (this.hasParent(this.getGroup('microTemplate'))) {
+    		this.append('__RESULT__ = Unsafe(' + str + ');');
+    	} else {
+    		this.append(ws$1(_templateObject4$2, this.out('__CALL_CACHE__', { unsafe: true }), this.wrap(str)));
     	}
     });
 
-    var _templateObject$12 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\t', '.push(', ');\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\t', '++;\n\t\t\t\t'], ['\n\t\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\t', '.push(', ');\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\t', '++;\n\t\t\t\t']);
-    var _templateObject2$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\t', '.push({\n\t\t\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\t', '++;\n\t\t\t\t'], ['\n\t\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\t', '.push({\n\t\t\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\t', '++;\n\t\t\t\t']);
-    var _templateObject3$6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t', '\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t'], ['\n\t\t\t\t\t', '\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t']);
-    var _templateObject4$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t'], ['\n\t\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t']);
-    var _templateObject5$2 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t', '.push({\n\t\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t});\n\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t'], ['\n\t\t\t\t\t', '.push({\n\t\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t});\n\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t']);
-    var _templateObject6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t'], ['\n\t\t\t\t\t', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t']);
+    var _templateObject$12 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\t', '++;\n\t\t\t'], ['\n\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\t', '++;\n\t\t\t']);
+    var _templateObject2$7 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t', '.push({\n\t\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t});\n\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\t', '++;\n\t\t\t'], ['\n\t\t\t\tif (!', ' && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t', '.push({\n\t\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t});\n\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\t', '++;\n\t\t\t']);
+    var _templateObject3$5 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
+    var _templateObject4$3 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
+    var _templateObject5$1 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '.push({\n\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t});\n\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '.push({\n\t\t\t\t\tkey: \'', '\',\n\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t});\n\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
+    var _templateObject6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
     Snakeskin.addDirective('putIn', {
     	block: true,
     	deferInit: true,
-    	group: ['putIn', 'void'],
+    	group: ['putIn', 'microTemplate', 'void'],
     	shorthands: { '*': 'putIn ', '/*': 'end putIn' },
     	trim: true
     }, function (ref) {
     	this.startDir(null, { ref: ref });
 
-    	var parent = this.structure.parent;
+    	var parent = any(this.hasParent(this.getGroup('microTemplate'), true));
 
     	var tmp = this.out('__CALL_TMP__', { unsafe: true }),
     	    pos = this.out('__CALL_POS__', { unsafe: true });
 
-    	switch (parent.name) {
-    		case 'call':
-    			parent.params.chunks++;
-    			this.append(ws$1(_templateObject$12, pos, tmp, this.getReturnResultDecl(), this.getResultDecl(), pos));
-
-    			break;
-
-    		case 'target':
-    			this.append(ws$1(_templateObject2$8, pos, tmp, ref, this.getReturnResultDecl(), this.getResultDecl(), pos));
-
-    			break;
-
-    		default:
-    			this.append(ws$1(_templateObject3$6, this.declVars('__CALL_CACHE__ = ' + this.getReturnResultDecl(), { sys: true }), this.getResultDecl()));
+    	if (parent && this.getGroup('call')[parent.name]) {
+    		parent.params.chunks++;
+    		this.append(ws$1(_templateObject$12, pos, tmp, this.getReturnResultDecl(), this.getResultDecl(), pos));
+    	} else if (parent && this.getGroup('target')[parent.name]) {
+    		this.append(ws$1(_templateObject2$7, pos, tmp, ref, this.getReturnResultDecl(), this.getResultDecl(), pos));
+    	} else {
+    		this.append(ws$1(_templateObject3$5, this.declVars('__CALL_CACHE__ = ' + this.getReturnResultDecl(), { sys: true }), this.getResultDecl()));
     	}
     }, function () {
-    	var structure = this.structure;
-    	var ref = structure.params.ref;
+    	var ref = this.structure.params.ref;
 
-    	var tmp = this.out('__CALL_TMP__', { unsafe: true });
+    	var tmp = this.out('__CALL_TMP__', { unsafe: true }),
+    	    parent = any(this.hasParent(this.getGroup('microTemplate')));
 
-    	switch (structure.parent.name) {
-    		case 'call':
-    			this.append(ws$1(_templateObject4$3, tmp, this.getReturnResultDecl(), this.getResultDecl()));
-
-    			break;
-
-    		case 'target':
-    			this.append(ws$1(_templateObject5$2, tmp, ref, this.getReturnResultDecl(), this.getResultDecl()));
-
-    			break;
-
-    		default:
-    			this.append(ws$1(_templateObject6, this.out(ref + ' = ' + this.getReturnResultDecl(), { unsafe: true }), this.out('__CALL_CACHE__', { unsafe: true })));
+    	if (parent && this.getGroup('call')[parent]) {
+    		this.append(ws$1(_templateObject4$3, tmp, this.getReturnResultDecl(), this.getResultDecl()));
+    	} else if (parent && this.getGroup('target')[parent]) {
+    		this.append(ws$1(_templateObject5$1, tmp, ref, this.getReturnResultDecl(), this.getResultDecl()));
+    	} else {
+    		this.append(ws$1(_templateObject6, this.out(ref + ' = ' + this.getReturnResultDecl(), { unsafe: true }), this.out('__CALL_CACHE__', { unsafe: true })));
     	}
     });
 
-    var _templateObject$13 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\tvar __RESULT__ = ', ';\n\n\t\t\t\t\t\t\t', '\n\n\t\t\t\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn res;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t', '\n\t\t\t\t'], ['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\tvar __RESULT__ = ', ';\n\n\t\t\t\t\t\t\t', '\n\n\t\t\t\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn res;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t', '\n\t\t\t\t']);
-    var _templateObject2$9 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\n\t\t\t\t\t', '__switchLine__ ', '', '\n\t\t\t\t\t\t', '\n\t\t\t\t\t', '__end__', '\n\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\t\t\t'], ['\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\n\t\t\t\t\t', '__switchLine__ ', '', '\n\t\t\t\t\t\t', '\n\t\t\t\t\t', '__end__', '\n\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\t\t\t']);
-    var _templateObject3$7 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t};\n\t\t\t\t}\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t};\n\t\t\t\t}\n\n\t\t\t\t', '\n\t\t\t']);
+    var _templateObject$13 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\tvar __RESULT__ = ', ';\n\n\t\t\t\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn res;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t', '\n\t\t\t\t'], ['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\tvar __RESULT__ = ', ';\n\n\t\t\t\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn res;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t', '\n\t\t\t\t']);
+    var _templateObject2$8 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\n\t\t\t\t\t', '__switchLine__ ', '', '\n\t\t\t\t\t\t', '\n\t\t\t\t\t', '__end__', '\n\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\t\t\t'], ['\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\n\t\t\t\t\t', '__switchLine__ ', '', '\n\t\t\t\t\t\t', '\n\t\t\t\t\t', '__end__', '\n\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\t\t\t']);
+    var _templateObject3$6 = babelHelpers_taggedTemplateLiteral(['\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t};\n\t\t\t\t}\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t};\n\t\t\t\t}\n\n\t\t\t\t', '\n\t\t\t']);
     var callBlockNameRgxp = new RegExp('^[^' + symbols + '_$][^' + w + '$]*|[^' + w + '$]+', 'i');
 
     Snakeskin.addDirective('block', {
@@ -8581,7 +8752,7 @@
     		if (args.params) {
     			var fnDecl = structure.params.fn = 'self.' + name;
 
-    			this.save(ws$1(_templateObject$13, fnDecl, fnDecl, args.str, this.getResultDecl(), this.declArguments(), this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl(), args.defParams));
+    			this.save(ws$1(_templateObject$13, fnDecl, fnDecl, args.str, this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl(), args.defParams));
 
     			if (params != null) {
     				var vars = structure.vars;
@@ -8590,7 +8761,7 @@
     				params = this.getFnArgs('(' + params + ')');
 
     				structure.vars = vars;
-    				structure.params.params = $C$1(params).reduce(function (res, el) {
+    				structure.params.params = $C(params).reduce(function (res, el) {
     					return '' + res + _this.out(el, { unsafe: true }) + ',';
     				}, '').slice(0, -1);
     			}
@@ -8600,25 +8771,28 @@
     	var p = this.structure.params,
     	    diff = this.getDiff(commandLength);
 
-    	var s = (this.needPrfx ? ADV_LEFT_BLOCK : '') + LEFT_BLOCK,
-    	    e = RIGHT_BLOCK;
+    	var s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
+    	    e = RIGHT_BOUND;
 
     	if (this.outerLink === p.name) {
     		var obj = this.preDefs[this.tplName],
     		    i = Number(obj.i);
 
-    		obj.text += ws$1(_templateObject2$9, this.eol, this.source.slice(p.from, i), s, e, s, obj.startLine, e, this.source.slice(i, this.i - diff), s, e, this.eol, this.source.slice(this.i - diff, this.i + 1), s, e);
+    		obj.text += ws$1(_templateObject2$8, this.eol, this.source.slice(p.from, i), s, e, s, obj.startLine, e, this.source.slice(i, this.i - diff), s, e, this.eol, this.source.slice(this.i - diff, this.i + 1), s, e);
 
-    		this.outerLink = null;
-    		this.tplName = null;
-
+    		this.outerLink = this.tplName = undefined;
     		return;
     	}
 
-    	var block = $blocks[this.tplName][p.name];
+    	var block = $blocks[this.tplName][p.name],
+    	    output = p.params != null;
 
     	if (this.isSimpleOutput() && p.fn) {
-    		this.save(ws$1(_templateObject3$7, this.getReturnResultDecl(), p.params != null ? this.wrap(p.fn + '(' + p.params + ')') : ''));
+    		this.save(ws$1(_templateObject3$6, this.getReturnResultDecl(), output ? this.wrap(p.fn + '(' + p.params + ')') : ''));
+
+    		if (!output && this.hasParent(this.getGroup('microTemplate'))) {
+    			this.append('__RESULT__ = new Data(' + p.fn + ');');
+    		}
     	}
 
     	if (this.isAdvTest()) {
@@ -8636,6 +8810,7 @@
     Snakeskin.addDirective('attr', {
     	filters: { global: ['attr', 'html'], local: ['undef'] },
     	group: ['attr', 'output'],
+    	interpolation: true,
     	notEmpty: true,
     	placement: 'template',
     	text: true
@@ -8648,6 +8823,7 @@
     	deferInit: true,
     	filters: { global: ['attr', 'html'], local: ['undef'] },
     	group: ['tag', 'output'],
+    	interpolation: true,
     	placement: 'template',
     	shorthands: { '/<': 'end tag', '<': 'tag ' },
     	text: true,
@@ -8673,7 +8849,7 @@
     	var inlineMap = _getXMLTagDesc.inlineMap;
     	var classes = _getXMLTagDesc.classes;
 
-    	$C$1.extend(false, this.structure.params, { inline: inline, tag: tag });
+    	$C.extend(false, this.structure.params, { inline: inline, tag: tag });
 
     	if (inlineMap) {
     		this.append(this.declVars('__INLINE_TAGS__ = ' + inlineMap, { sys: true }));
@@ -8711,9 +8887,9 @@
     /**
      * Special Snakeskin class for escaping HTML entities from an object
      *
+     * @constructor
      * @param {?} val - source value
      * @param {?string=} [opt_attr] - type of attribute declaration
-     * @return {(string|!Node)}
      */
     Snakeskin.HTMLObject = function (val, opt_attr) {
     	this.value = val;
@@ -8762,10 +8938,10 @@
     	return document.createComment(text);
     };
 
-    var keys = (function () {
+    var keys = function () {
     	return (/\[native code]/.test(Object.keys && Object.keys.toString()) && Object.keys
     	);
-    })();
+    }();
 
     /**
      * Common iterator
@@ -8902,6 +9078,21 @@
      */
     Snakeskin.setAttribute = function (node, name, val) {
     	node.setAttribute(name, val instanceof Node === false ? String(val) : val.textContent);
+    };
+
+    /**
+     * Decorates a function by another functions
+     *
+     * @param {!Array<!Function>} decorators - array of decorator functions
+     * @param {!Function} fn - source function
+     * @return {!Function}
+     */
+    Snakeskin.decorate = function (decorators, fn) {
+    	Snakeskin.forEach(decorators, function (decorator) {
+    		return fn = decorator(fn);
+    	});
+    	fn.decorators = decorators;
+    	return fn;
     };
 
     return Snakeskin;

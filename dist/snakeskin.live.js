@@ -5,16 +5,16 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 13 Jan 2016 14:17:03 GMT
+ * Date: 'Tue, 19 Jan 2016 10:57:56 GMT
  */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define('Snakeskin', factory) :
-    global.Snakeskin = factory();
+    (global.Snakeskin = factory());
 }(this, function () { 'use strict';
 
-    function babelHelpers_defineProperty (obj, key, value) {
+    var babelHelpers_defineProperty = function (obj, key, value) {
       if (key in obj) {
         Object.defineProperty(obj, key, {
           value: value,
@@ -124,9 +124,9 @@
     /**
      * Special Snakeskin class for escaping HTML entities from an object
      *
+     * @constructor
      * @param {?} val - source value
      * @param {?string=} [opt_attr] - type of attribute declaration
-     * @return {(string|!Node)}
      */
     Snakeskin.HTMLObject = function (val, opt_attr) {
     	this.value = val;
@@ -175,10 +175,10 @@
     	return document.createComment(text);
     };
 
-    var keys = (function () {
+    var keys = function () {
     	return (/\[native code]/.test(Object.keys && Object.keys.toString()) && Object.keys
     	);
-    })();
+    }();
 
     /**
      * Common iterator
@@ -317,6 +317,21 @@
     	node.setAttribute(name, val instanceof Node === false ? String(val) : val.textContent);
     };
 
+    /**
+     * Decorates a function by another functions
+     *
+     * @param {!Array<!Function>} decorators - array of decorator functions
+     * @param {!Function} fn - source function
+     * @return {!Function}
+     */
+    Snakeskin.decorate = function (decorators, fn) {
+    	Snakeskin.forEach(decorators, function (decorator) {
+    		return fn = decorator(fn);
+    	});
+    	fn.decorators = decorators;
+    	return fn;
+    };
+
         var attrSeparators = {
       '-': true,
       ':': true,
@@ -338,8 +353,8 @@
     var _COMMENTS;
     var _SYS_ESCAPES;
     var _STRONG_SYS_ESCAPES;
-    var LEFT_BLOCK = '{';
-    var ADV_LEFT_BLOCK = '#';
+    var LEFT_BOUND = '{';
+    var ADV_LEFT_BOUND = '#';
     // <<<
     // The additional directive separators
     // >>>
@@ -388,7 +403,7 @@
 
     var SYS_ESCAPES = (_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers_defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers_defineProperty(_SYS_ESCAPES, LEFT_BLOCK, true), babelHelpers_defineProperty(_SYS_ESCAPES, ADV_LEFT_BLOCK, true), babelHelpers_defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers_defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers_defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
+    }, babelHelpers_defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers_defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers_defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers_defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers_defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers_defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
     for (var key$1 in BASE_SHORTS) {
     	if (!BASE_SHORTS.hasOwnProperty(key$1)) {
@@ -445,6 +460,23 @@
     	});
 
     	return this;
+    };
+
+    /**
+     * Sets parameters to the specified Snakeskin filter
+     *
+     * @param {(string|!Function)} filter - filter name or the filter function
+     * @param {Object} params - parameters
+     * @return {!Function}
+     */
+    Snakeskin.setFilterParams = function (filter, params) {
+    	if (isString(filter)) {
+    		Filters[filter]['ssFilterParams'] = params;
+    		return Filters[filter];
+    	}
+
+    	filter['ssFilterParams'] = params;
+    	return any(filter);
     };
 
     /**
@@ -518,23 +550,6 @@
     		(_console6 = console).warn.apply(_console6, arguments);
     		return val;
     	}
-    };
-
-    /**
-     * Sets parameters to the specified Snakeskin filter
-     *
-     * @param {(string|!Function)} filter - filter name or the filter function
-     * @param {Object} params - parameters
-     * @return {!Function}
-     */
-    Snakeskin.setFilterParams = function (filter, params) {
-    	if (isString(filter)) {
-    		Filters[filter]['ssFilterParams'] = params;
-    		return Filters[filter];
-    	}
-
-    	filter['ssFilterParams'] = params;
-    	return filter;
     };
 
     /**
@@ -796,6 +811,24 @@
     	return String(val).replace(search, replace);
     };
 
+    var tplRgxp = /\${(.*?)}/g;
+
+    /**
+     * Returns a string result of the specified template
+     *
+     * @example
+     * 'hello ${name}' |tpl {name: 'Kobezzza'}
+     *
+     * @param {?} tpl - source template
+     * @param {!Object} map - map of values
+     * @return {string}
+     */
+    Filters['tpl'] = function (tpl, map) {
+    	return String(tpl).replace(tplRgxp, function (str, $0) {
+    		return $0 in map ? map[$0] : '';
+    	});
+    };
+
     /**
      * Converts a value to JSON
      *
@@ -864,24 +897,6 @@
     Snakeskin.setFilterParams('default', {
     	'!html': true
     });
-
-    var tplRgxp = /\${(.*?)}/g;
-
-    /**
-     * Returns a string result of the specified template
-     *
-     * @example
-     * 'hello ${name}' |tpl {name: 'Kobezzza'}
-     *
-     * @param {?} tpl - source template
-     * @param {!Object} map - map of values
-     * @return {string}
-     */
-    Filters['tpl'] = function (tpl, map) {
-    	return String(tpl).replace(tplRgxp, function (str, $0) {
-    		return $0 in map ? map[$0] : '';
-    	});
-    };
 
     var nl2brRgxp = /\r?\n|\n/g;
 
@@ -990,13 +1005,17 @@
      * @return {(string|Snakeskin.HTMLObject)}
      */
     Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
-    	if (type !== 'attrKey') {
+    	if (type !== 'attrKey' || !isObject(val)) {
     		return String(val);
     	}
 
-    	function convert(obj) {
-    		var prfx = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
-
+    	/**
+      * @param {Object} obj
+      * @param {?string=} opt_prfx
+      * @return {Snakeskin.HTMLObject}
+      */
+    	function convert(obj, opt_prfx) {
+    		opt_prfx = opt_prfx || '';
     		Snakeskin.forEach(obj, function (el, key) {
     			if (el === FALSE) {
     				return;
@@ -1004,10 +1023,10 @@
 
     			if (isObject(el)) {
     				var group = Filters['attrKeyGroup'](key);
-    				return convert(el, prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
+    				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
     			}
 
-    			var attr = Filters['attrKey'](dasherize(prfx + key));
+    			var attr = Filters['attrKey'](dasherize(opt_prfx + key));
 
     			if (el === TRUE) {
     				el = doctype === 'xml' ? attr : '';
