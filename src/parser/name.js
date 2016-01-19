@@ -22,7 +22,7 @@ import { IS_NODE } from '../consts/hacks';
  * @return {string}
  */
 Parser.prototype.getDirName = function (name) {
-	return $dirNameAliases[name];
+	return $dirNameAliases[name] || name;
 };
 
 /**
