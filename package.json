@@ -37,8 +37,10 @@
   "dependencies": {
     "commander": "^2.5.0",
     "esprima": "^2.1.0",
+    "exists-sync": "0.0.3",
     "glob": "^6.0.0",
     "js-beautify": "^1.5.4",
+    "mkdirp": "^0.5.1",
     "monocle": "^1.1.51"
   },
   "devDependencies": {
