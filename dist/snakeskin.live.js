@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 19 Jan 2016 10:57:56 GMT
+ * Date: 'Tue, 19 Jan 2016 16:13:15 GMT
  */
 
 (function (global, factory) {
@@ -14,7 +14,9 @@
     (global.Snakeskin = factory());
 }(this, function () { 'use strict';
 
-    var babelHelpers_defineProperty = function (obj, key, value) {
+    var babelHelpers = {};
+
+    babelHelpers.defineProperty = function (obj, key, value) {
       if (key in obj) {
         Object.defineProperty(obj, key, {
           value: value,
@@ -28,6 +30,8 @@
 
       return obj;
     };
+
+    babelHelpers;
 
         var Snakeskin = {
       VERSION: [7, 0, 0]
@@ -364,7 +368,7 @@
     var SINGLE_COMMENT = '///';
     var MULT_COMMENT_START = '/*';
     var MULT_COMMENT_END = '*/';
-    var COMMENTS = (_COMMENTS = {}, babelHelpers_defineProperty(_COMMENTS, SINGLE_COMMENT, SINGLE_COMMENT), babelHelpers_defineProperty(_COMMENTS, MULT_COMMENT_START, MULT_COMMENT_START), babelHelpers_defineProperty(_COMMENTS, MULT_COMMENT_END, MULT_COMMENT_END), _COMMENTS);
+    var COMMENTS = (_COMMENTS = {}, babelHelpers.defineProperty(_COMMENTS, SINGLE_COMMENT, SINGLE_COMMENT), babelHelpers.defineProperty(_COMMENTS, MULT_COMMENT_START, MULT_COMMENT_START), babelHelpers.defineProperty(_COMMENTS, MULT_COMMENT_END, MULT_COMMENT_END), _COMMENTS);
 
     var MICRO_TEMPLATE = '${';
 
@@ -403,7 +407,7 @@
 
     var SYS_ESCAPES = (_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers_defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers_defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers_defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers_defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers_defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers_defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers_defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
+    }, babelHelpers.defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers.defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers.defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
     for (var key$1 in BASE_SHORTS) {
     	if (!BASE_SHORTS.hasOwnProperty(key$1)) {
@@ -415,9 +419,9 @@
 
     var STRONG_SYS_ESCAPES = (_STRONG_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers_defineProperty(_STRONG_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers_defineProperty(_STRONG_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _STRONG_SYS_ESCAPES);
+    }, babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _STRONG_SYS_ESCAPES);
 
-    var MICRO_TEMPLATE_ESCAPES = babelHelpers_defineProperty({
+    var MICRO_TEMPLATE_ESCAPES = babelHelpers.defineProperty({
     	'\\': true
     }, MICRO_TEMPLATE.charAt(0), true);
 
@@ -1026,13 +1030,7 @@
     				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
     			}
 
-    			var attr = Filters['attrKey'](dasherize(opt_prfx + key));
-
-    			if (el === TRUE) {
-    				el = doctype === 'xml' ? attr : '';
-    			}
-
-    			cache[attr] = el;
+    			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = el;
     		});
 
     		return new Snakeskin.HTMLObject(cache, 'attrVal');
