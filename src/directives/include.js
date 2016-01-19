@@ -69,16 +69,19 @@ Snakeskin.addDirective(
 	function (command) {
 		command = this.pasteDangerBlocks(command);
 
+		const
+			env = this.environment;
+
 		const module = {
 			children: [],
 			exports: {},
 			filename: command,
-			id: this.environment.id + 1,
+			id: env.id + 1,
 			key: null,
 			loaded: true,
-			parent: this.module,
+			parent: this.environment,
 			require,
-			root: this.module.root || this.module
+			root: env.root || env
 		};
 
 		module.root.key.push([
@@ -86,8 +89,9 @@ Snakeskin.addDirective(
 			require('fs').statSync(command).mtime.valueOf()
 		]);
 
-		this.module.children.push(module);
-		this.module = module;
+		env.children.push(module);
+		this.environment = module;
+
 		this.info.file = command;
 		this.files[command] = true;
 		this.save(this.declVars('$_', {sys: true}));
@@ -103,12 +107,12 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			file = this.module.filename;
+			{filename} = this.environment;
 
-		this.module = this.module.parent;
-		this.info.file = this.module.filename;
+		this.environment = this.environment.parent;
+		this.info.file = this.environment.filename;
 
-		if (this.params[this.params.length - 1]['@file'] === file) {
+		if (this.params[this.params.length - 1]['@file'] === filename) {
 			this.popParams();
 		}
 	}
