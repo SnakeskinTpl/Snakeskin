@@ -60,12 +60,12 @@ Snakeskin.addDirective(
 			this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
 		if (id) {
-			str += `__ATTR_CACHE__['id'] = '${id}' || __ATTR_CACHE__['id'];`;
+			str += `__ATTR_CACHE__['id'] = ['${id}'] || __ATTR_CACHE__['id'];`;
 		}
 
 		if (classes.length) {
-			const c = classes.join(' ');
-			str += `__ATTR_CACHE__['class'] = '${c}' + (__ATTR_CACHE__['class'] ? ' ' + __ATTR_CACHE__['class'] : '');`;
+			const c = JSON.stringify(classes);
+			str += `__ATTR_CACHE__['class'] = ${c}.concat(__ATTR_CACHE__['class'] || []);`;
 		}
 
 		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));

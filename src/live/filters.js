@@ -605,14 +605,7 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : `${group}-`));
 			}
 
-			const
-				attr = Filters['attrKey'](dasherize(opt_prfx + key));
-
-			if (el === TRUE) {
-				el = doctype === 'xml' ? attr : '';
-			}
-
-			cache[attr] = el;
+			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = el;
 		});
 
 		return new Snakeskin.HTMLObject(cache, 'attrVal');

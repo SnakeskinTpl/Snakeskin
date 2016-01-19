@@ -55,7 +55,8 @@ Parser.prototype.getXMLAttrsDeclBody = function (str) {
  */
 Parser.prototype.getXMLAttrsDeclEnd = function () {
 	const
-		link = this.out(`__TAG__`, {unsafe: true});
+		link = this.out(`__TAG__`, {unsafe: true}),
+		isDOMRenderMode = !this.stringResult && this.renderMode === 'dom';
 
 	return ws`
 		if (typeof ${link} === 'undefined' || ${link} !== '?') {
@@ -66,9 +67,13 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 					return;
 				}
 
+				var
+					attr = el[0] === TRUE ? ${isDOMRenderMode || this.doctype === 'xml' ? 'key' : `TRUE`} : el.join(' ');
+
 				${
-					!this.stringResult && this.renderMode === 'dom' ?
-						'Snakeskin.setAttribute($0, key, el);' : this.wrap(`' ' + key + (el && '="' + __ESCAPE_D_Q__(el) + '"')`)
+					isDOMRenderMode ?
+						'Snakeskin.setAttribute($0, key, attr);' :
+						this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)
 				}
 			});
 		}
@@ -119,7 +124,6 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			el.trim());
 
 		res += ws`
-			__ATTR_POS__ = 0;
 			__ATTR_STR__ = '';
 			__ATTR_TYPE__ = 'attrVal';
 		`;
@@ -145,30 +149,27 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			return ws`
 				${res}
 				__ATTR_TMP__ = '${this.pasteTplVarBlocks(val)}';
-
-				if (__ATTR_TMP__ != null && __ATTR_TMP__ !== '') {
-					__ATTR_STR__ += __ATTR_POS__ ? ' ' + __ATTR_TMP__ : __ATTR_TMP__;
-					__ATTR_POS__++;
-				}
+				__ATTR_STR__ = __ATTR_TMP__ != null ? __ATTR_TMP__ : '';
 			`;
 
 		}, '');
-
-		const
-			isDOMRenderMode = !this.stringResult && this.renderMode === 'dom';
 
 		return ws`
 			${res}
 			__ATTR_TYPE__ = 'attrKey';
 			__ATTR_TMP__ = '${this.pasteTplVarBlocks(args[0])}';
 
-			if (__ATTR_TMP__ != null && __ATTR_TMP__ != '') {
-				__ATTR_CACHE__[__ATTR_TMP__] = __ATTR_CONCAT_MAP__[__ATTR_TMP__] && __ATTR_CACHE__[__ATTR_TMP__] || '';
-				${isDOMRenderMode ? '' : `__ATTR_CACHE__[__ATTR_TMP__] += __ATTR_CACHE__[__ATTR_TMP__] ? ' ' : '';`}
-				__ATTR_CACHE__[__ATTR_TMP__] += ${empty ? isDOMRenderMode ? '__ATTR_TMP__' : `''` : '__ATTR_STR__'};
+			if (
+				!__ATTR_CONCAT_MAP__[__ATTR_TMP__] ||
+				!__ATTR_CACHE__[__ATTR_TMP__] ||
+				__ATTR_CACHE__[__ATTR_TMP__][0] === TRUE
+
+			) {
+				__ATTR_CACHE__[__ATTR_TMP__] = [];
 			}
 
-			__ATTR_POS__ = __ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
+			${empty ? '__ATTR_CACHE__[__ATTR_TMP__].push(TRUE)' : '__ATTR_CACHE__[__ATTR_TMP__].push(__ATTR_STR__)'};
+			__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 		`;
 
 	}, ''));

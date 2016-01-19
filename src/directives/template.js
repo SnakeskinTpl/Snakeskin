@@ -327,7 +327,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					__STRING_RESULT__;
 
 				var
-					__ATTR_POS__,
 					__ATTR_STR__,
 					__ATTR_TMP__,
 					__ATTR_TYPE__,
