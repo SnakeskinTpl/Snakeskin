@@ -133,8 +133,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				.split('.');
 
 			const
-				tplNameLength = tplNameParts.length,
-				exports = this.module === 'native' ? 'export ' : '';
+				tplNameLength = tplNameParts.length;
 
 			let shortcut = '';
 			[tplName] = tplNameParts;
@@ -175,7 +174,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 							${def} = {};
 						}
 
-						${i === 1 && shortcut ? `${exports}var ${shortcut} = ${def};` : ''}
+						${i === 1 && shortcut ? `${this.module === 'native' ? 'export ' : ''}var ${shortcut} = ${def};` : ''}
 					`),
 
 					{iface, jsDoc}
@@ -261,7 +260,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
 
 			this.save(ws`
-				${tplNameLength === 1 && shortcut ? `${exports}var ${shortcut} = ` : ''}
 				exports${concatProp(tplName)} =
 				 Snakeskin.decorate([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
 
