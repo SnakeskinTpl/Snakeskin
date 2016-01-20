@@ -9,7 +9,6 @@
  */
 
 import $C from '../deps/collection';
-import Snakeskin from '../core';
 import { NULL } from '../consts/links';
 import { IS_NODE } from '../consts/hacks';
 import { $globalCache, $globalFnCache, $rgxp } from '../consts/cache';

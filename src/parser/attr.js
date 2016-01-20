@@ -9,13 +9,11 @@
  */
 
 import $C from '../deps/collection';
-import Snakeskin from '../core';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
 import { attrKey, classRef } from '../consts/regs';
 import { FILTER, LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
-import { escapeHTMLRgxp, escapeHTML } from '../live/filters';
 
 /**
  * Returns string declaration of the specified XML attributes

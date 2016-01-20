@@ -9,7 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { isAssignExpression } from '../helpers/analysis';
 
 Snakeskin.addDirective(
 	'output',

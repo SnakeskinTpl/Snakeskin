@@ -16,7 +16,6 @@ import { stack } from '../helpers/include';
 import { SHORTS } from '../consts/literals';
 import { isFunction } from '../helpers/types';
 import { any } from '../helpers/gcc';
-import { r } from '../helpers/string';
 import { HAS_CONSOLE_LOG } from '../consts/hacks';
 import {
 

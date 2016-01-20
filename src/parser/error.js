@@ -11,7 +11,6 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { r } from '../helpers/string';
-import { isFunction } from '../helpers/types';
 import { HAS_CONSOLE_ERROR } from '../consts/hacks';
 import { LEFT_BOUND as lb, RIGHT_BOUND as rb, ADV_LEFT_BOUND as alb } from '../consts/literals';
 

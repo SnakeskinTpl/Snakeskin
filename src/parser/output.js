@@ -23,14 +23,7 @@ import { any } from '../helpers/gcc';
 import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
-import {
-
-	FILTER,
-	G_MOD,
-	P_OPEN,
-	P_CLOSE
-
-} from '../consts/literals';
+import { FILTER, G_MOD } from '../consts/literals';
 
 const blackWords = {
 	'+': true,

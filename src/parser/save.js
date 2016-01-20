@@ -15,7 +15,6 @@ import { any } from '../helpers/gcc';
 import { escapeEOLs } from '../helpers/escape';
 import { eol, singleQuotes } from '../consts/regs';
 import { $write } from '../consts/cache';
-import { isFunction } from '../helpers/types';
 import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 /**

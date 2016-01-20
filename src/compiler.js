@@ -23,7 +23,7 @@ import { templateRank } from './consts/other';
 import { $dirInterpolation, $dirNameShorthands, $dirParents } from './consts/cache';
 
 import { r } from './helpers/string';
-import { any, _ } from './helpers/gcc';
+import { any } from './helpers/gcc';
 import { getCommentType } from './helpers/literals';
 import { isAssignExpression } from './helpers/analysis';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';

@@ -13,7 +13,7 @@ import Parser from './constructor';
 import { any } from '../helpers/gcc';
 import { isArray } from '../helpers/types';
 import { scopeMod } from '../consts/regs';
-import { G_MOD, B_OPEN, B_CLOSE } from '../consts/literals';
+import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { $args, $argsRes, $consts } from '../consts/cache';
 
 /**
