@@ -1,8 +1,18 @@
-basicHelloWorld1
+helloWorld1
 
 ###
 
-- template basicHelloWorld1()
+- namespace template
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template helloWorld1()
 	Hello world!
 
 ###

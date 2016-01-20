@@ -82,7 +82,7 @@ exports.run = function (params) {
 			fs.writeFileSync(chunkSrc, res);
 
 			var
-				tpl = require(chunkSrc);
+				tpl = require(chunkSrc)[cat];
 
 		} catch (err) {
 			fs.writeFileSync(

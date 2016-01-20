@@ -1,8 +1,18 @@
-basicCycles1
+basic1
 
 ###
 
-- template basicCycles1()
+- namespace cycles
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template basic1()
 	- for var j = 0; j < 3; j++
 		{j}
 

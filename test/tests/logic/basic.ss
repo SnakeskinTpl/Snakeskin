@@ -1,10 +1,20 @@
-basicLogic1
-basicLogic2
-basicLogic3
+basic1
+basic2
+basic3
 
 ###
 
-- template basicLogic1()
+- namespace logic
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template basic1()
 	- if true
 		Hello
 
@@ -18,7 +28,7 @@ basicLogic3
 	- else if true
 		!
 
-- template basicLogic2()
+- template basic2()
 	- unless false
 		Hello
 
@@ -32,7 +42,7 @@ basicLogic3
 	- else unless false
 		!
 
-- template basicLogic3()
+- template basic3()
 	- switch 2
 		- case 1
 			Goodbye

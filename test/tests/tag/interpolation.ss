@@ -1,26 +1,36 @@
-interpolationTag1
-interpolationTag2
-interpolationTag3
-interpolationTag4
+interpolation1
+interpolation2
+interpolation3
+interpolation4
 
 ###
 
-- template interpolationTag1()
+- namespace tag
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template interpolation1()
 	< ${true ? 'input' : 'textarea'}
 		Hello
 
 	< ${false ? 'input' : 'textarea'}
 		Hello
 
-- template interpolationTag2()
+- template interpolation2()
 	< ${'span'}.${'foo'}#${'bar'}
 		< [[.&${'__bla'}]]
 			Hello
 
-- template ['interpolationTag3']()
+- template ['interpolation3']()
 	< body.i-page.${/\['(.*?)'\]/.exec(TPL_NAME)[1]}
 
-- template interpolationTag4()
+- template interpolation4()
 	< ${true ? '?' : ''}.foo bla = true
 		< .&__baz
 
@@ -37,7 +47,7 @@ interpolationTag4
 
 ***
 
-<body class="i-page interpolationTag3"></body>
+<body class="i-page interpolation3"></body>
 
 ***
 

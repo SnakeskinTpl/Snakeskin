@@ -1,9 +1,19 @@
-basicTry1
-basicTry2
+basic1
+basic2
 
 ###
 
-- template basicTry1()
+- namespace ['try']
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template basic1()
 	- try
 		? foo.bar.baz
 
@@ -16,7 +26,7 @@ basicTry2
 	- finally
 		all fine
 
-- template basicTry2()
+- template basic2()
 	- try
 		? foo.bar.baz
 	- catch err

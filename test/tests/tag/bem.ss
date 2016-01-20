@@ -1,33 +1,43 @@
-bemTag1
-bemTag2
-bemTag3
-bemTag4
-bemTag5
+bem1
+bem2
+bem3
+bem4
+bem5
 
 ###
 
-- template bemTag1()
+- namespace tag
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template bem1()
 	< .foo.baz
 		< .&__bar
 			Hello
 
-- template bemTag2()
+- template bem2()
 	< ?.foo.baz
 		< .&__bar
 			Hello
 
-- template bemTag3()
+- template bem3()
 	< .foo[.baz]
 		< .&__bar
 			Hello
 
-- template bemTag4()
+- template bem4()
 	< .foo
 		< .&__bar.baz
 			< .&__bar
 				Hello
 
-- template bemTag5()
+- template bem5()
 	< .foo[[[.bla]]]
 		< .&__bar[.&_style_dark.&_size_xxl.baz[.&__bar]]
 			Hello

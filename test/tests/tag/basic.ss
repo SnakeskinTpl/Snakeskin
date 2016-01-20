@@ -1,16 +1,26 @@
-basicTag1
-basicTag2
+basic1
+basic2
 
 ###
 
-- template basicTag1()
+- namespace tag
+
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
+- template basic1()
 	- tag div
 		Hello
 
 	< span.foo.bar#baz
 		Hello
 
-- template basicTag2()
+- template basic2()
 	- tag div
 		Hello
 		< span.foo.bar#baz
