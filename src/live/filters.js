@@ -174,7 +174,7 @@ Filters['html'] = function (val, opt_unsafe, opt_attr) {
 
 	if (val instanceof Snakeskin.HTMLObject) {
 		Snakeskin.forEach(val.value, (el, key, data) => {
-			data[key] = Filters['html'](el, opt_unsafe, val.attr);
+			data[key] = [Filters['html'](el[0], opt_unsafe, val.attr)];
 		});
 
 		return '';
@@ -605,7 +605,7 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : `${group}-`));
 			}
 
-			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = el;
+			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = [el];
 		});
 
 		return new Snakeskin.HTMLObject(cache, 'attrVal');
