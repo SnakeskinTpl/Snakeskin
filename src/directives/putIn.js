@@ -19,6 +19,7 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		group: ['putIn', 'microTemplate', 'void'],
+		interpolation: true,
 		shorthands: {'*': 'putIn ', '/*': 'end putIn'},
 		trim: true
 	},
@@ -48,7 +49,7 @@ Snakeskin.addDirective(
 			this.append(ws`
 				if (!${pos} && __LENGTH__(__RESULT__)) {
 					${tmp}.push({
-						key: '${ref}',
+						key: '${this.replaceTplVars(ref, {unsafe: true})}',
 						value: Unsafe(${this.getReturnResultDecl()})
 					});
 
@@ -87,7 +88,7 @@ Snakeskin.addDirective(
 		} else if (parent && this.getGroup('target')[parent]) {
 			this.append(ws`
 				${tmp}.push({
-					key: '${ref}',
+					key: '${this.replaceTplVars(ref, {unsafe: true})}',
 					value: Unsafe(${this.getReturnResultDecl()})
 				});
 
