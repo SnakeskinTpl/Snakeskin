@@ -217,13 +217,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				try {
 					parentTplName = /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1];
 
-					if (parentTplName[0] === '@') {
-						parentTplName = parentTplName.slice(1);
-
-					} else {
-						parentTplName = nms + concatProp(parentTplName);
-					}
-
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
 						throw false;
 					}
