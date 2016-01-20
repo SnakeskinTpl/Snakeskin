@@ -19,6 +19,7 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		group: ['target', 'microTemplate', 'var', 'void'],
+		notEmpty: true,
 		trim: true
 	},
 

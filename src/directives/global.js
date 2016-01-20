@@ -17,7 +17,8 @@ Snakeskin.addDirective(
 	'global',
 
 	{
-		group: ['global', 'var', 'output']
+		group: ['global', 'var', 'output'],
+		notEmpty: true
 	},
 
 	function (command) {

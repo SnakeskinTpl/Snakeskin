@@ -59,6 +59,10 @@ Snakeskin.addDirective(
 			`);
 
 		} else {
+			if (!ref) {
+				return this.error(`the directive "${this.name}" must have a body`);
+			}
+
 			this.append(ws`
 				${this.declVars(`__CALL_CACHE__ = ${this.getReturnResultDecl()}`, {sys: true})}
 				__RESULT__ = ${this.getResultDecl()};
