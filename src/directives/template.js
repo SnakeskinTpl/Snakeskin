@@ -49,7 +49,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 		function (command, commandLength, type, raw, jsDoc) {
 			const
-				nms = this.namespace;
+				nms = this.environment.namespace;
 
 			if (!nms) {
 				return this.error(`the directive "${this.name}" can't be declared without namespace`);

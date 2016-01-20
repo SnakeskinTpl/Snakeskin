@@ -134,9 +134,6 @@ $$SnakeskinParser.prototype.text;
 /** @type {!Object<{id: number, file: (string|undefined)}} */
 $$SnakeskinParser.prototype.namespaces;
 
-/** @type {(string|undefined)} */
-$$SnakeskinParser.prototype.namespace;
-
 /** @type {?string} */
 $$SnakeskinParser.prototype.tplName;
 
@@ -218,7 +215,7 @@ $$SnakeskinParser.prototype.cdataContent;
 /** @type {!Object} */
 $$SnakeskinParser.prototype.files;
 
-/** @type {{exports, require, id, key, root, filename, parent, children, loaded}} */
+/** @type {{exports, require, id, key, root, filename, parent, children, loaded, namespace}} */
 $$SnakeskinParser.prototype.environment;
 
 /** @type {string} */

@@ -50,12 +50,15 @@ Snakeskin.addDirective(
 					return this.error(`the directive "outer block" can be used only within the global space`);
 				}
 
-				if (!this.namespace) {
+				const
+					nms = this.environment.namespace;
+
+				if (!nms) {
 					return this.error(`the directive "outer block" can't be declared without namespace`);
 				}
 
 				try {
-					tplName = this.tplName = this.namespace + concatProp(this.prepareNameDecl(parts[0]));
+					tplName = this.tplName = nms + concatProp(this.prepareNameDecl(parts[0]));
 
 				} catch (err) {
 					return this.error(err.message);

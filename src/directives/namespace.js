@@ -20,13 +20,13 @@ Snakeskin.addDirective(
 		placement: 'global'
 	},
 
-	function (command) {
+	function (nms) {
 		if (this.namespace) {
 			return this.error('namespace can be set only once for a file');
 		}
 
-		this.namespace = command;
-		this.namespaces[command] = this.namespaces[command] || {file: this.info.file, id: this.environment.id};
+		this.environment.namespace = nms = this.prepareNameDecl(nms);
+		this.namespaces[nms] = this.namespaces[nms] || {file: this.info.file, id: this.environment.id};
 	}
 
 );

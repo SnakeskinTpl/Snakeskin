@@ -77,7 +77,7 @@ Snakeskin.include = function (base, file, eol, opt_renderMode) {
 				file +
 
 				`${wsEnd.test(file) ? '' : `${eol}${s}__cutLine__${e}`}` +
-				`${s}__endSetFile__ ${this.namespace} ${e}`
+				`${s}__endSetFile__${e}`
 			);
 		});
 

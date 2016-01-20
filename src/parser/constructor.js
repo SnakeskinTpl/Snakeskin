@@ -170,12 +170,6 @@ export default class Parser {
 		this.namespaces = {};
 
 		/**
-		 * The active namespace
-		 * @type {(string|undefined)}
-		 */
-		this.namespace = undefined;
-
-		/**
 		 * The name of the active template
 		 * @type {(string|undefined)}
 		 */
@@ -351,7 +345,7 @@ export default class Parser {
 
 		/**
 		 * The module environment
-		 * @type {{exports, require, id, key, root, filename, parent, children, loaded}}
+		 * @type {{exports, require, id, key, root, filename, parent, children, loaded, namespace}}
 		 */
 		this.environment = {
 			exports: {},
@@ -362,7 +356,8 @@ export default class Parser {
 			filename: this.info.file,
 			parent: IS_NODE ? module : null,
 			children: [],
-			loaded: true
+			loaded: true,
+			namespace: null
 		};
 
 		/**

@@ -80,6 +80,7 @@ Snakeskin.addDirective(
 			id: env.id + 1,
 			key: null,
 			loaded: true,
+			namespace: null,
 			parent: this.environment,
 			require,
 			root: env.root || env
@@ -92,7 +93,6 @@ Snakeskin.addDirective(
 
 		env.children.push(module);
 		this.environment = module;
-
 		this.info.file = file;
 		this.files[file] = true;
 		this.save(this.declVars('$_', {sys: true}));
@@ -106,11 +106,10 @@ Snakeskin.addDirective(
 		group: 'ignore'
 	},
 
-	function (namespace) {
+	function () {
 		const
 			{filename} = this.environment;
 
-		this.namespace = namespace;
 		this.environment = this.environment.parent;
 		this.info.file = this.environment.filename;
 
