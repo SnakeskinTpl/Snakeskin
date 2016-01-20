@@ -6,6 +6,14 @@ cdn2 ; 'angularjs@2'
 
 - namespace advanced
 
+/*!
+ * Snakeskin
+ * https://github.com/SnakeskinTpl/Snakeskin
+ *
+ * Released under the MIT license
+ * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
+ */
+
 - template cdn1(name, provider)
 	- if !name
 		- throw new Error('missing a name of the requested library')
