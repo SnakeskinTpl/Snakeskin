@@ -131,6 +131,12 @@ $$SnakeskinParser.prototype.inline;
 /** @type {boolean} */
 $$SnakeskinParser.prototype.text;
 
+/** @type {!Object<string, number>} */
+$$SnakeskinParser.prototype.namespaces;
+
+/** @type {(string|undefined)} */
+$$SnakeskinParser.prototype.namespace;
+
 /** @type {?string} */
 $$SnakeskinParser.prototype.tplName;
 

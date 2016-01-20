@@ -26,6 +26,7 @@ import './directives/global';
 import './directives/output';
 import './directives/comment';
 import './directives/doctype';
+import './directives/namespace';
 import './directives/decorator';
 import './directives/template';
 import './directives/import';

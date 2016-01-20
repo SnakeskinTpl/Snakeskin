@@ -164,6 +164,18 @@ export default class Parser {
 		this.text = false;
 
 		/**
+		 * The map of register namespaces
+		 * @type {!Object<string, number>}
+		 */
+		this.namespaces = {};
+
+		/**
+		 * The active namespace
+		 * @type {(string|undefined)}
+		 */
+		this.namespace = undefined;
+
+		/**
 		 * The name of the active template
 		 * @type {(string|undefined)}
 		 */
