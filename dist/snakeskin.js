@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 20 Jan 2016 17:37:25 GMT
+ * Date: 'Wed, 20 Jan 2016 19:21:05 GMT
  */
 
 (function (global, factory) {
@@ -4858,7 +4858,7 @@
 
     	if (val instanceof Snakeskin.HTMLObject) {
     		Snakeskin.forEach(val.value, function (el, key, data) {
-    			data[key] = Filters['html'](el, opt_unsafe, val.attr);
+    			data[key] = [Filters['html'](el[0], opt_unsafe, val.attr)];
     		});
 
     		return '';
@@ -5276,7 +5276,7 @@
     				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
     			}
 
-    			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = el;
+    			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = [el];
     		});
 
     		return new Snakeskin.HTMLObject(cache, 'attrVal');
