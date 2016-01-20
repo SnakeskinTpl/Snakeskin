@@ -143,7 +143,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			return ws`
 				${res}
 				__ATTR_TMP__ = '${this.pasteTplVarBlocks(val)}';
-				__ATTR_STR__ = __ATTR_TMP__ != null ? __ATTR_TMP__ : '';
+				__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (__ATTR_TMP__ != null ? __ATTR_TMP__ : '');
 			`;
 
 		}, '');
