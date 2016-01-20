@@ -417,7 +417,8 @@ export default class Parser {
 			var
 				__FILTERS__ = Snakeskin.Filters,
 				__VARS__ = Snakeskin.Vars,
-				__LOCAL__ = Snakeskin.LocalVars;
+				__LOCAL__ = Snakeskin.LocalVars,
+				__REQUIRE__;
 
 			function __LENGTH__(val) {
 				if (typeof Node === 'function' && val[0] instanceof Node === true) {

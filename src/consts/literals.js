@@ -181,6 +181,7 @@ export const P_CLOSE = {
 // >>>
 
 export const SYS_CONSTS = {
+	'__REQUIRE__': true,
 	'__RESULT__': true,
 	'__STRING_RESULT__': true,
 	'__CDATA__': true,
