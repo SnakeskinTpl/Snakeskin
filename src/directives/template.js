@@ -19,6 +19,7 @@ import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
 import { getRgxp } from '../helpers/cache';
 
+import { templateRank } from '../consts/other';
 import { symbols } from '../consts/regs';
 import { G_MOD } from '../consts/literals';
 import {
@@ -49,26 +50,21 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 		function (command, commandLength, type, raw, jsDoc) {
 			const
-				nms = this.environment.namespace;
+				env = this.environment,
+				nms = env.namespace;
 
 			if (!nms) {
 				return this.error(`the directive "${this.name}" can't be declared without namespace`);
 			}
 
-			if (this.namespaces[nms].id !== this.environment.id) {
+			if (this.namespaces[nms].id !== env.id && this.namespaces[nms].file !== env.filename) {
 				return this.error(
 					`the namespace "${nms}" already used for templates in another file (${this.namespaces[nms].file})`
 				);
 			}
 
-			const rank = {
-				'interface': 1,
-				'placeholder': 0,
-				'template': 2
-			};
-
 			this.startDir(
-				this.renderAs && rank[this.renderAs] < rank[type] ?
+				this.renderAs && templateRank[this.renderAs] < templateRank[type] ?
 					this.renderAs : null
 			);
 

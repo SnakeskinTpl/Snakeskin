@@ -19,6 +19,7 @@ import Parser from './parser/index';
 import * as rgxp from './consts/regs';
 import { NULL, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
+import { templateRank } from './consts/other';
 import { $dirInterpolation, $dirNameShorthands, $dirParents } from './consts/cache';
 
 import { r } from './helpers/string';
@@ -191,7 +192,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		);
 
 		dirname = path.dirname(filename);
-		Snakeskin.LocalVars.include[filename] = 'index';
+		Snakeskin.LocalVars.include[filename] = templateRank['template'];
 
 		try {
 			label = fs.statSync(filename).mtime;
