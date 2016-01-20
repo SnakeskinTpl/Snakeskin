@@ -204,14 +204,27 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
 	var
 		tpl;
 
-	if (opt_tplName) {
-		tpl = tpls[opt_tplName];
-
-	} else {
-		tpl = opt_src && tpls[path.basename(opt_src, path.extname(opt_src))] ||
+	function name(tpls) {
+		return opt_src && tpls[path.basename(opt_src, path.extname(opt_src))] ||
 			tpls.main ||
 			tpls.index ||
 			tpls[Object.keys(tpls).sort()[0]];
+	}
+
+	if (opt_tplName) {
+		tpl = $C(tpls).get(opt_tplName);
+
+		if (tpl && typeof tpls !== 'function') {
+			tpls = tpl
+
+		} else {
+			return tpl || null;
+		}
+	}
+
+	tpl = name(tpls);
+	while (tpl && typeof tpl !== 'function') {
+		tpl = name(tpl);
 	}
 
 	return tpl || null;
