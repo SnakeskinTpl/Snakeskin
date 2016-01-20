@@ -9,21 +9,6 @@
  */
 
 /**
- * Exports an object property for the GCC
- *
- * @param {?} a - option 1
- * @param {?} b - option 2
- * @return {?}
- */
-export function _(a, b) {
-	if (a !== undefined) {
-		return a;
-	}
-
-	return b;
-}
-
-/**
  * Gets an object with an undefined type
  * (for the GCC)
  *
