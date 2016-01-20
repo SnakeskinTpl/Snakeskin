@@ -165,7 +165,7 @@ export default class Parser {
 
 		/**
 		 * The map of register namespaces
-		 * @type {!Object<string, number>}
+		 * @type {!Object<{id: number, file: (string|undefined)}>}
 		 */
 		this.namespaces = {};
 

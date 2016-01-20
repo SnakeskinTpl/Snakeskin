@@ -57,9 +57,9 @@ function set(command) {
 		cache;
 
 	if (tplName) {
-		cache = $output[tplName]['flag'] = $output[tplName]['flag'] || {};
+		cache = $output[tplName].flags = $output[tplName].flags || {};
 		if (this.parentTplName) {
-			parentCache = $output[this.parentTplName] && $output[this.parentTplName]['flag'];
+			parentCache = $output[this.parentTplName] && $output[this.parentTplName].flags;
 		}
 	}
 

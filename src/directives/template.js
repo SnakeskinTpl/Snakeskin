@@ -25,7 +25,6 @@ import {
 
 	$write,
 	$scope,
-	$decorators,
 	$templates,
 	$cache,
 	$args,
@@ -49,6 +48,19 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 		},
 
 		function (command, commandLength, type, raw, jsDoc) {
+			const
+				nms = this.namespace;
+
+			if (!nms) {
+				return this.error(`the directive "${this.name}" can't be declared without namespace`);
+			}
+
+			if (this.namespaces[nms].id !== this.environment.id) {
+				return this.error(
+					`the namespace "${nms}" already used for templates in another file (${this.namespaces[nms].file})`
+				);
+			}
+
 			const rank = {
 				'interface': 1,
 				'placeholder': 0,
@@ -70,38 +82,43 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				nameRgxp = getRgxp(`^[^${symbols}_$[]`, 'i'),
 				esprimaNameHackRgxp = getRgxp(`[${r(G_MOD)}]`, 'g');
 
-			let
-				tmpTplName = this.replaceFileNamePatterns(this.getFnName(command)),
-				tplName;
+			function concat(a, b) {
+				return a + (b[0] === '[' ? '' : '.') + b;
+			}
+
+			let tplName = this.replaceFileNamePatterns(this.getFnName(command));
+			tplName = concat(nms, tplName);
+
+			const setTplName = () => {
+				this.info.template = this.tplName = tplName;
+				$write[tplName] = this.name === 'template';
+			};
 
 			let
 				prfx = '',
 				pos;
 
-			if (/\*/.test(tmpTplName)) {
+			if (/\*/.test(tplName)) {
 				prfx = '*';
-				tmpTplName = tmpTplName.replace(prfx, '');
+				tplName = tplName.replace(prfx, '');
+				this.generator = true;
 			}
 
-			tplName = this.pasteDangerBlocks(tmpTplName);
-			this.generator = Boolean(prfx);
-
 			try {
-				if (!tplName || nameRgxp.test(tplName)) {
+				let
+					tmp = this.pasteDangerBlocks(tplName);
+
+				if (!tmp || nameRgxp.test(tmp)) {
 					throw false;
 				}
 
-				esprima.parse(tplName.replace(esprimaNameHackRgxp, ''));
+				esprima.parse(tmp.replace(esprimaNameHackRgxp, ''));
 
 			} catch (ignore) {
 				return this.error(`invalid "${this.name}" name`);
 			}
 
-			this.info.template = this.tplName = tplName;
-			if (this.name !== 'template' && !$write[tplName]) {
-				$write[tplName] = false;
-			}
-
+			setTplName();
 			const fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
 			this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), {iface, jsDoc});
 
@@ -109,25 +126,25 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				jsDoc += pos.length;
 			}
 
-			const tmpTplNameArr = tmpTplName
+			const tplNameParts = tplName
 				.replace(nmssRgxp, '%')
 				.replace(nmsRgxp, '.%')
 				.replace(nmeRgxp, '')
 				.split('.');
 
 			const
-				tplNameLength = tmpTplNameArr.length,
+				tplNameLength = tplNameParts.length,
 				exports = this.module === 'native' ? 'export ' : '';
 
 			let shortcut = '';
-			[tmpTplName] = tmpTplNameArr;
+			[tplName] = tplNameParts;
 
-			if (tmpTplName[0] === '%') {
+			if (tplName[0] === '%') {
 				try {
-					tmpTplName = ws`['${
+					tplName = ws`['${
 						applyDefEscape(
 							this.returnEvalVal(
-								this.out(tmpTplName.slice(1), {unsafe: true})
+								this.out(tplName.slice(1), {unsafe: true})
 							)
 						)
 					}']`;
@@ -137,16 +154,16 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				}
 
 			} else {
-				shortcut = tmpTplName;
+				shortcut = tplName;
 			}
 
 			let lastName = '';
 			for (let i = 1; i < tplNameLength; i++) {
-				let el = tmpTplNameArr[i];
+				let el = tplNameParts[i];
 
 				const
 					custom = el[0] === '%',
-					def = `exports${concatProp(tmpTplName)}`;
+					def = `exports${concatProp(tplName)}`;
 
 				if (custom) {
 					el = el.slice(1);
@@ -170,7 +187,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 				if (custom) {
 					try {
-						tmpTplName += ws`['${
+						tplName += ws`['${
 							applyDefEscape(
 								this.returnEvalVal(
 									this.out(el, {unsafe: true})
@@ -188,12 +205,11 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					lastName = el;
 				}
 
-				tmpTplName += `.${el}`;
+				tplName += `.${el}`;
 			}
 
-			this.info.template = this.tplName = tplName = tmpTplName;
+			setTplName();
 			this.vars[tplName] = {};
-
 			this.blockTable = {};
 			this.blockStructure = {
 				children: [],
@@ -210,6 +226,13 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 					if (!parentTplName || nameRgxp.test(parentTplName)) {
 						throw false;
+					}
+
+					if (parentTplName[0] === '@') {
+						parentTplName = parentTplName.slice(1);
+
+					} else {
+						parentTplName = concat(nms, parentTplName);
 					}
 
 					esprima.parse(parentTplName.replace(esprimaNameHackRgxp, ''));
@@ -235,7 +258,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			}
 
 			const
-				decorators = (parentTplName ? $decorators[parentTplName] : []).concat(this.decorators);
+				decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
 
 			this.save(ws`
 				${tplNameLength === 1 && shortcut ? `${exports}var ${shortcut} = ` : ''}
@@ -271,8 +294,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			$args[tplName] = {};
 			$argsRes[tplName] = {};
-			$output[tplName] = {};
-			$decorators[tplName] = decorators;
+			$output[tplName] = {decorators};
 			$extMap[tplName] = parentTplName;
 			delete $extList[tplName];
 

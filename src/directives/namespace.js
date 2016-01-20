@@ -26,7 +26,7 @@ Snakeskin.addDirective(
 		}
 
 		this.namespace = command;
-		this.namespaces[command] = this.namespaces[command] || this.environment.id;
+		this.namespaces[command] = this.namespaces[command] || {file: this.info.file, id: this.environment.id};
 	}
 
 );
