@@ -79,6 +79,7 @@ Snakeskin.addDirective(
 	'__super__',
 
 	{
+		block: true,
 		group: 'ignore'
 	},
 
