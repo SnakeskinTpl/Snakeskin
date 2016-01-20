@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { concatProp } from '../helpers/literals';
 import { symbols, w } from '../consts/regs';
 import { $scope, $extMap, $blocks } from '../consts/cache';
 import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
@@ -49,8 +50,12 @@ Snakeskin.addDirective(
 					return this.error(`the directive "outer block" can be used only within the global space`);
 				}
 
+				if (!this.namespace) {
+					return this.error(`the directive "outer block" can't be declared without namespace`);
+				}
+
 				try {
-					tplName = this.tplName = this.prepareNameDecl(parts[0]);
+					tplName = this.tplName = this.namespace + concatProp(this.prepareNameDecl(parts[0]));
 
 				} catch (err) {
 					return this.error(err.message);

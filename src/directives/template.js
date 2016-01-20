@@ -82,12 +82,8 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				nameRgxp = getRgxp(`^[^${symbols}_$[]`, 'i'),
 				esprimaNameHackRgxp = getRgxp(`[${r(G_MOD)}]`, 'g');
 
-			function concat(a, b) {
-				return a + (b[0] === '[' ? '' : '.') + b;
-			}
-
 			let tplName = this.replaceFileNamePatterns(this.getFnName(command));
-			tplName = concat(nms, tplName);
+			tplName = nms + concatProp(tplName);
 
 			const setTplName = () => {
 				this.info.template = this.tplName = tplName;
@@ -219,19 +215,17 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
 				try {
-					parentTplName = /\)\s+extends\s+(.*?(?:@|$))/
-						.exec(command)[1]
-						.replace(/\s*@$/, '');
-
-					if (!parentTplName || nameRgxp.test(parentTplName)) {
-						throw false;
-					}
+					parentTplName = /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1];
 
 					if (parentTplName[0] === '@') {
 						parentTplName = parentTplName.slice(1);
 
 					} else {
-						parentTplName = concat(nms, parentTplName);
+						parentTplName = nms + concatProp(parentTplName);
+					}
+
+					if (!parentTplName || nameRgxp.test(parentTplName)) {
+						throw false;
 					}
 
 					esprima.parse(parentTplName.replace(esprimaNameHackRgxp, ''));
