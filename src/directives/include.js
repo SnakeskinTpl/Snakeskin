@@ -66,8 +66,9 @@ Snakeskin.addDirective(
 		group: 'ignore'
 	},
 
-	function (command) {
-		command = this.pasteDangerBlocks(command);
+	function (file) {
+		file = this.pasteDangerBlocks(file);
+		this.namespace = undefined;
 
 		const
 			env = this.environment;
@@ -75,7 +76,7 @@ Snakeskin.addDirective(
 		const module = {
 			children: [],
 			exports: {},
-			filename: command,
+			filename: file,
 			id: env.id + 1,
 			key: null,
 			loaded: true,
@@ -85,15 +86,15 @@ Snakeskin.addDirective(
 		};
 
 		module.root.key.push([
-			command,
-			require('fs').statSync(command).mtime.valueOf()
+			file,
+			require('fs').statSync(file).mtime.valueOf()
 		]);
 
 		env.children.push(module);
 		this.environment = module;
 
-		this.info.file = command;
-		this.files[command] = true;
+		this.info.file = file;
+		this.files[file] = true;
 		this.save(this.declVars('$_', {sys: true}));
 	}
 );
@@ -105,10 +106,11 @@ Snakeskin.addDirective(
 		group: 'ignore'
 	},
 
-	function () {
+	function (namespace) {
 		const
 			{filename} = this.environment;
 
+		this.namespace = namespace;
 		this.environment = this.environment.parent;
 		this.info.file = this.environment.filename;
 
