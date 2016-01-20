@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 19 Jan 2016 16:13:15 GMT
+ * Date: 'Wed, 20 Jan 2016 17:37:25 GMT
  */
 
 (function (global, factory) {
@@ -395,6 +395,12 @@
     	this.text = false;
 
     	/**
+      * The map of register namespaces
+      * @type {!Object<{id: number, file: (string|undefined)}>}
+      */
+    	this.namespaces = {};
+
+    	/**
       * The name of the active template
       * @type {(string|undefined)}
       */
@@ -570,7 +576,7 @@
 
     	/**
       * The module environment
-      * @type {{exports, require, id, key, root, filename, parent, children, loaded}}
+      * @type {{exports, require, id, key, root, filename, parent, children, loaded, namespace}}
       */
     	this.environment = {
     		exports: {},
@@ -581,7 +587,8 @@
     		filename: this.info.file,
     		parent: IS_NODE ? module : null,
     		children: [],
-    		loaded: true
+    		loaded: true,
+    		namespace: null
     	};
 
     	/**
@@ -863,7 +870,6 @@
 
     var $args = {};
     var $argsRes = {};
-    var $decorators = {};
     var $rgxp = {};
     var $extMap = {};
     var $extList = {};
@@ -1258,7 +1264,7 @@
     Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
     	opt_vars = opt_vars || {};
     	opt_params = opt_params || {};
-    	opt_name = this.name = String(opt_name || this.name);
+    	opt_name = this.name = String(opt_name ? this.getDirName(opt_name) : this.name);
 
     	var structure = this.structure;
 
@@ -1345,7 +1351,7 @@
      */
     Parser.prototype.startInlineDir = function (opt_name, opt_params) {
     	opt_params = opt_params || {};
-    	opt_name = this.name = String(opt_name || this.name);
+    	opt_name = this.name = String(opt_name ? this.getDirName(opt_name) : this.name);
 
     	var obj = {
     		chain: false,
@@ -1611,6 +1617,12 @@
     	return any(res || {});
     }
 
+        var templateRank = {
+      'interface': 1,
+      'placeholder': 0,
+      'template': 2
+    };
+
     var stack = [];
 
     Snakeskin.toObj = toObj;
@@ -1621,13 +1633,15 @@
      * @param {string} base - base path
      * @param {string} file - file path
      * @param {string} eol - EOL symbol
-     * @param {?string=} [opt_renderMode] - rendering mode for templates
+     * @param {?string=} [opt_renderAs] - rendering type of templates
      * @return {(string|boolean)}
      */
-    Snakeskin.include = function (base, file, eol, opt_renderMode) {
+    Snakeskin.include = function (base, file, eol, opt_renderAs) {
     	if (!IS_NODE) {
     		return false;
     	}
+
+    	var type = opt_renderAs || 'template';
 
     	var fs = require('fs'),
     	    path = require('path'),
@@ -1646,14 +1660,14 @@
     			$C(glob.hasMagic(src) ? glob.sync(src) : [src]).forEach(function (src) {
     				src = path.normalize(src);
 
-    				if (include[src]) {
+    				if (src in include && include[src] > templateRank[type]) {
     					return;
     				}
 
-    				include[src] = true;
+    				include[src] = templateRank[type];
     				var file = fs.readFileSync(src, 'utf8');
 
-    				stack.push(s + '__setFile__ ' + src + e + (opt_renderMode ? s + '__set__ renderAs \'' + opt_renderMode + '\'' + e : '') + ('' + (wsStart.test(file) ? '' : eol)) + file + ('' + (wsEnd.test(file) ? '' : '' + eol + s + '__cutLine__' + e)) + (s + '__endSetFile__' + e));
+    				stack.push(s + '__setFile__ ' + src + e + (opt_renderAs ? s + '__set__ renderAs \'' + opt_renderAs + '\'' + e : '') + ('' + (wsStart.test(file) ? '' : eol)) + file + ('' + (wsEnd.test(file) ? '' : '' + eol + s + '__cutLine__' + e)) + (s + '__endSetFile__' + e));
     			});
 
     			return {
@@ -6058,7 +6072,7 @@
     		filename = info.file = path.normalize(path.resolve(info.file));
 
     		dirname = path.dirname(filename);
-    		Snakeskin.LocalVars.include[filename] = 'index';
+    		Snakeskin.LocalVars.include[filename] = templateRank['template'];
 
     		try {
     			label = fs.statSync(filename).mtime;
@@ -6824,9 +6838,9 @@
     	    cache = undefined;
 
     	if (tplName) {
-    		cache = $output[tplName]['flag'] = $output[tplName]['flag'] || {};
+    		cache = $output[tplName].flags = $output[tplName].flags || {};
     		if (this.parentTplName) {
-    			parentCache = $output[this.parentTplName] && $output[this.parentTplName]['flag'];
+    			parentCache = $output[this.parentTplName] && $output[this.parentTplName].flags;
     		}
     	}
 
@@ -7346,7 +7360,8 @@
     });
 
     Snakeskin.addDirective('global', {
-    	group: ['global', 'var', 'output']
+    	group: ['global', 'var', 'output'],
+    	notEmpty: true
     }, function (command) {
     	var output = command.slice(-1) === '?';
 
@@ -7476,6 +7491,20 @@
     	this.append(this.wrap('\'' + type + '\''));
     });
 
+    Snakeskin.addDirective('namespace', {
+    	deferInit: true,
+    	group: 'namespace',
+    	notEmpty: true,
+    	placement: 'global'
+    }, function (nms) {
+    	if (this.namespace) {
+    		return this.error('namespace can be set only once for a file');
+    	}
+
+    	this.environment.namespace = nms = this.prepareNameDecl(nms);
+    	this.namespaces[nms] = this.namespaces[nms] || { file: this.info.file, id: this.environment.id };
+    });
+
     Snakeskin.addDirective('decorator', {
     	group: 'decorator',
     	notEmpty: true,
@@ -7493,7 +7522,7 @@
 
     var _templateObject$3 = babelHelpers.taggedTemplateLiteral(['[\'', '\']'], ['[\'', '\']']);
     var _templateObject2$1 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\tif (', ' == null) {\n\t\t\t\t\t\t\t', ' = {};\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t', '\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (', ' == null) {\n\t\t\t\t\t\t\t', ' = {};\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t', '\n\t\t\t\t\t']);
-    var _templateObject3$1 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '('], ['\n\t\t\t\t', '\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '(']);
+    var _templateObject3$1 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '('], ['\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '(']);
     var _templateObject4$1 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t']);
     var _templateObject5 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t'], ['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t']);
     $C(['template', 'interface', 'placeholder']).forEach(function (dir) {
@@ -7506,13 +7535,18 @@
     	}, function (command, commandLength, type, raw, jsDoc) {
     		var _this = this;
 
-    		var rank = {
-    			'interface': 1,
-    			'placeholder': 0,
-    			'template': 2
-    		};
+    		var env = this.environment,
+    		    nms = env.namespace;
 
-    		this.startDir(this.renderAs && rank[this.renderAs] < rank[type] ? this.renderAs : null);
+    		if (!nms) {
+    			return this.error('the directive "' + this.name + '" can\'t be declared without namespace');
+    		}
+
+    		if (this.namespaces[nms].id !== env.id && this.namespaces[nms].file !== env.filename) {
+    			return this.error('the namespace "' + nms + '" already used for templates in another file (' + this.namespaces[nms].file + ')');
+    		}
+
+    		this.startDir(this.renderAs && templateRank[this.renderAs] < templateRank[type] ? this.renderAs : null);
 
     		var iface = this.name === 'interface';
 
@@ -7522,35 +7556,36 @@
     		var nameRgxp = getRgxp('^[^' + symbols + '_$[]', 'i'),
     		    esprimaNameHackRgxp = getRgxp('[' + r(G_MOD) + ']', 'g');
 
-    		var tmpTplName = this.replaceFileNamePatterns(this.getFnName(command)),
-    		    tplName = undefined;
+    		var tplName = this.replaceFileNamePatterns(this.getFnName(command));
+    		tplName = nms + concatProp(tplName);
+
+    		var setTplName = function setTplName() {
+    			_this.info.template = _this.tplName = tplName;
+    			$write[tplName] = _this.name === 'template';
+    		};
 
     		var prfx = '',
     		    pos = undefined;
 
-    		if (/\*/.test(tmpTplName)) {
+    		if (/\*/.test(tplName)) {
     			prfx = '*';
-    			tmpTplName = tmpTplName.replace(prfx, '');
+    			tplName = tplName.replace(prfx, '');
+    			this.generator = true;
     		}
 
-    		tplName = this.pasteDangerBlocks(tmpTplName);
-    		this.generator = Boolean(prfx);
-
     		try {
-    			if (!tplName || nameRgxp.test(tplName)) {
+    			var tmp = this.pasteDangerBlocks(tplName);
+
+    			if (!tmp || nameRgxp.test(tmp)) {
     				throw false;
     			}
 
-    			esprima.parse(tplName.replace(esprimaNameHackRgxp, ''));
+    			esprima.parse(tmp.replace(esprimaNameHackRgxp, ''));
     		} catch (ignore) {
     			return this.error('invalid "' + this.name + '" name');
     		}
 
-    		this.info.template = this.tplName = tplName;
-    		if (this.name !== 'template' && !$write[tplName]) {
-    			$write[tplName] = false;
-    		}
-
+    		setTplName();
     		var fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
     		this.save(pos = '/* Snakeskin template: ' + tplName + '; ' + fnArgsKey + ' */', { iface: iface, jsDoc: jsDoc });
 
@@ -7558,39 +7593,38 @@
     			jsDoc += pos.length;
     		}
 
-    		var tmpTplNameArr = tmpTplName.replace(nmssRgxp, '%').replace(nmsRgxp, '.%').replace(nmeRgxp, '').split('.');
+    		var tplNameParts = tplName.replace(nmssRgxp, '%').replace(nmsRgxp, '.%').replace(nmeRgxp, '').split('.');
 
-    		var tplNameLength = tmpTplNameArr.length,
-    		    exports = this.module === 'native' ? 'export ' : '';
+    		var tplNameLength = tplNameParts.length;
 
     		var shortcut = '';
 
-    		var _tmpTplNameArr = babelHelpers.slicedToArray(tmpTplNameArr, 1);
+    		var _tplNameParts = babelHelpers.slicedToArray(tplNameParts, 1);
 
-    		tmpTplName = _tmpTplNameArr[0];
+    		tplName = _tplNameParts[0];
 
-    		if (tmpTplName[0] === '%') {
+    		if (tplName[0] === '%') {
     			try {
-    				tmpTplName = ws$1(_templateObject$3, applyDefEscape(this.returnEvalVal(this.out(tmpTplName.slice(1), { unsafe: true }))));
+    				tplName = ws$1(_templateObject$3, applyDefEscape(this.returnEvalVal(this.out(tplName.slice(1), { unsafe: true }))));
     			} catch (err) {
     				return this.error(err.message);
     			}
     		} else {
-    			shortcut = tmpTplName;
+    			shortcut = tplName;
     		}
 
     		var lastName = '';
     		for (var i = 1; i < tplNameLength; i++) {
-    			var el = tmpTplNameArr[i];
+    			var el = tplNameParts[i];
 
     			var custom = el[0] === '%',
-    			    def = 'exports' + concatProp(tmpTplName);
+    			    def = 'exports' + concatProp(tplName);
 
     			if (custom) {
     				el = el.slice(1);
     			}
 
-    			this.save(pos = ws$1(_templateObject2$1, def, def, i === 1 && shortcut ? exports + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
+    			this.save(pos = ws$1(_templateObject2$1, def, def, i === 1 && shortcut ? (this.module === 'native' ? 'export ' : '') + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
 
     			if (jsDoc) {
     				jsDoc += pos.length;
@@ -7598,7 +7632,7 @@
 
     			if (custom) {
     				try {
-    					tmpTplName += ws$1(_templateObject$3, applyDefEscape(this.returnEvalVal(this.out(el, { unsafe: true }))));
+    					tplName += ws$1(_templateObject$3, applyDefEscape(this.returnEvalVal(this.out(el, { unsafe: true }))));
     				} catch (err) {
     					return this.error(err.message);
     				}
@@ -7608,12 +7642,11 @@
     				lastName = el;
     			}
 
-    			tmpTplName += '.' + el;
+    			tplName += '.' + el;
     		}
 
-    		this.info.template = this.tplName = tplName = tmpTplName;
+    		setTplName();
     		this.vars[tplName] = {};
-
     		this.blockTable = {};
     		this.blockStructure = {
     			children: [],
@@ -7624,7 +7657,7 @@
     		var parentTplName = undefined;
     		if (/\)\s+extends\s+/.test(command)) {
     			try {
-    				parentTplName = /\)\s+extends\s+(.*?(?:@|$))/.exec(command)[1].replace(/\s*@$/, '');
+    				parentTplName = /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1];
 
     				if (!parentTplName || nameRgxp.test(parentTplName)) {
     					throw false;
@@ -7650,9 +7683,9 @@
     			}
     		}
 
-    		var decorators = (parentTplName ? $decorators[parentTplName] : []).concat(this.decorators);
+    		var decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
 
-    		this.save(ws$1(_templateObject3$1, tplNameLength === 1 && shortcut ? exports + 'var ' + shortcut + ' = ' : '', concatProp(tplName), decorators.join(), prfx, tplNameLength > 1 ? lastName : shortcut), { iface: iface });
+    		this.save(ws$1(_templateObject3$1, concatProp(tplName), decorators.join(), prfx, tplNameLength > 1 ? lastName : shortcut), { iface: iface });
 
     		this.decorators = [];
     		this.initTemplateCache(tplName);
@@ -7678,8 +7711,7 @@
 
     		$args[tplName] = {};
     		$argsRes[tplName] = {};
-    		$output[tplName] = {};
-    		$decorators[tplName] = decorators;
+    		$output[tplName] = { decorators: decorators };
     		$extMap[tplName] = parentTplName;
     		delete $extList[tplName];
 
@@ -7873,30 +7905,31 @@
 
     Snakeskin.addDirective('__setFile__', {
     	group: 'ignore'
-    }, function (command) {
-    	command = this.pasteDangerBlocks(command);
+    }, function (file) {
+    	file = this.pasteDangerBlocks(file);
+    	this.namespace = undefined;
 
     	var env = this.environment;
 
     	var module = {
     		children: [],
     		exports: {},
-    		filename: command,
+    		filename: file,
     		id: env.id + 1,
     		key: null,
     		loaded: true,
+    		namespace: null,
     		parent: this.environment,
     		require: require,
     		root: env.root || env
     	};
 
-    	module.root.key.push([command, require('fs').statSync(command).mtime.valueOf()]);
+    	module.root.key.push([file, require('fs').statSync(file).mtime.valueOf()]);
 
     	env.children.push(module);
     	this.environment = module;
-
-    	this.info.file = command;
-    	this.files[command] = true;
+    	this.info.file = file;
+    	this.files[file] = true;
     	this.save(this.declVars('$_', { sys: true }));
     });
 
@@ -8280,6 +8313,7 @@
     	block: true,
     	deferInit: true,
     	group: ['target', 'microTemplate', 'var', 'void'],
+    	notEmpty: true,
     	trim: true
     }, function (command) {
     	var _command$split = command.split(/\s+as\s+/);
@@ -8368,6 +8402,7 @@
     });
 
     Snakeskin.addDirective('__super__', {
+    	block: true,
     	group: 'ignore'
     }, function (command) {
     	if (!command && !this.freezeLine) {
@@ -8493,7 +8528,9 @@
     	block: true,
     	deferInit: true,
     	group: ['call', 'microTemplate', 'output'],
-    	shorthands: { '+=': 'call ', '/+': 'end call' }
+    	notEmpty: true,
+    	shorthands: { '+=': 'call ', '/+': 'end call' },
+    	trim: true
     }, function (command) {
     	var short = command.slice(-1) === '/';
 
@@ -8578,6 +8615,7 @@
     	block: true,
     	deferInit: true,
     	group: ['putIn', 'microTemplate', 'void'],
+    	interpolation: true,
     	shorthands: { '*': 'putIn ', '/*': 'end putIn' },
     	trim: true
     }, function (ref) {
@@ -8592,8 +8630,12 @@
     		parent.params.chunks++;
     		this.append(ws$1(_templateObject$12, pos, tmp, this.getReturnResultDecl(), this.getResultDecl(), pos));
     	} else if (parent && this.getGroup('target')[parent.name]) {
-    		this.append(ws$1(_templateObject2$7, pos, tmp, ref, this.getReturnResultDecl(), this.getResultDecl(), pos));
+    		this.append(ws$1(_templateObject2$7, pos, tmp, this.replaceTplVars(ref, { unsafe: true }), this.getReturnResultDecl(), this.getResultDecl(), pos));
     	} else {
+    		if (!ref) {
+    			return this.error('the directive "' + this.name + '" must have a body');
+    		}
+
     		this.append(ws$1(_templateObject3$5, this.declVars('__CALL_CACHE__ = ' + this.getReturnResultDecl(), { sys: true }), this.getResultDecl()));
     	}
     }, function () {
@@ -8605,7 +8647,7 @@
     	if (parent && this.getGroup('call')[parent]) {
     		this.append(ws$1(_templateObject4$3, tmp, this.getReturnResultDecl(), this.getResultDecl()));
     	} else if (parent && this.getGroup('target')[parent]) {
-    		this.append(ws$1(_templateObject5$1, tmp, ref, this.getReturnResultDecl(), this.getResultDecl()));
+    		this.append(ws$1(_templateObject5$1, tmp, this.replaceTplVars(ref, { unsafe: true }), this.getReturnResultDecl(), this.getResultDecl()));
     	} else {
     		this.append(ws$1(_templateObject6, this.out(ref + ' = ' + this.getReturnResultDecl(), { unsafe: true }), this.out('__CALL_CACHE__', { unsafe: true })));
     	}
@@ -8642,8 +8684,14 @@
     				return this.error('the directive "outer block" can be used only within the global space');
     			}
 
+    			var nms = this.environment.namespace;
+
+    			if (!nms) {
+    				return this.error('the directive "outer block" can\'t be declared without namespace');
+    			}
+
     			try {
-    				tplName = this.tplName = this.prepareNameDecl(parts[0]);
+    				tplName = this.tplName = nms + concatProp(this.prepareNameDecl(parts[0]));
     			} catch (err) {
     				return this.error(err.message);
     			}
