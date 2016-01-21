@@ -399,8 +399,12 @@ Parser.prototype.out = function (command, opt_params) {
 							vRes = addScope(this.scope[this.scope.length - 1]) + concatProp(finalWord.slice(1));
 
 						} else {
-							this.error(`invalid usage of context modifier @`);
-							return '';
+							if (this.isSimpleOutput()) {
+								this.error(`invalid usage of context modifier @`);
+								return '';
+							}
+
+							vRes = finalWord.slice(1);
 						}
 
 					} else {
