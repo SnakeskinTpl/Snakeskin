@@ -3,7 +3,7 @@ basic2
 
 ###
 
-- namespace tag
+- namespace tag.basic
 
 /*!
  * Snakeskin

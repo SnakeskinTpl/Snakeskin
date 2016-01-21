@@ -6,7 +6,7 @@ bem5
 
 ###
 
-- namespace tag
+- namespace tag.bem
 
 /*!
  * Snakeskin

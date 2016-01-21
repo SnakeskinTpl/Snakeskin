@@ -6,7 +6,8 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-const
+var
+	$C = require('collection.js').$C,
 	snakeskin = global.Snakeskin = require('../snakeskin');
 
 var
@@ -37,12 +38,11 @@ exports.run = function (params) {
 		debug = params.debug = {};
 
 	prfx++;
-	glob.sync(path.join(from, '*/*.ss')).forEach(exec);
+	$C(glob.sync(path.join(from, '*/*.ss'))).forEach(exec);
 
 	function exec(file) {
 		try {
-			var txt = fs.readFileSync(file, 'utf8')
-				.split('###')
+			var txt = $C(fs.readFileSync(file, 'utf8').split(/###.*/))
 				.map(function (el) {
 					return el.trim();
 				});
@@ -51,13 +51,14 @@ exports.run = function (params) {
 				fileName = path.basename(file),
 				cat = path.basename(path.dirname(file)),
 				chunkSrc = path.join(to, fileName + '_' + prfx + '.' + cat + '.js'),
-				relativeSrc = path.relative(process.cwd(), file);
+				relativeSrc = path.relative(process.cwd(), file),
+				nms = [cat, path.basename(file, '.ss')];
 
-			console.log('\n###### ' + cat + '\n');
+			console.log('\n###### ' + nms.join('.') + '\n');
 
 			var
 				tests = txt[0].split(/[\r\n]+/),
-				results = txt[2].split('***');
+				results = txt[2].split(/\*\*\*.*/);
 
 		} catch (err) {
 			log('File: ' + (relativeSrc || file) + '\nError: ' + err.message, 'error');
@@ -82,7 +83,7 @@ exports.run = function (params) {
 			fs.writeFileSync(chunkSrc, res);
 
 			var
-				tpl = require(chunkSrc)[cat];
+				tpl = $C(require(chunkSrc)).get(nms);
 
 		} catch (err) {
 			fs.writeFileSync(
@@ -93,7 +94,7 @@ exports.run = function (params) {
 			throw err;
 		}
 
-		tests.forEach(function (el, i) {
+		$C(tests).forEach(function (el, i) {
 			var
 				p = String(el).split(' ; '),
 				res = '';
@@ -104,7 +105,7 @@ exports.run = function (params) {
 					'equal(' + p[0] + '(' + p.slice(1) + ').trim(), \'' + results[i].replace(/(\\|')/g, '\\$1') + '\');'
 				);
 
-				res = eval('tpl.' + p[0] + '(' + p.slice(1) + ')');
+				res = eval('tpl["' + p[0] + '"](' + p.slice(1) + ')');
 				res = res != null ? res.trim() : '';
 
 				assert.equal(

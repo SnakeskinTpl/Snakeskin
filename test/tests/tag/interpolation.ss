@@ -5,7 +5,7 @@ interpolation4
 
 ###
 
-- namespace tag
+- namespace tag.interpolation
 
 /*!
  * Snakeskin

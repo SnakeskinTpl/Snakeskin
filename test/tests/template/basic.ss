@@ -2,7 +2,7 @@ helloWorld1
 
 ###
 
-- namespace template
+- namespace template.basic
 
 /*!
  * Snakeskin

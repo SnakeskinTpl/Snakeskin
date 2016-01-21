@@ -4,7 +4,7 @@ basic3
 
 ###
 
-- namespace logic
+- namespace logic.basic
 
 /*!
  * Snakeskin

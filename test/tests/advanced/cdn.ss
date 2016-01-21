@@ -4,7 +4,7 @@ cdn2 ; 'angularjs@2'
 
 ###
 
-- namespace advanced
+- namespace advanced.cdn
 
 /*!
  * Snakeskin
@@ -51,7 +51,7 @@ cdn2 ; 'angularjs@2'
 
 	{libraries[lib][provider] || libraries[lib][firstKey(libraries[lib])]}
 
-- template cdn2(name, provider) extends advanced.cdn1
+- template cdn2(name, provider) extends advanced.cdn.cdn1
 	- block libraries()
 		- super
 		- putIn libraries.bootstrap

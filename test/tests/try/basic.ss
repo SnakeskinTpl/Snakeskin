@@ -3,7 +3,7 @@ basic2
 
 ###
 
-- namespace ['try']
+- namespace ['try'].basic
 
 /*!
  * Snakeskin

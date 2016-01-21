@@ -7,7 +7,7 @@ wsWithTags2
 
 ###
 
-- namespace jade
+- namespace jade.whitespaces
 
 /*!
  * Snakeskin
