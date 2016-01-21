@@ -23,7 +23,7 @@ const
  * Returns an array of function arguments from a string
  *
  * @param {string} str - source string
- * @return {!Array}
+ * @return {!Array<string>}
  */
 Parser.prototype.getFnArgs = function (str) {
 	const
@@ -78,19 +78,14 @@ Parser.prototype.getFnArgs = function (str) {
  * Searches and initialises function arguments from a string and returns an information object
  *
  * @param {string} str - source string
- * @param {?{
- *   dir: (string|undefined),
- *   tplName: (string|undefined),
- *   parentTplName: (string|undefined),
- *   fnName: (string|undefined)
- * }=} [opt_params] - additional parameters:
+ * @param {?$$SnakeskinParserDeclFnArgsParams=} [opt_params] - additional parameters:
  *
  *   *) [dir] - directive name (template, block etc.)
  *   *) [tplName] - template name
  *   *) [parentTplName] - parent template name
  *   *) [fnName] - custom function name (for blocks)
  *
- * @return {{decl: string, def: string, list: !Array, isCallable, scope: (string|undefined)}}
+ * @return {$$SnakeskinParserDeclFnArgsResult}
  */
 Parser.prototype.declFnArgs = function (str, opt_params) {
 	const
