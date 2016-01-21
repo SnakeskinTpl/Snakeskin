@@ -220,7 +220,7 @@ Snakeskin.addDirective(
 			s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
 			e = RIGHT_BOUND;
 
-		if (this.outerLink === p.name) {
+		if (this.outerLink === p.fnName) {
 			const
 				obj = this.preDefs[this.tplName],
 				i = Number(obj.i);
@@ -242,7 +242,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			block = $blocks[this.tplName][p.name],
+			block = $blocks[this.tplName][p.fnName],
 			output = p.params != null;
 
 		if (this.isSimpleOutput() && p.fn) {
