@@ -185,7 +185,9 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			}
 
 			scope = arg[0] = arg[0]
-				.replace(scopeMod, '')
+				.replace(scopeMod, '');
+
+			scope = scope
 				.replace(nullableRgxp, '');
 		}
 
