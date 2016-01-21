@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 20 Jan 2016 21:04:14 GMT
+ * Date: 'Thu, 21 Jan 2016 09:42:37 GMT
  */
 
 (function (global, factory) {
@@ -73,13 +73,14 @@
      */
     Snakeskin.cache = {};
 
-    /**
+        /**
      * Gets an object with an undefined type
      * (for the GCC)
      *
      * @param {?} val - source object
      * @return {?}
      */
+
     function any(val) {
       return val;
     }
