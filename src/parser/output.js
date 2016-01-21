@@ -99,7 +99,7 @@ const esprimaHackFn = (str) => str
 	.trim()
 	.replace(/^({.*)/, '($0)')
 	.replace(/^\[(?!\s*])/, '$[')
-	.replace(/\byield\b/g, '');
+	.replace(/\b(?:yield|return)\b/g, '');
 
 /**
  * Prepares the specified command to output:
