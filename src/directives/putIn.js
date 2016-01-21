@@ -97,7 +97,7 @@ Snakeskin.addDirective(
 
 		} else {
 			this.append(ws`
-				${this.out(`${ref} = ${this.getReturnResultDecl()}`, {unsafe: true})};
+				${this.out(`${ref} = Unsafe(${this.getReturnResultDecl()})`, {unsafe: true})};
 				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
 			`);
 		}
