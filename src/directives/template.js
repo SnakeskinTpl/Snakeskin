@@ -310,7 +310,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			});
 
 			const
-				args = this.prepareArgs(command, 'template', {parentTplName, tplName});
+				args = this.getBlockArgs(command, 'template', {parentTplName, tplName});
 
 			if (args.scope) {
 				this.scope.push(args.scope);

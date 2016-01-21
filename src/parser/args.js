@@ -21,13 +21,12 @@ const
 	nullableMap = {'!': false, '?': true};
 
 /**
- * Declares callback function arguments
- * and returns a string of declaration
+ * Declares function arguments and returns a string of declaration
  *
  * @param {(!Array|string)} parts - string of arguments or an array
  * @return {string}
  */
-Parser.prototype.declCallbackArgs = function (parts) {
+Parser.prototype.declFnArgs = function (parts) {
 	const
 		args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').trim().split(/\s*,\s*/);
 
@@ -120,11 +119,10 @@ Parser.prototype.getFnArgs = function (str) {
 };
 
 /**
- * Searches function arguments from a string
- * and returns an information object
+ * Searches function arguments from a string and returns an information object
  *
  * @param {string} str - source string
- * @param {string} type - function type (template, block etc.)
+ * @param {string} type - block type (template, block etc.)
  * @param {?{
  *   tplName: (string|undefined),
  *   parentTplName: (string|undefined),
@@ -133,11 +131,11 @@ Parser.prototype.getFnArgs = function (str) {
  *
  *   *) [tplName] - template name
  *   *) [parentTplName] - parent template name
- *   *) [fName] - custom function name (for template, block etc.)
+ *   *) [fName] - custom function name (for blocks)
  *
  * @return {{defParams: string, list: !Array, isCallable, scope: (string|undefined), str: string}}
  */
-Parser.prototype.prepareArgs = function (str, type, opt_params) {
+Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 	const
 		{tplName = this.tplName, parentTplName, fName} = any(opt_params || {}),
 		{structure} = this;

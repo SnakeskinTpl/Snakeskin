@@ -76,7 +76,7 @@ Snakeskin.addDirective(
 			}
 		}
 
-		this.append(`${prfx}(function (${this.declCallbackArgs(parts)}) {${pstfx}`);
+		this.append(`${prfx}(function (${this.declFnArgs(parts)}) {${pstfx}`);
 	},
 
 	function () {
@@ -116,6 +116,6 @@ Snakeskin.addDirective(
 		this.structure.chain = false;
 		this.structure.params.final = true;
 
-		this.append(`], function (${this.declCallbackArgs(parts)}) {`);
+		this.append(`], function (${this.declFnArgs(parts)}) {`);
 	}
 );
