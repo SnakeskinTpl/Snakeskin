@@ -166,20 +166,20 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 			parentArgs = $args[parentTplName][type][fName];
 		}
 
+		const
+			cache = $argsRes[tplName][type][fName];
+
 		// If our parameters already exists in the cache,
 		// then init local variables and return an information object
-		if ($args[tplName][type][fName]) {
-			const
-				tmp = $argsRes[tplName][type][fName];
-
-			$C(tmp.list).forEach((el) => {
+		if (cache) {
+			$C(cache.list).forEach((el) => {
 				structure.vars[el[2]] = {
 					scope: this.scope.length,
 					value: el[0]
 				};
 			});
 
-			return tmp;
+			return cache;
 		}
 
 		argsTable = $args[tplName][type][fName] = {};
@@ -219,9 +219,11 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 			scope = arg[0] = arg[0].replace(scopeMod, '');
 		}
 
-		// Relation for null
 		let nullable = undefined;
-		arg[0] = arg[0].replace(nullableRgxp, (str) => nullable = nullableMap[str]);
+		arg[0] = arg[0].replace(nullableRgxp, (str) => {
+			nullable = nullableMap[str];
+			return '';
+		});
 
 		// Put to cache
 		argsTable[arg[0]] = {
