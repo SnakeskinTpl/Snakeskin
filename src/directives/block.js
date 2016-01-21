@@ -163,13 +163,7 @@ Snakeskin.addDirective(
 				}
 			);
 
-			if (args.isCallable) {
-				structure.params.isCallable = true;
-				if (callBlockNameRgxp.test(name)) {
-					return this.error(`invalid "${this.name}" declaration`);
-				}
-			}
-
+			structure.params.isCallable = args.isCallable;
 			$blocks[tplName][name] = {
 				args,
 				external: Boolean(parts.length),
@@ -188,7 +182,7 @@ Snakeskin.addDirective(
 			const
 				{args} = $blocks[tplName][name];
 
-			if (args.params) {
+			if (args.isCallable) {
 				const
 					fnDecl = structure.params.fn = `self.${name}`;
 
