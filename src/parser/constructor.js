@@ -464,6 +464,10 @@ export default class Parser {
 				this.value = val;
 			}
 
+			Unsafe.prototype.toString = function () {
+				return this.value;
+			};
+
 			${this.declVars('$_', {sys: true})}
 		`;
 	};
