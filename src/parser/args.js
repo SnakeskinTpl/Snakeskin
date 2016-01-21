@@ -181,7 +181,9 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 				};
 			}
 
-			scope = arg[0] = arg[0].replace(scopeMod, '');
+			scope = arg[0] = arg[0]
+				.replace(scopeMod, '')
+				.replace(nullableRgxp, '');
 		}
 
 		let nullable = undefined;
