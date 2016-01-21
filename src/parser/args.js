@@ -243,6 +243,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 				// set it as a local variable
 			} else {
 				argsMap[key] = {
+					defFilter: el.defFilter,
 					i: el.i,
 					key,
 					local: true,
