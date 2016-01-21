@@ -177,7 +177,7 @@ Snakeskin.addDirective(
 
 			if (args.scope) {
 				this.scope.push(args.scope);
-				structure.params._scope = true;
+				structure.params['@scope'] = true;
 			}
 		}
 
