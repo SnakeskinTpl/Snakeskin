@@ -168,6 +168,14 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			arg.splice(2, arg.length);
 		}
 
+		let defFilter = '';
+		if (arg[0][0] === '(') {
+			arg[0] = arg[0].replace(/^\(\s*([^|])+(.*?)\)$/, (str, arg, filter) => {
+				defFilter = filter;
+				return arg;
+			});
+		}
+
 		if (scopeMod.test(arg[0])) {
 			// Scope already defined
 			if (scope) {
@@ -194,6 +202,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 
 		// Put to cache
 		argsMap[arg[0]] = {
+			defFilter,
 			i,
 			key: arg[0],
 			nullable,
@@ -211,9 +220,15 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 
 			// Parameter exists in a parent function
 			if (arg) {
+				arg.defFilter = el.defFilter + arg.defFilter;
+
 				if (!scope && el.scope) {
 					scope = el.scope;
 					arg.scope = scope;
+				}
+
+				if (arg.nullable === undefined) {
+					arg.nullable = el.nullable;
 				}
 
 				if (arg.nullable === undefined) {
@@ -276,7 +291,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			old
 		]);
 
-		def += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {unsafe: true})};`;
+		def += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value) + el.defFilter, {unsafe: true})};`;
 		structure.vars[el.key] = {
 			scope: this.scope.length,
 			value: el.key
@@ -309,9 +324,15 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			old
 		]);
 
+		const
+			val = this.out(el.key + el.defFilter, {skipFirstWord: true, unsafe: true});
+
 		if (el.value !== undefined) {
-			const val = this.out(this.replaceDangerBlocks(el.value), {unsafe: true});
-			def += `${el.key} = ${el.key} ${el.nullable ? '!== undefined' : '!= null'} ? ${el.key} : ${val};`;
+			const defVal = this.out(this.replaceDangerBlocks(el.value) + el.defFilter, {unsafe: true});
+			def += `${el.key} = ${el.key} ${el.nullable ? '!== undefined' : '!= null'} ? ${val} : ${defVal};`;
+
+		} else if (el.defFilter) {
+			def += `${el.key} = ${val};`;
 		}
 
 		if (i !== finalArgsList.length - 1) {
