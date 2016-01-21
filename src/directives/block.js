@@ -154,7 +154,7 @@ Snakeskin.addDirective(
 				return this.error(`the block "${name}" is already defined`);
 			}
 
-			const args = this.getBlockArgs(
+			const args = this.declBlockArgs(
 				command,
 				dir,
 				{

@@ -119,7 +119,7 @@ Parser.prototype.getFnArgs = function (str) {
 };
 
 /**
- * Searches function arguments from a string and returns an information object
+ * Searches and initialises function arguments from a string and returns an information object
  *
  * @param {string} str - source string
  * @param {string} type - block type (template, block etc.)
@@ -135,21 +135,21 @@ Parser.prototype.getFnArgs = function (str) {
  *
  * @return {{defParams: string, list: !Array, isCallable, scope: (string|undefined), str: string}}
  */
-Parser.prototype.getBlockArgs = function (str, type, opt_params) {
+Parser.prototype.declBlockArgs = function (str, type, opt_params) {
+	const
+		argsList = this.getFnArgs(str);
+
 	const
 		{tplName = this.tplName, parentTplName, fName} = any(opt_params || {}),
 		{structure} = this;
 
 	let
-		argsList = this.getFnArgs(str),
-		scope = undefined;
-
-	const
-		{isCallable} = argsList;
-
-	let
+		scope = undefined,
 		parentArgs,
 		argsTable;
+
+	// Initialise cache objects
+	// for the specified block
 
 	if (!$args[tplName]) {
 		$args[tplName] = {};
@@ -166,6 +166,8 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 			parentArgs = $args[parentTplName][type][fName];
 		}
 
+		// If our parameters already exists in the cache,
+		// then init local variables and return an information object
 		if ($args[tplName][type][fName]) {
 			const
 				tmp = $argsRes[tplName][type][fName];
@@ -190,6 +192,8 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		argsTable = $args[tplName][type];
 	}
 
+	// Analise requested parameters
+	// and save it in cache
 	$C(argsList).forEach((el, i) => {
 		const
 			arg = el.split(/\s*=\s*/);
@@ -200,6 +204,7 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		}
 
 		if (scopeMod.test(arg[0])) {
+			// Scope already defined
 			if (scope) {
 				this.error(`invalid "${this.name}" declaration`);
 				return {
@@ -214,9 +219,11 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 			scope = arg[0] = arg[0].replace(scopeMod, '');
 		}
 
+		// Relation for null
 		let nullable = undefined;
 		arg[0] = arg[0].replace(nullableRgxp, (str) => nullable = nullableMap[str]);
 
+		// Put to cache
 		argsTable[arg[0]] = {
 			i,
 			key: arg[0],
@@ -226,10 +233,13 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		};
 	});
 
+	// Mix the requested parameters
+	// with parent block parameters
 	$C(parentArgs).forEach((el, key) => {
 		const
 			arg = argsTable[key];
 
+		// Parameter exists in a parent function
 		if (arg) {
 			if (!scope && el.scope) {
 				scope = el.scope;
@@ -244,6 +254,8 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 				argsTable[key].value = el.value;
 			}
 
+		// Parameter doesn't exists in a parent function,
+		// set it as a local variable
 		} else {
 			argsTable[key] = {
 				i: el.i,
@@ -254,18 +266,16 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		}
 	});
 
-	argsList = [];
-
 	const
-		localVars = [],
-		locals = [];
+		finalArgsList = [],
+		localsList = [];
 
 	$C(argsTable).forEach((el) => {
 		if (el.local) {
-			localVars[el.i] = el;
+			localsList[el.i] = el;
 
 		} else {
-			argsList[el.i] = el;
+			finalArgsList[el.i] = el;
 		}
 	});
 
@@ -273,7 +283,11 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		decl = '',
 		defParams = '';
 
-	$C(localVars).forEach((el) => {
+	const
+		locals = [];
+
+	// Initialise local variables
+	$C(localsList).forEach((el) => {
 		if (!el) {
 			return;
 		}
@@ -298,18 +312,13 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		};
 	});
 
-	let
-		args = [];
-
 	const
+		args = [],
 		consts = $consts[this.tplName],
-		constsCache = {};
+		constsCache = structure.params['@consts'] = {};
 
-	$C(argsList).forEach((el, i) => {
-		el.key = el.key
-			.replace(scopeMod, '')
-			.replace(nullableRgxp, '');
-
+	// Initialise arguments
+	$C(finalArgsList).forEach((el, i) => {
 		const
 			old = el.key;
 
@@ -330,22 +339,19 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		]);
 
 		if (el.value !== undefined) {
-			defParams +=
-				`${el.key} = ${el.key} != null ? ${el.key} : ${this.out(this.replaceDangerBlocks(el.value), {unsafe: true})};`;
+			const val = this.out(this.replaceDangerBlocks(el.value), {unsafe: true});
+			defParams += `${el.key} = ${el.key} ${el.nullable ? '!== undefined' : '!= null'} ? ${el.key} : ${val};`;
 		}
 
-		if (i !== argsList.length - 1) {
+		if (i !== finalArgsList.length - 1) {
 			decl += ',';
 		}
 	});
 
-	args = args.concat(locals);
-	structure.params['@consts'] = constsCache;
-
 	const res = {
 		defParams,
-		isCallable,
-		list: args,
+		isCallable: argsList.isCallable,
+		list: args.concat(locals),
 		scope,
 		str: decl
 	};
