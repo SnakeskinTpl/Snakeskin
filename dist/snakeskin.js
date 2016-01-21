@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 21 Jan 2016 18:55:40 GMT
+ * Date: 'Thu, 21 Jan 2016 20:56:51 GMT
  */
 
 (function (global, factory) {
@@ -3318,7 +3318,7 @@
 
     				var dir = (SHORTS[el] || SHORTS[next2str]) && nextSpace;
 
-    				var decl = getLineDesc(str, nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j, Boolean(dir), next2str === MULT_COMMENT_START);
+    				var decl = getLineDesc(str, nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j, Boolean(dir), next2str === MULT_COMMENT_START, this.localization);
 
     				if (!decl) {
     					this.error('invalid syntax');
@@ -3515,9 +3515,10 @@
      * @param {number} i - start position
      * @param {boolean} dir - if is true, then the declaration is considered as a block directive
      * @param {boolean} comment - if is true, then declaration is considered as a multiline comment
+     * @param {boolean} i18n - if is true, then localization is enable
      * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
      */
-    function getLineDesc(str, i, dir, comment) {
+    function getLineDesc(str, i, dir, comment, i18n) {
     	var command = '',
     	    name = '';
 
@@ -3647,11 +3648,11 @@
     				}
     			}
 
-    			if ((ESCAPES[el] || el === I18N) && (el !== '/' || bEnd$$) && !bOpen) {
+    			if ((ESCAPES[el] || el === I18N && i18n) && (el !== '/' || bEnd$$) && !bOpen) {
     				bOpen = el;
     			} else if (bOpen && (el === '\\' || bEscape)) {
     				bEscape = !bEscape;
-    			} else if ((ESCAPES[el] || el === I18N) && bOpen === el && !bEscape) {
+    			} else if ((ESCAPES[el] || el === I18N && i18n) && bOpen === el && !bEscape) {
     				bOpen = false;
 
     				if (concatLine === 1) {
@@ -6476,7 +6477,7 @@
     		}
 
     		if (!bOpen) {
-    			if (el === '\\' && SYS_ESCAPES[next] && (!begin || next === I18N) || escape) {
+    			if (el === '\\' && SYS_ESCAPES[next] && (!begin || next === I18N && parser.localization) || escape) {
     				escape = !escape;
     			}
 
@@ -6684,7 +6685,7 @@
     						command = '';
     						commandLength = 0;
     						continue;
-    					} else if (parser.localization && !cEscape && el === I18N) {
+    					} else if (el === I18N && parser.localization && !cEscape) {
     						if (i18nStart && i18nStr && p.words && !p.words[i18nStr]) {
     							p.words[i18nStr] = i18nStr;
     						}
@@ -8860,7 +8861,7 @@
     	} else if (parent && this.getGroup('target')[parent]) {
     		this.append(ws$1(_templateObject5$1, tmp, this.replaceTplVars(ref, { unsafe: true }), this.getReturnResultDecl(), this.getResultDecl()));
     	} else {
-    		this.append(ws$1(_templateObject6, this.out(ref + ' = ' + this.getReturnResultDecl(), { unsafe: true }), this.out('__CALL_CACHE__', { unsafe: true })));
+    		this.append(ws$1(_templateObject6, this.out(ref + ' = Unsafe(' + this.getReturnResultDecl() + ')', { unsafe: true }), this.out('__CALL_CACHE__', { unsafe: true })));
     	}
     });
 
