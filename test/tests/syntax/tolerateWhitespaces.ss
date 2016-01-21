@@ -14,6 +14,7 @@ markdown
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
 - template cut(target)
 	- block wrapper()
 		- return target.apply(this, arguments)|replace /^\t/gm, ''
