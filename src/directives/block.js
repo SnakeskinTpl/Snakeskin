@@ -213,12 +213,11 @@ Snakeskin.addDirective(
 						{vars} = structure;
 
 					structure.vars = structure.parent.vars;
-					params = this.getFnArgs(`(${params})`);
-
-					structure.vars = vars;
-					structure.params.params = $C(params)
+					structure.params.params = $C(this.getFnArgs(`(${params})`))
 						.reduce((res, el) => `${res}${this.out(el, {unsafe: true})},`, '')
 						.slice(0, -1);
+
+					structure.vars = vars;
 				}
 			}
 		}
