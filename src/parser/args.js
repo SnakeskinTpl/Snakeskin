@@ -16,6 +16,10 @@ import { scopeMod } from '../consts/regs';
 import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { $args, $argsRes, $consts } from '../consts/cache';
 
+const
+	nullableRgxp = /[?|!]$/,
+	nullableMap = {'!': false, '?': true};
+
 /**
  * Declares callback function arguments
  * and returns a string of declaration
@@ -72,13 +76,12 @@ Parser.prototype.getFnArgs = function (str) {
 
 	let
 		pOpen = 0,
-		arg = '',
-		params = false;
+		arg = '';
 
 	$C(str).forEach((el) => {
 		if (pOpen ? B_OPEN[el] : el === '(') {
 			pOpen++;
-			params = true;
+			res.isCallable = true;
 
 			if (pOpen === 1) {
 				return;
@@ -112,7 +115,7 @@ Parser.prototype.getFnArgs = function (str) {
 		res.push(arg.trim());
 	}
 
-	res.params = params;
+	res.isCallable = Boolean(res.isCallable);
 	return res;
 };
 
@@ -132,7 +135,7 @@ Parser.prototype.getFnArgs = function (str) {
  *   *) [parentTplName] - parent template name
  *   *) [fName] - custom function name (for template, block etc.)
  *
- * @return {{defParams: string, list: !Array, params, scope: (string|undefined), str: string}}
+ * @return {{defParams: string, list: !Array, isCallable, scope: (string|undefined), str: string}}
  */
 Parser.prototype.prepareArgs = function (str, type, opt_params) {
 	const
@@ -141,7 +144,12 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 
 	let
 		argsList = this.getFnArgs(str),
-		{params} = argsList,
+		scope = undefined;
+
+	const
+		{isCallable} = argsList;
+
+	let
 		parentArgs,
 		argsTable;
 
@@ -184,15 +192,12 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 		argsTable = $args[tplName][type];
 	}
 
-	let
-		scope = undefined;
-
 	$C(argsList).forEach((el, i) => {
-		const arg = el.split('=');
-		arg[0] = arg[0].trim();
+		const
+			arg = el.split(/\s*=\s*/);
 
 		if (arg.length > 1) {
-			arg[1] = arg.slice(1).join('=').trim();
+			arg[1] = arg.slice(1).join('=');
 			arg.splice(2, arg.length);
 		}
 
@@ -208,39 +213,37 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 				};
 			}
 
-			scope = arg[0].replace(scopeMod, '');
+			scope = arg[0] = arg[0].replace(scopeMod, '');
 		}
+
+		let nullable = undefined;
+		arg[0] = arg[0].replace(nullableRgxp, (str) => nullable = nullableMap[str]);
 
 		argsTable[arg[0]] = {
 			i,
 			key: arg[0],
+			nullable,
 			scope,
 			value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
 		};
 	});
 
 	$C(parentArgs).forEach((el, key) => {
-		let aKey;
-		if (scopeMod.test(key)) {
-			aKey = key.replace(scopeMod, '');
-
-		} else {
-			aKey = `@${key}`;
-		}
-
 		const
-			rKey = argsTable[key] ? key : aKey,
-			current = argsTable[rKey],
-			cVal = current && current.value === undefined;
+			arg = argsTable[key];
 
-		if (argsTable[rKey]) {
+		if (arg) {
 			if (!scope && el.scope) {
 				scope = el.scope;
-				argsTable[rKey].scope = scope;
+				arg.scope = scope;
 			}
 
-			if (cVal) {
-				argsTable[rKey].value = el.value;
+			if (arg.nullable === undefined) {
+				arg.nullable = el.nullable;
+			}
+
+			if (arg.value === undefined) {
+				argsTable[key].value = el.value;
 			}
 
 		} else {
@@ -254,8 +257,12 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 	});
 
 	argsList = [];
+
 	const
-		localVars = [];
+		consts = $consts[this.tplName],
+		constsCache = {},
+		localVars = [],
+		locals = [];
 
 	$C(argsTable).forEach((el) => {
 		if (el.local) {
@@ -266,11 +273,6 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 		}
 	});
 
-	const
-		consts = $consts[this.tplName],
-		constsCache = {},
-		locals = [];
-
 	let
 		decl = '',
 		defParams = '';
@@ -280,7 +282,6 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 			return;
 		}
 
-		el.key = el.key.replace(scopeMod, '');
 		const
 			old = el.key;
 
@@ -301,11 +302,11 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 		};
 	});
 
-	let
-		args = [];
-
+	let args = [];
 	$C(argsList).forEach((el, i) => {
-		el.key = el.key.replace(scopeMod, '');
+		el.key = el.key
+			.replace(scopeMod, '')
+			.replace(nullableRgxp, '');
 
 		const
 			old = el.key;
@@ -341,8 +342,8 @@ Parser.prototype.prepareArgs = function (str, type, opt_params) {
 
 	const res = {
 		defParams,
+		isCallable,
 		list: args,
-		params,
 		scope,
 		str: decl
 	};

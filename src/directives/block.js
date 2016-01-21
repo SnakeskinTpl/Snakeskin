@@ -163,11 +163,10 @@ Snakeskin.addDirective(
 				}
 			);
 
-			if (args.params && callBlockNameRgxp.test(name)) {
+			if (args.isCallable && callBlockNameRgxp.test(name)) {
 				return this.error(`invalid "${this.name}" declaration`);
 			}
 
-			this.structure.params.args = args.params;
 			$blocks[tplName][name] = {
 				args,
 				external: Boolean(parts.length),
