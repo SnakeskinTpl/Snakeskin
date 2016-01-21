@@ -440,15 +440,15 @@ export default class Parser {
 				TRUE = new Boolean(true),
 				FALSE = new Boolean(false);
 
-			function Data(val) {
-				if (!this || this.constructor !== Data) {
-					return new Data(val);
+			function Raw(val) {
+				if (!this || this.constructor !== Raw) {
+					return new Raw(val);
 				}
 
 				this.value = val;
 			}
 
-			Data.prototype.push = function (val) {
+			Raw.prototype.push = function (val) {
 				this.value += val;
 			};
 

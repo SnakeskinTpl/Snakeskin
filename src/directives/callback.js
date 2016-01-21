@@ -55,7 +55,7 @@ Snakeskin.addDirective(
 				prfx = length > 1 ? ',' : '';
 
 			} else if (this.getGroup('microTemplate')[parent.name]) {
-				prfx = `__RESULT__ = new Data`;
+				prfx = `__RESULT__ = new Raw`;
 				pstfx = ws`
 				var __RESULT__ = ${this.getResultDecl()};
 

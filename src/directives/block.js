@@ -272,7 +272,7 @@ Snakeskin.addDirective(
 			`);
 
 			if (!output && this.hasParent(this.getGroup('microTemplate'))) {
-				this.append(`__RESULT__ = new Data(${p.fn});`);
+				this.append(`__RESULT__ = new Raw(${p.fn});`);
 			}
 		}
 
