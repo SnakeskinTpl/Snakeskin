@@ -1,7 +1,7 @@
-interpolation1
-interpolation2
-interpolation3
-interpolation4
+input-textarea
+advanced tag declaration
+RegExp with filter
+placeholder and default
 
 ###
 
@@ -15,40 +15,40 @@ interpolation4
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template interpolation1()
+- template ['input-textarea']()
 	< ${true ? 'input' : 'textarea'}
 		Hello
 
 	< ${false ? 'input' : 'textarea'}
 		Hello
 
-- template interpolation2()
+- template ['advanced tag declaration']()
 	< ${'span'}.${'foo'}#${'bar'}
 		< [[.&${'__bla'}]]
 			Hello
 
-- template ['interpolation3']()
+- template ['RegExp with filter']()
 	< body.i-page.${/\['(.*?)'\]/.exec(TPL_NAME)[1]}
 
-- template interpolation4()
+- template ['placeholder and default']()
 	< ${true ? '?' : ''}.foo bla = true
 		< .&__baz
 
 	< ${false ? '?' : ''}.foo bla = true
 		< .&__baz
 
-###
+### input-textarea
 
 <input value="Hello"> <textarea>Hello</textarea>
 
-***
+*** advanced tag declaration
 
 <span id="bar" class="foo"><div class="foo__bla">Hello</div></span>
 
-***
+*** RegExp with filter
 
-<body class="i-page interpolation3"></body>
+<body class="i-page RegExp with filter"></body>
 
-***
+*** placeholder and default
 
 <div class="foo__baz"></div> <div bla="true" class="foo"><div class="foo__baz"></div></div>

@@ -1,8 +1,8 @@
-bem1
-bem2
-bem3
-bem4
-bem5
+simple class reference
+class reference from placeholder
+sticky link
+advanced sticky links
+multiple class reference
 
 ###
 
@@ -16,48 +16,48 @@ bem5
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template bem1()
+- template ['simple class reference']()
 	< .foo.baz
 		< .&__bar
 			Hello
 
-- template bem2()
+- template ['class reference from placeholder']()
 	< ?.foo.baz
 		< .&__bar
 			Hello
 
-- template bem3()
+- template ['sticky link']()
 	< .foo[.baz]
 		< .&__bar
 			Hello
 
-- template bem4()
+- template ['advanced sticky links']()
+	< .foo[[[.bla]]]
+		< .&__bar[.&_style_dark.&_size_xxl.baz[.&__bar]]
+			Hello
+
+- template ['multiple class reference']()
 	< .foo
 		< .&__bar.baz
 			< .&__bar
 				Hello
 
-- template bem5()
-	< .foo[[[.bla]]]
-		< .&__bar[.&_style_dark.&_size_xxl.baz[.&__bar]]
-			Hello
-
-###
+### simple class reference
 
 <div class="foo baz"><div class="baz__bar">Hello</div></div>
 
-***
+*** class reference from placeholder
 
 <div class="baz__bar">Hello</div>
 
-***
+*** sticky link
 
 <div class="foo baz"><div class="foo__bar">Hello</div></div>
 
-***
-
-<div class="foo"><div class="foo__bar baz"><div class="baz__bar">Hello</div></div></div>
-
-***
+*** advanced sticky links
 
 <div class="foo bla"><div class="foo__bar foo__bar_style_dark foo__bar_size_xxl baz baz__bar">Hello</div></div>
+
+*** multiple class reference
+
+<div class="foo"><div class="foo__bar baz"><div class="baz__bar">Hello</div></div></div>

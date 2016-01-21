@@ -1,5 +1,5 @@
-basic1
-basic2
+sibling tags
+nested tags
 
 ###
 
@@ -13,23 +13,23 @@ basic2
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template basic1()
+- template ['sibling tags']()
 	- tag div
 		Hello
 
 	< span.foo.bar#baz
 		Hello
 
-- template basic2()
+- template ['nested tags']()
 	- tag div
 		Hello
 		< span.foo.bar#baz
 			Hello
 
-###
+### sibling tags
 
 <div>Hello</div> <span id="baz" class="foo bar">Hello</span>
 
-***
+*** nested tags
 
 <div>Hello <span id="baz" class="foo bar">Hello</span></div>
