@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 21 Jan 2016 09:42:37 GMT
+ * Date: 'Thu, 21 Jan 2016 18:55:40 GMT
  */
 
 (function (global, factory) {
@@ -621,7 +621,7 @@
     	'__filename': true,
     	'TPL_NAME': true,
     	'PARENT_TPL_NAME': true,
-    	'Data': true,
+    	'Raw': true,
     	'Unsafe': true,
     	'Snakeskin': true,
     	'getTplResult': true,
@@ -1299,7 +1299,7 @@
     var _templateObject2$9 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin) {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin) {\n\t\t\t\t\t', '\n\t\t\t']);
     var _templateObject3$7 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'snakeskin\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'snakeskin\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
     var _templateObject4$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
-    var _templateObject5$2 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Data(val) {\n\t\t\t\tif (!this || this.constructor !== Data) {\n\t\t\t\t\treturn new Data(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tData.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Data(val) {\n\t\t\t\tif (!this || this.constructor !== Data) {\n\t\t\t\t\treturn new Data(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tData.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\t', '\n\t\t']);
+    var _templateObject5$2 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (typeof Node === \'function\' && val[0] instanceof Node === true) {\n\t\t\t\t\treturn val[0].childNodes.length;\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || {}.toString.call(val) === \'[object Array]\') {\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
     /**
      * The class for parsing SS templates
      */
@@ -1711,65 +1711,24 @@
     	'template': {}
     };
 
-    /**
-     * Declares callback function arguments
-     * and returns a string of declaration
-     *
-     * @param {(!Array|string)} parts - string of arguments or an array
-     * @return {string}
-     */
-    Parser.prototype.declCallbackArgs = function (parts) {
-    	var _this = this;
-
-    	var args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').trim().split(/\s*,\s*/);
-
-    	var scope = undefined;
-
-    	$C(args).forEach(function (el, i) {
-    		var mod = scopeMod.test(el);
-
-    		if (mod) {
-    			if (scope) {
-    				_this.error('invalid "' + _this.name + '" declaration');
-    			} else {
-    				el = el.replace(scopeMod, '');
-    			}
-    		}
-
-    		if (el) {
-    			args[i] = _this.declVar(el, { fn: true });
-
-    			if (mod) {
-    				scope = args[i];
-    			}
-    		}
-    	});
-
-    	if (scope) {
-    		this.scope.push(scope);
-    		this.structure.params['@scope'] = true;
-    	}
-
-    	return args.join();
-    };
-
+    var nullableRgxp = /[?|!]$/;
+    var nullableMap = { '!': false, '?': true };
     /**
      * Returns an array of function arguments from a string
      *
      * @param {string} str - source string
-     * @return {!Array}
+     * @return {!Array<string>}
      */
     Parser.prototype.getFnArgs = function (str) {
     	var res = [];
 
     	var pOpen = 0,
-    	    arg = '',
-    	    params = false;
+    	    arg = '';
 
     	$C(str).forEach(function (el) {
     		if (pOpen ? B_OPEN[el] : el === '(') {
     			pOpen++;
-    			params = true;
+    			res.isCallable = true;
 
     			if (pOpen === 1) {
     				return;
@@ -1802,228 +1761,272 @@
     		res.push(arg.trim());
     	}
 
-    	res.params = params;
+    	res.isCallable = Boolean(res.isCallable);
     	return res;
     };
 
     /**
-     * Searches function arguments from a string
-     * and returns an information object
+     * Searches and initialises function arguments from a string and returns an information object
      *
      * @param {string} str - source string
-     * @param {string} type - function type (template, block etc.)
-     * @param {?{
-     *   tplName: (string|undefined),
-     *   parentTplName: (string|undefined),
-     *   fName: (string|undefined)
-     * }=} [opt_params] - additional parameters:
+     * @param {?$$SnakeskinParserDeclFnArgsParams=} [opt_params] - additional parameters:
      *
+     *   *) [dir] - directive name (template, block etc.)
      *   *) [tplName] - template name
      *   *) [parentTplName] - parent template name
-     *   *) [fName] - custom function name (for template, block etc.)
+     *   *) [fnName] - custom function name (for blocks)
      *
-     * @return {{defParams: string, list: !Array, params, scope: (string|undefined), str: string}}
+     * @return {$$SnakeskinParserDeclFnArgsResult}
      */
-    Parser.prototype.prepareArgs = function (str, type, opt_params) {
-    	var _this2 = this;
+    Parser.prototype.declFnArgs = function (str, opt_params) {
+    	var _this = this;
 
     	var _any = any(opt_params || {});
 
+    	var dir = _any.dir;
     	var _any$tplName = _any.tplName;
     	var tplName = _any$tplName === undefined ? this.tplName : _any$tplName;
     	var parentTplName = _any.parentTplName;
 
-    	var fName = _any.fName;
+    	var fnName = _any.fnName;
     	var structure = this.structure;
 
-    	var argsList = this.getFnArgs(str);
-    	var _argsList = argsList;
-    	var params = _argsList.params;
-    	var parentArgs = undefined;
-    	var argsTable = undefined;
+    	var argsList = this.getFnArgs(str),
+    	    isLocalFunction = !dir || fnName;
 
-    	if (!$args[tplName]) {
-    		$args[tplName] = {};
-    		$argsRes[tplName] = {};
-    	}
+    	var scope = undefined,
+    	    argsMap = {},
+    	    parentArgs = undefined;
 
-    	if (!$args[tplName][type]) {
-    		$args[tplName][type] = {};
-    		$argsRes[tplName][type] = {};
-    	}
+    	// Initialise cache objects
+    	// for the specified block
 
-    	if (fName) {
-    		if (parentTplName && $args[parentTplName][type]) {
-    			parentArgs = $args[parentTplName][type][fName];
+    	if (dir) {
+    		if (!$args[tplName]) {
+    			$args[tplName] = {};
+    			$argsRes[tplName] = {};
     		}
 
-    		if ($args[tplName][type][fName]) {
-    			var tmp = $argsRes[tplName][type][fName];
-
-    			$C(tmp.list).forEach(function (el) {
-    				structure.vars[el[2]] = {
-    					scope: _this2.scope.length,
-    					value: el[0]
-    				};
-    			});
-
-    			return tmp;
+    		if (!$args[tplName][dir]) {
+    			$args[tplName][dir] = {};
+    			$argsRes[tplName][dir] = {};
     		}
 
-    		argsTable = $args[tplName][type][fName] = {};
-    	} else {
-    		if (parentTplName) {
-    			parentArgs = $args[parentTplName][type];
-    		}
+    		if (fnName) {
+    			if (parentTplName && $args[parentTplName][dir]) {
+    				parentArgs = $args[parentTplName][dir][fnName];
+    			}
 
-    		argsTable = $args[tplName][type];
+    			var cache = $argsRes[tplName][dir][fnName];
+
+    			// If our parameters already exists in the cache,
+    			// then init local variables and return an information object
+    			if (cache) {
+    				$C(cache.list).forEach(function (el) {
+    					structure.vars[el[2]] = {
+    						scope: _this.scope.length,
+    						value: el[0]
+    					};
+    				});
+
+    				if (cache.scope) {
+    					this.scope.push(cache.scope);
+    					this.structure.params['@scope'] = true;
+    				}
+
+    				return cache;
+    			}
+
+    			argsMap = $args[tplName][dir][fnName] = {};
+    		} else {
+    			if (parentTplName) {
+    				parentArgs = $args[parentTplName][dir];
+    			}
+
+    			argsMap = $args[tplName][dir];
+    		}
     	}
 
-    	var scope = undefined;
-
+    	// Analise requested parameters
+    	// and save it in cache
     	$C(argsList).forEach(function (el, i) {
-    		var arg = el.split('=');
-    		arg[0] = arg[0].trim();
+    		var arg = el.split(/\s*=\s*/);
 
     		if (arg.length > 1) {
-    			arg[1] = arg.slice(1).join('=').trim();
+    			arg[1] = arg.slice(1).join('=');
     			arg.splice(2, arg.length);
     		}
 
+    		var defFilter = '';
+    		if (arg[0][0] === '(') {
+    			arg[0] = arg[0].replace(/^\(\s*([^|]+)(.*?)\)$/, function (str, arg, filter) {
+    				defFilter = filter;
+    				return arg;
+    			});
+    		}
+
     		if (scopeMod.test(arg[0])) {
+    			// Scope already defined
     			if (scope) {
-    				_this2.error('invalid "' + _this2.name + '" declaration');
+    				_this.error('invalid "' + _this.name + '" declaration');
     				return {
-    					defParams: '',
+    					decl: '',
+    					def: '',
+    					isCallable: false,
     					list: [],
-    					params: false,
-    					scope: undefined,
-    					str: ''
+    					scope: undefined
     				};
     			}
 
-    			scope = arg[0].replace(scopeMod, '');
+    			scope = arg[0] = arg[0].replace(scopeMod, '');
+
+    			scope = scope.replace(nullableRgxp, '');
     		}
 
-    		argsTable[arg[0]] = {
+    		var nullable = undefined;
+    		arg[0] = arg[0].replace(nullableRgxp, function (str) {
+    			nullable = nullableMap[str];
+    			return '';
+    		});
+
+    		// Put to cache
+    		argsMap[arg[0]] = {
+    			defFilter: defFilter,
     			i: i,
     			key: arg[0],
+    			nullable: nullable,
     			scope: scope,
-    			value: arg[1] && _this2.pasteDangerBlocks(arg[1].trim())
+    			value: arg[1] && _this.pasteDangerBlocks(arg[1].trim())
     		};
     	});
 
-    	$C(parentArgs).forEach(function (el, key) {
-    		var aKey = undefined;
-    		if (scopeMod.test(key)) {
-    			aKey = key.replace(scopeMod, '');
-    		} else {
-    			aKey = '@' + key;
-    		}
+    	if (dir) {
+    		// Mix the requested parameters
+    		// with parent block parameters
+    		$C(parentArgs).forEach(function (el, key) {
+    			var arg = argsMap[key];
 
-    		var rKey = argsTable[key] ? key : aKey,
-    		    current = argsTable[rKey],
-    		    cVal = current && current.value === undefined;
+    			// Parameter exists in a parent function
+    			if (arg) {
+    				arg.defFilter = el.defFilter + arg.defFilter;
 
-    		if (argsTable[rKey]) {
-    			if (!scope && el.scope) {
-    				scope = el.scope;
-    				argsTable[rKey].scope = scope;
-    			}
+    				if (!scope && el.scope) {
+    					scope = el.scope;
+    					arg.scope = scope;
+    				}
 
-    			if (cVal) {
-    				argsTable[rKey].value = el.value;
-    			}
-    		} else {
-    			argsTable[key] = {
-    				i: el.i,
-    				key: key,
-    				local: true,
-    				value: el.value !== undefined ? el.value : 'undefined'
-    			};
-    		}
-    	});
+    				if (arg.nullable === undefined) {
+    					arg.nullable = el.nullable;
+    				}
 
-    	argsList = [];
-    	var localVars = [];
+    				if (arg.nullable === undefined) {
+    					arg.nullable = el.nullable;
+    				}
 
-    	$C(argsTable).forEach(function (el) {
+    				if (arg.value === undefined) {
+    					argsMap[key].value = el.value;
+    				}
+
+    				// Parameter doesn't exists in a parent function,
+    				// set it as a local variable
+    			} else {
+    					argsMap[key] = {
+    						defFilter: el.defFilter,
+    						i: el.i,
+    						key: key,
+    						local: true,
+    						value: el.value !== undefined ? el.value : 'undefined'
+    					};
+    				}
+    		});
+    	}
+
+    	var finalArgsList = [],
+    	    localsList = [];
+
+    	$C(argsMap).forEach(function (el) {
     		if (el.local) {
-    			localVars[el.i] = el;
+    			localsList[el.i] = el;
     		} else {
-    			argsList[el.i] = el;
+    			finalArgsList[el.i] = el;
     		}
     	});
-
-    	var consts = $consts[this.tplName],
-    	    constsCache = {},
-    	    locals = [];
 
     	var decl = '',
-    	    defParams = '';
+    	    def = '';
 
-    	$C(localVars).forEach(function (el) {
+    	var locals = [];
+
+    	// Initialise local variables
+    	$C(localsList).forEach(function (el) {
     		if (!el) {
     			return;
     		}
 
-    		el.key = el.key.replace(scopeMod, '');
     		var old = el.key;
 
-    		if (fName) {
-    			el.key = _this2.declVar(el.key, { fn: true });
+    		if (isLocalFunction) {
+    			el.key = _this.declVar(el.key, { fn: true });
     		}
 
     		locals.push([el.key, el.value, old]);
 
-    		defParams += 'var ' + el.key + ' = ' + _this2.out(_this2.replaceDangerBlocks(el.value), { unsafe: true }) + ';';
+    		def += 'var ' + el.key + ' = ' + _this.out(_this.replaceDangerBlocks(el.value) + el.defFilter, { unsafe: true }) + ';';
     		structure.vars[el.key] = {
-    			scope: _this2.scope.length,
+    			scope: _this.scope.length,
     			value: el.key
     		};
     	});
 
-    	var args = [];
+    	var args = [],
+    	    consts = $consts[this.tplName],
+    	    constsCache = structure.params['@consts'] = {};
 
-    	$C(argsList).forEach(function (el, i) {
-    		el.key = el.key.replace(scopeMod, '');
-
+    	// Initialise arguments
+    	$C(finalArgsList).forEach(function (el, i) {
     		var old = el.key;
 
-    		if (consts[old] && fName) {
+    		if (consts[old] && isLocalFunction) {
     			constsCache[old] = consts[old];
     			delete consts[old];
     		}
 
-    		if (fName) {
-    			el.key = _this2.declVar(el.key, { fn: true });
+    		if (isLocalFunction) {
+    			el.key = _this.declVar(el.key, { fn: true });
     		}
 
     		decl += el.key;
     		args.push([el.key, el.value, old]);
 
+    		var val = _this.out(el.key + el.defFilter, { skipFirstWord: true, unsafe: true });
+
     		if (el.value !== undefined) {
-    			defParams += el.key + ' = ' + el.key + ' != null ? ' + el.key + ' : ' + _this2.out(_this2.replaceDangerBlocks(el.value), { unsafe: true }) + ';';
+    			var defVal = _this.out(_this.replaceDangerBlocks(el.value) + el.defFilter, { unsafe: true });
+    			def += el.key + ' = ' + el.key + ' ' + (el.nullable ? '!== undefined' : '!= null') + ' ? ' + val + ' : ' + defVal + ';';
+    		} else if (el.defFilter) {
+    			def += el.key + ' = ' + val + ';';
     		}
 
-    		if (i !== argsList.length - 1) {
+    		if (i !== finalArgsList.length - 1) {
     			decl += ',';
     		}
     	});
 
-    	args = args.concat(locals);
-    	structure.params['@consts'] = constsCache;
-
     	var res = {
-    		defParams: defParams,
-    		list: args,
-    		params: params,
-    		scope: scope,
-    		str: decl
+    		decl: decl,
+    		def: def,
+    		isCallable: argsList.isCallable,
+    		list: args.concat(locals),
+    		scope: scope
     	};
 
-    	if (fName) {
-    		$argsRes[tplName][type][fName] = res;
+    	if (scope) {
+    		this.scope.push(scope);
+    		this.structure.params['@scope'] = true;
+    	}
+
+    	if (dir && fnName) {
+    		$argsRes[tplName][dir][fnName] = res;
     	}
 
     	return res;
@@ -4733,8 +4736,12 @@
     						} else if (this.scope.length) {
     							vRes = addScope(this.scope[this.scope.length - 1]) + concatProp(finalWord.slice(1));
     						} else {
-    							this.error('invalid usage of context modifier @');
-    							return '';
+    							if (this.isSimpleOutput()) {
+    								this.error('invalid usage of context modifier @');
+    								return '';
+    							}
+
+    							vRes = finalWord.slice(1);
     						}
     					} else {
     						vRes = addScope(finalWord);
@@ -5072,7 +5079,7 @@
      * @return {string}
      */
     Parser.prototype.getReturnResultDecl = function () {
-    	var r = '__RESULT__ instanceof Data ? __RESULT__.value : ';
+    	var r = '__RESULT__ instanceof Raw ? __RESULT__.value : ';
 
     	switch (this.renderMode) {
     		case 'stringBuffer':
@@ -5236,7 +5243,7 @@
     	var obj = this.structure.parent;
 
     	while (true) {
-    		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.args)) {
+    		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.isCallable)) {
     			obj = obj.parent;
     			continue;
     		}
@@ -5252,7 +5259,7 @@
     Parser.prototype.isLogic = function () {
     	var structure = this.structure;
 
-    	return $logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.args);
+    	return $logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.isCallable);
     };
 
     /**
@@ -7554,7 +7561,7 @@
     			parent = $consts[parentTpl][name];
     		}
 
-    		if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
+    		if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.isCallable) {
     			insideCallBlock = false;
     		}
 
@@ -7960,14 +7967,10 @@
     			Snakeskin.Directives['__set__'].call(_this, [key, key === 'filters' ? el[el.length - 1] : el]);
     		});
 
-    		var args = this.prepareArgs(command, 'template', { parentTplName: parentTplName, tplName: tplName });
+    		var args = this.declFnArgs(command, { dir: 'template', parentTplName: parentTplName, tplName: tplName });
 
-    		if (args.scope) {
-    			this.scope.push(args.scope);
-    		}
-
-    		this.save(args.str + ') {', { iface: iface });
-    		this.save(ws$1(_templateObject4$1, concatProp(tplName), this.getResultDecl(), this.renderMode === 'dom' ? '__RESULT__[0]' : 'undefined', this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl(), escapeDoubleQuotes(tplName), parentTplName ? ' = "' + escapeDoubleQuotes(parentTplName) + '"' : '', args.defParams));
+    		this.save(args.decl + ') {', { iface: iface });
+    		this.save(ws$1(_templateObject4$1, concatProp(tplName), this.getResultDecl(), this.renderMode === 'dom' ? '__RESULT__[0]' : 'undefined', this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl(), escapeDoubleQuotes(tplName), parentTplName ? ' = "' + escapeDoubleQuotes(parentTplName) + '"' : '', args.def));
 
     		var preDefs = this.preDefs[tplName];
     		if ((!$extMap[tplName] || parentTplName) && preDefs) {
@@ -8013,10 +8016,6 @@
     		this.canWrite = true;
     		this.tplName = undefined;
     		delete this.info.template;
-
-    		if (this.scope.length) {
-    			this.scope.pop();
-    		}
     	});
     });
 
@@ -8249,7 +8248,7 @@
     	var inside = any(this.hasParent(this.getGroup.apply(this, valid))),
     	    parent = any(this.hasParent(this.getGroup.apply(this, babelHelpers.toConsumableArray(all)), true));
 
-    	if (parent.name === 'block' && parent.params.args || this.getGroup('microTemplate')[parent.name] && this.getGroup('callback')[any(this.hasParent(this.getGroup.apply(this, valid.concat(['callback']))))]) {
+    	if (parent.name === 'block' && parent.params.isCallable || this.getGroup('microTemplate')[parent.name] && this.getGroup('callback')[any(this.hasParent(this.getGroup.apply(this, valid.concat(['callback']))))]) {
     		return this.error('the directive "' + this.name + '" can\'t be used within the "' + parent.name + '"');
     	}
 
@@ -8278,7 +8277,7 @@
     	var inside = any(this.hasParent(this.getGroup.apply(this, valid))),
     	    parent = any(this.hasParent(this.getGroup.apply(this, babelHelpers.toConsumableArray(all)), true));
 
-    	if (parent.name === 'block' && parent.params.args || this.getGroup('microTemplate')[parent.name] && this.getGroup('callback')[any(this.hasParent(this.getGroup.apply(this, valid.concat(['callback']))))]) {
+    	if (parent.name === 'block' && parent.params.isCallable || this.getGroup('microTemplate')[parent.name] && this.getGroup('callback')[any(this.hasParent(this.getGroup.apply(this, valid.concat(['callback']))))]) {
     		return this.error('the directive "' + this.name + '" can\'t be used within the "' + parent.name + '"');
     	}
 
@@ -8297,9 +8296,9 @@
     	}
     });
 
-    var _templateObject$6 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t'], ['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t']);
-    var _templateObject2$3 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t'], ['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t']);
-    var _templateObject3$2 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t'], ['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t']);
+    var _templateObject$6 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t']);
+    var _templateObject2$3 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forEach(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t']);
+    var _templateObject3$2 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forIn(\n\t\t\t\t', ',\n\t\t\t\tfunction (', ') {\n\t\t\t\t\t', '\n\t\t']);
     Snakeskin.addDirective('forEach', {
     	block: true,
     	deferInit: true,
@@ -8314,7 +8313,8 @@
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
-    	var is$C = parts.length === 3;
+    	var is$C = parts.length === 3,
+    	    args = this.declFnArgs('(' + parts[is$C ? 2 : 1] + ')');
 
     	this.startDir(null, {
     		$C: is$C,
@@ -8323,12 +8323,12 @@
 
     	if (is$C) {
     		this.selfThis.push(true);
-    		this.append(ws$1(_templateObject$6, this.out('$C(' + parts[0] + ')', { unsafe: true }), this.declCallbackArgs(parts)));
+    		this.append(ws$1(_templateObject$6, this.out('$C(' + parts[0] + ')', { unsafe: true }), args.decl, args.def));
 
     		return;
     	}
 
-    	this.append(ws$1(_templateObject2$3, this.out(parts[0], { unsafe: true }), this.declCallbackArgs(parts[1])));
+    	this.append(ws$1(_templateObject2$3, this.out(parts[0], { unsafe: true }), args.decl, args.def));
     }, function () {
     	var p = this.structure.params;
 
@@ -8354,7 +8354,9 @@
     		return this.error('invalid "' + this.name + '" declaration');
     	}
 
-    	this.append(ws$1(_templateObject3$2, this.out(parts[0], { unsafe: true }), this.declCallbackArgs(parts[1])));
+    	var args = this.declFnArgs('(' + parts[1] + ')');
+
+    	this.append(ws$1(_templateObject3$2, this.out(parts[0], { unsafe: true }), args.decl, args.def));
     }, function () {
     	this.append('});');
     });
@@ -8399,12 +8401,13 @@
     				prfx = length > 1 ? ',' : '';
     			})();
     		} else if (this.getGroup('microTemplate')[parent.name]) {
-    			prfx = '__RESULT__ = new Data';
+    			prfx = '__RESULT__ = new Raw';
     			pstfx = ws$1(_templateObject$7, this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl());
     		}
     	}
 
-    	this.append(prfx + '(function (' + this.declCallbackArgs(parts) + ') {' + pstfx);
+    	var args = this.declFnArgs('(' + parts[1] + ')');
+    	this.append(prfx + '(function (' + args.decl + ') {' + args.def + pstfx);
     }, function () {
     	var parent = any(this.hasParent(this.getGroup('async', 'microTemplate')));
 
@@ -8432,7 +8435,8 @@
     	this.structure.chain = false;
     	this.structure.params.final = true;
 
-    	this.append('], function (' + this.declCallbackArgs(parts) + ') {');
+    	var args = this.declFnArgs('(' + parts[1] + ')');
+    	this.append('], function (' + args.decl + ') {' + args.def);
     });
 
     $C(['parallel', 'series', 'waterfall']).forEach(function (dir) {
@@ -8489,7 +8493,7 @@
     		parent = any(this._has(this.getGroup.apply(this, babelHelpers.toConsumableArray(all)), parent.parent, true));
     	}
 
-    	if (!inside || parent && (parent.name === 'block' && parent.params.args || cb[inside] && this.getGroup('microTemplate')[parent.name])) {
+    	if (!inside || parent && (parent.name === 'block' && parent.params.isCallable || cb[inside] && this.getGroup('microTemplate')[parent.name])) {
     		this.append('return ' + val + ';');
     		return;
     	}
@@ -8566,7 +8570,7 @@
     	this.append(ws$1(_templateObject3$3, tmp, this.getReturnResultDecl(), tmp, ref, ref));
 
     	if (this.hasParent(this.getGroup('microTemplate'))) {
-    		this.append('__RESULT__ = new Data(' + ref + ');');
+    		this.append('__RESULT__ = new Raw(' + ref + ');');
     	} else {
     		this.append('__RESULT__ = ' + this.out('__CALL_CACHE__', { unsafe: true }) + ';');
     	}
@@ -8985,16 +8989,9 @@
     			return this.error('the block "' + name + '" is already defined');
     		}
 
-    		var args = this.prepareArgs(command, dir, {
-    			fName: name,
-    			parentTplName: this.parentTplName
-    		});
+    		var args = this.declFnArgs(command, { dir: dir, fnName: name, parentTplName: this.parentTplName });
+    		structure.params.isCallable = args.isCallable;
 
-    		if (args.params && callBlockNameRgxp.test(name)) {
-    			return this.error('invalid "' + this.name + '" declaration');
-    		}
-
-    		this.structure.params.args = args.params;
     		$blocks[tplName][name] = {
     			args: args,
     			external: Boolean(parts.length),
@@ -9002,31 +8999,25 @@
     			needPrfx: this.needPrfx,
     			output: output
     		};
-
-    		if (args.scope) {
-    			this.scope.push(args.scope);
-    			structure.params._scope = true;
-    		}
     	}
 
     	if (this.isSimpleOutput()) {
     		var args = $blocks[tplName][name].args;
 
-    		if (args.params) {
+    		if (args.isCallable) {
     			var fnDecl = structure.params.fn = 'self.' + name;
 
-    			this.save(ws$1(_templateObject$13, fnDecl, fnDecl, args.str, this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl(), args.defParams));
+    			this.save(ws$1(_templateObject$13, fnDecl, fnDecl, args.decl, this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getResultDecl(), args.def));
 
     			if (params != null) {
     				var vars = structure.vars;
 
     				structure.vars = structure.parent.vars;
-    				params = this.getFnArgs('(' + params + ')');
-
-    				structure.vars = vars;
-    				structure.params.params = $C(params).reduce(function (res, el) {
+    				structure.params.params = $C(this.getFnArgs('(' + params + ')')).reduce(function (res, el) {
     					return '' + res + _this.out(el, { unsafe: true }) + ',';
     				}, '').slice(0, -1);
+
+    				structure.vars = vars;
     			}
     		}
     	}
@@ -9054,7 +9045,7 @@
     		this.save(ws$1(_templateObject3$6, this.getReturnResultDecl(), output ? this.wrap(p.fn + '(' + p.params + ')') : ''));
 
     		if (!output && this.hasParent(this.getGroup('microTemplate'))) {
-    			this.append('__RESULT__ = new Data(' + p.fn + ');');
+    			this.append('__RESULT__ = new Raw(' + p.fn + ');');
     		}
     	}
 
