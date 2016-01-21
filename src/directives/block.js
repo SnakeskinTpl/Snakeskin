@@ -33,17 +33,17 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		let
 			{tplName} = this,
-			fnName = this.getFnName(command);
+			name = this.getFnName(command);
 
-		if (!fnName) {
+		if (!name) {
 			return this.error(`invalid "${this.name}" name`);
 		}
 
 		const
-			parts = fnName.split('->');
+			parts = name.split('->');
 
 		if (parts[1]) {
-			fnName = parts[1].trim();
+			name = parts[1].trim();
 
 			if (!tplName) {
 				if (this.structure.parent) {
@@ -76,14 +76,14 @@ Snakeskin.addDirective(
 				desc.startLine = this.info.line;
 				desc.i = this.i + 1;
 
-				this.outerLink = fnName;
+				this.outerLink = name;
 			}
 
 		} else if (!this.outerLink && !this.tplName) {
 			return this.error(`the directive "${this.name}" can be used only within a template`);
 		}
 
-		if (!fnName || !tplName || callBlockNameRgxp.test(fnName)) {
+		if (!name || !tplName || callBlockNameRgxp.test(name)) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
@@ -92,15 +92,15 @@ Snakeskin.addDirective(
 			parentTplName = $extMap[tplName];
 
 		let
-			current = scope[fnName],
+			current = scope[name],
 			parentScope;
 
 		if (parentTplName) {
 			parentScope = $scope[this.name][parentTplName] = $scope[this.name][parentTplName] || {};
 		}
 
-		if (!scope[fnName]) {
-			current = scope[fnName] = {
+		if (!scope[name]) {
+			current = scope[name] = {
 				children: {},
 				id: this.environment.id
 			};
@@ -108,14 +108,14 @@ Snakeskin.addDirective(
 
 		if (!this.outerLink && !current.root) {
 			const
-				parent = parentScope && parentScope[fnName];
+				parent = parentScope && parentScope[name];
 
 			current.parent = parent;
 			current.overridden = Boolean(parentTplName && this.parentTplName);
-			current.root = parent ? parent.root : scope[fnName];
+			current.root = parent ? parent.root : scope[name];
 
 			if (parent) {
-				parent.children[tplName] = scope[fnName];
+				parent.children[tplName] = scope[name];
 			}
 		}
 
@@ -123,8 +123,8 @@ Snakeskin.addDirective(
 			start = this.i - this.startTemplateI;
 
 		this.startDir(null, {
-			fnName,
-			from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1
+			from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1,
+			name
 		});
 
 		const
@@ -135,29 +135,29 @@ Snakeskin.addDirective(
 			params,
 			output;
 
-		if (fnName !== command) {
+		if (name !== command) {
 			const
 				outputCache = this.getBlockOutput(dir);
 
 			if (outputCache) {
 				output = command.split('=>')[1];
-				params = outputCache[fnName];
+				params = outputCache[name];
 
 				if (output != null) {
-					params = outputCache[fnName] = output;
+					params = outputCache[name] = output;
 				}
 			}
 		}
 
 		if (this.isAdvTest()) {
-			if ($blocks[tplName][fnName]) {
-				return this.error(`the block "${fnName}" is already defined`);
+			if ($blocks[tplName][name]) {
+				return this.error(`the block "${name}" is already defined`);
 			}
 
-			const args = this.declFnArgs(command, {dir, fnName, parentTplName: this.parentTplName});
+			const args = this.declFnArgs(command, {dir, fnName: name, parentTplName: this.parentTplName});
 			structure.params.isCallable = args.isCallable;
 
-			$blocks[tplName][fnName] = {
+			$blocks[tplName][name] = {
 				args,
 				external: Boolean(parts.length),
 				from: start - this.getDiff(commandLength),
@@ -168,11 +168,11 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput()) {
 			const
-				{args} = $blocks[tplName][fnName];
+				{args} = $blocks[tplName][name];
 
 			if (args.isCallable) {
 				const
-					fnDecl = structure.params.fn = `self.${fnName}`;
+					fnDecl = structure.params.fn = `self.${name}`;
 
 				this.save(ws`
 					if (!${fnDecl}) {
@@ -220,7 +220,7 @@ Snakeskin.addDirective(
 			s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
 			e = RIGHT_BOUND;
 
-		if (this.outerLink === p.fnName) {
+		if (this.outerLink === p.name) {
 			const
 				obj = this.preDefs[this.tplName],
 				i = Number(obj.i);
@@ -242,7 +242,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			block = $blocks[this.tplName][p.fnName],
+			block = $blocks[this.tplName][p.name],
 			output = p.params != null;
 
 		if (this.isSimpleOutput() && p.fn) {
