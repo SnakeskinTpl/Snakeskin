@@ -104,38 +104,24 @@ export const
  * @return {string}
  */
 Parser.prototype.prepareNameDecl = function (name) {
-	name = this.replaceFileNamePatterns(name);
-	if (nmRgxp.test(name)) {
-		name = String($C(
-			name
-				.replace(nmssRgxp, '%')
-				.replace(nmsRgxp, '.%')
-				.replace(nmeRgxp, '')
-				.split('.')
+	name = String($C(
+		this.replaceFileNamePatterns(name)
+			.replace(nmssRgxp, '%')
+			.replace(nmsRgxp, '.%')
+			.replace(nmeRgxp, '')
+			.split('.')
 
-		).reduce((str, el) => {
-			const
-				custom = el[0] === '%';
+	).reduce((str, el) => {
+		const custom = el[0] === '%';
+		el = this.out(custom ? el.slice(1) : el, {unsafe: true});
 
-			if (custom) {
-				el = el.slice(1);
-			}
+		if (custom) {
+			str += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
+			return str;
+		}
 
-			if (custom) {
-				str += ws`['${
-					applyDefEscape(
-						this.returnEvalVal(
-							this.out(el, {unsafe: true})
-						)
-					)
-				}']`;
-
-				return str;
-			}
-
-			return str + (str ? `.${el}` : el);
-		}, ''));
-	}
+		return str + (str ? `.${el}` : el);
+	}, ''));
 
 	return name.trim();
 };

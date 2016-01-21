@@ -27,6 +27,7 @@ Snakeskin.addDirective(
 
 		this.environment.namespace = nms = this.prepareNameDecl(nms);
 		this.namespaces[nms] = this.namespaces[nms] || {file: this.info.file, id: this.environment.id};
+		this.scope.push(nms);
 	}
 
 );

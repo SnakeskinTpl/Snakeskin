@@ -108,10 +108,14 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{filename} = this.environment;
+			{filename, namespace} = this.environment;
 
 		this.environment = this.environment.parent;
 		this.info.file = this.environment.filename;
+
+		if (namespace) {
+			this.scope.pop();
+		}
 
 		if (this.params[this.params.length - 1]['@file'] === filename) {
 			this.popParams();
