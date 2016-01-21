@@ -32,7 +32,8 @@ Snakeskin.addDirective(
 		}
 
 		const
-			is$C = parts.length === 3;
+			is$C = parts.length === 3,
+			args = this.declFnArgs(`(${parts[is$C ? 2 : 1]})`);
 
 		this.startDir(null, {
 			$C: is$C,
@@ -42,7 +43,8 @@ Snakeskin.addDirective(
 		if (is$C) {
 			this.selfThis.push(true);
 			this.append(ws`
-				${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${this.declFnArgs(parts)}) {
+				${this.out(`$C(${parts[0]})`, {unsafe: true})}.forEach(function (${args.decl}) {
+					${args.def}
 			`);
 
 			return;
@@ -51,7 +53,8 @@ Snakeskin.addDirective(
 		this.append(ws`
 			Snakeskin.forEach(
 				${this.out(parts[0], {unsafe: true})},
-				function (${this.declFnArgs(parts[1])}) {
+				function (${args.decl}) {
+					${args.def}
 		`);
 	},
 
@@ -89,10 +92,14 @@ Snakeskin.addDirective(
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
+		const
+			args = this.declFnArgs(`(${parts[1]})`);
+
 		this.append(ws`
 			Snakeskin.forIn(
 				${this.out(parts[0], {unsafe: true})},
-				function (${this.declFnArgs(parts[1])}) {
+				function (${args.decl}) {
+					${args.def}
 		`);
 	},
 
