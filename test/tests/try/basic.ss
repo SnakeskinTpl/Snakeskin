@@ -1,5 +1,7 @@
-basic1
-basic2
+try
+try-catch
+try-finally
+try-catch-finally
 
 ###
 
@@ -13,31 +15,39 @@ basic2
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template basic1()
+- template ['try']()
 	- try
 		? foo.bar.baz
 
-	- try
-		? foo.bar.baz
-	- catch err
-		{err.message}
-
-	- try
-	- finally
-		all fine
-
-- template basic2()
+- template ['try-catch']()
 	- try
 		? foo.bar.baz
 	- catch err
 		{err.message}
+
+- template ['try-finally']()
+	- try
 	- finally
 		all fine
 
-###
+- template ['try-catch-finally']()
+	- try
+		? foo.bar.baz
+	- catch err
+		{err.message}
+	- finally
+		all fine
 
-foo is not defined all fine
+### try
 
-***
+*** try-catch
+
+foo is not defined
+
+*** try-finally
+
+all fine
+
+*** try-catch-finally
 
 foo is not defined all fine

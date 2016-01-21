@@ -1,9 +1,9 @@
-wsTplStart
-wsTplStartWithIgnore
-ignoreAllWs1
-ignoreAllWs2
-wsWithTags1
-wsWithTags2
+simple
+{&}
+&+ &-
+&+ switch-case
+tag trimming
+tags trimming
 
 ###
 
@@ -17,19 +17,19 @@ wsWithTags2
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template wsTplStart()
+- template simple()
 	foo
 	- if true
 		bar
 	baz
 
-- template wsTplStartWithIgnore()
+- template ['{&}']()
 	foo{&}
 	- if true
 		bar
 	baz
 
-- template ignoreAllWs1()
+- template ['&+ &-']()
 	&+
 		bla bla bla
 		&-
@@ -38,7 +38,7 @@ wsWithTags2
 
 	bla bla bla
 
-- template ignoreAllWs2()
+- template ['&+ switch-case']()
 	&+
 		- switch true
 			> true
@@ -50,13 +50,13 @@ wsWithTags2
 	bar
 	bar
 
-- template wsWithTags1()
+- template ['tag trimming']()
 	< div
 		foo
 
 	bar
 
-- template wsWithTags2()
+- template ['tags trimming']()
 	< div
 		foo
 	< div
@@ -66,26 +66,26 @@ wsWithTags2
 		baz
 		\
 
-###
+### simple
 
 foo bar baz
 
-***
+*** {&}
 
 foobar baz
 
-***
+*** &+ &-
 
 blablablabar bar bar bzzbzzbzz bla bla bla
 
-***
+*** &+ switch-case
 
 blablabla bar bar bar
 
-***
+*** tag trimming
 
 <div>foo</div> bar
 
-***
+*** tags trimming
 
 <div>foo</div><div>bar</div> <div>baz </div>
