@@ -163,8 +163,11 @@ Snakeskin.addDirective(
 				}
 			);
 
-			if (args.isCallable && callBlockNameRgxp.test(name)) {
-				return this.error(`invalid "${this.name}" declaration`);
+			if (args.isCallable) {
+				structure.params.isCallable = true;
+				if (callBlockNameRgxp.test(name)) {
+					return this.error(`invalid "${this.name}" declaration`);
+				}
 			}
 
 			$blocks[tplName][name] = {

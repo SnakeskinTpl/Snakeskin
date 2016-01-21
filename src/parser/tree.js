@@ -22,7 +22,7 @@ Parser.prototype.getNonLogicParent = function () {
 		obj = this.structure.parent;
 
 	while (true) {
-		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.args)) {
+		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.isCallable)) {
 			obj = obj.parent;
 			continue;
 		}
@@ -37,7 +37,7 @@ Parser.prototype.getNonLogicParent = function () {
  */
 Parser.prototype.isLogic = function () {
 	const {structure} = this;
-	return $logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.args);
+	return $logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.isCallable);
 };
 
 /**

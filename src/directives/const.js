@@ -91,7 +91,7 @@ Snakeskin.addDirective(
 				parent = $consts[parentTpl][name];
 			}
 
-			if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.args) {
+			if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.isCallable) {
 				insideCallBlock = false;
 			}
 

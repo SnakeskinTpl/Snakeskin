@@ -30,7 +30,7 @@ Snakeskin.addDirective(
 			parent = any(this.hasParent(this.getGroup(...all), true));
 
 		if (
-			parent.name === 'block' && parent.params.args ||
+			parent.name === 'block' && parent.params.isCallable ||
 			this.getGroup('microTemplate')[parent.name] &&
 			this.getGroup('callback')[any(this.hasParent(this.getGroup(...valid, 'callback')))]
 
@@ -82,7 +82,7 @@ Snakeskin.addDirective(
 			parent = any(this.hasParent(this.getGroup(...all), true));
 
 		if (
-			parent.name === 'block' && parent.params.args ||
+			parent.name === 'block' && parent.params.isCallable ||
 			this.getGroup('microTemplate')[parent.name] &&
 			this.getGroup('callback')[any(this.hasParent(this.getGroup(...valid, 'callback')))]
 

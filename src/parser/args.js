@@ -257,8 +257,6 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 	argsList = [];
 
 	const
-		consts = $consts[this.tplName],
-		constsCache = {},
 		localVars = [],
 		locals = [];
 
@@ -300,7 +298,13 @@ Parser.prototype.getBlockArgs = function (str, type, opt_params) {
 		};
 	});
 
-	let args = [];
+	let
+		args = [];
+
+	const
+		consts = $consts[this.tplName],
+		constsCache = {};
+
 	$C(argsList).forEach((el, i) => {
 		el.key = el.key
 			.replace(scopeMod, '')

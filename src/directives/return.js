@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 
 		if (
 			!inside || parent && (
-				parent.name === 'block' && parent.params.args ||
+				parent.name === 'block' && parent.params.isCallable ||
 				cb[inside] && this.getGroup('microTemplate')[parent.name]
 			)
 
