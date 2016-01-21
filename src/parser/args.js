@@ -11,7 +11,6 @@
 import $C from '../deps/collection';
 import Parser from './constructor';
 import { any } from '../helpers/gcc';
-import { isArray } from '../helpers/types';
 import { scopeMod } from '../consts/regs';
 import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { $args, $argsRes, $consts } from '../consts/cache';
@@ -19,49 +18,6 @@ import { $args, $argsRes, $consts } from '../consts/cache';
 const
 	nullableRgxp = /[?|!]$/,
 	nullableMap = {'!': false, '?': true};
-
-/**
- * Declares function arguments and returns a string of declaration
- *
- * @param {(!Array|string)} parts - string of arguments or an array
- * @return {string}
- */
-Parser.prototype.declFnArgs = function (parts) {
-	const
-		args = ((isArray(parts) ? parts[2] || parts[1] : parts) || '').trim().split(/\s*,\s*/);
-
-	let
-		scope;
-
-	$C(args).forEach((el, i) => {
-		const
-			mod = scopeMod.test(el);
-
-		if (mod) {
-			if (scope) {
-				this.error(`invalid "${this.name}" declaration`);
-
-			} else {
-				el = el.replace(scopeMod, '');
-			}
-		}
-
-		if (el) {
-			args[i] = this.declVar(el, {fn: true});
-
-			if (mod) {
-				scope = args[i];
-			}
-		}
-	});
-
-	if (scope) {
-		this.scope.push(scope);
-		this.structure.params['@scope'] = true;
-	}
-
-	return args.join();
-};
 
 /**
  * Returns an array of function arguments from a string
@@ -122,74 +78,83 @@ Parser.prototype.getFnArgs = function (str) {
  * Searches and initialises function arguments from a string and returns an information object
  *
  * @param {string} str - source string
- * @param {string} type - block type (template, block etc.)
  * @param {?{
+ *   dir: (string|undefined),
  *   tplName: (string|undefined),
  *   parentTplName: (string|undefined),
- *   fName: (string|undefined)
+ *   fnName: (string|undefined)
  * }=} [opt_params] - additional parameters:
  *
+ *   *) [dir] - directive name (template, block etc.)
  *   *) [tplName] - template name
  *   *) [parentTplName] - parent template name
- *   *) [fName] - custom function name (for blocks)
+ *   *) [fnName] - custom function name (for blocks)
  *
- * @return {{defParams: string, list: !Array, isCallable, scope: (string|undefined), str: string}}
+ * @return {{decl: string, def: string, list: !Array, isCallable, scope: (string|undefined)}}
  */
-Parser.prototype.declBlockArgs = function (str, type, opt_params) {
+Parser.prototype.declFnArgs = function (str, opt_params) {
 	const
-		argsList = this.getFnArgs(str);
+		{dir, tplName = this.tplName, parentTplName, fnName} = any(opt_params || {}),
+		{structure} = this;
 
 	const
-		{tplName = this.tplName, parentTplName, fName} = any(opt_params || {}),
-		{structure} = this;
+		argsList = this.getFnArgs(str),
+		isLocalFunction = !dir || fnName;
 
 	let
 		scope = undefined,
-		parentArgs,
-		argsTable;
+		argsMap = {},
+		parentArgs;
 
 	// Initialise cache objects
 	// for the specified block
 
-	if (!$args[tplName]) {
-		$args[tplName] = {};
-		$argsRes[tplName] = {};
-	}
-
-	if (!$args[tplName][type]) {
-		$args[tplName][type] = {};
-		$argsRes[tplName][type] = {};
-	}
-
-	if (fName) {
-		if (parentTplName && $args[parentTplName][type]) {
-			parentArgs = $args[parentTplName][type][fName];
+	if (dir) {
+		if (!$args[tplName]) {
+			$args[tplName] = {};
+			$argsRes[tplName] = {};
 		}
 
-		const
-			cache = $argsRes[tplName][type][fName];
-
-		// If our parameters already exists in the cache,
-		// then init local variables and return an information object
-		if (cache) {
-			$C(cache.list).forEach((el) => {
-				structure.vars[el[2]] = {
-					scope: this.scope.length,
-					value: el[0]
-				};
-			});
-
-			return cache;
+		if (!$args[tplName][dir]) {
+			$args[tplName][dir] = {};
+			$argsRes[tplName][dir] = {};
 		}
 
-		argsTable = $args[tplName][type][fName] = {};
+		if (fnName) {
+			if (parentTplName && $args[parentTplName][dir]) {
+				parentArgs = $args[parentTplName][dir][fnName];
+			}
 
-	} else {
-		if (parentTplName) {
-			parentArgs = $args[parentTplName][type];
+			const
+				cache = $argsRes[tplName][dir][fnName];
+
+			// If our parameters already exists in the cache,
+			// then init local variables and return an information object
+			if (cache) {
+				$C(cache.list).forEach((el) => {
+					structure.vars[el[2]] = {
+						scope: this.scope.length,
+						value: el[0]
+					};
+				});
+
+				if (cache.scope) {
+					this.scope.push(cache.scope);
+					this.structure.params['@scope'] = true;
+				}
+
+				return cache;
+			}
+
+			argsMap = $args[tplName][dir][fnName] = {};
+
+		} else {
+			if (parentTplName) {
+				parentArgs = $args[parentTplName][dir];
+			}
+
+			argsMap = $args[tplName][dir];
 		}
-
-		argsTable = $args[tplName][type];
 	}
 
 	// Analise requested parameters
@@ -208,11 +173,11 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 			if (scope) {
 				this.error(`invalid "${this.name}" declaration`);
 				return {
-					defParams: '',
+					decl: '',
+					def: '',
+					isCallable: false,
 					list: [],
-					params: false,
-					scope: undefined,
-					str: ''
+					scope: undefined
 				};
 			}
 
@@ -226,7 +191,7 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 		});
 
 		// Put to cache
-		argsTable[arg[0]] = {
+		argsMap[arg[0]] = {
 			i,
 			key: arg[0],
 			nullable,
@@ -235,44 +200,46 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 		};
 	});
 
-	// Mix the requested parameters
-	// with parent block parameters
-	$C(parentArgs).forEach((el, key) => {
-		const
-			arg = argsTable[key];
+	if (dir) {
+		// Mix the requested parameters
+		// with parent block parameters
+		$C(parentArgs).forEach((el, key) => {
+			const
+				arg = argsMap[key];
 
-		// Parameter exists in a parent function
-		if (arg) {
-			if (!scope && el.scope) {
-				scope = el.scope;
-				arg.scope = scope;
+			// Parameter exists in a parent function
+			if (arg) {
+				if (!scope && el.scope) {
+					scope = el.scope;
+					arg.scope = scope;
+				}
+
+				if (arg.nullable === undefined) {
+					arg.nullable = el.nullable;
+				}
+
+				if (arg.value === undefined) {
+					argsMap[key].value = el.value;
+				}
+
+				// Parameter doesn't exists in a parent function,
+				// set it as a local variable
+			} else {
+				argsMap[key] = {
+					i: el.i,
+					key,
+					local: true,
+					value: el.value !== undefined ? el.value : 'undefined'
+				};
 			}
-
-			if (arg.nullable === undefined) {
-				arg.nullable = el.nullable;
-			}
-
-			if (arg.value === undefined) {
-				argsTable[key].value = el.value;
-			}
-
-		// Parameter doesn't exists in a parent function,
-		// set it as a local variable
-		} else {
-			argsTable[key] = {
-				i: el.i,
-				key,
-				local: true,
-				value: el.value !== undefined ? el.value : 'undefined'
-			};
-		}
-	});
+		});
+	}
 
 	const
 		finalArgsList = [],
 		localsList = [];
 
-	$C(argsTable).forEach((el) => {
+	$C(argsMap).forEach((el) => {
 		if (el.local) {
 			localsList[el.i] = el;
 
@@ -283,7 +250,7 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 
 	let
 		decl = '',
-		defParams = '';
+		def = '';
 
 	const
 		locals = [];
@@ -297,7 +264,7 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 		const
 			old = el.key;
 
-		if (fName) {
+		if (isLocalFunction) {
 			el.key = this.declVar(el.key, {fn: true});
 		}
 
@@ -307,7 +274,7 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 			old
 		]);
 
-		defParams += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {unsafe: true})};`;
+		def += `var ${el.key} = ${this.out(this.replaceDangerBlocks(el.value), {unsafe: true})};`;
 		structure.vars[el.key] = {
 			scope: this.scope.length,
 			value: el.key
@@ -324,12 +291,12 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 		const
 			old = el.key;
 
-		if (consts[old] && fName) {
+		if (consts[old] && isLocalFunction) {
 			constsCache[old] = consts[old];
 			delete consts[old];
 		}
 
-		if (fName) {
+		if (isLocalFunction) {
 			el.key = this.declVar(el.key, {fn: true});
 		}
 
@@ -342,7 +309,7 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 
 		if (el.value !== undefined) {
 			const val = this.out(this.replaceDangerBlocks(el.value), {unsafe: true});
-			defParams += `${el.key} = ${el.key} ${el.nullable ? '!== undefined' : '!= null'} ? ${el.key} : ${val};`;
+			def += `${el.key} = ${el.key} ${el.nullable ? '!== undefined' : '!= null'} ? ${el.key} : ${val};`;
 		}
 
 		if (i !== finalArgsList.length - 1) {
@@ -351,15 +318,20 @@ Parser.prototype.declBlockArgs = function (str, type, opt_params) {
 	});
 
 	const res = {
-		defParams,
+		decl,
+		def,
 		isCallable: argsList.isCallable,
 		list: args.concat(locals),
-		scope,
-		str: decl
+		scope
 	};
 
-	if (fName) {
-		$argsRes[tplName][type][fName] = res;
+	if (scope) {
+		this.scope.push(scope);
+		this.structure.params['@scope'] = true;
+	}
+
+	if (dir && fnName) {
+		$argsRes[tplName][dir][fnName] = res;
 	}
 
 	return res;

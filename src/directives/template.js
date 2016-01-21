@@ -310,13 +310,9 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			});
 
 			const
-				args = this.declBlockArgs(command, 'template', {parentTplName, tplName});
+				args = this.declFnArgs(command, {dir: 'template', parentTplName, tplName});
 
-			if (args.scope) {
-				this.scope.push(args.scope);
-			}
-
-			this.save(`${args.str}) {`, {iface});
+			this.save(`${args.decl}) {`, {iface});
 			this.save(ws`
 				var
 					__THIS__ = this;
@@ -365,7 +361,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					TPL_NAME = "${escapeDoubleQuotes(tplName)}",
 					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuotes(parentTplName)}"` : ''};
 
-				${args.defParams}
+				${args.def}
 			`);
 
 			const preDefs = this.preDefs[tplName];
@@ -429,10 +425,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			this.canWrite = true;
 			this.tplName = undefined;
 			delete this.info.template;
-
-			if (this.scope.length) {
-				this.scope.pop();
-			}
 		}
 
 	);

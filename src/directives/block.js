@@ -33,17 +33,17 @@ Snakeskin.addDirective(
 	function (command, commandLength) {
 		let
 			{tplName} = this,
-			name = this.getFnName(command);
+			fnName = this.getFnName(command);
 
-		if (!name) {
+		if (!fnName) {
 			return this.error(`invalid "${this.name}" name`);
 		}
 
 		const
-			parts = name.split('->');
+			parts = fnName.split('->');
 
 		if (parts[1]) {
-			name = parts[1].trim();
+			fnName = parts[1].trim();
 
 			if (!tplName) {
 				if (this.structure.parent) {
@@ -76,14 +76,14 @@ Snakeskin.addDirective(
 				desc.startLine = this.info.line;
 				desc.i = this.i + 1;
 
-				this.outerLink = name;
+				this.outerLink = fnName;
 			}
 
 		} else if (!this.outerLink && !this.tplName) {
 			return this.error(`the directive "${this.name}" can be used only within a template`);
 		}
 
-		if (!name || !tplName || callBlockNameRgxp.test(name)) {
+		if (!fnName || !tplName || callBlockNameRgxp.test(fnName)) {
 			return this.error(`invalid "${this.name}" declaration`);
 		}
 
@@ -92,15 +92,15 @@ Snakeskin.addDirective(
 			parentTplName = $extMap[tplName];
 
 		let
-			current = scope[name],
+			current = scope[fnName],
 			parentScope;
 
 		if (parentTplName) {
 			parentScope = $scope[this.name][parentTplName] = $scope[this.name][parentTplName] || {};
 		}
 
-		if (!scope[name]) {
-			current = scope[name] = {
+		if (!scope[fnName]) {
+			current = scope[fnName] = {
 				children: {},
 				id: this.environment.id
 			};
@@ -108,14 +108,14 @@ Snakeskin.addDirective(
 
 		if (!this.outerLink && !current.root) {
 			const
-				parent = parentScope && parentScope[name];
+				parent = parentScope && parentScope[fnName];
 
 			current.parent = parent;
 			current.overridden = Boolean(parentTplName && this.parentTplName);
-			current.root = parent ? parent.root : scope[name];
+			current.root = parent ? parent.root : scope[fnName];
 
 			if (parent) {
-				parent.children[tplName] = scope[name];
+				parent.children[tplName] = scope[fnName];
 			}
 		}
 
@@ -123,8 +123,8 @@ Snakeskin.addDirective(
 			start = this.i - this.startTemplateI;
 
 		this.startDir(null, {
-			from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1,
-			name
+			fnName,
+			from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1
 		});
 
 		const
@@ -135,60 +135,48 @@ Snakeskin.addDirective(
 			params,
 			output;
 
-		if (name !== command) {
+		if (fnName !== command) {
 			const
 				outputCache = this.getBlockOutput(dir);
 
 			if (outputCache) {
 				output = command.split('=>')[1];
-				params = outputCache[name];
+				params = outputCache[fnName];
 
 				if (output != null) {
-					params = outputCache[name] = output;
+					params = outputCache[fnName] = output;
 				}
 			}
 		}
 
 		if (this.isAdvTest()) {
-			if ($blocks[tplName][name]) {
-				return this.error(`the block "${name}" is already defined`);
+			if ($blocks[tplName][fnName]) {
+				return this.error(`the block "${fnName}" is already defined`);
 			}
 
-			const args = this.declBlockArgs(
-				command,
-				dir,
-				{
-					fName: name,
-					parentTplName: this.parentTplName
-				}
-			);
-
+			const args = this.declFnArgs(command, {dir, fnName, parentTplName: this.parentTplName});
 			structure.params.isCallable = args.isCallable;
-			$blocks[tplName][name] = {
+
+			$blocks[tplName][fnName] = {
 				args,
 				external: Boolean(parts.length),
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
 				output
 			};
-
-			if (args.scope) {
-				this.scope.push(args.scope);
-				structure.params['@scope'] = true;
-			}
 		}
 
 		if (this.isSimpleOutput()) {
 			const
-				{args} = $blocks[tplName][name];
+				{args} = $blocks[tplName][fnName];
 
 			if (args.isCallable) {
 				const
-					fnDecl = structure.params.fn = `self.${name}`;
+					fnDecl = structure.params.fn = `self.${fnName}`;
 
 				this.save(ws`
 					if (!${fnDecl}) {
-						${fnDecl} = function (${args.str}) {
+						${fnDecl} = function (${args.decl}) {
 							var __RESULT__ = ${this.getResultDecl()};
 
 							function getTplResult(opt_clear) {
@@ -205,7 +193,7 @@ Snakeskin.addDirective(
 								__RESULT__ = ${this.getResultDecl()};
 							}
 
-							${args.defParams}
+							${args.def}
 				`);
 
 				if (params != null) {

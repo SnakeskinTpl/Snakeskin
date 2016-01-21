@@ -76,7 +76,8 @@ Snakeskin.addDirective(
 			}
 		}
 
-		this.append(`${prfx}(function (${this.declFnArgs(parts)}) {${pstfx}`);
+		const args = this.declFnArgs(`(${parts[1]})`);
+		this.append(`${prfx}(function (${args.decl}) {${args.def}${pstfx}`);
 	},
 
 	function () {
@@ -116,6 +117,7 @@ Snakeskin.addDirective(
 		this.structure.chain = false;
 		this.structure.params.final = true;
 
-		this.append(`], function (${this.declFnArgs(parts)}) {`);
+		const args = this.declFnArgs(`(${parts[1]})`);
+		this.append(`], function (${args.decl}) {${args.def}`);
 	}
 );
