@@ -175,7 +175,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					str,
 					nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
 					Boolean(dir),
-					next2str === MULT_COMMENT_START
+					next2str === MULT_COMMENT_START,
+					this.localization
 				);
 
 				if (!decl) {
@@ -382,9 +383,10 @@ function appendDirEnd(str, struct) {
  * @param {number} i - start position
  * @param {boolean} dir - if is true, then the declaration is considered as a block directive
  * @param {boolean} comment - if is true, then declaration is considered as a multiline comment
+ * @param {boolean} i18n - if is true, then localization is enable
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
-function getLineDesc(str, i, dir, comment) {
+function getLineDesc(str, i, dir, comment, i18n) {
 	let
 		command = '',
 		name = '';
@@ -531,13 +533,13 @@ function getLineDesc(str, i, dir, comment) {
 				}
 			}
 
-			if ((ESCAPES[el] || el === I18N) && (el !== '/' || bEnd) && !bOpen) {
+			if ((ESCAPES[el] || el === I18N && i18n) && (el !== '/' || bEnd) && !bOpen) {
 				bOpen = el;
 
 			} else if (bOpen && (el === '\\' || bEscape)) {
 				bEscape = !bEscape;
 
-			} else if ((ESCAPES[el] || el === I18N) && bOpen === el && !bEscape) {
+			} else if ((ESCAPES[el] || el === I18N && i18n) && bOpen === el && !bEscape) {
 				bOpen = false;
 
 				if (concatLine === 1) {

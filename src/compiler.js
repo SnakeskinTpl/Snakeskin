@@ -401,7 +401,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		}
 
 		if (!bOpen) {
-			if (el === '\\' && SYS_ESCAPES[next] && (!begin || next === I18N) || escape) {
+			if (el === '\\' && SYS_ESCAPES[next] && (!begin || next === I18N && parser.localization) || escape) {
 				escape = !escape;
 			}
 
@@ -631,7 +631,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					commandLength = 0;
 					continue;
 
-				} else if (parser.localization && !cEscape && el === I18N) {
+				} else if (el === I18N && parser.localization && !cEscape) {
 					if (i18nStart && i18nStr && p.words && !p.words[i18nStr]) {
 						p.words[i18nStr] = i18nStr;
 					}
