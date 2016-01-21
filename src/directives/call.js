@@ -29,17 +29,7 @@ Snakeskin.addDirective(
 
 		if (short) {
 			this.startInlineDir(null, {short: true});
-
-			const
-				out = this.out(`${command.slice(0, -1)};`, {unsafe: true});
-
-			if (this.hasParent(this.getGroup('microTemplate'))) {
-				this.append(`__RESULT__ = Unsafe(${out});`);
-
-			} else {
-				this.append(this.wrap(out));
-			}
-
+			this.append(this.wrap(this.out(`${command.slice(0, -1)};`, {unsafe: true})));
 			return;
 		}
 
@@ -119,15 +109,10 @@ Snakeskin.addDirective(
 			str = this.out(command, {unsafe: true});
 		}
 
-		if (this.hasParent(this.getGroup('microTemplate'))) {
-			this.append(`__RESULT__ = Unsafe(${str});`);
-
-		} else {
-			this.append(ws`
-				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
-				${this.wrap(str)}
-			`);
-		}
+		this.append(ws`
+			__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+			${this.wrap(str)}
+		`);
 	}
 
 );

@@ -264,7 +264,7 @@ Snakeskin.addDirective(
 
 		if (this.isSimpleOutput() && p.fn) {
 			this.save(ws`
-						return ${this.getReturnResultDecl()};
+						return Unsafe(${this.getReturnResultDecl()});
 					};
 				}
 

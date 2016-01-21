@@ -88,7 +88,7 @@ Snakeskin.addDirective(
 				this.append('})');
 
 			} else if (this.getGroup('microTemplate')[parent]) {
-				this.append(`return ${this.getReturnResultDecl()}; });`);
+				this.append(`return Unsafe(${this.getReturnResultDecl()}); });`);
 			}
 
 		} else {
