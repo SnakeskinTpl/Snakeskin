@@ -170,7 +170,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 
 		let defFilter = '';
 		if (arg[0][0] === '(') {
-			arg[0] = arg[0].replace(/^\(\s*([^|])+(.*?)\)$/, (str, arg, filter) => {
+			arg[0] = arg[0].replace(/^\(\s*([^|]+)(.*?)\)$/, (str, arg, filter) => {
 				defFilter = filter;
 				return arg;
 			});
