@@ -1,6 +1,6 @@
-basic1
-basic2
-basic3
+if-else if-else
+unless-else unless-else
+switch-case-default
 
 ###
 
@@ -14,7 +14,7 @@ basic3
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template basic1()
+- template ['if-else if-else']()
 	- if true
 		Hello
 
@@ -28,7 +28,7 @@ basic3
 	- else if true
 		!
 
-- template basic2()
+- template ['unless-else unless-else']()
 	- unless false
 		Hello
 
@@ -42,7 +42,7 @@ basic3
 	- else unless false
 		!
 
-- template basic3()
+- template ['switch-case-default']()
 	- switch 2
 		- case 1
 			Goodbye
@@ -52,16 +52,16 @@ basic3
 			Hi
 
 	- switch 2
-		- case 1
+		> 1
 			hell !
 		- default
 			world !
 
-###
+### if-else if-else
 
 Hello world !
 
-***
+*** unless-else unless-else
 
 Hello world !
 
