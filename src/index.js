@@ -9,11 +9,10 @@
  */
 
 export { default as default } from './core';
+import './live/index';
 
 //#if compiler
 import './deps/core';
 import './compiler';
 import './directives';
 //#endif
-
-import './live/index';
