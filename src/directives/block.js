@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 import { concatProp } from '../helpers/literals';
 import { symbols, w } from '../consts/regs';
 import { $scope, $extMap, $blocks } from '../consts/cache';
@@ -254,8 +255,13 @@ Snakeskin.addDirective(
 				${output ? this.wrap(`${p.fn}(${p.params})`) : ''}
 			`);
 
-			if (!output && this.hasParent(this.getGroup('microTemplate'))) {
+			const
+				parent = any(this.hasParent(this.getGroup('microTemplate'), true));
+
+			if (!output && parent) {
 				this.append(`__RESULT__ = new Raw(${p.fn});`);
+				parent.params.strongSpace = true;
+				this.strongSpace.push(true);
 			}
 		}
 

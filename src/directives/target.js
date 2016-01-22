@@ -11,6 +11,7 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
 	'target',
@@ -62,8 +63,12 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			{ref} = this.structure.params,
+			p = this.structure.params,
 			tmp = this.out('__CALL_TMP__', {unsafe: true});
+
+		if (p.strongSpace) {
+			this.strongSpace.pop();
+		}
 
 		this.append(ws`
 			if (__LENGTH__(__RESULT__)) {
@@ -74,12 +79,17 @@ Snakeskin.addDirective(
 			}
 
 			Snakeskin.forEach(${tmp}, function (el, i) {
-				${ref}[el.key || ${ref}.length] = el.value;
+				${p.ref}[el.key || ${p.ref}.length] = el.value;
 			});
 		`);
 
-		if (this.hasParent(this.getGroup('microTemplate'))) {
-			this.append(`__RESULT__ = new Raw(${ref});`);
+		const
+			parent = any(this.hasParent(this.getGroup('microTemplate'), true));
+
+		if (parent) {
+			this.append(`__RESULT__ = new Raw(${p.ref});`);
+			parent.params.strongSpace = true;
+			this.strongSpace.push(true);
 
 		} else {
 			this.append(`__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};`);

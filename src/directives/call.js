@@ -57,6 +57,10 @@ Snakeskin.addDirective(
 		const
 			p = this.structure.params;
 
+		if (p.strongSpace) {
+			this.strongSpace.pop();
+		}
+
 		if (p.short) {
 			return;
 		}

@@ -81,15 +81,17 @@ Snakeskin.addDirective(
 	},
 
 	function () {
-		let
-			parent = any(this.hasParent(this.getGroup('async', 'microTemplate')));
+		const
+			parent = any(this.hasParent(this.getGroup('async', 'microTemplate'), true));
 
 		if (parent) {
-			if (this.getGroup('async')[parent]) {
+			if (this.getGroup('async')[parent.name]) {
 				this.append('})');
 
-			} else if (this.getGroup('microTemplate')[parent]) {
+			} else if (this.getGroup('microTemplate')[parent.name]) {
 				this.append(`return Unsafe(${this.getReturnResultDecl()}); });`);
+				parent.params.strongSpace = true;
+				this.strongSpace.push(true);
 			}
 
 		} else {
