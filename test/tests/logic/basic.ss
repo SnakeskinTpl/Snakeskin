@@ -1,11 +1,3 @@
-if-else if-else
-unless-else unless-else
-switch-case-default
-
-###
-
-- namespace logic.basic
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,6 +5,22 @@ switch-case-default
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[if-else if-else]]=====================================================================================================
+
+Hello world !
+
+[[unless-else unless-else]]=============================================================================================
+
+Hello world !
+
+[[switch-case-default]]=================================================================================================
+
+Hello world !
+
+========================================================================================================================
+
+- namespace logic.basic
 
 - template ['if-else if-else']()
 	- if true
@@ -56,15 +64,3 @@ switch-case-default
 			hell !
 		- default
 			world !
-
-### if-else if-else
-
-Hello world !
-
-*** unless-else unless-else
-
-Hello world !
-
-***
-
-Hello world !

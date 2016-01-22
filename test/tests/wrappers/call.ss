@@ -1,10 +1,3 @@
-simple call
-call with wrapper
-
-###
-
-- namespace wrappers.call
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,6 +5,18 @@ call with wrapper
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[simple call]]=========================================================================================================
+
+1 2 3
+
+[[call with wrapper]]===================================================================================================
+
+1 <div class="foo"></div> <div class="bar"></div>
+
+========================================================================================================================
+
+- namespace wrappers.call
 
 - template wrapper(val1, val2, val3)
 	{val1}
@@ -26,11 +31,3 @@ call with wrapper
 			< .foo
 		*
 			< .bar
-
-### simple call
-
-1 2 3
-
-*** call with wrapper
-
-1 <div class="foo"></div> <div class="bar"></div>

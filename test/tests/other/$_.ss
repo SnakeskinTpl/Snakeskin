@@ -1,10 +1,3 @@
-global
-local
-
-###
-
-- namespace other.$_
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,6 +5,18 @@ local
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[global]]==============================================================================================================
+
+bar
+
+[[local]]===============================================================================================================
+
+bar foo
+
+========================================================================================================================
+
+- namespace other.$_
 
 {?' bar '|trim}
 
@@ -22,11 +27,3 @@ local
 	{$_}
 	{?' foo '|trim}
 	{$_}
-
-### global
-
-bar
-
-*** local
-
-bar foo

@@ -1,14 +1,3 @@
-simple
-{&}
-&+ &-
-&+ switch-case
-tag trimming
-tags trimming
-
-###
-
-- namespace jade.whitespaces
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -16,6 +5,34 @@ tags trimming
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[simple]]==============================================================================================================
+
+foo bar baz
+
+[[{&}]]=================================================================================================================
+
+foobar baz
+
+[[&+ &-]]===============================================================================================================
+
+blablablabar bar bar bzzbzzbzz bla bla bla
+
+[[&+ switch-case]]======================================================================================================
+
+blablabla bar bar bar
+
+[[tag trimming]]========================================================================================================
+
+<div>foo</div> bar
+
+[[tags trimming]]=======================================================================================================
+
+<div>foo</div><div>bar</div> <div>baz </div>
+
+========================================================================================================================
+
+- namespace jade.whitespaces
 
 - template simple()
 	foo
@@ -65,27 +82,3 @@ tags trimming
 	< div
 		baz
 		\
-
-### simple
-
-foo bar baz
-
-*** {&}
-
-foobar baz
-
-*** &+ &-
-
-blablablabar bar bar bzzbzzbzz bla bla bla
-
-*** &+ switch-case
-
-blablabla bar bar bar
-
-*** tag trimming
-
-<div>foo</div> bar
-
-*** tags trimming
-
-<div>foo</div><div>bar</div> <div>baz </div>

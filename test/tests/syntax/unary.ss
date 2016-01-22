@@ -1,10 +1,3 @@
-simple
-inc
-
-###
-
-- namespace syntax.unary
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,6 +5,18 @@ inc
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[simple]]==============================================================================================================
+
+undefined false [object Object] true string false
+
+[[inc]]=================================================================================================================
+
+1 1 true
+
+========================================================================================================================
+
+- namespace syntax.unary
 
 - template simple()
 	{typeof foo}
@@ -26,12 +31,4 @@ inc
 	{++i}
 	{i++}
 	{!!i}
-
-### simple
-
-undefined false [object Object] true string false
-
-*** inc
-
-1 1 true
 

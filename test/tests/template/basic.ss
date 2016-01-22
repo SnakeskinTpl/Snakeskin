@@ -1,17 +1,3 @@
-helloWorld
-template with parameters ; 'Kobezzza'
-template with default parameters
-template with nullable default parameters ; null
-template with parameter binding ; {name: 'Bob'}
-template with default parameter binding
-template with nullable default parameter binding ; null
-template with multiple parameters ; undefined ; 3
-template with parameters with filters
-
-###
-
-- namespace template.basic
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -19,6 +5,46 @@ template with parameters with filters
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[helloWorld]]==========================================================================================================
+
+Hello world!
+
+[[template with parameters ; 'Kobezzza']]===============================================================================
+
+Hello Kobezzza!
+
+[[template with default parameters]]====================================================================================
+
+Hello friend!
+
+[[template with nullable default parameters ; null]]====================================================================
+
+Hello null!
+
+[[template with parameter binding ; {name: 'Bob'}]]=====================================================================
+
+Hello Bob!
+
+[[template with default parameter binding]]=============================================================================
+
+Hello Persik!
+
+[[template with nullable default parameter binding ; null]]=============================================================
+
+Hello null!
+
+[[template with multiple parameters ; undefined ; 3]]===================================================================
+
+4
+
+[[template with parameters with filters]]===============================================================================
+
+Hello world!
+
+========================================================================================================================
+
+- namespace template.basic
 
 - template helloWorld()
 	Hello world!
@@ -46,39 +72,3 @@ template with parameters with filters
 
 - template ['template with parameters with filters']((@params?|parse) = ({hello: 'world'}|json))
 	Hello {@hello}!
-
-### helloWorld
-
-Hello world!
-
-*** template with parameters
-
-Hello Kobezzza!
-
-*** template with default parameters
-
-Hello friend!
-
-*** template with nullable default parameters
-
-Hello null!
-
-*** template with parameter binding
-
-Hello Bob!
-
-*** template with default parameter binding
-
-Hello Persik!
-
-*** template with nullable default parameter binding
-
-Hello null!
-
-*** template with multiple parameters
-
-4
-
-*** template with parameters with filters
-
-Hello world!

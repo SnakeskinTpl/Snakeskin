@@ -1,14 +1,3 @@
-target with array
-target with array link
-target with object
-target with array-like object
-nested target
-mixed target
-
-###
-
-- namespace wrappers.target
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -16,6 +5,34 @@ mixed target
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[target with array]]===================================================================================================
+
+<div class="foo"></div> 0 Hello 1  2 world! 3
+
+[[target with array link]]==============================================================================================
+
+<div class="foo"></div> 0 Hello 1  2 world! 3
+
+[[target with object]]==================================================================================================
+
+<div class="foo"></div> one Hello two world! three
+
+[[target with array-like object]]=======================================================================================
+
+world! 3 3 length
+
+[[nested target]]=======================================================================================================
+
+<div class="foo"></div>
+
+[[mixed target]]========================================================================================================
+
+[object Object]<div class="bar"></div>
+
+========================================================================================================================
+
+- namespace wrappers.target
 
 - template ['target with array']()
 	- target [] as foo
@@ -83,27 +100,3 @@ mixed target
 			< .bar
 
 	{foo.foo}
-
-### target as array
-
-<div class="foo"></div> 0 Hello 1  2 world! 3
-
-*** target as array link
-
-<div class="foo"></div> 0 Hello 1  2 world! 3
-
-*** target as object
-
-<div class="foo"></div> one Hello two world! three
-
-*** target with array-like object
-
-world! 3 3 length
-
-*** nested target
-
-<div class="foo"></div>
-
-*** mixed target
-
-[object Object]<div class="bar"></div>

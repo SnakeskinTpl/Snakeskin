@@ -1,10 +1,3 @@
-sibling tags
-nested tags
-
-###
-
-- namespace tag.basic
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -12,6 +5,18 @@ nested tags
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[sibling tags]]========================================================================================================
+
+<div>Hello</div> <span id="baz" class="foo bar">Hello</span>
+
+[[nested tags]]=========================================================================================================
+
+<div>Hello <span id="baz" class="foo bar">Hello</span></div>
+
+========================================================================================================================
+
+- namespace tag.basic
 
 - template ['sibling tags']()
 	- tag div
@@ -25,11 +30,3 @@ nested tags
 		Hello
 		< span.foo.bar#baz
 			Hello
-
-### sibling tags
-
-<div>Hello</div> <span id="baz" class="foo bar">Hello</span>
-
-*** nested tags
-
-<div>Hello <span id="baz" class="foo bar">Hello</span></div>

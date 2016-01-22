@@ -1,11 +1,3 @@
-cdn1 ; 'angularjs@2'
-cdn2 ; 'bootstrap@4' ; 'yandex'
-cdn2 ; 'angularjs@2'
-
-###
-
-- namespace advanced.cdn
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,6 +5,22 @@ cdn2 ; 'angularjs@2'
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[cdn1 ; 'angularjs@2']]================================================================================================
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/2/angular.min.js"></script>
+
+[[cdn2 ; 'bootstrap@4' ; 'yandex']]=====================================================================================
+
+<link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/4/css/bootstrap.min.css"><script type="text/javascript" src="http://yastatic.net/bootstrap/4/js/bootstrap.min.js"></script>
+
+[[cdn2 ; 'angularjs@2']]================================================================================================
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/2/angular.min.js"></script>
+
+========================================================================================================================
+
+- namespace advanced.cdn
 
 - template cdn1(name, provider)
 	- if !name
@@ -63,15 +71,3 @@ cdn2 ; 'angularjs@2'
 				* yandex
 					- link (href = http://yastatic.net/bootstrap/${version}/css/bootstrap.min.css)
 					- script (src = http://yastatic.net/bootstrap/${version}/js/bootstrap.min.js)
-
-###
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/2/angular.min.js"></script>
-
-***
-
-<link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/4/css/bootstrap.min.css"><script type="text/javascript" src="http://yastatic.net/bootstrap/4/js/bootstrap.min.js"></script>
-
-***
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/2/angular.min.js"></script>

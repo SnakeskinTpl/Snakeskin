@@ -42,7 +42,7 @@ exports.run = function (params) {
 
 	function exec(file) {
 		try {
-			var txt = $C(fs.readFileSync(file, 'utf8').split(/###.*/))
+			var txt = $C(fs.readFileSync(file, 'utf8').replace(/^\/\*![\s\S]*?\*\//, '').split(/^===.*/m))
 				.map(function (el) {
 					return el.trim();
 				});
@@ -57,8 +57,13 @@ exports.run = function (params) {
 			console.log('\n###### ' + nms.join('.') + '\n');
 
 			var
-				tests = txt[0].split(/[\r\n]+/),
-				results = txt[2].split(/\*\*\*.*/);
+				testRgxp = /^\[\[(.*)]]=*$/gm,
+				tests = [],
+				results = txt[0].split(/^\[\[.*]]=*$/m).slice(1);
+
+			while (testRgxp.exec(txt[0])) {
+				tests.push(RegExp.$1);
+			}
 
 		} catch (err) {
 			log('File: ' + (relativeSrc || file) + '\nError: ' + err.message, 'error');

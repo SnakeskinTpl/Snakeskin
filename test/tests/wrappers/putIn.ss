@@ -1,11 +1,3 @@
-putIn to variable
-putIn to array
-putIn to object
-
-###
-
-- namespace wrappers.putIn
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,6 +5,22 @@ putIn to object
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[putIn to variable]]===================================================================================================
+
+<div class="foo"></div>
+
+[[putIn to array]]======================================================================================================
+
+<div class="foo"></div>
+
+[[putIn to object]]=====================================================================================================
+
+<div class="foo"></div>
+
+========================================================================================================================
+
+- namespace wrappers.putIn
 
 - template ['putIn to variable']()
 	: putIn foo
@@ -33,15 +41,3 @@ putIn to object
 		< .foo
 
 	{foo.bar}
-
-### target as array
-
-<div class="foo"></div>
-
-*** putIn to array
-
-<div class="foo"></div>
-
-*** putIn to object
-
-<div class="foo"></div>

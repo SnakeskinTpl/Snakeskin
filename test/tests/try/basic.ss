@@ -1,12 +1,3 @@
-try
-try-catch
-try-finally
-try-catch-finally
-
-###
-
-- namespace ['try'].basic
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -14,6 +5,24 @@ try-catch-finally
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+[[try]]=================================================================================================================
+
+[[try-catch]]===========================================================================================================
+
+foo is not defined
+
+[[try-finally]]=========================================================================================================
+
+all fine
+
+[[try-catch-finally]]===================================================================================================
+
+foo is not defined all fine
+
+========================================================================================================================
+
+- namespace ['try'].basic
 
 - template ['try']()
 	- try
@@ -37,17 +46,3 @@ try-catch-finally
 		{err.message}
 	- finally
 		all fine
-
-### try
-
-*** try-catch
-
-foo is not defined
-
-*** try-finally
-
-all fine
-
-*** try-catch-finally
-
-foo is not defined all fine

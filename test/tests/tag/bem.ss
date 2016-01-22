@@ -1,13 +1,3 @@
-simple class reference
-class reference from placeholder
-sticky link
-advanced sticky links
-multiple class reference
-
-###
-
-- namespace tag.bem
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -15,6 +5,31 @@ multiple class reference
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
+
+
+[[simple class reference]]==============================================================================================
+
+<div class="foo baz"><div class="baz__bar">Hello</div></div>
+
+[[class reference from placeholder]]====================================================================================
+
+<div class="baz__bar">Hello</div>
+
+[[sticky link]]=========================================================================================================
+
+<div class="foo baz"><div class="foo__bar">Hello</div></div>
+
+[[advanced sticky links]]===============================================================================================
+
+<div class="foo bla"><div class="foo__bar foo__bar_style_dark foo__bar_size_xxl baz baz__bar">Hello</div></div>
+
+[[multiple class reference]]============================================================================================
+
+<div class="foo"><div class="foo__bar baz"><div class="baz__bar">Hello</div></div></div>
+
+========================================================================================================================
+
+- namespace tag.bem
 
 - template ['simple class reference']()
 	< .foo.baz
@@ -41,23 +56,3 @@ multiple class reference
 		< .&__bar.baz
 			< .&__bar
 				Hello
-
-### simple class reference
-
-<div class="foo baz"><div class="baz__bar">Hello</div></div>
-
-*** class reference from placeholder
-
-<div class="baz__bar">Hello</div>
-
-*** sticky link
-
-<div class="foo baz"><div class="foo__bar">Hello</div></div>
-
-*** advanced sticky links
-
-<div class="foo bla"><div class="foo__bar foo__bar_style_dark foo__bar_size_xxl baz baz__bar">Hello</div></div>
-
-*** multiple class reference
-
-<div class="foo"><div class="foo__bar baz"><div class="baz__bar">Hello</div></div></div>
