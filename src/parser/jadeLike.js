@@ -394,7 +394,8 @@ function getLineDesc(str, i, dir, comment, i18n) {
 	let
 		lastEl = '',
 		lastElI = 0,
-		length = -1;
+		length = -1,
+		skip = 0;
 
 	let
 		escape = false,
@@ -495,6 +496,10 @@ function getLineDesc(str, i, dir, comment, i18n) {
 			if (comment) {
 				comment = commentType !== MULT_COMMENT_END;
 
+				if (!comment) {
+					skip += MULT_COMMENT_END.length;
+				}
+
 			} else if (!sComment) {
 				comment = commentType === MULT_COMMENT_START;
 
@@ -504,7 +509,7 @@ function getLineDesc(str, i, dir, comment, i18n) {
 			}
 		}
 
-		if (!comment && !sComment) {
+		if (!comment && !sComment && !skip) {
 			if (!bOpen) {
 				if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
 					bEnd = true;
@@ -548,6 +553,10 @@ function getLineDesc(str, i, dir, comment, i18n) {
 
 				bEnd = false;
 			}
+		}
+
+		if (skip) {
+			skip--;
 		}
 
 		const
