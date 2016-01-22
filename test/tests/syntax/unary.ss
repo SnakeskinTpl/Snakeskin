@@ -14,6 +14,10 @@ undefined false [object Object] true string false
 
 1 1 true
 
+[[ternary and logic]]===================================================================================================
+
+foo-10 true
+
 ========================================================================================================================
 
 - namespace syntax.unary
@@ -31,4 +35,14 @@ undefined false [object Object] true string false
 	{++i}
 	{i++}
 	{!!i}
+
+
+- template ['ternary and logic']()
+	: &
+		obj = {mon: {from: 10, to: 20}},
+		day = 'mon'
+	.
+
+	- true ? 'foo-' + obj[day].from : ''
+	- obj[day] && 'from' in obj[day] && 'to' in obj[day]
 
