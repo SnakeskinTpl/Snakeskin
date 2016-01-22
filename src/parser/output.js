@@ -666,7 +666,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 	if (!unsafe) {
 		res = this.out(
-			removeDefFilters(addDefFilters(res, defFilters.global), cancelFilters).replace(defFilterRgxp, ''),
+			removeDefFilters(addDefFilters(`(${res})`, defFilters.global), cancelFilters).replace(defFilterRgxp, ''),
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 
