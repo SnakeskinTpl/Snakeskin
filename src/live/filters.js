@@ -169,7 +169,7 @@ export const
  * @return {(string|!Node)}
  */
 Filters['html'] = function (val, opt_unsafe, opt_attr) {
-	if (typeof Node === 'function' && val instanceof Node) {
+	if (!val || typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
 
