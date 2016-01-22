@@ -92,7 +92,7 @@ Parser.prototype.getAdvInfo = function () {
 		str += eol + sep + prfx + eol + chunk + eol + sep;
 	}
 
-	return str;
+	return str + eol;
 };
 
 /**

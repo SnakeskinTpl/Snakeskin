@@ -196,14 +196,13 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
-				parentTplName = /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1];
+				try {
+					parentTplName = this.parentTplName =
+						this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
 
-				if (!parentTplName) {
+				} catch (ignore) {
 					return this.error(`invalid template name "${this.name}" for inheritance`);
 				}
-
-				parentTplName = this.parentTplName =
-					this.getBlockName(parentTplName, true);
 
 				if ($cache[parentTplName] == null) {
 					if (!this.renderAs || this.renderAs === 'template') {
