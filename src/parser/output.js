@@ -70,7 +70,7 @@ const blackWords = {
 	'await': true
 };
 
-const unUndefUnaryBlackWords = {
+const unDefUnaryBlackWords = {
 	'new': true
 };
 
@@ -83,7 +83,7 @@ const declBlackWords = {
 const
 	ssfRgxp = /__FILTERS__\./,
 	nextCharRgxp = new RegExp(`[${r(G_MOD)}$+\\-~!${rgxp.w}]`),
-	newWordRgxp = new RegExp(`[^${r(G_MOD)}$${rgxp.w}[\\].]`);
+	newWordRgxp = new RegExp(`[^${r(G_MOD)}$${rgxp.w}[\\]]`);
 
 const
 	multPropRgxp = /\[|\./,
@@ -273,12 +273,12 @@ Parser.prototype.out = function (command, opt_params) {
 	const addScope = (str) => {
 		if (multPropRgxp.test(str)) {
 			let
-				fistProp = firstPropRgxp.exec(str);
+				firstProp = firstPropRgxp.exec(str);
 
-			fistProp[1] = fistProp[1]
+			firstProp[1] = firstProp[1]
 				.replace(propValRgxp, replacePropVal);
 
-			return fistProp.slice(1).join('');
+			return firstProp.slice(1).join('');
 		}
 
 		return str.replace(propValRgxp, replacePropVal);
@@ -349,22 +349,22 @@ Parser.prototype.out = function (command, opt_params) {
 					pContent.unshift([i + wordAddEnd]);
 					pCount++;
 				}
+
+			} else if (el === '.') {
+				posNWord = 2;
 			}
 
 			// nWord indicates that started a new word;
 			// posNWord indicates how many new words to skip
 			if (nWord && !posNWord && nextCharRgxp.test(el)) {
-				const
-					nextStep = this.getWordFromPos(command, i);
-
 				let
-					{word, finalWord} = nextStep;
+					{word, finalWord, unary} = this.getWordFromPos(command, i);
 
 				let
 					uAdd = wordAddEnd + add,
 					tmpFinalWord;
 
-				if (nextStep.unary) {
+				if (unary) {
 					tmpFinalWord = finalWord.split(' ');
 					finalWord = tmpFinalWord[tmpFinalWord.length - 1];
 				}
@@ -431,7 +431,7 @@ Parser.prototype.out = function (command, opt_params) {
 					return '';
 				}
 
-				if (nextStep.unary) {
+				if (unary) {
 					tmpFinalWord[tmpFinalWord.length - 1] = vRes;
 					vRes = tmpFinalWord.join(' ');
 				}
@@ -439,7 +439,7 @@ Parser.prototype.out = function (command, opt_params) {
 				if (declBlackWords[finalWord]) {
 					posNWord = 2;
 
-				} else if (canParse && !unsafe && !filterStart && (!nextStep.unary || unUndefUnaryBlackWords[nextStep.unary])) {
+				} else if (canParse && !unsafe && !filterStart && (!unary || unDefUnaryBlackWords[unary])) {
 					vRes = addDefFilters(vRes, defFilters.local);
 				}
 
