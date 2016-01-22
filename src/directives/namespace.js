@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 			return this.error('namespace can be set only once for a file');
 		}
 
-		this.environment.namespace = nms = this.prepareNameDecl(nms);
+		this.environment.namespace = nms = this.getBlockName(nms);
 		this.namespaces[nms] = this.namespaces[nms] || {file: this.info.file, id: this.environment.id};
 		this.scope.push(nms);
 	}

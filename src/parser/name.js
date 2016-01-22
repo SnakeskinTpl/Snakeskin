@@ -9,6 +9,7 @@
  */
 
 import $C from '../deps/collection';
+import esprima from '../deps/esprima';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { applyDefEscape } from '../helpers/escape';
@@ -97,31 +98,43 @@ export const
 	nmeRgxp = /]/g;
 
 /**
- * Prepares a template declaration string
- * (evaluation of expressions, etc.)
+ * Returns a block name from a string
  *
  * @param {string} name - source string
+ * @param {?boolean=} [opt_parseLiteralScope=false] - if true, then wil be parse literal scope declaration
  * @return {string}
  */
-Parser.prototype.prepareNameDecl = function (name) {
-	name = String($C(
-		this.replaceFileNamePatterns(name)
-			.replace(nmssRgxp, '%')
-			.replace(nmsRgxp, '.%')
-			.replace(nmeRgxp, '')
-			.split('.')
+Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
+	try {
+		name = String($C(
+			this.replaceFileNamePatterns(name)
+				.replace(nmssRgxp, '%')
+				.replace(nmsRgxp, '.%')
+				.replace(nmeRgxp, '')
+				.split('.')
 
-	).reduce((str, el) => {
-		const custom = el[0] === '%';
-		el = this.out(custom ? el.slice(1) : el, {unsafe: true});
+		).reduce((str, el) => {
+			const
+				custom = el[0] === '%';
 
-		if (custom) {
-			str += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
-			return str;
-		}
+			el = opt_parseLiteralScope || custom ?
+				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
-		return str + (str ? `.${el}` : el);
-	}, ''));
+			if (custom) {
+				str += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
+				return str;
+			}
 
-	return name.trim();
+			return str + (str ? `.${el}` : el);
+		}, ''));
+
+		name = name.trim();
+		esprima.parse(name);
+
+	} catch (err) {
+		this.error(err.message);
+		return '';
+	}
+
+	return name;
 };

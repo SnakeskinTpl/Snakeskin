@@ -14,14 +14,11 @@ import esprima from '../deps/esprima';
 import Snakeskin from '../core';
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 
-import { ws, r } from '../helpers/string';
+import { ws } from '../helpers/string';
 import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
-import { getRgxp } from '../helpers/cache';
-
 import { templateRank } from '../consts/other';
-import { symbols } from '../consts/regs';
-import { G_MOD } from '../consts/literals';
+
 import {
 
 	$write,
@@ -74,10 +71,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info.line;
 
-			const
-				nameRgxp = getRgxp(`^[^${symbols}_$[]`, 'i'),
-				esprimaNameHackRgxp = getRgxp(`[${r(G_MOD)}]`, 'g');
-
 			let tplName = this.replaceFileNamePatterns(this.getFnName(command));
 			tplName = nms + concatProp(tplName);
 
@@ -94,20 +87,6 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				prfx = '*';
 				tplName = tplName.replace(prfx, '');
 				this.generator = true;
-			}
-
-			try {
-				let
-					tmp = this.pasteDangerBlocks(tplName);
-
-				if (!tmp || nameRgxp.test(tmp)) {
-					throw false;
-				}
-
-				esprima.parse(tmp.replace(esprimaNameHackRgxp, ''));
-
-			} catch (ignore) {
-				return this.error(`invalid "${this.name}" name`);
 			}
 
 			setTplName();
@@ -199,6 +178,13 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				tplName += `.${el}`;
 			}
 
+			try {
+				esprima.parse(tplName);
+
+			} catch (ignore) {
+				return this.error(`invalid "${this.name}" name`);
+			}
+
 			setTplName();
 			this.vars[tplName] = {};
 			this.blockTable = {};
@@ -210,25 +196,14 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
-				try {
-					parentTplName = /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1];
+				parentTplName = /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1];
 
-					if (!parentTplName || nameRgxp.test(parentTplName)) {
-						throw false;
-					}
-
-					esprima.parse(parentTplName.replace(esprimaNameHackRgxp, ''));
-
-				} catch (ignore) {
+				if (!parentTplName) {
 					return this.error(`invalid template name "${this.name}" for inheritance`);
 				}
 
-				try {
-					parentTplName = this.parentTplName = this.prepareNameDecl(parentTplName);
-
-				} catch (err) {
-					return this.error(err.message);
-				}
+				parentTplName = this.parentTplName =
+					this.getBlockName(parentTplName, true);
 
 				if ($cache[parentTplName] == null) {
 					if (!this.renderAs || this.renderAs === 'template') {
