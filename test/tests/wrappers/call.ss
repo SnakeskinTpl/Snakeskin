@@ -24,10 +24,10 @@
 	{val3}
 
 - template ['simple call']()
-	+= wrappers.call.wrapper(1, 2, 3)
+	+= @wrapper(1, 2, 3)
 
 - template ['call with wrapper']()
-	+= wrappers.call.wrapper(1)
+	+= @wrapper(1)
 			< .foo
 		*
 			< .bar

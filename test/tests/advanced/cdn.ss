@@ -59,7 +59,7 @@
 
 	{libraries[lib][provider] || libraries[lib][firstKey(libraries[lib])]}
 
-- template cdn2(name, provider) extends advanced.cdn.cdn1
+- template cdn2(name, provider) extends @cdn1
 	- block libraries()
 		- super
 		- putIn libraries.bootstrap
