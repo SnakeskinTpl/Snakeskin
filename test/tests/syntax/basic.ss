@@ -46,11 +46,17 @@ bar-1 foo 1
  * @return {string}
  */
 - template simpleOutput()
+	/**
+	 * @type {!Object}
+	 */
 	- val = { &
 		foo: 'foo',
 		bar: 'bar'
 	} .
 
+	/*
+	 * @type {!Object}
+	 */
 	- method &
 	= {
 		foo: {
