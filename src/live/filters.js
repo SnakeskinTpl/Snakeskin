@@ -11,6 +11,7 @@
 import Snakeskin from '../core';
 import { isString, isObject, isFunction } from '../helpers/types';
 import { any } from '../helpers/gcc';
+import { isNotPrimitive } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
 import { attrKey } from '../consts/regs';
 
@@ -187,6 +188,13 @@ Filters['html'] = function (val, opt_unsafe, opt_attr) {
 	return String(opt_attr ? Filters[opt_attr](val) : val).replace(escapeHTMLRgxp, escapeHTML);
 };
 
+Snakeskin.setFilterParams('html', {
+	'bind': ['Unsafe', '__ATTR_TYPE__'],
+	'test'(val) {
+		return isNotPrimitive(val);
+	}
+});
+
 Filters['htmlObject'] = function (val) {
 	if (val instanceof Snakeskin.HTMLObject) {
 		return '';
@@ -194,10 +202,6 @@ Filters['htmlObject'] = function (val) {
 
 	return val;
 };
-
-Snakeskin.setFilterParams('html', {
-	'bind': ['Unsafe', '__ATTR_TYPE__']
-});
 
 /**
  * Replaces undefined to ''
@@ -208,6 +212,12 @@ Snakeskin.setFilterParams('html', {
 Filters['undef'] = function (val) {
 	return val !== undefined ? val : '';
 };
+
+Snakeskin.setFilterParams('undef', {
+	'test'(val) {
+		return isNotPrimitive(val, {'false': true, 'null': true, 'true': true});
+	}
+});
 
 /**
  * Replaces escaped HTML entities to real content
@@ -616,5 +626,8 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	'bind': [(o) => `'${o.doctype}'`, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE']
+	'bind': [(o) => `'${o.doctype}'`, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE'],
+	'test'(val) {
+		return isNotPrimitive(val);
+	}
 });

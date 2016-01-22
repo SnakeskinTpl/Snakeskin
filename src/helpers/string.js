@@ -43,3 +43,19 @@ const
 export function r(str) {
 	return str.replace(rRgxp, '\\$1');
 }
+
+const
+	isNotPrimitiveRgxp = /^\(*\s*(.*?)\s*\)*$/,
+	isNotPrimitiveMap = {'false': true, 'null': true, 'true': true, 'undefined': true};
+
+/**
+ * Returns true if the specified string can't be parse as a primitive value
+ *
+ * @param {string} str - source string
+ * @param {Object<string, boolean>=} opt_map - map of primitives
+ * @return {boolean}
+ */
+export function isNotPrimitive(str, opt_map) {
+	str = ((isNotPrimitiveRgxp.exec(str) || [])[1] || '').trim();
+	return Boolean(str && isNaN(Number(str)) && !(opt_map || isNotPrimitiveMap)[str]);
+}

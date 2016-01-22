@@ -20,7 +20,7 @@ import { concatProp } from '../helpers/literals';
 import { isNextAssign, isSyOL } from '../helpers/analysis';
 import { getRgxp } from '../helpers/cache';
 import { any } from '../helpers/gcc';
-import { r } from '../helpers/string';
+import { r, isNotPrimitive } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
 import { FILTER, G_MOD } from '../consts/literals';
@@ -527,24 +527,39 @@ Parser.prototype.out = function (command, opt_params) {
 					input = params.slice(1).join(' ').trim(),
 					current = params.shift().split('.');
 
-				let bind = [];
+				let
+					bind = [],
+					test;
+
 				if (Filters.in(current)) {
 					$C(Filters.get(current)['ssFilterParams']).forEach((el, key) => {
-						if (key[0] === '!') {
-							const
-								filter = key.slice(1);
+						switch (key) {
+							case 'bind':
+								bind = bind.concat(el);
+								break;
 
-							if (isGlobalFilter) {
-								cancelFilters[filter] = true;
+							case 'test':
+								test = el;
+								break;
 
-							} else {
-								cancelLocalFilters[filter] = true;
-							}
+							default:
+								if (key[0] === '!') {
+									const
+										filter = key.slice(1);
 
-						} else if (key === 'bind') {
-							bind = bind.concat(el);
+									if (isGlobalFilter) {
+										cancelFilters[filter] = true;
+
+									} else {
+										cancelLocalFilters[filter] = true;
+									}
+								}
 						}
 					});
+				}
+
+				if (test && !test(decl)) {
+					return decl;
 				}
 
 				decl =
@@ -655,11 +670,13 @@ Parser.prototype.out = function (command, opt_params) {
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
 
-		if (!this.stringResult && this.renderMode === 'dom') {
-			res = `__FILTERS__['node'](${res}, $0)`;
-		}
+		if (isNotPrimitive(res)) {
+			if (!this.stringResult && this.renderMode === 'dom') {
+				res = `__FILTERS__['node'](${res}, $0)`;
+			}
 
-		res = `__FILTERS__['htmlObject'](${res})`;
+			res = `__FILTERS__['htmlObject'](${res})`;
+		}
 	}
 
 	if (skipValidation !== false) {
