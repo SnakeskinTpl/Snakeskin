@@ -255,13 +255,24 @@ Snakeskin.addDirective(
 				${output ? this.wrap(`${p.fn}(${p.params})`) : ''}
 			`);
 
-			const
-				parent = any(this.hasParent(this.getGroup('microTemplate'), true));
+			if (!output) {
+				const
+					parents = ['microTemplate', 'callback', 'async'],
+					parent = any(this.hasParent(this.getGroup(...parents, 'block'), true)),
+					microTemplates = this.getGroup('microTemplate');
 
-			if (!output && parent) {
-				this.append(`__RESULT__ = new Raw(${p.fn});`);
-				parent.params.strongSpace = true;
-				this.strongSpace.push(true);
+				if (
+					parent && (
+						microTemplates[parent.name] ||
+						parent.name === 'block' && !parent.params.isCallable &&
+						microTemplates[this.hasParent(this.getGroup(...parents))]
+					)
+
+				) {
+					this.append(`__RESULT__ = new Raw(${p.fn});`);
+					parent.params.strongSpace = true;
+					this.strongSpace.push(true);
+				}
 			}
 		}
 
