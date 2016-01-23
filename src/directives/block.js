@@ -27,15 +27,19 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		group: ['block', 'template', 'define', 'inherit', 'blockInherit'],
-		logic: true,
-		notEmpty: true
+		logic: true
 	},
 
 	function (command, commandLength) {
 		let
-			{tplName} = this,
-			name = this.getFnName(command);
+			{tplName} = this;
 
+		if (tplName && !command) {
+			this.startDir(null, {placeholder: true});
+			return;
+		}
+
+		let name = this.getFnName(command);
 		if (!name) {
 			return this.error(`invalid "${this.name}" name`);
 		}
@@ -216,6 +220,10 @@ Snakeskin.addDirective(
 		const
 			p = this.structure.params,
 			diff = this.getDiff(commandLength);
+
+		if (p.placeholder) {
+			return;
+		}
 
 		const
 			s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
