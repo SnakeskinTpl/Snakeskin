@@ -168,8 +168,13 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				const chr = str[j + diff];
 				nextSpace = !chr || rgxp.ws.test(chr);
 
-				let
+				let dir;
+				if (struct && struct.adv) {
+					dir = el === alb && nextSpace;
+
+				} else {
 					dir = (SHORTS[el] || SHORTS[next2str]) && nextSpace;
+				}
 
 				const decl = getLineDesc(
 					str,

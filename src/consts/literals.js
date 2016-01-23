@@ -43,7 +43,7 @@ export const
 
 export const BASE_SHORTS = {
 	'-': true,
-	'#': true
+	[ADV_LEFT_BOUND]: true
 };
 
 export const
