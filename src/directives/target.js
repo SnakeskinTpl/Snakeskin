@@ -84,9 +84,18 @@ Snakeskin.addDirective(
 		`);
 
 		const
-			parent = any(this.hasParent(this.getGroup('microTemplate'), true));
+			parents = ['microTemplate', 'callback', 'async'],
+			parent = any(this.hasParent(this.getGroup(...parents, 'block'), true)),
+			microTemplates = this.getGroup('microTemplate');
 
-		if (parent) {
+		if (
+			parent && (
+				microTemplates[parent.name] ||
+				parent.name === 'block' && !parent.params.isCallable &&
+				microTemplates[this.hasParent(this.getGroup(...parents))]
+			)
+
+		) {
 			this.append(`__RESULT__ = new Raw(${p.ref});`);
 			parent.params.strongSpace = true;
 			this.strongSpace.push(true);
