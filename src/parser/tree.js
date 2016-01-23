@@ -148,27 +148,63 @@ Parser.prototype.hasParentBlock = function (name, opt_return) {
 };
 
 /**
- * Returns an object of closest parent structure if it is micro-template or false
+ * Returns an object of the closest parent micro-template structure or false
  * @return {(!Object|boolean)}
  */
 Parser.prototype.hasParentMicroTemplate = function () {
-	const
-		parents = ['microTemplate', 'callback', 'async', 'block'],
-		microTemplates = this.getGroup('microTemplate');
-
 	const test = (obj) => {
 		let
-			parent = any(this._has(this.getGroup(...parents), obj, true));
+			parent = any(this._has(this.getGroup('microTemplate', 'callback', 'async', 'block'), obj, true));
 
 		if (
 			parent && (
-				microTemplates[parent.name] ||
+				this.getGroup('microTemplate')[parent.name] ||
 				parent.name === 'block' && !parent.params.isCallable && (parent = test(parent.parent))
 			)
 
 		) {
 
 			return parent;
+		}
+
+		return false;
+	};
+
+	return test(this.structure.parent);
+};
+
+/**
+ * Returns an object of the closest parent function structure or false
+ * @return {(!Object|boolean)}
+ */
+Parser.prototype.hasParentFunction = function () {
+	const test = (obj) => {
+		let
+			target = any(this._has(this.getGroup('async', 'function', 'block', 'rootTemplate'), obj, true));
+
+		const
+			closest = this.getNonLogicParent().name,
+			asyncParent = this.getGroup('async')[closest] ? closest : false;
+
+		if (target) {
+			if (
+				this.getGroup('rootTemplate')[target.name] ||
+				this.getGroup('callback')[target.name] && !asyncParent ||
+				target.name === 'block' && (target.params.isCallable || (target = test(target.parent)))
+			) {
+
+				return {
+					asyncParent,
+					block: true,
+					target
+				};
+			}
+
+			return {
+				asyncParent,
+				block: false,
+				target
+			};
 		}
 
 		return false;

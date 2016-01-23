@@ -22,50 +22,25 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			valid = ['function', 'async'],
-			all = valid.concat('block', 'microTemplate');
+			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl(),
+			parent = any(this.hasParentFunction());
 
-		const
-			cb = this.getGroup('callback'),
-			inside = any(this.hasParent(this.getGroup(...valid))),
-			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl();
+		if (!parent || parent.block) {
+			this.append(`return ${val};`);
+			return;
+		}
 
 		const def = ws`
 			__RETURN__ = true;
 			__RETURN_VAL__ = ${val};
 		`;
 
-		let
-			parent = any(this.hasParent(this.getGroup(...all), true));
-
-		if (parent && cb[parent.name]) {
-			parent = any(this._has(this.getGroup(...all), parent.parent, true));
-		}
-
-		if (
-			!inside || parent && (
-				parent.name === 'block' && parent.params.isCallable ||
-				cb[inside] && this.getGroup('microTemplate')[parent.name]
-			)
-
-		) {
-			this.append(`return ${val};`);
-			return;
-		}
-
-		let
-			str = '',
-			asyncParent;
-
-		if (inside && this.getGroup('callback')[inside]) {
-			asyncParent = any(this.hasParent(this.getGroup('async')));
-		}
-
-		if (asyncParent) {
-			if (this.getGroup('Async')[asyncParent]) {
+		let str = '';
+		if (parent.asyncParent) {
+			if (this.getGroup('Async')[parent.asyncParent]) {
 				str += def;
 
-				if (this.getGroup('waterfall')[asyncParent]) {
+				if (this.getGroup('waterfall')[parent.asyncParent]) {
 					str += 'return arguments[arguments.length - 1](__RETURN_VAL__);';
 
 				} else {
@@ -83,7 +58,7 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			if (inside && !this.getGroup('async')[inside]) {
+			if (parent && !this.getGroup('async')[parent.target.name]) {
 				str += def;
 				this.deferReturn = 1;
 			}
