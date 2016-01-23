@@ -10,6 +10,7 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
+import { any } from '../helpers/gcc';
 import { isArray, isObject } from '../helpers/types';
 import { $logicDirs } from '../consts/cache';
 
@@ -47,7 +48,7 @@ Parser.prototype.isLogic = function () {
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
  * @param {Object=} [opt_obj] - structure object
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 Parser.prototype._has = function (name, opt_obj, opt_return) {
 	let obj = opt_obj;
@@ -92,7 +93,7 @@ Parser.prototype._has = function (name, opt_obj, opt_return) {
  *
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 Parser.prototype.has = function (name, opt_return) {
 	return this._has(name, this.structure, opt_return);
@@ -104,7 +105,7 @@ Parser.prototype.has = function (name, opt_return) {
  *
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 Parser.prototype.hasParent = function (name, opt_return) {
 	if (this.structure.parent) {
@@ -120,7 +121,7 @@ Parser.prototype.hasParent = function (name, opt_return) {
  *
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 Parser.prototype.hasBlock = function (name, opt_return) {
 	if (this.blockStructure) {
@@ -136,7 +137,7 @@ Parser.prototype.hasBlock = function (name, opt_return) {
  *
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 Parser.prototype.hasParentBlock = function (name, opt_return) {
 	if (this.blockStructure && this.blockStructure.parent) {
@@ -144,4 +145,34 @@ Parser.prototype.hasParentBlock = function (name, opt_return) {
 	}
 
 	return false;
+};
+
+/**
+ * Returns an object of closest parent structure if it is micro-template or false
+ * @return {(!Object|boolean)}
+ */
+Parser.prototype.hasParentMicroTemplate = function () {
+	const
+		parents = ['microTemplate', 'callback', 'async', 'block'],
+		microTemplates = this.getGroup('microTemplate');
+
+	const test = (obj) => {
+		let
+			parent = any(this._has(this.getGroup(...parents), obj, true));
+
+		if (
+			parent && (
+				microTemplates[parent.name] ||
+				parent.name === 'block' && !parent.params.isCallable && (parent = test(parent.parent))
+			)
+
+		) {
+
+			return parent;
+		}
+
+		return false;
+	};
+
+	return test(this.structure.parent);
 };

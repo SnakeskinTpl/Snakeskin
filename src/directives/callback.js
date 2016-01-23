@@ -58,17 +58,9 @@ Snakeskin.addDirective(
 
 		} else {
 			const
-				parent = any(this.hasParent(this.getGroup('microTemplate', 'callback', 'block'), true)),
-				microTemplates = this.getGroup('microTemplate');
+				parent = any(this.hasParentMicroTemplate());
 
-			if (
-				parent && (
-					microTemplates[parent.name] ||
-					parent.name === 'block' && !parent.params.isCallable &&
-					this.hasParent(microTemplates)
-				)
-
-			) {
+			if (parent) {
 				p.parent = parent;
 				p.type = 'microTemplate';
 				prfx = `__RESULT__ = new Raw`;

@@ -32,11 +32,6 @@ Snakeskin.addDirective(
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
 			pos = this.out('__CALL_POS__', {unsafe: true});
 
-		const
-			parents = ['microTemplate', 'callback', 'async'],
-			parent = any(this.hasParent(this.getGroup(...parents, 'block'), true)),
-			microTemplates = this.getGroup('microTemplate');
-
 		const def = () => {
 			if (!ref) {
 				return this.error(`the directive "${this.name}" must have a body`);
@@ -48,14 +43,10 @@ Snakeskin.addDirective(
 			`);
 		};
 
-		if (
-			parent && (
-				microTemplates[parent.name] ||
-				parent.name === 'block' && !parent.params.isCallable &&
-				microTemplates[this.hasParent(this.getGroup(...parents))]
-			)
+		const
+			parent = any(this.hasParentMicroTemplate());
 
-		) {
+		if (parent) {
 			p.parent = parent;
 
 			if (parent.params.strongSpace) {
