@@ -58,14 +58,16 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		command = (command || 'html').toLowerCase();
+
 		const
-			type = types[(command || 'html').toLowerCase()] || '';
+			type = types[command] || '';
 
 		if (!type) {
 			return this.error('invalid doctype');
 		}
 
-		this.doctype = type !== 'html' ? 'xml' : type;
+		this.doctype = command !== 'html' ? 'xml' : type;
 		this.append(this.wrap(`'${type}'`));
 	}
 
