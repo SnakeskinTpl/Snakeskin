@@ -28,44 +28,16 @@ Snakeskin.addDirective(
 		this.startDir(null, {ref});
 
 		const
-			parent = any(this.hasParent(this.getGroup('microTemplate'), true)),
-			p = parent && parent.params;
-
-		const
+			p = this.structure.params,
 			tmp = this.out('__CALL_TMP__', {unsafe: true}),
 			pos = this.out('__CALL_POS__', {unsafe: true});
 
-		if (parent && this.getGroup('microTemplate')[parent.name] && p.strongSpace) {
-			p.strongSpace = false;
-			this.strongSpace.pop();
-		}
+		const
+			parents = ['microTemplate', 'callback', 'async'],
+			parent = any(this.hasParent(this.getGroup(...parents, 'block'), true)),
+			microTemplates = this.getGroup('microTemplate');
 
-		if (parent && this.getGroup('call')[parent.name]) {
-			p.chunks++;
-			this.append(ws`
-				if (!${pos} && __LENGTH__(__RESULT__)) {
-					${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
-					__RESULT__ = ${this.getResultDecl()};
-				}
-
-				${pos}++;
-			`);
-
-		} else if (parent && this.getGroup('target')[parent.name]) {
-			this.append(ws`
-				if (!${pos} && __LENGTH__(__RESULT__)) {
-					${tmp}.push({
-						key: '${this.replaceTplVars(ref, {unsafe: true})}',
-						value: Unsafe(${this.getReturnResultDecl()})
-					});
-
-					__RESULT__ = ${this.getResultDecl()};
-				}
-
-				${pos}++;
-			`);
-
-		} else {
+		const def = () => {
 			if (!ref) {
 				return this.error(`the directive "${this.name}" must have a body`);
 			}
@@ -74,48 +46,100 @@ Snakeskin.addDirective(
 				${this.declVars(`__CALL_CACHE__ = ${this.getReturnResultDecl()}`, {sys: true})}
 				__RESULT__ = ${this.getResultDecl()};
 			`);
+		};
+
+		if (
+			parent && (
+				microTemplates[parent.name] ||
+				parent.name === 'block' && !parent.params.isCallable &&
+				microTemplates[this.hasParent(this.getGroup(...parents))]
+			)
+
+		) {
+			p.parent = parent;
+
+			if (parent.params.strongSpace) {
+				parent.params.strongSpace = false;
+				this.strongSpace.pop();
+			}
+
+			if (this.getGroup('call')[parent.name]) {
+				p.type = 'call';
+				parent.params.chunks++;
+				this.append(ws`
+					if (!${pos} && __LENGTH__(__RESULT__)) {
+						${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
+						__RESULT__ = ${this.getResultDecl()};
+					}
+
+					${pos}++;
+				`);
+
+			} else if (this.getGroup('target')[parent.name]) {
+				p.type = 'target';
+				this.append(ws`
+					if (!${pos} && __LENGTH__(__RESULT__)) {
+						${tmp}.push({
+							key: '${this.replaceTplVars(ref, {unsafe: true})}',
+							value: Unsafe(${this.getReturnResultDecl()})
+						});
+
+						__RESULT__ = ${this.getResultDecl()};
+					}
+
+					${pos}++;
+				`);
+
+			} else {
+				p.type = 'microTemplate';
+				def();
+			}
+
+		} else {
+			def();
 		}
 	},
 
 	function () {
 		const
-			p = this.structure.params;
+			p = this.structure.params,
+			tmp = this.out('__CALL_TMP__', {unsafe: true});
 
 		if (p.strongSpace) {
 			this.strongSpace.pop();
 		}
 
-		const
-			tmp = this.out('__CALL_TMP__', {unsafe: true}),
-			parent = any(this.hasParent(this.getGroup('microTemplate'), true));
-
-		if (parent && this.getGroup('call')[parent.name]) {
-			this.append(ws`
-				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
-				__RESULT__ = ${this.getResultDecl()};
-			`);
-
-			parent.params.strongSpace = true;
+		if (p.type) {
+			p.parent.params.strongSpace = true;
 			this.strongSpace.push(true);
+		}
 
-		} else if (parent && this.getGroup('target')[parent.name]) {
-			this.append(ws`
-				${tmp}.push({
-					key: '${this.replaceTplVars(p.ref, {unsafe: true})}',
-					value: Unsafe(${this.getReturnResultDecl()})
-				});
+		switch (p.type) {
+			case 'call':
+				this.append(ws`
+					${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
+					__RESULT__ = ${this.getResultDecl()};
+				`);
 
-				__RESULT__ = ${this.getResultDecl()};
-			`);
+				break;
 
-			parent.params.strongSpace = true;
-			this.strongSpace.push(true);
+			case 'target':
+				this.append(ws`
+					${tmp}.push({
+						key: '${this.replaceTplVars(p.ref, {unsafe: true})}',
+						value: Unsafe(${this.getReturnResultDecl()})
+					});
 
-		} else {
-			this.append(ws`
-				${this.out(`${p.ref} = Unsafe(${this.getReturnResultDecl()})`, {unsafe: true})};
-				__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
-			`);
+					__RESULT__ = ${this.getResultDecl()};
+				`);
+
+				break;
+
+			default:
+				this.append(ws`
+					${this.out(`${p.ref} = Unsafe(${this.getReturnResultDecl()})`, {unsafe: true})};
+					__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+				`);
 		}
 	}
 
