@@ -37,31 +37,42 @@ Snakeskin.addDirective(
 		}
 
 		if (this.deferReturn) {
-			let
+			const
 				{name} = this.structure;
 
 			const
-				async = this.getGroup('async');
+				async = this.getGroup('async'),
+				isCallback = this.getGroup('callback')[name];
 
-			if (
-				this.getGroup('function', 'async')[name] && (
-					this.getGroup('callback')[name] ?
-						!this.getGroup('microTemplate')[any(this.hasParent(this.getGroup('microTemplate', 'async')))] : true
-				)
+			let
+				closest,
+				asyncParent;
 
-			) {
-				const
-					parent = any(this.hasParent(async));
+			if (isCallback) {
+				closest = this.getNonLogicParent().name,
+				asyncParent = async[closest];
+			}
 
-				if (parent) {
-					if (this.getGroup('waterfall')[parent]) {
+			if (this.getGroup('function', 'async')[name] && (isCallback && asyncParent || !isCallback)) {
+				const def = ws`
+					if (__RETURN__) {
+						return false;
+					}
+				`;
+
+				if (isCallback || async[name]) {
+					this.deferReturn = 0;
+				}
+
+				if (isCallback) {
+					if (this.getGroup('waterfall')[closest]) {
 						this.append(ws`
 							if (__RETURN__) {
 								return arguments[arguments.length - 1](__RETURN_VAL__);
 							}
 						`);
 
-					} else if (this.getGroup('Async')[parent]) {
+					} else if (this.getGroup('Async')[closest]) {
 						this.append(ws`
 							if (__RETURN__) {
 								if (typeof arguments[0] === 'function') {
@@ -73,28 +84,21 @@ Snakeskin.addDirective(
 						`);
 
 					} else {
-						this.append(ws`
-							if (__RETURN__) {
-								return false;
-							}
-						`);
+						this.append(def);
 					}
 
-					this.deferReturn = 0;
+				} else if (async[name]) {
+					this.append(def);
 
 				} else if (this.deferReturn) {
 					if (this.deferReturn > 1) {
-						this.append(ws`
-							if (__RETURN__) {
-								return false;
-							}
-						`);
+						this.append(def);
 					}
 
 					this.deferReturn++;
 				}
 
-			} else if (!async[name]) {
+			} else {
 				this.append(ws`
 					if (__RETURN__) {
 						return __RETURN_VAL__;
