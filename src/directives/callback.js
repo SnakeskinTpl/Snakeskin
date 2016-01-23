@@ -24,7 +24,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			parts = command.split('=>');
+			parts = command.split('=>'),
+			p = this.structure.params;
 
 		if (!parts.length || parts.length > 2) {
 			return this.error(`invalid "${this.name}" declaration`);
@@ -35,28 +36,45 @@ Snakeskin.addDirective(
 			pstfx = '';
 
 		const
-			parent = any(this.hasParent(this.getGroup('async', 'microTemplate'), true));
+			parent = this.getNonLogicParent();
 
-		if (parent) {
-			if (this.getGroup('async')[parent.name]) {
-				let
-					length = 0;
+		if (this.getGroup('async')[this.getNonLogicParent().name]) {
+			p.type = 'async';
 
-				$C(parent.children).forEach(({name}) => {
-					if (this.getGroup('callback')[name]) {
-						length++;
-					}
+			let
+				length = 0;
 
-					if (length > 1) {
-						return false;
-					}
-				});
+			$C(parent.children).forEach(({name}) => {
+				if (this.getGroup('callback')[name]) {
+					length++;
+				}
 
-				prfx = length > 1 ? ',' : '';
+				if (length > 1) {
+					return false;
+				}
+			});
 
-			} else if (this.getGroup('microTemplate')[parent.name]) {
+			prfx = length > 1 ? ',' : '';
+
+		} else {
+			const
+				parent = any(this.hasParent(this.getGroup('microTemplate', 'callback', 'block'), true)),
+				microTemplates = this.getGroup('microTemplate');
+
+			if (
+				parent && (
+					microTemplates[parent.name] ||
+					parent.name === 'block' && !parent.params.isCallable &&
+					this.hasParent(microTemplates)
+				)
+
+			) {
+				p.parent = parent;
+				p.type = 'microTemplate';
 				prfx = `__RESULT__ = new Raw`;
-				pstfx = ws`
+			}
+
+			pstfx = ws`
 				var __RESULT__ = ${this.getResultDecl()};
 
 				function getTplResult(opt_clear) {
@@ -73,7 +91,6 @@ Snakeskin.addDirective(
 					__RESULT__ = ${this.getResultDecl()};
 				}
 			`;
-			}
 		}
 
 		const args = this.declFnArgs(`(${parts[1]})`);
@@ -82,20 +99,21 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			parent = any(this.hasParent(this.getGroup('async', 'microTemplate'), true));
+			p = this.structure.params;
 
-		if (parent) {
-			if (this.getGroup('async')[parent.name]) {
+		switch (p.type) {
+			case 'async':
 				this.append('})');
+				break;
 
-			} else if (this.getGroup('microTemplate')[parent.name]) {
+			case 'microTemplate':
 				this.append(`return Unsafe(${this.getReturnResultDecl()}); });`);
-				parent.params.strongSpace = true;
+				p.parent.params.strongSpace = true;
 				this.strongSpace.push(true);
-			}
+				break;
 
-		} else {
-			this.append('});');
+			default:
+				this.append('});');
 		}
 	}
 );
