@@ -48,3 +48,4 @@ import './directives/putIn';
 import './directives/block';
 import './directives/attr';
 import './directives/tag';
+import './directives/op';
