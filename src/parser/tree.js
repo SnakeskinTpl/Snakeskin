@@ -180,19 +180,23 @@ Parser.prototype.hasParentMicroTemplate = function () {
 Parser.prototype.hasParentFunction = function () {
 	const test = (obj) => {
 		let
-			target = any(this._has(this.getGroup('async', 'function', 'block', 'rootTemplate'), obj, true));
-
-		const
+			target = any(this._has(this.getGroup('async', 'function', 'block'), obj, true)),
 			closest = this.getNonLogicParent().name,
 			asyncParent = this.getGroup('async')[closest] ? closest : false;
 
 		if (target) {
-			if (
-				this.getGroup('rootTemplate')[target.name] ||
-				this.getGroup('callback')[target.name] && !asyncParent ||
-				target.name === 'block' && (target.params.isCallable || (target = test(target.parent)))
-			) {
+			if (target.name === 'block' && !target.params.isCallable) {
+				const
+					tmp = test(target.parent);
 
+				if (!tmp) {
+					return false;
+				}
+
+				({asyncParent, target} = tmp);
+			}
+
+			if (target.name === 'block' || this.getGroup('callback')[target.name] && !asyncParent) {
 				return {
 					asyncParent,
 					block: true,
@@ -200,11 +204,13 @@ Parser.prototype.hasParentFunction = function () {
 				};
 			}
 
-			return {
-				asyncParent,
-				block: false,
-				target
-			};
+			if (target) {
+				return {
+					asyncParent,
+					block: false,
+					target
+				};
+			}
 		}
 
 		return false;

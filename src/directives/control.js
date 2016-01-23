@@ -22,44 +22,36 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			valid = ['cycle', 'iterator', 'async'],
-			all = valid.concat('block', 'microTemplate');
+			parent = any(this.hasParentFunction());
 
-		const
-			inside = any(this.hasParent(this.getGroup(...valid))),
-			parent = any(this.hasParent(this.getGroup(...all), true));
+		if (parent) {
+			if (parent.block) {
+				return this.error(`the directive "${this.name}" can't be used within the "${parent.target.name}"`);
+			}
 
-		if (
-			parent.name === 'block' && parent.params.isCallable ||
-			this.getGroup('microTemplate')[parent.name] &&
-			this.getGroup('callback')[any(this.hasParent(this.getGroup(...valid, 'callback')))]
+			if (parent.asyncParent) {
+				const
+					val = command ? this.out(command, {unsafe: true}) : 'false';
 
-		) {
-			return this.error(`the directive "${this.name}" can't be used within the "${parent.name}"`);
-		}
+				if (this.getGroup('waterfall')[parent.asyncParent]) {
+					this.append(`return arguments[arguments.length - 1](${val});`);
 
-		if (this.getGroup('cycle')[inside]) {
-			this.append('break;');
+				} else {
+					this.append(ws`
+						if (typeof arguments[0] === 'function') {
+							return arguments[0](${val});
+						}
 
-		} else if (this.getGroup('iterator')[inside]) {
-			this.append('return false;');
-
-		} else {
-			const
-				val = command ? this.out(command, {unsafe: true}) : 'false';
-
-			if (this.getGroup('waterfall')[inside]) {
-				this.append(`return arguments[arguments.length - 1](${val});`);
+						return false;
+					`);
+				}
 
 			} else {
-				this.append(ws`
-					if (typeof arguments[0] === 'function') {
-						return arguments[0](${val});
-					}
-
-					return false;
-				`);
+				this.append('return false;');
 			}
+
+		} else {
+			this.append('break;');
 		}
 	}
 );
@@ -74,44 +66,36 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			valid = ['cycle', 'iterator', 'async'],
-			all = valid.concat('block', 'microTemplate');
+			parent = any(this.hasParentFunction());
 
-		const
-			inside = any(this.hasParent(this.getGroup(...valid))),
-			parent = any(this.hasParent(this.getGroup(...all), true));
+		if (parent) {
+			if (parent.block) {
+				return this.error(`the directive "${this.name}" can't be used within the "${parent.target.name}"`);
+			}
 
-		if (
-			parent.name === 'block' && parent.params.isCallable ||
-			this.getGroup('microTemplate')[parent.name] &&
-			this.getGroup('callback')[any(this.hasParent(this.getGroup(...valid, 'callback')))]
+			if (parent.asyncParent) {
+				const
+					val = command ? this.out(command, {unsafe: true}) : 'false';
 
-		) {
-			return this.error(`the directive "${this.name}" can't be used within the "${parent.name}"`);
-		}
+				if (this.getGroup('waterfall')[parent.asyncParent]) {
+					this.append(`return arguments[arguments.length - 1](${val});`);
 
-		if (this.getGroup('cycle')[inside]) {
-			this.append('continue;');
+				} else {
+					this.append(ws`
+						if (typeof arguments[0] === 'function') {
+							return arguments[0](${val});
+						}
 
-		} else if (this.getGroup('iterator')[inside]) {
-			this.append('return;');
-
-		} else {
-			const
-				val = command ? `undefined,${this.out(command, {unsafe: true})}` : '';
-
-			if (this.getGroup('waterfall')[inside]) {
-				this.append(`return arguments[arguments.length - 1](${val});`);
+						return;
+					`);
+				}
 
 			} else {
-				this.append(ws`
-					if (typeof arguments[0] === 'function') {
-						return arguments[0](${val});
-					}
-
-					return;
-				`);
+				this.append('return;');
 			}
+
+		} else {
+			this.append('continue;');
 		}
 	}
 );
