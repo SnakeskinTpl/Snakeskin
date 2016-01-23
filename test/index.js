@@ -26,7 +26,6 @@ if (!utils.exists(utils.to)) {
 utils.run({
 	prettyPrint: true,
 	throws: true,
-	autoReplace: true,
 	lineSeparator: eol
 });
 
