@@ -420,7 +420,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			const
 				parent = any(this.getNonLogicParent()).name;
 
-			if ($dirParents[parent.name] && $dirParents[parent.name][dirName]) {
+			if ($dirParents[parent] && $dirParents[parent][dirName]) {
 				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
 
 			} else if (dirName !== 'end') {
