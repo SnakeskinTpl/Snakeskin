@@ -57,9 +57,9 @@ exports.run = function (params) {
 			console.log('\n###### ' + nms.join('.') + '\n');
 
 			var
-				testRgxp = /^\[\[(.*)]]=*$/gm,
+				testRgxp = /^\[\[(.*)]]===+$/gm,
 				tests = [],
-				results = txt[0].split(/^\[\[.*]]=*$/m).slice(1);
+				results = txt[0].split(/^\[\[.*]]===+$/m).slice(1);
 
 			while (testRgxp.exec(txt[0])) {
 				tests.push(RegExp.$1);
