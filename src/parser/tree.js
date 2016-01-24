@@ -16,20 +16,28 @@ import { $logicDirs } from '../consts/cache';
 
 /**
  * Returns an object of the closest non logic parent directive
+ *
+ * @private
+ * @param {!Object} structure - structure object
  * @return {!Object}
  */
-Parser.prototype.getNonLogicParent = function () {
-	let
-		obj = this.structure.parent;
-
+Parser.prototype._getNonLogicParent = function (structure) {
 	while (true) {
-		if ($logicDirs[obj.name] && (obj.name !== 'block' || !obj.params.isCallable)) {
-			obj = obj.parent;
+		if ($logicDirs[structure.name] && (structure.name !== 'block' || !structure.params.isCallable)) {
+			structure = structure.parent;
 			continue;
 		}
 
-		return obj;
+		return structure;
 	}
+};
+
+/**
+ * Returns an object of the closest non logic parent directive
+ * @return {!Object}
+ */
+Parser.prototype.getNonLogicParent = function () {
+	return this._getNonLogicParent(this.structure.parent);
 };
 
 /**
@@ -46,13 +54,11 @@ Parser.prototype.isLogic = function () {
  *
  * @private
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
- * @param {Object=} [opt_obj] - structure object
+ * @param {!Object} structure - structure object
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */
-Parser.prototype._has = function (name, opt_obj, opt_return) {
-	let obj = opt_obj;
-
+Parser.prototype._has = function (name, structure, opt_return) {
 	if (isArray(name)) {
 		name = $C(name).reduce((map, el) => {
 			if (isObject(el)) {
@@ -68,18 +74,18 @@ Parser.prototype._has = function (name, opt_obj, opt_return) {
 
 	while (true) {
 		const
-			nm = obj.name;
+			nm = structure.name;
 
 		if (name[nm] || nm === name) {
 			if (name[nm]) {
-				return opt_return ? obj : nm;
+				return opt_return ? structure : nm;
 			}
 
-			return opt_return ? obj : true;
+			return opt_return ? structure : true;
 		}
 
-		if (obj.parent && obj.parent.name !== 'root') {
-			obj = obj.parent;
+		if (structure.parent && structure.parent.name !== 'root') {
+			structure = structure.parent;
 
 		} else {
 			return false;
@@ -188,8 +194,8 @@ Parser.prototype.hasParentFunction = function () {
 	const test = (obj) => {
 		let
 			target = any(this._has(groups, obj, true)),
-			closest = this.getNonLogicParent().name,
-			asyncParent = cb[target.name] && this.getGroup('async')[closest] ? closest : false;
+			closest = this._getNonLogicParent(obj.parent).name,
+			asyncParent = this.getGroup('async')[closest] ? closest : false;
 
 		if (target) {
 			if (target.name === 'block' && !target.params.isCallable) {
