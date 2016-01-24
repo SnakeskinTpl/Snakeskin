@@ -54,7 +54,7 @@ Parser.prototype.isLogic = function () {
  *
  * @private
  * @param {(string|!Object<string, boolean>|!Array<string>)} name - directive name, a map of names or an array of names
- * @param {!Object} structure - structure object
+ * @param {$$SnakeskinParserStructure} structure - structure object
  * @param {?boolean=} [opt_return=false] - if is true, then returns a reference to the found object (if it exists)
  * @return {(boolean|string|!Object)}
  */
@@ -102,7 +102,7 @@ Parser.prototype._has = function (name, structure, opt_return) {
  * @return {(boolean|string|!Object)}
  */
 Parser.prototype.has = function (name, opt_return) {
-	return this._has(name, this.structure, opt_return);
+	return this._has(name, any(this.structure), opt_return);
 };
 
 /**
@@ -115,7 +115,7 @@ Parser.prototype.has = function (name, opt_return) {
  */
 Parser.prototype.hasParent = function (name, opt_return) {
 	if (this.structure.parent) {
-		return this._has(name, this.structure.parent, opt_return);
+		return this._has(name, any(this.structure.parent), opt_return);
 	}
 
 	return false;
@@ -131,7 +131,7 @@ Parser.prototype.hasParent = function (name, opt_return) {
  */
 Parser.prototype.hasBlock = function (name, opt_return) {
 	if (this.blockStructure) {
-		return this._has(name, this.blockStructure, opt_return);
+		return this._has(name, any(this.blockStructure), opt_return);
 	}
 
 	return false;
@@ -147,7 +147,7 @@ Parser.prototype.hasBlock = function (name, opt_return) {
  */
 Parser.prototype.hasParentBlock = function (name, opt_return) {
 	if (this.blockStructure && this.blockStructure.parent) {
-		return this._has(name, this.blockStructure.parent, opt_return);
+		return this._has(name, any(this.blockStructure.parent), opt_return);
 	}
 
 	return false;
