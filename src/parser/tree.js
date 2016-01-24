@@ -154,7 +154,7 @@ Parser.prototype.hasParentBlock = function (name, opt_return) {
 };
 
 /**
- * Returns an object of the closest parent micro-template structure or false
+ * Returns an object of the closest parent micro-template directive or false
  * @return {($$SnakeskinParserStructure|boolean)}
  */
 Parser.prototype.hasParentMicroTemplate = function () {
@@ -183,7 +183,7 @@ Parser.prototype.hasParentMicroTemplate = function () {
 };
 
 /**
- * Returns an object of the closest parent function structure or false
+ * Returns an object of the closest parent function directive or false
  * @return {({asyncParent: (boolean|string), block: boolean, target: $$SnakeskinParserStructure}|boolean)}
  */
 Parser.prototype.hasParentFunction = function () {
