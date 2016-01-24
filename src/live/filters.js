@@ -165,17 +165,18 @@ export const
  *
  * @param {?} val - source value
  * @param {?=} [opt_unsafe] - instance of the Unsafe class
+ * @param {?=} [opt_true] - true value
  * @param {?string=} [opt_attr] - type of attribute declaration
  * @return {(string|!Node)}
  */
-Filters['html'] = function (val, opt_unsafe, opt_attr) {
+Filters['html'] = function (val, opt_unsafe, opt_true, opt_attr) {
 	if (!val || typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
 
 	if (val instanceof Snakeskin.HTMLObject) {
 		Snakeskin.forEach(val.value, (el, key, data) => {
-			data[key] = [Filters['html'](el[0], opt_unsafe, val.attr)];
+			data[key] = el[0] !== opt_true ? [Filters['html'](el[0], opt_unsafe, opt_true, val.attr)] : el;
 		});
 
 		return '';
@@ -189,7 +190,7 @@ Filters['html'] = function (val, opt_unsafe, opt_attr) {
 };
 
 Snakeskin.setFilterParams('html', {
-	'bind': ['Unsafe', '__ATTR_TYPE__'],
+	'bind': ['Unsafe', 'TRUE', '__ATTR_TYPE__'],
 	'test'(val) {
 		return isNotPrimitive(val);
 	}

@@ -121,12 +121,11 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		`;
 
 		if (group) {
-			args[0] = ws`
-				' + (__ATTR_TYPE__ = 'attrKeyGroup', '') +
+			args[0] = ws`' +
+				(__ATTR_TYPE__ = 'attrKeyGroup', '') +
 				'${group}${separator}' +
 				(__ATTR_TYPE__ = 'attrKey', '') +
-				'${args[0]}
-			`;
+				'${args[0]}`;
 
 		} else {
 			args[0] = args[0][0] === '-' ? `data-${args[0].slice(1)}` : args[0];
@@ -151,17 +150,19 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			__ATTR_TYPE__ = 'attrKey';
 			__ATTR_TMP__ = '${this.pasteTplVarBlocks(args[0])}';
 
-			if (
-				!__ATTR_CONCAT_MAP__[__ATTR_TMP__] ||
-				!__ATTR_CACHE__[__ATTR_TMP__] ||
-				__ATTR_CACHE__[__ATTR_TMP__][0] === TRUE
+			if (__ATTR_TMP__ != null && __ATTR_TMP__ !== '') {
+				if (
+					!__ATTR_CONCAT_MAP__[__ATTR_TMP__] ||
+					!__ATTR_CACHE__[__ATTR_TMP__] ||
+					__ATTR_CACHE__[__ATTR_TMP__][0] === TRUE
 
-			) {
-				__ATTR_CACHE__[__ATTR_TMP__] = [];
+				) {
+					__ATTR_CACHE__[__ATTR_TMP__] = [];
+				}
+
+				${empty ? '__ATTR_CACHE__[__ATTR_TMP__].push(TRUE)' : '__ATTR_CACHE__[__ATTR_TMP__].push(__ATTR_STR__)'};
+				__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 			}
-
-			${empty ? '__ATTR_CACHE__[__ATTR_TMP__].push(TRUE)' : '__ATTR_CACHE__[__ATTR_TMP__].push(__ATTR_STR__)'};
-			__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 		`;
 
 	}, ''));

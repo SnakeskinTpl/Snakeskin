@@ -99,7 +99,8 @@ export default class Parser {
 				filters: this.filters,
 				language: this.language,
 				ignore: this.ignore,
-				tolerateWhitespaces: this.tolerateWhitespaces
+				tolerateWhitespaces: this.tolerateWhitespaces,
+				doctype: this.doctype
 			}
 		];
 
