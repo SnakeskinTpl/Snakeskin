@@ -6,7 +6,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-
 [[simple class reference]]==============================================================================================
 
 <div class="foo baz"><div class="baz__bar">Hello</div></div>
