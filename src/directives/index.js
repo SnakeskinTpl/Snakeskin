@@ -418,9 +418,9 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (structure.chain && !prevChain && !ignore && !this.isLogic()) {
 			const
-				parent = this.getNonLogicParent().name;
+				parent = any(this.getNonLogicParent()).name;
 
-			if ($dirParents[parent] && $dirParents[parent][dirName]) {
+			if ($dirParents[parent.name] && $dirParents[parent.name][dirName]) {
 				this.strongSpace.push(this.strongSpace[this.strongSpace.length - 2]);
 
 			} else if (dirName !== 'end') {
@@ -506,7 +506,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		const
-			chainParent = $dirParents[this.getNonLogicParent().name];
+			chainParent = $dirParents[any(this.getNonLogicParent()).name];
 
 		if ($dirParents[structure.name] || chainParent && chainParent[structure.name]) {
 			this.strongSpace.pop();

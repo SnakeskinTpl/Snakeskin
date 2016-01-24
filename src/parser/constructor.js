@@ -287,23 +287,10 @@ export default class Parser {
 
 		/**
 		 * The template structure
-		 * @type {!Object}
+		 * @type {$$SnakeskinParserStructure}
 		 */
 		this.structure = {
 			name: 'root',
-			/**
-			 * @type {?{
-			 *   name:
-			 *   string,
-			 *   parent: Object,
-			 *   params: !Object,
-			 *   stack: !Array,
-			 *   vars: Object,
-			 *   children: Array,
-			 *   logic: boolean,
-			 *   chain: boolean
-			 * }}
-			 */
 			parent: null,
 			params: {},
 			stack: [],

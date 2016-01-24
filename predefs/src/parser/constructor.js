@@ -197,6 +197,20 @@ $$SnakeskinParser.prototype.blockStructure;
 /** @type {Object} */
 $$SnakeskinParser.prototype.blockTable;
 
+/**
+ * @typedef {{
+ *   name: string,
+ *   parent: ?$$SnakeskinParserStructure,
+ *   params: !Object,
+ *   stack: !Array,
+ *   vars: Object,
+ *   children: Array,
+ *   logic: boolean,
+ *   chain: boolean
+ * }}
+ */
+var $$SnakeskinParserStructure;
+
 /** @type {!Object} */
 $$SnakeskinParser.prototype.structure;
 

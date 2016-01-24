@@ -18,8 +18,8 @@ import { $logicDirs } from '../consts/cache';
  * Returns an object of the closest non logic parent directive
  *
  * @private
- * @param {!Object} structure - structure object
- * @return {!Object}
+ * @param {$$SnakeskinParserStructure} structure - structure object
+ * @return {$$SnakeskinParserStructure}
  */
 Parser.prototype._getNonLogicParent = function (structure) {
 	while (true) {
@@ -34,10 +34,10 @@ Parser.prototype._getNonLogicParent = function (structure) {
 
 /**
  * Returns an object of the closest non logic parent directive
- * @return {!Object}
+ * @return {?$$SnakeskinParserStructure}
  */
 Parser.prototype.getNonLogicParent = function () {
-	return this._getNonLogicParent(this.structure.parent);
+	return this.structure.parent ? this._getNonLogicParent(any(this.structure.parent)) : null;
 };
 
 /**
@@ -155,7 +155,7 @@ Parser.prototype.hasParentBlock = function (name, opt_return) {
 
 /**
  * Returns an object of the closest parent micro-template structure or false
- * @return {(!Object|boolean)}
+ * @return {($$SnakeskinParserStructure|boolean)}
  */
 Parser.prototype.hasParentMicroTemplate = function () {
 	const
@@ -184,7 +184,7 @@ Parser.prototype.hasParentMicroTemplate = function () {
 
 /**
  * Returns an object of the closest parent function structure or false
- * @return {(!Object|boolean)}
+ * @return {({asyncParent: (boolean|string), block: boolean, target: $$SnakeskinParserStructure}|boolean)}
  */
 Parser.prototype.hasParentFunction = function () {
 	const
@@ -194,8 +194,8 @@ Parser.prototype.hasParentFunction = function () {
 	const test = (obj) => {
 		let
 			target = any(this._has(groups, obj, true)),
-			closest = this._getNonLogicParent(obj.parent).name,
-			asyncParent = this.getGroup('async')[closest] ? closest : false;
+			closest = any(this._getNonLogicParent(obj.parent)),
+			asyncParent = closest && this.getGroup('async')[closest.name] && cb[target.name] ? closest.name : false;
 
 		if (target) {
 			if (target.name === 'block' && !target.params.isCallable) {

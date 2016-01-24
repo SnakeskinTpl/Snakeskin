@@ -49,7 +49,7 @@ Snakeskin.addDirective(
 				asyncParent;
 
 			if (isCallback) {
-				closest = this.getNonLogicParent().name,
+				closest = any(this.getNonLogicParent()).name,
 				asyncParent = async[closest];
 			}
 
