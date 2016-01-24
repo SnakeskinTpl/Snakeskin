@@ -367,12 +367,12 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 			// Inside a template
 			} else {
-				if (!space && !parser.space && !parser.sysSpace) {
+				if (!space && (parser.tolerateWhitespaces || !parser.space) && !parser.sysSpace) {
 					el = parser.ignore && parser.ignore.test(el) ?
 						'' : el;
 
-					if (el && !parser.tolerateWhitespaces) {
-						el = ' ';
+					if (el) {
+						el = parser.tolerateWhitespaces ? el : ' ';
 						parser.space = true;
 					}
 
