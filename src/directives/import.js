@@ -30,7 +30,7 @@ Snakeskin.addDirective(
 			res = isNativeExport ? 'import ' : '',
 			from = '';
 
-		command = command.replace(/\s+from\s+([^\s]+)\s*|\s*([^\s]+)\s*/, (str, path1, path2) => {
+		command = command.replace(/(?:\s+from\s+([^\s]+)\s*|\s*([^\s]+)\s*)$/, (str, path1, path2) => {
 			if (isNativeExport) {
 				from = str;
 
