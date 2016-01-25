@@ -109,18 +109,12 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 	try {
 		name = String($C(
 			this.replaceFileNamePatterns(name)
-				.replace(nmssRgxp, (str, $0) => `${$0 || ''}%`)
+				.replace(nmssRgxp, (str, $0) => `${$0 ? `${this.scope[this.scope.length - 1]}.` : ''}%`)
 				.replace(nmsRgxp, '.%')
 				.replace(nmeRgxp, '')
 				.split('.')
 
 		).reduce((str, el) => {
-			let prfx = '';
-			if (el.substr(0, 2) === `${G_MOD}%`) {
-				prfx = this.scope[this.scope.length - 1];
-				el = el.slice(1);
-			}
-
 			const
 				custom = el[0] === '%';
 
@@ -128,7 +122,7 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
 			if (custom) {
-				str += ws`${prfx}['${applyDefEscape(this.returnEvalVal(el))}']`;
+				str += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
 				return str;
 			}
 
