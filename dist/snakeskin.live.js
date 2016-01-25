@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 21 Jan 2016 20:56:51 GMT
+ * Date: 'Mon, 25 Jan 2016 13:33:08 GMT
  */
 
 (function (global, factory) {
@@ -130,11 +130,11 @@
      * Special Snakeskin class for escaping HTML entities from an object
      *
      * @constructor
-     * @param {?} val - source value
+     * @param {?} obj - source object
      * @param {?string=} [opt_attr] - type of attribute declaration
      */
-    Snakeskin.HTMLObject = function (val, opt_attr) {
-    	this.value = val;
+    Snakeskin.HTMLObject = function (obj, opt_attr) {
+    	this.value = obj;
     	this.attr = opt_attr;
     };
 
@@ -337,12 +337,6 @@
     	return fn;
     };
 
-        var attrSeparators = {
-      '-': true,
-      ':': true,
-      '_': true
-    };
-
     var rRgxp = /([\\\/'*+?|()\[\]{}.^$-])/g;
 
     /**
@@ -354,6 +348,26 @@
     function r(str) {
       return str.replace(rRgxp, '\\$1');
     }
+
+    var isNotPrimitiveRgxp = /^\(*\s*(.*?)\s*\)*$/;
+    var isNotPrimitiveMap = { 'false': true, 'null': true, 'true': true, 'undefined': true };
+    /**
+     * Returns true if the specified string can't be parse as a primitive value
+     *
+     * @param {string} str - source string
+     * @param {Object<string, boolean>=} opt_map - map of primitives
+     * @return {boolean}
+     */
+    function isNotPrimitive(str, opt_map) {
+      str = ((isNotPrimitiveRgxp.exec(str) || [])[1] || '').trim();
+      return Boolean(str && isNaN(Number(str)) && !(opt_map || isNotPrimitiveMap)[str]);
+    }
+
+        var attrSeparators = {
+      '-': true,
+      ':': true,
+      '_': true
+    };
 
     var _COMMENTS;
     var _SYS_ESCAPES;
@@ -373,10 +387,9 @@
 
     var MICRO_TEMPLATE = '${';
 
-    var BASE_SHORTS = {
-    	'-': true,
-    	'#': true
-    };
+    var BASE_SHORTS = babelHelpers.defineProperty({
+    	'-': true
+    }, ADV_LEFT_BOUND, true);
 
     var SHORTS = {};
 
@@ -604,19 +617,25 @@
      * @param {?} val - source value
      * @param {?=} [opt_unsafe] - instance of the Unsafe class
      * @param {?string=} [opt_attr] - type of attribute declaration
-     * @return {(string|!Node)}
+     * @param {Object=} [opt_attrCache] - attribute cache object
+     * @param {?=} [opt_true] - true value
+     * @return {(string|!Snakeskin.HTMLObject|!Node)}
      */
-    Filters['html'] = function (val, opt_unsafe, opt_attr) {
-    	if (typeof Node === 'function' && val instanceof Node) {
+    Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) {
+    	if (!val || typeof Node === 'function' && val instanceof Node) {
     		return val;
     	}
 
     	if (val instanceof Snakeskin.HTMLObject) {
     		Snakeskin.forEach(val.value, function (el, key, data) {
-    			data[key] = [Filters['html'](el[0], opt_unsafe, val.attr)];
+    			if (val.attr) {
+    				opt_attrCache[key] = data[key] = el[0] !== opt_true ? [Filters['html'](el[0], opt_unsafe, val.attr, opt_attrCache, opt_true)] : el;
+    			} else {
+    				data[key] = Filters['html'](el, opt_unsafe);
+    			}
     		});
 
-    		return '';
+    		return val;
     	}
 
     	if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
@@ -626,6 +645,13 @@
     	return String(opt_attr ? Filters[opt_attr](val) : val).replace(escapeHTMLRgxp, escapeHTML);
     };
 
+    Snakeskin.setFilterParams('html', {
+    	'bind': ['Unsafe', '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE'],
+    	'test': function test(val) {
+    		return isNotPrimitive(val);
+    	}
+    });
+
     Filters['htmlObject'] = function (val) {
     	if (val instanceof Snakeskin.HTMLObject) {
     		return '';
@@ -633,10 +659,6 @@
 
     	return val;
     };
-
-    Snakeskin.setFilterParams('html', {
-    	'bind': ['Unsafe', '__ATTR_TYPE__']
-    });
 
     /**
      * Replaces undefined to ''
@@ -647,6 +669,12 @@
     Filters['undef'] = function (val) {
     	return val !== undefined ? val : '';
     };
+
+    Snakeskin.setFilterParams('undef', {
+    	'test': function test(val) {
+    		return isNotPrimitive(val, { 'false': true, 'null': true, 'true': true });
+    	}
+    });
 
     /**
      * Replaces escaped HTML entities to real content
@@ -1014,6 +1042,8 @@
     		return String(val);
     	}
 
+    	var localCache = {};
+
     	/**
       * @param {Object} obj
       * @param {?string=} opt_prfx
@@ -1031,10 +1061,11 @@
     				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : group + '-'));
     			}
 
-    			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = [el];
+    			var tmp = dasherize(opt_prfx + key);
+    			cache[tmp] = localCache[tmp] = [el];
     		});
 
-    		return new Snakeskin.HTMLObject(cache, 'attrVal');
+    		return new Snakeskin.HTMLObject(localCache, 'attrVal');
     	}
 
     	return convert(val);
@@ -1044,7 +1075,10 @@
     	'!html': true,
     	'bind': [function (o) {
     		return '\'' + o.doctype + '\'';
-    	}, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE']
+    	}, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE'],
+    	'test': function test(val) {
+    		return isNotPrimitive(val);
+    	}
     });
 
     return Snakeskin;

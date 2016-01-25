@@ -1,3 +1,5 @@
+- namespace demo
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -7,4 +9,5 @@
  */
 
 - template helloWorld(name = 'world')
-	Hello {name}!
+	< .hello
+		Hello {name}!
