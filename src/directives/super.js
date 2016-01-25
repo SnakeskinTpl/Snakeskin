@@ -1,5 +1,7 @@
 'use strict';
 
+// jscs:disable requireTemplateStrings
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -9,7 +11,6 @@
  */
 
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
 import { $router } from '../consts/cache';
 import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
@@ -64,14 +65,13 @@ Snakeskin.addDirective(
 				diff = this.getDiff(commandLength),
 				sp = this.tolerateWhitespaces ? '' : `${s}__&-__${e}`;
 
-			this.source = ws`
-				${this.source.slice(0, this.i - diff)}
-				/*!!= ${s}super${e} =*/${s}__super__ ${this.info.line}${e}${cache.content}${sp}${s}__end__${e}
-				${this.source.slice(this.i + 1)}
-			`;
+			this.source =
+				this.source.slice(0, this.i - diff) +
+				`/*!!= ${s}super${e} =*/${s}__super__ ${this.info.line}${e}${cache.content}${sp}${s}__end__${e}` +
+				this.source.slice(this.i + 1);
 
 			const l = this.lines.length - 1;
-			this.lines[l] = this.lines[l].slice(0, l - diff);
+			this.lines[l] = this.lines[l].slice(0, this.lines[l].length - diff - 1);
 			this.i -= diff + 1;
 		}
 	}

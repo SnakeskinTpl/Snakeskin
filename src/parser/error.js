@@ -55,9 +55,6 @@ Parser.prototype.getAdvInfo = function () {
 				pos = line - i - 2,
 				prev = this.lines[pos];
 
-			const
-				space = new Array(String(line - 1).length - String(pos).length + 1).join(' ');
-
 			if (prev != null) {
 				prev = prev
 					.replace(styleRgxp, '  ')
@@ -66,7 +63,7 @@ Parser.prototype.getAdvInfo = function () {
 
 				let part;
 				if (prev.trim()) {
-					part = `${eol}  ${pos + 1} ${space}${prev}`;
+					part = `${eol}  ${pos + 1} ${prev}`;
 
 				} else {
 					part = `${eol}  ...`;
