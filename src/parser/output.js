@@ -65,9 +65,7 @@ const blackWords = {
 	'while': true,
 	'with': true,
 	'class': true,
-	'interface': true,
-	'async': true,
-	'await': true
+	'interface': true
 };
 
 const unDefUnaryBlackWords = {

@@ -161,8 +161,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 				}
 
 				${empty ? '__ATTR_CACHE__[__ATTR_TMP__].push(TRUE)' : '__ATTR_CACHE__[__ATTR_TMP__].push(__ATTR_STR__)'};
-				__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 			}
+
+			__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 		`;
 
 	}, ''));

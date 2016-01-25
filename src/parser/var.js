@@ -109,14 +109,14 @@ Parser.prototype.declVars = function (str, opt_params) {
 		cache = '';
 
 	let
-		fin = 'var ',
-		struct = this.structure;
+		{structure} = this,
+		fin = 'var ';
 
-	while (!struct.vars) {
-		struct = struct.parent;
+	while (!structure.vars) {
+		structure = structure.parent;
 	}
 
-	if (struct.name === 'root') {
+	if (structure.name === 'root') {
 		fin = '';
 	}
 

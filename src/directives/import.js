@@ -15,16 +15,20 @@ Snakeskin.addDirective(
 	'import',
 
 	{
-		group: ['import', 'define', 'head'],
+		group: ['import', 'head'],
 		notEmpty: true,
 		placement: 'global'
 	},
 
 	function (command) {
-		this.structure.vars = {};
-
 		const
+			{structure} = this,
 			isNativeExport = this.module === 'native';
+
+		if (isNativeExport) {
+			structure.vars = {};
+			structure.params['@result'] = '';
+		}
 
 		let
 			res = isNativeExport ? 'import ' : '',

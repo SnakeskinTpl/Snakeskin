@@ -525,7 +525,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 
 		const
-			res = params['@result'] ? params['@result'] : this.result;
+			res = params['@result'] != null ? params['@result'] : this.result;
 
 		const
 			from = params['@from'],
