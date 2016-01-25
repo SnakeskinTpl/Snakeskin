@@ -20,6 +20,7 @@ Snakeskin.addDirective(
 		group: ['call', 'microTemplate', 'output'],
 		notEmpty: true,
 		shorthands: {'+=': 'call ', '/+': 'end call'},
+		text: true,
 		trim: true
 	},
 
@@ -54,6 +55,8 @@ Snakeskin.addDirective(
 	},
 
 	function () {
+		this.text = true;
+
 		const
 			p = this.structure.params;
 
