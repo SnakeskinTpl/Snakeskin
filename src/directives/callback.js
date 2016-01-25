@@ -36,9 +36,9 @@ Snakeskin.addDirective(
 			pstfx = '';
 
 		const
-			parent = any(this.getNonLogicParent()).name;
+			parent = any(this.getNonLogicParent());
 
-		if (this.getGroup('async')[parent]) {
+		if (this.getGroup('async')[parent.name]) {
 			p.type = 'async';
 
 			let
