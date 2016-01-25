@@ -8,53 +8,57 @@
 
 [[with default value]]==================================================================================================
 
-	<script type="text/javascript">
-		var baz = {
-			foo: 'bar'
-		};
-	</script>
+	<style type="text/css">
+		.foo {
+			color: red;
+		}
+	</style>
 
-[[with ts value]]=======================================================================================================
+[[with css value]]======================================================================================================
 
-	<script type="application/typescript">
-		const baz: number = 1;
-	</script>
+	<style type="text/css">
+		.foo {
+			color: red;
+		}
+	</style>
 
 [[with custom value]]===================================================================================================
 
-	<script type="text/x-snakeskin">
-		- template foo()
-			< .bar
-	</script>
+	<style type="text/x-stylus">
+		.foo
+			color red
+	</style>
 
 [[with merging attributes]]=============================================================================================
 
-	<script type="text/x-snakeskin">
-		- template foo()
-			< .bar
-	</script>
+	<style type="text/x-stylus">
+		.foo
+			color red
+	</style>
 
 ========================================================================================================================
 
-- namespace tag.script
+- namespace tags.style
 @= tolerateWhitespaces true
 
 - template ['with default value']()
-	# script
-		var baz = {
-			foo: 'bar'
-		};
+	# style
+		.foo {
+			color: red;
+		}
 
-- template ['with ts value']()
-	# script ts
-		const baz: number = 1;
+- template ['with css value']()
+	# style css
+		.foo {
+			color: red;
+		}
 
 - template ['with custom value']()
-	# script text/x-snakeskin
-		- template foo()
-			< .bar
+	# style text/x-stylus
+		.foo
+			color red
 
 - template ['with merging attributes']()
-	# script (type = text/x-snakeskin)
-		- template foo()
-			< .bar
+	# style (type = text/x-stylus)
+		.foo
+			color red

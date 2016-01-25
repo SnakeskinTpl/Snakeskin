@@ -28,7 +28,7 @@
 
 ========================================================================================================================
 
-- namespace tag.bem
+- namespace tags.bem
 
 - template ['simple class reference']()
 	< .foo.baz

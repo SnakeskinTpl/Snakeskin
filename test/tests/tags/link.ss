@@ -36,7 +36,7 @@
 
 ========================================================================================================================
 
-- namespace tag.link
+- namespace tags.link
 
 - template ['with default value']()
 	- link (href = foo.css)

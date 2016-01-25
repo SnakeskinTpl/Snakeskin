@@ -24,7 +24,7 @@
 
 ========================================================================================================================
 
-- namespace tag.interpolation
+- namespace tags.interpolation
 
 - template ['input-textarea']()
 	< ${true ? 'input' : 'textarea'}

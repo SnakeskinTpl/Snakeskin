@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace tag.doctype
+- namespace tags.doctype
 
 - template ['with default value']()
 	- doctype
