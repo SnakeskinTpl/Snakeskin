@@ -16,11 +16,11 @@ import { isArray } from '../helpers/types';
  * Special Snakeskin class for escaping HTML entities from an object
  *
  * @constructor
- * @param {?} val - source value
+ * @param {?} obj - source object
  * @param {?string=} [opt_attr] - type of attribute declaration
  */
-Snakeskin.HTMLObject = function (val, opt_attr) {
-	this.value = val;
+Snakeskin.HTMLObject = function (obj, opt_attr) {
+	this.value = obj;
 	this.attr = opt_attr;
 };
 

@@ -165,21 +165,28 @@ export const
  *
  * @param {?} val - source value
  * @param {?=} [opt_unsafe] - instance of the Unsafe class
- * @param {?=} [opt_true] - true value
  * @param {?string=} [opt_attr] - type of attribute declaration
- * @return {(string|!Node)}
+ * @param {Object=} [opt_attrCache] - attribute cache object
+ * @param {?=} [opt_true] - true value
+ * @return {(string|!Snakeskin.HTMLObject|!Node)}
  */
-Filters['html'] = function (val, opt_unsafe, opt_true, opt_attr) {
+Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) {
 	if (!val || typeof Node === 'function' && val instanceof Node) {
 		return val;
 	}
 
 	if (val instanceof Snakeskin.HTMLObject) {
 		Snakeskin.forEach(val.value, (el, key, data) => {
-			data[key] = el[0] !== opt_true ? [Filters['html'](el[0], opt_unsafe, opt_true, val.attr)] : el;
+			if (val.attr) {
+				opt_attrCache[key] = data[key] = el[0] !== opt_true ?
+					[Filters['html'](el[0], opt_unsafe, val.attr, opt_attrCache, opt_true)] : el;
+
+			} else {
+				data[key] = Filters['html'](el, opt_unsafe);
+			}
 		});
 
-		return '';
+		return val;
 	}
 
 	if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
@@ -190,7 +197,7 @@ Filters['html'] = function (val, opt_unsafe, opt_true, opt_attr) {
 };
 
 Snakeskin.setFilterParams('html', {
-	'bind': ['Unsafe', 'TRUE', '__ATTR_TYPE__'],
+	'bind': ['Unsafe', '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE'],
 	'test'(val) {
 		return isNotPrimitive(val);
 	}
@@ -599,6 +606,9 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 		return String(val);
 	}
 
+	const
+		localCache = {};
+
 	/**
 	 * @param {Object} obj
 	 * @param {?string=} opt_prfx
@@ -616,10 +626,11 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 				return convert(el, opt_prfx + (!group.length || attrSeparators[group.slice(-1)] ? group : `${group}-`));
 			}
 
-			cache[Filters['attrKey'](dasherize(opt_prfx + key))] = [el];
+			const tmp = dasherize(opt_prfx + key);
+			cache[tmp] = localCache[tmp] = [el];
 		});
 
-		return new Snakeskin.HTMLObject(cache, 'attrVal');
+		return new Snakeskin.HTMLObject(localCache, 'attrVal');
 	}
 
 	return convert(val);
