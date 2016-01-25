@@ -30,6 +30,14 @@
 
 <div onclick="javascript:alert(&quot;xss!&quot;)" onload="javascript&#31;:alert(&quot;xss!&quot;)" class="foo"></div>
 
+[[mixing with object]]==================================================================================================
+
+<div class="foo bar" ng-baz="foo bar" bar="bla" ng-bar="foo"></div>
+
+[[interpolation]]==================================================================================================
+
+<div class="foo bar" bar="[object Object]" baz=""></div>
+
 ========================================================================================================================
 
 - namespace tag.attr
@@ -52,3 +60,9 @@
 
 - template ['html escaping with object']()
 	< .foo ${{onclick: 'javascript:alert("xss!")'}|!html} | ${{onload: 'javascript:alert("xss!")'}}
+
+- template ['mixing with object']()
+	< .foo (${{class: 'bar', ng: {baz: 'foo bar'}, bar: TRUE}}) (bar = bla) ng-(bar = foo)
+
+- template ['interpolation']()
+	< .foo ${{class: 'bar'}} = foo | ${'bar'} = ${{class: 'bar'}} | ${''} = hello | ${'baz'} = ${''}
