@@ -11,10 +11,11 @@
 import $C from '../deps/collection';
 import esprima from '../deps/esprima';
 import Parser from './constructor';
-import { ws } from '../helpers/string';
+import { ws, r } from '../helpers/string';
 import { applyDefEscape } from '../helpers/escape';
 import { $dirNameAliases } from '../consts/cache';
 import { IS_NODE } from '../consts/hacks';
+import { G_MOD } from '../consts/literals';
 
 /**
  * Returns a real directive name
@@ -93,7 +94,7 @@ Parser.prototype.replaceFileNamePatterns = function (str) {
 
 export const
 	nmRgxp = /\.|\[/,
-	nmssRgxp = /^\[/,
+	nmssRgxp = new RegExp(`^(${r(G_MOD)}?)\\[`),
 	nmsRgxp = /\[/g,
 	nmeRgxp = /]/g;
 
@@ -108,12 +109,18 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 	try {
 		name = String($C(
 			this.replaceFileNamePatterns(name)
-				.replace(nmssRgxp, '%')
+				.replace(nmssRgxp, (str, $0) => `${$0 || ''}%`)
 				.replace(nmsRgxp, '.%')
 				.replace(nmeRgxp, '')
 				.split('.')
 
 		).reduce((str, el) => {
+			let prfx = '';
+			if (el.substr(0, 2) === `${G_MOD}%`) {
+				prfx = this.scope[this.scope.length - 1];
+				el = el.slice(1);
+			}
+
 			const
 				custom = el[0] === '%';
 
@@ -121,7 +128,7 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
 			if (custom) {
-				str += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
+				str += ws`${prfx}['${applyDefEscape(this.returnEvalVal(el))}']`;
 				return str;
 			}
 
@@ -132,6 +139,7 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 		esprima.parse(name);
 
 	} catch (err) {
+		console.log(12, name);
 		this.error(err.message);
 		return '';
 	}
