@@ -8,11 +8,11 @@
 
 [[simpleOutputClassic]]=================================================================================================
 
-bar-1 foo 1
+bar -1 1 foo foo 1
 
 [[simpleOutput]]========================================================================================================
 
-bar-1 foo 1
+bar -1 1 foo foo 1
 
 ========================================================================================================================
 
@@ -37,8 +37,10 @@ bar-1 foo 1
 
 	{call method[val['foo']][val.bar].call('foo', 'foo', 'bar') /}
 	{new String([1, 2, 3]).indexOf()}
+	{call returnOne() /}
 
 	{'{foo}'|replace /^{|}$/gim, ''}
+	{'{foo}'|foo.bar.replace /^{|}$/gim, ''}
 	{2 / 2}
 {/template}
 
@@ -66,6 +68,8 @@ bar-1 foo 1
 
 	+= method[val['foo']][val.bar].call('foo', 'foo', 'bar')
 	{new String([1, 2, 3]).indexOf()}
+	+= returnOne()
 
 	{'{foo}'|replace /^{|}$/gim, ''}
+	{'{foo}'|foo.bar.replace /^{|}$/gim, ''}
 	{2 / 2}
