@@ -578,6 +578,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					);
 
 					parser.space = parser.prevSpace;
+
+					const
+						inlineLength = parser.inline.length;
+
 					const fnRes = Snakeskin.Directives[commandType].call(
 						parser,
 						command,
@@ -592,24 +596,22 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 
 					if (parser.needPrfx) {
-						if (parser.inline !== false) {
-							if (parser.getDirName(commandType) === 'end') {
-								if (prfxI) {
-									prfxI--;
+						if (parser.getDirName(commandType) === 'end') {
+							if (prfxI) {
+								prfxI--;
 
-									if (!prfxI) {
-										parser.needPrfx = false;
-									}
-
-								} else {
+								if (!prfxI) {
 									parser.needPrfx = false;
 								}
 
-							} else if (!prfxI) {
+							} else {
 								parser.needPrfx = false;
 							}
 
-						} else {
+						} else if (inlineLength === parser.inline.length && !prfxI) {
+							parser.needPrfx = false;
+
+						} else if (parser.inline.length > inlineLength) {
 							prfxI++;
 						}
 					}
@@ -846,7 +848,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					parser.save(applyDefEscape(el));
 				}
 
-				parser.inline = null;
+				parser.inline.pop();
 				parser.structure = parser.structure.parent;
 			}
 

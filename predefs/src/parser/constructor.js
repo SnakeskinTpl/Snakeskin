@@ -125,7 +125,7 @@ $$SnakeskinParser.prototype.scope;
 /** @type {?string} */
 $$SnakeskinParser.prototype.name;
 
-/** @type {?boolean} */
+/** @type {!Array<boolean>} */
 $$SnakeskinParser.prototype.inline;
 
 /** @type {boolean} */

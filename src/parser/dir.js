@@ -44,7 +44,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		vars: opt_vars
 	};
 
-	this.inline = false;
+	this.inline.push(false);
 	this.structure = obj;
 	structure.children.push(obj);
 
@@ -126,7 +126,7 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 		vars: null
 	};
 
-	this.inline = true;
+	this.inline.push(true);
 	this.structure.children.push(obj);
 	this.structure = obj;
 
@@ -171,6 +171,8 @@ Parser.prototype.endDir = function () {
 		this.blockStructure = this.blockStructure.parent;
 	}
 
+	this.inline.pop();
 	this.structure = this.structure.parent;
+
 	return this;
 };
