@@ -70,6 +70,8 @@ Snakeskin.addDirective(
 				${this.source.slice(this.i + 1)}
 			`;
 
+			const l = this.lines.length - 1;
+			this.lines[l] = this.lines[l].slice(0, l - diff);
 			this.i -= diff + 1;
 		}
 	}
