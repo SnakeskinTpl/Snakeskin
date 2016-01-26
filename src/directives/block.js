@@ -160,7 +160,7 @@ Snakeskin.addDirective(
 
 			$blocks[tplName][name] = {
 				args,
-				external: Boolean(parts.length),
+				external: parts.length > 1,
 				from: start - this.getDiff(commandLength),
 				needPrfx: this.needPrfx,
 				output
