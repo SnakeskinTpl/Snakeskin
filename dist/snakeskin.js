@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 25 Jan 2016 13:33:08 GMT
+ * Date: 'Tue, 26 Jan 2016 08:45:05 GMT
  */
 
 (function (global, factory) {
@@ -3981,7 +3981,7 @@
 
     var esprima = GLOBAL.esprima || require('esprima');
 
-        var _templateObject$14 = babelHelpers.taggedTemplateLiteral(['', '[\'', '\']'], ['', '[\'', '\']']);
+        var _templateObject$14 = babelHelpers.taggedTemplateLiteral(['[\'', '\']'], ['[\'', '\']']);
 
     /**
      * Returns a real directive name
@@ -4071,20 +4071,14 @@
 
     	try {
     		name = String($C(this.replaceFileNamePatterns(name).replace(nmssRgxp, function (str, $0) {
-    			return ($0 || '') + '%';
+    			return ($0 ? _this2.scope[_this2.scope.length - 1] + '.' : '') + '%';
     		}).replace(nmsRgxp, '.%').replace(nmeRgxp, '').split('.')).reduce(function (str, el) {
-    			var prfx = '';
-    			if (el.substr(0, 2) === G_MOD + '%') {
-    				prfx = _this2.scope[_this2.scope.length - 1];
-    				el = el.slice(1);
-    			}
-
     			var custom = el[0] === '%';
 
     			el = opt_parseLiteralScope || custom ? _this2.out(custom ? el.slice(1) : el, { unsafe: true }) : el;
 
     			if (custom) {
-    				str += ws$1(_templateObject$14, prfx, applyDefEscape(_this2.returnEvalVal(el)));
+    				str += ws$1(_templateObject$14, applyDefEscape(_this2.returnEvalVal(el)));
     				return str;
     			}
 
@@ -9179,7 +9173,7 @@
 
     		$blocks[tplName][name] = {
     			args: args,
-    			external: Boolean(parts.length),
+    			external: parts.length > 1,
     			from: start - this.getDiff(commandLength),
     			needPrfx: this.needPrfx,
     			output: output
