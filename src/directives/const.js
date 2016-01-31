@@ -81,29 +81,23 @@ Snakeskin.addDirective(
 
 			const
 				parentTpl = this.parentTplName,
-				start = this.i - this.startTemplateI;
+				start = this.i - this.startTemplateI,
+				block = this.hasParentBlock(this.getGroup('block', 'function', 'async'));
 
-			let
-				parent,
-				insideCallBlock = this.hasParentBlock('block', true);
-
+			let parent;
 			if (parentTpl) {
 				parent = $consts[parentTpl][name];
 			}
 
-			if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.isCallable) {
-				insideCallBlock = false;
-			}
-
 			$consts[tplName][name] = {
-				block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
+				block: Boolean(block || parentTpl && parent && parent.block),
 				from: start - commandLength,
 				needPrfx: this.needPrfx,
 				output: output ? '?' : null,
 				to: start
 			};
 
-			if (!insideCallBlock) {
+			if (!block) {
 				$constPositions[tplName] = start + 1;
 			}
 		}

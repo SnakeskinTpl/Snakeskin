@@ -102,7 +102,7 @@ Snakeskin.addDirective(
 
 		if (name === '&') {
 			const
-				block = this.hasBlock('block', true);
+				block = this.hasBlock(this.getGroup('block'), true);
 
 			if (block) {
 				str = block.params.fn + this.out(command.replace(name, ''), {unsafe: true});

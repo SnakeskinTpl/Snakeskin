@@ -196,7 +196,9 @@ Parser.prototype.isSimpleOutput = function () {
  * @return {boolean}
  */
 Parser.prototype.isAdvTest = function () {
-	return Boolean(!this.outerLink && (this.parentTplName && !this.hasParentBlock('block') || !this.parentTplName));
+	return Boolean(
+		!this.outerLink && (this.parentTplName && !this.hasParentBlock(this.getGroup('block')) || !this.parentTplName)
+	);
 };
 
 /**
