@@ -13,6 +13,7 @@ import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
 import { attrKey, classRef } from '../consts/regs';
+import { stringRender } from '../consts/other';
 import { FILTER, LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 /**
@@ -54,7 +55,7 @@ Parser.prototype.getXMLAttrsDeclBody = function (str) {
 Parser.prototype.getXMLAttrsDeclEnd = function () {
 	const
 		link = this.out(`__TAG__`, {unsafe: true}),
-		isDOMRenderMode = !this.stringResult && this.renderMode === 'dom';
+		isDOMRenderMode = !this.stringResult && !stringRender[this.renderMode];
 
 	return ws`
 		if (typeof ${link} === 'undefined' || ${link} !== '?') {
@@ -64,7 +65,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 
 				${
 					isDOMRenderMode ?
-						'Snakeskin.setAttribute($0, key, attr);' :
+						`Snakeskin.setAttribute($0, key, attr, '${this.renderMode}');` :
 						this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)
 				}
 			});

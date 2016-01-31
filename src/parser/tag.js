@@ -12,6 +12,7 @@ import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { classRef } from '../consts/regs';
+import { stringRender } from '../consts/other';
 import { MICRO_TEMPLATE, RIGHT_BOUND, FILTER } from '../consts/literals';
 
 export const
@@ -48,11 +49,11 @@ Parser.prototype.getXMLTagDeclStart = function (tag) {
 	const
 		link = this.out(`__TAG__`, {unsafe: true});
 
-	if (!this.stringResult && this.renderMode === 'dom') {
+	if (!this.stringResult && !stringRender[this.renderMode]) {
 		return ws`
 			${str}
 			if (${link} !== '?') {
-				$0 = new Snakeskin.Element(${link});
+				$0 = new Snakeskin.Element(${link}, '${this.renderMode}');
 			}
 		`;
 	}
@@ -78,7 +79,7 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 		link = this.out(`__TAG__`, {unsafe: true}),
 		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true});
 
-	if (!this.stringResult && this.renderMode === 'dom') {
+	if (!this.stringResult && !stringRender[this.renderMode]) {
 		return ws`
 			if (${link} !== '?') {
 				${this.wrap('$0')}
@@ -126,7 +127,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 		link = this.out(`__TAG__`, {unsafe: true}),
 		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true});
 
-	if (!this.stringResult && this.renderMode === 'dom') {
+	if (!this.stringResult && !stringRender[this.renderMode]) {
 		return ws`
 			if (${link} !== '?') {
 				if (${inlineTag} && ${inlineTag} !== true) {
@@ -139,7 +140,8 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 						Snakeskin.setAttribute(
 							${this.out(`__NODE__`, {unsafe: true})},
 							${inlineTag},
-							${this.out('__CALL_TMP__', {unsafe: true})}
+							${this.out('__CALL_TMP__', {unsafe: true})},
+							'${this.renderMode}'
 						);
 					}
 

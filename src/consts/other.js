@@ -13,3 +13,8 @@ export const templateRank = {
 	'placeholder': 0,
 	'template': 2
 };
+
+export const stringRender = {
+	'stringBuffer': true,
+	'stringConcat': true
+};

@@ -54,7 +54,7 @@ Snakeskin.addDirective(
 	{
 		group: ['doctype', 'output'],
 		placement: 'template',
-		renderModesBlacklist: 'dom'
+		renderModesWhitelist: ['stringConcat', 'stringBuffer']
 	},
 
 	function (command) {

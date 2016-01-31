@@ -128,7 +128,7 @@ Filters['console'] = {
  */
 Filters['node'] = function (val, node) {
 	if (node && typeof Node === 'function' && val instanceof Node) {
-		node.appendChild(val);
+		Snakeskin.appendChild(any(node), val);
 		return '';
 	}
 
@@ -516,8 +516,8 @@ Filters['nl2br'] = function (val, node, doctype) {
 		}
 
 		if (node) {
-			node.appendChild(any(document.createTextNode(el)));
-			node.appendChild(any(document.createElement('br')));
+			Snakeskin.appendChild(any(node), el);
+			Snakeskin.appendChild(any(node), Snakeskin.Element('br'));
 
 		} else {
 			res += `${Filters['html'](el)}<br${doctype === 'xml' ? '/' : ''}>`;

@@ -10,6 +10,7 @@
 
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
+import { stringRender } from '../consts/other';
 
 Snakeskin.addDirective(
 	'comment',
@@ -28,7 +29,7 @@ Snakeskin.addDirective(
 		this.startDir(null, {condition});
 
 		let str;
-		if (this.renderMode === 'dom') {
+		if (!stringRender[this.renderMode]) {
 			if (!this.stringResult) {
 				this.stringResult = this.structure.params.stringResult = true;
 			}
@@ -52,7 +53,7 @@ Snakeskin.addDirective(
 			end = p.condition ? ' <![endif]' : '';
 
 		let str;
-		if (this.renderMode === 'dom') {
+		if (!stringRender[this.renderMode]) {
 			str = this.wrap(`'${end}'`);
 
 			if (p.stringResult) {
@@ -60,7 +61,7 @@ Snakeskin.addDirective(
 			}
 
 			str += ws`
-				${this.wrap('new Snakeskin.Comment(__STRING_RESULT__)')}
+				${this.wrap(`new Snakeskin.Comment(__STRING_RESULT__, '${this.renderMode}')`)}
 				__STRING_RESULT__ = '';
 			`;
 

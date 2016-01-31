@@ -17,7 +17,7 @@ import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 import { ws } from '../helpers/string';
 import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
-import { templateRank } from '../consts/other';
+import { stringRender, templateRank } from '../consts/other';
 
 import {
 
@@ -312,7 +312,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 					__INLINE_TAG__;
 
 				var
-					$0 = ${this.renderMode === 'dom' ? '__RESULT__[0]' : 'undefined'};
+					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
 
 				function getTplResult(opt_clear) {
 					var res = ${this.getReturnResultDecl()};

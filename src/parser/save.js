@@ -27,14 +27,14 @@ Parser.prototype.$ = function () {
 	}
 
 	switch (this.renderMode) {
+		case 'stringConcat':
+			return '__RESULT__ += ';
+
 		case 'stringBuffer':
 			return '__RESULT__.push(';
 
-		case 'dom':
-			return 'Snakeskin.appendChild(__RESULT__[__RESULT__.length - 1], ';
-
 		default:
-			return '__RESULT__ += ';
+			return 'Snakeskin.appendChild(__RESULT__[__RESULT__.length - 1], ';
 	}
 };
 
@@ -48,14 +48,14 @@ Parser.prototype.$$ = function () {
 	}
 
 	switch (this.renderMode) {
+		case 'stringConcat':
+			return '';
+
 		case 'stringBuffer':
 			return ')';
 
-		case 'dom':
-			return ')';
-
 		default:
-			return '';
+			return `, '${this.renderMode}')`;
 	}
 };
 
@@ -75,14 +75,14 @@ Parser.prototype.wrap = function (opt_str) {
  */
 Parser.prototype.getResultDecl = function () {
 	switch (this.renderMode) {
+		case 'stringConcat':
+			return `''`;
+
 		case 'stringBuffer':
 			return 'new Snakeskin.StringBuffer()';
 
-		case 'dom':
-			return '[new Snakeskin.DocumentFragment()]';
-
 		default:
-			return `''`;
+			return `[new Snakeskin.DocumentFragment('${this.renderMode}')]`;
 	}
 };
 
@@ -95,14 +95,14 @@ Parser.prototype.getReturnResultDecl = function () {
 		r = '__RESULT__ instanceof Raw ? __RESULT__.value : ';
 
 	switch (this.renderMode) {
+		case 'stringConcat':
+			return `${r}__RESULT__`;
+
 		case 'stringBuffer':
 			return `${r}__RESULT__.join('')`;
 
-		case 'dom':
-			return `${r}__RESULT__[0]`;
-
 		default:
-			return `${r}__RESULT__`;
+			return `${r}__RESULT__[0]`;
 	}
 };
 
@@ -142,20 +142,24 @@ Parser.prototype.end = function (cacheKey, label) {
 
 	// Replace some trash :)
 	switch (this.renderMode) {
+		case 'stringConcat':
+			this.result = this.result.replace(/__RESULT__ \+= '';/g, '');
+			break;
+
 		case 'stringBuffer':
 			this.result = this.result.replace(/__RESULT__\.push\(''\);/g, '');
 			break;
 
-		case 'dom':
+		default:
 			this.result = this.result.replace(
-				/Snakeskin\.appendChild\(__RESULT__\[__RESULT__\.length - 1], ''\);/g,
+				new RegExp(
+					`Snakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], '', ${this.renderMode}'\\);`,
+					'g'
+				),
+
 				''
 			);
 
-			break;
-
-		default:
-			this.result = this.result.replace(/__RESULT__ \+= '';/g, '');
 			break;
 	}
 

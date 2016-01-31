@@ -23,6 +23,7 @@ import { any } from '../helpers/gcc';
 import { r, isNotPrimitive } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
+import { stringRender } from '../consts/other';
 import { FILTER, G_MOD } from '../consts/literals';
 
 const blackWords = {
@@ -669,7 +670,7 @@ Parser.prototype.out = function (command, opt_params) {
 		);
 
 		if (isNotPrimitive(res)) {
-			if (!this.stringResult && this.renderMode === 'dom') {
+			if (!this.stringResult && !stringRender[this.renderMode]) {
 				res = `__FILTERS__['node'](${res}, $0)`;
 			}
 
