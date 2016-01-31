@@ -879,7 +879,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// Beautify
 	if (p.prettyPrint) {
 		parser.result = beautify(parser.result);
-		parser.result = parser.result.replace(new RegExp(rgxp.eol.source, 'g'), p.eol);
+		parser.result = parser.result.replace(new RegExp(rgxp.eol.source, 'g'), any(p.eol));
 	}
 
 	// Line feed

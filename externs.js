@@ -305,6 +305,35 @@ Snakeskin.forIn = function (obj, callback) {};
  */
 Snakeskin.decorate = function (decorators, fn) {};
 
+'use strict';
+
+/**
+ * @param {string} str
+ * @return {!Array<string>}
+ */
+$$SnakeskinParser.prototype.getFnArgs = function (str) {};
+
+/**
+ * @typedef {{
+ *   dir: (string|undefined),
+ *   tplName: (string|undefined),
+ *   parentTplName: (string|undefined),
+ *   fnName: (string|undefined)
+ * }}
+ */
+var $$SnakeskinParserDeclFnArgsParams;
+
+/** @typedef {{decl: string, def: string, list: !Array, isCallable, scope: (string|undefined)}} */
+var $$SnakeskinParserDeclFnArgsResult;
+
+/**
+ * @param {string} str
+ * @param {?$$SnakeskinParserDeclFnArgsParams=} [opt_params]
+ * @return {$$SnakeskinParserDeclFnArgsResult}
+ */
+$$SnakeskinParser.prototype.declFnArgs = function (str, opt_params) {};
+
+
 /**
  * @param {string} str
  * @return {string}
@@ -467,11 +496,14 @@ $$SnakeskinParser.prototype.scope;
 /** @type {?string} */
 $$SnakeskinParser.prototype.name;
 
-/** @type {?boolean} */
+/** @type {!Array<boolean>} */
 $$SnakeskinParser.prototype.inline;
 
 /** @type {boolean} */
 $$SnakeskinParser.prototype.text;
+
+/** @type {!Object<{id: number, file: (string|undefined)}} */
+$$SnakeskinParser.prototype.namespaces;
 
 /** @type {?string} */
 $$SnakeskinParser.prototype.tplName;
@@ -536,6 +568,20 @@ $$SnakeskinParser.prototype.blockStructure;
 /** @type {Object} */
 $$SnakeskinParser.prototype.blockTable;
 
+/**
+ * @typedef {{
+ *   name: string,
+ *   parent: ?$$SnakeskinParserStructure,
+ *   params: !Object,
+ *   stack: !Array,
+ *   vars: Object,
+ *   children: Array,
+ *   logic: boolean,
+ *   chain: boolean
+ * }}
+ */
+var $$SnakeskinParserStructure;
+
 /** @type {!Object} */
 $$SnakeskinParser.prototype.structure;
 
@@ -554,7 +600,7 @@ $$SnakeskinParser.prototype.cdataContent;
 /** @type {!Object} */
 $$SnakeskinParser.prototype.files;
 
-/** @type {{exports, require, id, key, root, filename, parent, children, loaded}} */
+/** @type {{exports, require, id, key, root, filename, parent, children, loaded, namespace}} */
 $$SnakeskinParser.prototype.environment;
 
 /** @type {string} */
@@ -799,7 +845,7 @@ $$SnakeskinParser.prototype.getXMLTagDesc = function (str) {};
 $$SnakeskinParser.prototype.getTokens = function (str) {};
 
 /**
- * @return {!Object}
+ * @return {?$$SnakeskinParserStructure}
  */
 $$SnakeskinParser.prototype.getNonLogicParent = function () {};
 
@@ -811,30 +857,40 @@ $$SnakeskinParser.prototype.isLogic = function () {};
 /**
  * @param {(string|!Object<string, boolean>|!Array<string>)} name
  * @param {?boolean=} [opt_return]
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 $$SnakeskinParser.prototype.has = function (name, opt_return) {};
 
 /**
  * @param {(string|!Object<string, boolean>|!Array<string>)} name
  * @param {?boolean=} [opt_return]
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 $$SnakeskinParser.prototype.hasParent = function (name, opt_return) {};
 
 /**
  * @param {(string|!Object<string, boolean>|!Array<string>)} name
  * @param {?boolean=} [opt_return]
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 $$SnakeskinParser.prototype.hasBlock = function (name, opt_return) {};
 
 /**
  * @param {(string|!Object<string, boolean>|!Array<string>)} name
  * @param {?boolean=} [opt_return]
- * @return {(boolean|string|!Object<string, boolean>)}
+ * @return {(boolean|string|!Object)}
  */
 $$SnakeskinParser.prototype.hasParentBlock = function (name, opt_return) {};
+
+/**
+ * @return {($$SnakeskinParserStructure|boolean)}
+ */
+$$SnakeskinParser.prototype.hasParentMicroTemplate = function () {};
+
+/**
+ * @return {({asyncParent: (boolean|string), block: boolean, target: $$SnakeskinParserStructure}|boolean)}
+ */
+$$SnakeskinParser.prototype.hasParentFunction = function () {};
 
 /** @typedef {{end: (boolean|undefined), def: (string|undefined), sys: (boolean|undefined)}} */
 var $$SnakeskinParserDeclVarsParams;
