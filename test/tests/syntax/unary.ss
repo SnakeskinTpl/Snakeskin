@@ -36,7 +36,6 @@ foo-10 true
 	{i++}
 	{!!i}
 
-
 - template ['ternary and logic']()
 	: &
 		obj = {mon: {from: 10, to: 20}},

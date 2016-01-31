@@ -26,6 +26,10 @@ Hello!
 
 Hello world!
 
+[[recursion]]===========================================================================================================
+
+3 2 1 0
+
 ========================================================================================================================
 
 - namespace block.basic
@@ -57,3 +61,9 @@ Hello world!
 	Hello world!
 
 - template ['immediately invoke outer block with inherit']() extends @['immediately invoke outer block']
+
+- template ['recursion']()
+	- block foo(i) => 3
+		{i}
+		- if i
+			+= &(--i)

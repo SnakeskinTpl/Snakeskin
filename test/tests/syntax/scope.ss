@@ -16,7 +16,7 @@ Andrey Kobets 26
 
 [[nested with]]=========================================================================================================
 
-Sergey Kobets
+Andrey Kobezzza
 
 [[template shorthand with ; {name: 'Andrey', secondName: 'Kobets'}]]====================================================
 
@@ -40,8 +40,7 @@ Andrey Kobets 26
 
 - template globals()
 	{@@name + ' ' + @@secondName}
-	{@@age = 26}
-	{@@age}
+	{@@age = 26?}
 
 - template ['with']()
 	: params = { &
@@ -55,17 +54,21 @@ Andrey Kobets 26
 
 - template ['nested with']()
 	: params = { &
-		name: 'Andrey',
-		secondName: 'Kobets'
+		a: {
+			b: {
+				name: 'Andrey',
+				secondName: 'Kobets'
+			}
+		}
+
 	} .
 
 	- with params
 		: params = { &
-			name: 'Sergey',
-			secondName: 'Kobets'
+			secondName: 'Kobezzza'
 		} .
 
-		- with params
+		- with @a['b']
 			{@name + ' ' + params.secondName}
 
 - template ['template shorthand with'](@params)
