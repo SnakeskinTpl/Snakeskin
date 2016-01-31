@@ -30,7 +30,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			desc = isAssignExpression(command);
+			desc = isAssignExpression(command, true);
 
 		if ((!desc || output) && !this.tplName) {
 			return this.error(`invalid "${this.name}" declaration`);

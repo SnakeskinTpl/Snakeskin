@@ -34,7 +34,7 @@ Andrey Kobets 26
 
 - namespace syntax.scope
 
-- name = 'Andrey'
+- ['name'] = 'Andrey'
 ? @@secondName = 'Kobets'
 - global age = 25
 

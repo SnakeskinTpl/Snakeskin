@@ -557,7 +557,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						defDir = !Snakeskin.Directives[commandType];
 
 					if (defDir) {
-						if (isAssignExpression(command)) {
+						if (isAssignExpression(command, !parser.tplName)) {
 							commandType = parser.tplName ? 'const' : 'global';
 
 						} else {
