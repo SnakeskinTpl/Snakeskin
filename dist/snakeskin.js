@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 26 Jan 2016 08:45:05 GMT
+ * Date: 'Sun, 31 Jan 2016 16:43:00 GMT
  */
 
 (function (global, factory) {
@@ -1991,14 +1991,14 @@
     	});
 
     	var args = [],
-    	    consts = $consts[this.tplName],
+    	    consts = $consts[tplName],
     	    constsCache = structure.params['@consts'] = {};
 
     	// Initialise arguments
     	$C(finalArgsList).forEach(function (el, i) {
     		var old = el.key;
 
-    		if (consts[old] && isLocalFunction) {
+    		if (consts && consts[old] && isLocalFunction) {
     			constsCache[old] = consts[old];
     			delete consts[old];
     		}
@@ -2537,6 +2537,8 @@
 
     var GROUP = '@';
 
+    var groupCache = {};
+
     /**
      * Initialises the specified group
      *
@@ -2622,6 +2624,8 @@
      * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
      */
     Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
+    	groupCache = {};
+
     	var p = $C.extend(false, {}, params),
     	    concat = function concat(val) {
     		return val != null ? [].concat(val) : [];
@@ -2640,9 +2644,10 @@
     		var val = _ref3.val;
 
     		if (cache === $dirTrim) {
+    			var res = undefined;
     			switch (val) {
     				case true:
-    					val = {
+    					res = {
     						left: true,
     						right: true
     					};
@@ -2650,7 +2655,7 @@
     					break;
 
     				case false:
-    					val = {
+    					res = {
     						left: false,
     						right: false
     					};
@@ -2658,7 +2663,7 @@
     					break;
     			}
 
-    			cache[name] = val;
+    			cache[name] = res;
     		} else {
     			cache[name] = Boolean(val);
     		}
@@ -3008,8 +3013,6 @@
     	};
     };
 
-    var cache = {};
-
     /**
      * Returns a map of directive names
      * which belong to the specified groups
@@ -3020,8 +3023,8 @@
     Parser.prototype.getGroup = function (names) {
       var cacheKey = Array.from(arguments).join();
 
-      if (cache[cacheKey]) {
-        return clone(cache[cacheKey]);
+      if (groupCache[cacheKey]) {
+        return clone(groupCache[cacheKey]);
       }
 
       var map = {};
@@ -3034,7 +3037,7 @@
         });
       });
 
-      cache[cacheKey] = clone(map);
+      groupCache[cacheKey] = clone(map);
       return map;
     };
 
@@ -4088,7 +4091,6 @@
     		name = name.trim();
     		esprima.parse(name);
     	} catch (err) {
-    		console.log(12, name);
     		this.error(err.message);
     		return '';
     	}
@@ -4650,7 +4652,7 @@
       * @return {string}
       */
     	var addScope = function addScope(str) {
-    		if (multPropRgxp.test(str)) {
+    		if (!multPropRgxp.test(str[0]) && multPropRgxp.test(str)) {
     			var firstProp = firstPropRgxp.exec(str);
 
     			firstProp[1] = firstProp[1].replace(propValRgxp, replacePropVal);
@@ -5226,7 +5228,7 @@
      * @return {boolean}
      */
     Parser.prototype.isAdvTest = function () {
-    	return Boolean(!this.outerLink && (this.parentTplName && !this.hasParentBlock('block') || !this.parentTplName));
+    	return Boolean(!this.outerLink && (this.parentTplName && !this.hasParentBlock(this.getGroup('block')) || !this.parentTplName));
     };
 
     /**
@@ -6753,7 +6755,7 @@
     						var defDir = !Snakeskin.Directives[commandType];
 
     						if (defDir) {
-    							if (isAssignExpression(command)) {
+    							if (isAssignExpression(command, !parser.tplName)) {
     								commandType = parser.tplName ? 'const' : 'global';
     							} else {
     								commandType = parser.tplName ? 'output' : 'decorator';
@@ -7675,10 +7677,10 @@
     		this.consts.push('var ' + prop + ';');
     	}
 
-    	var str = prop + ' = ' + this.out(parts.slice(1).join('='), { unsafe: !output }) + ';';
+    	var str = prop + ' = ' + this.out(parts.slice(1).join('='), { unsafe: !output });
 
     	this.text = output;
-    	this.append(output ? this.wrap(str) : str);
+    	this.append(output ? this.wrap(str) : str + ';');
 
     	if (this.isAdvTest()) {
     		if ($consts[tplName][name]) {
@@ -7694,28 +7696,23 @@
     		}
 
     		var parentTpl = this.parentTplName,
-    		    start = this.i - this.startTemplateI;
+    		    start = this.i - this.startTemplateI,
+    		    block = this.hasParentBlock(this.getGroup('block', 'function', 'async'));
 
-    		var parent = undefined,
-    		    insideCallBlock = this.hasParentBlock('block', true);
-
+    		var parent = undefined;
     		if (parentTpl) {
     			parent = $consts[parentTpl][name];
     		}
 
-    		if (insideCallBlock && insideCallBlock.name === 'block' && !insideCallBlock.params.isCallable) {
-    			insideCallBlock = false;
-    		}
-
     		$consts[tplName][name] = {
-    			block: Boolean(insideCallBlock || parentTpl && parent && parent.block),
+    			block: Boolean(block || parentTpl && parent && parent.block),
     			from: start - commandLength,
     			needPrfx: this.needPrfx,
     			output: output ? '?' : null,
     			to: start
     		};
 
-    		if (!insideCallBlock) {
+    		if (!block) {
     			$constPositions[tplName] = start + 1;
     		}
     	}
@@ -7731,7 +7728,7 @@
     		command = command.slice(0, -1);
     	}
 
-    	var desc = isAssignExpression(command);
+    	var desc = isAssignExpression(command, true);
 
     	if ((!desc || output) && !this.tplName) {
     		return this.error('invalid "' + this.name + '" declaration');
@@ -7739,7 +7736,7 @@
 
     	if (output) {
     		this.text = true;
-    		this.append(this.wrap(this.out(desc.key, { unsafe: true }) + ' = ' + this.out(desc.value) + ';'));
+    		this.append(this.wrap(this.out(desc.key, { unsafe: true }) + ' = ' + this.out(desc.value)));
     	} else {
     		var mod = G_MOD + G_MOD;
 
@@ -8033,6 +8030,7 @@
 
     		this.decorators = [];
     		this.initTemplateCache(tplName);
+    		this.scope.push('exports' + concatProp(this.scope[this.scope.length - 1]));
 
     		if (tplName in $extMap) {
     			this.clearScopeCache(tplName);
@@ -8137,8 +8135,10 @@
     			this.popParams();
     		}
 
+    		this.scope.pop();
     		this.canWrite = true;
     		this.tplName = undefined;
+
     		delete this.info.template;
     	});
     });
@@ -8946,7 +8946,7 @@
     	var name = this.getFnName(command);
 
     	if (name === '&') {
-    		var block = this.hasBlock('block', true);
+    		var block = this.hasBlock(this.getGroup('block'), true);
 
     		if (block) {
     			str = block.params.fn + this.out(command.replace(name, ''), { unsafe: true });
