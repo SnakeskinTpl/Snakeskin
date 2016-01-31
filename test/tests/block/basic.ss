@@ -17,7 +17,7 @@ Hello!
 - template parent()
 	- block foo
 
-- block child->bar()
+- block ['outer blocks with extend']->bar()
 	Hello!
 
 - template ['outer blocks with extend']() extends @parent
