@@ -225,6 +225,7 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 
 			this.decorators = [];
 			this.initTemplateCache(tplName);
+			this.scope.push(`exports${concatProp(this.scope[this.scope.length - 1])}`);
 
 			if (tplName in $extMap) {
 				this.clearScopeCache(tplName);
@@ -396,8 +397,10 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				this.popParams();
 			}
 
+			this.scope.pop();
 			this.canWrite = true;
 			this.tplName = undefined;
+
 			delete this.info.template;
 		}
 

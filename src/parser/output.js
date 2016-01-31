@@ -269,7 +269,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const addScope = (str) => {
-		if (multPropRgxp.test(str)) {
+		if (!multPropRgxp.test(str[0]) && multPropRgxp.test(str)) {
 			let
 				firstProp = firstPropRgxp.exec(str);
 

@@ -133,7 +133,6 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 		esprima.parse(name);
 
 	} catch (err) {
-		console.log(12, name);
 		this.error(err.message);
 		return '';
 	}
