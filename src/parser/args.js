@@ -298,7 +298,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 
 	const
 		args = [],
-		consts = $consts[this.tplName],
+		consts = $consts[tplName],
 		constsCache = structure.params['@consts'] = {};
 
 	// Initialise arguments
@@ -306,7 +306,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		const
 			old = el.key;
 
-		if (consts[old] && isLocalFunction) {
+		if (consts && consts[old] && isLocalFunction) {
 			constsCache[old] = consts[old];
 			delete consts[old];
 		}
