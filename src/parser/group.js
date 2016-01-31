@@ -10,12 +10,9 @@
 
 import $C from '../deps/collection';
 import Parser from './constructor';
-import { GROUP } from '../directives/index';
+import { groupCache, GROUP } from '../directives/index';
 import { clone } from '../helpers/object';
 import { $dirGroups } from '../consts/cache';
-
-const
-	cache = {};
 
 /**
  * Returns a map of directive names
@@ -28,8 +25,8 @@ Parser.prototype.getGroup = function (names) {
 	const
 		cacheKey = Array.from(arguments).join();
 
-	if (cache[cacheKey]) {
-		return clone(cache[cacheKey]);
+	if (groupCache[cacheKey]) {
+		return clone(groupCache[cacheKey]);
 	}
 
 	const
@@ -43,7 +40,7 @@ Parser.prototype.getGroup = function (names) {
 		})
 	);
 
-	cache[cacheKey] = clone(map);
+	groupCache[cacheKey] = clone(map);
 	return map;
 };
 

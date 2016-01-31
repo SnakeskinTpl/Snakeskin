@@ -13,9 +13,9 @@
 import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { stack } from '../helpers/include';
-import { SHORTS } from '../consts/literals';
 import { isFunction } from '../helpers/types';
 import { any } from '../helpers/gcc';
+import { SHORTS } from '../consts/literals';
 import { HAS_CONSOLE_LOG } from '../consts/hacks';
 import {
 
@@ -50,6 +50,9 @@ export const
 
 export const
 	GROUP = '@';
+
+export let
+	groupCache = {};
 
 /**
  * Initialises the specified group
@@ -138,6 +141,8 @@ const
  * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
+	groupCache = {};
+
 	const
 		p = $C.extend(false, {}, params),
 		concat = (val) => val != null ? [].concat(val) : [];
@@ -155,9 +160,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	]).forEach(({cache, val}) => {
 		if (cache === $dirTrim) {
+			let res;
 			switch (val) {
 				case true:
-					val = {
+					res = {
 						left: true,
 						right: true
 					};
@@ -165,7 +171,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 					break;
 
 				case false:
-					val = {
+					res = {
 						left: false,
 						right: false
 					};
@@ -173,7 +179,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 					break;
 			}
 
-			cache[name] = val;
+			cache[name] = res;
 
 		} else {
 			cache[name] = Boolean(val);
