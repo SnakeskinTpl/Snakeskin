@@ -26,12 +26,23 @@ foo Hello world!
 
 Hello world! baz
 
+[[include as placeholder]]==============================================================================================
+
+<div><div>foo <div>bar </div> </div> </div>
+
 ========================================================================================================================
 
 - namespace modules.basic
 
+- import fs from 'fs'
+- import path from 'path'
+
 : baseVar = 3
-- include './base/base'
+- include './base/!(block|body)'
+
+- eval
+	- forEach fs.readdirSync(path.join(__dirname, 'base')) => file
+		- include path.join(__dirname, 'base', file)
 
 - template ['get variable from closure']() extends modules.base.base1
 
@@ -54,3 +65,7 @@ Hello world! baz
 - template ['simple extend']() extends modules.base.base2
 	- block baz
 		baz
+
+- template ['include as placeholder']() extends modules.block['block']
+	- block body
+		+= modules.body['body']()
