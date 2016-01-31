@@ -10,6 +10,22 @@
 
 Hello!
 
+[[immediately invoke block]]============================================================================================
+
+Hello!
+
+[[immediately invoke block with inherit]]===============================================================================
+
+Hello world!
+
+[[immediately invoke outer block]]======================================================================================
+
+Hello!
+
+[[immediately invoke outer block with inherit]]=========================================================================
+
+Hello world!
+
 ========================================================================================================================
 
 - namespace block.basic
@@ -23,3 +39,21 @@ Hello!
 - template ['outer blocks with extend']() extends @parent
 	- block foo
 		+= self.bar()
+
+- template ['immediately invoke block']()
+	- block foo() =>
+		Hello!
+
+- template ['immediately invoke block with inherit']() extends @['immediately invoke block']
+	- block foo()
+		Hello world!
+
+- block ['immediately invoke outer block']->foo() =>
+	Hello!
+
+- template ['immediately invoke outer block']()
+
+- block ['immediately invoke outer block with inherit']->foo()
+	Hello world!
+
+- template ['immediately invoke outer block with inherit']() extends @['immediately invoke outer block']
