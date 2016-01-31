@@ -61,10 +61,10 @@ Snakeskin.addDirective(
 		}
 
 		const
-			str = `${prop} = ${this.out(parts.slice(1).join('='), {unsafe: !output})};`;
+			str = `${prop} = ${this.out(parts.slice(1).join('='), {unsafe: !output})}`;
 
 		this.text = output;
-		this.append(output ? this.wrap(str) : str);
+		this.append(output ? this.wrap(str) : `${str};`);
 
 		if (this.isAdvTest()) {
 			if ($consts[tplName][name]) {
