@@ -19,6 +19,12 @@ function Collection(obj) {}
 function $C(obj) {}
 
 /**
+ * @param {?} link
+ * @return {boolean}
+ */
+Collection.prototype.in = function (link) {};
+
+/**
  * @param {function(?, ?, ?): ?} cb
  * @return {!Collection}
  */
