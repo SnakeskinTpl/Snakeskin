@@ -44,7 +44,7 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 
 ### Example
 
-```
+```js
 - namespace example
 - template helloWorld(name = 'world')
   < .hello
