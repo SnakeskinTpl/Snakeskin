@@ -24,7 +24,7 @@
 			var d = {};
 			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
 			// console.log(d.code);
-			console.log(demo.helloWorld());
+			document.getElementById('test').innerHTML = demo.helloWorld();
 		</script>
 	</body>
 </html>
