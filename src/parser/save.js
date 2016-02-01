@@ -102,7 +102,7 @@ Parser.prototype.getReturnResultDecl = function () {
 			return `${r}__RESULT__.join('')`;
 
 		default:
-			return `${r}__RESULT__[0].value`;
+			return `${r}__RESULT__[0]`;
 	}
 };
 

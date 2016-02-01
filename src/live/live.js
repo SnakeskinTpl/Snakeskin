@@ -63,7 +63,7 @@ Snakeskin.Node.prototype.length = function () {
 
 /**
  * Returns text content
- * @return {number}
+ * @return {string}
  */
 Snakeskin.Node.prototype.textContent = function () {
 	return this.value.textContent;
@@ -89,6 +89,22 @@ inherit(Snakeskin.DocumentFragment, Snakeskin.Node);
  */
 Snakeskin.DocumentFragment.prototype.appendChild = function (el) {
 	this.value.appendChild(el);
+};
+
+/**
+ * Returns text content
+ * @return {string}
+ */
+Snakeskin.DocumentFragment.prototype.textContent = function () {
+	const
+		children = this.value.childNodes;
+
+	let res = '';
+	for (let i = 0; i < children.length; i++) {
+		res += children[i].outerHTML;
+	}
+
+	return res;
 };
 
 /**
@@ -123,6 +139,14 @@ Snakeskin.Element.prototype.appendChild = function (el) {
  */
 Snakeskin.Element.prototype.setAttribute = function (name, val) {
 	this.value.setAttribute(name, val);
+};
+
+/**
+ * Returns text content
+ * @return {string}
+ */
+Snakeskin.Element.prototype.textContent = function () {
+	return this.value.outerHTML;
 };
 
 /**
@@ -203,6 +227,7 @@ Snakeskin.appendChild = function (el, val, renderMode) {
  * @param {?} val - attribute value
  */
 Snakeskin.setAttribute = function (node, name, val) {
+	console.log(node, name, val);
 	node.setAttribute(name, val instanceof Snakeskin.Node ? val.textContent() : String(val));
 };
 
