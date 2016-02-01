@@ -173,7 +173,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					dir = el === alb && nextSpace;
 
 				} else {
-					dir = (SHORTS[el] || SHORTS[next2str]) && nextSpace;
+					dir = (SHORTS[el] || SHORTS[next2str]) && el !== lb && nextSpace;
 				}
 
 				const decl = getLineDesc(
@@ -181,7 +181,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
 					Boolean(dir),
 					next2str === MULT_COMMENT_START,
-					this.localization
+					this.localization,
+					struct && struct.adv
 				);
 
 				if (!decl) {
@@ -195,14 +196,14 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 				let replacer;
 				if (el === alb) {
-					replacer = $dirNameShorthands[diff2str] ||
+					replacer =
+						$dirNameShorthands[diff2str] ||
 						$dirNameShorthands[next] ||
 						$dirNameShorthands[next2str] ||
 						$dirNameShorthands[el];
 
 				} else {
-					replacer = $dirNameShorthands[next2str] ||
-						$dirNameShorthands[el];
+					replacer = $dirNameShorthands[next2str] || $dirNameShorthands[el];
 				}
 
 				if (replacer) {
@@ -386,12 +387,13 @@ function appendDirEnd(str, struct) {
  *
  * @param {string} str - source string
  * @param {number} i - start position
- * @param {boolean} dir - if is true, then the declaration is considered as a block directive
+ * @param {boolean} dir - if is true, then the declaration is considered as a directive
  * @param {boolean} comment - if is true, then declaration is considered as a multiline comment
  * @param {boolean} i18n - if is true, then localization is enable
+ * @param {boolean} adv - if is true, then the declaration is considered as a block directive
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
-function getLineDesc(str, i, dir, comment, i18n) {
+function getLineDesc(str, i, dir, comment, i18n, adv) {
 	let
 		command = '',
 		name = '';
@@ -411,6 +413,9 @@ function getLineDesc(str, i, dir, comment, i18n) {
 		bOpen = false,
 		bEnd = true,
 		bEscape = false;
+
+	let
+		dOpen = 0;
 
 	let
 		part = '',
@@ -474,7 +479,7 @@ function getLineDesc(str, i, dir, comment, i18n) {
 						continue;
 					}
 
-				} else if (bOpen) {
+				} else if (dOpen || bOpen === I18N) {
 					concatLine = 1;
 					continue;
 				}
@@ -523,13 +528,6 @@ function getLineDesc(str, i, dir, comment, i18n) {
 					bEnd = false;
 				}
 
-				if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
-					bEnd = true;
-
-				} else if (rgxp.bEnd.test(el)) {
-					bEnd = false;
-				}
-
 				if (rgxp.sysWord.test(el)) {
 					part += el;
 
@@ -538,8 +536,18 @@ function getLineDesc(str, i, dir, comment, i18n) {
 					part = '';
 				}
 
-				if (dir && !inline) {
-					inline = str.substr(j, INLINE.length) === INLINE;
+				if (dir) {
+					if (!inline) {
+						inline = str.substr(j, INLINE.length) === INLINE;
+					}
+
+				} else {
+					if (dOpen || adv ? str.substr(i, 2) === alb + lb : el === lb) {
+						dOpen++;
+
+					} else if (dOpen && el === rb) {
+						dOpen--;
+					}
 				}
 			}
 
