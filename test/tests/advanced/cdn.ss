@@ -155,13 +155,8 @@
 
 	: putIn firstKey
 		() => obj
-			: val
-
 			- forEach obj => el, key
-				? val = key
-				- break
-
-			- return val
+				- return key
 
 	{libraries[lib][opt_provider] || libraries[lib][firstKey(libraries[lib])]}
 
