@@ -23,6 +23,7 @@ import {
 	CONCAT_END,
 	IGNORE,
 	INLINE,
+	FILTER,
 	ESCAPES,
 	ESCAPES_END,
 	ESCAPES_END_WORD,
@@ -390,7 +391,7 @@ function appendDirEnd(str, struct) {
  * @param {boolean} dir - if is true, then the declaration is considered as a directive
  * @param {boolean} comment - if is true, then declaration is considered as a multiline comment
  * @param {boolean} i18n - if is true, then localization is enable
- * @param {boolean} adv - if is true, then the declaration is considered as a block directive
+ * @param {boolean} adv - if is true, then the declaration is considered as advanced
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
 function getLineDesc(str, i, dir, comment, i18n, adv) {
@@ -415,7 +416,8 @@ function getLineDesc(str, i, dir, comment, i18n, adv) {
 		bEscape = false;
 
 	let
-		dOpen = 0;
+		dOpen = 0,
+		filterStart = false;
 
 	let
 		part = '',
@@ -534,6 +536,27 @@ function getLineDesc(str, i, dir, comment, i18n, adv) {
 				} else {
 					rPart = part;
 					part = '';
+				}
+
+				let skip = false;
+				if (el === FILTER && rgxp.filterStart.test(str[j + 1])) {
+					filterStart = true;
+					bEnd = false;
+					skip = true;
+
+				} else if (filterStart && rgxp.ws.test(el)) {
+					filterStart = false;
+					bEnd = true;
+					skip = true;
+				}
+
+				if (!skip) {
+					if (ESCAPES_END[el]) {
+						bEnd = true;
+
+					} else if (rgxp.bEnd.test(el)) {
+						bEnd = false;
+					}
 				}
 
 				if (dir) {
