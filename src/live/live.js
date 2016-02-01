@@ -191,7 +191,7 @@ Snakeskin.appendChild = function (el, val, renderMode) {
 		val = Snakeskin.Text(String(val), renderMode);
 	}
 
-	el.appendChild(val);
+	el.appendChild(val.value);
 	return val;
 };
 
