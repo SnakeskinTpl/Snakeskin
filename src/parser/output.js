@@ -610,7 +610,7 @@ Parser.prototype.out = function (command, opt_params) {
 					l = filters.length - 1,
 					cache = filters[l];
 
-				filters[l] = this.out(cache, {skipFirstWord: true, logic: true, skipValidation: true});
+				filters[l] = this.out(cache, {skipFirstWord: true, skipValidation: true, unsafe: true});
 				const
 					length = filters[l].length - cache.length;
 
