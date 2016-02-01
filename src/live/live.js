@@ -227,7 +227,6 @@ Snakeskin.appendChild = function (el, val, renderMode) {
  * @param {?} val - attribute value
  */
 Snakeskin.setAttribute = function (node, name, val) {
-	console.log(node, name, val);
 	node.setAttribute(name, val instanceof Snakeskin.Node ? val.textContent() : String(val));
 };
 
