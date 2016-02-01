@@ -267,6 +267,33 @@ var renderAs;
 /** @type {?} */
 var renderMode;
 
+/** @type {?} */
+var HTMLObject;
+
+/** @type {?} */
+var StringBuffer;
+
+/** @type {?} */
+var length;
+
+/** @type {?} */
+var textContent;
+
+/** @type {?} */
+var appendChild;
+
+/** @type {?} */
+var setAttribute;
+
+/** @type {?} */
+var include;
+
+/** @type {?} */
+var toObj;
+
+/** @const */
+Snakeskin.inlineTags = {};
+
 /**
  * @abstract
  * @param {!Object} filters
@@ -502,7 +529,7 @@ $$SnakeskinParser.prototype.inline;
 /** @type {boolean} */
 $$SnakeskinParser.prototype.text;
 
-/** @type {!Object<{id: number, file: (string|undefined)}} */
+/** @type {!Object<{id: number, file: (string|undefined)}>} */
 $$SnakeskinParser.prototype.namespaces;
 
 /** @type {?string} */
@@ -581,6 +608,24 @@ $$SnakeskinParser.prototype.blockTable;
  * }}
  */
 var $$SnakeskinParserStructure;
+
+/** @type {?} */
+var name;
+
+/** @type {?} */
+var parent;
+
+/** @type {?} */
+var params;
+
+/** @type {?} */
+var stack;
+
+/** @type {?} */
+var children;
+
+/** @type {?} */
+var chain;
 
 /** @type {!Object} */
 $$SnakeskinParser.prototype.structure;
