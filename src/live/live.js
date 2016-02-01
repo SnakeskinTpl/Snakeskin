@@ -188,7 +188,7 @@ Snakeskin.inlineTags = {
  */
 Snakeskin.appendChild = function (el, val, renderMode) {
 	if (val instanceof Snakeskin.Node === false) {
-		val = Snakeskin.Text(String(val), renderMode);
+		val = new Snakeskin.Text(String(val), renderMode);
 	}
 
 	el.appendChild(val.value);
@@ -203,7 +203,7 @@ Snakeskin.appendChild = function (el, val, renderMode) {
  * @param {?} val - attribute value
  */
 Snakeskin.setAttribute = function (node, name, val) {
-	node.setAttribute(name, val instanceof Snakeskin.Node ? val.textContent : String(val));
+	node.setAttribute(name, val instanceof Snakeskin.Node ? val.textContent() : String(val));
 };
 
 const
