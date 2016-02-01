@@ -12,6 +12,7 @@ import Snakeskin from '../core';
 import { isString, isObject, isFunction } from '../helpers/types';
 import { any } from '../helpers/gcc';
 import { isNotPrimitive } from '../helpers/string';
+import { stringRender } from '../consts/other';
 import { attrSeparators } from '../consts/html';
 import { attrKey } from '../consts/regs';
 
@@ -123,17 +124,22 @@ Filters['console'] = {
  * Appends a value to a node
  *
  * @param {?} val - source value
- * @param {(Node|undefined)} node - source node
- * @return {(string|!Node)}
+ * @param {(!Snakeskin.DocumentFragment|!Snakeskin.Element|undefined)} node - source node
+ * @param {string} renderMode - rendering mode of templates
+ * @return {string}
  */
-Filters['node'] = function (val, node) {
-	if (node && typeof Node === 'function' && val instanceof Node) {
-		Snakeskin.appendChild(any(node), val);
+Filters['node'] = function (val, node, renderMode) {
+	if (node && val instanceof Snakeskin.Node) {
+		Snakeskin.appendChild(node, val, renderMode);
 		return '';
 	}
 
 	return val;
 };
+
+Snakeskin.setFilterParams('node', {
+	'bind': [(o) => `'${o.renderMode}'`]
+});
 
 const entityMap = {
 	'"': '&quot;',
@@ -168,10 +174,10 @@ export const
  * @param {?string=} [opt_attr] - type of attribute declaration
  * @param {Object=} [opt_attrCache] - attribute cache object
  * @param {?=} [opt_true] - true value
- * @return {(string|!Snakeskin.HTMLObject|!Node)}
+ * @return {(string|!Snakeskin.HTMLObject|!Snakeskin.Node)}
  */
 Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) {
-	if (!val || typeof Node === 'function' && val instanceof Node) {
+	if (!val || val instanceof Snakeskin.Node) {
 		return val;
 	}
 
@@ -497,16 +503,17 @@ const
  * Replaces EOL symbols from a string to <br>
  *
  * @param {?} val - source value
- * @param {(Node|undefined)} node - source node
+ * @param {(!Snakeskin.DocumentFragment|!Snakeskin.Element|undefined)} node - source node
+ * @param {string} renderMode - rendering mode of templates
+ * @param {boolean} stringResult - if is true, then the output will be saved to __STRING_RESULT__ as a string
  * @param {string} doctype - document type
  * @return {?}
  */
-Filters['nl2br'] = function (val, node, doctype) {
+Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 	const
 		arr = val.split(nl2brRgxp);
 
 	let res = '';
-
 	for (let i = 0; i < arr.length; i++) {
 		const
 			el = arr[i];
@@ -515,9 +522,9 @@ Filters['nl2br'] = function (val, node, doctype) {
 			continue;
 		}
 
-		if (node) {
-			Snakeskin.appendChild(any(node), el);
-			Snakeskin.appendChild(any(node), Snakeskin.Element('br'));
+		if (!stringResult && !stringRender[renderMode]) {
+			Snakeskin.appendChild(node, el, renderMode);
+			Snakeskin.appendChild(node, Snakeskin.Element('br', renderMode), renderMode);
 
 		} else {
 			res += `${Filters['html'](el)}<br${doctype === 'xml' ? '/' : ''}>`;
@@ -529,7 +536,7 @@ Filters['nl2br'] = function (val, node, doctype) {
 
 Filters['nl2br']['ssFilterParams'] = {
 	'!html': true,
-	'bind': ['$0', (o) => `'${o.doctype}'`]
+	'bind': ['$0', (o) => `'${o.renderMode}'`, (o) => this.stringResult, '$0', (o) => `'${o.doctype}'`]
 };
 
 /**
