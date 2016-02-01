@@ -516,18 +516,20 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 	let res = '';
 	for (let i = 0; i < arr.length; i++) {
 		const
-			el = arr[i];
-
-		if (!el) {
-			continue;
-		}
+			el = arr[i],
+			last = i === arr.length - 1;
 
 		if (!stringResult && !stringRender[renderMode]) {
 			Snakeskin.appendChild(any(node), el, renderMode);
-			Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
+			if (!last) {
+				Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
+			}
 
 		} else {
-			res += `${Filters['html'](el)}<br${doctype === 'xml' ? '/' : ''}>`;
+			res += Filters['html'](el);
+			if (!last) {
+				res += `<br${doctype === 'xml' ? '/' : ''}>`;
+			}
 		}
 	}
 
@@ -536,7 +538,7 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 
 Filters['nl2br']['ssFilterParams'] = {
 	'!html': true,
-	'bind': ['$0', (o) => `'${o.renderMode}'`, (o) => this.stringResult, '$0', (o) => `'${o.doctype}'`]
+	'bind': ['$0', (o) => `'${o.renderMode}'`, (o) => o.stringResult, '$0', (o) => `'${o.doctype}'`]
 };
 
 /**

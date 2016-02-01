@@ -153,7 +153,7 @@ Parser.prototype.end = function (cacheKey, label) {
 		default:
 			this.result = this.result.replace(
 				new RegExp(
-					`Snakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], '', ${this.renderMode}'\\);`,
+					`Snakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], '', '${this.renderMode}'\\);`,
 					'g'
 				),
 
