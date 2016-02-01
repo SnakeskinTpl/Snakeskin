@@ -409,8 +409,8 @@ export default class Parser {
 				__REQUIRE__;
 
 			function __LENGTH__(val) {
-				if (typeof Node === 'function' && val[0] instanceof Node === true) {
-					return val[0].childNodes.length;
+				if (val[0] instanceof Snakeskin.Node) {
+					return val[0].length();
 				}
 
 				if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {

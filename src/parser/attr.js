@@ -65,7 +65,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 
 				${
 					isDOMRenderMode ?
-						`Snakeskin.setAttribute($0, key, attr, '${this.renderMode}');` :
+						`Snakeskin.setAttribute($0, key, attr);` :
 						this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)
 				}
 			});

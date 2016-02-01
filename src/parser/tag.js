@@ -140,8 +140,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 						Snakeskin.setAttribute(
 							${this.out(`__NODE__`, {unsafe: true})},
 							${inlineTag},
-							${this.out('__CALL_TMP__', {unsafe: true})},
-							'${this.renderMode}'
+							${this.out('__CALL_TMP__', {unsafe: true})}
 						);
 					}
 
