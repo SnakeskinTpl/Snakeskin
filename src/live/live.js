@@ -101,7 +101,7 @@ Snakeskin.DocumentFragment.prototype.textContent = function () {
 
 	let res = '';
 	for (let i = 0; i < children.length; i++) {
-		res += children[i].outerHTML;
+		res += children[i].outerHTML || children[i].textContent;
 	}
 
 	return res;
