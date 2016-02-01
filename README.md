@@ -29,11 +29,9 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 * JS-like set of directives;
 * [BEM](http://en.bem.info) (as in [Stylus](https://github.com/LearnBoost/stylus));
 * Localization;
-* Macros and filters;
+* Filters;
 * Modules;
-* High-speed compilation;
 * Work in browsers, as well as on a server ([node.js](http://nodejs.org));
-* The engine is written in pure JavaScript and doesn't have any dependencies;
 * The source code is designed to work with Google Closure Compiler in advanced mode;
 * Good code coverage;
 * Detailed [documentation](https://github.com/SnakeskinTpl/Snakeskin/wiki) with examples.
@@ -42,56 +40,25 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 
 * [Gulp](https://github.com/SnakeskinTpl/gulp-snakeskin)
 * [Grunt](https://github.com/SnakeskinTpl/grunt-snakeskin)
+* [WebPack](https://github.com/SnakeskinTpl/snakeskin-loader)
 
 ### Example
 
 ```
-- template page(youAreUsingSnakeskin)
-	- doctype
-	< html lang = en
-		< head
-			< title :: Snakeskin
-			#< script
-				if (foo) bar(1 + 5)
-
-		< body
-			< h1 :: Snakeskin — the best template engine
-			< #container.b-info
-				- if youAreUsingSnakeskin
-					< p.&__good :: Congratulations, you are using the best!
-
-				- else
-					< p.&__bad :: Get on it!
-
-				< p.&__description
-					Snakeskin — a client-server template engine with
-					simple and straightforward syntax and a rich set of features.
+- namespace example
+- template helloWorld(name = 'world')
+  < .hello
+    Hello {name}!
 ```
 
 ```js
-page(true);
+example.helloWorld();
 ```
 
 It will transpiled to
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>Snakeskin</title>
-		<script type="text/javascript">
-			if (foo) bar(1 + 5)
-		</script>
-	</head>
-	<body>
-		<h1>Snakeskin — the best template engine</h1>
-		<div id="container" class="b-info">
-			<p class="b-info__good">Congratulations, you are using the best!</p>
-			<p class="b-info__description">Snakeskin — a client-server template engine with
-				simple and straightforward syntax and a rich set of features.</p>
-		</div>
-	</body>
-</html>
+<div class="hello">Hello world!</div>
 ```
 
 ## [License](https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE)
