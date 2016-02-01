@@ -32,7 +32,7 @@ Parser.prototype.getXMLAttrsDecl = function (str) {
  */
 Parser.prototype.getXMLAttrsDeclStart = function () {
 	return ws`
-		__ATTR_CACHE__ = {};
+		${this.declVars('__ATTR_CACHE__ = {}', {sys: true})}
 		__ATTR_CONCAT_MAP__ = {'class': true};
 	`;
 };
@@ -59,7 +59,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 
 	return ws`
 		if (typeof ${link} === 'undefined' || ${link} !== '?') {
-			Snakeskin.forEach(__ATTR_CACHE__, function (el, key) {
+			Snakeskin.forEach(${this.out('__ATTR_CACHE__', {unsafe: true})}, function (el, key) {
 				var
 					attr = el[0] === TRUE ? ${isDOMRenderMode || this.doctype === 'xml' ? 'key' : `TRUE`} : el.join(' ');
 
@@ -146,6 +146,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		}, '');
 
+		const
+			attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
+
 		return ws`
 			${res}
 			__ATTR_TYPE__ = 'attrKey';
@@ -154,14 +157,13 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			if (__ATTR_TMP__ != null && __ATTR_TMP__ !== '') {
 				if (
 					!__ATTR_CONCAT_MAP__[__ATTR_TMP__] ||
-					!__ATTR_CACHE__[__ATTR_TMP__] ||
-					__ATTR_CACHE__[__ATTR_TMP__][0] === TRUE
+					!${attrCache}[__ATTR_TMP__] || ${attrCache}[__ATTR_TMP__][0] === TRUE
 
 				) {
-					__ATTR_CACHE__[__ATTR_TMP__] = [];
+					${attrCache}[__ATTR_TMP__] = [];
 				}
 
-				${empty ? '__ATTR_CACHE__[__ATTR_TMP__].push(TRUE)' : '__ATTR_CACHE__[__ATTR_TMP__].push(__ATTR_STR__)'};
+				${empty ? `${attrCache}[__ATTR_TMP__].push(TRUE)` : `${attrCache}[__ATTR_TMP__].push(__ATTR_STR__)`};
 			}
 
 			__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;

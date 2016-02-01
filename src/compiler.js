@@ -919,6 +919,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 		// Compiling in a browser
 		} else {
+			console.log(parser.result);
 			parser.evalStr(parser.result);
 		}
 

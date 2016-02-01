@@ -125,7 +125,8 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 
 	const
 		link = this.out(`__TAG__`, {unsafe: true}),
-		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true});
+		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true}),
+		attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
 
 	if (!this.stringResult && !stringRender[this.renderMode]) {
 		return ws`
@@ -136,7 +137,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 					__RESULT__ =
 						${this.out('__CALL_CACHE__', {unsafe: true})};
 
-					if (${inlineTag} in __ATTR_CACHE__ === false) {
+					if (${inlineTag} in ${attrCache} === false) {
 						Snakeskin.setAttribute(
 							${this.out(`__NODE__`, {unsafe: true})},
 							${inlineTag},
@@ -149,8 +150,6 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 					$0 = __RESULT__[__RESULT__.length - 1];
 				}
 			}
-
-			__ATTR_CACHE__ = undefined;
 		`;
 	}
 
@@ -162,7 +161,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 				__RESULT__ =
 						${this.out('__CALL_CACHE__', {unsafe: true})};
 
-				if (${inlineTag} in __ATTR_CACHE__ === false) {
+				if (${inlineTag} in ${attrCache} === false) {
 					${this.wrap(ws`
 						' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"'
 					`)}
@@ -174,8 +173,6 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 				${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
 			}
 		}
-
-		__ATTR_CACHE__ = undefined;
 	`;
 };
 

@@ -59,13 +59,16 @@ Snakeskin.addDirective(
 			this.getXMLAttrsDeclStart() +
 			this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
+		const
+			attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
+
 		if (id) {
-			str += `__ATTR_CACHE__['id'] = ['${id}'] || __ATTR_CACHE__['id'];`;
+			str += `${attrCache}['id'] = ['${id}'] || ${attrCache}['id'];`;
 		}
 
 		if (classes.length) {
 			const c = $C(classes).map((el) => `'${el}'`).join(',');
-			str += `__ATTR_CACHE__['class'] = [${c}].concat(__ATTR_CACHE__['class'] || []);`;
+			str += `${attrCache}['class'] = [${c}].concat(${attrCache}['class'] || []);`;
 		}
 
 		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));
