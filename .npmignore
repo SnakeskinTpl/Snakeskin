@@ -49,7 +49,7 @@ node_modules
 
 # Temporary
 *.tmp
-/tmp
+/test/tmp
 
 # NPM ignore list
 /src
