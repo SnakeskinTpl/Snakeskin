@@ -130,7 +130,7 @@ Filters['console'] = {
  */
 Filters['node'] = function (val, node, renderMode) {
 	if (node && val instanceof Snakeskin.Node) {
-		Snakeskin.appendChild(node, val, renderMode);
+		Snakeskin.appendChild(any(node), val, renderMode);
 		return '';
 	}
 
@@ -523,8 +523,8 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 		}
 
 		if (!stringResult && !stringRender[renderMode]) {
-			Snakeskin.appendChild(node, el, renderMode);
-			Snakeskin.appendChild(node, Snakeskin.Element('br', renderMode), renderMode);
+			Snakeskin.appendChild(any(node), el, renderMode);
+			Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
 
 		} else {
 			res += `${Filters['html'](el)}<br${doctype === 'xml' ? '/' : ''}>`;

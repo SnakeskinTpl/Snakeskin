@@ -39,6 +39,7 @@ Snakeskin.StringBuffer = function () {
  * @param {!Function} parent
  */
 function inherit(child, parent) {
+	/** @constructor */
 	const F = function () {
 		this.constructor = child;
 	};
