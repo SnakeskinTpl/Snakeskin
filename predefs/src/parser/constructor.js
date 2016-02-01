@@ -211,6 +211,24 @@ $$SnakeskinParser.prototype.blockTable;
  */
 var $$SnakeskinParserStructure;
 
+/** @type {?} */
+var name;
+
+/** @type {?} */
+var parent;
+
+/** @type {?} */
+var params;
+
+/** @type {?} */
+var stack;
+
+/** @type {?} */
+var children;
+
+/** @type {?} */
+var chain;
+
 /** @type {!Object} */
 $$SnakeskinParser.prototype.structure;
 

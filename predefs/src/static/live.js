@@ -6,6 +6,27 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+/** @type {?} */
+var HTMLObject;
+
+/** @type {?} */
+var StringBuffer;
+
+/** @type {?} */
+var length;
+
+/** @type {?} */
+var textContent;
+
+/** @type {?} */
+var appendChild;
+
+/** @type {?} */
+var setAttribute;
+
+/** @const */
+Snakeskin.inlineTags = {};
+
 /**
  * @abstract
  * @param {!Object} filters
