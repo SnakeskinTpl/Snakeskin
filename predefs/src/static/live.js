@@ -24,6 +24,12 @@ var appendChild;
 /** @type {?} */
 var setAttribute;
 
+/** @type {?} */
+var include;
+
+/** @type {?} */
+var toObj;
+
 /** @const */
 Snakeskin.inlineTags = {};
 
