@@ -18,7 +18,7 @@ import { $scope, $extMap, $blocks } from '../consts/cache';
 import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 const
-	callBlockNameRgxp = new RegExp(`^[^${symbols}_$][^${w}$]*|[^${w}$]+`, 'i');
+	callBlockNameRgxp = new RegExp(`^[^${symbols}_$][^${w}]*|[^${w}]+`, 'i');
 
 Snakeskin.addDirective(
 	'block',

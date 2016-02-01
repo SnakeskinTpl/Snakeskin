@@ -31,7 +31,7 @@ const unaryBlackWords = {
 };
 
 const
-	nextWordCharRgxp = new RegExp(`[${r(G_MOD)}$+\\-~!${w}[\\]().]`);
+	nextWordCharRgxp = new RegExp(`[${r(G_MOD)}+\\-~!${w}[\\]().]`);
 
 /**
  * Returns a full word from a string from the specified position

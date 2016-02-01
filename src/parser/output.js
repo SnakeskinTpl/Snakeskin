@@ -81,8 +81,8 @@ const declBlackWords = {
 
 const
 	ssfRgxp = /__FILTERS__\./,
-	nextCharRgxp = new RegExp(`[${r(G_MOD)}$+\\-~!${rgxp.w}]`),
-	newWordRgxp = new RegExp(`[^${r(G_MOD)}$${rgxp.w}[\\]]`);
+	nextCharRgxp = new RegExp(`[${r(G_MOD)}+\\-~!${rgxp.w}]`),
+	newWordRgxp = new RegExp(`[^${r(G_MOD)}${rgxp.w}[\\]]`);
 
 const
 	multPropRgxp = /\[|\./,
