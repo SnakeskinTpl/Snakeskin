@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 31 Jan 2016 16:43:00 GMT
+ * Date: 'Mon, 01 Feb 2016 08:25:31 GMT
  */
 
 (function (global, factory) {
@@ -134,8 +134,8 @@
      * @param {?string=} [opt_attr] - type of attribute declaration
      */
     Snakeskin.HTMLObject = function (obj, opt_attr) {
-    	this.value = obj;
-    	this.attr = opt_attr;
+      this.value = obj;
+      this.attr = opt_attr;
     };
 
     /**
@@ -145,44 +145,208 @@
      * @return {!Array}
      */
     Snakeskin.StringBuffer = function () {
-    	return [];
+      return [];
+    };
+
+    /**
+     * @param {!Function} child
+     * @param {!Function} parent
+     */
+    function inherit(child, parent) {
+      /** @constructor */
+      var F = function F() {
+        this.constructor = child;
+      };
+
+      F.prototype = parent.prototype;
+      child.prototype = new F();
+    }
+
+    /**
+     * Node constructor
+     * @constructor
+     */
+    Snakeskin.Node = function () {};
+
+    /**
+     * Returns the number of child elements
+     * @return {number}
+     */
+    Snakeskin.Node.prototype.length = function () {
+      return this.value.childNodes.length;
+    };
+
+    /**
+     * Returns text content
+     * @return {string}
+     */
+    Snakeskin.Node.prototype.textContent = function () {
+      return this.value.textContent;
     };
 
     /**
      * DocumentFragment constructor
      *
      * @constructor
-     * @return {!DocumentFragment}
+     * @extends {Snakeskin.Node}
+     * @param {string} renderMode - rendering mode of templates
      */
-    Snakeskin.DocumentFragment = function () {
-    	return document.createDocumentFragment();
+    Snakeskin.DocumentFragment = function (renderMode) {
+      this.renderMode = renderMode;
+      this.value = document.createDocumentFragment();
+    };
+
+    inherit(Snakeskin.DocumentFragment, Snakeskin.Node);
+
+    /**
+     * Appends a child to the document fragment
+     * @param {?} el - element for appending
+     */
+    Snakeskin.DocumentFragment.prototype.appendChild = function (el) {
+      this.value.appendChild(el);
+    };
+
+    /**
+     * Returns text content
+     * @return {string}
+     */
+    Snakeskin.DocumentFragment.prototype.textContent = function () {
+      var children = this.value.childNodes;
+
+      var res = '';
+      for (var i = 0; i < children.length; i++) {
+        res += children[i].outerHTML || children[i].textContent;
+      }
+
+      return res;
     };
 
     /**
      * Element constructor
      *
      * @constructor
+     * @extends {Snakeskin.Node}
+     *
      * @param {string} name - element name
-     * @return {!Element}
+     * @param {string} renderMode - rendering mode of templates
      */
-    Snakeskin.Element = function (name) {
-    	return document.createElement(name);
+    Snakeskin.Element = function (name, renderMode) {
+      this.renderMode = renderMode;
+      this.value = document.createElement(name);
+    };
+
+    inherit(Snakeskin.Element, Snakeskin.Node);
+
+    /**
+     * Appends a child to the element
+     * @param {?} el - element for appending
+     */
+    Snakeskin.Element.prototype.appendChild = function (el) {
+      this.value.appendChild(el);
+    };
+
+    /**
+     * Sets an attribute to the element
+     *
+     * @param {string} name - attribute name
+     * @param {string} val - attribute value
+     */
+    Snakeskin.Element.prototype.setAttribute = function (name, val) {
+      this.value.setAttribute(name, val);
+    };
+
+    /**
+     * Returns text content
+     * @return {string}
+     */
+    Snakeskin.Element.prototype.textContent = function () {
+      return this.value.outerHTML;
     };
 
     /**
      * Comment constructor
      *
      * @constructor
+     * @extends {Snakeskin.Node}
+     *
      * @param {string} text - comment text
-     * @return {!Comment}
+     * @param {string} renderMode - rendering mode of templates
      */
-    Snakeskin.Comment = function (text) {
-    	return document.createComment(text);
+    Snakeskin.Comment = function (text, renderMode) {
+      this.renderMode = renderMode;
+      this.value = document.createComment(text);
+    };
+
+    inherit(Snakeskin.Comment, Snakeskin.Node);
+
+    /**
+     * Text constructor
+     *
+     * @constructor
+     * @extends {Snakeskin.Node}
+     *
+     * @param {string} text
+     * @param {string} renderMode - rendering mode of templates
+     */
+    Snakeskin.Text = function (text, renderMode) {
+      this.renderMode = renderMode;
+      this.value = document.createTextNode(text);
+    };
+
+    inherit(Snakeskin.Text, Snakeskin.Node);
+
+    /**
+     * Map of inline tag names
+     * @const
+     */
+    Snakeskin.inlineTags = {
+      'area': 'href',
+      'base': 'href',
+      'br': true,
+      'col': true,
+      'embed': 'src',
+      'hr': true,
+      'img': 'src',
+      'input': 'value',
+      'link': 'href',
+      'meta': 'content',
+      'param': 'value',
+      'source': 'src',
+      'track': 'src',
+      'wbr': true
+    };
+
+    /**
+     * Appends a value to the specified element
+     *
+     * @param {(!Snakeskin.DocumentFragment|!Snakeskin.Element)} el - base element
+     * @param {?} val - value for appending
+     * @param {string} renderMode - rendering mode of templates
+     * @return {(!Snakeskin.Element|!Snakeskin.Comment|!Snakeskin.Text)}
+     */
+    Snakeskin.appendChild = function (el, val, renderMode) {
+      if (val instanceof Snakeskin.Node === false) {
+        val = new Snakeskin.Text(String(val), renderMode);
+      }
+
+      el.appendChild(val.value);
+      return val;
+    };
+
+    /**
+     * Sets an attribute to the specified element
+     *
+     * @param {!Snakeskin.Node} node - source element
+     * @param {string} name - attribute name
+     * @param {?} val - attribute value
+     */
+    Snakeskin.setAttribute = function (node, name, val) {
+      node.setAttribute(name, val instanceof Snakeskin.Node ? val.textContent() : String(val));
     };
 
     var keys = function () {
-    	return (/\[native code]/.test(Object.keys && Object.keys.toString()) && Object.keys
-    	);
+      return (/\[native code]/.test(Object.keys && Object.keys.toString()) && Object.keys
+      );
     }();
 
     /**
@@ -196,52 +360,52 @@
      * )} callback - callback function
      */
     Snakeskin.forEach = function (obj, callback) {
-    	if (!obj) {
-    		return;
-    	}
+      if (!obj) {
+        return;
+      }
 
-    	var length = 0;
+      var length = 0;
 
-    	if (isArray(obj)) {
-    		length = obj.length;
-    		for (var i = -1; ++i < length;) {
-    			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
-    				break;
-    			}
-    		}
-    	} else if (keys) {
-    		var arr = keys(obj);
+      if (isArray(obj)) {
+        length = obj.length;
+        for (var i = -1; ++i < length;) {
+          if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
+            break;
+          }
+        }
+      } else if (keys) {
+        var arr = keys(obj);
 
-    		length = arr.length;
-    		for (var i = -1; ++i < length;) {
-    			if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
-    				break;
-    			}
-    		}
-    	} else {
-    		if (callback.length >= 6) {
-    			for (var key in obj) {
-    				if (!obj.hasOwnProperty(key)) {
-    					continue;
-    				}
+        length = arr.length;
+        for (var i = -1; ++i < length;) {
+          if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
+            break;
+          }
+        }
+      } else {
+        if (callback.length >= 6) {
+          for (var key in obj) {
+            if (!obj.hasOwnProperty(key)) {
+              continue;
+            }
 
-    				length++;
-    			}
-    		}
+            length++;
+          }
+        }
 
-    		var i = 0;
-    		for (var key in obj) {
-    			if (!obj.hasOwnProperty(key)) {
-    				continue;
-    			}
+        var i = 0;
+        for (var key in obj) {
+          if (!obj.hasOwnProperty(key)) {
+            continue;
+          }
 
-    			if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
-    				break;
-    			}
+          if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+            break;
+          }
 
-    			i++;
-    		}
-    	}
+          i++;
+        }
+      }
     };
 
     /**
@@ -252,74 +416,26 @@
      * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - callback function
      */
     Snakeskin.forIn = function (obj, callback) {
-    	if (!obj) {
-    		return;
-    	}
+      if (!obj) {
+        return;
+      }
 
-    	var length = 0,
-    	    i = 0;
+      var length = 0,
+          i = 0;
 
-    	if (callback.length >= 6) {
-    		for (var ignore in obj) {
-    			length++;
-    		}
-    	}
+      if (callback.length >= 6) {
+        for (var ignore in obj) {
+          length++;
+        }
+      }
 
-    	for (var key in obj) {
-    		if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
-    			break;
-    		}
+      for (var key in obj) {
+        if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+          break;
+        }
 
-    		i++;
-    	}
-    };
-
-    /**
-     * Map of empty tag names
-     * @const
-     */
-    Snakeskin.inlineTags = {
-    	'area': 'href',
-    	'base': 'href',
-    	'br': true,
-    	'col': true,
-    	'embed': 'src',
-    	'hr': true,
-    	'img': 'src',
-    	'input': 'value',
-    	'link': 'href',
-    	'meta': 'content',
-    	'param': 'value',
-    	'source': 'src',
-    	'track': 'src',
-    	'wbr': true
-    };
-
-    /**
-     * Appends a node or a text to the source
-     *
-     * @param {!Element} node - source element
-     * @param {?} obj - element for appending
-     * @return {(!Element|!Text)}
-     */
-    Snakeskin.appendChild = function (node, obj) {
-    	if (obj instanceof Node === false) {
-    		obj = document.createTextNode(String(obj));
-    	}
-
-    	node.appendChild(any(obj));
-    	return obj;
-    };
-
-    /**
-     * Sets an attribute to the specified element
-     *
-     * @param {!Element} node - source element
-     * @param {string} name - attribute name
-     * @param {?} val - attribute value
-     */
-    Snakeskin.setAttribute = function (node, name, val) {
-    	node.setAttribute(name, val instanceof Node === false ? String(val) : val.textContent);
+        i++;
+      }
     };
 
     /**
@@ -330,11 +446,11 @@
      * @return {!Function}
      */
     Snakeskin.decorate = function (decorators, fn) {
-    	Snakeskin.forEach(decorators, function (decorator) {
-    		return fn = decorator(fn);
-    	});
-    	fn.decorators = decorators;
-    	return fn;
+      Snakeskin.forEach(decorators, function (decorator) {
+        return fn = decorator(fn);
+      });
+      fn.decorators = decorators;
+      return fn;
     };
 
     var rRgxp = /([\\\/'*+?|()\[\]{}.^$-])/g;
@@ -362,6 +478,11 @@
       str = ((isNotPrimitiveRgxp.exec(str) || [])[1] || '').trim();
       return Boolean(str && isNaN(Number(str)) && !(opt_map || isNotPrimitiveMap)[str]);
     }
+
+    var stringRender = {
+      'stringBuffer': true,
+      'stringConcat': true
+    };
 
         var attrSeparators = {
       '-': true,
@@ -452,6 +573,8 @@
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
     var attrKey = /([^\s=]+)/;
+
+        var _this = this;
 
     var Filters = Snakeskin.Filters;
 
@@ -574,17 +697,24 @@
      * Appends a value to a node
      *
      * @param {?} val - source value
-     * @param {(Node|undefined)} node - source node
-     * @return {(string|!Node)}
+     * @param {(!Snakeskin.DocumentFragment|!Snakeskin.Element|undefined)} node - source node
+     * @param {string} renderMode - rendering mode of templates
+     * @return {string}
      */
-    Filters['node'] = function (val, node) {
-    	if (node && typeof Node === 'function' && val instanceof Node) {
-    		node.appendChild(val);
+    Filters['node'] = function (val, node, renderMode) {
+    	if (node && val instanceof Snakeskin.Node) {
+    		Snakeskin.appendChild(any(node), val, renderMode);
     		return '';
     	}
 
     	return val;
     };
+
+    Snakeskin.setFilterParams('node', {
+    	'bind': [function (o) {
+    		return '\'' + o.renderMode + '\'';
+    	}]
+    });
 
     var entityMap = {
     	'"': '&quot;',
@@ -619,10 +749,10 @@
      * @param {?string=} [opt_attr] - type of attribute declaration
      * @param {Object=} [opt_attrCache] - attribute cache object
      * @param {?=} [opt_true] - true value
-     * @return {(string|!Snakeskin.HTMLObject|!Node)}
+     * @return {(string|!Snakeskin.HTMLObject|!Snakeskin.Node)}
      */
     Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) {
-    	if (!val || typeof Node === 'function' && val instanceof Node) {
+    	if (!val || val instanceof Snakeskin.Node) {
     		return val;
     	}
 
@@ -646,7 +776,9 @@
     };
 
     Snakeskin.setFilterParams('html', {
-    	'bind': ['Unsafe', '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE'],
+    	'bind': ['Unsafe', '__ATTR_TYPE__', function (o) {
+    		return o.out('__ATTR_CACHE__', { unsafe: true });
+    	}, 'TRUE'],
     	'test': function test(val) {
     		return isNotPrimitive(val);
     	}
@@ -937,15 +1069,16 @@
      * Replaces EOL symbols from a string to <br>
      *
      * @param {?} val - source value
-     * @param {(Node|undefined)} node - source node
+     * @param {(!Snakeskin.DocumentFragment|!Snakeskin.Element|undefined)} node - source node
+     * @param {string} renderMode - rendering mode of templates
+     * @param {boolean} stringResult - if is true, then the output will be saved to __STRING_RESULT__ as a string
      * @param {string} doctype - document type
      * @return {?}
      */
-    Filters['nl2br'] = function (val, node, doctype) {
+    Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
     	var arr = val.split(nl2brRgxp);
 
     	var res = '';
-
     	for (var i = 0; i < arr.length; i++) {
     		var el = arr[i];
 
@@ -953,9 +1086,9 @@
     			continue;
     		}
 
-    		if (node) {
-    			node.appendChild(any(document.createTextNode(el)));
-    			node.appendChild(any(document.createElement('br')));
+    		if (!stringResult && !stringRender[renderMode]) {
+    			Snakeskin.appendChild(any(node), el, renderMode);
+    			Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
     		} else {
     			res += Filters['html'](el) + '<br' + (doctype === 'xml' ? '/' : '') + '>';
     		}
@@ -967,6 +1100,10 @@
     Filters['nl2br']['ssFilterParams'] = {
     	'!html': true,
     	'bind': ['$0', function (o) {
+    		return '\'' + o.renderMode + '\'';
+    	}, function (o) {
+    		return _this.stringResult;
+    	}, '$0', function (o) {
     		return '\'' + o.doctype + '\'';
     	}]
     };
@@ -1075,7 +1212,9 @@
     	'!html': true,
     	'bind': [function (o) {
     		return '\'' + o.doctype + '\'';
-    	}, '__ATTR_TYPE__', '__ATTR_CACHE__', 'TRUE', 'FALSE'],
+    	}, '__ATTR_TYPE__', function (o) {
+    		return o.out('__ATTR_CACHE__', { unsafe: true });
+    	}, 'TRUE', 'FALSE'],
     	'test': function test(val) {
     		return isNotPrimitive(val);
     	}
