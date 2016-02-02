@@ -130,6 +130,10 @@ function action(data, file) {
 		params.language = load(language);
 	}
 
+	function url(url) {
+		return path.relative(process.cwd(), path.resolve(url));
+	}
+
 	function line() {
 		console.log(new Array(80).join('~'));
 	}
@@ -137,7 +141,7 @@ function action(data, file) {
 	function success() {
 		line();
 		console.log(new Date().toString());
-		console.log('File "' + file + '" was successfully compiled -> "' + outFile + '".');
+		console.log('File "' + url(file) + '" was successfully compiled -> "' + url(outFile) + '".');
 		console.timeEnd('Time');
 		line();
 	}
@@ -191,8 +195,8 @@ function action(data, file) {
 
 	} catch (err) {
 		console.log(new Date().toString());
-		console.error(err);
-		res = '';
+		console.error(err.message);
+		res = false;
 
 		if (!watch) {
 			process.exit(1);
@@ -242,7 +246,7 @@ function action(data, file) {
 
 				} catch (err) {
 					console.log(new Date().toString());
-					console.error(err);
+					console.error(err.message);
 					res = '';
 
 					if (!watch) {
@@ -272,10 +276,8 @@ function action(data, file) {
 			}
 		}
 
-	} else {
-		if (!watch) {
-			process.exit(1);
-		}
+	} else if (!watch) {
+		process.exit(1);
 	}
 }
 
