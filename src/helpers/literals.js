@@ -10,6 +10,9 @@
 
 import { COMMENTS } from '../consts/literals';
 
+const
+	comments = Object.keys(COMMENTS);
+
 /**
  * Returns a comment type for the specified position of a string
  *
@@ -22,13 +25,9 @@ export function getCommentType(str, pos) {
 		return false;
 	}
 
-	for (let key in COMMENTS) {
-		if (!COMMENTS.hasOwnProperty(key)) {
-			break;
-		}
-
+	for (let i = 0; i < comments.length; i++) {
 		const
-			el = COMMENTS[key],
+			el = comments[i],
 			chunk = str.substr(pos, el.length);
 
 		if (COMMENTS[chunk] && chunk === el) {
