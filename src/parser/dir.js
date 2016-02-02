@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { $templates, $logicDirs } from '../consts/cache';
 
@@ -26,12 +25,17 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_name = this.name = String(opt_name ? this.getDirName(opt_name) : this.name);
 
 	const
-		{structure} = this;
+		{structure} = this,
+		{vars} = structure;
 
-	$C(structure.vars).forEach((el, key) => {
-		opt_vars[key] = el;
+	for (let key in vars) {
+		if (!vars.hasOwnProperty(key)) {
+			break;
+		}
+
+		opt_vars[key] = vars[key];
 		opt_vars[key].inherited = true;
-	});
+	}
 
 	const obj = {
 		chain: false,
@@ -75,8 +79,9 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 
 			blockTable[key] = sub;
 			const deep = (obj) => {
-				$C(obj).forEach((el) => {
+				for (let i = 0; i < obj.length; i++) {
 					const
+						el = obj[i],
 						key = `${el.name}_${el.params.name}`;
 
 					if (blockTable[key] && blockTable[key] !== true) {
@@ -89,7 +94,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 					if (el.children) {
 						deep(el.children);
 					}
-				});
+				}
 			};
 
 			if (parent && $templates[parent][key] && $templates[parent][key].children) {

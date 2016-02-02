@@ -14,10 +14,6 @@ import { scopeMod } from '../consts/regs';
 import { B_OPEN, B_CLOSE } from '../consts/literals';
 import { $args, $argsRes, $consts } from '../consts/cache';
 
-const
-	nullableRgxp = /[?|!]$/,
-	nullableMap = {'!': false, '?': true};
-
 /**
  * Returns an array of function arguments from a string
  *
@@ -75,6 +71,10 @@ Parser.prototype.getFnArgs = function (str) {
 	res.isCallable = Boolean(res.isCallable);
 	return res;
 };
+
+const
+	nullableRgxp = /[?|!]$/,
+	nullableMap = {'!': false, '?': true};
 
 /**
  * Searches and initialises function arguments from a string and returns an information object

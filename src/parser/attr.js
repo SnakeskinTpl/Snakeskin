@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
@@ -44,8 +43,15 @@ Parser.prototype.getXMLAttrsDeclStart = function () {
  * @return {string}
  */
 Parser.prototype.getXMLAttrsDeclBody = function (str) {
-	return String($C(this.splitXMLAttrGroup(str))
-		.reduce((res, el) => res + this.getXMLAttrDecl(el), ''));
+	const
+		groups = this.splitXMLAttrGroup(str);
+
+	let res = '';
+	for (let i = 0; i < groups.length; i++) {
+		res += this.getXMLAttrDecl(groups[i]);
+	}
+
+	return res;
 };
 
 /**
@@ -98,7 +104,11 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		s = ADV_LEFT_BOUND + LEFT_BOUND,
 		e = RIGHT_BOUND;
 
-	return String($C(parts).reduce((res, el) => {
+	let res = '';
+	for (let i = 0; i < parts.length; i++) {
+		const
+			el = parts[i];
+
 		let
 			args = el.split(' = '),
 			empty = args.length !== 2;
@@ -113,8 +123,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			}
 		}
 
-		args = $C(args).map((el) =>
-			el.trim());
+		for (let i = 0; i < args.length; i++) {
+			args[i] = args[i].trim();
+		}
 
 		res += ws`
 			__ATTR_STR__ = '';
@@ -132,25 +143,28 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			args[0] = args[0][0] === '-' ? `data-${args[0].slice(1)}` : args[0];
 		}
 
-		res += $C(this.getTokens(args[1])).reduce((res, val) => {
+		const
+			tokens = this.getTokens(args[1]);
+
+		for (let i = 0; i < tokens.length; i++) {
+			let
+				val = tokens[i];
+
 			if (classRef.test(val) && ref) {
 				val = `${s}'${ref}'${FILTER}${this.bemFilter} '${val.slice('&amp;'.length)}'${e}`;
 				val = this.pasteDangerBlocks(this.replaceTplVars(val));
 			}
 
-			return ws`
-				${res}
+			res += ws`
 				__ATTR_TMP__ = '${this.pasteTplVarBlocks(val)}';
 				__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (__ATTR_TMP__ != null ? __ATTR_TMP__ : '');
 			`;
-
-		}, '');
+		}
 
 		const
 			attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
 
-		return ws`
-			${res}
+		res += ws`
 			__ATTR_TYPE__ = 'attrKey';
 			__ATTR_TMP__ = '${this.pasteTplVarBlocks(args[0])}';
 
@@ -168,8 +182,9 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 			__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
 		`;
+	}
 
-	}, ''));
+	return res;
 };
 
 /**
