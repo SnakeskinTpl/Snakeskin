@@ -15,8 +15,7 @@ const
 
 const
 	replace = require('gulp-replace'),
-	bump = require('gulp-bump'),
-	run = require('gulp-run');
+	bump = require('gulp-bump');
 
 gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
@@ -41,10 +40,4 @@ gulp.task('npmignore', (cb) => {
 		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, `${fs.readFileSync('./.gitignore')}\n`))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
-});
-
-gulp.task('yaspeller', (cb) => {
-	run('yaspeller ./').exec()
-		.on('error', helpers.error(cb))
-		.on('finish', cb);
 });

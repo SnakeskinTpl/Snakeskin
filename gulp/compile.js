@@ -22,7 +22,7 @@ const
 	gcc = require('gulp-closure-compiler'),
 	eol = require('gulp-eol');
 
-gulp.task('compile', ['predefs'], compile);
+gulp.task('compile', ['build', 'predefs'], compile);
 gulp.task('compile-fast', compile);
 
 function compile(cb) {

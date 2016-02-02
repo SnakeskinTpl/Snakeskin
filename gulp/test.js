@@ -10,25 +10,20 @@
 
 const
 	gulp = require('gulp'),
-	istanbul = require('gulp-istanbul'),
-	jasmine = require('gulp-jasmine'),
-	helpers = require('./helpers');
+	helpers = require('./helpers'),
+	run = require('gulp-run');
 
 gulp.task('full-build', ['compile'], test);
-gulp.task('test', ['build'], test);
-gulp.task('test-dev', ['compile-fast'], test);
+gulp.task('test', test);
 
 function test(cb) {
-	gulp.src('./dist/snakeskin.js')
-		.pipe(istanbul())
-		.pipe(istanbul.hookRequire())
-		.on('finish', runTests);
-
-	function runTests() {
-		gulp.src('./test/test.dev.js')
-			.pipe(jasmine())
-			.on('error', helpers.error(cb))
-			.pipe(istanbul.writeReports())
-			.on('end', cb);
-	}
+	run('node test').exec()
+		.on('error', helpers.error(cb))
+		.on('finish', cb);
 }
+
+gulp.task('yaspeller', (cb) => {
+	run('yaspeller ./').exec()
+		.on('error', helpers.error(cb))
+		.on('finish', cb);
+});

@@ -10,9 +10,6 @@
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 
 var
-	$C = require('collection.js').$C;
-
-var
 	path = require('path'),
 	fs = require('fs'),
 	cache = {};
@@ -78,12 +75,14 @@ exports.check = function (source, result, opt_key, opt_includes) {
 	}
 
 	if (includes[1]) {
-		if ($C(JSON.parse(includes[1])).some(test)) {
+		includes = JSON.parse(includes[1]);
+
+		if (includes.some(test)) {
 			return false;
 		}
 
 		if (opt_includes) {
-			return $C(includes).map(function (el) {
+			return includes.map(function (el) {
 				return el[0];
 			});
 		}
@@ -212,7 +211,7 @@ exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
 	}
 
 	if (opt_tplName) {
-		tpl = $C(tpls).get(opt_tplName);
+		tpl = eval('tpls' + opt_tplName);
 
 		if (tpl && typeof tpls !== 'function') {
 			tpls = tpl

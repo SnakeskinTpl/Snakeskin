@@ -31,8 +31,7 @@
   ],
   "scripts": {
     "test": "bower install && node test",
-    "test-coverage": "bower install && gulp test",
-    "full-test": "npm run test-coverage && npm run yaspeller ./"
+    "full-test": "bower install && istanbul cover test && yaspeller ./"
   },
   "dependencies": {
     "commander": "^2.5.0",
@@ -62,7 +61,6 @@
     "gulp-download": "0.0.1",
     "gulp-eol": "^0.1.1",
     "gulp-header": "^1.2.2",
-    "gulp-istanbul": "^0.10.0",
     "gulp-jasmine": "^2.0.0",
     "gulp-monic": "^2.0.1",
     "gulp-rename": "^1.2.0",
@@ -70,6 +68,7 @@
     "gulp-rollup": "^1.4.0",
     "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.11.0",
+    "istanbul": "^0.4.2",
     "jscs": "^2.6.0",
     "mkdirp": "^0.5.1",
     "monic": "^2.3.9",

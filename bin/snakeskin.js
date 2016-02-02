@@ -11,9 +11,6 @@
 global.Snakeskin = require('../snakeskin');
 
 var
-	$C = require('collection.js').$C;
-
-var
 	program = require('commander'),
 	beautify = require('js-beautify'),
 	monocle = require('monocle')();
@@ -175,7 +172,7 @@ function action(data, file) {
 				include[file] = include[file] || {};
 				include[file][file] = true;
 
-				$C(includes).forEach(function (key) {
+				includes.forEach(function (key) {
 					include[key] = include[key] || {};
 					include[key][file] = true;
 				});
@@ -269,7 +266,7 @@ function action(data, file) {
 			include[file][file] = true;
 
 			if (tmp) {
-				$C(tmp).forEach(function (el, key) {
+				Object.keys(tmp).forEach(function (key) {
 					include[key] = include[key] || {};
 					include[key][file] = true;
 				});
@@ -349,7 +346,7 @@ if (!file && input == null) {
 		var watchFiles = function watchFiles() {
 			var files = [];
 
-			$C(include).forEach(function (el, key) {
+			Object.keys(include).forEach(function (key) {
 				fMap[key] = true;
 				files.push(key);
 			});
@@ -365,7 +362,7 @@ if (!file && input == null) {
 						calls[src] = setTimeout(function () {
 							monocle.unwatchAll();
 
-							$C(files).forEach(function (el, key) {
+							Object.keys(files).forEach(function (key) {
 								if ((!mask || mask.test(key))) {
 									if (exists(key)) {
 										action(fs.readFileSync(key), key);
@@ -393,7 +390,7 @@ if (!file && input == null) {
 
 		if (fs.statSync(file).isDirectory()) {
 			var renderDir = function (dir) {
-				$C(fs.readdirSync(dir)).forEach(function (el) {
+				fs.readdirSync(dir).forEach(function (el) {
 					var src = path.join(dir, el);
 
 					if (fs.statSync(src).isDirectory()) {
