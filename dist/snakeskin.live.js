@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 01 Feb 2016 08:25:31 GMT
+ * Date: 'Tue, 02 Feb 2016 16:58:54 GMT
  */
 
 (function (global, factory) {
@@ -15,6 +15,11 @@
 }(this, function () { 'use strict';
 
     var babelHelpers = {};
+    babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+    };
 
     babelHelpers.defineProperty = function (obj, key, value) {
       if (key in obj) {
@@ -72,18 +77,6 @@
      * @const
      */
     Snakeskin.cache = {};
-
-        /**
-     * Gets an object with an undefined type
-     * (for the GCC)
-     *
-     * @param {?} val - source object
-     * @return {?}
-     */
-
-    function any(val) {
-      return val;
-    }
 
         /**
      * Returns true if the specified value is a function
@@ -355,8 +348,8 @@
      *
      * @param {(Array|Object|undefined)} obj - source object
      * @param {(
-     *   function(?, number, !Array, boolean, boolean, number)|
-     *   function(?, string, !Object, number, boolean, boolean, number)
+     *   function(?, ?, !Array, boolean, boolean, number)|
+     *   function(?, ?, !Object, number, boolean, boolean, number)
      * )} callback - callback function
      */
     Snakeskin.forEach = function (obj, callback) {
@@ -368,7 +361,7 @@
 
       if (isArray(obj)) {
         length = obj.length;
-        for (var i = -1; ++i < length;) {
+        for (var i = 0; i < length; i++) {
           if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
             break;
           }
@@ -377,7 +370,7 @@
         var arr = keys(obj);
 
         length = arr.length;
-        for (var i = -1; ++i < length;) {
+        for (var i = 0; i < length; i++) {
           if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
             break;
           }
@@ -386,7 +379,7 @@
         if (callback.length >= 6) {
           for (var key in obj) {
             if (!obj.hasOwnProperty(key)) {
-              continue;
+              break;
             }
 
             length++;
@@ -396,7 +389,7 @@
         var i = 0;
         for (var key in obj) {
           if (!obj.hasOwnProperty(key)) {
-            continue;
+            break;
           }
 
           if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
@@ -452,6 +445,18 @@
       fn.decorators = decorators;
       return fn;
     };
+
+        /**
+     * Gets an object with an undefined type
+     * (for the GCC)
+     *
+     * @param {?} val - source object
+     * @return {?}
+     */
+
+    function any(val) {
+      return val;
+    }
 
     var rRgxp = /([\\\/'*+?|()\[\]{}.^$-])/g;
 
@@ -516,7 +521,7 @@
 
     for (var key in BASE_SHORTS) {
     	if (!BASE_SHORTS.hasOwnProperty(key)) {
-    		continue;
+    		break;
     	}
 
     	SHORTS[key] = true;
@@ -546,7 +551,7 @@
 
     for (var key$1 in BASE_SHORTS) {
     	if (!BASE_SHORTS.hasOwnProperty(key$1)) {
-    		continue;
+    		break;
     	}
 
     	SYS_ESCAPES[key$1.charAt(0)] = true;
@@ -565,7 +570,7 @@
     var tmpSep = [];
     for (var key in attrSeparators) {
     	if (!attrSeparators.hasOwnProperty(key)) {
-    		continue;
+    		break;
     	}
 
     	tmpSep.push(r(key));
@@ -573,8 +578,6 @@
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
     var attrKey = /([^\s=]+)/;
-
-        var _this = this;
 
     var Filters = Snakeskin.Filters;
 
@@ -1011,7 +1014,7 @@
      * @return {string}
      */
     Filters['string'] = function (val) {
-    	if (isString(val) && val instanceof String === false) {
+    	if ((typeof val === 'undefined' ? 'undefined' : babelHelpers.typeof(val)) === 'object' && val instanceof String === false) {
     		return JSON.stringify(val);
     	}
 
@@ -1060,7 +1063,7 @@
     };
 
     Snakeskin.setFilterParams('default', {
-    	'!html': true
+    	'!undef': true
     });
 
     var nl2brRgxp = /\r?\n|\n/g;
@@ -1080,17 +1083,19 @@
 
     	var res = '';
     	for (var i = 0; i < arr.length; i++) {
-    		var el = arr[i];
-
-    		if (!el) {
-    			continue;
-    		}
+    		var el = arr[i],
+    		    last = i === arr.length - 1;
 
     		if (!stringResult && !stringRender[renderMode]) {
     			Snakeskin.appendChild(any(node), el, renderMode);
-    			Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
+    			if (!last) {
+    				Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
+    			}
     		} else {
-    			res += Filters['html'](el) + '<br' + (doctype === 'xml' ? '/' : '') + '>';
+    			res += Filters['html'](el);
+    			if (!last) {
+    				res += '<br' + (doctype === 'xml' ? '/' : '') + '>';
+    			}
     		}
     	}
 
@@ -1102,7 +1107,7 @@
     	'bind': ['$0', function (o) {
     		return '\'' + o.renderMode + '\'';
     	}, function (o) {
-    		return _this.stringResult;
+    		return o.stringResult;
     	}, '$0', function (o) {
     		return '\'' + o.doctype + '\'';
     	}]
