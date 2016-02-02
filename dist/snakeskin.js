@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 20:54:41 GMT
+ * Date: 'Tue, 02 Feb 2016 21:31:14 GMT
  */
 
 (function (global, factory) {
@@ -759,8 +759,8 @@
     var escaperPart = /^__ESCAPER_QUOT__\d+_/;
     var tmpSep = [];
 
-    Snakeskin$1.forEach(attrSeparators, function (el, key) {
-    	tmpSep.push(r(key));
+    Object.keys(attrSeparators).forEach(function (key) {
+    	return tmpSep.push(r(key));
     });
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
@@ -2797,7 +2797,7 @@
     		return { cache: cache, val: val };
     	};
 
-    	Snakeskin$1.forEach([_([$dirTrim, p.trim]), _([$blockDirs, p.block]), _([$logicDirs, p.logic]), _([$textDirs, p.text]), _([$dirInterpolation, p.interpolation])], function (_ref3) {
+    	[_([$dirTrim, p.trim]), _([$blockDirs, p.block]), _([$logicDirs, p.logic]), _([$textDirs, p.text]), _([$dirInterpolation, p.interpolation])].forEach(function (_ref3) {
     		var cache = _ref3.cache;
     		var val = _ref3.val;
 
@@ -2827,7 +2827,7 @@
     		}
     	});
 
-    	Snakeskin$1.forEach([_([$dirGroups, p.group]), _([$dirChain, p.with]), _([$dirParents, p.parents]), _([$dirEnd, p.endFor])], function (_ref4) {
+    	[_([$dirGroups, p.group]), _([$dirChain, p.with]), _([$dirParents, p.parents]), _([$dirEnd, p.endFor])].forEach(function (_ref4) {
     		var cache = _ref4.cache;
     		var val = _ref4.val;
 
@@ -2841,7 +2841,7 @@
     		});
     	});
 
-    	Snakeskin$1.forEach([$dirChain, $dirParents, $dirEnd], function (cache) {
+    	[$dirChain, $dirParents, $dirEnd].forEach(function (cache) {
     		Snakeskin$1.forEach(cache, function (el, key) {
     			if (key[0] !== GROUP) {
     				return;
@@ -2858,17 +2858,17 @@
     		});
     	});
 
-    	Snakeskin$1.forEach([_([$dirParents, p.children]), _([$dirEnd, p.endsWith])], function (_ref5) {
+    	[_([$dirParents, p.children]), _([$dirEnd, p.endsWith])].forEach(function (_ref5) {
     		var cache = _ref5.cache;
     		var val = _ref5.val;
 
-    		Snakeskin$1.forEach(concat(val), function (key) {
+    		concat(val).forEach(function (key) {
     			cache[name] = cache[name] || {};
     			cache[name][key] = true;
     		});
     	});
 
-    	Snakeskin$1.forEach([$dirParents, $dirEnd], function (cache) {
+    	[$dirParents, $dirEnd].forEach(function (cache) {
     		Snakeskin$1.forEach(cache, function (dir) {
     			Snakeskin$1.forEach(dir, function (el, key) {
     				if (key[0] !== GROUP) {
@@ -2891,7 +2891,7 @@
     		return { cache: cache, plainCache: plainCache, val: val };
     	};
 
-    	Snakeskin$1.forEach([_([dirPlacement, dirPlacementPlain, p.placement]), _([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]), _([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])], function (_ref8) {
+    	[_([dirPlacement, dirPlacementPlain, p.placement]), _([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]), _([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])].forEach(function (_ref8) {
     		var cache = _ref8.cache;
     		var plainCache = _ref8.plainCache;
     		var val = _ref8.val;
@@ -8242,7 +8242,7 @@
     var _templateObject3$1 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '('], ['\n\t\t\t\texports', ' =\n\t\t\t\t Snakeskin.decorate([', '], function ', '', '(']);
     var _templateObject4$1 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__RESULT__ = ', ',\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_TMP__,\n\t\t\t\t\t__ATTR_TYPE__,\n\t\t\t\t\t__ATTR_CACHE__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__;\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags,\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ';\n\n\t\t\t\tfunction getTplResult(opt_clear) {\n\t\t\t\t\tvar res = ', ';\n\n\t\t\t\t\tif (opt_clear) {\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\n\t\t\t\tfunction clearTplResult() {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t']);
     var _templateObject5 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t'], ['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t']);
-    Snakeskin$1.forEach(['template', 'interface', 'placeholder'], function (dir) {
+    ['template', 'interface', 'placeholder'].forEach(function (dir) {
     	Snakeskin$1.addDirective(dir, {
     		block: true,
     		deferInit: true,
@@ -8943,7 +8943,7 @@
     	this.append('], function (' + args.decl + ') {' + args.def);
     });
 
-    Snakeskin$1.forEach(['parallel', 'series', 'waterfall'], function (dir) {
+    ['parallel', 'series', 'waterfall'].forEach(function (dir) {
     	Snakeskin$1.addDirective(dir, {
     		block: true,
     		children: Snakeskin$1.group('callback'),
