@@ -13,4 +13,3 @@ import { IS_NODE } from '../consts/hacks';
 if (IS_NODE) {
 	require('core-js/es6');
 }
-
