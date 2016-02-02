@@ -181,7 +181,6 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					str,
 					nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
 					{
-						adv: Boolean(struct && struct.adv),
 						comment: next2str === MULT_COMMENT_START,
 						dir,
 						i18n: this.localization
@@ -386,12 +385,12 @@ function appendDirEnd(str, struct) {
  *
  * @param {string} str - source string
  * @param {number} i - start position
- * @param {{adv: boolean, comment: boolean, dir: boolean, i18n: boolean}} params - parameters
+ * @param {{comment: boolean, dir: boolean, i18n: boolean}} params - parameters
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
 function getLineDesc(str, i, params) {
 	const
-		{adv, dir, i18n} = params;
+		{dir, i18n} = params;
 
 	let
 		{comment} = params,
@@ -481,7 +480,7 @@ function getLineDesc(str, i, params) {
 					}
 
 				} else if (begin || bOpen === I18N) {
-					concatLine = 1;
+					command += el;
 					continue;
 				}
 			}
@@ -564,17 +563,17 @@ function getLineDesc(str, i, params) {
 					}
 
 				} else {
-					if (!begin && (adv ? str.substr(j, 2) === alb + lb : el === lb)) {
-						bEnd = false;
-						begin++;
-
-					} else if (begin) {
+					if (begin) {
 						if (el === lb) {
-							begin--;
+							begin++;
 
 						} else if (el === rb) {
 							begin--;
 						}
+
+					} else if (el === lb) {
+						bEnd = false;
+						begin++;
 					}
 				}
 			}
