@@ -174,7 +174,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					dir = el === alb && next !== lb && nextSpace;
 
 				} else {
-					dir = (SHORTS[el] || SHORTS[next2str]) && el !== lb && nextSpace;
+					dir = Boolean(SHORTS[el] || SHORTS[next2str]) && el !== lb && nextSpace;
 				}
 
 				const decl = getLineDesc(
@@ -183,7 +183,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					{
 						adv: Boolean(struct && struct.adv),
 						comment: next2str === MULT_COMMENT_START,
-						dir: Boolean(dir),
+						dir,
 						i18n: this.localization
 					}
 				);
@@ -564,15 +564,17 @@ function getLineDesc(str, i, params) {
 					}
 
 				} else {
-					if (begin || adv ? str.substr(i, 2) === alb + lb : el === lb) {
-						if (!begin) {
-							bEnd = false;
-						}
-
+					if (!begin && (adv ? str.substr(j, 2) === alb + lb : el === lb)) {
+						bEnd = false;
 						begin++;
 
-					} else if (begin && el === rb) {
-						begin--;
+					} else if (begin) {
+						if (el === lb) {
+							begin--;
+
+						} else if (el === rb) {
+							begin--;
+						}
 					}
 				}
 			}
