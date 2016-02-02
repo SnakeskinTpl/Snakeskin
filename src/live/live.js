@@ -240,8 +240,8 @@ const
  *
  * @param {(Array|Object|undefined)} obj - source object
  * @param {(
- *   function(?, number, !Array, boolean, boolean, number)|
- *   function(?, string, !Object, number, boolean, boolean, number)
+ *   function(?, ?, !Array, boolean, boolean, number)|
+ *   function(?, ?, !Object, number, boolean, boolean, number)
  * )} callback - callback function
  */
 Snakeskin.forEach = function (obj, callback) {

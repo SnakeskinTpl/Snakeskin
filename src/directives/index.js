@@ -10,7 +10,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { stack } from '../helpers/include';
 import { isFunction } from '../helpers/types';
@@ -43,8 +42,16 @@ import {
  * @param {Array} arr - source list
  * @return {string}
  */
-export const
-	q = (arr) => any($C(arr).map((el) => `"${el}"`).join(', '));
+export const q = (arr) => {
+	const
+		tmp = [];
+
+	for (let i = 0; i < arr.length; i++) {
+		tmp.push(`"${arr[i]}"`);
+	}
+
+	return tmp.join(', ');
+};
 
 // jscs:enable jsDoc
 
@@ -150,7 +157,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	let
 		_ = ([cache, val]) => ({cache, val});
 
-	$C([
+	Snakeskin.forEach([
 
 		_([$dirTrim, p.trim]),
 		_([$blockDirs, p.block]),
@@ -158,7 +165,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$textDirs, p.text]),
 		_([$dirInterpolation, p.interpolation])
 
-	]).forEach(({cache, val}) => {
+	], ({cache, val}) => {
 		if (cache === $dirTrim) {
 			let res;
 			switch (val) {
@@ -186,15 +193,15 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 	});
 
-	$C([
+	Snakeskin.forEach([
 
 		_([$dirGroups, p.group]),
 		_([$dirChain, p.with]),
 		_([$dirParents, p.parents]),
 		_([$dirEnd, p.endFor])
 
-	]).forEach(({cache, val}) => {
-		$C(concat(val)).forEach((key) => {
+	], ({cache, val}) => {
+		Snakeskin.forEach(concat(val), (key) => {
 			if (cache === $dirGroups && key[0] === GROUP) {
 				throw new Error(`Invalid group name "${key}" (group name can't begin with "${GROUP}"`);
 			}
@@ -204,8 +211,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C([$dirChain, $dirParents, $dirEnd]).forEach((cache) => {
-		$C(cache).forEach((el, key) => {
+	Snakeskin.forEach([$dirChain, $dirParents, $dirEnd], (cache) => {
+		Snakeskin.forEach(cache, (el, key) => {
 			if (key[0] !== GROUP) {
 				return;
 			}
@@ -213,33 +220,33 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			const
 				link = cache[key];
 
-			$C($dirGroups[key.slice(1)]).forEach((el, group) => {
+			Snakeskin.forEach($dirGroups[key.slice(1)], (el, group) => {
 				cache[group] = cache[group] || {};
-				$C(link).forEach((el, dir) => cache[group][dir] = true);
+				Snakeskin.forEach(link, (el, dir) => cache[group][dir] = true);
 			});
 		});
 	});
 
-	$C([
+	Snakeskin.forEach([
 
 		_([$dirParents, p.children]),
 		_([$dirEnd, p.endsWith])
 
-	]).forEach(({cache, val}) => {
-		$C(concat(val)).forEach((key) => {
+	], ({cache, val}) => {
+		Snakeskin.forEach(concat(val), (key) => {
 			cache[name] = cache[name] || {};
 			cache[name][key] = true;
 		});
 	});
 
-	$C([$dirParents, $dirEnd]).forEach((cache) => {
-		$C(cache).forEach((dir) => {
-			$C(dir).forEach((el, key) => {
+	Snakeskin.forEach([$dirParents, $dirEnd], (cache) => {
+		Snakeskin.forEach(cache, (dir) => {
+			Snakeskin.forEach(dir, (el, key) => {
 				if (key[0] !== GROUP) {
 					return;
 				}
 
-				$C($dirGroups[key.slice(1)]).forEach((val, key) => dir[key] = true);
+				Snakeskin.forEach($dirGroups[key.slice(1)], (val, key) => dir[key] = true);
 			});
 		});
 	});
@@ -247,17 +254,23 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	_ =
 		([cache, plainCache, val]) => ({cache, plainCache, val});
 
-	$C([
+	Snakeskin.forEach([
 		_([dirPlacement, dirPlacementPlain, p.placement]),
 		_([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]),
 		_([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
 
-	]).forEach(({cache, plainCache, val}) => {
-		cache[name] = $C(concat(val)).reduce((map, el) =>
-			(map[el] = [el], map), {});
+	], ({cache, plainCache, val}) => {
+		cache[name] = {};
 
-		$C(cache).forEach((map, key) => {
-			$C(map).forEach((el, key) => {
+		const
+			arr = concat(val);
+
+		for (let i = 0; i < arr.length; i++) {
+			cache[name][arr[i]] = [arr[i]];
+		}
+
+		Snakeskin.forEach(cache, (map, key) => {
+			Snakeskin.forEach(map, (el, key) => {
 				if (key[0] !== GROUP) {
 					return;
 				}
@@ -269,8 +282,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			});
 
 			plainCache[key] = {};
-			$C(map).forEach((el) =>
-				$C(el).forEach((el) => {
+			Snakeskin.forEach(map, (el) =>
+				Snakeskin.forEach(el, (el) => {
 					if (el[0] !== GROUP) {
 						plainCache[key][el] = true;
 					}
@@ -279,7 +292,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	$C(p.shorthands).forEach((el, key) => {
+	Snakeskin.forEach(p.shorthands, (el, key) => {
 		if (key.length > 2) {
 			throw new Error(`Invalid shorthand key "${key}" (key.length > 2)`);
 		}
@@ -342,7 +355,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		const
 			rmBlacklistList = concat(p.renderModesBlacklist),
-			rmBlacklist = $C(rmBlacklistList).reduce((map, el) => (map[el] = true, map), {});
+			rmBlacklist = {};
+
+		for (let i = 0; i < rmBlacklistList.length; i++) {
+			rmBlacklist[rmBlacklistList[i]] = true;
+		}
 
 		if (p.renderModesBlacklist && rmBlacklist[this.renderMode]) {
 			return this.error(
@@ -352,7 +369,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		const
 			rmWhitelistList = concat(p.renderModesWhitelist),
-			rmWhitelist = $C(rmWhitelistList).reduce((map, el) => (map[el] = true, map), {});
+			rmWhitelist = {};
+
+		for (let i = 0; i < rmWhitelistList.length; i++) {
+			rmWhitelist[rmWhitelistList[i]] = true;
+		}
 
 		if (p.renderModesWhitelist && !rmWhitelist[this.renderMode]) {
 			return this.error(
@@ -364,10 +385,16 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			prevChain = $dirChain[prevDirName] && $dirChain[prevDirName][dirName];
 
 		if (p.with && !prevChain) {
-			const groups = $C([].concat(p.with)).reduce((arr, el) =>
-				arr.concat(el[0] === GROUP ? this.getGroupList(el.slice(1)) : el), []);
+			const
+				groups = [].concat(p.with);
 
-			return this.error(`the directive "${dirName}" can be used only with directives ${q(groups)}`);
+			let arr = [];
+			for (let i = 0; i < groups.length; i++) {
+				const el = groups[i];
+				arr = arr.concat(el[0] === GROUP ? this.getGroupList(el.slice(1)) : el);
+			}
+
+			return this.error(`the directive "${dirName}" can be used only with directives ${q(arr)}`);
 		}
 
 		if (p.ancestorsBlacklist && this.has(dirAncestorsBlacklistPlain[name])) {
@@ -526,9 +553,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			this.selfThis.pop();
 		}
 
-		$C(params['@consts']).forEach((el, key) => {
-			$consts[this.tplName][key] = el;
-		});
+		const
+			consts = params['@consts'];
+
+		if (consts) {
+			for (let key in consts) {
+				if (!consts.hasOwnProperty(key)) {
+					break;
+				}
+
+				$consts[this.tplName][key] = consts[key];
+			}
+		}
 
 		const
 			res = params['@result'] != null ? params['@result'] : this.result;
