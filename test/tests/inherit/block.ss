@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace inherit.block
+- namespace inherit[%fileName%]
 
 - block parent->foo(a = 1, b? = 2, @c = {name: 'Kobezzza'}) => null, null
 	{a}

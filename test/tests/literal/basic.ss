@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace literal.basic
+- namespace literal[%fileName%]
 
 - template simple()
 	: name = 'world'

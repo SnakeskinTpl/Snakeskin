@@ -20,7 +20,7 @@ Hello world !
 
 ========================================================================================================================
 
-- namespace logic.basic
+- namespace logic[%fileName%]
 
 - template ['if-else if-else']()
 	- if true

@@ -22,7 +22,7 @@ foo is not defined all fine
 
 ========================================================================================================================
 
-- namespace ['try'].basic
+- namespace ['try'][%fileName%]
 
 - template ['try']()
 	- try

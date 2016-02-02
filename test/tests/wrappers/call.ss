@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace wrappers.call
+- namespace wrappers[%fileName%]
 
 - template wrapper(val1, val2, val3)
 	{val1}

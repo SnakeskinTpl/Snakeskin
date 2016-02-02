@@ -32,7 +32,7 @@ Hello world!
 
 ========================================================================================================================
 
-- namespace block.basic
+- namespace block[%fileName%]
 
 - template parent()
 	- block foo

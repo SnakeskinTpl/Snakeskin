@@ -32,7 +32,7 @@ Hello world! baz
 
 ========================================================================================================================
 
-- namespace modules.basic
+- namespace modules[%fileName%]
 
 - import fs from 'fs'
 - import path from 'path'

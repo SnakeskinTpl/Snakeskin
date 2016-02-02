@@ -32,7 +32,7 @@ Hello world!
 
 ========================================================================================================================
 
-- namespace syntax.localization
+- namespace syntax[%fileName%]
 
 - template simple()
 	`Hello world!`

@@ -32,7 +32,7 @@
 
 	- return self.wrapper
 
-- @syntax.tolerateWhitespaces.cut
+- @cut
 - template markdown()
 	|# Hello
 

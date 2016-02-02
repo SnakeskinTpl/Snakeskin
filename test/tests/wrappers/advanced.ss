@@ -28,7 +28,7 @@
 
 ========================================================================================================================
 
-- namespace wrappers.advanced
+- namespace wrappers[%fileName%]
 
 - template ['putIn with noncallable blocks']() @= tolerateWhitespaces true
 	: putIn foo

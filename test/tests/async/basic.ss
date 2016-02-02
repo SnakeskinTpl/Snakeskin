@@ -12,7 +12,7 @@
 
 ========================================================================================================================
 
-- namespace async.basic
+- namespace async[%fileName%]
 - import async from 'async'
 
 - template series()

@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace inherit.super
+- namespace inherit[%fileName%]
 
 - template parent()
 	- block bar

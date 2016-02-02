@@ -32,7 +32,7 @@ blablabla bar bar bar
 
 ========================================================================================================================
 
-- namespace jade.whitespaces
+- namespace syntax[%fileName%]
 
 - template simple()
 	foo

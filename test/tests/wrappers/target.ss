@@ -32,7 +32,7 @@ world! 3 3 length
 
 ========================================================================================================================
 
-- namespace wrappers.target
+- namespace wrappers[%fileName%]
 
 - template ['target with array']()
 	- target [] as foo

@@ -20,7 +20,7 @@ foo-10 true
 
 ========================================================================================================================
 
-- namespace syntax.unary
+- namespace syntax[%fileName%]
 
 - template simple()
 	{typeof foo}

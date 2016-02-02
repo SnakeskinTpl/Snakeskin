@@ -32,7 +32,7 @@ Andrey Kobets 26
 
 ========================================================================================================================
 
-- namespace syntax.scope
+- namespace syntax[%fileName%]
 
 - ['name'] = 'Andrey'
 ? @@secondName = 'Kobets'

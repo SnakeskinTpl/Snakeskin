@@ -80,7 +80,7 @@
 
 ========================================================================================================================
 
-- namespace iterators.basic
+- namespace iterators[%fileName%]
 - import { $C } from 'collection.js'
 
 - template forEach()

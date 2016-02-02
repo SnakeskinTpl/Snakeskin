@@ -20,7 +20,7 @@
 
 ========================================================================================================================
 
-- namespace wrappers.putIn
+- namespace wrappers[%fileName%]
 
 - template ['putIn to variable']()
 	: putIn foo

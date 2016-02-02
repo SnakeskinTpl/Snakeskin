@@ -44,7 +44,7 @@ Hello world!
 
 ========================================================================================================================
 
-- namespace template.basic
+- namespace template[%fileName%]
 
 - template helloWorld()
 	Hello world!

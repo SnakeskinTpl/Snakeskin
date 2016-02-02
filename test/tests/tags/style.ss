@@ -38,7 +38,7 @@
 
 ========================================================================================================================
 
-- namespace tags.style
+- namespace tags[%fileName%]
 @= tolerateWhitespaces true
 
 - template ['with default value']()

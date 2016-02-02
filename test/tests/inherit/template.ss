@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace inherit.template
+- namespace inherit[%fileName%]
 
 - template parent(a = 1, b? = 2, @c? = {name: 'Kobezzza'})
 	{a}

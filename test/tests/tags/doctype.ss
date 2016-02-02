@@ -16,7 +16,7 @@
 
 ========================================================================================================================
 
-- namespace tags.doctype
+- namespace tags[%fileName%]
 
 - template ['with default value']()
 	- doctype

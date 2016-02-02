@@ -40,7 +40,7 @@
 
 ========================================================================================================================
 
-- namespace tags.attr
+- namespace tags[%fileName%]
 
 - template simple()
 	< .foo class = bar | bla = 2 | -baz = foo bar | foo

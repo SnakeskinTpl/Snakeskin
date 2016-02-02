@@ -16,7 +16,7 @@ foo
 
 ========================================================================================================================
 
-- namespace syntax.other
+- namespace syntax[%fileName%]
 
 - template ['method with group'](@params)
 	{(@a + @b).replace(('foo'|replace /foo/, 'bar'), 'foo')}

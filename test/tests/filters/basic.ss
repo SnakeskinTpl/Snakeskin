@@ -80,7 +80,7 @@ foofoo barbarbar
 
 ========================================================================================================================
 
-- namespace filters.basic
+- namespace filters[%fileName%]
 
 - template uhtml()
 	{'<div>121</div>'|html|uhtml|!html}

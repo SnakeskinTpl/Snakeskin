@@ -8,31 +8,22 @@
 
 [[simple]]==============================================================================================================
 
-1 1 1 1
-
-[[simple2]]=============================================================================================================
-
-F121 {"foo":1} FOO
+Привет «Мир»!
 
 ========================================================================================================================
 
 - namespace syntax[%fileName%]
+- import Typograf from 'typograf'
 
+- template typograf(params)
+	- block superWrapper(target)
+		- block wrapper()
+			: tp = new Typograf(params)
+			- return tp.execute(target.apply(this, arguments))
+
+		- return self.wrapper
+	- return self.superWrapper
+
+- @typograf({lang: 'ru'})
 - template simple()
-	: a = 1
-	- 1|1
-	- 1 | 1
-	- 1| a
-	- 1 | a
-
-- template simple2()
-	- (('f'|upper) + ('L'|lower))|replace 'l', 121
-
-	- ({foo: 1}) &
-		|json
-		|parse
-		|json
-		|!html
-	.
-
-	- 'foo'|foo.bar.upper
+	Привет "Мир"!
