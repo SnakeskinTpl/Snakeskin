@@ -59,8 +59,11 @@ Parser.prototype.getAdvInfo = function () {
 			max = 0;
 
 		for (let i = 8; i--;) {
-			let
+			const
 				pos = line - i - 2,
+				space = new Array(String(line - 1).length - String(pos).length + 1).join(' ');
+
+			let
 				prev = this.lines[pos];
 
 			if (prev != null) {
@@ -71,7 +74,7 @@ Parser.prototype.getAdvInfo = function () {
 
 				let part;
 				if (prev.trim()) {
-					part = `${eol}  ${pos + 1} ${prev}`;
+					part = `${eol}  ${pos + 1} ${space}${prev}`;
 
 				} else {
 					part = `${eol}  ...`;
