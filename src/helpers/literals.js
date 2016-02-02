@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import { COMMENTS } from '../consts/literals';
 
 /**
@@ -23,13 +22,19 @@ export function getCommentType(str, pos) {
 		return false;
 	}
 
-	const res = $C(COMMENTS).get({filter: (el) => {
-		const chunk = str.substr(pos, el.length);
-		return COMMENTS[chunk] && chunk === el;
+	for (let key in COMMENTS) {
+		if (!COMMENTS.hasOwnProperty(key)) {
+			break;
+		}
 
-	}, mult: false});
+		const
+			el = COMMENTS[key],
+			chunk = str.substr(pos, el.length);
 
-	return res ? String(res) : false;
+		if (COMMENTS[chunk] && chunk === el) {
+			return el || false;
+		}
+	}
 }
 
 /**

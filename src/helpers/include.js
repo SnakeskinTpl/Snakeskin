@@ -59,7 +59,7 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 			file + (extname ? '' : '.ss')
 		);
 
-		$C(glob.hasMagic(src) ? glob.sync(src) : [src]).forEach((src) => {
+		$C(glob.sync(src)).forEach((src) => {
 			src = path.normalize(src);
 
 			if (src in include && include[src] > templateRank[type]) {

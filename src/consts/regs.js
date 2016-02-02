@@ -23,7 +23,7 @@ export const
 const tmpSep = [];
 for (let key in attrSeparators) {
 	if (!attrSeparators.hasOwnProperty(key)) {
-		continue;
+		break;
 	}
 
 	tmpSep.push(r(key));

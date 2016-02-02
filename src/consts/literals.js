@@ -51,7 +51,7 @@ export const
 
 for (let key in BASE_SHORTS) {
 	if (!BASE_SHORTS.hasOwnProperty(key)) {
-		continue;
+		break;
 	}
 
 	SHORTS[key] = true;
@@ -100,7 +100,7 @@ export const SYS_ESCAPES = {
 
 for (let key in BASE_SHORTS) {
 	if (!BASE_SHORTS.hasOwnProperty(key)) {
-		continue;
+		break;
 	}
 
 	SYS_ESCAPES[key.charAt(0)] = true;

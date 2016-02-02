@@ -254,7 +254,7 @@ Snakeskin.forEach = function (obj, callback) {
 
 	if (isArray(obj)) {
 		length = obj.length;
-		for (let i = -1; ++i < length;) {
+		for (let i = 0; i < length; i++) {
 			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
 				break;
 			}
@@ -265,7 +265,7 @@ Snakeskin.forEach = function (obj, callback) {
 			arr = keys(obj);
 
 		length = arr.length;
-		for (let i = -1; ++i < length;) {
+		for (let i = 0; i < length; i++) {
 			if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
 				break;
 			}
@@ -275,7 +275,7 @@ Snakeskin.forEach = function (obj, callback) {
 		if (callback.length >= 6) {
 			for (let key in obj) {
 				if (!obj.hasOwnProperty(key)) {
-					continue;
+					break;
 				}
 
 				length++;
@@ -285,7 +285,7 @@ Snakeskin.forEach = function (obj, callback) {
 		let i = 0;
 		for (let key in obj) {
 			if (!obj.hasOwnProperty(key)) {
-				continue;
+				break;
 			}
 
 			if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
