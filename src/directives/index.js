@@ -260,14 +260,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
 
 	].forEach(({cache, plainCache, val}) => {
-		cache[name] = {};
-
-		const
-			arr = concat(val);
-
-		for (let i = 0; i < arr.length; i++) {
-			cache[name][arr[i]] = [arr[i]];
-		}
+		cache[name] =
+			concat(val).reduce((map, el) => (map[el] = [el], map), {});
 
 		Snakeskin.forEach(cache, (map, key) => {
 			Snakeskin.forEach(map, (el, key) => {
