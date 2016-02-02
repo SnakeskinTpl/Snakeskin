@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { $extMap, $cache, $templates, $router, $routerPositions } from '../consts/cache';
 import { LEFT_BOUND as lb, RIGHT_BOUND as rb, ADV_LEFT_BOUND as alb } from '../consts/literals';
@@ -29,10 +28,10 @@ Parser.prototype.getTplFullBody = function (name) {
 		isDecl = this.getGroupList('inherit'),
 		is = {};
 
-	$C(isDecl).forEach((el, i) => {
-		is[i * 2] = el;
-		is[i * 2 + 1] = `${el}_add`;
-	});
+	for (let i = 0; i < isDecl.length; i++) {
+		is[i * 2] = isDecl[i];
+		is[i * 2 + 1] = `${isDecl[i]}_add`;
+	}
 
 	let res = $cache[parentTpl];
 	if (!this.tolerateWhitespaces) {
@@ -70,7 +69,11 @@ Parser.prototype.getTplFullBody = function (name) {
 			}
 		}
 
-		$C(el).forEach((val, key) => {
+		for (let key in el) {
+			if (!el.hasOwnProperty(key)) {
+				break;
+			}
+
 			const
 				current = el[key],
 				parent = !tb[k + key].drop && prev[key];
@@ -97,14 +100,15 @@ Parser.prototype.getTplFullBody = function (name) {
 			const
 				diff = parent ? parent.from : from;
 
-			$C(advDiff.sort(sort)).forEach((el) => {
-				if (el.val <= diff) {
-					adv += el.adv;
+			advDiff.sort(sort);
+			for (let i = 0; i < advDiff.length; i++) {
+				if (advDiff[i].val <= diff) {
+					adv += advDiff[i].adv;
 
 				} else {
-					return false;
+					break;
 				}
-			});
+			}
 
 			if (parent && (i % 2 === 0)) {
 				if (type !== 'block' && (type !== 'const' || !current.block)) {
@@ -157,7 +161,7 @@ Parser.prototype.getTplFullBody = function (name) {
 						break;
 				}
 			}
-		});
+		}
 	}
 
 	return res;

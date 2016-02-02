@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import esprima from '../deps/esprima';
 import Parser from './constructor';
 import { ws, r } from '../helpers/string';
@@ -107,14 +106,16 @@ export const
  */
 Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 	try {
-		name = String($C(
-			this.replaceFileNamePatterns(name)
-				.replace(nmssRgxp, (str, $0) => `${$0 ? `${this.scope[this.scope.length - 1]}.` : ''}%`)
-				.replace(nmsRgxp, '.%')
-				.replace(nmeRgxp, '')
-				.split('.')
+		const parts = this.replaceFileNamePatterns(name)
+			.replace(nmssRgxp, (str, $0) => `${$0 ? `${this.scope[this.scope.length - 1]}.` : ''}%`)
+			.replace(nmsRgxp, '.%')
+			.replace(nmeRgxp, '')
+			.split('.');
 
-		).reduce((str, el) => {
+		let res = '';
+		for (let i = 0; i < parts.length; i++) {
+			let el = parts[i];
+
 			const
 				custom = el[0] === '%';
 
@@ -122,14 +123,14 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
 			if (custom) {
-				str += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
-				return str;
+				res += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
+				continue;
 			}
 
-			return str + (str ? `.${el}` : el);
-		}, ''));
+			res += (res ? `.${el}` : el);
+		}
 
-		name = name.trim();
+		name = res.trim();
 		esprima.parse(name);
 
 	} catch (err) {
