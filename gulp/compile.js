@@ -11,9 +11,6 @@
  */
 
 const
-	$C = require('collection.js').$C;
-
-const
 	gulp = require('gulp'),
 	async = require('async'),
 	helpers = require('./helpers');
@@ -33,18 +30,11 @@ function compile(cb) {
 		builds = helpers.getBuilds(),
 		tasks = [];
 
-	$C(builds).forEach((el, key) => {
+	Object.keys(builds).forEach((key) => {
 		const name = key !== 'snakeskin' ? ` (${key.replace(/^snakeskin\./, '')})` : '';
 		tasks.push((cb) => {
-			const gccFlags = $C.extend(
-				false,
-
-				{
-					fileName: `${key}.min.js`
-				},
-
-				require('../gcc.json')
-			);
+			const
+				gccFlags = Object.assign({fileName: `${key}.min.js`}, require('../gcc.json'));
 
 			const head =
 				`/*! Snakeskin v${helpers.getVersion()}${name}` +

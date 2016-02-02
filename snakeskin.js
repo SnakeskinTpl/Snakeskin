@@ -107,11 +107,11 @@ exports.compileFile = function (src, opt_params) {
 	src = path.normalize(path.resolve(module.parent ? path.dirname(module.parent.filename) : '', src));
 
 	var
-		p = $C.extend(false, {}, opt_params),
+		p = Object.assign({}, opt_params),
 		cacheEnabled = p.cache !== false;
 
 	var
-		cacheKey = exports.compile(null, $C.extend(false, {}, p, {getCacheKey: true})),
+		cacheKey = exports.compile(null, Object.assign({}, p, {getCacheKey: true})),
 		fromCache = cacheEnabled && cache[cacheKey] && cache[cacheKey][src];
 
 	function clone(obj) {

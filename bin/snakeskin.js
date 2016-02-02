@@ -45,7 +45,7 @@ program
 	.parse(process.argv);
 
 var
-	params = $C.extend(false, {}, Snakeskin.toObj(program['params']), {debug: {}, cache: false}),
+	params = Object.assign({}, Snakeskin.toObj(program['params']), {debug: {}, cache: false}),
 	prettyPrint = params.prettyPrint,
 	language = params.language,
 	words = params.words;
@@ -161,7 +161,7 @@ function action(data, file) {
 			var includes = Snakeskin.check(
 				file,
 				outFile,
-				Snakeskin.compile(null, $C.extend(false, {}, params, {getCacheKey: true})),
+				Snakeskin.compile(null, Object.assign({}, params, {getCacheKey: true})),
 				true
 			);
 

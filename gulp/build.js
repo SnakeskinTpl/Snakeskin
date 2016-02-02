@@ -12,9 +12,6 @@
  */
 
 const
-	$C = require('collection.js').$C;
-
-const
 	gulp = require('gulp'),
 	async = require('async'),
 	del = require('del'),
@@ -34,7 +31,7 @@ gulp.task('build', (cb) => {
 		builds = helpers.getBuilds(),
 		tasks = [];
 
-	$C(builds).forEach((el, key) => {
+	Object.keys(builds).forEach((key) => {
 		const name = `${key}.tmp`;
 		const fullHead =
 			helpers.getHead(true, key !== 'snakeskin' ? key.replace(/^snakeskin\./, '') : '') +
@@ -44,7 +41,7 @@ gulp.task('build', (cb) => {
 
 		tasks.push((cb) => {
 			gulp.src('./src/index.js')
-				.pipe(monic({flags: el}))
+				.pipe(monic({flags: builds[key]}))
 				.on('error', helpers.error(cb))
 				.pipe(rename(name))
 				.pipe(gulp.dest('./src'))

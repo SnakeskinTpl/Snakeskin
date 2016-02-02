@@ -87,7 +87,13 @@ export function toObj(val, opt_base, opt_onFileExists) {
 			res = new Function(`return ${val}`)();
 
 		} catch (ignore) {
-			res = {};
+			try {
+				console.log(`return {${val}}`);
+				res = new Function(`return {${val}}`)();
+
+			} catch (ignore) {
+				res = {};
+			}
 		}
 	}
 
