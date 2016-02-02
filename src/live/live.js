@@ -9,7 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { any } from '../helpers/gcc';
 import { isArray } from '../helpers/types';
 
 /**

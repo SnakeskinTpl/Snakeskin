@@ -10,6 +10,7 @@
 
 import Parser from './constructor';
 import { r } from '../helpers/string';
+import { any } from '../helpers/gcc';
 import { HAS_CONSOLE_ERROR } from '../consts/hacks';
 import { LEFT_BOUND as lb, RIGHT_BOUND as rb, ADV_LEFT_BOUND as alb } from '../consts/literals';
 
@@ -109,7 +110,7 @@ Parser.prototype.error = function (msg) {
 
 	const
 		report = `${msg}; ${this.getAdvInfo()}`,
-		error = Object.assign(new Error(report), {name: 'SnakeskinError'});
+		error = any(Object.assign(new Error(report), {name: 'SnakeskinError'}));
 
 	if (this.onError) {
 		this.onError(error);

@@ -210,7 +210,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	const
-		parser = new Parser(text, Object.assign({info}, p));
+		parser = new Parser(text, any(Object.assign({info}, p)));
 
 	// If is true, then a directive declaration is started,
 	// ie { ... }

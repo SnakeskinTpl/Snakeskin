@@ -363,7 +363,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if (p.renderModesBlacklist && rmBlacklist[this.renderMode]) {
 			return this.error(
-				`the directive "${dirName}" can't be used with directives ${q(rmBlacklist)} rendering modes`
+				`the directive "${dirName}" can't be used with directives ${q(rmBlacklistList)} rendering modes`
 			);
 		}
 

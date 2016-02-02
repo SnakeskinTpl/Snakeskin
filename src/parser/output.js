@@ -281,7 +281,7 @@ Parser.prototype.out = function (command, opt_params) {
 	};
 
 	/**
-	 * @param {!Array<string>} params
+	 * @param {!Array} params
 	 * @return {string}
 	 */
 	const joinFilterParams = (params) => {
