@@ -10,24 +10,21 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
 import { r } from '../helpers/string';
 import { attrSeparators } from './html';
 import { G_MOD } from './literals';
 
 export const
-	scopeMod = new RegExp(`^${r(G_MOD)}+`);
-
-export const
+	scopeMod = new RegExp(`^${r(G_MOD)}+`),
 	escaperPart = /^__ESCAPER_QUOT__\d+_/;
 
-const tmpSep = [];
-for (let key in attrSeparators) {
-	if (!attrSeparators.hasOwnProperty(key)) {
-		break;
-	}
+const
+	tmpSep = [];
 
+Snakeskin.forEach(attrSeparators, (el, key) => {
 	tmpSep.push(r(key));
-}
+});
 
 export const
 	emptyCommandParams = new RegExp(`^([^\\s]+?[${tmpSep.join('')}]\\(|\\()`),

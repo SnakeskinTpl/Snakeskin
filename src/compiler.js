@@ -125,15 +125,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	);
 
 	// Set super global variables
-	if (p.vars) {
-		for (let key in p.vars) {
-			if (!p.vars.hasOwnProperty(key)) {
-				break;
-			}
-
-			Snakeskin.Vars[key] = p.vars[key];
-		}
-	}
+	Snakeskin.forEach(p.vars, (el, key) => {
+		Snakeskin.Vars[key] = el;
+	});
 
 	// <<<
 	// Debug information

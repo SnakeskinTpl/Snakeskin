@@ -11,6 +11,8 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import Snakeskin from '../core';
+
 // The base directive separators
 // >>>
 
@@ -49,13 +51,8 @@ export const BASE_SHORTS = {
 export const
 	SHORTS = {};
 
-for (let key in BASE_SHORTS) {
-	if (!BASE_SHORTS.hasOwnProperty(key)) {
-		break;
-	}
-
-	SHORTS[key] = true;
-}
+Snakeskin.forEach(BASE_SHORTS, (el, key) =>
+	SHORTS[key] = true);
 
 // <<<
 // The context modifiers
@@ -98,13 +95,8 @@ export const SYS_ESCAPES = {
 	[INLINE.trim().charAt(0)]: true
 };
 
-for (let key in BASE_SHORTS) {
-	if (!BASE_SHORTS.hasOwnProperty(key)) {
-		break;
-	}
-
-	SYS_ESCAPES[key.charAt(0)] = true;
-}
+Snakeskin.forEach(BASE_SHORTS, (el, key) =>
+	SYS_ESCAPES[key.charAt(0)] = true);
 
 export const STRONG_SYS_ESCAPES = {
 	'\\': true,
