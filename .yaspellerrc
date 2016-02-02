@@ -30,6 +30,7 @@
     "sexualized",
     "snakeskin",
     "/js/i",
-    "transpiled"
+    "transpiled",
+    "/webpack/i"
   ]
 }
