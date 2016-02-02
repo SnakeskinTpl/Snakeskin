@@ -22,13 +22,20 @@ Parser.prototype.appendDefaultFilters = function (filters) {
 	const
 		obj = $C.extend(false, {global: [], local: []}, filters);
 
-	$C(obj).forEach((el) => {
-		$C(el).forEach((filter, i) => {
-			if (isString(filter)) {
-				el[i] = {[filter]: []};
+	for (let key in obj) {
+		if (!obj.hasOwnProperty(key)) {
+			break;
+		}
+
+		const
+			filters = obj[key];
+
+		for (let i = 0; i < filters.length; i++) {
+			if (isString(filters[i])) {
+				filters[i] = {[filters[i]]: []};
 			}
-		});
-	});
+		}
+	}
 
 	this.filters = this.filters || [];
 	this.filters.push(obj);

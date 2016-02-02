@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { $extList, $extMap, $scope } from '../consts/cache';
 
@@ -40,22 +39,34 @@ Parser.prototype.getExtList = function (name) {
  * @return {!Parser}
  */
 Parser.prototype.clearScopeCache = function (name) {
-	$C($scope).forEach((cluster, key) => {
+	for (let key in $scope) {
+		if (!$scope.hasOwnProperty(key)) {
+			break;
+		}
+
+		const
+			cluster = $scope[key],
+			el = cluster[name];
+
 		if (key === 'template') {
-			if (cluster[name] && cluster[name].parent) {
-				delete cluster[name].parent.children[name];
+			if (el && el.parent) {
+				delete el.parent.children[name];
 			}
 
 		} else {
-			$C(cluster[name]).forEach((el) => {
-				if (el.parent) {
-					delete el.parent.children[name];
+			for (let key in el) {
+				if (!el.hasOwnProperty(el)) {
+					break;
 				}
-			});
+
+				if (el[key].parent) {
+					delete el[key].parent.children[name];
+				}
+			}
 		}
 
 		delete cluster[name];
-	});
+	}
 
 	return this;
 };
@@ -77,9 +88,16 @@ Parser.prototype.getDiff = function (length) {
 Parser.prototype.popParams = function () {
 	this.params.pop();
 
-	$C(this.params[this.params.length - 1]).forEach((el, key) => {
-		this[key] = el;
-	});
+	const
+		last = this.params[this.params.length - 1];
+
+	for (let key in last) {
+		if (!last.hasOwnProperty(key)) {
+			break;
+		}
+
+		this[key] = last[key];
+	}
 
 	return this;
 };

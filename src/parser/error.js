@@ -31,19 +31,27 @@ Parser.prototype.getAdvInfo = function () {
 		return '';
 	}
 
-	let str = $C(info).reduce((res, el, key) => {
-		if (el != null) {
-			if (el.innerHTML) {
-				res += `${key}: (class: ${el.className || 'undefined'}, id: ${el.id || 'undefined'}); `;
-
-			} else {
-				res += `${key}: ${el}; `;
-			}
+	let str = '';
+	for (let key in info) {
+		if (!info.hasOwnProperty(key)) {
+			break;
 		}
 
-		return res;
+		const
+			el = info[key];
 
-	}, '').replace(/; $/, '');
+		if (el != null) {
+			if (el.innerHTML) {
+				str += `${key}: (class: ${el.className || 'undefined'}, id: ${el.id || 'undefined'}); `;
+
+			} else {
+				str += `${key}: ${el}; `;
+			}
+		}
+	}
+
+	str = str
+		.replace(/; $/, '');
 
 	if (line) {
 		let

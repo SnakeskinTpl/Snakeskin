@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { groupCache, GROUP } from '../directives/index';
 import { clone } from '../helpers/object';
@@ -32,13 +31,20 @@ Parser.prototype.getGroup = function (names) {
 	const
 		map = {};
 
-	$C(arguments).forEach((name) =>
-		$C($dirGroups[name]).forEach((el, key) => {
+	for (let i = 0; i < arguments.length; i++) {
+		const
+			group = $dirGroups[arguments[i]];
+
+		for (let key in group) {
+			if (!group.hasOwnProperty(key)) {
+				break;
+			}
+
 			if (key !== GROUP) {
 				map[key] = true;
 			}
-		})
-	);
+		}
+	}
 
 	groupCache[cacheKey] = clone(map);
 	return map;
