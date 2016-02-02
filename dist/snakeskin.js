@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 21:31:14 GMT
+ * Date: 'Tue, 02 Feb 2016 21:37:18 GMT
  */
 
 (function (global, factory) {
@@ -759,8 +759,8 @@
     var escaperPart = /^__ESCAPER_QUOT__\d+_/;
     var tmpSep = [];
 
-    Object.keys(attrSeparators).forEach(function (key) {
-    	return tmpSep.push(r(key));
+    Snakeskin$1.forEach(attrSeparators, function (el, key) {
+    	tmpSep.push(r(key));
     });
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
@@ -2896,13 +2896,9 @@
     		var plainCache = _ref8.plainCache;
     		var val = _ref8.val;
 
-    		cache[name] = {};
-
-    		var arr = concat(val);
-
-    		for (var i = 0; i < arr.length; i++) {
-    			cache[name][arr[i]] = [arr[i]];
-    		}
+    		cache[name] = concat(val).reduce(function (map, el) {
+    			return map[el] = [el], map;
+    		}, {});
 
     		Snakeskin$1.forEach(cache, function (map, key) {
     			Snakeskin$1.forEach(map, function (el, key) {

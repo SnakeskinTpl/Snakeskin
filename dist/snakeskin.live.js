@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 21:31:14 GMT
+ * Date: 'Tue, 02 Feb 2016 21:37:18 GMT
  */
 
 (function (global, factory) {
@@ -560,8 +560,8 @@
     var scopeMod = new RegExp('^' + r(G_MOD) + '+');
     var tmpSep = [];
 
-    Object.keys(attrSeparators).forEach(function (key) {
-    	return tmpSep.push(r(key));
+    Snakeskin.forEach(attrSeparators, function (el, key) {
+    	tmpSep.push(r(key));
     });
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
