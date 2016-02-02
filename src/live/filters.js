@@ -493,7 +493,7 @@ Filters['default'] = function (val, def) {
 };
 
 Snakeskin.setFilterParams('default', {
-	'!html': true
+	'!undef': true
 });
 
 const
