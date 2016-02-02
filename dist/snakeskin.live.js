@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 16:58:54 GMT
+ * Date: 'Tue, 02 Feb 2016 17:50:32 GMT
  */
 
 (function (global, factory) {
@@ -519,13 +519,9 @@
 
     var SHORTS = {};
 
-    for (var key in BASE_SHORTS) {
-    	if (!BASE_SHORTS.hasOwnProperty(key)) {
-    		break;
-    	}
-
-    	SHORTS[key] = true;
-    }
+    Snakeskin.forEach(BASE_SHORTS, function (el, key) {
+    	return SHORTS[key] = true;
+    });
 
     // <<<
     // The context modifiers
@@ -549,13 +545,9 @@
     	'\\': true
     }, babelHelpers.defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers.defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers.defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
-    for (var key$1 in BASE_SHORTS) {
-    	if (!BASE_SHORTS.hasOwnProperty(key$1)) {
-    		break;
-    	}
-
-    	SYS_ESCAPES[key$1.charAt(0)] = true;
-    }
+    Snakeskin.forEach(BASE_SHORTS, function (el, key) {
+    	return SYS_ESCAPES[key.charAt(0)] = true;
+    });
 
     var STRONG_SYS_ESCAPES = (_STRONG_SYS_ESCAPES = {
     	'\\': true
@@ -566,15 +558,11 @@
     }, MICRO_TEMPLATE.charAt(0), true);
 
     var scopeMod = new RegExp('^' + r(G_MOD) + '+');
-
     var tmpSep = [];
-    for (var key in attrSeparators) {
-    	if (!attrSeparators.hasOwnProperty(key)) {
-    		break;
-    	}
 
+    Snakeskin.forEach(attrSeparators, function (el, key) {
     	tmpSep.push(r(key));
-    }
+    });
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
     var attrKey = /([^\s=]+)/;

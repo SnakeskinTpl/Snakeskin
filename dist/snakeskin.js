@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 16:58:54 GMT
+ * Date: 'Tue, 02 Feb 2016 17:50:32 GMT
  */
 
 (function (global, factory) {
@@ -600,13 +600,9 @@
 
     var SHORTS = {};
 
-    for (var key in BASE_SHORTS) {
-    	if (!BASE_SHORTS.hasOwnProperty(key)) {
-    		break;
-    	}
-
-    	SHORTS[key] = true;
-    }
+    Snakeskin$1.forEach(BASE_SHORTS, function (el, key) {
+    	return SHORTS[key] = true;
+    });
 
     // <<<
     // The context modifiers
@@ -636,13 +632,9 @@
     	'\\': true
     }, babelHelpers.defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers.defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers.defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
-    for (var key$1 in BASE_SHORTS) {
-    	if (!BASE_SHORTS.hasOwnProperty(key$1)) {
-    		break;
-    	}
-
-    	SYS_ESCAPES[key$1.charAt(0)] = true;
-    }
+    Snakeskin$1.forEach(BASE_SHORTS, function (el, key) {
+    	return SYS_ESCAPES[key.charAt(0)] = true;
+    });
 
     var STRONG_SYS_ESCAPES = (_STRONG_SYS_ESCAPES = {
     	'\\': true
@@ -764,17 +756,12 @@
     };
 
     var scopeMod = new RegExp('^' + r(G_MOD) + '+');
-
     var escaperPart = /^__ESCAPER_QUOT__\d+_/;
-
     var tmpSep = [];
-    for (var key in attrSeparators) {
-    	if (!attrSeparators.hasOwnProperty(key)) {
-    		break;
-    	}
 
+    Snakeskin$1.forEach(attrSeparators, function (el, key) {
     	tmpSep.push(r(key));
-    }
+    });
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
     var classRef = /^&/;
@@ -2453,14 +2440,16 @@
 
     		for (var i = 8; i--;) {
     			var pos = line - i - 2,
-    			    prev = this.lines[pos];
+    			    space = new Array(String(line - 1).length - String(pos).length + 1).join(' ');
+
+    			var prev = this.lines[pos];
 
     			if (prev != null) {
     				prev = prev.replace(styleRgxp, '  ').replace(privateRgxp, '').replace(cutRgxp, '$1');
 
     				var part = undefined;
     				if (prev.trim()) {
-    					part = eol + '  ' + (pos + 1) + ' ' + prev;
+    					part = eol + '  ' + (pos + 1) + ' ' + space + prev;
     				} else {
     					part = eol + '  ...';
     				}
@@ -3318,8 +3307,8 @@
     			}
 
     			var diff = parent ? parent.from : from;
-
     			advDiff.sort(sort);
+
     			for (var _i = 0; _i < advDiff.length; _i++) {
     				if (advDiff[_i].val <= diff) {
     					adv += advDiff[_i].adv;
@@ -4428,16 +4417,10 @@
      * @return {(string|undefined)}
      */
     function getFromCache(key, code, params, ctx) {
-    	if (IS_NODE && ctx !== NULL && $globalFnCache[key] && $globalFnCache[key][code]) {
-    		var obj = $globalFnCache[key][code];
-
-    		for (var _key in obj) {
-    			if (!obj.hasOwnProperty(_key)) {
-    				break;
-    			}
-
-    			ctx[_key] = obj[_key];
-    		}
+    	if (IS_NODE && ctx !== NULL && $globalFnCache[key]) {
+    		Snakeskin$1.forEach($globalFnCache[key][code], function (el, key) {
+    			ctx[key] = el;
+    		});
     	}
 
     	var cache = $globalCache[key] && $globalCache[key][code];
@@ -4451,13 +4434,9 @@
     			return;
     		}
 
-    		for (var _key2 in cache.words) {
-    			if (!cache.words.hasOwnProperty(_key2)) {
-    				break;
-    			}
-
-    			params.words[_key2] = cache.words[_key2];
-    		}
+    		Snakeskin$1.forEach(cache.words, function (el, key) {
+    			params.words[key] = el;
+    		});
     	}
 
     	if (params.debug) {
@@ -4465,13 +4444,9 @@
     			return;
     		}
 
-    		for (var _key3 in cache.debug) {
-    			if (!cache.debug.hasOwnProperty(_key3)) {
-    				break;
-    			}
-
-    			params.debug[_key3] = cache.debug[_key3];
-    		}
+    		Snakeskin$1.forEach(cache.debug, function (el, key) {
+    			params.debug[key] = el;
+    		});
     	}
 
     	return cache.text;
@@ -6712,15 +6687,9 @@
     	}, opt_params));
 
     	// Set super global variables
-    	if (p.vars) {
-    		for (var key in p.vars) {
-    			if (!p.vars.hasOwnProperty(key)) {
-    				break;
-    			}
-
-    			Snakeskin$1.Vars[key] = p.vars[key];
-    		}
-    	}
+    	Snakeskin$1.forEach(p.vars, function (el, key) {
+    		Snakeskin$1.Vars[key] = el;
+    	});
 
     	// <<<
     	// Debug information
