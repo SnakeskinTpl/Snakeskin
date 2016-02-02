@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { any } from '../helpers/gcc';
 import { scopeMod } from '../consts/regs';
@@ -33,33 +32,36 @@ Parser.prototype.getFnArgs = function (str) {
 		pOpen = 0,
 		arg = '';
 
-	$C(str).forEach((el) => {
+	for (let i = 0; i < str.length; i++) {
+		const
+			el = str[i];
+
 		if (pOpen ? B_OPEN[el] : el === '(') {
 			pOpen++;
 			res.isCallable = true;
 
 			if (pOpen === 1) {
-				return;
+				continue;
 			}
 
 		} else if (pOpen ? B_CLOSE[el] : el === ')') {
 			pOpen--;
 
 			if (!pOpen) {
-				return false;
+				break;
 			}
 		}
 
 		if (el === ',' && pOpen === 1) {
 			res.push(arg.trim());
 			arg = '';
-			return;
+			continue;
 		}
 
 		if (pOpen) {
 			arg += el;
 		}
-	});
+	}
 
 	if (pOpen) {
 		this.error(`invalid "${this.name}" declaration`);
@@ -103,7 +105,6 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 
 	// Initialise cache objects
 	// for the specified block
-
 	if (dir) {
 		if (!$args[tplName]) {
 			$args[tplName] = {};
@@ -126,12 +127,18 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			// If our parameters already exists in the cache,
 			// then init local variables and return an information object
 			if (cache) {
-				$C(cache.list).forEach((el) => {
+				const
+					{list} = cache;
+
+				for (let i = 0; i < list.length; i++) {
+					const
+						el = list[i];
+
 					structure.vars[el[2]] = {
 						scope: this.scope.length,
 						value: el[0]
 					};
-				});
+				}
 
 				if (cache.scope) {
 					this.scope.push(cache.scope);
@@ -154,8 +161,9 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 
 	// Analise requested parameters
 	// and save it in cache
-	$C(argsList).forEach((el, i) => {
+	for (let i = 0; i < argsList.length; i++) {
 		const
+			el = argsList[i],
 			arg = el.split(/\s*=\s*/);
 
 		if (arg.length > 1) {
@@ -172,7 +180,6 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		}
 
 		if (scopeMod.test(arg[0])) {
-			// Scope already defined
 			if (scope) {
 				this.error(`invalid "${this.name}" declaration`);
 				return {
@@ -197,7 +204,6 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			return '';
 		});
 
-		// Put to cache
 		argsMap[arg[0]] = {
 			defFilter,
 			i,
@@ -206,13 +212,18 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			scope,
 			value: arg[1] && this.pasteDangerBlocks(arg[1].trim())
 		};
-	});
+	}
 
 	if (dir) {
 		// Mix the requested parameters
 		// with parent block parameters
-		$C(parentArgs).forEach((el, key) => {
+		for (let key in parentArgs) {
+			if (!parentArgs.hasOwnProperty(key)) {
+				break;
+			}
+
 			const
+				el = parentArgs[key],
 				arg = argsMap[key];
 
 			// Parameter exists in a parent function
@@ -236,8 +247,8 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 					argsMap[key].value = el.value;
 				}
 
-				// Parameter doesn't exists in a parent function,
-				// set it as a local variable
+			// Parameter doesn't exists in a parent function,
+			// set it as a local variable
 			} else {
 				argsMap[key] = {
 					defFilter: el.defFilter,
@@ -247,21 +258,28 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 					value: el.value !== undefined ? el.value : 'undefined'
 				};
 			}
-		});
+		}
 	}
 
 	const
 		finalArgsList = [],
 		localsList = [];
 
-	$C(argsMap).forEach((el) => {
+	for (let key in argsMap) {
+		if (!argsMap.hasOwnProperty(key)) {
+			break;
+		}
+
+		const
+			el = argsMap[key];
+
 		if (el.local) {
 			localsList[el.i] = el;
 
 		} else {
 			finalArgsList[el.i] = el;
 		}
-	});
+	}
 
 	let
 		decl = '',
@@ -271,9 +289,12 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		locals = [];
 
 	// Initialise local variables
-	$C(localsList).forEach((el) => {
+	for (let i = 0; i < localsList.length; i++) {
+		const
+			el = localsList[i];
+
 		if (!el) {
-			return;
+			continue;
 		}
 
 		const
@@ -294,7 +315,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 			scope: this.scope.length,
 			value: el.key
 		};
-	});
+	}
 
 	const
 		args = [],
@@ -302,8 +323,9 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		constsCache = structure.params['@consts'] = {};
 
 	// Initialise arguments
-	$C(finalArgsList).forEach((el, i) => {
+	for (let i = 0; i < finalArgsList.length; i++) {
 		const
+			el = finalArgsList[i],
 			old = el.key;
 
 		if (consts && consts[old] && isLocalFunction) {
@@ -336,7 +358,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		if (i !== finalArgsList.length - 1) {
 			decl += ',';
 		}
-	});
+	}
 
 	const res = {
 		decl,
