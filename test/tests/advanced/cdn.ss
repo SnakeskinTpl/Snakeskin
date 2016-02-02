@@ -24,7 +24,7 @@
 
 ========================================================================================================================
 
-- namespace advanced.cdn
+- namespace advanced[%fileName%]
 @= tolerateWhitespaces true
 
 - template cdn1(name, opt_provider)
