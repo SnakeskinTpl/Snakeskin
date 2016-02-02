@@ -60,16 +60,22 @@ Parser.prototype.isLogic = function () {
  */
 Parser.prototype._has = function (name, structure, opt_return) {
 	if (isArray(name)) {
-		name = $C(name).reduce((map, el) => {
+		const
+			map = {};
+
+		for (let i = 0; i < name.length; i++) {
+			const
+				el = name[i];
+
 			if (isObject(el)) {
 				$C.extend(false, map, el);
 
 			} else {
 				map[el] = true;
 			}
+		}
 
-			return map;
-		}, {});
+		name = map;
 	}
 
 	while (true) {

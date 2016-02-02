@@ -8,10 +8,9 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 
-$C(['parallel', 'series', 'waterfall']).forEach((dir) => {
+Snakeskin.forEach(['parallel', 'series', 'waterfall'], (dir) => {
 	Snakeskin.addDirective(
 		dir,
 

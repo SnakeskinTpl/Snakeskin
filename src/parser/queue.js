@@ -8,9 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
-import { any } from '../helpers/gcc';
 
 /**
  * Appends a function to the SS queue
@@ -28,11 +26,13 @@ Parser.prototype.toQueue = function (fn) {
  * @return {!Parser}
  */
 Parser.prototype.applyQueue = function () {
-	$C(this.structure.stack).forEach((fn, i, stack) => {
-		fn.call(this);
-		any(stack).shift();
+	const
+		{stack} = this.structure;
 
-	}, {live: true});
+	for (let i = 0; i < stack.length; i++) {
+		stack[i].call(this);
+		stack.shift();
+	}
 
 	return this;
 };

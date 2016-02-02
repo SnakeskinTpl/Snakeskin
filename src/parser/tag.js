@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { classRef } from '../consts/regs';
@@ -282,10 +281,13 @@ Parser.prototype.getXMLTagDesc = function (str) {
 			if (el === '.') {
 				if (bOpen) {
 					if (points.length) {
-						$C(points).forEach((point, i) => {
+						for (let i = points.length; i--;) {
+							const
+								point = points[i];
+
 							if (point) {
 								if (point.stage >= bOpen) {
-									return;
+									continue;
 								}
 
 								let
@@ -308,7 +310,7 @@ Parser.prototype.getXMLTagDesc = function (str) {
 									val: tmp
 								});
 
-								return false;
+								break;
 							}
 
 							points.push({
@@ -317,9 +319,8 @@ Parser.prototype.getXMLTagDesc = function (str) {
 								val: classes[i]
 							});
 
-							return false;
-
-						}, {reverse: true});
+							break;
+						}
 
 					} else {
 						points.push({
@@ -368,7 +369,10 @@ Parser.prototype.getXMLTagDesc = function (str) {
 	}
 
 	let ref = this.bemRef;
-	$C(classes).forEach((el, i) => {
+
+	for (let i = 0; i < classes.length; i++) {
+		let el = classes[i];
+
 		const
 			point = points[i];
 
@@ -385,7 +389,7 @@ Parser.prototype.getXMLTagDesc = function (str) {
 		}
 
 		classes[i] = this.pasteTplVarBlocks(el);
-	});
+	}
 
 	this.bemRef = ref;
 	pseudoHelper();

@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { any } from '../helpers/gcc';
@@ -120,7 +119,10 @@ Parser.prototype.declVars = function (str, opt_params) {
 		fin = '';
 	}
 
-	$C(str).forEach((el, i) => {
+	for (let i = 0; i < str.length; i++) {
+		const
+			el = str[i];
+
 		if (B_OPEN[el]) {
 			bOpen++;
 
@@ -149,11 +151,11 @@ Parser.prototype.declVars = function (str, opt_params) {
 			fin += `${parts[0]}${val ? this.out(val, {unsafe: true}) : ''},`;
 			cache = '';
 
-			return;
+			continue;
 		}
 
 		cache += el;
-	});
+	}
 
 	if (bOpen) {
 		this.error(`invalid "${this.name}" declaration`);
