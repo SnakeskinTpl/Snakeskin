@@ -12,11 +12,11 @@ import Parser from './constructor';
 import { r } from '../helpers/string';
 import { any } from '../helpers/gcc';
 import { HAS_CONSOLE_ERROR } from '../consts/hacks';
-import { LEFT_BOUND as lb, RIGHT_BOUND as rb, ADV_LEFT_BOUND as alb } from '../consts/literals';
+import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 const
 	cutRgxp = /\/\*!!= (.*?) =\*\//g,
-	privateRgxp = new RegExp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`, 'g'),
+	privateRgxp = new RegExp(`${r(ADV_LEFT_BOUND)}?${r(LEFT_BOUND)}__.*?__.*?${r(RIGHT_BOUND)}`, 'g'),
 	styleRgxp = /\t|[ ]{4}/g;
 
 /**
