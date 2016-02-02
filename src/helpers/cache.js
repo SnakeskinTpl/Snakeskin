@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import { NULL } from '../consts/links';
 import { IS_NODE } from '../consts/hacks';
 import { $globalCache, $globalFnCache, $rgxp } from '../consts/cache';
@@ -24,10 +23,17 @@ import { escapeEOLs } from './escape';
  * @return {(string|undefined)}
  */
 export function getFromCache(key, code, params, ctx) {
-	if (IS_NODE && ctx !== NULL && $globalFnCache[key]) {
-		$C($globalFnCache[key][code]).forEach((el, key) => {
-			ctx[key] = el;
-		});
+	if (IS_NODE && ctx !== NULL && $globalFnCache[key] && $globalFnCache[key][code]) {
+		const
+			obj = $globalFnCache[key][code];
+
+		for (let key in obj) {
+			if (!obj.hasOwnProperty(key)) {
+				break;
+			}
+
+			ctx[key] = obj[key];
+		}
 	}
 
 	const
@@ -42,9 +48,13 @@ export function getFromCache(key, code, params, ctx) {
 			return;
 		}
 
-		$C(cache.words).forEach((el, key) => {
-			params.words[key] = el;
-		});
+		for (let key in cache.words) {
+			if (!cache.words.hasOwnProperty(key)) {
+				break;
+			}
+
+			params.words[key] = cache.words[key];
+		}
 	}
 
 	if (params.debug) {
@@ -52,9 +62,13 @@ export function getFromCache(key, code, params, ctx) {
 			return;
 		}
 
-		$C(cache.debug).forEach((el, key) => {
-			params.debug[key] = el;
-		});
+		for (let key in cache.debug) {
+			if (!cache.debug.hasOwnProperty(key)) {
+				break;
+			}
+
+			params.debug[key] = cache.debug[key];
+		}
 	}
 
 	return cache.text;

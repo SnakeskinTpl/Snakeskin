@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { any } from '../helpers/gcc';
@@ -202,10 +201,16 @@ Snakeskin.addDirective(
 						{vars} = structure;
 
 					structure.vars = structure.parent.vars;
-					structure.params.params = $C(this.getFnArgs(`(${params})`))
-						.reduce((res, el) => `${res}${this.out(el, {unsafe: true})},`, '')
-						.slice(0, -1);
 
+					const
+						args = this.getFnArgs(`(${params})`),
+						tmp = [];
+
+					for (let i = 0; i < args.length; i++) {
+						tmp.push(this.out(args[i], {unsafe: true}));
+					}
+
+					structure.params.params = tmp.join();
 					structure.vars = vars;
 				}
 			}

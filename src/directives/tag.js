@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { defaultTag } from '../parser/tag';
 import { emptyCommandParams } from '../consts/regs';
@@ -67,8 +66,14 @@ Snakeskin.addDirective(
 		}
 
 		if (classes.length) {
-			const c = $C(classes).map((el) => `'${el}'`).join(',');
-			str += `${attrCache}['class'] = [${c}].concat(${attrCache}['class'] || []);`;
+			const
+				arr = [];
+
+			for (let i = 0; i < classes.length; i++) {
+				arr.push(`'${classes[i]}'`);
+			}
+
+			str += `${attrCache}['class'] = [${arr}].concat(${attrCache}['class'] || []);`;
 		}
 
 		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));

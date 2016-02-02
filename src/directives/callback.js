@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { any } from '../helpers/gcc';
@@ -44,15 +43,15 @@ Snakeskin.addDirective(
 			let
 				length = 0;
 
-			$C(parent.children).forEach(({name}) => {
-				if (this.getGroup('callback')[name]) {
+			for (let i = 0; i < parent.children.length; i++) {
+				if (this.getGroup('callback')[parent.children[i].name]) {
 					length++;
 				}
 
 				if (length > 1) {
-					return false;
+					break;
 				}
-			});
+			}
 
 			prfx = length > 1 ? ',' : '';
 

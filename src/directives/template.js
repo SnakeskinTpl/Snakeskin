@@ -8,12 +8,10 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import esprima from '../deps/esprima';
-
 import Snakeskin from '../core';
-import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 
+import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 import { ws } from '../helpers/string';
 import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
@@ -33,7 +31,7 @@ import {
 
 } from '../consts/cache';
 
-$C(['template', 'interface', 'placeholder']).forEach((dir) => {
+Snakeskin.forEach(['template', 'interface', 'placeholder'], (dir) => {
 	Snakeskin.addDirective(
 		dir,
 
@@ -259,30 +257,41 @@ $C(['template', 'interface', 'placeholder']).forEach((dir) => {
 				flags = command.split('@=').slice(1);
 
 			if (!parentTplName) {
-				$C(this.params[this.params.length - 1]).forEach((el, key) => {
+				const
+					obj = this.params[this.params.length - 1];
+
+				for (let key in obj) {
+					if (!obj.hasOwnProperty(key)) {
+						break;
+					}
+
+					const
+						el = obj[key];
+
 					if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
 						baseParams[key] = el;
 					}
-				});
+				}
 			}
 
 			if (parentTplName && !flags.length) {
 				flags.push('@skip true');
 			}
 
-			$C(flags).forEach((el) => {
-				el = el.trim();
-
-				const
-					[name] = el.split(' ');
-
-				delete baseParams[name];
+			for (let i = 0; i < flags.length; i++) {
+				const el = flags[i].trim();
+				delete baseParams[el.split(' ')[0]];
 				Snakeskin.Directives['__set__'].call(this, el);
-			});
+			}
 
-			$C(baseParams).forEach((el, key) => {
+			for (let key in baseParams) {
+				if (!baseParams.hasOwnProperty(key)) {
+					break;
+				}
+
+				const el = baseParams[key];
 				Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
-			});
+			}
 
 			const
 				args = this.declFnArgs(command, {dir: 'template', parentTplName, tplName});

@@ -10,7 +10,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from './deps/collection';
 import beautify from './deps/js-beautify';
 
 import Snakeskin from './core';
@@ -126,9 +125,15 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	);
 
 	// Set super global variables
-	$C(p.vars).forEach((val, key) => {
-		Snakeskin.Vars[key] = val;
-	});
+	if (p.vars) {
+		for (let key in p.vars) {
+			if (!p.vars.hasOwnProperty(key)) {
+				break;
+			}
+
+			Snakeskin.Vars[key] = p.vars[key];
+		}
+	}
 
 	// <<<
 	// Debug information
@@ -205,7 +210,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	const
-		parser = new Parser(text, $C.extend({traits: true}, {info}, p));
+		parser = new Parser(text, Object.assign({info}, p));
 
 	// If is true, then a directive declaration is started,
 	// ie { ... }
@@ -869,7 +874,12 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// If we have some outer declarations,
 	// which weren't attached to template,
 	// then will be thrown an exception
-	if ($C(parser.preDefs).some((el, key) => (parser.error(`the template "${key}" is not defined`), true))) {
+	for (let key in parser.preDefs) {
+		if (!parser.preDefs.hasOwnProperty(key)) {
+			break;
+		}
+
+		parser.error(`the template "${key}" is not defined`);
 		return false;
 	}
 

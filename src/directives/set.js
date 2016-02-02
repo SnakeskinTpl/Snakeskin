@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { $output } from '../consts/cache';
 import { isArray } from '../helpers/types';
@@ -46,8 +45,34 @@ function set(command) {
 		[root] = this.params,
 		last = this.params[this.params.length - 1];
 
+	/**
+	 * @param {!Object} a
+	 * @param {!Object} b
+	 * @return {!Object}
+	 */
+	function extend(a, b) {
+		for (let key in b) {
+			if (!b.hasOwnProperty(key)) {
+				break;
+			}
+
+			const
+				aVal = a[key],
+				bVal = b[key];
+
+			if (aVal && bVal && aVal.constructor === Object && bVal.constructor === Object) {
+				extend(aVal, bVal);
+
+			} else {
+				a[key] = bVal;
+			}
+		}
+
+		return a;
+	}
+
 	function mix(base, opt_adv, opt_initial) {
-		return $C.extend(true, Object.assign(opt_initial || {}, opt_adv), base);
+		return extend(Object.assign(opt_initial || {}, opt_adv), base);
 	}
 
 	let
@@ -71,14 +96,19 @@ function set(command) {
 		};
 
 		const inherit = (obj) => {
-			$C(obj).forEach((el, key) => {
+			for (let key in obj) {
+				if (!obj.hasOwnProperty(key)) {
+					break;
+				}
+
 				if (key[0] !== '@' && key in root) {
-					params[key] = this[key] = el;
+					params[key] = this[key] = obj[key];
+
 					if (cache) {
-						cache[key] = el;
+						cache[key] = obj[key];
 					}
 				}
-			});
+			}
 		};
 
 		inherit(last);

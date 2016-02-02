@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 
 Snakeskin.addDirective(
@@ -66,9 +65,13 @@ Snakeskin.addDirective(
 				return '';
 			}
 
-			return $C(str.split(/\s*,\s*/)).reduce((arr, decl) => {
+			const
+				args = str.split(/\s*,\s*/),
+				arr = [];
+
+			for (let i = 0; i < args.length; i++) {
 				const
-					parts = decl.split(/\s+as\s+/);
+					parts = args[i].split(/\s+as\s+/);
 
 				if (isNativeExport) {
 					arr.push(`${parts[0]} as ${this.declVar(parts[1] || parts[0])}`);
@@ -78,10 +81,9 @@ Snakeskin.addDirective(
 						`${parts[1] || parts[0]} = ${from}${opt_global || parts[0] === '*' ? '' : `.${parts[1] || parts[0]}`}`
 					));
 				}
+			}
 
-				return arr;
-
-			}, []).join(isNativeExport ? ',' : '');
+			return arr.join(isNativeExport ? ',' : '');
 		};
 
 		command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*(,?)\s*/, (str, prfComma, decl, postComma) => {
