@@ -180,10 +180,12 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				const decl = getLineDesc(
 					str,
 					nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
-					Boolean(dir),
-					next2str === MULT_COMMENT_START,
-					this.localization,
-					struct && struct.adv
+					{
+						adv: Boolean(struct && struct.adv),
+						comment: next2str === MULT_COMMENT_START,
+						dir: Boolean(dir),
+						i18n: this.localization
+					}
 				);
 
 				if (!decl) {
@@ -388,13 +390,13 @@ function appendDirEnd(str, struct) {
  *
  * @param {string} str - source string
  * @param {number} i - start position
- * @param {boolean} dir - if is true, then the declaration is considered as a directive
- * @param {boolean} comment - if is true, then declaration is considered as a multiline comment
- * @param {boolean} i18n - if is true, then localization is enable
- * @param {boolean} adv - if is true, then the declaration is considered as advanced
+ * @param {{adv: boolean, comment: boolean, dir: boolean, i18n: boolean}} params - parameters
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
-function getLineDesc(str, i, dir, comment, i18n, adv) {
+function getLineDesc(str, i, params) {
+	const
+		{adv, comment, dir, i18n} = params;
+
 	let
 		command = '',
 		name = '';
@@ -416,7 +418,7 @@ function getLineDesc(str, i, dir, comment, i18n, adv) {
 		bEscape = false;
 
 	let
-		dOpen = 0,
+		begin = 0,
 		filterStart = false;
 
 	let
@@ -481,7 +483,7 @@ function getLineDesc(str, i, dir, comment, i18n, adv) {
 						continue;
 					}
 
-				} else if (dOpen || bOpen === I18N) {
+				} else if (begin || bOpen === I18N) {
 					concatLine = 1;
 					continue;
 				}
@@ -565,11 +567,15 @@ function getLineDesc(str, i, dir, comment, i18n, adv) {
 					}
 
 				} else {
-					if (dOpen || adv ? str.substr(i, 2) === alb + lb : el === lb) {
-						dOpen++;
+					if (begin || adv ? str.substr(i, 2) === alb + lb : el === lb) {
+						if (!begin) {
+							bEnd = false;
+						}
 
-					} else if (dOpen && el === rb) {
-						dOpen--;
+						begin++;
+
+					} else if (begin && el === rb) {
+						begin--;
 					}
 				}
 			}
