@@ -444,7 +444,7 @@ Filters['json'] = function (val) {
  * @return {string}
  */
 Filters['string'] = function (val) {
-	if (isString(val) && val instanceof String === false) {
+	if (typeof obj === 'object' && obj instanceof String === false) {
 		return JSON.stringify(val);
 	}
 
