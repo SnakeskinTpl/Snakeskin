@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "test": "bower install && node test",
-    "full-test": "bower install && istanbul cover test && yaspeller ./"
+    "full-test": "bower install && istanbul cover test/index.dev.js && yaspeller ./"
   },
   "dependencies": {
     "commander": "^2.5.0",
