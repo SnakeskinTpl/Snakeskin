@@ -52,8 +52,8 @@ Snakeskin.setFilterParams = function (filter, params) {};
 /**
  * @param {(Array|Object|undefined)} obj
  * @param {(
- *   function(?, number, !Array, boolean, boolean, number)|
- *   function(?, string, !Object, number, boolean, boolean, number)
+ *   function(?, ?, !Array, boolean, boolean, number)|
+ *   function(?, ?, !Object, number, boolean, boolean, number)
  * )} callback - callback function
  */
 Snakeskin.forEach = function (obj, callback) {};
