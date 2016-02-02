@@ -8,5 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+import './shims';
 import './live';
 import './filters';

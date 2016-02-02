@@ -413,7 +413,7 @@ export default class Parser {
 					return val[0].length();
 				}
 
-				if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
+				if (typeof val === 'string' || Array.isArray(val)) {
 					return val;
 				}
 
