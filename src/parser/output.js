@@ -11,9 +11,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import esprima from '../deps/esprima';
-import Snakeskin from '../core';
 import Parser from './constructor';
 import { isFunction } from '../helpers/types';
 import { concatProp } from '../helpers/literals';
@@ -119,8 +117,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 	const
 		{structure} = this,
-		tplName = String(this.tplName),
-		Filters = $C(Snakeskin.Filters);
+		tplName = String(this.tplName);
 
 	if (dangerRgxp.test(command)) {
 		this.error('unsupported syntax');
@@ -287,16 +284,34 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @param {!Array<string>} params
 	 * @return {string}
 	 */
-	const joinFilterParams = (params) =>
-		String($C(params).map((el) => isFunction(el) ? String(el(this)) : el).join());
+	const joinFilterParams = (params) => {
+		const
+			arr = [];
+
+		for (let i = 0; i < params.length; i++) {
+			const el = params[i];
+			arr[i] = isFunction(el) ? String(el(this)) : el;
+		}
+
+		return arr.join();
+	};
 
 	/**
 	 * @param {string} str
 	 * @param {!Object} map
 	 * @return {string}
 	 */
-	const removeDefFilters = (str, map) =>
-		String($C(map).reduce((str, el, filter) => str.replace(getRgxp(`\\|${filter} .*?(?=#;)`, 'g'), ''), str));
+	const removeDefFilters = (str, map) => {
+		for (let key in map) {
+			if (!map.hasOwnProperty(key)) {
+				break;
+			}
+
+			str = str.replace(getRgxp(`\\|${key} .*?(?=#;)`, 'g'), '');
+		}
+
+		return str;
+	};
 
 	/**
 	 * @param {string} str
@@ -308,13 +323,20 @@ Parser.prototype.out = function (command, opt_params) {
 			isLocalFilter = filters === defFilters.local,
 			prfx = [isLocalFilter ? '(' : '', isLocalFilter ? ')' : ''];
 
-		return String($C(filters).reduce((val, filter) => {
-			const reduce = (str, args, filter) =>
-				`${prfx[0]}${val}|${filter} ${joinFilterParams(args)}#;${prfx[1]}`;
+		for (let i = 0; i < filters.length; i++) {
+			const
+				filter = filters[i];
 
-			return $C(filter).reduce(reduce, '');
+			for (let key in filter) {
+				if (!filter.hasOwnProperty(key)) {
+					break;
+				}
 
-		}, str));
+				str = `${prfx[0]}${str}|${key} ${joinFilterParams(filter[key])}#;${prfx[1]}`;
+			}
+		}
+
+		return str;
 	};
 
 	if (!command) {
@@ -504,10 +526,16 @@ Parser.prototype.out = function (command, opt_params) {
 			const
 				isGlobalFilter = i === end && el != ')';
 
-			filters = $C(filters).get((el) => {
+			for (let i = 0; i < filters.length; i++) {
+				const
+					el = filters[i];
+
 				if (el[0] !== '!') {
-					return true;
+					continue;
 				}
+
+				filters.splice(i, 1);
+				i--;
 
 				const
 					filter = el.slice(1);
@@ -518,11 +546,12 @@ Parser.prototype.out = function (command, opt_params) {
 				} else {
 					cancelLocalFilters[filter] = true;
 				}
-			});
+			}
 
-			let tmp = $C(filters).reduce((decl, el) => {
+			let tmp = fBody.trim() || 'undefined';
+			for (let i = 0; i < filters.length; i++) {
 				const
-					params = el.split(' '),
+					params = filters[i].split(' '),
 					input = params.slice(1).join(' ').trim(),
 					current = params.shift().split('.');
 
@@ -530,8 +559,31 @@ Parser.prototype.out = function (command, opt_params) {
 					bind = [],
 					test;
 
-				if (Filters.in(current)) {
-					$C(Filters.get(current)['ssFilterParams']).forEach((el, key) => {
+				let
+					{Filters} = Snakeskin,
+					pos = 0;
+
+				while (Filters) {
+					Filters = Filters[current[pos]];
+					pos++;
+
+					if (pos === current.length) {
+						break;
+					}
+				}
+
+				if (Filters && Filters['ssFilterParams']) {
+					const
+						p = Filters['ssFilterParams'];
+
+					for (let key in p) {
+						if (!p.hasOwnProperty(key)) {
+							break;
+						}
+
+						const
+							el = p[key];
+
 						switch (key) {
 							case 'bind':
 								bind = bind.concat(el);
@@ -554,26 +606,28 @@ Parser.prototype.out = function (command, opt_params) {
 									}
 								}
 						}
-					});
+					}
 				}
 
-				if (test && !test(decl)) {
-					return decl;
+				if (test && !test(tmp)) {
+					continue;
 				}
 
-				decl =
-					`(${cacheLink} = __FILTERS__${$C(current).reduce((str, el) => str + `['${el}']`, '')}` +
-						(filterWrapper || !pCount ? '.call(this,' : '') +
-						decl +
-						(bind.length ? `,${joinFilterParams(bind)}` : '') +
-						(input ? `,${input}` : '') +
-						(filterWrapper || !pCount ? ')' : '') +
+				let filter = '';
+				for (let i = 0; i < current.length; i++) {
+					filter += `['${current[i]}']`;
+				}
+
+				tmp =
+					`(${cacheLink} = __FILTERS__${filter}` +
+					(filterWrapper || !pCount ? '.call(this,' : '') +
+					tmp +
+					(bind.length ? `,${joinFilterParams(bind)}` : '') +
+					(input ? `,${input}` : '') +
+					(filterWrapper || !pCount ? ')' : '') +
 					')'
 				;
-
-				return decl;
-
-			}, fBody.trim() || 'undefined');
+			}
 
 			if (!isGlobalFilter) {
 				tmp = removeDefFilters(tmp, cancelLocalFilters);
