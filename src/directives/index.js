@@ -157,7 +157,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	let
 		_ = ([cache, val]) => ({cache, val});
 
-	Snakeskin.forEach([
+	[
 
 		_([$dirTrim, p.trim]),
 		_([$blockDirs, p.block]),
@@ -165,7 +165,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		_([$textDirs, p.text]),
 		_([$dirInterpolation, p.interpolation])
 
-	], ({cache, val}) => {
+	].forEach(({cache, val}) => {
 		if (cache === $dirTrim) {
 			let res;
 			switch (val) {
@@ -193,14 +193,14 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 	});
 
-	Snakeskin.forEach([
+	[
 
 		_([$dirGroups, p.group]),
 		_([$dirChain, p.with]),
 		_([$dirParents, p.parents]),
 		_([$dirEnd, p.endFor])
 
-	], ({cache, val}) => {
+	].forEach(({cache, val}) => {
 		Snakeskin.forEach(concat(val), (key) => {
 			if (cache === $dirGroups && key[0] === GROUP) {
 				throw new Error(`Invalid group name "${key}" (group name can't begin with "${GROUP}"`);
@@ -211,7 +211,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	Snakeskin.forEach([$dirChain, $dirParents, $dirEnd], (cache) => {
+	[$dirChain, $dirParents, $dirEnd].forEach((cache) => {
 		Snakeskin.forEach(cache, (el, key) => {
 			if (key[0] !== GROUP) {
 				return;
@@ -227,19 +227,19 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	Snakeskin.forEach([
+	[
 
 		_([$dirParents, p.children]),
 		_([$dirEnd, p.endsWith])
 
-	], ({cache, val}) => {
-		Snakeskin.forEach(concat(val), (key) => {
+	].forEach(({cache, val}) => {
+		concat(val).forEach((key) => {
 			cache[name] = cache[name] || {};
 			cache[name][key] = true;
 		});
 	});
 
-	Snakeskin.forEach([$dirParents, $dirEnd], (cache) => {
+	[$dirParents, $dirEnd].forEach((cache) => {
 		Snakeskin.forEach(cache, (dir) => {
 			Snakeskin.forEach(dir, (el, key) => {
 				if (key[0] !== GROUP) {
@@ -254,12 +254,12 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	_ =
 		([cache, plainCache, val]) => ({cache, plainCache, val});
 
-	Snakeskin.forEach([
+	[
 		_([dirPlacement, dirPlacementPlain, p.placement]),
 		_([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]),
 		_([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
 
-	], ({cache, plainCache, val}) => {
+	].forEach(({cache, plainCache, val}) => {
 		cache[name] = {};
 
 		const

@@ -31,7 +31,7 @@ import {
 
 } from '../consts/cache';
 
-Snakeskin.forEach(['template', 'interface', 'placeholder'], (dir) => {
+['template', 'interface', 'placeholder'].forEach((dir) => {
 	Snakeskin.addDirective(
 		dir,
 

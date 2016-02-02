@@ -10,7 +10,7 @@
 
 import Snakeskin from '../core';
 
-Snakeskin.forEach(['parallel', 'series', 'waterfall'], (dir) => {
+['parallel', 'series', 'waterfall'].forEach((dir) => {
 	Snakeskin.addDirective(
 		dir,
 
