@@ -255,6 +255,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		([cache, plainCache, val]) => ({cache, plainCache, val});
 
 	[
+
 		_([dirPlacement, dirPlacementPlain, p.placement]),
 		_([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]),
 		_([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])
