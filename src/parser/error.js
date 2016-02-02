@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { r } from '../helpers/string';
 import { HAS_CONSOLE_ERROR } from '../consts/hacks';
@@ -110,7 +109,7 @@ Parser.prototype.error = function (msg) {
 
 	const
 		report = `${msg}; ${this.getAdvInfo()}`,
-		error = $C.extend(false, new Error(report), {name: 'SnakeskinError'});
+		error = Object.assign(new Error(report), {name: 'SnakeskinError'});
 
 	if (this.onError) {
 		this.onError(error);

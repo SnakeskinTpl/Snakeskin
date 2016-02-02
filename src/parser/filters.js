@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { isString } from '../helpers/types';
 
@@ -20,7 +19,7 @@ import { isString } from '../helpers/types';
  */
 Parser.prototype.appendDefaultFilters = function (filters) {
 	const
-		obj = $C.extend(false, {global: [], local: []}, filters);
+		obj = Object.assign({global: [], local: []}, filters);
 
 	for (let key in obj) {
 		if (!obj.hasOwnProperty(key)) {

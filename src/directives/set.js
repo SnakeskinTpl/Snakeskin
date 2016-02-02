@@ -47,7 +47,7 @@ function set(command) {
 		last = this.params[this.params.length - 1];
 
 	function mix(base, opt_adv, opt_initial) {
-		return $C.extend(true, $C.extend(false, opt_initial || {}, opt_adv), base);
+		return $C.extend(true, Object.assign(opt_initial || {}, opt_adv), base);
 	}
 
 	let

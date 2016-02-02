@@ -105,7 +105,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 	/** @type {$$SnakeskinParams} */
 	const p = any(
-		$C.extend(false, {
+		Object.assign({
 			cache: true,
 			renderMode: 'stringConcat',
 			vars: {},
@@ -135,7 +135,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	const
-		info = any($C.extend(false, {line: 1}, opt_info));
+		info = any(Object.assign({line: 1}, opt_info));
 
 	let text;
 	if (typeof src === 'object' && 'innerHTML' in src) {

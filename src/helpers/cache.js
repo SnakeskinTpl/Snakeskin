@@ -107,7 +107,7 @@ export function saveIntoFnCache(key, code, params, ctx) {
 		return;
 	}
 
-	$globalFnCache[key] = $C.extend(false, $globalFnCache[key], {[code]: ctx});
+	$globalFnCache[key] = Object.assign($globalFnCache[key] || {}, {[code]: ctx});
 }
 
 /**
@@ -123,7 +123,7 @@ export function saveIntoCache(key, code, params, parser) {
 		return;
 	}
 
-	$globalCache[key] = $C.extend(false, $globalCache[key], {
+	$globalCache[key] = Object.assign($globalCache[key] || {}, {
 		[code]: {
 			debug: params.debug,
 			text: parser.result,

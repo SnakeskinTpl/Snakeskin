@@ -10,7 +10,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { toObj } from './object';
 import { IS_NODE } from '../consts/hacks';
@@ -59,11 +58,15 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 			file + (extname ? '' : '.ss')
 		);
 
-		$C(glob.sync(src)).forEach((src) => {
-			src = path.normalize(src);
+		const
+			arr = glob.hasMagic(src) ? glob.sync(src) : [src];
+
+		for (let i = 0; i < arr.length; i++) {
+			const
+				src = path.normalize(arr[i]);
 
 			if (src in include && include[src] > templateRank[type]) {
-				return;
+				continue;
 			}
 
 			include[src] = templateRank[type];
@@ -83,7 +86,7 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 				`${wsEnd.test(file) ? '' : `${eol}${s}__cutLine__${e}`}` +
 				`${s}__endSetFile__${e}`
 			);
-		});
+		}
 
 		return true;
 

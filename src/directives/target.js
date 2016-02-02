@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { any } from '../helpers/gcc';
@@ -33,13 +32,8 @@ Snakeskin.addDirective(
 		}
 
 		this.startDir();
-
-		let
-			str = this.declVars(`__TARGET_REF__ = ${obj}`, {sys: true});
-
-		$C.extend(false, this.structure.params, {
-			ref: this.out('__TARGET_REF__', {unsafe: true})
-		});
+		let str = this.declVars(`__TARGET_REF__ = ${obj}`, {sys: true});
+		this.structure.params.ref = this.out('__TARGET_REF__', {unsafe: true});
 
 		if (ref) {
 			str += this.out(`var ${ref} = __TARGET_REF__;`, {skipFirstWord: true, unsafe: true});

@@ -44,7 +44,7 @@ Snakeskin.addDirective(
 			parts = this.getTokens(command),
 			{tag, id, inline, inlineMap, classes} = this.getXMLTagDesc(parts[0]);
 
-		$C.extend(false, this.structure.params, {inline, tag});
+		Object.assign(this.structure.params, {inline, tag});
 
 		if (inlineMap) {
 			this.append(this.declVars(`__INLINE_TAGS__ = ${inlineMap}`, {sys: true}));

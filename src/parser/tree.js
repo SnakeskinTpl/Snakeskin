@@ -8,7 +8,6 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import $C from '../deps/collection';
 import Parser from './constructor';
 import { any } from '../helpers/gcc';
 import { isArray, isObject } from '../helpers/types';
@@ -68,7 +67,7 @@ Parser.prototype._has = function (name, structure, opt_return) {
 				el = name[i];
 
 			if (isObject(el)) {
-				$C.extend(false, map, el);
+				Object.assign(map, el);
 
 			} else {
 				map[el] = true;
