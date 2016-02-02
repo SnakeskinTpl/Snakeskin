@@ -31,9 +31,11 @@ export function getCommentType(str, pos) {
 			chunk = str.substr(pos, el.length);
 
 		if (COMMENTS[chunk] && chunk === el) {
-			return el || false;
+			return el;
 		}
 	}
+
+	return false;
 }
 
 /**
