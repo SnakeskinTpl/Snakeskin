@@ -395,9 +395,10 @@ function appendDirEnd(str, struct) {
  */
 function getLineDesc(str, i, params) {
 	const
-		{adv, comment, dir, i18n} = params;
+		{adv, dir, i18n} = params;
 
 	let
+		{comment} = params,
 		command = '',
 		name = '';
 
