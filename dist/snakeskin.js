@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 21:44:47 GMT
+ * Date: 'Tue, 02 Feb 2016 22:41:59 GMT
  */
 
 (function (global, factory) {
@@ -8237,14 +8237,7 @@
     	notEmpty: true,
     	placement: 'global'
     }, function (command) {
-    	var prfxRgxp = /^@\s*/;
-
-    	if (!prfxRgxp.test(command)) {
-    		return this.error('invalid "' + this.name + '" declaration');
-    	}
-
-    	command = command.replace(prfxRgxp, '');
-    	this.decorators.push(this.out(command.replace(prfxRgxp, ''), { unsafe: true }));
+    	this.decorators.push(this.out(command, { unsafe: true }));
     });
 
     var _templateObject$3 = babelHelpers.taggedTemplateLiteral(['[\'', '\']'], ['[\'', '\']']);

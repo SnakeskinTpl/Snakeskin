@@ -19,6 +19,7 @@
 	- block superWrapper(target)
 		- block wrapper()
 			: tp = new Typograf(params)
+			/// FixMe: return new Typograf(params).execute(target.apply(this, arguments))
 			- return tp.execute(target.apply(this, arguments))
 
 		- return self.wrapper

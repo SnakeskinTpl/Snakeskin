@@ -14,15 +14,26 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			- namespace demo
-			- template helloWorld(name = 'world')
-				Hello {name}!
+			@= tolerateWhitespaces true
+			@= localization false
+
+			- template cut(target)
+				- block wrapper()
+					- return target.apply(this, arguments)|replace /^\t/gm, ''
+
+				- return self.wrapper
+
+			- @cut
+			- template markdown()
+
 		</script>
 
 		<script>
 			var d = {};
 			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
 			// console.log(d.code);
-			document.getElementById('test').innerHTML = demo.helloWorld();
+			console.log(demo.markdown());
+			//document.getElementById('test').innerHTML = demo.helloWorld();
 		</script>
 	</body>
 </html>
