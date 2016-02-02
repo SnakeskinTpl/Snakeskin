@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 21:37:18 GMT
+ * Date: 'Tue, 02 Feb 2016 21:44:47 GMT
  */
 
 (function (global, factory) {
@@ -77,6 +77,20 @@
      * @const
      */
     Snakeskin.cache = {};
+
+        Array.isArray = Array.isArray || function (obj) {
+    	return {}.call(obj) === '[object Array]';
+    };
+
+    String.prototype.trim = String.prototype.trim || function () {
+    	var str = this.replace(/^\s\s*/, '');
+
+    	var i = str.length;
+
+    	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
+
+    	return str.substring(0, i + 1);
+    };
 
         /**
      * Returns true if the specified value is a function
