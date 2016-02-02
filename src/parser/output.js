@@ -733,14 +733,29 @@ Parser.prototype.out = function (command, opt_params) {
 	}
 
 	if (skipValidation !== false) {
-		try {
-			esprima.parse(esprimaHackFn(res));
+		const
+			esprimaRes = parse(res);
 
-		} catch (err) {
-			this.error(err.message.replace(/.*?: (\w)/, (str, $1) => $1.toLowerCase()));
+		if (esprimaRes !== true) {
+			this.error(esprimaRes);
 			return '';
 		}
 	}
 
 	return res;
 };
+
+/**
+ * @param {string} str
+ * @return {(boolean|string)}
+ */
+function parse(str) {
+	try {
+		esprima.parse(esprimaHackFn(str));
+
+	} catch (err) {
+		return err.message.replace(/.*?: (\w)/, (str, $1) => $1.toLowerCase());
+	}
+
+	return true;
+}
