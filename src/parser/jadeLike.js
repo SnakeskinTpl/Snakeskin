@@ -171,7 +171,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 				let dir;
 				if (struct && struct.adv) {
-					dir = el === alb && nextSpace;
+					dir = el === alb && next !== lb && nextSpace;
 
 				} else {
 					dir = (SHORTS[el] || SHORTS[next2str]) && el !== lb && nextSpace;
@@ -198,14 +198,10 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				}
 
 				let replacer;
-				if (el === alb) {
-					replacer =
-						$dirNameShorthands[diff2str] ||
-						$dirNameShorthands[next] ||
-						$dirNameShorthands[next2str] ||
-						$dirNameShorthands[el];
+				if (el === alb && next !== lb) {
+					replacer = $dirNameShorthands[diff2str] || $dirNameShorthands[next];
 
-				} else {
+				} else if (el !== lb) {
 					replacer = $dirNameShorthands[next2str] || $dirNameShorthands[el];
 				}
 
