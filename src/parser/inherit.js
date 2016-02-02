@@ -97,10 +97,9 @@ Parser.prototype.getTplFullBody = function (name) {
 				blockDiff = block.length - $cache[parentTpl].slice(parent.from, parent.to).length;
 			}
 
-			const
-				diff = parent ? parent.from : from;
-
+			const diff = parent ? parent.from : from;
 			advDiff.sort(sort);
+
 			for (let i = 0; i < advDiff.length; i++) {
 				if (advDiff[i].val <= diff) {
 					adv += advDiff[i].adv;
