@@ -199,6 +199,7 @@ export const SYS_CONSTS = {
 	'__INLINE_TAGS__': true,
 	'__TAG__': true,
 	'__NODE__': true,
+	'__JOIN__': true,
 	'TRUE': true,
 	'FALSE': true,
 	'module': true,

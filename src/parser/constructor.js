@@ -420,6 +420,14 @@ export default class Parser {
 				return 1;
 			}
 
+			function __JOIN__(arr) {
+				var str = '';
+				for (var i = 0; i < arr.length; i++) {
+					str += arr[i];
+				}
+				return str;
+			}
+
 			function __ESCAPE_D_Q__(str) {
 				return str.replace(/"/g, "&quot;")
 			}
