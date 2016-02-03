@@ -6,64 +6,137 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-[[outer blocks with extend]]============================================================================================
-
-Hello!
-
-[[immediately invoke block]]============================================================================================
-
-Hello!
-
-[[immediately invoke block with inherit]]===============================================================================
+[[simple]]==============================================================================================================
 
 Hello world!
 
-[[immediately invoke outer block]]======================================================================================
+[[callable block]]======================================================================================================
 
-Hello!
-
-[[immediately invoke outer block with inherit]]=========================================================================
+[[callable block with call]]============================================================================================
 
 Hello world!
 
-[[recursion]]===========================================================================================================
+[[callable block with multiple call]]===================================================================================
 
-3 2 1 0
+Hello world! Hello world!
+
+[[outer block]]=========================================================================================================
+
+Hello world!
+
+[[callable block with parameters]]======================================================================================
+
+Hello Kobezzza!
+
+[[callable block with default parameters]]==============================================================================
+
+Hello friend!
+
+[[callable block with nullable default parameters]]=====================================================================
+
+Hello null!
+
+[[callable block with parameter binding]]===============================================================================
+
+Hello Kobezzza!
+
+[[callable block with default parameter binding]]=======================================================================
+
+Hello Persik!
+
+[[callable block with nullable default parameter binding]]==============================================================
+
+Hello Kobezzza!
+
+[[callable block with multiple parameters]]=============================================================================
+
+4
+
+[[callable block with parameters with filters]]=========================================================================
+
+Hello world!
 
 ========================================================================================================================
 
 - namespace block[%fileName%]
 
-- template parent()
+- template simple()
 	- block foo
+		Hello world!
 
-- block ['outer blocks with extend']->bar()
-	Hello!
-
-- template ['outer blocks with extend']() extends @parent
-	- block foo
-		+= self.bar()
-
-- template ['immediately invoke block']()
-	- block foo() =>
-		Hello!
-
-- template ['immediately invoke block with inherit']() extends @['immediately invoke block']
+- template ['callable block']()
 	- block foo()
 		Hello world!
 
-- block ['immediately invoke outer block']->foo() =>
-	Hello!
+- template ['callable block with call']()
+	- block foo()
+		Hello world!
 
-- template ['immediately invoke outer block']()
+	+= self.foo()
 
-- block ['immediately invoke outer block with inherit']->foo()
-	Hello world!
+- template ['callable block with multiple call']()
+	- block foo()
+		Hello world!{&}
 
-- template ['immediately invoke outer block with inherit']() extends @['immediately invoke outer block']
+	+= self.foo()
+	+= self.foo()
 
-- template ['recursion']()
-	- block foo(i) => 3
-		{i}
-		- if i
-			+= &(--i)
+- block ['outer block']->foo()
+		Hello world!
+
+- template ['outer block']()
+	+= self.foo()
+
+- template ['callable block with parameters']()
+	- block foo(name)
+		Hello {name}!
+
+	+= self.foo('Kobezzza')
+
+- template ['callable block with default parameters']()
+	- block foo(name = 'friend')
+		Hello {name}!
+
+	+= self.foo(null)
+
+- template ['callable block with nullable default parameters']()
+	- block foo(name? = 'friend')
+		Hello {name}!
+
+	+= self.foo(null)
+
+- template ['callable block with parameter binding']()
+	- block foo(@params)
+		Hello {@name}!
+
+	+= self.foo({name: 'Kobezzza'})
+
+- template ['callable block with default parameter binding']()
+	- block foo(@params = {name: 'Persik'})
+		Hello {@name}!
+
+	+= self.foo()
+
+- template ['callable block with default parameter binding']()
+	- block foo(@params = {name: 'Persik'})
+		Hello {@name}!
+
+	+= self.foo()
+
+- template ['callable block with nullable default parameter binding']()
+	- block foo(@params? = {name: 'Persik'})
+		Hello {params ? @name : 'Kobezzza'}!
+
+	+= self.foo(null)
+
+- template ['callable block with multiple parameters']()
+	- block foo(a? = 1, b = 2)
+		{a + b}
+
+	+= self.foo(undefined, 3)
+
+- template ['callable block with parameters with filters']()
+	- block foo((@params?|parse) = ({name: 'world'}|json))
+		Hello {@name}!
+
+	+= self.foo()
