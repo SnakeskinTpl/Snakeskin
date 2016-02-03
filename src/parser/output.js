@@ -18,10 +18,9 @@ import { concatProp } from '../helpers/literals';
 import { isNextAssign, isSyOL } from '../helpers/analysis';
 import { getRgxp } from '../helpers/cache';
 import { any } from '../helpers/gcc';
-import { r, isNotPrimitive } from '../helpers/string';
+import { r } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
-import { stringRender } from '../consts/other';
 import { FILTER, G_MOD } from '../consts/literals';
 
 const blackWords = {
@@ -715,14 +714,6 @@ Parser.prototype.out = function (command, opt_params) {
 			removeDefFilters(addDefFilters(`(${res})`, defFilters.global), cancelFilters).replace(defFilterRgxp, ''),
 			{unsafe: true, skipFirstWord, skipValidation}
 		);
-
-		if (isNotPrimitive(res)) {
-			if (!this.stringResult && !stringRender[this.renderMode]) {
-				res = `__FILTERS__['node'](${res}, $0)`;
-			}
-
-			res = `__FILTERS__['htmlObject'](${res})`;
-		}
 	}
 
 	if (skipValidation !== false) {

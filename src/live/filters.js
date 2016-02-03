@@ -120,27 +120,6 @@ Filters['console'] = {
 	}
 };
 
-/**
- * Appends a value to a node
- *
- * @param {?} val - source value
- * @param {(!Snakeskin.DocumentFragment|!Snakeskin.Element|undefined)} node - source node
- * @param {string} renderMode - rendering mode of templates
- * @return {string}
- */
-Filters['node'] = function (val, node, renderMode) {
-	if (node && val instanceof Snakeskin.Node) {
-		Snakeskin.appendChild(any(node), val, renderMode);
-		return '';
-	}
-
-	return val;
-};
-
-Snakeskin.setFilterParams('node', {
-	'bind': [(o) => `'${o.renderMode}'`]
-});
-
 const entityMap = {
 	'"': '&quot;',
 	'&': '&amp;',
@@ -216,6 +195,12 @@ Filters['htmlObject'] = function (val) {
 
 	return val;
 };
+
+Snakeskin.setFilterParams('htmlObject', {
+	'test'(val) {
+		return isNotPrimitive(val);
+	}
+});
 
 /**
  * Replaces undefined to ''
