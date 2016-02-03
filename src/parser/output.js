@@ -302,12 +302,11 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const removeDefFilters = (str, map) => {
-		for (let key in map) {
-			if (!map.hasOwnProperty(key)) {
-				break;
-			}
+		const
+			arr = Object.keys(map);
 
-			str = str.replace(getRgxp(`\\|${key} .*?(?=#;)`, 'g'), '');
+		for (let i = 0; i < arr.length; i++) {
+			str = str.replace(getRgxp(`\\|${arr[i]} .*?(?=#;)`, 'g'), '');
 		}
 
 		return str;
@@ -325,14 +324,11 @@ Parser.prototype.out = function (command, opt_params) {
 
 		for (let i = 0; i < filters.length; i++) {
 			const
-				filter = filters[i];
+				filter = filters[i],
+				arr = Object.keys(filter);
 
-			for (let key in filter) {
-				if (!filter.hasOwnProperty(key)) {
-					break;
-				}
-
-				str = `${prfx[0]}${str}|${key} ${joinFilterParams(filter[key])}#;${prfx[1]}`;
+			for (let i = 0; i < arr.length; i++) {
+				str = `${prfx[0]}${str}|${arr[i]} ${joinFilterParams(filter[arr[i]])}#;${prfx[1]}`;
 			}
 		}
 
@@ -573,14 +569,12 @@ Parser.prototype.out = function (command, opt_params) {
 
 				if (Filters && Filters['ssFilterParams']) {
 					const
-						p = Filters['ssFilterParams'];
+						p = Filters['ssFilterParams'],
+						arr = Object.keys(p);
 
-					for (let key in p) {
-						if (!p.hasOwnProperty(key)) {
-							break;
-						}
-
+					for (let i = 0; i < arr.length; i++) {
 						const
+							key = arr[i],
 							el = p[key];
 
 						switch (key) {

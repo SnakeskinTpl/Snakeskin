@@ -19,15 +19,12 @@ import { isString } from '../helpers/types';
  */
 Parser.prototype.appendDefaultFilters = function (filters) {
 	const
-		obj = Object.assign({global: [], local: []}, filters);
+		obj = Object.assign({global: [], local: []}, filters),
+		arr = Object.keys(obj);
 
-	for (let key in obj) {
-		if (!obj.hasOwnProperty(key)) {
-			break;
-		}
-
+	for (let i = 0; i < arr.length; i++) {
 		const
-			filters = obj[key];
+			filters = obj[arr[i]];
 
 		for (let i = 0; i < filters.length; i++) {
 			if (isString(filters[i])) {

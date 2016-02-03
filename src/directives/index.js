@@ -412,7 +412,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return this.error(`the directive "${dirName}" can't be used within the "${dirName}"`);
 		}
 
-		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'private')[dirName]) {
+		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'ignore')[dirName]) {
 			return this.error(`decorators can't be used after ${dirName}`);
 		}
 
@@ -552,12 +552,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			consts = params['@consts'];
 
 		if (consts) {
-			for (let key in consts) {
-				if (!consts.hasOwnProperty(key)) {
-					break;
-				}
+			const
+				arr = Object.keys(consts);
 
-				$consts[this.tplName][key] = consts[key];
+			for (let i = 0; i < arr.length; i++) {
+				$consts[this.tplName][arr[i]] = consts[arr[i]];
 			}
 		}
 

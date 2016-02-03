@@ -28,11 +28,11 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		{structure} = this,
 		{vars} = structure;
 
-	for (let key in vars) {
-		if (!vars.hasOwnProperty(key)) {
-			break;
-		}
+	const
+		arr = Object.keys(vars);
 
+	for (let i = 0; i < arr.length; i++) {
+		const key = arr[i];
 		opt_vars[key] = vars[key];
 		opt_vars[key].inherited = true;
 	}

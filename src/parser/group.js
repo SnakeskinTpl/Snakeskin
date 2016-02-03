@@ -33,15 +33,11 @@ Parser.prototype.getGroup = function (names) {
 
 	for (let i = 0; i < arguments.length; i++) {
 		const
-			group = $dirGroups[arguments[i]];
+			arr = Object.keys($dirGroups[arguments[i]]);
 
-		for (let key in group) {
-			if (!group.hasOwnProperty(key)) {
-				break;
-			}
-
-			if (key !== GROUP) {
-				map[key] = true;
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i] !== GROUP) {
+				map[arr[i]] = true;
 			}
 		}
 	}
