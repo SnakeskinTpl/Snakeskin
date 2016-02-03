@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 	'attr',
 
 	{
-		filters: {global: ['attr', 'html', 'htmlObject'], local: ['undef']},
+		filters: {global: ['attr', 'html'], local: ['undef']},
 		group: ['attr', 'output'],
 		interpolation: true,
 		notEmpty: true,
