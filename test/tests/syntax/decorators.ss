@@ -22,9 +22,7 @@
 - template typograf(params)
 	- block superWrapper(target)
 		- block wrapper()
-			: tp = new Typograf(params)
 			- return new Typograf(params).execute(target.apply(this, arguments))
-
 		- return self.wrapper
 	- return self.superWrapper
 
