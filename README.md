@@ -16,7 +16,7 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 [![Build Status](http://img.shields.io/travis/SnakeskinTpl/Snakeskin.svg?style=flat&branch=master)](https://travis-ci.org/SnakeskinTpl/Snakeskin)
 [![Coverage Status](http://img.shields.io/coveralls/SnakeskinTpl/Snakeskin.svg?style=flat)](https://coveralls.io/r/SnakeskinTpl/Snakeskin?branch=master)
 
-[Demo](http://jsfiddle.net/kobezzza/NAPWB/10/)
+[Demo](http://codepen.io/kobezzza/pen/zrJNXx)
 
 [Documentation](https://github.com/SnakeskinTpl/Snakeskin/wiki)
 
