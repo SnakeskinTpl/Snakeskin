@@ -15,7 +15,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['for', 'cycle'],
+		group: ['for', 'cycle', 'dynamic'],
 		notEmpty: true
 	},
 
@@ -67,7 +67,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['while', 'cycle'],
+		group: ['while', 'cycle', 'dynamic'],
 		notEmpty: true
 	},
 
@@ -97,7 +97,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		endsWith: [Snakeskin.group('while'), 'end'],
-		group: ['do', 'cycle']
+		group: ['do', 'cycle', 'dynamic']
 	},
 
 	function () {

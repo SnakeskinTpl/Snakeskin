@@ -29,7 +29,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['try', 'exception']
+		group: ['try', 'exception', 'dynamic']
 	},
 
 	function () {
@@ -51,7 +51,7 @@ Snakeskin.addDirective(
 	'catch',
 
 	{
-		group: ['catch', 'exception'],
+		group: ['catch', 'exception', 'dynamic'],
 		notEmpty: true,
 		with: Snakeskin.group('try')
 	},

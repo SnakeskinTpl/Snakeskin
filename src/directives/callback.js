@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['callback', 'function'],
+		group: ['callback', 'function', 'dynamic'],
 		shorthands: {'()': 'callback '}
 	},
 
@@ -113,7 +113,7 @@ Snakeskin.addDirective(
 	'final',
 
 	{
-		group: ['final', 'function'],
+		group: ['final', 'function', 'dynamic'],
 		with: Snakeskin.group('Async')
 	},
 

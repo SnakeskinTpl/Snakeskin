@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['forEach', 'iterator', 'function'],
+		group: ['forEach', 'iterator', 'function', 'dynamic'],
 		notEmpty: true
 	},
 
@@ -81,7 +81,7 @@ Snakeskin.addDirective(
 
 	{
 		block: true,
-		group: ['forIn', 'iterator', 'function'],
+		group: ['forIn', 'iterator', 'function', 'dynamic'],
 		notEmpty: true
 	},
 

@@ -82,7 +82,7 @@ Snakeskin.addDirective(
 			const
 				parentTpl = this.parentTplName,
 				start = this.i - this.startTemplateI,
-				block = this.hasParentBlock(this.getGroup('block', 'function', 'async'));
+				block = this.hasParent(this.getGroup('dynamic'));
 
 			let parent;
 			if (parentTpl) {

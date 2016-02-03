@@ -25,7 +25,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		group: ['block', 'template', 'define', 'inherit', 'blockInherit'],
+		group: ['block', 'template', 'define', 'inherit', 'blockInherit', 'dynamic'],
 		logic: true,
 		notEmpty: true
 	},

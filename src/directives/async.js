@@ -17,7 +17,7 @@ import Snakeskin from '../core';
 		{
 			block: true,
 			children: Snakeskin.group('callback'),
-			group: [dir, 'Async', 'async']
+			group: [dir, 'Async', 'async', 'dynamic']
 		},
 
 		function (command, commandLength, type) {
@@ -36,7 +36,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		children: Snakeskin.group('callback'),
-		group: ['when', 'promise', 'async'],
+		group: ['when', 'promise', 'async', 'dynamic'],
 		notEmpty: true
 	},
 
