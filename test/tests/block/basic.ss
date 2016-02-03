@@ -24,15 +24,15 @@ Hello world! Hello world!
 
 Hello world!
 
-[[callable block with parameters]]======================================================================================
+[[callable block with parameter]]=======================================================================================
 
 Hello Kobezzza!
 
-[[callable block with default parameters]]==============================================================================
+[[callable block with default parameter]]===============================================================================
 
 Hello friend!
 
-[[callable block with nullable default parameters]]=====================================================================
+[[callable block with nullable default parameter]]======================================================================
 
 Hello null!
 
@@ -52,9 +52,17 @@ Hello Kobezzza!
 
 4
 
-[[callable block with parameters with filters]]=========================================================================
+[[callable block with parameter with filters]]==========================================================================
 
 Hello world!
+
+[[immediately callable block and recursion]]============================================================================
+
+3 2 1 0
+
+[[immediately callable outer block]]====================================================================================
+
+Hello Kobezzza!
 
 ========================================================================================================================
 
@@ -87,19 +95,19 @@ Hello world!
 - template ['outer block']()
 	+= self.foo()
 
-- template ['callable block with parameters']()
+- template ['callable block with parameter']()
 	- block foo(name)
 		Hello {name}!
 
 	+= self.foo('Kobezzza')
 
-- template ['callable block with default parameters']()
+- template ['callable block with default parameter']()
 	- block foo(name = 'friend')
 		Hello {name}!
 
 	+= self.foo(null)
 
-- template ['callable block with nullable default parameters']()
+- template ['callable block with nullable default parameter']()
 	- block foo(name? = 'friend')
 		Hello {name}!
 
@@ -135,8 +143,19 @@ Hello world!
 
 	+= self.foo(undefined, 3)
 
-- template ['callable block with parameters with filters']()
+- template ['callable block with parameter with filters']()
 	- block foo((@params?|parse) = ({name: 'world'}|json))
 		Hello {@name}!
 
 	+= self.foo()
+
+- template ['immediately callable block and recursion']()
+	- block foo(i) => 3
+		{i}
+		- if i
+			+= &(--i)
+
+- block ['immediately callable outer block']->foo(name) => 'Kobezzza'
+	Hello {name}!
+
+- template ['immediately callable outer block']()
