@@ -9,6 +9,7 @@
  */
 
 import Parser from './constructor';
+import { any } from '../helpers/gcc';
 import { $templates, $logicDirs } from '../consts/cache';
 
 /**
@@ -29,7 +30,7 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 		{vars} = structure;
 
 	const
-		arr = Object.keys(vars);
+		arr = Object.keys(any(vars));
 
 	for (let i = 0; i < arr.length; i++) {
 		const key = arr[i];
