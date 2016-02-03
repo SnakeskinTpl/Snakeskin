@@ -414,7 +414,7 @@ export default class Parser {
 				}
 
 				if (typeof val === 'string' || Array.isArray(val)) {
-					return val;
+					return val.length;
 				}
 
 				return 1;
