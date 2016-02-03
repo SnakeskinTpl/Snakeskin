@@ -2,7 +2,7 @@
   "name": "Snakeskin",
   "description": "Awesome JavaScript template engine.",
   "main": "dist/snakeskin.min.js",
-  "version": "6.6.15",
+  "version": "7.0.0",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
   "keywords": [
     "templates",
@@ -18,13 +18,20 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "/lib",
+    "/spec",
+    "/predefs",
+    "/package.json",
+    "/gulpfile.js",
+    "/externs.js",
+    "/.editorconfig",
+    "/.jscsrc",
+    "/.yaspellerrc",
+    "/.travis.yml",
+    "/.gitignore",
+    "/.gitattributes",
+    "/.npmignore"
   ],
-  "moduleType": [],
   "devDependencies": {
     "closure-compiler": "http://dl.google.com/closure-compiler/compiler-latest.zip"
   }

@@ -3,6 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Hello world</title>
+		<script src="../node_modules/js-beautify/js/lib/beautify.js"></script>
+		<script src="../node_modules/escaper/dist/escaper.min.js"></script>
+		<script src="../node_modules/esprima/esprima.js"></script>
 		<script src="../dist/snakeskin.min.js"></script>
 	</head>
 
@@ -10,14 +13,17 @@
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			{template helloWorld(name = 'world')}
-				<h1>Hello {name}!</h1>
-			{/template}
+			- namespace demo
+			- template helloWorld(name = 'world')
+				< .hello
+					Hello {name}!
 		</script>
 
 		<script>
-			Snakeskin.compile(document.getElementById('templates'));
-			document.getElementById('test').innerHTML = helloWorld();
+			var d = {};
+			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
+			// console.log(d.code);
+			document.getElementById('test').innerHTML = demo.helloWorld();
 		</script>
 	</body>
 </html>

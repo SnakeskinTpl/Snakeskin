@@ -1,0 +1,36 @@
+{
+  "compilerPath": "./bower_components/closure-compiler/compiler.jar",
+  "continueWithWarnings": true,
+  "compilerFlags": {
+    "compilation_level": "ADVANCED",
+    "use_types_for_optimization": null,
+    "language_in": "ES5",
+    "language_out": "ES5",
+    "externs": [
+      "./predefs/build/index.js"
+    ],
+    "jscomp_off": [
+      "nonStandardJsDocs"
+    ],
+    "jscomp_warning": [
+      "invalidCasts",
+      "accessControls",
+      "checkDebuggerStatement",
+      "checkRegExp",
+      "checkTypes",
+      "const",
+      "constantProperty",
+      "deprecated",
+      "externsValidation",
+      "missingProperties",
+      "visibility",
+      "missingReturn",
+      "duplicate",
+      "internetExplorerChecks",
+      "suspiciousCode",
+      "uselessCode",
+      "misplacedTypeAnnotation",
+      "typeInvalidation"
+    ]
+  }
+}

@@ -7,7 +7,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[LICENSE]
+[{LICENSE,.gitattributes,.gitignore,.npmignore}]
 indent_style = space
 
 [*.{json,yml,md,jscsrc,yaspellerrc,bowerrc,babelrc}]

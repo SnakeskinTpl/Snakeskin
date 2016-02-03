@@ -2,7 +2,9 @@
   "name": "snakeskin",
   "description": "Awesome JavaScript template engine.",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
-  "version": "6.6.15",
+  "main": "snakeskin.js",
+  "version": "7.0.0",
+  "license": "MIT",
   "author": {
     "name": "kobezzza",
     "email": "kobezzza@mail.ru",
@@ -15,8 +17,6 @@
   "bugs": {
     "url": "https://github.com/SnakeskinTpl/Snakeskin/issues"
   },
-  "license": "MIT",
-  "main": "snakeskin.js",
   "bin": {
     "snakeskin": "bin/snakeskin.js"
   },
@@ -30,38 +30,52 @@
     "haml"
   ],
   "scripts": {
-    "test": "node test",
-    "test-travis": "gulp test",
-    "bower": "node node_modules/bower/bin/bower install",
-    "yaspeller": "node node_modules/yaspeller/bin/yaspeller ./"
+    "test": "bower install && node test",
+    "full-test": "bower install && istanbul cover test/index.dev.js && yaspeller ./"
   },
   "dependencies": {
     "commander": "^2.5.0",
-    "glob": "^4.0.6",
+    "core-js": "^2.0.3",
+    "esprima": "^2.1.0",
+    "exists-sync": "0.0.3",
+    "glob": "^6.0.0",
     "js-beautify": "^1.5.4",
+    "mkdirp": "^0.5.1",
     "monocle": "^1.1.51"
   },
   "devDependencies": {
-    "async": "^0.9.0",
+    "async": "^1.5.0",
+    "babel-core": "^6.3.15",
+    "babel-preset-es2015-rollup": "^1.0.0",
     "bower": "^1.3.12",
     "closurecompiler-externs": "^1.0.4",
-    "collection.js": "^5.3.3",
+    "collection.js": "^5.5.5",
     "coveralls": "^2.11.2",
-    "escaper": "2.2.5",
-    "esprima": "^1.2.2",
+    "del": "^2.2.0",
+    "escaper": "^2.4.17",
+    "glob": "^6.0.1",
     "gulp": "^3.8.9",
-    "gulp-6to5": "^3.0.0",
-    "gulp-bump": "^0.1.11",
-    "gulp-closure-compiler": "^0.2.7",
+    "gulp-bump": "^1.0.0",
+    "gulp-cached": "^1.0.4",
+    "gulp-closure-compiler": "^0.4.0",
     "gulp-download": "0.0.1",
+    "gulp-eol": "^0.1.1",
     "gulp-header": "^1.2.2",
-    "gulp-istanbul": "^0.8.1",
     "gulp-jasmine": "^2.0.0",
-    "gulp-monic": "^1.0.2",
+    "gulp-monic": "^2.0.1",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.0",
+    "gulp-rollup": "^1.4.0",
+    "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.11.0",
-    "jscs": "^1.12.0",
-    "yaspeller": "^1.1.0"
+    "istanbul": "^0.4.2",
+    "jscs": "^2.6.0",
+    "mkdirp": "^0.5.1",
+    "monic": "^2.3.9",
+    "rollup-plugin-babel": "^2.2.0",
+    "sugar": "^1.4.1",
+    "through2": "^2.0.0",
+    "typograf": "^4.3.0",
+    "yaspeller": "^2.0.0"
   }
 }
