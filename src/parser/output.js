@@ -12,6 +12,7 @@
  */
 
 import esprima from '../deps/esprima';
+import Snakeskin from '../core';
 import Parser from './constructor';
 import { isFunction } from '../helpers/types';
 import { concatProp } from '../helpers/literals';

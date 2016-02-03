@@ -899,7 +899,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		// Server compilation
 		if (IS_NODE) {
 			if (ctx !== NULL) {
-				new Function('module', 'exports', 'require', '__dirname', '__filename', parser.result)(
+				new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(
+					Snakeskin,
+
 					{
 						children: [],
 						exports: ctx,
@@ -919,7 +921,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 		// CommonJS compiling in a browser
 		} else if (ctx !== NULL) {
-			new Function('module', 'exports', 'global', parser.result)({exports: ctx}, ctx, GLOBAL);
+			new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, {exports: ctx}, ctx, GLOBAL);
 
 		// Compiling in a browser
 		} else {
