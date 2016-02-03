@@ -9,7 +9,7 @@
  */
 
 const Snakeskin = {
-	VERSION: [7, 0, 0, 'beta1']
+	VERSION: [7, 0, 0, 'beta2']
 };
 
 export default
