@@ -169,7 +169,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				nextSpace = !chr || rgxp.ws.test(chr);
 
 				let dir;
-				if (struct && struct.adv) {
+				if (struct && struct.adv || el === alb) {
 					dir = el === alb && next !== lb && nextSpace;
 
 				} else {
@@ -291,8 +291,8 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 							parts[i] = this.pasteDangerBlocks(parts[i]);
 						}
 
-						if (obj.trim.left) {
-							parts[1] = `${s}__&+__${e}${parts[1] || ''}`;
+						if (obj.trim.left && !parts[1]) {
+							parts[1] = `${s}__&+__${e}`;
 						}
 					}
 
