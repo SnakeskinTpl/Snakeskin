@@ -730,7 +730,7 @@ Parser.prototype.out = function (command, opt_params) {
 			esprimaRes = parse(res);
 
 		if (esprimaRes !== true) {
-			this.error(esprimaRes);
+			this.error(String(esprimaRes));
 			return '';
 		}
 	}
