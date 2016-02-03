@@ -387,7 +387,7 @@ Parser.prototype.out = function (command, opt_params) {
 
 				if (unary) {
 					tmpFinalWord = finalWord.split(' ');
-					finalWord = tmpFinalWord[tmpFinalWord.length - 1];
+					finalWord = tmpFinalWord.slice(1).join(' ');
 				}
 
 				// If true, then a word is:
@@ -453,8 +453,7 @@ Parser.prototype.out = function (command, opt_params) {
 				}
 
 				if (unary) {
-					tmpFinalWord[tmpFinalWord.length - 1] = vRes;
-					vRes = tmpFinalWord.join(' ');
+					vRes = `${tmpFinalWord[0]} ${vRes}`;
 				}
 
 				if (declBlackWords[finalWord]) {
