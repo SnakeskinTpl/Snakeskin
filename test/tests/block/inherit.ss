@@ -8,19 +8,25 @@
 
 [[parent]]==============================================================================================================
 
-1
+1 null Kobezzza
 
 [[child]]===============================================================================================================
 
-23
+1 2 Over Hello world!
 
 ========================================================================================================================
 
-- namespace inherit[%fileName%]
+- namespace block[%fileName%]
+
+- block parent->foo(a = 1, b? = 2, @c = {name: 'Kobezzza'}) => null, null
+	{a}
+	{b}
+	{@name}
 
 - template parent()
-	- foo = 1?
+
+- block child->foo(b!, c = {name: 'Over'})
+	- super
+	Hello world!
 
 - template child() extends @parent
-	- bar = 3?
-	- foo = 2
