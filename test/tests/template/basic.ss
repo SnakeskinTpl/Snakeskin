@@ -10,15 +10,15 @@
 
 Hello world!
 
-[[template with parameters ; 'Kobezzza']]===============================================================================
+[[template with parameter ; 'Kobezzza']]===============================================================================
 
 Hello Kobezzza!
 
-[[template with default parameters]]====================================================================================
+[[template with default parameter]]====================================================================================
 
 Hello friend!
 
-[[template with nullable default parameters ; null]]====================================================================
+[[template with nullable default parameter ; null]]====================================================================
 
 Hello null!
 
@@ -38,7 +38,7 @@ Hello null!
 
 4
 
-[[template with parameters with filters]]===============================================================================
+[[template with parameter with filters]]===============================================================================
 
 Hello world!
 
@@ -49,13 +49,13 @@ Hello world!
 - template helloWorld()
 	Hello world!
 
-- template ['template with parameters'](name)
+- template ['template with parameter'](name)
 	Hello {name}!
 
-- template ['template with default parameters'](name = 'friend')
+- template ['template with default parameter'](name = 'friend')
 	Hello {name}!
 
-- template ['template with nullable default parameters'](name? = 'friend')
+- template ['template with nullable default parameter'](name? = 'friend')
 	Hello {name}!
 
 - template ['template with parameter binding'](@params)
@@ -70,5 +70,5 @@ Hello world!
 - template ['template with multiple parameters'](a? = 1, b = 2)
 	{a + b}
 
-- template ['template with parameters with filters']((@params?|parse) = ({hello: 'world'}|json))
+- template ['template with parameter with filters']((@params?|parse) = ({hello: 'world'}|json))
 	Hello {@hello}!
