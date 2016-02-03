@@ -26,10 +26,6 @@ world! 3 3 length
 
 <div class="foo"></div>
 
-[[mixed target]]========================================================================================================
-
-[object Object]<div class="bar"></div>
-
 ========================================================================================================================
 
 - namespace wrappers[%fileName%]
@@ -91,12 +87,3 @@ world! 3 3 length
 				< .foo
 
 	{foo.foo[0]}
-
-- template ['mixed target']()
-	- target {} as foo
-		* foo
-			- target []
-				< .foo
-			< .bar
-
-	{foo.foo}

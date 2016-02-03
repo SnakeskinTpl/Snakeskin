@@ -54,7 +54,7 @@ exports.run = function (params) {
 				relativeSrc = path.relative(process.cwd(), file),
 				nms = [cat, path.basename(file, '.ss')];
 
-			console.log('\n###### ' + nms.join('.') + '\n');
+			console.log('\n###### ' + nms.join('.') + ' :: ' + options +  '\n');
 
 			var
 				testRgxp = /^\[\[(.*)]]===+$/gm,
@@ -81,10 +81,7 @@ exports.run = function (params) {
 				start = Date.now(),
 				res = snakeskin.compile(txt[1], params, {file: file});
 
-			if (!prfx) {
-				log(relativeSrc + ' ' + (Date.now() - start) + 'ms');
-			}
-
+			log(relativeSrc + ' ' + (Date.now() - start) + 'ms');
 			fs.writeFileSync(chunkSrc, res);
 
 			var
