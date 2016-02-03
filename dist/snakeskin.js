@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 02 Feb 2016 22:41:59 GMT
+ * Date: 'Wed, 03 Feb 2016 10:31:12 GMT
  */
 
 (function (global, factory) {
@@ -2263,11 +2263,10 @@
     	var structure = this.structure;
     	var vars = structure.vars;
 
-    	for (var key in vars) {
-    		if (!vars.hasOwnProperty(key)) {
-    			break;
-    		}
+    	var arr = Object.keys(vars);
 
+    	for (var i = 0; i < arr.length; i++) {
+    		var key = arr[i];
     		opt_vars[key] = vars[key];
     		opt_vars[key].inherited = true;
     	}
@@ -3043,7 +3042,7 @@
     			return this.error('the directive "' + dirName + '" can\'t be used within the "' + dirName + '"');
     		}
 
-    		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'private')[dirName]) {
+    		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'ignore')[dirName]) {
     			return this.error('decorators can\'t be used after ' + dirName);
     		}
 
@@ -3163,12 +3162,10 @@
     		var consts = params['@consts'];
 
     		if (consts) {
-    			for (var key in consts) {
-    				if (!consts.hasOwnProperty(key)) {
-    					break;
-    				}
+    			var arr = Object.keys(consts);
 
-    				$consts[this.tplName][key] = consts[key];
+    			for (var i = 0; i < arr.length; i++) {
+    				$consts[this.tplName][arr[i]] = consts[arr[i]];
     			}
     		}
 
@@ -3214,15 +3211,11 @@
     	var map = {};
 
     	for (var i = 0; i < arguments.length; i++) {
-    		var group = $dirGroups[arguments[i]];
+    		var arr = Object.keys($dirGroups[arguments[i]]);
 
-    		for (var key in group) {
-    			if (!group.hasOwnProperty(key)) {
-    				break;
-    			}
-
-    			if (key !== GROUP) {
-    				map[key] = true;
+    		for (var _i = 0; _i < arr.length; _i++) {
+    			if (arr[_i] !== GROUP) {
+    				map[arr[_i]] = true;
     			}
     		}
     	}
@@ -4933,12 +4926,10 @@
       * @return {string}
       */
     	var removeDefFilters = function removeDefFilters(str, map) {
-    		for (var key in map) {
-    			if (!map.hasOwnProperty(key)) {
-    				break;
-    			}
+    		var arr = Object.keys(map);
 
-    			str = str.replace(getRgxp('\\|' + key + ' .*?(?=#;)', 'g'), '');
+    		for (var i = 0; i < arr.length; i++) {
+    			str = str.replace(getRgxp('\\|' + arr[i] + ' .*?(?=#;)', 'g'), '');
     		}
 
     		return str;
@@ -4954,14 +4945,11 @@
     		    prfx = [isLocalFilter ? '(' : '', isLocalFilter ? ')' : ''];
 
     		for (var i = 0; i < filters.length; i++) {
-    			var filter = filters[i];
+    			var filter = filters[i],
+    			    arr = Object.keys(filter);
 
-    			for (var key in filter) {
-    				if (!filter.hasOwnProperty(key)) {
-    					break;
-    				}
-
-    				str = '' + prfx[0] + str + '|' + key + ' ' + joinFilterParams(filter[key]) + '#;' + prfx[1];
+    			for (var _i = 0; _i < arr.length; _i++) {
+    				str = '' + prfx[0] + str + '|' + arr[_i] + ' ' + joinFilterParams(filter[arr[_i]]) + '#;' + prfx[1];
     			}
     		}
 
@@ -5012,7 +5000,7 @@
 
     				if (unary) {
     					tmpFinalWord = finalWord.split(' ');
-    					finalWord = tmpFinalWord[tmpFinalWord.length - 1];
+    					finalWord = tmpFinalWord.slice(1).join(' ');
     				}
 
     				// If true, then a word is:
@@ -5059,8 +5047,7 @@
     				}
 
     				if (unary) {
-    					tmpFinalWord[tmpFinalWord.length - 1] = vRes;
-    					vRes = tmpFinalWord.join(' ');
+    					vRes = tmpFinalWord[0] + ' ' + vRes;
     				}
 
     				if (declBlackWords[finalWord]) {
@@ -5126,15 +5113,15 @@
 
     			var isGlobalFilter = i === end && el != ')';
 
-    			for (var _i = 0; _i < filters.length; _i++) {
-    				var _el = filters[_i];
+    			for (var _i2 = 0; _i2 < filters.length; _i2++) {
+    				var _el = filters[_i2];
 
     				if (_el[0] !== '!') {
     					continue;
     				}
 
-    				filters.splice(_i, 1);
-    				_i--;
+    				filters.splice(_i2, 1);
+    				_i2--;
 
     				var filter = _el.slice(1);
 
@@ -5146,8 +5133,8 @@
     			}
 
     			var tmp = fBody.trim() || 'undefined';
-    			for (var _i2 = 0; _i2 < filters.length; _i2++) {
-    				var params = filters[_i2].split(' '),
+    			for (var _i3 = 0; _i3 < filters.length; _i3++) {
+    				var params = filters[_i3].split(' '),
     				    input = params.slice(1).join(' ').trim(),
     				    current = params.shift().split('.');
 
@@ -5169,14 +5156,12 @@
     				}
 
     				if (Filters && Filters['ssFilterParams']) {
-    					var p = Filters['ssFilterParams'];
+    					var p = Filters['ssFilterParams'],
+    					    arr = Object.keys(p);
 
-    					for (var key in p) {
-    						if (!p.hasOwnProperty(key)) {
-    							break;
-    						}
-
-    						var _el2 = p[key];
+    					for (var _i4 = 0; _i4 < arr.length; _i4++) {
+    						var key = arr[_i4],
+    						    _el2 = p[key];
 
     						switch (key) {
     							case 'bind':
@@ -5206,8 +5191,8 @@
     				}
 
     				var filter = '';
-    				for (var _i3 = 0; _i3 < current.length; _i3++) {
-    					filter += '[\'' + current[_i3] + '\']';
+    				for (var _i5 = 0; _i5 < current.length; _i5++) {
+    					filter += '[\'' + current[_i5] + '\']';
     				}
 
     				tmp = '(' + cacheLink + ' = __FILTERS__' + filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + ')';
@@ -6454,18 +6439,15 @@
      * @return {!Array}
      */
     Parser.prototype.appendDefaultFilters = function (filters) {
-    	var obj = Object.assign({ global: [], local: [] }, filters);
+    	var obj = Object.assign({ global: [], local: [] }, filters),
+    	    arr = Object.keys(obj);
 
-    	for (var key in obj) {
-    		if (!obj.hasOwnProperty(key)) {
-    			break;
-    		}
+    	for (var i = 0; i < arr.length; i++) {
+    		var _filters = obj[arr[i]];
 
-    		var _filters = obj[key];
-
-    		for (var i = 0; i < _filters.length; i++) {
-    			if (isString(_filters[i])) {
-    				_filters[i] = babelHelpers.defineProperty({}, _filters[i], []);
+    		for (var _i = 0; _i < _filters.length; _i++) {
+    			if (isString(_filters[_i])) {
+    				_filters[_i] = babelHelpers.defineProperty({}, _filters[_i], []);
     			}
     		}
     	}
@@ -7844,7 +7826,7 @@
 
     Snakeskin$1.addDirective('try', {
     	block: true,
-    	group: ['try', 'exception']
+    	group: ['try', 'exception', 'dynamic']
     }, function () {
     	this.append('try {');
     }, function () {
@@ -7856,7 +7838,7 @@
     });
 
     Snakeskin$1.addDirective('catch', {
-    	group: ['catch', 'exception'],
+    	group: ['catch', 'exception', 'dynamic'],
     	notEmpty: true,
     	with: Snakeskin$1.group('try')
     }, function (command) {
@@ -8062,7 +8044,7 @@
 
     		var parentTpl = this.parentTplName,
     		    start = this.i - this.startTemplateI,
-    		    block = this.hasParentBlock(this.getGroup('block', 'function', 'async'));
+    		    block = this.hasParent(this.getGroup('dynamic'));
 
     		var parent = undefined;
     		if (parentTpl) {
@@ -8667,7 +8649,7 @@
 
     Snakeskin$1.addDirective('for', {
     	block: true,
-    	group: ['for', 'cycle'],
+    	group: ['for', 'cycle', 'dynamic'],
     	notEmpty: true
     }, function (command) {
     	// for var i = 0; i < 3; i++
@@ -8705,7 +8687,7 @@
     Snakeskin$1.addDirective('while', {
     	block: true,
     	deferInit: true,
-    	group: ['while', 'cycle'],
+    	group: ['while', 'cycle', 'dynamic'],
     	notEmpty: true
     }, function (command) {
     	// do { ... } while ( ... )
@@ -8726,7 +8708,7 @@
     Snakeskin$1.addDirective('do', {
     	block: true,
     	endsWith: [Snakeskin$1.group('while'), 'end'],
-    	group: ['do', 'cycle']
+    	group: ['do', 'cycle', 'dynamic']
     }, function () {
     	this.append('do {');
     }, function () {
@@ -8799,7 +8781,7 @@
     Snakeskin$1.addDirective('forEach', {
     	block: true,
     	deferInit: true,
-    	group: ['forEach', 'iterator', 'function'],
+    	group: ['forEach', 'iterator', 'function', 'dynamic'],
     	notEmpty: true
     }, function (command) {
     	command = command.replace(/=>>/g, '=>=>');
@@ -8844,7 +8826,7 @@
 
     Snakeskin$1.addDirective('forIn', {
     	block: true,
-    	group: ['forIn', 'iterator', 'function'],
+    	group: ['forIn', 'iterator', 'function', 'dynamic'],
     	notEmpty: true
     }, function (command) {
     	var parts = command.split(/\s*=>\s*/);
@@ -8865,7 +8847,7 @@
 
     Snakeskin$1.addDirective('callback', {
     	block: true,
-    	group: ['callback', 'function'],
+    	group: ['callback', 'function', 'dynamic'],
     	shorthands: { '()': 'callback ' }
     }, function (command) {
     	var parts = command.split('=>'),
@@ -8930,7 +8912,7 @@
     });
 
     Snakeskin$1.addDirective('final', {
-    	group: ['final', 'function'],
+    	group: ['final', 'function', 'dynamic'],
     	with: Snakeskin$1.group('Async')
     }, function (command) {
     	var parts = command.split('=>');
@@ -8950,7 +8932,7 @@
     	Snakeskin$1.addDirective(dir, {
     		block: true,
     		children: Snakeskin$1.group('callback'),
-    		group: [dir, 'Async', 'async']
+    		group: [dir, 'Async', 'async', 'dynamic']
     	}, function (command, commandLength, type) {
     		this.append(this.out('async', { unsafe: true }) + '.' + type + '([');
     	}, function () {
@@ -8961,7 +8943,7 @@
     Snakeskin$1.addDirective('when', {
     	block: true,
     	children: Snakeskin$1.group('callback'),
-    	group: ['when', 'promise', 'async'],
+    	group: ['when', 'promise', 'async', 'dynamic'],
     	notEmpty: true
     }, function (command) {
     	this.append(this.out(command, { unsafe: true }) + '.then(');
@@ -9408,7 +9390,7 @@
     Snakeskin$1.addDirective('block', {
     	block: true,
     	deferInit: true,
-    	group: ['block', 'template', 'define', 'inherit', 'blockInherit'],
+    	group: ['block', 'template', 'define', 'inherit', 'blockInherit', 'dynamic'],
     	logic: true,
     	notEmpty: true
     }, function (command, commandLength) {
