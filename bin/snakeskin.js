@@ -205,7 +205,7 @@ function action(data, file) {
 
 	if (res !== false) {
 		if (execTpl) {
-			var tpl = Snakeskin.returnMainTpl(tpls, fileName, mainTpl);
+			var tpl = Snakeskin.getMainTpl(tpls, fileName, mainTpl);
 
 			if (!tpl) {
 				console.log(new Date().toString());

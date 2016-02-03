@@ -199,7 +199,7 @@ exports.compileFile = function (src, opt_params) {
  * @param {?string=} [opt_tplName] - name of the main template
  * @return {Function}
  */
-exports.returnMainTpl = function (tpls, opt_src, opt_tplName) {
+exports.getMainTpl = function (tpls, opt_src, opt_tplName) {
 	var
 		tpl;
 
@@ -247,7 +247,7 @@ exports.execFile = function (src, opt_params, opt_tplName) {
 		return null;
 	}
 
-	return exports.returnMainTpl(tpls, src, opt_tplName);
+	return exports.getMainTpl(tpls, src, opt_tplName);
 };
 
 /**
@@ -268,5 +268,5 @@ exports.exec = function (txt, opt_params, opt_tplName) {
 	opt_params.context = tpls;
 
 	exports.compile(txt, opt_params);
-	return exports.returnMainTpl(tpls, null, opt_tplName);
+	return exports.getMainTpl(tpls, null, opt_tplName);
 };
