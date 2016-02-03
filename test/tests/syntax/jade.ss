@@ -10,6 +10,10 @@
 
 {"foo":"bar","baz":"foo"} {"foo":"bar","baz":"foo"}
 
+[[inline]]==============================================================================================================
+
+<div class="foo">Hello Kobezzza! Hello world!</div>
+
 [[escaping]]============================================================================================================
 
 < .foo \< .bar
@@ -41,6 +45,11 @@
 
 	{obj1|json|!html}
 	{obj2|json|!html}
+
+- template inline()
+	: name = 'Kobezzza'
+	< .foo :: Hello {name}!
+		Hello world!
 
 - template escaping()
 	|< .foo

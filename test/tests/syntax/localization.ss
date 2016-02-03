@@ -50,12 +50,6 @@ Hello world!
 	- `Hello
 	heaven!`
 
-- template multiline()
-	`Hello
-	world!`
-	- `Hello
-	heaven!`
-
 - template ['static en']() @= language './langs/en.json'
 	`Hello` `world`!
 
