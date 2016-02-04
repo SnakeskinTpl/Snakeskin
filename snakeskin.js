@@ -211,7 +211,7 @@ exports.getMainTpl = function (tpls, opt_src, opt_tplName) {
 	}
 
 	if (opt_tplName) {
-		tpl = eval('tpls' + opt_tplName);
+		tpl = eval('tpls' + (opt_tplName[0] !== '[' ? '.' + opt_tplName : opt_tplName));
 
 		if (tpl && typeof tpls !== 'function') {
 			tpls = tpl
