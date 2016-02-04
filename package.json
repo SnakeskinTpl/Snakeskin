@@ -73,6 +73,7 @@
     "mkdirp": "^0.5.1",
     "monic": "^2.3.9",
     "rollup-plugin-babel": "^2.2.0",
+    "std.ss": "^1.0.0",
     "sugar": "^1.4.1",
     "through2": "^2.0.0",
     "typograf": "^4.3.0",
