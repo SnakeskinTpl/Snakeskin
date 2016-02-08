@@ -8,12 +8,12 @@
 
 /**
  * @param {...string} names
- * @return {!Object.<string, boolean>}
+ * @return {!Object<string, boolean>}
  */
 $$SnakeskinParser.prototype.getGroup = function (names) {};
 
 /**
  * @param {...string} names
- * @return {!Array.<string>}
+ * @return {!Array<string>}
  */
 $$SnakeskinParser.prototype.getGroupList = function (names) {};

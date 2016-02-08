@@ -36,7 +36,7 @@ Snakeskin.group = function (name) {};
  *   selfInclude: (?boolean|undefined),
  *   interpolation: (?boolean|undefined),
  *   selfThis: (?boolean|undefined),
- *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
+ *   shorthands: (Object<string, (string|function(string): string)>|undefined)
  * }}
  */
 var $$SnakeskinAddDirectiveParams;

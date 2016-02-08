@@ -164,7 +164,7 @@ $$SnakeskinParser.prototype.selfThis;
 /**  @type {boolean} */
 $$SnakeskinParser.prototype.canWrite;
 
-/** @type {!Array.<string>} */
+/** @type {!Array<string>} */
 $$SnakeskinParser.prototype.decorators;
 
 /** @type {!Object} */
