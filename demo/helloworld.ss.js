@@ -1,4 +1,4 @@
-/* Snakeskin v7.0.0, key <["umd","tpls",null,false,"\\n",false,null,"stringConcat",true,null,true,"i18n",null,["{{","}}"],"bem",{"global":["html","undef"],"local":["undef"]},true]>, label <1454444946116>, includes <>, generated at <1454447473233>.
+/* Snakeskin v7.0.0.beta6, key <["umd","tpls",null,false,"\\n",false,null,"stringConcat",true,null,true,"i18n",null,["{{","}}"],"bem",{"global":["html","undef"],"local":["undef"]},true]>, label <1454517555328>, includes <>, generated at <1454943204638>.
    This code is generated automatically, don't alter it. */
 (function(global, factory) {
     if (typeof exports === 'object' && typeof module !== 'undefined') {
@@ -21,10 +21,18 @@
         if (val[0] instanceof Snakeskin.Node) {
             return val[0].length();
         }
-        if (typeof val === 'string' || {}.toString.call(val) === '[object Array]') {
-            return val;
+        if (typeof val === 'string' || Array.isArray(val)) {
+            return val.length;
         }
         return 1;
+    }
+
+    function __JOIN__(arr) {
+        var str = '';
+        for (var i = 0; i < arr.length; i++) {
+            str += arr[i];
+        }
+        return str;
     }
 
     function __ESCAPE_D_Q__(str) {
@@ -55,7 +63,7 @@
     Unsafe.prototype.toString = function() {
         return this.value;
     };
-    __LOCAL__.$__0_0_420d2 = undefined; /* Snakeskin template: demo.helloWorld; name  */
+    __LOCAL__.$__0_0_cd0c6 = undefined; /* Snakeskin template: demo.helloWorld; name  */
     if (exports.demo == null) {
         exports.demo = {};
     }
@@ -114,16 +122,18 @@
             }
         }
         __RESULT__ += 'Hello ';
-        __RESULT__ += __FILTERS__['htmlObject']((__LOCAL__.$__0_0_420d2 = __FILTERS__['html'].call(this, (__LOCAL__.$__0_0_420d2 = __FILTERS__['attr'].call(this, ((__LOCAL__.$__0_0_420d2 = __FILTERS__['undef'](name))), 'undefined', __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE, FALSE)), Unsafe, __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE)));
+        __RESULT__ += __FILTERS__['htmlObject']((__LOCAL__.$__0_0_cd0c6 = __FILTERS__['html'].call(this, (__LOCAL__.$__0_0_cd0c6 = __FILTERS__['attr'].call(this, ((__LOCAL__.$__0_0_cd0c6 = __FILTERS__['undef'](name))), 'undefined', __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE, FALSE)), Unsafe, __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE)));
         __RESULT__ += '!';
         if (____TAG___tag_254 !== '?') {
-            if (__INLINE_TAGS__[____TAG___tag_254] && __INLINE_TAGS__[____TAG___tag_254] !== true) {
-                var ____CALL_TMP___tag_305 = __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
-                __RESULT__ = ____CALL_CACHE___tag_254;
-                if (__INLINE_TAGS__[____TAG___tag_254] in ____ATTR_CACHE___tag_254 === false) {
-                    __RESULT__ += ' ' + __INLINE_TAGS__[____TAG___tag_254] + '="' + __FILTERS__['htmlObject']((__LOCAL__.$__0_0_420d2 = __FILTERS__['html'].call(this, (__LOCAL__.$__0_0_420d2 = __FILTERS__['attr'].call(this, ((__LOCAL__.$__0_0_420d2 = __FILTERS__['undef'](____CALL_TMP___tag_305))), 'undefined', __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE, FALSE)), Unsafe, __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE))) + '"';
+            if (__INLINE_TAGS__[____TAG___tag_254]) {
+                if (__INLINE_TAGS__[____TAG___tag_254] !== true) {
+                    var ____CALL_TMP___tag_305 = __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
+                    __RESULT__ = ____CALL_CACHE___tag_254;
+                    if (__INLINE_TAGS__[____TAG___tag_254] in ____ATTR_CACHE___tag_254 === false) {
+                        __RESULT__ += ' ' + __INLINE_TAGS__[____TAG___tag_254] + '="' + __FILTERS__['htmlObject']((__LOCAL__.$__0_0_cd0c6 = __FILTERS__['html'].call(this, (__LOCAL__.$__0_0_cd0c6 = __FILTERS__['attr'].call(this, ((__LOCAL__.$__0_0_cd0c6 = __FILTERS__['undef'](____CALL_TMP___tag_305))), 'undefined', __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE, FALSE)), Unsafe, __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE))) + '"';
+                    }
+                    __RESULT__ += '>';
                 }
-                __RESULT__ += '>';
             } else if (true) {
                 __RESULT__ += '</' + ____TAG___tag_254 + '>';
             }
