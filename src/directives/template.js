@@ -61,26 +61,6 @@ import {
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info.line;
 
-			let parentTplName;
-			if (/\)\s+extends\s+/.test(command)) {
-				try {
-					this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
-					parentTplName = this.parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
-					this.scope.pop();
-
-				} catch (ignore) {
-					return this.error(`invalid template name "${this.name}" for inheritance`);
-				}
-
-				if ($cache[parentTplName] == null) {
-					if (!this.renderAs || this.renderAs === 'template') {
-						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
-					}
-
-					parentTplName = this.parentTplName = undefined;
-				}
-			}
-
 			let
 				tplName = this.replaceFileNamePatterns(this.getFnName(command)),
 				prfx = '',
@@ -101,56 +81,20 @@ import {
 				$write[tplName] = this.name === 'template';
 			};
 
-			setTplName();
-			$output[tplName] = {};
-
 			const
-				baseParams = {},
-				flags = command.split('@=').slice(1);
+				flags = command.split(/\s+@=\s+/).slice(1);
 
-			if (!parentTplName) {
-				const
-					obj = this.params[this.params.length - 1];
-
-				for (let key in obj) {
-					if (!obj.hasOwnProperty(key)) {
-						break;
-					}
-
-					const
-						el = obj[key];
-
-					if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
-						baseParams[key] = el;
-					}
-				}
-			}
-
-			if (parentTplName && !flags.length) {
-				flags.push('@skip true');
-			}
-
+			let {renderAs} = this;
 			for (let i = 0; i < flags.length; i++) {
-				const el = flags[i].trim();
-				delete baseParams[el.split(' ')[0]];
-				Snakeskin.Directives['__set__'].call(this, el);
-			}
+				const
+					[flag, value] = flags[i].split(/\s+/);
 
-			for (let key in baseParams) {
-				if (!baseParams.hasOwnProperty(key)) {
-					break;
+				if (flag === 'renderAs') {
+					renderAs = this.pasteDangerBlocks(value);
 				}
-
-				const el = baseParams[key];
-				Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
 			}
 
-			this.name = type;
-			this.startDir(
-				this.renderAs && templateRank[this.renderAs] < templateRank[type] ?
-					this.renderAs : null
-			);
-
+			this.startDir(templateRank[renderAs] < templateRank[type] ? renderAs : type);
 			setTplName();
 
 			const
@@ -259,6 +203,26 @@ import {
 				parent: null
 			};
 
+			let parentTplName;
+			if (/\)\s+extends\s+/.test(command)) {
+				try {
+					this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
+					parentTplName = this.parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+					this.scope.pop();
+
+				} catch (ignore) {
+					return this.error(`invalid template name "${this.name}" for inheritance`);
+				}
+
+				if ($cache[parentTplName] == null) {
+					if (!this.renderAs || this.renderAs === 'template') {
+						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
+					}
+
+					parentTplName = this.parentTplName = undefined;
+				}
+			}
+
 			const
 				decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
 
@@ -301,15 +265,48 @@ import {
 
 			$args[tplName] = {};
 			$argsRes[tplName] = {};
-			$output[tplName] = Object.assign($output[oldTplName], {decorators});
-
-			if (tplName !== oldTplName) {
-				this.params[this.params.length - 1]['@tplName'] = tplName;
-				delete $output[oldTplName];
-			}
-
+			$output[tplName] = {decorators};
 			$extMap[tplName] = parentTplName;
 			delete $extList[tplName];
+
+			const
+				baseParams = {};
+
+			if (!parentTplName) {
+				const
+					obj = this.params[this.params.length - 1];
+
+				for (let key in obj) {
+					if (!obj.hasOwnProperty(key)) {
+						break;
+					}
+
+					const
+						el = obj[key];
+
+					if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
+						baseParams[key] = el;
+					}
+				}
+			}
+
+			if (parentTplName && !flags.length) {
+				flags.push('@skip true');
+			}
+
+			for (let i = 0; i < flags.length; i++) {
+				delete baseParams[flags[i].split(' ')[0]];
+				Snakeskin.Directives['__set__'].call(this, flags[i]);
+			}
+
+			for (let key in baseParams) {
+				if (!baseParams.hasOwnProperty(key)) {
+					break;
+				}
+
+				const el = baseParams[key];
+				Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
+			}
 
 			const
 				args = this.declFnArgs(command, {dir: 'template', parentTplName, tplName});
@@ -420,7 +417,9 @@ import {
 			}
 
 			this.save('/* Snakeskin template. */', {iface});
-			this.popParams();
+			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
+				this.popParams();
+			}
 
 			this.canWrite = true;
 			this.tplName = undefined;
