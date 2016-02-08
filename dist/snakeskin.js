@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta5
+ * Snakeskin v7.0.0-beta6
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 04 Feb 2016 12:13:16 GMT
+ * Date: 'Mon, 08 Feb 2016 14:51:34 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta5']
+      VERSION: [7, 0, 0, 'beta6']
     };
 
     /**
@@ -7572,10 +7572,6 @@
     		}
     	}
 
-    	if (flag === 'renderAs' && tplName) {
-    		return this.error('the flag "renderAs" can\'t be used in the template declaration');
-    	}
-
     	if (flag in root) {
     		if (flag === 'language') {
     			value = mix(toObj(value, file, function (src) {
@@ -8192,7 +8188,7 @@
 
     	this.environment.namespace = nms = this.getBlockName(nms);
     	this.namespaces[nms] = this.namespaces[nms] || { file: this.info.file, id: this.environment.id };
-    	this.scope.push(nms);
+    	this.scope.push('exports' + concatProp(nms));
     });
 
     Snakeskin.addDirective('decorator', {
@@ -8229,22 +8225,30 @@
     			return this.error('the namespace "' + nms + '" already used for templates in another file (' + this.namespaces[nms].file + ')');
     		}
 
-    		this.startDir(this.renderAs && templateRank[this.renderAs] < templateRank[type] ? this.renderAs : null);
-
-    		var iface = this.name === 'interface';
-
     		this.startTemplateI = this.i + 1;
     		this.startTemplateLine = this.info.line;
 
-    		var tplName = this.replaceFileNamePatterns(this.getFnName(command));
-    		tplName = nms + concatProp(tplName);
+    		var parentTplName = undefined;
+    		if (/\)\s+extends\s+/.test(command)) {
+    			try {
+    				this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
+    				parentTplName = this.parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+    				this.scope.pop();
+    			} catch (ignore) {
+    				return this.error('invalid template name "' + this.name + '" for inheritance');
+    			}
 
-    		var setTplName = function setTplName() {
-    			_this.info.template = _this.tplName = tplName;
-    			$write[tplName] = _this.name === 'template';
-    		};
+    			if ($cache[parentTplName] == null) {
+    				if (!this.renderAs || this.renderAs === 'template') {
+    					return this.error('the specified template "' + parentTplName + '" for inheritance is not defined');
+    				}
 
-    		var prfx = '',
+    				parentTplName = this.parentTplName = undefined;
+    			}
+    		}
+
+    		var tplName = this.replaceFileNamePatterns(this.getFnName(command)),
+    		    prfx = '',
     		    pos = undefined;
 
     		if (/\*/.test(tplName)) {
@@ -8253,10 +8257,64 @@
     			this.generator = true;
     		}
 
-    		setTplName();
-    		var fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
-    		this.save(pos = '/* Snakeskin template: ' + tplName + '; ' + fnArgsKey + ' */', { iface: iface, jsDoc: jsDoc });
+    		var oldTplName = tplName = nms + concatProp(tplName);
 
+    		var setTplName = function setTplName() {
+    			_this.info.template = _this.tplName = tplName;
+    			delete $write[oldTplName];
+    			$write[tplName] = _this.name === 'template';
+    		};
+
+    		setTplName();
+    		$output[tplName] = {};
+
+    		var baseParams = {},
+    		    flags = command.split('@=').slice(1);
+
+    		if (!parentTplName) {
+    			var obj = this.params[this.params.length - 1];
+
+    			for (var key in obj) {
+    				if (!obj.hasOwnProperty(key)) {
+    					break;
+    				}
+
+    				var el = obj[key];
+
+    				if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
+    					baseParams[key] = el;
+    				}
+    			}
+    		}
+
+    		if (parentTplName && !flags.length) {
+    			flags.push('@skip true');
+    		}
+
+    		for (var i = 0; i < flags.length; i++) {
+    			var el = flags[i].trim();
+    			delete baseParams[el.split(' ')[0]];
+    			Snakeskin.Directives['__set__'].call(this, el);
+    		}
+
+    		for (var key in baseParams) {
+    			if (!baseParams.hasOwnProperty(key)) {
+    				break;
+    			}
+
+    			var el = baseParams[key];
+    			Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
+    		}
+
+    		this.name = type;
+    		this.startDir(this.renderAs && templateRank[this.renderAs] < templateRank[type] ? this.renderAs : null);
+
+    		setTplName();
+
+    		var iface = this.name === 'interface',
+    		    fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
+
+    		this.save(pos = '/* Snakeskin template: ' + tplName + '; ' + fnArgsKey + ' */', { iface: iface, jsDoc: jsDoc });
     		if (jsDoc) {
     			jsDoc += pos.length;
     		}
@@ -8328,30 +8386,12 @@
     			parent: null
     		};
 
-    		var parentTplName = undefined;
-    		if (/\)\s+extends\s+/.test(command)) {
-    			try {
-    				parentTplName = this.parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
-    			} catch (ignore) {
-    				return this.error('invalid template name "' + this.name + '" for inheritance');
-    			}
-
-    			if ($cache[parentTplName] == null) {
-    				if (!this.renderAs || this.renderAs === 'template') {
-    					return this.error('the specified template "' + parentTplName + '" for inheritance is not defined');
-    				}
-
-    				parentTplName = this.parentTplName = undefined;
-    			}
-    		}
-
     		var decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
 
     		this.save(ws$1(_templateObject3$1, concatProp(tplName), decorators.join(), prfx, tplNameLength > 1 ? lastName : shortcut), { iface: iface });
 
     		this.decorators = [];
     		this.initTemplateCache(tplName);
-    		this.scope.push('exports' + concatProp(this.scope[this.scope.length - 1]));
 
     		if (tplName in $extMap) {
     			this.clearScopeCache(tplName);
@@ -8374,47 +8414,15 @@
 
     		$args[tplName] = {};
     		$argsRes[tplName] = {};
-    		$output[tplName] = { decorators: decorators };
+    		$output[tplName] = Object.assign($output[oldTplName], { decorators: decorators });
+
+    		if (tplName !== oldTplName) {
+    			this.params[this.params.length - 1]['@tplName'] = tplName;
+    			delete $output[oldTplName];
+    		}
+
     		$extMap[tplName] = parentTplName;
     		delete $extList[tplName];
-
-    		var baseParams = {},
-    		    flags = command.split('@=').slice(1);
-
-    		if (!parentTplName) {
-    			var obj = this.params[this.params.length - 1];
-
-    			for (var key in obj) {
-    				if (!obj.hasOwnProperty(key)) {
-    					break;
-    				}
-
-    				var el = obj[key];
-
-    				if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
-    					baseParams[key] = el;
-    				}
-    			}
-    		}
-
-    		if (parentTplName && !flags.length) {
-    			flags.push('@skip true');
-    		}
-
-    		for (var i = 0; i < flags.length; i++) {
-    			var el = flags[i].trim();
-    			delete baseParams[el.split(' ')[0]];
-    			Snakeskin.Directives['__set__'].call(this, el);
-    		}
-
-    		for (var key in baseParams) {
-    			if (!baseParams.hasOwnProperty(key)) {
-    				break;
-    			}
-
-    			var el = baseParams[key];
-    			Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
-    		}
 
     		var args = this.declFnArgs(command, { dir: 'template', parentTplName: parentTplName, tplName: tplName });
 
@@ -8452,17 +8460,14 @@
     		var iface = this.structure.name === 'interface';
 
     		if (iface) {
-    			this.save('};', { iface: iface });
+    			this.save('});', { iface: iface });
     		} else {
     			this.save(ws$1(_templateObject5, this.consts.join(''), this.getReturnResultDecl(), escapeDoubleQuotes(tplName), concatProp(tplName)));
     		}
 
     		this.save('/* Snakeskin template. */', { iface: iface });
-    		if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
-    			this.popParams();
-    		}
+    		this.popParams();
 
-    		this.scope.pop();
     		this.canWrite = true;
     		this.tplName = undefined;
 
@@ -8945,9 +8950,24 @@
     var _templateObject$8 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t'], ['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t']);
     var _templateObject2$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
     Snakeskin.addDirective('return', {
-    	group: 'return',
+    	block: true,
+    	deferInit: true,
+    	group: ['return', 'microTemplate'],
     	placement: 'template'
     }, function (command) {
+    	if (command.slice(-1) === '/') {
+    		this.startInlineDir(null, { command: command.slice(0, -1) });
+    		return;
+    	}
+
+    	this.startDir(null, { command: command });
+
+    	if (!command) {
+    		this.wrap('__RESULT__ = ' + this.getResultDecl() + ';');
+    	}
+    }, function () {
+    	var command = this.structure.params.command;
+
     	var val = command ? this.out(command, { unsafe: true }) : this.getReturnResultDecl(),
     	    parent = any(this.hasParentFunction());
 
