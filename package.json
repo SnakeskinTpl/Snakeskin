@@ -53,7 +53,6 @@
     "collection.js": "^5.5.6",
     "coveralls": "^2.11.2",
     "del": "^2.2.0",
-    "glob": "^6.0.1",
     "gulp": "^3.8.9",
     "gulp-bump": "^1.0.0",
     "gulp-cached": "^1.0.4",
