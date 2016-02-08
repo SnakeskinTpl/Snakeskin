@@ -138,10 +138,6 @@ function set(command) {
 		}
 	}
 
-	if (flag === 'renderAs' && tplName) {
-		return this.error(`the flag "renderAs" can't be used in the template declaration`);
-	}
-
 	if (flag in root) {
 		if (flag === 'language') {
 			value = mix(
