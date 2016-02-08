@@ -262,12 +262,18 @@ import {
 			const
 				decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
 
-			this.save(ws`
-				exports${concatProp(tplName)} =
-				 Snakeskin.decorate([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
+			if (iface) {
+				this.save(
+					`exports${concatProp(tplName)} = function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
+					{iface}
+				);
 
-				{iface}
-			);
+			} else {
+				this.save(ws`
+					exports${concatProp(tplName)} =
+						Snakeskin.decorate([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`
+				);
+			}
 
 			this.decorators = [];
 			this.initTemplateCache(tplName);
@@ -401,7 +407,7 @@ import {
 				iface = this.structure.name === 'interface';
 
 			if (iface) {
-				this.save('});', {iface});
+				this.save('};', {iface});
 
 			} else {
 				this.save(ws`
