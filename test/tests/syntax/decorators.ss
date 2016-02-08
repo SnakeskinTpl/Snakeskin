@@ -20,11 +20,11 @@
 - import Typograf from 'typograf'
 
 - template typograf(params)
-	- block superWrapper(target)
-		- block wrapper()
-			- return new Typograf(params).execute(target.apply(this, arguments))
-		- return self.wrapper
-	- return self.superWrapper
+	- return
+		() => target
+			- return
+				() =>
+					- return new Typograf(params).execute(target.apply(this, arguments))
 
 - @typograf({lang: 'ru'})
 - template simple()

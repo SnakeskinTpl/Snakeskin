@@ -8,8 +8,5 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-- template [%fileName%](text)
-	- block root
-		< div
-			- block body
-				{text}
+- template parent() @= renderAs 'template'
+	Hello world!

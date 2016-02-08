@@ -1,4 +1,4 @@
-- namespace modules.body
+- namespace modules[%fileName%]
 
 /*!
  * Snakeskin
@@ -9,7 +9,7 @@
  */
 
 - include './block'
-- template [%fileName%]() extends modules.block['block']
+- template [%fileName%]() extends modules['block']['block']
 	- block body
 		foo
 		+= modules.block['block']('bar')

@@ -30,6 +30,10 @@ Hello world! baz
 
 <div><div>foo <div>bar </div> </div> </div>
 
+[[include as placeholder 2]]============================================================================================
+
+Hello world!
+
 ========================================================================================================================
 
 - namespace modules[%fileName%]
@@ -38,11 +42,13 @@ Hello world! baz
 - import path from 'path'
 
 : baseVar = 3
-- include './base/!(block|body)'
+- include './base/!(block|body|asPlaceholder)'
+- include './base/asPlaceholder.ss' as placeholder
 
 - eval
 	- forEach fs.readdirSync(path.join(__dirname, 'base')) => file
-		- include path.join(__dirname, 'base', file)
+		- if file !== 'asPlaceholder.ss'
+			- include path.join(__dirname, 'base', file)
 
 - template ['get variable from closure']() extends modules.base.base1
 
@@ -66,6 +72,9 @@ Hello world! baz
 	- block baz
 		baz
 
-- template ['include as placeholder']() extends modules.block['block']
+- template ['include as placeholder']() extends modules['block']['block']
 	- block body
 		+= modules.body['body']()
+
+- template ['include as placeholder 2']()
+	+= modules['asPlaceholder'].parent()
