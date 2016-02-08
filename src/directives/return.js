@@ -16,11 +16,29 @@ Snakeskin.addDirective(
 	'return',
 
 	{
-		group: 'return',
+		block: true,
+		deferInit: true,
+		group: ['return', 'microTemplate'],
 		placement: 'template'
 	},
 
 	function (command) {
+		if (command.slice(-1) === '/') {
+			this.startInlineDir(null, {command: command.slice(0, -1)});
+			return;
+		}
+
+		this.startDir(null, {command});
+
+		if (!command) {
+			this.wrap(`__RESULT__ = ${this.getResultDecl()};`);
+		}
+	},
+
+	function () {
+		const
+			{command} = this.structure.params;
+
 		const
 			val = command ? this.out(command, {unsafe: true}) : this.getReturnResultDecl(),
 			parent = any(this.hasParentFunction());
