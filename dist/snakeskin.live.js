@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta6 (live)
+ * Snakeskin v7.0.0-beta7 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 08 Feb 2016 14:51:34 GMT
+ * Date: 'Mon, 08 Feb 2016 15:15:10 GMT
  */
 
 (function (global, factory) {
@@ -39,7 +39,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta6']
+      VERSION: [7, 0, 0, 'beta7']
     };
 
     /**
