@@ -416,14 +416,14 @@ import {
 				`);
 			}
 
-			this.save('/* Snakeskin template. */', {iface});
-			if (this.params[this.params.length - 1]['@tplName'] === this.tplName) {
-				this.popParams();
-			}
+			this.save(
+				'/* Snakeskin template. */',
+				{iface}
+			);
 
+			this.popParams();
 			this.canWrite = true;
 			this.tplName = undefined;
-
 			delete this.info.template;
 		}
 
