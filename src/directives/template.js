@@ -195,8 +195,10 @@ import {
 			let parentTplName;
 			if (/\)\s+extends\s+/.test(command)) {
 				try {
-					parentTplName = this.parentTplName =
-						this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+					this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
+					console.log(this.scope);
+					parentTplName = this.parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+					this.scope.pop();
 
 				} catch (ignore) {
 					return this.error(`invalid template name "${this.name}" for inheritance`);
@@ -223,7 +225,6 @@ import {
 
 			this.decorators = [];
 			this.initTemplateCache(tplName);
-			this.scope.push(`exports${concatProp(this.scope[this.scope.length - 1])}`);
 
 			if (tplName in $extMap) {
 				this.clearScopeCache(tplName);
@@ -406,7 +407,6 @@ import {
 				this.popParams();
 			}
 
-			this.scope.pop();
 			this.canWrite = true;
 			this.tplName = undefined;
 

@@ -9,6 +9,7 @@
  */
 
 import Snakeskin from '../core';
+import { concatProp } from '../helpers/literals';
 
 Snakeskin.addDirective(
 	'namespace',
@@ -27,7 +28,7 @@ Snakeskin.addDirective(
 
 		this.environment.namespace = nms = this.getBlockName(nms);
 		this.namespaces[nms] = this.namespaces[nms] || {file: this.info.file, id: this.environment.id};
-		this.scope.push(nms);
+		this.scope.push(`exports${concatProp(nms)}`);
 	}
 
 );
