@@ -68,7 +68,7 @@ Snakeskin.group = function (name) {};
  *   selfInclude: (?boolean|undefined),
  *   interpolation: (?boolean|undefined),
  *   selfThis: (?boolean|undefined),
- *   shorthands: (Object.<string, (string|function(string): string)>|undefined)
+ *   shorthands: (Object<string, (string|function(string): string)>|undefined)
  * }}
  */
 var $$SnakeskinAddDirectiveParams;
@@ -562,7 +562,7 @@ $$SnakeskinParser.prototype.selfThis;
 /**  @type {boolean} */
 $$SnakeskinParser.prototype.canWrite;
 
-/** @type {!Array.<string>} */
+/** @type {!Array<string>} */
 $$SnakeskinParser.prototype.decorators;
 
 /** @type {!Object} */
@@ -705,13 +705,13 @@ $$SnakeskinParser.prototype.returnEvalVal = function (str) {};
 
 /**
  * @param {...string} names
- * @return {!Object.<string, boolean>}
+ * @return {!Object<string, boolean>}
  */
 $$SnakeskinParser.prototype.getGroup = function (names) {};
 
 /**
  * @param {...string} names
- * @return {!Array.<string>}
+ * @return {!Array<string>}
  */
 $$SnakeskinParser.prototype.getGroupList = function (names) {};
 
