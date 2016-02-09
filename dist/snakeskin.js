@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta8
+ * Snakeskin v7.0.0-beta9
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 08 Feb 2016 17:14:39 GMT
+ * Date: 'Tue, 09 Feb 2016 15:45:49 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta8']
+      VERSION: [7, 0, 0, 'beta9']
     };
 
     /**
@@ -4726,7 +4726,7 @@
     var functionRgxp = /\bfunction\b/;
     var defFilterRgxp = /#;/g;
     var esprimaHackFn = function esprimaHackFn(str) {
-    	return str.trim().replace(/^({.*)/, '($0)').replace(/^\[(?!\s*])/, '$[').replace(/\b(?:yield|return)\b/g, '');
+    	return String(str).trim().replace(/^({.*)/, '($0)').replace(/^\[(?!\s*])/, '$[').replace(/\b(?:yield|return)\b/g, '');
     };
 
     /**
@@ -6804,7 +6804,7 @@
     	    i18nStart = false,
     	    i18nDirStart = false,
     	    i18nInterpolation = false,
-    	    i18nTpl = false,
+    	    i18nTpl = 0,
     	    i18nPOpen = 0;
 
     	/**
@@ -7000,12 +7000,15 @@
     							i18nPOpen++;
     						} else if (el === ')' && ! --i18nPOpen) {
     							el = el + (!i18nInterpolation || i18nTpl ? '' : RIGHT_BOUND);
-    							i18nTpl = false;
     						}
     					}
 
-    					if (!cEscape && substr2 === MICRO_TEMPLATE) {
-    						i18nTpl = true;
+    					if (!cEscape) {
+    						if (substr2 === MICRO_TEMPLATE) {
+    							i18nTpl = 1;
+    						} else if (el === RIGHT_BOUND && i18nTpl) {
+    							i18nTpl--;
+    						}
     					}
     				}
 
@@ -7171,7 +7174,6 @@
     										}
 
     										el += ')' + (!i18nInterpolation || i18nTpl ? '' : RIGHT_BOUND);
-    										i18nTpl = false;
     									}
 
     									if (i18nDirStart) {
@@ -7591,7 +7593,7 @@
 
 
     		try {
-    			value = this.returnEvalVal(parts.slice(1).join(' '));
+    			value = this.returnEvalVal(this.out(parts.slice(1).join(' '), { unsafe: true }));
     		} catch (err) {
     			return this.error(err.message);
     		}
