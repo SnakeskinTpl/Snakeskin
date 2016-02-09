@@ -131,7 +131,7 @@ function set(command) {
 		[flag] = parts;
 
 		try {
-			value = this.returnEvalVal(parts.slice(1).join(' '));
+			value = this.returnEvalVal(this.out(parts.slice(1).join(' '), {unsafe: true}));
 
 		} catch (err) {
 			return this.error(err.message);

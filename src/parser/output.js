@@ -92,7 +92,7 @@ const
 	functionRgxp = /\bfunction\b/,
 	defFilterRgxp = /#;/g;
 
-const esprimaHackFn = (str) => str
+const esprimaHackFn = (str) => String(str)
 	.trim()
 	.replace(/^({.*)/, '($0)')
 	.replace(/^\[(?!\s*])/, '$[')
