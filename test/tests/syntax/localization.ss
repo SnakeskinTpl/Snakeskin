@@ -30,6 +30,10 @@ Hello world!
 
 Привет world!
 
+[[custom i18n function]]================================================================================================
+
+<foo bar="bla" baz="3"></foo>
+
 ========================================================================================================================
 
 - namespace syntax[%fileName%]
@@ -54,3 +58,12 @@ Hello world!
 	`Hello` `world`!
 
 - template ['static ru']() extends @['static en'] @= language './langs/ru.json'
+
+- template i18nFn(str, a, b)
+	- return a + b
+
+- head
+	- @@i18n = @i18nFn
+
+- template ['custom i18n function']() @= i18nFn 'Snakeskin.Vars.i18n'
+	< foo bar = ${'bla'} | baz = ${`hello`(1, (2))}
