@@ -266,7 +266,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		i18nStart = false,
 		i18nDirStart = false,
 		i18nInterpolation = false,
-		i18nTpl = false,
+		i18nTpl = 0,
 		i18nPOpen = 0;
 
 	/**
@@ -483,12 +483,16 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 						} else if (el === ')' && !--i18nPOpen) {
 							el = el + (!i18nInterpolation || i18nTpl ? '' : rb);
-							i18nTpl = false;
 						}
 					}
 
-					if (!cEscape && substr2 === MICRO_TEMPLATE) {
-						i18nTpl = true;
+					if (!cEscape) {
+						if (substr2 === MICRO_TEMPLATE) {
+							i18nTpl = 1;
+
+						} else if (el === rb && i18nTpl) {
+							i18nTpl--;
+						}
 					}
 				}
 
@@ -672,7 +676,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 									}
 
 									el += `)${!i18nInterpolation || i18nTpl ? '' : rb}`;
-									i18nTpl = false;
 								}
 
 								if (i18nDirStart) {
