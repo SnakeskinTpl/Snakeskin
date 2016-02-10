@@ -19,7 +19,8 @@ Snakeskin.addDirective(
 		block: true,
 		deferInit: true,
 		group: ['return', 'microTemplate'],
-		placement: 'template'
+		placement: 'template',
+		trim: true
 	},
 
 	function (command) {
