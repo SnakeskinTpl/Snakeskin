@@ -113,7 +113,7 @@ const esprimaHackFn = (str) => String(str)
  */
 Parser.prototype.out = function (command, opt_params) {
 	const
-		{unsafe, skipFirstWord, skipValidation} = any(opt_params || {});
+		{cache, unsafe, skipFirstWord, skipValidation} = any(Object.assign({cache: true}, opt_params));
 
 	const
 		{structure} = this,
@@ -612,14 +612,13 @@ Parser.prototype.out = function (command, opt_params) {
 				}
 
 				tmp =
-					`(${cacheLink} = __FILTERS__${filter}` +
-					(filterWrapper || !pCount ? '.call(this,' : '') +
-					tmp +
-					(bind.length ? `,${joinFilterParams(bind)}` : '') +
-					(input ? `,${input}` : '') +
-					(filterWrapper || !pCount ? ')' : '') +
-					')'
-				;
+					`${cache ? `(${cacheLink} = ` : ''}__FILTERS__${filter}` +
+						(filterWrapper || !pCount ? '.call(this,' : '') +
+						tmp +
+						(bind.length ? `,${joinFilterParams(bind)}` : '') +
+						(input ? `,${input}` : '') +
+						(filterWrapper || !pCount ? ')' : '') +
+					(cache ? ')' : '');
 			}
 
 			if (!isGlobalFilter) {
@@ -713,7 +712,7 @@ Parser.prototype.out = function (command, opt_params) {
 	if (!unsafe) {
 		res = this.out(
 			removeDefFilters(addDefFilters(`(${res})`, defFilters.global), cancelFilters).replace(defFilterRgxp, ''),
-			{unsafe: true, skipFirstWord, skipValidation}
+			{cache: false, unsafe: true, skipFirstWord, skipValidation}
 		);
 
 		if (isNotPrimitive(res)) {
