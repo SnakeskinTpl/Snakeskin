@@ -105,6 +105,7 @@ const esprimaHackFn = (str) => String(str)
  * @param {string} command - source command
  * @param {?$$SnakeskinParserOutParams=} [opt_params] - additional parameters:
  *
+ *   *) [cache=true] - if is false, then filter results won't be cached in variable
  *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
  *   *) [skipFirstWord=false] - if is true, then the first word in the string will be skipped
  *   *) [skipValidation=true] - if is false, then the resulting string won't be validated

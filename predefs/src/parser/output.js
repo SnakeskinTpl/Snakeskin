@@ -8,6 +8,7 @@
 
 /**
  * @typedef {{
+ *   cache: (boolean|undefined),
  *   unsafe: (boolean|undefined),
  *   skipFirstWord: (boolean|undefined),
  *   skipValidation: (boolean|undefined)
