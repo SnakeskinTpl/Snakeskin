@@ -173,7 +173,7 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
  * @return {!Parser}
  */
 Parser.prototype.endDir = function () {
-	if (this.blockStructure && this.getGroup('blockInherit')[this.structure.name]) {
+	if (this.blockStructure && this.getGroup('blockInherit', 'inlineInherit')[this.structure.name]) {
 		this.blockStructure = this.blockStructure.parent;
 	}
 

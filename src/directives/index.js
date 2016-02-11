@@ -513,12 +513,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
 			}
 
-			this.inline.pop();
-			this.structure = this.structure.parent;
-
-			if (this.blockStructure && this.blockStructure.name === 'const') {
-				this.blockStructure = this.blockStructure.parent;
-			}
+			this.endDir();
 		}
 	};
 
