@@ -354,7 +354,7 @@ import {
 					__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '');
 				}
 
-				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, isXMLDoctype) {
+				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype) {
 					var __RESULT__ = res;
 
 					if (typeof link === 'undefined' || link !== '?') {
@@ -362,7 +362,10 @@ import {
 							var
 								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' ');
 
-							if (isDOMRenderMode) {
+							if (stringResult) {
+								__STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"');
+
+							} else if (isDOMRenderMode) {
 								Snakeskin.setAttribute($0, key, attr);
 
 							} else {
@@ -374,7 +377,7 @@ import {
 					return __RESULT__;
 				}
 
-				function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, isXMLDoctype) {
+				function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, stringResult, isXMLDoctype) {
 					var __RESULT__ = res;
 
 					if (isDOMRenderMode) {
@@ -395,13 +398,23 @@ import {
 					} else {
 						if (link !== '?') {
 							if (inline && (!inlineTag || inlineTag === true)) {
-								${this.wrap(`(isXMLDoctype ? '/' : '') + '>'`)}
+								if (stringResult) {
+									__STRING_RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+
+								} else {
+									${this.wrap(`(isXMLDoctype ? '/' : '') + '>'`)}
+								}
 
 							} else if (inlineTag && inlineTag !== true) {
 								__RESULT__ = ${this.getResultDecl()};
 
 							} else {
-								${this.wrap(`'>'`)}
+								if (stringResult) {
+									__STRING_RESULT__ += '>';
+
+								} else {
+									${this.wrap(`'>'`)}
+								}
 							}
 						}
 					}
@@ -418,6 +431,7 @@ import {
 					callCache,
 					callTmp,
 					isDOMRenderMode,
+					stringResult,
 					isXMLDoctype,
 					node
 
@@ -447,14 +461,29 @@ import {
 									__RESULT__ = callCache;
 
 									if (inlineTag in attrCache === false) {
-										${this.wrap(`' ' + inlineTag + '="' + callTmp + '"'`)}
+										if (stringResult) {
+											__STRING_RESULT__ += ' ' + inlineTag + '="' + callTmp + '"';
+
+										} else {
+											${this.wrap(`' ' + inlineTag + '="' + callTmp + '"'`)}
+										}
 									}
 
-									${this.wrap(`(isXMLDoctype ? '/' : '') + '>'`)}
+									if (stringResult) {
+										__STRING_RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+
+									} else {
+										${this.wrap(`(isXMLDoctype ? '/' : '') + '>'`)}
+									}
 								}
 
 							} else if (!inline) {
-								${this.wrap(`'</' + link + '>'`)}
+								if (stringResult) {
+									__STRING_RESULT__ += '</' + link + '>';
+
+								} else {
+									${this.wrap(`'</' + link + '>'`)}
+								}
 							}
 						}
 					}

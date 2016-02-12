@@ -62,6 +62,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 			${this.getVar('__TAG__')},
 			${this.getVar('__ATTR_CACHE__')},
 			${!this.stringResult && !stringRender[this.renderMode]},
+			${this.stringResult},
 			${this.doctype === 'xml'}
 		);
 	`;

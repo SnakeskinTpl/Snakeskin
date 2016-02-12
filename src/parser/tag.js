@@ -84,6 +84,7 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 			${Boolean(opt_inline)},
 			${this.out('__INLINE_TAGS__[__TAG__]', {unsafe: true})},
 			${isDOMRenderMode},
+			${this.stringResult},
 			${this.doctype === 'xml'}
 		);
 	`;
@@ -110,6 +111,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 			${this.getVar('__CALL_CACHE__')},
 			${this.getVar('__CALL_TMP__')},
 			${isDOMRenderMode},
+			${this.stringResult},
 			${this.doctype === 'xml'}
 			${isDOMRenderMode ? `, ${this.getVar('__NODE__')}` : ''}
 		);
