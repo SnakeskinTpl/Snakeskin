@@ -26,6 +26,12 @@ var fn;
 
 /**
  * @param {string} name
+ * @return {string}
+ */
+$$SnakeskinParser.prototype.getVar = function (name) {};
+
+/**
+ * @param {string} name
  * @param {?$$SnakeskinParserDeclVarParams=} [opt_params]
  * @return {string}
  */
