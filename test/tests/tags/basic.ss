@@ -14,6 +14,14 @@
 
 <div>Hello <span id="baz" class="foo bar">Hello</span></div>
 
+[[!inline]]=============================================================================================================
+
+<textarea>121
+
+[[!inline=value]]=======================================================================================================
+
+<textarea>121
+
 ========================================================================================================================
 
 - namespace tags[%fileName%]
@@ -30,3 +38,13 @@
 		Hello
 		< span.foo.bar#baz
 			Hello
+
+- template ['!inline']
+	< textarea!inline
+		121
+
+- template ['!inline=value']
+	: inline = {textarea: true}
+	< ?!inline=inline
+		< textarea
+			121
