@@ -351,7 +351,7 @@ import {
 				}
 
 				function __APPEND_XML_ATTR_VAL__(val) {
-					__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '')
+					__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '');
 				}
 
 				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, isXMLDoctype) {
