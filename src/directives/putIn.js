@@ -58,25 +58,19 @@ Snakeskin.addDirective(
 				p.type = 'call';
 				parent.params.chunks++;
 				this.append(ws`
-					if (!${pos} && __LENGTH__(__RESULT__)) {
-						${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
-						__RESULT__ = ${this.getResultDecl()};
-					}
-
+					__RESULT__ = __PUTIN_CALL__(__RESULT__, ${pos}, ${tmp});
 					${pos}++;
 				`);
 
 			} else if (this.getGroup('target')[parent.name]) {
 				p.type = 'target';
 				this.append(ws`
-					if (!${pos} && __LENGTH__(__RESULT__)) {
-						${tmp}.push({
-							key: '${this.replaceTplVars(ref, {unsafe: true})}',
-							value: Unsafe(${this.getReturnResultDecl()})
-						});
-
-						__RESULT__ = ${this.getResultDecl()};
-					}
+					__RESULT__ = __PUTIN_TARGET__(
+						__RESULT__,
+						${pos},
+						${tmp},
+						'${this.replaceTplVars(ref, {unsafe: true})}'
+					);
 
 					${pos}++;
 				`);
@@ -107,21 +101,12 @@ Snakeskin.addDirective(
 
 		switch (p.type) {
 			case 'call':
-				this.append(ws`
-					${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
-					__RESULT__ = ${this.getResultDecl()};
-				`);
-
+				this.append(`__RESULT__ = __PUTIN_CALL__(__RESULT__, true, ${tmp});`);
 				break;
 
 			case 'target':
 				this.append(ws`
-					${tmp}.push({
-						key: '${this.replaceTplVars(p.ref, {unsafe: true})}',
-						value: Unsafe(${this.getReturnResultDecl()})
-					});
-
-					__RESULT__ = ${this.getResultDecl()};
+					__RESULT__ = __PUTIN_TARGET__(__RESULT__, true, ${tmp}, '${this.replaceTplVars(p.ref, {unsafe: true})}');
 				`);
 
 				break;

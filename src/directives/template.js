@@ -462,6 +462,49 @@ import {
 					return __RESULT__;
 				}
 
+				function __TARGET_END__(res, stack, ref) {
+					var __RESULT__ = res;
+
+					if (__LENGTH__(__RESULT__)) {
+						stack.push({
+							key: undefined,
+							value: Unsafe(${this.getReturnResultDecl()})
+						});
+					}
+
+					Snakeskin.forEach(stack, function (el, i) {
+						ref[el.key || ref.length] = el.value;
+					});
+
+					return __RESULT__;
+				}
+
+				function __PUTIN_CALL__(res, pos, stack) {
+					var __RESULT__ = res;
+
+					if (pos === true || !pos && __LENGTH__(__RESULT__)) {
+						stack.push(Unsafe(${this.getReturnResultDecl()}));
+						__RESULT__ = ${this.getResultDecl()};
+					}
+
+					return __RESULT__;
+				}
+
+				function __PUTIN_TARGET__(res, pos, stack, key) {
+					var __RESULT__ = res;
+
+					if (pos === true || !pos && __LENGTH__(__RESULT__)) {
+						stack.push({
+							key: key,
+							value: Unsafe(${this.getReturnResultDecl()})
+						});
+
+						__RESULT__ = ${this.getResultDecl()};
+					}
+
+					return __RESULT__;
+				}
+
 				var
 					__RETURN__ = false,
 					__RETURN_VAL__;

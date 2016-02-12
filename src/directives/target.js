@@ -57,25 +57,13 @@ Snakeskin.addDirective(
 
 	function () {
 		const
-			p = this.structure.params,
-			tmp = this.getVar('__CALL_TMP__');
+			p = this.structure.params;
 
 		if (p.strongSpace) {
 			this.strongSpace.pop();
 		}
 
-		this.append(ws`
-			if (__LENGTH__(__RESULT__)) {
-				${tmp}.push({
-					key: undefined,
-					value: Unsafe(${this.getReturnResultDecl()})
-				});
-			}
-
-			Snakeskin.forEach(${tmp}, function (el, i) {
-				${p.ref}[el.key || ${p.ref}.length] = el.value;
-			});
-		`);
+		this.append(`__RESULT__ = __TARGET_END__(__RESULT__, ${this.getVar('__CALL_TMP__')}, ${p.ref});`);
 
 		const
 			parent = any(this.hasParentMicroTemplate());
