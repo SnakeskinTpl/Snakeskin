@@ -192,11 +192,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 		dirname = path.dirname(filename);
 		Snakeskin.LocalVars.include[filename] = templateRank['template'];
-
-		try {
-			label = fs.statSync(filename).mtime;
-
-		} catch (ignore) {}
+		label = mtime(filename);
 	}
 
 	// <<<
@@ -899,6 +895,24 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		p.debug.files = parser.files;
 	}
 
+	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename)) {
+		return false;
+	}
+
+	saveIntoCache(cacheKey, text, p, parser);
+	return parser.result;
+};
+
+function mtime(file) {
+	try {
+		return String(fs.statSync(file).mtime);
+
+	} catch (ignore) {
+		return '';
+	}
+}
+
+function compile(text, p, info, cacheKey, ctx, parser, dirname, filename) {
 	try {
 		// Server compilation
 		if (IS_NODE) {
@@ -938,9 +952,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		delete info.line;
 		delete info.template;
 		parser.error(err.message);
-		return false;
+		return true;
 	}
-
-	saveIntoCache(cacheKey, text, p, parser);
-	return parser.result;
-};
+}
