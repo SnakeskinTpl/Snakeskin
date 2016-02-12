@@ -30,3 +30,4 @@ import './attr';
 import './tag';
 import './filters';
 import './tokens';
+import './runtime';

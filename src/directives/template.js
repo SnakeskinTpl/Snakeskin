@@ -321,8 +321,9 @@ import {
 					self = callee.Blocks = {};
 
 				var
-					__RESULT__ = ${this.getResultDecl()},
 					__STRING_RESULT__;
+
+				${this.getTplRuntime()}
 
 				var
 					__ATTR_STR__,
@@ -337,20 +338,6 @@ import {
 
 				var
 					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
-
-				function getTplResult(opt_clear) {
-					var res = ${this.getReturnResultDecl()};
-
-					if (opt_clear) {
-						__RESULT__ = ${this.getResultDecl()};
-					}
-
-					return res;
-				}
-
-				function clearTplResult() {
-					__RESULT__ = ${this.getResultDecl()};
-				}
 
 				var
 					__RETURN__ = false,

@@ -9,7 +9,6 @@
  */
 
 import Snakeskin from '../core';
-import { ws } from '../helpers/string';
 import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
@@ -65,23 +64,7 @@ Snakeskin.addDirective(
 				prfx = `__RESULT__ = new Raw`;
 			}
 
-			pstfx = ws`
-				var __RESULT__ = ${this.getResultDecl()};
-
-				function getTplResult(opt_clear) {
-					var res = ${this.getReturnResultDecl()};
-
-					if (opt_clear) {
-						__RESULT__ = ${this.getResultDecl()};
-					}
-
-					return res;
-				}
-
-				function clearTplResult() {
-					__RESULT__ = ${this.getResultDecl()};
-				}
-			`;
+			pstfx = this.getTplRuntime();
 		}
 
 		const args = this.declFnArgs(`(${parts[1]})`);

@@ -177,22 +177,7 @@ Snakeskin.addDirective(
 				this.save(ws`
 					if (!${fnDecl}) {
 						${fnDecl} = function (${args.decl}) {
-							var __RESULT__ = ${this.getResultDecl()};
-
-							function getTplResult(opt_clear) {
-								var res = ${this.getReturnResultDecl()};
-
-								if (opt_clear) {
-									__RESULT__ = ${this.getResultDecl()};
-								}
-
-								return res;
-							}
-
-							function clearTplResult() {
-								__RESULT__ = ${this.getResultDecl()};
-							}
-
+							${this.getTplRuntime()}
 							${args.def}
 				`);
 
