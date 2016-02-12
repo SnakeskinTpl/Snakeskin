@@ -72,44 +72,19 @@ Parser.prototype.getXMLTagDeclStart = function (tag) {
  * @return {string}
  */
 Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
-	opt_inline = Boolean(opt_inline);
-
 	const
-		link = this.out(`__TAG__`, {unsafe: true}),
-		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true});
-
-	if (!this.stringResult && !stringRender[this.renderMode]) {
-		return ws`
-			if (${link} !== '?') {
-				${this.wrap('$0')}
-				if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
-					$0 = __RESULT__[__RESULT__.length - 1];
-
-				} else if (${inlineTag} && ${inlineTag} !== true) {
-					${this.declVars('__CALL_CACHE__ = __RESULT__, __NODE__ = $0', {sys: true})}
-					__RESULT__ = ${this.getResultDecl()};
-					$0 = __RESULT__[__RESULT__.length - 1];
-
-				} else {
-					__RESULT__.push($0);
-				}
-			}
-		`;
-	}
+		isDOMRenderMode = !this.stringResult && !stringRender[this.renderMode];
 
 	return ws`
-		if (${link} !== '?') {
-			if (${opt_inline} && (!${inlineTag} || ${inlineTag} === true)) {
-				${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
-
-			} else if (${inlineTag} && ${inlineTag} !== true) {
-				${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
-				__RESULT__ = ${this.getResultDecl()};
-
-			} else {
-				${this.wrap(`'>'`)}
-			}
-		}
+		${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
+		${isDOMRenderMode ? this.declVars('__NODE__ = $0') : ''}
+		__RESULT__ = __GET_XML_TAG_DECL_END__(
+			__RESULT__,
+			${this.out(`__TAG__`, {unsafe: true})},
+			${Boolean(opt_inline)},
+			${this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true})},
+			${isDOMRenderMode}
+		);
 	`;
 };
 
@@ -120,62 +95,23 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
  * @return {string}
  */
 Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
-	opt_inline = Boolean(opt_inline);
-
 	const
-		link = this.out(`__TAG__`, {unsafe: true}),
-		inlineTag = this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true}),
-		attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
-
-	if (!this.stringResult && !stringRender[this.renderMode]) {
-		return ws`
-			if (${link} !== '?') {
-				if (${inlineTag}) {
-					if (${inlineTag} !== true) {
-						${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
-
-						__RESULT__ =
-							${this.out('__CALL_CACHE__', {unsafe: true})};
-
-						if (${inlineTag} in ${attrCache} === false) {
-							Snakeskin.setAttribute(
-								${this.out(`__NODE__`, {unsafe: true})},
-								${inlineTag},
-								${this.out('__CALL_TMP__', {unsafe: true})}
-							);
-						}
-					}
-
-				} else if (${!opt_inline}) {
-					__RESULT__.pop();
-					$0 = __RESULT__[__RESULT__.length - 1];
-				}
-			}
-		`;
-	}
+		isDOMRenderMode = !this.stringResult && !stringRender[this.renderMode];
 
 	return ws`
-		if (${link} !== '?') {
-			if (${inlineTag}) {
-				if (${inlineTag} !== true) {
-					${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
-
-					__RESULT__ =
-							${this.out('__CALL_CACHE__', {unsafe: true})};
-
-					if (${inlineTag} in ${attrCache} === false) {
-						${this.wrap(ws`
-							' ' + ${inlineTag} + '="' + ${this.out('__CALL_TMP__')} + '"'
-						`)}
-					}
-
-					${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
-				}
-
-			} else if (${!opt_inline}) {
-				${this.wrap(`'</' + ${this.out(`__TAG__`, {unsafe: true})} + '>'`)}
-			}
-		}
+		${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
+		__RESULT__ = __GET_END_XML_TAG_DECL__(
+			__RESULT__,
+			${this.out(`__TAG__`, {unsafe: true})},
+			${Boolean(opt_inline)},
+			${this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true})},
+			${this.out('__ATTR_CACHE__', {unsafe: true})},
+			${this.out('__CALL_CACHE__', {unsafe: true})},
+			${this.out('__CALL_TMP__', {unsafe: true})},
+			${isDOMRenderMode},
+			${this.doctype === 'xml'}
+			${isDOMRenderMode ? `, ${this.out('__NODE__', {unsafe: true})}` : ''}
+		);
 	`;
 };
 

@@ -321,6 +321,13 @@ import {
 					self = callee.Blocks = {};
 
 				var
+					__INLINE_TAGS__ = Snakeskin.inlineTags,
+					__INLINE_TAG__;
+
+				var
+					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
+
+				var
 					__STRING_RESULT__;
 
 				${this.getTplRuntime()}
@@ -367,12 +374,93 @@ import {
 					return __RESULT__;
 				}
 
-				var
-					__INLINE_TAGS__ = Snakeskin.inlineTags,
-					__INLINE_TAG__;
+				function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode) {
+					var __RESULT__ = res;
 
-				var
-					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
+					if (isDOMRenderMode) {
+						if (link !== '?') {
+							${this.wrap('$0')}
+							if (inline && (!inlineTag || inlineTag === true)) {
+								$0 = __RESULT__[__RESULT__.length - 1];
+
+							} else if (inlineTag && inlineTag!== true) {
+								__RESULT__ = ${this.getResultDecl()};
+								$0 = __RESULT__[__RESULT__.length - 1];
+
+							} else {
+								__RESULT__.push($0);
+							}
+						}
+
+					} else {
+						if (link !== '?') {
+							if (inline && (!inlineTag || inlineTag === true)) {
+								${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
+
+							} else if (inlineTag && inlineTag !== true) {
+								__RESULT__ = ${this.getResultDecl()};
+
+							} else {
+								${this.wrap(`'>'`)}
+							}
+						}
+					}
+
+					return __RESULT__;
+				}
+
+				function __GET_END_XML_TAG_DECL__(
+					res,
+					link,
+					inline,
+					inlineTag,
+					attrCache,
+					callCache,
+					callTmp,
+					isDOMRenderMode,
+					isXMLDoctype,
+					node
+
+				) {
+					var __RESULT__ = res;
+
+					if (isDOMRenderMode) {
+						if (link !== '?') {
+							if (inlineTag) {
+								if (inlineTag !== true) {
+									__RESULT__ = callCache;
+									if (inlineTag in attrCache === false) {
+										Snakeskin.setAttribute(node, inlineTag, callTmp);
+									}
+								}
+
+							} else if (!inline) {
+								__RESULT__.pop();
+								$0 = __RESULT__[__RESULT__.length - 1];
+							}
+						}
+
+					} else {
+						if (link !== '?') {
+							if (inlineTag) {
+								if (inlineTag !== true) {
+									__RESULT__ = callCache;
+
+									if (inlineTag in attrCache === false) {
+										${this.wrap(`' ' + inlineTag + '="' + callTmp + '"'`)}
+									}
+
+									${this.wrap(`(isXMLDoctype ? '/' : '') + '>'`)}
+								}
+
+							} else if (!inline) {
+								${this.wrap(`'</' + link + '>'`)}
+							}
+						}
+					}
+
+					return __RESULT__;
+				}
 
 				var
 					__RETURN__ = false,
