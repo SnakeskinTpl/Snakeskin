@@ -325,12 +325,12 @@ import {
 					__INLINE_TAG__;
 
 				var
-					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
-
-				var
 					__STRING_RESULT__;
 
 				${this.getTplRuntime()}
+
+				var
+					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
 
 				var
 					__ATTR_STR__,
