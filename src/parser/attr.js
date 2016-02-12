@@ -155,32 +155,15 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 				val = this.pasteDangerBlocks(this.replaceTplVars(val));
 			}
 
-			res += ws`
-				__ATTR_TMP__ = '${this.pasteTplVarBlocks(val)}';
-				__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (__ATTR_TMP__ != null ? __ATTR_TMP__ : '');
-			`;
+			res += `__APPEND_XML_ATTR_VAL__('${this.pasteTplVarBlocks(val)}');`;
 		}
 
-		const
-			attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
-
 		res += ws`
-			__ATTR_TYPE__ = 'attrKey';
-			__ATTR_TMP__ = '${this.pasteTplVarBlocks(args[0])}';
-
-			if (__ATTR_TMP__ != null && __ATTR_TMP__ !== '') {
-				if (
-					!__ATTR_CONCAT_MAP__[__ATTR_TMP__] ||
-					!${attrCache}[__ATTR_TMP__] || ${attrCache}[__ATTR_TMP__][0] === TRUE
-
-				) {
-					${attrCache}[__ATTR_TMP__] = [];
-				}
-
-				${empty ? `${attrCache}[__ATTR_TMP__].push(TRUE)` : `${attrCache}[__ATTR_TMP__].push(__ATTR_STR__)`};
-			}
-
-			__ATTR_STR__ = __ATTR_TYPE__ = __ATTR_TMP__ = undefined;
+			__GET_XML_ATTR_KEY_DECL__(
+				(__ATTR_TYPE__ = 'attrKey', '${this.pasteTplVarBlocks(args[0])}'),
+				${this.out('__ATTR_CACHE__', {unsafe: true})},
+				${empty}
+			);
 		`;
 	}
 

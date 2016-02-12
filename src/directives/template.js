@@ -327,10 +327,25 @@ import {
 
 				var
 					__ATTR_STR__,
-					__ATTR_TMP__,
 					__ATTR_TYPE__,
 					__ATTR_CACHE__,
 					__ATTR_CONCAT_MAP__;
+
+				function __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {
+					if (val != null && val !== '') {
+						if (!__ATTR_CONCAT_MAP__[val] || !cache[val] || cache[val][0] === TRUE) {
+							cache[val] = [];
+						}
+
+						cache[val].push(empty ? TRUE : __ATTR_STR__);
+					}
+
+					__ATTR_STR__ = __ATTR_TYPE__ = undefined;
+				}
+
+				function __APPEND_XML_ATTR_VAL__(val) {
+					__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '')
+				}
 
 				var
 					__INLINE_TAGS__ = Snakeskin.inlineTags,
