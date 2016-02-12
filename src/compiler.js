@@ -430,6 +430,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							parser.i += commentType.length - 1;
 
 						} else if (commentType === MULT_COMMENT_START) {
+							commentStart = parser.i;
+
 							if (!begin && str.substr(parser.i, JS_DOC.length) === JS_DOC) {
 								if (beginStr && parser.isSimpleOutput()) {
 									parser.save(`'${parser.$$()};`);
@@ -441,7 +443,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 							} else {
 								comment = commentType;
-								commentStart = parser.i;
 
 								if (modLine) {
 									parser.lines[lastLine] += commentType.slice(1);
