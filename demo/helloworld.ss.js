@@ -1,4 +1,4 @@
-/* Snakeskin v7.0.0.beta11, key <["umd","tpls",null,false,"\\n",false,null,"stringConcat",true,null,true,"i18n",null,["{{","}}"],"bem",{"global":["html","undef"],"local":["undef"]},true]>, label <>, includes <>, generated at <1455309468445>.
+/* Snakeskin v7.0.0.beta13, key <["umd","tpls",null,false,"\\n",false,null,"stringConcat",true,null,true,"i18n",null,["{{","}}"],"bem",{"global":["html","undef"],"local":["undef"]},true]>, label <>, includes <>, generated at <1455316440474>.
    This code is generated automatically, don't alter it. */
 (function(global, factory) {
     if (typeof exports === 'object' && typeof module !== 'undefined') {
@@ -63,7 +63,7 @@
     Unsafe.prototype.toString = function() {
         return this.value;
     };
-    __LOCAL__.$__0_0_6c951 = undefined; /* Snakeskin template: demo.helloWorld; name  */
+    __LOCAL__.$__0_0_0b38b = undefined; /* Snakeskin template: demo.helloWorld; name  */
     if (exports.demo == null) {
         exports.demo = {};
     }
@@ -74,7 +74,6 @@
             self = callee.Blocks = {};
         var __INLINE_TAGS__ = Snakeskin.inlineTags,
             __INLINE_TAG__;
-        var $0 = undefined;
         var __STRING_RESULT__;
         var __RESULT__ = '';
 
@@ -89,6 +88,7 @@
         function clearTplResult() {
             __RESULT__ = '';
         }
+        var $0 = undefined;
         var __ATTR_STR__, __ATTR_TYPE__, __ATTR_CACHE__, __ATTR_CONCAT_MAP__ = {
             'class': true
         };
@@ -104,15 +104,17 @@
         }
 
         function __APPEND_XML_ATTR_VAL__(val) {
-            __ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '')
+            __ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '');
         }
 
-        function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, isXMLDoctype) {
+        function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype) {
             var __RESULT__ = res;
             if (typeof link === 'undefined' || link !== '?') {
                 Snakeskin.forEach(cache, function(el, key) {
                     var attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' ');
-                    if (isDOMRenderMode) {
+                    if (stringResult) {
+                        __STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"');
+                    } else if (isDOMRenderMode) {
                         Snakeskin.setAttribute($0, key, attr);
                     } else {
                         __RESULT__ += ' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"');
@@ -122,7 +124,7 @@
             return __RESULT__;
         }
 
-        function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, isXMLDoctype) {
+        function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, stringResult, isXMLDoctype) {
             var __RESULT__ = res;
             if (isDOMRenderMode) {
                 if (link !== '?') {
@@ -139,18 +141,26 @@
             } else {
                 if (link !== '?') {
                     if (inline && (!inlineTag || inlineTag === true)) {
-                        __RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                        if (stringResult) {
+                            __STRING_RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                        } else {
+                            __RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                        }
                     } else if (inlineTag && inlineTag !== true) {
                         __RESULT__ = '';
                     } else {
-                        __RESULT__ += '>';
+                        if (stringResult) {
+                            __STRING_RESULT__ += '>';
+                        } else {
+                            __RESULT__ += '>';
+                        }
                     }
                 }
             }
             return __RESULT__;
         }
 
-        function __GET_END_XML_TAG_DECL__(res, link, inline, inlineTag, attrCache, callCache, callTmp, isDOMRenderMode, isXMLDoctype, node) {
+        function __GET_END_XML_TAG_DECL__(res, link, inline, inlineTag, attrCache, callCache, callTmp, isDOMRenderMode, stringResult, isXMLDoctype, node) {
             var __RESULT__ = res;
             if (isDOMRenderMode) {
                 if (link !== '?') {
@@ -172,12 +182,24 @@
                         if (inlineTag !== true) {
                             __RESULT__ = callCache;
                             if (inlineTag in attrCache === false) {
-                                __RESULT__ += ' ' + inlineTag + '="' + callTmp + '"';
+                                if (stringResult) {
+                                    __STRING_RESULT__ += ' ' + inlineTag + '="' + callTmp + '"';
+                                } else {
+                                    __RESULT__ += ' ' + inlineTag + '="' + callTmp + '"';
+                                }
                             }
-                            __RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                            if (stringResult) {
+                                __STRING_RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                            } else {
+                                __RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                            }
                         }
                     } else if (!inline) {
-                        __RESULT__ += '</' + link + '>';
+                        if (stringResult) {
+                            __STRING_RESULT__ += '</' + link + '>';
+                        } else {
+                            __RESULT__ += '</' + link + '>';
+                        }
                     }
                 }
             }
@@ -229,14 +251,14 @@
         }
         var ____ATTR_CACHE___tag_254 = {};
         ____ATTR_CACHE___tag_254['class'] = ['hello'].concat(____ATTR_CACHE___tag_254['class'] || []);
-        __RESULT__ = __GET_XML_ATTRS_DECL_END__(__RESULT__, ____TAG___tag_254, ____ATTR_CACHE___tag_254, false, false);
+        __RESULT__ = __GET_XML_ATTRS_DECL_END__(__RESULT__, ____TAG___tag_254, ____ATTR_CACHE___tag_254, false, false, false);
         var ____CALL_CACHE___tag_254 = __RESULT__;
-        __RESULT__ = __GET_XML_TAG_DECL_END__(__RESULT__, ____TAG___tag_254, false, __INLINE_TAGS__[____TAG___tag_254], false, false);
+        __RESULT__ = __GET_XML_TAG_DECL_END__(__RESULT__, ____TAG___tag_254, false, __INLINE_TAGS__[____TAG___tag_254], false, false, false);
         __RESULT__ += 'Hello ';
         __RESULT__ += __FILTERS__['htmlObject'](__FILTERS__['html'].call(this, __FILTERS__['attr'].call(this, (__FILTERS__['undef'](name)), 'undefined', __ATTR_TYPE__, __ATTR_CACHE__, TRUE, FALSE), Unsafe, __ATTR_TYPE__, __ATTR_CACHE__, TRUE));
         __RESULT__ += '!';
         var ____CALL_TMP___tag_305 = __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
-        __RESULT__ = __GET_END_XML_TAG_DECL__(__RESULT__, ____TAG___tag_254, false, __INLINE_TAGS__[____TAG___tag_254], ____ATTR_CACHE___tag_254, ____CALL_CACHE___tag_254, ____CALL_TMP___tag_305, false, false);
+        __RESULT__ = __GET_END_XML_TAG_DECL__(__RESULT__, ____TAG___tag_254, false, __INLINE_TAGS__[____TAG___tag_254], ____ATTR_CACHE___tag_254, ____CALL_CACHE___tag_254, ____CALL_TMP___tag_305, false, false, false);
         return __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
     });
     Snakeskin.cache["demo.helloWorld"] = exports.demo.helloWorld; /* Snakeskin template. */
