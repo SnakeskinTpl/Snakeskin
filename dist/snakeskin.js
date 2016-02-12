@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta9
+ * Snakeskin v7.0.0-beta10
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 09 Feb 2016 15:45:49 GMT
+ * Date: 'Fri, 12 Feb 2016 10:42:42 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta9']
+      VERSION: [7, 0, 0, 'beta10']
     };
 
     /**
@@ -2399,7 +2399,7 @@
      * @return {!Parser}
      */
     Parser.prototype.endDir = function () {
-    	if (this.blockStructure && this.getGroup('blockInherit')[this.structure.name]) {
+    	if (this.blockStructure && this.getGroup('blockInherit', 'inlineInherit')[this.structure.name]) {
     		this.blockStructure = this.blockStructure.parent;
     	}
 
@@ -3123,12 +3123,7 @@
     				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
     			}
 
-    			this.inline.pop();
-    			this.structure = this.structure.parent;
-
-    			if (this.blockStructure && this.blockStructure.name === 'const') {
-    				this.blockStructure = this.blockStructure.parent;
-    			}
+    			this.endDir();
     		}
     	};
 
@@ -3518,11 +3513,15 @@
     				var chr = str[j + diff];
     				nextSpace = !chr || ws.test(chr);
 
-    				var dir = undefined;
+    				var dir = undefined,
+    				    replacer = undefined;
+
     				if (struct && struct.adv || el === ADV_LEFT_BOUND) {
     					dir = el === ADV_LEFT_BOUND && next !== LEFT_BOUND && nextSpace;
+    					replacer = dir && ($dirNameShorthands[diff2str] || $dirNameShorthands[next]);
     				} else {
     					dir = Boolean(SHORTS[el] || SHORTS[next2str]) && el !== LEFT_BOUND && nextSpace;
+    					replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
     				}
 
     				var decl = getLineDesc(str, nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j, {
@@ -3538,13 +3537,6 @@
     						error: true,
     						length: 0
     					};
-    				}
-
-    				var replacer = undefined;
-    				if (el === ADV_LEFT_BOUND && next !== LEFT_BOUND) {
-    					replacer = $dirNameShorthands[diff2str] || $dirNameShorthands[next];
-    				} else if (el !== LEFT_BOUND) {
-    					replacer = $dirNameShorthands[next2str] || $dirNameShorthands[el];
     				}
 
     				if (replacer) {
@@ -4736,6 +4728,7 @@
      * @param {string} command - source command
      * @param {?$$SnakeskinParserOutParams=} [opt_params] - additional parameters:
      *
+     *   *) [cache=true] - if is false, then filter results won't be cached in variable
      *   *) [unsafe=false] - if is true, then default filters won't be applied to the resulting string
      *   *) [skipFirstWord=false] - if is true, then the first word in the string will be skipped
      *   *) [skipValidation=true] - if is false, then the resulting string won't be validated
@@ -4745,8 +4738,9 @@
     Parser.prototype.out = function (command, opt_params) {
     	var _this = this;
 
-    	var _any = any(opt_params || {});
+    	var _any = any(Object.assign({ cache: true }, opt_params));
 
+    	var cache = _any.cache;
     	var unsafe = _any.unsafe;
     	var skipFirstWord = _any.skipFirstWord;
     	var skipValidation = _any.skipValidation;
@@ -5196,7 +5190,7 @@
     					filter += '[\'' + current[_i5] + '\']';
     				}
 
-    				tmp = '(' + cacheLink + ' = __FILTERS__' + filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + ')';
+    				tmp = (cache ? '(' + cacheLink + ' = ' : '') + '__FILTERS__' + filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + (cache ? ')' : '');
     			}
 
     			if (!isGlobalFilter) {
@@ -5231,10 +5225,10 @@
 
     			if (!pCountFilter) {
     				var l = filters.length - 1,
-    				    cache = filters[l];
+    				    _cache = filters[l];
 
-    				filters[l] = this.out(cache, { skipFirstWord: true, skipValidation: true, unsafe: true });
-    				var length = filters[l].length - cache.length;
+    				filters[l] = this.out(_cache, { skipFirstWord: true, skipValidation: true, unsafe: true });
+    				var length = filters[l].length - _cache.length;
 
     				wordAddEnd += length;
     				filterAddEnd += length;
@@ -5284,7 +5278,7 @@
     	}
 
     	if (!unsafe) {
-    		res = this.out(removeDefFilters(addDefFilters('(' + res + ')', defFilters.global), cancelFilters).replace(defFilterRgxp, ''), { unsafe: true, skipFirstWord: skipFirstWord, skipValidation: skipValidation });
+    		res = this.out(removeDefFilters(addDefFilters('(' + res + ')', defFilters.global), cancelFilters).replace(defFilterRgxp, ''), { cache: false, unsafe: true, skipFirstWord: skipFirstWord, skipValidation: skipValidation });
 
     		if (isNotPrimitive(res)) {
     			res = '__FILTERS__[\'htmlObject\'](' + res + ')';
@@ -6952,6 +6946,8 @@
 
     							parser.i += commentType.length - 1;
     						} else if (commentType === MULT_COMMENT_START) {
+    							commentStart = parser.i;
+
     							if (!begin && str.substr(parser.i, JS_DOC.length) === JS_DOC) {
     								if (beginStr && parser.isSimpleOutput()) {
     									parser.save('\'' + parser.$$() + ';');
@@ -6962,7 +6958,6 @@
     								beginStr = true;
     							} else {
     								comment = commentType;
-    								commentStart = parser.i;
 
     								if (modLine) {
     									parser.lines[lastLine] += commentType.slice(1);
@@ -8993,7 +8988,8 @@
     	block: true,
     	deferInit: true,
     	group: ['return', 'microTemplate'],
-    	placement: 'template'
+    	placement: 'template',
+    	trim: true
     }, function (command) {
     	if (command.slice(-1) === '/') {
     		this.startInlineDir(null, { command: command.slice(0, -1) });
