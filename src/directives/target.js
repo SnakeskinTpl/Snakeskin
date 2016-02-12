@@ -33,7 +33,7 @@ Snakeskin.addDirective(
 
 		this.startDir();
 		let str = this.declVars(`__TARGET_REF__ = ${obj}`, {sys: true});
-		this.structure.params.ref = this.out('__TARGET_REF__', {unsafe: true});
+		this.structure.params.ref = this.getVar('__TARGET_REF__');
 
 		if (ref) {
 			str += this.out(`var ${ref} = __TARGET_REF__;`, {skipFirstWord: true, unsafe: true});
@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 	function () {
 		const
 			p = this.structure.params,
-			tmp = this.out('__CALL_TMP__', {unsafe: true});
+			tmp = this.getVar('__CALL_TMP__');
 
 		if (p.strongSpace) {
 			this.strongSpace.pop();
@@ -86,7 +86,7 @@ Snakeskin.addDirective(
 			this.strongSpace.push(true);
 
 		} else {
-			this.append(`__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};`);
+			this.append(`__RESULT__ = ${this.getVar('__CALL_CACHE__')};`);
 		}
 	}
 

@@ -29,8 +29,8 @@ Snakeskin.addDirective(
 
 		const
 			p = this.structure.params,
-			tmp = this.out('__CALL_TMP__', {unsafe: true}),
-			pos = this.out('__CALL_POS__', {unsafe: true});
+			tmp = this.getVar('__CALL_TMP__'),
+			pos = this.getVar('__CALL_POS__');
 
 		const def = () => {
 			if (!ref) {
@@ -94,7 +94,7 @@ Snakeskin.addDirective(
 	function () {
 		const
 			p = this.structure.params,
-			tmp = this.out('__CALL_TMP__', {unsafe: true});
+			tmp = this.getVar('__CALL_TMP__');
 
 		if (p.strongSpace) {
 			this.strongSpace.pop();
@@ -129,7 +129,7 @@ Snakeskin.addDirective(
 			default:
 				this.append(ws`
 					${this.out(`${p.ref} = Unsafe(${this.getReturnResultDecl()})`, {unsafe: true})};
-					__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+					__RESULT__ = ${this.getVar('__CALL_CACHE__')};
 				`);
 		}
 	}

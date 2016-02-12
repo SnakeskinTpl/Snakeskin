@@ -68,7 +68,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			tmp = this.out('__CALL_TMP__', {unsafe: true});
+			tmp = this.getVar('__CALL_TMP__');
 
 		this.append(ws`
 			if (__LENGTH__(__RESULT__)) {
@@ -116,7 +116,7 @@ Snakeskin.addDirective(
 		}
 
 		this.append(ws`
-			__RESULT__ = ${this.out('__CALL_CACHE__', {unsafe: true})};
+			__RESULT__ = ${this.getVar('__CALL_CACHE__')};
 			${this.wrap(str)}
 		`);
 	}
