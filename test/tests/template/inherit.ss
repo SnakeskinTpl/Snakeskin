@@ -22,6 +22,10 @@
 
 3 4 5 % %
 
+[[child with jsDoc]]====================================================================================================
+
+bar baz
+
 ========================================================================================================================
 
 - namespace template[%fileName%]
@@ -75,3 +79,20 @@
 		{catch err}
 			%
 		{end}
+
+- template ['parent with jsDoc']()
+	- block methods
+
+		/** foo */
+		bar
+
+	- block root
+		- block body
+
+- template ['child with jsDoc']() extends @['parent with jsDoc']
+	- block head
+		- super
+
+	- block body
+		- super
+		baz
