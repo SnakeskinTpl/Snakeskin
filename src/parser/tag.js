@@ -77,7 +77,7 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 
 	return ws`
 		${this.declVars('__CALL_CACHE__ = __RESULT__', {sys: true})}
-		${isDOMRenderMode ? this.declVars('__NODE__ = $0') : ''}
+		${isDOMRenderMode ? this.declVars('__NODE__ = $0', {sys: true}) : ''}
 		__RESULT__ = __GET_XML_TAG_DECL_END__(
 			__RESULT__,
 			${this.getVar('__TAG__')},
