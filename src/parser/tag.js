@@ -83,7 +83,8 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 			${this.out(`__TAG__`, {unsafe: true})},
 			${Boolean(opt_inline)},
 			${this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true})},
-			${isDOMRenderMode}
+			${isDOMRenderMode},
+			${this.doctype === 'xml'}
 		);
 	`;
 };

@@ -374,7 +374,7 @@ import {
 					return __RESULT__;
 				}
 
-				function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode) {
+				function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, isXMLDoctype) {
 					var __RESULT__ = res;
 
 					if (isDOMRenderMode) {
@@ -395,7 +395,7 @@ import {
 					} else {
 						if (link !== '?') {
 							if (inline && (!inlineTag || inlineTag === true)) {
-								${this.wrap(`'${this.doctype === 'xml' ? '/' : ''}>'`)}
+								${this.wrap(`(isXMLDoctype ? '/' : '') + '>'`)}
 
 							} else if (inlineTag && inlineTag !== true) {
 								__RESULT__ = ${this.getResultDecl()};
