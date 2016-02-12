@@ -1,4 +1,4 @@
-/* Snakeskin v7.0.0.beta10, key <["umd","tpls",null,false,"\\n",false,null,"stringConcat",true,null,true,"i18n",null,["{{","}}"],"bem",{"global":["html","undef"],"local":["undef"]},true]>, label <1454947396671>, includes <>, generated at <1455273918429>.
+/* Snakeskin v7.0.0.beta11, key <["umd","tpls",null,false,"\\n",false,null,"stringConcat",true,null,true,"i18n",null,["{{","}}"],"bem",{"global":["html","undef"],"local":["undef"]},true]>, label <>, includes <>, generated at <1455309468445>.
    This code is generated automatically, don't alter it. */
 (function(global, factory) {
     if (typeof exports === 'object' && typeof module !== 'undefined') {
@@ -63,7 +63,7 @@
     Unsafe.prototype.toString = function() {
         return this.value;
     };
-    __LOCAL__.$__0_0_7b68b = undefined; /* Snakeskin template: demo.helloWorld; name  */
+    __LOCAL__.$__0_0_6c951 = undefined; /* Snakeskin template: demo.helloWorld; name  */
     if (exports.demo == null) {
         exports.demo = {};
     }
@@ -72,12 +72,11 @@
         var __THIS__ = this;
         var callee = exports.demo.helloWorld,
             self = callee.Blocks = {};
-        var __RESULT__ = '',
-            __STRING_RESULT__;
-        var __ATTR_STR__, __ATTR_TMP__, __ATTR_TYPE__, __ATTR_CACHE__, __ATTR_CONCAT_MAP__;
         var __INLINE_TAGS__ = Snakeskin.inlineTags,
             __INLINE_TAG__;
         var $0 = undefined;
+        var __STRING_RESULT__;
+        var __RESULT__ = '';
 
         function getTplResult(opt_clear) {
             var res = __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
@@ -90,6 +89,135 @@
         function clearTplResult() {
             __RESULT__ = '';
         }
+        var __ATTR_STR__, __ATTR_TYPE__, __ATTR_CACHE__, __ATTR_CONCAT_MAP__ = {
+            'class': true
+        };
+
+        function __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {
+            if (val != null && val !== '') {
+                if (!__ATTR_CONCAT_MAP__[val] || !cache[val] || cache[val][0] === TRUE) {
+                    cache[val] = [];
+                }
+                cache[val].push(empty ? TRUE : __ATTR_STR__);
+            }
+            __ATTR_STR__ = __ATTR_TYPE__ = undefined;
+        }
+
+        function __APPEND_XML_ATTR_VAL__(val) {
+            __ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '')
+        }
+
+        function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, isXMLDoctype) {
+            var __RESULT__ = res;
+            if (typeof link === 'undefined' || link !== '?') {
+                Snakeskin.forEach(cache, function(el, key) {
+                    var attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' ');
+                    if (isDOMRenderMode) {
+                        Snakeskin.setAttribute($0, key, attr);
+                    } else {
+                        __RESULT__ += ' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"');
+                    }
+                });
+            }
+            return __RESULT__;
+        }
+
+        function __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, isXMLDoctype) {
+            var __RESULT__ = res;
+            if (isDOMRenderMode) {
+                if (link !== '?') {
+                    __RESULT__ += $0;
+                    if (inline && (!inlineTag || inlineTag === true)) {
+                        $0 = __RESULT__[__RESULT__.length - 1];
+                    } else if (inlineTag && inlineTag !== true) {
+                        __RESULT__ = '';
+                        $0 = __RESULT__[__RESULT__.length - 1];
+                    } else {
+                        __RESULT__.push($0);
+                    }
+                }
+            } else {
+                if (link !== '?') {
+                    if (inline && (!inlineTag || inlineTag === true)) {
+                        __RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                    } else if (inlineTag && inlineTag !== true) {
+                        __RESULT__ = '';
+                    } else {
+                        __RESULT__ += '>';
+                    }
+                }
+            }
+            return __RESULT__;
+        }
+
+        function __GET_END_XML_TAG_DECL__(res, link, inline, inlineTag, attrCache, callCache, callTmp, isDOMRenderMode, isXMLDoctype, node) {
+            var __RESULT__ = res;
+            if (isDOMRenderMode) {
+                if (link !== '?') {
+                    if (inlineTag) {
+                        if (inlineTag !== true) {
+                            __RESULT__ = callCache;
+                            if (inlineTag in attrCache === false) {
+                                Snakeskin.setAttribute(node, inlineTag, callTmp);
+                            }
+                        }
+                    } else if (!inline) {
+                        __RESULT__.pop();
+                        $0 = __RESULT__[__RESULT__.length - 1];
+                    }
+                }
+            } else {
+                if (link !== '?') {
+                    if (inlineTag) {
+                        if (inlineTag !== true) {
+                            __RESULT__ = callCache;
+                            if (inlineTag in attrCache === false) {
+                                __RESULT__ += ' ' + inlineTag + '="' + callTmp + '"';
+                            }
+                            __RESULT__ += (isXMLDoctype ? '/' : '') + '>';
+                        }
+                    } else if (!inline) {
+                        __RESULT__ += '</' + link + '>';
+                    }
+                }
+            }
+            return __RESULT__;
+        }
+
+        function __TARGET_END__(res, stack, ref) {
+            var __RESULT__ = res;
+            if (__LENGTH__(__RESULT__)) {
+                stack.push({
+                    key: undefined,
+                    value: Unsafe(__RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__)
+                });
+            }
+            Snakeskin.forEach(stack, function(el, i) {
+                ref[el.key || ref.length] = el.value;
+            });
+            return __RESULT__;
+        }
+
+        function __PUTIN_CALL__(res, pos, stack) {
+            var __RESULT__ = res;
+            if (pos === true || !pos && __LENGTH__(__RESULT__)) {
+                stack.push(Unsafe(__RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__));
+                __RESULT__ = '';
+            }
+            return __RESULT__;
+        }
+
+        function __PUTIN_TARGET__(res, pos, stack, key) {
+            var __RESULT__ = res;
+            if (pos === true || !pos && __LENGTH__(__RESULT__)) {
+                stack.push({
+                    key: key,
+                    value: Unsafe(__RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__)
+                });
+                __RESULT__ = '';
+            }
+            return __RESULT__;
+        }
         var __RETURN__ = false,
             __RETURN_VAL__;
         var TPL_NAME = "demo.helloWorld",
@@ -100,44 +228,15 @@
             __RESULT__ += '<' + ____TAG___tag_254;
         }
         var ____ATTR_CACHE___tag_254 = {};
-        __ATTR_CONCAT_MAP__ = {
-            'class': true
-        };
         ____ATTR_CACHE___tag_254['class'] = ['hello'].concat(____ATTR_CACHE___tag_254['class'] || []);
-        if (typeof ____TAG___tag_254 === 'undefined' || ____TAG___tag_254 !== '?') {
-            Snakeskin.forEach(____ATTR_CACHE___tag_254, function(el, key) {
-                var attr = el[0] === TRUE ? TRUE : el.join(' ');
-                __RESULT__ += ' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"');
-            });
-        }
-        __ATTR_CONCAT_MAP__ = undefined;
-        if (____TAG___tag_254 !== '?') {
-            if (false && (!__INLINE_TAGS__[____TAG___tag_254] || __INLINE_TAGS__[____TAG___tag_254] === true)) {
-                __RESULT__ += '>';
-            } else if (__INLINE_TAGS__[____TAG___tag_254] && __INLINE_TAGS__[____TAG___tag_254] !== true) {
-                var ____CALL_CACHE___tag_254 = __RESULT__;
-                __RESULT__ = '';
-            } else {
-                __RESULT__ += '>';
-            }
-        }
+        __RESULT__ = __GET_XML_ATTRS_DECL_END__(__RESULT__, ____TAG___tag_254, ____ATTR_CACHE___tag_254, false, false);
+        var ____CALL_CACHE___tag_254 = __RESULT__;
+        __RESULT__ = __GET_XML_TAG_DECL_END__(__RESULT__, ____TAG___tag_254, false, __INLINE_TAGS__[____TAG___tag_254], false, false);
         __RESULT__ += 'Hello ';
-        __RESULT__ += __FILTERS__['htmlObject'](__FILTERS__['html'].call(this, __FILTERS__['attr'].call(this, (__FILTERS__['undef'](name)), 'undefined', __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE, FALSE), Unsafe, __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE));
+        __RESULT__ += __FILTERS__['htmlObject'](__FILTERS__['html'].call(this, __FILTERS__['attr'].call(this, (__FILTERS__['undef'](name)), 'undefined', __ATTR_TYPE__, __ATTR_CACHE__, TRUE, FALSE), Unsafe, __ATTR_TYPE__, __ATTR_CACHE__, TRUE));
         __RESULT__ += '!';
-        if (____TAG___tag_254 !== '?') {
-            if (__INLINE_TAGS__[____TAG___tag_254]) {
-                if (__INLINE_TAGS__[____TAG___tag_254] !== true) {
-                    var ____CALL_TMP___tag_305 = __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
-                    __RESULT__ = ____CALL_CACHE___tag_254;
-                    if (__INLINE_TAGS__[____TAG___tag_254] in ____ATTR_CACHE___tag_254 === false) {
-                        __RESULT__ += ' ' + __INLINE_TAGS__[____TAG___tag_254] + '="' + __FILTERS__['htmlObject'](__FILTERS__['html'].call(this, __FILTERS__['attr'].call(this, (__FILTERS__['undef'](____CALL_TMP___tag_305)), 'undefined', __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE, FALSE), Unsafe, __ATTR_TYPE__, ____ATTR_CACHE___tag_254, TRUE)) + '"';
-                    }
-                    __RESULT__ += '>';
-                }
-            } else if (true) {
-                __RESULT__ += '</' + ____TAG___tag_254 + '>';
-            }
-        }
+        var ____CALL_TMP___tag_305 = __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
+        __RESULT__ = __GET_END_XML_TAG_DECL__(__RESULT__, ____TAG___tag_254, false, __INLINE_TAGS__[____TAG___tag_254], ____ATTR_CACHE___tag_254, ____CALL_CACHE___tag_254, ____CALL_TMP___tag_305, false, false);
         return __RESULT__ instanceof Raw ? __RESULT__.value : __RESULT__;
     });
     Snakeskin.cache["demo.helloWorld"] = exports.demo.helloWorld; /* Snakeskin template. */

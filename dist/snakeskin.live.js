@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta10 (live)
+ * Snakeskin v7.0.0-beta11 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Fri, 12 Feb 2016 10:42:42 GMT
+ * Date: 'Fri, 12 Feb 2016 20:35:38 GMT
  */
 
 (function (global, factory) {
@@ -39,7 +39,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta10']
+      VERSION: [7, 0, 0, 'beta11']
     };
 
     /**
@@ -767,7 +767,7 @@
 
     Snakeskin.setFilterParams('html', {
     	'bind': ['Unsafe', '__ATTR_TYPE__', function (o) {
-    		return o.out('__ATTR_CACHE__', { unsafe: true });
+    		return o.getVar('__ATTR_CACHE__');
     	}, 'TRUE'],
     	'test': function test(val) {
     		return isNotPrimitive(val);
@@ -1211,7 +1211,7 @@
     	'bind': [function (o) {
     		return '\'' + o.doctype + '\'';
     	}, '__ATTR_TYPE__', function (o) {
-    		return o.out('__ATTR_CACHE__', { unsafe: true });
+    		return o.getVar('__ATTR_CACHE__');
     	}, 'TRUE', 'FALSE'],
     	'test': function test(val) {
     		return isNotPrimitive(val);
