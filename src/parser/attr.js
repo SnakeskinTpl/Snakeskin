@@ -59,8 +59,8 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 	return ws`
 		__RESULT__ = __GET_XML_ATTRS_DECL_END__(
 			__RESULT__,
-			${this.out(`__TAG__`, {unsafe: true})},
-			${this.out('__ATTR_CACHE__', {unsafe: true})},
+			${this.getVar('__TAG__')},
+			${this.getVar('__ATTR_CACHE__')},
 			${!this.stringResult && !stringRender[this.renderMode]},
 			${this.doctype === 'xml'}
 		);
@@ -147,7 +147,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		res += ws`
 			__GET_XML_ATTR_KEY_DECL__(
 				(__ATTR_TYPE__ = 'attrKey', '${this.pasteTplVarBlocks(args[0])}'),
-				${this.out('__ATTR_CACHE__', {unsafe: true})},
+				${this.getVar('__ATTR_CACHE__')},
 				${empty}
 			);
 		`;

@@ -59,7 +59,7 @@ Snakeskin.addDirective(
 			this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
 		const
-			attrCache = this.out('__ATTR_CACHE__', {unsafe: true});
+			attrCache = this.getVar('__ATTR_CACHE__');
 
 		if (id) {
 			str += `${attrCache}['id'] = ['${id}'] || ${attrCache}['id'];`;

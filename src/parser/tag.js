@@ -46,7 +46,7 @@ Parser.prototype.getXMLTagDeclStart = function (tag) {
 		str = this.declVars(`__TAG__ = ('${tag}').trim() || '${defaultTag}'`, {sys: true});
 
 	const
-		link = this.out(`__TAG__`, {unsafe: true});
+		link = this.getVar('__TAG__');
 
 	if (!this.stringResult && !stringRender[this.renderMode]) {
 		return ws`
@@ -80,9 +80,9 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 		${isDOMRenderMode ? this.declVars('__NODE__ = $0') : ''}
 		__RESULT__ = __GET_XML_TAG_DECL_END__(
 			__RESULT__,
-			${this.out(`__TAG__`, {unsafe: true})},
+			${this.getVar('__TAG__')},
 			${Boolean(opt_inline)},
-			${this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true})},
+			${`__INLINE_TAGS__[${this.getVar('__TAG__')}]`},
 			${isDOMRenderMode},
 			${this.doctype === 'xml'}
 		);
@@ -103,15 +103,15 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 		${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
 		__RESULT__ = __GET_END_XML_TAG_DECL__(
 			__RESULT__,
-			${this.out(`__TAG__`, {unsafe: true})},
+			${this.getVar(`__TAG__`)},
 			${Boolean(opt_inline)},
-			${this.out(`__INLINE_TAGS__[__TAG__]`, {unsafe: true})},
-			${this.out('__ATTR_CACHE__', {unsafe: true})},
-			${this.out('__CALL_CACHE__', {unsafe: true})},
-			${this.out('__CALL_TMP__', {unsafe: true})},
+			${`__INLINE_TAGS__[${this.getVar('__TAG__')}]`},
+			${this.getVar('__ATTR_CACHE__')},
+			${this.getVar('__CALL_CACHE__')},
+			${this.getVar('__CALL_TMP__')},
 			${isDOMRenderMode},
 			${this.doctype === 'xml'}
-			${isDOMRenderMode ? `, ${this.out('__NODE__', {unsafe: true})}` : ''}
+			${isDOMRenderMode ? `, ${this.getVar('__NODE__')}` : ''}
 		);
 	`;
 };

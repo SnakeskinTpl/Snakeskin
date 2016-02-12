@@ -15,6 +15,17 @@ import { $consts } from '../consts/cache';
 import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
 
 /**
+ * Returns variable ID by the specified name
+ *
+ * @param {string} name - variable name
+ * @return {string}
+ */
+Parser.prototype.getVar = function (name) {
+	const {vars} = this.structure;
+	return vars && vars[name] ? vars[name].value : name;
+};
+
+/**
  * Declares a variable and returns string declaration
  *
  * @param {string} name - variable name

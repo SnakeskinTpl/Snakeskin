@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 			} else {
 				if (path1) {
 					res += `__REQUIRE__ = require(${path1});`;
-					from = this.out(`__REQUIRE__`, {unsafe: true});
+					from = '__REQUIRE__';
 
 				} else {
 					res += `require(${path2});`;
