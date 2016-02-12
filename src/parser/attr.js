@@ -59,25 +59,14 @@ Parser.prototype.getXMLAttrsDeclBody = function (str) {
  * @return {string}
  */
 Parser.prototype.getXMLAttrsDeclEnd = function () {
-	const
-		link = this.out(`__TAG__`, {unsafe: true}),
-		isDOMRenderMode = !this.stringResult && !stringRender[this.renderMode];
-
 	return ws`
-		if (typeof ${link} === 'undefined' || ${link} !== '?') {
-			Snakeskin.forEach(${this.out('__ATTR_CACHE__', {unsafe: true})}, function (el, key) {
-				var
-					attr = el[0] === TRUE ? ${isDOMRenderMode || this.doctype === 'xml' ? 'key' : `TRUE`} : el.join(' ');
-
-				${
-					isDOMRenderMode ?
-						`Snakeskin.setAttribute($0, key, attr);` :
-						this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)
-				}
-			});
-		}
-
-		__ATTR_CONCAT_MAP__ = undefined;
+		__RESULT__ = __GET_XML_ATTRS_DECL_END__(
+			__RESULT__,
+			${this.out(`__TAG__`, {unsafe: true})},
+			${this.out('__ATTR_CACHE__', {unsafe: true})},
+			${!this.stringResult && !stringRender[this.renderMode]},
+			${this.doctype === 'xml'}
+		);
 	`;
 };
 

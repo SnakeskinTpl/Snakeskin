@@ -347,6 +347,27 @@ import {
 					__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '')
 				}
 
+				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, isXMLDoctype) {
+					var __RESULT__ = res;
+
+					if (typeof link === 'undefined' || link !== '?') {
+						Snakeskin.forEach(cache, function (el, key) {
+							var
+								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' ');
+
+							if (isDOMRenderMode) {
+								Snakeskin.setAttribute($0, key, attr);
+
+							} else {
+								${this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)}
+							}
+						});
+					}
+
+					__ATTR_CONCAT_MAP__ = undefined;
+					return __RESULT__;
+				}
+
 				var
 					__INLINE_TAGS__ = Snakeskin.inlineTags,
 					__INLINE_TAG__;
