@@ -82,7 +82,7 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 			__RESULT__,
 			${this.getVar('__TAG__')},
 			${Boolean(opt_inline)},
-			${`__INLINE_TAGS__[${this.getVar('__TAG__')}]`},
+			${this.out('__INLINE_TAGS__[__TAG__]', {unsafe: true})},
 			${isDOMRenderMode},
 			${this.doctype === 'xml'}
 		);
@@ -105,7 +105,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 			__RESULT__,
 			${this.getVar(`__TAG__`)},
 			${Boolean(opt_inline)},
-			${`__INLINE_TAGS__[${this.getVar('__TAG__')}]`},
+			${this.out('__INLINE_TAGS__[__TAG__]', {unsafe: true})},
 			${this.getVar('__ATTR_CACHE__')},
 			${this.getVar('__CALL_CACHE__')},
 			${this.getVar('__CALL_TMP__')},
