@@ -30,10 +30,7 @@ Parser.prototype.getXMLAttrsDecl = function (str) {
  * @return {string}
  */
 Parser.prototype.getXMLAttrsDeclStart = function () {
-	return ws`
-		${this.declVars('__ATTR_CACHE__ = {}', {sys: true})}
-		__ATTR_CONCAT_MAP__ = {'class': true};
-	`;
+	return this.declVars('__ATTR_CACHE__ = {}', {sys: true});
 };
 
 /**

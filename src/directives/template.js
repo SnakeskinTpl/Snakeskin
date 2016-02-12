@@ -329,7 +329,7 @@ import {
 					__ATTR_STR__,
 					__ATTR_TYPE__,
 					__ATTR_CACHE__,
-					__ATTR_CONCAT_MAP__;
+					__ATTR_CONCAT_MAP__ = {'class': true};
 
 				function __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {
 					if (val != null && val !== '') {
@@ -364,7 +364,6 @@ import {
 						});
 					}
 
-					__ATTR_CONCAT_MAP__ = undefined;
 					return __RESULT__;
 				}
 
