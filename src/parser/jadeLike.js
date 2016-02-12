@@ -168,12 +168,17 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				const chr = str[j + diff];
 				nextSpace = !chr || rgxp.ws.test(chr);
 
-				let dir;
+				let
+					dir,
+					replacer;
+
 				if (struct && struct.adv || el === alb) {
 					dir = el === alb && next !== lb && nextSpace;
+					replacer = dir && ($dirNameShorthands[diff2str] || $dirNameShorthands[next]);
 
 				} else {
 					dir = Boolean(SHORTS[el] || SHORTS[next2str]) && el !== lb && nextSpace;
+					replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
 				}
 
 				const decl = getLineDesc(
@@ -193,14 +198,6 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						error: true,
 						length: 0
 					};
-				}
-
-				let replacer;
-				if (el === alb && next !== lb) {
-					replacer = $dirNameShorthands[diff2str] || $dirNameShorthands[next];
-
-				} else if (el !== lb) {
-					replacer = $dirNameShorthands[next2str] || $dirNameShorthands[el];
 				}
 
 				if (replacer) {
