@@ -69,7 +69,6 @@
     "gulp-wrap": "^0.11.0",
     "istanbul": "^0.4.2",
     "jscs": "^2.6.0",
-    "mkdirp": "^0.5.1",
     "monic": "^2.3.9",
     "rollup-plugin-babel": "^2.2.0",
     "std.ss": "^1.0.0",
