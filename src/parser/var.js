@@ -46,7 +46,7 @@ Parser.prototype.declVar = function (name, opt_params) {
 	let
 		{structure} = this;
 
-	if (!fn && tplName && $consts[tplName][name]) {
+	if (!fn && tplName && $consts[tplName] && $consts[tplName][name]) {
 		this.error(`the variable "${name}" is already defined as a constant`);
 	}
 
@@ -90,7 +90,7 @@ Parser.prototype.declVar = function (name, opt_params) {
 		value: link
 	};
 
-	if (tplName) {
+	if (tplName && this.vars[tplName]) {
 		this.vars[tplName][name] = true;
 	}
 
