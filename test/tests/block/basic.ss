@@ -64,6 +64,10 @@ Hello world!
 
 Hello Kobezzza!
 
+[[outer block with iterator]]===========================================================================================
+
+2 3 4
+
 ========================================================================================================================
 
 - namespace block[%fileName%]
@@ -159,3 +163,12 @@ Hello Kobezzza!
 	Hello {name}!
 
 - template ['immediately callable outer block']()
+
+- block ['outer block with iterator']->foo(arr)
+	- block bar
+		- i = 1
+	- forEach arr => el
+		{el + 1}
+
+- template ['outer block with iterator']()
+	+= self.foo([1, 2, 3])
