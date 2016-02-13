@@ -56,7 +56,7 @@ Snakeskin.addDirective(
 
 		this.startInlineDir(null, {name});
 
-		if (!/[.\[]/.test(prop)) {
+		if (!this.outerLink && !/[.\[]/.test(prop)) {
 			this.consts.push(`var ${prop};`);
 		}
 

@@ -232,6 +232,10 @@ Snakeskin.addDirective(
 			return;
 		}
 
+		if (this.outerLink) {
+			return;
+		}
+
 		const
 			block = $blocks[this.tplName][p.name],
 			output = p.params != null;
