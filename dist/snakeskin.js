@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta13
+ * Snakeskin v7.0.0-beta14
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Fri, 12 Feb 2016 22:26:06 GMT
+ * Date: 'Sat, 13 Feb 2016 12:23:57 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta13']
+      VERSION: [7, 0, 0, 'beta14']
     };
 
     /**
@@ -5827,7 +5827,7 @@
     	var structure = this.structure;
 
 
-    	if (!fn && tplName && $consts[tplName][name]) {
+    	if (!fn && tplName && $consts[tplName] && $consts[tplName][name]) {
     		this.error('the variable "' + name + '" is already defined as a constant');
     	}
 
@@ -5868,7 +5868,7 @@
     		value: link
     	};
 
-    	if (tplName) {
+    	if (tplName && this.vars[tplName]) {
     		this.vars[tplName][name] = true;
     	}
 
@@ -8036,7 +8036,7 @@
 
     	this.startInlineDir(null, { name: name });
 
-    	if (!/[.\[]/.test(prop)) {
+    	if (!this.outerLink && !/[.\[]/.test(prop)) {
     		this.consts.push('var ' + prop + ';');
     	}
 
@@ -9606,6 +9606,10 @@
     		obj.text += ws$1(_templateObject2$8, this.eol, this.source.slice(p.from, i), s, e, s, obj.startLine, e, this.source.slice(i, this.i - diff), s, e, this.eol, this.source.slice(this.i - diff, this.i + 1), s, e);
 
     		this.outerLink = this.tplName = undefined;
+    		return;
+    	}
+
+    	if (this.outerLink) {
     		return;
     	}
 
