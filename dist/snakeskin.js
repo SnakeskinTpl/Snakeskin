@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta14
+ * Snakeskin v7.0.0-beta15
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sat, 13 Feb 2016 12:23:57 GMT
+ * Date: 'Wed, 17 Feb 2016 20:04:40 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta14']
+      VERSION: [7, 0, 0, 'beta15']
     };
 
     /**
@@ -788,7 +788,7 @@
     });
 
     var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
-    var classRef = /^&/;
+
     var eol = /\r?\n|\r/;
     var ws = /\s/;
     var lineWs = / |\t/;
@@ -6054,14 +6054,7 @@
     		var tokens = this.getTokens(args[1]);
 
     		for (var _i2 = 0; _i2 < tokens.length; _i2++) {
-    			var val = tokens[_i2];
-
-    			if (classRef.test(val) && ref) {
-    				val = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + val.slice('&amp;'.length) + '\'' + e;
-    				val = this.pasteDangerBlocks(this.replaceTplVars(val));
-    			}
-
-    			res += '__APPEND_XML_ATTR_VAL__(\'' + this.pasteTplVarBlocks(val) + '\');';
+    			res += '__APPEND_XML_ATTR_VAL__(\'' + this.pasteTplVarBlocks(tokens[_i2]) + '\');';
     		}
 
     		res += ws$1(_templateObject4$5, this.pasteTplVarBlocks(args[0]), this.getVar('__ATTR_CACHE__'), empty);
@@ -6235,6 +6228,8 @@
 
     	var bOpen = 0,
     	    bStart = false;
+
+    	var classRef = /^&/;
 
     	var bMap = {
     		'[': true,
