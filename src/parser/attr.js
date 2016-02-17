@@ -11,9 +11,9 @@
 import Parser from './constructor';
 import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
-import { attrKey, classRef } from '../consts/regs';
+import { attrKey } from '../consts/regs';
 import { stringRender } from '../consts/other';
-import { FILTER, LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
+import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 /**
  * Returns string declaration of the specified XML attributes
@@ -134,15 +134,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			tokens = this.getTokens(args[1]);
 
 		for (let i = 0; i < tokens.length; i++) {
-			let
-				val = tokens[i];
-
-			if (classRef.test(val) && ref) {
-				val = `${s}'${ref}'${FILTER}${this.bemFilter} '${val.slice('&amp;'.length)}'${e}`;
-				val = this.pasteDangerBlocks(this.replaceTplVars(val));
-			}
-
-			res += `__APPEND_XML_ATTR_VAL__('${this.pasteTplVarBlocks(val)}');`;
+			res += `__APPEND_XML_ATTR_VAL__('${this.pasteTplVarBlocks(tokens[i])}');`;
 		}
 
 		res += ws`

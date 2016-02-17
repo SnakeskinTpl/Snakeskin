@@ -27,8 +27,7 @@ Snakeskin.forEach(attrSeparators, (el, key) => {
 });
 
 export const
-	emptyCommandParams = new RegExp(`^([^\\s]+?[${tmpSep.join('')}]\\(|\\()`),
-	classRef = /^&/;
+	emptyCommandParams = new RegExp(`^([^\\s]+?[${tmpSep.join('')}]\\(|\\()`);
 
 export const
 	eol = /\r?\n|\r/,

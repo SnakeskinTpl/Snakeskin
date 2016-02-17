@@ -10,7 +10,6 @@
 
 import Parser from './constructor';
 import { ws } from '../helpers/string';
-import { classRef } from '../consts/regs';
 import { stringRender } from '../consts/other';
 import { MICRO_TEMPLATE, RIGHT_BOUND, FILTER } from '../consts/literals';
 
@@ -153,6 +152,9 @@ Parser.prototype.getXMLTagDesc = function (str) {
 	let
 		bOpen = 0,
 		bStart = false;
+
+	const
+		classRef = /^&/;
 
 	const bMap = {
 		'[': true,
