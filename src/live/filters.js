@@ -521,10 +521,10 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 	return res;
 };
 
-Filters['nl2br']['ssFilterParams'] = {
+Snakeskin.setFilterParams('nl2br', {
 	'!html': true,
 	'bind': ['$0', (o) => `'${o.renderMode}'`, (o) => o.stringResult, '$0', (o) => `'${o.doctype}'`]
-};
+});
 
 /**
  * @param str
