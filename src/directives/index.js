@@ -320,7 +320,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		const
 			dirName = this.name = this.getDirName(name),
 			prevDirName = structure.name,
-			ignore = $dirGroups['ignore'][dirName];
+			ignore = this.getGroup('ignore')[dirName];
 
 		switch (p.placement) {
 			case 'template':
@@ -412,7 +412,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return this.error(`the directive "${dirName}" can't be used within the "${dirName}"`);
 		}
 
-		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'ignore')[dirName]) {
+		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'decorator')[dirName]) {
 			return this.error(`decorators can't be used after ${dirName}`);
 		}
 
