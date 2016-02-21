@@ -92,7 +92,7 @@ Snakeskin.addDirective(
 		}
 
 		let str;
-		const command = p.command.replace(/([^\s]\s*)(?=\))$/, (str, $0) => {
+		const command = p.command.replace(/([^\s]\s*)(?=\)$)/, (str, $0) => {
 			if (str[0] !== '(') {
 				wrapParams = `,${wrapParams}`;
 			}

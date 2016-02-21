@@ -97,33 +97,18 @@ Parser.prototype.getWordFromPos = function (str, pos) {
 
 			pCount--;
 			if (!pCount) {
-				let
-					startD = start,
-					endD = j;
-
-				if (nRes) {
-					startD = start + diff;
-					endD = j + diff + pContent.length;
-				}
-
-				nRes =
-					res.slice(0, startD) +
-					(pContent && this.out(pContent, {unsafe: true})) +
-					res.slice(endD);
-
+				nRes = nRes.slice(0, start + diff) + (pContent && this.out(pContent, {unsafe: true}));
 				diff = nRes.length - res.length;
 				pContent = null;
 			}
 		}
 
 		res += el;
-		if (nRes) {
-			nRes += el;
-		}
+		nRes += el;
 	}
 
 	return {
-		finalWord: nRes || res,
+		finalWord: nRes,
 		unary: unaryStr,
 		word: res
 	};
