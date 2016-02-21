@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta16
+ * Snakeskin v7.0.0-beta17
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 21 Feb 2016 13:08:50 GMT
+ * Date: 'Sun, 21 Feb 2016 13:56:36 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta16']
+      VERSION: [7, 0, 0, 'beta17']
     };
 
     /**
@@ -6509,29 +6509,18 @@
 
     			pCount--;
     			if (!pCount) {
-    				var startD = start,
-    				    endD = j;
-
-    				if (nRes) {
-    					startD = start + diff;
-    					endD = j + diff + pContent.length;
-    				}
-
-    				nRes = res.slice(0, startD) + (pContent && this.out(pContent, { unsafe: true })) + res.slice(endD);
-
+    				nRes = nRes.slice(0, start + diff) + (pContent && this.out(pContent, { unsafe: true }));
     				diff = nRes.length - res.length;
     				pContent = null;
     			}
     		}
 
     		res += el;
-    		if (nRes) {
-    			nRes += el;
-    		}
+    		nRes += el;
     	}
 
     	return {
-    		finalWord: nRes || res,
+    		finalWord: nRes,
     		unary: unaryStr,
     		word: res
     	};
@@ -7745,7 +7734,6 @@
     	notEmpty: true,
     	shorthands: { '?': 'void ' }
     }, function (command) {
-    	console.log(1212);
     	this.append(this.out(command, { unsafe: true }) + ';');
     });
 
@@ -9329,7 +9317,7 @@
     	}
 
     	var str = undefined;
-    	var command = p.command.replace(/([^\s]\s*)(?=\))$/, function (str, $0) {
+    	var command = p.command.replace(/([^\s]\s*)(?=\)$)/, function (str, $0) {
     		if (str[0] !== '(') {
     			wrapParams = ',' + wrapParams;
     		}
