@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta15
+ * Snakeskin v7.0.0-beta16
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 17 Feb 2016 20:04:40 GMT
+ * Date: 'Sun, 21 Feb 2016 10:00:49 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta15']
+      VERSION: [7, 0, 0, 'beta16']
     };
 
     /**
@@ -1316,7 +1316,7 @@
     	return res;
     };
 
-    Filters['nl2br']['ssFilterParams'] = {
+    Snakeskin.setFilterParams('nl2br', {
     	'!html': true,
     	'bind': ['$0', function (o) {
     		return '\'' + o.renderMode + '\'';
@@ -1325,7 +1325,7 @@
     	}, '$0', function (o) {
     		return '\'' + o.doctype + '\'';
     	}]
-    };
+    });
 
     /**
      * @param str
@@ -6727,13 +6727,19 @@
 
     	if (IS_NODE && info.file) {
     		var _fs = require('fs'),
-    		    path = require('path');
+    		    path = require('path'),
+    		    findNodeModules = require('find-node-modules');
 
     		filename = info.file = path.normalize(path.resolve(info.file));
 
     		dirname = path.dirname(filename);
     		Snakeskin.LocalVars.include[filename] = templateRank['template'];
     		label = mtime(filename);
+
+    		var modules = (findNodeModules({ cwd: dirname, relative: false }) || []).concat(module.paths);
+    		module.paths = Object.keys(modules.reduce(function (map, el) {
+    			return map[el] = true, map;
+    		}, {}));
     	}
 
     	// <<<
