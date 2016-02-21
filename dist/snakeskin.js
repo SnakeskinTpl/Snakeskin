@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 21 Feb 2016 10:00:49 GMT
+ * Date: 'Sun, 21 Feb 2016 13:08:50 GMT
  */
 
 (function (global, factory) {
@@ -7745,6 +7745,7 @@
     	notEmpty: true,
     	shorthands: { '?': 'void ' }
     }, function (command) {
+    	console.log(1212);
     	this.append(this.out(command, { unsafe: true }) + ';');
     });
 
@@ -9328,9 +9329,12 @@
     	}
 
     	var str = undefined;
-    	var command = p.command.replace(/\((.*?)\)$/, function (str, $0) {
-    		$0 = $0.trim();
-    		return $0 ? '(' + $0 + ',' + wrapParams + ')' : '(' + wrapParams + ')';
+    	var command = p.command.replace(/([^\s]\s*)(?=\))$/, function (str, $0) {
+    		if (str[0] !== '(') {
+    			wrapParams = ',' + wrapParams;
+    		}
+
+    		return $0 + wrapParams;
     	});
 
     	var name = this.getFnName(command);

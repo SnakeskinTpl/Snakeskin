@@ -6,7 +6,7 @@
 		<script src="../node_modules/js-beautify/js/lib/beautify.js"></script>
 		<script src="../node_modules/escaper/dist/escaper.min.js"></script>
 		<script src="../node_modules/esprima/esprima.js"></script>
-		<script src="../dist/snakeskin.min.js"></script>
+		<script src="../dist/snakeskin.js"></script>
 	</head>
 
 	<body>
@@ -14,16 +14,29 @@
 
 		<script type="text/x-snakeskin-template" id="templates">
 			- namespace demo
-			- template helloWorld(name = 'world')
-				< .hello
-					Hello {name}!
+
+			- template wrapper(val1, val2, val3)
+				{val1}
+				{val2}
+				{val3}
+
+			- template ['simple call']()
+				+= @wrapper(1, 2, 3)
+
+			- template ['syntax']()
+				: foo = {bar: @['simple call']}
+
+				? console.log(foo[Object.keys(foo)[0]])
+				///+= foo[Object.keys(foo)[0]]()
+
 		</script>
 
 		<script>
 			var d = {};
 			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
+			console.log(demo.syntax())
 			// console.log(d.code);
-			document.getElementById('test').innerHTML = demo.helloWorld();
+			// document.getElementById('test').innerHTML = demo.helloWorld();
 		</script>
 	</body>
 </html>
