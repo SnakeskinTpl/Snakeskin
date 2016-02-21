@@ -37,5 +37,5 @@
 			< .bar
 
 - template ['syntax']()
-	: foo = {foo: {bar: @['simple call']}}
+	: foo = {bar: @['simple call']}
 	+= foo[Object.keys(foo)[0]]()
