@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta17
+ * Snakeskin v7.0.0-beta18
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 21 Feb 2016 13:56:36 GMT
+ * Date: 'Sun, 21 Feb 2016 14:40:23 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta17']
+      VERSION: [7, 0, 0, 'beta18']
     };
 
     /**
@@ -2974,7 +2974,7 @@
 
     		var dirName = this.name = this.getDirName(name),
     		    prevDirName = structure.name,
-    		    ignore = $dirGroups['ignore'][dirName];
+    		    ignore = this.getGroup('ignore')[dirName];
 
     		switch (p.placement) {
     			case 'template':
@@ -3048,7 +3048,7 @@
     			return this.error('the directive "' + dirName + '" can\'t be used within the "' + dirName + '"');
     		}
 
-    		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'ignore')[dirName]) {
+    		if (this.decorators.length && !ignore && !this.getGroup('rootTemplate', 'decorator')[dirName]) {
     			return this.error('decorators can\'t be used after ' + dirName);
     		}
 
