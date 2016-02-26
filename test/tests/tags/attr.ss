@@ -12,7 +12,7 @@
 
 [[xml doctype]]=========================================================================================================
 
-<?xml version="1.0" encoding="utf-8" ?><div foo="foo" class="foo"></div>
+<?xml version="1.0" encoding="utf-8" ?><div class="foo" foo="foo"></div>
 
 [[with groups]]=========================================================================================================
 
@@ -24,11 +24,11 @@
 
 [[TRUE | FALSE]]========================================================================================================
 
-<div foo class="foo"></div>
+<div class="foo" foo></div>
 
 [[html escaping with object]]===========================================================================================
 
-<div onclick="javascript:alert(&quot;xss!&quot;)" onload="javascript&#31;:alert(&quot;xss!&quot;)" class="foo"></div>
+<div class="foo" onclick="javascript:alert(&quot;xss!&quot;)" onload="javascript&#31;:alert(&quot;xss!&quot;)"></div>
 
 [[mixing with object]]==================================================================================================
 
@@ -40,7 +40,7 @@
 
 [[with parentheses]]====================================================================================================
 
-<div foo="bar() && (bla ? bar((1)) : 2)" (onclick)="alert()" class="foo"></div>
+<div class="foo" foo="bar() && (bla ? bar((1)) : 2)" (onclick)="alert()"></div>
 
 ========================================================================================================================
 

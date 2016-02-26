@@ -20,7 +20,7 @@
 
 [[placeholder and default]]=============================================================================================
 
-<div class="foo__baz"></div> <div bla="true" class="foo"><div class="foo__baz"></div></div>
+<div class="foo__baz"></div> <div class="foo" bla="true"><div class="foo__baz"></div></div>
 
 ========================================================================================================================
 

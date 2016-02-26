@@ -373,7 +373,12 @@ import {
 					var __RESULT__ = res;
 
 					if (typeof link === 'undefined' || link !== '?') {
-						Snakeskin.forEach(cache, function (el, key) {
+						var base = true;
+						var set = function (el, key) {
+							if (!base && {'class': true, 'id': true}[key]) {
+								return;
+							}
+
 							var
 								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' ');
 
@@ -386,7 +391,18 @@ import {
 							} else {
 								${this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)}
 							}
-						});
+						};
+
+						if (cache['id']) {
+							set(cache['id'], 'id');
+						}
+
+						if (cache['class']) {
+							set(cache['class'], 'class');
+						}
+
+						base = false;
+						Snakeskin.forEach(cache, set);
 					}
 
 					return __RESULT__;
