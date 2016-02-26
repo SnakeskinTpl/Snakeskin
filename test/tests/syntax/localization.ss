@@ -16,7 +16,7 @@ Hello(' world', '!') Hello world!
 
 [[with tag]]============================================================================================================
 
-<div class="foo" bar="Hello world!"></div>
+<div class="foo" bar="Hello world!" bla="'Hello world!'"></div>
 
 [[multiline]]===========================================================================================================
 
@@ -24,15 +24,15 @@ Hello world! Hello heaven!
 
 [[static en]]===========================================================================================================
 
-Hello world!
+Hello world! Hello world! <div bar="'Hello'" baz="'world'" bla="'world'"></div>
 
 [[static ru]]===========================================================================================================
 
-Привет world!
+Привет world! Привет world! <div bar="'Привет'" baz="'world'" bla="'world'"></div>
 
 [[custom i18n function]]================================================================================================
 
-<foo bar="bla" baz="3"></foo>
+<foo bar="bla" baz="3" bla="'3'"></foo>
 
 ========================================================================================================================
 
@@ -46,7 +46,7 @@ Hello world!
 	{`Hello`(' world', '!')}
 
 - template ['with tag']()
-	< .foo `bar` = ${`Hello`(' world', '!')}
+	< .foo `bar` = ${`Hello`(' world', '!')} | bla = '${`Hello`} `world`!'
 
 - template multiline()
 	`Hello
@@ -56,6 +56,8 @@ Hello world!
 
 - template ['static en']() @= language './langs/en.json'
 	`Hello` `world`!
+	{`Hello`} {`world`}!
+	< div bar = `Hello` | baz = '`world`' | bla = '${`world`}'
 
 - template ['static ru']() extends @['static en'] @= language './langs/ru.json'
 
@@ -66,4 +68,4 @@ Hello world!
 	- @@i18n = @i18nFn
 
 - template ['custom i18n function']() @= i18nFn 'Snakeskin.Vars.i18n'
-	< foo bar = ${'bla'} | baz = ${`hello`(1, (2))}
+	< foo bar = ${'bla'} | baz = ${`hello`(1, (2))} | bla = '${`hello`(1, (2))}'
