@@ -113,7 +113,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 
 		if (begin) {
 			if (!bOpen) {
-				if (el === '\\' && (STRONG_SYS_ESCAPES[next] || next === I18N && this.localization) || escape) {
+				if (el === '\\' && STRONG_SYS_ESCAPES[next] || escape) {
 					escape = !escape;
 				}
 
@@ -244,11 +244,13 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 						}
 					}
 
-					if (el === LEFT_BOUND) {
-						begin++;
+					if (!cEscape) {
+						if (el === LEFT_BOUND) {
+							begin++;
 
-					} else if (el === RIGHT_BOUND) {
-						begin--;
+						} else if (el === RIGHT_BOUND) {
+							begin--;
+						}
 					}
 				}
 			}

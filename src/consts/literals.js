@@ -82,6 +82,14 @@ export const
 // Escaping
 // >>>
 
+export const BASE_SYS_ESCAPES = {
+	'\\': true,
+	[I18N]: true,
+	[LEFT_BOUND]: true,
+	[SINGLE_COMMENT.charAt(0)]: true,
+	[MULT_COMMENT_START.charAt(0)]: true
+};
+
 export const SYS_ESCAPES = {
 	'\\': true,
 	[I18N]: true,
@@ -100,6 +108,7 @@ Snakeskin.forEach(BASE_SHORTS, (el, key) =>
 
 export const STRONG_SYS_ESCAPES = {
 	'\\': true,
+	[I18N]: true,
 	[SINGLE_COMMENT.charAt(0)]: true,
 	[MULT_COMMENT_START.charAt(0)]: true
 };

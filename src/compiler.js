@@ -35,6 +35,7 @@ import {
 	FILTER,
 	SHORTS,
 	SYS_ESCAPES,
+	BASE_SYS_ESCAPES,
 	ESCAPES,
 	ESCAPES_END,
 	ESCAPES_END_WORD,
@@ -211,27 +212,22 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	const
 		parser = new Parser(text, any(Object.assign({info}, p)));
 
-	// If is true, then a directive declaration is started,
-	// ie { ... }
-	let
-		begin = false,
-		pseudoI = false;
+	// The number of open { symbols
+	let begin = 0;
+
+	// If is true, then string declaration is started
+	let beginStr = false;
 
 	let
 		command = '',
 		commandLength = 0,
-		filterStart = false;
+		filterStart = false,
+		pseudoI = false;
 
 	const
 		commandTypeRgxp = /[^\s]+/,
 		commandRgxp = /[^\s]+\s*/,
 		ignoreRgxp = new RegExp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`, 'g');
-
-	// The number of open { symbols inside a directive
-	let fakeBegin = 0;
-
-	// If is true, then string declaration is started
-	let beginStr = false;
 
 	// If is true, then a previous symbol wasn't escaped
 	let escape = false;
@@ -389,7 +385,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 			clrL = false;
 
 			if (!begin && !space && !parser.sysSpace) {
-				if (!cEscape && (isPrefStart ? el === alb : el === lb)) {
+				if (isPrefStart ? el === alb : el === lb) {
 					parser.prevSpace = parser.space;
 
 				} else {
@@ -405,7 +401,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		}
 
 		if (!bOpen) {
-			if (el === '\\' && SYS_ESCAPES[next] && (!begin || next === I18N && parser.localization) || escape) {
+			if (el === '\\' && ((begin ? BASE_SYS_ESCAPES : SYS_ESCAPES)[next]) || escape) {
 				escape = !escape;
 			}
 
@@ -487,7 +483,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						if (el === '(') {
 							i18nPOpen++;
 
-						} else if (el === ')' && !--i18nPOpen) {
+						} else if (el === ')' && i18nPOpen && !--i18nPOpen) {
 							el = el + (!i18nInterpolation || i18nTpl ? '' : rb);
 						}
 					}
@@ -626,11 +622,11 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 				}
 
-				if (!i18nStart) {
+				if (!i18nStart && !cEscape) {
 					// Directive is started
-					if (isPrefStart || (el === lb && (begin || !cEscape))) {
-						if (begin) {
-							fakeBegin++;
+					if (isPrefStart || el === lb) {
+						if (begin && !cEscape) {
+							begin++;
 
 						} else if (!parser.needPrfx || isPrefStart) {
 							if (isPrefStart) {
@@ -643,14 +639,14 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							}
 
 							bEnd = true;
-							begin = true;
+							begin = 1;
 
 							continue;
 						}
 
 					// Directive is ended
-					} else if (el === rb && begin && (!fakeBegin || !(fakeBegin--))) {
-						begin = false;
+					} else if (el === rb && begin && !--begin) {
+						begin = 0;
 
 						const raw = command;
 						command = command.trim();
@@ -741,7 +737,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						parser.text = false;
 
 						if (fnRes === false) {
-							begin = false;
+							begin = 0;
 							beginStr = false;
 						}
 

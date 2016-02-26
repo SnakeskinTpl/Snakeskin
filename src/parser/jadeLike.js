@@ -558,7 +558,7 @@ function getLineDesc(str, i, params) {
 						inline = str.substr(j, INLINE.length) === INLINE;
 					}
 
-				} else {
+				} else if (!cEscape) {
 					if (begin) {
 						if (el === lb) {
 							begin++;
