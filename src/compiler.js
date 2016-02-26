@@ -412,7 +412,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 				continue;
 			}
 
-			if (!cEscape) {
+			if (!cEscape && !i18nStart) {
 				const
 					commentType = getCommentType(str, parser.i),
 					endComment = getCommentType(str, parser.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
