@@ -115,7 +115,7 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			str = this.out(command, {unsafe: true});
+			str = this.out(`${command}|undef`, {unsafe: true});
 		}
 
 		this.append(ws`
