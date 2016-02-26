@@ -40,7 +40,7 @@
 
 [[with parentheses]]====================================================================================================
 
-<div foo="bar() && (bla ? bar((1)) : 2)" class="foo"></div>
+<div foo="bar() && (bla ? bar((1)) : 2)" (onclick)="alert()" class="foo"></div>
 
 ========================================================================================================================
 
@@ -72,4 +72,4 @@
 	< .foo ${{class: 'bar'}} = foo | ${'bar'} = ${{class: 'bar'}} | ${''} = hello | ${'baz'} = ${''}
 
 - template ['with parentheses']()
-	< .foo foo = bar() && (bla ? bar((1)) : 2)
+	< .foo foo = bar() && (bla ? bar((1)) : 2) | (onclick) = alert()
