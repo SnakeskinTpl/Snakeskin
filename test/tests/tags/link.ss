@@ -39,22 +39,22 @@
 - namespace tags[%fileName%]
 
 - template ['with default value']()
-	- link (href = foo.css)
+	- link (( href = foo.css ))
 
 - template ['with css value']()
-	- link css (href = foo.css)
+	- link css (( href = foo.css ))
 
 - template ['with acss value']()
-	- link acss (href = foo.css)
+	- link acss (( href = foo.css ))
 
 - template ['with icon value']()
-	- link icon (href = foo.ico)
+	- link icon (( href = foo.ico ))
 
 - template ['with custom value']()
-	- link foo (href = foo.css)
+	- link foo (( href = foo.css ))
 
 - template ['with merging attributes']()
-	- link (href = foo.css | rel = alternate stylesheet)
+	- link (( href = foo.css | rel = alternate stylesheet ))
 
 - template ['with auto value']()
 	- link

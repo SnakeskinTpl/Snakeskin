@@ -40,7 +40,7 @@ Snakeskin.addDirective(
 			parts = this.getTokens(command),
 			type = types[parts[0].toLowerCase()] || this.replaceTplVars(parts[0]);
 
-		this.append(this.getXMLTagDecl('style', `(type = ${type}) ${parts.slice(1).join(' ')}`));
+		this.append(this.getXMLTagDecl('style', `(( type = ${type} )) ${parts.slice(1).join(' ')}`));
 	},
 
 	function () {

@@ -55,6 +55,6 @@
 			< .bar
 
 - template ['with merging attributes']()
-	# script (type = text/x-snakeskin)
+	# script (( type = text/x-snakeskin ))
 		- template foo()
 			< .bar

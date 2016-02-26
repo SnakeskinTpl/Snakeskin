@@ -50,7 +50,7 @@
 	< .foo foo
 
 - template ['with groups']()
-	< .foo (class = bar) ng-(baz = foo bar | foo = ((1)))
+	< .foo (( class = bar )) ng-(( baz = foo bar | foo = ((1)) ))
 
 - template ['with object']()
 	< .foo ${{class: 'bar', ng: {baz: 'foo bar'}, 'bar-': {foo: 'bla'}}}
@@ -62,7 +62,7 @@
 	< .foo ${{onclick: 'javascript:alert("xss!")'}|!html} | ${{onload: 'javascript:alert("xss!")'}}
 
 - template ['mixing with object']()
-	< .foo (${{class: 'bar', ng: {baz: 'foo bar'}, bar: TRUE}}) (bar = bla) ng-(bar = foo)
+	< .foo (( ${{class: 'bar', ng: {baz: 'foo bar'}, bar: TRUE}} )) (( bar = bla )) ng-(( bar = foo ))
 
 - template ['interpolation']()
 	< .foo ${{class: 'bar'}} = foo | ${'bar'} = ${{class: 'bar'}} | ${''} = hello | ${'baz'} = ${''}

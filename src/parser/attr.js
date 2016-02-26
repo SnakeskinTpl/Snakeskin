@@ -13,7 +13,6 @@ import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
 import { attrKey } from '../consts/regs';
 import { stringRender } from '../consts/other';
-import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
 /**
  * Returns string declaration of the specified XML attributes
@@ -84,12 +83,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		{group = '', separator = '-'} = params;
 
 	const
-		parts = params.attr.split(' | '),
-		ref = this.bemRef;
-
-	const
-		s = ADV_LEFT_BOUND + LEFT_BOUND,
-		e = RIGHT_BOUND;
+		parts = params.attr.split(' | ');
 
 	let res = '';
 	for (let i = 0; i < parts.length; i++) {
@@ -159,7 +153,10 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 	str = this.replaceTplVars(str, {replace: true});
 
 	const
-		groups = [];
+		groups = [],
+		groupBounds = ['(( ', ' ))'],
+		groupLength = groupBounds[0].length,
+		pOpenLength = groupBounds[0].trim().length;
 
 	let
 		group = '',
@@ -168,46 +165,47 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 		pOpen = 0;
 
 	for (let i = 0; i < str.length; i++) {
-		let
+		const
 			el = str[i],
-			next = str[i + 1];
+			chunk = str.substr(i, groupLength);
 
 		if (!pOpen) {
-			if (attrSeparators[el] && next === '(') {
-				pOpen++;
-				i++;
+			if (attrSeparators[el] && str.substr(i + 1, groupLength) === groupBounds[0]) {
+				pOpen = pOpenLength;
+				i += groupLength;
 				separator = el;
 				continue;
 			}
 
-			if (el === '(') {
-				pOpen++;
+			if (chunk === groupBounds[0]) {
+				pOpen = pOpenLength;
+				i += groupLength - 1;
 				separator = '';
 				continue;
 			}
 		}
 
 		if (pOpen) {
-			if (el === '(') {
+			if (chunk === groupBounds[1] && pOpen === pOpenLength) {
+				groups.push({
+					attr: attr.trim(),
+					group: (attrKey.exec(group) || [])[1],
+					separator
+				});
+
+				pOpen = 0;
+				group = '';
+				attr = '';
+				separator = '';
+
+				i += groupLength - 1;
+				continue;
+
+			} else if (el === '(') {
 				pOpen++;
 
 			} else if (el === ')') {
 				pOpen--;
-
-				if (!pOpen) {
-					groups.push({
-						attr: attr.trim(),
-						group: (attrKey.exec(group) || [])[1],
-						separator
-					});
-
-					group = '';
-					attr = '';
-					separator = '';
-
-					i++;
-					continue;
-				}
 			}
 		}
 

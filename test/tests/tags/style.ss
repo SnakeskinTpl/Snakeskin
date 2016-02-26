@@ -59,6 +59,6 @@
 			color red
 
 - template ['with merging attributes']()
-	# style (type = text/x-stylus)
+	# style (( type = text/x-stylus ))
 		.foo
 			color red

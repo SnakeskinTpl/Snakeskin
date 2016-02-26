@@ -54,7 +54,7 @@ Snakeskin.addDirective(
 			type = types[parts[0].toLowerCase()] || this.replaceTplVars(parts[0]);
 
 		const
-			typeStr = `(rel = ${type.rel ? `${type.rel}` : type}${type.type ? ` | type = ${type.type}` : ''})`;
+			typeStr = `(( rel = ${type.rel ? `${type.rel}` : type}${type.type ? ` | type = ${type.type}` : ''} ))`;
 
 		this.append(this.getXMLTagDecl('link', `${typeStr} ${parts.slice(1).join(' ')}`));
 	},

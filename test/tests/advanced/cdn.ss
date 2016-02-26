@@ -42,111 +42,111 @@
 		* angularjs
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/angularjs/${v}/angular.min.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/angularjs/${v}/angular.min.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/angularjs/${v}/angular.min.js)
+					- script (( src = http://yastatic.net/angularjs/${v}/angular.min.js ))
 
 		* dojo
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/dojo/${v}/dojo/dojo.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/dojo/${v}/dojo/dojo.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/dojo/${v}/dojo/dojo.js)
+					- script (( src = http://yastatic.net/dojo/${v}/dojo/dojo.js ))
 
 		* extcore
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/ext-core/${v}/ext-core.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/ext-core/${v}/ext-core.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/ext-core/${v}/ext-core.min.js)
+					- script (( src = http://yastatic.net/ext-core/${v}/ext-core.min.js ))
 
 		* fontawesome
 			- target {}
 				* maxcdn
-					- link (href = http://maxcdn.bootstrapcdn.com/font-awesome/${v}/css/font-awesome.min.css)
+					- link (( href = http://maxcdn.bootstrapcdn.com/font-awesome/${v}/css/font-awesome.min.css ))
 
 		* jquery
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/jquery/${v}/jquery.min.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/jquery/${v}/jquery.min.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/jquery/${v}/jquery.min.js)
+					- script (( src = http://yastatic.net/jquery/${v}/jquery.min.js ))
 
 		* jquerymobile
 			- target {}
 				* google
-					- link (href = http://ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.css)
-					- script (src = http://ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.js)
+					- link (( href = http://ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.css ))
+					- script (( src = http://ajax.googleapis.com/ajax/libs/jquerymobile/${v}/jquery.mobile.min.js ))
 
 				* yandex
-					- link (href = http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.css)
-					- script (src = http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.js)
+					- link (( href = http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.css ))
+					- script (( src = http://yastatic.net/jquery/mobile/${v}/jquery.mobile.min.js ))
 
 		* jqueryui
 			- target {}
 				* google
-					- link (href = http://ajax.googleapis.com/ajax/libs/jqueryui/${v}/themes/smoothness/jquery-ui.css)
-					- script (src = http://ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.min.js)
+					- link (( href = http://ajax.googleapis.com/ajax/libs/jqueryui/${v}/themes/smoothness/jquery-ui.css ))
+					- script (( src = http://ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.min.js ))
 
 				* yandex
-					- link (href = http://yastatic.net/jquery-ui/${v}/themes/smoothness/jquery-ui.min.css)
-					- script (src = http://yastatic.net/jquery-ui/${v}/jquery-ui.min.js)
+					- link (( href = http://yastatic.net/jquery-ui/${v}/themes/smoothness/jquery-ui.min.css ))
+					- script (( src = http://yastatic.net/jquery-ui/${v}/jquery-ui.min.js ))
 
 		* lodash
 			- target {}
 				* yandex
-					- script (src = http://yastatic.net/lodash/${v}/lodash.min.js)
+					- script (( src = http://yastatic.net/lodash/${v}/lodash.min.js ))
 
 		* mootools
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/mootools/${v}/mootools-yui-compressed.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/mootools/${v}/mootools-yui-compressed.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/mootools/${v}/mootools.min.js)
+					- script (( src = http://yastatic.net/mootools/${v}/mootools.min.js ))
 
 		* prototype
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/prototype/${v}/prototype.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/prototype/${v}/prototype.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/prototype/${v}/prototype.min.js)
+					- script (( src = http://yastatic.net/prototype/${v}/prototype.min.js ))
 
 		* script.aculo.us
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/scriptaculous/${v}/scriptaculous.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/scriptaculous/${v}/scriptaculous.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/scriptaculous/${v}/min/scriptaculous.js)
+					- script (( src = http://yastatic.net/scriptaculous/${v}/min/scriptaculous.js ))
 
 		* swfobject
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/swfobject/${v}/swfobject.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/swfobject/${v}/swfobject.js ))
 
 				* yandex
-					- script (src = http://yastatic.net/swfobject/${v}/swfobject.min.js)
+					- script (( src = http://yastatic.net/swfobject/${v}/swfobject.min.js ))
 
 		* three.js
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/threejs/${v}/three.min.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/threejs/${v}/three.min.js ))
 
 		* underscore.js
 			- target {}
 				* yandex
-					- script (src = http://yastatic.net/underscore/${v}/underscore-min.js)
+					- script (( src = http://yastatic.net/underscore/${v}/underscore-min.js ))
 
 		* webfontloader
 			- target {}
 				* google
-					- script (src = http://ajax.googleapis.com/ajax/libs/webfont/${v}/webfont.js)
+					- script (( src = http://ajax.googleapis.com/ajax/libs/webfont/${v}/webfont.js ))
 
 	- block libraries() =>
 
@@ -166,9 +166,9 @@
 		- putIn libraries.bootstrap
 			- target {}
 				* maxcdn
-					- link (href = http://maxcdn.bootstrapcdn.com/bootstrap/${v}/css/bootstrap.min.css)
-					- script (src = http://maxcdn.bootstrapcdn.com/bootstrap/${v}/js/bootstrap.min.js)
+					- link (( href = http://maxcdn.bootstrapcdn.com/bootstrap/${v}/css/bootstrap.min.css ))
+					- script (( src = http://maxcdn.bootstrapcdn.com/bootstrap/${v}/js/bootstrap.min.js ))
 
 				* yandex
-					- link (href = http://yastatic.net/bootstrap/${v}/css/bootstrap.min.css)
-					- script (src = http://yastatic.net/bootstrap/${v}/js/bootstrap.min.js)
+					- link (( href = http://yastatic.net/bootstrap/${v}/css/bootstrap.min.css ))
+					- script (( src = http://yastatic.net/bootstrap/${v}/js/bootstrap.min.js ))
