@@ -48,6 +48,9 @@ import {
 
 } from './consts/literals';
 
+export let
+	$rTemplates;
+
 /**
  * Compiles Snakeskin templates
  *
@@ -100,6 +103,7 @@ import {
  * @return {(string|boolean|null)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info) {
+	$rTemplates = {};
 	src = src || '';
 
 	/** @type {$$SnakeskinParams} */

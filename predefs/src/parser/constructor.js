@@ -131,8 +131,11 @@ $$SnakeskinParser.prototype.inline;
 /** @type {boolean} */
 $$SnakeskinParser.prototype.text;
 
-/** @type {!Object<{id: number, file: (string|undefined)}>} */
+/** @type {!Object<{files: Array<(string|undefined)>}>} */
 $$SnakeskinParser.prototype.namespaces;
+
+/** @type {!Object<{file: (string|undefined), renderAs: (string|undefined)}>} */
+$$SnakeskinParser.prototype.templates;
 
 /** @type {?string} */
 $$SnakeskinParser.prototype.tplName;

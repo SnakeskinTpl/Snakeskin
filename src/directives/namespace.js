@@ -27,7 +27,14 @@ Snakeskin.addDirective(
 		}
 
 		this.environment.namespace = nms = this.getBlockName(nms);
-		this.namespaces[nms] = this.namespaces[nms] || {file: this.info.file, id: this.environment.id};
+
+		if (this.namespaces[nms]) {
+			this.namespaces[nms].files.push(this.info.file);
+
+		} else {
+			this.namespaces[nms] = {files: [this.info.file]};
+		}
+
 		this.scope.push(`exports${concatProp(nms)}`);
 	}
 

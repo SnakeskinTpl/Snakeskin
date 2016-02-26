@@ -55,10 +55,6 @@
 	|< .foo
 	\< .bar
 
-- template escaping()
-	|< .foo
-	\< .bar
-
 /// Comment
 /* /// Comment */
 - template comments()

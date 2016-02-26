@@ -129,12 +129,6 @@ Hello Kobezzza!
 
 	+= self.foo()
 
-- template ['callable block with default parameter binding']()
-	- block foo(@params = {name: 'Persik'})
-		Hello {@name}!
-
-	+= self.foo()
-
 - template ['callable block with nullable default parameter binding']()
 	- block foo(@params? = {name: 'Persik'})
 		Hello {params ? @name : 'Kobezzza'}!

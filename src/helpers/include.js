@@ -65,7 +65,7 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 			const
 				src = path.normalize(arr[i]);
 
-			if (src in include && include[src] > templateRank[type]) {
+			if (src in include && include[src] >= templateRank[type]) {
 				continue;
 			}
 

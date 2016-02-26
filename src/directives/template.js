@@ -52,12 +52,6 @@ import {
 				return this.error(`the directive "${this.name}" can't be declared without namespace`);
 			}
 
-			if (this.namespaces[nms].id !== env.id && this.namespaces[nms].file !== env.filename) {
-				return this.error(
-					`the namespace "${nms}" already used for templates in another file (${this.namespaces[nms].file})`
-				);
-			}
-
 			this.startTemplateI = this.i + 1;
 			this.startTemplateLine = this.info.line;
 
@@ -194,7 +188,28 @@ import {
 				return this.error(`invalid "${this.name}" name`);
 			}
 
+			const rName = this.pasteDangerBlocks(
+				this.replaceDangerBlocks(tplName)
+					.replace(nmsRgxp, '.')
+					.replace(nmeRgxp, '')
+
+			).replace(/\.['"]/g, '.').replace(/['"]$/, '');
+
+			if (this.templates[rName]) {
+				const
+					{file, renderAs} = this.templates[rName];
+
+				if (this.file !== file || this.renderAs === renderAs) {
+					return this.error(`the template "${tplName}" already defined`);
+				}
+			}
+
 			setTplName();
+			this.templates[rName] = {
+				file: this.info.file,
+				renderAs: this.renderAs
+			};
+
 			this.vars[tplName] = {};
 			this.blockTable = {};
 			this.blockStructure = {
