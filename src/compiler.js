@@ -50,9 +50,6 @@ import {
 
 } from './consts/literals';
 
-export let
-	$rTemplates;
-
 /**
  * Compiles Snakeskin templates
  *
@@ -105,7 +102,6 @@ export let
  * @return {(string|boolean|null)}
  */
 Snakeskin.compile = function (src, opt_params, opt_info) {
-	$rTemplates = {};
 	src = src || '';
 
 	/** @type {$$SnakeskinParams} */
@@ -130,7 +126,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		}, opt_params)
 	);
 
-	// Set super global variables
 	Snakeskin.forEach(p.vars, (el, key) => {
 		Snakeskin.Vars[key] = el;
 	});
@@ -212,11 +207,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	const
 		parser = new Parser(text, any(Object.assign({info}, p)));
 
-	// The number of open { symbols
-	let begin = 0;
-
-	// If is true, then string declaration is started
-	let beginStr = false;
+	let
+		begin = 0,
+		beginStr = false;
 
 	let
 		command = '',
@@ -229,31 +222,24 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		commandRgxp = /[^\s]+\s*/,
 		ignoreRgxp = new RegExp(`${r(alb)}?${r(lb)}__.*?__.*?${r(rb)}`, 'g');
 
-	// If is true, then a previous symbol wasn't escaped
-	let escape = false;
-
-	// If isn't false, then a comment block is started (///, /*, /**)
 	let
+		escape = false,
 		comment = false,
 		commentStart = 0;
 
-	// If is true, then JSDoc is started
 	let
 		jsDoc = false,
 		jsDocStart = false;
 
-	// Debug flags
 	let
 		freezeI = 0,
 		freezeTmp = 0,
 		prfxI = 0;
 
-	// The flags for working with whitespaces
 	let
 		prevCommentSpace = false,
 		clrL = true;
 
-	// The flags for working with string literals and regular expressions inside a directive
 	let
 		bOpen = false,
 		bEnd,
@@ -261,7 +247,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		part = '',
 		rPart = '';
 
-	// The flags for working with localization literals
 	let
 		i18nStr = '',
 		i18nStart = false,
