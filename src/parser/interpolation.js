@@ -253,7 +253,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 				}
 			}
 
-			if (ESCAPES[el] && (el !== '/' || bEnd) && !bOpen) {
+			if (ESCAPES[el] && !bOpen && !cEscape && (el !== '/' || bEnd)) {
 				bOpen = el;
 
 			} else if (bOpen && (el === '\\' || bEscape)) {

@@ -793,7 +793,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 				}
 
-				if (ESCAPES[el] && (el !== '/' || bEnd && command) && !bOpen) {
+				if (ESCAPES[el] && !bOpen && !cEscape && (el !== '/' || bEnd && command)) {
 					bOpen = el;
 
 				} else if (bOpen && (el === '\\' || bEscape)) {

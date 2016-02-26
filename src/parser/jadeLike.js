@@ -407,8 +407,7 @@ function getLineDesc(str, i, params) {
 
 	let
 		bOpen = false,
-		bEnd = true,
-		bEscape = false;
+		bEnd = true;
 
 	let
 		begin = 0,
@@ -427,7 +426,7 @@ function getLineDesc(str, i, params) {
 			el = str[j],
 			cEscape = escape;
 
-		if (!bOpen && (el === '\\' || escape)) {
+		if (el === '\\' || escape) {
 			escape = !escape;
 		}
 
@@ -575,20 +574,19 @@ function getLineDesc(str, i, params) {
 				}
 			}
 
-			if ((ESCAPES[el] || el === I18N && i18n) && (el !== '/' || bEnd) && !bOpen) {
-				bOpen = el;
+			if (!cEscape) {
+				if ((ESCAPES[el] || el === I18N && i18n) && !bOpen && (el !== '/' || bEnd)) {
+					bOpen = el;
 
-			} else if (bOpen && (el === '\\' || bEscape)) {
-				bEscape = !bEscape;
+				} else if ((ESCAPES[el] || el === I18N && i18n) && bOpen === el) {
+					bOpen = false;
 
-			} else if ((ESCAPES[el] || el === I18N && i18n) && bOpen === el && !bEscape) {
-				bOpen = false;
+					if (concatLine === 1) {
+						concatLine = false;
+					}
 
-				if (concatLine === 1) {
-					concatLine = false;
+					bEnd = false;
 				}
-
-				bEnd = false;
 			}
 		}
 
