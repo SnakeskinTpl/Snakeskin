@@ -172,7 +172,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 
 					if (this.language) {
 						if (i18nStart) {
-							let word = this.language[i18nStr] || '';
+							const word = this.language[i18nStr] || '';
 							el = `'${applyDefEscape(isFunction(word) ? word() : word)}'`;
 							i18nStart = false;
 							i18nStr = '';
@@ -315,7 +315,7 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 
 				if (this.language) {
 					if (i18nStart) {
-						let word = this.language[i18nStr] || '';
+						const word = this.language[i18nStr] || '';
 						el = isFunction(word) ? word() : word;
 						i18nStart = false;
 						i18nStr = '';
