@@ -748,47 +748,46 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 			}
 		}
 
-		// Working with a command
+		// Working with a directive
 		if (begin) {
 			if (beginStr && parser.isSimpleOutput()) {
 				parser.save(`'${parser.$$()};`);
 				beginStr = false;
 			}
 
-			// Working with literals
-			if (!bOpen) {
-				let skip = false;
-				if (el === FILTER && rgxp.filterStart.test(next)) {
-					filterStart = true;
-					bEnd = false;
-					skip = true;
-
-				} else if (filterStart && rgxp.ws.test(el)) {
-					filterStart = false;
-					bEnd = true;
-					skip = true;
-				}
-
-				if (!skip) {
-					if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
-						bEnd = true;
-						rPart = '';
-
-					} else if (rgxp.bEnd.test(el)) {
-						bEnd = false;
-					}
-
-					if (rgxp.sysWord.test(el)) {
-						part += el;
-
-					} else {
-						rPart = part;
-						part = '';
-					}
-				}
-			}
-
 			if (!i18nStart) {
+				if (!bOpen) {
+					let skip = false;
+					if (el === FILTER && rgxp.filterStart.test(next)) {
+						filterStart = true;
+						bEnd = false;
+						skip = true;
+
+					} else if (filterStart && rgxp.ws.test(el)) {
+						filterStart = false;
+						bEnd = true;
+						skip = true;
+					}
+
+					if (!skip) {
+						if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
+							bEnd = true;
+							rPart = '';
+
+						} else if (rgxp.bEnd.test(el)) {
+							bEnd = false;
+						}
+
+						if (rgxp.sysWord.test(el)) {
+							part += el;
+
+						} else {
+							rPart = part;
+							part = '';
+						}
+					}
+				}
+
 				if (ESCAPES[el] && (el !== '/' || bEnd && command) && !bOpen) {
 					bOpen = el;
 
