@@ -519,129 +519,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 				}
 
-				// Directive is started
-				if (isPrefStart || (el === lb && (begin || !cEscape))) {
-					if (begin) {
-						fakeBegin++;
-
-					} else if (!parser.needPrfx || isPrefStart) {
-						if (isPrefStart) {
-							parser.i++;
-							parser.needPrfx = true;
-
-							if (modLine) {
-								parser.lines[lastLine] += lb;
-							}
-						}
-
-						bEnd = true;
-						begin = true;
-
-						continue;
-					}
-
-				// Directive is ended
-				} else if (el === rb && begin && (!fakeBegin || !(fakeBegin--))) {
-					begin = false;
-
-					const raw = command;
-					command = command.trim();
-
-					if (!command) {
-						continue;
-					}
-
-					const
-						replacer = getReplacer(command);
-
-					if (replacer) {
-						command = replacer(command);
-					}
-
-					let
-						[commandType] = commandTypeRgxp.exec(command);
-
-					const
-						defDir = !Snakeskin.Directives[commandType];
-
-					if (defDir) {
-						if (isAssignExpression(command, !parser.tplName)) {
-							commandType = parser.tplName ? 'const' : 'global';
-
-						} else {
-							commandType = parser.tplName ? 'output' : 'decorator';
-						}
-					}
-
-					commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
-
-					// All directives, which matches to the template __.*?__
-					// will be cutted from the code listing
-					if (ignoreRgxp.test(commandType)) {
-						parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
-					}
-
-					command = parser.replaceDangerBlocks(
-						defDir ? command : command.replace(commandRgxp, '')
-					);
-
-					parser.space = parser.prevSpace;
-
-					const
-						inlineLength = parser.inline.length;
-
-					const fnRes = Snakeskin.Directives[commandType].call(
-						parser,
-						command,
-						commandLength,
-						commandType,
-						raw,
-						jsDocStart
-					);
-
-					if (parser.break) {
-						return false;
-					}
-
-					if (parser.needPrfx) {
-						if (parser.getDirName(commandType) === 'end') {
-							if (prfxI) {
-								prfxI--;
-
-								if (!prfxI) {
-									parser.needPrfx = false;
-								}
-
-							} else {
-								parser.needPrfx = false;
-							}
-
-						} else if (inlineLength === parser.inline.length && !prfxI) {
-							parser.needPrfx = false;
-
-						} else if (parser.inline.length > inlineLength) {
-							prfxI++;
-						}
-					}
-
-					if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
-						parser.sysSpace = false;
-						parser.space = parser.prevSpace = false;
-					}
-
-					jsDocStart = false;
-					parser.text = false;
-
-					if (fnRes === false) {
-						begin = false;
-						beginStr = false;
-					}
-
-					command = '';
-					commandLength = 0;
-					continue;
-
-				} else if (el === I18N && parser.localization && !cEscape) {
+				if (el === I18N && parser.localization && !cEscape) {
 					if (i18nStart && i18nStr && p.words && !p.words[i18nStr]) {
 						p.words[i18nStr] = i18nStr;
 					}
@@ -740,6 +618,131 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 								continue;
 							}
 						}
+					}
+				}
+
+				if (!i18nStart) {
+					// Directive is started
+					if (isPrefStart || (el === lb && (begin || !cEscape))) {
+						if (begin) {
+							fakeBegin++;
+
+						} else if (!parser.needPrfx || isPrefStart) {
+							if (isPrefStart) {
+								parser.i++;
+								parser.needPrfx = true;
+
+								if (modLine) {
+									parser.lines[lastLine] += lb;
+								}
+							}
+
+							bEnd = true;
+							begin = true;
+
+							continue;
+						}
+
+					// Directive is ended
+					} else if (el === rb && begin && (!fakeBegin || !(fakeBegin--))) {
+						begin = false;
+
+						const raw = command;
+						command = command.trim();
+
+						if (!command) {
+							continue;
+						}
+
+						const
+							replacer = getReplacer(command);
+
+						if (replacer) {
+							command = replacer(command);
+						}
+
+						let
+							[commandType] = commandTypeRgxp.exec(command);
+
+						const
+							defDir = !Snakeskin.Directives[commandType];
+
+						if (defDir) {
+							if (isAssignExpression(command, !parser.tplName)) {
+								commandType = parser.tplName ? 'const' : 'global';
+
+							} else {
+								commandType = parser.tplName ? 'output' : 'decorator';
+							}
+						}
+
+						commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
+
+						// All directives, which matches to the template __.*?__
+						// will be cutted from the code listing
+						if (ignoreRgxp.test(commandType)) {
+							parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
+						}
+
+						command = parser.replaceDangerBlocks(
+							defDir ? command : command.replace(commandRgxp, '')
+						);
+
+						parser.space = parser.prevSpace;
+
+						const
+							inlineLength = parser.inline.length;
+
+						const fnRes = Snakeskin.Directives[commandType].call(
+							parser,
+							command,
+							commandLength,
+							commandType,
+							raw,
+							jsDocStart
+						);
+
+						if (parser.break) {
+							return false;
+						}
+
+						if (parser.needPrfx) {
+							if (parser.getDirName(commandType) === 'end') {
+								if (prfxI) {
+									prfxI--;
+
+									if (!prfxI) {
+										parser.needPrfx = false;
+									}
+
+								} else {
+									parser.needPrfx = false;
+								}
+
+							} else if (inlineLength === parser.inline.length && !prfxI) {
+								parser.needPrfx = false;
+
+							} else if (parser.inline.length > inlineLength) {
+								prfxI++;
+							}
+						}
+
+						if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
+							parser.sysSpace = false;
+							parser.space = parser.prevSpace = false;
+						}
+
+						jsDocStart = false;
+						parser.text = false;
+
+						if (fnRes === false) {
+							begin = false;
+							beginStr = false;
+						}
+
+						command = '';
+						commandLength = 0;
+						continue;
 					}
 				}
 			}
