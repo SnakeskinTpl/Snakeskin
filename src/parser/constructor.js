@@ -166,13 +166,13 @@ export default class Parser {
 
 		/**
 		 * The map of register namespaces
-		 * @type {!Object<{files: Array<(string|undefined)>}>}
+		 * @type {!Object<{files: Array}>}
 		 */
 		this.namespaces = {};
 
 		/**
 		 * The map of register templates
-		 * @type {!Object<{file: (string|undefined), renderAs: (string|undefined)}>}
+		 * @type {!Object<{file, renderAs}>}
 		 */
 		this.templates = {};
 

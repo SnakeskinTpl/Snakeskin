@@ -131,10 +131,10 @@ $$SnakeskinParser.prototype.inline;
 /** @type {boolean} */
 $$SnakeskinParser.prototype.text;
 
-/** @type {!Object<{files: Array<(string|undefined)>}>} */
+/** @type {!Object<{files: Array}>} */
 $$SnakeskinParser.prototype.namespaces;
 
-/** @type {!Object<{file: (string|undefined), renderAs: (string|undefined)}>} */
+/** @type {!Object<{file, renderAs}>} */
 $$SnakeskinParser.prototype.templates;
 
 /** @type {?string} */
