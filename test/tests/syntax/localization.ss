@@ -24,15 +24,19 @@ Hello world! Hello heaven!
 
 [[static en]]===========================================================================================================
 
-Hello world! Hello world! <div bar="'Hello'" baz="'world'" bla="'world'"></div>
+Hello world! Hello world! <div bar="Hello" baz="'world'" bla="'world'"></div>
 
 [[static ru]]===========================================================================================================
 
-Привет world! Привет world! <div bar="'Привет'" baz="'world'" bla="'world'"></div>
+Привет world! Привет world! <div bar="Привет" baz="'world'" bla="'world'"></div>
 
 [[custom i18n function]]================================================================================================
 
 <foo bar="bla" baz="3" bla="'3'"></foo>
+
+[[escaping]]============================================================================================================
+
+`foo` {/*121 { <div bar="'}*/'" bla="'`121`'"></div>
 
 ========================================================================================================================
 
@@ -69,3 +73,9 @@ Hello world! Hello world! <div bar="'Hello'" baz="'world'" bla="'world'"></div>
 
 - template ['custom i18n function']() @= i18nFn 'Snakeskin.Vars.i18n'
 	< foo bar = ${'bla'} | baz = ${`hello`(1, (2))} | bla = '${`hello`(1, (2))}'
+
+- template ['escaping']()
+	\`foo\`
+	`{/*121`
+	{`{`}
+	< div bar = '`}*/`' | bla = '\`121\`'
