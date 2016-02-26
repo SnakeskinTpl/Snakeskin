@@ -397,7 +397,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 			if (!cEscape && !i18nStart) {
 				const
 					commentType = getCommentType(str, parser.i),
-					endComment = getCommentType(str, parser.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
+					endComment = (comment === MULT_COMMENT_START || jsDoc) &&
+						getCommentType(str, parser.i - MULT_COMMENT_END.length + 1) === MULT_COMMENT_END;
 
 				const map = {
 					[MULT_COMMENT_START]: true,
@@ -457,6 +458,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					continue;
 				}
 			}
+
+			console.log(comment);
 
 			if (comment) {
 				continue;
