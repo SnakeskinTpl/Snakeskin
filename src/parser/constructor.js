@@ -64,6 +64,9 @@ export default class Parser {
 		/** @type {(Object|undefined)} */
 		this.language = params.language;
 
+		/** @type {(Object|undefined)} */
+		this.words = params.words;
+
 		/** @type {(RegExp|undefined)} */
 		this.ignore = params.ignore;
 

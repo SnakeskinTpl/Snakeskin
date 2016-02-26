@@ -21,6 +21,7 @@
  *   i18nFn: string,
  *   i18nFnOptions: (?string|undefined),
  *   language: (Object|undefined),
+ *   words: (Object|undefined),
  *   ignore: (RegExp|undefined),
  *   tolerateWhitespaces: boolean,
  *   eol: string,
@@ -79,6 +80,9 @@ $$SnakeskinParser.prototype.i18nFnOptions;
 
 /** @type {(Object|undefined)} */
 $$SnakeskinParser.prototype.language;
+
+/** @type {(Object|undefined)} */
+$$SnakeskinParser.prototype.words;
 
 /** @type {(RegExp|undefined)} */
 $$SnakeskinParser.prototype.ignore;

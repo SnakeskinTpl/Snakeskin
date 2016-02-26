@@ -23,6 +23,7 @@ import { $dirInterpolation, $dirNameShorthands, $dirParents } from './consts/cac
 
 import { r } from './helpers/string';
 import { any } from './helpers/gcc';
+import { isFunction } from './helpers/types';
 import { getCommentType } from './helpers/literals';
 import { isAssignExpression } from './helpers/analysis';
 import { escapeEOLs, applyDefEscape } from './helpers/escape';
@@ -527,7 +528,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					if (parser.language) {
 						if (i18nStart) {
 							let word = parser.language[i18nStr] || '';
-							word = word.call ? word() : word;
+							word = isFunction(word) ? word() : word;
 
 							el = begin ?
 								`'${applyDefEscape(word)}'` : word;
