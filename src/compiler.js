@@ -513,7 +513,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						}
 
 						i18nStr += el;
-
 						if (parser.language) {
 							continue;
 						}
@@ -525,20 +524,35 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						p.words[i18nStr] = i18nStr;
 					}
 
+					if (!i18nStart && begin) {
+						let
+							[cmd] = (commandRgxp.exec(command) || ['']);
+
+						const
+							replacer = getReplacer(cmd);
+
+						if (replacer) {
+							cmd = replacer(cmd);
+						}
+
+						i18nInterpolation = (cmd = cmd.trim()) && $dirInterpolation[cmd];
+					}
+
 					if (parser.language) {
 						if (i18nStart) {
 							let word = parser.language[i18nStr] || '';
 							word = isFunction(word) ? word() : word;
 
-							el = begin ?
+							el = begin && (!i18nInterpolation || i18nTpl) ?
 								`'${applyDefEscape(word)}'` : word;
 
 							i18nStart = false;
+							i18nInterpolation = false;
 							i18nStr = '';
 
 						} else {
-							el = '';
 							i18nStart = true;
+							el = '';
 						}
 
 					} else {
@@ -569,6 +583,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 									freezeTmp = 0;
 								}
 
+								i18nInterpolation = false;
+
 							} else {
 								const
 									advStr = `${FILTER}!html${rb}`;
@@ -587,20 +603,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 						} else {
 							i18nStart = true;
-							i18nInterpolation = false;
 
 							if (begin) {
-								let
-									[cmd] = (commandRgxp.exec(command) || ['']);
-
-								const
-									replacer = getReplacer(cmd);
-
-								if (replacer) {
-									cmd = replacer(cmd);
-								}
-
-								i18nInterpolation = (cmd = cmd.trim()) && $dirInterpolation[cmd];
 								el = `${!i18nInterpolation || i18nTpl ? '' : MICRO_TEMPLATE}${parser.i18nFn}("`;
 
 							} else {
