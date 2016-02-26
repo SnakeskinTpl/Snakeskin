@@ -24,12 +24,9 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		const
-			short = command.slice(-1) === '/';
-
-		if (short) {
+		if (command.slice(-1) === '/') {
 			this.startInlineDir(null, {short: true});
-			this.append(this.wrap(this.out(command.slice(0, -1), {unsafe: true})));
+			this.append(this.wrap(this.out(`${command.slice(0, -1)}|undef`, {unsafe: true})));
 			return;
 		}
 
