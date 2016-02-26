@@ -38,6 +38,10 @@
 
 <div class="foo bar" bar="[object Object]" baz=""></div>
 
+[[with parentheses]]====================================================================================================
+
+<div foo="bar() && (bla ? bar((1)) : 2)" class="foo"></div>
+
 ========================================================================================================================
 
 - namespace tags[%fileName%]
@@ -66,3 +70,6 @@
 
 - template ['interpolation']()
 	< .foo ${{class: 'bar'}} = foo | ${'bar'} = ${{class: 'bar'}} | ${''} = hello | ${'baz'} = ${''}
+
+- template ['with parentheses']()
+	< .foo foo = bar() && (bla ? bar((1)) : 2)
