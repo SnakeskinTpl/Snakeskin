@@ -53,6 +53,7 @@ node_modules
 
 # NPM ignore list
 /src
+/gulp
 /predefs
 /test
 /bower.json
