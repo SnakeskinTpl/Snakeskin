@@ -73,7 +73,7 @@ Parser.prototype.getFnArgs = function (str) {
 };
 
 const
-	nullableRgxp = /[?|!]$/,
+	nullableRgxp = /[?|!]\s*$/,
 	nullableMap = {'!': false, '?': true};
 
 /**
