@@ -175,6 +175,10 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 			escape = !escape;
 		}
 
+		if (escape) {
+			continue;
+		}
+
 		if (!pOpen) {
 			if (attrSeparators[el] && !cEscape && str.substr(i + 1, groupLength) === groupBounds[0]) {
 				pOpen = pOpenLength;
