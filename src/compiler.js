@@ -459,8 +459,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 				}
 			}
 
-			console.log(comment);
-
 			if (comment) {
 				continue;
 			}
