@@ -175,7 +175,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		if (arg[0][0] === '(') {
 			arg[0] = arg[0].replace(/^\(\s*([^|]+)(.*?)\)$/, (str, arg, filter) => {
 				defFilter = filter;
-				return arg;
+				return arg.trim();
 			});
 		}
 
