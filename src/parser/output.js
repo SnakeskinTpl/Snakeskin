@@ -346,14 +346,32 @@ Parser.prototype.out = function (command, opt_params) {
 
 	let
 		isFilter,
-		breakNum;
+		breakNum,
+		escape = false;
 
 	for (let i = 0; i < command.length; i++) {
 		const
 			el = command[i],
 			next = command[i + 1],
-			next2 = command[i + 2],
-			end = command.length - 1;
+			next2 = command[i + 2];
+
+		const
+			end = command.length - 1,
+			cEscape = escape,
+			uAdd = wordAddEnd + add;
+
+		if (el === '\\' || escape) {
+			escape = !escape;
+		}
+
+		if (escape) {
+			if (unsafe) {
+				command = command.slice(0, i) + command.slice(i + 1);
+				res = res.slice(0, i + uAdd) + res.slice(i + uAdd + 1);
+			}
+
+			continue;
+		}
 
 		if (!breakNum) {
 			if (el === '(') {
@@ -373,10 +391,7 @@ Parser.prototype.out = function (command, opt_params) {
 			// posNWord indicates how many new words to skip
 			if (nWord && !posNWord && nextCharRgxp.test(el)) {
 				let
-					{word, finalWord, unary} = this.getWordFromPos(command, i);
-
-				let
-					uAdd = wordAddEnd + add,
+					{word, finalWord, unary} = this.getWordFromPos(command, i),
 					tmpFinalWord;
 
 				if (unary) {
@@ -668,7 +683,7 @@ Parser.prototype.out = function (command, opt_params) {
 			}
 		}
 
-		isFilter = el === FILTER;
+		isFilter = !cEscape && el === FILTER;
 		breakNum && breakNum--;
 
 		// After 2 iteration begins a filter
