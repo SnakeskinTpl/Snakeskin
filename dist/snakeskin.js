@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 28 Feb 2016 13:51:24 GMT
+ * Date: 'Sun, 28 Feb 2016 14:43:47 GMT
  */
 
 (function (global, factory) {
@@ -6880,7 +6880,7 @@
     	Snakeskin.UID = Math.random().toString(16).replace('0.', '').slice(0, 5);
 
     	if (IS_NODE && info.file) {
-    		var _fs = require('fs'),
+    		var fs = require('fs'),
     		    path = require('path'),
     		    findNodeModules = require('find-node-modules');
 
@@ -7527,8 +7527,10 @@
     };
 
     function mtime(file) {
+    	var fs = require('fs');
+
     	try {
-    		return String(fs.statSync(file).mtime);
+    		return fs.statSync(file).mtime.valueOf();
     	} catch (ignore) {
     		return '';
     	}
