@@ -342,21 +342,18 @@ Parser.prototype.out = function (command, opt_params) {
 	}
 
 	const
-		cmdLength = command.length,
-		end = cmdLength - 1;
-
-	const
 		cacheLink = replacePropVal('$_');
 
 	let
 		isFilter,
 		breakNum;
 
-	for (let i = 0; i < cmdLength; i++) {
+	for (let i = 0; i < command.length; i++) {
 		const
 			el = command[i],
 			next = command[i + 1],
-			next2 = command[i + 2];
+			next2 = command[i + 2],
+			end = command.length - 1;
 
 		if (!breakNum) {
 			if (el === '(') {
@@ -692,9 +689,12 @@ Parser.prototype.out = function (command, opt_params) {
 				filters.push(next2);
 				rFilters.push(next2);
 				i += 2;
+				if (i === end) {
+					command += ' ';
+				}
 			}
 
-		} else if (i === 0 && el === FILTER && rgxp.filterStart.test(next)) {
+		} else if (i === 0 && isFilter && rgxp.filterStart.test(next)) {
 			nWord = false;
 
 			if (!filterStart) {
