@@ -7,11 +7,12 @@
  */
 
 /** @type {Snakeskin} */
-module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
+module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin');
 
 var
 	path = require('path'),
 	fs = require('fs'),
+	exists = require('exists-sync'),
 	cache = {};
 
 /**
@@ -103,6 +104,13 @@ exports.check = function (source, result, opt_key, opt_includes) {
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
+	var
+		ssrc = path.join(process.cwd(), '.snakeskinrc');
+
+	if (!opt_params && exists(ssrc)) {
+		opt_params = exports.toObj(ssrc);
+	}
+
 	src = path.normalize(path.resolve(module.parent ? path.dirname(module.parent.filename) : '', src));
 
 	var

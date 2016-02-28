@@ -42,6 +42,13 @@ program
 	.parse(process.argv);
 
 var
+	ssrc = path.join(process.cwd(), '.snakeskinrc');
+
+if (!program['params'] && exists(ssrc)) {
+	program['params'] = ssrc;
+}
+
+var
 	params = Object.assign({}, Snakeskin.toObj(program['params']), {debug: {}, cache: false}),
 	prettyPrint = params.prettyPrint,
 	language = params.language,
