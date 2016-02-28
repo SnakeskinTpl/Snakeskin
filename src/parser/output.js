@@ -356,7 +356,7 @@ Parser.prototype.out = function (command, opt_params) {
 		const
 			el = command[i],
 			next = command[i + 1],
-			nNext = command[i + 2];
+			next2 = command[i + 2];
 
 		if (!breakNum) {
 			if (el === '(') {
@@ -486,7 +486,7 @@ Parser.prototype.out = function (command, opt_params) {
 			if (!filterStart) {
 				if (el === ')') {
 					// Closing parenthesis, and the next two characters aren't filter
-					if (next !== FILTER || !rgxp.filterStart.test(nNext)) {
+					if (next !== FILTER || !rgxp.filterStart.test(next2)) {
 						pCount && pCount--;
 						pContent.shift();
 						continue;
@@ -675,7 +675,7 @@ Parser.prototype.out = function (command, opt_params) {
 		breakNum && breakNum--;
 
 		// After 2 iteration begins a filter
-		if (next === FILTER && rgxp.filterStart.test(nNext)) {
+		if (next === FILTER && rgxp.filterStart.test(next2)) {
 			nWord = false;
 
 			if (!filterStart) {
@@ -689,8 +689,8 @@ Parser.prototype.out = function (command, opt_params) {
 
 			filterStart = true;
 			if (!pCountFilter) {
-				filters.push(nNext);
-				rFilters.push(nNext);
+				filters.push(next2);
+				rFilters.push(next2);
 				i += 2;
 			}
 
