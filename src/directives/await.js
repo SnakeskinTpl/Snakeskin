@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		ancestorsBlacklist: Snakeskin.group('function'),
 		async: true,
-		group: 'yield',
+		group: 'await',
 		placement: 'template'
 	},
 
