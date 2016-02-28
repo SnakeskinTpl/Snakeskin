@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta19
+ * Snakeskin v7.0.0-beta20
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 28 Feb 2016 14:43:47 GMT
+ * Date: 'Sun, 28 Feb 2016 16:28:06 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta19']
+      VERSION: [7, 0, 0, 'beta20']
     };
 
     /**
@@ -6890,7 +6890,7 @@
     		Snakeskin.LocalVars.include[filename] = templateRank['template'];
     		label = mtime(filename);
 
-    		var modules = (findNodeModules({ cwd: dirname, relative: false }) || []).concat(module.paths);
+    		var modules = (module.paths || []).concat(findNodeModules({ cwd: dirname, relative: false }) || []);
     		module.paths = Object.keys(modules.reduce(function (map, el) {
     			return map[el] = true, map;
     		}, {}));

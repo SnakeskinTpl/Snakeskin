@@ -196,7 +196,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		Snakeskin.LocalVars.include[filename] = templateRank['template'];
 		label = mtime(filename);
 
-		const modules = (findNodeModules({cwd: dirname, relative: false}) || []).concat(module.paths);
+		const modules = (module.paths || []).concat(findNodeModules({cwd: dirname, relative: false}) || []);
 		module.paths = Object.keys(modules.reduce((map, el) => (map[el] = true, map), {}));
 	}
 
