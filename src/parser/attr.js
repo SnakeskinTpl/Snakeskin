@@ -162,15 +162,21 @@ Parser.prototype.splitXMLAttrGroup = function (str) {
 		group = '',
 		attr = '',
 		separator = '',
-		pOpen = 0;
+		pOpen = 0,
+		escape = false;
 
 	for (let i = 0; i < str.length; i++) {
 		const
 			el = str[i],
-			chunk = str.substr(i, groupLength);
+			cEscape = escape,
+			chunk = !cEscape && str.substr(i, groupLength);
+
+		if (el === '\\' || escape) {
+			escape = !escape;
+		}
 
 		if (!pOpen) {
-			if (attrSeparators[el] && str.substr(i + 1, groupLength) === groupBounds[0]) {
+			if (attrSeparators[el] && !cEscape && str.substr(i + 1, groupLength) === groupBounds[0]) {
 				pOpen = pOpenLength;
 				i += groupLength;
 				separator = el;
