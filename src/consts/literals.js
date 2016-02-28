@@ -233,5 +233,6 @@ export const SYS_CONSTS = {
 	'self': true,
 	'callee': true,
 	'$_': true,
-	'$0': true
+	'$0': true,
+	'$class': true
 };

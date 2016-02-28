@@ -345,7 +345,8 @@ import {
 				${this.getTplRuntime()}
 
 				var
-					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'};
+					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'},
+					$class = '';
 
 				var
 					__ATTR_STR__,

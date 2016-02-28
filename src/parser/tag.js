@@ -337,6 +337,7 @@ Parser.prototype.getXMLTagDesc = function (str) {
 	}
 
 	this.bemRef = ref;
+	this.append(`$class = '${ref}';`);
 	pseudoHelper();
 
 	return {

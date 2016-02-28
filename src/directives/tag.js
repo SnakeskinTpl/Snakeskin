@@ -84,6 +84,7 @@ Snakeskin.addDirective(
 			p = this.structure.params;
 
 		this.bemRef = p.bemRef;
+		this.append(`$class = '${p.bemRef}';`);
 		this.prevSpace = false;
 
 		if (p.tag === '?') {
