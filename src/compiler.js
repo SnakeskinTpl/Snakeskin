@@ -901,8 +901,11 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 };
 
 function mtime(file) {
+	const
+		fs = require('fs');
+
 	try {
-		return String(fs.statSync(file).mtime);
+		return fs.statSync(file).mtime.valueOf();
 
 	} catch (ignore) {
 		return '';
