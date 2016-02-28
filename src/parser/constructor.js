@@ -204,6 +204,12 @@ export default class Parser {
 		this.generator = false;
 
 		/**
+		 * If is true, then the active template is async
+		 * @type {boolean}
+		 */
+		this.async = false;
+
+		/**
 		 * The number of deferred return calls
 		 * @type {number}
 		 */

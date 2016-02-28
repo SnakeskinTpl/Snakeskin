@@ -86,6 +86,7 @@ const
  * @param {$$SnakeskinAddDirectiveParams} params - additional parameters:
  *
  *   *) [params.deferInit = false] - if is true, the directive won't be started automatically
+ *   *) [params.async = false] - if is true, the directive can be used only with asyncs
  *   *) [params.generator = false] - if is true, the directive can be used only with generators
  *   *) [params.notEmpty = false] - if is true, then the directive can't be empty
  *   *) [params.alias = false] - if is true, then the directive is considered as an alias
@@ -344,7 +345,11 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return this.error(`the directive "${dirName}" must have a body`);
 		}
 
-		if (p.generator && !this.parentTplName && !this.generator && !this.outerLink) {
+		if (p.async && !this.async && !this.outerLink) {
+			return this.error(`the directive "${dirName}" can be used only within an async template`);
+		}
+
+		if (p.generator && !this.generator && !this.outerLink) {
 			return this.error(`the directive "${dirName}" can be used only within a generator template`);
 		}
 

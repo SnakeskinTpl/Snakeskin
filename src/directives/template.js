@@ -31,7 +31,7 @@ import {
 
 } from '../consts/cache';
 
-['template', 'interface', 'placeholder'].forEach((dir) => {
+['async', 'template', 'interface', 'placeholder'].forEach((dir) => {
 	Snakeskin.addDirective(
 		dir,
 
@@ -44,6 +44,12 @@ import {
 		},
 
 		function (command, commandLength, type, raw, jsDoc) {
+			if (this.name === 'async') {
+				this.async = true;
+				const dir = command.split(' ');
+				return Snakeskin.Directives[dir[0]].call(this, dir.slice(1).join(' ').trim(), commandLength, dir[0], raw, jsDoc);
+			}
+
 			const
 				env = this.environment,
 				nms = env.namespace;
@@ -57,13 +63,17 @@ import {
 
 			let
 				tplName = this.replaceFileNamePatterns(this.getFnName(command)),
-				prfx = '',
+				prfx = ['', ''],
 				pos;
 
 			if (/\*/.test(tplName)) {
-				prfx = '*';
-				tplName = tplName.replace(prfx, '');
+				prfx[1] = '*';
+				tplName = tplName.replace(prfx[1], '');
 				this.generator = true;
+			}
+
+			if (this.async) {
+				prfx[0] = 'async';
 			}
 
 			const
@@ -239,18 +249,35 @@ import {
 			}
 
 			const
-				decorators = (parentTplName ? $output[parentTplName].decorators : []).concat(this.decorators);
+				parentObj = $output[parentTplName];
+
+			if (parentTplName) {
+				if (parentObj.async) {
+					prfx[0] = 'async';
+					this.async = true;
+				}
+
+				if (parentObj.generator) {
+					prfx[1] = '*';
+					this.generator = true;
+				}
+			}
+
+			const
+				decorators = (parentTplName ? parentObj.decorators : []).concat(this.decorators);
 
 			if (iface) {
 				this.save(
-					`exports${concatProp(tplName)} = function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`,
+					`exports${concatProp(tplName)} = ${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`,
 					{iface}
 				);
 
 			} else {
 				this.save(ws`
 					exports${concatProp(tplName)} =
-						Snakeskin.decorate([${decorators.join()}], function ${prfx}${tplNameLength > 1 ? lastName : shortcut}(`
+						Snakeskin.decorate([
+							${decorators.join()}],
+							${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`
 				);
 			}
 
@@ -280,7 +307,12 @@ import {
 
 			$args[tplName] = {};
 			$argsRes[tplName] = {};
-			$output[tplName] = {decorators};
+			$output[tplName] = {
+				async: this.async,
+				decorators,
+				generator: this.generator
+			};
+
 			$extMap[tplName] = parentTplName;
 			delete $extList[tplName];
 
@@ -638,6 +670,8 @@ import {
 			this.popParams();
 			this.canWrite = true;
 			this.tplName = undefined;
+			this.async = false;
+			this.generator = false;
 			delete this.info.template;
 		}
 
