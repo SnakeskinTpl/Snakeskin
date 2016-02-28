@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta18 (live)
+ * Snakeskin v7.0.0-beta19 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 21 Feb 2016 14:40:23 GMT
+ * Date: 'Sun, 28 Feb 2016 13:51:24 GMT
  */
 
 (function (global, factory) {
@@ -39,7 +39,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta18']
+      VERSION: [7, 0, 0, 'beta19']
     };
 
     /**
@@ -513,6 +513,7 @@
     };
 
     var _COMMENTS;
+    var _BASE_SYS_ESCAPES;
     var _SYS_ESCAPES;
     var _STRONG_SYS_ESCAPES;
     var LEFT_BOUND = '{';
@@ -558,6 +559,10 @@
     // Escaping
     // >>>
 
+    var BASE_SYS_ESCAPES = (_BASE_SYS_ESCAPES = {
+    	'\\': true
+    }, babelHelpers.defineProperty(_BASE_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_BASE_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_BASE_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_BASE_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _BASE_SYS_ESCAPES);
+
     var SYS_ESCAPES = (_SYS_ESCAPES = {
     	'\\': true
     }, babelHelpers.defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers.defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers.defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
@@ -568,7 +573,7 @@
 
     var STRONG_SYS_ESCAPES = (_STRONG_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _STRONG_SYS_ESCAPES);
+    }, babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _STRONG_SYS_ESCAPES);
 
     var MICRO_TEMPLATE_ESCAPES = babelHelpers.defineProperty({
     	'\\': true

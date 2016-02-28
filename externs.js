@@ -48,6 +48,7 @@ Snakeskin.group = function (name) {};
 /**
  * @typedef {{
  *   deferInit: (?boolean|undefined),
+ *   async: (?boolean|undefined),
  *   generator: (?boolean|undefined),
  *   notEmpty: (?boolean|undefined),
  *   alias: (?boolean|undefined),
