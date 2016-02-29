@@ -331,13 +331,13 @@ Parser.prototype.getXMLTagDesc = function (str) {
 
 		} else if (el && types[i]) {
 			ref = this.pasteTplVarBlocks(el);
+			this.append(`$class = '${ref}';`);
 		}
 
 		classes[i] = this.pasteTplVarBlocks(el);
 	}
 
 	this.bemRef = ref;
-	this.append(`$class = '${ref}';`);
 	pseudoHelper();
 
 	return {

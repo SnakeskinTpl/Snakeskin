@@ -26,6 +26,10 @@
 
 <div class="foo"><div class="foo__bar baz"><div class="baz__bar">Hello</div></div></div>
 
+[[$class]]==============================================================================================================
+
+<div class="foo-baz"><div class="foo-baz__bar">Hello</div></div>
+
 ========================================================================================================================
 
 - namespace tags[%fileName%]
@@ -53,5 +57,12 @@
 - template ['multiple class reference']()
 	< .foo
 		< .&__bar.baz
+			< .&__bar
+				Hello
+
+- template ['$class']()
+	< ?.foo
+		: ref = $class
+		< .${ref}-baz
 			< .&__bar
 				Hello
