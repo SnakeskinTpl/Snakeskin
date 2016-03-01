@@ -213,31 +213,29 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					trim: dir && $dirTrim[decl.name] || {}
 				};
 
+				const toText = () => {
+					if (BASE_SHORTS[el]) {
+						decl.command = next2str + decl.command;
+					}
+
+					dir = obj.dir = obj.block = false;
+					obj.adv = adv = alb;
+					obj.text = true;
+				};
+
 				if (struct) {
 					if (struct.spaces < spaces && struct.block) {
 						obj.parent = struct;
 
 						if (!obj.adv && struct.adv) {
-							if (BASE_SHORTS[el]) {
-								decl.command = next2str + decl.command;
-							}
-
-							dir = obj.dir = obj.block = false;
-							obj.adv = adv = alb;
-							obj.text = true;
+							toText();
 						}
 
 					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
 						obj.parent = struct.parent;
 
 						if (!obj.adv && struct.parent && struct.parent.adv) {
-							if (dir && BASE_SHORTS[el]) {
-								decl.command = next2str + decl.command;
-							}
-
-							dir = obj.dir = obj.block = false;
-							obj.adv = adv = alb;
-							obj.text = true;
+							toText();
 						}
 
 						end(struct, obj);
@@ -260,6 +258,9 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						}
 
 						obj.parent = struct;
+						if (!obj.adv && struct.adv) {
+							toText();
+						}
 					}
 				}
 
@@ -311,7 +312,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 				if (dir && txt) {
 					const inline = {
-						adv: '',
+						adv,
 						block: false,
 						dir: false,
 						parent: obj,
