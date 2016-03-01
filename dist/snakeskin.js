@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta22
+ * Snakeskin v7.0.0-beta23
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 29 Feb 2016 12:24:34 GMT
+ * Date: 'Tue, 01 Mar 2016 15:22:38 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta22']
+      VERSION: [7, 0, 0, 'beta23']
     };
 
     /**
@@ -3455,6 +3455,8 @@
      * @return {{code: string, length: number, error: (?boolean|undefined)}}
      */
     Parser.prototype.toBaseSyntax = function (str, i) {
+    	var _this = this;
+
     	needSpace = !this.tolerateWhitespaces;
     	eol$1 = this.eol;
     	endDirInit = false;
@@ -3496,20 +3498,20 @@
     		}
     	}
 
-    	for (var j = i; j < str.length; j++) {
+    	var _loop = function _loop(_j) {
     		length++;
 
-    		var el = str[j],
-    		    next = str[j + 1];
+    		var el = str[_j],
+    		    next = str[_j + 1];
 
-    		var next2str = str.substr(j, 2),
-    		    diff2str = str.substr(j + 1, 2);
+    		var next2str = str.substr(_j, 2),
+    		    diff2str = str.substr(_j + 1, 2);
 
     		if (eol.test(el)) {
     			tSpace++;
 
     			if (next2str === '\r\n') {
-    				continue;
+    				return 'continue';
     			}
 
     			if (clrL) {
@@ -3530,169 +3532,200 @@
     				space += el;
     				tSpace++;
     			} else {
-    				var nextSpace = false,
-    				    diff = undefined;
+    				var _ret2 = function () {
+    					var adv = el === ADV_LEFT_BOUND ? ADV_LEFT_BOUND : '',
+    					    nextSpace = false,
+    					    diff = undefined;
 
-    				init = false;
-    				clrL = 0;
+    					init = false;
+    					clrL = 0;
 
-    				if (el === ADV_LEFT_BOUND) {
-    					diff = SHORTS[diff2str] ? 3 : SHORTS[next] ? 2 : 1;
-    				} else {
-    					diff = SHORTS[next2str] ? 2 : 1;
-    				}
-
-    				var chr = str[j + diff];
-    				nextSpace = !chr || ws.test(chr);
-
-    				var dir = undefined,
-    				    replacer = undefined;
-
-    				if (struct && struct.adv || el === ADV_LEFT_BOUND) {
-    					dir = el === ADV_LEFT_BOUND && next !== LEFT_BOUND && nextSpace;
-    					replacer = dir && ($dirNameShorthands[diff2str] || $dirNameShorthands[next]);
-    				} else {
-    					dir = Boolean(SHORTS[el] || SHORTS[next2str]) && el !== LEFT_BOUND && nextSpace;
-    					replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
-    				}
-
-    				var decl = getLineDesc(str, nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j, {
-    					comment: next2str === MULT_COMMENT_START,
-    					dir: dir,
-    					i18n: this.localization
-    				});
-
-    				if (!decl) {
-    					this.error('invalid syntax');
-    					return {
-    						code: '',
-    						error: true,
-    						length: 0
-    					};
-    				}
-
-    				if (replacer) {
-    					decl.name = replacer(decl.name).replace(commandRgxp, '$1');
-    				}
-
-    				var adv = el === ADV_LEFT_BOUND ? ADV_LEFT_BOUND : '';
-
-    				var obj = {
-    					adv: adv,
-    					block: dir && $blockDirs[decl.name],
-    					dir: dir,
-    					name: decl.name,
-    					parent: null,
-    					space: space,
-    					spaces: spaces,
-    					text: !dir || $textDirs[decl.name],
-    					trim: dir && $dirTrim[decl.name] || {}
-    				};
-
-    				if (struct) {
-    					if (struct.spaces < spaces && struct.block) {
-    						obj.parent = struct;
-
-    						if (!obj.adv && struct.adv) {
-    							if (dir) {
-    								decl.command = el + next + decl.command;
-    							}
-
-    							dir = obj.dir = obj.block = false;
-    							obj.adv = adv = ADV_LEFT_BOUND;
-    						}
-    					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
-    						obj.parent = struct.parent;
-
-    						if (!obj.adv && struct.parent && struct.parent.adv) {
-    							if (dir) {
-    								decl.command = el + next + decl.command;
-    							}
-
-    							dir = obj.dir = obj.block = false;
-    							obj.adv = adv = ADV_LEFT_BOUND;
-    						}
-
-    						end(struct, obj);
-    						if (!struct.parent) {
-    							return {
-    								code: code,
-    								length: length - tSpace - 1
-    							};
-    						}
+    					if (adv) {
+    						diff = SHORTS[diff2str] ? 3 : SHORTS[next] ? 2 : 1;
     					} else {
-    						while (struct.spaces >= spaces) {
+    						diff = SHORTS[next2str] ? 2 : 1;
+    					}
+
+    					var chr = str[_j + diff];
+    					nextSpace = !chr || ws.test(chr);
+
+    					var dir = undefined,
+    					    replacer = undefined;
+
+    					if (adv) {
+    						dir = el === ADV_LEFT_BOUND && next !== LEFT_BOUND && nextSpace;
+    						replacer = dir && ($dirNameShorthands[diff2str] || $dirNameShorthands[next]);
+    					} else {
+    						dir = Boolean(SHORTS[el] || SHORTS[next2str]) && el !== LEFT_BOUND && nextSpace;
+    						replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
+    					}
+
+    					var decl = getLineDesc(str, dir && BASE_SHORTS[el] || el === IGNORE ? _j + 1 : _j, {
+    						comment: next2str === MULT_COMMENT_START,
+    						dir: dir,
+    						i18n: _this.localization
+    					});
+
+    					if (!decl) {
+    						_this.error('invalid syntax');
+    						return {
+    							v: {
+    								v: {
+    									code: '',
+    									error: true,
+    									length: 0
+    								}
+    							}
+    						};
+    					}
+
+    					if (replacer) {
+    						decl.name = replacer(decl.name).replace(commandRgxp, '$1');
+    					}
+
+    					var obj = {
+    						adv: adv,
+    						block: dir && $blockDirs[decl.name],
+    						dir: dir,
+    						name: decl.name,
+    						parent: null,
+    						space: space,
+    						spaces: spaces,
+    						text: !dir || $textDirs[decl.name],
+    						trim: dir && $dirTrim[decl.name] || {}
+    					};
+
+    					var toText = function toText() {
+    						if (BASE_SHORTS[el]) {
+    							decl.command = next2str + decl.command;
+    						}
+
+    						dir = obj.dir = obj.block = false;
+    						obj.adv = adv = ADV_LEFT_BOUND;
+    						obj.text = true;
+    					};
+
+    					if (struct) {
+    						if (struct.spaces < spaces && struct.block) {
+    							obj.parent = struct;
+
+    							if (!obj.adv && struct.adv) {
+    								toText();
+    							}
+    						} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
+    							obj.parent = struct.parent;
+
+    							if (!obj.adv && struct.parent && struct.parent.adv) {
+    								toText();
+    							}
+
     							end(struct, obj);
-    							if (!(struct = struct.parent)) {
+    							if (!struct.parent) {
     								return {
-    									code: code,
-    									length: length - tSpace - 1
+    									v: {
+    										v: {
+    											code: code,
+    											length: length - tSpace - 1
+    										}
+    									}
     								};
     							}
-    						}
+    						} else {
+    							while (struct.spaces >= spaces) {
+    								end(struct, obj);
+    								if (!(struct = struct.parent)) {
+    									return {
+    										v: {
+    											v: {
+    												code: code,
+    												length: length - tSpace - 1
+    											}
+    										}
+    									};
+    								}
+    							}
 
-    						obj.parent = struct;
-    					}
-    				}
-
-    				var s = dir ? adv + LEFT_BOUND : '',
-    				    e = dir ? RIGHT_BOUND : '';
-
-    				var parts = undefined,
-    				    txt = undefined;
-
-    				decl.command = decl.command.replace(lastSymbolRgxp, '\\$1');
-
-    				if (dir) {
-    					if (decl.sComment) {
-    						parts = [decl.command];
-    					} else {
-    						parts = this.replaceDangerBlocks(decl.command).split(INLINE);
-
-    						for (var _i = 0; _i < parts.length; _i++) {
-    							parts[_i] = this.pasteDangerBlocks(parts[_i]);
-    						}
-
-    						if (obj.trim.left && !parts[1]) {
-    							parts[1] = s + '__&+__' + e;
+    							obj.parent = struct;
+    							if (!obj.adv && struct.adv) {
+    								toText();
+    							}
     						}
     					}
 
-    					txt = parts.slice(1).join(INLINE);
-    					txt = txt && txt.trim();
-    				}
+    					var s = dir ? adv + LEFT_BOUND : '',
+    					    e = dir ? RIGHT_BOUND : '';
 
-    				struct = obj;
-    				code += space;
+    					var parts = undefined,
+    					    txt = undefined;
 
-    				if (needSpace && (obj.text || !Snakeskin.Directives[obj.name])) {
-    					code += '' + ADV_LEFT_BOUND + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
-    				}
+    					decl.command = decl.command.replace(lastSymbolRgxp, '\\$1');
 
-    				code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
-    				endDirInit = false;
+    					if (dir) {
+    						if (decl.sComment) {
+    							parts = [decl.command];
+    						} else {
+    							parts = _this.replaceDangerBlocks(decl.command).split(INLINE);
 
-    				var declDiff = decl.length - 1;
-    				tSpace = 0;
+    							for (var _i = 0; _i < parts.length; _i++) {
+    								parts[_i] = _this.pasteDangerBlocks(parts[_i]);
+    							}
 
-    				length += declDiff;
-    				j += declDiff;
+    							if (obj.trim.left && !parts[1]) {
+    								parts[1] = s + '__&+__' + e;
+    							}
+    						}
 
-    				if (dir && txt) {
-    					var inline = {
-    						adv: '',
-    						block: false,
-    						dir: false,
-    						parent: obj,
-    						space: '',
-    						spaces: spaces + 1
-    					};
+    						txt = parts.slice(1).join(INLINE);
+    						txt = txt && txt.trim();
+    					}
 
-    					inline.parent = obj;
-    					struct = inline;
-    					code += txt;
-    				}
+    					struct = obj;
+    					code += space;
+
+    					if (needSpace && (obj.text || !Snakeskin.Directives[obj.name])) {
+    						code += '' + ADV_LEFT_BOUND + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
+    					}
+
+    					code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+    					endDirInit = false;
+
+    					var declDiff = decl.length - 1;
+    					tSpace = 0;
+
+    					length += declDiff;
+    					_j += declDiff;
+
+    					if (dir && txt) {
+    						var inline = {
+    							adv: adv,
+    							block: false,
+    							dir: false,
+    							parent: obj,
+    							space: '',
+    							spaces: spaces + 1
+    						};
+
+    						inline.parent = obj;
+    						struct = inline;
+    						code += txt;
+    					}
+    				}();
+
+    				if ((typeof _ret2 === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret2)) === "object") return _ret2.v;
     			}
+    		}
+    		j = _j;
+    	};
+
+    	for (var j = i; j < str.length; j++) {
+    		var _ret = _loop(j);
+
+    		switch (_ret) {
+    			case 'continue':
+    				continue;
+
+    			default:
+    				if ((typeof _ret === 'undefined' ? 'undefined' : babelHelpers.typeof(_ret)) === "object") return _ret.v;
     		}
     	}
 
@@ -3782,16 +3815,16 @@
     	var concatLine = false,
     	    nmBrk = null;
 
-    	for (var j = i; j < str.length; j++) {
-    		var el = str[j],
+    	for (var _j2 = i; _j2 < str.length; _j2++) {
+    		var _el = str[_j2],
     		    cEscape = escape;
 
-    		if (el === '\\' || escape) {
+    		if (_el === '\\' || escape) {
     			escape = !escape;
     		}
 
     		length++;
-    		if (eol.test(el)) {
+    		if (eol.test(_el)) {
     			if (!comment && !bOpen) {
     				rPart = sComment ? '' : part;
     				part = '';
@@ -3802,10 +3835,10 @@
 
     			lastEl = '';
     			if (comment || sComment && concatLine) {
-    				command += el;
+    				command += _el;
     			} else if (!sComment) {
     				if (dir) {
-    					var dirStart = ws.test(str[j - 2]);
+    					var dirStart = ws.test(str[_j2 - 2]);
 
     					var literal = undefined;
     					brk = dirStart && prevEl === CONCAT_END;
@@ -3814,7 +3847,7 @@
     						literal = prevEl;
     						command = command.slice(0, lastElI - 1) + command.slice(lastElI + 1);
     					} else if (concatLine && !bOpen) {
-    						command += el;
+    						command += _el;
     					}
 
     					if (concatLine && !brk) {
@@ -3825,13 +3858,13 @@
     						concatLine = literal !== CONCAT ? 1 : true;
 
     						if (!bOpen) {
-    							command += el;
+    							command += _el;
     						}
 
     						continue;
     					}
     				} else if (begin || bOpen === I18N) {
-    					command += el;
+    					command += _el;
     					continue;
     				}
     			}
@@ -3851,7 +3884,7 @@
     		}
 
     		if (!bOpen && !cEscape) {
-    			var commentType = getCommentType(str, j);
+    			var commentType = getCommentType(str, _j2);
 
     			if (comment) {
     				comment = commentType !== MULT_COMMENT_END;
@@ -3870,50 +3903,50 @@
 
     		if (!comment && !sComment && !skip) {
     			if (!bOpen) {
-    				if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
+    				if (ESCAPES_END[_el] || ESCAPES_END_WORD[rPart]) {
     					bEnd$$ = true;
-    				} else if (bEnd.test(el)) {
+    				} else if (bEnd.test(_el)) {
     					bEnd$$ = false;
     				}
 
-    				if (sysWord.test(el)) {
-    					part += el;
+    				if (sysWord.test(_el)) {
+    					part += _el;
     				} else {
     					rPart = part;
     					part = '';
     				}
 
     				var _skip = false;
-    				if (el === FILTER && filterStart.test(str[j + 1])) {
+    				if (_el === FILTER && filterStart.test(str[_j2 + 1])) {
     					filterStart$$ = true;
     					bEnd$$ = false;
     					_skip = true;
-    				} else if (filterStart$$ && ws.test(el)) {
+    				} else if (filterStart$$ && ws.test(_el)) {
     					filterStart$$ = false;
     					bEnd$$ = true;
     					_skip = true;
     				}
 
     				if (!_skip) {
-    					if (ESCAPES_END[el]) {
+    					if (ESCAPES_END[_el]) {
     						bEnd$$ = true;
-    					} else if (bEnd.test(el)) {
+    					} else if (bEnd.test(_el)) {
     						bEnd$$ = false;
     					}
     				}
 
     				if (dir) {
     					if (!inline) {
-    						inline = str.substr(j, INLINE.length) === INLINE;
+    						inline = str.substr(_j2, INLINE.length) === INLINE;
     					}
     				} else if (!cEscape) {
     					if (begin) {
-    						if (el === LEFT_BOUND) {
+    						if (_el === LEFT_BOUND) {
     							begin++;
-    						} else if (el === RIGHT_BOUND) {
+    						} else if (_el === RIGHT_BOUND) {
     							begin--;
     						}
-    					} else if (el === LEFT_BOUND) {
+    					} else if (_el === LEFT_BOUND) {
     						bEnd$$ = false;
     						begin++;
     					}
@@ -3921,9 +3954,9 @@
     			}
 
     			if (!cEscape) {
-    				if ((ESCAPES[el] || el === I18N && i18n) && !bOpen && (el !== '/' || bEnd$$)) {
-    					bOpen = el;
-    				} else if ((ESCAPES[el] || el === I18N && i18n) && bOpen === el) {
+    				if ((ESCAPES[_el] || _el === I18N && i18n) && !bOpen && (_el !== '/' || bEnd$$)) {
+    					bOpen = _el;
+    				} else if ((ESCAPES[_el] || _el === I18N && i18n) && bOpen === _el) {
     					bOpen = false;
 
     					if (concatLine === 1) {
@@ -3939,14 +3972,14 @@
     			skip--;
     		}
 
-    		var _needSpace = lineWs.test(el);
+    		var _needSpace = lineWs.test(_el);
 
     		if (_needSpace) {
     			if (nmBrk === false) {
     				nmBrk = true;
     			}
     		} else {
-    			lastEl = el;
+    			lastEl = _el;
     			lastElI = command.length;
     		}
 
@@ -3955,11 +3988,11 @@
     				nmBrk = false;
     			}
 
-    			name += el;
+    			name += _el;
     		}
 
     		if (nmBrk !== null) {
-    			command += el;
+    			command += _el;
     		}
     	}
 
