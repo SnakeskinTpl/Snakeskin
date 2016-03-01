@@ -152,13 +152,14 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 
 			} else {
 				let
+					adv = el === alb ? alb : '',
 					nextSpace = false,
 					diff;
 
 				init = false;
 				clrL = 0;
 
-				if (el === alb) {
+				if (adv) {
 					diff = SHORTS[diff2str] ? 3 : SHORTS[next] ? 2 : 1;
 
 				} else {
@@ -172,7 +173,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					dir,
 					replacer;
 
-				if (struct && struct.adv || el === alb) {
+				if (adv) {
 					dir = el === alb && next !== lb && nextSpace;
 					replacer = dir && ($dirNameShorthands[diff2str] || $dirNameShorthands[next]);
 
@@ -181,15 +182,11 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
 				}
 
-				const decl = getLineDesc(
-					str,
-					nextSpace && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j,
-					{
-						comment: next2str === MULT_COMMENT_START,
-						dir,
-						i18n: this.localization
-					}
-				);
+				const decl = getLineDesc(str, dir && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j, {
+					comment: next2str === MULT_COMMENT_START,
+					dir,
+					i18n: this.localization
+				});
 
 				if (!decl) {
 					this.error('invalid syntax');
@@ -203,9 +200,6 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				if (replacer) {
 					decl.name = replacer(decl.name).replace(commandRgxp, '$1');
 				}
-
-				let
-					adv = el === alb ? alb : '';
 
 				const obj = {
 					adv,
@@ -224,24 +218,26 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						obj.parent = struct;
 
 						if (!obj.adv && struct.adv) {
-							if (dir) {
-								decl.command = el + next + decl.command;
+							if (BASE_SHORTS[el]) {
+								decl.command = next2str + decl.command;
 							}
 
 							dir = obj.dir = obj.block = false;
 							obj.adv = adv = alb;
+							obj.text = true;
 						}
 
 					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
 						obj.parent = struct.parent;
 
 						if (!obj.adv && struct.parent && struct.parent.adv) {
-							if (dir) {
-								decl.command = el + next + decl.command;
+							if (dir && BASE_SHORTS[el]) {
+								decl.command = next2str + decl.command;
 							}
 
 							dir = obj.dir = obj.block = false;
 							obj.adv = adv = alb;
+							obj.text = true;
 						}
 
 						end(struct, obj);
