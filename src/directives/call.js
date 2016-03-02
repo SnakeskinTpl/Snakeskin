@@ -65,10 +65,12 @@ Snakeskin.addDirective(
 		}
 
 		const
-			tmp = this.getVar('__CALL_TMP__');
+			tmp = this.getVar('__CALL_TMP__'),
+			pos = this.getVar('__CALL_POS__');
 
 		this.append(ws`
 			if (__LENGTH__(__RESULT__)) {
+				${pos}++;
 				${tmp}.push(Unsafe(${this.getReturnResultDecl()}));
 			}
 		`);
@@ -112,7 +114,14 @@ Snakeskin.addDirective(
 			}
 
 		} else {
-			str = this.out(`${command}|undef`, {unsafe: true});
+			if (j === 1) {
+				str = ws`
+					${pos} ? ${this.out(`${command}|undef`, {unsafe: true})} : ${this.out(`${p.command}|undef`, {unsafe: true})}
+				`;
+
+			} else {
+				str = this.out(`${command}|undef`, {unsafe: true});
+			}
 		}
 
 		this.append(ws`
