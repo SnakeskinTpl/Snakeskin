@@ -22,6 +22,10 @@
 
 Hello
 
+[[apply arguments]]=====================================================================================================
+
+foo/bar
+
 ========================================================================================================================
 
 - namespace wrappers[%fileName%]
@@ -50,3 +54,10 @@ Hello
 
 	Hello
 	+= foo()
+
+- template ['apply arguments']()
+	- block join()
+		: path = require('path')
+		- return path.join.apply(path, arguments).replace(/\\/g, '/')
+
+	+= self.join('foo', 'bar')
