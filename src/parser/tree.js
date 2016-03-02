@@ -199,7 +199,7 @@ Parser.prototype.hasParentFunction = function () {
 	const test = (obj) => {
 		let
 			target = any(this._has(groups, obj, true)),
-			closest = any(this._getNonLogicParent(obj.parent)),
+			closest = any(obj.parent && this._getNonLogicParent(obj.parent)),
 			asyncParent = closest && this.getGroup('async')[closest.name] && cb[target.name] ? closest.name : false;
 
 		if (target) {
