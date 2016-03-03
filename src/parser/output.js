@@ -22,7 +22,7 @@ import { any } from '../helpers/gcc';
 import { r, isNotPrimitive } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
-import { FILTER, G_MOD, SYS_CONSTS } from '../consts/literals';
+import { FILTER, G_MOD } from '../consts/literals';
 
 const blackWords = {
 	'+': true,
@@ -215,28 +215,37 @@ Parser.prototype.out = function (command, opt_params) {
 	 * @return {string}
 	 */
 	const replacePropVal = (str) => {
-		let
-			def = vars[str];
+		let def = vars[str];
 
 		const
 			refCache = ref && $scope[type][tplName][ref],
 			tplCache = $scope['template'][tplName];
 
+		if (!def && tplName && (
+				$consts[tplName] && $consts[tplName][str] ||
+				tplCache && tplCache.parent && $consts[tplCache.parent.name] && $consts[tplCache.parent.name][str]
+			)
+
+		) {
+			return str;
+		}
+
 		if (!def && refCache) {
 			def = vars[`${str}_${refCache.id}`];
 		}
 
-		if (!def && (!tplName || !$consts[tplName] || !$consts[tplName][str])) {
-			def = vars[`${str}_${this.environment.id}`];
-		}
+		if (!def) {
+			if (tplName) {
+				def = vars[`${str}_${this.environment.id}`];
 
-		if (!def && tplName) {
-			if (refCache && refCache.parent) {
-				def = search(refCache.parent, str);
-			}
+			} else {
+				if (refCache && refCache.parent) {
+					def = search(refCache.parent, str);
+				}
 
-			if (!def && tplCache && tplCache.parent) {
-				def = search(tplCache.parent, str);
+				if (!def && tplCache && tplCache.parent) {
+					def = search(tplCache.parent, str);
+				}
 			}
 		}
 
