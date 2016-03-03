@@ -42,11 +42,14 @@ $$SnakeskinParser.prototype.isSimpleOutput = function () {};
  */
 $$SnakeskinParser.prototype.isAdvTest = function () {};
 
-/** @typedef {{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}} */
+/** @typedef {{iface: (boolean|undefined), raw: (boolean|undefined), jsDoc: (boolean|number|undefined)}} */
 var $$SnakeskinParserSaveParams;
 
 /** @type {?} */
 var iface;
+
+/** @type {?} */
+var raw;
 
 /** @type {?} */
 var jsDoc;

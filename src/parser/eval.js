@@ -17,10 +17,13 @@ import { ROOT } from '../consts/links';
  * Executes a string
  *
  * @param {string} str - source string
+ * @param {?boolean} [opt_raw=false] - if true, then the string is considered as raw
  * @return {?}
  */
-Parser.prototype.evalStr = function (str) {
-	str = this.pasteDangerBlocks(str);
+Parser.prototype.evalStr = function (str, opt_raw) {
+	if (!opt_raw) {
+		str = this.pasteDangerBlocks(str);
+	}
 
 	const
 		ctx = this.environment;

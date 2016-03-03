@@ -793,7 +793,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		// Plain text
 		} else {
 			if (jsDoc) {
-				parser.save(el);
+				parser.save(el, {raw: true});
 
 			} else if (!parser.tplName) {
 				if (el === ' ') {
@@ -841,7 +841,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						beginStr = true;
 					}
 
-					parser.save(applyDefEscape(el));
+					parser.save(applyDefEscape(el), {raw: true});
 				}
 
 				parser.inline.pop();
@@ -943,7 +943,7 @@ function compile(text, p, info, cacheKey, ctx, parser, dirname, filename) {
 
 		// Compiling in a browser
 		} else {
-			parser.evalStr(parser.result);
+			parser.evalStr(parser.result, true);
 		}
 
 		saveIntoFnCache(cacheKey, text, p, ctx);

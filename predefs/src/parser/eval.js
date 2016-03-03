@@ -8,9 +8,10 @@
 
 /**
  * @param {string} str
+ * @param {?boolean=} [opt_raw]
  * @return {?}
  */
-$$SnakeskinParser.prototype.evalStr = function (str) {};
+$$SnakeskinParser.prototype.evalStr = function (str, opt_raw) {};
 
 /**
  * @param {string} str

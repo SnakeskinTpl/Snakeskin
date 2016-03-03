@@ -163,13 +163,8 @@ Parser.prototype.end = function (cacheKey, label) {
 			break;
 	}
 
-	this.result = this.pasteDangerBlocks(this.result
-		.replace(
-			/__CDATA__(\d+)_/g,
-			(str, pos) =>
-				escapeEOLs(this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
-		)
-	);
+	this.result = this.result.replace(/__CDATA__(\d+)_/g, (str, pos) =>
+		escapeEOLs(this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\''));
 
 	const
 		versionDecl = `Snakeskin v${Snakeskin.VERSION.join('.')}`,
@@ -213,19 +208,24 @@ Parser.prototype.isAdvTest = function () {
  * @param {?$$SnakeskinParserSaveParams=} [opt_params] - addition parameters:
  *
  *   *) [iface=false] - if is true, then the current operation is an interface
+ *   *) [raw=false] - if is true, then the appending text is considered as raw
  *   *) [jsDoc] - last position of appending jsDoc or false
  *
  * @return {boolean}
  */
 Parser.prototype.save = function (str, opt_params) {
 	const
-		{iface, jsDoc} = any(opt_params || {});
+		{iface, jsDoc, raw} = any(opt_params || {});
 
 	if (str === undefined) {
 		return false;
 	}
 
 	if (!this.tplName || $write[this.tplName] !== false || iface) {
+		if (!raw) {
+			str = this.pasteDangerBlocks(str);
+		}
+
 		if (jsDoc) {
 			const pos = Number(jsDoc);
 			this.result = this.result.slice(0, pos) + str + this.result.slice(pos);
