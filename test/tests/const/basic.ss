@@ -22,6 +22,11 @@
 
 - namespace ['const'][%fileName%]
 
+: &
+	foo = 2,
+	bar = 2
+.
+
 - template simple()
 	- foo = 1
 	{foo}
