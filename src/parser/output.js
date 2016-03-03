@@ -200,26 +200,14 @@ Parser.prototype.out = function (command, opt_params) {
 	/**
 	 * @param {!Object} obj
 	 * @param {string} val
-	 * @param {!Array<string>} extList
 	 * @return {(string|boolean)}
 	 */
-	const search = (obj, val, extList) => {
+	const search = (obj, val) => {
 		if (!obj) {
 			return false;
 		}
 
-		const
-			def = vars[`${val}_${obj.id}`];
-
-		if (def) {
-			return def;
-		}
-
-		if (extList.length) {
-			return search(obj.children[extList.pop()], val, extList);
-		}
-
-		return false;
+		return vars[`${val}_${obj.id}`] || search(obj.parent, val) || false;
 	};
 
 	/**
@@ -228,31 +216,27 @@ Parser.prototype.out = function (command, opt_params) {
 	 */
 	const replacePropVal = (str) => {
 		let
-			def = vars[str];
+			def = vars[str],
+			refCache = ref && $scope[type][tplName][ref];
 
-		if (!def) {
+		if (!def && refCache) {
+			def = vars[`${str}_${refCache.id}`];
+		}
+
+		if (!def && (!tplName || !$consts[tplName] || !$consts[tplName][str])) {
+			def = vars[`${str}_${this.environment.id}`];
+		}
+
+		if (!def && tplName) {
+			if (refCache && refCache.parent) {
+				def = search(refCache.parent, str);
+			}
+
 			const
-				refCache = ref && $scope[type][tplName][ref];
+				tplCache = $scope['template'][tplName];
 
-			if (!def && refCache) {
-				def = vars[`${str}_${refCache.id}`];
-			}
-
-			if (!def && (!tplName || !$consts[tplName] || !$consts[tplName][str])) {
-				def = vars[`${str}_${this.environment.id}`];
-			}
-
-			if (!def && tplName) {
-				if (refCache) {
-					def = search(refCache.root, str, this.getExtList(tplName));
-				}
-
-				const
-					tplCache = $scope['template'][tplName];
-
-				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.root, str, this.getExtList(tplName));
-				}
+			if (!def && tplCache && tplCache.parent) {
+				def = search(tplCache.parent, str);
 			}
 		}
 

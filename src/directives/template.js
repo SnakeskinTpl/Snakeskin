@@ -295,6 +295,7 @@ import {
 			scope[tplName] = {
 				children: {},
 				id: this.environment.id,
+				name: tplName,
 				parent
 			};
 

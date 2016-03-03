@@ -102,7 +102,8 @@ Snakeskin.addDirective(
 		if (!scope[name]) {
 			current = scope[name] = {
 				children: {},
-				id: this.environment.id
+				id: this.environment.id,
+				name
 			};
 		}
 
