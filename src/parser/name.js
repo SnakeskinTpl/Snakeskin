@@ -119,7 +119,7 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 			const
 				custom = el[0] === '%';
 
-			el = opt_parseLiteralScope || custom ?
+			el = opt_parseLiteralScope && i === 0 || custom ?
 				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
 			if (custom) {
