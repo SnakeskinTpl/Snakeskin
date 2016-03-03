@@ -198,12 +198,16 @@ import {
 				return this.error(`invalid "${this.name}" name`);
 			}
 
-			const rName = this.pasteDangerBlocks(
-				this.replaceDangerBlocks(tplName)
-					.replace(nmsRgxp, '.')
-					.replace(nmeRgxp, '')
+			const getRName = (name) =>
+				this.pasteDangerBlocks(
+					this.replaceDangerBlocks(name)
+						.replace(nmsRgxp, '.')
+						.replace(nmeRgxp, '')
 
-			).replace(/\.['"]/g, '.').replace(/['"]$/, '');
+				).replace(/\.['"]/g, '.').replace(/['"]$/, '');
+
+			const
+				rName = getRName(tplName);
 
 			if (this.templates[rName]) {
 				const
@@ -216,6 +220,7 @@ import {
 
 			setTplName();
 			this.templates[rName] = {
+				declName: tplName,
 				file: this.info.file,
 				renderAs: this.renderAs
 			};
@@ -232,14 +237,20 @@ import {
 			if (/\)\s+extends\s+/.test(command)) {
 				try {
 					this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
-					parentTplName = this.parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+					parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
 					this.scope.pop();
 
 				} catch (ignore) {
 					return this.error(`invalid template name "${this.name}" for inheritance`);
 				}
 
-				if ($cache[parentTplName] == null) {
+				const
+					rName = getRName(parentTplName);
+
+				if (rName) {
+					parentTplName = this.parentTplName = rName.declName;
+
+				} else {
 					if (!this.renderAs || this.renderAs === 'template') {
 						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
 					}
