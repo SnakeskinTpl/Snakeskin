@@ -22,7 +22,7 @@ import { any } from '../helpers/gcc';
 import { r, isNotPrimitive } from '../helpers/string';
 import * as rgxp from '../consts/regs';
 import { $consts, $scope } from '../consts/cache';
-import { FILTER, G_MOD } from '../consts/literals';
+import { FILTER, G_MOD, SYS_CONSTS } from '../consts/literals';
 
 const blackWords = {
 	'+': true,
@@ -216,8 +216,11 @@ Parser.prototype.out = function (command, opt_params) {
 	 */
 	const replacePropVal = (str) => {
 		let
-			def = vars[str],
-			refCache = ref && $scope[type][tplName][ref];
+			def = vars[str];
+
+		const
+			refCache = ref && $scope[type][tplName][ref],
+			tplCache = $scope['template'][tplName];
 
 		if (!def && refCache) {
 			def = vars[`${str}_${refCache.id}`];
@@ -231,9 +234,6 @@ Parser.prototype.out = function (command, opt_params) {
 			if (refCache && refCache.parent) {
 				def = search(refCache.parent, str);
 			}
-
-			const
-				tplCache = $scope['template'][tplName];
 
 			if (!def && tplCache && tplCache.parent) {
 				def = search(tplCache.parent, str);
