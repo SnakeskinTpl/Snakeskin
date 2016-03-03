@@ -248,6 +248,7 @@ Parser.prototype.save = function (str, opt_params) {
  * @param {?$$SnakeskinParserSaveParams=} [opt_params] - addition parameters:
  *
  *   *) [iface=false] - if is true, then the current operation is an interface
+ *   *) [raw=false] - if is true, then the appending text is considered as raw
  *   *) [jsDoc] - last position of appending jsDoc or false
  *
  * @return {boolean}
