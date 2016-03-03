@@ -10,6 +10,7 @@
  * @typedef {{
  *   throws: boolean,
  *   onError: (?function(!Error)|undefined),
+ *   pack: boolean,
  *   module: string,
  *   moduleId: (?string|undefined),
  *   moduleName: (?string|undefined),
@@ -47,6 +48,9 @@ $$SnakeskinParser.prototype.throws;
 
 /** @type {(?function(!Error)|undefined)} */
 $$SnakeskinParser.prototype.onError;
+
+/** @type {boolean} */
+$$SnakeskinParser.prototype.pack;
 
 /** @type {string} */
 $$SnakeskinParser.prototype.module;

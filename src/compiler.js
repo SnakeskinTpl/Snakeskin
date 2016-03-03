@@ -64,6 +64,7 @@ import {
  *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
  *   *) [debug] - object, which will be contained some debug information
  *
+ *   *) [pack = false] - if true, then templates will be compiled to WebPack format
  *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, cjs, global)
  *   *) [moduleId = 'tpls'] - module id for AMD/UMD declaration
  *   *) [moduleName] - module name for global/UMD declaration
@@ -110,6 +111,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 			renderMode: 'stringConcat',
 			vars: {},
 			throws: true,
+			pack: false,
 			module: 'umd',
 			moduleId: 'tpls',
 			useStrict: true,
@@ -124,6 +126,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 			i18nOptions: []
 		}, opt_params)
 	);
+
+	if (p.pack) {
+		p.module = 'cjs';
+	}
 
 	Snakeskin.forEach(p.vars, (el, key) => {
 		Snakeskin.Vars[key] = el;

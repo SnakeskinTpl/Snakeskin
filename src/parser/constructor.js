@@ -31,6 +31,9 @@ export default class Parser {
 		/** @type {(?function(!Error)|undefined)} */
 		this.onError = params.onError;
 
+		/** @type {boolean} */
+		this.pack = params.pack;
+
 		/** @type {string} */
 		this.module = params.module;
 
@@ -375,10 +378,13 @@ export default class Parser {
 		 */
 		this.result = `This code is generated automatically, don't alter it. */`;
 
+		const ssRoot = this.pack ?
+			'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin';
+
 		if (this.module === 'native') {
 			this.result += ws`
 				${this.useStrict ? `'use strict';` : ''}
-				import Snakeskin from 'snakeskin';
+				import Snakeskin from '${ssRoot}';
 				var exports = {};
 				export default exports;
 			`;
@@ -390,7 +396,7 @@ export default class Parser {
 						{'cjs': true, 'umd': true}[this.module] ?
 							ws`
 								if (typeof exports === 'object' && typeof module !== 'undefined') {
-									factory(exports, typeof Snakeskin === 'undefined' ? require('snakeskin') : Snakeskin);
+									factory(exports, typeof Snakeskin === 'undefined' ? require('${ssRoot}') : Snakeskin);
 									return;
 								}
 							` : ''

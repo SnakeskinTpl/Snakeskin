@@ -37,6 +37,7 @@ var template;
  *   onError: (?function(!Error)|undefined),
  *   throws: (?boolean|undefined),
  *   debug: (Object|undefined),
+ *   pack: (?boolean|undefined),
  *   module: (?string|undefined),
  *   moduleId: (?string|undefined),
  *   moduleName: (?string|undefined),
@@ -79,6 +80,9 @@ var throws;
 
 /** @type {?} */
 var debug;
+
+/** @type {?} */
+var pack;
 
 /** @type {?} */
 var moduleId;

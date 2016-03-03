@@ -70,6 +70,7 @@ export function getFromCache(key, code, params, ctx) {
 export function getCacheKey(params, ctx) {
 	return params.language ?
 		null : JSON.stringify([
+			params.pack,
 			params.module,
 			params.moduleId,
 			params.moduleName,
