@@ -215,8 +215,8 @@ Parser.prototype.out = function (command, opt_params) {
 			return def;
 		}
 
-		if (extList.length && obj.children[extList[0]]) {
-			return search(obj.children[extList.shift()], val, extList);
+		if (extList.length) {
+			return search(obj.children[extList.pop()], val, extList);
 		}
 
 		return false;
@@ -231,28 +231,28 @@ Parser.prototype.out = function (command, opt_params) {
 			def = vars[str];
 
 		if (!def) {
-			let
+			const
 				refCache = ref && $scope[type][tplName][ref];
-
-			if (!refCache || refCache.parent && (!refCache.overridden || this.hasParent('__super__'))) {
-				if (refCache) {
-					def = search(refCache.root, str, this.getExtList(tplName));
-				}
-
-				let
-					tplCache = tplName && $scope['template'][tplName];
-
-				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.root, str, this.getExtList(tplName));
-				}
-			}
 
 			if (!def && refCache) {
 				def = vars[`${str}_${refCache.id}`];
 			}
 
-			if (!def) {
+			if (!def && (!tplName || !$consts[tplName] || !$consts[tplName][str])) {
 				def = vars[`${str}_${this.environment.id}`];
+			}
+
+			if (!def && tplName) {
+				if (refCache) {
+					def = search(refCache.root, str, this.getExtList(tplName));
+				}
+
+				const
+					tplCache = $scope['template'][tplName];
+
+				if (!def && tplCache && tplCache.parent) {
+					def = search(tplCache.root, str, this.getExtList(tplName));
+				}
 			}
 		}
 
