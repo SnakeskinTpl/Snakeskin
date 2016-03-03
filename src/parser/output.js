@@ -235,17 +235,16 @@ Parser.prototype.out = function (command, opt_params) {
 		}
 
 		if (!def) {
-			if (tplName) {
-				def = vars[`${str}_${this.environment.id}`];
+			def = vars[`${str}_${this.environment.id}`];
+		}
 
-			} else {
-				if (refCache && refCache.parent) {
-					def = search(refCache.parent, str);
-				}
+		if (!def && tplName) {
+			if (refCache && refCache.parent) {
+				def = search(refCache.parent, str);
+			}
 
-				if (!def && tplCache && tplCache.parent) {
-					def = search(tplCache.parent, str);
-				}
+			if (!def && tplCache && tplCache.parent) {
+				def = search(tplCache.parent, str);
 			}
 		}
 
