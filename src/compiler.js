@@ -11,7 +11,6 @@
  */
 
 import beautify from './deps/js-beautify';
-
 import Snakeskin from './core';
 import Parser from './parser/index';
 
