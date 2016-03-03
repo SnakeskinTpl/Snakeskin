@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { scopeMod } from '../consts/regs';
+import { scopeMod, escaperPart } from '../consts/regs';
 import { SYS_CONSTS } from '../consts/literals';
 import { $consts, $constPositions } from '../consts/cache';
 
@@ -75,7 +75,7 @@ Snakeskin.addDirective(
 				return this.error(`the constant "${name}" is already defined as variable`);
 			}
 
-			if (SYS_CONSTS[name]) {
+			if (SYS_CONSTS[name] || escaperPart.test(name)) {
 				return this.error(`can't declare the constant "${name}", try another name`);
 			}
 

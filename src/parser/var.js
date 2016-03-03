@@ -11,6 +11,7 @@
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { any } from '../helpers/gcc';
+import { escaperPart } from '../consts/regs';
 import { $consts } from '../consts/cache';
 import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
 
@@ -50,7 +51,7 @@ Parser.prototype.declVar = function (name, opt_params) {
 		this.error(`the variable "${name}" is already defined as a constant`);
 	}
 
-	if (!sys && SYS_CONSTS[name]) {
+	if (!sys && SYS_CONSTS[name] || escaperPart.test(name)) {
 		return this.error(`can't declare the variable "${name}", try another name`);
 	}
 

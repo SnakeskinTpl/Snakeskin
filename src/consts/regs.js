@@ -17,7 +17,7 @@ import { G_MOD } from './literals';
 
 export const
 	scopeMod = new RegExp(`^${r(G_MOD)}+`),
-	escaperPart = /^__ESCAPER_QUOT__\d+_/;
+	escaperPart = /^(?:__ESCAPER_QUOT__|__CDATA__)\d+_/;
 
 const
 	tmpSep = [];

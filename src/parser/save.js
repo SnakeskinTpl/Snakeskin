@@ -164,7 +164,9 @@ Parser.prototype.end = function (cacheKey, label) {
 	}
 
 	this.result = this.result.replace(/__CDATA__(\d+)_/g, (str, pos) =>
-		escapeEOLs(this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\''));
+		escapeEOLs((this.cdataContent[pos] || '')
+			.replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
+	);
 
 	const
 		versionDecl = `Snakeskin v${Snakeskin.VERSION.join('.')}`,
