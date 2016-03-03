@@ -163,12 +163,13 @@ Parser.prototype.end = function (cacheKey, label) {
 			break;
 	}
 
-	this.result = this.pasteDangerBlocks(this.result)
+	this.result = this.pasteDangerBlocks(this.result
 		.replace(
 			/__CDATA__(\d+)_/g,
 			(str, pos) =>
 				escapeEOLs(this.cdataContent[pos].replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
-		);
+		)
+	);
 
 	const
 		versionDecl = `Snakeskin v${Snakeskin.VERSION.join('.')}`,
