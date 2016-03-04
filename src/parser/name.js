@@ -154,5 +154,5 @@ Parser.prototype.normalizeBlockName = function (name) {
 
 	return this.pasteDangerBlocks(name)
 		.replace(/\.['"]|['"]\./g, '.')
-		.replace(/['"]$/, '');
+		.replace(/^\.|['"]$/, '');
 };
