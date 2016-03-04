@@ -573,7 +573,7 @@ import {
 						});
 					}
 
-					Snakeskin.forEach(stack, function (el, i) {
+					Snakeskin.forEach(stack, function (el) {
 						ref[el.key || ref.length] = el.value;
 					});
 
