@@ -121,11 +121,11 @@ Parser.prototype.replaceCData = function (str) {
 		.replace(new RegExp(`${r(s)}cdata${r(e)}([\\s\\S]*?)${r(s)}(?:\\/cdata|end cdata)${r(e)}`, 'g'), (str, data) => {
 			this.cdataContent.push(data);
 			return String(
-					// The number of added lines
-					`${s}__appendLine__ ${(data.match(new RegExp(eol.source, 'g')) || '').length}${e}` +
+				// The number of added lines
+				`${s}__appendLine__ ${(data.match(new RegExp(eol.source, 'g')) || '').length}${e}` +
 
-					// Label to replace CDATA
-					`__CDATA__${this.cdataContent.length - 1}_`
+				// Label to replace CDATA
+				`__CDATA__${this.cdataContent.length - 1}_`
 			);
 		});
 };
@@ -163,10 +163,12 @@ Parser.prototype.end = function (cacheKey, label) {
 			break;
 	}
 
-	this.result = this.result.replace(/__CDATA__(\d+)_/g, (str, pos) =>
-		escapeEOLs((this.cdataContent[pos] || '')
-			.replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
-	);
+	if (this.cdataContent.length) {
+		this.result = this.result.replace(/__CDATA__(\d+)_/g, (str, pos) =>
+			escapeEOLs((this.cdataContent[pos] || '')
+				.replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
+		);
+	}
 
 	const
 		versionDecl = `Snakeskin v${Snakeskin.VERSION.join('.')}`,
