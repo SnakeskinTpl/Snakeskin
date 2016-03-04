@@ -612,7 +612,7 @@ import {
 
 				var
 					TPL_NAME = "${escapeDoubleQuotes(declTplName)}",
-					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuotes(declParentTplName)}"` : ''};
+					PARENT_TPL_NAME${declParentTplName ? ` = "${escapeDoubleQuotes(declParentTplName)}"` : ''};
 
 				${args.def}
 			`);
