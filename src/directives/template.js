@@ -275,13 +275,13 @@ import {
 
 			if (iface) {
 				this.save(
-					`exports${concatProp(tplName)} = ${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`,
+					`exports${concatProp(declTplName)} = ${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`,
 					{iface}
 				);
 
 			} else {
 				this.save(ws`
-					exports${concatProp(tplName)} =
+					exports${concatProp(declTplName)} =
 						Snakeskin.decorate([
 							${decorators.join()}],
 							${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`
