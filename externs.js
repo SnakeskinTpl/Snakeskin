@@ -831,14 +831,14 @@ var jsDoc;
 /**
  * @param {string=} str
  * @param {?$$SnakeskinParserSaveParams=} [opt_params]
- * @return {boolean}
+ * @return {(boolean|string)}
  */
 $$SnakeskinParser.prototype.save = function (str, opt_params) {};
 
 /**
  * @param {string=} str
  * @param {?$$SnakeskinParserSaveParams=} [opt_params]
- * @return {boolean}
+ * @return {(boolean|string)}
  */
 $$SnakeskinParser.prototype.append = function (str, opt_params) {};
 
