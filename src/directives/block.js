@@ -58,7 +58,7 @@ Snakeskin.addDirective(
 				}
 
 				try {
-					tplName = this.normalizeBlockName(this.tplName = nms + concatProp(this.getBlockName(parts[0])));
+					tplName = this.tplName = this.normalizeBlockName(nms + concatProp(this.getBlockName(parts[0])));
 
 				} catch (err) {
 					return this.error(err.message);
