@@ -153,6 +153,6 @@ Parser.prototype.normalizeBlockName = function (name) {
 		.replace(nmeRgxp, '');
 
 	return this.pasteDangerBlocks(name)
-		.replace(/\.['"]/g, '.')
+		.replace(/\.['"]|['"]\./g, '.')
 		.replace(/['"]$/, '');
 };
