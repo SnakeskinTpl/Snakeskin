@@ -215,7 +215,7 @@ Parser.prototype.isAdvTest = function () {
  *   *) [raw=false] - if is true, then the appending text is considered as raw
  *   *) [jsDoc] - last position of appending jsDoc or false
  *
- * @return {boolean}
+ * @return {(boolean|string)}
  */
 Parser.prototype.save = function (str, opt_params) {
 	const
@@ -238,7 +238,7 @@ Parser.prototype.save = function (str, opt_params) {
 			this.result += str;
 		}
 
-		return true;
+		return str;
 	}
 
 	return false;

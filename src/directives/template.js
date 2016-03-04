@@ -77,7 +77,7 @@ import {
 			}
 
 			const
-				oldTplName = tplName = nms + concatProp(tplName);
+				oldTplName = tplName = this.replaceDangerBlocks(nms) + concatProp(tplName);
 
 			const setTplName = () => {
 				this.info.template = this.tplName = tplName;
@@ -105,8 +105,8 @@ import {
 				iface = this.name === 'interface',
 				fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
 
-			this.save((pos = `/* Snakeskin template: ${tplName}; ${fnArgsKey} */`), {iface, jsDoc});
-			if (jsDoc) {
+			pos = this.save(`/* Snakeskin template: ${tplName}; ${fnArgsKey} */`, {iface, jsDoc});
+			if (jsDoc && pos) {
 				jsDoc += pos.length;
 			}
 
@@ -152,19 +152,19 @@ import {
 					el = el.slice(1);
 				}
 
-				this.save(
-					(pos = ws`
+				pos = this.save(
+					ws`
 						if (${def} == null) {
 							${def} = {};
 						}
 
 						${i === 1 && shortcut ? `${this.module === 'native' ? 'export ' : ''}var ${shortcut} = ${def};` : ''}
-					`),
+					`,
 
 					{iface, jsDoc}
 				);
 
-				if (jsDoc) {
+				if (jsDoc && pos) {
 					jsDoc += pos.length;
 				}
 
