@@ -17,7 +17,7 @@ import { ROOT } from '../consts/links';
  * Executes a string
  *
  * @param {string} str - source string
- * @param {?boolean} [opt_raw=false] - if true, then the string is considered as raw
+ * @param {?boolean=} [opt_raw=false] - if true, then the string is considered as raw
  * @return {?}
  */
 Parser.prototype.evalStr = function (str, opt_raw) {
