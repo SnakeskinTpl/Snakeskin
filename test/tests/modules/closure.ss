@@ -15,4 +15,4 @@
 - namespace modules[%fileName%]
 - include './closure/c'
 
-- template ['get variables from closure']() extends modules.c.main
+- template ['get variables from closure']() extends modules['c'].main

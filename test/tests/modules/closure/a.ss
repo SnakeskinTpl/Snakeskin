@@ -1,4 +1,4 @@
-- namespace modules.a
+- namespace modules[%fileName%]
 
 /*!
  * Snakeskin
