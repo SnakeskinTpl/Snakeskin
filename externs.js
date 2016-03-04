@@ -174,6 +174,7 @@ var template;
  *   onError: (?function(!Error)|undefined),
  *   throws: (?boolean|undefined),
  *   debug: (Object|undefined),
+ *   pack: (?boolean|undefined),
  *   module: (?string|undefined),
  *   moduleId: (?string|undefined),
  *   moduleName: (?string|undefined),
@@ -216,6 +217,9 @@ var throws;
 
 /** @type {?} */
 var debug;
+
+/** @type {?} */
+var pack;
 
 /** @type {?} */
 var moduleId;
@@ -409,6 +413,7 @@ $$SnakeskinParser.prototype.splitXMLAttrGroup = function (str) {};
  * @typedef {{
  *   throws: boolean,
  *   onError: (?function(!Error)|undefined),
+ *   pack: boolean,
  *   module: string,
  *   moduleId: (?string|undefined),
  *   moduleName: (?string|undefined),
@@ -446,6 +451,9 @@ $$SnakeskinParser.prototype.throws;
 
 /** @type {(?function(!Error)|undefined)} */
 $$SnakeskinParser.prototype.onError;
+
+/** @type {boolean} */
+$$SnakeskinParser.prototype.pack;
 
 /** @type {string} */
 $$SnakeskinParser.prototype.module;
@@ -701,9 +709,10 @@ $$SnakeskinParser.prototype.pasteDangerBlocks = function (str) {};
 
 /**
  * @param {string} str
+ * @param {?boolean=} [opt_raw]
  * @return {?}
  */
-$$SnakeskinParser.prototype.evalStr = function (str) {};
+$$SnakeskinParser.prototype.evalStr = function (str, opt_raw) {};
 
 /**
  * @param {string} str
@@ -807,11 +816,14 @@ $$SnakeskinParser.prototype.isSimpleOutput = function () {};
  */
 $$SnakeskinParser.prototype.isAdvTest = function () {};
 
-/** @typedef {{iface: (boolean|undefined), jsDoc: (boolean|number|undefined)}} */
+/** @typedef {{iface: (boolean|undefined), raw: (boolean|undefined), jsDoc: (boolean|number|undefined)}} */
 var $$SnakeskinParserSaveParams;
 
 /** @type {?} */
 var iface;
+
+/** @type {?} */
+var raw;
 
 /** @type {?} */
 var jsDoc;
