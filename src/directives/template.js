@@ -372,7 +372,7 @@ import {
 					__THIS__ = this;
 
 				var
-					callee = exports${concatProp(tplName)},
+					callee = exports${concatProp(declTplName)},
 					self = callee.Blocks = {};
 
 				var
@@ -661,12 +661,15 @@ import {
 				this.save('};', {iface});
 
 			} else {
+				const
+					{declTplName} = this.templates[tplName];
+
 				this.save(ws`
 						${this.consts.join('')}
 						return ${this.getReturnResultDecl()};
 					});
 
-					Snakeskin.cache["${escapeDoubleQuotes(tplName)}"] = exports${concatProp(tplName)};
+					Snakeskin.cache["${escapeDoubleQuotes(declTplName)}"] = exports${concatProp(declTplName)};
 				`);
 			}
 
