@@ -198,33 +198,29 @@ import {
 				return this.error(`invalid "${this.name}" name`);
 			}
 
-			const getRName = (name) =>
-				this.pasteDangerBlocks(
-					this.replaceDangerBlocks(name)
-						.replace(nmsRgxp, '.')
-						.replace(nmeRgxp, '')
-
-				).replace(/\.['"]/g, '.').replace(/['"]$/, '');
-
 			const
-				rName = getRName(tplName);
+				normalizeTplName = this.normalizeBlockName(tplName);
 
-			if (this.templates[rName]) {
+			if (this.templates[normalizeTplName]) {
 				const
-					{file, renderAs} = this.templates[rName];
+					{file, renderAs} = this.templates[normalizeTplName];
 
 				if (this.file !== file || this.renderAs === renderAs) {
 					return this.error(`the template "${tplName}" already defined`);
 				}
 			}
 
-			setTplName();
-			this.templates[rName] = {
-				declName: tplName,
+			const declTplName = tplName;
+			this.templates[normalizeTplName] = {
+				declTplName,
 				file: this.info.file,
 				renderAs: this.renderAs
 			};
 
+			tplName = normalizeTplName;
+			setTplName();
+
+			this.info.template = declTplName;
 			this.vars[tplName] = {};
 			this.blockTable = {};
 			this.blockStructure = {
@@ -233,26 +229,26 @@ import {
 				parent: null
 			};
 
-			let parentTplName;
+			let
+				parentTplName,
+				declParentTplName;
+
 			if (/\)\s+extends\s+/.test(command)) {
 				try {
 					this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
-					parentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+					parentTplName = declParentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
 					this.scope.pop();
 
 				} catch (ignore) {
 					return this.error(`invalid template name "${this.name}" for inheritance`);
 				}
 
-				const
-					rName = getRName(parentTplName);
+				parentTplName =
+					this.parentTplName = this.normalizeBlockName(parentTplName);
 
-				if (rName) {
-					parentTplName = this.parentTplName = rName.declName;
-
-				} else {
+				if ($cache[parentTplName] == null) {
 					if (!this.renderAs || this.renderAs === 'template') {
-						return this.error(`the specified template "${parentTplName}" for inheritance is not defined`);
+						return this.error(`the specified template "${declParentTplName}" for inheritance is not defined`);
 					}
 
 					parentTplName = this.parentTplName = undefined;
@@ -615,8 +611,8 @@ import {
 					__RETURN_VAL__;
 
 				var
-					TPL_NAME = "${escapeDoubleQuotes(tplName)}",
-					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuotes(parentTplName)}"` : ''};
+					TPL_NAME = "${escapeDoubleQuotes(declTplName)}",
+					PARENT_TPL_NAME${parentTplName ? ` = "${escapeDoubleQuotes(declParentTplName)}"` : ''};
 
 				${args.def}
 			`);

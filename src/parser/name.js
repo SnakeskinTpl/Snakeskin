@@ -140,3 +140,19 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 
 	return name;
 };
+
+/**
+ * Normalizes the specified block name
+ *
+ * @param {string} name
+ * @return {string}
+ */
+Parser.prototype.normalizeBlockName = function (name) {
+	name = this.replaceDangerBlocks(name)
+		.replace(nmsRgxp, '.')
+		.replace(nmeRgxp, '');
+
+	return this.pasteDangerBlocks(name)
+		.replace(/\.['"]/g, '.')
+		.replace(/['"]$/, '');
+};
