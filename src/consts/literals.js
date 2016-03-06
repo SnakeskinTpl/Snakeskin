@@ -210,6 +210,7 @@ export const SYS_CONSTS = {
 	'__JOIN__': true,
 	'__GET_XML_ATTR_KEY_DECL__': true,
 	'__APPEND_XML_ATTR_VAL__': true,
+	'__GET_XML_ATTRS_DECL_START__': true,
 	'__GET_XML_TAG_DECL_END__': true,
 	'__GET_END_XML_TAG_DECL__': true,
 	'__TARGET_END__': true,

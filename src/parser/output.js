@@ -113,6 +113,8 @@ const esprimaHackFn = (str) => String(str)
  * @return {string}
  */
 Parser.prototype.out = function (command, opt_params) {
+	command = this.replaceDangerBlocks(command);
+
 	const
 		{cache, unsafe, skipFirstWord, skipValidation} = any(Object.assign({cache: true}, opt_params));
 

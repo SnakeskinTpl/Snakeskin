@@ -41,26 +41,15 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
  * @return {string}
  */
 Parser.prototype.getXMLTagDeclStart = function (tag) {
-	let
-		str = this.declVars(`__TAG__ = ('${tag}').trim() || '${defaultTag}'`, {sys: true});
-
-	const
-		link = this.getVar('__TAG__');
-
-	if (!this.stringResult && !stringRender[this.renderMode]) {
-		return ws`
-			${str}
-			if (${link} !== '?') {
-				$0 = new Snakeskin.Element(${link}, '${this.renderMode}');
-			}
-		`;
-	}
-
 	return ws`
-		${str}
-		if (${link} !== '?') {
-			${this.wrap(`'<' + ${link}`)}
-		}
+		${this.declVars(`__TAG__ = ('${tag}').trim() || '${defaultTag}'`, {sys: true})}
+		__RESULT__ = __GET_XML_ATTRS_DECL_START__(
+			__RESULT__,
+			${this.getVar('__TAG__')},
+			'${this.renderMode}',
+			${!stringRender[this.renderMode]},
+			${this.stringResult}
+		);
 	`;
 };
 

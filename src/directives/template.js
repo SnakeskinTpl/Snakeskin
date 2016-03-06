@@ -410,6 +410,28 @@ import {
 					__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? ' ' : '') + (val != null ? val : '');
 				}
 
+				function __GET_XML_ATTRS_DECL_START__(res, link, renderMode, isDOMRenderMode, stringResult) {
+					var __RESULT__ = res;
+
+					if (!stringResult && isDOMRenderMode) {
+						if (link !== '?') {
+							$0 = new Snakeskin.Element(link, renderMode);
+						}
+
+					} else {
+						if (link !== '?') {
+							if (stringResult) {
+								__STRING_RESULT__ += '<' + link;
+
+							} else {
+								${this.wrap(`'<' + link`)}
+							}
+						}
+					}
+
+					return __RESULT__;
+				}
+
 				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype) {
 					var __RESULT__ = res;
 
