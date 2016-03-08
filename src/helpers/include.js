@@ -42,7 +42,8 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 	const
 		fs = require('fs'),
 		path = require('path'),
-		glob = require('glob');
+		glob = require('glob'),
+		findup = require('findup-sync');
 
 	const
 		s = ADV_LEFT_BOUND + LEFT_BOUND,
@@ -53,10 +54,21 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 			extname = path.extname(file),
 			{include} = Snakeskin.LocalVars;
 
-		const src = path.resolve(
-			path.dirname(base),
-			file + (extname ? '' : '.ss')
-		);
+		const
+			dirname = path.basename(file),
+			mainFile = `?(${dirname && !glob.hasMagic(dirname) ? `${dirname}|` : ''}main|index).ss`;
+
+		let src = /(?:\\|\/)$/.test(file) ?
+			file + mainFile : file + (extname ? '' : '.ss');
+
+		if (!path.isAbsolute(src)) {
+			if (/^\./.test(src)) {
+				src = path.resolve(path.dirname(base), src);
+
+			} else {
+				src = path.resolve(findup('node_modules'), src);
+			}
+		}
 
 		const
 			arr = glob.hasMagic(src) ? glob.sync(src) : [src];
