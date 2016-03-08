@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta27
+ * Snakeskin v7.0.0-beta28
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 06 Mar 2016 17:19:21 GMT
+ * Date: 'Tue, 08 Mar 2016 18:04:01 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta27']
+      VERSION: [7, 0, 0, 'beta28']
     };
 
     /**
@@ -1153,7 +1153,7 @@
     	var tmp = val.slice(0, length - 1);
 
     	var i = tmp.length,
-    	    lastInd = undefined;
+    	    lastInd = void 0;
 
     	while (i-- && opt_wordOnly) {
     		if (tmp.charAt(i) === ' ') {
@@ -1977,7 +1977,7 @@
 
     	var scope = undefined,
     	    argsMap = {},
-    	    parentArgs = undefined;
+    	    parentArgs = void 0;
 
     	// Initialise cache objects
     	// for the specified block
@@ -2322,7 +2322,7 @@
     		var parent = this.parentTplName,
     		    key = opt_name + '_' + opt_params.name;
 
-    		var sub = undefined;
+    		var sub = void 0;
     		if (blockTable[key] && blockTable[key] !== true) {
     			sub = blockTable[key];
     			sub.parent = blockStructure;
@@ -2403,7 +2403,7 @@
     	if (blockStructure && this.getGroup('inlineInherit')[opt_name]) {
     		var key = opt_name + '_' + opt_params.name;
 
-    		var sub = undefined;
+    		var sub = void 0;
     		if (blockTable[key] && blockTable[key] !== true) {
     			sub = blockTable[key];
     			sub.parent = blockStructure;
@@ -2491,7 +2491,7 @@
     			if (prev != null) {
     				prev = prev.replace(styleRgxp, '  ').replace(privateRgxp, '').replace(cutRgxp, '$1');
 
-    				var part = undefined;
+    				var part = void 0;
     				if (prev.trim()) {
     					part = eol + '  ' + (pos + 1) + ' ' + space + prev;
     				} else {
@@ -2613,7 +2613,7 @@
     		return val;
     	}
 
-    	var res = undefined;
+    	var res = void 0;
     	if (IS_NODE) {
     		var path = require('path'),
     		    fs = require('fs');
@@ -2685,7 +2685,8 @@
 
     	var fs = require('fs'),
     	    path = require('path'),
-    	    glob = require('glob');
+    	    glob = require('glob'),
+    	    findup = require('findup-sync');
 
     	var s = ADV_LEFT_BOUND + LEFT_BOUND,
     	    e = RIGHT_BOUND;
@@ -2695,7 +2696,18 @@
     		var include = Snakeskin.LocalVars.include;
 
 
-    		var src = path.resolve(path.dirname(base), file + (extname ? '' : '.ss'));
+    		var dirname = path.basename(file),
+    		    mainFile = '?(' + (dirname && !glob.hasMagic(dirname) ? dirname + '|' : '') + 'main|index).ss';
+
+    		var src = /(?:\\|\/)$/.test(file) ? file + mainFile : file + (extname ? '' : '.ss');
+
+    		if (!path.isAbsolute(src)) {
+    			if (/^\./.test(src)) {
+    				src = path.resolve(path.dirname(base), src);
+    			} else {
+    				src = path.resolve(findup('node_modules'), src);
+    			}
+    		}
 
     		var arr = glob.hasMagic(src) ? glob.sync(src) : [src];
 
@@ -2851,7 +2863,7 @@
     		var val = _ref3.val;
 
     		if (cache === $dirTrim) {
-    			var res = undefined;
+    			var res = void 0;
     			switch (val) {
     				case true:
     					res = {
@@ -3143,7 +3155,7 @@
 
     			if (siblings) {
     				var j = 1,
-    				    prev = undefined;
+    				    prev = void 0;
 
     				while ((prev = siblings[siblings.length - j]) && (prev.name === 'text' || prev === newStructure)) {
     					j++;
@@ -3301,11 +3313,11 @@
     	    advDiff = [];
 
     	var tb = $templates[name],
-    	    blockDiff = undefined,
-    	    newFrom = undefined,
-    	    prev = undefined,
-    	    el = undefined,
-    	    k = undefined;
+    	    blockDiff = void 0,
+    	    newFrom = void 0,
+    	    prev = void 0,
+    	    el = void 0,
+    	    k = void 0;
 
     	var sort = function sort(a, b) {
     		return a.val - b.val;
@@ -3452,9 +3464,9 @@
     var rightPartRgxp = new RegExp('(?:' + r(ADV_LEFT_BOUND) + '?' + LEFT_BOUND + '__&-__' + r(RIGHT_BOUND) + '|)\\s*$');
     var rightWSRgxp = /\s*$/;
     var lastSymbolRgxp = new RegExp('(' + r(ADV_LEFT_BOUND) + '|\\\\)$');
-    var endDirInit = undefined;
-    var needSpace = undefined;
-    var eol$1 = undefined;
+    var endDirInit = void 0;
+    var needSpace = void 0;
+    var eol$1 = void 0;
     /**
      * Returns a template description object from a string from the specified position
      * (Jade-Like to SS native)
@@ -3475,7 +3487,7 @@
     	    spaces = 0,
     	    space = '';
 
-    	var struct = undefined,
+    	var struct = void 0,
     	    code = '';
 
     	var length = 0,
@@ -3544,7 +3556,7 @@
     				var _ret2 = function () {
     					var adv = el === ADV_LEFT_BOUND ? ADV_LEFT_BOUND : '',
     					    nextSpace = false,
-    					    diff = undefined;
+    					    diff = void 0;
 
     					init = false;
     					clrL = 0;
@@ -3558,8 +3570,8 @@
     					var chr = str[_j + diff];
     					nextSpace = !chr || ws.test(chr);
 
-    					var dir = undefined,
-    					    replacer = undefined;
+    					var dir = void 0,
+    					    replacer = void 0;
 
     					if (adv) {
     						dir = el === ADV_LEFT_BOUND && next !== LEFT_BOUND && nextSpace;
@@ -3664,8 +3676,8 @@
     					var s = dir ? adv + LEFT_BOUND : '',
     					    e = dir ? RIGHT_BOUND : '';
 
-    					var parts = undefined,
-    					    txt = undefined;
+    					var parts = void 0,
+    					    txt = void 0;
 
     					decl.command = decl.command.replace(lastSymbolRgxp, '\\$1');
 
@@ -3770,7 +3782,7 @@
     	var s = struct.adv + LEFT_BOUND,
     	    e = RIGHT_BOUND;
 
-    	var tmp = undefined;
+    	var tmp = void 0;
     	if (needSpace) {
     		tmp = '' + (struct.trim.right ? '' : eol$1) + (endDirInit ? '' : s + '__&+__' + e) + (struct.trim.right ? eol$1 : '');
     	} else {
@@ -3849,7 +3861,7 @@
     				if (dir) {
     					var dirStart = ws.test(str[_j2 - 2]);
 
-    					var literal = undefined;
+    					var literal = void 0;
     					brk = dirStart && prevEl === CONCAT_END;
 
     					if (dirStart && (prevEl === CONCAT && command !== CONCAT || brk)) {
@@ -4435,24 +4447,40 @@
     	var file = this.info.file;
 
 
-    	var basename = undefined;
-    	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, function (str, $1) {
+    	var basename = void 0,
+    	    dirname = void 0;
+
+    	str = this.replaceDangerBlocks(str.replace(/(.?)%(fileName|dirName)%/g, function (str, $1, placeholder) {
     		if (!file) {
-    			_this.error('the placeholder %fileName% can\'t be used without the "file" option');
+    			_this.error('the placeholder %' + placeholder + '% can\'t be used without the "file" option');
     			return '';
     		}
 
     		if (!IS_NODE) {
-    			_this.error('the placeholder %fileName% can\'t be used with live compilation in a browser');
+    			_this.error('the placeholder %' + placeholder + '% can\'t be used with live compilation in a browser');
     			return '';
     		}
 
-    		if (!basename) {
-    			var path = require('path');
-    			basename = path.basename(file, path.extname(file));
-    		}
+    		var path = require('path');
 
-    		var res = basename;
+    		var res = void 0;
+    		switch (placeholder) {
+    			case 'fileName':
+    				if (!basename) {
+    					basename = path.basename(file, path.extname(file));
+    				}
+
+    				res = basename;
+    				break;
+
+    			case 'dirName':
+    				if (!dirname) {
+    					dirname = path.basename(path.dirname(file));
+    				}
+
+    				res = dirname;
+    				break;
+    		}
 
     		if ($1) {
     			if ($1 !== '.') {
@@ -4733,7 +4761,7 @@
      * @return {boolean}
      */
     function isSyOL(str, start, end) {
-    	var res = undefined;
+    	var res = void 0;
 
     	while (start--) {
     		var el = str[start];
@@ -5018,7 +5046,7 @@
     	    filterAddEnd = 0;
 
     	var ref = this.hasBlock('block', true),
-    	    type = undefined;
+    	    type = void 0;
 
     	if (ref) {
     		ref = ref.params.name;
@@ -5155,8 +5183,8 @@
 
     	var cacheLink = replacePropVal('$_');
 
-    	var isFilter = undefined,
-    	    breakNum = undefined,
+    	var isFilter = void 0,
+    	    breakNum = void 0,
     	    escape = false;
 
     	for (var i = 0; i < command.length; i++) {
@@ -5202,7 +5230,7 @@
     				var finalWord = _getWordFromPos.finalWord;
 
     				var unary = _getWordFromPos.unary;
-    				var tmpFinalWord = undefined;
+    				var tmpFinalWord = void 0;
 
     				if (unary) {
     					tmpFinalWord = finalWord.split(' ');
@@ -5222,7 +5250,7 @@
     					return '';
     				}
 
-    				var vRes = undefined;
+    				var vRes = void 0;
     				if (canParse) {
     					if (el === G_MOD) {
     						if (next === G_MOD) {
@@ -5345,7 +5373,7 @@
     				    current = params.shift().split('.');
 
     				var bind = [],
-    				    test = undefined;
+    				    test = void 0;
 
     				var Filters = Snakeskin.Filters;
     				var _pos = 0;
@@ -6060,7 +6088,7 @@
     		return val.value;
     	}
 
-    	var link = undefined,
+    	var link = void 0,
     	    global = false;
 
     	if (structure.name === 'root') {
@@ -6678,7 +6706,7 @@
     	var start = 0,
     	    pContent = null;
 
-    	var unary = undefined,
+    	var unary = void 0,
     	    unaryStr = '',
     	    word = '';
 
@@ -6893,7 +6921,7 @@
 
     	var info = any(Object.assign({ line: 1 }, opt_info));
 
-    	var text = undefined;
+    	var text = void 0;
     	if ((typeof src === 'undefined' ? 'undefined' : babelHelpers.typeof(src)) === 'object' && 'innerHTML' in src) {
     		info.node = src;
     		text = src.innerHTML.replace(wsStart, '');
@@ -6925,8 +6953,8 @@
     	// >>>
 
     	var label = '',
-    	    dirname = undefined,
-    	    filename = undefined;
+    	    dirname = void 0,
+    	    filename = void 0;
 
     	Snakeskin.LocalVars.include = {};
     	Snakeskin.UID = Math.random().toString(16).replace('0.', '').slice(0, 5);
@@ -6981,7 +7009,7 @@
     	    clrL = true;
 
     	var bOpen = false,
-    	    bEnd$$ = undefined,
+    	    bEnd$$ = void 0,
     	    bEscape = false,
     	    part = '',
     	    rPart = '';
@@ -7745,8 +7773,8 @@
 
     	var init = false,
     	    params = last,
-    	    parentCache = undefined,
-    	    cache = undefined;
+    	    parentCache = void 0,
+    	    cache = void 0;
 
     	if (tplName) {
     		cache = $output[tplName].flags = $output[tplName].flags || {};
@@ -7786,8 +7814,8 @@
     		this.params.push(params);
     	}
 
-    	var flag = undefined,
-    	    value = undefined;
+    	var flag = void 0,
+    	    value = void 0;
 
     	if (isArray(command)) {
     		var _command = babelHelpers.slicedToArray(command, 2);
@@ -7877,8 +7905,8 @@
     		var async = this.getGroup('async'),
     		    isCallback = this.getGroup('callback')[_name];
 
-    		var closest = undefined,
-    		    asyncParent = undefined;
+    		var closest = void 0,
+    		    asyncParent = void 0;
 
     		if (isCallback) {
     			closest = any(this.getNonLogicParent()).name, asyncParent = async[closest];
@@ -8292,7 +8320,7 @@
     		    start = this.i - this.startTemplateI,
     		    block = this.hasParent(this.getGroup('dynamic'));
 
-    		var parent = undefined;
+    		var parent = void 0;
     		if (parentTpl) {
     			parent = $consts[parentTpl][name];
     		}
@@ -8364,7 +8392,7 @@
     }, function (condition) {
     	this.startDir(null, { condition: condition });
 
-    	var str = undefined;
+    	var str = void 0;
     	if (!stringRender[this.renderMode]) {
     		if (!this.stringResult) {
     			this.stringResult = this.structure.params.stringResult = true;
@@ -8384,7 +8412,7 @@
     	var p = this.structure.params,
     	    end = p.condition ? ' <![endif]' : '';
 
-    	var str = undefined;
+    	var str = void 0;
     	if (!stringRender[this.renderMode]) {
     		str = this.wrap('\'' + end + '\'');
 
@@ -8507,7 +8535,7 @@
 
     		var tplName = this.replaceFileNamePatterns(this.getFnName(command)),
     		    prfx = ['', ''],
-    		    pos = undefined;
+    		    pos = void 0;
 
     		if (/\*/.test(tplName)) {
     			prfx[1] = '*';
@@ -8647,8 +8675,8 @@
     			parent: null
     		};
 
-    		var parentTplName = undefined,
-    		    declParentTplName = undefined;
+    		var parentTplName = void 0,
+    		    declParentTplName = void 0;
 
     		if (/\)\s+extends\s+/.test(command)) {
     			try {
@@ -9407,8 +9435,8 @@
     	var map = this.getGroup('inherit');
 
     	var obj = this.blockStructure,
-    	    cache = undefined,
-    	    drop = undefined;
+    	    cache = void 0,
+    	    drop = void 0;
 
     	while (true) {
     		if (map[obj.name]) {
@@ -9620,7 +9648,7 @@
     		wrapParams += tmp + '[' + j++ + ']';
     	}
 
-    	var str = undefined;
+    	var str = void 0;
     	var command = p.command.replace(/([^\s]\s*)(?=\)$)/, function (str, $0) {
     		if (str[0] !== '(') {
     			wrapParams = ',' + wrapParams;
@@ -9798,7 +9826,7 @@
     	    parentTplName = $extMap[tplName];
 
     	var current = scope[name],
-    	    parentScope = undefined;
+    	    parentScope = void 0;
 
     	if (parentTplName) {
     		parentScope = $scope[this.name][parentTplName] = $scope[this.name][parentTplName] || {};
@@ -9834,8 +9862,8 @@
     	var structure = this.structure;
     	var dir = String(this.name);
 
-    	var params = undefined,
-    	    output = undefined;
+    	var params = void 0,
+    	    output = void 0;
 
     	if (name !== command) {
     		var outputCache = this.getBlockOutput(dir);
