@@ -11,3 +11,6 @@
  * @return {!Array}
  */
 Array.from = function (arrayLike) {};
+
+/** type {?} */
+var isAbsolute;
