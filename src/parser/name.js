@@ -56,25 +56,42 @@ Parser.prototype.replaceFileNamePatterns = function (str) {
 	const
 		{file} = this.info;
 
-	let basename;
-	str = this.replaceDangerBlocks(str.replace(/(.?)%fileName%/g, (str, $1) => {
+	let
+		basename,
+		dirname;
+
+	str = this.replaceDangerBlocks(str.replace(/(.?)%(fileName|dirName)%/g, (str, $1, placeholder) => {
 		if (!file) {
-			this.error(`the placeholder %fileName% can't be used without the "file" option`);
+			this.error(`the placeholder %${placeholder}% can't be used without the "file" option`);
 			return '';
 		}
 
 		if (!IS_NODE) {
-			this.error(`the placeholder %fileName% can't be used with live compilation in a browser`);
+			this.error(`the placeholder %${placeholder}% can't be used with live compilation in a browser`);
 			return '';
 		}
 
-		if (!basename) {
-			const path = require('path');
-			basename = path.basename(file, path.extname(file));
-		}
+		const
+			path = require('path');
 
-		let
-			res = basename;
+		let res;
+		switch (placeholder) {
+			case 'fileName':
+				if (!basename) {
+					basename = path.basename(file, path.extname(file));
+				}
+
+				res = basename;
+				break;
+
+			case 'dirName':
+				if (!dirname) {
+					dirname = path.basename(path.dirname(file));
+				}
+
+				res = dirname;
+				break;
+		}
 
 		if ($1) {
 			if ($1 !== '.') {
