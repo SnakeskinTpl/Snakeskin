@@ -8,7 +8,7 @@
 
 [[simple]]==============================================================================================================
 
-<div class="foo bar" bla="2" data-baz="foo bar" foo></div>
+<div class="foo bar" bla="2" data-baz="foo bar" foo baz=""></div>
 
 [[xml doctype]]=========================================================================================================
 
@@ -47,7 +47,7 @@
 - namespace tags[%fileName%]
 
 - template simple()
-	< .foo class = bar | bla = 2 | -baz = foo bar | foo
+	< .foo class = bar | bla = 2 | -baz = foo bar | foo | baz =
 
 - template ['xml doctype']()
 	- doctype xml

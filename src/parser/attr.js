@@ -83,7 +83,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 		{group = '', separator = '-'} = params;
 
 	const
-		parts = params.attr.split(' | ');
+		parts = params.attr.split(' | '),
+		eqRgxp = / =(?: |$)/;
 
 	let res = '';
 	for (let i = 0; i < parts.length; i++) {
@@ -91,7 +92,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			el = parts[i];
 
 		let
-			args = el.split(' = '),
+			args = el.split(eqRgxp),
 			empty = args.length !== 2;
 
 		if (empty) {
