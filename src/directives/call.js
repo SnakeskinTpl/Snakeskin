@@ -25,8 +25,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (command.slice(-1) === '/') {
+			this.appendDefaultFilters({local: ['undef']});
 			this.startInlineDir(null, {short: true});
-			this.append(this.wrap(this.out(`${command.slice(0, -1)}|undef`, {unsafe: true})));
+			this.append(this.wrap(this.out(command.slice(0, -1))));
+			this.filters.pop();
 			return;
 		}
 
@@ -68,6 +70,7 @@ Snakeskin.addDirective(
 			tmp = this.getVar('__CALL_TMP__'),
 			pos = this.getVar('__CALL_POS__');
 
+		this.appendDefaultFilters({local: ['undef']});
 		this.append(ws`
 			if (__LENGTH__(__RESULT__)) {
 				${pos}++;
@@ -116,14 +119,15 @@ Snakeskin.addDirective(
 		} else {
 			if (j === 1) {
 				str = ws`
-					${pos} ? ${this.out(`${command}|undef`, {unsafe: true})} : ${this.out(`${p.command}|undef`, {unsafe: true})}
+					${pos} ? ${this.out(command)} : ${this.out(p.command)}
 				`;
 
 			} else {
-				str = this.out(`${command}|undef`, {unsafe: true});
+				str = this.out(command);
 			}
 		}
 
+		this.filters.pop();
 		this.append(ws`
 			__RESULT__ = ${this.getVar('__CALL_CACHE__')};
 			${this.wrap(str)}
