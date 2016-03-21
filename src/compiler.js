@@ -698,7 +698,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							return false;
 						}
 
-						if (parser.needPrfx) {
+						if (parser.needPrfx && parser.needPrfx !== 1) {
 							if (parser.getDirName(commandType) === 'end') {
 								if (prfxI) {
 									prfxI--;

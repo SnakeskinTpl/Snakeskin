@@ -264,10 +264,6 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					}
 				}
 
-				const
-					s = dir ? adv + lb : '',
-					e = dir ? rb : '';
-
 				let
 					parts,
 					txt;
@@ -286,7 +282,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 						}
 
 						if (obj.trim.left && !parts[1]) {
-							parts[1] = `${s}__&+__${e}`;
+							parts[1] = `${alb}${lb}__&+__${rb}`;
 						}
 					}
 
@@ -300,6 +296,10 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				if (needSpace && (obj.text || !Snakeskin.Directives[obj.name])) {
 					code += `${alb}${lb}__&-__${rb}`;
 				}
+
+				const
+					s = dir ? adv + lb : '',
+					e = dir ? rb : '';
 
 				code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
 				endDirInit = false;
@@ -353,7 +353,7 @@ function appendDirEnd(str, struct) {
 	str = str.replace(rightPartRgxp, '');
 
 	const
-		s = struct.adv + lb,
+		s = alb + lb,
 		e = rb;
 
 	let tmp;
@@ -365,10 +365,10 @@ function appendDirEnd(str, struct) {
 	}
 
 	endDirInit = true;
-	str += `${tmp}${s}__end__${e}${s}__cutLine__${e}`;
+	str += `${tmp}${struct.adv + lb}__end__${e}${s}__cutLine__${e}`;
 
 	if (rightSpace && needSpace) {
-		str += `${struct.adv}${lb}__&-__${rb}`;
+		str += `${s}__&-__${rb}`;
 	}
 
 	return str + rightSpace;

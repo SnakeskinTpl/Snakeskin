@@ -109,7 +109,7 @@ $$SnakeskinParser.prototype.info;
 /** @type {!Array<!Object>} */
 $$SnakeskinParser.prototype.params;
 
-/** @type {boolean} */
+/** @type {(boolean|number)} */
 $$SnakeskinParser.prototype.needPrfx;
 
 /** @type {!Array} */

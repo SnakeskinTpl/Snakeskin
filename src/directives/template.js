@@ -667,6 +667,10 @@ import {
 					this.getTplFullBody(tplName) +
 					this.source.slice(this.i - diff);
 
+				if (this.needPrfx) {
+					this.needPrfx = 1;
+				}
+
 				this.initTemplateCache(tplName);
 				this.startDir(this.structure.name);
 				this.i = this.startTemplateI - 1;
@@ -674,6 +678,10 @@ import {
 				this.blockTable = {};
 				this.vars[tplName] = {};
 				return;
+			}
+
+			if (this.needPrfx === 1) {
+				this.needPrfx = false;
 			}
 
 			const

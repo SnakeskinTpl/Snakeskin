@@ -112,7 +112,7 @@ export default class Parser {
 
 		/**
 		 * If is true, then for declaring directives must use advanced syntax
-		 * @type {boolean}
+		 * @type {(boolean|number)}
 		 */
 		this.needPrfx = false;
 
