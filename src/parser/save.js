@@ -13,7 +13,7 @@ import Parser from './constructor';
 import { r } from '../helpers/string';
 import { any } from '../helpers/gcc';
 import { escapeEOLs } from '../helpers/escape';
-import { eol, singleQuotes } from '../consts/regs';
+import { eol, singleQuotes, backSlashes } from '../consts/regs';
 import { $write } from '../consts/cache';
 import { LEFT_BOUND, RIGHT_BOUND, ADV_LEFT_BOUND } from '../consts/literals';
 
@@ -166,7 +166,9 @@ Parser.prototype.end = function (cacheKey, label) {
 	if (this.cdataContent.length) {
 		this.result = this.result.replace(/__CDATA__(\d+)_/g, (str, pos) =>
 			escapeEOLs((this.cdataContent[pos] || '')
-				.replace(new RegExp(eol.source, 'g'), this.eol)).replace(singleQuotes, '\\\'')
+				.replace(backSlashes, '\\\\')
+				.replace(new RegExp(eol.source, 'g'), this.eol))
+				.replace(singleQuotes, '\\\'')
 		);
 	}
 
