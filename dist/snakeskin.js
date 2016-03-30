@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta.31
+ * Snakeskin v7.0.0-beta.32
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 22 Mar 2016 16:23:17 GMT
+ * Date: 'Wed, 30 Mar 2016 18:47:24 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta.31']
+      VERSION: [7, 0, 0, 'beta.32']
     };
 
     /**
@@ -3010,6 +3010,17 @@
     		p.block = true;
     	}
 
+    	if (p.filters) {
+    		(function () {
+    			var tmp = opt_destruct;
+    			opt_destruct = function opt_destruct() {
+    				this.appendDefaultFilters(p.filters);
+    				tmp && tmp.call.apply(tmp, [this].concat(Array.prototype.slice.call(arguments)));
+    				this.filters.pop();
+    			};
+    		})();
+    	}
+
     	/** @this {Parser} */
     	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
     		var structure = this.structure;
@@ -3167,6 +3178,10 @@
     			}
     		}
 
+    		if (p.filters) {
+    			this.filters.pop();
+    		}
+
     		this.applyQueue();
 
     		if (this.inline[this.inline.length - 1] === true) {
@@ -3198,10 +3213,6 @@
 
     		if ($dirParents[structure.name] || chainParent && chainParent[structure.name]) {
     			this.strongSpace.pop();
-    		}
-
-    		if (p.filters) {
-    			this.filters.pop();
     		}
 
     		if (p.selfThis) {
@@ -9609,16 +9620,15 @@
     Snakeskin.addDirective('call', {
     	block: true,
     	deferInit: true,
+    	filters: { local: ['undef'] },
     	group: ['call', 'microTemplate', 'output'],
     	notEmpty: true,
     	shorthands: { '+=': 'call ', '/+': 'end call' },
     	trim: true
     }, function (command) {
     	if (command.slice(-1) === '/') {
-    		this.appendDefaultFilters({ local: ['undef'] });
     		this.startInlineDir(null, { short: true });
     		this.append(this.wrap(this.out(command.slice(0, -1))));
-    		this.filters.pop();
     		return;
     	}
 
@@ -9687,7 +9697,6 @@
     		}
     	}
 
-    	this.filters.pop();
     	this.append(ws(_templateObject5$2, this.getVar('__CALL_CACHE__'), this.wrap(str)));
     });
 
