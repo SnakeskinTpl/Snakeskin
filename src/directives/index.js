@@ -313,6 +313,15 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		p.block = true;
 	}
 
+	if (p.filters) {
+		const tmp = opt_destruct;
+		opt_destruct = function () {
+			this.appendDefaultFilters(p.filters);
+			tmp && tmp.call(this, ...arguments);
+			this.filters.pop();
+		};
+	}
+
 	/** @this {Parser} */
 	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
 		const
@@ -508,6 +517,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			}
 		}
 
+		if (p.filters) {
+			this.filters.pop();
+		}
+
 		this
 			.applyQueue();
 
@@ -538,10 +551,6 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 		if ($dirParents[structure.name] || chainParent && chainParent[structure.name]) {
 			this.strongSpace.pop();
-		}
-
-		if (p.filters) {
-			this.filters.pop();
 		}
 
 		if (p.selfThis) {

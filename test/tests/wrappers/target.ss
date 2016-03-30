@@ -18,6 +18,10 @@
 
 <div class="foo"></div> one Hello two world! three
 
+[[target with wrapped object]]==========================================================================================
+
+<div class="foo"><div class="bar">Hello world!</div></div>
+
 [[target with array-like object]]=======================================================================================
 
 world! 3 3 length
@@ -67,6 +71,14 @@ world! 3 3 length
 
 	- forEach foo => el, key
 		{el} {key}
+
+- template ['target with wrapped object']()
+	< .foo
+		- target {} as foo
+			* data
+				< .bar
+					Hello world!
+		{foo.data}
 
 - template ['target with array-like object']()
 	- target {length: 3} as foo

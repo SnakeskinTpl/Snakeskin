@@ -17,6 +17,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		filters: {local: ['undef']},
 		group: ['call', 'microTemplate', 'output'],
 		notEmpty: true,
 		shorthands: {'+=': 'call ', '/+': 'end call'},
@@ -25,10 +26,8 @@ Snakeskin.addDirective(
 
 	function (command) {
 		if (command.slice(-1) === '/') {
-			this.appendDefaultFilters({local: ['undef']});
 			this.startInlineDir(null, {short: true});
 			this.append(this.wrap(this.out(command.slice(0, -1))));
-			this.filters.pop();
 			return;
 		}
 
@@ -127,7 +126,6 @@ Snakeskin.addDirective(
 			}
 		}
 
-		this.filters.pop();
 		this.append(ws`
 			__RESULT__ = ${this.getVar('__CALL_CACHE__')};
 			${this.wrap(str)}
