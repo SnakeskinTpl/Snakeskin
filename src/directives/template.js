@@ -376,7 +376,7 @@ import {
 					self = callee.Blocks = {};
 
 				var
-					__INLINE_TAGS__ = Snakeskin.inlineTags,
+					__INLINE_TAGS__ = Snakeskin.inlineTags['${this.doctype}'] || Snakeskin.inlineTags['html'],
 					__INLINE_TAG__;
 
 				var

@@ -68,7 +68,10 @@ Snakeskin.addDirective(
 		}
 
 		this.doctype = command !== 'html' ? 'xml' : type;
-		this.append(this.wrap(`'${type}'`));
+		this.append(
+			this.out(`__INLINE_TAGS__ = Snakeskin.inlineTags['${command}'] || Snakeskin.inlineTags['html'];`, {unsafe: true}) +
+			this.wrap(`'${type}'`)
+		);
 	}
 
 );

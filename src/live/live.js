@@ -186,20 +186,26 @@ inherit(Snakeskin.Text, Snakeskin.Node);
  * @const
  */
 Snakeskin.inlineTags = {
-	'area': 'href',
-	'base': 'href',
-	'br': true,
-	'col': true,
-	'embed': 'src',
-	'hr': true,
-	'img': 'src',
-	'input': 'value',
-	'link': 'href',
-	'meta': 'content',
-	'param': 'value',
-	'source': 'src',
-	'track': 'src',
-	'wbr': true
+	'html': {
+		'area': 'href',
+		'base': 'href',
+		'br': true,
+		'col': true,
+		'embed': 'src',
+		'hr': true,
+		'img': 'src',
+		'input': 'value',
+		'link': 'href',
+		'meta': 'content',
+		'param': 'value',
+		'source': 'src',
+		'track': 'src',
+		'wbr': true
+	},
+
+	'xml': {
+
+	}
 };
 
 /**
