@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta.32 (live)
+ * Snakeskin v7.0.0-beta.33 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 30 Mar 2016 18:47:24 GMT
+ * Date: 'Wed, 13 Apr 2016 17:30:43 GMT
  */
 
 (function (global, factory) {
@@ -39,7 +39,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta.32']
+      VERSION: [7, 0, 0, 'beta.33']
     };
 
     /**
@@ -307,20 +307,24 @@
      * @const
      */
     Snakeskin.inlineTags = {
-    	'area': 'href',
-    	'base': 'href',
-    	'br': true,
-    	'col': true,
-    	'embed': 'src',
-    	'hr': true,
-    	'img': 'src',
-    	'input': 'value',
-    	'link': 'href',
-    	'meta': 'content',
-    	'param': 'value',
-    	'source': 'src',
-    	'track': 'src',
-    	'wbr': true
+    	'html': {
+    		'area': 'href',
+    		'base': 'href',
+    		'br': true,
+    		'col': true,
+    		'embed': 'src',
+    		'hr': true,
+    		'img': 'src',
+    		'input': 'value',
+    		'link': 'href',
+    		'meta': 'content',
+    		'param': 'value',
+    		'source': 'src',
+    		'track': 'src',
+    		'wbr': true
+    	},
+
+    	'xml': {}
     };
 
     /**
@@ -1130,7 +1134,7 @@
     		}
     	}
 
-    	return res;
+    	return res.toLowerCase();
     }
 
     /**
