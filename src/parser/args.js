@@ -26,9 +26,10 @@ Parser.prototype.getFnArgs = function (str) {
 
 	let
 		pOpen = 0,
-		arg = '';
+		arg = '',
+		i;
 
-	for (let i = 0; i < str.length; i++) {
+	for (i = 0; i < str.length; i++) {
 		const
 			el = str[i];
 
@@ -69,6 +70,8 @@ Parser.prototype.getFnArgs = function (str) {
 	}
 
 	res.isCallable = Boolean(res.isCallable);
+	res.lastI = i + 1;
+
 	return res;
 };
 

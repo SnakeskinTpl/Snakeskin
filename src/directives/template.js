@@ -103,7 +103,16 @@ import {
 
 			const
 				iface = this.name === 'interface',
-				fnArgsKey = this.getFnArgs(command).join().replace(/=(.*?)(?:,|$)/g, '');
+				fnArgs = this.getFnArgs(command),
+				fnArgsKey = fnArgs.join().replace(/=(.*?)(?:,|$)/g, '');
+
+			const
+				lastDecl = command.slice(fnArgs.lastI),
+				lastDeclTest = /\s*([^\s]+)/.exec(lastDecl);
+
+			if (lastDeclTest && !{'@=': true, 'extends': true}[lastDeclTest[1]]) {
+				return this.error('invalid syntax');
+			}
 
 			pos = this.save(`/* Snakeskin template: ${tplName}; ${fnArgsKey} */`, {iface, jsDoc});
 			if (jsDoc && pos) {
