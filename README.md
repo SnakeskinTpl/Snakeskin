@@ -18,9 +18,7 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 
 [Demo](http://codepen.io/kobezzza/pen/zrJNXx)
 
-[Documentation](https://github.com/SnakeskinTpl/Snakeskin/wiki)
-
-[FAQ](https://github.com/SnakeskinTpl/Snakeskin/wiki/faq)
+[Documentation](http://snakeskintpl.github.io/docs)
 
 ## Features
 
