@@ -28,6 +28,13 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		const
+			short = command.slice(-1) === '/';
+
+		if (short) {
+			command = command.slice(0, -1);
+		}
+
 		this.startDir(null, {
 			bemRef: this.bemRef
 		});
@@ -77,20 +84,27 @@ Snakeskin.addDirective(
 		}
 
 		this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));
+
+		if (short) {
+			end.call(this);
+			this.endDir();
+		}
 	},
 
-	function () {
-		const
-			p = this.structure.params;
-
-		this.bemRef = p.bemRef;
-		this.append(`$class = '${p.bemRef}';`);
-		this.prevSpace = false;
-
-		if (p.tag === '?') {
-			return;
-		}
-
-		this.append(this.getEndXMLTagDecl(p.inline));
-	}
+	end
 );
+
+function end() {
+	const
+		p = this.structure.params;
+
+	this.bemRef = p.bemRef;
+	this.append(`$class = '${p.bemRef}';`);
+	this.prevSpace = false;
+
+	if (p.tag === '?') {
+		return;
+	}
+
+	this.append(this.getEndXMLTagDecl(p.inline));
+}
