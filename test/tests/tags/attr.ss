@@ -34,6 +34,10 @@
 
 <div class="foo bar" ng-baz="foo bar" bar="bla" ng-bar="foo"></div>
 
+[[dasherize with object]]===============================================================================================
+
+<div class="foo" data-foo-bar="bla"></div>
+
 [[interpolation]]=======================================================================================================
 
 <div class="foo bar" bar="[object Object]" baz=""></div>
@@ -67,6 +71,9 @@
 
 - template ['mixing with object']()
 	< .foo (( ${{class: 'bar', ng: {baz: 'foo bar'}, bar: TRUE}} )) (( bar = bla )) ng-(( bar = foo ))
+
+- template ['dasherize with object']()
+	< .foo ${{dataFooBar: 'bla'}}
 
 - template ['interpolation']()
 	< .foo ${{class: 'bar'}} = foo | ${'bar'} = ${{class: 'bar'}} | ${''} = hello | ${'baz'} = ${''}

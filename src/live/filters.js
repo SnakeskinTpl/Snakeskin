@@ -546,7 +546,7 @@ function dasherize(str) {
 		}
 	}
 
-	return res;
+	return res.toLowerCase();
 }
 
 /**
