@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta.33
+ * Snakeskin v7.0.0-beta.34
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 13 Apr 2016 17:30:43 GMT
+ * Date: 'Thu, 14 Apr 2016 17:57:26 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta.33']
+      VERSION: [7, 0, 0, 'beta.34']
     };
 
     /**
@@ -9558,6 +9558,7 @@
     	'js': 'text/javascript',
     	'json': 'application/json',
     	'ls': 'application/livescript',
+    	'ss': 'text/x-snakeskin-template',
     	'ts': 'application/typescript'
     };
 
@@ -9570,6 +9571,12 @@
     	selfInclude: false,
     	trim: true
     }, function (command) {
+    	var short = command.slice(-2) === ' /';
+
+    	if (short) {
+    		command = command.slice(0, -2);
+    	}
+
     	if (command) {
     		command = command.replace(emptyCommandParams, 'js $1');
     	} else {
@@ -9580,9 +9587,16 @@
     	    type = types$1[parts[0].toLowerCase()] || this.replaceTplVars(parts[0]);
 
     	this.append(this.getXMLTagDecl('script', '(( type = ' + type + ' )) ' + parts.slice(1).join(' ')));
-    }, function () {
+
+    	if (short) {
+    		end.call(this);
+    		this.endDir();
+    	}
+    }, end);
+
+    function end() {
     	this.append(this.getEndXMLTagDecl());
-    });
+    }
 
     var types$2 = {
     	'css': 'text/css'
@@ -9597,6 +9611,12 @@
     	selfInclude: false,
     	trim: true
     }, function (command) {
+    	var short = command.slice(-2) === ' /';
+
+    	if (short) {
+    		command = command.slice(0, -2);
+    	}
+
     	if (command) {
     		command = command.replace(emptyCommandParams, 'css $1');
     	} else {
@@ -9607,9 +9627,16 @@
     	    type = types$2[parts[0].toLowerCase()] || this.replaceTplVars(parts[0]);
 
     	this.append(this.getXMLTagDecl('style', '(( type = ' + type + ' )) ' + parts.slice(1).join(' ')));
-    }, function () {
+
+    	if (short) {
+    		end$1.call(this);
+    		this.endDir();
+    	}
+    }, end$1);
+
+    function end$1() {
     	this.append(this.getEndXMLTagDecl());
-    });
+    }
 
     var types$3 = {
     	'acss': {
@@ -9637,6 +9664,12 @@
     	selfInclude: false,
     	trim: true
     }, function (command) {
+    	var short = command.slice(-2) === ' /';
+
+    	if (short) {
+    		command = command.slice(0, -2);
+    	}
+
     	if (command) {
     		command = command.replace(emptyCommandParams, 'css $1');
     	} else {
@@ -9649,9 +9682,16 @@
     	var typeStr = '(( rel = ' + (type.rel ? '' + type.rel : type) + (type.type ? ' | type = ' + type.type : '') + ' ))';
 
     	this.append(this.getXMLTagDecl('link', typeStr + ' ' + parts.slice(1).join(' ')));
-    }, function () {
+
+    	if (short) {
+    		end$2.call(this);
+    		this.endDir();
+    	}
+    }, end$2);
+
+    function end$2() {
     	this.append(this.getEndXMLTagDecl());
-    });
+    }
 
     var _templateObject$15 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t'], ['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t']);
     var _templateObject2$11 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
@@ -10057,10 +10097,10 @@
     	text: true,
     	trim: true
     }, function (command) {
-    	var short = command.slice(-1) === '/';
+    	var short = command.slice(-2) === ' /';
 
     	if (short) {
-    		command = command.slice(0, -1);
+    		command = command.slice(0, -2);
     	}
 
     	this.startDir(null, {
@@ -10115,12 +10155,12 @@
     	this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));
 
     	if (short) {
-    		end.call(this);
+    		end$3.call(this);
     		this.endDir();
     	}
-    }, end);
+    }, end$3);
 
-    function end() {
+    function end$3() {
     	var p = this.structure.params;
 
     	this.bemRef = p.bemRef;
