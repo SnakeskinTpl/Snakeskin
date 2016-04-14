@@ -29,6 +29,13 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		const
+			short = command.slice(-2) === ' /';
+
+		if (short) {
+			command = command.slice(0, -2);
+		}
+
 		if (command) {
 			command = command.replace(emptyCommandParams, 'css $1');
 
@@ -41,9 +48,16 @@ Snakeskin.addDirective(
 			type = types[parts[0].toLowerCase()] || this.replaceTplVars(parts[0]);
 
 		this.append(this.getXMLTagDecl('style', `(( type = ${type} )) ${parts.slice(1).join(' ')}`));
+
+		if (short) {
+			end.call(this);
+			this.endDir();
+		}
 	},
 
-	function () {
-		this.append(this.getEndXMLTagDecl());
-	}
+	end
 );
+
+function end() {
+	this.append(this.getEndXMLTagDecl());
+}

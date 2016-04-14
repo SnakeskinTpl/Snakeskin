@@ -42,6 +42,13 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		const
+			short = command.slice(-2) === ' /';
+
+		if (short) {
+			command = command.slice(0, -2);
+		}
+
 		if (command) {
 			command = command.replace(emptyCommandParams, 'css $1');
 
@@ -57,9 +64,16 @@ Snakeskin.addDirective(
 			typeStr = `(( rel = ${type.rel ? `${type.rel}` : type}${type.type ? ` | type = ${type.type}` : ''} ))`;
 
 		this.append(this.getXMLTagDecl('link', `${typeStr} ${parts.slice(1).join(' ')}`));
+
+		if (short) {
+			end.call(this);
+			this.endDir();
+		}
 	},
 
-	function () {
-		this.append(this.getEndXMLTagDecl());
-	}
+	end
 );
+
+function end() {
+	this.append(this.getEndXMLTagDecl());
+}

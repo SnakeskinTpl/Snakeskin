@@ -29,10 +29,10 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			short = command.slice(-1) === '/';
+			short = command.slice(-2) === ' /';
 
 		if (short) {
-			command = command.slice(0, -1);
+			command = command.slice(0, -2);
 		}
 
 		this.startDir(null, {
