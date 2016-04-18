@@ -60,7 +60,7 @@ Snakeskin.setFilterParams = function (filter, params) {
 
 	let tmp;
 	function wrapper(val, Unsafe, ...args) {
-		if (val && Unsafe && val instanceof Unsafe) {
+		if (val && isFunction(Unsafe) && val instanceof Unsafe) {
 			val.value = tmp.call(this, val.value, ...args);
 			return val;
 		}
