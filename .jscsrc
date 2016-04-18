@@ -1,5 +1,4 @@
 {
-  "esnext": true,
   "fileExtensions": [".js"],
   "excludeFiles": [
     "externs.js",
