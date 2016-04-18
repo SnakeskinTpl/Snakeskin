@@ -69,7 +69,6 @@ Snakeskin.addDirective(
 			tmp = this.getVar('__CALL_TMP__'),
 			pos = this.getVar('__CALL_POS__');
 
-		this.appendDefaultFilters({local: ['undef']});
 		this.append(ws`
 			if (__LENGTH__(__RESULT__)) {
 				${pos}++;

@@ -51,9 +51,36 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
  * @return {!Function}
  */
 Snakeskin.setFilterParams = function (filter, params) {
+	const
+		safe = params['safe'];
+
+	if (safe) {
+		params['bind'] = ['Unsafe'].concat(params['bind'] || []);
+	}
+
+	let tmp;
+	function wrapper(val, Unsafe, ...args) {
+		if (val && Unsafe && val instanceof Unsafe) {
+			val.value = tmp.call(this, val.value, ...args);
+			return val;
+		}
+
+		return tmp.call(this, val, ...args);
+	}
+
 	if (isString(filter)) {
+		if (safe) {
+			tmp = Filters[filter];
+			Filters[filter] = wrapper;
+		}
+
 		Filters[filter]['ssFilterParams'] = params;
 		return Filters[filter];
+	}
+
+	if (safe) {
+		tmp = filter;
+		filter = wrapper;
 	}
 
 	filter['ssFilterParams'] = params;
@@ -258,6 +285,10 @@ Filters['uri'] = function (val) {
 		.replace(uriC, ']');
 };
 
+Snakeskin.setFilterParams('uri', {
+	'safe': true
+});
+
 /**
  * Converts a string to uppercase
  *
@@ -267,6 +298,10 @@ Filters['uri'] = function (val) {
 Filters['upper'] = function (val) {
 	return String(val).toUpperCase();
 };
+
+Snakeskin.setFilterParams('upper', {
+	'safe': true
+});
 
 /**
  * Converts the first letter of a string to uppercase
@@ -279,6 +314,10 @@ Filters['ucfirst'] = function (val) {
 	return val.charAt(0).toUpperCase() + val.slice(1);
 };
 
+Snakeskin.setFilterParams('ucfirst', {
+	'safe': true
+});
+
 /**
  * Converts a string to lowercase
  *
@@ -288,6 +327,10 @@ Filters['ucfirst'] = function (val) {
 Filters['lower'] = function (val) {
 	return String(val).toLowerCase();
 };
+
+Snakeskin.setFilterParams('lower', {
+	'safe': true
+});
 
 /**
  * Converts the first letter of a string to lowercase
@@ -300,6 +343,10 @@ Filters['lcfirst'] = function (val) {
 	return val.charAt(0).toLowerCase() + val.slice(1);
 };
 
+Snakeskin.setFilterParams('lcfirst', {
+	'safe': true
+});
+
 /**
  * Removes whitespace from both ends of a string
  *
@@ -309,6 +356,10 @@ Filters['lcfirst'] = function (val) {
 Filters['trim'] = function (val) {
 	return String(val).trim();
 };
+
+Snakeskin.setFilterParams('trim', {
+	'safe': true
+});
 
 const
 	spaceCollapseRgxp = /\s{2,}/g;
@@ -323,6 +374,10 @@ const
 Filters['collapse'] = function (val) {
 	return String(val).replace(spaceCollapseRgxp, ' ').trim();
 };
+
+Snakeskin.setFilterParams('collapse', {
+	'safe': true
+});
 
 /**
  * Truncates a string to the specified length
@@ -371,6 +426,10 @@ Filters['truncate'] = function (val, length, opt_wordOnly, opt_html) {
 Filters['repeat'] = function (val, opt_num) {
 	return new Array(opt_num != null ? opt_num + 1 : 3).join(val);
 };
+
+Snakeskin.setFilterParams('repeat', {
+	'safe': true
+});
 
 /**
  * Removes a slice from a string

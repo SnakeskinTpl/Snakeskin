@@ -39,6 +39,7 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 			'require',
 			'__dirname',
 			'__filename',
+			'Unsafe',
 			str
 
 		).call(
@@ -51,16 +52,18 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 			ctx.exports,
 			require,
 			require('path').dirname(ctx.filename),
-			ctx.filename
+			ctx.filename,
+			null
 		);
 	}
 
-	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', str).call(
+	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(
 		ROOT,
 		Snakeskin,
 		Snakeskin.Filters,
 		Snakeskin.Vars,
-		Snakeskin.LocalVars
+		Snakeskin.LocalVars,
+		null
 	);
 };
 
