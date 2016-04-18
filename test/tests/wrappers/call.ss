@@ -26,6 +26,10 @@ Hello
 
 foo/bar
 
+[[unsafe with filters]]=================================================================================================
+
+<div class="wrapper"><a href="http://yandex.ru">Яндекс</a> &lt;a href=&quot;http://yandex.ru&quot;&gt;Яндекс&lt;/a&gt;</div>
+
 ========================================================================================================================
 
 - namespace wrappers[%fileName%]
@@ -61,3 +65,15 @@ foo/bar
 		- return path.join.apply(path, arguments).replace(/\\/g, '/')
 
 	+= self.join('foo', 'bar')
+
+- template ['unsafe with filters']()
+	- block wrapper(@params)
+		< div.wrapper
+			{@content|trim}
+			{@content|replace 'foo', 'bar'}
+
+	+= self.wrapper()
+		- target {}
+			* content
+				< a href = http:\/\/yandex.ru
+					Яндекс

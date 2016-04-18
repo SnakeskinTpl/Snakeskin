@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta.34
+ * Snakeskin v7.0.0-beta.35
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 14 Apr 2016 17:57:26 GMT
+ * Date: 'Mon, 18 Apr 2016 19:08:30 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta.34']
+      VERSION: [7, 0, 0, 'beta.35']
     };
 
     /**
@@ -851,9 +851,43 @@
      * @return {!Function}
      */
     Snakeskin.setFilterParams = function (filter, params) {
+    	var safe = params['safe'];
+
+    	if (safe) {
+    		params['bind'] = ['Unsafe'].concat(params['bind'] || []);
+    	}
+
+    	var tmp = void 0;
+    	function wrapper(val, Unsafe) {
+    		var _tmp2;
+
+    		for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    			args[_key - 2] = arguments[_key];
+    		}
+
+    		if (val && Unsafe && val instanceof Unsafe) {
+    			var _tmp;
+
+    			val.value = (_tmp = tmp).call.apply(_tmp, [this, val.value].concat(args));
+    			return val;
+    		}
+
+    		return (_tmp2 = tmp).call.apply(_tmp2, [this, val].concat(args));
+    	}
+
     	if (isString(filter)) {
+    		if (safe) {
+    			tmp = Filters[filter];
+    			Filters[filter] = wrapper;
+    		}
+
     		Filters[filter]['ssFilterParams'] = params;
     		return Filters[filter];
+    	}
+
+    	if (safe) {
+    		tmp = filter;
+    		filter = wrapper;
     	}
 
     	filter['ssFilterParams'] = params;
@@ -1071,6 +1105,10 @@
     	return encodeURI(String(val)).replace(uriO, '[').replace(uriC, ']');
     };
 
+    Snakeskin.setFilterParams('uri', {
+    	'safe': true
+    });
+
     /**
      * Converts a string to uppercase
      *
@@ -1080,6 +1118,10 @@
     Filters['upper'] = function (val) {
     	return String(val).toUpperCase();
     };
+
+    Snakeskin.setFilterParams('upper', {
+    	'safe': true
+    });
 
     /**
      * Converts the first letter of a string to uppercase
@@ -1092,6 +1134,10 @@
     	return val.charAt(0).toUpperCase() + val.slice(1);
     };
 
+    Snakeskin.setFilterParams('ucfirst', {
+    	'safe': true
+    });
+
     /**
      * Converts a string to lowercase
      *
@@ -1101,6 +1147,10 @@
     Filters['lower'] = function (val) {
     	return String(val).toLowerCase();
     };
+
+    Snakeskin.setFilterParams('lower', {
+    	'safe': true
+    });
 
     /**
      * Converts the first letter of a string to lowercase
@@ -1113,6 +1163,10 @@
     	return val.charAt(0).toLowerCase() + val.slice(1);
     };
 
+    Snakeskin.setFilterParams('lcfirst', {
+    	'safe': true
+    });
+
     /**
      * Removes whitespace from both ends of a string
      *
@@ -1122,6 +1176,10 @@
     Filters['trim'] = function (val) {
     	return String(val).trim();
     };
+
+    Snakeskin.setFilterParams('trim', {
+    	'safe': true
+    });
 
     var spaceCollapseRgxp = /\s{2,}/g;
 
@@ -1135,6 +1193,10 @@
     Filters['collapse'] = function (val) {
     	return String(val).replace(spaceCollapseRgxp, ' ').trim();
     };
+
+    Snakeskin.setFilterParams('collapse', {
+    	'safe': true
+    });
 
     /**
      * Truncates a string to the specified length
@@ -1180,6 +1242,10 @@
     Filters['repeat'] = function (val, opt_num) {
     	return new Array(opt_num != null ? opt_num + 1 : 3).join(val);
     };
+
+    Snakeskin.setFilterParams('repeat', {
+    	'safe': true
+    });
 
     /**
      * Removes a slice from a string
@@ -2581,10 +2647,10 @@
     	var ctx = this.environment;
 
     	if (IS_NODE) {
-    		return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', str).call(ROOT, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename);
+    		return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
     	}
 
-    	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', str).call(ROOT, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars);
+    	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(ROOT, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, null);
     };
 
     /**
@@ -9735,7 +9801,6 @@
     	var tmp = this.getVar('__CALL_TMP__'),
     	    pos = this.getVar('__CALL_POS__');
 
-    	this.appendDefaultFilters({ local: ['undef'] });
     	this.append(ws(_templateObject3$8, pos, tmp, this.getReturnResultDecl()));
 
     	var i = p.chunks,
