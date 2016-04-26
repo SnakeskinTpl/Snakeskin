@@ -70,27 +70,13 @@ gulp.task('head', (cb) => {
 		});
 	}
 
-	async.parallel([
-		(cb) => {
-			gulp.src(['./@(src|gulp)/**/*.js', './predefs/src/**/*.js', './snakeskin.js'], {base: './'})
-				.pipe(test())
-				.pipe(replace(headRgxp, ''))
-				.pipe(header(fullHead))
-				.pipe(gulp.dest('./'))
-				.on('end', cb);
-		},
-
-		(cb) => {
-			gulp.src('./bin/snakeskin.js')
-				.pipe(test())
-				.pipe(replace(headRgxp, ''))
-				.pipe(replace(/^#!.*\n{2}/, (sstr) => sstr + fullHead))
-				.pipe(gulp.dest('./bin'))
-				.on('end', cb);
-		}
-
-	], () => {
-		global.readyToWatcher = true;
-		cb();
-	});
+	gulp.src(['./@(src|gulp)/**/*.js', './predefs/src/**/*.js', './snakeskin.js'], {base: './'})
+		.pipe(test())
+		.pipe(replace(headRgxp, ''))
+		.pipe(header(fullHead))
+		.pipe(gulp.dest('./'))
+		.on('end', () => {
+			global.readyToWatcher = true;
+			cb();
+		});
 });

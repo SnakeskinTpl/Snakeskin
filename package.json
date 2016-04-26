@@ -17,9 +17,6 @@
   "bugs": {
     "url": "https://github.com/SnakeskinTpl/Snakeskin/issues"
   },
-  "bin": {
-    "snakeskin": "bin/snakeskin.js"
-  },
   "keywords": [
     "templates",
     "javascript",
@@ -34,7 +31,6 @@
     "full-test": "bower install && istanbul cover test/index.dev.js && yaspeller ./"
   },
   "dependencies": {
-    "commander": "^2.5.0",
     "core-js": "^2.0.3",
     "escaper": "^2.4.17",
     "esprima": "^2.1.0",
@@ -42,9 +38,7 @@
     "find-node-modules": "^1.0.1",
     "findup-sync": "^0.4.0",
     "glob": "^7.0.0",
-    "js-beautify": "^1.5.4",
-    "mkdirp": "^0.5.1",
-    "monocle": "^1.1.51"
+    "js-beautify": "^1.5.4"
   },
   "devDependencies": {
     "async": "^1.5.0",
@@ -71,6 +65,7 @@
     "gulp-wrap": "^0.11.0",
     "istanbul": "^0.4.2",
     "jscs": "^3.0.0",
+    "mkdirp": "^0.5.1",
     "monic": "^2.3.9",
     "rollup-plugin-babel": "^2.2.0",
     "std.ss": "^1.0.0",
