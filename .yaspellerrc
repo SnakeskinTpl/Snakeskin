@@ -29,7 +29,7 @@
     "/maintainers?/",
     "sexualized",
     "snakeskin",
-    "/js/i",
+    "/js|cli|std|ss/i",
     "transpiled",
     "/webpack/i"
   ]
