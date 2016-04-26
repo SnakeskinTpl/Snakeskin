@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0-beta.35
+ * Snakeskin v7.0.0
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 18 Apr 2016 19:08:30 GMT
+ * Date: 'Tue, 26 Apr 2016 16:54:59 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0, 'beta.35']
+      VERSION: [7, 0, 0]
     };
 
     /**
@@ -865,7 +865,7 @@
     			args[_key - 2] = arguments[_key];
     		}
 
-    		if (val && Unsafe && val instanceof Unsafe) {
+    		if (val && isFunction(Unsafe) && val instanceof Unsafe) {
     			var _tmp;
 
     			val.value = (_tmp = tmp).call.apply(_tmp, [this, val.value].concat(args));
