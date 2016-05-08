@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 26 Apr 2016 16:54:59 GMT
+ * Date: 'Sun, 08 May 2016 14:30:16 GMT
  */
 
 (function (global, factory) {
