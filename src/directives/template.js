@@ -163,7 +163,7 @@ import {
 
 				pos = this.save(
 					ws`
-						if (${def} == null) {
+						if (typeof ${def} !== 'object' || !${def}) {
 							${def} = {};
 						}
 

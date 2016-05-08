@@ -20,5 +20,5 @@ export const IS_NODE = function () {
 }();
 
 export const
-	HAS_CONSOLE_LOG = typeof console !== 'undefined' && isFunction(console.log),
-	HAS_CONSOLE_ERROR = typeof console !== 'undefined' && isFunction(console.error);
+	HAS_CONSOLE_LOG = typeof console === 'object' && console && isFunction(console.log),
+	HAS_CONSOLE_ERROR = typeof console === 'object' && console && isFunction(console.error);
