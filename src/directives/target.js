@@ -57,14 +57,14 @@ Snakeskin.addDirective(
 	
 				${this.declVars(
 					ws`
-							__CALL_CACHE__ = __RESULT__,
-							__CALL_TMP__ = [],
-							__CALL_POS__ = 0
-						`,
+						__CALL_CACHE__ = __RESULT__,
+						__CALL_TMP__ = [],
+						__CALL_POS__ = 0
+					`,
 					{sys: true}
 				)}
 		
-					__RESULT__ = ${this.getResultDecl()};
+				__RESULT__ = ${this.getResultDecl()};
 			`);
 		}
 	},
