@@ -29,23 +29,3 @@ import Snakeskin from '../core';
 		}
 	);
 });
-
-Snakeskin.addDirective(
-	'when',
-
-	{
-		block: true,
-		children: Snakeskin.group('callback'),
-		group: ['when', 'promise', 'async', 'dynamic'],
-		notEmpty: true
-	},
-
-	function (command) {
-		this.append(`${this.out(command, {unsafe: true})}.then(`);
-	},
-
-	function () {
-		this.append(');');
-	}
-
-);
