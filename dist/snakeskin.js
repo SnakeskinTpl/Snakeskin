@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Fri, 13 May 2016 13:37:42 GMT
+ * Date: 'Fri, 13 May 2016 16:38:42 GMT
  */
 
 (function (global, factory) {
@@ -9020,7 +9020,7 @@
     		} else {
     			var _f = function _f() {
     				var path = path1 || path2,
-    				    pathId = _this.pasteDangerBlocks(path1).slice(1, -1);
+    				    pathId = _this.pasteDangerBlocks(path).slice(1, -1);
 
     				switch (_this.module) {
     					case 'cjs':
@@ -9076,7 +9076,15 @@
     			var parts = args[i].split(/\s+as\s+/);
 
     			if (isNativeExport) {
-    				arr.push(parts[0] + ' as ' + _this.declVar(parts[1] || parts[0]));
+    				if (opt_global) {
+    					if (parts[1]) {
+    						arr.push(parts[0] + ' as ' + _this.declVar(parts[1]));
+    					} else {
+    						arr.push(_this.declVar(parts[0]));
+    					}
+    				} else {
+    					arr.push(parts[0] + ' as ' + _this.declVar(parts[1] || parts[0]));
+    				}
     			} else {
     				arr.push(_this.declVars((parts[1] || parts[0]) + ' = ' + from + (opt_global || parts[0] === '*' ? '' : '.' + (parts[1] || parts[0]))));
     			}
@@ -9085,20 +9093,31 @@
     		return arr.join(isNativeExport ? ',' : '');
     	};
 
-    	command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*(,?)\s*/, function (str, prfComma, decl, postComma) {
+    	var r = /^,|,$/;
+    	command = command.replace(/\s*,?\s*\{\s*(.*?)\s*}\s*,?\s*/g, function (str, decl) {
     		if (isNativeExport) {
-    			res += (prfComma ? ', ' : '') + '{ ' + f(decl) + ' }' + (postComma ? ',' : '');
+    			res += '{ ' + f(decl) + ' },';
     		} else {
     			res += f(decl);
     		}
 
-    		return prfComma || '';
-    	});
+    		return ',';
+    	}).replace(r, '');
 
-    	console.log(res);
     	console.log(command);
+    	console.log(res);
 
-    	this.append(res + f(command, true) + (isNativeExport ? from : ''));
+    	if (!command) {
+    		res = res.replace(r, '');
+    	}
+
+    	if (isNativeExport) {
+    		res = res + f(command, true) + from;
+    	} else {
+    		res = res + f(command, true);
+    	}
+
+    	this.append(res);
     });
 
         var _templateObject$11 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t'], ['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t']);
