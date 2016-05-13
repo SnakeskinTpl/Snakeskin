@@ -24,12 +24,18 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
+		let prfx = '';
+		if (command[0] === '*') {
+			prfx = '*';
+			command = command.slice(1);
+		}
+
 		if (command.slice(-1) === '/') {
-			this.startInlineDir(null, {command: command.slice(0, -1), short: true});
+			this.startInlineDir(null, {command: command.slice(0, -1), prfx, short: true});
 			return;
 		}
 
-		this.startDir(null, {command});
+		this.startDir(null, {command, prfx});
 
 		if (!command) {
 			this.append(ws`
@@ -44,11 +50,11 @@ Snakeskin.addDirective(
 			p = this.structure.params;
 
 		if (p.command) {
-			this.append(`yield ${this.out(p.command, {unsafe: true})};`);
+			this.append(`yield${p.prfx} ${this.out(p.command, {unsafe: true})};`);
 
 		} else if (p.short) {
 			this.append(ws`
-				yield ${this.getReturnResultDecl()};
+				yield${p.prfx} ${this.getReturnResultDecl()};
 				__RESULT__ = ${this.getResultDecl()};
 			`);
 
@@ -58,12 +64,12 @@ Snakeskin.addDirective(
 
 			this.append(ws`
 				if (__LENGTH__(__RESULT__)) {
-					yield ${this.getReturnResultDecl()};
+					yield${p.prfx} ${this.getReturnResultDecl()};
 					__RESULT__ = ${tmp};
 
 				} else {
 					__RESULT__ = ${tmp};
-					yield ${this.getReturnResultDecl()};
+					yield${p.prfx} ${this.getReturnResultDecl()};
 					__RESULT__ = ${this.getResultDecl()};
 				}
 			`);
