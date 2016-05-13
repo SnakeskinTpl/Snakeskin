@@ -21,13 +21,10 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		const
-			parts = command.split('=>'),
-			p = this.structure.params;
+		command = command.replace(/^=>\s*/, '');
 
-		if (!parts.length || parts.length > 2) {
-			return this.error(`invalid "${this.name}" declaration`);
-		}
+		const
+			p = this.structure.params;
 
 		let
 			prfx = '',
@@ -67,7 +64,7 @@ Snakeskin.addDirective(
 			pstfx = this.getTplRuntime();
 		}
 
-		const args = this.declFnArgs(`(${parts[1]})`);
+		const args = this.declFnArgs(`(${command})`);
 		this.append(`${prfx}(function (${args.decl}) {${args.def}${pstfx}`);
 	},
 
