@@ -9,6 +9,9 @@
  */
 
 import Snakeskin from '../core';
+import { ws } from '../helpers/string';
+import { getRgxp } from '../helpers/cache';
+import { w, symbols } from '../consts/regs';
 
 Snakeskin.addDirective(
 	'import',
@@ -35,15 +38,44 @@ Snakeskin.addDirective(
 
 		command = command.replace(/(?:\s+from\s+([^\s]+)\s*|\s*([^\s]+)\s*)$/, (str, path1, path2) => {
 			if (isNativeExport) {
-				from = str;
+				from = `${str};`;
 
 			} else {
+				const f = () => {
+					const
+						path = path1 || path2,
+						pathId = this.pasteDangerBlocks(path).slice(1, -1);
+
+					switch (this.module) {
+						case 'cjs':
+							return `require(${path});`;
+
+						case 'global':
+							return `GLOBAL[${path}];`;
+
+						case 'amd':
+							this.amdModules.push(pathId);
+							return `${pathId};`;
+
+						default:
+							if (getRgxp(`^[$${symbols}_][${w}]*$`).test(pathId)) {
+								this.amdModules.push(pathId);
+								return ws`
+									typeof require === 'function' ?
+										require(${path}) : typeof ${pathId} !== 'undefined' ? ${pathId} : GLOBAL[${path}];
+								`;
+							}
+
+							return `typeof require === 'function' ? require(${path}) : GLOBAL[${path}];`;
+					}
+				};
+
 				if (path1) {
-					res += `__REQUIRE__ = require(${path1});`;
+					res += `__REQUIRE__ = ${f()}`;
 					from = '__REQUIRE__';
 
 				} else {
-					res += `require(${path2});`;
+					res += f();
 					from = true;
 				}
 			}
@@ -74,7 +106,17 @@ Snakeskin.addDirective(
 					parts = args[i].split(/\s+as\s+/);
 
 				if (isNativeExport) {
-					arr.push(`${parts[0]} as ${this.declVar(parts[1] || parts[0])}`);
+					if (opt_global) {
+						if (parts[1]) {
+							arr.push(`${parts[0]} as ${this.declVar(parts[1])}`);
+
+						} else {
+							arr.push(this.declVar(parts[0]));
+						}
+
+					} else {
+						arr.push(`${parts[0]} as ${this.declVar(parts[1] || parts[0])}`);
+					}
 
 				} else {
 					arr.push(this.declVars(
@@ -86,18 +128,33 @@ Snakeskin.addDirective(
 			return arr.join(isNativeExport ? ',' : '');
 		};
 
-		command = command.replace(/\s*(,?)\s*\{\s*(.*?)\s*}\s*(,?)\s*/, (str, prfComma, decl, postComma) => {
+		const r = /^,|,$/;
+		command = command.replace(/\s*,?\s*\{\s*(.*?)\s*}\s*,?\s*/g, (str, decl) => {
 			if (isNativeExport) {
-				res += `${prfComma ? ', ' : ''}{ ${f(decl)} }${postComma ? ',' : ''}`;
+				res += `{ ${f(decl)} },`;
 
 			} else {
 				res += f(decl);
 			}
 
-			return prfComma || '';
-		});
+			return ',';
+		}).replace(r, '');
 
-		this.append(res + f(command, true) + (isNativeExport ? from : ''));
+		console.log(command);
+		console.log(res);
+
+		if (!command) {
+			res = res.replace(r, '');
+		}
+
+		if (isNativeExport) {
+			res = res + f(command, true) + from;
+
+		} else {
+			res = res + f(command, true);
+		}
+
+		this.append(res);
 	}
 
 );
