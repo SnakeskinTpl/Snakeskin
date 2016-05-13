@@ -32,7 +32,7 @@ Snakeskin.addDirective(
 		}
 
 		const
-			[obj, ref] = command.split(/\s+as\s+/);
+			[obj, ref] = command.split(/\s+as\s+(?=[^\s])/);
 
 		if (ref) {
 			this.declVar(ref);
