@@ -25,6 +25,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
+		filters: {global: ['undef']},
 		group: ['block', 'template', 'define', 'inherit', 'blockInherit', 'dynamic'],
 		logic: true,
 		notEmpty: true
@@ -247,7 +248,7 @@ Snakeskin.addDirective(
 					};
 				}
 
-				${output ? this.wrap(`${p.fn}(${p.params})`) : ''}
+				${output ? this.wrap(this.out(`${p.fn}(${p.params})`)) : ''}
 			`);
 
 			if (!output) {
