@@ -35,7 +35,7 @@ import './directives/include';
 import './directives/cycles';
 import './directives/control';
 import './directives/iterators';
-import './directives/callback';
+import './directives/func';
 import './directives/async';
 import './directives/literal';
 import './directives/return';

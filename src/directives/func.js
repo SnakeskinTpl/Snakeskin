@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		group: ['func', 'function', 'dynamic'],
-		shorthands: {'()': 'callback '}
+		shorthands: {'()': 'func '}
 	},
 
 	function (command) {
