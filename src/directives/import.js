@@ -140,9 +140,6 @@ Snakeskin.addDirective(
 			return ',';
 		}).replace(r, '');
 
-		console.log(command);
-		console.log(res);
-
 		if (!command) {
 			res = res.replace(r, '');
 		}
