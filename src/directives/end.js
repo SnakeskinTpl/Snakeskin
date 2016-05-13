@@ -42,7 +42,7 @@ Snakeskin.addDirective(
 
 			const
 				async = this.getGroup('async'),
-				isCallback = this.getGroup('callback')[name];
+				isCallback = this.getGroup('func')[name];
 
 			let
 				closest,

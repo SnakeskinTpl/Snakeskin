@@ -164,7 +164,7 @@ Parser.prototype.hasParentBlock = function (name, opt_return) {
  */
 Parser.prototype.hasParentMicroTemplate = function () {
 	const
-		groups = this.getGroup('microTemplate', 'callback', 'async', 'block');
+		groups = this.getGroup('microTemplate', 'func', 'async', 'block');
 
 	const test = (obj) => {
 		let
@@ -193,7 +193,7 @@ Parser.prototype.hasParentMicroTemplate = function () {
  */
 Parser.prototype.hasParentFunction = function () {
 	const
-		cb = this.getGroup('callback'),
+		cb = this.getGroup('func'),
 		groups = this.getGroup('async', 'function', 'block');
 
 	const test = (obj) => {

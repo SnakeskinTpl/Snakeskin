@@ -12,11 +12,11 @@ import Snakeskin from '../core';
 import { any } from '../helpers/gcc';
 
 Snakeskin.addDirective(
-	'callback',
+	'func',
 
 	{
 		block: true,
-		group: ['callback', 'function', 'dynamic'],
+		group: ['func', 'function', 'dynamic'],
 		shorthands: {'()': 'callback '}
 	},
 
@@ -43,7 +43,7 @@ Snakeskin.addDirective(
 				length = 0;
 
 			for (let i = 0; i < parent.children.length; i++) {
-				if (this.getGroup('callback')[parent.children[i].name]) {
+				if (this.getGroup('func')[parent.children[i].name]) {
 					length++;
 				}
 

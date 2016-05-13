@@ -16,7 +16,7 @@ import Snakeskin from '../core';
 
 		{
 			block: true,
-			children: Snakeskin.group('callback'),
+			children: Snakeskin.group('func'),
 			group: [dir, 'Async', 'async', 'dynamic']
 		},
 
