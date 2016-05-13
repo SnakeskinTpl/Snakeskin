@@ -143,17 +143,17 @@ Parser.prototype.end = function (cacheKey, label) {
 	// Replace some trash :)
 	switch (this.renderMode) {
 		case 'stringConcat':
-			this.result = this.result.replace(/__RESULT__ \+= '';/g, '');
+			this.result = this.result.replace(/\b__RESULT__ \+= '';/g, '');
 			break;
 
 		case 'stringBuffer':
-			this.result = this.result.replace(/__RESULT__\.push\(''\);/g, '');
+			this.result = this.result.replace(/\b__RESULT__\.push\(''\);/g, '');
 			break;
 
 		default:
 			this.result = this.result.replace(
 				new RegExp(
-					`Snakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], '', '${this.renderMode}'\\);`,
+					`\\bSnakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], '', '${this.renderMode}'\\);`,
 					'g'
 				),
 
@@ -163,8 +163,14 @@ Parser.prototype.end = function (cacheKey, label) {
 			break;
 	}
 
+	if ({'amd': true, 'umd': true}[this.module] && this.amdModules.length) {
+		this.result = this.result
+			.replace(/\/\*#__SNAKESKIN_MODULES_DECL__\*\//, `,${JSON.stringify(this.amdModules).slice(1, -1)}`)
+			.replace(/\/\*#__SNAKESKIN_MODULES__\*\//, `,${this.amdModules.join()}`);
+	}
+
 	if (this.cdataContent.length) {
-		this.result = this.result.replace(/__CDATA__(\d+)_/g, (str, pos) =>
+		this.result = this.result.replace(/__CDATA__(\d+)_\b/g, (str, pos) =>
 			escapeEOLs((this.cdataContent[pos] || '')
 				.replace(backSlashes, '\\\\')
 				.replace(new RegExp(eol.source, 'g'), this.eol))

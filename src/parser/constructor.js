@@ -378,8 +378,15 @@ export default class Parser {
 		 */
 		this.result = `This code is generated automatically, don't alter it. */`;
 
-		const ssRoot = this.pack ?
-			'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin';
+		/**
+		 * The list of imported AMD modules
+		 * @type {!Array}
+		 */
+		this.amdModules = [];
+
+		const
+			isAMD = {'amd': true, 'umd': true}[this.module],
+			ssRoot = this.pack ? 'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin';
 
 		if (this.module === 'native') {
 			this.result += ws`
@@ -403,10 +410,10 @@ export default class Parser {
 					}
 
 					${
-						{'amd': true, 'umd': true}[this.module] ?
+						isAMD ?
 							ws`
 								if (typeof define === 'function' && define.amd) {
-									define('${this.moduleId}', ['exports', 'Snakeskin'], factory);
+									define('${this.moduleId}', ['exports', 'Snakeskin'/*#__SNAKESKIN_MODULES_DECL__*/], factory);
 									return;
 								}
 							` : ''
@@ -417,13 +424,14 @@ export default class Parser {
 							`factory(${this.moduleName ? `global.${this.moduleName} = {}` : 'global'}, Snakeskin);` : ''
 					}
 
-				})(this, function (exports, Snakeskin) {
+				})(this, function (exports, Snakeskin${isAMD ? '/*#__SNAKESKIN_MODULES__*/' : ''}) {
 					${this.useStrict ? `'use strict';` : ''}
 			`;
 		}
 
 		this.result += ws`
 			var
+				GLOBAL = new Function('return this')(),
 				__FILTERS__ = Snakeskin.Filters,
 				__VARS__ = Snakeskin.Vars,
 				__LOCAL__ = Snakeskin.LocalVars,

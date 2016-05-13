@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 08 May 2016 15:39:55 GMT
+ * Date: 'Fri, 13 May 2016 13:37:42 GMT
  */
 
 (function (global, factory) {
@@ -768,6 +768,9 @@
     	'__TARGET_END__': true,
     	'__PUTIN_CALL__': true,
     	'__PUTIN_TARGET__': true,
+    	'__SNAKESKIN_MODULES__': true,
+    	'__SNAKESKIN_MODULES_DECL__': true,
+    	'GLOBAL': true,
     	'TRUE': true,
     	'FALSE': true,
     	'module': true,
@@ -1538,10 +1541,10 @@
     var beautify = GLOBAL.js_beautify || require('js-beautify');
 
     var _templateObject = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\timport Snakeskin from \'', '\';\n\t\t\t\tvar exports = {};\n\t\t\t\texport default exports;\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\timport Snakeskin from \'', '\';\n\t\t\t\tvar exports = {};\n\t\t\t\texport default exports;\n\t\t\t']);
-    var _templateObject2 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin) {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin) {\n\t\t\t\t\t', '\n\t\t\t']);
+    var _templateObject2 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t']);
     var _templateObject3 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
-    var _templateObject4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
-    var _templateObject5 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
+    var _templateObject4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'/*#__SNAKESKIN_MODULES_DECL__*/], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'Snakeskin\'/*#__SNAKESKIN_MODULES_DECL__*/], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
+    var _templateObject5 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\tGLOBAL = new Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\tGLOBAL = new Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
     /**
      * The class for parsing SS templates
      */
@@ -1908,12 +1911,19 @@
       */
     	this.result = 'This code is generated automatically, don\'t alter it. */';
 
-    	var ssRoot = this.pack ? 'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin';
+    	/**
+      * The list of imported AMD modules
+      * @type {!Array}
+      */
+    	this.amdModules = [];
+
+    	var isAMD = { 'amd': true, 'umd': true }[this.module],
+    	    ssRoot = this.pack ? 'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin';
 
     	if (this.module === 'native') {
     		this.result += ws(_templateObject, this.useStrict ? '\'use strict\';' : '', ssRoot);
     	} else {
-    		this.result += ws(_templateObject2, { 'cjs': true, 'umd': true }[this.module] ? ws(_templateObject3, ssRoot) : '', { 'amd': true, 'umd': true }[this.module] ? ws(_templateObject4, this.moduleId) : '', { 'global': true, 'umd': true }[this.module] ? 'factory(' + (this.moduleName ? 'global.' + this.moduleName + ' = {}' : 'global') + ', Snakeskin);' : '', this.useStrict ? '\'use strict\';' : '');
+    		this.result += ws(_templateObject2, { 'cjs': true, 'umd': true }[this.module] ? ws(_templateObject3, ssRoot) : '', isAMD ? ws(_templateObject4, this.moduleId) : '', { 'global': true, 'umd': true }[this.module] ? 'factory(' + (this.moduleName ? 'global.' + this.moduleName + ' = {}' : 'global') + ', Snakeskin);' : '', isAMD ? '/*#__SNAKESKIN_MODULES__*/' : '', this.useStrict ? '\'use strict\';' : '');
     	}
 
     	this.result += ws(_templateObject5, this.declVars('$_', { sys: true }));
@@ -2647,10 +2657,10 @@
     	var ctx = this.environment;
 
     	if (IS_NODE) {
-    		return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
+    		return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
     	}
 
-    	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(ROOT, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, null);
+    	return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, null);
     };
 
     /**
@@ -3311,7 +3321,7 @@
     			return;
     		}
 
-    		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
+    		if ((!parent || parent.name === 'root') && (!{ 'amd': true, 'native': true }[this.module] || !this.getGroup('import')[name]) && !this.getGroup('define')[name] && from !== to) {
     			try {
     				this.evalStr(res.slice(from, to));
     			} catch (err) {
@@ -5790,21 +5800,25 @@
     	// Replace some trash :)
     	switch (this.renderMode) {
     		case 'stringConcat':
-    			this.result = this.result.replace(/__RESULT__ \+= '';/g, '');
+    			this.result = this.result.replace(/\b__RESULT__ \+= '';/g, '');
     			break;
 
     		case 'stringBuffer':
-    			this.result = this.result.replace(/__RESULT__\.push\(''\);/g, '');
+    			this.result = this.result.replace(/\b__RESULT__\.push\(''\);/g, '');
     			break;
 
     		default:
-    			this.result = this.result.replace(new RegExp('Snakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], \'\', \'' + this.renderMode + '\'\\);', 'g'), '');
+    			this.result = this.result.replace(new RegExp('\\bSnakeskin\\.appendChild\\(__RESULT__\\[__RESULT__\\.length - 1], \'\', \'' + this.renderMode + '\'\\);', 'g'), '');
 
     			break;
     	}
 
+    	if ({ 'amd': true, 'umd': true }[this.module] && this.amdModules.length) {
+    		this.result = this.result.replace(/\/\*#__SNAKESKIN_MODULES_DECL__\*\//, ',' + JSON.stringify(this.amdModules).slice(1, -1)).replace(/\/\*#__SNAKESKIN_MODULES__\*\//, ',' + this.amdModules.join());
+    	}
+
     	if (this.cdataContent.length) {
-    		this.result = this.result.replace(/__CDATA__(\d+)_/g, function (str, pos) {
+    		this.result = this.result.replace(/__CDATA__(\d+)_\b/g, function (str, pos) {
     			return escapeEOLs((_this2.cdataContent[pos] || '').replace(backSlashes, '\\\\').replace(new RegExp(eol.source, 'g'), _this2.eol)).replace(singleQuotes, '\\\'');
     		});
     	}
@@ -6052,7 +6066,7 @@
     Parser.prototype.hasParentMicroTemplate = function () {
     	var _this = this;
 
-    	var groups = this.getGroup('microTemplate', 'callback', 'async', 'block');
+    	var groups = this.getGroup('microTemplate', 'func', 'async', 'block');
 
     	var test = function test(obj) {
     		var parent = any(_this._has(groups, obj, true));
@@ -6075,7 +6089,7 @@
     Parser.prototype.hasParentFunction = function () {
     	var _this2 = this;
 
-    	var cb = this.getGroup('callback'),
+    	var cb = this.getGroup('func'),
     	    groups = this.getGroup('async', 'function', 'block');
 
     	var test = function test(obj) {
@@ -7683,7 +7697,7 @@
     		p.debug.files = parser.files;
     	}
 
-    	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename)) {
+    	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename, parser.module)) {
     		return false;
     	}
 
@@ -7701,30 +7715,32 @@
     	}
     }
 
-    function compile(text, p, info, cacheKey, ctx, parser, dirname, filename) {
+    function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module) {
     	try {
-    		// Server compilation
-    		if (IS_NODE) {
-    			if (ctx !== NULL) {
-    				new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin, {
-    					children: [],
-    					exports: ctx,
-    					filename: filename,
-    					id: filename,
-    					loaded: true,
-    					parent: module,
-    					require: require
-    				}, ctx, require, dirname, filename);
-    			}
-
-    			// CommonJS compiling in a browser
-    		} else if (ctx !== NULL) {
-    				new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
-
-    				// Compiling in a browser
-    			} else {
-    					parser.evalStr(parser.result, true);
+    		if (module !== 'native') {
+    			// Server compilation
+    			if (IS_NODE) {
+    				if (ctx !== NULL) {
+    					new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin, {
+    						children: [],
+    						exports: ctx,
+    						filename: filename,
+    						id: filename,
+    						loaded: true,
+    						parent: module,
+    						require: require
+    					}, ctx, require, dirname, filename);
     				}
+
+    				// CommonJS compiling in a browser
+    			} else if (ctx !== NULL) {
+    					new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
+
+    					// Compiling in a browser
+    				} else {
+    						parser.evalStr(parser.result, true);
+    					}
+    		}
 
     		saveIntoFnCache(cacheKey, text, p, ctx);
     	} catch (err) {
@@ -7988,7 +8004,7 @@
 
 
     		var async = this.getGroup('async'),
-    		    isCallback = this.getGroup('callback')[_name];
+    		    isCallback = this.getGroup('func')[_name];
 
     		var closest = void 0,
     		    asyncParent = void 0;
@@ -8132,8 +8148,8 @@
     });
 
     var _templateObject$6 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
-    var _templateObject2$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tyield ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\tyield ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
-    var _templateObject3$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tyield ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tyield ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tyield ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tyield ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t']);
+    var _templateObject2$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tyield', ' ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\tyield', ' ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
+    var _templateObject3$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t']);
     Snakeskin.addDirective('yield', {
     	ancestorsBlacklist: Snakeskin.group('function'),
     	block: true,
@@ -8142,12 +8158,18 @@
     	group: 'yield',
     	placement: 'template'
     }, function (command) {
+    	var prfx = '';
+    	if (command[0] === '*') {
+    		prfx = '*';
+    		command = command.slice(1);
+    	}
+
     	if (command.slice(-1) === '/') {
-    		this.startInlineDir(null, { command: command.slice(0, -1), short: true });
+    		this.startInlineDir(null, { command: command.slice(0, -1), prfx: prfx, short: true });
     		return;
     	}
 
-    	this.startDir(null, { command: command });
+    	this.startDir(null, { command: command, prfx: prfx });
 
     	if (!command) {
     		this.append(ws(_templateObject$6, this.declVars('__CALL_CACHE__ = __RESULT__', { sys: true }), this.getResultDecl()));
@@ -8156,13 +8178,13 @@
     	var p = this.structure.params;
 
     	if (p.command) {
-    		this.append('yield ' + this.out(p.command, { unsafe: true }) + ';');
+    		this.append('yield' + p.prfx + ' ' + this.out(p.command, { unsafe: true }) + ';');
     	} else if (p.short) {
-    		this.append(ws(_templateObject2$4, this.getReturnResultDecl(), this.getResultDecl()));
+    		this.append(ws(_templateObject2$4, p.prfx, this.getReturnResultDecl(), this.getResultDecl()));
     	} else {
     		var tmp = this.getVar('__CALL_CACHE__');
 
-    		this.append(ws(_templateObject3$4, this.getReturnResultDecl(), tmp, tmp, this.getReturnResultDecl(), this.getResultDecl()));
+    		this.append(ws(_templateObject3$4, p.prfx, this.getReturnResultDecl(), tmp, tmp, p.prfx, this.getReturnResultDecl(), this.getResultDecl()));
     	}
     });
 
@@ -8972,6 +8994,8 @@
     	});
     });
 
+        var _templateObject$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t']);
+
     Snakeskin.addDirective('import', {
     	group: ['import', 'head'],
     	notEmpty: true,
@@ -8992,13 +9016,38 @@
 
     	command = command.replace(/(?:\s+from\s+([^\s]+)\s*|\s*([^\s]+)\s*)$/, function (str, path1, path2) {
     		if (isNativeExport) {
-    			from = str;
+    			from = str + ';';
     		} else {
+    			var _f = function _f() {
+    				var path = path1 || path2,
+    				    pathId = _this.pasteDangerBlocks(path1).slice(1, -1);
+
+    				switch (_this.module) {
+    					case 'cjs':
+    						return 'require(' + path + ');';
+
+    					case 'global':
+    						return 'GLOBAL[' + path + '];';
+
+    					case 'amd':
+    						_this.amdModules.push(pathId);
+    						return pathId + ';';
+
+    					default:
+    						if (getRgxp('^[$' + symbols + '_][' + w + ']*$').test(pathId)) {
+    							_this.amdModules.push(pathId);
+    							return ws(_templateObject$10, path, pathId, pathId, path);
+    						}
+
+    						return 'typeof require === \'function\' ? require(' + path + ') : GLOBAL[' + path + '];';
+    				}
+    			};
+
     			if (path1) {
-    				res += '__REQUIRE__ = require(' + path1 + ');';
+    				res += '__REQUIRE__ = ' + _f();
     				from = '__REQUIRE__';
     			} else {
-    				res += 'require(' + path2 + ');';
+    				res += _f();
     				from = true;
     			}
     		}
@@ -9046,10 +9095,13 @@
     		return prfComma || '';
     	});
 
+    	console.log(res);
+    	console.log(command);
+
     	this.append(res + f(command, true) + (isNativeExport ? from : ''));
     });
 
-        var _templateObject$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t'], ['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t']);
+        var _templateObject$11 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t'], ['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t']);
 
     Snakeskin.addDirective('include', {
     	ancestorsBlacklist: [Snakeskin.group('head'), Snakeskin.group('template')],
@@ -9071,7 +9123,7 @@
     	    type = parts[1] ? '\'' + parts[1].trim() + '\'' : '\'\'';
 
     	if (path !== undefined && type !== undefined) {
-    		this.save(ws(_templateObject$10, escapeBackslashes(this.info.file || ''), this.pasteDangerBlocks(path), escapeEOLs(this.eol), type));
+    		this.save(ws(_templateObject$11, escapeBackslashes(this.info.file || ''), this.pasteDangerBlocks(path), escapeEOLs(this.eol), type));
     	}
     }, function () {
     	if (this.hasParent(this.getGroup('eval'))) {
@@ -9203,7 +9255,7 @@
     	this.append('} while (true);');
     });
 
-    var _templateObject$11 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
+    var _templateObject$12 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
     var _templateObject2$7 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn;\n\t\t\t\t\t']);
     Snakeskin.addDirective('break', {
     	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
@@ -9222,7 +9274,7 @@
     			if (this.getGroup('waterfall')[parent.asyncParent]) {
     				this.append('return arguments[arguments.length - 1](' + val + ');');
     			} else {
-    				this.append(ws(_templateObject$11, val));
+    				this.append(ws(_templateObject$12, val));
     			}
     		} else {
     			this.append('return false;');
@@ -9259,7 +9311,7 @@
     	}
     });
 
-    var _templateObject$12 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t']);
+    var _templateObject$13 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t', '.forEach(function (', ') {\n\t\t\t\t\t', '\n\t\t\t']);
     var _templateObject2$8 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tSnakeskin.forEach(', ', function (', ') {\n\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forEach(', ', function (', ') {\n\t\t\t\t', '\n\t\t']);
     var _templateObject3$7 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(', ', function (', ') {\n\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forIn(', ', function (', ') {\n\t\t\t\t', '\n\t\t']);
     Snakeskin.addDirective('forEach', {
@@ -9288,7 +9340,7 @@
 
     	if (is$C) {
     		this.selfThis.push(true);
-    		this.append(ws(_templateObject$12, val, args.decl, args.def));
+    		this.append(ws(_templateObject$13, val, args.decl, args.def));
 
     		return;
     	}
@@ -9327,17 +9379,14 @@
     	this.append('});');
     });
 
-    Snakeskin.addDirective('callback', {
+    Snakeskin.addDirective('func', {
     	block: true,
-    	group: ['callback', 'function', 'dynamic'],
-    	shorthands: { '()': 'callback ' }
+    	group: ['func', 'function', 'dynamic'],
+    	shorthands: { '()': 'func ' }
     }, function (command) {
-    	var parts = command.split('=>'),
-    	    p = this.structure.params;
+    	command = command.replace(/^=>\s*/, '');
 
-    	if (!parts.length || parts.length > 2) {
-    		return this.error('invalid "' + this.name + '" declaration');
-    	}
+    	var p = this.structure.params;
 
     	var prfx = '',
     	    pstfx = '';
@@ -9350,7 +9399,7 @@
     		var length = 0;
 
     		for (var i = 0; i < parent.children.length; i++) {
-    			if (this.getGroup('callback')[parent.children[i].name]) {
+    			if (this.getGroup('func')[parent.children[i].name]) {
     				length++;
     			}
 
@@ -9372,7 +9421,7 @@
     		pstfx = this.getTplRuntime();
     	}
 
-    	var args = this.declFnArgs('(' + parts[1] + ')');
+    	var args = this.declFnArgs('(' + command + ')');
     	this.append(prfx + '(function (' + args.decl + ') {' + args.def + pstfx);
     }, function () {
     	var p = this.structure.params;
@@ -9413,24 +9462,13 @@
     ['parallel', 'series', 'waterfall'].forEach(function (dir) {
     	Snakeskin.addDirective(dir, {
     		block: true,
-    		children: Snakeskin.group('callback'),
+    		children: Snakeskin.group('func'),
     		group: [dir, 'Async', 'async', 'dynamic']
     	}, function (command, commandLength, type) {
     		this.append(this.out('async', { unsafe: true }) + '.' + type + '([');
     	}, function () {
     		this.append((this.structure.params.final ? '}' : ']') + ');');
     	});
-    });
-
-    Snakeskin.addDirective('when', {
-    	block: true,
-    	children: Snakeskin.group('callback'),
-    	group: ['when', 'promise', 'async', 'dynamic'],
-    	notEmpty: true
-    }, function (command) {
-    	this.append(this.out(command, { unsafe: true }) + '.then(');
-    }, function () {
-    	this.append(');');
     });
 
     Snakeskin.addDirective('literal', {
@@ -9443,7 +9481,7 @@
     	this.append(this.wrap('\'' + this.literalBounds[0] + this.replaceTplVars(command.replace(/^\s*\{|}\s*$/g, '')) + this.literalBounds[1] + '\''));
     });
 
-    var _templateObject$13 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t'], ['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t']);
+    var _templateObject$14 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t'], ['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t']);
     var _templateObject2$9 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
     Snakeskin.addDirective('return', {
     	block: true,
@@ -9474,7 +9512,7 @@
     		return;
     	}
 
-    	var def = ws(_templateObject$13, val);
+    	var def = ws(_templateObject$14, val);
 
     	var str = '';
     	if (parent.asyncParent) {
@@ -9501,8 +9539,8 @@
     	this.append(str);
     });
 
-    var _templateObject$14 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t', '\n\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t'], ['\n\t\t\t', '\n\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t']);
-    var _templateObject2$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
+    var _templateObject$15 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\n\t\t\t\t', '\n\t\t\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\n\t\t\t\t', '\n\t\t\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
+    var _templateObject2$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t\t'], ['\n\t\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t\t']);
     Snakeskin.addDirective('target', {
     	block: true,
     	deferInit: true,
@@ -9510,7 +9548,13 @@
     	notEmpty: true,
     	trim: true
     }, function (command) {
-    	var _command$split = command.split(/\s+as\s+/);
+    	var short = command.slice(-1) === '/';
+
+    	if (short) {
+    		command = command.slice(0, -1);
+    	}
+
+    	var _command$split = command.split(/\s+as\s+(?=[^\s])/);
 
     	var _command$split2 = babelHelpers.slicedToArray(_command$split, 2);
 
@@ -9522,7 +9566,7 @@
     		this.declVar(ref);
     	}
 
-    	this.startDir();
+    	this.startDir(null, { short: short });
     	var str = this.declVars('__TARGET_REF__ = ' + obj, { sys: true });
     	this.structure.params.ref = this.getVar('__TARGET_REF__');
 
@@ -9530,15 +9574,25 @@
     		str += this.out('var ' + ref + ' = __TARGET_REF__;', { skipFirstWord: true, unsafe: true });
     	}
 
-    	this.append(ws(_templateObject$14, str, this.declVars(ws(_templateObject2$10), { sys: true }), this.getResultDecl()));
-    }, function () {
+    	if (short) {
+    		this.append(str);
+    		end.call(this);
+    		this.endDir();
+    	} else {
+    		this.append(ws(_templateObject$15, str, this.declVars(ws(_templateObject2$10), { sys: true }), this.getResultDecl()));
+    	}
+    }, end);
+
+    function end() {
     	var p = this.structure.params;
 
     	if (p.strongSpace) {
     		this.strongSpace.pop();
     	}
 
-    	this.append('__RESULT__ = __TARGET_END__(__RESULT__, ' + this.getVar('__CALL_TMP__') + ', ' + p.ref + ');');
+    	if (!p.short) {
+    		this.append('__RESULT__ = __TARGET_END__(__RESULT__, ' + this.getVar('__CALL_TMP__') + ', ' + p.ref + ');');
+    	}
 
     	var parent = any(this.hasParentMicroTemplate());
 
@@ -9546,10 +9600,10 @@
     		this.append('__RESULT__ = new Raw(' + p.ref + ');');
     		parent.params.strongSpace = true;
     		this.strongSpace.push(true);
-    	} else {
+    	} else if (!p.short) {
     		this.append('__RESULT__ = ' + this.getVar('__CALL_CACHE__') + ';');
     	}
-    });
+    }
 
     Snakeskin.addDirective('super', {
     	group: 'super',
@@ -9655,12 +9709,12 @@
     	this.append(this.getXMLTagDecl('script', '(( type = ' + type + ' )) ' + parts.slice(1).join(' ')));
 
     	if (short) {
-    		end.call(this);
+    		end$1.call(this);
     		this.endDir();
     	}
-    }, end);
+    }, end$1);
 
-    function end() {
+    function end$1() {
     	this.append(this.getEndXMLTagDecl());
     }
 
@@ -9695,12 +9749,12 @@
     	this.append(this.getXMLTagDecl('style', '(( type = ' + type + ' )) ' + parts.slice(1).join(' ')));
 
     	if (short) {
-    		end$1.call(this);
+    		end$2.call(this);
     		this.endDir();
     	}
-    }, end$1);
+    }, end$2);
 
-    function end$1() {
+    function end$2() {
     	this.append(this.getEndXMLTagDecl());
     }
 
@@ -9750,16 +9804,16 @@
     	this.append(this.getXMLTagDecl('link', typeStr + ' ' + parts.slice(1).join(' ')));
 
     	if (short) {
-    		end$2.call(this);
+    		end$3.call(this);
     		this.endDir();
     	}
-    }, end$2);
+    }, end$3);
 
-    function end$2() {
+    function end$3() {
     	this.append(this.getEndXMLTagDecl());
     }
 
-    var _templateObject$15 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t'], ['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t']);
+    var _templateObject$16 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t'], ['\n\t\t\t', '\n\n\t\t\t__RESULT__ = ', ';\n\t\t']);
     var _templateObject2$11 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t'], ['\n\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t']);
     var _templateObject3$8 = babelHelpers.taggedTemplateLiteral(['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '++;\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t}\n\t\t'], ['\n\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t', '++;\n\t\t\t\t', '.push(Unsafe(', '));\n\t\t\t}\n\t\t']);
     var _templateObject4$4 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t', ' ? ', ' : ', '\n\t\t\t\t'], ['\n\t\t\t\t\t', ' ? ', ' : ', '\n\t\t\t\t']);
@@ -9767,7 +9821,7 @@
     Snakeskin.addDirective('call', {
     	block: true,
     	deferInit: true,
-    	filters: { local: ['undef'] },
+    	filters: { global: ['undef'] },
     	group: ['call', 'microTemplate', 'output'],
     	notEmpty: true,
     	shorthands: { '+=': 'call ', '/+': 'end call' },
@@ -9784,7 +9838,7 @@
     		command: command
     	});
 
-    	this.append(ws(_templateObject$15, this.declVars(ws(_templateObject2$11), { sys: true }), this.getResultDecl()));
+    	this.append(ws(_templateObject$16, this.declVars(ws(_templateObject2$11), { sys: true }), this.getResultDecl()));
     }, function () {
     	this.text = true;
 
@@ -9846,7 +9900,7 @@
     	this.append(ws(_templateObject5$2, this.getVar('__CALL_CACHE__'), this.wrap(str)));
     });
 
-    var _templateObject$16 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
+    var _templateObject$17 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
     var _templateObject2$12 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t__RESULT__ = __PUTIN_CALL__(__RESULT__, ', ', ', ');\n\t\t\t\t\t', '++;\n\t\t\t\t'], ['\n\t\t\t\t\t__RESULT__ = __PUTIN_CALL__(__RESULT__, ', ', ', ');\n\t\t\t\t\t', '++;\n\t\t\t\t']);
     var _templateObject3$9 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t__RESULT__ = __PUTIN_TARGET__(\n\t\t\t\t\t\t__RESULT__,\n\t\t\t\t\t\t', ',\n\t\t\t\t\t\t', ',\n\t\t\t\t\t\t\'', '\'\n\t\t\t\t\t);\n\n\t\t\t\t\t', '++;\n\t\t\t\t'], ['\n\t\t\t\t\t__RESULT__ = __PUTIN_TARGET__(\n\t\t\t\t\t\t__RESULT__,\n\t\t\t\t\t\t', ',\n\t\t\t\t\t\t', ',\n\t\t\t\t\t\t\'', '\'\n\t\t\t\t\t);\n\n\t\t\t\t\t', '++;\n\t\t\t\t']);
     var _templateObject4$5 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t__RESULT__ = __PUTIN_TARGET__(__RESULT__, true, ', ', \'', '\');\n\t\t\t\t'], ['\n\t\t\t\t\t__RESULT__ = __PUTIN_TARGET__(__RESULT__, true, ', ', \'', '\');\n\t\t\t\t']);
@@ -9872,7 +9926,7 @@
     			return _this.error('the directive "' + _this.name + '" must have a body');
     		}
 
-    		_this.append(ws(_templateObject$16, _this.declVars('__CALL_CACHE__ = __RESULT__', { sys: true }), _this.getResultDecl()));
+    		_this.append(ws(_templateObject$17, _this.declVars('__CALL_CACHE__ = __RESULT__', { sys: true }), _this.getResultDecl()));
     	};
 
     	var parent = any(this.hasParentMicroTemplate());
@@ -9927,7 +9981,7 @@
     	}
     });
 
-    var _templateObject$17 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t', '\n\t\t\t\t'], ['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t', '\n\t\t\t\t']);
+    var _templateObject$18 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t', '\n\t\t\t\t'], ['\n\t\t\t\t\tif (!', ') {\n\t\t\t\t\t\t', ' = function (', ') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t', '\n\t\t\t\t']);
     var _templateObject2$13 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\n\t\t\t\t\t', '__switchLine__ ', '', '\n\t\t\t\t\t\t', '\n\t\t\t\t\t', '__end__', '\n\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\t\t\t'], ['\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\n\t\t\t\t\t', '__switchLine__ ', '', '\n\t\t\t\t\t\t', '\n\t\t\t\t\t', '__end__', '\n\n\t\t\t\t', '', '\n\t\t\t\t', '__cutLine__', '\n\t\t\t']);
     var _templateObject3$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsafe(', ');\n\t\t\t\t\t};\n\t\t\t\t}\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t\t\treturn Unsafe(', ');\n\t\t\t\t\t};\n\t\t\t\t}\n\n\t\t\t\t', '\n\t\t\t']);
     var callBlockNameRgxp = new RegExp('^[^' + symbols + '_$][^' + w + ']*|[^' + w + ']+', 'i');
@@ -9935,6 +9989,7 @@
     Snakeskin.addDirective('block', {
     	block: true,
     	deferInit: true,
+    	filters: { global: ['undef'] },
     	group: ['block', 'template', 'define', 'inherit', 'blockInherit', 'dynamic'],
     	logic: true,
     	notEmpty: true
@@ -10070,7 +10125,7 @@
     		if (args.isCallable) {
     			var fnDecl = structure.params.fn = 'self.' + name;
 
-    			this.save(ws(_templateObject$17, fnDecl, fnDecl, args.decl, this.getTplRuntime(), args.def));
+    			this.save(ws(_templateObject$18, fnDecl, fnDecl, args.decl, this.getTplRuntime(), args.def));
 
     			if (params != null) {
     				var vars = structure.vars;
@@ -10115,7 +10170,7 @@
     	    output = p.params != null;
 
     	if (this.isSimpleOutput() && p.fn) {
-    		this.save(ws(_templateObject3$10, this.getReturnResultDecl(), output ? this.wrap(p.fn + '(' + p.params + ')') : ''));
+    		this.save(ws(_templateObject3$10, this.getReturnResultDecl(), output ? this.wrap(this.out(p.fn + '(' + p.params + ')')) : ''));
 
     		if (!output) {
     			var parent = any(this.hasParentMicroTemplate());
@@ -10220,12 +10275,12 @@
     	this.append(str + this.getXMLAttrsDeclEnd() + this.getXMLTagDeclEnd(inline));
 
     	if (short) {
-    		end$3.call(this);
+    		end$4.call(this);
     		this.endDir();
     	}
-    }, end$3);
+    }, end$4);
 
-    function end$3() {
+    function end$4() {
     	var p = this.structure.params;
 
     	this.bemRef = p.bemRef;

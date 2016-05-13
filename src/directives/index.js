@@ -580,7 +580,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return;
 		}
 
-		if ((!parent || parent.name === 'root') && !this.getGroup('define')[name] && from !== to) {
+		if (
+			(!parent || parent.name === 'root') &&
+			(!{'amd': true, 'native': true}[this.module] || !this.getGroup('import')[name]) &&
+			!this.getGroup('define')[name] &&
+			from !== to
+
+		) {
 			try {
 				this.evalStr(res.slice(from, to));
 

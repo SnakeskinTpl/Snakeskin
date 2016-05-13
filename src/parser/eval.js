@@ -11,7 +11,7 @@
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { IS_NODE } from '../consts/hacks';
-import { ROOT } from '../consts/links';
+import { ROOT, GLOBAL } from '../consts/links';
 
 /**
  * Executes a string
@@ -30,6 +30,7 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 
 	if (IS_NODE) {
 		return new Function(
+			'GLOBAL',
 			'Snakeskin',
 			'__FILTERS__',
 			'__VARS__',
@@ -44,6 +45,7 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 
 		).call(
 			ROOT,
+			GLOBAL,
 			Snakeskin,
 			Snakeskin.Filters,
 			Snakeskin.Vars,
@@ -57,8 +59,9 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 		);
 	}
 
-	return new Function('Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(
+	return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(
 		ROOT,
+		GLOBAL,
 		Snakeskin,
 		Snakeskin.Filters,
 		Snakeskin.Vars,

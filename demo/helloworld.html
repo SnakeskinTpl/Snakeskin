@@ -6,24 +6,23 @@
 		<script src="../node_modules/js-beautify/js/lib/beautify.js"></script>
 		<script src="../node_modules/escaper/dist/escaper.min.js"></script>
 		<script src="../node_modules/esprima/esprima.js"></script>
-		<script src="../dist/snakeskin.min.js"></script>
+		<script src="../dist/snakeskin.js"></script>
 	</head>
 
 	<body>
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			- namespace demo
-			- template helloWorld(name = 'world')
-				< .hello
-					Hello {name}!
+			- import foo, {bar as bla} from 'barcar'
 		</script>
 
 		<script>
+			window['bar-car'] = {foo: 1};
 			var d = {};
-			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
+			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true, module: 'native'});
 			// console.log(d.code);
-			document.getElementById('test').innerHTML = demo.helloWorld();
+			// console.log(demo.helloWorld());
+			// document.getElementById('test').innerHTML = demo.helloWorld();
 		</script>
 	</body>
 </html>

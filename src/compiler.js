@@ -897,7 +897,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		p.debug.files = parser.files;
 	}
 
-	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename)) {
+	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename, parser.module)) {
 		return false;
 	}
 
@@ -917,38 +917,40 @@ function mtime(file) {
 	}
 }
 
-function compile(text, p, info, cacheKey, ctx, parser, dirname, filename) {
+function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module) {
 	try {
-		// Server compilation
-		if (IS_NODE) {
-			if (ctx !== NULL) {
-				new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(
-					Snakeskin,
+		if (module !== 'native') {
+			// Server compilation
+			if (IS_NODE) {
+				if (ctx !== NULL) {
+					new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(
+						Snakeskin,
 
-					{
-						children: [],
-						exports: ctx,
-						filename,
-						id: filename,
-						loaded: true,
-						parent: module,
-						require
-					},
+						{
+							children: [],
+							exports: ctx,
+							filename,
+							id: filename,
+							loaded: true,
+							parent: module,
+							require
+						},
 
-					ctx,
-					require,
-					dirname,
-					filename
-				);
+						ctx,
+						require,
+						dirname,
+						filename
+					);
+				}
+
+			// CommonJS compiling in a browser
+			} else if (ctx !== NULL) {
+				new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, {exports: ctx}, ctx, GLOBAL);
+
+			// Compiling in a browser
+			} else {
+				parser.evalStr(parser.result, true);
 			}
-
-		// CommonJS compiling in a browser
-		} else if (ctx !== NULL) {
-			new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, {exports: ctx}, ctx, GLOBAL);
-
-		// Compiling in a browser
-		} else {
-			parser.evalStr(parser.result, true);
 		}
 
 		saveIntoFnCache(cacheKey, text, p, ctx);
