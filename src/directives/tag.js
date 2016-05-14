@@ -18,7 +18,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		filters: {global: ['attr', 'html'], local: ['undef']},
+		filters: {global: ['attr', 'html', 'undef'], local: ['undef']},
 		group: ['tag', 'output'],
 		interpolation: true,
 		placement: 'template',
