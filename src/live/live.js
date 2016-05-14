@@ -248,8 +248,8 @@ const
  *
  * @param {(Array|Object|undefined)} obj - source object
  * @param {(
- *   function(?, ?, !Array, boolean, boolean, number)|
- *   function(?, ?, !Object, number, boolean, boolean, number)
+ *   function(?, ?, !Array, {isFirst: boolean, isLast: boolean, length: number})|
+ *   function(?, ?, !Object, {i: number, isFirst: boolean, isLast: boolean, length: number})
  * )} callback - callback function
  */
 Snakeskin.forEach = function (obj, callback) {
@@ -263,7 +263,7 @@ Snakeskin.forEach = function (obj, callback) {
 	if (isArray(obj)) {
 		length = obj.length;
 		for (let i = 0; i < length; i++) {
-			if (callback(obj[i], i, obj, i === 0, i === length - 1, length) === false) {
+			if (callback(obj[i], i, obj, {isFirst: i === 0, isLast: i === length - 1, length}) === false) {
 				break;
 			}
 		}
@@ -274,13 +274,13 @@ Snakeskin.forEach = function (obj, callback) {
 
 		length = arr.length;
 		for (let i = 0; i < length; i++) {
-			if (callback(obj[arr[i]], arr[i], obj, i, i === 0, i === length - 1, length) === false) {
+			if (callback(obj[arr[i]], arr[i], obj, {i, isFirst: i === 0, isLast: i === length - 1, length}) === false) {
 				break;
 			}
 		}
 
 	} else {
-		if (callback.length >= 6) {
+		if (callback.length >= 4) {
 			for (let key in obj) {
 				if (!obj.hasOwnProperty(key)) {
 					break;
@@ -296,7 +296,7 @@ Snakeskin.forEach = function (obj, callback) {
 				break;
 			}
 
-			if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+			if (callback(obj[key], key, obj, {i, isFirst: i === 0, isLast: i === length - 1, length}) === false) {
 				break;
 			}
 
@@ -310,7 +310,7 @@ Snakeskin.forEach = function (obj, callback) {
  * (without hasOwnProperty)
  *
  * @param {(Object|undefined)} obj - source object
- * @param {function(?, string, !Object, number, boolean, boolean, number)} callback - callback function
+ * @param {function(?, string, !Object, {i: number, isFirst: boolean, isLast: boolean, length: number})} callback - callback function
  */
 Snakeskin.forIn = function (obj, callback) {
 	if (!obj) {
@@ -321,14 +321,14 @@ Snakeskin.forIn = function (obj, callback) {
 		length = 0,
 		i = 0;
 
-	if (callback.length >= 6) {
+	if (callback.length >= 4) {
 		for (let ignore in obj) {
 			length++;
 		}
 	}
 
 	for (let key in obj) {
-		if (callback(obj[key], key, obj, i, i === 0, i === length - 1, length) === false) {
+		if (callback(obj[key], key, obj, {i, isFirst: i === 0, isLast: i === length - 1, length}) === false) {
 			break;
 		}
 

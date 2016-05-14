@@ -104,12 +104,12 @@
 		{el} - {key} |
 
 - template ['forEach array parameters']()
-	- forEach [1, 2] => el, i, data, isFirst, isLast, length
-		{el} - {i} - {data|json|!html} - {isFirst} - {isLast} - {length} |
+	- forEach [1, 2] => el, i, data, @params
+		{el} - {i} - {data|json|!html} - {@isFirst} - {@isLast} - {@length} |
 
 - template ['forEach object parameters']()
-	- forEach {a: 1, b: 2} => el, key, data, i, isFirst, isLast, length
-		{el} - {key} - {data|json|!html} - {i} - {isFirst} - {isLast} - {length} |
+	- forEach {a: 1, b: 2} => el, key, data, @params
+		{el} - {key} - {data|json|!html} - {@i} - {@isFirst} - {@isLast} - {@length} |
 
 - template ['forEach this']()
 	: that = this
@@ -134,8 +134,8 @@
 		{el}
 
 - template ['forIn parameters']()
-	- forIn {a: 1, b: 2} => el, key, data, i, isFirst, isLast, length
-		{el} - {key} - {data|json|!html} - {i} - {isFirst} - {isLast} - {length} |
+	- forIn {a: 1, b: 2} => el, key, data, @params
+		{el} - {key} - {data|json|!html} - {@i} - {@isFirst} - {@isLast} - {@length} |
 
 - template ['forIn this']()
 	: that = this

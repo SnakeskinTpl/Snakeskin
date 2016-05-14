@@ -52,15 +52,15 @@ Snakeskin.setFilterParams = function (filter, params) {};
 /**
  * @param {(Array|Object|undefined)} obj
  * @param {(
- *   function(?, ?, !Array, boolean, boolean, number)|
- *   function(?, ?, !Object, number, boolean, boolean, number)
+ *   function(?, ?, !Array, {isFirst: boolean, isLast: boolean, length: number})|
+ *   function(?, ?, !Object, {i: number, isFirst: boolean, isLast: boolean, length: number})
  * )} callback - callback function
  */
 Snakeskin.forEach = function (obj, callback) {};
 
 /**
  * @param {(Object|undefined)} obj
- * @param {function(?, string, !Object, number, boolean, boolean, number)} callback
+ * @param {function(?, string, !Object, {i: number, isFirst: boolean, isLast: boolean, length: number})} callback
  */
 Snakeskin.forIn = function (obj, callback) {};
 
