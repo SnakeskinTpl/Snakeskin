@@ -32,7 +32,7 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 * Work in browsers, as well as on a server ([node.js](http://nodejs.org));
 * The source code is designed to work with Google Closure Compiler in advanced mode;
 * Good code coverage;
-* Detailed [documentation](https://github.com/SnakeskinTpl/Snakeskin/wiki) with examples.
+* Detailed [documentation](http://snakeskintpl.github.io/docs) with examples.
 
 ## Plugins
 
