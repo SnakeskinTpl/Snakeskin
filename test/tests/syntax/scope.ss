@@ -50,7 +50,8 @@ Andrey Kobets 26
 
 	- with params
 		{@name + ' ' + params.secondName}
-		{@@age}
+		- if !!@@age
+			{@@age}
 
 - template ['nested with']()
 	: params = { &

@@ -83,6 +83,11 @@ const
 	newWordRgxp = new RegExp(`[^${r(G_MOD)}${rgxp.w}[\\]]`);
 
 const
+	localContRgxp = new RegExp(`${r(G_MOD)}{1}`),
+	globalContRgxp = new RegExp(`${r(G_MOD)}{2}`),
+	prfxContRgxp = new RegExp(`(.*?)${r(G_MOD)}+(.*)`);
+
+const
 	multPropRgxp = /\[|\./,
 	firstPropRgxp = /([^.[]+)(.*)/,
 	propValRgxp = /[^-+!(]+/;
@@ -415,12 +420,15 @@ Parser.prototype.out = function (command, opt_params) {
 
 				let vRes;
 				if (canParse) {
-					if (el === G_MOD) {
-						if (next === G_MOD) {
-							vRes = `__VARS__${concatProp(finalWord.slice(2))}`;
+					if (localContRgxp.test(word)) {
+						const
+							chunks = prfxContRgxp.exec(word);
+
+						if (globalContRgxp.test(word)) {
+							vRes = `${chunks[1]}__VARS__${concatProp(chunks[2])}`;
 
 						} else if (this.scope.length) {
-							vRes = addScope(this.scope[this.scope.length - 1]) + concatProp(finalWord.slice(1));
+							vRes = chunks[1] + addScope(this.scope[this.scope.length - 1]) + concatProp(chunks[2]);
 
 						} else {
 							if (this.isSimpleOutput()) {
@@ -428,7 +436,7 @@ Parser.prototype.out = function (command, opt_params) {
 								return '';
 							}
 
-							vRes = finalWord.slice(1);
+							vRes = chunks[1] + chunks[2];
 						}
 
 					} else {
