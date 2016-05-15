@@ -420,9 +420,9 @@ Parser.prototype.out = function (command, opt_params) {
 
 				let vRes;
 				if (canParse) {
-					if (localContRgxp.test(word)) {
+					if (localContRgxp.test(finalWord)) {
 						const
-							chunks = prfxContRgxp.exec(word);
+							chunks = prfxContRgxp.exec(finalWord);
 
 						if (globalContRgxp.test(word)) {
 							vRes = `${chunks[1]}__VARS__${concatProp(chunks[2])}`;

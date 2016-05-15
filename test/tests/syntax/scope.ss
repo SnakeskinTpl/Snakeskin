@@ -8,7 +8,7 @@
 
 [[globals]]=============================================================================================================
 
-Andrey Kobets 26
+Andrey Kobets 26 Andrey
 
 [[with]]================================================================================================================
 
@@ -35,12 +35,14 @@ Andrey Kobets 26
 - namespace syntax[%fileName%]
 
 - ['name'] = 'Andrey'
+- map = {Kobets: 'Andrey'}
 ? @@secondName = 'Kobets'
 - global age = 25
 
 - template globals()
 	{@@name + ' ' + @@secondName}
 	{@@age = 26?}
+	{@@map[@@secondName]}
 
 - template ['with']()
 	: params = { &
