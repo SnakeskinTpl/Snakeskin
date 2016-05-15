@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.1
+ * Snakeskin v7.0.2
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 15 May 2016 18:51:19 GMT
+ * Date: 'Sun, 15 May 2016 19:31:37 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 1]
+      VERSION: [7, 0, 2]
     };
 
     /**
@@ -5349,8 +5349,8 @@
 
     				var vRes = void 0;
     				if (canParse) {
-    					if (localContRgxp.test(word)) {
-    						var chunks = prfxContRgxp.exec(word);
+    					if (localContRgxp.test(finalWord)) {
+    						var chunks = prfxContRgxp.exec(finalWord);
 
     						if (globalContRgxp.test(word)) {
     							vRes = chunks[1] + '__VARS__' + concatProp(chunks[2]);
