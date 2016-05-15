@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 15 May 2016 16:08:48 GMT
+ * Date: 'Sun, 15 May 2016 18:51:19 GMT
  */
 
 (function (global, factory) {
@@ -5037,6 +5037,9 @@
     var ssfRgxp = /__FILTERS__\./;
     var nextCharRgxp = new RegExp('[' + r(G_MOD) + '+\\-~!' + w + ']');
     var newWordRgxp = new RegExp('[^' + r(G_MOD) + w + '[\\]]');
+    var localContRgxp = new RegExp(r(G_MOD) + '{1}');
+    var globalContRgxp = new RegExp(r(G_MOD) + '{2}');
+    var prfxContRgxp = new RegExp('(.*?)' + r(G_MOD) + '+(.*)');
     var multPropRgxp = /\[|\./;
     var firstPropRgxp = /([^.[]+)(.*)/;
     var propValRgxp = /[^-+!(]+/;
@@ -5346,18 +5349,20 @@
 
     				var vRes = void 0;
     				if (canParse) {
-    					if (el === G_MOD) {
-    						if (next === G_MOD) {
-    							vRes = '__VARS__' + concatProp(finalWord.slice(2));
+    					if (localContRgxp.test(word)) {
+    						var chunks = prfxContRgxp.exec(word);
+
+    						if (globalContRgxp.test(word)) {
+    							vRes = chunks[1] + '__VARS__' + concatProp(chunks[2]);
     						} else if (this.scope.length) {
-    							vRes = addScope(this.scope[this.scope.length - 1]) + concatProp(finalWord.slice(1));
+    							vRes = chunks[1] + addScope(this.scope[this.scope.length - 1]) + concatProp(chunks[2]);
     						} else {
     							if (this.isSimpleOutput()) {
     								this.error('invalid usage of context modifier @');
     								return '';
     							}
 
-    							vRes = finalWord.slice(1);
+    							vRes = chunks[1] + chunks[2];
     						}
     					} else {
     						vRes = addScope(finalWord);
