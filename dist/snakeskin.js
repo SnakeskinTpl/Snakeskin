@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.0
+ * Snakeskin v7.0.1
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 15 May 2016 09:27:40 GMT
+ * Date: 'Sun, 15 May 2016 16:08:48 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 0]
+      VERSION: [7, 0, 1]
     };
 
     /**
@@ -2596,7 +2596,7 @@
     		str += eol + sep + prfx + eol + chunk + eol + sep;
     	}
 
-    	return str + eol;
+    	return this.pasteDangerBlocks(str) + eol;
     };
 
     /**
