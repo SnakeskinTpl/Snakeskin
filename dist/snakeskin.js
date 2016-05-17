@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 17 May 2016 06:09:05 GMT
+ * Date: 'Tue, 17 May 2016 06:25:23 GMT
  */
 
 (function (global, factory) {
@@ -9002,7 +9002,7 @@
         var _templateObject$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : ', ' !== undefined ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : ', ' !== undefined ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t']);
 
     Snakeskin.addDirective('import', {
-    	ancestorsBlacklist: [Snakeskin.group('template')],
+    	ancestorsBlacklist: [Snakeskin.group('template'), Snakeskin.group('dynamic'), Snakeskin.group('logic')],
     	group: ['import', 'head'],
     	notEmpty: true
     }, function (command) {

@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	'import',
 
 	{
-		ancestorsBlacklist: [Snakeskin.group('template')],
+		ancestorsBlacklist: [Snakeskin.group('template'), Snakeskin.group('dynamic'), Snakeskin.group('logic')],
 		group: ['import', 'head'],
 		notEmpty: true
 	},
