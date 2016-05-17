@@ -59,13 +59,26 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 		);
 	}
 
-	return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(
+	return new Function(
+		'GLOBAL',
+		'Snakeskin',
+		'__FILTERS__',
+		'__VARS__',
+		'__LOCAL__',
+		'module',
+		'exports',
+		'Unsafe',
+		str
+
+	).call(
 		ROOT,
 		GLOBAL,
 		Snakeskin,
 		Snakeskin.Filters,
 		Snakeskin.Vars,
 		Snakeskin.LocalVars,
+		ctx,
+		ctx.exports,
 		null
 	);
 };

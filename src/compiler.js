@@ -15,7 +15,7 @@ import Snakeskin from './core';
 import Parser from './parser/index';
 
 import * as rgxp from './consts/regs';
-import { NULL, GLOBAL } from './consts/links';
+import { NULL, ROOT, GLOBAL } from './consts/links';
 import { IS_NODE } from './consts/hacks';
 import { templateRank } from './consts/other';
 import { $dirInterpolation, $dirNameShorthands, $dirParents } from './consts/cache';
@@ -949,7 +949,7 @@ function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module
 
 			// Compiling in a browser
 			} else {
-				parser.evalStr(parser.result, true);
+				new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
 			}
 		}
 

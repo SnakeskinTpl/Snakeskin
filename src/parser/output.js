@@ -424,7 +424,7 @@ Parser.prototype.out = function (command, opt_params) {
 						const
 							chunks = prfxContRgxp.exec(finalWord);
 
-						if (globalContRgxp.test(word)) {
+						if (globalContRgxp.test(finalWord)) {
 							vRes = `${chunks[1]}__VARS__${concatProp(chunks[2])}`;
 
 						} else if (this.scope.length) {
