@@ -62,7 +62,7 @@ Snakeskin.addDirective(
 								this.amdModules.push(pathId);
 								return ws`
 									typeof require === 'function' ?
-										require(${path}) : ${pathId} !== undefined ? ${pathId} : GLOBAL[${path}];
+										require(${path}) : typeof ${pathId} !== 'undefined' ? ${pathId} : GLOBAL[${path}];
 								`;
 							}
 
