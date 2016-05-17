@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.2
+ * Snakeskin v7.0.3
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 15 May 2016 19:31:37 GMT
+ * Date: 'Tue, 17 May 2016 06:09:05 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 2]
+      VERSION: [7, 0, 3]
     };
 
     /**
@@ -8999,12 +8999,12 @@
     	});
     });
 
-        var _templateObject$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t']);
+        var _templateObject$10 = babelHelpers.taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : ', ' !== undefined ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : ', ' !== undefined ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t']);
 
     Snakeskin.addDirective('import', {
+    	ancestorsBlacklist: [Snakeskin.group('template')],
     	group: ['import', 'head'],
-    	notEmpty: true,
-    	placement: 'global'
+    	notEmpty: true
     }, function (command) {
     	var _this = this;
 
