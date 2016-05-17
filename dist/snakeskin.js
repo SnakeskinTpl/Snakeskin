@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.4
+ * Snakeskin v7.0.5
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 17 May 2016 06:33:27 GMT
+ * Date: 'Tue, 17 May 2016 07:25:19 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 4]
+      VERSION: [7, 0, 5]
     };
 
     /**
@@ -443,8 +443,8 @@
     		var arr = keys(obj);
 
     		length = arr.length;
-    		for (var i = 0; i < length; i++) {
-    			if (callback(obj[arr[i]], arr[i], obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
+    		for (var _i = 0; _i < length; _i++) {
+    			if (callback(obj[arr[_i]], arr[_i], obj, { i: _i, isFirst: _i === 0, isLast: _i === length - 1, length: length }) === false) {
     				break;
     			}
     		}
@@ -459,17 +459,17 @@
     			}
     		}
 
-    		var i = 0;
-    		for (var key in obj) {
-    			if (!obj.hasOwnProperty(key)) {
+    		var _i2 = 0;
+    		for (var _key in obj) {
+    			if (!obj.hasOwnProperty(_key)) {
     				break;
     			}
 
-    			if (callback(obj[key], key, obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
+    			if (callback(obj[_key], _key, obj, { i: _i2, isFirst: _i2 === 0, isLast: _i2 === length - 1, length: length }) === false) {
     				break;
     			}
 
-    			i++;
+    			_i2++;
     		}
     	}
     };
@@ -2117,9 +2117,9 @@
 
     	// Analise requested parameters
     	// and save it in cache
-    	for (var i = 0; i < argsList.length; i++) {
-    		var el = argsList[i],
-    		    arg = el.split(/\s*=\s*/);
+    	for (var _i = 0; _i < argsList.length; _i++) {
+    		var _el = argsList[_i],
+    		    arg = _el.split(/\s*=\s*/);
 
     		if (arg.length > 1) {
     			arg[1] = arg.slice(1).join('=');
@@ -2159,7 +2159,7 @@
 
     		argsMap[arg[0]] = {
     			defFilter: defFilter,
-    			i: i,
+    			i: _i,
     			key: arg[0],
     			nullable: nullable,
     			scope: scope,
@@ -2175,39 +2175,39 @@
     				break;
     			}
 
-    			var el = parentArgs[key],
-    			    arg = argsMap[key];
+    			var _el2 = parentArgs[key],
+    			    _arg = argsMap[key];
 
     			// Parameter exists in a parent function
-    			if (arg) {
-    				arg.defFilter = el.defFilter + arg.defFilter;
+    			if (_arg) {
+    				_arg.defFilter = _el2.defFilter + _arg.defFilter;
 
-    				if (!scope && el.scope) {
-    					scope = el.scope;
-    					arg.scope = scope;
+    				if (!scope && _el2.scope) {
+    					scope = _el2.scope;
+    					_arg.scope = scope;
     				}
 
-    				if (arg.nullable === undefined) {
-    					arg.nullable = el.nullable;
+    				if (_arg.nullable === undefined) {
+    					_arg.nullable = _el2.nullable;
     				}
 
-    				if (arg.nullable === undefined) {
-    					arg.nullable = el.nullable;
+    				if (_arg.nullable === undefined) {
+    					_arg.nullable = _el2.nullable;
     				}
 
-    				if (arg.value === undefined) {
-    					argsMap[key].value = el.value;
+    				if (_arg.value === undefined) {
+    					argsMap[key].value = _el2.value;
     				}
 
     				// Parameter doesn't exists in a parent function,
     				// set it as a local variable
     			} else {
     					argsMap[key] = {
-    						defFilter: el.defFilter,
-    						i: el.i,
+    						defFilter: _el2.defFilter,
+    						i: _el2.i,
     						key: key,
     						local: true,
-    						value: el.value !== undefined ? el.value : 'undefined'
+    						value: _el2.value !== undefined ? _el2.value : 'undefined'
     					};
     				}
     		}
@@ -2216,17 +2216,17 @@
     	var finalArgsList = [],
     	    localsList = [];
 
-    	for (var key in argsMap) {
-    		if (!argsMap.hasOwnProperty(key)) {
+    	for (var _key in argsMap) {
+    		if (!argsMap.hasOwnProperty(_key)) {
     			break;
     		}
 
-    		var el = argsMap[key];
+    		var _el3 = argsMap[_key];
 
-    		if (el.local) {
-    			localsList[el.i] = el;
+    		if (_el3.local) {
+    			localsList[_el3.i] = _el3;
     		} else {
-    			finalArgsList[el.i] = el;
+    			finalArgsList[_el3.i] = _el3;
     		}
     	}
 
@@ -2236,25 +2236,25 @@
     	var locals = [];
 
     	// Initialise local variables
-    	for (var i = 0; i < localsList.length; i++) {
-    		var el = localsList[i];
+    	for (var _i2 = 0; _i2 < localsList.length; _i2++) {
+    		var _el4 = localsList[_i2];
 
-    		if (!el) {
+    		if (!_el4) {
     			continue;
     		}
 
-    		var old = el.key;
+    		var old = _el4.key;
 
     		if (isLocalFunction) {
-    			el.key = this.declVar(el.key, { fn: true });
+    			_el4.key = this.declVar(_el4.key, { fn: true });
     		}
 
-    		locals.push([el.key, el.value, old]);
+    		locals.push([_el4.key, _el4.value, old]);
 
-    		def += 'var ' + el.key + ' = ' + this.out(this.replaceDangerBlocks(el.value) + el.defFilter, { unsafe: true }) + ';';
-    		structure.vars[el.key] = {
+    		def += 'var ' + _el4.key + ' = ' + this.out(this.replaceDangerBlocks(_el4.value) + _el4.defFilter, { unsafe: true }) + ';';
+    		structure.vars[_el4.key] = {
     			scope: this.scope.length,
-    			value: el.key
+    			value: _el4.key
     		};
     	}
 
@@ -2263,32 +2263,32 @@
     	    constsCache = structure.params['@consts'] = {};
 
     	// Initialise arguments
-    	for (var i = 0; i < finalArgsList.length; i++) {
-    		var el = finalArgsList[i],
-    		    old = el.key;
+    	for (var _i3 = 0; _i3 < finalArgsList.length; _i3++) {
+    		var _el5 = finalArgsList[_i3],
+    		    _old = _el5.key;
 
-    		if (consts && consts[old] && isLocalFunction) {
-    			constsCache[old] = consts[old];
-    			delete consts[old];
+    		if (consts && consts[_old] && isLocalFunction) {
+    			constsCache[_old] = consts[_old];
+    			delete consts[_old];
     		}
 
     		if (isLocalFunction) {
-    			el.key = this.declVar(el.key, { fn: true });
+    			_el5.key = this.declVar(_el5.key, { fn: true });
     		}
 
-    		decl += el.key;
-    		args.push([el.key, el.value, old]);
+    		decl += _el5.key;
+    		args.push([_el5.key, _el5.value, _old]);
 
-    		var val = this.out(el.key + el.defFilter, { skipFirstWord: true, unsafe: true });
+    		var val = this.out(_el5.key + _el5.defFilter, { skipFirstWord: true, unsafe: true });
 
-    		if (el.value !== undefined) {
-    			var defVal = this.out(this.replaceDangerBlocks(el.value) + el.defFilter, { unsafe: true });
-    			def += el.key + ' = ' + el.key + ' ' + (el.nullable ? '!== undefined' : '!= null') + ' ? ' + val + ' : ' + defVal + ';';
-    		} else if (el.defFilter) {
-    			def += el.key + ' = ' + val + ';';
+    		if (_el5.value !== undefined) {
+    			var defVal = this.out(this.replaceDangerBlocks(_el5.value) + _el5.defFilter, { unsafe: true });
+    			def += _el5.key + ' = ' + _el5.key + ' ' + (_el5.nullable ? '!== undefined' : '!= null') + ' ? ' + val + ' : ' + defVal + ';';
+    		} else if (_el5.defFilter) {
+    			def += _el5.key + ' = ' + val + ';';
     		}
 
-    		if (i !== finalArgsList.length - 1) {
+    		if (_i3 !== finalArgsList.length - 1) {
     			decl += ',';
     		}
     	}
@@ -2403,11 +2403,11 @@
 
     	if (blockStructure && this.getGroup('blockInherit')[opt_name]) {
     		var parent = this.parentTplName,
-    		    key = opt_name + '_' + opt_params.name;
+    		    _key = opt_name + '_' + opt_params.name;
 
     		var sub = void 0;
-    		if (blockTable[key] && blockTable[key] !== true) {
-    			sub = blockTable[key];
+    		if (blockTable[_key] && blockTable[_key] !== true) {
+    			sub = blockTable[_key];
     			sub.parent = blockStructure;
     		} else {
     			(function () {
@@ -2418,20 +2418,20 @@
     					parent: blockStructure
     				};
 
-    				if (blockTable[key] === true) {
+    				if (blockTable[_key] === true) {
     					sub.drop = true;
     				}
 
-    				blockTable[key] = sub;
+    				blockTable[_key] = sub;
     				var deep = function deep(obj) {
-    					for (var i = 0; i < obj.length; i++) {
-    						var el = obj[i],
-    						    _key = el.name + '_' + el.params.name;
+    					for (var _i = 0; _i < obj.length; _i++) {
+    						var el = obj[_i],
+    						    _key2 = el.name + '_' + el.params.name;
 
-    						if (blockTable[_key] && blockTable[_key] !== true) {
-    							blockTable[_key].drop = true;
+    						if (blockTable[_key2] && blockTable[_key2] !== true) {
+    							blockTable[_key2].drop = true;
     						} else {
-    							blockTable[_key] = true;
+    							blockTable[_key2] = true;
     						}
 
     						if (el.children) {
@@ -2440,8 +2440,8 @@
     					}
     				};
 
-    				if (parent && $templates[parent][key] && $templates[parent][key].children) {
-    					deep($templates[parent][key].children);
+    				if (parent && $templates[parent][_key] && $templates[parent][_key].children) {
+    					deep($templates[parent][_key].children);
     				}
     			})();
     		}
@@ -2660,7 +2660,7 @@
     		return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
     	}
 
-    	return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, null);
+    	return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, null);
     };
 
     /**
@@ -3155,8 +3155,8 @@
     		var rmWhitelistList = concat(p.renderModesWhitelist),
     		    rmWhitelist = {};
 
-    		for (var i = 0; i < rmWhitelistList.length; i++) {
-    			rmWhitelist[rmWhitelistList[i]] = true;
+    		for (var _i = 0; _i < rmWhitelistList.length; _i++) {
+    			rmWhitelist[rmWhitelistList[_i]] = true;
     		}
 
     		if (p.renderModesWhitelist && !rmWhitelist[this.renderMode]) {
@@ -3169,8 +3169,8 @@
     			var groups = [].concat(p.with);
 
     			var arr = [];
-    			for (var i = 0; i < groups.length; i++) {
-    				var el = groups[i];
+    			for (var _i2 = 0; _i2 < groups.length; _i2++) {
+    				var el = groups[_i2];
     				arr = arr.concat(el[0] === GROUP ? this.getGroupList(el.slice(1)) : el);
     			}
 
@@ -3417,8 +3417,8 @@
     		return a.val - b.val;
     	};
 
-    	for (var i = 0; i < length; i++) {
-    		var type = is[i];
+    	for (var _i = 0; _i < length; _i++) {
+    		var type = is[_i];
 
     		if ($router[type]) {
     			el = $router[type][name];
@@ -3443,7 +3443,7 @@
     			    block = $cache[name].slice(current.from, current.to);
 
     			if (parent) {
-    				if (parent.output != null && current.output == null && i % 2 === 0) {
+    				if (parent.output != null && current.output == null && _i % 2 === 0) {
     					current.output = parent.output;
 
     					if (type === 'const') {
@@ -3459,15 +3459,15 @@
     			var diff = parent ? parent.from : from;
     			advDiff.sort(sort);
 
-    			for (var _i = 0; _i < advDiff.length; _i++) {
-    				if (advDiff[_i].val <= diff) {
-    					adv += advDiff[_i].adv;
+    			for (var _i2 = 0; _i2 < advDiff.length; _i2++) {
+    				if (advDiff[_i2].val <= diff) {
+    					adv += advDiff[_i2].adv;
     				} else {
     					break;
     				}
     			}
 
-    			if (parent && i % 2 === 0) {
+    			if (parent && _i % 2 === 0) {
     				if (type !== 'block' && (type !== 'const' || !current.block)) {
     					newFrom = parent.from + adv + block.length;
     					from += blockDiff;
@@ -3930,8 +3930,8 @@
     	var concatLine = false,
     	    nmBrk = null;
 
-    	for (var _j2 = i; _j2 < str.length; _j2++) {
-    		var _el = str[_j2],
+    	for (var j = i; j < str.length; j++) {
+    		var _el = str[j],
     		    cEscape = escape;
 
     		if (_el === '\\' || escape) {
@@ -3953,7 +3953,7 @@
     				command += _el;
     			} else if (!sComment) {
     				if (dir) {
-    					var dirStart = ws$1.test(str[_j2 - 2]);
+    					var dirStart = ws$1.test(str[j - 2]);
 
     					var literal = void 0;
     					brk = dirStart && prevEl === CONCAT_END;
@@ -3999,7 +3999,7 @@
     		}
 
     		if (!bOpen && !cEscape) {
-    			var commentType = getCommentType(str, _j2);
+    			var commentType = getCommentType(str, j);
 
     			if (comment) {
     				comment = commentType !== MULT_COMMENT_END;
@@ -4032,7 +4032,7 @@
     				}
 
     				var _skip = false;
-    				if (_el === FILTER && filterStart.test(str[_j2 + 1])) {
+    				if (_el === FILTER && filterStart.test(str[j + 1])) {
     					filterStart$$ = true;
     					bEnd$$ = false;
     					_skip = true;
@@ -4052,7 +4052,7 @@
 
     				if (dir) {
     					if (!inline) {
-    						inline = str.substr(_j2, INLINE.length) === INLINE;
+    						inline = str.substr(j, INLINE.length) === INLINE;
     					}
     				} else if (!cEscape) {
     					if (begin) {
@@ -4440,8 +4440,8 @@
 
     				if (this.language) {
     					if (i18nStart) {
-    						var word = this.language[i18nStr] || '';
-    						el = isFunction(word) ? word() : word;
+    						var _word = this.language[i18nStr] || '';
+    						el = isFunction(_word) ? _word() : _word;
     						i18nStart = false;
     						i18nStr = '';
     					} else {
@@ -4458,13 +4458,13 @@
     							i18nChunk += ', ' + this.i18nFnOptions;
     						}
 
-    						var tmp = this.out(this.replaceDangerBlocks(i18nChunk + ')').trim() || '\'\'', { unsafe: unsafe });
+    						var _tmp = this.out(this.replaceDangerBlocks(i18nChunk + ')').trim() || '\'\'', { unsafe: unsafe });
 
     						if (replace) {
     							res += '__SNAKESKIN__' + this.dirContent.length + '_';
-    							this.dirContent.push(tmp);
+    							this.dirContent.push(_tmp);
     						} else {
-    							res += '\' + (' + tmp + ') + \'';
+    							res += '\' + (' + _tmp + ') + \'';
     						}
 
     						i18nChunk = '';
@@ -4877,10 +4877,10 @@
 
     	if (!res) {
     		for (var i = end; i < str.length; i++) {
-    			var el = str[i];
+    			var _el = str[i];
 
-    			if (!eol.test(el)) {
-    				return el === ':';
+    			if (!eol.test(_el)) {
+    				return _el === ':';
     			}
     		}
     	}
@@ -5352,7 +5352,7 @@
     					if (localContRgxp.test(finalWord)) {
     						var chunks = prfxContRgxp.exec(finalWord);
 
-    						if (globalContRgxp.test(word)) {
+    						if (globalContRgxp.test(finalWord)) {
     							vRes = chunks[1] + '__VARS__' + concatProp(chunks[2]);
     						} else if (this.scope.length) {
     							vRes = chunks[1] + addScope(this.scope[this.scope.length - 1]) + concatProp(chunks[2]);
@@ -5425,9 +5425,9 @@
 
     				// Filter body
     			} else if (el !== ')' || pCountFilter) {
-    					var l = filters.length - 1;
-    					filters[l] += el;
-    					rFilters[l] += el;
+    					var _l = filters.length - 1;
+    					filters[_l] += el;
+    					rFilters[_l] += el;
     				}
     		}
 
@@ -5505,12 +5505,12 @@
 
     							default:
     								if (key[0] === '!') {
-    									var _filter = key.slice(1);
+    									var _filter2 = key.slice(1);
 
     									if (isGlobalFilter) {
-    										cancelFilters[_filter] = true;
+    										cancelFilters[_filter2] = true;
     									} else {
-    										cancelLocalFilters[_filter] = true;
+    										cancelLocalFilters[_filter2] = true;
     									}
     								}
     						}
@@ -5521,12 +5521,12 @@
     					continue;
     				}
 
-    				var filter = '';
+    				var _filter = '';
     				for (var _i5 = 0; _i5 < current.length; _i5++) {
-    					filter += '[\'' + current[_i5] + '\']';
+    					_filter += '[\'' + current[_i5] + '\']';
     				}
 
-    				tmp = (cache ? '(' + cacheLink + ' = ' : '') + '__FILTERS__' + filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + (cache ? ')' : '');
+    				tmp = (cache ? '(' + cacheLink + ' = ' : '') + '__FILTERS__' + _filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + (cache ? ')' : '');
     			}
 
     			if (!isGlobalFilter) {
@@ -5560,11 +5560,11 @@
     			pCountFilter--;
 
     			if (!pCountFilter) {
-    				var l = filters.length - 1,
-    				    _cache = filters[l];
+    				var _l2 = filters.length - 1,
+    				    _cache = filters[_l2];
 
-    				filters[l] = this.out(_cache, { skipFirstWord: true, skipValidation: true, unsafe: true });
-    				var length = filters[l].length - _cache.length;
+    				filters[_l2] = this.out(_cache, { skipFirstWord: true, skipValidation: true, unsafe: true });
+    				var length = filters[_l2].length - _cache.length;
 
     				wordAddEnd += length;
     				filterAddEnd += length;
@@ -6727,24 +6727,24 @@
 
     	var ref = this.bemRef;
 
-    	for (var i = 0; i < classes.length; i++) {
-    		var el = classes[i];
+    	for (var _i2 = 0; _i2 < classes.length; _i2++) {
+    		var _el = classes[_i2];
 
-    		var point = points[i];
+    		var _point = points[_i2];
 
-    		if (point && point.val != null) {
-    			el = el.replace(classRef, point.val);
+    		if (_point && _point.val != null) {
+    			_el = _el.replace(classRef, _point.val);
     		}
 
-    		if (classRef.test(el) && ref) {
-    			el = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + el.slice(1) + '\'' + e;
-    			el = this.pasteDangerBlocks(this.replaceTplVars(el));
-    		} else if (el && types[i]) {
-    			ref = this.pasteTplVarBlocks(el);
+    		if (classRef.test(_el) && ref) {
+    			_el = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + _el.slice(1) + '\'' + e;
+    			_el = this.pasteDangerBlocks(this.replaceTplVars(_el));
+    		} else if (_el && types[_i2]) {
+    			ref = this.pasteTplVarBlocks(_el);
     			this.append('$class = \'' + ref + '\';');
     		}
 
-    		classes[i] = this.pasteTplVarBlocks(el);
+    		classes[_i2] = this.pasteTplVarBlocks(_el);
     	}
 
     	this.bemRef = ref;
@@ -7474,10 +7474,10 @@
     								continue;
     							}
 
-    							var replacer = getReplacer(command);
+    							var _replacer = getReplacer(command);
 
-    							if (replacer) {
-    								command = replacer(command);
+    							if (_replacer) {
+    								command = _replacer(command);
     							}
 
     							var _commandTypeRgxp$exec = commandTypeRgxp.exec(command);
@@ -7743,7 +7743,7 @@
 
     					// Compiling in a browser
     				} else {
-    						parser.evalStr(parser.result, true);
+    						new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
     					}
     		}
 
@@ -8752,8 +8752,8 @@
     		}
 
     		var lastName = '';
-    		for (var i = 1; i < tplNameLength; i++) {
-    			var el = tplNameParts[i];
+    		for (var _i = 1; _i < tplNameLength; _i++) {
+    			var el = tplNameParts[_i];
 
     			var custom = el[0] === '%',
     			    def = 'exports' + concatProp(tplName);
@@ -8762,7 +8762,7 @@
     				el = el.slice(1);
     			}
 
-    			pos = this.save(ws(_templateObject2$6, def, def, i === 1 && shortcut ? (this.module === 'native' ? 'export ' : '') + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
+    			pos = this.save(ws(_templateObject2$6, def, def, _i === 1 && shortcut ? (this.module === 'native' ? 'export ' : '') + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
 
     			if (jsDoc && pos) {
     				jsDoc += pos.length;
@@ -8776,7 +8776,7 @@
     				}
 
     				continue;
-    			} else if (i === tplNameLength - 1) {
+    			} else if (_i === tplNameLength - 1) {
     				lastName = el;
     			}
 
@@ -8910,10 +8910,10 @@
     					break;
     				}
 
-    				var el = obj[key];
+    				var _el = obj[key];
 
-    				if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
-    					baseParams[key] = el;
+    				if (key !== 'renderAs' && key[0] !== '@' && _el !== undefined) {
+    					baseParams[key] = _el;
     				}
     			}
     		}
@@ -8922,18 +8922,18 @@
     			flags.push('@skip true');
     		}
 
-    		for (var i = 0; i < flags.length; i++) {
-    			delete baseParams[flags[i].split(' ')[0]];
-    			Snakeskin.Directives['__set__'].call(this, flags[i]);
+    		for (var _i2 = 0; _i2 < flags.length; _i2++) {
+    			delete baseParams[flags[_i2].split(' ')[0]];
+    			Snakeskin.Directives['__set__'].call(this, flags[_i2]);
     		}
 
-    		for (var key in baseParams) {
-    			if (!baseParams.hasOwnProperty(key)) {
+    		for (var _key in baseParams) {
+    			if (!baseParams.hasOwnProperty(_key)) {
     				break;
     			}
 
-    			var el = baseParams[key];
-    			Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
+    			var _el2 = baseParams[_key];
+    			Snakeskin.Directives['__set__'].call(this, [_key, _key === 'filters' ? _el2[_el2.length - 1] : _el2]);
     		}
 
     		var args = this.declFnArgs(command, { dir: 'template', parentTplName: parentTplName, tplName: tplName });
@@ -9228,14 +9228,14 @@
 
     		// for var key in obj OR for var el of obj
     	} else {
-    			var parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
+    			var _parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
 
-    			if (!parts) {
+    			if (!_parts) {
     				return this.error('invalid "' + this.name + '" declaration');
     			}
 
-    			var decl = parts[1] ? this.declVars(parts[2], { def: '', end: false }) : this.out(parts[2], { unsafe: true });
-    			this.append('for (' + decl + ' ' + parts[3] + ' ' + this.out(parts[4], { unsafe: true }) + ') {');
+    			var _decl = _parts[1] ? this.declVars(_parts[2], { def: '', end: false }) : this.out(_parts[2], { unsafe: true });
+    			this.append('for (' + _decl + ' ' + _parts[3] + ' ' + this.out(_parts[4], { unsafe: true }) + ') {');
     		}
     }, function () {
     	this.append('}');
@@ -10140,13 +10140,13 @@
     	}
 
     	if (this.isSimpleOutput()) {
-    		var args = $blocks[tplName][name].args;
+    		var _args = $blocks[tplName][name].args;
 
 
-    		if (args.isCallable) {
+    		if (_args.isCallable) {
     			var fnDecl = structure.params.fn = 'self.' + name;
 
-    			this.save(ws(_templateObject$18, fnDecl, fnDecl, args.decl, this.getTplRuntime(), args.def));
+    			this.save(ws(_templateObject$18, fnDecl, fnDecl, _args.decl, this.getTplRuntime(), _args.def));
 
     			if (params != null) {
     				var vars = structure.vars;
@@ -10154,11 +10154,11 @@
 
     				structure.vars = structure.parent.vars;
 
-    				var _args = this.getFnArgs('(' + params + ')'),
+    				var _args2 = this.getFnArgs('(' + params + ')'),
     				    tmp = [];
 
-    				for (var i = 0; i < _args.length; i++) {
-    					tmp.push(this.out(_args[i], { unsafe: true }));
+    				for (var i = 0; i < _args2.length; i++) {
+    					tmp.push(this.out(_args2[i], { unsafe: true }));
     				}
 
     				structure.params.params = tmp.join();
