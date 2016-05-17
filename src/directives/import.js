@@ -17,9 +17,9 @@ Snakeskin.addDirective(
 	'import',
 
 	{
+		ancestorsBlacklist: [Snakeskin.group('template')],
 		group: ['import', 'head'],
-		notEmpty: true,
-		placement: 'global'
+		notEmpty: true
 	},
 
 	function (command) {
@@ -62,7 +62,7 @@ Snakeskin.addDirective(
 								this.amdModules.push(pathId);
 								return ws`
 									typeof require === 'function' ?
-										require(${path}) : typeof ${pathId} !== 'undefined' ? ${pathId} : GLOBAL[${path}];
+										require(${path}) : ${pathId} !== undefined ? ${pathId} : GLOBAL[${path}];
 								`;
 							}
 
