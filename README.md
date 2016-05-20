@@ -1,5 +1,7 @@
 # Snakeskin
 
+[![Join the chat at https://gitter.im/SnakeskinTpl/Snakeskin](https://badges.gitter.im/SnakeskinTpl/Snakeskin.svg)](https://gitter.im/SnakeskinTpl/Snakeskin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 <img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190" />
 
 *This is Frank, a snake-cowboy who loves templates.*
