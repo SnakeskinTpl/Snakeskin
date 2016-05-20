@@ -182,7 +182,22 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
 				}
 
+				let parentAdv = false;
+				if (struct) {
+					if (struct.spaces < spaces && struct.block) {
+						if (struct.adv) {
+							parentAdv = true;
+						}
+
+					} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
+						if (struct.parent && struct.parent.adv) {
+							parentAdv = true;
+						}
+					}
+				}
+
 				const decl = getLineDesc(str, dir && BASE_SHORTS[el] || el === IGNORE ? j + 1 : j, {
+					adv: parentAdv,
 					comment: next2str === MULT_COMMENT_START,
 					dir,
 					i18n: this.localization
@@ -379,7 +394,7 @@ function appendDirEnd(str, struct) {
  *
  * @param {string} str - source string
  * @param {number} i - start position
- * @param {{comment: boolean, dir: boolean, i18n: boolean}} params - parameters
+ * @param {{adv: boolean, comment: boolean, dir: boolean, i18n: boolean}} params - parameters
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
 function getLineDesc(str, i, params) {
@@ -408,7 +423,8 @@ function getLineDesc(str, i, params) {
 
 	let
 		begin = 0,
-		filterStart = false;
+		filterStart = false,
+		bStart;
 
 	let
 		part = '',
@@ -557,14 +573,15 @@ function getLineDesc(str, i, params) {
 
 				} else if (!cEscape) {
 					if (begin) {
-						if (el === lb) {
+						if (el === lb && (params.dir || str[j - 1] !== alb || j - 1 !== bStart)) {
 							begin++;
 
 						} else if (el === rb) {
 							begin--;
 						}
 
-					} else if (el === lb) {
+					} else if (!params.dir && params.adv ? el === alb && str[j + 1] === lb : el === lb) {
+						bStart = j;
 						bEnd = false;
 						begin++;
 					}

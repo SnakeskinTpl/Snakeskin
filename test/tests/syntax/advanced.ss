@@ -14,6 +14,10 @@
 
 {1 + 2} 3 3 3 <script type="text/javascript">WebFont.load({ google: { families: ['Droid Sans', 'Droid Serif'] } });</script> <link rel="stylesheet" type="text/css" href="foo.css">
 
+[[jsx]]=================================================================================================================
+
+if (foo) { return <div class="foo">{ bar }</div>} if (foo) { return <div class="foo">{ bar }</div>}
+
 ========================================================================================================================
 
 - namespace syntax[%fileName%]
@@ -52,3 +56,21 @@
 		});
 
 	- link :: foo.css
+
+- template jsx() @= literalBounds ['{', '}']
+	# op
+		if (foo) {
+			return
+				#< .foo
+					#{{
+						bar
+					}}
+		}
+
+	if (foo) \{
+		return
+			#< .foo
+				#{{
+					bar
+				}}
+	}
