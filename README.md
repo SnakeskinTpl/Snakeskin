@@ -12,11 +12,10 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 [![NPM download](https://img.shields.io/npm/dm/snakeskin.svg?style=flat)](http://badge.fury.io/js/snakeskin)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000?style=flat-square)](https://gitter.im/trikadin/snakeskin)
 
-[![NPM dependencies](http://img.shields.io/david/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin#info=dependencies&view=table)
-[![NPM devDependencies](http://img.shields.io/david/dev/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin#info=devDependencies&view=table)
-
 [![Build Status](http://img.shields.io/travis/SnakeskinTpl/Snakeskin.svg?style=flat&branch=master)](https://travis-ci.org/SnakeskinTpl/Snakeskin)
 [![Coverage Status](http://img.shields.io/coveralls/SnakeskinTpl/Snakeskin.svg?style=flat)](https://coveralls.io/r/SnakeskinTpl/Snakeskin?branch=master)
+[![NPM dependencies](http://img.shields.io/david/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin#info=dependencies&view=table)
+[![NPM devDependencies](http://img.shields.io/david/dev/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin#info=devDependencies&view=table)
 
 [Demo](http://codepen.io/kobezzza/pen/zrJNXx)
 
