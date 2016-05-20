@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.5
+ * Snakeskin v7.0.6
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 17 May 2016 07:25:19 GMT
+ * Date: 'Fri, 20 May 2016 16:49:28 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 5]
+      VERSION: [7, 0, 6]
     };
 
     /**
@@ -3675,7 +3675,21 @@
     						replacer = dir && ($dirNameShorthands[next2str] || $dirNameShorthands[el]);
     					}
 
+    					var parentAdv = false;
+    					if (struct) {
+    						if (struct.spaces < spaces && struct.block) {
+    							if (struct.adv) {
+    								parentAdv = true;
+    							}
+    						} else if (struct.spaces === spaces || struct.spaces < spaces && !struct.block) {
+    							if (struct.parent && struct.parent.adv) {
+    								parentAdv = true;
+    							}
+    						}
+    					}
+
     					var decl = getLineDesc(str, dir && BASE_SHORTS[el] || el === IGNORE ? _j + 1 : _j, {
+    						adv: parentAdv,
     						comment: next2str === MULT_COMMENT_START,
     						dir: dir,
     						i18n: _this.localization
@@ -3898,7 +3912,7 @@
      *
      * @param {string} str - source string
      * @param {number} i - start position
-     * @param {{comment: boolean, dir: boolean, i18n: boolean}} params - parameters
+     * @param {{adv: boolean, comment: boolean, dir: boolean, i18n: boolean}} params - parameters
      * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
      */
     function getLineDesc(str, i, params) {
@@ -3922,7 +3936,8 @@
     	    bEnd$$ = true;
 
     	var begin = 0,
-    	    filterStart$$ = false;
+    	    filterStart$$ = false,
+    	    bStart = void 0;
 
     	var part = '',
     	    rPart = '';
@@ -4056,12 +4071,13 @@
     					}
     				} else if (!cEscape) {
     					if (begin) {
-    						if (_el === LEFT_BOUND) {
+    						if (_el === LEFT_BOUND && (params.dir || str[j - 1] !== ADV_LEFT_BOUND || j - 1 !== bStart)) {
     							begin++;
     						} else if (_el === RIGHT_BOUND) {
     							begin--;
     						}
-    					} else if (_el === LEFT_BOUND) {
+    					} else if (!params.dir && params.adv ? _el === ADV_LEFT_BOUND && str[j + 1] === LEFT_BOUND : _el === LEFT_BOUND) {
+    						bStart = j;
     						bEnd$$ = false;
     						begin++;
     					}
