@@ -372,6 +372,9 @@ import {
 				Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
 			}
 
+			const {doctype} = this;
+			this.doctype = doctype !== 'html' ? 'xml' : doctype;
+
 			const
 				args = this.declFnArgs(command, {dir: 'template', parentTplName, tplName});
 
@@ -385,7 +388,7 @@ import {
 					self = callee.Blocks = {};
 
 				var
-					__INLINE_TAGS__ = Snakeskin.inlineTags['${this.doctype}'] || Snakeskin.inlineTags['html'],
+					__INLINE_TAGS__ = Snakeskin.inlineTags['${doctype}'] || Snakeskin.inlineTags['html'],
 					__INLINE_TAG__;
 
 				var
@@ -486,7 +489,7 @@ import {
 					if (isDOMRenderMode) {
 						if (link !== '?') {
 							${this.wrap('$0')}
-							if (inline && (!inlineTag || inlineTag === true)) {
+							if (inline && !inlineTag || inlineTag === true) {
 								$0 = __RESULT__[__RESULT__.length - 1];
 
 							} else if (inlineTag && inlineTag!== true) {
@@ -500,7 +503,7 @@ import {
 
 					} else {
 						if (link !== '?') {
-							if (inline && (!inlineTag || inlineTag === true)) {
+							if (inline && !inlineTag || inlineTag === true) {
 								if (stringResult) {
 									__STRING_RESULT__ += (isXMLDoctype ? '/' : '') + '>';
 
