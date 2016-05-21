@@ -413,7 +413,7 @@ export default class Parser {
 						isAMD ?
 							ws`
 								if (typeof define === 'function' && define.amd) {
-									define('${this.moduleId}', ['exports', 'Snakeskin'/*#__SNAKESKIN_MODULES_DECL__*/], factory);
+									define('${this.moduleId}', ['exports', 'snakeskin'/*#__SNAKESKIN_MODULES_DECL__*/], factory);
 									return;
 								}
 							` : ''
