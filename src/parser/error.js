@@ -111,7 +111,7 @@ Parser.prototype.error = function (msg) {
 	this.break = true;
 
 	const
-		report = `SnakeskinError: ${msg}; ${this.getAdvInfo()}`,
+		report = `Error: ${msg}; ${this.getAdvInfo()}`,
 		error = any(Object.assign(new Error(report), {name: 'SnakeskinError'}));
 
 	if (this.onError) {
