@@ -386,11 +386,12 @@ export default class Parser {
 
 		const
 			isAMD = {'amd': true, 'umd': true}[this.module],
-			ssRoot = this.pack ? 'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin';
+			ssRoot = this.pack ? 'snakeskin/dist/snakeskin.live.min.js' : 'snakeskin',
+			useStrict = this.useStrict ? `'use strict';` : '';
 
 		if (this.module === 'native') {
 			this.result += ws`
-				${this.useStrict ? `'use strict';` : ''}
+				${useStrict}
 				import Snakeskin from '${ssRoot}';
 				var exports = {};
 				export default exports;
@@ -425,7 +426,7 @@ export default class Parser {
 					}
 
 				})(this, function (exports, Snakeskin${isAMD ? '/*#__SNAKESKIN_MODULES__*/' : ''}) {
-					${this.useStrict ? `'use strict';` : ''}
+					${useStrict}
 			`;
 		}
 
