@@ -37,10 +37,12 @@ Parser.prototype.getAdvInfo = function () {
 			break;
 		}
 
-		const
-			el = info[key];
+		const el = info[key];
+		key = key[0].toUpperCase() + key.slice(1);
 
 		if (el != null) {
+			str += '\n';
+
 			if (el.innerHTML) {
 				str += `${key}: (class: ${el.className || 'undefined'}, id: ${el.id || 'undefined'}); `;
 
@@ -49,9 +51,6 @@ Parser.prototype.getAdvInfo = function () {
 			}
 		}
 	}
-
-	str = str
-		.replace(/; $/, '');
 
 	if (line) {
 		let
@@ -100,7 +99,7 @@ Parser.prototype.getAdvInfo = function () {
 		str += eol + sep + prfx + eol + chunk + eol + sep;
 	}
 
-	return this.pasteDangerBlocks(str) + eol;
+	return this.pasteDangerBlocks(str + eol);
 };
 
 /**
@@ -112,7 +111,7 @@ Parser.prototype.error = function (msg) {
 	this.break = true;
 
 	const
-		report = `${msg}; ${this.getAdvInfo()}`,
+		report = `SnakeskinError: ${msg}; ${this.getAdvInfo()}`,
 		error = any(Object.assign(new Error(report), {name: 'SnakeskinError'}));
 
 	if (this.onError) {
@@ -123,6 +122,6 @@ Parser.prototype.error = function (msg) {
 			throw error;
 		}
 
-		console.error(`SnakeskinError: ${report}`);
+		console.error(report);
 	}
 };
