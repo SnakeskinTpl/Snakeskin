@@ -373,7 +373,7 @@ import {
 			}
 
 			const {doctype} = this;
-			this.doctype = doctype !== 'html' ? 'xml' : doctype;
+			this.doctype = doctype && doctype !== 'html' ? 'xml' : 'html';
 
 			const
 				args = this.declFnArgs(command, {dir: 'template', parentTplName, tplName});
