@@ -421,7 +421,7 @@ export default class Parser {
 
 					${
 						{'global': true, 'umd': true}[this.module] ?
-							`factory(${this.moduleName ? `global.${this.moduleName} = {}` : 'global'}, Snakeskin);` : ''
+							`factory(global${this.moduleName ? `.${this.moduleName} = {}` : ''}, Snakeskin);` : ''
 					}
 
 				})(this, function (exports, Snakeskin${isAMD ? '/*#__SNAKESKIN_MODULES__*/' : ''}) {
