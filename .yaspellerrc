@@ -31,6 +31,6 @@
     "snakeskin",
     "/js|cli|std|ss/i",
     "transpiled",
-    "/webpack/i"
+    "/WebPack|IntelliJ/i"
   ]
 }
