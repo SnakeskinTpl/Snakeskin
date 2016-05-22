@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.7
+ * Snakeskin v7.0.8
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sat, 21 May 2016 13:34:36 GMT
+ * Date: 'Sun, 22 May 2016 08:31:09 GMT
  */
 
 (function (global, factory) {
@@ -91,7 +91,7 @@
     babelHelpers;
 
         var Snakeskin = {
-      VERSION: [7, 0, 7]
+      VERSION: [7, 0, 8]
     };
 
     /**
@@ -1614,6 +1614,9 @@
     	/** @type {string} */
     	this.eol = params.eol;
 
+    	/** @type {string} */
+    	this.doctype = params.doctype;
+
     	/** @type {(?string|undefined)} */
     	this.renderAs = params.renderAs;
 
@@ -1726,12 +1729,6 @@
       * @type {(string|undefined)}
       */
     	this.parentTplName = undefined;
-
-    	/**
-      * The document type
-      * @type {string}
-      */
-    	this.doctype = 'html';
 
     	/**
       * If is true, then the active template is generator
@@ -6990,6 +6987,7 @@
      *   *) [tolerateWhitespaces = false] - if is true, then whitespaces will be processed "as is"
      *   *) [eol = '\n'] - EOL symbol
      *
+     *   *) [doctype = 'html'] - document type
      *   *) [renderAs] - rendering type of templates:
      *        1) placeholder - all templates will be rendered as "placeholder";
      *        2) interface - all templates will be rendered as "interface";
@@ -7011,6 +7009,7 @@
     	/** @type {$$SnakeskinParams} */
     	var p = any(Object.assign({
     		cache: true,
+    		doctype: 'html',
     		renderMode: 'stringConcat',
     		vars: {},
     		throws: true,
