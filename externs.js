@@ -191,6 +191,7 @@ var template;
  *   ignore: (RegExp|undefined),
  *   tolerateWhitespaces: (?boolean|undefined),
  *   eol: (?string|undefined),
+ *   doctype: (?string|undefined),
   *  renderAs: (?string|undefined),
  *   renderMode: (?string|undefined)
  * }}
@@ -429,6 +430,7 @@ $$SnakeskinParser.prototype.splitXMLAttrGroup = function (str) {};
  *   ignore: (RegExp|undefined),
  *   tolerateWhitespaces: boolean,
  *   eol: string,
+ *   doctype: string,
  *   renderAs: (?string|undefined),
  *   renderMode: string,
  *   info: {file, line, node, template}

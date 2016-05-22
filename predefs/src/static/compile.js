@@ -54,6 +54,7 @@ var template;
  *   ignore: (RegExp|undefined),
  *   tolerateWhitespaces: (?boolean|undefined),
  *   eol: (?string|undefined),
+ *   doctype: (?string|undefined),
   *  renderAs: (?string|undefined),
  *   renderMode: (?string|undefined)
  * }}

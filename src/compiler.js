@@ -86,6 +86,7 @@ import {
  *   *) [tolerateWhitespaces = false] - if is true, then whitespaces will be processed "as is"
  *   *) [eol = '\n'] - EOL symbol
  *
+ *   *) [doctype = 'html'] - document type
  *   *) [renderAs] - rendering type of templates:
  *        1) placeholder - all templates will be rendered as "placeholder";
  *        2) interface - all templates will be rendered as "interface";
@@ -108,6 +109,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	const p = any(
 		Object.assign({
 			cache: true,
+			doctype: 'html',
 			renderMode: 'stringConcat',
 			vars: {},
 			throws: true,

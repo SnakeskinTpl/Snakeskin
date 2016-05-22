@@ -26,6 +26,7 @@
  *   ignore: (RegExp|undefined),
  *   tolerateWhitespaces: boolean,
  *   eol: string,
+ *   doctype: string,
  *   renderAs: (?string|undefined),
  *   renderMode: string,
  *   info: {file, line, node, template}

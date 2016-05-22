@@ -79,6 +79,9 @@ export default class Parser {
 		/** @type {string} */
 		this.eol = params.eol;
 
+		/** @type {string} */
+		this.doctype = params.doctype;
+
 		/** @type {(?string|undefined)} */
 		this.renderAs = params.renderAs;
 
@@ -193,12 +196,6 @@ export default class Parser {
 		 * @type {(string|undefined)}
 		 */
 		this.parentTplName = undefined;
-
-		/**
-		 * The document type
-		 * @type {string}
-		 */
-		this.doctype = 'html';
 
 		/**
 		 * If is true, then the active template is generator
