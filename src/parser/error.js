@@ -111,7 +111,7 @@ Parser.prototype.error = function (msg) {
 	this.break = true;
 
 	const
-		report = `Error: ${msg}; ${this.getAdvInfo()}`,
+		report = `${msg}; ${this.getAdvInfo()}`,
 		error = any(Object.assign(new Error(report), {name: 'SnakeskinError'}));
 
 	if (this.onError) {
@@ -122,6 +122,6 @@ Parser.prototype.error = function (msg) {
 			throw error;
 		}
 
-		console.error(report);
+		console.error(`Error: ${report}`);
 	}
 };
