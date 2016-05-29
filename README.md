@@ -40,6 +40,7 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 * [Gulp](https://github.com/SnakeskinTpl/gulp-snakeskin)
 * [Grunt](https://github.com/SnakeskinTpl/grunt-snakeskin)
 * [WebPack](https://github.com/SnakeskinTpl/snakeskin-loader)
+* [Browserify](https://github.com/SnakeskinTpl/snakeskinify)
 * [CLI](https://github.com/SnakeskinTpl/snakeskin-cli)
 * [IntelliJ-IDEA](https://github.com/SnakeskinTpl/IntelliJ-IDEA)
 * [STD.ss](https://github.com/SnakeskinTpl/std.ss)
