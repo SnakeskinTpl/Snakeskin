@@ -8,6 +8,12 @@
 
 /** @type {Snakeskin} */
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
+require('core-js/es6/object');
+
+var
+	babel = require('babel-core'),
+	beautify = require('js-beautify'),
+	$C = require('collection.js').$C;
 
 var
 	path = require('path'),
@@ -277,4 +283,156 @@ exports.exec = function (txt, opt_params, opt_tplName) {
 
 	exports.compile(txt, opt_params);
 	return exports.getMainTpl(tpls, null, opt_tplName);
+};
+
+function testId(id) {
+	try {
+		var obj = {};
+		eval('obj.' + id + '= true');
+		return true;
+
+	} catch (ignore) {
+		return false;
+	}
+}
+
+/**
+ * Compiles Snakeskin templates as React JSX
+ *
+ * @param {string} txt - source text
+ * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
+ * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
+ * @return {(string|boolean|null)}
+ */
+exports.compileAsJSX = function (txt, opt_params, opt_info) {
+	opt_params = Object.assign({
+		module: 'umd',
+		moduleId: 'tpls',
+		useStrict: true,
+		eol: '\n'
+	}, opt_params);
+
+	var
+		eol = opt_params.eol,
+		mod = opt_params.module,
+		useStrict = opt_params.useStrict ? '"useStrict";' : '',
+		prettyPrint = opt_params.prettyPrint;
+
+	var
+		nRgxp = /\r?\n|\r/g,
+		tpls = {};
+
+	var p = Object.assign({}, opt_params, {
+		context: tpls,
+		doctype: 'transitional',
+		module: 'cjs',
+		literalBounds: ['{', '}'],
+		renderMode: 'stringConcat',
+		prettyPrint: false
+	});
+
+	var res = exports.compile(txt, p, opt_info);
+
+	if (!res) {
+		return res;
+	}
+
+	function compileJSX(tpls, prop) {
+		prop = prop || 'exports';
+		$C(tpls).forEach(function (el, key) {
+			var
+				val,
+				validKey = false;
+
+			if (testId(key)) {
+				val = prop + '.' + key;
+				validKey = true;
+
+			} else {
+				val = prop + '["' + key.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]';
+			}
+
+			if (typeof el !== 'function') {
+				res +=
+					'if (' + val + ' instanceof Object === false) {' +
+						val + ' = {};' +
+						(validKey && mod === 'native' ? 'export var ' + key + '=' + val + ';' : '') +
+					'}'
+				;
+
+				return compileJSX(el, val);
+			}
+
+			var
+				decl = /function .*?\)\s*\{/.exec(el.toString()),
+				text = el(p.data);
+
+			text = val + ' = ' + decl[0] + (/\breturn\s+\(?\s*[{<](?!\/)/.test(text) ? '' : 'return ') + text + '};';
+			res += babel.transform(text, {
+				babelrc: false,
+				plugins: [
+					require('babel-plugin-syntax-jsx'),
+					require('babel-plugin-transform-react-jsx'),
+					require('babel-plugin-transform-react-display-name')
+				]
+			}).code;
+		});
+	}
+
+	res = /\/\*[\s\S]*?\*\//.exec(res)[0];
+	res = res.replace(
+		/key <.*?>/,
+		'key <' + exports.compile(null, Object.assign({}, opt_params, {getCacheKey: true})) + '>'
+	);
+
+	if (mod === 'native') {
+		res +=
+			useStrict +
+			'import React from "react";' +
+			'var exports = {};' +
+			'export default exports;'
+		;
+
+	} else {
+		res +=
+			'(function(global, factory) {' +
+				(
+					{cjs: true, umd: true}[mod] ?
+						'if (typeof exports === "object" && typeof module !== "undefined") {' +
+							'factory(exports, typeof React === "undefined" ? require("react") : React);' +
+							'return;' +
+						'}' :
+						''
+				) +
+
+				(
+					{amd: true, umd: true}[mod] ?
+						'if (typeof define === "function" && define.amd) {' +
+							'define("' + (p.moduleId) + '", ["exports", "react"], factory);' +
+							'return;' +
+						'}' :
+						''
+				) +
+
+				(
+					{global: true, umd: true}[mod] ?
+						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + ', React);' :
+						''
+				) +
+
+			'})(this, function (exports, React) {' +
+				useStrict
+		;
+	}
+
+	compileJSX(tpls);
+	if (mod !== 'native') {
+		res += '});';
+	}
+
+	if (prettyPrint) {
+		res = beautify.js(res);
+	}
+
+	return res.replace(nRgxp, eol) + eol;
 };
