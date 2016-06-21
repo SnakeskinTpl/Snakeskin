@@ -50,6 +50,8 @@ gulp.task('build', (cb) => {
 			function buildSrc() {
 				gulp.src(`./src/${name}`)
 					.pipe(rollup({
+						allowRealFiles: true,
+						entry: `./src/${name}`,
 						format: 'umd',
 						moduleId: 'Snakeskin',
 						moduleName: 'Snakeskin',

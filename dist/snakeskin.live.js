@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.10 (live)
+ * Snakeskin v7.0.11 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 29 May 2016 10:48:41 GMT
+ * Date: 'Tue, 21 Jun 2016 18:36:33 GMT
  */
 
 (function (global, factory) {
@@ -14,32 +14,8 @@
     (global.Snakeskin = factory());
 }(this, function () { 'use strict';
 
-    var babelHelpers = {};
-    babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-    };
-
-    babelHelpers.defineProperty = function (obj, key, value) {
-      if (key in obj) {
-        Object.defineProperty(obj, key, {
-          value: value,
-          enumerable: true,
-          configurable: true,
-          writable: true
-        });
-      } else {
-        obj[key] = value;
-      }
-
-      return obj;
-    };
-
-    babelHelpers;
-
         var Snakeskin = {
-      VERSION: [7, 0, 10]
+      VERSION: [7, 0, 11]
     };
 
     /**
@@ -516,6 +492,27 @@
       '_': true
     };
 
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+    };
+
+    var defineProperty = function (obj, key, value) {
+      if (key in obj) {
+        Object.defineProperty(obj, key, {
+          value: value,
+          enumerable: true,
+          configurable: true,
+          writable: true
+        });
+      } else {
+        obj[key] = value;
+      }
+
+      return obj;
+    };
+
     var _COMMENTS;
     var _BASE_SYS_ESCAPES;
     var _SYS_ESCAPES;
@@ -531,11 +528,11 @@
     var SINGLE_COMMENT = '///';
     var MULT_COMMENT_START = '/*';
     var MULT_COMMENT_END = '*/';
-    var COMMENTS = (_COMMENTS = {}, babelHelpers.defineProperty(_COMMENTS, SINGLE_COMMENT, SINGLE_COMMENT), babelHelpers.defineProperty(_COMMENTS, MULT_COMMENT_START, MULT_COMMENT_START), babelHelpers.defineProperty(_COMMENTS, MULT_COMMENT_END, MULT_COMMENT_END), _COMMENTS);
+    var COMMENTS = (_COMMENTS = {}, defineProperty(_COMMENTS, SINGLE_COMMENT, SINGLE_COMMENT), defineProperty(_COMMENTS, MULT_COMMENT_START, MULT_COMMENT_START), defineProperty(_COMMENTS, MULT_COMMENT_END, MULT_COMMENT_END), _COMMENTS);
 
     var MICRO_TEMPLATE = '${';
 
-    var BASE_SHORTS = babelHelpers.defineProperty({
+    var BASE_SHORTS = defineProperty({
     	'-': true
     }, ADV_LEFT_BOUND, true);
 
@@ -565,11 +562,11 @@
 
     var BASE_SYS_ESCAPES = (_BASE_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers.defineProperty(_BASE_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_BASE_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_BASE_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_BASE_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _BASE_SYS_ESCAPES);
+    }, defineProperty(_BASE_SYS_ESCAPES, I18N, true), defineProperty(_BASE_SYS_ESCAPES, LEFT_BOUND, true), defineProperty(_BASE_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), defineProperty(_BASE_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _BASE_SYS_ESCAPES);
 
     var SYS_ESCAPES = (_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers.defineProperty(_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), babelHelpers.defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT, true), babelHelpers.defineProperty(_SYS_ESCAPES, CONCAT_END, true), babelHelpers.defineProperty(_SYS_ESCAPES, IGNORE, true), babelHelpers.defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
+    }, defineProperty(_SYS_ESCAPES, I18N, true), defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), defineProperty(_SYS_ESCAPES, CONCAT, true), defineProperty(_SYS_ESCAPES, CONCAT_END, true), defineProperty(_SYS_ESCAPES, IGNORE, true), defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
     Snakeskin.forEach(BASE_SHORTS, function (el, key) {
     	return SYS_ESCAPES[key.charAt(0)] = true;
@@ -577,9 +574,9 @@
 
     var STRONG_SYS_ESCAPES = (_STRONG_SYS_ESCAPES = {
     	'\\': true
-    }, babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, I18N, true), babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), babelHelpers.defineProperty(_STRONG_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _STRONG_SYS_ESCAPES);
+    }, defineProperty(_STRONG_SYS_ESCAPES, I18N, true), defineProperty(_STRONG_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), defineProperty(_STRONG_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _STRONG_SYS_ESCAPES);
 
-    var MICRO_TEMPLATE_ESCAPES = babelHelpers.defineProperty({
+    var MICRO_TEMPLATE_ESCAPES = defineProperty({
     	'\\': true
     }, MICRO_TEMPLATE.charAt(0), true);
 
@@ -1083,7 +1080,7 @@
      * @return {string}
      */
     Filters['string'] = function (val) {
-    	if ((typeof val === 'undefined' ? 'undefined' : babelHelpers.typeof(val)) === 'object' && val instanceof String === false) {
+    	if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' && val instanceof String === false) {
     		return JSON.stringify(val);
     	}
 
