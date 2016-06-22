@@ -40,7 +40,7 @@ export function escapeSingleQuotes(str) {
  */
 export function escapeDoubleQuotes(str) {
 	return String(str)
-		.replace(doubleQuotes, '\\\"');
+		.replace(doubleQuotes, '\\"');
 }
 
 const

@@ -79,7 +79,7 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
  * @return {string}
  */
 Parser.prototype.getXMLAttrDecl = function (params) {
-	let
+	const
 		{group = '', separator = '-'} = params;
 
 	const
@@ -89,12 +89,10 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 	let res = '';
 	for (let i = 0; i < parts.length; i++) {
 		const
-			el = parts[i];
+			el = parts[i],
+			args = el.split(eqRgxp);
 
-		let
-			args = el.split(eqRgxp),
-			empty = args.length !== 2;
-
+		let empty = args.length !== 2;
 		if (empty) {
 			if (this.doctype === 'xml') {
 				args[1] = args[0];

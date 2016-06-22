@@ -1,7 +1,5 @@
 'use strict';
 
-// jscs:disable requireTemplateStrings
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -28,13 +26,14 @@ module.exports = {
 	},
 
 	getHead(opt_version, opt_key) {
-		return '' +
+		return (
 			'/*!\n' +
 			` * Snakeskin${opt_version ? ` v${this.getVersion()}` : ''}${opt_key ? ` (${opt_key})` : ''}\n` +
 			' * https://github.com/SnakeskinTpl/Snakeskin\n' +
 			' *\n' +
 			' * Released under the MIT license\n' +
-			' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n';
+			' * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE\n'
+		);
 	},
 
 	getVersion() {
@@ -42,6 +41,6 @@ module.exports = {
 			file = fs.readFileSync(path.join(__dirname, '../src/core.js')),
 			v = /VERSION\s*(?::|=)\s*\[(.*?)]/.exec(file)[1].split(/\s*,\s*/);
 
-		return v.slice(0, 3).join('.') + (v[3] ? '-' + eval(v[3]) : '');
+		return v.slice(0, 3).join('.') + (v[3] ? `-${eval(v[3])}` : '');
 	}
 };

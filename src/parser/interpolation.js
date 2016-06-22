@@ -67,7 +67,6 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 	str = this.pasteDangerBlocks(str);
 
 	let
-		start = 0,
 		begin = 0;
 
 	let
@@ -101,11 +100,11 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 	for (let i = 0; i < str.length; i++) {
 		const
 			cEscape = escape,
-			pos = i;
+			pos = i,
+			next = str[i + 1];
 
 		let
-			el = str[i],
-			next = str[i + 1];
+			el = str[i];
 
 		if (str.substr(i, 2) === '\r\n') {
 			continue;
@@ -365,7 +364,6 @@ Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
 				if (!cEscape && str.substr(pos, MICRO_TEMPLATE.length) === MICRO_TEMPLATE) {
 					begin++;
 					dir = '';
-					start = i;
 					i += MICRO_TEMPLATE.length - 1;
 					escape = false;
 					continue;

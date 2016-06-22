@@ -1,7 +1,5 @@
 'use strict';
 
-// jscs:disable validateOrderInObjectKeys
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -191,7 +189,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 	if (IS_NODE && info.file) {
 		const
-			fs = require('fs'),
 			path = require('path'),
 			findNodeModules = require('find-node-modules');
 
@@ -393,7 +390,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		}
 
 		if (!bOpen) {
-			if (el === '\\' && ((begin ? BASE_SYS_ESCAPES : SYS_ESCAPES)[next]) || escape) {
+			if (el === '\\' && (begin ? BASE_SYS_ESCAPES : SYS_ESCAPES)[next] || escape) {
 				escape = !escape;
 			}
 
@@ -515,7 +512,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 					if (!i18nStart && begin) {
 						let
-							[cmd] = (commandRgxp.exec(command) || ['']);
+							[cmd] = commandRgxp.exec(command) || [''];
 
 						const
 							replacer = getReplacer(cmd);
@@ -872,7 +869,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// If we have some outer declarations,
 	// which weren't attached to template,
 	// then will be thrown an exception
-	for (let key in parser.preDefs) {
+	for (const key in parser.preDefs) {
 		if (!parser.preDefs.hasOwnProperty(key)) {
 			break;
 		}

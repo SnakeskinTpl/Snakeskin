@@ -1,7 +1,6 @@
 'use strict';
 
-// jscs:disable requireTemplateStrings
-// jscs:disable validateOrderInObjectKeys
+/* eslint-disable prefer-template */
 
 /*!
  * Snakeskin
@@ -268,7 +267,7 @@ Parser.prototype.out = function (command, opt_params) {
 	 */
 	const addScope = (str) => {
 		if (!multPropRgxp.test(str[0]) && multPropRgxp.test(str)) {
-			let
+			const
 				firstProp = firstPropRgxp.exec(str);
 
 			firstProp[1] = firstProp[1]
@@ -389,9 +388,13 @@ Parser.prototype.out = function (command, opt_params) {
 			// nWord indicates that started a new word;
 			// posNWord indicates how many new words to skip
 			if (nWord && !posNWord && nextCharRgxp.test(el)) {
+				/* eslint-disable prefer-const */
+
 				let
 					{word, finalWord, unary} = this.getWordFromPos(command, i),
 					tmpFinalWord;
+
+				/* eslint-enable prefer-const */
 
 				if (unary) {
 					tmpFinalWord = finalWord.split(' ');
@@ -534,7 +537,7 @@ Parser.prototype.out = function (command, opt_params) {
 				fBody = res.slice(pos[0] + (pCount ? add : 0), pos[1] + fAdd);
 
 			const
-				isGlobalFilter = i === end && el != ')';
+				isGlobalFilter = i === end && el !== ')';
 
 			for (let i = 0; i < filters.length; i++) {
 				const

@@ -52,7 +52,8 @@ import {
 
 			const
 				env = this.environment,
-				nms = env.namespace;
+				nms = env.namespace,
+				prfx = ['', ''];
 
 			if (!nms) {
 				return this.error(`the directive "${this.name}" can't be declared without namespace`);
@@ -63,7 +64,6 @@ import {
 
 			let
 				tplName = this.replaceFileNamePatterns(this.getFnName(command)),
-				prfx = ['', ''],
 				pos;
 
 			if (/\*/.test(tplName)) {
@@ -340,7 +340,7 @@ import {
 				const
 					obj = this.params[this.params.length - 1];
 
-				for (let key in obj) {
+				for (const key in obj) {
 					if (!obj.hasOwnProperty(key)) {
 						break;
 					}
@@ -363,7 +363,7 @@ import {
 				Snakeskin.Directives['__set__'].call(this, flags[i]);
 			}
 
-			for (let key in baseParams) {
+			for (const key in baseParams) {
 				if (!baseParams.hasOwnProperty(key)) {
 					break;
 				}

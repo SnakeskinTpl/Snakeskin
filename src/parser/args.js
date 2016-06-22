@@ -102,7 +102,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		isLocalFunction = !dir || fnName;
 
 	let
-		scope = undefined,
+		scope,
 		argsMap = {},
 		parentArgs;
 
@@ -201,7 +201,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 				.replace(nullableRgxp, '');
 		}
 
-		let nullable = undefined;
+		let nullable;
 		arg[0] = arg[0].replace(nullableRgxp, (str) => {
 			nullable = nullableMap[str];
 			return '';
@@ -220,7 +220,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 	if (dir) {
 		// Mix the requested parameters
 		// with parent block parameters
-		for (let key in parentArgs) {
+		for (const key in parentArgs) {
 			if (!parentArgs.hasOwnProperty(key)) {
 				break;
 			}
@@ -268,7 +268,7 @@ Parser.prototype.declFnArgs = function (str, opt_params) {
 		finalArgsList = [],
 		localsList = [];
 
-	for (let key in argsMap) {
+	for (const key in argsMap) {
 		if (!argsMap.hasOwnProperty(key)) {
 			break;
 		}

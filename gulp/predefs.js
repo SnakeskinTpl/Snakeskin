@@ -16,7 +16,6 @@ const
 
 const
 	monic = require('gulp-monic'),
-	download = require('gulp-download'),
 	replace = require('gulp-replace'),
 	rename = require('gulp-rename'),
 	header = require('gulp-header'),

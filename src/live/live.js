@@ -281,7 +281,7 @@ Snakeskin.forEach = function (obj, callback) {
 
 	} else {
 		if (callback.length >= 4) {
-			for (let key in obj) {
+			for (const key in obj) {
 				if (!obj.hasOwnProperty(key)) {
 					break;
 				}
@@ -291,7 +291,7 @@ Snakeskin.forEach = function (obj, callback) {
 		}
 
 		let i = 0;
-		for (let key in obj) {
+		for (const key in obj) {
 			if (!obj.hasOwnProperty(key)) {
 				break;
 			}
@@ -322,12 +322,14 @@ Snakeskin.forIn = function (obj, callback) {
 		i = 0;
 
 	if (callback.length >= 4) {
-		for (let ignore in obj) {
+		/* eslint-disable guard-for-in */
+		for (const ignore in obj) {
 			length++;
 		}
+		/* eslint-enable guard-for-in */
 	}
 
-	for (let key in obj) {
+	for (const key in obj) {
 		if (callback(obj[key], key, obj, {i, isFirst: i === 0, isLast: i === length - 1, length}) === false) {
 			break;
 		}

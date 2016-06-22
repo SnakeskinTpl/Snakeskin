@@ -10,6 +10,6 @@ insert_final_newline = true
 [{LICENSE,.gitattributes,.gitignore,.npmignore}]
 indent_style = space
 
-[*.{json,yml,md,jscsrc,yaspellerrc,bowerrc,babelrc,snakeskinrc}]
+[*.{json,yml,md,jscsrc,yaspellerrc,bowerrc,babelrc,snakeskinrc,eslintrc}]
 indent_style = space
 indent_size = 2

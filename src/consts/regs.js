@@ -1,7 +1,5 @@
 'use strict';
 
-// jscs:disable requireTemplateStrings
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin

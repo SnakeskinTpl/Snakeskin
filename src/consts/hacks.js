@@ -10,14 +10,14 @@
 
 import { isFunction } from '../helpers/types';
 
-export const IS_NODE = function () {
+export const IS_NODE = (function () {
 	try {
 		return typeof process === 'object' && {}.toString.call(process) === '[object process]';
 
 	} catch (ignore) {
 		return false;
 	}
-}();
+})();
 
 export const
 	HAS_CONSOLE_LOG = typeof console === 'object' && console && isFunction(console.log),

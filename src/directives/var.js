@@ -48,6 +48,6 @@ Snakeskin.addDirective(
 		}
 	},
 
-	function () {}
+	() => {}
 
 );

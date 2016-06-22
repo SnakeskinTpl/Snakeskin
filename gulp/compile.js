@@ -1,7 +1,5 @@
 'use strict';
 
-// jscs:disable requireObjectDestructuring
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin

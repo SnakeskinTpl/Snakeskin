@@ -376,7 +376,7 @@ function appendDirEnd(str, struct) {
 		tmp = `${struct.trim.right ? '' : eol}${endDirInit ? '' : `${s}__&+__${e}`}${struct.trim.right ? eol : ''}`;
 
 	} else {
-		tmp = eol + (struct.space).slice(1);
+		tmp = eol + struct.space.slice(1);
 	}
 
 	endDirInit = true;
@@ -450,12 +450,14 @@ function getLineDesc(str, i, params) {
 				part = '';
 			}
 
+			const
+				prevEl = lastEl;
+
 			let
-				prevEl = lastEl,
 				brk = false;
 
 			lastEl = '';
-			if (comment || (sComment && concatLine)) {
+			if (comment || sComment && concatLine) {
 				command += el;
 
 			} else if (!sComment) {

@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 	},
 
 	function (command) {
-		let
+		const
 			{structure, structure: {name}} = this;
 
 		if (!structure.parent) {

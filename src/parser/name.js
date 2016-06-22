@@ -144,7 +144,7 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 				continue;
 			}
 
-			res += (res ? `.${el}` : el);
+			res += res ? `.${el}` : el;
 		}
 
 		name = res.trim();

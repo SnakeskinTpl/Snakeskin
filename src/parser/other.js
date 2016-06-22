@@ -24,7 +24,7 @@ Parser.prototype.getExtList = function (name) {
 	}
 
 	const res = [];
-	while (name = $extMap[name]) {
+	while ((name = $extMap[name])) {
 		res.unshift(name);
 	}
 
@@ -39,7 +39,7 @@ Parser.prototype.getExtList = function (name) {
  * @return {!Parser}
  */
 Parser.prototype.clearScopeCache = function (name) {
-	for (let key in $scope) {
+	for (const key in $scope) {
 		if (!$scope.hasOwnProperty(key)) {
 			break;
 		}
@@ -54,7 +54,7 @@ Parser.prototype.clearScopeCache = function (name) {
 			}
 
 		} else {
-			for (let key in el) {
+			for (const key in el) {
 				if (!el.hasOwnProperty(el)) {
 					break;
 				}
@@ -91,7 +91,7 @@ Parser.prototype.popParams = function () {
 	const
 		last = this.params[this.params.length - 1];
 
-	for (let key in last) {
+	for (const key in last) {
 		if (!last.hasOwnProperty(key)) {
 			break;
 		}

@@ -1,6 +1,6 @@
 'use strict';
 
-// jscs:disable safeContextKeyword
+/* eslint-disable no-use-before-define */
 
 /*!
  * Snakeskin
@@ -33,9 +33,6 @@ import {
 
 } from '../consts/cache';
 
-// FIXME https://github.com/jscs-dev/node-jscs/issues/2017
-// jscs:disable jsDoc
-
 /**
  * Transformer for a group list
  *
@@ -52,8 +49,6 @@ export const q = (arr) => {
 
 	return tmp.join(', ');
 };
-
-// jscs:enable jsDoc
 
 export const
 	GROUP = '@';

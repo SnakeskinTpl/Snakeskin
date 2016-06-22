@@ -78,7 +78,7 @@ Parser.prototype.getWordFromPos = function (str, pos) {
 			unary = false;
 		}
 
-		if (pContent !== null && (pCount > 1 || (pCount === 1 && !P_CLOSE[el]))) {
+		if (pContent !== null && (pCount > 1 || pCount === 1 && !P_CLOSE[el])) {
 			pContent += el;
 		}
 

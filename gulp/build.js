@@ -1,7 +1,6 @@
 'use strict';
 
-// jscs:disable requireTemplateStrings
-// jscs:disable requireObjectDestructuring
+/* eslint-disable prefer-template */
 
 /*!
  * Snakeskin

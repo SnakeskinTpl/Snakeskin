@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable no-useless-rename */
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin

@@ -51,7 +51,7 @@ function set(command) {
 	 * @return {!Object}
 	 */
 	function extend(a, b) {
-		for (let key in b) {
+		for (const key in b) {
 			if (!b.hasOwnProperty(key)) {
 				break;
 			}
@@ -88,7 +88,7 @@ function set(command) {
 		}
 	}
 
-	if (last['@root'] || (file && last['@file'] !== file) || (tplName && last['@tplName'] !== tplName)) {
+	if (last['@root'] || file && last['@file'] !== file || tplName && last['@tplName'] !== tplName) {
 		init = true;
 		params = {
 			'@file': file,
@@ -96,7 +96,7 @@ function set(command) {
 		};
 
 		const inherit = (obj) => {
-			for (let key in obj) {
+			for (const key in obj) {
 				if (!obj.hasOwnProperty(key)) {
 					break;
 				}
@@ -127,7 +127,7 @@ function set(command) {
 		[flag, value] = command;
 
 	} else {
-		let parts = command.split(' ');
+		const parts = command.split(' ');
 		[flag] = parts;
 
 		try {

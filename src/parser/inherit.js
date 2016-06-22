@@ -38,13 +38,13 @@ Parser.prototype.getTplFullBody = function (name) {
 		res += `${alb + lb}__&-__${rb}`;
 	}
 
-	let
+	const
 		length = isDecl.length * 2,
-		from = 0,
+		tb = $templates[name],
 		advDiff = [];
 
 	let
-		tb = $templates[name],
+		from = 0,
 		blockDiff,
 		newFrom,
 		prev,
@@ -69,7 +69,7 @@ Parser.prototype.getTplFullBody = function (name) {
 			}
 		}
 
-		for (let key in el) {
+		for (const key in el) {
 			if (!el.hasOwnProperty(key)) {
 				break;
 			}
@@ -83,7 +83,7 @@ Parser.prototype.getTplFullBody = function (name) {
 				block = $cache[name].slice(current.from, current.to);
 
 			if (parent) {
-				if (parent.output != null && current.output == null && (i % 2 === 0)) {
+				if (parent.output != null && current.output == null && i % 2 === 0) {
 					current.output = parent.output;
 
 					if (type === 'const') {
@@ -109,7 +109,7 @@ Parser.prototype.getTplFullBody = function (name) {
 				}
 			}
 
-			if (parent && (i % 2 === 0)) {
+			if (parent && i % 2 === 0) {
 				if (type !== 'block' && (type !== 'const' || !current.block)) {
 					newFrom = parent.from + adv + block.length;
 					from += blockDiff;

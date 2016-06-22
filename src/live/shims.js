@@ -20,7 +20,7 @@ String.prototype.trim = String.prototype.trim || function () {
 		i = str.length;
 
 	for (let rgxp = /\s/; rgxp.test(str.charAt(--i));) {
-
+		// Do nothing
 	}
 
 	return str.substring(0, i + 1);

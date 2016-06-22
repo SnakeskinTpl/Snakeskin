@@ -1,7 +1,5 @@
 'use strict';
 
-// jscs:disable validateOrderInObjectKeys
-
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -493,5 +491,5 @@ export default class Parser {
 
 			${this.declVars('$_', {sys: true})}
 		`;
-	};
+	}
 }
