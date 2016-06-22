@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.11
+ * Snakeskin v7.0.12
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 21 Jun 2016 18:36:33 GMT
+ * Date: 'Wed, 22 Jun 2016 14:32:28 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 0, 11]
+      VERSION: [7, 0, 12]
     };
 
     /**
@@ -63,7 +63,9 @@
 
     	var i = str.length;
 
-    	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
+    	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {
+    		// Do nothing
+    	}
 
     	return str.substring(0, i + 1);
     };
@@ -414,9 +416,11 @@
     	    i = 0;
 
     	if (callback.length >= 4) {
+    		/* eslint-disable guard-for-in */
     		for (var ignore in obj) {
     			length++;
     		}
+    		/* eslint-enable guard-for-in */
     	}
 
     	for (var key in obj) {
@@ -2053,7 +2057,7 @@ var     ws$1 = /\s/;
     	var argsList = this.getFnArgs(str),
     	    isLocalFunction = !dir || fnName;
 
-    	var scope = undefined,
+    	var scope = void 0,
     	    argsMap = {},
     	    parentArgs = void 0;
 
@@ -2146,7 +2150,7 @@ var     ws$1 = /\s/;
     			scope = scope.replace(nullableRgxp, '');
     		}
 
-    		var nullable = undefined;
+    		var nullable = void 0;
     		arg[0] = arg[0].replace(nullableRgxp, function (str) {
     			nullable = nullableMap[str];
     			return '';
@@ -2811,9 +2815,6 @@ var     ws$1 = /\s/;
     	return false;
     };
 
-    // FIXME https://github.com/jscs-dev/node-jscs/issues/2017
-    // jscs:disable jsDoc
-
     /**
      * Transformer for a group list
      *
@@ -2829,8 +2830,6 @@ var     ws$1 = /\s/;
 
     	return tmp.join(', ');
     };
-
-    // jscs:enable jsDoc
 
     var GROUP = '@';
 
@@ -3399,10 +3398,10 @@ var     ws$1 = /\s/;
     	}
 
     	var length = isDecl.length * 2,
-    	    from = 0,
+    	    tb = $templates[name],
     	    advDiff = [];
 
-    	var tb = $templates[name],
+    	var from = 0,
     	    blockDiff = void 0,
     	    newFrom = void 0,
     	    prev = void 0,
@@ -3956,8 +3955,9 @@ var     eol$1 = void 0;
     				part = '';
     			}
 
-    			var prevEl = lastEl,
-    			    brk = false;
+    			var prevEl = lastEl;
+
+    			var brk = false;
 
     			lastEl = '';
     			if (comment || sComment && concatLine) {
@@ -4163,7 +4163,7 @@ var     eol$1 = void 0;
      * @return {string}
      */
     function escapeDoubleQuotes(str) {
-      return String(str).replace(doubleQuotes, '\\\"');
+      return String(str).replace(doubleQuotes, '\\"');
     }
 
     var nRgxp = /\n/g;
@@ -4227,8 +4227,7 @@ var     rRgxp$1 = /\r/g;
 
     	str = this.pasteDangerBlocks(str);
 
-    	var start = 0,
-    	    begin = 0;
+    	var begin = 0;
 
     	var dir = '',
     	    res = '';
@@ -4255,10 +4254,10 @@ var     rRgxp$1 = /\r/g;
 
     	for (var i = 0; i < str.length; i++) {
     		var cEscape = escape,
-    		    pos = i;
-
-    		var el = str[i],
+    		    pos = i,
     		    next = str[i + 1];
+
+    		var el = str[i];
 
     		if (str.substr(i, 2) === '\r\n') {
     			continue;
@@ -4494,7 +4493,6 @@ var     rRgxp$1 = /\r/g;
     				if (!cEscape && str.substr(pos, MICRO_TEMPLATE.length) === MICRO_TEMPLATE) {
     					begin++;
     					dir = '';
-    					start = i;
     					i += MICRO_TEMPLATE.length - 1;
     					escape = false;
     					continue;
@@ -5333,6 +5331,8 @@ var     rRgxp$1 = /\r/g;
     			// nWord indicates that started a new word;
     			// posNWord indicates how many new words to skip
     			if (nWord && !posNWord && nextCharRgxp.test(el)) {
+    				/* eslint-disable prefer-const */
+
     				var _getWordFromPos = this.getWordFromPos(command, i);
 
     				var word = _getWordFromPos.word;
@@ -5340,6 +5340,8 @@ var     rRgxp$1 = /\r/g;
 
     				var unary = _getWordFromPos.unary;
     				var tmpFinalWord = void 0;
+
+    				/* eslint-enable prefer-const */
 
     				if (unary) {
     					tmpFinalWord = finalWord.split(' ');
@@ -5456,7 +5458,7 @@ var     rRgxp$1 = /\r/g;
     			var fAdd = wordAddEnd - filterAddEnd + add,
     			    fBody = res.slice(pos[0] + (pCount ? add : 0), pos[1] + fAdd);
 
-    			var isGlobalFilter = i === end && el != ')';
+    			var isGlobalFilter = i === end && el !== ')';
 
     			for (var _i2 = 0; _i2 < filters.length; _i2++) {
     				var _el = filters[_i2];
@@ -6110,8 +6112,9 @@ var     rRgxp$1 = /\r/g;
     	    groups = this.getGroup('async', 'function', 'block');
 
     	var test = function test(obj) {
+    		var closest = any(obj.parent && _this2._getNonLogicParent(obj.parent));
+
     		var target = any(_this2._has(groups, obj, true)),
-    		    closest = any(obj.parent && _this2._getNonLogicParent(obj.parent)),
     		    asyncParent = closest && _this2.getGroup('async')[closest.name] && cb[target.name] ? closest.name : false;
 
     		if (target) {
@@ -6380,11 +6383,10 @@ var     _templateObject4$1 = taggedTemplateLiteral(['\n\t\t\t__GET_XML_ATTR_KEY_
 
     	var res = '';
     	for (var i = 0; i < parts.length; i++) {
-    		var el = parts[i];
+    		var el = parts[i],
+    		    args = el.split(eqRgxp);
 
-    		var args = el.split(eqRgxp),
-    		    empty = args.length !== 2;
-
+    		var empty = args.length !== 2;
     		if (empty) {
     			if (this.doctype === 'xml') {
     				args[1] = args[0];
@@ -7078,8 +7080,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     	Snakeskin.UID = Math.random().toString(16).replace('0.', '').slice(0, 5);
 
     	if (IS_NODE && info.file) {
-    		var fs = require('fs'),
-    		    path = require('path'),
+    		var path = require('path'),
     		    findNodeModules = require('find-node-modules');
 
     		filename = info.file = path.normalize(path.resolve(info.file));
@@ -8676,7 +8677,8 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     		}
 
     		var env = this.environment,
-    		    nms = env.namespace;
+    		    nms = env.namespace,
+    		    prfx = ['', ''];
 
     		if (!nms) {
     			return this.error('the directive "' + this.name + '" can\'t be declared without namespace');
@@ -8686,7 +8688,6 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     		this.startTemplateLine = this.info.line;
 
     		var tplName = this.replaceFileNamePatterns(this.getFnName(command)),
-    		    prfx = ['', ''],
     		    pos = void 0;
 
     		if (/\*/.test(tplName)) {

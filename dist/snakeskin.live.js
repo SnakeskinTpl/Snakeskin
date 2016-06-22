@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.11 (live)
+ * Snakeskin v7.0.12 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 21 Jun 2016 18:36:33 GMT
+ * Date: 'Wed, 22 Jun 2016 14:32:28 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 0, 11]
+      VERSION: [7, 0, 12]
     };
 
     /**
@@ -63,7 +63,9 @@
 
     	var i = str.length;
 
-    	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {}
+    	for (var rgxp = /\s/; rgxp.test(str.charAt(--i));) {
+    		// Do nothing
+    	}
 
     	return str.substring(0, i + 1);
     };
@@ -414,9 +416,11 @@
     	    i = 0;
 
     	if (callback.length >= 4) {
+    		/* eslint-disable guard-for-in */
     		for (var ignore in obj) {
     			length++;
     		}
+    		/* eslint-enable guard-for-in */
     	}
 
     	for (var key in obj) {
