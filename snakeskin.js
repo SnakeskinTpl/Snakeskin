@@ -9,10 +9,12 @@
 /** @type {Snakeskin} */
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 require('core-js/es6/object');
+require('core-js/es6/promise');
 
 var
 	beautify = require('js-beautify'),
-	$C = require('collection.js').$C;
+	$C = require('collection.js').$C,
+	async = require('async');
 
 var
 	path = require('path'),
@@ -303,10 +305,11 @@ function testId(id) {
  * @param {function(string, string, string): !Object} adaptor - adaptor of code
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
- * @return {(string|boolean|null)}
+ * @return {!Promise<(string|boolean|null)>}
  */
 exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 	opt_params = Object.assign({
+		renderMode: 'stringConcat',
 		module: 'umd',
 		moduleId: 'tpls',
 		useStrict: true,
@@ -333,6 +336,8 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 
 	function compile(tpls, prop) {
 		prop = prop || 'exports';
+		var tasks = [];
+
 		$C(tpls).forEach(function (el, key) {
 			var
 				val,
@@ -354,11 +359,62 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 					'}'
 				;
 
-				return compile(el, val);
+				tasks.push(function (cb) {
+					compile(el, val).then(
+						function (res) {
+							cb(null, res);
+						},
+
+						function (err) {
+							console.log(err);
+							cb(err);
+						}
+					)
+				});
+
+				return;
 			}
 
-			var decl = /^(async\s+)?function(\*)?\s*\((.*?)\)\s*\{/.exec(el.toString());
-			res += adaptor(val, decl[0], el(p.data));
+			var
+				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString()),
+				text = el(p.data);
+
+			if (text.then) {
+				tasks.push(function (cb) {
+					text
+						.then(function (text) {
+							res += adaptor(val, decl[2] + decl[3], text);
+							cb();
+						})
+
+						.catch(cb);
+				});
+
+			} else {
+				if (text.next) {
+					var
+						iterator = text,
+						pos = iterator.next();
+
+					text = pos.value;
+					while (!pos.done) {
+						pos = iterator.next();
+						text += pos.value;
+					}
+				}
+
+				res += adaptor(val, decl[0], text);
+			}
+		});
+
+		return new Promise(function (resolve, reject) {
+			async.parallel(tasks, function (err) {
+				if (err) {
+					return reject(err);
+				}
+
+				resolve();
+			});
 		});
 	}
 
@@ -408,14 +464,20 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 		;
 	}
 
-	compile(tpls);
-	if (mod !== 'native') {
-		res += '});';
-	}
+	return new Promise(function (resolve, reject) {
+		compile(tpls)
+			.then(function () {
+				if (mod !== 'native') {
+					res += '});';
+				}
 
-	if (prettyPrint) {
-		res = beautify.js(res);
-	}
+				if (prettyPrint) {
+					res = beautify.js(res);
+				}
 
-	return res.replace(nRgxp, eol) + eol;
+				resolve(res.replace(nRgxp, eol) + eol);
+			})
+
+			.catch(reject);
+	});
 };
