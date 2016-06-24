@@ -11,7 +11,6 @@ module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeski
 require('core-js/es6/object');
 
 var
-	babel = require('babel-core'),
 	beautify = require('js-beautify'),
 	$C = require('collection.js').$C;
 
@@ -299,12 +298,14 @@ function testId(id) {
 /**
  * Compiles Snakeskin templates as React JSX
  *
- * @param {string} txt - source text
+ * @param {string} txt
+ * @param {function(!Object): !Object} setParams - adaptor of parameters
+ * @param {function(string, string, string): !Object} adaptor - adaptor of code
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
  * @return {(string|boolean|null)}
  */
-exports.compileAsJSX = function (txt, opt_params, opt_info) {
+exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 	opt_params = Object.assign({
 		module: 'umd',
 		moduleId: 'tpls',
@@ -315,29 +316,22 @@ exports.compileAsJSX = function (txt, opt_params, opt_info) {
 	var
 		eol = opt_params.eol,
 		mod = opt_params.module,
-		useStrict = opt_params.useStrict ? '"useStrict";' : '',
 		prettyPrint = opt_params.prettyPrint;
 
 	var
 		nRgxp = /\r?\n|\r/g,
 		tpls = {};
 
-	var p = Object.assign({}, opt_params, {
-		context: tpls,
-		doctype: 'transitional',
-		module: 'cjs',
-		literalBounds: ['{', '}'],
-		renderMode: 'stringConcat',
-		prettyPrint: false
-	});
-
-	var res = exports.compile(txt, p, opt_info);
+	var
+		p = setParams(Object.assign({}, opt_params, {context: tpls})),
+		useStrict = p.useStrict ? '"useStrict";' : '',
+		res = exports.compile(txt, p, opt_info);
 
 	if (!res) {
 		return res;
 	}
 
-	function compileJSX(tpls, prop) {
+	function compile(tpls, prop) {
 		prop = prop || 'exports';
 		$C(tpls).forEach(function (el, key) {
 			var
@@ -360,22 +354,11 @@ exports.compileAsJSX = function (txt, opt_params, opt_info) {
 					'}'
 				;
 
-				return compileJSX(el, val);
+				return compile(el, val);
 			}
 
-			var
-				decl = /function .*?\)\s*\{/.exec(el.toString()),
-				text = el(p.data);
-
-			text = val + ' = ' + decl[0] + (/\breturn\s+\(?\s*[{<](?!\/)/.test(text) ? '' : 'return ') + text + '};';
-			res += babel.transform(text, {
-				babelrc: false,
-				plugins: [
-					require('babel-plugin-syntax-jsx'),
-					require('babel-plugin-transform-react-jsx'),
-					require('babel-plugin-transform-react-display-name')
-				]
-			}).code;
+			var decl = /^(async\s+)?function(\*)?\s*\((.*?)\)\s*\{/.exec(el.toString());
+			res += adaptor(val, decl[0], el(p.data));
 		});
 	}
 
@@ -425,7 +408,7 @@ exports.compileAsJSX = function (txt, opt_params, opt_info) {
 		;
 	}
 
-	compileJSX(tpls);
+	compile(tpls);
 	if (mod !== 'native') {
 		res += '});';
 	}
