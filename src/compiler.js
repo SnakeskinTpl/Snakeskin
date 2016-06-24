@@ -57,6 +57,7 @@ import {
  *   *) [cache = true] - if is false, then caching will be disabled
  *   *) [vars] - map of super global variables, which will be added to Snakeskin.Vars
  *   *) [context] - storage object for compiled templates
+ *   *) [babel] - array of applied babel plugins
  *
  *   *) [onError] - callback for an error handling
  *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
@@ -889,6 +890,14 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 	// Line feed
 	parser.result += p.eol;
+
+	if (p.babel) {
+		const babel = require('babel-core');
+		parser.result = babel.transform(parser.result, {
+			babelrc: false,
+			plugins: p.babel
+		}).code;
+	}
 
 	// Save some debug information
 	if (p.debug) {

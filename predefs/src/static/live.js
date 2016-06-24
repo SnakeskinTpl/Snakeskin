@@ -30,6 +30,15 @@ var include;
 /** @type {?} */
 var toObj;
 
+/** @type {?} */
+var safe;
+
+/** @type {?} */
+var bind;
+
+/** @type {?} */
+var test;
+
 /** @const */
 Snakeskin.inlineTags = {};
 

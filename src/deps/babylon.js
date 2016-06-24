@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,12 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-/** @const */
-var esprima = {
-	/**
-	 * @abstract
-	 * @param {string} str
-	 * @return {?}
-	 */
-	parse: function (str) {}
-};
+import { GLOBAL } from '../consts/links';
+
+export default
+	GLOBAL.babylon || GLOBAL.esprima || require('babylon');

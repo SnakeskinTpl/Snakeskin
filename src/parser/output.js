@@ -10,7 +10,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import esprima from '../deps/esprima';
+import babylon from '../deps/babylon';
 import Snakeskin from '../core';
 import Parser from './constructor';
 import { isFunction } from '../helpers/types';
@@ -100,7 +100,7 @@ const esprimaHackFn = (str) => String(str)
 	.trim()
 	.replace(/^({.*)/, '($0)')
 	.replace(/^\[(?!\s*])/, '$[')
-	.replace(/\b(?:yield|return)\b/g, '');
+	.replace(/\b(?:yield|await|return)\b/g, '');
 
 /**
  * Prepares the specified command to output:
@@ -760,7 +760,15 @@ Parser.prototype.out = function (command, opt_params) {
  */
 function parse(str) {
 	try {
-		esprima.parse(esprimaHackFn(str));
+		babylon.parse(esprimaHackFn(str), {plugins: [
+			'flow',
+			'asyncFunctions',
+			'objectRestSpread',
+			'exponentiationOperator',
+			'asyncGenerators',
+			'functionBind',
+			'functionSent'
+		]});
 
 	} catch (err) {
 		return err.message.replace(/.*?: (\w)/, (str, $1) => $1.toLowerCase());

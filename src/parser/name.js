@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import esprima from '../deps/esprima';
+import babylon from '../deps/babylon';
 import Parser from './constructor';
 import { ws, r } from '../helpers/string';
 import { applyDefEscape } from '../helpers/escape';
@@ -148,7 +148,7 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 		}
 
 		name = res.trim();
-		esprima.parse(name);
+		babylon.parse(name);
 
 	} catch (err) {
 		this.error(err.message);

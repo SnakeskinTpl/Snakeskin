@@ -33,6 +33,7 @@ var template;
  *   cache: (?boolean|undefined),
  *   getCacheKey: (?boolean|undefined),
  *   context: (Object|undefined),
+ *   babel: (Array|undefined),
  *   vars: (Object|undefined),
  *   onError: (?function(!Error)|undefined),
  *   throws: (?boolean|undefined),

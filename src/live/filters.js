@@ -209,8 +209,8 @@ Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) 
 };
 
 Snakeskin.setFilterParams('html', {
-	'bind': ['Unsafe', '__ATTR_TYPE__', (o) => o.getVar('__ATTR_CACHE__'), 'TRUE'],
-	'test'(val) {
+	bind: ['Unsafe', '__ATTR_TYPE__', (o) => o.getVar('__ATTR_CACHE__'), 'TRUE'],
+	test(val) {
 		return isNotPrimitive(val);
 	}
 });
@@ -224,7 +224,7 @@ Filters['htmlObject'] = function (val) {
 };
 
 Snakeskin.setFilterParams('htmlObject', {
-	'test'(val) {
+	test(val) {
 		return isNotPrimitive(val);
 	}
 });
@@ -240,7 +240,7 @@ Filters['undef'] = function (val) {
 };
 
 Snakeskin.setFilterParams('undef', {
-	'test'(val) {
+	test(val) {
 		return isNotPrimitive(val, {'false': true, 'null': true, 'true': true});
 	}
 });
@@ -286,7 +286,7 @@ Filters['uri'] = function (val) {
 };
 
 Snakeskin.setFilterParams('uri', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -300,7 +300,7 @@ Filters['upper'] = function (val) {
 };
 
 Snakeskin.setFilterParams('upper', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -315,7 +315,7 @@ Filters['ucfirst'] = function (val) {
 };
 
 Snakeskin.setFilterParams('ucfirst', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -329,7 +329,7 @@ Filters['lower'] = function (val) {
 };
 
 Snakeskin.setFilterParams('lower', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -344,7 +344,7 @@ Filters['lcfirst'] = function (val) {
 };
 
 Snakeskin.setFilterParams('lcfirst', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -358,7 +358,7 @@ Filters['trim'] = function (val) {
 };
 
 Snakeskin.setFilterParams('trim', {
-	'safe': true
+	safe: true
 });
 
 const
@@ -376,7 +376,7 @@ Filters['collapse'] = function (val) {
 };
 
 Snakeskin.setFilterParams('collapse', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -428,7 +428,7 @@ Filters['repeat'] = function (val, opt_num) {
 };
 
 Snakeskin.setFilterParams('repeat', {
-	'safe': true
+	safe: true
 });
 
 /**
@@ -522,7 +522,7 @@ Filters['bem'] = function (block, node, part) {
 };
 
 Snakeskin.setFilterParams('bem', {
-	'bind': ['$0']
+	bind: ['$0']
 });
 
 /**
@@ -582,7 +582,7 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 
 Snakeskin.setFilterParams('nl2br', {
 	'!html': true,
-	'bind': ['$0', (o) => `'${o.renderMode}'`, (o) => o.stringResult, '$0', (o) => `'${o.doctype}'`]
+	bind: ['$0', (o) => `'${o.renderMode}'`, (o) => o.stringResult, '$0', (o) => `'${o.doctype}'`]
 });
 
 /**
@@ -691,8 +691,8 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	'bind': [(o) => `'${o.doctype}'`, '__ATTR_TYPE__', (o) => o.getVar('__ATTR_CACHE__'), 'TRUE', 'FALSE'],
-	'test'(val) {
+	bind: [(o) => `'${o.doctype}'`, '__ATTR_TYPE__', (o) => o.getVar('__ATTR_CACHE__'), 'TRUE', 'FALSE'],
+	test(val) {
 		return isNotPrimitive(val);
 	}
 });

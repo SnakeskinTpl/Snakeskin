@@ -8,7 +8,7 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-import esprima from '../deps/esprima';
+import babylon from '../deps/babylon';
 import Snakeskin from '../core';
 
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
@@ -201,7 +201,7 @@ import {
 			}
 
 			try {
-				esprima.parse(tplName);
+				babylon.parse(tplName);
 
 			} catch (ignore) {
 				return this.error(`invalid "${this.name}" name`);
