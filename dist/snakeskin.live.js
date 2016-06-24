@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.12 (live)
+ * Snakeskin v7.0.13 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 22 Jun 2016 14:32:28 GMT
+ * Date: 'Fri, 24 Jun 2016 12:50:40 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 0, 12]
+      VERSION: [7, 0, 13]
     };
 
     /**
@@ -811,10 +811,10 @@
     };
 
     Snakeskin.setFilterParams('html', {
-    	'bind': ['Unsafe', '__ATTR_TYPE__', function (o) {
+    	bind: ['Unsafe', '__ATTR_TYPE__', function (o) {
     		return o.getVar('__ATTR_CACHE__');
     	}, 'TRUE'],
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val);
     	}
     });
@@ -828,7 +828,7 @@
     };
 
     Snakeskin.setFilterParams('htmlObject', {
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val);
     	}
     });
@@ -844,7 +844,7 @@
     };
 
     Snakeskin.setFilterParams('undef', {
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val, { 'false': true, 'null': true, 'true': true });
     	}
     });
@@ -885,7 +885,7 @@
     };
 
     Snakeskin.setFilterParams('uri', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -899,7 +899,7 @@
     };
 
     Snakeskin.setFilterParams('upper', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -914,7 +914,7 @@
     };
 
     Snakeskin.setFilterParams('ucfirst', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -928,7 +928,7 @@
     };
 
     Snakeskin.setFilterParams('lower', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -943,7 +943,7 @@
     };
 
     Snakeskin.setFilterParams('lcfirst', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -957,7 +957,7 @@
     };
 
     Snakeskin.setFilterParams('trim', {
-    	'safe': true
+    	safe: true
     });
 
     var spaceCollapseRgxp = /\s{2,}/g;
@@ -974,7 +974,7 @@
     };
 
     Snakeskin.setFilterParams('collapse', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1023,7 +1023,7 @@
     };
 
     Snakeskin.setFilterParams('repeat', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1118,7 +1118,7 @@
     };
 
     Snakeskin.setFilterParams('bem', {
-    	'bind': ['$0']
+    	bind: ['$0']
     });
 
     /**
@@ -1174,7 +1174,7 @@
 
     Snakeskin.setFilterParams('nl2br', {
     	'!html': true,
-    	'bind': ['$0', function (o) {
+    	bind: ['$0', function (o) {
     		return '\'' + o.renderMode + '\'';
     	}, function (o) {
     		return o.stringResult;
@@ -1285,12 +1285,12 @@
 
     Snakeskin.setFilterParams('attr', {
     	'!html': true,
-    	'bind': [function (o) {
+    	bind: [function (o) {
     		return '\'' + o.doctype + '\'';
     	}, '__ATTR_TYPE__', function (o) {
     		return o.getVar('__ATTR_CACHE__');
     	}, 'TRUE', 'FALSE'],
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val);
     	}
     });

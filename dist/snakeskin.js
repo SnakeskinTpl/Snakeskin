@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.0.12
+ * Snakeskin v7.0.13
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 22 Jun 2016 14:32:28 GMT
+ * Date: 'Fri, 24 Jun 2016 12:50:40 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 0, 12]
+      VERSION: [7, 0, 13]
     };
 
     /**
@@ -1036,10 +1036,10 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('html', {
-    	'bind': ['Unsafe', '__ATTR_TYPE__', function (o) {
+    	bind: ['Unsafe', '__ATTR_TYPE__', function (o) {
     		return o.getVar('__ATTR_CACHE__');
     	}, 'TRUE'],
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val);
     	}
     });
@@ -1053,7 +1053,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('htmlObject', {
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val);
     	}
     });
@@ -1069,7 +1069,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('undef', {
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val, { 'false': true, 'null': true, 'true': true });
     	}
     });
@@ -1110,7 +1110,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('uri', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1124,7 +1124,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('upper', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1139,7 +1139,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('ucfirst', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1153,7 +1153,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('lower', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1168,7 +1168,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('lcfirst', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1182,7 +1182,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('trim', {
-    	'safe': true
+    	safe: true
     });
 
     var spaceCollapseRgxp = /\s{2,}/g;
@@ -1199,7 +1199,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('collapse', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1248,7 +1248,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('repeat', {
-    	'safe': true
+    	safe: true
     });
 
     /**
@@ -1343,7 +1343,7 @@ var     ws$1 = /\s/;
     };
 
     Snakeskin.setFilterParams('bem', {
-    	'bind': ['$0']
+    	bind: ['$0']
     });
 
     /**
@@ -1399,7 +1399,7 @@ var     ws$1 = /\s/;
 
     Snakeskin.setFilterParams('nl2br', {
     	'!html': true,
-    	'bind': ['$0', function (o) {
+    	bind: ['$0', function (o) {
     		return '\'' + o.renderMode + '\'';
     	}, function (o) {
     		return o.stringResult;
@@ -1510,12 +1510,12 @@ var     ws$1 = /\s/;
 
     Snakeskin.setFilterParams('attr', {
     	'!html': true,
-    	'bind': [function (o) {
+    	bind: [function (o) {
     		return '\'' + o.doctype + '\'';
     	}, '__ATTR_TYPE__', function (o) {
     		return o.getVar('__ATTR_CACHE__');
     	}, 'TRUE', 'FALSE'],
-    	'test': function test(val) {
+    	test: function test(val) {
     		return isNotPrimitive(val);
     	}
     });
@@ -4506,7 +4506,7 @@ var     rRgxp$1 = /\r/g;
     	return res;
     };
 
-    var esprima = GLOBAL.esprima || require('esprima');
+    var babylon = GLOBAL.babylon || GLOBAL.esprima || require('babylon');
 
         var _templateObject$1 = taggedTemplateLiteral(['[\'', '\']'], ['[\'', '\']']);
 
@@ -4635,7 +4635,7 @@ var     rRgxp$1 = /\r/g;
     		}
 
     		name = res.trim();
-    		esprima.parse(name);
+    		babylon.parse(name);
     	} catch (err) {
     		this.error(err.message);
     		return '';
@@ -5057,7 +5057,7 @@ var     rRgxp$1 = /\r/g;
     var functionRgxp = /\bfunction\b/;
     var defFilterRgxp = /#;/g;
     var esprimaHackFn = function esprimaHackFn(str) {
-    	return String(str).trim().replace(/^({.*)/, '($0)').replace(/^\[(?!\s*])/, '$[').replace(/\b(?:yield|return)\b/g, '');
+    	return String(str).trim().replace(/^({.*)/, '($0)').replace(/^\[(?!\s*])/, '$[').replace(/\b(?:yield|await|return)\b/g, '');
     };
 
     /**
@@ -5656,7 +5656,7 @@ var     rRgxp$1 = /\r/g;
      */
     function parse(str) {
     	try {
-    		esprima.parse(esprimaHackFn(str));
+    		babylon.parse(esprimaHackFn(str), { plugins: ['flow', 'asyncFunctions', 'objectRestSpread', 'exponentiationOperator', 'asyncGenerators', 'functionBind', 'functionSent'] });
     	} catch (err) {
     		return err.message.replace(/.*?: (\w)/, function (str, $1) {
     			return $1.toLowerCase();
@@ -6959,6 +6959,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
      *   *) [cache = true] - if is false, then caching will be disabled
      *   *) [vars] - map of super global variables, which will be added to Snakeskin.Vars
      *   *) [context] - storage object for compiled templates
+     *   *) [babel] - array of applied babel plugins
      *
      *   *) [onError] - callback for an error handling
      *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
@@ -7710,6 +7711,14 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     	// Line feed
     	parser.result += p.eol;
+
+    	if (p.babel) {
+    		var babel = require('babel-core');
+    		parser.result = babel.transform(parser.result, {
+    			babelrc: false,
+    			plugins: p.babel
+    		}).code;
+    	}
 
     	// Save some debug information
     	if (p.debug) {
@@ -8799,7 +8808,7 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     		}
 
     		try {
-    			esprima.parse(tplName);
+    			babylon.parse(tplName);
     		} catch (ignore) {
     			return this.error('invalid "' + this.name + '" name');
     		}
