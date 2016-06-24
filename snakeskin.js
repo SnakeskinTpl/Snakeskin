@@ -325,8 +325,13 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 		nRgxp = /\r?\n|\r/g,
 		tpls = {};
 
+	var p = Object.assign({}, setParams(opt_params), {
+		context: tpls,
+		module: 'cjs',
+		prettyPrint: false
+	});
+
 	var
-		p = setParams(Object.assign({}, opt_params, {context: tpls})),
 		useStrict = p.useStrict ? '"useStrict";' : '',
 		res = exports.compile(txt, p, opt_info);
 
