@@ -60,7 +60,9 @@ node_modules
 /gulpfile.js
 /externs.js
 /.editorconfig
-/.jscsrc
+/.eslintrc
+/.eslintignore
+/.babelrc
 /.yaspellerrc
 /.travis.yml
 /.gitignore
