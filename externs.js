@@ -170,6 +170,7 @@ var template;
  *   cache: (?boolean|undefined),
  *   getCacheKey: (?boolean|undefined),
  *   context: (Object|undefined),
+ *   babel: (Array|undefined),
  *   vars: (Object|undefined),
  *   onError: (?function(!Error)|undefined),
  *   throws: (?boolean|undefined),
@@ -296,6 +297,15 @@ var include;
 
 /** @type {?} */
 var toObj;
+
+/** @type {?} */
+var safe;
+
+/** @type {?} */
+var bind;
+
+/** @type {?} */
+var test;
 
 /** @const */
 Snakeskin.inlineTags = {};
