@@ -7,7 +7,7 @@
  */
 
 /** @type {Snakeskin} */
-module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
+module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin');
 require('core-js/es6/object');
 require('core-js/es6/promise');
 
@@ -302,13 +302,14 @@ function testId(id) {
  *
  * @param {string} txt
  * @param {function(!Object): !Object} setParams - adaptor of parameters
- * @param {function(string, string, string): !Object} adaptor - adaptor of code
+ * @param {function(string, string, string, !Object): !Object} adaptor - adaptor of code
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
  * @return {!Promise<(string|boolean|null)>}
  */
 exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 	opt_params = Object.assign({
+		adaptorOptions: {},
 		renderMode: 'stringConcat',
 		module: 'umd',
 		moduleId: 'tpls',
@@ -325,7 +326,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 		nRgxp = /\r?\n|\r/g,
 		tpls = {};
 
-	var p = Object.assign({}, setParams(opt_params), {
+	var p = Object.assign(setParams(opt_params), {
 		context: tpls,
 		module: 'cjs',
 		prettyPrint: false
@@ -388,7 +389,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 				tasks.push(function (cb) {
 					text
 						.then(function (text) {
-							res += adaptor(val, decl[2] + decl[3], text);
+							res += adaptor(val, decl[2] + decl[3], text, p.adaptorOptions);
 							cb();
 						})
 
@@ -408,7 +409,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 					}
 				}
 
-				res += adaptor(val, decl[0], text);
+				res += adaptor(val, decl[0], text, p.adaptorOptions);
 			}
 		});
 
