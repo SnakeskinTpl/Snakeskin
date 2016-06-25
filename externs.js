@@ -182,6 +182,7 @@ var template;
  *   useStrict: (?boolean|undefined),
  *   prettyPrint: (?boolean|undefined),
  *   literalBounds: (Array<string>|undefined),
+ *   attrLiteralBounds: (Array<string>|undefined),
  *   bemFilter: (?string|undefined),
  *   filters: (Object|undefined),
  *   localization: (?boolean|undefined),
@@ -237,6 +238,9 @@ var prettyPrint;
 
 /** @type {?} */
 var literalBounds;
+
+/** @type {?} */
+var attrLiteralBounds;
 
 /** @type {?} */
 var bemFilter;
@@ -430,6 +434,7 @@ $$SnakeskinParser.prototype.splitXMLAttrGroup = function (str) {};
  *   moduleName: (?string|undefined),
  *   useStrict: boolean,
  *   literalBounds: !Array<string>,
+ *   attrLiteralBounds: (Array<string>|undefined),
  *   bemFilter: string,
  *   filters: (!Array),
  *   localization: boolean,
@@ -481,6 +486,9 @@ $$SnakeskinParser.prototype.useStrict;
 
 /** @type {!Array<string>} */
 $$SnakeskinParser.prototype.literalBounds;
+
+/** @type {(Array<string>|undefined)} */
+$$SnakeskinParser.prototype.attrLiteralBounds;
 
 /** @type {string} */
 $$SnakeskinParser.prototype.bemFilter;
