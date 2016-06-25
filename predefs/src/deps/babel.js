@@ -15,6 +15,9 @@ var transform;
 /** @type {?} */
 var code;
 
+/** @type {?} */
+var esprima;
+
 /** @const */
 var babylon = {
 	/**
