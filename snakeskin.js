@@ -372,7 +372,6 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 						},
 
 						function (err) {
-							console.log(err);
 							cb(err);
 						}
 					)
