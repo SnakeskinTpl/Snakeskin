@@ -444,7 +444,7 @@ import {
 					return __RESULT__;
 				}
 
-				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype) {
+				function __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype, literalBounds) {
 					var __RESULT__ = res;
 
 					if (typeof link === 'undefined' || link !== '?') {
@@ -455,16 +455,22 @@ import {
 							}
 
 							var
-								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' ');
+								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' '),
+								wrapper = literalBounds && attr.slice(0, 2) === '{{' && attr.slice(-2) === '}}',
+								w = wrapper ? '' : '"';
+
+							if (wrapper) {
+								attr = literalBounds[0] + attr.slice(2, -2) + literalBounds[1];
+							}
 
 							if (stringResult) {
-								__STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"');
+								__STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '=' + w + __ESCAPE_D_Q__(attr) + w);
 
 							} else if (isDOMRenderMode) {
 								Snakeskin.setAttribute($0, key, attr);
 
 							} else {
-								${this.wrap(`' ' + key + (attr === TRUE ? '' : '="' + __ESCAPE_D_Q__(attr) + '"')`)}
+								${this.wrap(`' ' + key + (attr === TRUE ? '' : '=' + w + __ESCAPE_D_Q__(attr) + w)`)}
 							}
 						};
 

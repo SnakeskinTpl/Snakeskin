@@ -16,6 +16,7 @@
  *   moduleName: (?string|undefined),
  *   useStrict: boolean,
  *   literalBounds: !Array<string>,
+ *   attrLiteralBounds: (Array<string>|undefined),
  *   bemFilter: string,
  *   filters: (!Array),
  *   localization: boolean,
@@ -67,6 +68,9 @@ $$SnakeskinParser.prototype.useStrict;
 
 /** @type {!Array<string>} */
 $$SnakeskinParser.prototype.literalBounds;
+
+/** @type {(Array<string>|undefined)} */
+$$SnakeskinParser.prototype.attrLiteralBounds;
 
 /** @type {string} */
 $$SnakeskinParser.prototype.bemFilter;

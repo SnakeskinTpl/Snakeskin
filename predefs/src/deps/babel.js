@@ -13,9 +13,6 @@ var plugins;
 var transform;
 
 /** @type {?} */
-var babelrc;
-
-/** @type {?} */
 var code;
 
 /** @const */

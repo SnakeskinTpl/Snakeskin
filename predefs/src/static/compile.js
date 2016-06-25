@@ -45,6 +45,7 @@ var template;
  *   useStrict: (?boolean|undefined),
  *   prettyPrint: (?boolean|undefined),
  *   literalBounds: (Array<string>|undefined),
+ *   attrLiteralBounds: (Array<string>|undefined),
  *   bemFilter: (?string|undefined),
  *   filters: (Object|undefined),
  *   localization: (?boolean|undefined),
@@ -100,6 +101,9 @@ var prettyPrint;
 
 /** @type {?} */
 var literalBounds;
+
+/** @type {?} */
+var attrLiteralBounds;
 
 /** @type {?} */
 var bemFilter;

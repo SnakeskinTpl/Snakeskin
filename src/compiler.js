@@ -72,6 +72,7 @@ import {
  *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
  *
  *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
+ *   *) [attrLiteralBounds = ['{', '}']] - bounds for the attribute literal directive
  *   *) [bemFilter = 'bem'] - name of the bem filter
  *   *) [filters = ['undef', 'html']] - list of default filters for output
  *
@@ -893,10 +894,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 	if (p.babel) {
 		const babel = require('babel-core');
-		parser.result = babel.transform(parser.result, {
-			babelrc: false,
-			plugins: p.babel
-		}).code;
+		parser.result = babel.transform(parser.result, p.babel).code;
 	}
 
 	// Save some debug information
