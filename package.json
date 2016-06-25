@@ -3,7 +3,7 @@
   "description": "Awesome JavaScript template engine.",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
   "main": "snakeskin.js",
-  "version": "7.0.13",
+  "version": "7.1.0",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -52,6 +52,7 @@
     "coveralls": "^2.11.2",
     "del": "^2.2.0",
     "eslint": "^2.13.1",
+    "esprima": "^2.7.2",
     "gulp": "^3.8.9",
     "gulp-bump": "^2.0.0",
     "gulp-cached": "^1.0.4",
