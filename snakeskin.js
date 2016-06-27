@@ -339,7 +339,7 @@ exports.execTpl = function (fn, opt_data) {
  * Compiles Snakeskin templates as React JSX
  *
  * @param {string} txt
- * @param {{setParams, template, local, importNative, importCJS, importAMD, importGlobal, header, footer}} adapter - adaptor of code
+ * @param {{setParams, template, local, importNative, importCJS, importAMD, importGlobal, header, footer}} adapter - adapter of code
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
  * @return {!Promise<(string|boolean|null)>}
