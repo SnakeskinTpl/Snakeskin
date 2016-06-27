@@ -339,13 +339,12 @@ exports.execTpl = function (fn, opt_data) {
  * Compiles Snakeskin templates as React JSX
  *
  * @param {string} txt
- * @param {function(!Object): !Object} setParams - adaptor of parameters
- * @param {function(string, string, string, !Object): !Object} adaptor - adaptor of code
+ * @param {{setParams, template, importNative, importCJS, importAMD, importGlobal, header, footer}} adaptor - adaptor of code
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
  * @return {!Promise<(string|boolean|null)>}
  */
-exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
+exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 	opt_params = Object.assign({
 		adaptorOptions: {},
 		renderMode: 'stringConcat',
@@ -364,7 +363,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 		nRgxp = /\r?\n|\r/g,
 		tpls = {};
 
-	var p = Object.assign(setParams(opt_params), {
+	var p = Object.assign(adaptor.setParams(opt_params), {
 		context: tpls,
 		module: 'cjs',
 		prettyPrint: false
@@ -410,7 +409,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString());
 
 			tasks.push(exports.execTpl(el, p.data).then(function (text) {
-				res += adaptor(val, decl[2] + decl[3], text, p.adaptorOptions);
+				res += adaptor.template(val, decl[2] + decl[3], text, p.adaptorOptions);
 			}));
 		});
 
@@ -423,10 +422,14 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 		'key <' + exports.compile(null, Object.assign({}, opt_params, {getCacheKey: true})) + '>'
 	);
 
+	if (adaptor.header) {
+		res += adaptor.header;
+	}
+
 	if (mod === 'native') {
 		res +=
 			useStrict +
-			'import React from "react";' +
+			adaptor.importNative +
 			'var exports = {};' +
 			'export default exports;'
 		;
@@ -437,7 +440,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 				(
 					{cjs: true, umd: true}[mod] ?
 						'if (typeof exports === "object" && typeof module !== "undefined") {' +
-							'factory(exports, typeof React === "undefined" ? require("react") : React);' +
+							'factory(exports, ' + adaptor.importCJS + ');' +
 							'return;' +
 						'}' :
 						''
@@ -446,7 +449,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 				(
 					{amd: true, umd: true}[mod] ?
 						'if (typeof define === "function" && define.amd) {' +
-							'define("' + (p.moduleId) + '", ["exports", "react"], factory);' +
+							'define("' + (p.moduleId) + '", ["exports", ' + adaptor.importAMD + '], factory);' +
 							'return;' +
 						'}' :
 						''
@@ -454,7 +457,7 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 
 				(
 					{global: true, umd: true}[mod] ?
-						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + ', React);' :
+						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + ', ' + adaptor.importGlobal + ');' :
 						''
 				) +
 
@@ -465,6 +468,10 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 
 	return compile(tpls)
 		.then(function () {
+			if (adaptor.footer) {
+				res += adaptor.footer;
+			}
+
 			if (mod !== 'native') {
 				res += '});';
 			}
