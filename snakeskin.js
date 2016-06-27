@@ -346,7 +346,7 @@ exports.execTpl = function (fn, opt_data) {
  */
 exports.adapter = function (txt, adapter, opt_params, opt_info) {
 	opt_params = Object.assign({
-		adaptorOptions: {},
+		adapterOptions: {},
 		renderMode: 'stringConcat',
 		module: 'umd',
 		moduleId: 'tpls',
@@ -371,7 +371,7 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 
 	var
 		useStrict = p.useStrict ? '"useStrict";' : '',
-		opts = p.adaptorOptions,
+		opts = p.adapterOptions,
 		res = exports.compile(txt, p, opt_info);
 
 	if (!res) {
@@ -410,7 +410,7 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString());
 
 			tasks.push(exports.execTpl(el, p.data).then(function (text) {
-				res += adapter.template(val, decl[2] + decl[3], text, p.adaptorOptions);
+				res += adapter.template(val, decl[2] + decl[3], text, p.adapterOptions);
 			}));
 		});
 
