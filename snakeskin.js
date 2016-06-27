@@ -371,6 +371,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 
 	var
 		useStrict = p.useStrict ? '"useStrict";' : '',
+		opts = p.adaptorOptions,
 		res = exports.compile(txt, p, opt_info);
 
 	if (!res) {
@@ -422,8 +423,8 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 		'key <' + exports.compile(null, Object.assign({}, opt_params, {getCacheKey: true})) + '>'
 	);
 
-	if (adaptor.header) {
-		res += adaptor.header;
+	if (opts.header) {
+		res += opts.header;
 	}
 
 	if (mod === 'native') {
@@ -468,8 +469,8 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 
 	return compile(tpls)
 		.then(function () {
-			if (adaptor.footer) {
-				res += adaptor.footer;
+			if (opts.footer) {
+				res += opts.footer;
 			}
 
 			if (mod !== 'native') {
