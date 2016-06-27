@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.2 (live)
+ * Snakeskin v7.1.3 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sat, 25 Jun 2016 15:49:17 GMT
+ * Date: 'Mon, 27 Jun 2016 09:41:05 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 2]
+      VERSION: [7, 1, 3]
     };
 
     /**
@@ -369,8 +369,8 @@
     		var arr = keys(obj);
 
     		length = arr.length;
-    		for (var _i = 0; _i < length; _i++) {
-    			if (callback(obj[arr[_i]], arr[_i], obj, { i: _i, isFirst: _i === 0, isLast: _i === length - 1, length: length }) === false) {
+    		for (var i = 0; i < length; i++) {
+    			if (callback(obj[arr[i]], arr[i], obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
     				break;
     			}
     		}
@@ -385,17 +385,17 @@
     			}
     		}
 
-    		var _i2 = 0;
-    		for (var _key in obj) {
-    			if (!obj.hasOwnProperty(_key)) {
+    		var i = 0;
+    		for (var key in obj) {
+    			if (!obj.hasOwnProperty(key)) {
     				break;
     			}
 
-    			if (callback(obj[_key], _key, obj, { i: _i2, isFirst: _i2 === 0, isLast: _i2 === length - 1, length: length }) === false) {
+    			if (callback(obj[key], key, obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
     				break;
     			}
 
-    			_i2++;
+    			i++;
     		}
     	}
     };

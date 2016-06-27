@@ -13,8 +13,7 @@ require('core-js/es6/promise');
 
 var
 	beautify = require('js-beautify'),
-	$C = require('collection.js').$C,
-	async = require('async');
+	$C = require('collection.js').$C;
 
 var
 	path = require('path'),
@@ -298,6 +297,45 @@ function testId(id) {
 }
 
 /**
+ * Executes the specified function and returns the result
+ *
+ * @param {?} fn - source function
+ * @param {?=} [opt_data] - additional parameters
+ * @return {Promise}
+ */
+exports.execTpl = function (fn, opt_data) {
+	var res = typeof fn === 'function' ? fn(opt_data) : fn;
+
+	if (res && res instanceof Object) {
+		if (typeof res === 'function') {
+			return exports.execTpl(res);
+		}
+
+		if (res.then) {
+			return res.then(function (text) {
+				return exports.execTpl(text);
+			});
+		}
+
+		if (res.next) {
+			var
+				iterator = res,
+				pos = iterator.next();
+
+			res = pos.value;
+			while (!pos.done) {
+				pos = iterator.next();
+				res += pos.value;
+			}
+		}
+	}
+
+	return new Promise(function (resolve) {
+		resolve(res);
+	});
+};
+
+/**
  * Compiles Snakeskin templates as React JSX
  *
  * @param {string} txt
@@ -365,62 +403,18 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 					'}'
 				;
 
-				tasks.push(function (cb) {
-					compile(el, val).then(
-						function (res) {
-							cb(null, res);
-						},
-
-						function (err) {
-							cb(err);
-						}
-					)
-				});
-
-				return;
+				return tasks.push(compile(el, val));
 			}
 
 			var
-				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString()),
-				text = el(p.data);
+				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString());
 
-			if (text.then) {
-				tasks.push(function (cb) {
-					text
-						.then(function (text) {
-							res += adaptor(val, decl[2] + decl[3], text, p.adaptorOptions);
-							cb();
-						})
-
-						.catch(cb);
-				});
-
-			} else {
-				if (text.next) {
-					var
-						iterator = text,
-						pos = iterator.next();
-
-					text = pos.value;
-					while (!pos.done) {
-						pos = iterator.next();
-						text += pos.value;
-					}
-				}
-
-				res += adaptor(val, decl[0], text, p.adaptorOptions);
-			}
+			tasks.push(exports.execTpl(el, p.data).then(function (text) {
+				res += adaptor(val, decl[2] + decl[3], text, p.adaptorOptions);
+			}));
 		});
 
-		return new Promise(function (resolve, reject) {
-			async.parallel(tasks, function (err) {
-				if (err) {
-					return reject(err);
-				}
-
-				resolve();
-			});
-		});
+		return Promise.all(tasks);
 	}
 
 	res = /\/\*[\s\S]*?\*\//.exec(res)[0];
@@ -469,20 +463,16 @@ exports.adaptor = function (txt, setParams, adaptor, opt_params, opt_info) {
 		;
 	}
 
-	return new Promise(function (resolve, reject) {
-		compile(tpls)
-			.then(function () {
-				if (mod !== 'native') {
-					res += '});';
-				}
+	return compile(tpls)
+		.then(function () {
+			if (mod !== 'native') {
+				res += '});';
+			}
 
-				if (prettyPrint) {
-					res = beautify.js(res);
-				}
+			if (prettyPrint) {
+				res = beautify.js(res);
+			}
 
-				resolve(res.replace(nRgxp, eol) + eol);
-			})
-
-			.catch(reject);
-	});
+			return res.replace(nRgxp, eol) + eol;
+		});
 };
