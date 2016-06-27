@@ -344,7 +344,7 @@ exports.execTpl = function (fn, opt_data) {
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
  * @return {!Promise<(string|boolean|null)>}
  */
-exports.adaptor = function (txt, adapter, opt_params, opt_info) {
+exports.adapter = function (txt, adapter, opt_params, opt_info) {
 	opt_params = Object.assign({
 		adaptorOptions: {},
 		renderMode: 'stringConcat',
