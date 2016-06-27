@@ -43,6 +43,7 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 * [Browserify](https://github.com/SnakeskinTpl/snakeskinify)
 * [CLI](https://github.com/SnakeskinTpl/snakeskin-cli)
 * [IntelliJ-IDEA](https://github.com/SnakeskinTpl/IntelliJ-IDEA)
+* [atom-snakeskin](https://github.com/SnakeskinTpl/atom-snakeskin)
 * [STD.ss](https://github.com/SnakeskinTpl/std.ss)
 
 ### Example
