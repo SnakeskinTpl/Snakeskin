@@ -429,7 +429,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 	if (mod === 'native') {
 		res +=
 			useStrict +
-			adaptor.importNative +
+			(adaptor.importNative || '') +
 			'var exports = {};' +
 			'export default exports;'
 		;
@@ -440,7 +440,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 				(
 					{cjs: true, umd: true}[mod] ?
 						'if (typeof exports === "object" && typeof module !== "undefined") {' +
-							'factory(exports, ' + adaptor.importCJS + ');' +
+							'factory(exports' + (adaptor.importCJS ? ',' + adaptor.importCJS : '') + ');' +
 							'return;' +
 						'}' :
 						''
@@ -449,7 +449,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 				(
 					{amd: true, umd: true}[mod] ?
 						'if (typeof define === "function" && define.amd) {' +
-							'define("' + (p.moduleId) + '", ["exports", ' + adaptor.importAMD + '], factory);' +
+							'define("' + (p.moduleId) + '", ["exports"' + (adaptor.importAMD ? ',' + adaptor.importAMD : '') + '], factory);' +
 							'return;' +
 						'}' :
 						''
@@ -457,11 +457,11 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 
 				(
 					{global: true, umd: true}[mod] ?
-						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + ', ' + adaptor.importGlobal + ');' :
+						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + (adaptor.importGlobal ? ',' + adaptor.importGlobal : '') + ');' :
 						''
 				) +
 
-			'})(this, function (exports, ' + adaptor.local + ') {' +
+			'})(this, function (exports' + (adaptor.local ? ',' + adaptor.local : '') + ') {' +
 				useStrict
 		;
 	}

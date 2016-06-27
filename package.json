@@ -3,7 +3,7 @@
   "description": "Awesome JavaScript template engine.",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
   "main": "snakeskin.js",
-  "version": "7.1.6",
+  "version": "7.1.7",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
