@@ -339,12 +339,12 @@ exports.execTpl = function (fn, opt_data) {
  * Compiles Snakeskin templates as React JSX
  *
  * @param {string} txt
- * @param {{setParams, template, local, importNative, importCJS, importAMD, importGlobal, header, footer}} adaptor - adaptor of code
+ * @param {{setParams, template, local, importNative, importCJS, importAMD, importGlobal, header, footer}} adapter - adaptor of code
  * @param {?$$SnakeskinParams=} [opt_params] - additional parameters
  * @param {?$$SnakeskinInfoParams=} [opt_info] - additional parameters for debug
  * @return {!Promise<(string|boolean|null)>}
  */
-exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
+exports.adaptor = function (txt, adapter, opt_params, opt_info) {
 	opt_params = Object.assign({
 		adaptorOptions: {},
 		renderMode: 'stringConcat',
@@ -363,7 +363,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 		nRgxp = /\r?\n|\r/g,
 		tpls = {};
 
-	var p = Object.assign(adaptor.setParams(opt_params), {
+	var p = Object.assign(adapter.setParams(opt_params), {
 		context: tpls,
 		module: 'cjs',
 		prettyPrint: false
@@ -410,7 +410,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString());
 
 			tasks.push(exports.execTpl(el, p.data).then(function (text) {
-				res += adaptor.template(val, decl[2] + decl[3], text, p.adaptorOptions);
+				res += adapter.template(val, decl[2] + decl[3], text, p.adaptorOptions);
 			}));
 		});
 
@@ -430,7 +430,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 	if (mod === 'native') {
 		res +=
 			useStrict +
-			(adaptor.importNative || '') +
+			(adapter.importNative || '') +
 			'var exports = {};' +
 			'export default exports;'
 		;
@@ -441,7 +441,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 				(
 					{cjs: true, umd: true}[mod] ?
 						'if (typeof exports === "object" && typeof module !== "undefined") {' +
-							'factory(exports' + (adaptor.importCJS ? ',' + adaptor.importCJS : '') + ');' +
+							'factory(exports' + (adapter.importCJS ? ',' + adapter.importCJS : '') + ');' +
 							'return;' +
 						'}' :
 						''
@@ -450,7 +450,7 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 				(
 					{amd: true, umd: true}[mod] ?
 						'if (typeof define === "function" && define.amd) {' +
-							'define("' + (p.moduleId) + '", ["exports"' + (adaptor.importAMD ? ',' + adaptor.importAMD : '') + '], factory);' +
+							'define("' + (p.moduleId) + '", ["exports"' + (adapter.importAMD ? ',' + adapter.importAMD : '') + '], factory);' +
 							'return;' +
 						'}' :
 						''
@@ -458,11 +458,11 @@ exports.adaptor = function (txt, adaptor, opt_params, opt_info) {
 
 				(
 					{global: true, umd: true}[mod] ?
-						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + (adaptor.importGlobal ? ',' + adaptor.importGlobal : '') + ');' :
+						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + (adapter.importGlobal ? ',' + adapter.importGlobal : '') + ');' :
 						''
 				) +
 
-			'})(this, function (exports' + (adaptor.local ? ',' + adaptor.local : '') + ') {' +
+			'})(this, function (exports' + (adapter.local ? ',' + adapter.local : '') + ') {' +
 				useStrict
 		;
 	}
