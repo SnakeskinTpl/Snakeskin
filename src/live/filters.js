@@ -513,16 +513,16 @@ Filters['parse'] = function (val) {
  * BEM filter
  *
  * @param {?} block - block name
- * @param {(Element|undefined)} node - link for a node (only for renderMode = dom)
+ * @param {!Object<string, !Array<string>>} attrs - object of attributes
  * @param {?} part - second part of declaration
  * @return {string}
  */
-Filters['bem'] = function (block, node, part) {
+Filters['bem'] = function (block, attrs, part) {
 	return String(block) + String(part);
 };
 
 Snakeskin.setFilterParams('bem', {
-	bind: ['$0']
+	bind: [(o) => o.getVar('__ATTR_CACHE__')]
 });
 
 /**

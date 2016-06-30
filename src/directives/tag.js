@@ -66,7 +66,8 @@ Snakeskin.addDirective(
 			this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
 		const
-			attrCache = this.getVar('__ATTR_CACHE__');
+			attrCache = this.getVar('__ATTR_CACHE__'),
+			attrHackRgxp = /_+ATTR_CACHE_+(tag_\d+)?(?=.*\+ ')/g;
 
 		if (id) {
 			str += `${attrCache}['id'] = ['${id}'] || ${attrCache}['id'];`;
@@ -77,7 +78,7 @@ Snakeskin.addDirective(
 				arr = [];
 
 			for (let i = 0; i < classes.length; i++) {
-				arr.push(`'${classes[i]}'`);
+				arr.push(`'${classes[i].replace(attrHackRgxp, attrCache)}'`);
 			}
 
 			str += `${attrCache}['class'] = [${arr}].concat(${attrCache}['class'] || []);`;
