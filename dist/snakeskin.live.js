@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.9 (live)
+ * Snakeskin v7.1.10 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 27 Jun 2016 18:35:08 GMT
+ * Date: 'Thu, 30 Jun 2016 06:43:55 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 9]
+      VERSION: [7, 1, 10]
     };
 
     /**
@@ -369,8 +369,8 @@
     		var arr = keys(obj);
 
     		length = arr.length;
-    		for (var i = 0; i < length; i++) {
-    			if (callback(obj[arr[i]], arr[i], obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
+    		for (var _i = 0; _i < length; _i++) {
+    			if (callback(obj[arr[_i]], arr[_i], obj, { i: _i, isFirst: _i === 0, isLast: _i === length - 1, length: length }) === false) {
     				break;
     			}
     		}
@@ -385,17 +385,17 @@
     			}
     		}
 
-    		var i = 0;
-    		for (var key in obj) {
-    			if (!obj.hasOwnProperty(key)) {
+    		var _i2 = 0;
+    		for (var _key in obj) {
+    			if (!obj.hasOwnProperty(_key)) {
     				break;
     			}
 
-    			if (callback(obj[key], key, obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
+    			if (callback(obj[_key], _key, obj, { i: _i2, isFirst: _i2 === 0, isLast: _i2 === length - 1, length: length }) === false) {
     				break;
     			}
 
-    			i++;
+    			_i2++;
     		}
     	}
     };
@@ -1109,16 +1109,18 @@
      * BEM filter
      *
      * @param {?} block - block name
-     * @param {(Element|undefined)} node - link for a node (only for renderMode = dom)
+     * @param {!Object<string, !Array<string>>} attrs - object of attributes
      * @param {?} part - second part of declaration
      * @return {string}
      */
-    Filters['bem'] = function (block, node, part) {
+    Filters['bem'] = function (block, attrs, part) {
     	return String(block) + String(part);
     };
 
     Snakeskin.setFilterParams('bem', {
-    	bind: ['$0']
+    	bind: [function (o) {
+    		return o.getVar('__ATTR_CACHE__');
+    	}]
     });
 
     /**

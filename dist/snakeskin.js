@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.9
+ * Snakeskin v7.1.10
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 27 Jun 2016 18:35:08 GMT
+ * Date: 'Thu, 30 Jun 2016 06:43:55 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 9]
+      VERSION: [7, 1, 10]
     };
 
     /**
@@ -369,8 +369,8 @@
     		var arr = keys(obj);
 
     		length = arr.length;
-    		for (var i = 0; i < length; i++) {
-    			if (callback(obj[arr[i]], arr[i], obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
+    		for (var _i = 0; _i < length; _i++) {
+    			if (callback(obj[arr[_i]], arr[_i], obj, { i: _i, isFirst: _i === 0, isLast: _i === length - 1, length: length }) === false) {
     				break;
     			}
     		}
@@ -385,17 +385,17 @@
     			}
     		}
 
-    		var i = 0;
-    		for (var key in obj) {
-    			if (!obj.hasOwnProperty(key)) {
+    		var _i2 = 0;
+    		for (var _key in obj) {
+    			if (!obj.hasOwnProperty(_key)) {
     				break;
     			}
 
-    			if (callback(obj[key], key, obj, { i: i, isFirst: i === 0, isLast: i === length - 1, length: length }) === false) {
+    			if (callback(obj[_key], _key, obj, { i: _i2, isFirst: _i2 === 0, isLast: _i2 === length - 1, length: length }) === false) {
     				break;
     			}
 
-    			i++;
+    			_i2++;
     		}
     	}
     };
@@ -1334,16 +1334,18 @@ var     ws$1 = /\s/;
      * BEM filter
      *
      * @param {?} block - block name
-     * @param {(Element|undefined)} node - link for a node (only for renderMode = dom)
+     * @param {!Object<string, !Array<string>>} attrs - object of attributes
      * @param {?} part - second part of declaration
      * @return {string}
      */
-    Filters['bem'] = function (block, node, part) {
+    Filters['bem'] = function (block, attrs, part) {
     	return String(block) + String(part);
     };
 
     Snakeskin.setFilterParams('bem', {
-    	bind: ['$0']
+    	bind: [function (o) {
+    		return o.getVar('__ATTR_CACHE__');
+    	}]
     });
 
     /**
@@ -2120,9 +2122,9 @@ var     ws$1 = /\s/;
 
     	// Analise requested parameters
     	// and save it in cache
-    	for (var i = 0; i < argsList.length; i++) {
-    		var el = argsList[i],
-    		    arg = el.split(/\s*=\s*/);
+    	for (var _i = 0; _i < argsList.length; _i++) {
+    		var _el = argsList[_i],
+    		    arg = _el.split(/\s*=\s*/);
 
     		if (arg.length > 1) {
     			arg[1] = arg.slice(1).join('=');
@@ -2162,7 +2164,7 @@ var     ws$1 = /\s/;
 
     		argsMap[arg[0]] = {
     			defFilter: defFilter,
-    			i: i,
+    			i: _i,
     			key: arg[0],
     			nullable: nullable,
     			scope: scope,
@@ -2178,58 +2180,58 @@ var     ws$1 = /\s/;
     				break;
     			}
 
-    			var el = parentArgs[key],
-    			    arg = argsMap[key];
+    			var _el2 = parentArgs[key],
+    			    _arg = argsMap[key];
 
     			// Parameter exists in a parent function
-    			if (arg) {
-    				arg.defFilter = el.defFilter + arg.defFilter;
+    			if (_arg) {
+    				_arg.defFilter = _el2.defFilter + _arg.defFilter;
 
-    				if (!scope && el.scope) {
-    					scope = el.scope;
-    					arg.scope = scope;
+    				if (!scope && _el2.scope) {
+    					scope = _el2.scope;
+    					_arg.scope = scope;
     				}
 
-    				if (arg.nullable === undefined) {
-    					arg.nullable = el.nullable;
+    				if (_arg.nullable === undefined) {
+    					_arg.nullable = _el2.nullable;
     				}
 
-    				if (arg.nullable === undefined) {
-    					arg.nullable = el.nullable;
+    				if (_arg.nullable === undefined) {
+    					_arg.nullable = _el2.nullable;
     				}
 
-    				if (arg.value === undefined) {
-    					argsMap[key].value = el.value;
+    				if (_arg.value === undefined) {
+    					argsMap[key].value = _el2.value;
     				}
 
     				// Parameter doesn't exists in a parent function,
     				// set it as a local variable
     			} else {
-    				argsMap[key] = {
-    					defFilter: el.defFilter,
-    					i: el.i,
-    					key: key,
-    					local: true,
-    					value: el.value !== undefined ? el.value : 'undefined'
-    				};
-    			}
+    					argsMap[key] = {
+    						defFilter: _el2.defFilter,
+    						i: _el2.i,
+    						key: key,
+    						local: true,
+    						value: _el2.value !== undefined ? _el2.value : 'undefined'
+    					};
+    				}
     		}
     	}
 
     	var finalArgsList = [],
     	    localsList = [];
 
-    	for (var key in argsMap) {
-    		if (!argsMap.hasOwnProperty(key)) {
+    	for (var _key in argsMap) {
+    		if (!argsMap.hasOwnProperty(_key)) {
     			break;
     		}
 
-    		var el = argsMap[key];
+    		var _el3 = argsMap[_key];
 
-    		if (el.local) {
-    			localsList[el.i] = el;
+    		if (_el3.local) {
+    			localsList[_el3.i] = _el3;
     		} else {
-    			finalArgsList[el.i] = el;
+    			finalArgsList[_el3.i] = _el3;
     		}
     	}
 
@@ -2239,25 +2241,25 @@ var     ws$1 = /\s/;
     	var locals = [];
 
     	// Initialise local variables
-    	for (var i = 0; i < localsList.length; i++) {
-    		var el = localsList[i];
+    	for (var _i2 = 0; _i2 < localsList.length; _i2++) {
+    		var _el4 = localsList[_i2];
 
-    		if (!el) {
+    		if (!_el4) {
     			continue;
     		}
 
-    		var old = el.key;
+    		var old = _el4.key;
 
     		if (isLocalFunction) {
-    			el.key = this.declVar(el.key, { fn: true });
+    			_el4.key = this.declVar(_el4.key, { fn: true });
     		}
 
-    		locals.push([el.key, el.value, old]);
+    		locals.push([_el4.key, _el4.value, old]);
 
-    		def += 'var ' + el.key + ' = ' + this.out(this.replaceDangerBlocks(el.value) + el.defFilter, { unsafe: true }) + ';';
-    		structure.vars[el.key] = {
+    		def += 'var ' + _el4.key + ' = ' + this.out(this.replaceDangerBlocks(_el4.value) + _el4.defFilter, { unsafe: true }) + ';';
+    		structure.vars[_el4.key] = {
     			scope: this.scope.length,
-    			value: el.key
+    			value: _el4.key
     		};
     	}
 
@@ -2266,32 +2268,32 @@ var     ws$1 = /\s/;
     	    constsCache = structure.params['@consts'] = {};
 
     	// Initialise arguments
-    	for (var i = 0; i < finalArgsList.length; i++) {
-    		var el = finalArgsList[i],
-    		    old = el.key;
+    	for (var _i3 = 0; _i3 < finalArgsList.length; _i3++) {
+    		var _el5 = finalArgsList[_i3],
+    		    _old = _el5.key;
 
-    		if (consts && consts[old] && isLocalFunction) {
-    			constsCache[old] = consts[old];
-    			delete consts[old];
+    		if (consts && consts[_old] && isLocalFunction) {
+    			constsCache[_old] = consts[_old];
+    			delete consts[_old];
     		}
 
     		if (isLocalFunction) {
-    			el.key = this.declVar(el.key, { fn: true });
+    			_el5.key = this.declVar(_el5.key, { fn: true });
     		}
 
-    		decl += el.key;
-    		args.push([el.key, el.value, old]);
+    		decl += _el5.key;
+    		args.push([_el5.key, _el5.value, _old]);
 
-    		var val = this.out(el.key + el.defFilter, { skipFirstWord: true, unsafe: true });
+    		var val = this.out(_el5.key + _el5.defFilter, { skipFirstWord: true, unsafe: true });
 
-    		if (el.value !== undefined) {
-    			var defVal = this.out(this.replaceDangerBlocks(el.value) + el.defFilter, { unsafe: true });
-    			def += el.key + ' = ' + el.key + ' ' + (el.nullable ? '!== undefined' : '!= null') + ' ? ' + val + ' : ' + defVal + ';';
-    		} else if (el.defFilter) {
-    			def += el.key + ' = ' + val + ';';
+    		if (_el5.value !== undefined) {
+    			var defVal = this.out(this.replaceDangerBlocks(_el5.value) + _el5.defFilter, { unsafe: true });
+    			def += _el5.key + ' = ' + _el5.key + ' ' + (_el5.nullable ? '!== undefined' : '!= null') + ' ? ' + val + ' : ' + defVal + ';';
+    		} else if (_el5.defFilter) {
+    			def += _el5.key + ' = ' + val + ';';
     		}
 
-    		if (i !== finalArgsList.length - 1) {
+    		if (_i3 !== finalArgsList.length - 1) {
     			decl += ',';
     		}
     	}
@@ -2406,11 +2408,11 @@ var     ws$1 = /\s/;
 
     	if (blockStructure && this.getGroup('blockInherit')[opt_name]) {
     		var parent = this.parentTplName,
-    		    key = opt_name + '_' + opt_params.name;
+    		    _key = opt_name + '_' + opt_params.name;
 
     		var sub = void 0;
-    		if (blockTable[key] && blockTable[key] !== true) {
-    			sub = blockTable[key];
+    		if (blockTable[_key] && blockTable[_key] !== true) {
+    			sub = blockTable[_key];
     			sub.parent = blockStructure;
     		} else {
     			(function () {
@@ -2421,20 +2423,20 @@ var     ws$1 = /\s/;
     					parent: blockStructure
     				};
 
-    				if (blockTable[key] === true) {
+    				if (blockTable[_key] === true) {
     					sub.drop = true;
     				}
 
-    				blockTable[key] = sub;
+    				blockTable[_key] = sub;
     				var deep = function deep(obj) {
-    					for (var i = 0; i < obj.length; i++) {
-    						var el = obj[i],
-    						    _key = el.name + '_' + el.params.name;
+    					for (var _i = 0; _i < obj.length; _i++) {
+    						var el = obj[_i],
+    						    _key2 = el.name + '_' + el.params.name;
 
-    						if (blockTable[_key] && blockTable[_key] !== true) {
-    							blockTable[_key].drop = true;
+    						if (blockTable[_key2] && blockTable[_key2] !== true) {
+    							blockTable[_key2].drop = true;
     						} else {
-    							blockTable[_key] = true;
+    							blockTable[_key2] = true;
     						}
 
     						if (el.children) {
@@ -2443,8 +2445,8 @@ var     ws$1 = /\s/;
     					}
     				};
 
-    				if (parent && $templates[parent][key] && $templates[parent][key].children) {
-    					deep($templates[parent][key].children);
+    				if (parent && $templates[parent][_key] && $templates[parent][_key].children) {
+    					deep($templates[parent][_key].children);
     				}
     			})();
     		}
@@ -3154,8 +3156,8 @@ var     ws$1 = /\s/;
     		var rmWhitelistList = concat(p.renderModesWhitelist),
     		    rmWhitelist = {};
 
-    		for (var i = 0; i < rmWhitelistList.length; i++) {
-    			rmWhitelist[rmWhitelistList[i]] = true;
+    		for (var _i = 0; _i < rmWhitelistList.length; _i++) {
+    			rmWhitelist[rmWhitelistList[_i]] = true;
     		}
 
     		if (p.renderModesWhitelist && !rmWhitelist[this.renderMode]) {
@@ -3168,8 +3170,8 @@ var     ws$1 = /\s/;
     			var groups = [].concat(p.with);
 
     			var arr = [];
-    			for (var i = 0; i < groups.length; i++) {
-    				var el = groups[i];
+    			for (var _i2 = 0; _i2 < groups.length; _i2++) {
+    				var el = groups[_i2];
     				arr = arr.concat(el[0] === GROUP ? this.getGroupList(el.slice(1)) : el);
     			}
 
@@ -3416,8 +3418,8 @@ var     ws$1 = /\s/;
     		return a.val - b.val;
     	};
 
-    	for (var i = 0; i < length; i++) {
-    		var type = is[i];
+    	for (var _i = 0; _i < length; _i++) {
+    		var type = is[_i];
 
     		if ($router[type]) {
     			el = $router[type][name];
@@ -3442,7 +3444,7 @@ var     ws$1 = /\s/;
     			    block = $cache[name].slice(current.from, current.to);
 
     			if (parent) {
-    				if (parent.output != null && current.output == null && i % 2 === 0) {
+    				if (parent.output != null && current.output == null && _i % 2 === 0) {
     					current.output = parent.output;
 
     					if (type === 'const') {
@@ -3458,15 +3460,15 @@ var     ws$1 = /\s/;
     			var diff = parent ? parent.from : from;
     			advDiff.sort(sort);
 
-    			for (var _i = 0; _i < advDiff.length; _i++) {
-    				if (advDiff[_i].val <= diff) {
-    					adv += advDiff[_i].adv;
+    			for (var _i2 = 0; _i2 < advDiff.length; _i2++) {
+    				if (advDiff[_i2].val <= diff) {
+    					adv += advDiff[_i2].adv;
     				} else {
     					break;
     				}
     			}
 
-    			if (parent && i % 2 === 0) {
+    			if (parent && _i % 2 === 0) {
     				if (type !== 'block' && (type !== 'const' || !current.block)) {
     					newFrom = parent.from + adv + block.length;
     					from += blockDiff;
@@ -3944,8 +3946,8 @@ var     eol$1 = void 0;
     	var concatLine = false,
     	    nmBrk = null;
 
-    	for (var _j2 = i; _j2 < str.length; _j2++) {
-    		var _el = str[_j2],
+    	for (var j = i; j < str.length; j++) {
+    		var _el = str[j],
     		    cEscape = escape;
 
     		if (_el === '\\' || escape) {
@@ -3968,7 +3970,7 @@ var     eol$1 = void 0;
     				command += _el;
     			} else if (!sComment) {
     				if (dir) {
-    					var dirStart = ws$1.test(str[_j2 - 2]);
+    					var dirStart = ws$1.test(str[j - 2]);
 
     					var literal = void 0;
     					brk = dirStart && prevEl === CONCAT_END;
@@ -4014,7 +4016,7 @@ var     eol$1 = void 0;
     		}
 
     		if (!bOpen && !cEscape) {
-    			var commentType = getCommentType(str, _j2);
+    			var commentType = getCommentType(str, j);
 
     			if (comment) {
     				comment = commentType !== MULT_COMMENT_END;
@@ -4047,7 +4049,7 @@ var     eol$1 = void 0;
     				}
 
     				var _skip = false;
-    				if (_el === FILTER && filterStart.test(str[_j2 + 1])) {
+    				if (_el === FILTER && filterStart.test(str[j + 1])) {
     					filterStart$$ = true;
     					bEnd$$ = false;
     					_skip = true;
@@ -4067,17 +4069,17 @@ var     eol$1 = void 0;
 
     				if (dir) {
     					if (!inline) {
-    						inline = str.substr(_j2, INLINE.length) === INLINE;
+    						inline = str.substr(j, INLINE.length) === INLINE;
     					}
     				} else if (!cEscape) {
     					if (begin) {
-    						if (_el === LEFT_BOUND && (params.dir || str[_j2 - 1] !== ADV_LEFT_BOUND || _j2 - 1 !== bStart)) {
+    						if (_el === LEFT_BOUND && (params.dir || str[j - 1] !== ADV_LEFT_BOUND || j - 1 !== bStart)) {
     							begin++;
     						} else if (_el === RIGHT_BOUND) {
     							begin--;
     						}
-    					} else if (!params.dir && params.adv ? _el === ADV_LEFT_BOUND && str[_j2 + 1] === LEFT_BOUND : _el === LEFT_BOUND) {
-    						bStart = _j2;
+    					} else if (!params.dir && params.adv ? _el === ADV_LEFT_BOUND && str[j + 1] === LEFT_BOUND : _el === LEFT_BOUND) {
+    						bStart = j;
     						bEnd$$ = false;
     						begin++;
     					}
@@ -4455,8 +4457,8 @@ var     rRgxp$1 = /\r/g;
 
     				if (this.language) {
     					if (i18nStart) {
-    						var word = this.language[i18nStr] || '';
-    						el = isFunction(word) ? word() : word;
+    						var _word = this.language[i18nStr] || '';
+    						el = isFunction(_word) ? _word() : _word;
     						i18nStart = false;
     						i18nStr = '';
     					} else {
@@ -4473,13 +4475,13 @@ var     rRgxp$1 = /\r/g;
     							i18nChunk += ', ' + this.i18nFnOptions;
     						}
 
-    						var tmp = this.out(this.replaceDangerBlocks(i18nChunk + ')').trim() || '\'\'', { unsafe: unsafe });
+    						var _tmp = this.out(this.replaceDangerBlocks(i18nChunk + ')').trim() || '\'\'', { unsafe: unsafe });
 
     						if (replace) {
     							res += '__SNAKESKIN__' + this.dirContent.length + '_';
-    							this.dirContent.push(tmp);
+    							this.dirContent.push(_tmp);
     						} else {
-    							res += '\' + (' + tmp + ') + \'';
+    							res += '\' + (' + _tmp + ') + \'';
     						}
 
     						i18nChunk = '';
@@ -4891,10 +4893,10 @@ var     rRgxp$1 = /\r/g;
 
     	if (!res) {
     		for (var i = end; i < str.length; i++) {
-    			var el = str[i];
+    			var _el = str[i];
 
-    			if (!eol.test(el)) {
-    				return el === ':';
+    			if (!eol.test(_el)) {
+    				return _el === ':';
     			}
     		}
     	}
@@ -5425,9 +5427,9 @@ var     rRgxp$1 = /\r/g;
 
     				// Maybe soon will start a new word
     			} else if (newWordRgxp.test(el)) {
-    				nWord = true;
-    				posNWord && posNWord--;
-    			}
+    					nWord = true;
+    					posNWord && posNWord--;
+    				}
 
     			if (!filterStart$$) {
     				if (el === ')') {
@@ -5443,10 +5445,10 @@ var     rRgxp$1 = /\r/g;
 
     				// Filter body
     			} else if (el !== ')' || pCountFilter) {
-    				var l = filters.length - 1;
-    				filters[l] += el;
-    				rFilters[l] += el;
-    			}
+    					var _l = filters.length - 1;
+    					filters[_l] += el;
+    					rFilters[_l] += el;
+    				}
     		}
 
     		if (i === end && pCount && !filterWrapper && el !== ')') {
@@ -5523,12 +5525,12 @@ var     rRgxp$1 = /\r/g;
 
     							default:
     								if (key[0] === '!') {
-    									var _filter = key.slice(1);
+    									var _filter2 = key.slice(1);
 
     									if (isGlobalFilter) {
-    										cancelFilters[_filter] = true;
+    										cancelFilters[_filter2] = true;
     									} else {
-    										cancelLocalFilters[_filter] = true;
+    										cancelLocalFilters[_filter2] = true;
     									}
     								}
     						}
@@ -5539,12 +5541,12 @@ var     rRgxp$1 = /\r/g;
     					continue;
     				}
 
-    				var filter = '';
+    				var _filter = '';
     				for (var _i5 = 0; _i5 < current.length; _i5++) {
-    					filter += '[\'' + current[_i5] + '\']';
+    					_filter += '[\'' + current[_i5] + '\']';
     				}
 
-    				tmp = (cache ? '(' + cacheLink + ' = ' : '') + '__FILTERS__' + filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + (cache ? ')' : '');
+    				tmp = (cache ? '(' + cacheLink + ' = ' : '') + '__FILTERS__' + _filter + (filterWrapper || !pCount ? '.call(this,' : '') + tmp + (bind.length ? ',' + joinFilterParams(bind) : '') + (input ? ',' + input : '') + (filterWrapper || !pCount ? ')' : '') + (cache ? ')' : '');
     			}
 
     			if (!isGlobalFilter) {
@@ -5578,11 +5580,11 @@ var     rRgxp$1 = /\r/g;
     			pCountFilter--;
 
     			if (!pCountFilter) {
-    				var l = filters.length - 1,
-    				    _cache = filters[l];
+    				var _l2 = filters.length - 1,
+    				    _cache = filters[_l2];
 
-    				filters[l] = this.out(_cache, { skipFirstWord: true, skipValidation: true, unsafe: true });
-    				var length = filters[l].length - _cache.length;
+    				filters[_l2] = this.out(_cache, { skipFirstWord: true, skipValidation: true, unsafe: true });
+    				var length = filters[_l2].length - _cache.length;
 
     				wordAddEnd += length;
     				filterAddEnd += length;
@@ -6745,24 +6747,24 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     	var ref = this.bemRef;
 
-    	for (var i = 0; i < classes.length; i++) {
-    		var el = classes[i];
+    	for (var _i2 = 0; _i2 < classes.length; _i2++) {
+    		var _el = classes[_i2];
 
-    		var point = points[i];
+    		var _point = points[_i2];
 
-    		if (point && point.val != null) {
-    			el = el.replace(classRef, point.val);
+    		if (_point && _point.val != null) {
+    			_el = _el.replace(classRef, _point.val);
     		}
 
-    		if (classRef.test(el) && ref) {
-    			el = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + el.slice(1) + '\'' + e;
-    			el = this.pasteDangerBlocks(this.replaceTplVars(el));
-    		} else if (el && types[i]) {
-    			ref = this.pasteTplVarBlocks(el);
+    		if (classRef.test(_el) && ref) {
+    			_el = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + _el.slice(1) + '\'' + e;
+    			_el = this.pasteDangerBlocks(this.replaceTplVars(_el));
+    		} else if (_el && types[_i2]) {
+    			ref = this.pasteTplVarBlocks(_el);
     			this.append('$class = \'' + ref + '\';');
     		}
 
-    		classes[i] = this.pasteTplVarBlocks(el);
+    		classes[_i2] = this.pasteTplVarBlocks(_el);
     	}
 
     	this.bemRef = ref;
@@ -7226,25 +7228,25 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     				// Outside a template
     			} else if (!parser.tplName) {
-    				// For JSDoc all of symbols don't change,
-    				// but in other case they will be ignored
-    				if (!comment && !jsDoc) {
-    					continue;
-    				}
-
-    				// Inside a template
-    			} else {
-    				if (!space && (parser.tolerateWhitespaces || !parser.space) && !parser.sysSpace) {
-    					el = parser.ignore && parser.ignore.test(el) ? '' : el;
-
-    					if (el) {
-    						el = parser.tolerateWhitespaces ? el : ' ';
-    						parser.space = true;
+    					// For JSDoc all of symbols don't change,
+    					// but in other case they will be ignored
+    					if (!comment && !jsDoc) {
+    						continue;
     					}
-    				} else if (!comment && !jsDoc) {
-    					continue;
-    				}
-    			}
+
+    					// Inside a template
+    				} else {
+    						if (!space && (parser.tolerateWhitespaces || !parser.space) && !parser.sysSpace) {
+    							el = parser.ignore && parser.ignore.test(el) ? '' : el;
+
+    							if (el) {
+    								el = parser.tolerateWhitespaces ? el : ' ';
+    								parser.space = true;
+    							}
+    						} else if (!comment && !jsDoc) {
+    							continue;
+    						}
+    					}
     		} else {
     			clrL = false;
 
@@ -7486,93 +7488,93 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     						// Directive is ended
     					} else if (el === RIGHT_BOUND && begin && ! --begin) {
-    						begin = 0;
+    							begin = 0;
 
-    						var raw = command;
-    						command = command.trim();
+    							var raw = command;
+    							command = command.trim();
 
-    						if (!command) {
-    							continue;
-    						}
-
-    						var replacer = getReplacer(command);
-
-    						if (replacer) {
-    							command = replacer(command);
-    						}
-
-    						var _commandTypeRgxp$exec = commandTypeRgxp.exec(command);
-
-    						var _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1);
-
-    						var commandType = _commandTypeRgxp$exec2[0];
-
-
-    						var defDir = !Snakeskin.Directives[commandType];
-
-    						if (defDir) {
-    							if (isAssignExpression(command, !parser.tplName)) {
-    								commandType = parser.tplName ? 'const' : 'global';
-    							} else {
-    								commandType = parser.tplName ? 'output' : 'decorator';
+    							if (!command) {
+    								continue;
     							}
-    						}
 
-    						commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
+    							var _replacer = getReplacer(command);
 
-    						// All directives, which matches to the template __.*?__
-    						// will be cutted from the code listing
-    						if (ignoreRgxp.test(commandType)) {
-    							parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
-    						}
+    							if (_replacer) {
+    								command = _replacer(command);
+    							}
 
-    						command = parser.replaceDangerBlocks(defDir ? command : command.replace(commandRgxp, ''));
+    							var _commandTypeRgxp$exec = commandTypeRgxp.exec(command);
 
-    						parser.space = parser.prevSpace;
+    							var _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1);
 
-    						var inlineLength = parser.inline.length;
+    							var commandType = _commandTypeRgxp$exec2[0];
 
-    						var fnRes = Snakeskin.Directives[commandType].call(parser, command, commandLength, commandType, raw, jsDocStart);
 
-    						if (parser.break) {
-    							return false;
-    						}
+    							var defDir = !Snakeskin.Directives[commandType];
 
-    						if (parser.needPrfx && parser.needPrfx !== 1) {
-    							if (parser.getDirName(commandType) === 'end') {
-    								if (prfxI) {
-    									prfxI--;
+    							if (defDir) {
+    								if (isAssignExpression(command, !parser.tplName)) {
+    									commandType = parser.tplName ? 'const' : 'global';
+    								} else {
+    									commandType = parser.tplName ? 'output' : 'decorator';
+    								}
+    							}
 
-    									if (!prfxI) {
+    							commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
+
+    							// All directives, which matches to the template __.*?__
+    							// will be cutted from the code listing
+    							if (ignoreRgxp.test(commandType)) {
+    								parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
+    							}
+
+    							command = parser.replaceDangerBlocks(defDir ? command : command.replace(commandRgxp, ''));
+
+    							parser.space = parser.prevSpace;
+
+    							var inlineLength = parser.inline.length;
+
+    							var fnRes = Snakeskin.Directives[commandType].call(parser, command, commandLength, commandType, raw, jsDocStart);
+
+    							if (parser.break) {
+    								return false;
+    							}
+
+    							if (parser.needPrfx && parser.needPrfx !== 1) {
+    								if (parser.getDirName(commandType) === 'end') {
+    									if (prfxI) {
+    										prfxI--;
+
+    										if (!prfxI) {
+    											parser.needPrfx = false;
+    										}
+    									} else {
     										parser.needPrfx = false;
     									}
-    								} else {
+    								} else if (inlineLength === parser.inline.length && !prfxI) {
     									parser.needPrfx = false;
+    								} else if (parser.inline.length > inlineLength) {
+    									prfxI++;
     								}
-    							} else if (inlineLength === parser.inline.length && !prfxI) {
-    								parser.needPrfx = false;
-    							} else if (parser.inline.length > inlineLength) {
-    								prfxI++;
     							}
+
+    							if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
+    								parser.sysSpace = false;
+    								parser.space = parser.prevSpace = false;
+    							}
+
+    							jsDocStart = false;
+    							parser.text = false;
+
+    							if (fnRes === false) {
+    								begin = 0;
+    								beginStr = false;
+    							}
+
+    							command = '';
+    							commandLength = 0;
+    							continue;
     						}
-
-    						if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
-    							parser.sysSpace = false;
-    							parser.space = parser.prevSpace = false;
-    						}
-
-    						jsDocStart = false;
-    						parser.text = false;
-
-    						if (fnRes === false) {
-    							begin = 0;
-    							beginStr = false;
-    						}
-
-    						command = '';
-    						commandLength = 0;
-    						continue;
-    					}
     				}
     			}
     		}
@@ -7629,61 +7631,61 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     			// Plain text
     		} else {
-    			if (jsDoc) {
-    				parser.save(el, { raw: true });
-    			} else if (!parser.tplName) {
-    				if (el === ' ') {
-    					continue;
-    				}
-
-    				// Convert Jade-Like to classic
-    				if (cClrL && (SHORTS[el] || SHORTS[substr2])) {
-    					var adv = parser.lines[lastLine].length - 1,
-    					    source = parser.toBaseSyntax(parser.source, parser.i - adv);
-
-    					if (source.error) {
-    						return false;
-    					}
-
-    					parser.source = parser.source.slice(0, parser.i - adv) + source.code + parser.source.slice(parser.i + source.length - adv);
-
-    					parser.lines[lastLine] = parser.lines[lastLine].slice(0, -1);
-    					parser.i--;
-    					continue;
-    				}
-
-    				parser.error('text can\'t be used in the global space');
-    				return false;
-    			} else {
-    				if (structure.chain && !$dirParents[structure.name]['text']) {
+    				if (jsDoc) {
+    					parser.save(el, { raw: true });
+    				} else if (!parser.tplName) {
     					if (el === ' ') {
-    						parser.space = false;
     						continue;
     					}
 
-    					parser.error('text can\'t be used within the "' + structure.name + '"');
-    					return false;
-    				}
+    					// Convert Jade-Like to classic
+    					if (cClrL && (SHORTS[el] || SHORTS[substr2])) {
+    						var adv = parser.lines[lastLine].length - 1,
+    						    source = parser.toBaseSyntax(parser.source, parser.i - adv);
 
-    				parser.startInlineDir('text');
-    				if (parser.isSimpleOutput()) {
-    					if (!beginStr) {
-    						parser.save(parser.$() + '\'');
-    						beginStr = true;
+    						if (source.error) {
+    							return false;
+    						}
+
+    						parser.source = parser.source.slice(0, parser.i - adv) + source.code + parser.source.slice(parser.i + source.length - adv);
+
+    						parser.lines[lastLine] = parser.lines[lastLine].slice(0, -1);
+    						parser.i--;
+    						continue;
     					}
 
-    					parser.save(applyDefEscape(el), { raw: true });
+    					parser.error('text can\'t be used in the global space');
+    					return false;
+    				} else {
+    					if (structure.chain && !$dirParents[structure.name]['text']) {
+    						if (el === ' ') {
+    							parser.space = false;
+    							continue;
+    						}
+
+    						parser.error('text can\'t be used within the "' + structure.name + '"');
+    						return false;
+    					}
+
+    					parser.startInlineDir('text');
+    					if (parser.isSimpleOutput()) {
+    						if (!beginStr) {
+    							parser.save(parser.$() + '\'');
+    							beginStr = true;
+    						}
+
+    						parser.save(applyDefEscape(el), { raw: true });
+    					}
+
+    					parser.inline.pop();
+    					parser.structure = parser.structure.parent;
     				}
 
-    				parser.inline.pop();
-    				parser.structure = parser.structure.parent;
+    				if (jsDoc && !beginStr) {
+    					jsDoc = false;
+    					parser.space = true;
+    				}
     			}
-
-    			if (jsDoc && !beginStr) {
-    				jsDoc = false;
-    				parser.space = true;
-    			}
-    		}
     	}
 
     	// If we have some unclosed directives,
@@ -7765,12 +7767,12 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     				// CommonJS compiling in a browser
     			} else if (ctx !== NULL) {
-    				new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
+    					new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
 
-    				// Compiling in a browser
-    			} else {
-    				new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
-    			}
+    					// Compiling in a browser
+    				} else {
+    						new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
+    					}
     		}
 
     		saveIntoFnCache(cacheKey, text, p, ctx);
@@ -8778,8 +8780,8 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     		}
 
     		var lastName = '';
-    		for (var i = 1; i < tplNameLength; i++) {
-    			var el = tplNameParts[i];
+    		for (var _i = 1; _i < tplNameLength; _i++) {
+    			var el = tplNameParts[_i];
 
     			var custom = el[0] === '%',
     			    def = 'exports' + concatProp(tplName);
@@ -8788,7 +8790,7 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     				el = el.slice(1);
     			}
 
-    			pos = this.save(ws(_templateObject2$6, def, def, i === 1 && shortcut ? (this.module === 'native' ? 'export ' : '') + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
+    			pos = this.save(ws(_templateObject2$6, def, def, _i === 1 && shortcut ? (this.module === 'native' ? 'export ' : '') + 'var ' + shortcut + ' = ' + def + ';' : ''), { iface: iface, jsDoc: jsDoc });
 
     			if (jsDoc && pos) {
     				jsDoc += pos.length;
@@ -8802,7 +8804,7 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     				}
 
     				continue;
-    			} else if (i === tplNameLength - 1) {
+    			} else if (_i === tplNameLength - 1) {
     				lastName = el;
     			}
 
@@ -8936,10 +8938,10 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     					break;
     				}
 
-    				var el = obj[key];
+    				var _el = obj[key];
 
-    				if (key !== 'renderAs' && key[0] !== '@' && el !== undefined) {
-    					baseParams[key] = el;
+    				if (key !== 'renderAs' && key[0] !== '@' && _el !== undefined) {
+    					baseParams[key] = _el;
     				}
     			}
     		}
@@ -8948,18 +8950,18 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     			flags.push('@skip true');
     		}
 
-    		for (var i = 0; i < flags.length; i++) {
-    			delete baseParams[flags[i].split(' ')[0]];
-    			Snakeskin.Directives['__set__'].call(this, flags[i]);
+    		for (var _i2 = 0; _i2 < flags.length; _i2++) {
+    			delete baseParams[flags[_i2].split(' ')[0]];
+    			Snakeskin.Directives['__set__'].call(this, flags[_i2]);
     		}
 
-    		for (var key in baseParams) {
-    			if (!baseParams.hasOwnProperty(key)) {
+    		for (var _key in baseParams) {
+    			if (!baseParams.hasOwnProperty(_key)) {
     				break;
     			}
 
-    			var el = baseParams[key];
-    			Snakeskin.Directives['__set__'].call(this, [key, key === 'filters' ? el[el.length - 1] : el]);
+    			var _el2 = baseParams[_key];
+    			Snakeskin.Directives['__set__'].call(this, [_key, _key === 'filters' ? _el2[_el2.length - 1] : _el2]);
     		}
 
     		var doctype = this.doctype;
@@ -9258,15 +9260,15 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
 
     		// for var key in obj OR for var el of obj
     	} else {
-    		var parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
+    			var _parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
 
-    		if (!parts) {
-    			return this.error('invalid "' + this.name + '" declaration');
+    			if (!_parts) {
+    				return this.error('invalid "' + this.name + '" declaration');
+    			}
+
+    			var _decl = _parts[1] ? this.declVars(_parts[2], { def: '', end: false }) : this.out(_parts[2], { unsafe: true });
+    			this.append('for (' + _decl + ' ' + _parts[3] + ' ' + this.out(_parts[4], { unsafe: true }) + ') {');
     		}
-
-    		var decl = parts[1] ? this.declVars(parts[2], { def: '', end: false }) : this.out(parts[2], { unsafe: true });
-    		this.append('for (' + decl + ' ' + parts[3] + ' ' + this.out(parts[4], { unsafe: true }) + ') {');
-    	}
     }, function () {
     	this.append('}');
     });
@@ -9285,9 +9287,9 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
 
     		// while ( ... ) { ... }
     	} else {
-    		this.startDir();
-    		this.append('while (' + this.out(command, { unsafe: true }) + ') {');
-    	}
+    			this.startDir();
+    			this.append('while (' + this.out(command, { unsafe: true }) + ') {');
+    		}
     }, function () {
     	this.append('}');
     });
@@ -10170,13 +10172,13 @@ var     _templateObject3$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsaf
     	}
 
     	if (this.isSimpleOutput()) {
-    		var args = $blocks[tplName][name].args;
+    		var _args = $blocks[tplName][name].args;
 
 
-    		if (args.isCallable) {
+    		if (_args.isCallable) {
     			var fnDecl = structure.params.fn = 'self.' + name;
 
-    			this.save(ws(_templateObject$18, fnDecl, fnDecl, args.decl, this.getTplRuntime(), args.def));
+    			this.save(ws(_templateObject$18, fnDecl, fnDecl, _args.decl, this.getTplRuntime(), _args.def));
 
     			if (params != null) {
     				var vars = structure.vars;
@@ -10184,11 +10186,11 @@ var     _templateObject3$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsaf
 
     				structure.vars = structure.parent.vars;
 
-    				var _args = this.getFnArgs('(' + params + ')'),
+    				var _args2 = this.getFnArgs('(' + params + ')'),
     				    tmp = [];
 
-    				for (var i = 0; i < _args.length; i++) {
-    					tmp.push(this.out(_args[i], { unsafe: true }));
+    				for (var i = 0; i < _args2.length; i++) {
+    					tmp.push(this.out(_args2[i], { unsafe: true }));
     				}
 
     				structure.params.params = tmp.join();
@@ -10307,7 +10309,8 @@ var     _templateObject3$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsaf
 
     	var str = this.getXMLTagDeclStart(tag) + this.getXMLAttrsDeclStart() + this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
-    	var attrCache = this.getVar('__ATTR_CACHE__');
+    	var attrCache = this.getVar('__ATTR_CACHE__'),
+    	    attrHackRgxp = /_+ATTR_CACHE_+(tag_\d+)?(?=.*\+ ')/g;
 
     	if (id) {
     		str += attrCache + '[\'id\'] = [\'' + id + '\'] || ' + attrCache + '[\'id\'];';
@@ -10317,7 +10320,7 @@ var     _templateObject3$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsaf
     		var arr = [];
 
     		for (var i = 0; i < classes.length; i++) {
-    			arr.push('\'' + classes[i] + '\'');
+    			arr.push('\'' + classes[i].replace(attrHackRgxp, attrCache) + '\'');
     		}
 
     		str += attrCache + '[\'class\'] = [' + arr + '].concat(' + attrCache + '[\'class\'] || []);';
