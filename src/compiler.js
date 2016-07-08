@@ -72,7 +72,7 @@ import {
  *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
  *
  *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
- *   *) [attrLiteralBounds = ['{', '}']] - bounds for the attribute literal directive
+ *   *) [attrLiteralBounds] - bounds for the attribute literal directive
  *   *) [bemFilter = 'bem'] - name of the bem filter
  *   *) [filters = ['undef', 'html']] - list of default filters for output
  *
