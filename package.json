@@ -51,7 +51,7 @@
     "collection.js": "^5.5.6",
     "coveralls": "^2.11.2",
     "del": "^2.2.0",
-    "eslint": "^2.13.1",
+    "eslint": "^3.0.0",
     "esprima": "^2.7.2",
     "gulp": "^3.8.9",
     "gulp-bump": "^2.0.0",
