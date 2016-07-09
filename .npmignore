@@ -59,10 +59,12 @@ node_modules
 /bower.json
 /gulpfile.js
 /externs.js
+/builds.js
+/gcc.json
+/.babelrc
 /.editorconfig
 /.eslintrc
 /.eslintignore
-/.babelrc
 /.yaspellerrc
 /.travis.yml
 /.gitignore
