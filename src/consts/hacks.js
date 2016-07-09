@@ -10,7 +10,7 @@
 
 import { isFunction } from '../helpers/types';
 
-export const IS_NODE = (function () {
+export const IS_NODE = (() => {
 	try {
 		return typeof process === 'object' && {}.toString.call(process) === '[object process]';
 
