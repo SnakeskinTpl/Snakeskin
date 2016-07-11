@@ -61,7 +61,6 @@
 ========================================================================================================================
 
 - namespace iterators[%fileName%]
-- import $C from 'collection.js'
 
 - template forEach()
 	- forEach [1, 2, 3] => el
