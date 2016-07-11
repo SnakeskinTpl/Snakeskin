@@ -3,7 +3,7 @@
   "description": "Awesome JavaScript template engine.",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
   "main": "snakeskin.js",
-  "version": "7.1.10",
+  "version": "7.1.11",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -34,7 +34,7 @@
     "async": "^2.0.0-rc.6",
     "babel-core": "^6.9.0",
     "babylon": "^6.8.1",
-    "collection.js": "^5.5.6",
+    "collection.js": "^6.0.0-beta.2",
     "core-js": "^2.4.0",
     "escaper": "^2.4.17",
     "exists-sync": "0.0.3",

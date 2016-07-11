@@ -13,7 +13,7 @@ require('core-js/es6/promise');
 
 var
 	beautify = require('js-beautify'),
-	$C = require('collection.js').$C;
+	$C = require('collection.js/compiled');
 
 var
 	path = require('path'),

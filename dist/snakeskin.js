@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.10
+ * Snakeskin v7.1.11
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 30 Jun 2016 06:43:55 GMT
+ * Date: 'Mon, 11 Jul 2016 12:02:48 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 10]
+      VERSION: [7, 1, 11]
     };
 
     /**
@@ -2207,14 +2207,14 @@ var     ws$1 = /\s/;
     				// Parameter doesn't exists in a parent function,
     				// set it as a local variable
     			} else {
-    					argsMap[key] = {
-    						defFilter: _el2.defFilter,
-    						i: _el2.i,
-    						key: key,
-    						local: true,
-    						value: _el2.value !== undefined ? _el2.value : 'undefined'
-    					};
-    				}
+    				argsMap[key] = {
+    					defFilter: _el2.defFilter,
+    					i: _el2.i,
+    					key: key,
+    					local: true,
+    					value: _el2.value !== undefined ? _el2.value : 'undefined'
+    				};
+    			}
     		}
     	}
 
@@ -5427,9 +5427,9 @@ var     rRgxp$1 = /\r/g;
 
     				// Maybe soon will start a new word
     			} else if (newWordRgxp.test(el)) {
-    					nWord = true;
-    					posNWord && posNWord--;
-    				}
+    				nWord = true;
+    				posNWord && posNWord--;
+    			}
 
     			if (!filterStart$$) {
     				if (el === ')') {
@@ -5445,10 +5445,10 @@ var     rRgxp$1 = /\r/g;
 
     				// Filter body
     			} else if (el !== ')' || pCountFilter) {
-    					var _l = filters.length - 1;
-    					filters[_l] += el;
-    					rFilters[_l] += el;
-    				}
+    				var _l = filters.length - 1;
+    				filters[_l] += el;
+    				rFilters[_l] += el;
+    			}
     		}
 
     		if (i === end && pCount && !filterWrapper && el !== ')') {
@@ -6980,7 +6980,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
      *   *) [prettyPrint = false] - if is true, then output code will be formatted (js-beautify)
      *
      *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
-     *   *) [attrLiteralBounds = ['{', '}']] - bounds for the attribute literal directive
+     *   *) [attrLiteralBounds] - bounds for the attribute literal directive
      *   *) [bemFilter = 'bem'] - name of the bem filter
      *   *) [filters = ['undef', 'html']] - list of default filters for output
      *
@@ -7228,25 +7228,25 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     				// Outside a template
     			} else if (!parser.tplName) {
-    					// For JSDoc all of symbols don't change,
-    					// but in other case they will be ignored
-    					if (!comment && !jsDoc) {
-    						continue;
-    					}
+    				// For JSDoc all of symbols don't change,
+    				// but in other case they will be ignored
+    				if (!comment && !jsDoc) {
+    					continue;
+    				}
 
-    					// Inside a template
-    				} else {
-    						if (!space && (parser.tolerateWhitespaces || !parser.space) && !parser.sysSpace) {
-    							el = parser.ignore && parser.ignore.test(el) ? '' : el;
+    				// Inside a template
+    			} else {
+    				if (!space && (parser.tolerateWhitespaces || !parser.space) && !parser.sysSpace) {
+    					el = parser.ignore && parser.ignore.test(el) ? '' : el;
 
-    							if (el) {
-    								el = parser.tolerateWhitespaces ? el : ' ';
-    								parser.space = true;
-    							}
-    						} else if (!comment && !jsDoc) {
-    							continue;
-    						}
+    					if (el) {
+    						el = parser.tolerateWhitespaces ? el : ' ';
+    						parser.space = true;
     					}
+    				} else if (!comment && !jsDoc) {
+    					continue;
+    				}
+    			}
     		} else {
     			clrL = false;
 
@@ -7488,93 +7488,93 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     						// Directive is ended
     					} else if (el === RIGHT_BOUND && begin && ! --begin) {
-    							begin = 0;
+    						begin = 0;
 
-    							var raw = command;
-    							command = command.trim();
+    						var raw = command;
+    						command = command.trim();
 
-    							if (!command) {
-    								continue;
-    							}
-
-    							var _replacer = getReplacer(command);
-
-    							if (_replacer) {
-    								command = _replacer(command);
-    							}
-
-    							var _commandTypeRgxp$exec = commandTypeRgxp.exec(command);
-
-    							var _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1);
-
-    							var commandType = _commandTypeRgxp$exec2[0];
-
-
-    							var defDir = !Snakeskin.Directives[commandType];
-
-    							if (defDir) {
-    								if (isAssignExpression(command, !parser.tplName)) {
-    									commandType = parser.tplName ? 'const' : 'global';
-    								} else {
-    									commandType = parser.tplName ? 'output' : 'decorator';
-    								}
-    							}
-
-    							commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
-
-    							// All directives, which matches to the template __.*?__
-    							// will be cutted from the code listing
-    							if (ignoreRgxp.test(commandType)) {
-    								parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
-    							}
-
-    							command = parser.replaceDangerBlocks(defDir ? command : command.replace(commandRgxp, ''));
-
-    							parser.space = parser.prevSpace;
-
-    							var inlineLength = parser.inline.length;
-
-    							var fnRes = Snakeskin.Directives[commandType].call(parser, command, commandLength, commandType, raw, jsDocStart);
-
-    							if (parser.break) {
-    								return false;
-    							}
-
-    							if (parser.needPrfx && parser.needPrfx !== 1) {
-    								if (parser.getDirName(commandType) === 'end') {
-    									if (prfxI) {
-    										prfxI--;
-
-    										if (!prfxI) {
-    											parser.needPrfx = false;
-    										}
-    									} else {
-    										parser.needPrfx = false;
-    									}
-    								} else if (inlineLength === parser.inline.length && !prfxI) {
-    									parser.needPrfx = false;
-    								} else if (parser.inline.length > inlineLength) {
-    									prfxI++;
-    								}
-    							}
-
-    							if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
-    								parser.sysSpace = false;
-    								parser.space = parser.prevSpace = false;
-    							}
-
-    							jsDocStart = false;
-    							parser.text = false;
-
-    							if (fnRes === false) {
-    								begin = 0;
-    								beginStr = false;
-    							}
-
-    							command = '';
-    							commandLength = 0;
+    						if (!command) {
     							continue;
     						}
+
+    						var _replacer = getReplacer(command);
+
+    						if (_replacer) {
+    							command = _replacer(command);
+    						}
+
+    						var _commandTypeRgxp$exec = commandTypeRgxp.exec(command);
+
+    						var _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1);
+
+    						var commandType = _commandTypeRgxp$exec2[0];
+
+
+    						var defDir = !Snakeskin.Directives[commandType];
+
+    						if (defDir) {
+    							if (isAssignExpression(command, !parser.tplName)) {
+    								commandType = parser.tplName ? 'const' : 'global';
+    							} else {
+    								commandType = parser.tplName ? 'output' : 'decorator';
+    							}
+    						}
+
+    						commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
+
+    						// All directives, which matches to the template __.*?__
+    						// will be cutted from the code listing
+    						if (ignoreRgxp.test(commandType)) {
+    							parser.lines[lastLine] = parser.lines[lastLine].replace(ignoreRgxp, '');
+    						}
+
+    						command = parser.replaceDangerBlocks(defDir ? command : command.replace(commandRgxp, ''));
+
+    						parser.space = parser.prevSpace;
+
+    						var inlineLength = parser.inline.length;
+
+    						var fnRes = Snakeskin.Directives[commandType].call(parser, command, commandLength, commandType, raw, jsDocStart);
+
+    						if (parser.break) {
+    							return false;
+    						}
+
+    						if (parser.needPrfx && parser.needPrfx !== 1) {
+    							if (parser.getDirName(commandType) === 'end') {
+    								if (prfxI) {
+    									prfxI--;
+
+    									if (!prfxI) {
+    										parser.needPrfx = false;
+    									}
+    								} else {
+    									parser.needPrfx = false;
+    								}
+    							} else if (inlineLength === parser.inline.length && !prfxI) {
+    								parser.needPrfx = false;
+    							} else if (parser.inline.length > inlineLength) {
+    								prfxI++;
+    							}
+    						}
+
+    						if (parser.text && !parser.strongSpace[parser.strongSpace.length - 1]) {
+    							parser.sysSpace = false;
+    							parser.space = parser.prevSpace = false;
+    						}
+
+    						jsDocStart = false;
+    						parser.text = false;
+
+    						if (fnRes === false) {
+    							begin = 0;
+    							beginStr = false;
+    						}
+
+    						command = '';
+    						commandLength = 0;
+    						continue;
+    					}
     				}
     			}
     		}
@@ -7631,61 +7631,61 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     			// Plain text
     		} else {
-    				if (jsDoc) {
-    					parser.save(el, { raw: true });
-    				} else if (!parser.tplName) {
-    					if (el === ' ') {
-    						continue;
-    					}
+    			if (jsDoc) {
+    				parser.save(el, { raw: true });
+    			} else if (!parser.tplName) {
+    				if (el === ' ') {
+    					continue;
+    				}
 
-    					// Convert Jade-Like to classic
-    					if (cClrL && (SHORTS[el] || SHORTS[substr2])) {
-    						var adv = parser.lines[lastLine].length - 1,
-    						    source = parser.toBaseSyntax(parser.source, parser.i - adv);
+    				// Convert Jade-Like to classic
+    				if (cClrL && (SHORTS[el] || SHORTS[substr2])) {
+    					var adv = parser.lines[lastLine].length - 1,
+    					    source = parser.toBaseSyntax(parser.source, parser.i - adv);
 
-    						if (source.error) {
-    							return false;
-    						}
-
-    						parser.source = parser.source.slice(0, parser.i - adv) + source.code + parser.source.slice(parser.i + source.length - adv);
-
-    						parser.lines[lastLine] = parser.lines[lastLine].slice(0, -1);
-    						parser.i--;
-    						continue;
-    					}
-
-    					parser.error('text can\'t be used in the global space');
-    					return false;
-    				} else {
-    					if (structure.chain && !$dirParents[structure.name]['text']) {
-    						if (el === ' ') {
-    							parser.space = false;
-    							continue;
-    						}
-
-    						parser.error('text can\'t be used within the "' + structure.name + '"');
+    					if (source.error) {
     						return false;
     					}
 
-    					parser.startInlineDir('text');
-    					if (parser.isSimpleOutput()) {
-    						if (!beginStr) {
-    							parser.save(parser.$() + '\'');
-    							beginStr = true;
-    						}
+    					parser.source = parser.source.slice(0, parser.i - adv) + source.code + parser.source.slice(parser.i + source.length - adv);
 
-    						parser.save(applyDefEscape(el), { raw: true });
+    					parser.lines[lastLine] = parser.lines[lastLine].slice(0, -1);
+    					parser.i--;
+    					continue;
+    				}
+
+    				parser.error('text can\'t be used in the global space');
+    				return false;
+    			} else {
+    				if (structure.chain && !$dirParents[structure.name]['text']) {
+    					if (el === ' ') {
+    						parser.space = false;
+    						continue;
     					}
 
-    					parser.inline.pop();
-    					parser.structure = parser.structure.parent;
+    					parser.error('text can\'t be used within the "' + structure.name + '"');
+    					return false;
     				}
 
-    				if (jsDoc && !beginStr) {
-    					jsDoc = false;
-    					parser.space = true;
+    				parser.startInlineDir('text');
+    				if (parser.isSimpleOutput()) {
+    					if (!beginStr) {
+    						parser.save(parser.$() + '\'');
+    						beginStr = true;
+    					}
+
+    					parser.save(applyDefEscape(el), { raw: true });
     				}
+
+    				parser.inline.pop();
+    				parser.structure = parser.structure.parent;
     			}
+
+    			if (jsDoc && !beginStr) {
+    				jsDoc = false;
+    				parser.space = true;
+    			}
+    		}
     	}
 
     	// If we have some unclosed directives,
@@ -7767,12 +7767,12 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     				// CommonJS compiling in a browser
     			} else if (ctx !== NULL) {
-    					new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
+    				new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
 
-    					// Compiling in a browser
-    				} else {
-    						new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
-    					}
+    				// Compiling in a browser
+    			} else {
+    				new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
+    			}
     		}
 
     		saveIntoFnCache(cacheKey, text, p, ctx);
@@ -9260,15 +9260,15 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
 
     		// for var key in obj OR for var el of obj
     	} else {
-    			var _parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
+    		var _parts = /\s*(var|)\s+(.*?)\s+(in|of)\s+(.*)/.exec(command);
 
-    			if (!_parts) {
-    				return this.error('invalid "' + this.name + '" declaration');
-    			}
-
-    			var _decl = _parts[1] ? this.declVars(_parts[2], { def: '', end: false }) : this.out(_parts[2], { unsafe: true });
-    			this.append('for (' + _decl + ' ' + _parts[3] + ' ' + this.out(_parts[4], { unsafe: true }) + ') {');
+    		if (!_parts) {
+    			return this.error('invalid "' + this.name + '" declaration');
     		}
+
+    		var _decl = _parts[1] ? this.declVars(_parts[2], { def: '', end: false }) : this.out(_parts[2], { unsafe: true });
+    		this.append('for (' + _decl + ' ' + _parts[3] + ' ' + this.out(_parts[4], { unsafe: true }) + ') {');
+    	}
     }, function () {
     	this.append('}');
     });
@@ -9287,9 +9287,9 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
 
     		// while ( ... ) { ... }
     	} else {
-    			this.startDir();
-    			this.append('while (' + this.out(command, { unsafe: true }) + ') {');
-    		}
+    		this.startDir();
+    		this.append('while (' + this.out(command, { unsafe: true }) + ') {');
+    	}
     }, function () {
     	this.append('}');
     });
@@ -9392,7 +9392,6 @@ var     _templateObject3$7 = taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(', 
     	    args = this.declFnArgs('(' + parts[is$C ? 2 : 1] + ')');
 
     	if (is$C) {
-    		this.selfThis.push(true);
     		this.append(ws(_templateObject$13, val, args.decl, args.def));
 
     		return;

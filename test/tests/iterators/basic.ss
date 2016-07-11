@@ -54,26 +54,6 @@
 
 1
 
-[[$forEach]]============================================================================================================
-
-3
-
-[[$forEach shorthand]]==================================================================================================
-
-1 2 3
-
-[[$forEach with break]]=================================================================================================
-
-1
-
-[[$forEach with continue]]==============================================================================================
-
-2 3
-
-[[$forEach this]]=======================================================================================================
-
-1
-
 [[forEach with return]]=================================================================================================
 
 1
@@ -81,7 +61,7 @@
 ========================================================================================================================
 
 - namespace iterators[%fileName%]
-- import { $C } from 'collection.js'
+- import $C from 'collection.js'
 
 - template forEach()
 	- forEach [1, 2, 3] => el
@@ -141,32 +121,6 @@
 	: that = this
 	- forIn {a: 1} => el
 		- if that === this
-			{el}
-
-- template $forEach()
-	- forEach [1, 2, 3] => {filter: ':el > 2'} => el
-		{el}
-
-- template ['$forEach shorthand']()
-	- forEach [1, 2, 3] =>> el
-		{el}
-
-- template ['$forEach with break']()
-	- forEach [1, 2, 3] =>> el
-		{el}
-		- break
-
-- template ['$forEach with continue']()
-	- forEach [1, 2, 3] =>> el
-		- if el === 1
-			- continue
-
-		{el}
-
-- template ['$forEach this']()
-	: that = this
-	- forEach [1] =>> el
-		- if that !== this
 			{el}
 
 - template ['forEach with return']()

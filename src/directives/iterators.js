@@ -44,7 +44,6 @@ Snakeskin.addDirective(
 			args = this.declFnArgs(`(${parts[is$C ? 2 : 1]})`);
 
 		if (is$C) {
-			this.selfThis.push(true);
 			this.append(ws`
 				${val}.forEach(function (${args.decl}) {
 					${args.def}

@@ -55,10 +55,9 @@ node_modules
 /src
 /gulp
 /predefs
-/test
+/CODE_OF_CONDUCT.md
 /bower.json
 /gulpfile.js
-/externs.js
 /builds.js
 /gcc.json
 /.babelrc
