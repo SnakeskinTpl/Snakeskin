@@ -19,7 +19,7 @@ const
  * @return {string}
  */
 export function ws(strings, expr) {
-	expr = [].slice.call(arguments, 1);
+	expr = Array.from(arguments).slice(1);
 
 	let
 		res = '';

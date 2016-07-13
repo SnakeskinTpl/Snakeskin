@@ -8,8 +8,7 @@
 
 /** @type {Snakeskin} */
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
-require('core-js/es6/object');
-require('core-js/es6/promise');
+require('core-js');
 
 var
 	beautify = require('js-beautify'),

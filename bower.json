@@ -2,8 +2,16 @@
   "name": "Snakeskin",
   "description": "Awesome JavaScript template engine.",
   "main": "dist/snakeskin.min.js",
-  "version": "7.1.11",
+  "version": "7.1.12",
   "homepage": "https://github.com/SnakeskinTpl/Snakeskin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kobezzza",
+      "email": "kobezzza@mail.ru",
+      "homepage": "https://github.com/kobezzza"
+    }
+  ],
   "keywords": [
     "templates",
     "javascript",
@@ -13,10 +21,6 @@
     "jadelike",
     "haml"
   ],
-  "authors": [
-    "kobezzza <kobezzza@gmail.com>"
-  ],
-  "license": "MIT",
   "ignore": [
     "/src",
     "/gulp",
