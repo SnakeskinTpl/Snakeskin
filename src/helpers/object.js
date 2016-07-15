@@ -63,7 +63,7 @@ export function toObj(val, opt_base, opt_onFileExists) {
 
 				} catch (ignore) {
 					try {
-						res = new Function(`return ${content}`)();
+						res = Function(`return ${content}`)();
 
 					} catch (ignore) {
 						delete require.cache[require.resolve(val)];
@@ -84,11 +84,11 @@ export function toObj(val, opt_base, opt_onFileExists) {
 
 	} catch (ignore) {
 		try {
-			res = new Function(`return ${val}`)();
+			res = Function(`return ${val}`)();
 
 		} catch (ignore) {
 			try {
-				res = new Function(`return {${val}}`)();
+				res = Function(`return {${val}}`)();
 
 			} catch (ignore) {
 				res = {};

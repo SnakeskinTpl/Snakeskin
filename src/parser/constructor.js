@@ -431,7 +431,7 @@ export default class Parser {
 
 		this.result += ws`
 			var
-				GLOBAL = new Function('return this')(),
+				GLOBAL = Function('return this')(),
 				__FILTERS__ = Snakeskin.Filters,
 				__VARS__ = Snakeskin.Vars,
 				__LOCAL__ = Snakeskin.LocalVars,

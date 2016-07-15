@@ -29,7 +29,7 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 		ctx = this.environment;
 
 	if (IS_NODE) {
-		return new Function(
+		return Function(
 			'GLOBAL',
 			'Snakeskin',
 			'__FILTERS__',
@@ -59,7 +59,7 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 		);
 	}
 
-	return new Function(
+	return Function(
 		'GLOBAL',
 		'Snakeskin',
 		'__FILTERS__',

@@ -11,6 +11,6 @@
 import { IS_NODE } from './hacks';
 
 export const
-	GLOBAL = new Function('return this')(),
+	GLOBAL = Function('return this')(),
 	ROOT = IS_NODE ? exports : GLOBAL,
 	NULL = {};

@@ -929,7 +929,7 @@ function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module
 			// Server compilation
 			if (IS_NODE) {
 				if (ctx !== NULL) {
-					new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(
+					Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(
 						Snakeskin,
 
 						{
@@ -951,11 +951,11 @@ function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module
 
 			// CommonJS compiling in a browser
 			} else if (ctx !== NULL) {
-				new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, {exports: ctx}, ctx, GLOBAL);
+				Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, {exports: ctx}, ctx, GLOBAL);
 
 			// Compiling in a browser
 			} else {
-				new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
+				Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
 			}
 		}
 
