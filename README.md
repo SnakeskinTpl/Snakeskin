@@ -14,8 +14,8 @@ Snakeskin is an awesome JavaScript template engine with the best support for inh
 
 [![Build Status](http://img.shields.io/travis/SnakeskinTpl/Snakeskin.svg?style=flat&branch=master)](https://travis-ci.org/SnakeskinTpl/Snakeskin)
 [![Coverage Status](http://img.shields.io/coveralls/SnakeskinTpl/Snakeskin.svg?style=flat)](https://coveralls.io/r/SnakeskinTpl/Snakeskin?branch=master)
-[![NPM dependencies](http://img.shields.io/david/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin#info=dependencies&view=table)
-[![NPM devDependencies](http://img.shields.io/david/dev/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin#info=devDependencies&view=table)
+[![NPM dependencies](http://img.shields.io/david/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin)
+[![NPM devDependencies](http://img.shields.io/david/dev/SnakeskinTpl/Snakeskin.svg?style=flat)](https://david-dm.org/SnakeskinTpl/Snakeskin?type=dev)
 
 [Demo](http://codepen.io/kobezzza/pen/zrJNXx)
 
