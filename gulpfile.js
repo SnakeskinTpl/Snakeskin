@@ -13,7 +13,7 @@ const
 	async = require('async'),
 	cached = require('gulp-cached');
 
-require('sugar');
+require('sugar').extend();
 require('./gulp/other');
 require('./gulp/predefs');
 require('./gulp/build');

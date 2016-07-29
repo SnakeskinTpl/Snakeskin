@@ -59,7 +59,7 @@ gulp.task('build', (cb) => {
 
 					.on('error', helpers.error(cb))
 					.pipe(replace(/(@param {.*?}) \[([$\w.]+)=.*]/g, '$1 $2'))
-					.pipe(replace(headRgxp.addFlag('g'), ''))
+					.pipe(replace(headRgxp.addFlags('g'), ''))
 					.pipe(header(fullHead))
 					.pipe(eol('\n'))
 					.pipe(rename({extname: '.js'}))

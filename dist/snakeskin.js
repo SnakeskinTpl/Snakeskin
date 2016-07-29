@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.12
+ * Snakeskin v7.1.13
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 13 Jul 2016 10:11:05 GMT
+ * Date: 'Fri, 29 Jul 2016 08:50:43 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 12]
+      VERSION: [7, 1, 13]
     };
 
     /**
@@ -907,7 +907,6 @@ var     ws$1 = /\s/;
       * @param {?} val
       * @return {?}
       */
-
     	'dir': function dir(val) {
     		var _console;
 
@@ -1537,7 +1536,7 @@ var     ws$1 = /\s/;
       require('core-js/es6');
     }
 
-    var GLOBAL = new Function('return this')();
+    var GLOBAL = Function('return this')();
     var ROOT = IS_NODE ? exports : GLOBAL;
     var NULL = {};
 
@@ -1547,7 +1546,7 @@ var     ws$1 = /\s/;
     var _templateObject2 = taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t']);
     var _templateObject3 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
     var _templateObject4 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'snakeskin\'/*#__SNAKESKIN_MODULES_DECL__*/], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'snakeskin\'/*#__SNAKESKIN_MODULES_DECL__*/], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
-    var _templateObject5 = taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\tGLOBAL = new Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\tGLOBAL = new Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
+    var _templateObject5 = taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\tGLOBAL = Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\tGLOBAL = Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
     /**
      * The class for parsing SS templates
      */
@@ -1561,7 +1560,7 @@ var     ws$1 = /\s/;
      * @param {$$SnakeskinParserParams} params - additional parameters
      */
     function Parser(src, params) {
-    classCallCheck(this, Parser);
+    	classCallCheck(this, Parser);
 
     	/** @type {boolean} */
     	this.throws = params.throws;
@@ -2663,10 +2662,10 @@ var     ws$1 = /\s/;
     	var ctx = this.environment;
 
     	if (IS_NODE) {
-    		return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
+    		return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
     	}
 
-    	return new Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, null);
+    	return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, null);
     };
 
     /**
@@ -2721,7 +2720,7 @@ var     ws$1 = /\s/;
     					res = JSON.parse(content);
     				} catch (ignore) {
     					try {
-    						res = new Function('return ' + content)();
+    						res = Function('return ' + content)();
     					} catch (ignore) {
     						delete require.cache[require.resolve(val)];
     						res = require(val);
@@ -2739,10 +2738,10 @@ var     ws$1 = /\s/;
     		res = JSON.parse(val);
     	} catch (ignore) {
     		try {
-    			res = new Function('return ' + val)();
+    			res = Function('return ' + val)();
     		} catch (ignore) {
     			try {
-    				res = new Function('return {' + val + '}')();
+    				res = Function('return {' + val + '}')();
     			} catch (ignore) {
     				res = {};
     			}
@@ -7754,7 +7753,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     			// Server compilation
     			if (IS_NODE) {
     				if (ctx !== NULL) {
-    					new Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin, {
+    					Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin, {
     						children: [],
     						exports: ctx,
     						filename: filename,
@@ -7767,11 +7766,11 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     				// CommonJS compiling in a browser
     			} else if (ctx !== NULL) {
-    				new Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
+    				Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
 
     				// Compiling in a browser
     			} else {
-    				new Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
+    				Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
     			}
     		}
 

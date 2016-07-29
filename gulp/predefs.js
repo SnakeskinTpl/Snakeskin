@@ -30,7 +30,7 @@ gulp.task('predefs', (cb) => {
 			gulp.src('./predefs/src/index.js')
 				.pipe(monic())
 				.on('error', helpers.error(cb))
-				.pipe(replace(headRgxp.addFlag('g'), ''))
+				.pipe(replace(headRgxp.addFlags('g'), ''))
 				.pipe(gulp.dest('./predefs/build'))
 				.on('end', cb);
 		},
@@ -39,7 +39,7 @@ gulp.task('predefs', (cb) => {
 			gulp.src('./predefs/src/index.js')
 				.pipe(monic({flags: {externs: true}}))
 				.on('error', helpers.error(cb))
-				.pipe(replace(headRgxp.addFlag('g'), ''))
+				.pipe(replace(headRgxp.addFlags('g'), ''))
 				.pipe(replace(/(\s)+$/, '$1'))
 				.pipe(header(fullHead))
 				.pipe(rename('externs.js'))
