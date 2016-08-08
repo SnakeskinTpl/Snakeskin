@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { isArray } from '../helpers/types';
+import { isArray, isFunction } from '../helpers/types';
 
 /**
  * Special Snakeskin class for escaping HTML entities from an object
@@ -346,7 +346,15 @@ Snakeskin.forIn = function (obj, callback) {
  * @return {!Function}
  */
 Snakeskin.decorate = function (decorators, fn) {
-	Snakeskin.forEach(decorators, (decorator) => fn = decorator(fn));
+	Snakeskin.forEach(decorators, (decorator) => {
+		const
+			res = decorator(fn);
+
+		if (isFunction(res)) {
+			fn = res;
+		}
+	});
+
 	fn.decorators = decorators;
 	return fn;
 };
