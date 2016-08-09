@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable eqeqeq */
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -21,7 +23,7 @@ gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
 		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (sstr, intro, from, to) => {
 			const year = new Date().getFullYear();
-			return intro + from + (to || from !== year ? `-${year}` : '');
+			return intro + from + (to || from != year ? `-${year}` : '');
 		}))
 
 		.pipe(gulp.dest('./'))
