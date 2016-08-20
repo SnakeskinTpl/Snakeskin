@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.13
+ * Snakeskin v7.2.0
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Fri, 29 Jul 2016 08:50:43 GMT
+ * Date: 'Sat, 20 Aug 2016 18:11:36 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 13]
+      VERSION: [7, 2, 0]
     };
 
     /**
@@ -441,7 +441,7 @@
      */
     Snakeskin.decorate = function (decorators, fn) {
     	Snakeskin.forEach(decorators, function (decorator) {
-    		return fn = decorator(fn);
+    		return fn = decorator(fn) || fn;
     	});
     	fn.decorators = decorators;
     	return fn;
@@ -700,6 +700,9 @@
     };
 
     var ESCAPES_END_WORD = {
+    	'return': true,
+    	'yield': true,
+    	'await': true,
     	'typeof': true,
     	'void': true,
     	'instanceof': true,
@@ -811,6 +814,7 @@ var     ws$1 = /\s/;
     var wsEnd = new RegExp('^(?:' + eol.source + ')[ \\t]*$');
     var bEnd = /[^\s\/]/;
     var sysWord = /[a-z]/;
+    var attrKey = /([^\s=]+)/;
     var backSlashes = /\\/g;
     var singleQuotes = /'/g;
     var doubleQuotes = /"/g;
@@ -818,7 +822,6 @@ var     ws$1 = /\s/;
 
     var filterStart = new RegExp('[!$' + symbols + '_]');
     var w = '$' + symbols + '0-9_';
-    var attrKey = /([^\s=]+)/;
 
     var Filters = Snakeskin.Filters;
 
@@ -1330,24 +1333,6 @@ var     ws$1 = /\s/;
     };
 
     /**
-     * BEM filter
-     *
-     * @param {?} block - block name
-     * @param {!Object<string, !Array<string>>} attrs - object of attributes
-     * @param {?} part - second part of declaration
-     * @return {string}
-     */
-    Filters['bem'] = function (block, attrs, part) {
-    	return String(block) + String(part);
-    };
-
-    Snakeskin.setFilterParams('bem', {
-    	bind: [function (o) {
-    		return o.getVar('__ATTR_CACHE__');
-    	}]
-    });
-
-    /**
      * Sets a default value for the specified parameter
      *
      * @param {?} val - source value
@@ -1436,7 +1421,7 @@ var     ws$1 = /\s/;
      * @param {?} val - source value
      * @return {string}
      */
-    Filters['attrKey'] = Filters['attrKeyGroup'] = function (val) {
+    Filters['attrKey'] = function (val) {
     	var tmp = attrKey.exec(String(val));
     	return tmp && tmp[1] || 'undefined';
     };
@@ -1460,7 +1445,7 @@ var     ws$1 = /\s/;
      * @param {?} val - source value
      * @return {string}
      */
-    Filters['attrVal'] = function (val) {
+    Filters['attrValue'] = function (val) {
     	return String(val).replace(attrValRgxp, '$1&#31;$2');
     };
 
@@ -1503,7 +1488,7 @@ var     ws$1 = /\s/;
     			cache[tmp] = localCache[tmp] = [el];
     		});
 
-    		return new Snakeskin.HTMLObject(localCache, 'attrVal');
+    		return new Snakeskin.HTMLObject(localCache, 'attrValue');
     	}
 
     	return convert(val);
@@ -1542,6 +1527,72 @@ var     ws$1 = /\s/;
 
     var beautify = GLOBAL.js_beautify || require('js-beautify');
 
+    /**
+     * Returns an object for require a file
+     *
+     * @param {string} ctxFile - context file
+     * @return {{require: (function(string): ?|undefined), dirname: (string|undefined)}}
+     */
+    function getRequire(ctxFile) {
+    	if (!IS_NODE) {
+    		return {};
+    	}
+
+    	if (!ctxFile) {
+    		return { require: require };
+    	}
+
+    	var path = require('path'),
+    	    findNodeModules = require('find-node-modules');
+
+    	var basePaths = module.paths.slice(),
+    	    dirname = path.dirname(ctxFile);
+
+    	var base = findNodeModules({ cwd: dirname, relative: false }) || [],
+    	    modules = base.concat(module.paths || []);
+
+    	var cache = {},
+    	    newPaths = [];
+
+    	for (var i = 0; i < modules.length; i++) {
+    		var el = modules[i];
+
+    		if (!cache[el]) {
+    			cache[el] = true;
+    			newPaths.push(el);
+    		}
+    	}
+
+    	var isRelative = { '/': true, '\\': true, '.': true };
+
+    	return {
+    		dirname: dirname,
+    		require: function (_require) {
+    			function require(_x) {
+    				return _require.apply(this, arguments);
+    			}
+
+    			require.toString = function () {
+    				return _require.toString();
+    			};
+
+    			return require;
+    		}(function (file) {
+    			module.paths = newPaths;
+
+    			var res = void 0;
+    			if (!path.isAbsolute(file) && isRelative[file[0]]) {
+    				res = require(path.resolve(dirname, file));
+    			} else {
+    				res = require(file);
+    			}
+
+    			module.paths = basePaths;
+    			return res;
+    		})
+    	};
+    }
+
     var _templateObject = taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\timport Snakeskin from \'', '\';\n\t\t\t\tvar exports = {};\n\t\t\t\texport default exports;\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\timport Snakeskin from \'', '\';\n\t\t\t\tvar exports = {};\n\t\t\t\texport default exports;\n\t\t\t']);
     var _templateObject2 = taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t']);
     var _templateObject3 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
@@ -1568,6 +1619,9 @@ var     ws$1 = /\s/;
     	/** @type {(?function(!Error)|undefined)} */
     	this.onError = params.onError;
 
+    	/** @type {(?function(string, string): string|undefined)} */
+    	this.resolveModuleSource = params.resolveModuleSource;
+
     	/** @type {boolean} */
     	this.pack = params.pack;
 
@@ -1589,7 +1643,16 @@ var     ws$1 = /\s/;
     	/** @type {(Array<string>|undefined)} */
     	this.attrLiteralBounds = params.attrLiteralBounds;
 
-    	/** @type {string} */
+    	/** @type {(?string|undefined)} */
+    	this.tagFilter = params.tagFilter;
+
+    	/** @type {(?string|undefined)} */
+    	this.attrKeyFilter = params.attrKeyFilter;
+
+    	/** @type {(?string|undefined)} */
+    	this.attrValueFilter = params.attrValueFilter;
+
+    	/** @type {(?string|undefined)} */
     	this.bemFilter = params.bemFilter;
 
     	/** @type {!Array} */
@@ -1644,6 +1707,9 @@ var     ws$1 = /\s/;
     		i18nFnOptions: this.i18nFnOptions,
     		literalBounds: this.literalBounds,
     		attrLiteralBounds: this.attrLiteralBounds,
+    		tagFilter: this.tagFilter,
+    		attrKeyFilter: this.attrKeyFilter,
+    		attrValueFilter: this.attrValueFilter,
     		bemFilter: this.bemFilter,
     		filters: this.filters,
     		language: this.language,
@@ -1885,17 +1951,20 @@ var     ws$1 = /\s/;
       */
     	this.files = {};
 
+    	var r = getRequire(this.info.file);
+
     	/**
       * The module environment
       * @type {{exports, require, id, key, root, filename, parent, children, loaded, namespace}}
       */
     	this.environment = {
     		exports: {},
-    		require: IS_NODE ? require : null,
+    		require: r.require,
     		id: 0,
     		key: [],
     		root: null,
     		filename: this.info.file,
+    		dirname: r.dirname,
     		parent: IS_NODE ? module : null,
     		children: [],
     		loaded: true,
@@ -2659,13 +2728,13 @@ var     ws$1 = /\s/;
     		str = this.pasteDangerBlocks(str);
     	}
 
-    	var ctx = this.environment;
+    	var env = this.environment;
 
     	if (IS_NODE) {
-    		return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, require, require('path').dirname(ctx.filename), ctx.filename, null);
+    		return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, env, env.exports, env.require, env.dirname, env.filename, null);
     	}
 
-    	return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, ctx, ctx.exports, null);
+    	return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, env, env.exports, null);
     };
 
     /**
@@ -4144,7 +4213,7 @@ var     eol$1 = void 0;
     /**
      * Escapes backslashes in a string
      *
-     * @param {string} str - source string
+     * @param {?} str - source string
      * @return {string}
      */
     function escapeBackslashes(str) {
@@ -4154,7 +4223,7 @@ var     eol$1 = void 0;
     /**
      * Escapes single quotes in a string
      *
-     * @param {string} str - source string
+     * @param {?} str - source string
      * @return {string}
      */
     function escapeSingleQuotes(str) {
@@ -4164,7 +4233,7 @@ var     eol$1 = void 0;
     /**
      * Escapes double quotes in a string
      *
-     * @param {string} str - source string
+     * @param {?} str - source string
      * @return {string}
      */
     function escapeDoubleQuotes(str) {
@@ -4176,7 +4245,7 @@ var     rRgxp$1 = /\r/g;
     /**
      * Escapes EOLs in a string
      *
-     * @param {string} str - source string
+     * @param {?} str - source string
      * @return {string}
      */
     function escapeEOLs(str) {
@@ -4186,7 +4255,7 @@ var     rRgxp$1 = /\r/g;
     /**
      * Applies default SS escaping to a string
      *
-     * @param {string} str - source string
+     * @param {?} str - source string
      * @return {string}
      */
     function applyDefEscape(str) {
@@ -4802,7 +4871,7 @@ var     rRgxp$1 = /\r/g;
      * @return {?string}
      */
     function getCacheKey(params, ctx) {
-    	return params.language ? null : JSON.stringify([params.pack, params.module, params.moduleId, params.moduleName, ctx !== NULL, escapeEOLs(params.eol), params.tolerateWhitespaces, params.renderAs, params.renderMode, params.prettyPrint, params.ignore, params.localization, params.i18nFn, params.i18nFnOptions, params.literalBounds, params.attrLiteralBounds, params.bemFilter, params.filters, params.useStrict]);
+    	return params.language ? null : JSON.stringify([params.pack, params.module, params.moduleId, params.moduleName, ctx !== NULL, escapeEOLs(params.eol), params.tolerateWhitespaces, params.renderAs, params.renderMode, params.prettyPrint, params.ignore, params.localization, params.i18nFn, params.i18nFnOptions, params.literalBounds, params.attrLiteralBounds, params.tagFilter, params.attrKeyFilter, params.attrValueFilter, params.bemFilter, params.filters, params.useStrict]);
     }
 
     /**
@@ -6319,9 +6388,9 @@ var     rRgxp$1 = /\r/g;
     };
 
 var     _templateObject$2 = taggedTemplateLiteral(['\n\t\t__RESULT__ = __GET_XML_ATTRS_DECL_END__(\n\t\t\t__RESULT__,\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', '\n\t\t);\n\t'], ['\n\t\t__RESULT__ = __GET_XML_ATTRS_DECL_END__(\n\t\t\t__RESULT__,\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', ',\n\t\t\t', '\n\t\t);\n\t']);
-var     _templateObject2$1 = taggedTemplateLiteral(['\n\t\t\t__ATTR_STR__ = \'\';\n\t\t\t__ATTR_TYPE__ = \'attrVal\';\n\t\t'], ['\n\t\t\t__ATTR_STR__ = \'\';\n\t\t\t__ATTR_TYPE__ = \'attrVal\';\n\t\t']);
+var     _templateObject2$1 = taggedTemplateLiteral(['\n\t\t\t__ATTR_STR__ = \'\';\n\t\t\t__ATTR_TYPE__ = \'attrValue\';\n\t\t'], ['\n\t\t\t__ATTR_STR__ = \'\';\n\t\t\t__ATTR_TYPE__ = \'attrValue\';\n\t\t']);
 var     _templateObject3$1 = taggedTemplateLiteral(['\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKeyGroup\', \'\') +\n\t\t\t\t\'', '', '\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'\') +\n\t\t\t\t\'', ''], ['\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKeyGroup\', \'\') +\n\t\t\t\t\'', '', '\' +\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'\') +\n\t\t\t\t\'', '']);
-var     _templateObject4$1 = taggedTemplateLiteral(['\n\t\t\t__GET_XML_ATTR_KEY_DECL__(\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'', '\'),\n\t\t\t\t', ',\n\t\t\t\t', '\n\t\t\t);\n\t\t'], ['\n\t\t\t__GET_XML_ATTR_KEY_DECL__(\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', \'', '\'),\n\t\t\t\t', ',\n\t\t\t\t', '\n\t\t\t);\n\t\t']);
+var     _templateObject4$1 = taggedTemplateLiteral(['\n\t\t\t__GET_XML_ATTR_KEY_DECL__(\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', ', '),\n\t\t\t\t', ',\n\t\t\t\t', '\n\t\t\t);\n\t\t'], ['\n\t\t\t__GET_XML_ATTR_KEY_DECL__(\n\t\t\t\t(__ATTR_TYPE__ = \'attrKey\', ', '),\n\t\t\t\t', ',\n\t\t\t\t', '\n\t\t\t);\n\t\t']);
     /**
      * Returns string declaration of the specified XML attributes
      *
@@ -6416,10 +6485,24 @@ var     _templateObject4$1 = taggedTemplateLiteral(['\n\t\t\t__GET_XML_ATTR_KEY_
     		var tokens = this.getTokens(args[1]);
 
     		for (var _i2 = 0; _i2 < tokens.length; _i2++) {
-    			res += '__APPEND_XML_ATTR_VAL__(\'' + this.pasteTplVarBlocks(tokens[_i2]) + '\');';
+    			var attrVal = '\'' + this.pasteTplVarBlocks(tokens[_i2]) + '\'';
+
+    			if (this.attrValueFilter) {
+    				attrVal += FILTER + this.attrValueFilter;
+    				attrVal = this.out(attrVal, { unsafe: true });
+    			}
+
+    			res += '__APPEND_XML_ATTR_VAL__(' + attrVal + ');';
     		}
 
-    		res += ws(_templateObject4$1, this.pasteTplVarBlocks(args[0]), this.getVar('__ATTR_CACHE__'), empty);
+    		var _attrKey = '\'' + this.pasteTplVarBlocks(args[0]) + '\'';
+
+    		if (this.attrKeyFilter) {
+    			_attrKey += FILTER + this.attrKeyFilter;
+    			_attrKey = this.out(_attrKey, { unsafe: true });
+    		}
+
+    		res += ws(_templateObject4$1, _attrKey, this.getVar('__ATTR_CACHE__'), empty);
     	}
 
     	return res;
@@ -6534,7 +6617,13 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
      * @return {string}
      */
     Parser.prototype.getXMLTagDeclStart = function (tag) {
-    	return ws(_templateObject$3, this.declVars('__TAG__ = (\'' + tag + '\').trim() || \'' + defaultTag + '\'', { sys: true }), this.getVar('__TAG__'), this.renderMode, !stringRender[this.renderMode], this.stringResult);
+    	tag = '\'' + tag + '\'';
+
+    	if (this.tagFilter) {
+    		tag += FILTER + this.tagFilter;
+    	}
+
+    	return ws(_templateObject$3, this.declVars('__TAG__ = (' + tag + ').trim() || \'' + defaultTag + '\'', { sys: true }), this.getVar('__TAG__'), this.renderMode, !stringRender[this.renderMode], this.stringResult);
     };
 
     /**
@@ -6756,7 +6845,12 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     		}
 
     		if (classRef.test(_el) && ref) {
-    			_el = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + _el.slice(1) + '\'' + e;
+    			if (this.bemFilter) {
+    				_el = s + '\'' + ref + '\'' + FILTER + this.bemFilter + ' \'' + _el.slice(1) + '\'' + e;
+    			} else {
+    				_el = s + '\'' + ref + '\' + \'' + _el.slice(1) + '\'' + e;
+    			}
+
     			_el = this.pasteDangerBlocks(this.replaceTplVars(_el));
     		} else if (_el && types[_i2]) {
     			ref = this.pasteTplVarBlocks(_el);
@@ -6970,6 +7064,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
      *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
      *   *) [debug] - object, which will be contained some debug information
      *
+     *   *) [resolveModuleSource] - function for resolve a module source
      *   *) [pack = false] - if true, then templates will be compiled to WebPack format
      *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, cjs, global)
      *   *) [moduleId = 'tpls'] - module id for AMD/UMD declaration
@@ -6980,7 +7075,10 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
      *
      *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
      *   *) [attrLiteralBounds] - bounds for the attribute literal directive
-     *   *) [bemFilter = 'bem'] - name of the bem filter
+     *   *) [tagFilter] - name of the tag filter
+     *   *) [attrKeyFilter] - name of the attribute key filter
+     *   *) [attrValueFilter] - name of the attribute value filter
+     *   *) [bemFilter] - name of the bem filter
      *   *) [filters = ['undef', 'html']] - list of default filters for output
      *
      *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
@@ -7024,7 +7122,6 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     		moduleId: 'tpls',
     		useStrict: true,
     		prettyPrint: false,
-    		bemFilter: 'bem',
     		literalBounds: ['{{', '}}'],
     		filters: { global: ['html', 'undef'], local: ['undef'] },
     		tolerateWhitespaces: false,
@@ -7079,27 +7176,15 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     	// File initialization
     	// >>>
 
-    	var label = '',
-    	    dirname = void 0,
-    	    filename = void 0;
-
+    	var label = '';
     	Snakeskin.LocalVars.include = {};
     	Snakeskin.UID = Math.random().toString(16).replace('0.', '').slice(0, 5);
 
     	if (IS_NODE && info.file) {
-    		var path = require('path'),
-    		    findNodeModules = require('find-node-modules');
-
-    		filename = info.file = path.normalize(path.resolve(info.file));
-
-    		dirname = path.dirname(filename);
-    		Snakeskin.LocalVars.include[filename] = templateRank['template'];
-    		label = mtime(filename);
-
-    		var modules = (module.paths || []).concat(findNodeModules({ cwd: dirname, relative: false }) || []);
-    		module.paths = Object.keys(modules.reduce(function (map, el) {
-    			return map[el] = true, map;
-    		}, {}));
+    		var path = require('path');
+    		info.file = path.normalize(path.resolve(info.file));
+    		Snakeskin.LocalVars.include[info.file] = templateRank['template'];
+    		label = mtime(info.file);
     	}
 
     	// <<<
@@ -7113,6 +7198,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     	var command = '',
     	    commandLength = 0,
+    	    commandNameDecl = false,
     	    filterStart$$ = false,
     	    pseudoI = false;
 
@@ -7480,6 +7566,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     							}
 
     							bEnd$$ = true;
+    							commandNameDecl = true;
     							begin = 1;
 
     							continue;
@@ -7487,16 +7574,15 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
 
     						// Directive is ended
     					} else if (el === RIGHT_BOUND && begin && ! --begin) {
-    						begin = 0;
+    						commandNameDecl = false;
 
-    						var raw = command;
+    						var raw = command,
+    						    _replacer = getReplacer(command);
+
     						command = command.trim();
-
     						if (!command) {
     							continue;
     						}
-
-    						var _replacer = getReplacer(command);
 
     						if (_replacer) {
     							command = _replacer(command);
@@ -7599,7 +7685,8 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     					}
 
     					if (!skip) {
-    						if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
+    						if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart] || commandNameDecl && ws$1.test(el) && Snakeskin.Directives[command.trim()]) {
+    							commandNameDecl = false;
     							bEnd$$ = true;
     							rPart = '';
     						} else if (bEnd.test(el)) {
@@ -7729,7 +7816,7 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     		p.debug.files = parser.files;
     	}
 
-    	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename, parser.module)) {
+    	if (compile(text, p, info, cacheKey, ctx, parser)) {
     		return false;
     	}
 
@@ -7747,21 +7834,23 @@ var     _templateObject3$2 = taggedTemplateLiteral(['\n\t\t', '\n\t\t__RESULT__ 
     	}
     }
 
-    function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module) {
+    function compile(text, p, info, cacheKey, ctx, parser) {
     	try {
-    		if (module !== 'native') {
+    		if (parser.module !== 'native') {
     			// Server compilation
     			if (IS_NODE) {
+    				var env = parser.environment;
+
     				if (ctx !== NULL) {
     					Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin, {
     						children: [],
     						exports: ctx,
-    						filename: filename,
-    						id: filename,
+    						filename: env.filename,
+    						id: env.filename,
     						loaded: true,
-    						parent: module,
-    						require: require
-    					}, ctx, require, dirname, filename);
+    						parent: env.module,
+    						require: env.require
+    					}, ctx, env.require, env.dirname, env.filename);
     				}
 
     				// CommonJS compiling in a browser
@@ -9030,7 +9119,7 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     	});
     });
 
-        var _templateObject$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t\t']);
+        var _templateObject$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t']);
 
     Snakeskin.addDirective('import', {
     	ancestorsBlacklist: [Snakeskin.group('template'), Snakeskin.group('dynamic'), Snakeskin.group('logic')],
@@ -9040,50 +9129,63 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     	var _this = this;
 
     	var structure = this.structure;
-    	var isNativeExport = this.module === 'native';
+    	var file = this.info.file;
+
+
+    	var isNativeExport = this.module === 'native',
+    	    resolve = this.resolveModuleSource;
+
+    	var res = '',
+    	    from = '';
 
     	if (isNativeExport) {
+    		res += 'import ';
     		structure.vars = {};
     		structure.params['@result'] = '';
     	}
 
-    	var res = isNativeExport ? 'import ' : '',
-    	    from = '';
-
     	command = command.replace(/(?:\s+from\s+([^\s]+)\s*|\s*([^\s]+)\s*)$/, function (str, path1, path2) {
-    		if (isNativeExport) {
-    			from = str + ';';
-    		} else {
-    			var _f = function _f() {
-    				var path = path1 || path2,
-    				    pathId = _this.pasteDangerBlocks(path).slice(1, -1);
+    		var f = function f() {
+    			var path = _this.pasteDangerBlocks(path1 || path2),
+    			    pathId = _this.pasteDangerBlocks(path).slice(1, -1);
 
-    				switch (_this.module) {
-    					case 'cjs':
-    						return 'require(' + path + ');';
+    			if (resolve) {
+    				pathId = resolve(pathId, file);
+    				path = '\'' + pathId + '\'';
+    			}
 
-    					case 'global':
-    						return 'GLOBAL[' + path + '];';
+    			switch (_this.module) {
+    				case 'native':
+    					return '' + (path1 ? 'from ' : '') + path + ';';
 
-    					case 'amd':
+    				case 'cjs':
+    					return 'require(' + path + ');';
+
+    				case 'global':
+    					return 'GLOBAL[' + path + '];';
+
+    				case 'amd':
+    					_this.amdModules.push(pathId);
+    					return pathId + ';';
+
+    				default:
+    					if (getRgxp('^[$' + symbols + '_][' + w + ']*$').test(pathId)) {
     						_this.amdModules.push(pathId);
-    						return pathId + ';';
+    						return ws(_templateObject$10, path, pathId, pathId, path);
+    					}
 
-    					default:
-    						if (getRgxp('^[$' + symbols + '_][' + w + ']*$').test(pathId)) {
-    							_this.amdModules.push(pathId);
-    							return ws(_templateObject$10, path, pathId, pathId, path);
-    						}
+    					return 'typeof require === \'function\' ? require(' + path + ') : GLOBAL[' + path + '];';
+    			}
+    		};
 
-    						return 'typeof require === \'function\' ? require(' + path + ') : GLOBAL[' + path + '];';
-    				}
-    			};
-
+    		if (isNativeExport) {
+    			from = f();
+    		} else {
     			if (path1) {
-    				res += '__REQUIRE__ = ' + _f();
+    				res += '__REQUIRE__ = ' + f();
     				from = '__REQUIRE__';
     			} else {
-    				res += _f();
+    				res += f();
     				from = true;
     			}
     		}
@@ -9191,24 +9293,26 @@ var     _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\
     	file = this.pasteDangerBlocks(file);
     	this.namespace = undefined;
 
-    	var env = this.environment;
+    	var env = this.environment,
+    	    r = getRequire(file);
 
     	var module = {
     		children: [],
     		exports: {},
     		filename: file,
+    		dirname: r.dirname,
     		id: env.id + 1,
     		key: null,
     		loaded: true,
     		namespace: null,
     		parent: this.environment,
-    		require: require,
+    		require: r.require,
     		root: env.root || env
     	};
 
     	module.root.key.push([file, require('fs').statSync(file).mtime.valueOf()]);
-
     	env.children.push(module);
+
     	this.environment = module;
     	this.info.file = file;
     	this.files[file] = true;
@@ -10305,7 +10409,7 @@ var     _templateObject3$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsaf
     		return;
     	}
 
-    	var str = this.getXMLTagDeclStart(tag) + this.getXMLAttrsDeclStart() + this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
+    	var str = this.getXMLAttrsDeclStart() + this.getXMLTagDeclStart(tag) + this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
     	var attrCache = this.getVar('__ATTR_CACHE__'),
     	    attrHackRgxp = /_+ATTR_CACHE_+(tag_\d+)?(?=.*\+ ')/g;

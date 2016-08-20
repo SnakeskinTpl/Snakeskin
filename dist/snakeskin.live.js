@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.1.13 (live)
+ * Snakeskin v7.2.0 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Fri, 29 Jul 2016 08:50:43 GMT
+ * Date: 'Sat, 20 Aug 2016 18:11:36 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, function () { 'use strict';
 
         var Snakeskin = {
-      VERSION: [7, 1, 13]
+      VERSION: [7, 2, 0]
     };
 
     /**
@@ -441,7 +441,7 @@
      */
     Snakeskin.decorate = function (decorators, fn) {
     	Snakeskin.forEach(decorators, function (decorator) {
-    		return fn = decorator(fn);
+    		return fn = decorator(fn) || fn;
     	});
     	fn.decorators = decorators;
     	return fn;
@@ -1105,24 +1105,6 @@
     };
 
     /**
-     * BEM filter
-     *
-     * @param {?} block - block name
-     * @param {!Object<string, !Array<string>>} attrs - object of attributes
-     * @param {?} part - second part of declaration
-     * @return {string}
-     */
-    Filters['bem'] = function (block, attrs, part) {
-    	return String(block) + String(part);
-    };
-
-    Snakeskin.setFilterParams('bem', {
-    	bind: [function (o) {
-    		return o.getVar('__ATTR_CACHE__');
-    	}]
-    });
-
-    /**
      * Sets a default value for the specified parameter
      *
      * @param {?} val - source value
@@ -1211,7 +1193,7 @@
      * @param {?} val - source value
      * @return {string}
      */
-    Filters['attrKey'] = Filters['attrKeyGroup'] = function (val) {
+    Filters['attrKey'] = function (val) {
     	var tmp = attrKey.exec(String(val));
     	return tmp && tmp[1] || 'undefined';
     };
@@ -1235,7 +1217,7 @@
      * @param {?} val - source value
      * @return {string}
      */
-    Filters['attrVal'] = function (val) {
+    Filters['attrValue'] = function (val) {
     	return String(val).replace(attrValRgxp, '$1&#31;$2');
     };
 
@@ -1278,7 +1260,7 @@
     			cache[tmp] = localCache[tmp] = [el];
     		});
 
-    		return new Snakeskin.HTMLObject(localCache, 'attrVal');
+    		return new Snakeskin.HTMLObject(localCache, 'attrValue');
     	}
 
     	return convert(val);
