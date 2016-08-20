@@ -73,7 +73,10 @@ import {
  *
  *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
  *   *) [attrLiteralBounds] - bounds for the attribute literal directive
- *   *) [bemFilter = 'bem'] - name of the bem filter
+ *   *) [tagFilter] - name of the tag filter
+ *   *) [attrKeyFilter] - name of the attribute key filter
+ *   *) [attrValueFilter] - name of the attribute value filter
+ *   *) [bemFilter] - name of the bem filter
  *   *) [filters = ['undef', 'html']] - list of default filters for output
  *
  *   *) [localization = true] - if is false, then localization literals ` ... ` won't be wrapped with a i18n function
@@ -118,7 +121,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 			moduleId: 'tpls',
 			useStrict: true,
 			prettyPrint: false,
-			bemFilter: 'bem',
 			literalBounds: ['{{', '}}'],
 			filters: {global: ['html', 'undef'], local: ['undef']},
 			tolerateWhitespaces: false,

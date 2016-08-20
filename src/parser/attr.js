@@ -13,6 +13,7 @@ import { ws } from '../helpers/string';
 import { attrSeparators } from '../consts/html';
 import { attrKey } from '../consts/regs';
 import { stringRender } from '../consts/other';
+import { FILTER } from '../consts/literals';
 
 /**
  * Returns string declaration of the specified XML attributes
@@ -128,12 +129,28 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 			tokens = this.getTokens(args[1]);
 
 		for (let i = 0; i < tokens.length; i++) {
-			res += `__APPEND_XML_ATTR_VAL__('${this.pasteTplVarBlocks(tokens[i])}');`;
+			let
+				attrVal = `'${this.pasteTplVarBlocks(tokens[i])}'`;
+
+			if (this.attrValueFilter) {
+				attrVal += FILTER + this.attrKeyFilter;
+				attrVal = this.out(attrVal, {unsafe: true});
+			}
+
+			res += `__APPEND_XML_ATTR_VAL__(${attrVal});`;
+		}
+
+		let
+			attrKey = `'${this.pasteTplVarBlocks(args[0])}'`;
+
+		if (this.attrKeyFilter) {
+			attrKey += FILTER + this.attrKeyFilter;
+			attrKey = this.out(attrKey, {unsafe: true});
 		}
 
 		res += ws`
 			__GET_XML_ATTR_KEY_DECL__(
-				(__ATTR_TYPE__ = 'attrKey', '${this.pasteTplVarBlocks(args[0])}'),
+				(__ATTR_TYPE__ = 'attrKey', ${attrKey}),
 				${this.getVar('__ATTR_CACHE__')},
 				${empty}
 			);

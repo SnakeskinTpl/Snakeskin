@@ -41,8 +41,14 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
  * @return {string}
  */
 Parser.prototype.getXMLTagDeclStart = function (tag) {
+	tag = `'${tag}'`;
+
+	if (this.tagFilter) {
+		tag += FILTER + this.tagFilter;
+	}
+
 	return ws`
-		${this.declVars(`__TAG__ = ('${tag}').trim() || '${defaultTag}'`, {sys: true})}
+		${this.declVars(`__TAG__ = (${tag}).trim() || '${defaultTag}'`, {sys: true})}
 		__RESULT__ = __GET_XML_ATTRS_DECL_START__(
 			__RESULT__,
 			${this.getVar('__TAG__')},
@@ -315,7 +321,13 @@ Parser.prototype.getXMLTagDesc = function (str) {
 		}
 
 		if (classRef.test(el) && ref) {
-			el = `${s}'${ref}'${FILTER}${this.bemFilter} '${el.slice(1)}'${e}`;
+			if (this.bemFilter) {
+				el = `${s}'${ref}'${FILTER}${this.bemFilter} '${el.slice(1)}'${e}`;
+
+			} else {
+				el = `${s}'${ref}' + '${el.slice(1)}'${e}`;
+			}
+
 			el = this.pasteDangerBlocks(this.replaceTplVars(el));
 
 		} else if (el && types[i]) {

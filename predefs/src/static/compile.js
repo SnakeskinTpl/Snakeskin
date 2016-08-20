@@ -46,6 +46,9 @@ var template;
  *   prettyPrint: (?boolean|undefined),
  *   literalBounds: (Array<string>|undefined),
  *   attrLiteralBounds: (Array<string>|undefined),
+ *   tagFilter: (?string|undefined),
+ *   attrKeyFilter: (?string|undefined),
+ *   attrValueFilter: (?string|undefined),
  *   bemFilter: (?string|undefined),
  *   filters: (Object|undefined),
  *   localization: (?boolean|undefined),
@@ -104,6 +107,15 @@ var literalBounds;
 
 /** @type {?} */
 var attrLiteralBounds;
+
+/** @type {?} */
+var tagFilter;
+
+/** @type {?} */
+var attrKeyFilter;
+
+/** @type {?} */
+var attrValueFilter;
 
 /** @type {?} */
 var bemFilter;

@@ -510,22 +510,6 @@ Filters['parse'] = function (val) {
 };
 
 /**
- * BEM filter
- *
- * @param {?} block - block name
- * @param {!Object<string, !Array<string>>} attrs - object of attributes
- * @param {?} part - second part of declaration
- * @return {string}
- */
-Filters['bem'] = function (block, attrs, part) {
-	return String(block) + String(part);
-};
-
-Snakeskin.setFilterParams('bem', {
-	bind: [(o) => o.getVar('__ATTR_CACHE__')]
-});
-
-/**
  * Sets a default value for the specified parameter
  *
  * @param {?} val - source value
@@ -614,7 +598,7 @@ function dasherize(str) {
  * @param {?} val - source value
  * @return {string}
  */
-Filters['attrKey'] = Filters['attrKeyGroup'] = function (val) {
+Filters['attrKey'] = function (val) {
 	const tmp = attrKey.exec(String(val));
 	return tmp && tmp[1] || 'undefined';
 };

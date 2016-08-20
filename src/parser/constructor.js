@@ -50,7 +50,16 @@ export default class Parser {
 		/** @type {(Array<string>|undefined)} */
 		this.attrLiteralBounds = params.attrLiteralBounds;
 
-		/** @type {string} */
+		/** @type {(?string|undefined)} */
+		this.tagFilter = params.tagFilter;
+
+		/** @type {(?string|undefined)} */
+		this.attrKeyFilter = params.attrKeyFilter;
+
+		/** @type {(?string|undefined)} */
+		this.attrValueFilter = params.attrValueFilter;
+
+		/** @type {(?string|undefined)} */
 		this.bemFilter = params.bemFilter;
 
 		/** @type {!Array} */
@@ -106,6 +115,9 @@ export default class Parser {
 				i18nFnOptions: this.i18nFnOptions,
 				literalBounds: this.literalBounds,
 				attrLiteralBounds: this.attrLiteralBounds,
+				tagFilter: this.tagFilter,
+				attrKeyFilter: this.attrKeyFilter,
+				attrValueFilter: this.attrValueFilter,
 				bemFilter: this.bemFilter,
 				filters: this.filters,
 				language: this.language,

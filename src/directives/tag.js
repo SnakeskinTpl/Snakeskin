@@ -61,8 +61,8 @@ Snakeskin.addDirective(
 		}
 
 		let str =
-			this.getXMLTagDeclStart(tag) +
 			this.getXMLAttrsDeclStart() +
+			this.getXMLTagDeclStart(tag) +
 			this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
 		const
