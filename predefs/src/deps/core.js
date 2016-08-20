@@ -14,3 +14,6 @@ Array.from = function (arrayLike) {};
 
 /** type {?} */
 var isAbsolute;
+
+/** type {?} */
+var paths;
