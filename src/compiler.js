@@ -222,6 +222,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	let
 		command = '',
 		commandLength = 0,
+		commandNameDecl = false,
 		filterStart = false,
 		pseudoI = false;
 
@@ -633,6 +634,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							}
 
 							bEnd = true;
+							commandNameDecl = true;
 							begin = 1;
 
 							continue;
@@ -640,8 +642,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 					// Directive is ended
 					} else if (el === rb && begin && !--begin) {
-						begin = 0;
-
+						commandNameDecl = false;
 						const raw = command;
 						command = command.trim();
 
@@ -765,7 +766,13 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 
 					if (!skip) {
-						if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart]) {
+						if (
+							ESCAPES_END[el] ||
+							ESCAPES_END_WORD[rPart] ||
+							commandNameDecl && rgxp.ws.test(el) && Snakeskin.Directives[command.trim()]
+
+						) {
+							commandNameDecl = false;
 							bEnd = true;
 							rPart = '';
 
