@@ -111,7 +111,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		res += ws`
 			__ATTR_STR__ = '';
-			__ATTR_TYPE__ = 'attrVal';
+			__ATTR_TYPE__ = 'attrValue';
 		`;
 
 		if (group) {

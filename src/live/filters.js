@@ -623,7 +623,7 @@ const
  * @param {?} val - source value
  * @return {string}
  */
-Filters['attrVal'] = function (val) {
+Filters['attrValue'] = function (val) {
 	return String(val).replace(attrValRgxp, '$1&#31;$2');
 };
 
@@ -667,7 +667,7 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 			cache[tmp] = localCache[tmp] = [el];
 		});
 
-		return new Snakeskin.HTMLObject(localCache, 'attrVal');
+		return new Snakeskin.HTMLObject(localCache, 'attrValue');
 	}
 
 	return convert(val);
