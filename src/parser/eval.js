@@ -17,14 +17,19 @@ import { ROOT, GLOBAL } from '../consts/links';
  * Executes a string
  *
  * @param {string} str - source string
+ * @param {?boolean=} [opt_raw=false] - if true, then the string is considered as raw
  * @return {?}
  */
-Parser.prototype.evalStr = function (str) {
+Parser.prototype.evalStr = function (str, opt_raw) {
+	if (!opt_raw) {
+		str = this.pasteDangerBlocks(str);
+	}
+
 	const
 		env = this.environment;
 
 	if (IS_NODE) {
-		const tmp = Function(
+		return Function(
 			'GLOBAL',
 			'Snakeskin',
 			'__FILTERS__',
@@ -52,8 +57,6 @@ Parser.prototype.evalStr = function (str) {
 			env.filename,
 			null
 		);
-
-		return tmp;
 	}
 
 	return Function(
