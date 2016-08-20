@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -13,7 +15,7 @@ const
 	eol = '\n',
 	utils = require('./utils');
 
-var
+const
 	fs = require('fs'),
 	mkdirp = require('mkdirp');
 

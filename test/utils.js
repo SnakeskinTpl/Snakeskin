@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -6,20 +8,17 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-var
+const
 	$C = require('collection.js/compiled'),
 	snakeskin = global.Snakeskin = require('../snakeskin');
 
-var
+const
 	path = require('path'),
 	fs = require('fs'),
-	assert = require('assert');
+	assert = require('assert'),
+	glob = require('glob');
 
-var
-	glob = require('glob'),
-	mkdirp = require('mkdirp');
-
-var
+const
 	from = path.join(__dirname, 'tests'),
 	to = path.join(__dirname, 'tmp'),
 	error = path.join(__dirname, '../error.tmp');
@@ -28,12 +27,9 @@ exports.from = from;
 exports.to = to;
 exports.error = error;
 
-var
-	asserts = [],
-	prfx = -1;
-
+let prfx = -1;
 exports.run = function (params) {
-	var
+	const
 		options = JSON.stringify(params, null, 2),
 		debug = params.debug = {};
 
@@ -41,73 +37,90 @@ exports.run = function (params) {
 	$C(glob.sync(path.join(from, '*/*.ss'))).forEach(exec);
 
 	function exec(file) {
+		let
+			txt,
+			fileName,
+			cat,
+			chunkSrc,
+			relativeSrc,
+			nms;
+
+		let
+			results,
+			tests;
+
 		try {
-			var txt = $C(fs.readFileSync(file, 'utf8').replace(/^\/\*![\s\S]*?\*\//, '').split(/^===.*/m))
-				.map(function (el) {
-					return el.trim();
-				});
+			txt = $C(
+				fs
+					.readFileSync(file, 'utf8')
+					.replace(/^\/\*![\s\S]*?\*\//, '')
+					.split(/^===.*/m)
 
-			var
-				fileName = path.basename(file),
-				cat = path.basename(path.dirname(file)),
-				chunkSrc = path.join(to, fileName + '_' + prfx + '.' + cat + '.js'),
-				relativeSrc = path.relative(process.cwd(), file),
-				nms = [cat, path.basename(file, '.ss')];
+			).map((el) => el.trim());
 
-			console.log('\n###### ' + nms.join('.') + ' :: ' + options +  '\n');
+			fileName = path.basename(file);
+			cat = path.basename(path.dirname(file));
+			chunkSrc = path.join(to, `${fileName}_${prfx}.${cat}.js`);
+			relativeSrc = path.relative(process.cwd(), file);
+			nms = [cat, path.basename(file, '.ss')];
 
-			var
-				testRgxp = /^\[\[(.*)]]===+$/gm,
-				tests = [],
-				results = txt[0].split(/^\[\[.*]]===+$/m).slice(1);
+			console.log(`\n###### ${nms.join('.')} :: ${options}\n`);
+
+			const
+				testRgxp = /^\[\[(.*)]]===+$/gm;
+
+			results = txt[0].split(/^\[\[.*]]===+$/m).slice(1);
+			tests = [];
 
 			while (testRgxp.exec(txt[0])) {
 				tests.push(RegExp.$1);
 			}
 
 		} catch (err) {
-			log('File: ' + (relativeSrc || file) + '\nError: ' + err.message, 'error');
+			log(`File: ${relativeSrc || file}\nError: ${err.message}`, 'error');
 			return;
 		}
 
-		var obj = {
+		const obj = {
 			tpl: txt[1],
 			id: path.basename(file, '.ss'),
 			js: []
 		};
 
+		/* eslint-disable no-unused-vars */
+		let tpl;
+		/* eslint-enable no-unused-vars */
+
 		try {
-			var
+			const
 				start = Date.now(),
-				res = snakeskin.compile(txt[1], params, {file: file});
+				res = snakeskin.compile(txt[1], params, {file});
 
-			log(relativeSrc + ' ' + (Date.now() - start) + 'ms');
+			log(`${relativeSrc} ${Date.now() - start}ms`);
 			fs.writeFileSync(chunkSrc, res);
-
-			var
-				tpl = $C(require(chunkSrc)).get(nms);
+			tpl = $C(require(chunkSrc)).get(nms);
 
 		} catch (err) {
 			fs.writeFileSync(
 				error,
-				'File: ' + file + '\n\n' + err.message + (debug['code'] ? '\n\nCode:\n\n' + debug['code'] : '')
+				`File: ${file}\n\n${err.message + (debug.code ? `\n\nCode:\n\n${debug.code}` : '')}`
 			);
 
 			throw err;
 		}
 
-		$C(tests).forEach(function (el, i) {
-			var
-				p = String(el).split(' ; '),
-				res = '';
+		$C(tests).forEach((el, i) => {
+			const
+				p = String(el).split(' ; ');
 
+			let res = '';
 			try {
 				results[i] = (results[i] || '').trim();
 				obj.js.push(
-					'equal(' + p[0] + '(' + p.slice(1) + ').trim(), \'' + results[i].replace(/(\\|')/g, '\\$1') + '\');'
+					`equal(${p[0]}(${p.slice(1)}).trim(), '${results[i].replace(/(\\|')/g, '\\$1')}');`
 				);
 
-				res = eval('tpl["' + p[0] + '"](' + p.slice(1) + ')');
+				res = eval(`tpl["${p[0]}"](${p.slice(1)})`);
 				res = res != null ? res.trim() : '';
 
 				assert.equal(
@@ -116,23 +129,23 @@ exports.run = function (params) {
 				);
 
 			} catch (err) {
-				var
-					header =
-						'File: ' + relativeSrc + ' (' + prfx + ')' +
-						'\nOptions:\n\n' + options +
-						'\n\nTpl: ' + p[0];
+				/* eslint-disable prefer-template */
+				const header =
+					`File: ${relativeSrc}  (${prfx})` +
+					`\nOptions:\n\n${options}` +
+					`\n\nTpl: ${p[0]}`;
 
 				log(header, 'error');
-
-				var report =
+				const report =
 					header +
-					'\n\n' + line() +
-					'\n\nResult:\n' + res +
-					'\n\nExpected:\n' + results[i] +
-					'\n\n' + line() +
-					'\n\nTest:\n' + txt[1] +
-					'\n\nCode:\n' + debug['code'];
+					`\n\n${line()}` +
+					`\n\nResult:\n${res}` +
+					`\n\nExpected:\n${results[i]}` +
+					`\n\n${line()}` +
+					`\n\nTest:\n${txt[1]}` +
+					`\n\nCode:\n${debug['code']}`;
 
+				/* eslint-enable prefer-template */
 				fs.writeFileSync(error, report);
 				throw err;
 			}
