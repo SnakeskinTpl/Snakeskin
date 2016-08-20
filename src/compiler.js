@@ -192,20 +192,11 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		.slice(0, 5);
 
 	if (IS_NODE && info.file) {
-		const
-			path = require('path'),
-			findNodeModules = require('find-node-modules');
-
-		filename = info.file = path.normalize(
-			path.resolve(info.file)
-		);
-
+		const path = require('path');
+		filename = info.file = path.normalize(path.resolve(info.file));
 		dirname = path.dirname(filename);
 		Snakeskin.LocalVars.include[filename] = templateRank['template'];
 		label = mtime(filename);
-
-		const modules = (module.paths || []).concat(findNodeModules({cwd: dirname, relative: false}) || []);
-		module.paths = Object.keys(modules.reduce((map, el) => (map[el] = true, map), {}));
 	}
 
 	// <<<

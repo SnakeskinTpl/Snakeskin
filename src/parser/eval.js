@@ -17,19 +17,58 @@ import { ROOT, GLOBAL } from '../consts/links';
  * Executes a string
  *
  * @param {string} str - source string
- * @param {?boolean=} [opt_raw=false] - if true, then the string is considered as raw
  * @return {?}
  */
-Parser.prototype.evalStr = function (str, opt_raw) {
-	if (!opt_raw) {
-		str = this.pasteDangerBlocks(str);
-	}
-
+Parser.prototype.evalStr = function (str) {
 	const
 		ctx = this.environment;
 
 	if (IS_NODE) {
-		return Function(
+		let
+			requireFile = require,
+			dirname,
+			paths;
+
+		if (ctx.filename) {
+			const
+				path = require('path'),
+				findNodeModules = require('find-node-modules');
+
+			paths = module.paths.slice();
+			dirname = path.dirname(ctx.filename);
+
+			const
+				base = findNodeModules({cwd: dirname, relative: false}) || [],
+				modules = base.concat(module.paths || []);
+
+			const
+				map = {},
+				res = [];
+
+			for (let i = 0; i < modules.length; i++) {
+				const
+					el = modules[i];
+
+				if (!map[el]) {
+					map[el] = true;
+					res.push(el);
+				}
+			}
+
+			const
+				isRelative = {'/': true, '\\': true, '.': true};
+
+			module.paths = res;
+			requireFile = (file) => {
+				if (!path.isAbsolute(file) && isRelative[file[0]]) {
+					return require(path.resolve(dirname, file));
+				}
+
+				return require(file);
+			};
+		}
+
+		const tmp = Function(
 			'GLOBAL',
 			'Snakeskin',
 			'__FILTERS__',
@@ -52,11 +91,17 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 			Snakeskin.LocalVars,
 			ctx,
 			ctx.exports,
-			require,
-			require('path').dirname(ctx.filename),
+			requireFile,
+			dirname,
 			ctx.filename,
 			null
 		);
+
+		if (paths) {
+			module.paths = paths;
+		}
+
+		return tmp;
 	}
 
 	return Function(
