@@ -643,15 +643,15 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					// Directive is ended
 					} else if (el === rb && begin && !--begin) {
 						commandNameDecl = false;
-						const raw = command;
-						command = command.trim();
 
+						const
+							raw = command,
+							replacer = getReplacer(command);
+
+						command = command.trim();
 						if (!command) {
 							continue;
 						}
-
-						const
-							replacer = getReplacer(command);
 
 						if (replacer) {
 							command = replacer(command);

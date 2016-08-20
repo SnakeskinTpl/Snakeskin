@@ -18,6 +18,10 @@ bar -1 1 foo foo 1 \1
 
 {{ { /* hello */ }} /* world */ /** ! */ {{ /* 121 */ }} <div class="foo" bla-(( a ))="2" bar(( foo ))="3"></div>foo'bar' 3 `foo` {/*121 { <div bar="'}*/'" bla="'`121`'"></div>
 
+[[directiveWithRegExpLiteral]]==========================================================================================
+
+true false
+
 ========================================================================================================================
 
 - namespace syntax[%fileName%]
@@ -95,3 +99,7 @@ bar -1 1 foo foo 1 \1
 	`{/*121`
 	{`{`}
 	< div bar = '`}*/`' | bla = '\`121\`'
+
+- template directiveWithRegExpLiteral()
+	{output /123/.test('123')}
+	{ /\d+/.test('bla')}
