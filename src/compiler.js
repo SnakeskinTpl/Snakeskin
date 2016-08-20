@@ -180,11 +180,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// File initialization
 	// >>>
 
-	let
-		label = '',
-		dirname,
-		filename;
-
+	let label = '';
 	Snakeskin.LocalVars.include = {};
 	Snakeskin.UID = Math.random()
 		.toString(16)
@@ -193,10 +189,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 	if (IS_NODE && info.file) {
 		const path = require('path');
-		filename = info.file = path.normalize(path.resolve(info.file));
-		dirname = path.dirname(filename);
-		Snakeskin.LocalVars.include[filename] = templateRank['template'];
-		label = mtime(filename);
+		info.file = path.normalize(path.resolve(info.file));
+		Snakeskin.LocalVars.include[info.file] = templateRank['template'];
+		label = mtime(info.file);
 	}
 
 	// <<<
