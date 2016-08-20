@@ -63,6 +63,7 @@ import {
  *   *) [throws = false] - if is true, then in case of an error or a missing error handler will be thrown an exception
  *   *) [debug] - object, which will be contained some debug information
  *
+ *   *) [resolveModuleSource] - function for resolve a module source
  *   *) [pack = false] - if true, then templates will be compiled to WebPack format
  *   *) [module = 'umd'] - module type for compiled templates (native, umd, amd, cjs, global)
  *   *) [moduleId = 'tpls'] - module id for AMD/UMD declaration

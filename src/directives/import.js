@@ -24,52 +24,64 @@ Snakeskin.addDirective(
 
 	function (command) {
 		const
-			{structure} = this,
-			isNativeExport = this.module === 'native';
+			{structure, info: {file}} = this;
+
+		const
+			isNativeExport = this.module === 'native',
+			resolve = this.resolveModuleSource;
+
+		let
+			res = '',
+			from = '';
 
 		if (isNativeExport) {
+			res += 'import ';
 			structure.vars = {};
 			structure.params['@result'] = '';
 		}
 
-		let
-			res = isNativeExport ? 'import ' : '',
-			from = '';
-
 		command = command.replace(/(?:\s+from\s+([^\s]+)\s*|\s*([^\s]+)\s*)$/, (str, path1, path2) => {
+			const f = () => {
+				let
+					path = this.pasteDangerBlocks(path1 || path2),
+					pathId = this.pasteDangerBlocks(path).slice(1, -1);
+
+				if (resolve) {
+					pathId = resolve(pathId, file);
+					path = `'${pathId}'`;
+				}
+
+				switch (this.module) {
+					case 'native':
+						return `${path1 ? 'from ' : ''}${path};`;
+
+					case 'cjs':
+						return `require(${path});`;
+
+					case 'global':
+						return `GLOBAL[${path}];`;
+
+					case 'amd':
+						this.amdModules.push(pathId);
+						return `${pathId};`;
+
+					default:
+						if (getRgxp(`^[$${symbols}_][${w}]*$`).test(pathId)) {
+							this.amdModules.push(pathId);
+							return ws`
+								typeof require === 'function' ?
+									require(${path}) : typeof ${pathId} !== 'undefined' ? ${pathId} : GLOBAL[${path}];
+							`;
+						}
+
+						return `typeof require === 'function' ? require(${path}) : GLOBAL[${path}];`;
+				}
+			};
+
 			if (isNativeExport) {
-				from = `${str};`;
+				from = f();
 
 			} else {
-				const f = () => {
-					const
-						path = path1 || path2,
-						pathId = this.pasteDangerBlocks(path).slice(1, -1);
-
-					switch (this.module) {
-						case 'cjs':
-							return `require(${path});`;
-
-						case 'global':
-							return `GLOBAL[${path}];`;
-
-						case 'amd':
-							this.amdModules.push(pathId);
-							return `${pathId};`;
-
-						default:
-							if (getRgxp(`^[$${symbols}_][${w}]*$`).test(pathId)) {
-								this.amdModules.push(pathId);
-								return ws`
-									typeof require === 'function' ?
-										require(${path}) : typeof ${pathId} !== 'undefined' ? ${pathId} : GLOBAL[${path}];
-								`;
-							}
-
-							return `typeof require === 'function' ? require(${path}) : GLOBAL[${path}];`;
-					}
-				};
-
 				if (path1) {
 					res += `__REQUIRE__ = ${f()}`;
 					from = '__REQUIRE__';

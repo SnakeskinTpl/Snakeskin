@@ -30,6 +30,9 @@ export default class Parser {
 		/** @type {(?function(!Error)|undefined)} */
 		this.onError = params.onError;
 
+		/** @type {(?function(string, string): string|undefined)} */
+		this.resolveModuleSource = params.resolveModuleSource;
+
 		/** @type {boolean} */
 		this.pack = params.pack;
 

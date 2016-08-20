@@ -10,6 +10,7 @@
  * @typedef {{
  *   throws: boolean,
  *   onError: (?function(!Error)|undefined),
+ *   resolveModuleSource: (?function(string, string): string|undefined),
  *   pack: boolean,
  *   module: string,
  *   moduleId: (?string|undefined),
