@@ -144,6 +144,9 @@ export const ESCAPES_END = {
 };
 
 export const ESCAPES_END_WORD = {
+	'return': true,
+	'yield': true,
+	'await': true,
 	'typeof': true,
 	'void': true,
 	'instanceof': true,
