@@ -11,6 +11,7 @@
 import Snakeskin from '../core';
 import { ws } from '../helpers/string';
 import { escapeBackslashes, escapeEOLs } from '../helpers/escape';
+import { getRequire } from '../helpers/require';
 
 Snakeskin.addDirective(
 	'include',
@@ -71,27 +72,26 @@ Snakeskin.addDirective(
 		this.namespace = undefined;
 
 		const
-			env = this.environment;
+			env = this.environment,
+			r = getRequire(file);
 
 		const module = {
 			children: [],
 			exports: {},
 			filename: file,
+			dirname: r.dirname,
 			id: env.id + 1,
 			key: null,
 			loaded: true,
 			namespace: null,
 			parent: this.environment,
-			require,
+			require: r.require,
 			root: env.root || env
 		};
 
-		module.root.key.push([
-			file,
-			require('fs').statSync(file).mtime.valueOf()
-		]);
-
+		module.root.key.push([file, require('fs').statSync(file).mtime.valueOf()]);
 		env.children.push(module);
+
 		this.environment = module;
 		this.info.file = file;
 		this.files[file] = true;

@@ -903,7 +903,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		p.debug.files = parser.files;
 	}
 
-	if (compile(text, p, info, cacheKey, ctx, parser, dirname, filename, parser.module)) {
+	if (compile(text, p, info, cacheKey, ctx, parser)) {
 		return false;
 	}
 
@@ -923,11 +923,14 @@ function mtime(file) {
 	}
 }
 
-function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module) {
+function compile(text, p, info, cacheKey, ctx, parser) {
 	try {
-		if (module !== 'native') {
+		if (parser.module !== 'native') {
 			// Server compilation
 			if (IS_NODE) {
+				const
+					env = parser.environment;
+
 				if (ctx !== NULL) {
 					Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(
 						Snakeskin,
@@ -935,17 +938,17 @@ function compile(text, p, info, cacheKey, ctx, parser, dirname, filename, module
 						{
 							children: [],
 							exports: ctx,
-							filename,
-							id: filename,
+							filename: env.filename,
+							id: env.filename,
 							loaded: true,
-							parent: module,
-							require
+							parent: env.module,
+							require: env.require
 						},
 
 						ctx,
-						require,
-						dirname,
-						filename
+						env.require,
+						env.dirname,
+						env.filename
 					);
 				}
 

@@ -9,6 +9,7 @@
  */
 
 import { IS_NODE } from '../consts/hacks';
+import { getRequire } from '../helpers/require';
 import { ws } from '../helpers/string';
 
 /**
@@ -360,17 +361,21 @@ export default class Parser {
 		 */
 		this.files = {};
 
+		const
+			r = getRequire(this.info.file);
+
 		/**
 		 * The module environment
 		 * @type {{exports, require, id, key, root, filename, parent, children, loaded, namespace}}
 		 */
 		this.environment = {
 			exports: {},
-			require: IS_NODE ? require : null,
+			require: r.require,
 			id: 0,
 			key: [],
 			root: null,
 			filename: this.info.file,
+			dirname: r.dirname,
 			parent: IS_NODE ? module : null,
 			children: [],
 			loaded: true,

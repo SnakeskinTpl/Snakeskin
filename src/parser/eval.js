@@ -21,53 +21,9 @@ import { ROOT, GLOBAL } from '../consts/links';
  */
 Parser.prototype.evalStr = function (str) {
 	const
-		ctx = this.environment;
+		env = this.environment;
 
 	if (IS_NODE) {
-		let
-			requireFile = require,
-			dirname,
-			paths;
-
-		if (ctx.filename) {
-			const
-				path = require('path'),
-				findNodeModules = require('find-node-modules');
-
-			paths = module.paths.slice();
-			dirname = path.dirname(ctx.filename);
-
-			const
-				base = findNodeModules({cwd: dirname, relative: false}) || [],
-				modules = base.concat(module.paths || []);
-
-			const
-				map = {},
-				res = [];
-
-			for (let i = 0; i < modules.length; i++) {
-				const
-					el = modules[i];
-
-				if (!map[el]) {
-					map[el] = true;
-					res.push(el);
-				}
-			}
-
-			const
-				isRelative = {'/': true, '\\': true, '.': true};
-
-			module.paths = res;
-			requireFile = (file) => {
-				if (!path.isAbsolute(file) && isRelative[file[0]]) {
-					return require(path.resolve(dirname, file));
-				}
-
-				return require(file);
-			};
-		}
-
 		const tmp = Function(
 			'GLOBAL',
 			'Snakeskin',
@@ -89,11 +45,11 @@ Parser.prototype.evalStr = function (str) {
 			Snakeskin.Filters,
 			Snakeskin.Vars,
 			Snakeskin.LocalVars,
-			ctx,
-			ctx.exports,
-			requireFile,
-			dirname,
-			ctx.filename,
+			env,
+			env.exports,
+			env.require,
+			env.dirname,
+			env.filename,
 			null
 		);
 
@@ -122,8 +78,8 @@ Parser.prototype.evalStr = function (str) {
 		Snakeskin.Filters,
 		Snakeskin.Vars,
 		Snakeskin.LocalVars,
-		ctx,
-		ctx.exports,
+		env,
+		env.exports,
 		null
 	);
 };
