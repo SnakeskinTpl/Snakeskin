@@ -53,10 +53,6 @@ Parser.prototype.evalStr = function (str) {
 			null
 		);
 
-		if (paths) {
-			module.paths = paths;
-		}
-
 		return tmp;
 	}
 
