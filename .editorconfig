@@ -7,9 +7,9 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[{LICENSE,.gitattributes,.gitignore,.npmignore}]
+[{LICENSE,.gitattributes,.gitignore,.npmignore,.eslintignore}]
 indent_style = space
 
-[*.{json,yml,md,jscsrc,yaspellerrc,bowerrc,babelrc,snakeskinrc,eslintrc,eslintignore}]
+[*.{json,yml,md,jscsrc,yaspellerrc,bowerrc,babelrc,snakeskinrc,eslintrc}]
 indent_style = space
 indent_size = 2
