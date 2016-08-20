@@ -133,7 +133,7 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 				attrVal = `'${this.pasteTplVarBlocks(tokens[i])}'`;
 
 			if (this.attrValueFilter) {
-				attrVal += FILTER + this.attrKeyFilter;
+				attrVal += FILTER + this.attrValueFilter;
 				attrVal = this.out(attrVal, {unsafe: true});
 			}
 
