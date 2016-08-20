@@ -13,34 +13,31 @@ import { backSlashes, singleQuotes, doubleQuotes } from '../consts/regs';
 /**
  * Escapes backslashes in a string
  *
- * @param {string} str - source string
+ * @param {?} str - source string
  * @return {string}
  */
 export function escapeBackslashes(str) {
-	return String(str)
-		.replace(backSlashes, '\\\\');
+	return String(str).replace(backSlashes, '\\\\');
 }
 
 /**
  * Escapes single quotes in a string
  *
- * @param {string} str - source string
+ * @param {?} str - source string
  * @return {string}
  */
 export function escapeSingleQuotes(str) {
-	return String(str)
-		.replace(singleQuotes, '\\\'');
+	return String(str).replace(singleQuotes, '\\\'');
 }
 
 /**
  * Escapes double quotes in a string
  *
- * @param {string} str - source string
+ * @param {?} str - source string
  * @return {string}
  */
 export function escapeDoubleQuotes(str) {
-	return String(str)
-		.replace(doubleQuotes, '\\"');
+	return String(str).replace(doubleQuotes, '\\"');
 }
 
 const
@@ -50,7 +47,7 @@ const
 /**
  * Escapes EOLs in a string
  *
- * @param {string} str - source string
+ * @param {?} str - source string
  * @return {string}
  */
 export function escapeEOLs(str) {
@@ -62,7 +59,7 @@ export function escapeEOLs(str) {
 /**
  * Applies default SS escaping to a string
  *
- * @param {string} str - source string
+ * @param {?} str - source string
  * @return {string}
  */
 export function applyDefEscape(str) {
