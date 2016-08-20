@@ -19,13 +19,9 @@ const
 	glob = require('glob');
 
 const
-	from = path.join(__dirname, 'tests'),
-	to = path.join(__dirname, 'tmp'),
-	error = path.join(__dirname, '../error.tmp');
-
-exports.from = from;
-exports.to = to;
-exports.error = error;
+	from = exports.from = path.join(__dirname, 'tests'),
+	to = exports.to = path.join(__dirname, 'tmp'),
+	error = exports.error = path.join(__dirname, '../error.tmp');
 
 let prfx = -1;
 exports.run = function (params) {
@@ -39,8 +35,10 @@ exports.run = function (params) {
 	function exec(file) {
 		let
 			txt,
-			fileName,
-			cat,
+			filename,
+			dirname;
+
+		let
 			chunkSrc,
 			relativeSrc,
 			nms;
@@ -58,13 +56,16 @@ exports.run = function (params) {
 
 			).map((el) => el.trim());
 
-			fileName = path.basename(file);
-			cat = path.basename(path.dirname(file));
-			chunkSrc = path.join(to, `${fileName}_${prfx}.${cat}.js`);
-			relativeSrc = path.relative(process.cwd(), file);
-			nms = [cat, path.basename(file, '.ss')];
+			filename = path.basename(file);
+			dirname = path.basename(path.dirname(file));
 
-			console.log(`\n###### ${nms.join('.')} :: ${options}\n`);
+			chunkSrc = path.join(to, `${filename}_${prfx}.${dirname}.js`);
+			relativeSrc = path.relative(process.cwd(), file);
+			nms = [dirname, path.basename(file, '.ss')];
+
+			console.log(
+				`\n###### ${nms.join('.')} :: ${options}\n`
+			);
 
 			const
 				testRgxp = /^\[\[(.*)]]===+$/gm;
@@ -77,7 +78,7 @@ exports.run = function (params) {
 			}
 
 		} catch (err) {
-			log(`File: ${relativeSrc || file}\nError: ${err.message}`, 'error');
+			log(`File: ${relativeSrc ? relativeSrc : file}\nError: ${err.message}`, 'error');
 			return;
 		}
 
