@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sat, 20 Aug 2016 18:11:36 GMT
+ * Date: 'Tue, 23 Aug 2016 17:18:37 GMT
  */
 
 (function (global, factory) {
@@ -810,8 +810,8 @@
     };
 
     Snakeskin.setFilterParams('html', {
-    	bind: ['Unsafe', '__ATTR_TYPE__', function (o) {
-    		return o.getVar('__ATTR_CACHE__');
+    	bind: ['Unsafe', '$attrType', function (o) {
+    		return o.getVar('$attrs');
     	}, 'TRUE'],
     	test: function test(val) {
     		return isNotPrimitive(val);
@@ -1270,8 +1270,8 @@
     	'!html': true,
     	bind: [function (o) {
     		return '\'' + o.doctype + '\'';
-    	}, '__ATTR_TYPE__', function (o) {
-    		return o.getVar('__ATTR_CACHE__');
+    	}, '$attrType', function (o) {
+    		return o.getVar('$attrs');
     	}, 'TRUE', 'FALSE'],
     	test: function test(val) {
     		return isNotPrimitive(val);
