@@ -87,6 +87,7 @@ export function getCacheKey(params, ctx) {
 			params.literalBounds,
 			params.attrLiteralBounds,
 			params.tagFilter,
+			params.tagNameFilter,
 			params.attrKeyFilter,
 			params.attrValueFilter,
 			params.bemFilter,

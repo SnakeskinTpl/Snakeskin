@@ -19,6 +19,7 @@
  *   literalBounds: !Array<string>,
  *   attrLiteralBounds: (Array<string>|undefined),
  *   tagFilter: (?string|undefined),
+ *   tagNameFilter: (?string|undefined),
  *   attrKeyFilter: (?string|undefined),
  *   attrValueFilter: (?string|undefined),
  *   bemFilter: (?string|undefined),

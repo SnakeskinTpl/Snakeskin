@@ -43,8 +43,8 @@ Parser.prototype.getXMLTagDecl = function (tag, opt_attrs, opt_inline) {
 Parser.prototype.getXMLTagDeclStart = function (tag) {
 	tag = `'${tag}'`;
 
-	if (this.tagFilter) {
-		tag += FILTER + this.tagFilter;
+	if (this.tagNameFilter) {
+		tag += FILTER + this.tagNameFilter;
 	}
 
 	return ws`

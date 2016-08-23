@@ -56,11 +56,21 @@ Parser.prototype.getXMLAttrsDeclBody = function (str) {
  * @return {string}
  */
 Parser.prototype.getXMLAttrsDeclEnd = function () {
+	const
+		tagName = this.getVar(`$tagName`),
+		attrs = this.getVar('$attrs');
+
+	let res = '';
+	if (this.tagFilter) {
+		res += `${this.out(`({name: ${tagName}, attrs: ${attrs}}${FILTER}${this.tagFilter})`, {unsafe: true})};`;
+	}
+
 	return ws`
+		${res}
 		__RESULT__ = __GET_XML_ATTRS_DECL_END__(
 			__RESULT__,
-			${this.getVar('$tagName')},
-			${this.getVar('$attrs')},
+			${tagName},
+			${attrs},
 			${!this.stringResult && !stringRender[this.renderMode]},
 			${this.stringResult},
 			${this.doctype === 'xml'},

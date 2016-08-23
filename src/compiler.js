@@ -74,6 +74,7 @@ import {
  *
  *   *) [literalBounds = ['{', '}']] - bounds for the literal directive
  *   *) [attrLiteralBounds] - bounds for the attribute literal directive
+ *   *) [tagNameFilter] - name of the tag name filter
  *   *) [tagFilter] - name of the tag filter
  *   *) [attrKeyFilter] - name of the attribute key filter
  *   *) [attrValueFilter] - name of the attribute value filter

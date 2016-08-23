@@ -58,6 +58,9 @@ export default class Parser {
 		this.tagFilter = params.tagFilter;
 
 		/** @type {(?string|undefined)} */
+		this.tagNameFilter = params.tagNameFilter;
+
+		/** @type {(?string|undefined)} */
 		this.attrKeyFilter = params.attrKeyFilter;
 
 		/** @type {(?string|undefined)} */

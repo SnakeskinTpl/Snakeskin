@@ -48,6 +48,7 @@ var template;
  *   literalBounds: (Array<string>|undefined),
  *   attrLiteralBounds: (Array<string>|undefined),
  *   tagFilter: (?string|undefined),
+ *   tagNameFilter: (?string|undefined),
  *   attrKeyFilter: (?string|undefined),
  *   attrValueFilter: (?string|undefined),
  *   bemFilter: (?string|undefined),
@@ -114,6 +115,9 @@ var attrLiteralBounds;
 
 /** @type {?} */
 var tagFilter;
+
+/** @type {?} */
+var tagNameFilter;
 
 /** @type {?} */
 var attrKeyFilter;
