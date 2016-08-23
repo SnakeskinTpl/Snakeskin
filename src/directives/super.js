@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint-disable prefer-template */
+/* eslint-disable prefer-template, no-useless-escape */
 
 /*!
  * Snakeskin
@@ -67,7 +67,8 @@ Snakeskin.addDirective(
 
 			this.source =
 				this.source.slice(0, this.i - diff) +
-				`/*!!= ${s}super${e} =*/${s}__super__ ${this.info.line}${e}${cache.content}${sp}${s}__end__${e}` +
+				// Fixme: Babel goes fucking crazy
+				'\/\*!!= ' + s + 'super' + e + ' =\*\/' + s + '__super__ ' + this.info.line + e + cache.content + sp + s + '__end__' + e +
 				this.source.slice(this.i + 1);
 
 			const l = this.lines.length - 1;
