@@ -628,7 +628,7 @@ Filters['attrValue'] = function (val) {
 };
 
 /**
- * Sets an attributes to a node
+ * Sets attributes to a node
  *
  * @param {?} val - source value
  * @param {string} doctype - document type
