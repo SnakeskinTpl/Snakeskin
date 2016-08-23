@@ -1,3 +1,7 @@
+'use strict';
+
+/* eslint-disable eqeqeq, prefer-template */
+
 /*!
  * Snakeskin
  * https://github.com/SnakeskinTpl/Snakeskin
@@ -10,11 +14,11 @@
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
 require('core-js');
 
-var
-	beautify = require('js-beautify'),
-	$C = require('collection.js/compiled');
+const
+	$C = require('collection.js/compiled'),
+	beautify = require('js-beautify');
 
-var
+const
 	path = require('path'),
 	fs = require('fs'),
 	exists = require('exists-sync'),
@@ -30,14 +34,15 @@ var
  * @return {(boolean|!Array)}
  */
 exports.check = function (source, result, opt_key, opt_includes) {
-	var
+	const
 		ctx = module.parent ? path.dirname(module.parent.filename) : '';
 
 	source = path.normalize(path.resolve(ctx, source));
 	result = path.normalize(path.resolve(ctx, result));
 
+	let sourceStat;
 	try {
-		var sourceStat = fs.statSync(source);
+		sourceStat = fs.statSync(source);
 
 		if (!sourceStat.isFile() || !fs.statSync(result).isFile()) {
 			return false;
@@ -47,7 +52,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		return false;
 	}
 
-	var
+	const
 		code = fs.readFileSync(result, 'utf8'),
 		label = /label <([\d]+)>/.exec(code);
 
@@ -56,14 +61,16 @@ exports.check = function (source, result, opt_key, opt_includes) {
 	}
 
 	if (opt_key) {
-		var key = /key <(.*?)>/.exec(code);
+		const
+			key = /key <(.*?)>/.exec(code);
 
 		if (!key || key[1] != opt_key) {
 			return false;
 		}
 	}
 
-	var includes = /includes <(.*?)>/.exec(code);
+	let
+		includes = /includes <(.*?)>/.exec(code);
 
 	if (!includes) {
 		return false;
@@ -88,9 +95,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
 		}
 
 		if (opt_includes) {
-			return includes.map(function (el) {
-				return el[0];
-			});
+			return includes.map((el) => el[0]);
 		}
 	}
 
@@ -109,7 +114,7 @@ exports.check = function (source, result, opt_key, opt_includes) {
  * @return {(!Object|boolean)}
  */
 exports.compileFile = function (src, opt_params) {
-	var
+	const
 		ssrc = path.join(process.cwd(), '.snakeskinrc');
 
 	if (!opt_params && exists(ssrc)) {
@@ -118,12 +123,14 @@ exports.compileFile = function (src, opt_params) {
 
 	src = path.normalize(path.resolve(module.parent ? path.dirname(module.parent.filename) : '', src));
 
-	var
+	const
 		p = Object.assign({}, opt_params),
 		cacheEnabled = p.cache !== false;
 
-	var
-		cacheKey = exports.compile(null, Object.assign({}, p, {getCacheKey: true})),
+	const
+		cacheKey = exports.compile(null, Object.assign({}, p, {getCacheKey: true}));
+
+	let
 		fromCache = cacheEnabled && cache[cacheKey] && cache[cacheKey][src];
 
 	function clone(obj) {
@@ -131,7 +138,8 @@ exports.compileFile = function (src, opt_params) {
 	}
 
 	if (fromCache) {
-		var tmp = fromCache;
+		const
+			tmp = fromCache;
 
 		if (p.words) {
 			if (!tmp.words) {
@@ -156,11 +164,11 @@ exports.compileFile = function (src, opt_params) {
 		}
 	}
 
-	var
+	const
 		source = fs.readFileSync(src).toString(),
-		resSrc = src + '.js';
+		resSrc = `${src}.js`;
 
-	var
+	let
 		tpls,
 		res = true;
 
@@ -188,7 +196,7 @@ exports.compileFile = function (src, opt_params) {
 		if (cacheKey && (cacheEnabled || cache[cacheKey])) {
 			cache[cacheKey] = cache[cacheKey] || {};
 			cache[cacheKey][src] = {
-				tpls: tpls,
+				tpls,
 				debug: p.debug,
 				words: p.words
 			};
@@ -213,9 +221,7 @@ exports.compileFile = function (src, opt_params) {
  * @return {Function}
  */
 exports.getMainTpl = function (tpls, opt_src, opt_tplName) {
-	var
-		tpl;
-
+	let tpl;
 	function name(tpls) {
 		return opt_src && tpls[path.basename(opt_src, path.extname(opt_src))] ||
 			tpls.main ||
@@ -224,10 +230,10 @@ exports.getMainTpl = function (tpls, opt_src, opt_tplName) {
 	}
 
 	if (opt_tplName) {
-		tpl = eval('tpls' + (opt_tplName[0] !== '[' ? '.' + opt_tplName : opt_tplName));
+		tpl = eval(`tpls${opt_tplName[0] !== '[' ? `.${opt_tplName}` : opt_tplName}`);
 
 		if (tpl && typeof tpls !== 'function') {
-			tpls = tpl
+			tpls = tpl;
 
 		} else {
 			return tpl || null;
@@ -254,7 +260,8 @@ exports.getMainTpl = function (tpls, opt_src, opt_tplName) {
  * @return {Function}
  */
 exports.execFile = function (src, opt_params, opt_tplName) {
-	var tpls = exports.compileFile(src, opt_params);
+	const
+		tpls = exports.compileFile(src, opt_params);
 
 	if (!tpls) {
 		return null;
@@ -275,7 +282,8 @@ exports.execFile = function (src, opt_params, opt_tplName) {
  * @return {Function}
  */
 exports.exec = function (txt, opt_params, opt_tplName) {
-	var tpls = {};
+	const
+		tpls = {};
 
 	opt_params = opt_params || {};
 	opt_params.context = tpls;
@@ -286,8 +294,10 @@ exports.exec = function (txt, opt_params, opt_tplName) {
 
 function testId(id) {
 	try {
-		var obj = {};
-		eval('obj.' + id + '= true');
+		/* eslint-disable no-unused-vars */
+		const obj = {};
+		/* eslint-enable no-unused-vars */
+		eval(`obj.${id} = true`);
 		return true;
 
 	} catch (ignore) {
@@ -303,7 +313,8 @@ function testId(id) {
  * @return {Promise}
  */
 exports.execTpl = function (fn, opt_data) {
-	var res = typeof fn === 'function' ? fn(opt_data) : fn;
+	let
+		res = typeof fn === 'function' ? fn(opt_data) : fn;
 
 	if (res && res instanceof Object) {
 		if (typeof res === 'function') {
@@ -311,14 +322,14 @@ exports.execTpl = function (fn, opt_data) {
 		}
 
 		if (res.then) {
-			return res.then(function (text) {
-				return exports.execTpl(text);
-			});
+			return res.then((text) => exports.execTpl(text));
 		}
 
 		if (res.next) {
-			var
-				iterator = res,
+			const
+				iterator = res;
+
+			let
 				pos = iterator.next();
 
 			res = pos.value;
@@ -329,9 +340,7 @@ exports.execTpl = function (fn, opt_data) {
 		}
 	}
 
-	return new Promise(function (resolve) {
-		resolve(res);
-	});
+	return new Promise((resolve) => resolve(res));
 };
 
 /**
@@ -353,24 +362,26 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 		eol: '\n'
 	}, opt_params);
 
-	var
+	const
 		eol = opt_params.eol,
 		mod = opt_params.module,
 		prettyPrint = opt_params.prettyPrint;
 
-	var
+	const
 		nRgxp = /\r?\n|\r/g,
 		tpls = {};
 
-	var p = Object.assign(adapter.setParams(opt_params), {
+	const p = Object.assign(adapter.setParams(opt_params), {
 		context: tpls,
 		module: 'cjs',
 		prettyPrint: false
 	});
 
-	var
+	const
 		useStrict = p.useStrict ? '"useStrict";' : '',
-		opts = p.adapterOptions,
+		opts = p.adapterOptions;
+
+	let
 		res = exports.compile(txt, p, opt_info);
 
 	if (!res) {
@@ -379,36 +390,38 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 
 	function compile(tpls, prop) {
 		prop = prop || 'exports';
-		var tasks = [];
 
-		$C(tpls).forEach(function (el, key) {
-			var
+		const
+			tasks = [];
+
+		$C(tpls).forEach((el, key) => {
+			let
 				val,
 				validKey = false;
 
 			if (testId(key)) {
-				val = prop + '.' + key;
+				val = `${prop}.${key}`;
 				validKey = true;
 
 			} else {
-				val = prop + '["' + key.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"]';
+				val = `${prop}["${key.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]`;
 			}
 
 			if (typeof el !== 'function') {
 				res +=
-					'if (' + val + ' instanceof Object === false) {' +
-						val + ' = {};' +
-						(validKey && mod === 'native' ? 'export var ' + key + '=' + val + ';' : '') +
+					`if (${val} instanceof Object === false) {` +
+						`${val} = {};` +
+						(validKey && mod === 'native' ? `export var ${key} = ${val};` : '') +
 					'}'
 				;
 
 				return tasks.push(compile(el, val));
 			}
 
-			var
+			const
 				decl = /^(async\s+)?(function)[*]?(\s*.*?\)\s*\{)/.exec(el.toString());
 
-			tasks.push(exports.execTpl(el, p.data).then(function (text) {
+			tasks.push(exports.execTpl(el, p.data).then((text) => {
 				res += adapter.template(val, decl[2] + decl[3], text, p.adapterOptions);
 			}));
 		});
@@ -419,7 +432,7 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 	res = /\/\*[\s\S]*?\*\//.exec(res)[0];
 	res = res.replace(
 		/key <.*?>/,
-		'key <' + exports.compile(null, Object.assign({}, opt_params, {getCacheKey: true})) + '>'
+		`key <${exports.compile(null, Object.assign({}, opt_params, {getCacheKey: true}))}>`
 	);
 
 	if (opts.header) {
@@ -427,12 +440,12 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 	}
 
 	if (mod === 'native') {
-		res +=
-			useStrict +
-			(adapter.importNative || '') +
-			'var exports = {};' +
-			'export default exports;'
-		;
+		res += `
+			${useStrict}
+			${adapter.importNative || ''}
+			var exports = {};
+			export default exports;
+		`;
 
 	} else {
 		res +=
@@ -440,7 +453,7 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 				(
 					{cjs: true, umd: true}[mod] ?
 						'if (typeof exports === "object" && typeof module !== "undefined") {' +
-							'factory(exports' + (adapter.importCJS ? ',' + adapter.importCJS : '') + ');' +
+							`factory(exports${adapter.importCJS ? `, ${adapter.importCJS}` : ''});` +
 							'return;' +
 						'}' :
 						''
@@ -449,7 +462,7 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 				(
 					{amd: true, umd: true}[mod] ?
 						'if (typeof define === "function" && define.amd) {' +
-							'define("' + (p.moduleId) + '", ["exports"' + (adapter.importAMD ? ',' + adapter.importAMD : '') + '], factory);' +
+							`define("${p.moduleId}", ["exports"${adapter.importAMD ? `, ${adapter.importAMD}` : ''}], factory);` +
 							'return;' +
 						'}' :
 						''
@@ -457,29 +470,31 @@ exports.adapter = function (txt, adapter, opt_params, opt_info) {
 
 				(
 					{global: true, umd: true}[mod] ?
-						'factory(global' + (p.moduleName ? '.' + p.moduleName + '= {}' : '') + (adapter.importGlobal ? ',' + adapter.importGlobal : '') + ');' :
+						`factory(global${
+							(p.moduleName ? `.${p.moduleName} = {}` : '') +
+							(adapter.importGlobal ? `, ${adapter.importGlobal}` : '')
+						});` :
 						''
 				) +
 
-			'})(this, function (exports' + (adapter.local ? ',' + adapter.local : '') + ') {' +
+			`})(this, function (exports${adapter.local ? `, ${adapter.local}` : ''}) {` +
 				useStrict
 		;
 	}
 
-	return compile(tpls)
-		.then(function () {
-			if (opts.footer) {
-				res += opts.footer;
-			}
+	return compile(tpls).then(() => {
+		if (opts.footer) {
+			res += opts.footer;
+		}
 
-			if (mod !== 'native') {
-				res += '});';
-			}
+		if (mod !== 'native') {
+			res += '});';
+		}
 
-			if (prettyPrint) {
-				res = beautify.js(res);
-			}
+		if (prettyPrint) {
+			res = beautify.js(res);
+		}
 
-			return res.replace(nRgxp, eol) + eol;
-		});
+		return res.replace(nRgxp, eol) + eol;
+	});
 };
