@@ -9,7 +9,7 @@
  */
 
 import Snakeskin from '../core';
-import { isArray, isFunction } from '../helpers/types';
+import { isArray } from '../helpers/types';
 
 /**
  * Special Snakeskin class for escaping HTML entities from an object
