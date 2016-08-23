@@ -30,7 +30,7 @@ Parser.prototype.getXMLAttrsDecl = function (str) {
  * @return {string}
  */
 Parser.prototype.getXMLAttrsDeclStart = function () {
-	return this.declVars('__ATTR_CACHE__ = {}', {sys: true});
+	return this.declVars('$attrs = {}', {sys: true});
 };
 
 /**
@@ -59,8 +59,8 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
 	return ws`
 		__RESULT__ = __GET_XML_ATTRS_DECL_END__(
 			__RESULT__,
-			${this.getVar('__TAG__')},
-			${this.getVar('__ATTR_CACHE__')},
+			${this.getVar('$tagName')},
+			${this.getVar('$attrs')},
 			${!this.stringResult && !stringRender[this.renderMode]},
 			${this.stringResult},
 			${this.doctype === 'xml'},
@@ -111,14 +111,14 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		res += ws`
 			__ATTR_STR__ = '';
-			__ATTR_TYPE__ = 'attrValue';
+			$attrType = 'attrValue';
 		`;
 
 		if (group) {
 			args[0] = ws`' +
-				(__ATTR_TYPE__ = 'attrKeyGroup', '') +
+				($attrType = 'attrKeyGroup', '') +
 				'${group}${separator}' +
-				(__ATTR_TYPE__ = 'attrKey', '') +
+				($attrType = 'attrKey', '') +
 				'${args[0]}`;
 
 		} else {
@@ -150,8 +150,8 @@ Parser.prototype.getXMLAttrDecl = function (params) {
 
 		res += ws`
 			__GET_XML_ATTR_KEY_DECL__(
-				(__ATTR_TYPE__ = 'attrKey', ${attrKey}),
-				${this.getVar('__ATTR_CACHE__')},
+				($attrType = 'attrKey', $attrKey = ${attrKey}),
+				${this.getVar('$attrs')},
 				${empty}
 			);
 		`;

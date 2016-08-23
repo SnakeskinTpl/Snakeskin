@@ -209,7 +209,7 @@ Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) 
 };
 
 Snakeskin.setFilterParams('html', {
-	bind: ['Unsafe', '__ATTR_TYPE__', (o) => o.getVar('__ATTR_CACHE__'), 'TRUE'],
+	bind: ['Unsafe', '$attrType', (o) => o.getVar('$attrs'), 'TRUE'],
 	test(val) {
 		return isNotPrimitive(val);
 	}
@@ -675,7 +675,7 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	bind: [(o) => `'${o.doctype}'`, '__ATTR_TYPE__', (o) => o.getVar('__ATTR_CACHE__'), 'TRUE', 'FALSE'],
+	bind: [(o) => `'${o.doctype}'`, '$attrType', (o) => o.getVar('$attrs'), 'TRUE', 'FALSE'],
 	test(val) {
 		return isNotPrimitive(val);
 	}

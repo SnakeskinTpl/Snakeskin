@@ -192,8 +192,6 @@ export const SYS_CONSTS = {
 	'__ESCAPE_D_Q__': true,
 	'__ATTR_STR__': true,
 	'__ATTR_CONCAT_MAP__': true,
-	'__ATTR_CACHE__': true,
-	'__ATTR_TYPE__': true,
 	'__TARGET_REF__': true,
 	'__CALL_POS__': true,
 	'__CALL_TMP__': true,
@@ -205,7 +203,6 @@ export const SYS_CONSTS = {
 	'__INCLUDE__': true,
 	'__INLINE_TAG__': true,
 	'__INLINE_TAGS__': true,
-	'__TAG__': true,
 	'__NODE__': true,
 	'__JOIN__': true,
 	'__GET_XML_ATTR_KEY_DECL__': true,
@@ -238,5 +235,9 @@ export const SYS_CONSTS = {
 	'callee': true,
 	'$_': true,
 	'$0': true,
-	'$class': true
+	'$class': true,
+	'$tagName': true,
+	'$attrKey': true,
+	'$attrType': true,
+	'$attrs': true
 };

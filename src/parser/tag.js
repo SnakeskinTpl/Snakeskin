@@ -48,10 +48,10 @@ Parser.prototype.getXMLTagDeclStart = function (tag) {
 	}
 
 	return ws`
-		${this.declVars(`__TAG__ = (${tag}).trim() || '${defaultTag}'`, {sys: true})}
+		${this.declVars(`$tagName = (${tag}).trim() || '${defaultTag}'`, {sys: true})}
 		__RESULT__ = __GET_XML_ATTRS_DECL_START__(
 			__RESULT__,
-			${this.getVar('__TAG__')},
+			${this.getVar('$tagName')},
 			'${this.renderMode}',
 			${!stringRender[this.renderMode]},
 			${this.stringResult}
@@ -74,9 +74,9 @@ Parser.prototype.getXMLTagDeclEnd = function (opt_inline) {
 		${isDOMRenderMode ? this.declVars('__NODE__ = $0', {sys: true}) : ''}
 		__RESULT__ = __GET_XML_TAG_DECL_END__(
 			__RESULT__,
-			${this.getVar('__TAG__')},
+			${this.getVar('$tagName')},
 			${Boolean(opt_inline)},
-			${this.out('__INLINE_TAGS__[__TAG__]', {unsafe: true})},
+			${this.out('__INLINE_TAGS__[$tagName]', {unsafe: true})},
 			${isDOMRenderMode},
 			${this.stringResult},
 			${this.doctype === 'xml'}
@@ -98,10 +98,10 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 		${this.declVars(`__CALL_TMP__ = ${this.getReturnResultDecl()}`, {sys: true})}
 		__RESULT__ = __GET_END_XML_TAG_DECL__(
 			__RESULT__,
-			${this.getVar(`__TAG__`)},
+			${this.getVar(`$tagName`)},
 			${Boolean(opt_inline)},
-			${this.out('__INLINE_TAGS__[__TAG__]', {unsafe: true})},
-			${this.getVar('__ATTR_CACHE__')},
+			${this.out('__INLINE_TAGS__[$tagName]', {unsafe: true})},
+			${this.getVar('$attrs')},
 			${this.getVar('__CALL_CACHE__')},
 			${this.getVar('__CALL_TMP__')},
 			${isDOMRenderMode},

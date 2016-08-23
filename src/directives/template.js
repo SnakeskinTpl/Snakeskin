@@ -398,12 +398,14 @@ import {
 
 				var
 					$0 = ${stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]'},
-					$class = '';
+					$class,
+					$tagName,
+					$attrKey,
+					$attrType,
+					$attrs;
 
 				var
 					__ATTR_STR__,
-					__ATTR_TYPE__,
-					__ATTR_CACHE__,
 					__ATTR_CONCAT_MAP__ = {'class': true};
 
 				function __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {
@@ -415,7 +417,7 @@ import {
 						cache[val].push(empty ? TRUE : __ATTR_STR__);
 					}
 
-					__ATTR_STR__ = __ATTR_TYPE__ = undefined;
+					__ATTR_STR__ = $attrType = undefined;
 				}
 
 				function __APPEND_XML_ATTR_VAL__(val) {
