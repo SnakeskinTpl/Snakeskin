@@ -12,7 +12,6 @@
 
 /** @type {Snakeskin} */
 module.exports = exports = global['SNAKESKIN_DEBUG'] || require('./dist/snakeskin.min');
-require('core-js');
 
 const
 	$C = require('collection.js/compiled'),
