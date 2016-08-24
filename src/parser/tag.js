@@ -103,7 +103,7 @@ Parser.prototype.getEndXMLTagDecl = function (opt_inline) {
 			${this.out('__INLINE_TAGS__[$tagName]', {unsafe: true})},
 			${this.getVar('$attrs')},
 			${this.getVar('__CALL_CACHE__')},
-			${this.getVar('__CALL_TMP__')},
+			${this.getVar('__CALL_TMP__')}.trim(),
 			${isDOMRenderMode},
 			${this.stringResult},
 			${this.doctype === 'xml'}

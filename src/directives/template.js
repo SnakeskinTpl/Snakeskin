@@ -557,7 +557,7 @@ import {
 							if (inlineTag) {
 								if (inlineTag !== true) {
 									__RESULT__ = callCache;
-									if (inlineTag in attrCache === false) {
+									if (inlineTag in attrCache === false && callTmp) {
 										Snakeskin.setAttribute(node, inlineTag, callTmp);
 									}
 								}
@@ -574,7 +574,7 @@ import {
 								if (inlineTag !== true) {
 									__RESULT__ = callCache;
 
-									if (inlineTag in attrCache === false) {
+									if (inlineTag in attrCache === false && callTmp) {
 										if (stringResult) {
 											__STRING_RESULT__ += ' ' + inlineTag + '="' + callTmp + '"';
 
