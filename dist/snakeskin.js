@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.1
+ * Snakeskin v7.2.2
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 24 Aug 2016 16:13:22 GMT
+ * Date: 'Mon, 29 Aug 2016 10:18:28 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 1]
+  VERSION: [7, 2, 2]
 };
 
 /**
@@ -10435,7 +10435,7 @@ Snakeskin.addDirective('tag', {
 	var str = this.getXMLAttrsDeclStart() + this.getXMLTagDeclStart(tag) + this.getXMLAttrsDeclBody(parts.slice(1).join(' '));
 
 	var attrCache = this.getVar('$attrs'),
-	    attrHackRgxp = /_+$attrs_+(tag_\d+)?(?=.*\+ ')/g;
+	    attrHackRgxp = /_+\$attrs_+(tag_\d+)?(?=.*\+ ')/g;
 
 	if (id) {
 		str += attrCache + '[\'id\'] = [\'' + id + '\'] || ' + attrCache + '[\'id\'];';

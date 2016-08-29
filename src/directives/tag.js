@@ -67,7 +67,7 @@ Snakeskin.addDirective(
 
 		const
 			attrCache = this.getVar('$attrs'),
-			attrHackRgxp = /_+$attrs_+(tag_\d+)?(?=.*\+ ')/g;
+			attrHackRgxp = /_+\$attrs_+(tag_\d+)?(?=.*\+ ')/g;
 
 		if (id) {
 			str += `${attrCache}['id'] = ['${id}'] || ${attrCache}['id'];`;
