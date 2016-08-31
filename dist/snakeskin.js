@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.2
+ * Snakeskin v7.2.3
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 29 Aug 2016 10:18:28 GMT
+ * Date: 'Wed, 31 Aug 2016 05:17:10 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 2]
+  VERSION: [7, 2, 3]
 };
 
 /**
