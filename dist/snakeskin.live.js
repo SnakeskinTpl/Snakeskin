@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.3 (live)
+ * Snakeskin v7.2.4 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 31 Aug 2016 05:17:10 GMT
+ * Date: 'Wed, 21 Sep 2016 08:29:03 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 3]
+  VERSION: [7, 2, 4]
 };
 
 /**
@@ -82,6 +82,14 @@ function isFunction(obj) {
 }
 
 /**
+ * Returns true if the specified value is a number
+ *
+ * @param {?} obj - source value
+ * @return {boolean}
+ */
+
+
+/**
  * Returns true if the specified value is a string
  *
  * @param {?} obj - source value
@@ -90,6 +98,14 @@ function isFunction(obj) {
 function isString(obj) {
   return typeof obj === 'string';
 }
+
+/**
+ * Returns true if the specified value is a boolean
+ *
+ * @param {?} obj - source value
+ * @return {boolean}
+ */
+
 
 /**
  * Returns true if the specified value is an array
@@ -459,6 +475,17 @@ function any(val) {
   return val;
 }
 
+var wsRgxp = /^\s+|[\r\n]+/mg;
+
+/**
+ * String tag (for ES6 string templates) for truncate starting whitespaces and eol-s
+ *
+ * @param {!Array<string>} strings
+ * @param {...?} expr
+ * @return {string}
+ */
+
+
 var rRgxp = /([\\\/'*+?|()\[\]{}.^$-])/g;
 
 /**
@@ -473,6 +500,7 @@ function r(str) {
 
 var isNotPrimitiveRgxp = /^\(*\s*(.*?)\s*\)*$/;
 var isNotPrimitiveMap = { 'false': true, 'null': true, 'true': true, 'undefined': true };
+
 /**
  * Returns true if the specified string can't be parse as a primitive value
  *
@@ -484,6 +512,8 @@ function isNotPrimitive(str, opt_map) {
   str = ((isNotPrimitiveRgxp.exec(str) || [])[1] || '').trim();
   return Boolean(str && isNaN(Number(str)) && !(opt_map || isNotPrimitiveMap)[str]);
 }
+
+
 
 var stringRender = {
   'stringBuffer': true,
@@ -502,6 +532,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
 var defineProperty = function (obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -517,12 +559,80 @@ var defineProperty = function (obj, key, value) {
   return obj;
 };
 
+var get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;
+
+    if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }
+
+  return value;
+};
+
 var _COMMENTS;
 var _BASE_SYS_ESCAPES;
 var _SYS_ESCAPES;
 var _STRONG_SYS_ESCAPES;
+
+// The base directive separators
+// >>>
+
 var LEFT_BOUND = '{';
 var ADV_LEFT_BOUND = '#';
+
 // <<<
 // The additional directive separators
 // >>>
@@ -532,6 +642,7 @@ var I18N = '`';
 var SINGLE_COMMENT = '///';
 var MULT_COMMENT_START = '/*';
 var MULT_COMMENT_END = '*/';
+
 var COMMENTS = (_COMMENTS = {}, defineProperty(_COMMENTS, SINGLE_COMMENT, SINGLE_COMMENT), defineProperty(_COMMENTS, MULT_COMMENT_START, MULT_COMMENT_START), defineProperty(_COMMENTS, MULT_COMMENT_END, MULT_COMMENT_END), _COMMENTS);
 
 var MICRO_TEMPLATE = '${';
@@ -550,7 +661,7 @@ Snakeskin.forEach(BASE_SHORTS, function (el, key) {
 // The context modifiers
 // >>>
 
-var G_MOD = '@';
+
 
 // <<<
 // Jade-Like
@@ -560,6 +671,13 @@ var CONCAT = '&';
 var CONCAT_END = '.';
 var IGNORE = '|';
 var INLINE = ' :: ';
+
+// <<<
+// The filter modifiers
+// >>>
+
+
+
 // <<<
 // Escaping
 // >>>
@@ -584,14 +702,35 @@ var MICRO_TEMPLATE_ESCAPES = defineProperty({
 	'\\': true
 }, MICRO_TEMPLATE.charAt(0), true);
 
-var scopeMod = new RegExp('^' + r(G_MOD) + '+');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// <<<
+// The reserved names
+// >>>
+
+
+
 var tmpSep = [];
 
 Snakeskin.forEach(attrSeparators, function (el, key) {
 	tmpSep.push(r(key));
 });
 
-var emptyCommandParams = new RegExp('^([^\\s]+?[' + tmpSep.join('') + ']\\(|\\()');
+
+
+
 
 var attrKey = /([^\s=]+)/;
 
@@ -762,6 +901,7 @@ var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g;
 var escapeHTML = function escapeHTML(s) {
 	return entityMap[s] || s;
 };
+
 var uentityMap = {
 	'&#39;': '\'',
 	'&#x2F;': '/',
@@ -775,6 +915,7 @@ var uescapeHTMLRgxp = /&amp;|&lt;|&gt;|&quot;|&#39;|&#x2F;/g;
 var uescapeHTML = function uescapeHTML(s) {
 	return uentityMap[s];
 };
+
 /**
  * Escapes HTML entities from a string
  *
@@ -872,6 +1013,7 @@ Filters['stripTags'] = function (val) {
 
 var uriO = /%5B/g;
 var uriC = /%5D/g;
+
 /**
  * Encodes URL
  *
