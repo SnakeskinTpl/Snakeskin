@@ -19,9 +19,6 @@ export const
 	$logicDirs = {};
 
 export const
-	$write = {};
-
-export const
 	$dirChain = {},
 	$dirParents = {},
 	$dirEnd = {},
@@ -36,6 +33,7 @@ export const
 	$constPositions = {};
 
 export const
+	$write = {},
 	$output = {};
 
 export const
