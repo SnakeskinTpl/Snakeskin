@@ -147,7 +147,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	groupCache = {};
 
 	const
-		p = Object.assign({}, params),
+		p = {...params},
 		concat = (val) => val != null ? [].concat(val) : [];
 
 	let

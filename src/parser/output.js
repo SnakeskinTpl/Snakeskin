@@ -120,7 +120,7 @@ Parser.prototype.out = function (command, opt_params) {
 	command = this.replaceDangerBlocks(command);
 
 	const
-		{cache, unsafe, skipFirstWord, skipValidation} = any(Object.assign({cache: true}, opt_params));
+		{cache, unsafe, skipFirstWord, skipValidation} = any({cache: true, ...opt_params});
 
 	const
 		{structure} = this,

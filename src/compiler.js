@@ -111,27 +111,26 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	src = src || '';
 
 	/** @type {$$SnakeskinParams} */
-	const p = any(
-		Object.assign({
-			cache: true,
-			doctype: 'html',
-			renderMode: 'stringConcat',
-			vars: {},
-			throws: true,
-			pack: false,
-			module: 'umd',
-			moduleId: 'tpls',
-			useStrict: true,
-			prettyPrint: false,
-			literalBounds: ['{{', '}}'],
-			filters: {global: ['html', 'undef'], local: ['undef']},
-			tolerateWhitespaces: false,
-			eol: '\n',
-			localization: true,
-			i18nFn: 'i18n',
-			i18nOptions: []
-		}, opt_params)
-	);
+	const p = any({
+		cache: true,
+		doctype: 'html',
+		renderMode: 'stringConcat',
+		vars: {},
+		throws: true,
+		pack: false,
+		module: 'umd',
+		moduleId: 'tpls',
+		useStrict: true,
+		prettyPrint: false,
+		literalBounds: ['{{', '}}'],
+		filters: {global: ['html', 'undef'], local: ['undef']},
+		tolerateWhitespaces: false,
+		eol: '\n',
+		localization: true,
+		i18nFn: 'i18n',
+		i18nOptions: [],
+		...opt_params
+	});
 
 	if (p.pack) {
 		p.module = 'cjs';
@@ -146,7 +145,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	const
-		info = any(Object.assign({line: 1}, opt_info));
+		info = any({line: 1, ...opt_info});
 
 	let text;
 	if (typeof src === 'object' && 'innerHTML' in src) {
@@ -201,7 +200,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	const
-		parser = new Parser(text, any(Object.assign({info}, p)));
+		parser = new Parser(text, any({info, ...p}));
 
 	let
 		begin = 0,
