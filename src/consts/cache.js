@@ -23,12 +23,11 @@ export const
 	$dirParents = {},
 	$dirEnd = {},
 	$dirTrim = {},
-	$dirInterpolation = {};
+	$dirInterpolation = {},
+	$rgxp = {};
 
 export const
-	$blocks = {};
-
-export const
+	$blocks = {},
 	$consts = {},
 	$constPositions = {};
 
@@ -41,7 +40,6 @@ export const
 	$argsRes = {};
 
 export const
-	$rgxp = {},
 	$extMap = {},
 	$extList = {};
 
