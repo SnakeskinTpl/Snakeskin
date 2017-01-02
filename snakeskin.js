@@ -21,7 +21,6 @@ const
 const
 	path = require('path'),
 	fs = require('fs'),
-	exists = require('exists-sync'),
 	cache = {};
 
 /**
@@ -117,7 +116,7 @@ exports.compileFile = function (src, opt_params) {
 	const
 		ssrc = path.join(process.cwd(), '.snakeskinrc');
 
-	if (!opt_params && exists(ssrc)) {
+	if (!opt_params && fs.existsSync(ssrc)) {
 		opt_params = exports.toObj(ssrc);
 	}
 
