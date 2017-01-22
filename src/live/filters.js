@@ -156,7 +156,7 @@ const entityMap = {
 };
 
 export const
-	escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g,
+	escapeHTMLRgxp = /[<>"'/]|&(?!#|[a-z]+;)/g,
 	escapeHTML = (s) => entityMap[s] || s;
 
 const uentityMap = {

@@ -458,21 +458,23 @@ import {
 
 							var
 								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' '),
-								wrapper = literalBounds && attr.slice(0, 2) === '{{' && attr.slice(-2) === '}}',
-								w = wrapper ? '' : '"';
+								wrapper = literalBounds && attr.slice(0, 2) === '{{' && attr.slice(-2) === '}}';
 
 							if (wrapper) {
 								attr = literalBounds[0] + attr.slice(2, -2) + literalBounds[1];
+
+							} else if (!isDOMRenderMode) {
+								attr = '"' + __ESCAPE_D_Q__(attr) + '"';
 							}
 
 							if (stringResult) {
-								__STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '=' + w + __ESCAPE_D_Q__(attr) + w);
+								__STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '=' + attr);
 
 							} else if (isDOMRenderMode) {
 								Snakeskin.setAttribute($0, key, attr);
 
 							} else {
-								${this.wrap(`' ' + key + (attr === TRUE ? '' : '=' + w + __ESCAPE_D_Q__(attr) + w)`)}
+								${this.wrap(`' ' + key + (attr === TRUE ? '' : '=' + attr)`)}
 							}
 						};
 
