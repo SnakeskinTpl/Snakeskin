@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.5 (live)
+ * Snakeskin v7.2.6 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 22 Jan 2017 18:46:09 GMT
+ * Date: 'Sun, 22 Jan 2017 20:55:26 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 5]
+  VERSION: [7, 2, 6]
 };
 
 /**
@@ -864,13 +864,13 @@ var uescapeHTML = function uescapeHTML(s) {
  * Escapes HTML entities from a string
  *
  * @param {?} val - source value
- * @param {?=} [opt_unsafe] - instance of the Unsafe class
+ * @param {?=} [opt_Unsafe] - unsafe class constructor
  * @param {?string=} [opt_attr] - type of attribute declaration
  * @param {Object=} [opt_attrCache] - attribute cache object
  * @param {?=} [opt_true] - true value
  * @return {(string|!Snakeskin.HTMLObject|!Snakeskin.Node)}
  */
-Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) {
+Filters['html'] = function (val, opt_Unsafe, opt_attr, opt_attrCache, opt_true) {
 	if (!val || val instanceof Snakeskin.Node) {
 		return val;
 	}
@@ -878,16 +878,16 @@ Filters['html'] = function (val, opt_unsafe, opt_attr, opt_attrCache, opt_true) 
 	if (val instanceof Snakeskin.HTMLObject) {
 		Snakeskin.forEach(val.value, function (el, key, data) {
 			if (val.attr) {
-				opt_attrCache[key] = data[key] = el[0] !== opt_true ? [Filters['html'](el[0], opt_unsafe, val.attr, opt_attrCache, opt_true)] : el;
+				opt_attrCache[key] = data[key] = el[0] !== opt_true ? [Filters['html'](el[0], opt_Unsafe, val.attr, opt_attrCache, opt_true)] : el;
 			} else {
-				data[key] = Filters['html'](el, opt_unsafe);
+				data[key] = Filters['html'](el, opt_Unsafe);
 			}
 		});
 
 		return val;
 	}
 
-	if (isFunction(opt_unsafe) && val instanceof opt_unsafe) {
+	if (isFunction(opt_Unsafe) && val instanceof opt_Unsafe) {
 		return val.value;
 	}
 
@@ -1311,15 +1311,20 @@ Filters['attrValue'] = function (val) {
  * Sets attributes to a node
  *
  * @param {?} val - source value
+ * @param {?} Unsafe - unsafe class constructor
  * @param {string} doctype - document type
  * @param {string} type - type of attribute declaration
  * @param {!Object} cache - attribute cache object
  * @param {!Boolean} TRUE - true value
  * @param {!Boolean} FALSE - false value
- * @return {(string|Snakeskin.HTMLObject)}
+ * @return {(string|Unsafe|Snakeskin.HTMLObject)}
  */
-Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
+Filters['attr'] = function (val, Unsafe, doctype, type, cache, TRUE, FALSE) {
 	if (type !== 'attrKey' || !isObject(val)) {
+		if (isFunction(Unsafe) && val instanceof Unsafe) {
+			return val;
+		}
+
 		return String(val);
 	}
 
@@ -1354,7 +1359,7 @@ Filters['attr'] = function (val, doctype, type, cache, TRUE, FALSE) {
 
 Snakeskin.setFilterParams('attr', {
 	'!html': true,
-	bind: [function (o) {
+	bind: ['Unsafe', function (o) {
 		return '\'' + o.doctype + '\'';
 	}, '$attrType', function (o) {
 		return o.getVar('$attrs');
