@@ -13,7 +13,7 @@ import Snakeskin from '../core';
 
 import { nmeRgxp, nmsRgxp, nmssRgxp } from '../parser/name';
 import { ws } from '../helpers/string';
-import { applyDefEscape, escapeDoubleQuotes } from '../helpers/escape';
+import { applyDefEscape, escapeDoubleQuotes, escapeEOLs } from '../helpers/escape';
 import { concatProp } from '../helpers/literals';
 import { stringRender, templateRank } from '../consts/other';
 
@@ -663,7 +663,8 @@ import {
 
 				var
 					TPL_NAME = "${escapeDoubleQuotes(declTplName)}",
-					PARENT_TPL_NAME${declParentTplName ? ` = "${escapeDoubleQuotes(declParentTplName)}"` : ''};
+					PARENT_TPL_NAME${declParentTplName ? ` = "${escapeDoubleQuotes(declParentTplName)}"` : ''},
+					EOL = "${escapeEOLs(this.eol)}";
 
 				${args.def}
 			`);

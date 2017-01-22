@@ -789,6 +789,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 				}
 			}
 
+			if (i18nStart) {
+				el = applyDefEscape(el);
+			}
+
 			command += el;
 			commandLength++;
 
