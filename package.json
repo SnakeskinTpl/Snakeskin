@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "test": "bower install && node test",
-    "full-test": "bower install && istanbul cover test/index.dev.js && yaspeller ./"
+    "full-test": "bower install && istanbul cover test/index.dev.js && yaspeller ./ --ignore-uppercase"
   },
   "dependencies": {
     "async": "^2.0.0",
