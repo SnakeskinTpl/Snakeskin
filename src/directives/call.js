@@ -17,7 +17,7 @@ Snakeskin.addDirective(
 	{
 		block: true,
 		deferInit: true,
-		filters: {global: ['undef']},
+		filters: {global: [['undef']]},
 		group: ['call', 'microTemplate', 'output'],
 		notEmpty: true,
 		shorthands: {'+=': 'call ', '/+': 'end call'},

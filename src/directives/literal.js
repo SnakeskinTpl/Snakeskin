@@ -14,7 +14,7 @@ Snakeskin.addDirective(
 	'literal',
 
 	{
-		filters: {global: ['undef'], local: ['undef']},
+		filters: {global: [['undef']], local: [['undef']]},
 		group: ['literal', 'escape', 'output'],
 		notEmpty: true,
 		placement: 'template',
