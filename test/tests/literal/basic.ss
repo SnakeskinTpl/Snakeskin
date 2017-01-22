@@ -18,9 +18,13 @@
 
 <div class="foo" bar={bla} baz={foo}></div>
 
-[[attrEscaping]]========================================================================================================
+[[attr escaping]]=======================================================================================================
 
 <div class="foo" bar="121"&quot;22&quot;"1"></div>
+
+[[attr escaping with Unsafe]]===========================================================================================
+
+<foo bla="getSome("foo")"></foo>
 
 ========================================================================================================================
 
@@ -37,5 +41,11 @@
 - template attr() @= attrLiteralBounds ['{', '}']
 	< .foo bar = {{bla}} | baz = ${'{{foo}}'}
 
-- template attrEscaping() @= attrLiteralBounds ['', '']
+- template ['attr escaping']() @= attrLiteralBounds ['', '']
 	< .foo bar = {{"121"${'"22"'}${'"1"'|!html}}}
+
+- template wrap(param)
+	- return Unsafe('"getSome("' + param + '")"')
+
+- template ['attr escaping with Unsafe']() @= attrLiteralBounds ['', '']
+	< foo bla = {{${@wrap('foo')|!html}}}
