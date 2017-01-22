@@ -23,7 +23,7 @@ function test(cb) {
 }
 
 gulp.task('yaspeller', (cb) => {
-	run('yaspeller ./').exec()
+	run('yaspeller ./ --ignore-uppercase').exec()
 		.on('error', helpers.error(cb))
 		.on('finish', cb);
 });

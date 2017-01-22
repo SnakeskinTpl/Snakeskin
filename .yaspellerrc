@@ -15,7 +15,7 @@
   ],
 
   "dictionary": [
-    "/рендеринга?/",
+    "рендеринга?",
     "рендерятся",
     "мультистрочного",
     "микрошаблонов",
@@ -24,13 +24,13 @@
     "враппер",
     "автокомплит",
     "парсить",
-    "/полифилы?/",
-    "/bem/i",
-    "/maintainers?/",
+    "полифилы?",
+    "bem",
+    "maintainers?",
     "sexualized",
     "snakeskin",
-    "/js|cli|std|ss/i",
+    "js|cli|std|ss",
     "transpiled",
-    "/WebPack|Browserify|IntelliJ/i"
+    "WebPack|Browserify|IntelliJ"
   ]
 }
