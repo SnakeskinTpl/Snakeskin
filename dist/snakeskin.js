@@ -1,21 +1,21 @@
 /*!
- * Snakeskin v7.2.4
+ * Snakeskin v7.2.5
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 21 Sep 2016 08:29:03 GMT
+ * Date: 'Sun, 22 Jan 2017 18:46:09 GMT
  */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define('Snakeskin', factory) :
-    (global.Snakeskin = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('Snakeskin', factory) :
+	(global.Snakeskin = factory());
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 4]
+  VERSION: [7, 2, 5]
 };
 
 /**
@@ -543,8 +543,14 @@ var attrSeparators = {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
+
+
+
+
+
+
 
 
 
@@ -577,30 +583,6 @@ var defineProperty = function (obj, key, value) {
   return obj;
 };
 
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
 
 
 
@@ -618,27 +600,8 @@ var get = function get(object, property, receiver) {
 
 
 
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
 
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
 
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
-};
 
 var slicedToArray = function () {
   function sliceIterator(arr, i) {
@@ -880,6 +843,7 @@ var SYS_CONSTS = {
 	'__filename': true,
 	'TPL_NAME': true,
 	'PARENT_TPL_NAME': true,
+	'EOL': true,
 	'Raw': true,
 	'Unsafe': true,
 	'Snakeskin': true,
@@ -992,6 +956,9 @@ Snakeskin.setFilterParams = function (filter, params) {
 			Filters[filter] = wrapper;
 		}
 
+		Filters[filter] = Filters[filter] || function (str) {
+			return str;
+		};
 		Filters[filter]['ssFilterParams'] = params;
 		return Filters[filter];
 	}
@@ -1090,7 +1057,7 @@ var entityMap = {
 	'>': '&gt;'
 };
 
-var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g;
+var escapeHTMLRgxp = /[<>"'/]|&(?!#|[a-z]+;)/g;
 var escapeHTML = function escapeHTML(s) {
 	return entityMap[s] || s;
 };
@@ -1704,7 +1671,7 @@ var _templateObject = taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\timport Sna
 var _templateObject2 = taggedTemplateLiteral(['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\t(function (global, factory) {\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t\t', '\n\n\t\t\t\t})(this, function (exports, Snakeskin', ') {\n\t\t\t\t\t', '\n\t\t\t']);
 var _templateObject3 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof exports === \'object\' && typeof module !== \'undefined\') {\n\t\t\t\t\t\t\t\t\tfactory(exports, typeof Snakeskin === \'undefined\' ? require(\'', '\') : Snakeskin);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
 var _templateObject4 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'snakeskin\'/*#__SNAKESKIN_MODULES_DECL__*/], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\tif (typeof define === \'function\' && define.amd) {\n\t\t\t\t\t\t\t\t\tdefine(\'', '\', [\'exports\', \'snakeskin\'/*#__SNAKESKIN_MODULES_DECL__*/], factory);\n\t\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t']);
-var _templateObject5 = taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\tGLOBAL = Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\tGLOBAL = Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn str.replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
+var _templateObject5 = taggedTemplateLiteral(['\n\t\t\tvar\n\t\t\t\tGLOBAL = Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn String(str).replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t'], ['\n\t\t\tvar\n\t\t\t\tGLOBAL = Function(\'return this\')(),\n\t\t\t\t__FILTERS__ = Snakeskin.Filters,\n\t\t\t\t__VARS__ = Snakeskin.Vars,\n\t\t\t\t__LOCAL__ = Snakeskin.LocalVars,\n\t\t\t\t__REQUIRE__;\n\n\t\t\tfunction __LENGTH__(val) {\n\t\t\t\tif (val[0] instanceof Snakeskin.Node) {\n\t\t\t\t\treturn val[0].length();\n\t\t\t\t}\n\n\t\t\t\tif (typeof val === \'string\' || Array.isArray(val)) {\n\t\t\t\t\treturn val.length;\n\t\t\t\t}\n\n\t\t\t\treturn 1;\n\t\t\t}\n\n\t\t\tfunction __JOIN__(arr) {\n\t\t\t\tvar str = \'\';\n\t\t\t\tfor (var i = 0; i < arr.length; i++) {\n\t\t\t\t\tstr += arr[i];\n\t\t\t\t}\n\t\t\t\treturn str;\n\t\t\t}\n\n\t\t\tfunction __ESCAPE_D_Q__(str) {\n\t\t\t\treturn String(str).replace(/"/g, "&quot;")\n\t\t\t}\n\n\t\t\tvar\n\t\t\t\tTRUE = new Boolean(true),\n\t\t\t\tFALSE = new Boolean(false);\n\n\t\t\tfunction Raw(val) {\n\t\t\t\tif (!this || this.constructor !== Raw) {\n\t\t\t\t\treturn new Raw(val);\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tRaw.prototype.push = function (val) {\n\t\t\t\tthis.value += val;\n\t\t\t};\n\n\t\t\tfunction Unsafe(val) {\n\t\t\t\tif (!this || this.constructor !== Unsafe) {\n\t\t\t\t\tif (typeof val === \'string\') {\n\t\t\t\t\t\treturn new Unsafe(val);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn val;\n\t\t\t\t}\n\n\t\t\t\tthis.value = val;\n\t\t\t}\n\n\t\t\tUnsafe.prototype.toString = function () {\n\t\t\t\treturn this.value;\n\t\t\t};\n\n\t\t\t', '\n\t\t']);
 
 /**
  * The class for parsing SS templates
@@ -2121,25 +2088,23 @@ var $blockDirs = {};
 var $textDirs = {};
 var $logicDirs = {};
 
-var $write = {};
-
 var $dirChain = {};
 var $dirParents = {};
 var $dirEnd = {};
 var $dirTrim = {};
 var $dirInterpolation = {};
+var $rgxp = {};
 
 var $blocks = {};
-
 var $consts = {};
 var $constPositions = {};
 
+var $write = {};
 var $output = {};
 
 var $args = {};
 var $argsRes = {};
 
-var $rgxp = {};
 var $extMap = {};
 var $extList = {};
 
@@ -2237,16 +2202,13 @@ var nullableMap = { '!': false, '?': true };
  * @return {$$SnakeskinParserDeclFnArgsResult}
  */
 Parser.prototype.declFnArgs = function (str, opt_params) {
-	var _any = any(opt_params || {});
-
-	var dir = _any.dir;
-	var _any$tplName = _any.tplName;
-	var tplName = _any$tplName === undefined ? this.tplName : _any$tplName;
-	var parentTplName = _any.parentTplName;
-
-	var fnName = _any.fnName;
-	var structure = this.structure;
-
+	var _any = any(opt_params || {}),
+	    dir = _any.dir,
+	    _any$tplName = _any.tplName,
+	    tplName = _any$tplName === undefined ? this.tplName : _any$tplName,
+	    parentTplName = _any.parentTplName,
+	    fnName = _any.fnName,
+	    structure = this.structure;
 
 	var argsList = this.getFnArgs(str),
 	    isLocalFunction = !dir || fnName;
@@ -2563,8 +2525,8 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	opt_params = opt_params || {};
 	opt_name = this.name = String(opt_name ? this.getDirName(opt_name) : this.name);
 
-	var structure = this.structure;
-	var vars = structure.vars;
+	var structure = this.structure,
+	    vars = structure.vars;
 
 
 	var arr = Object.keys(any(vars));
@@ -2590,8 +2552,8 @@ Parser.prototype.startDir = function (opt_name, opt_params, opt_vars) {
 	this.structure = obj;
 	structure.children.push(obj);
 
-	var blockStructure = this.blockStructure;
-	var blockTable = this.blockTable;
+	var blockStructure = this.blockStructure,
+	    blockTable = this.blockTable;
 
 
 	if (blockStructure && this.getGroup('blockInherit')[opt_name]) {
@@ -2672,8 +2634,8 @@ Parser.prototype.startInlineDir = function (opt_name, opt_params) {
 	this.structure.children.push(obj);
 	this.structure = obj;
 
-	var blockStructure = this.blockStructure;
-	var blockTable = this.blockTable;
+	var blockStructure = this.blockStructure,
+	    blockTable = this.blockTable;
 
 
 	if (blockStructure && this.getGroup('inlineInherit')[opt_name]) {
@@ -2727,9 +2689,9 @@ var styleRgxp = /\t|[ ]{4}/g;
  * @return {string}
  */
 Parser.prototype.getAdvInfo = function () {
-	var eol = this.eol;
-	var info = this.info;
-	var line = this.info.line;
+	var eol = this.eol,
+	    info = this.info,
+	    line = this.info.line;
 
 
 	if (!info) {
@@ -2972,8 +2934,8 @@ Snakeskin.include = function (base, file, eol$$1, opt_renderAs) {
 	    e = RIGHT_BOUND;
 
 	try {
-		var extname = path.extname(file);
-		var include = Snakeskin.LocalVars.include;
+		var extname = path.extname(file),
+		    include = Snakeskin.LocalVars.include;
 
 
 		var dirname = path.basename(file),
@@ -3129,16 +3091,16 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	};
 
 	var _ = function _(_ref) {
-		var _ref2 = slicedToArray(_ref, 2);
+		var _ref2 = slicedToArray(_ref, 2),
+		    cache = _ref2[0],
+		    val = _ref2[1];
 
-		var cache = _ref2[0];
-		var val = _ref2[1];
 		return { cache: cache, val: val };
 	};
 
 	[_([$dirTrim, p.trim]), _([$blockDirs, p.block]), _([$logicDirs, p.logic]), _([$textDirs, p.text]), _([$dirInterpolation, p.interpolation])].forEach(function (_ref3) {
-		var cache = _ref3.cache;
-		var val = _ref3.val;
+		var cache = _ref3.cache,
+		    val = _ref3.val;
 
 		if (cache === $dirTrim) {
 			var res = void 0;
@@ -3167,8 +3129,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	});
 
 	[_([$dirGroups, p.group]), _([$dirChain, p.with]), _([$dirParents, p.parents]), _([$dirEnd, p.endFor])].forEach(function (_ref4) {
-		var cache = _ref4.cache;
-		var val = _ref4.val;
+		var cache = _ref4.cache,
+		    val = _ref4.val;
 
 		Snakeskin.forEach(concat(val), function (key) {
 			if (cache === $dirGroups && key[0] === GROUP) {
@@ -3198,8 +3160,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	});
 
 	[_([$dirParents, p.children]), _([$dirEnd, p.endsWith])].forEach(function (_ref5) {
-		var cache = _ref5.cache;
-		var val = _ref5.val;
+		var cache = _ref5.cache,
+		    val = _ref5.val;
 
 		concat(val).forEach(function (key) {
 			cache[name] = cache[name] || {};
@@ -3222,18 +3184,18 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	});
 
 	_ = function _(_ref6) {
-		var _ref7 = slicedToArray(_ref6, 3);
+		var _ref7 = slicedToArray(_ref6, 3),
+		    cache = _ref7[0],
+		    plainCache = _ref7[1],
+		    val = _ref7[2];
 
-		var cache = _ref7[0];
-		var plainCache = _ref7[1];
-		var val = _ref7[2];
 		return { cache: cache, plainCache: plainCache, val: val };
 	};
 
 	[_([dirPlacement, dirPlacementPlain, p.placement]), _([dirAncestorsBlacklist, dirAncestorsBlacklistPlain, p.ancestorsBlacklist]), _([dirAncestorsWhitelist, dirAncestorsWhitelistPlain, p.ancestorsWhitelist])].forEach(function (_ref8) {
-		var cache = _ref8.cache;
-		var plainCache = _ref8.plainCache;
-		var val = _ref8.val;
+		var cache = _ref8.cache,
+		    plainCache = _ref8.plainCache,
+		    val = _ref8.val;
 
 		cache[name] = concat(val).reduce(function (map, el) {
 			return map[el] = [el], map;
@@ -3477,10 +3439,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 
 	/** @this {Parser} */
 	var baseEnd = Snakeskin.Directives[name + 'BaseEnd'] = function () {
-		var structure = this.structure;
-		var _structure = this.structure;
-		var params = _structure.params;
-		var parent = _structure.parent;
+		var structure = this.structure,
+		    _structure = this.structure,
+		    params = _structure.params,
+		    parent = _structure.parent;
 
 
 		if (params['@scope']) {
@@ -3749,7 +3711,7 @@ function concatProp(val) {
 }
 
 var commandRgxp = /([^\s]+).*/;
-var nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/;
+var nonBlockCommentRgxp = /([^\\])\/\/\/\s?.*/;
 var rightPartRgxp = new RegExp('(?:' + r(ADV_LEFT_BOUND) + '?' + LEFT_BOUND + '__&-__' + r(RIGHT_BOUND) + '|)\\s*$');
 var rightWSRgxp = /\s*$/;
 var lastSymbolRgxp = new RegExp('(' + r(ADV_LEFT_BOUND) + '|\\\\)$');
@@ -4012,7 +3974,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					var s = dir ? adv + LEFT_BOUND : '',
 					    e = dir ? RIGHT_BOUND : '';
 
-					code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+					code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1') + e;
 					endDirInit = false;
 
 					var declDiff = decl.length - 1;
@@ -4076,11 +4038,9 @@ function appendDirEnd(str, struct) {
 		return str;
 	}
 
-	var _rightWSRgxp$exec = rightWSRgxp.exec(str);
-
-	var _rightWSRgxp$exec2 = slicedToArray(_rightWSRgxp$exec, 1);
-
-	var rightSpace = _rightWSRgxp$exec2[0];
+	var _rightWSRgxp$exec = rightWSRgxp.exec(str),
+	    _rightWSRgxp$exec2 = slicedToArray(_rightWSRgxp$exec, 1),
+	    rightSpace = _rightWSRgxp$exec2[0];
 
 	str = str.replace(rightPartRgxp, '');
 
@@ -4113,12 +4073,13 @@ function appendDirEnd(str, struct) {
  * @return {{command: string, lastEl: string, length: number, name: string, sComment: boolean}}
  */
 function getLineDesc(str, i, params) {
-	var dir = params.dir;
-	var i18n = params.i18n;
+	var dir = params.dir,
+	    i18n = params.i18n;
 
-	var comment = params.comment;
-	var command = '';
-	var name = '';
+	var comment = params.comment,
+	    command = '',
+	    name = '';
+
 
 	var lastEl = '',
 	    lastElI = 0,
@@ -4142,8 +4103,8 @@ function getLineDesc(str, i, params) {
 	var concatLine = false,
 	    nmBrk = null;
 
-	for (var j = i; j < str.length; j++) {
-		var _el = str[j],
+	for (var _j2 = i; _j2 < str.length; _j2++) {
+		var _el = str[_j2],
 		    cEscape = escape;
 
 		if (_el === '\\' || escape) {
@@ -4166,7 +4127,7 @@ function getLineDesc(str, i, params) {
 				command += _el;
 			} else if (!sComment) {
 				if (dir) {
-					var dirStart = ws$1.test(str[j - 2]);
+					var dirStart = ws$1.test(str[_j2 - 2]);
 
 					var literal = void 0;
 					brk = dirStart && prevEl === CONCAT_END;
@@ -4212,7 +4173,7 @@ function getLineDesc(str, i, params) {
 		}
 
 		if (!bOpen && !cEscape) {
-			var commentType = getCommentType(str, j);
+			var commentType = getCommentType(str, _j2);
 
 			if (comment) {
 				comment = commentType !== MULT_COMMENT_END;
@@ -4245,7 +4206,7 @@ function getLineDesc(str, i, params) {
 				}
 
 				var _skip = false;
-				if (_el === FILTER && filterStart.test(str[j + 1])) {
+				if (_el === FILTER && filterStart.test(str[_j2 + 1])) {
 					filterStart$$1 = true;
 					bEnd$$1 = false;
 					_skip = true;
@@ -4265,17 +4226,17 @@ function getLineDesc(str, i, params) {
 
 				if (dir) {
 					if (!inline) {
-						inline = str.substr(j, INLINE.length) === INLINE;
+						inline = str.substr(_j2, INLINE.length) === INLINE;
 					}
 				} else if (!cEscape) {
 					if (begin) {
-						if (_el === LEFT_BOUND && (params.dir || str[j - 1] !== ADV_LEFT_BOUND || j - 1 !== bStart)) {
+						if (_el === LEFT_BOUND && (params.dir || str[_j2 - 1] !== ADV_LEFT_BOUND || _j2 - 1 !== bStart)) {
 							begin++;
 						} else if (_el === RIGHT_BOUND) {
 							begin--;
 						}
-					} else if (!params.dir && params.adv ? _el === ADV_LEFT_BOUND && str[j + 1] === LEFT_BOUND : _el === LEFT_BOUND) {
-						bStart = j;
+					} else if (!params.dir && params.adv ? _el === ADV_LEFT_BOUND && str[_j2 + 1] === LEFT_BOUND : _el === LEFT_BOUND) {
+						bStart = _j2;
 						bEnd$$1 = false;
 						begin++;
 					}
@@ -4423,10 +4384,9 @@ Parser.prototype.pasteTplVarBlocks = function (str, opt_fn) {
  * @return {string}
  */
 Parser.prototype.replaceTplVars = function (str, opt_params, opt_wrap) {
-	var _any = any(opt_params || {});
-
-	var unsafe = _any.unsafe;
-	var replace = _any.replace;
+	var _any = any(opt_params || {}),
+	    unsafe = _any.unsafe,
+	    replace = _any.replace;
 
 	str = this.pasteDangerBlocks(str);
 
@@ -5289,15 +5249,15 @@ Parser.prototype.out = function (command, opt_params) {
 
 	command = this.replaceDangerBlocks(command);
 
-	var _any = any(Object.assign({ cache: true }, opt_params));
+	var _any = any(Object.assign({ cache: true }, opt_params)),
+	    cache = _any.cache,
+	    unsafe = _any.unsafe,
+	    skipFirstWord = _any.skipFirstWord,
+	    skipValidation = _any.skipValidation;
 
-	var cache = _any.cache;
-	var unsafe = _any.unsafe;
-	var skipFirstWord = _any.skipFirstWord;
-	var skipValidation = _any.skipValidation;
+	var structure = this.structure,
+	    tplName = String(this.tplName);
 
-	var structure = this.structure;
-	var tplName = String(this.tplName);
 
 	if (dangerRgxp.test(command)) {
 		this.error('unsupported syntax');
@@ -5543,13 +5503,11 @@ Parser.prototype.out = function (command, opt_params) {
 			if (nWord && !posNWord && nextCharRgxp.test(el)) {
 				/* eslint-disable prefer-const */
 
-				var _getWordFromPos = this.getWordFromPos(command, i);
-
-				var word = _getWordFromPos.word;
-				var finalWord = _getWordFromPos.finalWord;
-
-				var unary = _getWordFromPos.unary;
-				var tmpFinalWord = void 0;
+				var _getWordFromPos = this.getWordFromPos(command, i),
+				    word = _getWordFromPos.word,
+				    finalWord = _getWordFromPos.finalWord,
+				    unary = _getWordFromPos.unary,
+				    tmpFinalWord = void 0;
 
 				/* eslint-enable prefer-const */
 
@@ -5662,8 +5620,9 @@ Parser.prototype.out = function (command, opt_params) {
 
 		// Closing of a filter
 		if (filterStart$$1 && !pCountFilter && (el === ')' && !breakNum || i === end)) {
-			var pos = pContent[0];
-			var cancelLocalFilters = {};
+			var pos = pContent[0],
+			    cancelLocalFilters = {};
+
 
 			var fAdd = wordAddEnd - filterAddEnd + add,
 			    fBody = res.slice(pos[0] + (pCount ? add : 0), pos[1] + fAdd);
@@ -5698,8 +5657,9 @@ Parser.prototype.out = function (command, opt_params) {
 				var bind = [],
 				    test = void 0;
 
-				var Filters = Snakeskin.Filters;
-				var _pos = 0;
+				var Filters = Snakeskin.Filters,
+				    _pos = 0;
+
 
 				while (Filters) {
 					Filters = Filters[current[_pos]];
@@ -6097,12 +6057,10 @@ Parser.prototype.isAdvTest = function () {
  * @return {(boolean|string)}
  */
 Parser.prototype.save = function (str, opt_params) {
-	var _any = any(opt_params || {});
-
-	var iface = _any.iface;
-	var jsDoc = _any.jsDoc;
-	var raw = _any.raw;
-
+	var _any = any(opt_params || {}),
+	    iface = _any.iface,
+	    jsDoc = _any.jsDoc,
+	    raw = _any.raw;
 
 	if (str === undefined) {
 		return false;
@@ -6363,7 +6321,7 @@ Parser.prototype.hasParentFunction = function () {
 };
 
 /**
- * Returns variable ID by the specified name
+ * Returns variable id by the specified name
  *
  * @param {string} name - variable name
  * @return {string}
@@ -6388,13 +6346,12 @@ Parser.prototype.getVar = function (name) {
 Parser.prototype.declVar = function (name, opt_params) {
 	name = name.trim();
 
-	var _any = any(opt_params || {});
+	var _any = any(opt_params || {}),
+	    fn = _any.fn,
+	    sys = _any.sys,
+	    tplName = this.tplName,
+	    id = this.environment.id;
 
-	var fn = _any.fn;
-
-	var sys = _any.sys;
-	var tplName = this.tplName;
-	var id = this.environment.id;
 	var structure = this.structure;
 
 
@@ -6460,20 +6417,19 @@ Parser.prototype.declVar = function (name, opt_params) {
  * @return {string}
  */
 Parser.prototype.declVars = function (str, opt_params) {
-	var _any2 = any(opt_params || {});
-
-	var _any2$def = _any2.def;
-	var def = _any2$def === undefined ? 'undefined' : _any2$def;
-	var _any2$end = _any2.end;
-	var end = _any2$end === undefined ? true : _any2$end;
-	var sys = _any2.sys;
-
+	var _any2 = any(opt_params || {}),
+	    _any2$def = _any2.def,
+	    def = _any2$def === undefined ? 'undefined' : _any2$def,
+	    _any2$end = _any2.end,
+	    end = _any2$end === undefined ? true : _any2$end,
+	    sys = _any2.sys;
 
 	var bOpen = 0,
 	    cache = '';
 
-	var structure = this.structure;
-	var fin = 'var ';
+	var structure = this.structure,
+	    fin = 'var ';
+
 
 	while (!structure.vars) {
 		structure = structure.parent;
@@ -6591,10 +6547,10 @@ Parser.prototype.getXMLAttrsDeclEnd = function () {
  * @return {string}
  */
 Parser.prototype.getXMLAttrDecl = function (params) {
-	var _params$group = params.group;
-	var group = _params$group === undefined ? '' : _params$group;
-	var _params$separator = params.separator;
-	var separator = _params$separator === undefined ? '-' : _params$separator;
+	var _params$group = params.group,
+	    group = _params$group === undefined ? '' : _params$group,
+	    _params$separator = params.separator,
+	    separator = _params$separator === undefined ? '-' : _params$separator;
 
 
 	var parts = params.attr.split(' | '),
@@ -6910,9 +6866,9 @@ Parser.prototype.getXMLTagDesc = function (str) {
 								}
 
 								while (points[pos] != null) {
-									var _points$pos = points[pos];
-									var val = _points$pos.val;
-									var from = _points$pos.from;
+									var _points$pos = points[pos],
+									    val = _points$pos.val,
+									    from = _points$pos.from;
 
 									tmp = tmp.replace(classRef, val);
 									pos = from;
@@ -7029,20 +6985,43 @@ Parser.prototype.appendDefaultFilters = function (filters) {
 	var obj = Object.assign({ global: [], local: [] }, filters),
 	    arr = Object.keys(obj);
 
+	var f = this.filters = this.filters || [],
+	    prev = f[f.length - 1],
+	    prevMap = {};
+
+	Snakeskin.forEach(prev, function (el, key) {
+		prevMap[key] = {};
+		Snakeskin.forEach(el, function (el) {
+			prevMap[key][Object.keys(el)[0]] = true;
+		});
+	});
+
 	for (var i = 0; i < arr.length; i++) {
-		var _filters = obj[arr[i]];
+		var key = arr[i],
+		    _filters = obj[key];
 
 		for (var _i = 0; _i < _filters.length; _i++) {
-			if (isString(_filters[_i])) {
-				_filters[_i] = defineProperty({}, _filters[_i], []);
+			var el = _filters[_i];
+
+			if (isArray(el)) {
+				el = el[0];
+
+				var isStr = isString(el);
+
+				if (prevMap[key] && prevMap[key][isStr ? el : Object.keys(el)[0]]) {
+					_filters[_i] = isStr ? defineProperty({}, el, []) : el;
+				} else {
+					_filters.splice(_i, 1);
+					_i--;
+				}
+			} else if (isString(el)) {
+				_filters[_i] = defineProperty({}, el, []);
 			}
 		}
 	}
 
-	this.filters = this.filters || [];
-	this.filters.push(obj);
-
-	return this.filters;
+	f.push(obj);
+	return f;
 };
 
 var unaryBlackWords = {
@@ -7389,8 +7368,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	}
 
 	while (++parser.i < parser.source.length) {
-		var str = parser.source;
-		var structure = parser.structure;
+		var str = parser.source,
+		    structure = parser.structure;
 
 
 		var el = str[parser.i];
@@ -7399,8 +7378,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		    next = str[parser.i + 1],
 		    substr2 = str.substr(parser.i, 2);
 
-		var line = info.line;
-		var lastLine = line - 1;
+		var line = info.line,
+		    lastLine = line - 1;
+
 
 		var modLine = !parser.freezeLine && parser.lines.length === line;
 
@@ -7609,12 +7589,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 
 					if (!i18nStart && begin) {
-						var _ref = commandRgxp.exec(command) || [''];
-
-						var _ref2 = slicedToArray(_ref, 1);
-
-						var cmd = _ref2[0];
-
+						var _ref = commandRgxp.exec(command) || [''],
+						    _ref2 = slicedToArray(_ref, 1),
+						    cmd = _ref2[0];
 
 						var replacer = getReplacer(cmd);
 
@@ -7735,12 +7712,9 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							command = _replacer(command);
 						}
 
-						var _commandTypeRgxp$exec = commandTypeRgxp.exec(command);
-
-						var _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1);
-
-						var commandType = _commandTypeRgxp$exec2[0];
-
+						var _commandTypeRgxp$exec = commandTypeRgxp.exec(command),
+						    _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1),
+						    commandType = _commandTypeRgxp$exec2[0];
 
 						var defDir = !Snakeskin.Directives[commandType];
 
@@ -7857,6 +7831,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					bOpen = false;
 					bEnd$$1 = false;
 				}
+			}
+
+			if (i18nStart) {
+				el = applyDefEscape(el);
 			}
 
 			command += el;
@@ -8103,20 +8081,19 @@ Snakeskin.addDirective('__set__', {
 function set$1(command) {
 	var _this = this;
 
-	var tplName = this.tplName;
-
-	var file = this.info.file;
-
-	var _params = slicedToArray(this.params, 1);
-
-	var root = _params[0];
-	var last = this.params[this.params.length - 1];
+	var tplName = this.tplName,
+	    file = this.info.file,
+	    _params = slicedToArray(this.params, 1),
+	    root = _params[0],
+	    last = this.params[this.params.length - 1];
 
 	/**
   * @param {!Object} a
   * @param {!Object} b
   * @return {!Object}
   */
+
+
 	function extend(a, b) {
 		for (var key in b) {
 			if (!b.hasOwnProperty(key)) {
@@ -8253,8 +8230,8 @@ Snakeskin.addDirective('end', {
 	var _Snakeskin$Directives,
 	    _this = this;
 
-	var structure = this.structure;
-	var name = this.structure.name;
+	var structure = this.structure,
+	    name = this.structure.name;
 
 
 	if (!structure.parent) {
@@ -8909,7 +8886,7 @@ Snakeskin.addDirective('decorator', {
 var _templateObject$9 = taggedTemplateLiteral(['[\'', '\']'], ['[\'', '\']']);
 var _templateObject2$6 = taggedTemplateLiteral(['\n\t\t\t\t\t\tif (', ' instanceof Object === false) {\n\t\t\t\t\t\t\t', ' = {};\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t', '\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (', ' instanceof Object === false) {\n\t\t\t\t\t\t\t', ' = {};\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t', '\n\t\t\t\t\t']);
 var _templateObject3$6 = taggedTemplateLiteral(['\n\t\t\t\t\texports', ' =\n\t\t\t\t\t\tSnakeskin.decorate([\n\t\t\t\t\t\t\t', '],\n\t\t\t\t\t\t\t', ' function ', '', '('], ['\n\t\t\t\t\texports', ' =\n\t\t\t\t\t\tSnakeskin.decorate([\n\t\t\t\t\t\t\t', '],\n\t\t\t\t\t\t\t', ' function ', '', '(']);
-var _templateObject4$3 = taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags[\'', '\'] || Snakeskin.inlineTags[\'html\'],\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\t', '\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ',\n\t\t\t\t\t$class,\n\t\t\t\t\t$tagName,\n\t\t\t\t\t$attrKey,\n\t\t\t\t\t$attrType,\n\t\t\t\t\t$attrs;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\n\t\t\t\tfunction __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {\n\t\t\t\t\tif (val != null && val !== \'\') {\n\t\t\t\t\t\tif (!__ATTR_CONCAT_MAP__[val] || !cache[val] || cache[val][0] === TRUE) {\n\t\t\t\t\t\t\tcache[val] = [];\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tcache[val].push(empty ? TRUE : __ATTR_STR__);\n\t\t\t\t\t}\n\n\t\t\t\t\t__ATTR_STR__ = $attrType = undefined;\n\t\t\t\t}\n\n\t\t\t\tfunction __APPEND_XML_ATTR_VAL__(val) {\n\t\t\t\t\t__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? \' \' : \'\') + (val != null ? val : \'\');\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_START__(res, link, renderMode, isDOMRenderMode, stringResult) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (!stringResult && isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t$0 = new Snakeskin.Element(link, renderMode);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'<\' + link;\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype, literalBounds) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (typeof link === \'undefined\' || link !== \'?\') {\n\t\t\t\t\t\tvar base = true;\n\t\t\t\t\t\tvar set = function (el, key) {\n\t\t\t\t\t\t\tif (!base && {\'class\': true, \'id\': true}[key]) {\n\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tvar\n\t\t\t\t\t\t\t\tattr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(\' \'),\n\t\t\t\t\t\t\t\twrapper = literalBounds && attr.slice(0, 2) === \'{{\' && attr.slice(-2) === \'}}\',\n\t\t\t\t\t\t\t\tw = wrapper ? \'\' : \'"\';\n\n\t\t\t\t\t\t\tif (wrapper) {\n\t\t\t\t\t\t\t\tattr = literalBounds[0] + attr.slice(2, -2) + literalBounds[1];\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + key + (attr === TRUE ? \'\' : \'=\' + w + __ESCAPE_D_Q__(attr) + w);\n\n\t\t\t\t\t\t\t} else if (isDOMRenderMode) {\n\t\t\t\t\t\t\t\tSnakeskin.setAttribute($0, key, attr);\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t};\n\n\t\t\t\t\t\tif (cache[\'id\']) {\n\t\t\t\t\t\t\tset(cache[\'id\'], \'id\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tif (cache[\'class\']) {\n\t\t\t\t\t\t\tset(cache[\'class\'], \'class\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tbase = false;\n\t\t\t\t\t\tSnakeskin.forEach(cache, set);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, stringResult, isXMLDoctype) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag!== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t__RESULT__.push($0);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag !== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_END_XML_TAG_DECL__(\n\t\t\t\t\tres,\n\t\t\t\t\tlink,\n\t\t\t\t\tinline,\n\t\t\t\t\tinlineTag,\n\t\t\t\t\tattrCache,\n\t\t\t\t\tcallCache,\n\t\t\t\t\tcallTmp,\n\t\t\t\t\tisDOMRenderMode,\n\t\t\t\t\tstringResult,\n\t\t\t\t\tisXMLDoctype,\n\t\t\t\t\tnode\n\n\t\t\t\t) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tSnakeskin.setAttribute(node, inlineTag, callTmp);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\t__RESULT__.pop();\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + inlineTag + \'="\' + callTmp + \'"\';\n\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'</\' + link + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __TARGET_END__(res, stack, ref) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: undefined,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\tSnakeskin.forEach(stack, function (el) {\n\t\t\t\t\t\tref[el.key || ref.length] = el.value;\n\t\t\t\t\t});\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_CALL__(res, pos, stack) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push(Unsafe(', '));\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_TARGET__(res, pos, stack, key) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: key,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags[\'', '\'] || Snakeskin.inlineTags[\'html\'],\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\t', '\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ',\n\t\t\t\t\t$class,\n\t\t\t\t\t$tagName,\n\t\t\t\t\t$attrKey,\n\t\t\t\t\t$attrType,\n\t\t\t\t\t$attrs;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\n\t\t\t\tfunction __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {\n\t\t\t\t\tif (val != null && val !== \'\') {\n\t\t\t\t\t\tif (!__ATTR_CONCAT_MAP__[val] || !cache[val] || cache[val][0] === TRUE) {\n\t\t\t\t\t\t\tcache[val] = [];\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tcache[val].push(empty ? TRUE : __ATTR_STR__);\n\t\t\t\t\t}\n\n\t\t\t\t\t__ATTR_STR__ = $attrType = undefined;\n\t\t\t\t}\n\n\t\t\t\tfunction __APPEND_XML_ATTR_VAL__(val) {\n\t\t\t\t\t__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? \' \' : \'\') + (val != null ? val : \'\');\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_START__(res, link, renderMode, isDOMRenderMode, stringResult) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (!stringResult && isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t$0 = new Snakeskin.Element(link, renderMode);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'<\' + link;\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype, literalBounds) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (typeof link === \'undefined\' || link !== \'?\') {\n\t\t\t\t\t\tvar base = true;\n\t\t\t\t\t\tvar set = function (el, key) {\n\t\t\t\t\t\t\tif (!base && {\'class\': true, \'id\': true}[key]) {\n\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tvar\n\t\t\t\t\t\t\t\tattr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(\' \'),\n\t\t\t\t\t\t\t\twrapper = literalBounds && attr.slice(0, 2) === \'{{\' && attr.slice(-2) === \'}}\',\n\t\t\t\t\t\t\t\tw = wrapper ? \'\' : \'"\';\n\n\t\t\t\t\t\t\tif (wrapper) {\n\t\t\t\t\t\t\t\tattr = literalBounds[0] + attr.slice(2, -2) + literalBounds[1];\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + key + (attr === TRUE ? \'\' : \'=\' + w + __ESCAPE_D_Q__(attr) + w);\n\n\t\t\t\t\t\t\t} else if (isDOMRenderMode) {\n\t\t\t\t\t\t\t\tSnakeskin.setAttribute($0, key, attr);\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t};\n\n\t\t\t\t\t\tif (cache[\'id\']) {\n\t\t\t\t\t\t\tset(cache[\'id\'], \'id\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tif (cache[\'class\']) {\n\t\t\t\t\t\t\tset(cache[\'class\'], \'class\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tbase = false;\n\t\t\t\t\t\tSnakeskin.forEach(cache, set);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, stringResult, isXMLDoctype) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag!== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t__RESULT__.push($0);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag !== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_END_XML_TAG_DECL__(\n\t\t\t\t\tres,\n\t\t\t\t\tlink,\n\t\t\t\t\tinline,\n\t\t\t\t\tinlineTag,\n\t\t\t\t\tattrCache,\n\t\t\t\t\tcallCache,\n\t\t\t\t\tcallTmp,\n\t\t\t\t\tisDOMRenderMode,\n\t\t\t\t\tstringResult,\n\t\t\t\t\tisXMLDoctype,\n\t\t\t\t\tnode\n\n\t\t\t\t) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tSnakeskin.setAttribute(node, inlineTag, callTmp);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\t__RESULT__.pop();\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + inlineTag + \'="\' + callTmp + \'"\';\n\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'</\' + link + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __TARGET_END__(res, stack, ref) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: undefined,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\tSnakeskin.forEach(stack, function (el) {\n\t\t\t\t\t\tref[el.key || ref.length] = el.value;\n\t\t\t\t\t});\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_CALL__(res, pos, stack) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push(Unsafe(', '));\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_TARGET__(res, pos, stack, key) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: key,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ';\n\n\t\t\t\t', '\n\t\t\t']);
+var _templateObject4$3 = taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags[\'', '\'] || Snakeskin.inlineTags[\'html\'],\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\t', '\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ',\n\t\t\t\t\t$class,\n\t\t\t\t\t$tagName,\n\t\t\t\t\t$attrKey,\n\t\t\t\t\t$attrType,\n\t\t\t\t\t$attrs;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\n\t\t\t\tfunction __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {\n\t\t\t\t\tif (val != null && val !== \'\') {\n\t\t\t\t\t\tif (!__ATTR_CONCAT_MAP__[val] || !cache[val] || cache[val][0] === TRUE) {\n\t\t\t\t\t\t\tcache[val] = [];\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tcache[val].push(empty ? TRUE : __ATTR_STR__);\n\t\t\t\t\t}\n\n\t\t\t\t\t__ATTR_STR__ = $attrType = undefined;\n\t\t\t\t}\n\n\t\t\t\tfunction __APPEND_XML_ATTR_VAL__(val) {\n\t\t\t\t\t__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? \' \' : \'\') + (val != null ? val : \'\');\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_START__(res, link, renderMode, isDOMRenderMode, stringResult) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (!stringResult && isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t$0 = new Snakeskin.Element(link, renderMode);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'<\' + link;\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype, literalBounds) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (typeof link === \'undefined\' || link !== \'?\') {\n\t\t\t\t\t\tvar base = true;\n\t\t\t\t\t\tvar set = function (el, key) {\n\t\t\t\t\t\t\tif (!base && {\'class\': true, \'id\': true}[key]) {\n\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tvar\n\t\t\t\t\t\t\t\tattr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(\' \'),\n\t\t\t\t\t\t\t\twrapper = literalBounds && attr.slice(0, 2) === \'{{\' && attr.slice(-2) === \'}}\';\n\n\t\t\t\t\t\t\tif (!isDOMRenderMode) {\n\t\t\t\t\t\t\t\tif (attr === TRUE) {\n\t\t\t\t\t\t\t\t\tattr = \'\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\tif (wrapper) {\n\t\t\t\t\t\t\t\t\t\tattr = \'=\' + literalBounds[0] + attr.slice(2, -2) + literalBounds[1];\n\n\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\tattr = \'="\' + __ESCAPE_D_Q__(attr) + \'"\';\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + key + attr;\n\n\t\t\t\t\t\t\t} else if (isDOMRenderMode) {\n\t\t\t\t\t\t\t\tSnakeskin.setAttribute($0, key, attr);\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t};\n\n\t\t\t\t\t\tif (cache[\'id\']) {\n\t\t\t\t\t\t\tset(cache[\'id\'], \'id\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tif (cache[\'class\']) {\n\t\t\t\t\t\t\tset(cache[\'class\'], \'class\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tbase = false;\n\t\t\t\t\t\tSnakeskin.forEach(cache, set);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, stringResult, isXMLDoctype) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag!== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t__RESULT__.push($0);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag !== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_END_XML_TAG_DECL__(\n\t\t\t\t\tres,\n\t\t\t\t\tlink,\n\t\t\t\t\tinline,\n\t\t\t\t\tinlineTag,\n\t\t\t\t\tattrCache,\n\t\t\t\t\tcallCache,\n\t\t\t\t\tcallTmp,\n\t\t\t\t\tisDOMRenderMode,\n\t\t\t\t\tstringResult,\n\t\t\t\t\tisXMLDoctype,\n\t\t\t\t\tnode\n\n\t\t\t\t) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tSnakeskin.setAttribute(node, inlineTag, callTmp);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\t__RESULT__.pop();\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + inlineTag + \'="\' + callTmp + \'"\';\n\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'</\' + link + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __TARGET_END__(res, stack, ref) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: undefined,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\tSnakeskin.forEach(stack, function (el) {\n\t\t\t\t\t\tref[el.key || ref.length] = el.value;\n\t\t\t\t\t});\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_CALL__(res, pos, stack) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push(Unsafe(', '));\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_TARGET__(res, pos, stack, key) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: key,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ',\n\t\t\t\t\tEOL = "', '";\n\n\t\t\t\t', '\n\t\t\t'], ['\n\t\t\t\tvar\n\t\t\t\t\t__THIS__ = this;\n\n\t\t\t\tvar\n\t\t\t\t\tcallee = exports', ',\n\t\t\t\t\tself = callee.Blocks = {};\n\n\t\t\t\tvar\n\t\t\t\t\t__INLINE_TAGS__ = Snakeskin.inlineTags[\'', '\'] || Snakeskin.inlineTags[\'html\'],\n\t\t\t\t\t__INLINE_TAG__;\n\n\t\t\t\tvar\n\t\t\t\t\t__STRING_RESULT__;\n\n\t\t\t\t', '\n\n\t\t\t\tvar\n\t\t\t\t\t$0 = ', ',\n\t\t\t\t\t$class,\n\t\t\t\t\t$tagName,\n\t\t\t\t\t$attrKey,\n\t\t\t\t\t$attrType,\n\t\t\t\t\t$attrs;\n\n\t\t\t\tvar\n\t\t\t\t\t__ATTR_STR__,\n\t\t\t\t\t__ATTR_CONCAT_MAP__ = {\'class\': true};\n\n\t\t\t\tfunction __GET_XML_ATTR_KEY_DECL__(val, cache, empty) {\n\t\t\t\t\tif (val != null && val !== \'\') {\n\t\t\t\t\t\tif (!__ATTR_CONCAT_MAP__[val] || !cache[val] || cache[val][0] === TRUE) {\n\t\t\t\t\t\t\tcache[val] = [];\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tcache[val].push(empty ? TRUE : __ATTR_STR__);\n\t\t\t\t\t}\n\n\t\t\t\t\t__ATTR_STR__ = $attrType = undefined;\n\t\t\t\t}\n\n\t\t\t\tfunction __APPEND_XML_ATTR_VAL__(val) {\n\t\t\t\t\t__ATTR_STR__ = __ATTR_STR__ + (__ATTR_STR__ ? \' \' : \'\') + (val != null ? val : \'\');\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_START__(res, link, renderMode, isDOMRenderMode, stringResult) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (!stringResult && isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t$0 = new Snakeskin.Element(link, renderMode);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'<\' + link;\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_ATTRS_DECL_END__(res, link, cache, isDOMRenderMode, stringResult, isXMLDoctype, literalBounds) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (typeof link === \'undefined\' || link !== \'?\') {\n\t\t\t\t\t\tvar base = true;\n\t\t\t\t\t\tvar set = function (el, key) {\n\t\t\t\t\t\t\tif (!base && {\'class\': true, \'id\': true}[key]) {\n\t\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tvar\n\t\t\t\t\t\t\t\tattr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(\' \'),\n\t\t\t\t\t\t\t\twrapper = literalBounds && attr.slice(0, 2) === \'{{\' && attr.slice(-2) === \'}}\';\n\n\t\t\t\t\t\t\tif (!isDOMRenderMode) {\n\t\t\t\t\t\t\t\tif (attr === TRUE) {\n\t\t\t\t\t\t\t\t\tattr = \'\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\tif (wrapper) {\n\t\t\t\t\t\t\t\t\t\tattr = \'=\' + literalBounds[0] + attr.slice(2, -2) + literalBounds[1];\n\n\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\tattr = \'="\' + __ESCAPE_D_Q__(attr) + \'"\';\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + key + attr;\n\n\t\t\t\t\t\t\t} else if (isDOMRenderMode) {\n\t\t\t\t\t\t\t\tSnakeskin.setAttribute($0, key, attr);\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t};\n\n\t\t\t\t\t\tif (cache[\'id\']) {\n\t\t\t\t\t\t\tset(cache[\'id\'], \'id\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tif (cache[\'class\']) {\n\t\t\t\t\t\t\tset(cache[\'class\'], \'class\');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tbase = false;\n\t\t\t\t\t\tSnakeskin.forEach(cache, set);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_XML_TAG_DECL_END__(res, link, inline, inlineTag, isDOMRenderMode, stringResult, isXMLDoctype) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag!== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t__RESULT__.push($0);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inline && !inlineTag || inlineTag === true) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (inlineTag && inlineTag !== true) {\n\t\t\t\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __GET_END_XML_TAG_DECL__(\n\t\t\t\t\tres,\n\t\t\t\t\tlink,\n\t\t\t\t\tinline,\n\t\t\t\t\tinlineTag,\n\t\t\t\t\tattrCache,\n\t\t\t\t\tcallCache,\n\t\t\t\t\tcallTmp,\n\t\t\t\t\tisDOMRenderMode,\n\t\t\t\t\tstringResult,\n\t\t\t\t\tisXMLDoctype,\n\t\t\t\t\tnode\n\n\t\t\t\t) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (isDOMRenderMode) {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tSnakeskin.setAttribute(node, inlineTag, callTmp);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\t__RESULT__.pop();\n\t\t\t\t\t\t\t\t$0 = __RESULT__[__RESULT__.length - 1];\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\n\t\t\t\t\t} else {\n\t\t\t\t\t\tif (link !== \'?\') {\n\t\t\t\t\t\t\tif (inlineTag) {\n\t\t\t\t\t\t\t\tif (inlineTag !== true) {\n\t\t\t\t\t\t\t\t\t__RESULT__ = callCache;\n\n\t\t\t\t\t\t\t\t\tif (inlineTag in attrCache === false && callTmp) {\n\t\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \' \' + inlineTag + \'="\' + callTmp + \'"\';\n\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += (isXMLDoctype ? \'/\' : \'\') + \'>\';\n\n\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t} else if (!inline) {\n\t\t\t\t\t\t\t\tif (stringResult) {\n\t\t\t\t\t\t\t\t\t__STRING_RESULT__ += \'</\' + link + \'>\';\n\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t', '\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __TARGET_END__(res, stack, ref) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: undefined,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\tSnakeskin.forEach(stack, function (el) {\n\t\t\t\t\t\tref[el.key || ref.length] = el.value;\n\t\t\t\t\t});\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_CALL__(res, pos, stack) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push(Unsafe(', '));\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tfunction __PUTIN_TARGET__(res, pos, stack, key) {\n\t\t\t\t\tvar __RESULT__ = res;\n\n\t\t\t\t\tif (pos === true || !pos && __LENGTH__(__RESULT__)) {\n\t\t\t\t\t\tstack.push({\n\t\t\t\t\t\t\tkey: key,\n\t\t\t\t\t\t\tvalue: Unsafe(', ')\n\t\t\t\t\t\t});\n\n\t\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\t}\n\n\t\t\t\t\treturn __RESULT__;\n\t\t\t\t}\n\n\t\t\t\tvar\n\t\t\t\t\t__RETURN__ = false,\n\t\t\t\t\t__RETURN_VAL__;\n\n\t\t\t\tvar\n\t\t\t\t\tTPL_NAME = "', '",\n\t\t\t\t\tPARENT_TPL_NAME', ',\n\t\t\t\t\tEOL = "', '";\n\n\t\t\t\t', '\n\t\t\t']);
 var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t'], ['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t']);
 
 ['async', 'template', 'interface', 'placeholder'].forEach(function (dir) {
@@ -8965,13 +8942,10 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 		var renderAs = this.renderAs;
 
 		for (var i = 0; i < flags.length; i++) {
-			var _flags$i$split = flags[i].split(/\s+/);
-
-			var _flags$i$split2 = slicedToArray(_flags$i$split, 2);
-
-			var flag = _flags$i$split2[0];
-			var value = _flags$i$split2[1];
-
+			var _flags$i$split = flags[i].split(/\s+/),
+			    _flags$i$split2 = slicedToArray(_flags$i$split, 2),
+			    flag = _flags$i$split2[0],
+			    value = _flags$i$split2[1];
 
 			if (flag === 'renderAs') {
 				renderAs = this.pasteDangerBlocks(value);
@@ -9059,9 +9033,9 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 		var normalizeTplName = this.normalizeBlockName(tplName);
 
 		if (this.templates[normalizeTplName]) {
-			var _templates$normalizeT = this.templates[normalizeTplName];
-			var file = _templates$normalizeT.file;
-			var _renderAs = _templates$normalizeT.renderAs;
+			var _templates$normalizeT = this.templates[normalizeTplName],
+			    file = _templates$normalizeT.file,
+			    _renderAs = _templates$normalizeT.renderAs;
 
 
 			if (this.file !== file || this.renderAs === _renderAs) {
@@ -9210,7 +9184,7 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 		var args = this.declFnArgs(command, { dir: 'template', parentTplName: parentTplName, tplName: tplName });
 
 		this.save(args.decl + ') {', { iface: iface });
-		this.save(ws(_templateObject4$3, concatProp(declTplName), doctype, this.getTplRuntime(), stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]', this.wrap('\'<\' + link'), this.wrap('\' \' + key + (attr === TRUE ? \'\' : \'=\' + w + __ESCAPE_D_Q__(attr) + w)'), this.wrap('$0'), this.getResultDecl(), this.wrap('(isXMLDoctype ? \'/\' : \'\') + \'>\''), this.getResultDecl(), this.wrap('\'>\''), this.wrap('\' \' + inlineTag + \'="\' + callTmp + \'"\''), this.wrap('(isXMLDoctype ? \'/\' : \'\') + \'>\''), this.wrap('\'</\' + link + \'>\''), this.getReturnResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), escapeDoubleQuotes(declTplName), declParentTplName ? ' = "' + escapeDoubleQuotes(declParentTplName) + '"' : '', args.def));
+		this.save(ws(_templateObject4$3, concatProp(declTplName), doctype, this.getTplRuntime(), stringRender[this.renderMode] ? 'undefined' : '__RESULT__[0]', this.wrap('\'<\' + link'), this.wrap('\' \' + key + attr'), this.wrap('$0'), this.getResultDecl(), this.wrap('(isXMLDoctype ? \'/\' : \'\') + \'>\''), this.getResultDecl(), this.wrap('\'>\''), this.wrap('\' \' + inlineTag + \'="\' + callTmp + \'"\''), this.wrap('(isXMLDoctype ? \'/\' : \'\') + \'>\''), this.wrap('\'</\' + link + \'>\''), this.getReturnResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), this.getReturnResultDecl(), this.getResultDecl(), escapeDoubleQuotes(declTplName), declParentTplName ? ' = "' + escapeDoubleQuotes(declParentTplName) + '"' : '', escapeEOLs(this.eol), args.def));
 
 		var preDefs = this.preDefs[tplName];
 		if ((!$extMap[tplName] || parentTplName) && preDefs) {
@@ -9279,8 +9253,8 @@ Snakeskin.addDirective('import', {
 }, function (command) {
 	var _this = this;
 
-	var structure = this.structure;
-	var file = this.info.file;
+	var structure = this.structure,
+	    file = this.info.file;
 
 
 	var isNativeExport = this.module === 'native',
@@ -9473,9 +9447,9 @@ Snakeskin.addDirective('__setFile__', {
 Snakeskin.addDirective('__endSetFile__', {
 	group: 'ignore'
 }, function () {
-	var _environment = this.environment;
-	var filename = _environment.filename;
-	var namespace = _environment.namespace;
+	var _environment = this.environment,
+	    filename = _environment.filename,
+	    namespace = _environment.namespace;
 
 
 	this.environment = this.environment.parent;
@@ -9780,6 +9754,7 @@ Snakeskin.addDirective('final', {
 });
 
 Snakeskin.addDirective('literal', {
+	filters: { global: [['undef']], local: [['undef']] },
 	group: ['literal', 'escape', 'output'],
 	notEmpty: true,
 	placement: 'template',
@@ -9864,13 +9839,10 @@ Snakeskin.addDirective('target', {
 		command = command.slice(0, -1);
 	}
 
-	var _command$split = command.split(/\s+as\s+(?=[^\s])/);
-
-	var _command$split2 = slicedToArray(_command$split, 2);
-
-	var obj = _command$split2[0];
-	var ref = _command$split2[1];
-
+	var _command$split = command.split(/\s+as\s+(?=[^\s])/),
+	    _command$split2 = slicedToArray(_command$split, 2),
+	    obj = _command$split2[0],
+	    ref = _command$split2[1];
 
 	if (ref) {
 		this.declVar(ref);
@@ -9998,7 +9970,7 @@ var types$1 = {
 
 Snakeskin.addDirective('script', {
 	block: true,
-	filters: { global: ['attr', 'html', 'undef'], local: ['undef'] },
+	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['script', 'tag', 'output'],
 	interpolation: true,
 	placement: 'template',
@@ -10038,7 +10010,7 @@ var types$2 = {
 
 Snakeskin.addDirective('style', {
 	block: true,
-	filters: { global: ['attr', 'html', 'undef'], local: ['undef'] },
+	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['style', 'tag', 'output'],
 	interpolation: true,
 	placement: 'template',
@@ -10091,7 +10063,7 @@ var types$3 = {
 
 Snakeskin.addDirective('link', {
 	block: true,
-	filters: { global: ['attr', 'html', 'undef'], local: ['undef'] },
+	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['link', 'tag', 'output'],
 	interpolation: true,
 	placement: 'template',
@@ -10136,7 +10108,7 @@ var _templateObject5$2 = taggedTemplateLiteral(['\n\t\t\t__RESULT__ = ', ';\n\t\
 Snakeskin.addDirective('call', {
 	block: true,
 	deferInit: true,
-	filters: { global: ['undef'] },
+	filters: { global: [['undef']] },
 	group: ['call', 'microTemplate', 'output'],
 	notEmpty: true,
 	shorthands: { '+=': 'call ', '/+': 'end call' },
@@ -10306,13 +10278,14 @@ var callBlockNameRgxp = new RegExp('^[^' + symbols + '_$][^' + w + ']*|[^' + w +
 Snakeskin.addDirective('block', {
 	block: true,
 	deferInit: true,
-	filters: { global: ['undef'] },
+	filters: { global: [['undef']] },
 	group: ['block', 'template', 'define', 'inherit', 'blockInherit', 'dynamic'],
 	logic: true,
 	notEmpty: true
 }, function (command, commandLength) {
-	var tplName = this.tplName;
-	var name = this.getFnName(command);
+	var tplName = this.tplName,
+	    name = this.getFnName(command);
+
 
 	if (!name) {
 		return this.error('invalid "' + this.name + '" name');
@@ -10399,8 +10372,9 @@ Snakeskin.addDirective('block', {
 		name: name
 	});
 
-	var structure = this.structure;
-	var dir = String(this.name);
+	var structure = this.structure,
+	    dir = String(this.name);
+
 
 	var params = void 0,
 	    output = void 0;
@@ -10513,7 +10487,7 @@ Snakeskin.addDirective('block', {
 });
 
 Snakeskin.addDirective('attr', {
-	filters: { global: ['attr', 'html', 'undef'], local: ['undef'] },
+	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['attr', 'output'],
 	interpolation: true,
 	notEmpty: true,
@@ -10526,7 +10500,7 @@ Snakeskin.addDirective('attr', {
 Snakeskin.addDirective('tag', {
 	block: true,
 	deferInit: true,
-	filters: { global: ['attr', 'html', 'undef'], local: ['undef'] },
+	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['tag', 'output'],
 	interpolation: true,
 	placement: 'template',
@@ -10550,15 +10524,13 @@ Snakeskin.addDirective('tag', {
 		command = defaultTag;
 	}
 
-	var parts = this.getTokens(command);
-
-	var _getXMLTagDesc = this.getXMLTagDesc(parts[0]);
-
-	var tag = _getXMLTagDesc.tag;
-	var id = _getXMLTagDesc.id;
-	var inline = _getXMLTagDesc.inline;
-	var inlineMap = _getXMLTagDesc.inlineMap;
-	var classes = _getXMLTagDesc.classes;
+	var parts = this.getTokens(command),
+	    _getXMLTagDesc = this.getXMLTagDesc(parts[0]),
+	    tag = _getXMLTagDesc.tag,
+	    id = _getXMLTagDesc.id,
+	    inline = _getXMLTagDesc.inline,
+	    inlineMap = _getXMLTagDesc.inlineMap,
+	    classes = _getXMLTagDesc.classes;
 
 
 	Object.assign(this.structure.params, { inline: inline, tag: tag });

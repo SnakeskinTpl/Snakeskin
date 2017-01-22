@@ -1,21 +1,21 @@
 /*!
- * Snakeskin v7.2.4 (live)
+ * Snakeskin v7.2.5 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 21 Sep 2016 08:29:03 GMT
+ * Date: 'Sun, 22 Jan 2017 18:46:09 GMT
  */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define('Snakeskin', factory) :
-    (global.Snakeskin = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('Snakeskin', factory) :
+	(global.Snakeskin = factory());
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 4]
+  VERSION: [7, 2, 5]
 };
 
 /**
@@ -475,8 +475,6 @@ function any(val) {
   return val;
 }
 
-var wsRgxp = /^\s+|[\r\n]+/mg;
-
 /**
  * String tag (for ES6 string templates) for truncate starting whitespaces and eol-s
  *
@@ -529,8 +527,14 @@ var attrSeparators = {
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
+
+
+
+
+
+
 
 
 
@@ -557,69 +561,6 @@ var defineProperty = function (obj, key, value) {
   }
 
   return obj;
-};
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
 };
 
 var _COMMENTS;
@@ -799,6 +740,9 @@ Snakeskin.setFilterParams = function (filter, params) {
 			Filters[filter] = wrapper;
 		}
 
+		Filters[filter] = Filters[filter] || function (str) {
+			return str;
+		};
 		Filters[filter]['ssFilterParams'] = params;
 		return Filters[filter];
 	}
@@ -897,7 +841,7 @@ var entityMap = {
 	'>': '&gt;'
 };
 
-var escapeHTMLRgxp = /[<>"'\/]|&(?!#|[a-z]+;)/g;
+var escapeHTMLRgxp = /[<>"'/]|&(?!#|[a-z]+;)/g;
 var escapeHTML = function escapeHTML(s) {
 	return entityMap[s] || s;
 };
