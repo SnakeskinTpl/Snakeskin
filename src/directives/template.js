@@ -460,21 +460,28 @@ import {
 								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' '),
 								wrapper = literalBounds && attr.slice(0, 2) === '{{' && attr.slice(-2) === '}}';
 
-							if (wrapper) {
-								attr = literalBounds[0] + attr.slice(2, -2) + literalBounds[1];
+							if (!isDOMRenderMode) {
+								if (attr === TRUE) {
+									attr = '';
 
-							} else if (!isDOMRenderMode) {
-								attr = '"' + __ESCAPE_D_Q__(attr) + '"';
+								} else {
+									if (wrapper) {
+										attr = '=' + literalBounds[0] + attr.slice(2, -2) + literalBounds[1];
+
+									} else {
+										attr = '="' + __ESCAPE_D_Q__(attr) + '"';
+									}
+								}
 							}
 
 							if (stringResult) {
-								__STRING_RESULT__ += ' ' + key + (attr === TRUE ? '' : '=' + attr);
+								__STRING_RESULT__ += ' ' + key + attr;
 
 							} else if (isDOMRenderMode) {
 								Snakeskin.setAttribute($0, key, attr);
 
 							} else {
-								${this.wrap(`' ' + key + (attr === TRUE ? '' : '=' + attr)`)}
+								${this.wrap(`' ' + key + attr`)}
 							}
 						};
 

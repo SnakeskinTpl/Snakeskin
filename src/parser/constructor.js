@@ -481,7 +481,7 @@ export default class Parser {
 			}
 
 			function __ESCAPE_D_Q__(str) {
-				return str.replace(/"/g, "&quot;")
+				return String(str).replace(/"/g, "&quot;")
 			}
 
 			var

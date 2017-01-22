@@ -48,7 +48,7 @@ import {
 
 const
 	commandRgxp = /([^\s]+).*/,
-	nonBlockCommentRgxp = /([^\\])\/\/\/(\s?)(.*)/,
+	nonBlockCommentRgxp = /([^\\])\/\/\/\s?.*/,
 	rightPartRgxp = new RegExp(`(?:${r(alb)}?${lb}__&-__${r(rb)}|)\\s*$`),
 	rightWSRgxp = /\s*$/,
 	lastSymbolRgxp = new RegExp(`(${r(alb)}|\\\\)$`);
@@ -316,7 +316,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 					s = dir ? adv + lb : '',
 					e = dir ? rb : '';
 
-				code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1/*$2$3$2*/') + e;
+				code += s + (dir ? parts[0] : decl.command).replace(nonBlockCommentRgxp, '$1') + e;
 				endDirInit = false;
 
 				const declDiff = decl.length - 1;
