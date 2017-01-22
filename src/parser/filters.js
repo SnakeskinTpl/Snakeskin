@@ -25,12 +25,13 @@ Parser.prototype.appendDefaultFilters = function (filters) {
 
 	const
 		f = this.filters = this.filters || [],
-		fMap = {};
+		prev = f[f.length - 1],
+		prevMap = {};
 
-	Snakeskin.forEach(f[f.length - 1], (el, key) => {
-		fMap[key] = {};
+	Snakeskin.forEach(prev, (el, key) => {
+		prevMap[key] = {};
 		Snakeskin.forEach(el, (el) => {
-			fMap[key][Object.keys(el)[0]] = true;
+			prevMap[key][Object.keys(el)[0]] = true;
 		});
 	});
 
@@ -49,7 +50,7 @@ Parser.prototype.appendDefaultFilters = function (filters) {
 				const
 					isStr = isString(el);
 
-				if (fMap[key] && fMap[key][isStr ? el : Object.keys(el)[0]]) {
+				if (prevMap[key] && prevMap[key][isStr ? el : Object.keys(el)[0]]) {
 					filters[i] = isStr ? {[el]: []} : el;
 
 				} else {
