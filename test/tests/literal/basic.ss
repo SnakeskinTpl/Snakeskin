@@ -18,6 +18,10 @@
 
 <div class="foo" bar={bla} baz={foo}></div>
 
+[[attrEscaping]]========================================================================================================
+
+<div class="foo" bar="121"&quot;22&quot;"1"></div>
+
 ========================================================================================================================
 
 - namespace literal[%fileName%]
@@ -32,3 +36,6 @@
 
 - template attr() @= attrLiteralBounds ['{', '}']
 	< .foo bar = {{bla}} | baz = ${'{{foo}}'}
+
+- template attrEscaping() @= attrLiteralBounds ['', '']
+	< .foo bar = {{"121"${'"22"'}${'"1"'|!html}}}
