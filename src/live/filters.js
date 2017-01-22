@@ -74,6 +74,7 @@ Snakeskin.setFilterParams = function (filter, params) {
 			Filters[filter] = wrapper;
 		}
 
+		Filters[filter] = Filters[filter] || ((str) => str);
 		Filters[filter]['ssFilterParams'] = params;
 		return Filters[filter];
 	}
