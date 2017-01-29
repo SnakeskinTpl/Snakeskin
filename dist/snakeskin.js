@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.6
+ * Snakeskin v7.2.7
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 22 Jan 2017 20:55:26 GMT
+ * Date: 'Sun, 29 Jan 2017 18:04:23 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 6]
+  VERSION: [7, 2, 7]
 };
 
 /**
@@ -714,7 +714,10 @@ var FILTER = '|';
 // >>>
 
 var BASE_SYS_ESCAPES = (_BASE_SYS_ESCAPES = {
-	'\\': true
+	'\\': true,
+	'"': true,
+	'\'': true,
+	'/': true
 }, defineProperty(_BASE_SYS_ESCAPES, I18N, true), defineProperty(_BASE_SYS_ESCAPES, LEFT_BOUND, true), defineProperty(_BASE_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), defineProperty(_BASE_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _BASE_SYS_ESCAPES);
 
 var SYS_ESCAPES = (_SYS_ESCAPES = {
@@ -3084,8 +3087,21 @@ var dirAncestorsWhitelistPlain = {};
  *          '?': 'void '
  *        }
  *
- * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_constr - constructor
- * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
+ * @param {function(this:Parser, string, {
+ *   length: number,
+ *   type: string,
+ *   expr: string,
+ *   raw: string,
+ *   jsDocStart: (boolean|number)
+ * })=} opt_constr - constructor
+ *
+ * @param {function(this:Parser, string, {
+ *   length: number,
+ *   type: string,
+ *   expr: string,
+ *   raw: string,
+ *   jsDocStart: (boolean|number)
+ * })=} opt_destruct - destructor
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	groupCache = {};
@@ -3267,7 +3283,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	}
 
 	/** @this {Parser} */
-	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
+	Snakeskin.Directives[name] = function (command, params) {
 		var structure = this.structure;
 
 
@@ -3378,7 +3394,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (opt_constr) {
-			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
+			opt_constr.call(this, command, params);
 		}
 
 		if (structure.chain && !prevChain && !ignore && !this.isLogic()) {
@@ -3433,7 +3449,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			baseEnd.call(this);
 
 			if (opt_destruct) {
-				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
+				opt_destruct.call(this, command, params);
 			}
 
 			this.endDir();
@@ -7328,6 +7344,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	    beginStr = false;
 
 	var command = '',
+	    rawCommand = '',
 	    commandLength = 0,
 	    commandNameDecl = false,
 	    filterStart$$1 = false,
@@ -7378,6 +7395,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 
 		var el = str[parser.i];
+
+		if (begin) {
+			rawCommand += el;
+		}
 
 		var rEl = el,
 		    next = str[parser.i + 1],
@@ -7572,8 +7593,14 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 				}
 
 				if (i18nStart) {
-					if (!cEscape && el === '"' && !parser.language) {
-						el = '\\"';
+					if (!parser.language) {
+						if (cEscape) {
+							if (el === '\\') {
+								el = '\\\\';
+							}
+						} else if (el === '"') {
+							el = '\\"';
+						}
 					}
 
 					if (cEscape || el !== I18N) {
@@ -7705,7 +7732,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					} else if (el === RIGHT_BOUND && begin && ! --begin) {
 						commandNameDecl = false;
 
-						var raw = command,
+						var commandExpr = command,
 						    _replacer = getReplacer(command);
 
 						command = command.trim();
@@ -7745,7 +7772,13 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 						var inlineLength = parser.inline.length;
 
-						var fnRes = Snakeskin.Directives[commandType].call(parser, command, commandLength, commandType, raw, jsDocStart);
+						var fnRes = Snakeskin.Directives[commandType].call(parser, command, {
+							length: commandLength,
+							type: commandType,
+							expr: commandExpr,
+							raw: rawCommand.slice(0, -1),
+							jsDoc: jsDocStart
+						});
 
 						if (parser.break) {
 							return false;
@@ -7783,6 +7816,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						}
 
 						command = '';
+						rawCommand = '';
 						commandLength = 0;
 						continue;
 					}
@@ -7836,10 +7870,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					bOpen = false;
 					bEnd$$1 = false;
 				}
-			}
-
-			if (i18nStart) {
-				el = applyDefEscape(el);
 			}
 
 			command += el;
@@ -8647,7 +8677,8 @@ Snakeskin.addDirective('__&-__', {
 Snakeskin.addDirective('const', {
 	deferInit: true,
 	group: ['const', 'inherit', 'inlineInherit']
-}, function (command, commandLength) {
+}, function (command, _ref) {
+	var length = _ref.length;
 	var tplName = this.tplName;
 
 
@@ -8713,7 +8744,7 @@ Snakeskin.addDirective('const', {
 
 		$consts[tplName][name] = {
 			block: Boolean(block || parentTpl && parent && parent.block),
-			from: start - commandLength,
+			from: start - length,
 			needPrfx: this.needPrfx,
 			output: output ? '?' : null,
 			to: start
@@ -8901,13 +8932,23 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 		group: [dir, 'template', 'rootTemplate', 'define'],
 		notEmpty: true,
 		placement: 'global'
-	}, function (command, commandLength, type, raw, jsDoc) {
+	}, function (command, _ref) {
 		var _this = this;
+
+		var length = _ref.length,
+		    type = _ref.type,
+		    expr = _ref.expr,
+		    jsDoc = _ref.jsDoc;
 
 		if (this.name === 'async') {
 			this.async = true;
 			var _dir = command.split(' ');
-			return Snakeskin.Directives[_dir[0]].call(this, _dir.slice(1).join(' ').trim(), commandLength, _dir[0], raw, jsDoc);
+			return Snakeskin.Directives[_dir[0]].call(this, _dir.slice(1).join(' ').trim(), {
+				type: _dir[0],
+				length: length,
+				expr: expr,
+				jsDoc: jsDoc
+			});
 		}
 
 		var env = this.environment,
@@ -9197,9 +9238,11 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 
 			delete this.preDefs[tplName];
 		}
-	}, function (command, commandLength) {
+	}, function (command, _ref2) {
+		var length = _ref2.length;
+
 		var tplName = String(this.tplName),
-		    diff = this.getDiff(commandLength);
+		    diff = this.getDiff(length);
 
 		$cache[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
 		$templates[tplName] = this.blockTable;
@@ -9751,7 +9794,9 @@ Snakeskin.addDirective('final', {
 		block: true,
 		children: Snakeskin.group('func'),
 		group: [dir, 'Async', 'async', 'dynamic']
-	}, function (command, commandLength, type) {
+	}, function (command, _ref) {
+		var type = _ref.type;
+
 		this.append(this.out('async', { unsafe: true }) + '.' + type + '([');
 	}, function () {
 		this.append((this.structure.params.final ? '}' : ']') + ');');
@@ -9897,7 +9942,9 @@ function end() {
 Snakeskin.addDirective('super', {
 	group: 'super',
 	placement: 'template'
-}, function (command, commandLength) {
+}, function (command, _ref) {
+	var length = _ref.length;
+
 	if (!this.parentTplName || this.outerLink) {
 		return;
 	}
@@ -9932,7 +9979,7 @@ Snakeskin.addDirective('super', {
 	    e = RIGHT_BOUND;
 
 	if (cache && !drop) {
-		var diff = this.getDiff(commandLength),
+		var diff = this.getDiff(length),
 		    sp = this.tolerateWhitespaces ? '' : s + '__&-__' + e;
 
 		this.source = this.source.slice(0, this.i - diff) +
@@ -9981,8 +10028,10 @@ Snakeskin.addDirective('script', {
 	placement: 'template',
 	selfInclude: false,
 	trim: true
-}, function (command) {
-	var short = command.slice(-2) === ' /';
+}, function (command, _ref) {
+	var raw = _ref.raw;
+
+	var short = raw.slice(-2) === ' /';
 
 	if (short) {
 		command = command.slice(0, -2);
@@ -10021,8 +10070,10 @@ Snakeskin.addDirective('style', {
 	placement: 'template',
 	selfInclude: false,
 	trim: true
-}, function (command) {
-	var short = command.slice(-2) === ' /';
+}, function (command, _ref) {
+	var raw = _ref.raw;
+
+	var short = raw.slice(-2) === ' /';
 
 	if (short) {
 		command = command.slice(0, -2);
@@ -10074,8 +10125,10 @@ Snakeskin.addDirective('link', {
 	placement: 'template',
 	selfInclude: false,
 	trim: true
-}, function (command) {
-	var short = command.slice(-2) === ' /';
+}, function (command, _ref) {
+	var raw = _ref.raw;
+
+	var short = raw.slice(-2) === ' /';
 
 	if (short) {
 		command = command.slice(0, -2);
@@ -10287,7 +10340,9 @@ Snakeskin.addDirective('block', {
 	group: ['block', 'template', 'define', 'inherit', 'blockInherit', 'dynamic'],
 	logic: true,
 	notEmpty: true
-}, function (command, commandLength) {
+}, function (command, _ref) {
+	var length = _ref.length;
+
 	var tplName = this.tplName,
 	    name = this.getFnName(command);
 
@@ -10373,7 +10428,7 @@ Snakeskin.addDirective('block', {
 	var start = this.i - this.startTemplateI;
 
 	this.startDir(null, {
-		from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1,
+		from: this.outerLink ? this.i - this.getDiff(length) : start + 1,
 		name: name
 	});
 
@@ -10408,7 +10463,7 @@ Snakeskin.addDirective('block', {
 		$blocks[tplName][name] = {
 			args: args,
 			external: parts.length > 1,
-			from: start - this.getDiff(commandLength),
+			from: start - this.getDiff(length),
 			needPrfx: this.needPrfx,
 			output: output
 		};
@@ -10441,9 +10496,11 @@ Snakeskin.addDirective('block', {
 			}
 		}
 	}
-}, function (command, commandLength) {
+}, function (command, _ref2) {
+	var length = _ref2.length;
+
 	var p = this.structure.params,
-	    diff = this.getDiff(commandLength);
+	    diff = this.getDiff(length);
 
 	var s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,
 	    e = RIGHT_BOUND;
@@ -10512,8 +10569,10 @@ Snakeskin.addDirective('tag', {
 	shorthands: { '/<': 'end tag', '<': 'tag ' },
 	text: true,
 	trim: true
-}, function (command) {
-	var short = command.slice(-2) === ' /';
+}, function (command, _ref) {
+	var raw = _ref.raw;
+
+	var short = raw.slice(-2) === ' /';
 
 	if (short) {
 		command = command.slice(0, -2);

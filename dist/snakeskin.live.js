@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.6 (live)
+ * Snakeskin v7.2.7 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sun, 22 Jan 2017 20:55:26 GMT
+ * Date: 'Sun, 29 Jan 2017 18:04:23 GMT
  */
 
 (function (global, factory) {
@@ -15,7 +15,7 @@
 }(this, (function () { 'use strict';
 
 var Snakeskin = {
-  VERSION: [7, 2, 6]
+  VERSION: [7, 2, 7]
 };
 
 /**
@@ -624,7 +624,10 @@ var INLINE = ' :: ';
 // >>>
 
 var BASE_SYS_ESCAPES = (_BASE_SYS_ESCAPES = {
-	'\\': true
+	'\\': true,
+	'"': true,
+	'\'': true,
+	'/': true
 }, defineProperty(_BASE_SYS_ESCAPES, I18N, true), defineProperty(_BASE_SYS_ESCAPES, LEFT_BOUND, true), defineProperty(_BASE_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), defineProperty(_BASE_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), _BASE_SYS_ESCAPES);
 
 var SYS_ESCAPES = (_SYS_ESCAPES = {
