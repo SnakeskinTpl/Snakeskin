@@ -16,7 +16,7 @@ bar -1 1 foo foo 1 \1
 
 [[escaping]]============================================================================================================
 
-{{ { /* hello */ }} /* world */ /** ! */ {{ /* 121 */ }} <div class="foo" bla-(( a ))="2" bar(( foo ))="3"></div>foo'bar' 3 `foo` {/*121 { <div bar="'}*/'" bla="'`121`'"></div>
+{{ { /* hello */ }} /* world */ /** ! */ {{ /* 121 */ }} <div class="foo" bla-(( a ))="2" bar(( foo ))="3"></div>foo'bar' 3 `foo` {/*121 { <div bar="'}*/'" bla="'`121`'"></div><a href="&quot;"></a><a href="/"></a><a href="/foo"></a>
 
 [[directiveWithRegExpLiteral]]==========================================================================================
 
@@ -99,6 +99,9 @@ true false
 	`{/*121`
 	{`{`}
 	< div bar = '`}*/`' | bla = '\`121\`'
+	< a href = \"
+	< a href = \/
+	< a href = \/foo
 
 - template directiveWithRegExpLiteral()
 	{output /123/.test('123')}

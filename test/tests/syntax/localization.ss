@@ -34,6 +34,11 @@ Hello world! Hello world! <div bar="Hello" baz="'world'" bla="'world'"></div>
 
 <foo bar="bla" baz="3" bla="'3'"></foo>
 
+[[inner escaping]]======================================================================================================
+
+Text @with"'1  2 \ 3 \ out params
+Text @with"'1  2 \ 3 \ out params
+
 ========================================================================================================================
 
 - namespace syntax[%fileName%]
@@ -69,3 +74,8 @@ Hello world! Hello world! <div bar="Hello" baz="'world'" bla="'world'"></div>
 
 - template ['custom i18n function']() @= i18nFn 'Snakeskin.Vars.i18n'
 	< foo bar = ${'bla'} | baz = ${`hello`(1, (2))} | bla = '${`hello`(1, (2))}'
+
+- template ['inner escaping']()
+	&+
+		`Text @with"'1 \ 2 \\ 3 \\\ out params\n`
+		+= 'Text @with"\'1 \ 2 \\ 3 \\\ out params'
