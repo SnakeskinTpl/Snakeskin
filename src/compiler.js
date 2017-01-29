@@ -632,7 +632,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						commandNameDecl = false;
 
 						const
-							raw = command,
+							commandExpr = command,
 							replacer = getReplacer(command);
 
 						command = command.trim();
@@ -679,10 +679,12 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						const fnRes = Snakeskin.Directives[commandType].call(
 							parser,
 							command,
-							commandLength,
-							commandType,
-							raw,
-							jsDocStart
+							{
+								length: commandLength,
+								type: commandType,
+								expr: commandExpr,
+								jsDoc: jsDocStart
+							}
 						);
 
 						if (parser.break) {

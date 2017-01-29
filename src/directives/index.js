@@ -140,8 +140,19 @@ const
  *          '?': 'void '
  *        }
  *
- * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_constr - constructor
- * @param {function(this:Parser, string, number, string, string, (boolean|number))=} opt_destruct - destructor
+ * @param {function(this:Parser, string, {
+ *   length: number,
+ *   type: string,
+ *   expr: string,
+ *   jsDocStart: (boolean|number)
+ * })=} opt_constr - constructor
+ *
+ * @param {function(this:Parser, string, {
+ *   length: number,
+ *   type: string,
+ *   expr: string,
+ *   jsDocStart: (boolean|number)
+ * })=} opt_destruct - destructor
  */
 Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	groupCache = {};
@@ -318,7 +329,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	}
 
 	/** @this {Parser} */
-	Snakeskin.Directives[name] = function (command, commandLength, type, raw, jsDoc) {
+	Snakeskin.Directives[name] = function (command, params) {
 		const
 			{structure} = this;
 
@@ -450,7 +461,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 
 		if (opt_constr) {
-			opt_constr.call(this, command, commandLength, type, raw, jsDoc);
+			opt_constr.call(this, command, params);
 		}
 
 		if (structure.chain && !prevChain && !ignore && !this.isLogic()) {
@@ -523,7 +534,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			baseEnd.call(this);
 
 			if (opt_destruct) {
-				opt_destruct.call(this, command, commandLength, type, raw, jsDoc);
+				opt_destruct.call(this, command, params);
 			}
 
 			this.endDir();

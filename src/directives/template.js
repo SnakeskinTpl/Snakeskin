@@ -43,11 +43,16 @@ import {
 			placement: 'global'
 		},
 
-		function (command, commandLength, type, raw, jsDoc) {
+		function (command, {length, type, expr, jsDoc}) {
 			if (this.name === 'async') {
 				this.async = true;
 				const dir = command.split(' ');
-				return Snakeskin.Directives[dir[0]].call(this, dir.slice(1).join(' ').trim(), commandLength, dir[0], raw, jsDoc);
+				return Snakeskin.Directives[dir[0]].call(this, dir.slice(1).join(' ').trim(), {
+					type: dir[0],
+					length,
+					expr,
+					jsDoc
+				});
 			}
 
 			const
@@ -680,10 +685,10 @@ import {
 			}
 		},
 
-		function (command, commandLength) {
+		function (command, {length}) {
 			const
 				tplName = String(this.tplName),
-				diff = this.getDiff(commandLength);
+				diff = this.getDiff(length);
 
 			$cache[tplName] = this.source.slice(this.startTemplateI, this.i - diff);
 			$templates[tplName] = this.blockTable;

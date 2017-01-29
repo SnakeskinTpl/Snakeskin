@@ -21,7 +21,7 @@ Snakeskin.addDirective(
 		group: ['const', 'inherit', 'inlineInherit']
 	},
 
-	function (command, commandLength) {
+	function (command, {length}) {
 		const
 			{tplName} = this;
 
@@ -91,7 +91,7 @@ Snakeskin.addDirective(
 
 			$consts[tplName][name] = {
 				block: Boolean(block || parentTpl && parent && parent.block),
-				from: start - commandLength,
+				from: start - length,
 				needPrfx: this.needPrfx,
 				output: output ? '?' : null,
 				to: start

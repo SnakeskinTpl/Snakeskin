@@ -31,7 +31,7 @@ Snakeskin.addDirective(
 		notEmpty: true
 	},
 
-	function (command, commandLength) {
+	function (command, {length}) {
 		let
 			{tplName} = this,
 			name = this.getFnName(command);
@@ -125,7 +125,7 @@ Snakeskin.addDirective(
 			start = this.i - this.startTemplateI;
 
 		this.startDir(null, {
-			from: this.outerLink ? this.i - this.getDiff(commandLength) : start + 1,
+			from: this.outerLink ? this.i - this.getDiff(length) : start + 1,
 			name
 		});
 
@@ -162,7 +162,7 @@ Snakeskin.addDirective(
 			$blocks[tplName][name] = {
 				args,
 				external: parts.length > 1,
-				from: start - this.getDiff(commandLength),
+				from: start - this.getDiff(length),
 				needPrfx: this.needPrfx,
 				output
 			};
@@ -204,10 +204,10 @@ Snakeskin.addDirective(
 		}
 	},
 
-	function (command, commandLength) {
+	function (command, {length}) {
 		const
 			p = this.structure.params,
-			diff = this.getDiff(commandLength);
+			diff = this.getDiff(length);
 
 		const
 			s = (this.needPrfx ? ADV_LEFT_BOUND : '') + LEFT_BOUND,

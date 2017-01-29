@@ -20,7 +20,7 @@ import Snakeskin from '../core';
 			group: [dir, 'Async', 'async', 'dynamic']
 		},
 
-		function (command, commandLength, type) {
+		function (command, {type}) {
 			this.append(`${this.out('async', {unsafe: true})}.${type}([`);
 		},
 

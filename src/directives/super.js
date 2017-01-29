@@ -22,7 +22,7 @@ Snakeskin.addDirective(
 		placement: 'template'
 	},
 
-	function (command, commandLength) {
+	function (command, {length}) {
 		if (!this.parentTplName || this.outerLink) {
 			return;
 		}
@@ -62,7 +62,7 @@ Snakeskin.addDirective(
 
 		if (cache && !drop) {
 			const
-				diff = this.getDiff(commandLength),
+				diff = this.getDiff(length),
 				sp = this.tolerateWhitespaces ? '' : `${s}__&-__${e}`;
 
 			this.source =
