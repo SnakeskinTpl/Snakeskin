@@ -81,6 +81,9 @@ export const
 
 export const BASE_SYS_ESCAPES = {
 	'\\': true,
+	'"': true,
+	'\'': true,
+	'/': true,
 	[I18N]: true,
 	[LEFT_BOUND]: true,
 	[SINGLE_COMMENT.charAt(0)]: true,
