@@ -144,6 +144,7 @@ const
  *   length: number,
  *   type: string,
  *   expr: string,
+ *   raw: string,
  *   jsDocStart: (boolean|number)
  * })=} opt_constr - constructor
  *
@@ -151,6 +152,7 @@ const
  *   length: number,
  *   type: string,
  *   expr: string,
+ *   raw: string,
  *   jsDocStart: (boolean|number)
  * })=} opt_destruct - destructor
  */

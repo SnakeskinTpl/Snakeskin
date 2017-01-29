@@ -208,6 +208,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 	let
 		command = '',
+		rawCommand = '',
 		commandLength = 0,
 		commandNameDecl = false,
 		filterStart = false,
@@ -265,6 +266,10 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 		let
 			el = str[parser.i];
+
+		if (begin) {
+			rawCommand += el;
+		}
 
 		const
 			rEl = el,
@@ -683,6 +688,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 								length: commandLength,
 								type: commandType,
 								expr: commandExpr,
+								raw: rawCommand.slice(0, -1),
 								jsDoc: jsDocStart
 							}
 						);
@@ -726,6 +732,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						}
 
 						command = '';
+						rawCommand = '';
 						commandLength = 0;
 						continue;
 					}

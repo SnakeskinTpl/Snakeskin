@@ -27,9 +27,9 @@ Snakeskin.addDirective(
 		trim: true
 	},
 
-	function (command) {
+	function (command, {raw}) {
 		const
-			short = command.slice(-2) === ' /';
+			short = raw.slice(-2) === ' /';
 
 		if (short) {
 			command = command.slice(0, -2);
