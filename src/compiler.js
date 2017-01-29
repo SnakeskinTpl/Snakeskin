@@ -486,8 +486,15 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 				}
 
 				if (i18nStart) {
-					if (!cEscape && el === '"' && !parser.language) {
-						el = '\\"';
+					if (!parser.language) {
+						if (cEscape) {
+							if (el === '\\') {
+								el = '\\\\';
+							}
+
+						} else if (el === '"') {
+							el = '\\"';
+						}
 					}
 
 					if (cEscape || el !== I18N) {
@@ -796,10 +803,6 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					bOpen = false;
 					bEnd = false;
 				}
-			}
-
-			if (i18nStart) {
-				el = applyDefEscape(el);
 			}
 
 			command += el;
