@@ -24,7 +24,7 @@
 
 [[attr escaping with Unsafe]]===========================================================================================
 
-<foo bla="getSome("foo")"></foo>
+<foo bla="getSome("foo")" bar></foo>
 
 ========================================================================================================================
 
@@ -48,4 +48,4 @@
 	- return Unsafe('"getSome("' + param + '")"')
 
 - template ['attr escaping with Unsafe']() @= attrLiteralBounds ['', '']
-	< foo bla = {{${@wrap('foo')|!html}}}
+	< foo bla = {{${@wrap('foo')|!html}}} | bar

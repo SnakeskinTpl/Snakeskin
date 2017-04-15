@@ -16,7 +16,7 @@
 
 [[jsx]]=================================================================================================================
 
-if (foo) { return <div class="foo">{ bar }</div>} if (foo) { return <div class="foo">{ bar }</div>}
+if (foo) { return <div class="foo" bar>{ bar }</div>} if (foo) { return <div class="foo">{ bar }</div>}
 
 ========================================================================================================================
 
@@ -61,7 +61,7 @@ if (foo) { return <div class="foo">{ bar }</div>} if (foo) { return <div class="
 	# op
 		if (foo) {
 			return
-				#< .foo
+				#< .foo bar
 					#{{
 						bar
 					}}

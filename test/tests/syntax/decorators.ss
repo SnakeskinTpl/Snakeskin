@@ -26,7 +26,7 @@
 				() =>
 					- return new Typograf(params).execute(target.apply(this, arguments))
 
-- @typograf({lang: 'ru'})
+- @typograf({locale: 'ru'})
 - template simple()
 	Привет "Мир"!
 

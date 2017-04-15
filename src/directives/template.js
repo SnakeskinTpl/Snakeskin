@@ -463,7 +463,7 @@ import {
 
 							var
 								attr = el[0] === TRUE ? isDOMRenderMode || isXMLDoctype ? key : TRUE : el.join(' '),
-								wrapper = literalBounds && attr.slice(0, 2) === '{{' && attr.slice(-2) === '}}';
+								wrapper = literalBounds && attr !== TRUE && attr.slice(0, 2) === '{{' && attr.slice(-2) === '}}';
 
 							if (!isDOMRenderMode) {
 								if (attr === TRUE) {
