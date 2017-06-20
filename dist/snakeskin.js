@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Sat, 15 Apr 2017 13:01:11 GMT
+ * Date: 'Tue, 20 Jun 2017 16:12:31 GMT
  */
 
 (function (global, factory) {
@@ -14,7 +14,8 @@
 	(global.Snakeskin = factory());
 }(this, (function () { 'use strict';
 
-var Snakeskin = {
+var Snakeskin = void 0;
+var Snakeskin$1 = Snakeskin = {
   VERSION: [7, 2, 8]
 };
 
@@ -134,7 +135,7 @@ function isObject(obj) {
  * @param {?} obj - source object
  * @param {?string=} [opt_attr] - type of attribute declaration
  */
-Snakeskin.HTMLObject = function (obj, opt_attr) {
+Snakeskin$1.HTMLObject = function (obj, opt_attr) {
 	this.value = obj;
 	this.attr = opt_attr;
 };
@@ -145,7 +146,7 @@ Snakeskin.HTMLObject = function (obj, opt_attr) {
  * @constructor
  * @return {!Array}
  */
-Snakeskin.StringBuffer = function () {
+Snakeskin$1.StringBuffer = function () {
 	return [];
 };
 
@@ -167,13 +168,13 @@ function inherit(child, parent) {
  * Node constructor
  * @constructor
  */
-Snakeskin.Node = function () {};
+Snakeskin$1.Node = function () {};
 
 /**
  * Returns the number of child elements
  * @return {number}
  */
-Snakeskin.Node.prototype.length = function () {
+Snakeskin$1.Node.prototype.length = function () {
 	return this.value.childNodes.length;
 };
 
@@ -181,7 +182,7 @@ Snakeskin.Node.prototype.length = function () {
  * Returns text content
  * @return {string}
  */
-Snakeskin.Node.prototype.textContent = function () {
+Snakeskin$1.Node.prototype.textContent = function () {
 	return this.value.textContent;
 };
 
@@ -192,18 +193,18 @@ Snakeskin.Node.prototype.textContent = function () {
  * @extends {Snakeskin.Node}
  * @param {string} renderMode - rendering mode of templates
  */
-Snakeskin.DocumentFragment = function (renderMode) {
+Snakeskin$1.DocumentFragment = function (renderMode) {
 	this.renderMode = renderMode;
 	this.value = document.createDocumentFragment();
 };
 
-inherit(Snakeskin.DocumentFragment, Snakeskin.Node);
+inherit(Snakeskin$1.DocumentFragment, Snakeskin$1.Node);
 
 /**
  * Appends a child to the document fragment
  * @param {?} el - element for appending
  */
-Snakeskin.DocumentFragment.prototype.appendChild = function (el) {
+Snakeskin$1.DocumentFragment.prototype.appendChild = function (el) {
 	this.value.appendChild(el);
 };
 
@@ -211,7 +212,7 @@ Snakeskin.DocumentFragment.prototype.appendChild = function (el) {
  * Returns text content
  * @return {string}
  */
-Snakeskin.DocumentFragment.prototype.textContent = function () {
+Snakeskin$1.DocumentFragment.prototype.textContent = function () {
 	var children = this.value.childNodes;
 
 	var res = '';
@@ -231,18 +232,18 @@ Snakeskin.DocumentFragment.prototype.textContent = function () {
  * @param {string} name - element name
  * @param {string} renderMode - rendering mode of templates
  */
-Snakeskin.Element = function (name, renderMode) {
+Snakeskin$1.Element = function (name, renderMode) {
 	this.renderMode = renderMode;
 	this.value = document.createElement(name);
 };
 
-inherit(Snakeskin.Element, Snakeskin.Node);
+inherit(Snakeskin$1.Element, Snakeskin$1.Node);
 
 /**
  * Appends a child to the element
  * @param {?} el - element for appending
  */
-Snakeskin.Element.prototype.appendChild = function (el) {
+Snakeskin$1.Element.prototype.appendChild = function (el) {
 	this.value.appendChild(el);
 };
 
@@ -252,7 +253,7 @@ Snakeskin.Element.prototype.appendChild = function (el) {
  * @param {string} name - attribute name
  * @param {string} val - attribute value
  */
-Snakeskin.Element.prototype.setAttribute = function (name, val) {
+Snakeskin$1.Element.prototype.setAttribute = function (name, val) {
 	this.value.setAttribute(name, val);
 };
 
@@ -260,7 +261,7 @@ Snakeskin.Element.prototype.setAttribute = function (name, val) {
  * Returns text content
  * @return {string}
  */
-Snakeskin.Element.prototype.textContent = function () {
+Snakeskin$1.Element.prototype.textContent = function () {
 	return this.value.outerHTML;
 };
 
@@ -273,12 +274,12 @@ Snakeskin.Element.prototype.textContent = function () {
  * @param {string} text - comment text
  * @param {string} renderMode - rendering mode of templates
  */
-Snakeskin.Comment = function (text, renderMode) {
+Snakeskin$1.Comment = function (text, renderMode) {
 	this.renderMode = renderMode;
 	this.value = document.createComment(text);
 };
 
-inherit(Snakeskin.Comment, Snakeskin.Node);
+inherit(Snakeskin$1.Comment, Snakeskin$1.Node);
 
 /**
  * Text constructor
@@ -289,18 +290,18 @@ inherit(Snakeskin.Comment, Snakeskin.Node);
  * @param {string} text
  * @param {string} renderMode - rendering mode of templates
  */
-Snakeskin.Text = function (text, renderMode) {
+Snakeskin$1.Text = function (text, renderMode) {
 	this.renderMode = renderMode;
 	this.value = document.createTextNode(text);
 };
 
-inherit(Snakeskin.Text, Snakeskin.Node);
+inherit(Snakeskin$1.Text, Snakeskin$1.Node);
 
 /**
  * Map of inline tag names
  * @const
  */
-Snakeskin.inlineTags = {
+Snakeskin$1.inlineTags = {
 	'html': {
 		'area': 'href',
 		'base': 'href',
@@ -329,9 +330,9 @@ Snakeskin.inlineTags = {
  * @param {string} renderMode - rendering mode of templates
  * @return {(!Snakeskin.Element|!Snakeskin.Comment|!Snakeskin.Text)}
  */
-Snakeskin.appendChild = function (el, val, renderMode) {
-	if (val instanceof Snakeskin.Node === false) {
-		val = new Snakeskin.Text(String(val), renderMode);
+Snakeskin$1.appendChild = function (el, val, renderMode) {
+	if (val instanceof Snakeskin$1.Node === false) {
+		val = new Snakeskin$1.Text(String(val), renderMode);
 	}
 
 	if (el) {
@@ -348,8 +349,8 @@ Snakeskin.appendChild = function (el, val, renderMode) {
  * @param {string} name - attribute name
  * @param {?} val - attribute value
  */
-Snakeskin.setAttribute = function (node, name, val) {
-	node.setAttribute(name, val instanceof Snakeskin.Node ? val.textContent() : String(val));
+Snakeskin$1.setAttribute = function (node, name, val) {
+	node.setAttribute(name, val instanceof Snakeskin$1.Node ? val.textContent() : String(val));
 };
 
 var keys = function () {
@@ -367,7 +368,7 @@ var keys = function () {
  *   function(?, ?, !Object, {i: number, isFirst: boolean, isLast: boolean, length: number})
  * )} callback - callback function
  */
-Snakeskin.forEach = function (obj, callback) {
+Snakeskin$1.forEach = function (obj, callback) {
 	if (!obj) {
 		return;
 	}
@@ -423,7 +424,7 @@ Snakeskin.forEach = function (obj, callback) {
  * @param {(Object|undefined)} obj - source object
  * @param {function(?, string, !Object, {i: number, isFirst: boolean, isLast: boolean, length: number})} callback - callback function
  */
-Snakeskin.forIn = function (obj, callback) {
+Snakeskin$1.forIn = function (obj, callback) {
 	if (!obj) {
 		return;
 	}
@@ -455,8 +456,8 @@ Snakeskin.forIn = function (obj, callback) {
  * @param {!Function} fn - source function
  * @return {!Function}
  */
-Snakeskin.decorate = function (decorators, fn) {
-	Snakeskin.forEach(decorators, function (decorator) {
+Snakeskin$1.decorate = function (decorators, fn) {
+	Snakeskin$1.forEach(decorators, function (decorator) {
 		return fn = decorator(fn) || fn;
 	});
 	fn.decorators = decorators;
@@ -684,7 +685,7 @@ var BASE_SHORTS = defineProperty({
 
 var SHORTS = {};
 
-Snakeskin.forEach(BASE_SHORTS, function (el, key) {
+Snakeskin$1.forEach(BASE_SHORTS, function (el, key) {
 	return SHORTS[key] = true;
 });
 
@@ -724,7 +725,7 @@ var SYS_ESCAPES = (_SYS_ESCAPES = {
 	'\\': true
 }, defineProperty(_SYS_ESCAPES, I18N, true), defineProperty(_SYS_ESCAPES, LEFT_BOUND, true), defineProperty(_SYS_ESCAPES, ADV_LEFT_BOUND, true), defineProperty(_SYS_ESCAPES, SINGLE_COMMENT.charAt(0), true), defineProperty(_SYS_ESCAPES, MULT_COMMENT_START.charAt(0), true), defineProperty(_SYS_ESCAPES, CONCAT, true), defineProperty(_SYS_ESCAPES, CONCAT_END, true), defineProperty(_SYS_ESCAPES, IGNORE, true), defineProperty(_SYS_ESCAPES, INLINE.trim().charAt(0), true), _SYS_ESCAPES);
 
-Snakeskin.forEach(BASE_SHORTS, function (el, key) {
+Snakeskin$1.forEach(BASE_SHORTS, function (el, key) {
 	return SYS_ESCAPES[key.charAt(0)] = true;
 });
 
@@ -869,7 +870,7 @@ var escaperPart = /^(?:__ESCAPER_QUOT__|__CDATA__)\d+_/;
 
 var tmpSep = [];
 
-Snakeskin.forEach(attrSeparators, function (el, key) {
+Snakeskin$1.forEach(attrSeparators, function (el, key) {
 	tmpSep.push(r(key));
 });
 
@@ -894,7 +895,7 @@ var symbols = '\\u0041-\\u005A\\u0061-\\u007A\\u00AA\\u00B5\\u00BA\\u00C0-\\u00D
 var filterStart = new RegExp('[!$' + symbols + '_]');
 var w = '$' + symbols + '0-9_';
 
-var Filters = Snakeskin.Filters;
+var Filters = Snakeskin$1.Filters;
 
 /**
  * Imports an object to Filters
@@ -904,17 +905,17 @@ var Filters = Snakeskin.Filters;
  * @return {!Object}
  */
 
-Snakeskin.importFilters = function (filters, opt_namespace) {
+Snakeskin$1.importFilters = function (filters, opt_namespace) {
 	var obj = Filters;
 
 	if (opt_namespace) {
-		Snakeskin.forEach(opt_namespace.split('.'), function (el) {
+		Snakeskin$1.forEach(opt_namespace.split('.'), function (el) {
 			obj[el] = obj[el] || {};
 			obj = obj[el];
 		});
 	}
 
-	Snakeskin.forEach(filters, function (el, key) {
+	Snakeskin$1.forEach(filters, function (el, key) {
 		return obj[key] = el;
 	});
 
@@ -928,7 +929,7 @@ Snakeskin.importFilters = function (filters, opt_namespace) {
  * @param {Object} params - parameters
  * @return {!Function}
  */
-Snakeskin.setFilterParams = function (filter, params) {
+Snakeskin$1.setFilterParams = function (filter, params) {
 	var safe = params['safe'];
 
 	if (safe) {
@@ -1090,12 +1091,12 @@ var uescapeHTML = function uescapeHTML(s) {
  * @return {(string|!Snakeskin.HTMLObject|!Snakeskin.Node)}
  */
 Filters['html'] = function (val, opt_Unsafe, opt_attr, opt_attrCache, opt_true) {
-	if (!val || val instanceof Snakeskin.Node) {
+	if (!val || val instanceof Snakeskin$1.Node) {
 		return val;
 	}
 
-	if (val instanceof Snakeskin.HTMLObject) {
-		Snakeskin.forEach(val.value, function (el, key, data) {
+	if (val instanceof Snakeskin$1.HTMLObject) {
+		Snakeskin$1.forEach(val.value, function (el, key, data) {
 			if (val.attr) {
 				opt_attrCache[key] = data[key] = el[0] !== opt_true ? [Filters['html'](el[0], opt_Unsafe, val.attr, opt_attrCache, opt_true)] : el;
 			} else {
@@ -1113,7 +1114,7 @@ Filters['html'] = function (val, opt_Unsafe, opt_attr, opt_attrCache, opt_true) 
 	return String(opt_attr ? Filters[opt_attr](val) : val).replace(escapeHTMLRgxp, escapeHTML);
 };
 
-Snakeskin.setFilterParams('html', {
+Snakeskin$1.setFilterParams('html', {
 	bind: ['Unsafe', '$attrType', function (o) {
 		return o.getVar('$attrs');
 	}, 'TRUE'],
@@ -1123,14 +1124,14 @@ Snakeskin.setFilterParams('html', {
 });
 
 Filters['htmlObject'] = function (val) {
-	if (val instanceof Snakeskin.HTMLObject) {
+	if (val instanceof Snakeskin$1.HTMLObject) {
 		return '';
 	}
 
 	return val;
 };
 
-Snakeskin.setFilterParams('htmlObject', {
+Snakeskin$1.setFilterParams('htmlObject', {
 	test: function test(val) {
 		return isNotPrimitive(val);
 	}
@@ -1146,7 +1147,7 @@ Filters['undef'] = function (val) {
 	return val !== undefined ? val : '';
 };
 
-Snakeskin.setFilterParams('undef', {
+Snakeskin$1.setFilterParams('undef', {
 	test: function test(val) {
 		return isNotPrimitive(val, { 'false': true, 'null': true, 'true': true });
 	}
@@ -1188,7 +1189,7 @@ Filters['uri'] = function (val) {
 	return encodeURI(String(val)).replace(uriO, '[').replace(uriC, ']');
 };
 
-Snakeskin.setFilterParams('uri', {
+Snakeskin$1.setFilterParams('uri', {
 	safe: true
 });
 
@@ -1202,7 +1203,7 @@ Filters['upper'] = function (val) {
 	return String(val).toUpperCase();
 };
 
-Snakeskin.setFilterParams('upper', {
+Snakeskin$1.setFilterParams('upper', {
 	safe: true
 });
 
@@ -1217,7 +1218,7 @@ Filters['ucfirst'] = function (val) {
 	return val.charAt(0).toUpperCase() + val.slice(1);
 };
 
-Snakeskin.setFilterParams('ucfirst', {
+Snakeskin$1.setFilterParams('ucfirst', {
 	safe: true
 });
 
@@ -1231,7 +1232,7 @@ Filters['lower'] = function (val) {
 	return String(val).toLowerCase();
 };
 
-Snakeskin.setFilterParams('lower', {
+Snakeskin$1.setFilterParams('lower', {
 	safe: true
 });
 
@@ -1246,7 +1247,7 @@ Filters['lcfirst'] = function (val) {
 	return val.charAt(0).toLowerCase() + val.slice(1);
 };
 
-Snakeskin.setFilterParams('lcfirst', {
+Snakeskin$1.setFilterParams('lcfirst', {
 	safe: true
 });
 
@@ -1260,7 +1261,7 @@ Filters['trim'] = function (val) {
 	return String(val).trim();
 };
 
-Snakeskin.setFilterParams('trim', {
+Snakeskin$1.setFilterParams('trim', {
 	safe: true
 });
 
@@ -1277,7 +1278,7 @@ Filters['collapse'] = function (val) {
 	return String(val).replace(spaceCollapseRgxp, ' ').trim();
 };
 
-Snakeskin.setFilterParams('collapse', {
+Snakeskin$1.setFilterParams('collapse', {
 	safe: true
 });
 
@@ -1326,7 +1327,7 @@ Filters['repeat'] = function (val, opt_num) {
 	return new Array(opt_num != null ? opt_num + 1 : 3).join(val);
 };
 
-Snakeskin.setFilterParams('repeat', {
+Snakeskin$1.setFilterParams('repeat', {
 	safe: true
 });
 
@@ -1420,7 +1421,7 @@ Filters['default'] = function (val, def) {
 	return val === undefined ? def : val;
 };
 
-Snakeskin.setFilterParams('default', {
+Snakeskin$1.setFilterParams('default', {
 	'!undef': true
 });
 
@@ -1445,9 +1446,9 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 		    last = i === arr.length - 1;
 
 		if (!stringResult && !stringRender[renderMode]) {
-			Snakeskin.appendChild(any(node), el, renderMode);
+			Snakeskin$1.appendChild(any(node), el, renderMode);
 			if (!last) {
-				Snakeskin.appendChild(any(node), new Snakeskin.Element('br', renderMode), renderMode);
+				Snakeskin$1.appendChild(any(node), new Snakeskin$1.Element('br', renderMode), renderMode);
 			}
 		} else {
 			res += Filters['html'](el);
@@ -1460,7 +1461,7 @@ Filters['nl2br'] = function (val, node, renderMode, stringResult, doctype) {
 	return res;
 };
 
-Snakeskin.setFilterParams('nl2br', {
+Snakeskin$1.setFilterParams('nl2br', {
 	'!html': true,
 	bind: ['$0', function (o) {
 		return '\'' + o.renderMode + '\'';
@@ -1556,7 +1557,7 @@ Filters['attr'] = function (val, Unsafe, doctype, type, cache, TRUE, FALSE) {
   */
 	function convert(obj, opt_prfx) {
 		opt_prfx = opt_prfx || '';
-		Snakeskin.forEach(obj, function (el, key) {
+		Snakeskin$1.forEach(obj, function (el, key) {
 			if (el === FALSE) {
 				return;
 			}
@@ -1570,13 +1571,13 @@ Filters['attr'] = function (val, Unsafe, doctype, type, cache, TRUE, FALSE) {
 			cache[tmp] = localCache[tmp] = [el];
 		});
 
-		return new Snakeskin.HTMLObject(localCache, 'attrValue');
+		return new Snakeskin$1.HTMLObject(localCache, 'attrValue');
 	}
 
 	return convert(val);
 };
 
-Snakeskin.setFilterParams('attr', {
+Snakeskin$1.setFilterParams('attr', {
 	'!html': true,
 	bind: ['Unsafe', function (o) {
 		return '\'' + o.doctype + '\'';
@@ -2820,10 +2821,10 @@ Parser.prototype.evalStr = function (str, opt_raw) {
 	var env = this.environment;
 
 	if (IS_NODE) {
-		return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, env, env.exports, env.require, env.dirname, env.filename, null);
+		return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'require', '__dirname', '__filename', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin$1, Snakeskin$1.Filters, Snakeskin$1.Vars, Snakeskin$1.LocalVars, env, env.exports, env.require, env.dirname, env.filename, null);
 	}
 
-	return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin, Snakeskin.Filters, Snakeskin.Vars, Snakeskin.LocalVars, env, env.exports, null);
+	return Function('GLOBAL', 'Snakeskin', '__FILTERS__', '__VARS__', '__LOCAL__', 'module', 'exports', 'Unsafe', str).call(ROOT, GLOBAL, Snakeskin$1, Snakeskin$1.Filters, Snakeskin$1.Vars, Snakeskin$1.LocalVars, env, env.exports, null);
 };
 
 /**
@@ -2913,7 +2914,7 @@ function toObj(val, opt_base, opt_onFileExists) {
 
 var stack = [];
 
-Snakeskin.toObj = toObj;
+Snakeskin$1.toObj = toObj;
 
 /**
  * Adds file content by the specified path to the stack
@@ -2924,7 +2925,7 @@ Snakeskin.toObj = toObj;
  * @param {?string=} [opt_renderAs] - rendering type of templates
  * @return {(string|boolean)}
  */
-Snakeskin.include = function (base, file, eol$$1, opt_renderAs) {
+Snakeskin$1.include = function (base, file, eol$$1, opt_renderAs) {
 	if (!IS_NODE) {
 		return false;
 	}
@@ -2941,7 +2942,7 @@ Snakeskin.include = function (base, file, eol$$1, opt_renderAs) {
 
 	try {
 		var extname = path.extname(file),
-		    include = Snakeskin.LocalVars.include;
+		    include = Snakeskin$1.LocalVars.include;
 
 
 		var dirname = path.basename(file),
@@ -3008,7 +3009,7 @@ var groupCache = {};
  * @param {string} name - group name
  * @return {string}
  */
-Snakeskin.group = function (name) {
+Snakeskin$1.group = function (name) {
 	return GROUP + name;
 };
 
@@ -3101,7 +3102,7 @@ var dirAncestorsWhitelistPlain = {};
  *   jsDocStart: (boolean|number)
  * })=} opt_destruct - destructor
  */
-Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
+Snakeskin$1.addDirective = function (name, params, opt_constr, opt_destruct) {
 	groupCache = {};
 
 	var p = Object.assign({}, params),
@@ -3151,7 +3152,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		var cache = _ref4.cache,
 		    val = _ref4.val;
 
-		Snakeskin.forEach(concat(val), function (key) {
+		Snakeskin$1.forEach(concat(val), function (key) {
 			if (cache === $dirGroups && key[0] === GROUP) {
 				throw new Error('Invalid group name "' + key + '" (group name can\'t begin with "' + GROUP + '"');
 			}
@@ -3162,16 +3163,16 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	});
 
 	[$dirChain, $dirParents, $dirEnd].forEach(function (cache) {
-		Snakeskin.forEach(cache, function (el, key) {
+		Snakeskin$1.forEach(cache, function (el, key) {
 			if (key[0] !== GROUP) {
 				return;
 			}
 
 			var link = cache[key];
 
-			Snakeskin.forEach($dirGroups[key.slice(1)], function (el, group) {
+			Snakeskin$1.forEach($dirGroups[key.slice(1)], function (el, group) {
 				cache[group] = cache[group] || {};
-				Snakeskin.forEach(link, function (el, dir) {
+				Snakeskin$1.forEach(link, function (el, dir) {
 					return cache[group][dir] = true;
 				});
 			});
@@ -3189,13 +3190,13 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	});
 
 	[$dirParents, $dirEnd].forEach(function (cache) {
-		Snakeskin.forEach(cache, function (dir) {
-			Snakeskin.forEach(dir, function (el, key) {
+		Snakeskin$1.forEach(cache, function (dir) {
+			Snakeskin$1.forEach(dir, function (el, key) {
 				if (key[0] !== GROUP) {
 					return;
 				}
 
-				Snakeskin.forEach($dirGroups[key.slice(1)], function (val, key) {
+				Snakeskin$1.forEach($dirGroups[key.slice(1)], function (val, key) {
 					return dir[key] = true;
 				});
 			});
@@ -3220,8 +3221,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			return map[el] = [el], map;
 		}, {});
 
-		Snakeskin.forEach(cache, function (map, key) {
-			Snakeskin.forEach(map, function (el, key) {
+		Snakeskin$1.forEach(cache, function (map, key) {
+			Snakeskin$1.forEach(map, function (el, key) {
 				if (key[0] !== GROUP) {
 					return;
 				}
@@ -3233,8 +3234,8 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 			});
 
 			plainCache[key] = {};
-			Snakeskin.forEach(map, function (el) {
-				return Snakeskin.forEach(el, function (el) {
+			Snakeskin$1.forEach(map, function (el) {
+				return Snakeskin$1.forEach(el, function (el) {
 					if (el[0] !== GROUP) {
 						plainCache[key][el] = true;
 					}
@@ -3243,7 +3244,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		});
 	});
 
-	Snakeskin.forEach(p.shorthands, function (el, key) {
+	Snakeskin$1.forEach(p.shorthands, function (el, key) {
 		if (key.length > 2) {
 			throw new Error('Invalid shorthand key "' + key + '" (key.length > 2)');
 		}
@@ -3279,7 +3280,7 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 	}
 
 	/** @this {Parser} */
-	Snakeskin.Directives[name] = function (command, params) {
+	Snakeskin$1.Directives[name] = function (command, params) {
 		var structure = this.structure;
 
 
@@ -3452,10 +3453,10 @@ Snakeskin.addDirective = function (name, params, opt_constr, opt_destruct) {
 		}
 	};
 
-	Snakeskin.Directives[name + 'End'] = opt_destruct;
+	Snakeskin$1.Directives[name + 'End'] = opt_destruct;
 
 	/** @this {Parser} */
-	var baseEnd = Snakeskin.Directives[name + 'BaseEnd'] = function () {
+	var baseEnd = Snakeskin$1.Directives[name + 'BaseEnd'] = function () {
 		var structure = this.structure,
 		    _structure = this.structure,
 		    params = _structure.params,
@@ -3977,7 +3978,7 @@ Parser.prototype.toBaseSyntax = function (str, i) {
 				struct = obj;
 				code += space;
 
-				if (needSpace && (obj.text || !Snakeskin.Directives[obj.name])) {
+				if (needSpace && (obj.text || !Snakeskin$1.Directives[obj.name])) {
 					code += '' + ADV_LEFT_BOUND + LEFT_BOUND + '__&-__' + RIGHT_BOUND;
 				}
 
@@ -4926,7 +4927,7 @@ Parser.prototype.popParams = function () {
  */
 function getFromCache(key, code, params, ctx) {
 	if (IS_NODE && ctx !== NULL && $globalFnCache[key]) {
-		Snakeskin.forEach($globalFnCache[key][code], function (el, key) {
+		Snakeskin$1.forEach($globalFnCache[key][code], function (el, key) {
 			ctx[key] = el;
 		});
 	}
@@ -4942,7 +4943,7 @@ function getFromCache(key, code, params, ctx) {
 			return;
 		}
 
-		Snakeskin.forEach(cache.words, function (el, key) {
+		Snakeskin$1.forEach(cache.words, function (el, key) {
 			params.words[key] = el;
 		});
 	}
@@ -4952,7 +4953,7 @@ function getFromCache(key, code, params, ctx) {
 			return;
 		}
 
-		Snakeskin.forEach(cache.debug, function (el, key) {
+		Snakeskin$1.forEach(cache.debug, function (el, key) {
 			params.debug[key] = el;
 		});
 	}
@@ -5664,7 +5665,7 @@ Parser.prototype.out = function (command, opt_params) {
 				var bind = [],
 				    test = void 0;
 
-				var Filters = Snakeskin.Filters,
+				var Filters = Snakeskin$1.Filters,
 				    _pos = 0;
 
 
@@ -6019,7 +6020,7 @@ Parser.prototype.end = function (cacheKey, label) {
 		});
 	}
 
-	var versionDecl = 'Snakeskin v' + Snakeskin.VERSION.join('.'),
+	var versionDecl = 'Snakeskin v' + Snakeskin$1.VERSION.join('.'),
 	    keyDecl = 'key <' + cacheKey + '>',
 	    labelDecl = 'label <' + label.valueOf() + '>',
 	    includesDecl = 'includes <' + (this.environment.key.length ? JSON.stringify(this.environment.key) : '') + '>',
@@ -6386,7 +6387,7 @@ Parser.prototype.declVar = function (name, opt_params) {
 	if (structure.name === 'root') {
 		global = true;
 		name += '_' + id;
-		link = '__LOCAL__.' + name + '_' + id + '_' + Snakeskin.UID;
+		link = '__LOCAL__.' + name + '_' + id + '_' + Snakeskin$1.UID;
 	} else {
 		if (this.getGroup('head')[structure.name]) {
 			structure = structure.parent;
@@ -6996,9 +6997,9 @@ Parser.prototype.appendDefaultFilters = function (filters) {
 	    prev = f[f.length - 1],
 	    prevMap = {};
 
-	Snakeskin.forEach(prev, function (el, key) {
+	Snakeskin$1.forEach(prev, function (el, key) {
 		prevMap[key] = {};
-		Snakeskin.forEach(el, function (el) {
+		Snakeskin$1.forEach(el, function (el) {
 			prevMap[key][Object.keys(el)[0]] = true;
 		});
 	});
@@ -7240,7 +7241,7 @@ Parser.prototype.getTplRuntime = function () {
  *
  * @return {(string|boolean|null)}
  */
-Snakeskin.compile = function (src, opt_params, opt_info) {
+Snakeskin$1.compile = function (src, opt_params, opt_info) {
 	src = src || '';
 
 	/** @type {$$SnakeskinParams} */
@@ -7268,8 +7269,8 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 		p.module = 'cjs';
 	}
 
-	Snakeskin.forEach(p.vars, function (el, key) {
-		Snakeskin.Vars[key] = el;
+	Snakeskin$1.forEach(p.vars, function (el, key) {
+		Snakeskin$1.Vars[key] = el;
 	});
 
 	// <<<
@@ -7310,13 +7311,13 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 	// >>>
 
 	var label = '';
-	Snakeskin.LocalVars.include = {};
-	Snakeskin.UID = Math.random().toString(16).replace('0.', '').slice(0, 5);
+	Snakeskin$1.LocalVars.include = {};
+	Snakeskin$1.UID = Math.random().toString(16).replace('0.', '').slice(0, 5);
 
 	if (IS_NODE && info.file) {
 		var path = require('path');
 		info.file = path.normalize(path.resolve(info.file));
-		Snakeskin.LocalVars.include[info.file] = templateRank['template'];
+		Snakeskin$1.LocalVars.include[info.file] = templateRank['template'];
 		label = mtime(info.file);
 	}
 
@@ -7734,7 +7735,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 						    _commandTypeRgxp$exec2 = slicedToArray(_commandTypeRgxp$exec, 1),
 						    commandType = _commandTypeRgxp$exec2[0];
 
-						var defDir = !Snakeskin.Directives[commandType];
+						var defDir = !Snakeskin$1.Directives[commandType];
 
 						if (defDir) {
 							if (isAssignExpression(command, !parser.tplName)) {
@@ -7744,7 +7745,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 							}
 						}
 
-						commandType = Snakeskin.Directives[commandType] ? commandType : 'output';
+						commandType = Snakeskin$1.Directives[commandType] ? commandType : 'output';
 
 						// All directives, which matches to the template __.*?__
 						// will be cutted from the code listing
@@ -7758,7 +7759,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 
 						var inlineLength = parser.inline.length;
 
-						var fnRes = Snakeskin.Directives[commandType].call(parser, command, {
+						var fnRes = Snakeskin$1.Directives[commandType].call(parser, command, {
 							length: commandLength,
 							type: commandType,
 							expr: commandExpr,
@@ -7831,7 +7832,7 @@ Snakeskin.compile = function (src, opt_params, opt_info) {
 					}
 
 					if (!skip) {
-						if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart] || commandNameDecl && ws$1.test(el) && Snakeskin.Directives[command.trim()]) {
+						if (ESCAPES_END[el] || ESCAPES_END_WORD[rPart] || commandNameDecl && ws$1.test(el) && Snakeskin$1.Directives[command.trim()]) {
 							commandNameDecl = false;
 							bEnd$$1 = true;
 							rPart = '';
@@ -7988,7 +7989,7 @@ function compile(text, p, info, cacheKey, ctx, parser) {
 				var env = parser.environment;
 
 				if (ctx !== NULL) {
-					Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin, {
+					Function('Snakeskin', 'module', 'exports', 'require', '__dirname', '__filename', parser.result)(Snakeskin$1, {
 						children: [],
 						exports: ctx,
 						filename: env.filename,
@@ -8001,11 +8002,11 @@ function compile(text, p, info, cacheKey, ctx, parser) {
 
 				// CommonJS compiling in a browser
 			} else if (ctx !== NULL) {
-				Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin, { exports: ctx }, ctx, GLOBAL);
+				Function('Snakeskin', 'module', 'exports', 'global', parser.result)(Snakeskin$1, { exports: ctx }, ctx, GLOBAL);
 
 				// Compiling in a browser
 			} else {
-				Function('Snakeskin', parser.result).call(ROOT, Snakeskin);
+				Function('Snakeskin', parser.result).call(ROOT, Snakeskin$1);
 			}
 		}
 
@@ -8018,13 +8019,13 @@ function compile(text, p, info, cacheKey, ctx, parser) {
 	}
 }
 
-Snakeskin.addDirective('__setError__', {
+Snakeskin$1.addDirective('__setError__', {
 	group: 'ignore'
 }, function (command) {
 	this.error(this.pasteDangerBlocks(command));
 });
 
-Snakeskin.addDirective('__appendLine__', {
+Snakeskin$1.addDirective('__appendLine__', {
 	deferInit: true,
 	group: 'ignore',
 	placement: 'template'
@@ -8039,7 +8040,7 @@ Snakeskin.addDirective('__appendLine__', {
 	}
 });
 
-Snakeskin.addDirective('__setLine__', {
+Snakeskin$1.addDirective('__setLine__', {
 	group: 'ignore'
 }, function (command) {
 	if (this.freezeLine) {
@@ -8049,7 +8050,7 @@ Snakeskin.addDirective('__setLine__', {
 	this.info.line = parseInt(command, 10);
 });
 
-Snakeskin.addDirective('__cutLine__', {
+Snakeskin$1.addDirective('__cutLine__', {
 	group: 'ignore'
 }, function () {
 	if (this.freezeLine) {
@@ -8060,7 +8061,7 @@ Snakeskin.addDirective('__cutLine__', {
 	this.info.line--;
 });
 
-Snakeskin.addDirective('__switchLine__', {
+Snakeskin$1.addDirective('__switchLine__', {
 	deferInit: true,
 	group: 'ignore'
 }, function (command) {
@@ -8085,7 +8086,7 @@ Snakeskin.addDirective('__switchLine__', {
 	}
 });
 
-Snakeskin.addDirective('set', {
+Snakeskin$1.addDirective('set', {
 	group: 'set',
 	notEmpty: true,
 	placement: 'global',
@@ -8094,7 +8095,7 @@ Snakeskin.addDirective('set', {
 	}
 }, set$1);
 
-Snakeskin.addDirective('__set__', {
+Snakeskin$1.addDirective('__set__', {
 	group: 'ignore',
 	notEmpty: true
 }, set$1);
@@ -8243,7 +8244,7 @@ var _templateObject2$3 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__)
 var _templateObject3$3 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t']);
 var _templateObject4$2 = taggedTemplateLiteral(['\n\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\treturn __RETURN_VAL__;\n\t\t\t\t\t}\n\t\t\t\t'], ['\n\t\t\t\t\tif (__RETURN__) {\n\t\t\t\t\t\treturn __RETURN_VAL__;\n\t\t\t\t\t}\n\t\t\t\t']);
 
-Snakeskin.addDirective('end', {
+Snakeskin$1.addDirective('end', {
 	deferInit: true,
 	group: 'end',
 	shorthands: { '/': 'end ' }
@@ -8311,7 +8312,7 @@ Snakeskin.addDirective('end', {
 		}
 	}
 
-	var destruct = Snakeskin.Directives[name + 'End'];
+	var destruct = Snakeskin$1.Directives[name + 'End'];
 
 	if (destruct) {
 		destruct.call.apply(destruct, [this].concat(Array.prototype.slice.call(arguments)));
@@ -8319,24 +8320,24 @@ Snakeskin.addDirective('end', {
 		this.append('};');
 	}
 
-	(_Snakeskin$Directives = Snakeskin.Directives[name + 'BaseEnd']).call.apply(_Snakeskin$Directives, [this].concat(Array.prototype.slice.call(arguments)));
+	(_Snakeskin$Directives = Snakeskin$1.Directives[name + 'BaseEnd']).call.apply(_Snakeskin$Directives, [this].concat(Array.prototype.slice.call(arguments)));
 
 	this.endDir().toQueue(function () {
 		return _this.startInlineDir();
 	});
 });
 
-Snakeskin.addDirective('__end__', {
+Snakeskin$1.addDirective('__end__', {
 	alias: true,
 	deferInit: true,
 	group: 'ignore'
 }, function () {
 	var _Snakeskin$Directives2;
 
-	(_Snakeskin$Directives2 = Snakeskin.Directives['end']).call.apply(_Snakeskin$Directives2, [this].concat(Array.prototype.slice.call(arguments)));
+	(_Snakeskin$Directives2 = Snakeskin$1.Directives['end']).call.apply(_Snakeskin$Directives2, [this].concat(Array.prototype.slice.call(arguments)));
 });
 
-Snakeskin.addDirective('void', {
+Snakeskin$1.addDirective('void', {
 	group: 'void',
 	notEmpty: true,
 	shorthands: { '?': 'void ' }
@@ -8344,7 +8345,7 @@ Snakeskin.addDirective('void', {
 	this.append(this.out(command, { unsafe: true }) + ';');
 });
 
-Snakeskin.addDirective('if', {
+Snakeskin$1.addDirective('if', {
 	block: true,
 	group: ['if', 'logic'],
 	notEmpty: true
@@ -8354,7 +8355,7 @@ Snakeskin.addDirective('if', {
 	this.append('}');
 });
 
-Snakeskin.addDirective('unless', {
+Snakeskin$1.addDirective('unless', {
 	block: true,
 	group: ['unless', 'if', 'logic'],
 	notEmpty: true
@@ -8364,9 +8365,9 @@ Snakeskin.addDirective('unless', {
 	this.append('}');
 });
 
-Snakeskin.addDirective('else', {
+Snakeskin$1.addDirective('else', {
 	group: ['else', 'logic'],
-	with: Snakeskin.group('if')
+	with: Snakeskin$1.group('if')
 }, function (command) {
 	// else if OR else unless
 	if (command) {
@@ -8383,9 +8384,9 @@ Snakeskin.addDirective('else', {
 	}
 });
 
-Snakeskin.addDirective('switch', {
+Snakeskin$1.addDirective('switch', {
 	block: true,
-	children: Snakeskin.group('case'),
+	children: Snakeskin$1.group('case'),
 	group: ['switch', 'logic'],
 	notEmpty: true
 }, function (command) {
@@ -8394,7 +8395,7 @@ Snakeskin.addDirective('switch', {
 	this.append('}');
 });
 
-Snakeskin.addDirective('case', {
+Snakeskin$1.addDirective('case', {
 	block: true,
 	group: ['case', 'logic'],
 	notEmpty: true,
@@ -8405,7 +8406,7 @@ Snakeskin.addDirective('case', {
 	this.append('} break;');
 });
 
-Snakeskin.addDirective('default', {
+Snakeskin$1.addDirective('default', {
 	block: true,
 	group: ['case', 'logic']
 }, function () {
@@ -8418,8 +8419,8 @@ var _templateObject$6 = taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__RESULT
 var _templateObject2$4 = taggedTemplateLiteral(['\n\t\t\t\tyield', ' ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\tyield', ' ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
 var _templateObject3$4 = taggedTemplateLiteral(['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tyield', ' ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t']);
 
-Snakeskin.addDirective('yield', {
-	ancestorsBlacklist: Snakeskin.group('function'),
+Snakeskin$1.addDirective('yield', {
+	ancestorsBlacklist: Snakeskin$1.group('function'),
 	block: true,
 	deferInit: true,
 	generator: true,
@@ -8460,8 +8461,8 @@ var _templateObject$7 = taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__RESULT
 var _templateObject2$5 = taggedTemplateLiteral(['\n\t\t\t\tawait ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\tawait ', ';\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
 var _templateObject3$5 = taggedTemplateLiteral(['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tawait ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tawait ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t'], ['\n\t\t\t\tif (__LENGTH__(__RESULT__)) {\n\t\t\t\t\tawait ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\n\t\t\t\t} else {\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t\tawait ', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t}\n\t\t\t']);
 
-Snakeskin.addDirective('await', {
-	ancestorsBlacklist: Snakeskin.group('function'),
+Snakeskin$1.addDirective('await', {
+	ancestorsBlacklist: Snakeskin$1.group('function'),
 	async: true,
 	block: true,
 	deferInit: true,
@@ -8492,14 +8493,14 @@ Snakeskin.addDirective('await', {
 	}
 });
 
-Snakeskin.addDirective('throw', {
+Snakeskin$1.addDirective('throw', {
 	group: ['throw', 'exception'],
 	notEmpty: true
 }, function (command) {
 	this.append('throw ' + this.out(command, { unsafe: true }) + ';');
 });
 
-Snakeskin.addDirective('try', {
+Snakeskin$1.addDirective('try', {
 	block: true,
 	group: ['try', 'exception', 'dynamic']
 }, function () {
@@ -8512,24 +8513,24 @@ Snakeskin.addDirective('try', {
 	}
 });
 
-Snakeskin.addDirective('catch', {
+Snakeskin$1.addDirective('catch', {
 	group: ['catch', 'exception', 'dynamic'],
 	notEmpty: true,
-	with: Snakeskin.group('try')
+	with: Snakeskin$1.group('try')
 }, function (command) {
 	this.structure.params.chain = true;
 	this.append('} catch (' + this.declVar(command) + ') {');
 });
 
-Snakeskin.addDirective('finally', {
+Snakeskin$1.addDirective('finally', {
 	group: ['finally', 'exception'],
-	with: Snakeskin.group('try')
+	with: Snakeskin$1.group('try')
 }, function () {
 	this.structure.params.chain = true;
 	this.append('} finally {');
 });
 
-Snakeskin.addDirective('var', {
+Snakeskin$1.addDirective('var', {
 	block: true,
 	deferInit: true,
 	group: 'var',
@@ -8540,7 +8541,7 @@ Snakeskin.addDirective('var', {
 
 	if (putIn) {
 		this.append(this.declVars(putIn[1]));
-		Snakeskin.Directives['putIn'].call(this, putIn[1]);
+		Snakeskin$1.Directives['putIn'].call(this, putIn[1]);
 	} else {
 		var short = command.slice(-1) === '/';
 
@@ -8558,7 +8559,7 @@ Snakeskin.addDirective('var', {
 	}
 }, function () {});
 
-Snakeskin.addDirective('with', {
+Snakeskin$1.addDirective('with', {
 	block: true,
 	group: 'with',
 	logic: true,
@@ -8569,14 +8570,14 @@ Snakeskin.addDirective('with', {
 	this.scope.pop();
 });
 
-Snakeskin.addDirective('head', {
+Snakeskin$1.addDirective('head', {
 	block: true,
 	group: ['head', 'define'],
 	logic: true,
 	placement: 'global'
 });
 
-Snakeskin.addDirective('eval', {
+Snakeskin$1.addDirective('eval', {
 	block: true,
 	deferInit: true,
 	group: 'eval',
@@ -8592,7 +8593,7 @@ Snakeskin.addDirective('eval', {
 	this.result = this.result.slice(0, p.from);
 });
 
-Snakeskin.addDirective('ignoreWhitespaces', {
+Snakeskin$1.addDirective('ignoreWhitespaces', {
 	group: ['ignoreWhitespaces', 'space'],
 	placement: 'template',
 	shorthands: { '&': 'ignoreWhitespaces ' }
@@ -8601,7 +8602,7 @@ Snakeskin.addDirective('ignoreWhitespaces', {
 	this.prevSpace = true;
 });
 
-Snakeskin.addDirective('ignoreAllWhitespaces', {
+Snakeskin$1.addDirective('ignoreAllWhitespaces', {
 	block: true,
 	group: ['ignoreAllWhitespaces', 'space'],
 	placement: 'template',
@@ -8613,7 +8614,7 @@ Snakeskin.addDirective('ignoreAllWhitespaces', {
 	this.sysSpace = Number(this.sysSpace);
 });
 
-Snakeskin.addDirective('unIgnoreAllWhitespaces', {
+Snakeskin$1.addDirective('unIgnoreAllWhitespaces', {
 	block: true,
 	group: ['unIgnoreAllWhitespaces', 'space'],
 	placement: 'template',
@@ -8625,18 +8626,18 @@ Snakeskin.addDirective('unIgnoreAllWhitespaces', {
 	this.sysSpace = Number(this.sysSpace);
 });
 
-Snakeskin.addDirective('sp', {
+Snakeskin$1.addDirective('sp', {
 	group: ['sp', 'space'],
 	shorthands: { '\\': 'sp ' },
 	text: true
 });
 
-Snakeskin.addDirective('__sp__', {
+Snakeskin$1.addDirective('__sp__', {
 	group: 'ignore',
 	text: true
 });
 
-Snakeskin.addDirective('__&+__', {
+Snakeskin$1.addDirective('__&+__', {
 	group: 'ignore'
 }, function () {
 	if (this.tolerateWhitespaces) {
@@ -8646,7 +8647,7 @@ Snakeskin.addDirective('__&+__', {
 	this.sysSpace = true;
 });
 
-Snakeskin.addDirective('__&-__', {
+Snakeskin$1.addDirective('__&-__', {
 	group: 'ignore'
 }, function () {
 	if (this.tolerateWhitespaces) {
@@ -8660,7 +8661,7 @@ Snakeskin.addDirective('__&-__', {
 	this.sysSpace = false;
 });
 
-Snakeskin.addDirective('const', {
+Snakeskin$1.addDirective('const', {
 	deferInit: true,
 	group: ['const', 'inherit', 'inlineInherit']
 }, function (command, _ref) {
@@ -8671,7 +8672,7 @@ Snakeskin.addDirective('const', {
 	if (!tplName) {
 		var _Snakeskin$Directives;
 
-		(_Snakeskin$Directives = Snakeskin.Directives['global']).call.apply(_Snakeskin$Directives, [this].concat(Array.prototype.slice.call(arguments)));
+		(_Snakeskin$Directives = Snakeskin$1.Directives['global']).call.apply(_Snakeskin$Directives, [this].concat(Array.prototype.slice.call(arguments)));
 		return;
 	}
 
@@ -8742,7 +8743,7 @@ Snakeskin.addDirective('const', {
 	}
 });
 
-Snakeskin.addDirective('global', {
+Snakeskin$1.addDirective('global', {
 	group: ['global', 'var', 'output'],
 	notEmpty: true
 }, function (command) {
@@ -8774,7 +8775,7 @@ Snakeskin.addDirective('global', {
 	}
 });
 
-Snakeskin.addDirective('output', {
+Snakeskin$1.addDirective('output', {
 	group: 'output',
 	placement: 'template',
 	text: true
@@ -8784,7 +8785,7 @@ Snakeskin.addDirective('output', {
 
 var _templateObject$8 = taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\t\t\t__STRING_RESULT__ = \'\';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\t\t\t__STRING_RESULT__ = \'\';\n\t\t\t']);
 
-Snakeskin.addDirective('comment', {
+Snakeskin$1.addDirective('comment', {
 	block: true,
 	deferInit: true,
 	group: ['comment', 'tag', 'output'],
@@ -8859,7 +8860,7 @@ var types = {
 	'xml': '<?xml version="1.0" encoding="utf-8" ?>'
 };
 
-Snakeskin.addDirective('doctype', {
+Snakeskin$1.addDirective('doctype', {
 	group: ['doctype', 'output'],
 	placement: 'template',
 	renderModesWhitelist: ['stringConcat', 'stringBuffer']
@@ -8876,7 +8877,7 @@ Snakeskin.addDirective('doctype', {
 	this.append(this.out('__INLINE_TAGS__ = Snakeskin.inlineTags[\'' + command + '\'] || Snakeskin.inlineTags[\'html\'];', { unsafe: true }) + this.wrap('\'' + type + '\''));
 });
 
-Snakeskin.addDirective('namespace', {
+Snakeskin$1.addDirective('namespace', {
 	deferInit: true,
 	group: 'namespace',
 	notEmpty: true,
@@ -8897,7 +8898,7 @@ Snakeskin.addDirective('namespace', {
 	this.scope.push('exports' + concatProp(nms));
 });
 
-Snakeskin.addDirective('decorator', {
+Snakeskin$1.addDirective('decorator', {
 	group: 'decorator',
 	notEmpty: true,
 	placement: 'global'
@@ -8912,7 +8913,7 @@ var _templateObject4$3 = taggedTemplateLiteral(['\n\t\t\t\tvar\n\t\t\t\t\t__THIS
 var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t'], ['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\treturn ', ';\n\t\t\t\t\t});\n\n\t\t\t\t\tSnakeskin.cache["', '"] = exports', ';\n\t\t\t\t']);
 
 ['async', 'template', 'interface', 'placeholder'].forEach(function (dir) {
-	Snakeskin.addDirective(dir, {
+	Snakeskin$1.addDirective(dir, {
 		block: true,
 		deferInit: true,
 		group: [dir, 'template', 'rootTemplate', 'define'],
@@ -8929,7 +8930,7 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 		if (this.name === 'async') {
 			this.async = true;
 			var _dir = command.split(' ');
-			return Snakeskin.Directives[_dir[0]].call(this, _dir.slice(1).join(' ').trim(), {
+			return Snakeskin$1.Directives[_dir[0]].call(this, _dir.slice(1).join(' ').trim(), {
 				type: _dir[0],
 				length: length,
 				expr: expr,
@@ -9197,7 +9198,7 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 
 		for (var _i2 = 0; _i2 < flags.length; _i2++) {
 			delete baseParams[flags[_i2].split(' ')[0]];
-			Snakeskin.Directives['__set__'].call(this, flags[_i2]);
+			Snakeskin$1.Directives['__set__'].call(this, flags[_i2]);
 		}
 
 		for (var _key in baseParams) {
@@ -9206,7 +9207,7 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 			}
 
 			var _el2 = baseParams[_key];
-			Snakeskin.Directives['__set__'].call(this, [_key, _key === 'filters' ? _el2[_el2.length - 1] : _el2]);
+			Snakeskin$1.Directives['__set__'].call(this, [_key, _key === 'filters' ? _el2[_el2.length - 1] : _el2]);
 		}
 
 		var doctype = this.doctype;
@@ -9280,8 +9281,8 @@ var _templateObject5$1 = taggedTemplateLiteral(['\n\t\t\t\t\t\t', '\n\t\t\t\t\t\
 
 var _templateObject$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t'], ['\n\t\t\t\t\t\t\t\ttypeof require === \'function\' ?\n\t\t\t\t\t\t\t\t\trequire(', ') : typeof ', ' !== \'undefined\' ? ', ' : GLOBAL[', '];\n\t\t\t\t\t\t\t']);
 
-Snakeskin.addDirective('import', {
-	ancestorsBlacklist: [Snakeskin.group('template'), Snakeskin.group('dynamic'), Snakeskin.group('logic')],
+Snakeskin$1.addDirective('import', {
+	ancestorsBlacklist: [Snakeskin$1.group('template'), Snakeskin$1.group('dynamic'), Snakeskin$1.group('logic')],
 	group: ['import', 'head'],
 	notEmpty: true
 }, function (command) {
@@ -9416,8 +9417,8 @@ Snakeskin.addDirective('import', {
 
 var _templateObject$11 = taggedTemplateLiteral(['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t'], ['\n\t\t\t\tSnakeskin.include(\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', ',\n\t\t\t\t\t\'', '\',\n\t\t\t\t\t', '\n\t\t\t\t);\n\t\t\t']);
 
-Snakeskin.addDirective('include', {
-	ancestorsBlacklist: [Snakeskin.group('head'), Snakeskin.group('template')],
+Snakeskin$1.addDirective('include', {
+	ancestorsBlacklist: [Snakeskin$1.group('head'), Snakeskin$1.group('template')],
 	deferInit: true,
 	group: 'include',
 	notEmpty: true
@@ -9446,7 +9447,7 @@ Snakeskin.addDirective('include', {
 	this.result = this.result.slice(0, this.structure.params.from);
 });
 
-Snakeskin.addDirective('__setFile__', {
+Snakeskin$1.addDirective('__setFile__', {
 	group: 'ignore'
 }, function (file) {
 	file = this.pasteDangerBlocks(file);
@@ -9478,7 +9479,7 @@ Snakeskin.addDirective('__setFile__', {
 	this.save(this.declVars('$_', { sys: true }));
 });
 
-Snakeskin.addDirective('__endSetFile__', {
+Snakeskin$1.addDirective('__endSetFile__', {
 	group: 'ignore'
 }, function () {
 	var _environment = this.environment,
@@ -9498,7 +9499,7 @@ Snakeskin.addDirective('__endSetFile__', {
 	}
 });
 
-Snakeskin.addDirective('for', {
+Snakeskin$1.addDirective('for', {
 	block: true,
 	group: ['for', 'cycle', 'dynamic'],
 	notEmpty: true
@@ -9535,7 +9536,7 @@ Snakeskin.addDirective('for', {
 	this.append('}');
 });
 
-Snakeskin.addDirective('while', {
+Snakeskin$1.addDirective('while', {
 	block: true,
 	deferInit: true,
 	group: ['while', 'cycle', 'dynamic'],
@@ -9545,7 +9546,7 @@ Snakeskin.addDirective('while', {
 	if (this.structure.name === 'do') {
 		this.append('} while (' + this.out(command, { unsafe: true }) + ');');
 		this.structure.params.chain = true;
-		Snakeskin.Directives['end'].call(this);
+		Snakeskin$1.Directives['end'].call(this);
 
 		// while ( ... ) { ... }
 	} else {
@@ -9556,9 +9557,9 @@ Snakeskin.addDirective('while', {
 	this.append('}');
 });
 
-Snakeskin.addDirective('do', {
+Snakeskin$1.addDirective('do', {
 	block: true,
-	endsWith: [Snakeskin.group('while'), 'end'],
+	endsWith: [Snakeskin$1.group('while'), 'end'],
 	group: ['do', 'cycle', 'dynamic']
 }, function () {
 	this.append('do {');
@@ -9573,8 +9574,8 @@ Snakeskin.addDirective('do', {
 var _templateObject$12 = taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
 var _templateObject2$7 = taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](', ');\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn;\n\t\t\t\t\t']);
 
-Snakeskin.addDirective('break', {
-	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
+Snakeskin$1.addDirective('break', {
+	ancestorsWhitelist: [Snakeskin$1.group('cycle'), Snakeskin$1.group('iterator'), Snakeskin$1.group('async')],
 	group: ['break', 'control']
 }, function (command) {
 	var parent = any(this.hasParentFunction());
@@ -9600,8 +9601,8 @@ Snakeskin.addDirective('break', {
 	}
 });
 
-Snakeskin.addDirective('continue', {
-	ancestorsWhitelist: [Snakeskin.group('cycle'), Snakeskin.group('iterator'), Snakeskin.group('async')],
+Snakeskin$1.addDirective('continue', {
+	ancestorsWhitelist: [Snakeskin$1.group('cycle'), Snakeskin$1.group('iterator'), Snakeskin$1.group('async')],
 	group: ['continue', 'control']
 }, function (command) {
 	var parent = any(this.hasParentFunction());
@@ -9631,7 +9632,7 @@ var _templateObject$13 = taggedTemplateLiteral(['\n\t\t\t\t', '.forEach(function
 var _templateObject2$8 = taggedTemplateLiteral(['\n\t\t\tSnakeskin.forEach(', ', function (', ') {\n\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forEach(', ', function (', ') {\n\t\t\t\t', '\n\t\t']);
 var _templateObject3$7 = taggedTemplateLiteral(['\n\t\t\tSnakeskin.forIn(', ', function (', ') {\n\t\t\t\t', '\n\t\t'], ['\n\t\t\tSnakeskin.forIn(', ', function (', ') {\n\t\t\t\t', '\n\t\t']);
 
-Snakeskin.addDirective('forEach', {
+Snakeskin$1.addDirective('forEach', {
 	block: true,
 	deferInit: true,
 	group: ['forEach', 'iterator', 'function', 'dynamic'],
@@ -9676,7 +9677,7 @@ Snakeskin.addDirective('forEach', {
 	}
 });
 
-Snakeskin.addDirective('forIn', {
+Snakeskin$1.addDirective('forIn', {
 	block: true,
 	group: ['forIn', 'iterator', 'function', 'dynamic'],
 	notEmpty: true
@@ -9695,7 +9696,7 @@ Snakeskin.addDirective('forIn', {
 	this.append('});');
 });
 
-Snakeskin.addDirective('func', {
+Snakeskin$1.addDirective('func', {
 	block: true,
 	group: ['func', 'function', 'dynamic'],
 	shorthands: { '()': 'func ' }
@@ -9758,9 +9759,9 @@ Snakeskin.addDirective('func', {
 	}
 });
 
-Snakeskin.addDirective('final', {
+Snakeskin$1.addDirective('final', {
 	group: ['final', 'function', 'dynamic'],
-	with: Snakeskin.group('Async')
+	with: Snakeskin$1.group('Async')
 }, function (command) {
 	var parts = command.split('=>');
 
@@ -9776,9 +9777,9 @@ Snakeskin.addDirective('final', {
 });
 
 ['parallel', 'series', 'waterfall'].forEach(function (dir) {
-	Snakeskin.addDirective(dir, {
+	Snakeskin$1.addDirective(dir, {
 		block: true,
-		children: Snakeskin.group('func'),
+		children: Snakeskin$1.group('func'),
 		group: [dir, 'Async', 'async', 'dynamic']
 	}, function (command, _ref) {
 		var type = _ref.type;
@@ -9789,7 +9790,7 @@ Snakeskin.addDirective('final', {
 	});
 });
 
-Snakeskin.addDirective('literal', {
+Snakeskin$1.addDirective('literal', {
 	filters: { global: [['undef']], local: [['undef']] },
 	group: ['literal', 'escape', 'output'],
 	notEmpty: true,
@@ -9803,7 +9804,7 @@ Snakeskin.addDirective('literal', {
 var _templateObject$14 = taggedTemplateLiteral(['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t'], ['\n\t\t\t__RETURN__ = true;\n\t\t\t__RETURN_VAL__ = ', ';\n\t\t']);
 var _templateObject2$9 = taggedTemplateLiteral(['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tif (typeof arguments[0] === \'function\') {\n\t\t\t\t\t\t\treturn arguments[0](__RETURN_VAL__);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t']);
 
-Snakeskin.addDirective('return', {
+Snakeskin$1.addDirective('return', {
 	block: true,
 	deferInit: true,
 	group: ['return', 'microTemplate'],
@@ -9862,7 +9863,7 @@ Snakeskin.addDirective('return', {
 var _templateObject$15 = taggedTemplateLiteral(['\n\t\t\t\t', '\n\t\n\t\t\t\t', '\n\t\t\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t'], ['\n\t\t\t\t', '\n\t\n\t\t\t\t', '\n\t\t\n\t\t\t\t__RESULT__ = ', ';\n\t\t\t']);
 var _templateObject2$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t\t'], ['\n\t\t\t\t\t\t__CALL_CACHE__ = __RESULT__,\n\t\t\t\t\t\t__CALL_TMP__ = [],\n\t\t\t\t\t\t__CALL_POS__ = 0\n\t\t\t\t\t']);
 
-Snakeskin.addDirective('target', {
+Snakeskin$1.addDirective('target', {
 	block: true,
 	deferInit: true,
 	group: ['target', 'microTemplate', 'var', 'void'],
@@ -9925,7 +9926,7 @@ function end() {
 
 /* eslint-disable prefer-template, no-useless-escape */
 
-Snakeskin.addDirective('super', {
+Snakeskin$1.addDirective('super', {
 	group: 'super',
 	placement: 'template'
 }, function (command, _ref) {
@@ -9978,7 +9979,7 @@ Snakeskin.addDirective('super', {
 	}
 });
 
-Snakeskin.addDirective('__super__', {
+Snakeskin$1.addDirective('__super__', {
 	block: true,
 	group: 'ignore'
 }, function (command) {
@@ -10006,7 +10007,7 @@ var types$1 = {
 	'ts': 'application/typescript'
 };
 
-Snakeskin.addDirective('script', {
+Snakeskin$1.addDirective('script', {
 	block: true,
 	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['script', 'tag', 'output'],
@@ -10048,7 +10049,7 @@ var types$2 = {
 	'css': 'text/css'
 };
 
-Snakeskin.addDirective('style', {
+Snakeskin$1.addDirective('style', {
 	block: true,
 	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['style', 'tag', 'output'],
@@ -10103,7 +10104,7 @@ var types$3 = {
 	}
 };
 
-Snakeskin.addDirective('link', {
+Snakeskin$1.addDirective('link', {
 	block: true,
 	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['link', 'tag', 'output'],
@@ -10149,7 +10150,7 @@ var _templateObject3$8 = taggedTemplateLiteral(['\n\t\t\tif (__LENGTH__(__RESULT
 var _templateObject4$4 = taggedTemplateLiteral(['\n\t\t\t\t\t', ' ? ', ' : ', '\n\t\t\t\t'], ['\n\t\t\t\t\t', ' ? ', ' : ', '\n\t\t\t\t']);
 var _templateObject5$2 = taggedTemplateLiteral(['\n\t\t\t__RESULT__ = ', ';\n\t\t\t', '\n\t\t'], ['\n\t\t\t__RESULT__ = ', ';\n\t\t\t', '\n\t\t']);
 
-Snakeskin.addDirective('call', {
+Snakeskin$1.addDirective('call', {
 	block: true,
 	deferInit: true,
 	filters: { global: [['undef']] },
@@ -10237,7 +10238,7 @@ var _templateObject3$9 = taggedTemplateLiteral(['\n\t\t\t\t\t__RESULT__ = __PUTI
 var _templateObject4$5 = taggedTemplateLiteral(['\n\t\t\t\t\t__RESULT__ = __PUTIN_TARGET__(__RESULT__, true, ', ', \'', '\');\n\t\t\t\t'], ['\n\t\t\t\t\t__RESULT__ = __PUTIN_TARGET__(__RESULT__, true, ', ', \'', '\');\n\t\t\t\t']);
 var _templateObject5$3 = taggedTemplateLiteral(['\n\t\t\t\t\t', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t'], ['\n\t\t\t\t\t', ';\n\t\t\t\t\t__RESULT__ = ', ';\n\t\t\t\t']);
 
-Snakeskin.addDirective('putIn', {
+Snakeskin$1.addDirective('putIn', {
 	block: true,
 	deferInit: true,
 	group: ['putIn', 'microTemplate', 'void'],
@@ -10319,7 +10320,7 @@ var _templateObject3$10 = taggedTemplateLiteral(['\n\t\t\t\t\t\treturn Unsafe(',
 
 var callBlockNameRgxp = new RegExp('^[^' + symbols + '_$][^' + w + ']*|[^' + w + ']+', 'i');
 
-Snakeskin.addDirective('block', {
+Snakeskin$1.addDirective('block', {
 	block: true,
 	deferInit: true,
 	filters: { global: [['undef']] },
@@ -10534,7 +10535,7 @@ Snakeskin.addDirective('block', {
 	}
 });
 
-Snakeskin.addDirective('attr', {
+Snakeskin$1.addDirective('attr', {
 	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
 	group: ['attr', 'output'],
 	interpolation: true,
@@ -10545,7 +10546,7 @@ Snakeskin.addDirective('attr', {
 	this.append(this.getXMLAttrsDecl(command));
 });
 
-Snakeskin.addDirective('tag', {
+Snakeskin$1.addDirective('tag', {
 	block: true,
 	deferInit: true,
 	filters: { global: ['attr', ['html'], ['undef']], local: [['undef']] },
@@ -10634,12 +10635,12 @@ function end$4() {
 	this.append(this.getEndXMLTagDecl(p.inline));
 }
 
-Snakeskin.addDirective('op', {
+Snakeskin$1.addDirective('op', {
   block: true,
   group: 'op',
   logic: true
 });
 
-return Snakeskin;
+return Snakeskin$1;
 
 })));
