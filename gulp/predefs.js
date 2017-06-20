@@ -10,26 +10,26 @@
 
 const
 	gulp = require('gulp'),
-	async = require('async'),
-	through = require('through2'),
-	helpers = require('./helpers');
-
-const
-	monic = require('gulp-monic'),
+	plumber = require('gulp-plumber'),
 	replace = require('gulp-replace'),
-	rename = require('gulp-rename'),
 	header = require('gulp-header'),
-	run = require('gulp-run');
+	helpers = require('./helpers');
 
 const
 	fullHead = `${helpers.getHead()} */\n\n`;
 
 gulp.task('predefs', (cb) => {
+	const
+		async = require('async'),
+		monic = require('gulp-monic'),
+		rename = require('gulp-rename'),
+		run = require('gulp-run');
+
 	async.parallel([
 		(cb) => {
 			gulp.src('./predefs/src/index.js')
+				.pipe(plumber())
 				.pipe(monic())
-				.on('error', helpers.error(cb))
 				.pipe(replace(headRgxp.addFlags('g'), ''))
 				.pipe(gulp.dest('./predefs/build'))
 				.on('end', cb);
@@ -37,8 +37,8 @@ gulp.task('predefs', (cb) => {
 
 		(cb) => {
 			gulp.src('./predefs/src/index.js')
+				.pipe(plumber())
 				.pipe(monic({flags: {externs: true}}))
-				.on('error', helpers.error(cb))
 				.pipe(replace(headRgxp.addFlags('g'), ''))
 				.pipe(replace(/(\s)+$/, '$1'))
 				.pipe(header(fullHead))
@@ -49,7 +49,7 @@ gulp.task('predefs', (cb) => {
 
 		(cb) => {
 			run('bower install').exec()
-				.on('error', helpers.error(cb))
+				.pipe(plumber())
 				.on('finish', cb);
 		}
 
@@ -57,6 +57,9 @@ gulp.task('predefs', (cb) => {
 });
 
 gulp.task('head', (cb) => {
+	const
+		through = require('through2');
+
 	global.readyToWatcher = false;
 
 	function test() {

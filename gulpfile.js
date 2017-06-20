@@ -48,4 +48,4 @@ gulp.task('watch', ['build', 'bump', 'yaspeller', 'npmignore'], () => {
 	}
 });
 
-gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller', 'npmignore']);
+gulp.task('default', ['copyright', 'head', 'fullBuild', 'bump', 'yaspeller', 'npmignore']);

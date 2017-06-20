@@ -9,14 +9,12 @@
 /** @const */
 var glob = {
 	/**
-	 * @abstract
 	 * @param {string} str
 	 * @return {boolean}
 	 */
 	hasMagic: function (str) {},
 
 	/**
-	 * @abstract
 	 * @param {string} str
 	 * @return {!Array<string>}
 	 */

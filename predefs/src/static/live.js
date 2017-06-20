@@ -43,7 +43,6 @@ var test;
 Snakeskin.inlineTags = {};
 
 /**
- * @abstract
  * @param {!Object} filters
  * @param {?string=} [opt_namespace]
  * @return {!Object}
@@ -51,7 +50,6 @@ Snakeskin.inlineTags = {};
 Snakeskin.importFilters = function (filters, opt_namespace) {};
 
 /**
- * @abstract
  * @param {(string|!Function)} filter
  * @param {Object} params
  * @return {!Function}

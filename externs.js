@@ -29,7 +29,6 @@ var Snakeskin = {
 	cache: {},
 
 	/**
-	 * @abstract
 	 * @param {(Element|string)} src
 	 * @param {?$$SnakeskinParams=} [opt_params]
 	 * @param {?$$SnakeskinInfoParams=} [opt_info]
@@ -39,7 +38,6 @@ var Snakeskin = {
 };
 
 /**
- * @abstract
  * @param {string} name
  * @return {string}
  */
@@ -135,7 +133,6 @@ var selfThis;
 var shorthands;
 
 /**
- * @abstract
  * @param {string} name
  * @param {$$SnakeskinAddDirectiveParams} params
  * @param {function(this:$$SnakeskinParser, string, number, string, string, (boolean|number))=} opt_constr
@@ -335,7 +332,6 @@ var test;
 Snakeskin.inlineTags = {};
 
 /**
- * @abstract
  * @param {!Object} filters
  * @param {?string=} [opt_namespace]
  * @return {!Object}
@@ -343,7 +339,6 @@ Snakeskin.inlineTags = {};
 Snakeskin.importFilters = function (filters, opt_namespace) {};
 
 /**
- * @abstract
  * @param {(string|!Function)} filter
  * @param {Object} params
  * @return {!Function}

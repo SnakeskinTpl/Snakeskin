@@ -7,7 +7,6 @@
  */
 
 /**
- * @abstract
  * @param {string} name
  * @return {string}
  */
@@ -103,7 +102,6 @@ var selfThis;
 var shorthands;
 
 /**
- * @abstract
  * @param {string} name
  * @param {$$SnakeskinAddDirectiveParams} params
  * @param {function(this:$$SnakeskinParser, string, number, string, string, (boolean|number))=} opt_constr

@@ -1,5 +1,5 @@
 {
-  "compilerPath": "./bower_components/closure-compiler/compiler.jar",
+  "compilerPath": "./bower_components/closure-compiler/closure-compiler-*.jar",
   "continueWithWarnings": true,
   "compilerFlags": {
     "compilation_level": "ADVANCED",

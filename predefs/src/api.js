@@ -27,7 +27,6 @@ var Snakeskin = {
 	cache: {},
 
 	/**
-	 * @abstract
 	 * @param {(Element|string)} src
 	 * @param {?$$SnakeskinParams=} [opt_params]
 	 * @param {?$$SnakeskinInfoParams=} [opt_info]

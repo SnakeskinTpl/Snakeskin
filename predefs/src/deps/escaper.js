@@ -24,7 +24,6 @@ var Escaper = {
 	snakeskinRgxp: null,
 
 	/**
-	 * @abstract
 	 * @param {string} str
 	 * @param {(Object<string, boolean>|boolean)=} [opt_withCommentsOrParams]
 	 * @param {Array=} [opt_content]
@@ -34,7 +33,6 @@ var Escaper = {
 	replace: function (str, opt_withCommentsOrParams, opt_content, opt_snakeskin) {},
 
 	/**
-	 * @abstract
 	 * @param {string} str
 	 * @param {Array=} [opt_content]
 	 * @return {string}

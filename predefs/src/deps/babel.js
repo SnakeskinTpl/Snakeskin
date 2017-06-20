@@ -21,7 +21,6 @@ var esprima;
 /** @const */
 var babylon = {
 	/**
-	 * @abstract
 	 * @param {string} str
 	 * @param {{plugins: Array}=} [opt_options]
 	 * @return {?}

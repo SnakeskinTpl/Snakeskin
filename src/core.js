@@ -8,12 +8,10 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
-const Snakeskin = {
+let Snakeskin;
+export default Snakeskin = {
 	VERSION: [7, 2, 8]
 };
-
-export default
-	Snakeskin;
 
 /**
  * The operation UID
