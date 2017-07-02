@@ -1,6 +1,6 @@
 # Snakeskin
 
-<img src="http://kobezzza.com/files/snakeskin/logo.svg?1" alt="Snakeskin" width="190" />
+<img src="http://snakeskintpl.github.io/docs/logo.svg" alt="Snakeskin" width="190" />
 
 *This is Frank, a snake-cowboy who loves templates.*
 
