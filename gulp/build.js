@@ -54,10 +54,10 @@ gulp.task('build', (cb) => {
 					.pipe(plumber())
 					.pipe(rollup({
 						allowRealFiles: true,
-						entry: `./src/${name}`,
+						input: `./src/${name}`,
 						format: 'umd',
 						amd: {id: 'Snakeskin'},
-						moduleName: 'Snakeskin',
+						name: 'Snakeskin',
 						plugins: [babel()]
 					}))
 

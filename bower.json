@@ -1,5 +1,5 @@
 {
-  "name": "Snakeskin",
+  "name": "snakeskin",
   "description": "Awesome JavaScript template engine.",
   "main": "dist/snakeskin.min.js",
   "version": "7.2.8",

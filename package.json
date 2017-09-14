@@ -34,8 +34,8 @@
     "async": "^2.0.0",
     "babel-core": "^6.9.0",
     "babylon": "^6.8.1",
-    "collection.js": "^6.0.0-beta.13",
-    "core-js": "^2.4.0",
+    "collection.js": "^6.0.8",
+    "core-js": "^2.5.1",
     "escaper": "^2.4.17",
     "find-node-modules": "^1.0.4",
     "findup-sync": "^2.0.0",
@@ -43,14 +43,15 @@
     "js-beautify": "^1.5.4"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "babel-preset-es2015-rollup": "^3.0.0",
-    "bower": "^1.3.12",
+    "bower": "^1.8.2",
     "closurecompiler-externs": "^1.0.4",
     "coveralls": "^2.11.2",
     "del": "^3.0.0",
-    "eslint": "^4.0.0",
+    "eslint": "^4.6.1",
     "esprima": "^4.0.0",
     "gulp": "^3.8.9",
     "gulp-bump": "^2.0.0",
@@ -63,7 +64,7 @@
     "gulp-plumber": "^1.1.0",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.6.0",
-    "gulp-rollup": "^2.0.0",
+    "gulp-rollup": "^2.15.0",
     "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.13.0",
     "istanbul": "^0.4.2",
@@ -74,6 +75,6 @@
     "sugar": "^2.0.0",
     "through2": "^2.0.0",
     "typograf": "^6.0.0",
-    "yaspeller": "^3.0.0"
+    "yaspeller": "^4.0.0"
   }
 }
