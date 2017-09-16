@@ -30,7 +30,7 @@ gulp.task('bump', (cb) => {
 	const
 		bump = require('gulp-bump');
 
-	gulp.src('./@(package|bower).json')
+	gulp.src('./@(package-lock|package|bower).json')
 		.pipe(bump({version: helpers.getVersion()}))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
