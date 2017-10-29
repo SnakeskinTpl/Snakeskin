@@ -39,7 +39,7 @@ module.exports = {
 
 		const
 			file = fs.readFileSync(path.join(__dirname, '../src/core.js')),
-			v = /VERSION\s*(?::|=)\s*\[(.*?)]/.exec(file)[1].split(/\s*,\s*/);
+			v = /VERSION\s*[:=]\s*\[(.*?)]/.exec(file)[1].split(/\s*,\s*/);
 
 		return v.slice(0, 3).join('.') + (v[3] ? `-${eval(v[3])}` : '');
 	}
