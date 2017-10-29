@@ -43,6 +43,10 @@
     "js-beautify": "^1.7.4"
   },
   "devDependencies": {
+    "@types/async": "^2.0.44",
+    "@types/glob": "^5.0.33",
+    "@types/gulp": "^4.0.5",
+    "@types/through2": "^2.0.33",
     "babel-eslint": "^8.0.1",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
