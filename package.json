@@ -45,6 +45,7 @@
     "@types/glob": "^5.0.35",
     "@types/gulp": "^4.0.5",
     "@types/gulp-load-plugins": "0.0.31",
+    "async": "^2.6.0",
     "babel-eslint": "^8.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
