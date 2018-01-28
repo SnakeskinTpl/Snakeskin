@@ -8,13 +8,12 @@
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  */
 
+const
+	path = require('path'),
+	fs = require('fs');
+
 module.exports = {
-	error(cb) {
-		return (err) => {
-			console.error(err.message);
-			cb();
-		};
-	},
+	headRgxp: /(\/\*![\s\S]*?\*\/\n{2})/,
 
 	getBuilds() {
 		delete require.cache[require.resolve('../builds')];
@@ -33,10 +32,6 @@ module.exports = {
 	},
 
 	getVersion() {
-		const
-			path = require('path'),
-			fs = require('fs');
-
 		const
 			file = fs.readFileSync(path.join(__dirname, '../src/core.js')),
 			v = /VERSION\s*[:=]\s*\[(.*?)]/.exec(file)[1].split(/\s*,\s*/);
