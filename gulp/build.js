@@ -17,7 +17,7 @@ const
 gulp.task('build:js', () => {
 	const
 		del = require('del'),
-		combine = require('stream-combiner2').obj,
+		merge = require('merge2'),
 		helpers = require('./helpers');
 
 	const
@@ -57,7 +57,7 @@ gulp.task('build:js', () => {
 		);
 	});
 
-	return combine(...tasks);
+	return merge(tasks);
 });
 
 gulp.task('build:compile', gulp.series(gulp.parallel(['build:js', 'predefs']), compile));
@@ -66,7 +66,7 @@ gulp.task('build:compile:fast', compile);
 function compile() {
 	const
 		glob = require('glob'),
-		combine = require('stream-combiner2').obj;
+		merge = require('merge2');
 
 	const
 		config = require('../gcc.json'),
@@ -97,7 +97,7 @@ function compile() {
 		);
 	});
 
-	return combine(...tasks);
+	return merge(tasks);
 }
 
 gulp.task('build', gulp.series(['build:compile']));

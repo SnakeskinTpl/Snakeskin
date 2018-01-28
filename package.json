@@ -73,11 +73,11 @@
     "gulp-run": "^1.6.7",
     "gulp-wrap": "^0.13.0",
     "istanbul": "^0.4.2",
+    "merge2": "^1.2.1",
     "mkdirp": "^0.5.1",
     "monic": "^2.5.1",
     "rollup-plugin-babel": "^3.0.3",
     "std.ss": "^1.0.0",
-    "stream-combiner2": "^1.1.1",
     "sugar": "^2.0.0",
     "typograf": "^6.6.1",
     "yaspeller": "^4.0.3"
