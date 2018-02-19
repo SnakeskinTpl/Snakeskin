@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.2.8
+ * Snakeskin v7.2.9
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Tue, 16 Jan 2018 15:03:43 GMT
+ * Date: 'Mon, 19 Feb 2018 14:41:13 GMT
  */
 
 (function (global, factory) {
@@ -16,7 +16,7 @@
 
 var Snakeskin = void 0;
 var Snakeskin$1 = Snakeskin = {
-  VERSION: [7, 2, 8]
+  VERSION: [7, 2, 9]
 };
 
 /**
@@ -6284,15 +6284,17 @@ Parser.prototype._has = function (name, structure, opt_return) {
 		name = map;
 	}
 
+	var nameIsStr = isString(name);
+
 	while (true) {
 		var nm = structure.name;
 
-		if (name[nm] || nm === name) {
-			if (name[nm]) {
-				return opt_return ? structure : nm;
+		if (nameIsStr) {
+			if (nm === name) {
+				return opt_return ? structure : true;
 			}
-
-			return opt_return ? structure : true;
+		} else if (name[nm]) {
+			return opt_return ? structure : nm;
 		}
 
 		if (structure.parent && structure.parent.name !== 'root') {
