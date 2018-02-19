@@ -10,7 +10,7 @@
 
 import Parser from './constructor';
 import { any } from '../helpers/gcc';
-import { isArray, isObject } from '../helpers/types';
+import { isArray, isObject, isString } from '../helpers/types';
 import { $logicDirs } from '../consts/cache';
 
 /**
@@ -77,16 +77,20 @@ Parser.prototype._has = function (name, structure, opt_return) {
 		name = map;
 	}
 
+	const
+		nameIsStr = isString(name);
+
 	while (true) {
 		const
 			nm = structure.name;
 
-		if (name[nm] || nm === name) {
-			if (name[nm]) {
-				return opt_return ? structure : nm;
+		if (nameIsStr) {
+			if (nm === name) {
+				return opt_return ? structure : true;
 			}
 
-			return opt_return ? structure : true;
+		} else if (name[nm]) {
+			return opt_return ? structure : nm;
 		}
 
 		if (structure.parent && structure.parent.name !== 'root') {
