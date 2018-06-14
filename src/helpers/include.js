@@ -29,7 +29,7 @@ Snakeskin.toObj = toObj;
  * @param {(string|Array<string>)} file - file path or list with paths
  * @param {string} eol - EOL symbol
  * @param {?string=} [opt_renderAs] - rendering type of templates
- * @return {(string|boolean)}
+ * @return {boolean}
  */
 Snakeskin.include = function (base, file, eol, opt_renderAs) {
 	if (!IS_NODE) {
@@ -114,12 +114,11 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 				);
 			}
 
-			return true;
-
 		} catch (err) {
 			stack.push(`${s}__setError__ ${err.message}${e}`);
+			return false;
 		}
 	}
 
-	return false;
+	return true;
 };
