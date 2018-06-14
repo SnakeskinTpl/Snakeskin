@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.3.0
+ * Snakeskin v7.4.0
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 14 Jun 2018 10:04:56 GMT
+ * Date: 'Thu, 14 Jun 2018 12:41:03 GMT
  */
 
 (function (global, factory) {
@@ -16,7 +16,7 @@
 
 var Snakeskin = void 0;
 var Snakeskin$1 = Snakeskin = {
-  VERSION: [7, 3, 0]
+  VERSION: [7, 4, 0]
 };
 
 /**
@@ -3029,7 +3029,7 @@ Snakeskin$1.toObj = toObj;
  * Adds file content by the specified path to the stack
  *
  * @param {string} base - base path
- * @param {string} file - file path
+ * @param {(string|Array<string>)} file - file path or list with paths
  * @param {string} eol - EOL symbol
  * @param {?string=} [opt_renderAs] - rendering type of templates
  * @return {(string|boolean)}
@@ -3049,42 +3049,55 @@ Snakeskin$1.include = function (base, file, eol$$1, opt_renderAs) {
 	var s = ADV_LEFT_BOUND + LEFT_BOUND,
 	    e = RIGHT_BOUND;
 
-	try {
-		var extname = path.extname(file),
-		    include = Snakeskin$1.LocalVars.include;
+	var isFolder = /(?:\\|\/)$/,
+	    isRelative = /^\./;
+
+	var files = [].concat(file),
+	    include = Snakeskin$1.LocalVars.include;
 
 
-		var dirname = path.basename(file),
-		    mainFile = '?(' + (dirname && !glob.hasMagic(dirname) ? dirname + '|' : '') + 'main|index).ss';
+	for (var i = 0; i < files.length; i++) {
+		var _file = files[i];
 
-		var src = /(?:\\|\/)$/.test(file) ? file + mainFile : file + (extname ? '' : '.ss');
-
-		if (!path.isAbsolute(src)) {
-			if (/^\./.test(src)) {
-				src = path.resolve(path.dirname(base), src);
-			} else {
-				src = path.resolve(findup('node_modules'), src);
-			}
+		if (!_file) {
+			continue;
 		}
 
-		var arr = glob.hasMagic(src) ? glob.sync(src) : [src];
+		try {
+			var extname = path.extname(_file),
+			    dirname = path.basename(_file),
+			    mainFile = '?(' + (dirname && !glob.hasMagic(dirname) ? dirname + '|' : '') + 'main|index).ss';
 
-		for (var i = 0; i < arr.length; i++) {
-			var _src = path.normalize(arr[i]);
+			var src = isFolder.test(_file) ? _file + mainFile : _file + (extname ? '' : '.ss');
 
-			if (_src in include && include[_src] >= templateRank[type]) {
-				continue;
+			if (!path.isAbsolute(src)) {
+				if (isRelative.test(src)) {
+					src = path.resolve(path.dirname(base), src);
+				} else {
+					src = path.resolve(findup('node_modules'), src);
+				}
 			}
 
-			include[_src] = templateRank[type];
-			var _file = fs.readFileSync(_src, 'utf8');
+			var arr = glob.hasMagic(src) ? glob.sync(src) : [src];
 
-			stack.push(s + '__setFile__ ' + _src + e + (opt_renderAs ? s + '__set__ renderAs \'' + opt_renderAs + '\'' + e : '') + ('' + (wsStart.test(_file) ? '' : eol$$1)) + _file + ('' + (wsEnd.test(_file) ? '' : '' + eol$$1 + s + '__cutLine__' + e)) + (s + '__endSetFile__' + e));
+			for (var _i = 0; _i < arr.length; _i++) {
+				var _src = path.normalize(arr[_i]);
+
+				if (_src in include && include[_src] >= templateRank[type]) {
+					continue;
+				}
+
+				include[_src] = templateRank[type];
+
+				var _file2 = fs.readFileSync(_src, 'utf8');
+
+				stack.push(s + '__setFile__ ' + _src + e + (opt_renderAs ? s + '__set__ renderAs \'' + opt_renderAs + '\'' + e : '') + ('' + (wsStart.test(_file2) ? '' : eol$$1)) + _file2 + ('' + (wsEnd.test(_file2) ? '' : '' + eol$$1 + s + '__cutLine__' + e)) + (s + '__endSetFile__' + e));
+			}
+
+			return true;
+		} catch (err) {
+			stack.push(s + '__setError__ ' + err.message + e);
 		}
-
-		return true;
-	} catch (err) {
-		stack.push(s + '__setError__ ' + err.message + e);
 	}
 
 	return false;
