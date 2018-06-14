@@ -26,7 +26,7 @@ Snakeskin.toObj = toObj;
  * Adds file content by the specified path to the stack
  *
  * @param {string} base - base path
- * @param {string} file - file path
+ * @param {(string|Array<string>)} file - file path or list with paths
  * @param {string} eol - EOL symbol
  * @param {?string=} [opt_renderAs] - rendering type of templates
  * @return {(string|boolean)}
@@ -49,61 +49,76 @@ Snakeskin.include = function (base, file, eol, opt_renderAs) {
 		s = ADV_LEFT_BOUND + LEFT_BOUND,
 		e = RIGHT_BOUND;
 
-	try {
+	const
+		isFolder = /(?:\\|\/)$/,
+		isRelative = /^\./;
+
+	const
+		files = [].concat(file),
+		{include} = Snakeskin.LocalVars;
+
+	for (let i = 0; i < files.length; i++) {
 		const
-			extname = path.extname(file),
-			{include} = Snakeskin.LocalVars;
+			file = files[i];
 
-		const
-			dirname = path.basename(file),
-			mainFile = `?(${dirname && !glob.hasMagic(dirname) ? `${dirname}|` : ''}main|index).ss`;
-
-		let src = /(?:\\|\/)$/.test(file) ?
-			file + mainFile : file + (extname ? '' : '.ss');
-
-		if (!path.isAbsolute(src)) {
-			if (/^\./.test(src)) {
-				src = path.resolve(path.dirname(base), src);
-
-			} else {
-				src = path.resolve(findup('node_modules'), src);
-			}
+		if (!file) {
+			continue;
 		}
 
-		const
-			arr = glob.hasMagic(src) ? glob.sync(src) : [src];
-
-		for (let i = 0; i < arr.length; i++) {
+		try {
 			const
-				src = path.normalize(arr[i]);
+				extname = path.extname(file),
+				dirname = path.basename(file),
+				mainFile = `?(${dirname && !glob.hasMagic(dirname) ? `${dirname}|` : ''}main|index).ss`;
 
-			if (src in include && include[src] >= templateRank[type]) {
-				continue;
+			let
+				src = isFolder.test(file) ? file + mainFile : file + (extname ? '' : '.ss');
+
+			if (!path.isAbsolute(src)) {
+				if (isRelative.test(src)) {
+					src = path.resolve(path.dirname(base), src);
+
+				} else {
+					src = path.resolve(findup('node_modules'), src);
+				}
 			}
 
-			include[src] = templateRank[type];
 			const
-				file = fs.readFileSync(src, 'utf8');
+				arr = glob.hasMagic(src) ? glob.sync(src) : [src];
 
-			stack.push(
-				`${s}__setFile__ ${src}${e}` +
+			for (let i = 0; i < arr.length; i++) {
+				const
+					src = path.normalize(arr[i]);
 
-				(opt_renderAs ?
-					`${s}__set__ renderAs '${opt_renderAs}'${e}` : '') +
+				if (src in include && include[src] >= templateRank[type]) {
+					continue;
+				}
 
-				`${wsStart.test(file) ? '' : eol}` +
+				include[src] = templateRank[type];
 
-				file +
+				const
+					file = fs.readFileSync(src, 'utf8');
 
-				`${wsEnd.test(file) ? '' : `${eol}${s}__cutLine__${e}`}` +
-				`${s}__endSetFile__${e}`
-			);
+				stack.push(
+					`${s}__setFile__ ${src}${e}` +
+
+					(opt_renderAs ?
+						`${s}__set__ renderAs '${opt_renderAs}'${e}` : '') +
+
+					`${wsStart.test(file) ? '' : eol}` +
+
+					file +
+
+					`${wsEnd.test(file) ? '' : `${eol}${s}__cutLine__${e}`}` +
+					`${s}__endSetFile__${e}`
+				);
+			}
+
+			return true;
+
+		} catch (err) {
+			stack.push(`${s}__setError__ ${err.message}${e}`);
 		}
-
-		return true;
-
-	} catch (err) {
-		stack.push(`${s}__setError__ ${err.message}${e}`);
 	}
 
 	return false;
