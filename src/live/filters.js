@@ -686,3 +686,31 @@ Snakeskin.setFilterParams('attr', {
 		return isNotPrimitive(val);
 	}
 });
+
+const p = {};
+
+Filters['super'] = function (val, scope, init) {
+	const
+		nm = scope + val;
+
+	p[nm] = p[nm] || [val];
+
+	console.log(init);
+
+	if (init) {
+		console.log(121);
+		return p.slice(-1)[0];
+	}
+
+	val = val + Math.random().toString().slice(2);
+	p[nm].push(val);
+
+	console.log(val);
+
+	return val;
+};
+
+Snakeskin.setFilterParams('super', {
+	'!html': true,
+	bind: [(o) => JSON.stringify(o.scope[0]), (o) => Boolean(o.vars[o.tplName])]
+});

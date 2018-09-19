@@ -250,7 +250,9 @@ import {
 			if (/\)\s+extends\s+/.test(command)) {
 				try {
 					this.scope.push(this.scope[this.scope.length - 1].replace(/^exports\.?/, ''));
+					console.log(7, /\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1]);
 					parentTplName = declParentTplName = this.getBlockName(/\)\s+extends\s+(.*?)(?=@=|$)/.exec(command)[1], true);
+					console.log(34);
 					this.scope.pop();
 
 				} catch (ignore) {
@@ -298,6 +300,7 @@ import {
 					exports${concatProp(declTplName)} =
 						Snakeskin.decorate([
 							${decorators.join()}],
+							${this.scope},
 							${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`
 				);
 			}

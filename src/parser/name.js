@@ -140,6 +140,8 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
 			if (custom) {
+				console.log(111, el);
+				console.log(222, this.returnEvalVal(el));
 				res += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
 				continue;
 			}

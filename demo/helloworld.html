@@ -6,24 +6,36 @@
 		<script src="../node_modules/js-beautify/js/lib/beautify.js"></script>
 		<script src="../node_modules/escaper/dist/escaper.min.js"></script>
 		<script src="../node_modules/esprima/dist/esprima.js"></script>
-		<script src="../dist/snakeskin.min.js"></script>
+		<script src="../dist/snakeskin.js"></script>
 	</head>
 
 	<body>
 		<div id="test"></div>
 
 		<script type="text/x-snakeskin-template" id="templates">
-			- namespace demo
-			- template helloWorld(name = 'world')
+			- namespace ['dd-1']
+
+			- template override(name)
+				- return
+					() => fn, ctx
+						? ctx.helloWorld = fn
+						- return fn
+
+			- template ['helloWorld'](name = 'world')
 				< .hello
 					Hello {name}!
+
+			- @override('helloWorld')
+			- template ['helloWorld'|super](name = 'world') extends ['dd-1']['helloWorld'|super]
+				- block e
+					121
 		</script>
 
 		<script>
 			var d = {};
 			Snakeskin.compile(document.getElementById('templates'), {debug: d, prettyPrint: true});
 			// console.log(d.code);
-			document.getElementById('test').innerHTML = demo.helloWorld();
+			document.getElementById('test').innerHTML = window['dd-1'].helloWorld();
 		</script>
 	</body>
 </html>
