@@ -141,8 +141,13 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 
 			if (custom) {
 				console.log(111, el);
-				console.log(222, this.returnEvalVal(el));
+				try {
+					console.log(222, this.returnEvalVal(el));
+				} catch (e) {
+					console.log(e);
+				}
 				res += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
+				console.log(333, res);
 				continue;
 			}
 

@@ -263,6 +263,8 @@ import {
 					this.parentTplName = this.normalizeBlockName(parentTplName);
 
 				if ($cache[parentTplName] == null) {
+					console.log(parentTplName, declParentTplName, $cache);
+
 					if (!this.renderAs || this.renderAs === 'template') {
 						return this.error(`the specified template "${declParentTplName}" for inheritance is not defined`);
 					}

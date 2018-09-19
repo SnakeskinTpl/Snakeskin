@@ -698,8 +698,7 @@ Filters['super'] = function (val, scope, init) {
 	console.log(init);
 
 	if (init) {
-		console.log(121);
-		return p.slice(-1)[0];
+		return p[nm].slice(-2)[0];
 	}
 
 	val = val + Math.random().toString().slice(2);
