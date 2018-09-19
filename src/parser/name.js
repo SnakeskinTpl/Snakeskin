@@ -129,9 +129,16 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 			.replace(nmeRgxp, '')
 			.split('.');
 
-		let res = '';
+		let
+			res = '';
+
 		for (let i = 0; i < parts.length; i++) {
-			let el = parts[i];
+			let
+				el = parts[i];
+
+			if (!el) {
+				continue;
+			}
 
 			const
 				custom = el[0] === '%';
@@ -140,15 +147,17 @@ Parser.prototype.getBlockName = function (name, opt_parseLiteralScope) {
 				this.out(custom ? el.slice(1) : el, {unsafe: true}) : el;
 
 			if (custom) {
-				console.log(111, el);
+				const
+					v = this.returnEvalVal(el);
+
 				try {
-					console.log(222, this.returnEvalVal(el));
-				} catch (e) {
-					console.log(e);
+					new Function(`var ${v};`)();
+					el = v;
+
+				} catch (_) {
+					res += ws`['${applyDefEscape(v)}']`;
+					continue;
 				}
-				res += ws`['${applyDefEscape(this.returnEvalVal(el))}']`;
-				console.log(333, res);
-				continue;
 			}
 
 			res += res ? `.${el}` : el;
