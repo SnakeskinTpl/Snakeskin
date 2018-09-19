@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.4.1 (live)
+ * Snakeskin v7.5.0 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 14 Jun 2018 15:32:23 GMT
+ * Date: 'Wed, 19 Sep 2018 11:00:58 GMT
  */
 
 (function (global, factory) {
@@ -16,7 +16,7 @@
 
 var Snakeskin = void 0;
 var Snakeskin$1 = Snakeskin = {
-  VERSION: [7, 4, 1]
+  VERSION: [7, 5, 0]
 };
 
 /**
@@ -41,7 +41,28 @@ Snakeskin.Filters = {};
  * The namespace for super-global variables
  * @const
  */
-Snakeskin.Vars = {};
+Snakeskin.Vars = {
+  /**
+   * Decorator for template overriding
+   *
+   * @param {string} name
+   * @return {!Function}
+   */
+  override: function override(name) {
+    return function (fn, ctx) {
+      return ctx[name] = fn;
+    };
+  },
+
+
+  /**
+   * Decorator for template ignoring
+   * @param {!Function} fn
+   */
+  ignore: function ignore(fn) {
+    fn.ignore = true;
+  }
+};
 
 /**
  * The namespace for local variables
@@ -453,11 +474,12 @@ Snakeskin$1.forIn = function (obj, callback) {
  *
  * @param {!Array<!Function>} decorators - array of decorator functions
  * @param {!Function} fn - source function
+ * @param {!Object} nms - source namespace
  * @return {!Function}
  */
-Snakeskin$1.decorate = function (decorators, fn) {
+Snakeskin$1.decorate = function (decorators, nms, fn) {
 	Snakeskin$1.forEach(decorators, function (decorator) {
-		return fn = decorator(fn) || fn;
+		return fn = decorator(fn, nms) || fn;
 	});
 	fn.decorators = decorators;
 	return fn;
@@ -1480,6 +1502,42 @@ Snakeskin$1.setFilterParams('attr', {
 	test: function test(val) {
 		return isNotPrimitive(val);
 	}
+});
+
+/**
+ * Returns a valid template name for overriding
+ *
+ * @param {string} name - base name
+ * @param {!Object} store - link to a store object
+ * @param {string} scope - scope string
+ * @param {boolean} init - true, if a template already defined
+ * @return {string}
+ */
+Filters['super'] = function (name, store, scope, init) {
+	var cache = store.templates = store.templates || {},
+	    nm = scope + name;
+
+	cache[nm] = cache[nm] || [name];
+
+	if (init) {
+		return cache[nm].slice(-2)[0] || name;
+	}
+
+	name = name + Math.random().toString().slice(2);
+	cache[nm].push(name);
+
+	return name;
+};
+
+Snakeskin$1.setFilterParams('super', {
+	'!html': true,
+	bind: [function (o) {
+		return o.getVar('__STORE__');
+	}, function (o) {
+		return JSON.stringify(o.scope[0]);
+	}, function (o) {
+		return Boolean(o.vars[o.tplName]);
+	}]
 });
 
 return Snakeskin$1;
