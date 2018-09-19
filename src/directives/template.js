@@ -306,7 +306,7 @@ import {
 					exports${concatProp(declTplName)} =
 						Snakeskin.decorate([
 							${decorators.join()}],
-							${this.scope},
+							${this.scope.slice(-1)[0]},
 							${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`
 				);
 			}
