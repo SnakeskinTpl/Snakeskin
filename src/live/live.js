@@ -343,10 +343,11 @@ Snakeskin.forIn = function (obj, callback) {
  *
  * @param {!Array<!Function>} decorators - array of decorator functions
  * @param {!Function} fn - source function
+ * @param {!Object} nms - source namespace
  * @return {!Function}
  */
-Snakeskin.decorate = function (decorators, fn) {
-	Snakeskin.forEach(decorators, (decorator) => fn = decorator(fn) || fn);
+Snakeskin.decorate = function (decorators, nms, fn) {
+	Snakeskin.forEach(decorators, (decorator) => fn = decorator(fn, nms) || fn);
 	fn.decorators = decorators;
 	return fn;
 };

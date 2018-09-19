@@ -10,7 +10,7 @@
 
 let Snakeskin;
 export default Snakeskin = {
-	VERSION: [7, 4, 1]
+	VERSION: [7, 5, 0]
 };
 
 /**
@@ -35,7 +35,25 @@ Snakeskin.Filters = {};
  * The namespace for super-global variables
  * @const
  */
-Snakeskin.Vars = {};
+Snakeskin.Vars = {
+	/**
+	 * Decorator for template overriding
+	 *
+	 * @param {string} name
+	 * @return {!Function}
+	 */
+	override(name) {
+		return (fn, ctx) => ctx[name] = fn;
+	},
+
+	/**
+	 * Decorator for template ignoring
+	 * @param {!Function} fn
+	 */
+	ignore(fn) {
+		fn.ignore = true;
+	}
+};
 
 /**
  * The namespace for local variables

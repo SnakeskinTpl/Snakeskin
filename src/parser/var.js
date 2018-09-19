@@ -22,8 +22,23 @@ import { B_OPEN, B_CLOSE, SYS_CONSTS } from '../consts/literals';
  * @return {string}
  */
 Parser.prototype.getVar = function (name) {
-	const {vars} = this.structure;
-	return vars && vars[name] ? vars[name].value : name;
+	const
+		{structure: {vars}, environment: {id}} = this;
+
+	if (vars) {
+		if (vars[name]) {
+			return vars[name].value;
+		}
+
+		const
+			globalName = `${name}_${id}`;
+
+		if (vars[globalName]) {
+			return vars[globalName].value;
+		}
+	}
+
+	return name;
 };
 
 /**

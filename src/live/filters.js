@@ -686,3 +686,38 @@ Snakeskin.setFilterParams('attr', {
 		return isNotPrimitive(val);
 	}
 });
+
+/**
+ * Returns a valid template name for overriding
+ *
+ * @param {string} name - base name
+ * @param {!Object} store - link to a store object
+ * @param {string} scope - scope string
+ * @param {boolean} init - true, if a template already defined
+ * @return {string}
+ */
+Filters['super'] = function (name, store, scope, init) {
+	const
+		cache = store.templates = store.templates || {},
+		nm = scope + name;
+
+	cache[nm] = cache[nm] || [name];
+
+	if (init) {
+		return cache[nm].slice(-2)[0] || name;
+	}
+
+	name = name + Math.random().toString().slice(2);
+	cache[nm].push(name);
+
+	return name;
+};
+
+Snakeskin.setFilterParams('super', {
+	'!html': true,
+	bind: [
+		(o) => o.getVar('__STORE__'),
+		(o) => JSON.stringify(o.scope[0]),
+		(o) => Boolean(o.vars[o.tplName])
+	]
+});

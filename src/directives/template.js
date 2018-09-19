@@ -138,13 +138,17 @@ import {
 
 			if (tplName[0] === '%') {
 				try {
-					tplName = ws`['${
-						applyDefEscape(
-							this.returnEvalVal(
-								this.out(tplName.slice(1), {unsafe: true})
-							)
-						)
-					}']`;
+					const v = this.returnEvalVal(
+						this.out(tplName.slice(1), {unsafe: true})
+					);
+
+					try {
+						new Function(`var ${v};`)();
+						shortcut = tplName = v;
+
+					} catch (_) {
+						tplName = ws`['${applyDefEscape(v)}']`;
+					}
 
 				} catch (err) {
 					return this.error(err.message);
@@ -184,21 +188,25 @@ import {
 
 				if (custom) {
 					try {
-						tplName += ws`['${
-							applyDefEscape(
-								this.returnEvalVal(
-									this.out(el, {unsafe: true})
-								)
-							)
-						}']`;
+						const v = this.returnEvalVal(
+							this.out(el, {unsafe: true})
+						);
+
+						try {
+							new Function(`var ${v};`)();
+							el = v;
+
+						} catch (_) {
+							tplName += ws`['${applyDefEscape(v)}']`;
+							continue;
+						}
 
 					} catch (err) {
 						return this.error(err.message);
 					}
+				}
 
-					continue;
-
-				} else if (i === tplNameLength - 1) {
+				if (i === tplNameLength - 1) {
 					lastName = el;
 				}
 
@@ -254,7 +262,7 @@ import {
 					this.scope.pop();
 
 				} catch (ignore) {
-					return this.error(`invalid template name "${this.name}" for inheritance`);
+					return this.error(`invalid template name for inheritance (template: ${tplName})`);
 				}
 
 				parentTplName =
@@ -298,6 +306,7 @@ import {
 					exports${concatProp(declTplName)} =
 						Snakeskin.decorate([
 							${decorators.join()}],
+							${this.scope.slice(-1)[0]},
 							${prfx[0]} function ${prfx[1]}${tplNameLength > 1 ? lastName : shortcut}(`
 				);
 			}
