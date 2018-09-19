@@ -18,7 +18,16 @@ var Snakeskin = {
 	Filters: {},
 
 	/** @const */
-	Vars: {},
+	Vars: {
+		/**
+		 * @param {string} name
+		 * @return {!Function}
+		 */
+		override: function (name) {},
+
+		/** @param {!Function} fn */
+		ignore: function (fn) {}
+	},
 
 	/** @const */
 	LocalVars: {},
