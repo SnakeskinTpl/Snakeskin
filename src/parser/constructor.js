@@ -452,6 +452,12 @@ export default class Parser {
 			`;
 		}
 
+		const globalVars = [
+			this.declVars('$_', {sys: true}),
+			this.declVars('__STORE__ = {}', {sys: true})
+		].join('');
+
+		this.evalStr(globalVars, true);
 		this.result += ws`
 			var
 				GLOBAL = Function('return this')(),
@@ -516,7 +522,7 @@ export default class Parser {
 				return this.value;
 			};
 
-			${this.declVars('$_', {sys: true})}
+			${globalVars}
 		`;
 	}
 }

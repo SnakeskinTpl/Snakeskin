@@ -185,6 +185,7 @@ export const P_CLOSE = {
 // >>>
 
 export const SYS_CONSTS = {
+	'__STORE__': true,
 	'__REQUIRE__': true,
 	'__RESULT__': true,
 	'__STRING_RESULT__': true,
