@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.5.0
+ * Snakeskin v7.5.1
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Wed, 19 Sep 2018 11:00:57 GMT
+ * Date: 'Fri, 21 Sep 2018 15:57:43 GMT
  */
 
 (function (global, factory) {
@@ -16,7 +16,7 @@
 
 var Snakeskin = void 0;
 var Snakeskin$1 = Snakeskin = {
-  VERSION: [7, 5, 0]
+  VERSION: [7, 5, 1]
 };
 
 /**
@@ -6541,10 +6541,14 @@ Parser.prototype.getVar = function (name) {
 			return vars[name].value;
 		}
 
-		var globalName = name + '_' + id;
+		var nms = [id, 0];
 
-		if (vars[globalName]) {
-			return vars[globalName].value;
+		for (var i = 0; i < nms.length; i++) {
+			var globalName = name + '_' + nms[i];
+
+			if (vars[globalName]) {
+				return vars[globalName].value;
+			}
 		}
 	}
 
