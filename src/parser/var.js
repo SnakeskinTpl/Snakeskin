@@ -31,10 +31,15 @@ Parser.prototype.getVar = function (name) {
 		}
 
 		const
-			globalName = `${name}_${id}`;
+			nms = [id, 0];
 
-		if (vars[globalName]) {
-			return vars[globalName].value;
+		for (let i = 0; i < nms.length; i++) {
+			const
+				globalName = `${name}_${nms[i]}`;
+
+			if (vars[globalName]) {
+				return vars[globalName].value;
+			}
 		}
 	}
 
