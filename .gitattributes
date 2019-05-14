@@ -1,2 +1,2 @@
 # Perform LF normalization
-* text eol=lf
+* text=auto eol=lf
