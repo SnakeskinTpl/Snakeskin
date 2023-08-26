@@ -26,7 +26,7 @@ gulp.task('copyright', () =>
 );
 
 gulp.task('bump', () =>
-	gulp.src('./@(package-lock|package|bower).json')
+	gulp.src('./@(package-lock|package).json')
 		.pipe($.plumber())
 		.pipe($.bump({version: require('./helpers').getVersion()}))
 		.pipe(gulp.dest('./'))

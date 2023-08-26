@@ -27,8 +27,8 @@
     "haml"
   ],
   "scripts": {
-    "test": "bower install && node test",
-    "full-test": "bower install && istanbul cover test/index.dev.js && yaspeller ./ --ignore-uppercase"
+    "test": "node test",
+    "full-test": "istanbul cover test/index.dev.js && yaspeller ./ --ignore-uppercase"
   },
   "dependencies": {
     "babel-core": "^6.26.3",
@@ -50,7 +50,6 @@
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "babel-preset-es2015-rollup": "^3.0.0",
-    "bower": "^1.8.4",
     "closurecompiler-externs": "^1.0.4",
     "coveralls": "^3.0.2",
     "del": "^3.0.0",
