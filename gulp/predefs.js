@@ -33,14 +33,9 @@ gulp.task('predefs:externs', () =>
 		.pipe(gulp.dest('./'))
 );
 
-gulp.task('predefs:bower', () =>
-	$.run('bower install').exec()
-);
-
 gulp.task('predefs', gulp.parallel([
 	'predefs:build',
-	'predefs:externs',
-	'predefs:bower'
+	'predefs:externs'
 ]));
 
 gulp.task('head', () => {

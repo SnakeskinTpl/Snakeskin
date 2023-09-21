@@ -12,6 +12,7 @@
 
 const
 	gulp = require('gulp'),
+	closureCompiler = require('google-closure-compiler').gulp(),
 	$ = require('gulp-load-plugins')();
 
 gulp.task('build:js', () => {
@@ -65,7 +66,6 @@ gulp.task('build:compile:fast', compile);
 
 function compile() {
 	const
-		glob = require('glob'),
 		merge = require('merge2');
 
 	const
@@ -79,16 +79,16 @@ function compile() {
 	Object.keys(builds).forEach((key) => {
 		const
 			name = key !== 'snakeskin' ? ` (${key.replace(/^snakeskin\./, '')})` : '',
-			gccFlags = Object.assign({fileName: `${key}.min.js`}, config);
+			gccFlags = Object.assign({js_output_file: `${key}.min.js`}, config.compilerFlags);
 
 		const head =
 			`/*! Snakeskin v${helpers.getVersion()}${name}` +
 			' | https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE */\n';
 
 		tasks.push(
-			gulp.src(`./dist/${key}.js`)
+			gulp.src(`./dist/${key}.js`, {base: './'})
 				.pipe($.plumber())
-				.pipe($.closureCompiler(Object.assign(gccFlags, {compilerPath: glob.sync(gccFlags.compilerPath)})))
+				.pipe(closureCompiler(gccFlags))
 				.pipe($.replace(/^\/\*[\s\S]*?\*\//, ''))
 				.pipe($.wrap('(function(){\'use strict\';<%= contents %>}).call(this);'))
 				.pipe($.header(head))
