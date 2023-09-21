@@ -416,7 +416,8 @@ import {
 					$tagName,
 					$attrKey,
 					$attrType,
-					$attrs;
+					$attrs,
+					$i = 0;
 
 				var
 					__ATTR_STR__,
