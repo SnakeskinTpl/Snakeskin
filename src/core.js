@@ -10,7 +10,7 @@
 
 let Snakeskin;
 export default Snakeskin = {
-	VERSION: [7, 5, 1]
+	VERSION: [7, 6, 0]
 };
 
 /**

@@ -1,11 +1,11 @@
 /*!
- * Snakeskin v7.5.1 (live)
+ * Snakeskin v7.6.0 (live)
  * https://github.com/SnakeskinTpl/Snakeskin
  *
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Mon, 04 Sep 2023 13:53:25 GMT
+ * Date: 'Thu, 21 Sep 2023 15:28:40 GMT
  */
 
 (function (global, factory) {
@@ -16,7 +16,7 @@
 
 var Snakeskin = void 0;
 var Snakeskin$1 = Snakeskin = {
-  VERSION: [7, 5, 1]
+  VERSION: [7, 6, 0]
 };
 
 /**
