@@ -36,8 +36,6 @@ Snakeskin.addDirective(
 			command
 		});
 
-		this.append(`$i = ${this.i};`);
-
 		this.append(ws`
 			${this.declVars(
 				ws`
