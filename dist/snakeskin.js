@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/SnakeskinTpl/Snakeskin/blob/master/LICENSE
  *
- * Date: 'Thu, 21 Sep 2023 15:28:39 GMT
+ * Date: 'Thu, 21 Sep 2023 21:35:25 GMT
  */
 
 (function (global, factory) {
@@ -8995,7 +8995,6 @@ Snakeskin$1.addDirective('output', {
 	placement: 'template',
 	text: true
 }, function (command) {
-	this.append('$i = ' + this.i + ';');
 	this.append(this.wrap(this.out(command)));
 });
 
@@ -10400,8 +10399,6 @@ Snakeskin$1.addDirective('call', {
 		chunks: 1,
 		command: command
 	});
-
-	this.append('$i = ' + this.i + ';');
 
 	this.append(ws(_templateObject$16, this.declVars(ws(_templateObject2$11), { sys: true }), this.getResultDecl()));
 }, function () {
